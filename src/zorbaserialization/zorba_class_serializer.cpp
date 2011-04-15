@@ -357,7 +357,9 @@ void operator&(Archiver &ar, store::Item* &obj)
     //ar.register_reference(id, &obj);
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+      throw ZORBA_EXCEPTION(
+        ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      );
     }
     is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
     if(!is_ref)
@@ -416,7 +418,9 @@ void operator&(Archiver &ar, store::Item* &obj)
 
       if(name_of_type == "untyped")
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, name_of_type);
+        throw ZORBA_EXCEPTION(
+          ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( name_of_type )
+        );
       }
       else if(name_of_type == "untypedAtomic")
       {
@@ -425,15 +429,21 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "anyType")
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, name_of_type);
+        throw ZORBA_EXCEPTION(
+          ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( name_of_type )
+        );
       }
       else if(name_of_type == "anySimpleType")
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, name_of_type);
+        throw ZORBA_EXCEPTION(
+          ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( name_of_type )
+        );
       }
       else if(name_of_type == "anyAtomicType")
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, name_of_type);
+        throw ZORBA_EXCEPTION(
+          ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( name_of_type )
+        );
       }
       else if(name_of_type == "string")
       {
@@ -659,7 +669,9 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, name_of_type);
+        throw ZORBA_EXCEPTION(
+          ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( name_of_type )
+        );
       }
 EndAtomicItem:;
     }
@@ -669,7 +681,9 @@ EndAtomicItem:;
     }
     else if(is_pul)
     {
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, "Pul");
+      throw ZORBA_EXCEPTION(
+        ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "Pul" )
+      );
     }
     else if(is_error)
     {
@@ -729,7 +743,9 @@ EndAtomicItem:;
         obj = dynamic_cast<store::Item*>(new_obj);
         if(!obj)
         {
-          ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+          throw ZORBA_EXCEPTION(
+            ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          );
         }
       }
       else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
@@ -805,7 +821,9 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     //ar.register_reference(id, &obj);
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+      throw ZORBA_EXCEPTION(
+        ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      );
     }
     is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
   }
@@ -820,7 +838,9 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     switch(nodekind)
     {
     case store::StoreConsts::anyNode:
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, "anyNode");
+      throw ZORBA_EXCEPTION(
+        ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "anyNode" )
+      );
     case store::StoreConsts::documentNode:
     {
       SERIALIZE_FIELD2(zstring, baseUri, getBaseURI);
@@ -906,7 +926,9 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
       FINALIZE_SERIALIZE(createCommentNode, (result, parent, content));
     }break;
     default:
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, "unknown");
+      throw ZORBA_EXCEPTION(
+        ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "unknown" )
+      );
     }
   }//end is_ref
 
@@ -930,7 +952,9 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
         obj = dynamic_cast<store::Item*>(new_obj);
         if(!obj)
         {
-          ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+          throw ZORBA_EXCEPTION(
+            ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          );
         }
       }
       else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
@@ -944,7 +968,9 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
 
 void operator&(Archiver &ar, zorba::store::TempSeq *obj)
 {
-  ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, "TempSeq");
+  throw ZORBA_EXCEPTION(
+    ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "TempSeq" )
+  );
 }
 /*
 void operator&(Archiver &ar, Error *&obj)
@@ -975,4 +1001,6 @@ void operator&(Archiver &ar, Error *&obj)
 
 }
 */
-}}
+}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

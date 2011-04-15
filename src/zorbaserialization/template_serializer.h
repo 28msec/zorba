@@ -268,7 +268,9 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
       obj = (std::vector<T>*)new_obj;
       if(!obj)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
     else
@@ -437,7 +439,9 @@ void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
       obj = (std::pair<T1, T2>*)new_obj;
       if(!obj)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
     else
@@ -545,7 +549,9 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
       obj = (std::map<T1, T2>*)new_obj;
       if(!obj)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
     else
@@ -660,7 +666,13 @@ void operator&(Archiver &ar, T &obj)
     int v;
     if(version > T::class_versions[T::class_versions_count-1].class_version)
     {
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj.get_class_name_str() << " is " << version  << "while the version supported is " << T::class_versions[T::class_versions_count-1].class_version);
+      throw ZORBA_EXCEPTION(
+        ZCSE0005_CLASS_VERSION_TOO_NEW,
+        ERROR_PARAMS(
+          obj.get_class_name_str(), version,
+          T::class_versions[T::class_versions_count-1].class_version
+        )
+      );
     }
     for(v = T::class_versions_count-1; v >= 0; v--)
     {
@@ -676,11 +688,16 @@ void operator&(Archiver &ar, T &obj)
         }
         if(oldv < 0)
           oldv = 0;
-        
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0006_CLASS_VERSION_IS_TOO_OLD, 
-                        "Class version for " << obj.get_class_name_str() << " is " << version 
-                        << " while the minimal supported version is " << T::class_versions[v].class_version 
-                        << ". Use Zorba 0x" << std::hex << T::class_versions[oldv].zorba_version << "instead.");
+          std::ostringstream vs;
+          vs << std::hex << T::class_versions[oldv].zorba_version;
+          throw ZORBA_EXCEPTION(
+            ZCSE0006_CLASS_VERSION_TOO_OLD,
+            ERROR_PARAMS(
+              obj.get_class_name_str(), version,
+              T::class_versions[v].class_version,
+              vs
+            )
+          );
       }
               
     }
@@ -763,19 +780,25 @@ void operator&(Archiver &ar, T *&obj)
 #ifndef NDEBUG
       if(strcmp(type, T::get_class_name_str_static()))
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
 #endif
       if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
     else
     {
       if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
 
@@ -786,14 +809,19 @@ void operator&(Archiver &ar, T *&obj)
       cls_factory = ClassSerializer::getInstance()->get_class_factory(type);
       if(cls_factory == NULL)
       {
-         ZORBA_SER_ERROR_DESC_OSS(ZCSE0003_UNRECOGNIZED_CLASS_FIELD, type);
+         throw ZORBA_EXCEPTION(
+          ZCSE0003_UNRECOGNIZED_CLASS_FIELD, ERROR_PARAMS( type )
+        );
       }
       new_obj = cls_factory->create_new(ar);
       obj = dynamic_cast<T*>(new_obj);
       if(!obj)
       {
         delete new_obj;obj=NULL;
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id << " type " << type << " class " << typeid(T).name());
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD,
+          ERROR_PARAMS( id, type, typeid(T).name() )
+        );
       }
 
       //check the version
@@ -802,7 +830,13 @@ void operator&(Archiver &ar, T *&obj)
       if(version > obj->get_classversion(obj->get_version_count()-1).class_version)
       {
         delete new_obj;obj=NULL;
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj->get_class_name_str() << " is " << version  << "while the version supported is " << obj->get_classversion(obj->get_version_count()-1).class_version);
+        throw ZORBA_EXCEPTION(
+          ZCSE0005_CLASS_VERSION_TOO_NEW,
+          ERROR_PARAMS(
+            obj->get_class_name_str(), version,
+            obj->get_classversion(obj->get_version_count()-1).class_version
+          )
+        );
       }
       for(v = obj->get_version_count()-1; v >= 0; v--)
       {
@@ -821,10 +855,16 @@ void operator&(Archiver &ar, T *&obj)
             oldv = 0;
           
           delete new_obj;obj=NULL;
-          ZORBA_SER_ERROR_DESC_OSS(ZCSE0006_CLASS_VERSION_IS_TOO_OLD, 
-                          "Class version for " << obj->get_class_name_str() << " is " << version 
-                          << " while the minimal supported version is " << ver.class_version 
-                          << ". Use Zorba 0x" << std::hex << obj->get_classversion(oldv).zorba_version << "instead.");
+          std::ostringstream vs;
+          vs << std::hex << obj->get_classversion(oldv).zorba_version;
+          throw ZORBA_EXCEPTION(
+            ZCSE0006_CLASS_VERSION_TOO_OLD,
+            ERROR_PARAMS(
+              obj->get_class_name_str(), version,
+              ver.class_version,
+              vs.str()
+            )
+          );
         }
                 
       }
@@ -847,7 +887,13 @@ void operator&(Archiver &ar, T *&obj)
       int v;
       if(version > obj->T::get_classversion(obj->T::get_version_count()-1).class_version)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj->T::get_class_name_str() << " is " << version  << "while the version supported is " << obj->T::get_classversion(obj->T::get_version_count()-1).class_version);
+        throw ZORBA_EXCEPTION(
+          ZCSE0005_CLASS_VERSION_TOO_NEW,
+          ERROR_PARAMS(
+            obj->T::get_class_name_str(), version,
+            obj->T::get_classversion(obj->T::get_version_count()-1).class_version
+          )
+        );
       }
       for(v = obj->T::get_version_count()-1; v >= 0; v--)
       {
@@ -863,11 +909,16 @@ void operator&(Archiver &ar, T *&obj)
           }
           if(oldv < 0)
             oldv = 0;
-          
-          ZORBA_SER_ERROR_DESC_OSS(ZCSE0006_CLASS_VERSION_IS_TOO_OLD, 
-            "Class version for " << obj->T::get_class_name_str() << " is " << version 
-                          << " while the minimal supported version is " << obj->T::get_classversion(v).class_version 
-                          << ". Use Zorba 0x" << std::hex << obj->T::get_classversion(oldv).zorba_version << "instead.");
+            std::ostringstream vs;
+            vs << std::hex << obj->T::get_classversion(oldv).zorba_version;
+            throw ZORBA_EXCEPTION(
+              ZCSE0006_CLASS_VERSION_TOO_OLD,
+              ERROR_PARAMS(
+                obj->T::get_class_name_str(), version,
+                obj->T::get_classversion(v).class_version,
+                vs.str()
+              )
+          );
         }
                 
       }
@@ -882,11 +933,15 @@ void operator&(Archiver &ar, T *&obj)
         obj = dynamic_cast<T*>(new_obj);
       }catch(...)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0004_UNRESOLVED_FIELD_REFERENCE, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0004_UNRESOLVED_FIELD_REFERENCE, ERROR_PARAMS( id )
+        );
       }
       if(!obj)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
     else

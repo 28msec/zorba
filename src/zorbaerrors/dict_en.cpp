@@ -191,7 +191,6 @@ extern entry const dict_en[] = {
   { "XQTY0030", "validate argument must be exactly one document or element node" },
   { "XQTY0086", "typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve" },
 
-
   ////////////////////////////////////////////////
   //                                            //
   // XQuery Scripting Errors                    //
@@ -207,16 +206,15 @@ extern entry const dict_en[] = {
   { "XSST0007", "\"$1\": variable not assignable" },
   { "XSST0008", "\"while\" expression with non-sequential body" },
 
-  // ????????????
+  // XSLT Errors
 
-  { "XTDE1310", "\"$1\": picture string does not satisfy format-number function rules" },
-  { "XTDE1340", "\"$1\": invalid picture string" },
-  { "XTDE1350", "\"$1\": component specifier not available" },
+  { "XTDE1310", "\"$1\": picture string does not satisfy format-number() function rules" },
+  { "XTDE1340", "\"$1\": invalid picture string for date/time" },
+  { "XTDE1350", "component specifier not available" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
   ////////////////////////////////////////////////
   //                                            //
@@ -287,14 +285,14 @@ extern entry const dict_en[] = {
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "ZCSE0001", "\"$1\": nonexistent input field" },
-  { "ZCSE0002", "\"$1\": incompatible input field" },
+  { "ZCSE0002", "\"$1\": incompatible input field${: type=2}${, class=3}" },
   { "ZCSE0003", "\"$1\": unrecognized class field" },
   { "ZCSE0004", "\"$1\": unresolved field reference" },
-  { "ZCSE0005", "\"$1\": class version is too new" },
-  { "ZCSE0006", "\"$1\": class version is too old" },
+  { "ZCSE0005", "class version for \"$1\" ($2) is too new; supported version is $3" },
+  { "ZCSE0006", "class version for \"$1\" ($2) is too old; minimum supported version is $3; use Zorba 0x$4 instead" },
   { "ZCSE0007", "input archive used for out serialization" },
   { "ZCSE0008", "output archive used for in serialization" },
-  { "ZCSE0009", "class not serializable" },
+  { "ZCSE0009", "\"$1\": class not serializable" },
   { "ZCSE0010", "\"$1\": item type not serializable" },
   { "ZCSE0011", "input archive not zorba archive" },
   { "ZCSE0012", "\"$1\": incompatible archive version" },

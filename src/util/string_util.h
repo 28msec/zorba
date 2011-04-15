@@ -54,7 +54,22 @@ public:
   template<typename T>
   string_builder& operator=( T const &t ) {
     oss_.str( "" );
-    return append( t );
+    oss_ << t;
+    return *this;
+  }
+
+  /**
+   * Appends the string representation of the given object to the string being
+   * built.
+   *
+   * @tparam T The object type.
+   * @param t The object.
+   * @return returns \c *this.
+   */
+  template<typename T>
+  string_builder& operator<<( T const &t ) {
+    oss_ << t;
+    return *this;
   }
 
   /**
@@ -67,7 +82,8 @@ public:
    */
   template<typename T>
   string_builder& operator,( T const &t ) {
-    return append( t );
+    oss_ << t;
+    return *this;
   }
 
   /**
@@ -91,12 +107,6 @@ public:
   }
 
 private:
-  template<typename T>
-  string_builder& append( T const &t ) {
-    oss_ << t;
-    return *this;
-  }
-
   std::ostringstream oss_;
 };
 

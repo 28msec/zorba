@@ -429,14 +429,18 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
     {
       if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
     else
     {
       if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
 
@@ -444,7 +448,9 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
     if((field_treat == ARCHIVE_FIELD_IS_PTR) ||
       (field_treat == ARCHIVE_FIELD_IS_BASECLASS))
     {
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0009_CLASS_NOT_SERIALIZABLE, " rchandle<T>*");
+      throw ZORBA_EXCEPTION(
+        ZCSE0009_CLASS_NOT_SERIALIZABLE, ERROR_PARAMS( "rchandle<T>*" )
+      );
 
       bool is_temp = false;
       if(ar.get_is_temp_field_one_level())
@@ -480,11 +486,15 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
         obj = dynamic_cast<rchandle<T>*>(new_obj);
       }catch(...)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0004_UNRESOLVED_FIELD_REFERENCE, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0004_UNRESOLVED_FIELD_REFERENCE, ERROR_PARAMS( id )
+        );
       }
       if(!obj)
       {
-        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
+        throw ZORBA_EXCEPTION(
+          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        );
       }
     }
     else
@@ -495,5 +505,7 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
 }
 */
 
-}}
+} // namespace serialization
+} // namespae zorba
 #endif
+/* vim:set et sw=2 ts=2: */

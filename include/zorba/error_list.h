@@ -576,6 +576,25 @@ XQUERY_DEC_ERROR( XQST0106 );
  */
 XQUERY_DEC_ERROR( XQST0111 );
 
+/**
+ * It is a non-recoverable dynamic error if the picture string does not satisfy
+ * the format-number function rules.
+ */
+XQUERY_DEC_ERROR( XTDE1310 );
+
+/**
+ * It is a non-recoverable dynamic error if the syntax of the picture is
+ * incorrect.
+ */
+XQUERY_DEC_ERROR( XTDE1340 );
+
+/**
+ * It is a non-recoverable dynamic error if a component specifier within the
+ * picture refers to components that are not available in the given type of
+ * <code>$value</code>.
+ */
+XQUERY_DEC_ERROR( XTDE1350 );
+
 ////////// XQuery Full-Text Errors ////////////////////////////////////////////
 
 #ifndef XQUERY_NO_FULL_TEXT
@@ -1006,25 +1025,6 @@ XQUERY_DEC_ERROR( SERE0015 );
  */
 XQUERY_DEC_ERROR( SEPM0016 );
 
-/**
- * It is a non-recoverable dynamic error if the picture string does not satisfy
- * the format-number function rules.
- */
-XQUERY_DEC_ERROR( XTDE1310 );
-
-/**
- * It is a non-recoverable dynamic error if the syntax of the picture is
- * incorrect.
- */
-XQUERY_DEC_ERROR( XTDE1340 );
-
-/**
- * It is a non-recoverable dynamic error if a component specifier within the
- * picture refers to components that are not available in the given type of
- * <code>$value</code>.
- */
-XQUERY_DEC_ERROR( XTDE1350 );
-
 ////////// Zorba XQuery Processor Errors //////////////////////////////////////
 
 #define ZORBA_DEC_ERROR(ERR)  extern ZORBA_DLL_PUBLIC ZorbaError ERR
@@ -1103,12 +1103,12 @@ ZORBA_DEC_ERROR( ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX );
 
 ////////// Zorba Class Serialization Errors ///////////////////////////////////
 
-ZORBA_DEC_ERROR( ZCSE0001_INEXISTENT_INPUT_FIELD );
+ZORBA_DEC_ERROR( ZCSE0001_NONEXISTENT_INPUT_FIELD );
 ZORBA_DEC_ERROR( ZCSE0002_INCOMPATIBLE_INPUT_FIELD );
 ZORBA_DEC_ERROR( ZCSE0003_UNRECOGNIZED_CLASS_FIELD );
 ZORBA_DEC_ERROR( ZCSE0004_UNRESOLVED_FIELD_REFERENCE );
-ZORBA_DEC_ERROR( ZCSE0005_CLASS_VERSION_IS_TOO_NEW );
-ZORBA_DEC_ERROR( ZCSE0006_CLASS_VERSION_IS_TOO_OLD );
+ZORBA_DEC_ERROR( ZCSE0005_CLASS_VERSION_TOO_NEW );
+ZORBA_DEC_ERROR( ZCSE0006_CLASS_VERSION_TOO_OLD );
 ZORBA_DEC_ERROR( ZCSE0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION );
 ZORBA_DEC_ERROR( ZCSE0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION );
 ZORBA_DEC_ERROR( ZCSE0009_CLASS_NOT_SERIALIZABLE );

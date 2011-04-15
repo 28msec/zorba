@@ -516,7 +516,9 @@ void BinArchiver::read_string(std::string &str)
   //  is->read(&c, 1);
   //  if(is->gcount() < 1)
   //  {
-  //    throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD);
+  //    throw ZORBA_EXCEPTION(
+  //      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+  //    );
   //  }
   //  
   //  if(c)
@@ -537,7 +539,9 @@ void BinArchiver::read_string(char* str)
   //  is->read(&c, 1);
   //  if(is->gcount() < 1)
   //  {
-  //    throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD);
+  //    throw ZORBA_EXCEPTION(
+  //      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+  //    );
   //  }
   //  *str = c;
   //  if(!c)
@@ -770,4 +774,6 @@ void BinArchiver::read_end_current_level_impl()
 }
 
 
-}}
+} // namespace serialization
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

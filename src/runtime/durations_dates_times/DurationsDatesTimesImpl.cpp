@@ -191,7 +191,7 @@ public:
     second_modifier(""),
     min_width_modifier(-2),
     max_width_modifier(-2)
-	{
+  {
   };
 };
 
@@ -229,7 +229,7 @@ static void format_number(zstring& str, long number, Modifier& modifier)
 
   if (modifier.min_width_modifier >= 0)
     while (temp.size() < (unsigned int)modifier.min_width_modifier)
-	  temp = "0" + temp;
+    temp = "0" + temp;
 
   str.append(temp.c_str());
 }
@@ -556,7 +556,7 @@ bool FnFormatDateTimeIterator::nextImpl(
   }
   else
   {
-  	consumeNext(picture, theChildren[1].getp(), planState);
+    consumeNext(picture, theChildren[1].getp(), planState);
 
     pictureString = picture->getStringValue().str();
     resultString = "";
@@ -608,7 +608,9 @@ bool FnFormatDateTimeIterator::nextImpl(
           break;
 
         default:
-          throw XQUERY_EXCEPTION(XTDE1340, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(
+            XTDE1340, ERROR_PARAMS( pictureString ), ERROR_LOC( loc )
+          );
         }
 
         if (variable_marker == false)
@@ -625,7 +627,9 @@ bool FnFormatDateTimeIterator::nextImpl(
 
         // min_width_modifier is -3, there was an error in the picture
         if (modifier.min_width_modifier == -3)
-          throw XQUERY_EXCEPTION(XTDE1340, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(
+            XTDE1340, ERROR_PARAMS( pictureString ), ERROR_LOC( loc )
+          );
 
         int data_type = get_data_type(component);
         if (data_type != -1 && (!DateTime::FACET_MEMBERS[facet_type][data_type]))
@@ -686,10 +690,10 @@ bool FnFormatDateTimeIterator::nextImpl(
           // deliberate fall-through
         case 'z': // timezone as a time offset using GMT, for example GMT+1
           {
-		        zstring temp = "gmt";
+            zstring temp = "gmt";
             temp += dateTimeItem->getDateTimeValue().getTimezone().toString();
             format_string(resultString, temp.c_str(), modifier);
-		      }
+          }
           break;
         case 'C': // calendar: the name or abbreviation of a calendar name
           if (modifier.presentation_modifier.empty())
@@ -712,5 +716,5 @@ bool FnFormatDateTimeIterator::nextImpl(
   STACK_END (state);
 }
 
-
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
