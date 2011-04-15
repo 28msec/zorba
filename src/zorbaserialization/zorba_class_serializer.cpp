@@ -15,9 +15,11 @@
  */
 
 #include <zorba/error.h>
+#include <zorba/error_list.h>
 #include <zorba/internal/qname.h>
-#include <zorba/user_exception.h>
 #include <zorba/item.h>
+#include <zorba/user_exception.h>
+
 #include "zorbaserialization/serialization_engine.h"
 
 #include "types/typeimpl.h"

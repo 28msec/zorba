@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifdef MY_D_USE_VISUAL_LEAK_DETECTOR
 #include <vld.h>
 #endif
 
-#include "zorbaserialization/archiver.h"
-#include "zorbaerrors/error_manager.h"
 #include <zorba/error.h>
-#include "zorbaserialization/mem_archiver.h"
-#include "zorbaserialization/class_serializer.h"
+#include <zorba/error_list.h>
 
 #include "functions/function.h"
 #include "store/api/item.h"
-
+#include "zorbaerrors/error_manager.h"
 #include "zorbautils/hashmap.h"
+
+#include "archiver.h"
+#include "class_serializer.h"
+#include "mem_archiver.h"
 
 namespace zorba
 {

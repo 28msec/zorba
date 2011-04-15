@@ -20,11 +20,11 @@
 #include <list>
 #include <vector>
 #include <map>
-#include <sstream>
 #include <stdio.h>
 
 #include <zorba/error_list.h>
 
+#include "util/string_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zstring.h"
 
@@ -688,14 +688,12 @@ void operator&(Archiver &ar, T &obj)
         }
         if(oldv < 0)
           oldv = 0;
-          std::ostringstream vs;
-          vs << std::hex << T::class_versions[oldv].zorba_version;
           throw ZORBA_EXCEPTION(
             ZCSE0006_CLASS_VERSION_TOO_OLD,
             ERROR_PARAMS(
               obj.get_class_name_str(), version,
               T::class_versions[v].class_version,
-              vs
+              BUILD_STRING( std::hex << T::class_versions[oldv].zorba_version )
             )
           );
       }
@@ -855,14 +853,14 @@ void operator&(Archiver &ar, T *&obj)
             oldv = 0;
           
           delete new_obj;obj=NULL;
-          std::ostringstream vs;
-          vs << std::hex << obj->get_classversion(oldv).zorba_version;
           throw ZORBA_EXCEPTION(
             ZCSE0006_CLASS_VERSION_TOO_OLD,
             ERROR_PARAMS(
               obj->get_class_name_str(), version,
               ver.class_version,
-              vs.str()
+              BUILD_STRING(
+                std::hex << obj->get_classversion(oldv).zorba_version
+              )
             )
           );
         }
@@ -909,14 +907,14 @@ void operator&(Archiver &ar, T *&obj)
           }
           if(oldv < 0)
             oldv = 0;
-            std::ostringstream vs;
-            vs << std::hex << obj->T::get_classversion(oldv).zorba_version;
             throw ZORBA_EXCEPTION(
               ZCSE0006_CLASS_VERSION_TOO_OLD,
               ERROR_PARAMS(
                 obj->T::get_class_name_str(), version,
                 obj->T::get_classversion(v).class_version,
-                vs.str()
+                BUILD_STRING(
+                  std::hex << obj->T::get_classversion(oldv).zorba_version
+                )
               )
           );
         }

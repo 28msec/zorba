@@ -36,6 +36,7 @@ using internal::ztd::has_str;
 /**
  * A %string_builder is used to build (concatenate) strings on-the-fly and pass
  * the resultant string to some function.  See the BUILD_STRING macro for usage.
+ * Note that you can use either "<<" or "," to taste.
  *
  * See http://stackoverflow.com/questions/5666678/ as to why a class like this
  * is needed rather than just using an ostringstream directly.
@@ -133,7 +134,7 @@ inline std::ostream& operator<<( std::ostream &o, string_builder const &sb ) {
  * \endcode
  * \hideinitializer
  */
-#define BUILD_STRING(...) (zorba::ztd::string_builder() = __VA_ARGS__)
+#define BUILD_STRING(...) (zorba::ztd::string_builder() << __VA_ARGS__)
 
 ////////// String equality /////////////////////////////////////////////////////
 
