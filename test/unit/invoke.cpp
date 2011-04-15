@@ -155,8 +155,7 @@ invoke5(zorba::Zorba* z)
     ItemFactory* lFac = z->getItemFactory();
     Item lQName = lFac->createQName(
         "http://www.zorba-xquery.com/modules/random",
-        "r",
-        "random"); // round needs at least one param
+        "random"); 
 
     std::vector<ItemSequence_t> lArgs;
 
