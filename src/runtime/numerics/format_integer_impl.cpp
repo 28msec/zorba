@@ -204,7 +204,7 @@ static void formatIntegerRoman(xs_integer valueInteger, zstring &resultString)
 
   if (valueInteger > xs_integer::parseInt(3000))
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_gt_3000)));
+    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_gt_3000), valueInteger));
   }
   else if (valueInteger >= integer_1000)
   {
@@ -860,7 +860,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         NumConversions::integerToInt(valueInteger, val_int);
         if((val_int < 1) || (val_int > 20))
         {
-          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_20)), ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_20), val_int), ERROR_LOC(loc));
         }
         utf8_result += (c0 + val_int - 1);
       }
@@ -881,7 +881,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         NumConversions::integerToInt(valueInteger, val_int);
         if((val_int < 1) || (val_int > 10))
         {
-          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_10)), ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_10), val_int), ERROR_LOC(loc));
         }
         utf8_result += (c0 + val_int - 1);
       }

@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-#ifdef MY_D_USE_VISUAL_LEAK_DETECTOR
-#include <vld.h>
-#endif
-
 #include <zorba/error.h>
 #include <zorba/error_list.h>
 
