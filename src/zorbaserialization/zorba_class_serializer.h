@@ -17,6 +17,8 @@
 #ifndef ZORBA_SPECIFIC_CLASS_SERIALIZATION
 #define ZORBA_SPECIFIC_CLASS_SERIALIZATION
 
+#include <zorba/item.h>
+#include <zorba/xquery_exception.h>
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/m_apm.h"
 #include "zorbautils/checked_vector.h"
@@ -32,6 +34,8 @@
 namespace zorba{
   class XQType;
   class function;
+  class Error;
+  class ZorbaException;
 
   namespace serialization{
 //void operator&(Archiver &ar, XQType *&obj);
@@ -43,6 +47,12 @@ void operator&(Archiver &ar, MAPM &obj);
 void operator&(Archiver &ar, XQPCollator *&obj);
 void operator&(Archiver &ar, store::Item* &obj);
 //void operator&(Archiver &ar, std::vector<rchandle<function> >*& obj);
+void operator&(Archiver &ar, Error *&obj);
+void operator&(Archiver &ar, ZorbaException *&obj);
+void operator&(Archiver &ar, zorba::internal::err::location &obj);
+void operator&(Archiver &ar, zorba::Item &obj);
+void operator&(Archiver &ar, zorba::XQueryStackTrace &obj);
+void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj);
 
 //void serialize_qname(Archiver &ar, store::Item_t &qname);
 
@@ -504,6 +514,48 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
   }
 }
 */
+
+template<typename StringType>
+void operator&(Archiver &ar, zorba::internal::VariableQName<StringType> &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    bool is_ref;
+    is_ref = ar.add_compound_field("VariableQName<StringType>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      ar & obj.ns_;
+      ar & obj.prefix_;
+      ar & obj.localname_;
+      ar.add_end_compound_field();
+    }
+    else
+    {
+      assert(false);
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "VariableQName<StringType>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    ar & obj.ns_;
+    ar & obj.prefix_;
+    ar & obj.localname_;
+    ar.read_end_current_level();
+  }
+}
 
 } // namespace serialization
 } // namespae zorba

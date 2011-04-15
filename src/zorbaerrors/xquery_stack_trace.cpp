@@ -34,6 +34,11 @@ XQueryStackTrace::Entry::Entry( fn_name_type const &fn_name,
 {
 }
 
+//for plan serialization
+XQueryStackTrace::Entry::Entry() : fn_name_(*(zorba::serialization::Archiver*)NULL)
+{
+}
+
 void XQueryStackTrace::push( Entry const &entry ) {
   trace_.push_back( entry );
 }

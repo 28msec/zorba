@@ -9,7 +9,14 @@
 namespace zorba {
 
 class XQueryException;
+class XQueryStackTrace;
+//class XQueryStackTrace::Entry;
+class Entry;
 
+namespace serialization{
+  class Archiver;
+  void operator&(zorba::serialization::Archiver &ar, XQueryStackTrace &obj);
+}
 ///////////////////////////////////////////////////////////////////////////////
 
 class XQueryStackTrace {
@@ -44,12 +51,37 @@ public:
       return col_;
     }
 
+
+
+    fn_name_type& getFnNameRef()  {
+      return fn_name_;
+    }
+
+    fn_arity_type& getFnArityRef() {
+      return fn_arity_;
+    }
+
+    std::string& getFileNameRef() {
+      return filename_;
+    }
+
+    line_type& getLineRef() {
+      return line_;
+    }
+
+    column_type& getColumnRef() {
+      return col_;
+    }
+
   private:
     fn_name_type fn_name_;
     fn_arity_type fn_arity_;
     std::string filename_;
     line_type line_;
     column_type col_;
+  public:
+    //for plan serialization
+    Entry();
   };
 
   typedef std::vector<Entry> trace_t;
@@ -85,6 +117,8 @@ public:
 
 private:
   trace_t trace_;
+private:
+  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, XQueryStackTrace &obj);
 };
 
 ///////////////////////////////////////////////////////////////////////////////

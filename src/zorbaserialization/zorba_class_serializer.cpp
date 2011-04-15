@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#include <zorba/error.h>
+#include <zorba/internal/qname.h>
+#include <zorba/user_exception.h>
+#include <zorba/item.h>
 #include "zorbaserialization/serialization_engine.h"
 
 #include "types/typeimpl.h"
@@ -688,9 +692,8 @@ EndAtomicItem:;
     else if(is_error)
     {
       ZORBA_ASSERT(false);
-    /*  SERIALIZE_FIELD(ZorbaException*, value, getError());
+      SERIALIZE_FIELD(ZorbaException*, value, getError());
       FINALIZE_SERIALIZE(createError, (result, value));
-    */
     }
     else  if(is_function)
     {
@@ -972,7 +975,7 @@ void operator&(Archiver &ar, zorba::store::TempSeq *obj)
     ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "TempSeq" )
   );
 }
-/*
+
 void operator&(Archiver &ar, Error *&obj)
 {
   if(ar.is_serializing_out())
@@ -981,26 +984,381 @@ void operator&(Archiver &ar, Error *&obj)
     {
       ar.add_compound_field("NULL", 
                             1 ,//class_version
-                            FIELD_IS_CLASS, "NULL", 
+                            !FIELD_IS_CLASS, "NULL", 
                             NULL,//(SerializeBaseClass*)obj, 
                             ARCHIVE_FIELD_IS_NULL);
       return;
     }
     bool is_ref;
     assert(!ar.is_serialize_base_class());
-    zstring   err_qname = obj->
+    UserError *user_err = dynamic_cast<UserError*>(obj);
+    XQueryError *xquery_err = dynamic_cast<XQueryError*>(obj);
+    ZorbaError *zorba_err = dynamic_cast<ZorbaError*>(obj);
+    char err_type[20];
+    sprintf(err_type, "u%dx%dz%d", 
+            user_err != NULL ? 1 : 0,
+            xquery_err != NULL ? 1 : 0,
+            zorba_err != NULL ? 1 : 0);
     is_ref = ar.add_compound_field("Error*", 
                                    1, 
-                                   !FIELD_IS_CLASS, "0",//strtemp, 
+                                   !FIELD_IS_CLASS, err_type, 
                                    obj, 
                                    ARCHIVE_FIELD_IS_PTR);
     if(!is_ref)
     {
+      if(user_err)
+      {
+        ar & user_err->qname_;
+      }
+      else
+      {
+        ar.set_is_temp_field(true);
+        const err::QName   &errqn = obj->qname();
+        char*   strtemp = (char*)errqn.localname();
+        ar & strtemp;
+        ar.set_is_temp_field(false);
+      }
+
       ar.add_end_compound_field();
     }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "Error*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      assert(!ar.is_serialize_base_class());
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    {
+      int is_user, is_xquery, is_zorba;
+      sscanf(value.c_str(), "u%dx%dz%d", &is_user, &is_xquery, &is_zorba);
+      if(is_user)
+      {
+        UserError *user_error = new UserError(ar);
+        ar & user_error->qname_;
+        obj = user_error;
+      }
+      else if(is_xquery || is_zorba)
+      {
+        ar.set_is_temp_field(true);
+        char*   local;
+        ar & local;
+        ar.set_is_temp_field(false);
+        obj = (Error*)internal::SystemErrorBase::find(local);
+      }
+      else
+      {
+        ZORBA_ASSERT(false);//unreachable, maybe a new Error class has been added
+      }
+      ar.register_reference(id, field_treat, obj);
+      ar.read_end_current_level();
+    }
+    else if((obj = (Error*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    {
+    }
+    else
+    {
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "Error*", referencing);
+    }
+  }
 
 }
-*/
+
+void operator&(Archiver &ar, ZorbaException *&obj)
+{
+  if(ar.is_serializing_out())
+  {
+    if(obj == NULL)
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            !FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      return;
+    }
+    bool is_ref;
+    assert(!ar.is_serialize_base_class());
+    UserException *user_ex = dynamic_cast<UserException*>(obj);
+    XQueryException *xquery_ex = dynamic_cast<XQueryException*>(obj);
+    char ex_type[20];
+    sprintf(ex_type, "u%dx%d", 
+            user_ex != NULL ? 1 : 0,
+            xquery_ex != NULL ? 1 : 0);
+    is_ref = ar.add_compound_field("ZorbaException*", 
+                                   1, 
+                                   !FIELD_IS_CLASS, ex_type,
+                                   obj, 
+                                   ARCHIVE_FIELD_IS_PTR);
+    if(!is_ref)
+    {
+      ar & obj->error_;
+      ar & obj->throw_file_;
+      ar & obj->throw_line_;
+      ar & obj->message_;
+
+      if(xquery_ex)
+      {
+        ar & xquery_ex->source_loc_;
+        ar & xquery_ex->query_trace_;
+      }
+      if(user_ex)
+      {
+        ar & user_ex->error_object_;
+      }
+
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "ZorbaException*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      assert(!ar.is_serialize_base_class());
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    {
+      int is_user, is_xquery;
+      sscanf(value.c_str(), "u%dx%d", &is_user, &is_xquery);
+      UserException *user_ex = NULL;
+      XQueryException *xquery_ex = NULL;
+      if(is_user)
+      {
+        user_ex = new UserException(ar);
+        xquery_ex = user_ex;
+        obj = user_ex;
+      }
+      else if(is_xquery)
+      {
+        xquery_ex = new XQueryException(ar);
+        obj = xquery_ex;
+      }
+      else
+        obj = new ZorbaException(ar);
+
+      ar & obj->error_;
+      ar & obj->throw_file_;
+      ar & obj->throw_line_;
+      ar & obj->message_;
+
+      if(xquery_ex)
+      {
+        ar & xquery_ex->source_loc_;
+        ar & xquery_ex->query_trace_;
+      }
+      if(user_ex)
+      {
+        ar & user_ex->error_object_;
+      }
+
+      ar.register_reference(id, field_treat, obj);
+      ar.read_end_current_level();
+    }
+    else if((obj = (ZorbaException*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    {
+    }
+    else
+    {
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "ZorbaException*", referencing);
+    }
+  }
+
+}
+
+void operator&(Archiver &ar, zorba::internal::err::location &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    bool is_ref;
+    is_ref = ar.add_compound_field("internal::err::location", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      ar & obj.file_;
+      ar & obj.line_;
+      ar & obj.column_;
+      ar.add_end_compound_field();
+    }
+    else
+    {
+      assert(false);
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "internal::err::location", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    ar & obj.file_;
+    ar & obj.line_;
+    ar & obj.column_;
+    ar.read_end_current_level();
+  }
+}
+
+void operator&(Archiver &ar, zorba::Item &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    bool is_ref;
+    is_ref = ar.add_compound_field("zorba::Item", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      ar & obj.m_item;
+      ar.add_end_compound_field();
+    }
+    else
+    {
+      assert(false);
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "zorba::Item", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    ar & obj.m_item;
+    ar.read_end_current_level();
+  }
+}
+
+void operator&(Archiver &ar, zorba::XQueryStackTrace &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    bool is_ref;
+    is_ref = ar.add_compound_field("XQueryStackTrace", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      ar & obj.trace_;
+      ar.add_end_compound_field();
+    }
+    else
+    {
+      assert(false);
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "XQueryStackTrace", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    ar & obj.trace_;
+    ar.read_end_current_level();
+  }
+}
+
+void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    bool is_ref;
+    is_ref = ar.add_compound_field("XQueryStackTrace::Entry", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      ar & obj.getFnNameRef();
+      ar & obj.getFnArityRef();
+      ar & obj.getFileNameRef();
+      ar & obj.getLineRef();
+      ar & obj.getColumnRef();
+      ar.add_end_compound_field();
+    }
+    else
+    {
+      assert(false);
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "XQueryStackTrace::Entry", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+
+    ar & obj.getFnNameRef();
+    ar & obj.getFnArityRef();
+    ar & obj.getFileNameRef();
+    ar & obj.getLineRef();
+    ar & obj.getColumnRef();
+    ar.read_end_current_level();
+  }
+}
+
+
+
 }
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

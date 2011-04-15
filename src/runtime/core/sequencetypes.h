@@ -218,7 +218,7 @@ private:
   xqtref_t theTreatType;
   TypeConstants::quantifier_t theQuantifier;
   bool check_prime;
-  Error const *theErrorCode;
+  Error                      *theErrorCode;
   store::Item_t								theFnQName;      // Stores the QName of the function, if the promote expr
                                                // is used to cast the function's body to its result type
 
@@ -238,7 +238,7 @@ public:
     ar & theTreatType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
     ar & check_prime;
-    // TODO: fix serialization: SERIALIZE_ENUM(Error, theErrorCode);
+    ar & theErrorCode;
     ar & theFnQName;
   }
 

@@ -27,7 +27,14 @@
 
 namespace zorba {
 
-///////////////////////////////////////////////////////////////////////////////
+class ZorbaException;
+
+namespace serialization{
+  class Archiver;
+  void operator&(Archiver &ar, ZorbaException *&obj);
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * A %ZorbaException is the base class for all Zorba exceptions.
@@ -121,10 +128,14 @@ public:
   char const* what() const throw();
 
 private:
-  Error const *error_;
+  Error /*const*/ *error_;
   std::string throw_file_;
   line_type throw_line_;
   std::string message_;
+protected:
+  //for plan serialization
+  ZorbaException(zorba::serialization::Archiver &ar);
+  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
 };
 
 /**

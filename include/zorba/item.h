@@ -22,7 +22,14 @@
 
 namespace zorba {
 
+class Item;
 namespace store { class Item; }
+
+namespace serialization
+{
+  class Archiver;
+  void operator&(zorba::serialization::Archiver &ar, zorba::Item &obj);
+}
 
 /** \brief The Zorba Item interface.
  *
@@ -334,6 +341,9 @@ private:
   friend class Unmarshaller;
 
   store::Item * m_item;
+private:
+  //for plan serialization
+  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, Item &obj);
 };
 
 } // namespace zorba

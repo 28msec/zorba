@@ -490,7 +490,7 @@ treat_expr::treat_expr(
     store::Item_t fnQname)
   :
   cast_base_expr(sctx, loc, treat_expr_kind, inputExpr, type),
-  theError(&err),
+  theError((Error*)&err),
   theCheckPrime(check_prime),
   theFnQName(fnQname)
 {
@@ -500,8 +500,8 @@ treat_expr::treat_expr(
 void treat_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (cast_base_expr*)this);
-  // TODO: fix serialization: SERIALIZE_ENUM(Error, theError);
   ar & theCheckPrime;
+  ar & theError;
   ar & theFnQName;
 }
 

@@ -17,9 +17,15 @@
 #ifndef ZORBA_ERROR_API_H
 #define ZORBA_ERROR_API_H
 
-#include <zorba/err.h>
+#include <zorba/internal/qname.h>
 
 namespace zorba {
+
+class Error;
+namespace serialization{
+  class Archiver;
+  void operator&(zorba::serialization::Archiver &ar, Error *&obj);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -136,6 +142,10 @@ private:
 
   friend class UserException;
   friend UserError make_user_error( char const*, char const*, char const* );
+
+  //for plan serialization
+  UserError(zorba::serialization::Archiver &ar);
+  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, Error *&obj);
 };
 
 ///////////////////////////////////////////////////////////////////////////////

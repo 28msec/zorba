@@ -22,6 +22,11 @@
 
 namespace zorba {
 
+namespace serialization{
+  class Archiver;
+  void operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace internal {
@@ -199,6 +204,10 @@ private:
   );
 
   friend class UserException;
+protected:
+  //for plan serialization
+  XQueryException(zorba::serialization::Archiver &ar);
+  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
 };
 
 #define MAKE_EXCEPTION_VAR(MAKE_FN,...) \

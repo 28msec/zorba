@@ -279,7 +279,7 @@ class treat_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  Error const * theError;
+  Error        *theError;
   bool          theCheckPrime;
   store::Item_t theFnQName;
 

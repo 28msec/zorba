@@ -15,6 +15,7 @@
  */
 
 #include <zorba/error.h>
+#include "zorbaserialization/serialization_engine.h"
 
 #include "dict.h"
 
@@ -50,6 +51,10 @@ char const* Error::message() const {
 UserError::UserError( char const *ns, char const *prefix,
                       char const *localname ) :
   qname_( ns, prefix, localname )
+{
+}
+
+UserError::UserError(zorba::serialization::Archiver &ar) : qname_(ar)
 {
 }
 

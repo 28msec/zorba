@@ -39,6 +39,10 @@ UserException::UserException( char const *ns, char const *prefix,
     error_object->swap( error_object_ );
 }
 
+UserException::UserException(zorba::serialization::Archiver &ar) : XQueryException(ar)
+{
+}
+
 UserException::~UserException() throw() {
   // out-of-line since it's virtual
 }

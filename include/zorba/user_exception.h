@@ -25,6 +25,9 @@
 
 namespace zorba {
 
+namespace serialization{
+  class Archiver;
+}
 ///////////////////////////////////////////////////////////////////////////////
 
 class UserException;
@@ -112,6 +115,10 @@ private:
     char const*, line_type, char const*, char const*, char const*, char const*,
     internal::err::location const&, error_object_type*
   );
+
+  //for plan serialization
+  UserException(zorba::serialization::Archiver &ar);
+  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
 };
 
 /**

@@ -23,6 +23,15 @@
 #include "ztd.h"
 
 namespace zorba {
+namespace internal{
+template<typename StringType>
+class ZORBA_DLL_PUBLIC VariableQName;
+  }
+namespace serialization{
+  class Archiver;
+  template<typename StringType>
+  void operator&(zorba::serialization::Archiver &ar, zorba::internal::VariableQName<StringType> &obj);
+}
 namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,6 +98,12 @@ private:
   StringType ns_;
   StringType prefix_;
   StringType localname_;
+
+  //for plan serialization
+public:
+  VariableQName(zorba::serialization::Archiver &ar) {}
+private:
+  friend void zorba::serialization::operator&<>(zorba::serialization::Archiver &ar, VariableQName &obj);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
