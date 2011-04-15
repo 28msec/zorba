@@ -768,7 +768,7 @@ void BinArchiver::read_end_current_level_impl()
   tempbyte = read_bits(8);
   if(tempbyte != 0xFF)
   {
-    throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD);
+    throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(last_id));
   }
 #endif
 }
