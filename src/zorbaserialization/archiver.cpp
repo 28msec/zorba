@@ -767,7 +767,10 @@ void Archiver::root_tag_is_read()
 {
   if(archive_version != g_zorba_classes_version)
   {
-    ZORBA_SER_ERROR_DESC_OSS(ZCSE0012_INCOMPATIBLE_ARCHIVE_VERSION, "Archive version is " << archive_version << " but expected " << g_zorba_classes_version);
+    throw ZORBA_EXCEPTION(
+      ZCSE0012_INCOMPATIBLE_ARCHIVE_VERSION,
+      ERROR_PARAMS( archive_version, g_zorba_classes_version )
+    );
   }
   //all_reference_list = new hash32map<void*>(nr_ids*2, 0.6f);
   all_reference_list = new void*[nr_ids+1];

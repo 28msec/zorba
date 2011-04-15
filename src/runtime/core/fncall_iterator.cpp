@@ -45,6 +45,8 @@
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
 
+#include "util/string_util.h"
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
@@ -492,12 +494,13 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
       theFunction = theSctx->lookup_external_function(theNamespace, lLocalname);
       if (!theFunction)
       {
-        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
-                             "Couldn't load pre-compiled query because "
-                             << " the external function with URI " << theNamespace
-                             << " and local name " << lLocalname
-                             << " is not available through any of the"
-                             << " ExternalModules.");
+        throw ZORBA_EXCEPTION(
+          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ERROR_PARAMS(
+						ZED( NoExternalFunction ),
+						BUILD_STRING( '{', theNamespace, '}', lLocalname )
+					)
+        );
       }
     }
     else
