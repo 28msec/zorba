@@ -144,7 +144,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         //
         if ( backref_no > cap_sub.size() )
           throw INVALID_RE_EXCEPTION(
-            xq_re, ZED( NonexistantBackRef ), backref_no
+            xq_re, ZED( NonexistentBackRef ), backref_no
           );
         if ( cap_sub[ backref_no - 1 ] )
           throw INVALID_RE_EXCEPTION(

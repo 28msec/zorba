@@ -136,7 +136,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if( NULL == resolvedURIItem)
       throw XQUERY_EXCEPTION(
         FODC0002,
-        ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInStaticCtx ) ),
+        ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
         ERROR_LOC( loc )
       );
   }
