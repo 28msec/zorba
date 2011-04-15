@@ -34,6 +34,7 @@ class XmlArchiver : public Archiver
   char  field_type[1000];
   bool  has_attributes;
   bool  is_compound_field_without_children;
+  int   last_id;
 public:
   XmlArchiver(std::istream *is);
   XmlArchiver(std::ostream *os);

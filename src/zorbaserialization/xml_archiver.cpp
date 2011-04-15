@@ -327,7 +327,7 @@ process_attr:
       if(!strcmp(attrib_name, "id"))
       {
         read_attrib_value(attrib_value);
-        *id = atoi(attrib_value);
+        last_id = *id = atoi(attrib_value);
         attr_index++;
         break;
       }
@@ -455,14 +455,14 @@ read_tag:
   {
     if(!match_string(c, "/obj_field"))
     {
-      throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD);
+      throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(last_id));
     }
   }
   else
   {
     if(!match_string(c, "/zorba_archive"))
     {
-      throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD);
+      throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(last_id));
     }
   }
 
