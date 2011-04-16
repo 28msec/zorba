@@ -50,14 +50,14 @@
 namespace zorba
 {
 
-xs_integer StringToXsInteger(const char *str)
+xs_integer FormatIntegerIterator::StringToXsInteger(const char *str)
 {
   xs_integer  retint;
   xs_integer::parseString(str, retint);
   return retint;
 }
 
-static void checkOptionalModifier(utf8_string<zstring> &utf8_picture, 
+void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_picture, 
                                   unsigned int off, 
                                   bool *is_ordinal, 
                                   bool *is_traditional,
@@ -157,7 +157,7 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
   The sequence includes the characters 'I' and 'O'
   There is no upper limit for the input integer
 */
-static void formatIntegerAZ(xs_integer valueInteger, char c0, zstring &resultString)
+void FormatIntegerIterator::formatIntegerAZ(xs_integer valueInteger, char c0, zstring &resultString)
 {
   static const unsigned int letter_range = 'Z' - 'A' + 1;
   static xs_integer integer_digit = xs_integer::parseInt(letter_range);
@@ -171,7 +171,7 @@ static void formatIntegerAZ(xs_integer valueInteger, char c0, zstring &resultStr
   resultString += (c0 + mod_int);
 }
 
-static void formatIntegerRoman(xs_integer valueInteger, zstring &resultString)
+void FormatIntegerIterator::formatIntegerRoman(xs_integer valueInteger, zstring &resultString)
 {
   static xs_integer integer_1000 = xs_integer::parseInt(1000);
   static xs_integer integer_900 = xs_integer::parseInt(900);
@@ -339,7 +339,7 @@ static void formatIntegerRoman(xs_integer valueInteger, zstring &resultString)
   }
 }
 
-static void formatIntegerEnglish(xs_integer valueInteger, bool is_ordinal, zstring &resultString)
+void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool is_ordinal, zstring &resultString)
 {
   //10^303
   static xs_integer integer_centillion =     StringToXsInteger("1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
@@ -508,7 +508,7 @@ static void formatIntegerEnglish(xs_integer valueInteger, bool is_ordinal, zstri
   }
 }
 
-static bool isDecimalDigitPattern(utf8_string<zstring> &utf8_picture,
+bool FormatIntegerIterator::isDecimalDigitPattern(utf8_string<zstring> &utf8_picture,
                                   unsigned int *picture_size, 
                                   unsigned int *groupingInterval,
                                   utf8_string<zstring>::value_type *groupingChar,
@@ -650,7 +650,7 @@ static bool isDecimalDigitPattern(utf8_string<zstring> &utf8_picture,
   return true;
 }
 
-static void formatIntegerDecimalPattern(zstring::const_reverse_iterator   valueit, 
+void FormatIntegerIterator::formatIntegerDecimalPattern(zstring::const_reverse_iterator   valueit, 
                             zstring::const_reverse_iterator   &valueit_rend, 
                             std::vector<unicode::code_point>::const_reverse_iterator  pictureit, 
                             std::vector<unicode::code_point>::const_reverse_iterator  &pictureit_rend, 
@@ -715,6 +715,32 @@ static void formatIntegerDecimalPattern(zstring::const_reverse_iterator   valuei
       utf8_result += (utf8zero + *valueit - '0');
       return;
     }
+  }
+}
+
+void   FormatIntegerIterator::addOrdinalEnglish(zstring &valueString, 
+                                                unsigned int valuelen, 
+                                                utf8_string<zstring> &utf8_result)
+{
+  if((valuelen >= 2) && (valueString[valuelen - 2] == '1'))
+  {
+    utf8_result += "th";
+  }
+  else if(valueString[valuelen-1] == '1')
+  {
+    utf8_result += "st";
+  }
+  else if(valueString[valuelen-1] == '2')
+  {
+    utf8_result += "nd";
+  }
+  else if(valueString[valuelen-1] == '3')
+  {
+    utf8_result += "rd";
+  }
+  else
+  {
+    utf8_result += "th";
   }
 }
 
@@ -912,26 +938,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         unsigned int valuelen = valueString.length();
         if(is_ordinal && (utf8zero == '0') && (valuelen >= 1))
         {
-          if((valuelen >= 2) && (valueString[valuelen - 2] == '1'))
-          {
-            utf8_result += "th";
-          }
-          else if(valueString[valuelen-1] == '1')
-          {
-            utf8_result += "st";
-          }
-          else if(valueString[valuelen-1] == '2')
-          {
-            utf8_result += "nd";
-          }
-          else if(valueString[valuelen-1] == '3')
-          {
-            utf8_result += "rd";
-          }
-          else
-          {
-            utf8_result += "th";
-          }
+          addOrdinalEnglish(valueString, valuelen, utf8_result);
         }
       }
       else

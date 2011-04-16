@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include "util/utf8_string.h"
 
 
 namespace zorba {
@@ -265,6 +266,15 @@ public:
 
   virtual ~FormatIntegerIterator();
 
+public:
+  static xs_integer StringToXsInteger(const char * str);
+  static void checkOptionalModifier(utf8_string<zstring> & utf8_picture, unsigned int off, bool * is_ordinal, bool * is_traditional, utf8_string<zstring> & word_terminal);
+  static void formatIntegerAZ(xs_integer valueInteger, char c0, zstring & resultString);
+  static void formatIntegerRoman(xs_integer valueInteger, zstring & resultString);
+  static void formatIntegerEnglish(xs_integer valueInteger, bool is_ordinal, zstring & resultString);
+  static bool isDecimalDigitPattern(utf8_string<zstring> & utf8_picture, unsigned int * picture_size, unsigned int * groupingInterval, utf8_string<zstring>::value_type * groupingChar, utf8_string<zstring>::value_type * utf8zero);
+  static void formatIntegerDecimalPattern(zstring::const_reverse_iterator valueit, zstring::const_reverse_iterator   & valueit_rend, std::vector<unicode::code_point>::const_reverse_iterator pictureit, std::vector<unicode::code_point>::const_reverse_iterator  & pictureit_rend, unsigned int picture_pos, unsigned int grouping_interval, utf8_string<zstring>::value_type grouping_char, utf8_string<zstring>::value_type utf8zero, utf8_string<zstring> & utf8_result);
+  static void addOrdinalEnglish(zstring & valueString, unsigned int valuelen, utf8_string<zstring> & utf8_result);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

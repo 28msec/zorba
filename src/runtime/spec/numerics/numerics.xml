@@ -10,8 +10,11 @@
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
-    
-<!--
+
+<zorba:header>
+  <zorba:include form="Quoted">util/utf8_string.h</zorba:include>
+</zorba:header>
+  <!--
 /*******************************************************************************
  * 6.4.1 fn:abs
 ********************************************************************************/
@@ -159,6 +162,70 @@
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:method name="StringToXsInteger"
+    return="static xs_integer">
+    <zorba:param type="const char *" name="str"/>
+  </zorba:method>
+
+  <zorba:method name="checkOptionalModifier"
+    return="static void">
+    <zorba:param type="utf8_string&lt;zstring&gt; &amp;" name="utf8_picture"/>
+    <zorba:param type="unsigned int" name="off"/>
+    <zorba:param type="bool *" name="is_ordinal"/>
+    <zorba:param type="bool *" name="is_traditional"/>
+    <zorba:param type="utf8_string&lt;zstring&gt; &amp;" name="word_terminal"/>
+  </zorba:method>
+
+  <zorba:method name="formatIntegerAZ"
+    return="static void">
+    <zorba:param type="xs_integer" name="valueInteger"/>
+    <zorba:param type="char" name="c0"/>
+    <zorba:param type="zstring &amp;" name="resultString"/>
+  </zorba:method>
+
+  <zorba:method name="formatIntegerRoman"
+    return="static void">
+    <zorba:param type="xs_integer" name="valueInteger"/>
+    <zorba:param type="zstring &amp;" name="resultString"/>
+  </zorba:method>
+
+  <zorba:method name="formatIntegerEnglish"
+    return="static void">
+    <zorba:param type="xs_integer" name="valueInteger"/>
+    <zorba:param type="bool" name="is_ordinal"/>
+    <zorba:param type="zstring &amp;" name="resultString"/>
+  </zorba:method>
+
+  <zorba:method name="isDecimalDigitPattern"
+    return="static bool">
+    <zorba:param type="utf8_string&lt;zstring&gt; &amp;" name="utf8_picture"/>
+    <zorba:param type="unsigned int *" name="picture_size"/>
+    <zorba:param type="unsigned int *" name="groupingInterval"/>
+    <zorba:param type="utf8_string&lt;zstring&gt;::value_type *" name="groupingChar"/>
+    <zorba:param type="utf8_string&lt;zstring&gt;::value_type *" name="utf8zero"/>
+  </zorba:method>
+
+  <zorba:method name="formatIntegerDecimalPattern"
+    return="static void">
+    <zorba:param type="zstring::const_reverse_iterator" name="valueit"/>
+    <zorba:param type="zstring::const_reverse_iterator   &amp;" name="valueit_rend"/>
+    <zorba:param type="std::vector&lt;unicode::code_point&gt;::const_reverse_iterator" name="pictureit"/>
+    <zorba:param type="std::vector&lt;unicode::code_point&gt;::const_reverse_iterator  &amp;" name="pictureit_rend"/>
+    <zorba:param type="unsigned int" name="picture_pos"/>
+    <zorba:param type="unsigned int" name="grouping_interval"/>
+    <zorba:param type="utf8_string&lt;zstring&gt;::value_type" name="grouping_char"/>
+    <zorba:param type="utf8_string&lt;zstring&gt;::value_type" name="utf8zero"/>
+    <zorba:param type="utf8_string&lt;zstring&gt; &amp;" name="utf8_result"/>
+  </zorba:method>
+
+  <zorba:method name="addOrdinalEnglish"
+    return="static void">
+    <zorba:param type="zstring &amp;" name="valueString"/>
+    <zorba:param type="unsigned int" name="valuelen"/>
+    <zorba:param type="utf8_string&lt;zstring&gt; &amp;" name="utf8_result"/>
+  </zorba:method>
+
 </zorba:iterator>
 
  </zorba:iterators>
