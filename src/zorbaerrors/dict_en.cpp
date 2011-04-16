@@ -299,6 +299,8 @@ extern entry const dict_en[] = {
   { "ZCSE0013", "failed to load pre-compiled query${: 1}" },
   { "ZCSE0014", "infinite circular dependencies" },
   { "ZCSE0015", "incompatible between 32/64 bits or little/big-endian" },
+  { "ZCSE0016", "cannot load execution plan saved from release mode zorba into debug mode zorba" },
+  { "ZCSE0017", "cannot load execution plan saved from debug mode zorba into release mode zorba" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!

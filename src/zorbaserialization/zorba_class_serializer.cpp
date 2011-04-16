@@ -1064,6 +1064,7 @@ void operator&(Archiver &ar, Error *&obj)
         ar & local;
         ar.set_is_temp_field(false);
         obj = (Error*)internal::SystemErrorBase::find(local);
+        ZORBA_ASSERT(obj);
       }
       else
       {

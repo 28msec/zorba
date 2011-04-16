@@ -74,12 +74,12 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
 #ifndef NDEBUG
   if(is_release)
   {
-    throw ZORBA_EXCEPTION(ZCSE0012_INCOMPATIBLE_ARCHIVE_VERSION);
+    throw ZORBA_EXCEPTION(ZCSE0016_CANNOT_LOAD_FROM_RELEASE_TO_DEBUG);
   }
 #else
   if(!is_release)
   {
-    throw ZORBA_EXCEPTION(ZCSE0012_INCOMPATIBLE_ARCHIVE_VERSION);
+    throw ZORBA_EXCEPTION(ZCSE0017_CANNOT_LOAD_FROM_DEBUG_TO_RELEASE);
   }
 #endif
 
