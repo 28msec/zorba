@@ -293,14 +293,14 @@ extern entry const dict_en[] = {
   { "ZCSE0007", "input archive used for out serialization" },
   { "ZCSE0008", "output archive used for in serialization" },
   { "ZCSE0009", "\"$1\": class not serializable" },
-  { "ZCSE0010", "\"$1\": item type not serializable. Only atomic, node, function and error items are supported." },
-  { "ZCSE0011", "input archive not zorba archive" },
+  { "ZCSE0010", "\"$1\": item type not serializable; only atomic, node, function, and error items are supported" },
+  { "ZCSE0011", "input archive not Zorba archive" },
   { "ZCSE0012", "\"$1\": incompatible archive version; expected \"$2\"" },
   { "ZCSE0013", "failed to load pre-compiled query${: 1}" },
   { "ZCSE0014", "cannot save execution plan: infinite circular dependencies" },
   { "ZCSE0015", "cannot load execution plan: incompatible between 32/64 bits or little/big-endian" },
-  { "ZCSE0016", "cannot load execution plan saved from release mode zorba into debug mode zorba" },
-  { "ZCSE0017", "cannot load execution plan saved from debug mode zorba into release mode zorba" },
+  { "ZCSE0016", "cannot load execution plan saved from release mode Zorba into debug mode Zorba" },
+  { "ZCSE0017", "cannot load execution plan saved from debug mode Zorba into release mode Zorba" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
