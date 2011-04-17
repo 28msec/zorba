@@ -517,8 +517,10 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (!theHaveLock) 
   {
-    ZORBA_ERROR_DESC(ZXQP0001_DYNAMIC_RUNTIME_ERROR,
-                     "Collection iterator has not been opened");
+    throw ZORBA_EXCEPTION(
+      ZXQP0001_DYNAMIC_RUNTIME_ERROR,
+      ERROR_PARAMS( ZED( CollectionIteratorNotOpen ) )
+    );
   }
 
   if (theIterator == theCollection->theXmlTrees.end()) 
@@ -555,4 +557,4 @@ void SimpleCollection::CollectionIter::close()
 
 } // namespace simplestore
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */

@@ -120,9 +120,11 @@ bool RemoveDocumentIterator::nextImpl(
 
   // check if document exists in the store
   if (GENV_STORE.getDocument(lResolvedUriString) == NULL) {
-    ZORBA_ERROR_LOC_DESC_OSS(ZXQD0001_DOCUMENT_NOT_VALID, loc,
-        "A document with URI " << lResolvedUriString << " does not exists "
-        << "in the store.");
+    throw XQUERY_EXCEPTION(
+      ZXQD0002_DOCUMENT_NOT_VALID,
+      ERROR_PARAMS( lResolvedUriString, ZED( NoURIInStore ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   // create the pul and add the primitive
@@ -170,9 +172,11 @@ bool RetrieveDocumentIterator::nextImpl(
 
   // check if document exists in the store
   if ((result = GENV_STORE.getDocument(lResolvedUriString)) == NULL) {
-    ZORBA_ERROR_LOC_DESC_OSS(ZXQD0001_DOCUMENT_NOT_VALID, loc,
-        "A document with URI " << lResolvedUriString << " does not exists "
-        << "in the store.");
+    throw XQUERY_EXCEPTION(
+      ZXQD0002_DOCUMENT_NOT_VALID,
+      ERROR_PARAMS( lResolvedUriString, ZED( NoURIInStore ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   STACK_PUSH(true, state);

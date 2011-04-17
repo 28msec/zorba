@@ -210,9 +210,10 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
   }
   catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_OSS(ZXQD0001_DOCUMENT_NOT_VALID,
-                         "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
-                         << e.what() << " '" << aString << "'");
+    throw ZORBA_EXCEPTION(
+      ZXQD0002_DOCUMENT_NOT_VALID,
+      ERROR_PARAMS( aString, ZED( BadXMLForXQDoc ), e.what() )
+    );
   }
 }
 
@@ -559,10 +560,9 @@ void add_invoked_function (
   map<zstring, zstring>::iterator ite = theNamespaces.find(aPrefix);
   if (ite == theNamespaces.end()) 
   {
-    ZORBA_ERROR_DESC_OSS(ZXQD0000_PREFIX_NOT_DECLARED,
-       "Could not generate the xqDoc documentation because the namespace for prefix '"
-       << aPrefix << "' is not declared when calling function '" << aLocalName
-       << "' from " << aLocation << "."
+    throw ZORBA_EXCEPTION(
+      ZXQD0001_PREFIX_NOT_DECLARED,
+      ERROR_PARAMS( aPrefix, aLocalName, aLocation )
     );
   }
 
@@ -943,3 +943,4 @@ void print_parsetree_xqdoc(
 }
 
 } // end namespace
+/* vim:set et sw=2 ts=2: */

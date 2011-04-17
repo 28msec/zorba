@@ -41,20 +41,14 @@
 using namespace std;
 namespace zorba {
 
-#define _SOURCE  __FUNCTION__
-
-void fxcharheap::ioexception(
-  string const& location,
-  string const& msg) const
-{
+void fxcharheap::ioexception( string const& msg ) const {
   ostringstream oss;
 #ifndef _WIN32_WCE
   oss << msg << " [" << strerror(errno) << ']';
 #else
   oss << msg;
 #endif
-  //throw xqp_exception(location, oss.str());
-  ZORBA_ERROR_DESC( ZXQP0013_SYSTEM_FXCHARHEAP_IOEXCEPTION, oss.str() );
+  ZORBA_ERROR_DESC( ZXQP0013_FXCHARHEAP_EXCEPTION, oss.str() );
 }
 
 
@@ -156,7 +150,7 @@ off_t fxcharheap::put(    // return the target offset
     memcpy(&data[id], &buf[start_offset], len);
     data[id+len] = 0;
   } catch (...) {
-    ioexception(_SOURCE,"exception in expanding before put()");
+    ioexception("exception in expanding before put()");
   }
 
   *offset_p += (len+1);
@@ -185,13 +179,13 @@ void fxcharheap::replace(
 {
   // check if we have enough room
   if (strlen(&data[id]) < len) {
-    ioexception(_SOURCE,"insufficient space for replace");
+    ioexception("insufficient space for replace");
   }
   try {
     memcpy(&data[id], &buf[start_offset], len);
     data[id+len] = 0;
   } catch (...) {
-    ioexception(_SOURCE,"exception in memcpy");
+    ioexception("exception in memcpy");
   }
 }
 
@@ -207,7 +201,7 @@ void fxcharheap::get(
     if (maxlen < len+1) len = maxlen-1;
     memcpy(&buf[output_offset], &data[id], len+1);  // include the trailing 0
   } catch (...) {
-    ioexception(_SOURCE,"exception in memcpy"); 
+    ioexception("exception in memcpy"); 
   }
 }
 
@@ -224,7 +218,7 @@ void fxcharheap::get0(
     memcpy(&buf[output_offset], &data[id], len);
     buf [output_offset + len] = 0;
   } catch (...) {
-    ioexception(_SOURCE,"exception in memcpy"); 
+    ioexception("exception in memcpy"); 
   }
 }
 

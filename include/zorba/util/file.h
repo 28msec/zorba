@@ -74,8 +74,6 @@ public: // common methods
 
   time_t lastModified();
 
-  static void error(std::string const& location, std::string const& msg);
-
 public: // file methods
   void create();
   void remove(bool ignore = true);

@@ -90,6 +90,9 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     case ZORBA_STORE:
       return XQC_INVALID_ARGUMENT;
 
+    case ZORBA_OS:
+      return XQC_DYNAMIC_ERROR;
+
     default:                            // suppresses warning
       break;
   }
@@ -97,19 +100,10 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
   ////////// Zorba errors /////////////////////////////////////////////////////
 
   if ( error == ZXQP0001_DYNAMIC_RUNTIME_ERROR
-    || error == ZXQP0002_DYNAMIC_ITERATOR_OVERRUN
-    || error == ZXQP0003_DYNAMIC_ILLEGAL_NODE_CHILD
-    || error == ZXQP0004_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND
-    || error == ZXQP0005_SYSTEM_NOT_SUPPORTED
-    || error == ZXQP0006_SYSTEM_ASSERT_FAILED
-    || error == ZXQP0007_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN
-    || error == ZXQP0008_SYSTEM_VECTOR_OUT_OF_RANGE
-    || error == ZXQP0009_SYSTEM_READ_LOCK_FAILED
-    || error == ZXQP0010_SYSTEM_WRITE_LOCK_FAILED
-    || error == ZXQP0011_SYSTEM_POP_FROM_EMPTY_LIST
-    || error == ZXQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION
-    || error == ZXQP0013_SYSTEM_FXCHARHEAP_IOEXCEPTION
-    || error == ZXQP0015_SYSTEM_NOT_YET_IMPLEMENTED
+    || error == ZXQP0005_NOT_SUPPORTED
+    || error == ZXQP0006_ASSERT_FAILED
+    || error == ZXQP0013_FXCHARHEAP_EXCEPTION
+    || error == ZXQP0015_NOT_IMPLEMENTED
     || error == ZXQP0019_INTERNAL_ERROR
     || error == ZXQP0020_INVALID_URI
     || error == ZXQP0021_USER_ERROR

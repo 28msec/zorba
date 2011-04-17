@@ -25,7 +25,7 @@ declare %sequential function local:remove-twice()
 {
   try {
     doc:remove("foo");
-  } catch zerr:ZXQD0001 ($err) {
+  } catch zerr:ZXQD0002 ($err) {
     "caught attempt to remove a document that doesn't exist"
   }
 };
@@ -34,7 +34,7 @@ declare function local:document()
 {
   try {
     doc:document("foo")
-  } catch zerr:ZXQD0001 {
+  } catch zerr:ZXQD0002 {
     "caught attempt to retrieve a document that doesn't exist"
   }
 };

@@ -45,7 +45,6 @@
 #ifndef _WIN32_WCE
 #include <fcntl.h>
 #endif
-#include <sstream>
 
 #include <zorba/config.h>
 
@@ -243,7 +242,7 @@ filesystem_path::filesystem_path () {
 #else
   char buf[1024];
   if (getcwd (buf, sizeof (buf)) == NULL) {
-    file::error (__FUNCTION__, "current directory path too long");
+    throw ZORBA_IO_EXCEPTION( getcwd, buf );
   }
   else path = buf;
 #endif
@@ -415,7 +414,8 @@ void file::do_stat () {
 #ifndef WIN32
   struct stat st;
   if (::stat(c_str(), &st)) {
-    if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on " +get_path ());
+    if (errno!=ENOENT)
+      throw ZORBA_IO_EXCEPTION( stat, get_path() );
   } else {
     size  = st.st_size;
     type  = (st.st_mode & S_IFDIR)  ? type_directory :
@@ -478,7 +478,7 @@ enum file::filetype file::get_filetype() {
       errno = 0;
       return (type = type_non_existent);
     }
-    error(__FUNCTION__,"stat failed on " +get_path ());
+    throw ZORBA_IO_EXCEPTION( stat, get_path() );
   }
   size  = st.st_size;
   return (type  = (st.st_mode & S_IFDIR)  ? type_directory :
@@ -502,8 +502,7 @@ enum file::filetype file::get_filetype() {
   DWORD lFileAttributes;
   lFileAttributes = GetFileAttributesW(wpath_str);
   if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
-    error(__FUNCTION__,"file/dir not exist " + get_path ());
-    return type_non_existent;
+    throw ZORBA_EXCEPTION( ZOSE0001, ERROR_PARAMS( get_path() ) );
   } else {
     HANDLE hFile = CreateFileW(wpath_str, GENERIC_READ, FILE_SHARE_READ |
         FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -536,18 +535,11 @@ file::lastModified()
 }
 
 
-void file::error(
-  string const& location,
-  string const& msg)
-{
-  ZORBA_ERROR_DESC( ZXQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION, msg);
-}
-
-
 void file::create() {
 #ifndef WIN32
   int fd = ::creat(c_str(),0666);
-  if (fd < 0) error(__FUNCTION__, "failed to create file " + get_path ());
+  if (fd < 0)
+    throw ZORBA_IO_EXCEPTION( create, get_path() );
   ::close(fd);
   set_filetype(type_file);
 #else
@@ -565,7 +557,7 @@ void file::create() {
                       FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                       CREATE_ALWAYS, 0, NULL);
   if (fd == INVALID_HANDLE_VALUE)
-    error(__FUNCTION__, "failed to create file " + get_path ());
+    throw ZORBA_IO_EXCEPTION( create, get_path() );
   CloseHandle(fd);
   set_filetype(type_file);
 #endif
@@ -575,10 +567,7 @@ void file::create() {
 void file::mkdir() {
 #if ! defined (WIN32)
   if (::mkdir(c_str(),0777)) {
-    ostringstream oss;
-    oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: " << get_path ();
-    cout << oss.str() << endl;  //XXX DEBUG
-    error(__FUNCTION__,oss.str());
+    throw ZORBA_IO_EXCEPTION( mkdir, get_path() );
   }
   set_filetype(file::type_directory);
 #else
@@ -594,9 +583,7 @@ void file::mkdir() {
   }
   if (!CreateDirectoryW(wpath_str, NULL))
   {
-    ostringstream oss;
-    oss<<"mkdir failed ["<<GetLastError() << "]"<<"] for: "<<wpath_str;
-    error(__FUNCTION__,oss.str());
+    throw ZORBA_IO_EXCEPTION( CreateDirectory, get_path() );
   }
   set_filetype(file::type_directory);
 #endif
@@ -617,7 +604,7 @@ void file::remove(bool ignore) {
 #ifdef ZORBA_WITH_FILE_ACCESS
   if ( !fs::remove( c_str() ) ) {
     if ( !ignore )
-      error(__FUNCTION__, "failed to remove " + get_path ());
+      throw ZORBA_IO_EXCEPTION( remove, get_path() );
     return;
   }
   set_filetype(type_non_existent);
@@ -628,9 +615,8 @@ void file::remove(bool ignore) {
 void file::rmdir(bool ignore) {
 #if ! defined (WIN32)
   if (::rmdir(c_str())) {
-    if (!ignore) {
-      error(__FUNCTION__, "rmdir failed on " + get_path ());
-    }
+    if ( !ignore )
+      throw ZORBA_IO_EXCEPTION( rmdir, get_path() );
     return;
   }
 #else
@@ -645,7 +631,7 @@ void file::rmdir(bool ignore) {
   }
   retval = RemoveDirectoryW(wpath_str);
   if (!retval && !ignore) {
-    error(__FUNCTION__, "rmdir failed on " + get_path ());
+    throw ZORBA_IO_EXCEPTION( RemoveDirectory, get_path() );
   }
 #endif
   set_filetype(file::type_non_existent);
@@ -656,7 +642,7 @@ void file::chdir() {
   if (!is_directory()) return;
 #if ! defined (WIN32)
   if (::chdir(c_str())) {
-    error(__FUNCTION__, "chdir failed on " + get_path ());
+    throw ZORBA_IO_EXCEPTION( chdir, get_path() );
   }
 #else
   WCHAR wpath_str[1024];
@@ -670,7 +656,7 @@ void file::chdir() {
                       wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
   }
   if (::_wchdir(wpath_str)) {
-    error(__FUNCTION__, "chdir failed on " + get_path ());
+    throw ZORBA_IO_EXCEPTION( chdir, get_path() );
   }
 #endif
 }
@@ -679,9 +665,7 @@ void file::chdir() {
 void file::rename(std::string const& newpath) {
 #if ! defined (WIN32)
   if (::rename(c_str(), newpath.c_str())) {
-    ostringstream oss;
-    oss << get_path () << " to " << newpath;
-    error(__FUNCTION__, "failed to rename: " +oss.str());
+    throw ZORBA_IO_EXCEPTION( rename, get_path() );
   }
   set_path(newpath);
 #else
@@ -707,9 +691,7 @@ void file::rename(std::string const& newpath) {
   }
   if(!MoveFileW(wpath_str, wnewpath_str))
   {
-    ostringstream oss;
-    oss << wpath_str << " to " << newpath;
-    error(__FUNCTION__, "failed to rename: " +oss.str());
+    throw ZORBA_IO_EXCEPTION( MoveFile, get_path() );
   }
 #endif
 }
@@ -737,6 +719,5 @@ isValidDriveSegment(
 }
 #endif
 
-} /* namespace zorba */
-
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

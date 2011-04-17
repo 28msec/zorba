@@ -161,7 +161,7 @@ protected:  //internals
   /**
    **  parametrized io exception
    */
-  void ioexception(std::string const& location, std::string const& msg) const; 
+  void ioexception(std::string const& msg) const; 
 
   void dump_heap() const;
 };

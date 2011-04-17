@@ -67,20 +67,19 @@ dir_iterator::dir_iterator(
     string const& path,
     bool end_iterator)
 :
-  	dirpath(path)
+    dirpath(path)
 #ifndef WIN32
-	  ,dirent(0)
+    ,dirent(0)
 #endif
 {
 #ifndef WIN32
-	dir = opendir(path.c_str());
+  dir = opendir(path.c_str());
   if (dir==0) {
-      std::string lMsg = "opendir failed on " + dirpath;
-      ZORBA_ERROR_DESC( ZXQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
-	}
+    throw ZORBA_IO_EXCEPTION( opendir, path );
+  }
   if (!end_iterator) operator++();
 #else
-	if(!end_iterator) {
+  if(!end_iterator) {
     std::string path_star = path + "\\*.*";
     WCHAR wpath_str[1024];
     wpath_str[0] = 0;
@@ -92,19 +91,18 @@ dir_iterator::dir_iterator(
                         0, path_star.c_str(), -1,
                         wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
     }
-		win32_dir = FindFirstFileW(wpath_str, &win32_direntry);
+    win32_dir = FindFirstFileW(wpath_str, &win32_direntry);
     if(win32_dir == INVALID_HANDLE_VALUE) {
-      std::string lMsg = "opendir failed on " + dirpath;
-      ZORBA_ERROR_DESC( ZXQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
+      throw ZORBA_IO_EXCEPTION( FindFirstFile, path );
     }
     if (wcscmp(win32_direntry.cFileName, L".") == 0 ||
       wcscmp(win32_direntry.cFileName, L"..") == 0) {
         operator ++();
     }
-	} else {
-		win32_dir = INVALID_HANDLE_VALUE;
-		wcscpy(win32_direntry.cFileName, L"");
-	}
+  } else {
+    win32_dir = INVALID_HANDLE_VALUE;
+    wcscpy(win32_direntry.cFileName, L"");
+  }
 #endif
 
 }
@@ -115,7 +113,7 @@ dir_iterator::~dir_iterator()
   if (dir!=0) closedir(dir);
 #else
   if(win32_dir != INVALID_HANDLE_VALUE) {
-		FindClose(win32_dir);
+    FindClose(win32_dir);
   }
 #endif
 }
@@ -136,40 +134,41 @@ dir_iterator::operator++()
       if (strcmp(dirent->d_name,".") &&
           strcmp(dirent->d_name,"..")) {
         break;
-			}
+      }
     }
   }
 #else
-	if(win32_dir != INVALID_HANDLE_VALUE) {
-		while(true) {
-			if(!FindNextFileW(win32_dir, &win32_direntry)) {				
+  if(win32_dir != INVALID_HANDLE_VALUE) {
+    while(true) {
+      if(!FindNextFileW(win32_dir, &win32_direntry)) {        
         FindClose(win32_dir); 
         win32_dir = INVALID_HANDLE_VALUE; 
-				wcscpy(win32_direntry.cFileName, L"");
+        wcscpy(win32_direntry.cFileName, L"");
         break; 
       }
-			if (wcscmp(win32_direntry.cFileName, L".") &&
+      if (wcscmp(win32_direntry.cFileName, L".") &&
           wcscmp(win32_direntry.cFileName, L"..")) {
         break;
-			}
-		}
+      }
+    }
   }
 #endif
 }
 
 bool operator!=(
-	  dir_iterator const& x,
-	  dir_iterator const& y)
+    dir_iterator const& x,
+    dir_iterator const& y)
 {
 #ifndef WIN32
-	if (x.dirpath==y.dirpath) return false;
-	if (x.dirent==y.dirent) return false;
-	return true;
+  if (x.dirpath==y.dirpath) return false;
+  if (x.dirent==y.dirent) return false;
+  return true;
 #else
-	if (x.dirpath==y.dirpath) return false;
-	if (!wcscmp(x.win32_direntry.cFileName, y.win32_direntry.cFileName)) return false;
-	return true;
+  if (x.dirpath==y.dirpath) return false;
+  if (!wcscmp(x.win32_direntry.cFileName, y.win32_direntry.cFileName)) return false;
+  return true;
 #endif
 }
 
 }  // namespace
+/* vim:set et sw=2 ts=2: */

@@ -26,6 +26,8 @@
 // TODO: this #include is temporary
 #include <zorba/error_list.h>
 
+#include "util/error_util.h"
+
 #include "dict.h"
 #include "err.h"
 #include "xquery_exception.h"
@@ -100,19 +102,19 @@ private:
 
 /**
  * \internal
+ * Convenience macro for throwing "I/O error" exception.
+ * \hideinitializer
+ */
+#define ZORBA_IO_EXCEPTION(FUNC,PATH) \
+  ZORBA_EXCEPTION( ZOSE0004_IO_ERROR, ERROR_PARAMS( PATH, ::zorba::error::get_os_err_string( #FUNC ) ) )
+
+/**
+ * \internal
  * Convenience macro for throwing "not implemented" exception.
  * \hideinitializer
  */
 #define ZORBA_NOT_IMPLEMENTED(...) \
-  XQUERY_EXCEPTION( ZXQP0015_SYSTEM_NOT_YET_IMPLEMENTED, __VA_ARGS__ )
-
-/**
- * \internal
- * Convenience macro for throwing "not supported" exception.
- * \hideinitializer
- */
-#define ZORBA_NOT_SUPPORTED(...) \
-  XQUERY_EXCEPTION( ZXQP0004_SYSTEM_NOT_SUPPORTED, __VA_ARGS__ )
+  XQUERY_EXCEPTION( ZXQP0015_NOT_IMPLEMENTED, __VA_ARGS__ )
 
 ////////// TEMPORARY TRANSITION MACROS: THESE WILL BE REMOVED /////////////////
 

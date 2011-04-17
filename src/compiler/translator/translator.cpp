@@ -10696,7 +10696,11 @@ void* begin_visit(const SchemaElementTest& v)
     }
   }
 #else//ZORBA_NO_XMLSCHEMA
-  throw XQUERY_EXCEPTION(ZXQP0005_SYSTEM_NOT_SUPPORTED, ERROR_LOC(v.get_location()));
+  throw XQUERY_EXCEPTION(
+    ZXQP0005_NOT_SUPPORTED,
+    ERROR_PARAMS( "XML schema" ),
+    ERROR_LOC( v.get_location() )
+  );
 #endif
   return no_state;
 }
@@ -10810,7 +10814,11 @@ void* begin_visit(const SchemaAttributeTest& v)
   }
 
 #else//ZORBA_NO_XMLSCHEMA
-  throw XQUERY_EXCEPTION(ZXQP0005_SYSTEM_NOT_SUPPORTED, ERROR_LOC(v.get_location()));
+  throw XQUERY_EXCEPTION(
+    ZXQP0005_NOT_SUPPORTED,
+    ERROR_PARAMS( "XML schema" ),
+    ERROR_LOC( v.get_location() )
+  );
 #endif
   return no_state;
 }

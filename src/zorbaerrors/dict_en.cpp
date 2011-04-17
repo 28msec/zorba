@@ -378,7 +378,7 @@ extern entry const dict_en[] = {
   { "ZOSE0001", "\"$1\": file not found${: 2}" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
-  { "ZOSE0004", "I/O error${: 1}" },
+  { "ZOSE0004", "\"$1\": I/O error${: 2}" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
@@ -411,22 +411,13 @@ extern entry const dict_en[] = {
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  { "ZXQD0000", "\"$1\": prefix not declared" },
-  { "ZXQD0001", "document not valid" },
+  { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
+  { "ZXQD0002", "\"$1\": $2" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
-  { "ZXQP0002", "dynamic iterator overrun" },
-  { "ZXQP0003", "illegal node child" },
-  { "ZXQP0004", "\"$1\": target namespace not found" },
   { "ZXQP0005", "\"$1\": not supported" },
   { "ZXQP0006", "\"$1\": assertion failed" },
-  { "ZXQP0007", "hash error: KeyLen exceeds MaxKeyLen" },
-  { "ZXQP0008", "vector out of range" },
-  { "ZXQP0009", "read lock failed" },
-  { "ZXQP0010", "write lock failed" },
-  { "ZXQP0011", "pop from empty list" },
-  { "ZXQP0012", "file error in function" },
-  { "ZXQP0013", "FxCharHeap I/O error" },
+  { "ZXQP0013", "FxCharHeap error: $1" },
   { "ZXQP0015", "not yet implemented: $1" },
   { "ZXQP0016", "\"$1\": reserved module target namespace" },
   { "ZXQP0017", "file access disabled" },
@@ -485,6 +476,7 @@ extern entry const dict_en[] = {
   { "~BadUnicodeChar", "\"$2\": invalid character code-point" },
   { "~BadWordNetPartOfSpeech", "\"$2\": invalid part-of-speech" },
   { "~BadWordNetPtr", "\"$2\": invalid pointer type" },
+  { "~BadXMLForXQDoc", "can not parse as XML for xqdoc: $3" },
   { "~BadXQueryVersion", "\"$2\": XQuery version must be at least 1.0" },
   { "~Base64BadChar", "invalid Base64 character" },
   { "~Base64Equals", "in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]" },
@@ -494,6 +486,7 @@ extern entry const dict_en[] = {
   { "~CastFromToFailed", "$3 to $4 cast failed" },
   { "~CharExpected", "'$3' expected" },
   { "~ClosingBraceWithoutOpen", "'}' encountered without '{' first" },
+  { "~CollectionIteratorNotOpen", "collection iterator not open" },
   { "~CountClause11", "\"count\" clause only available in XQuery 1.1 or later" },
   { "~DefaultCollation", "default collation" },
   { "~DivisionNoINF", "division can not have +-INF dividend" },
@@ -532,6 +525,7 @@ extern entry const dict_en[] = {
   { "~NoSourceURI", "no URI" },
   { "~NoTypeInCtx", "undefined type in current context" },
   { "~NoURIAuthority", "no authority" },
+  { "~NoURIInStore", "URI for document not found in store" },
   { "~NoURIScheme", "no URI scheme" },
   { "~NonClosedBackRef", "'$$3': non-closed backreference" },
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
