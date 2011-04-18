@@ -294,12 +294,16 @@ ENDIF (FOUND_XQTS)
 # this condition.
 IF(XVERMAJ EQUAL 2)
   EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
-  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
+  IF(NOT WIN32)
+    EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
+  ENDIF(NOT WIN32)
 ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
+  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
   EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3284888)
+  EXPECTED_FAILURE(test/rbkt/zorba/block/local_var3 3288799)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
@@ -315,4 +319,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3281365)
 #ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
-

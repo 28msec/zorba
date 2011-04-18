@@ -126,9 +126,6 @@ declare %private %sequential function file:append-text(
 (:~
  : Copies a file or a directory given a source and a destination path/URI.
  :
- : The operation is equivalent to calling:
- : <pre>file:copy($source, $destination, fn:true())</pre>.
- :
  : @param $source The path/URI of the file to copy.
  : @param $destination The detination path/URI.
  : @return The empty sequence.
@@ -142,36 +139,6 @@ declare %private %sequential function file:append-text(
 declare %sequential function file:copy(
   $source as xs:string,
   $destination as xs:string
-) as empty-sequence()
-{
-  file:copy($source, $destination, fn:true())
-};
-
-(:~
- : Copies a file or a directory given a source and a destination path/URI.
- : 
- : @param $source The path/URI of the file to copy.
- : @param $destination The destination path/URI.
- : @param $overwrite Flag to control if the operation should overwrite the
- :    destination file.
- : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If:
- :    <ul>
- :      <li><pre>$source</pre> points to a directory and
- :        <pre>$destination</pre> points to an existing file.</li>
- :      <li>the <pre>$overwrite</pre> parameter evaluates to
- :        <pre>fn:false()</pre>, and <pre>$destination</pre> points to an
- :        existing file;</li>
- :    </ul>
- : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
- :    parent directory does not exist either.
- : @error FOFL0000 If any other error occurs.
- :)
-declare %sequential function file:copy(
-  $source as xs:string,
-  $destination as xs:string,
-  $overwrite as xs:boolean
 ) as empty-sequence() external;
 
 (:~
@@ -284,10 +251,7 @@ declare %nondeterministic function file:is-file(
 (:~
  : Moves a file or directory given a source and a destination paths/URIs.
  :
- : The operation is equivalent to calling:
- : <pre>file:move($sourceFile, $destination, fn:true())</pre>.
- :
- : @param $sourceFile The path/URI of the file to move.
+ : @param $source The path/URI of the file to move.
  : @param $destination The detination path/URI.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
@@ -298,39 +262,11 @@ declare %nondeterministic function file:is-file(
  : @error FOFL0000 If any other error occurs.
  :)
 declare %sequential function file:move(
-  $sourceFile as xs:string,
+  $source as xs:string,
   $destination as xs:string
 ) as empty-sequence()
 {
-  file:move($sourceFile, $destination, fn:true())
-};
-
-(:~
- : Moves a file or directory given a source and a destination paths/URIs.
- :
- : @param $source The path/URI of the file or directory to move.
- : @param $destination The destination path/URI.
- : @param $overwrite Flag to control if the operation should overwrite the
- :    destination file.
- : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If:
- :    <ul>
- :      <li><pre>$source</pre> points to a directory, <pre>$destination</pre> points to an existing file</li>
- :      <li><pre>$source</pre> points to a file, <pre>$destination</pre> points to an existing file, and
- :        the <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre></li>
- :    </ul>
- : @error FOFL0003 If <pre>$destination</pre> does not exist and it's parent
- :    directory does not exist either.
- : @error FOFL0000 If any other error occurs.
- :)
-declare %sequential function file:move(
-  $source as xs:string,
-  $destination as xs:string,
-  $overwrite as xs:boolean
-) as empty-sequence()
-{
-  file:copy($source, $destination, $overwrite);
+  file:copy($source, $destination);
   file:delete($source);
 };
 
@@ -444,14 +380,11 @@ declare function file:read-text-lines(
  :
  : @param $sourceDir The existing source directory.
  : @param $destinationDir The existing destination directory.
- : @param $overwrite Flag to control if the operation should overwrite any
- :        files that already exist at destination.
  : @return The empty sequence.
  :)
 declare %private %sequential function file:copy-directory(
   $sourceDir as xs:string,
-  $destinationDir as xs:string,
-  $overwrite as xs:boolean
+  $destinationDir as xs:string
 ) as empty-sequence()
 {
   let $name := file:base-name($sourceDir)
@@ -465,33 +398,10 @@ declare %private %sequential function file:copy-directory(
       let $fullDestPath := fn:concat($destDir, file:directory-separator(), $item)
       return
         if (file:is-directory($fullSrcPath)) then
-          file:copy-directory($fullSrcPath, $fullDestPath, $overwrite)
+          file:copy-directory($fullSrcPath, $fullDestPath)
         else
-          file:copy($fullSrcPath, $fullDestPath, $overwrite);
+          file:copy($fullSrcPath, $fullDestPath);
     }
-};
-
-(:~
- : Writes a sequence of items to a file.
- :
- : The operation is equivalent to calling:
- : <pre>file:write($file, $content, $serializer-params, fn:true())</pre>.
- :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @param $serializer-params Parameter to control the serialization of the
- :        content.
- : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
- :)
-declare %sequential function file:write(
-  $file as xs:string,
-  $content as item()*,
-  $serializer-params as element(output:serialization-parameters)?
-) as empty-sequence()
-{
-  file:write($file, $content, $serializer-params, fn:true())
 };
 
 (:~
@@ -507,21 +417,17 @@ declare %sequential function file:write(
  : @param $content The content to be serialized to the file.
  : @param $serializer-params Parameter to control the serialization of the
  :        content.
- : @param $overwrite Flag to specify if an existing file should be overwritten.
  : @return The empty sequence.
- : @error FOFL0002 If <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre>
- :    and <pre>$file</pre> already exists.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
 declare %sequential function file:write(
   $file as xs:string,
   $content as item()*,
-  $serializer-params as element(output:serialization-parameters)?,
-  $overwrite as xs:boolean
+  $serializer-params as element(output:serialization-parameters)?
 ) as empty-sequence()
 {
-  file:write-text($file, fn:serialize($content, $serializer-params), $overwrite)
+  file:write-text($file, fn:serialize($content, $serializer-params))
 };
 
 (:~
@@ -539,27 +445,20 @@ declare %sequential function file:write(
 declare %sequential function file:write-binary(
   $file as xs:string,
   $content as xs:base64Binary*
-) as empty-sequence()
-{
-  file:write-binary($file, $content, fn:true())
-};
+) as empty-sequence() external;
 
 (:~
  : Writes a sequence of Base64 items as binary to a file.
  :
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
- : @param $overwrite Flag to specify if an existing file should be overwritten.
  : @return The empty sequence.
- : @error FOFL0002 If <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre>
- :    and <pre>$file</pre> already exists.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
 declare %sequential function file:write-binary(
   $file as xs:string,
-  $content as xs:base64Binary*,
-  $overwrite as xs:boolean
+  $content as xs:base64Binary*
 ) as empty-sequence() external;
 
 (:~
@@ -570,17 +469,13 @@ declare %sequential function file:write-binary(
  :
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
- : @param $overwrite Flag to specify if an existing file should be overwritten.
  : @return The empty sequence.
- : @error FOFL0002 If <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre>
- :    and <pre>$file</pre> already exists.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
 declare %private %sequential function file:write-text(
   $file as xs:string,
-  $content as xs:string*,
-  $overwrite as xs:boolean
+  $content as xs:string*
 ) as empty-sequence() external;
 
 (:~

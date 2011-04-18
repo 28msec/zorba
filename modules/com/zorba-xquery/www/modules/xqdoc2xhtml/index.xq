@@ -142,7 +142,7 @@ declare %private %sequential function xqdoc2html:gather-and-copy(
     let $fileName := fn:tokenize($file, fn:concat("\", file:directory-separator()))[last()]
     let $fileSourcePath := fn:concat($sourcePath, file:directory-separator(), $file)
     let $fileDestinationPath := fn:concat($destinationPath, file:directory-separator(), $fileName)
-    let $res := file:copy($fileSourcePath, $fileDestinationPath, fn:false())
+    let $res := file:copy($fileSourcePath, $fileDestinationPath)
     return
       ()
 };
@@ -347,8 +347,7 @@ declare %sequential function xqdoc2html:generate-xqdoc-xml(
                                           "modules",
                                           file:directory-separator(),
                                           $getFilename,
-                                          ".xq"), 
-                                fn:false())
+                                          ".xq"))
           return ()
         )
         else
@@ -1242,12 +1241,12 @@ declare %private %sequential function xqdoc2html:copy-example(
   return
     if (fn:not(fn:matches($exampleSource, "[.]xq$")) or
         fn:not(fn:matches($exampleSource, $search-queries))) then
-      file:copy($exampleSource, $exampleDestination, fn:false())
+      file:copy($exampleSource, $exampleDestination)
     else 
       let $exampleContent := file:read-text( $exampleSource )
       return
       if (fn:matches($exampleContent, "output", "i")) then
-        file:copy($exampleSource, $exampleDestination, fn:false())
+        file:copy($exampleSource, $exampleDestination)
       else
         let $specSource := fn:replace($exampleSource, "[.]xq$", ".spec")
         return
