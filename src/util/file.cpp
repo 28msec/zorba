@@ -502,7 +502,7 @@ enum file::filetype file::get_filetype() {
   DWORD lFileAttributes;
   lFileAttributes = GetFileAttributesW(wpath_str);
   if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
-    throw ZORBA_EXCEPTION( ZOSE0001, ERROR_PARAMS( get_path() ) );
+    throw ZORBA_EXCEPTION( ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( get_path() ) );
   } else {
     HANDLE hFile = CreateFileW(wpath_str, GENERIC_READ, FILE_SHARE_READ |
         FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
