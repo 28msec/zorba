@@ -44,9 +44,11 @@ namespace fs {
 ////////// constants //////////////////////////////////////////////////////////
 
 #ifdef WIN32
-char const separator = '\\';
+char const dir_separator = '\\';
+char const path_separator = ';';
 #else
-char const separator = '/';
+char const dir_separator = '/';
+char const path_separator = ':';
 #endif /* WIN32 */
 
 ////////// types //////////////////////////////////////////////////////////////
@@ -578,8 +580,8 @@ void normalize_path( PathStringType &path, PathStringType const &base = "" ) {
  */
 template<class PathStringType1>
 inline void append( PathStringType1 &path1, char const *path2 ) {
-  if ( !ascii::ends_with( path1, separator ) )
-    path1 += separator;
+  if ( !ascii::ends_with( path1, dir_separator ) )
+    path1 += dir_separator;
   path1 += path2;
 }
 

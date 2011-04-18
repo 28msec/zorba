@@ -34,6 +34,16 @@ using namespace std;
 namespace zorba {
 namespace fs {
 
+////////// helper functions ///////////////////////////////////////////////////
+
+inline void replace_foreign( zstring *path ) {
+#ifdef WIN32
+  ascii::replace_all( *path, '/', '\\' );
+#else
+  ascii::replace_all( *path, '\\', '/' );
+#endif /* WIN32 */
+}
+
 ////////// fs::exception //////////////////////////////////////////////////////
 
 exception::~exception() throw() {
@@ -155,29 +165,21 @@ zstring get_normalized_path( char const *path, char const *base ) {
       throw XQUERY_EXCEPTION(
         XPTY0004, ERROR_PARAMS( result, ZED( NoDriveSpecification ) )
       );
-    ascii::replace_all( result, '/', '\\' );
+    replace_foreign( &result );
 #endif /* WIN32 */
   } else {
     zstring path2( path );
-#ifdef WIN32
-    ascii::replace_all( path2, '/', '\\' );
-#endif /* WIN32 */
+    replace_foreign( &path2 );
     if ( !is_absolute( path2 ) && base && base[0] ) {
       result = base;
-#ifdef WIN32
-      ascii::replace_all( result, '/', '\\' );
-#endif /* WIN32 */
+      replace_foreign( &result );
       append( result, path2 );
     } else
       result = path2;
 #ifdef WIN32
-    while ( ascii::replace_all( result, '/', '\\' ) )
-      ;
     while ( ascii::replace_all( result, "\\\\", 2, "\\", 1 ) )
       ;
 #else
-    while ( ascii::replace_all( result, '\\', '/' ) )
-      ;
     while ( ascii::replace_all( result, "//", 2, "/", 1 ) )
       ;
 #endif /* WIN32 */
@@ -208,8 +210,11 @@ void get_temp_file( char *path ) {
 type get_type( char const *path, size_type *size ) {
 #ifndef WIN32
   struct stat st_buf;
-  if ( ::stat( path, &st_buf ) == -1 )
-    return non_existent;
+  if ( ::stat( path, &st_buf ) == -1 ) {
+    if ( errno == ENOENT )
+      return non_existent;
+    throw ZORBA_IO_EXCEPTION( "stat()", path );
+  }
   if ( S_ISDIR( st_buf.st_mode ) )
     return directory;
   if ( size )

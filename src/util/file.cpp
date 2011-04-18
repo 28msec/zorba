@@ -42,10 +42,6 @@
 #include <unistd.h>
 #endif
 
-#ifndef _WIN32_WCE
-#include <fcntl.h>
-#endif
-
 #include <zorba/config.h>
 
 #include "ascii_util.h"
@@ -59,147 +55,6 @@
 
 using namespace std;
 namespace zorba {
-
-#ifdef WIN32
-bool
-isValidDriveSegment(
-    zstring& aString);
-#endif
-
-zstring
-_normalize_path
-(zstring aIn, zstring aBase)
-  throw (ZorbaException)
-{
-  static const std::string FILE_SCHEMA("file://");
-
-  zstring lFileArg = aIn;
-  std::stringstream lErrorMessage;
-
-  // ****************************************************
-  // if we have an absolute file URI
-  // e.g.: file://localhost/C:/my%20file.txt
-  if(utf8::begins_with(lFileArg, FILE_SCHEMA.c_str())) {
-    // make sure the URI is a valid one
-    // QQQ not sure how to replicate this without a static context
-    //aSctxCtx->resolve("", lFileArg);
-
-    // test if we have a valid URI
-    lFileArg = lFileArg.substr(FILE_SCHEMA.length());
-    int lIndex = lFileArg.find("/");
-
-    if (lIndex > 0) { // if the file URI has a host
-                      // e.g.: file://localhost/C:/my%20file.txt
-      zstring lAuthorityString = lFileArg.substr(0, lIndex);
-      // only allow "localhost" as the authority
-      // This makes this implementation the same with the Zorba URI type.
-      // If this functionality is changed, please make the same changes
-      // in the Zorba URI type.
-      if (!lAuthorityString.compare("localhost") == 0 ) {
-        lErrorMessage << "Invalid host: \"" << lAuthorityString
-            << "\". Only \"localhost\" is allowed as host in a file URI.";
-        // QQQ I think it's weird that I need to include
-        // ExternalFunctionData to do this, but couldn't find an
-        // alternative.
-        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ) );
-      }
-    } else if (lIndex < 0) { // if the file URI doesn't have a path: file://abc
-      // TODO: error message needs type
-      throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( "The file URI contains no path." ) );
-    }
-
-#ifdef WIN32
-    // remove the first '/' from path: /C:/my%20file.txt
-    ++lIndex;
-#endif
-
-    // remove the host from the URI
-    lFileArg = lFileArg.substr(lIndex);
-
-#ifdef WIN32
-    // test for a valid drive segment
-    zstring lDriveString;
-    int lNext = lFileArg.find("/");
-    if (lNext >= 0) {
-      lDriveString = lFileArg.substr(0, lNext);
-    } else {
-      lDriveString = lFileArg.substr(0);
-    }
-    if(!isValidDriveSegment(lDriveString)) {
-      lErrorMessage << "Invalid drive specification: \""
-          << lDriveString << "\".";
-      throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ) );
-    }
-#endif
-
-    // decode the resulting URL encoded path
-    // e.g.: C%3A/my%20file.txt, C:/my%20file.txt, /usr/my%20file.xml
-    uri::decode(lFileArg);
-  }
-  
-  // ****************************************************
-  // if we have a relative file URI
-  // e.g.: "/blub 1/file", "myfile"
-  else {
-
-    bool lAbsolutePath = false;
-
-    // check if we have an absolute path: /users, C:\test
-#ifdef WIN32
-    // the underlying Zorba implementation accepts both separators for WIN32
-    // so detect the first occurence of any of them
-    int lIndex = lFileArg.find("\\");
-    int lIndexS = lFileArg.find("/");
-    if (lIndex < 0) {
-      lIndex = lIndexS;
-    } else if (lIndexS >=0 ) {
-      lIndex = std::min(lIndex, lIndexS);
-    }
-
-    // test for a valid drive segment
-    zstring lDriveString;
-    if (lIndex >= 0) {
-      lDriveString = lFileArg.substr(0, lIndex);
-    } else {
-      lDriveString = lFileArg.substr(0);
-    }
-    lAbsolutePath = isValidDriveSegment(lDriveString);
-#else
-    // only check if the path starts with "/"
-    lAbsolutePath = (lFileArg.find("/") == 0);
-#endif
-    // if a relative path, we have to resolve it against the base URI
-    if (!lAbsolutePath && aBase != "") {
-      // resolve the relative path against the current working directory
-      //lFileArg = aSctxCtx->resolve(aSctxCtx->getBaseURI(), lFileArg);
-      // QQQ?!
-      lFileArg = aBase + filesystem_path::get_directory_separator() + lFileArg;
-    }
-
-    // no other encoding or decoding if already an absolute path
-    // simply return it
-  }
-
-  // If there are any "foreign" path separators, replace them with native ones
-  {
-#ifdef WIN32
-    zstring pattern = "/+";
-#else
-    zstring pattern = "\\\\+";
-#endif
-    unicode::string lResult;
-    unicode::regex re;
-    re.compile(pattern, "");
-    const char *path_sep = filesystem_path::get_directory_separator();
-    if(!strcmp(path_sep, "\\"))
-      path_sep = "\\\\";
-    re.replace_all(lFileArg.c_str(), path_sep,
-      &lResult);
-    utf8::to_string(lResult, &lFileArg);
-  }
-
-  return lFileArg;
-}
 
 std::string filesystem_path::normalize_path( std::string const &aIn,
                                              std::string const &aBase ) {
@@ -414,70 +269,22 @@ void file::do_stat() {
     case fs::other       : type = type_other;        break;
   }
   size = fs_size;
+#else
+  type = type_non_existent;
+  size = 0;
 #endif
 }
 
 file::file( const filesystem_path &path_, int flags_ ) :
-  filesystem_path( path_, flags_ ),
-  type( type_non_existent )
+  filesystem_path( path_, flags_ )
 {
   do_stat();
 }
 
-enum file::filetype file::get_filetype() {
-  if (type!=type_non_existent) return type;
-
-#ifndef WIN32
-  // call native file system status
-  struct stat st;
-  if (::stat(c_str(), &st)) {
-    if (errno==ENOENT) {
-      errno = 0;
-      return (type = type_non_existent);
-    }
-    throw ZORBA_IO_EXCEPTION( "stat()", get_path() );
-  }
-  size  = st.st_size;
-  return (type  = (st.st_mode & S_IFDIR)  ? type_directory :
-                  (st.st_mode & S_IFREG ) ? type_file :
-                  //(st.st_mode & S_IFLNK)  ? type_link :
-                  type_invalid );
-
-#else
-
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
-  }
-
-  DWORD lFileAttributes;
-  lFileAttributes = GetFileAttributesW(wpath_str);
-  if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
-    throw ZORBA_EXCEPTION( ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( get_path() ) );
-  } else {
-    HANDLE hFile = CreateFileW(wpath_str, GENERIC_READ, FILE_SHARE_READ |
-        FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hFile == INVALID_HANDLE_VALUE) {
-      size = -1;
-    } else {
-      LARGE_INTEGER lLi;
-      if (GetFileSizeEx(hFile, &lLi)) {
-        size = lLi.QuadPart;
-      }
-    }
-    type  = (lFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? type_directory :
-        ((lFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) ? type_link :
-        type_file);
-    CloseHandle(hFile);
-    return type;
-  }
-#endif
+file::filetype file::get_filetype() {
+  if ( type == type_non_existent )
+    do_stat();
+  return type;
 }
 
 time_t file::lastModified() {
@@ -563,20 +370,6 @@ void file::rename( std::string const& newpath ) {
   set_path( newpath );
 #endif
 }
-
-#ifdef WIN32
-bool isValidDriveSegment( zstring& aString ) {
-  utf8::to_upper(aString);
-  // the drive segment has one of the forms: "C:", "C%3A"
-  size_t aStringLen = utf8::length(aString);
-  if ((aStringLen != 2 && aStringLen != 4) ||
-    (aStringLen == 2 && !utf8::ends_with(aString, ":")) ||
-    (aStringLen == 4 && !utf8::ends_with(aString, "%3A"))) {
-    return false;
-  }
-  return ascii::is_alpha( aString[0] );
-}
-#endif /* WIN32 */
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
