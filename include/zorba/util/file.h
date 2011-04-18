@@ -36,25 +36,25 @@ class ZORBA_DLL_PUBLIC file : public filesystem_path
 {
 public:
 
-      enum filetype {
-        type_invalid,
-        type_non_existent,
-        type_directory,
-        type_link,
-        type_file,
-        type_volume
-      };
+  enum filetype {
+    type_invalid,
+    type_non_existent,
+    type_directory,
+    type_link,
+    type_file,
+    type_volume,
+    type_other
+  };
 
-
-typedef zorba::File::FileSize_t file_size_t;
+  typedef zorba::File::FileSize_t file_size_t;
 
 protected:
-  enum filetype type; 
+  filetype type; 
 
 // file attributes
   file_size_t size;          // size in bytes
 
-  void do_stat ();
+  void do_stat();
 
 public:
   file(const filesystem_path &path, int flags = 0);
@@ -93,11 +93,11 @@ public: // directory methods
 };
 
 
-} /* namespace zorba */
+} // namespace zorba
 #endif /* ZORBA_FILE_H */
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

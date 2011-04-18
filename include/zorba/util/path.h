@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_PATH_H
 #define ZORBA_PATH_H
 
@@ -23,86 +24,83 @@
 
 namespace zorba {
 
-  class ZORBA_DLL_PUBLIC filesystem_path {
+class ZORBA_DLL_PUBLIC filesystem_path {
+private:
+  std::string path;
 
-    private:
-      std::string path;
-    
-      void
-        canonicalize ();
+  void canonicalize ();
 
-    protected:
-      std::string
-        getPathString() const;
+protected:
+  std::string
+    getPathString() const;
 
-    public:
-      typedef enum { CONVERT_SLASHES  = 1 << 0, 
-                     RESOLVE = 1 << 1
-      } flags_t;
-
-    public:
-
-      /**
-       * @brief Utility function to normalize a path as a system conforming
-       *        path and optionally resolve it.
-       *
-       * This function takes a path (as system path, file uri) and normalizes it.
-       * It converts file URIs to system paths and replaces '/' and '\' to the
-       * platform specific directory separator ('\' on Windows, '/' on UNIX like
-       * operating systems like Linux and Mac OS X).
-       * If the parameter base is set, it also resolves the path.
-       *
-       * @param in The path to normalize.
-       * @param base The base name to resolve a path (default = ""), if this is the
-       *             empty string, it does not resolve anything, but only normalizes
-       *             the path.
-       * @return Returns a normalized and optionally a resolved path.
-       */
-      static std::string normalize_path(std::string in, std::string base = "");
-
-      // from current dir
-      filesystem_path ();
-
-      filesystem_path (const std::string &path_, int flags = 0);
-
-      filesystem_path (const filesystem_path &base, const filesystem_path &rel) {
-        if (rel.is_complete ())
-          *this = rel;
-        else {
-          *this = base.get_path () + get_directory_separator () + rel.get_path ();
-          canonicalize ();
-        }
-      }
-
-      filesystem_path &operator = (const std::string &p_)
-      { path = p_; canonicalize (); return *this; }
-
-      const std::string &get_path () const { return path; }
-      const char *c_str () const { return path.c_str (); }
-      operator const std::string & () const { return path; }
-
-      bool is_complete () const;
-      bool is_root () const;
-      void resolve_relative ();
-
-      filesystem_path branch_path () const;
-
-      static const char *get_directory_separator ();
-      static const char *get_path_separator ();
-  //  #ifdef WIN32
-  //    static bool isValidDriveSegment( String& aString);
-  //  #endif
+public:
+  enum flags_t {
+    CONVERT_SLASHES = 1,
+    RESOLVE         = 2
   };
 
-  inline std::ostream &operator<< (std::ostream &os, const filesystem_path &p)
-  { os << p.get_path (); return os; }
+public:
 
+  /**
+    * @brief Utility function to normalize a path as a system conforming
+    *        path and optionally resolve it.
+    *
+    * This function takes a path (as system path, file uri) and normalizes it.
+    * It converts file URIs to system paths and replaces '/' and '\' to the
+    * platform specific directory separator ('\' on Windows, '/' on UNIX like
+    * operating systems like Linux and Mac OS X).
+    * If the parameter base is set, it also resolves the path.
+    *
+    * @param in The path to normalize.
+    * @param base The base name to resolve a path (default = ""), if this is the
+    *             empty string, it does not resolve anything, but only normalizes
+    *             the path.
+    * @return Returns a normalized and optionally a resolved path.
+    */
+  static std::string normalize_path(std::string const &in, std::string const &base = "");
+
+  // from current dir
+  filesystem_path ();
+
+  filesystem_path (const std::string &path_, int flags = 0);
+
+  filesystem_path (const filesystem_path &base, const filesystem_path &rel) {
+    if (rel.is_complete ())
+      *this = rel;
+    else {
+      *this = base.get_path () + get_directory_separator () + rel.get_path ();
+      canonicalize ();
+    }
   }
 
-#endif
+  filesystem_path &operator = (const std::string &p_)
+  { path = p_; canonicalize (); return *this; }
 
+  const std::string &get_path () const { return path; }
+  const char *c_str () const { return path.c_str (); }
+  operator const std::string & () const { return path; }
+
+  bool is_complete () const;
+  bool is_root () const;
+  void resolve_relative ();
+
+  filesystem_path branch_path () const;
+
+  static const char *get_directory_separator ();
+  static const char *get_path_separator ();
+};
+
+inline std::ostream &operator<< (std::ostream &os, const filesystem_path &p) {
+  return os << p.get_path ();
+}
+
+
+} // namespace zorba
+#endif /* ZORBA_PATH_H */
 /*
- * Local variables:
- * mode: c++
- * End:
- */
+* Local variables:
+* mode: c++
+* End:
+*/
+/* vim:set et sw=2 ts=2: */

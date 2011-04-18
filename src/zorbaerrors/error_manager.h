@@ -106,7 +106,7 @@ private:
  * \hideinitializer
  */
 #define ZORBA_IO_EXCEPTION(FUNC,PATH) \
-  ZORBA_EXCEPTION( ZOSE0004_IO_ERROR, ERROR_PARAMS( PATH, ::zorba::error::get_os_err_string( #FUNC ) ) )
+  ZORBA_EXCEPTION( ZOSE0004_IO_ERROR, ERROR_PARAMS( PATH, ::zorba::error::get_os_err_string( FUNC ) ) )
 
 /**
  * \internal

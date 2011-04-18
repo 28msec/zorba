@@ -25,6 +25,7 @@
 # include <windows.h>
 #endif /* WIN32 */
 
+#include "string_util.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
@@ -38,10 +39,10 @@ typedef DWORD os_code;
 typedef int os_code;
 #endif /* WIN32 */
 
-////////// OS errors //////////////////////////////////////////////////////////
+////////// operating system errors ////////////////////////////////////////////
 
 /**
- * Gets the most recent OS error code.
+ * Gets the most recent operating system error code.
  *
  * @return Returns said error code.
  */
@@ -54,18 +55,32 @@ inline os_code get_os_err_code() {
 }
 
 /**
- * Gets the OS error string for the given OS error code.
+ * Gets the error string for the given operating system error code.
  *
  * @param what What failed or \c NULL.
- * @param code The OS error code.
+ * @param code The operating system error code.
  * @return Returns said error string.
  */
 zstring get_os_err_string( char const *what, os_code code = get_os_err_code() );
 
 /**
- * Gets the OS error string for the given OS error code.
+ * Gets the error string for the given operating system error code.
  *
- * @param code The OS error code.
+ * @tparam StringType The \a what string type.
+ * @param what What failed.
+ * @param code The operating system error code.
+ * @return Returns said error string.
+ */
+template<class StringType> inline
+typename ztd::enable_if<ztd::has_c_str<StringType>::value,zstring>::type
+get_os_err_string( StringType const &what, os_code code = get_os_err_code() ) {
+  return get_os_err_string( what.c_str(), code );
+}
+
+/**
+ * Gets the error string for the given operating system error code.
+ *
+ * @param code The operating system error code.
  * @return Returns said error string.
  */
 inline zstring get_os_err_string( os_code code = get_os_err_code() ) {

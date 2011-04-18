@@ -75,7 +75,7 @@ dir_iterator::dir_iterator(
 #ifndef WIN32
   dir = opendir(path.c_str());
   if (dir==0) {
-    throw ZORBA_IO_EXCEPTION( opendir, path );
+    throw ZORBA_IO_EXCEPTION( "opendir()", path );
   }
   if (!end_iterator) operator++();
 #else
@@ -93,7 +93,7 @@ dir_iterator::dir_iterator(
     }
     win32_dir = FindFirstFileW(wpath_str, &win32_direntry);
     if(win32_dir == INVALID_HANDLE_VALUE) {
-      throw ZORBA_IO_EXCEPTION( FindFirstFile, path );
+      throw ZORBA_IO_EXCEPTION( "FindFirstFile()", path );
     }
     if (wcscmp(win32_direntry.cFileName, L".") == 0 ||
       wcscmp(win32_direntry.cFileName, L"..") == 0) {

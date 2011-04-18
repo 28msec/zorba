@@ -29,7 +29,7 @@
 #endif
 #include <stdio.h>
 
-#if defined (WIN32)
+#ifdef WIN32
 #include <tchar.h>
 #ifndef _WIN32_WCE
 #include <io.h>
@@ -48,11 +48,11 @@
 
 #include <zorba/config.h>
 
-#include "util/ascii_util.h"
-#include "util/fs_util.h"
-#include "util/regex.h"
-#include "util/uri_util.h"
-#include "util/utf8_util.h"
+#include "ascii_util.h"
+#include "fs_util.h"
+#include "regex.h"
+#include "uri_util.h"
+#include "utf8_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/xquery_exception.h"
 
@@ -201,17 +201,12 @@ _normalize_path
   return lFileArg;
 }
 
-std::string
-filesystem_path::normalize_path(std::string aIn, std::string aBase)
-{
-  zstring lIn = aIn;
-  zstring lBase = aBase;
-  zstring lResult = _normalize_path(lIn, lBase);
-  return lResult.str();
+std::string filesystem_path::normalize_path( std::string const &aIn,
+                                             std::string const &aBase ) {
+  return fs::get_normalized_path( aIn, aBase ).str();
 }
 
-const char *
-filesystem_path::get_directory_separator () {
+const char* filesystem_path::get_directory_separator() {
 #ifdef WIN32
   return "\\";
 #else
@@ -219,8 +214,7 @@ filesystem_path::get_directory_separator () {
 #endif
 }
 
-const char *
-filesystem_path::get_path_separator () {
+const char* filesystem_path::get_path_separator() {
 #ifdef WIN32
   return ";";
 #else
@@ -228,7 +222,7 @@ filesystem_path::get_path_separator () {
 #endif
 }
 
-filesystem_path::filesystem_path () {
+filesystem_path::filesystem_path() {
 #ifdef WIN32
   char buf [MAX_PATH];
   WCHAR wbuf[MAX_PATH];
@@ -242,7 +236,7 @@ filesystem_path::filesystem_path () {
 #else
   char buf[1024];
   if (getcwd (buf, sizeof (buf)) == NULL) {
-    throw ZORBA_IO_EXCEPTION( getcwd, buf );
+    throw ZORBA_IO_EXCEPTION( "getcwd()", buf );
   }
   else path = buf;
 #endif
@@ -404,68 +398,31 @@ filesystem_path::branch_path () const
   else return filesystem_path (path.substr (0, pos + sep.size ()));
 }
 
-std::string
-filesystem_path::getPathString() const
-{
+std::string filesystem_path::getPathString() const {
   return path;
 }
 
-void file::do_stat () {
-#ifndef WIN32
-  struct stat st;
-  if (::stat(c_str(), &st)) {
-    if (errno!=ENOENT)
-      throw ZORBA_IO_EXCEPTION( stat, get_path() );
-  } else {
-    size  = st.st_size;
-    type  = (st.st_mode & S_IFDIR)  ? type_directory :
-            (st.st_mode & S_IFREG ) ? type_file :
-            (st.st_mode & S_IFLNK)  ? type_link : type_invalid;
+void file::do_stat() {
+#ifdef ZORBA_WITH_FILE_ACCESS
+  fs::size_type fs_size;
+  switch ( fs::get_type( c_str(), &fs_size ) ) {
+    case fs::non_existent: type = type_non_existent; break;
+    case fs::directory   : type = type_directory;    break;
+    case fs::file        : type = type_file;         break;
+    case fs::link        : type = type_link;         break;
+    case fs::volume      : type = type_volume;       break;
+    case fs::other       : type = type_other;        break;
   }
-#else
-
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
-  }
-
-  DWORD lFileAttributes;
-  lFileAttributes = GetFileAttributesW(wpath_str);
-  if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
-    type = type_invalid;
-  } else {
-    HANDLE hFile = CreateFileW(wpath_str, GENERIC_READ, FILE_SHARE_READ |
-        FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hFile == INVALID_HANDLE_VALUE) {
-      size = -1;
-    } else {
-      LARGE_INTEGER lLi;
-      if (GetFileSizeEx(hFile, &lLi)) {
-        size = lLi.QuadPart;
-      }
-    }
-    type  = (lFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? type_directory :
-        ((lFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) ? type_link :
-        type_file);
-    CloseHandle(hFile);
-  }
+  size = fs_size;
 #endif
 }
 
-file::file(const filesystem_path &path_, int flags_)
-:
-  filesystem_path(path_, flags_),
-  type(type_non_existent)
+file::file( const filesystem_path &path_, int flags_ ) :
+  filesystem_path( path_, flags_ ),
+  type( type_non_existent )
 {
-  do_stat ();
+  do_stat();
 }
-
 
 enum file::filetype file::get_filetype() {
   if (type!=type_non_existent) return type;
@@ -478,7 +435,7 @@ enum file::filetype file::get_filetype() {
       errno = 0;
       return (type = type_non_existent);
     }
-    throw ZORBA_IO_EXCEPTION( stat, get_path() );
+    throw ZORBA_IO_EXCEPTION( "stat()", get_path() );
   }
   size  = st.st_size;
   return (type  = (st.st_mode & S_IFDIR)  ? type_directory :
@@ -523,184 +480,92 @@ enum file::filetype file::get_filetype() {
 #endif
 }
 
-time_t
-file::lastModified()
-{
+time_t file::lastModified() {
+#ifdef ZORBA_WITH_FILE_ACCESS
   struct stat s;
-  int i = stat(get_path().c_str(), &s);
-  if (i == 0) {
+  if ( ::stat( get_path().c_str(), &s ) == 0 )
     return s.st_mtime;
-  }
+#endif
   return -1;
 }
 
-
 void file::create() {
-#ifndef WIN32
-  int fd = ::creat(c_str(),0666);
-  if (fd < 0)
-    throw ZORBA_IO_EXCEPTION( create, get_path() );
-  ::close(fd);
-  set_filetype(type_file);
-#else
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+#ifdef ZORBA_WITH_FILE_ACCESS
+  try {
+    fs::create( c_str() );
+    set_filetype( type_file );
   }
-  HANDLE fd = CreateFileW(wpath_str,GENERIC_READ | GENERIC_WRITE,
-                      FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
-                      CREATE_ALWAYS, 0, NULL);
-  if (fd == INVALID_HANDLE_VALUE)
-    throw ZORBA_IO_EXCEPTION( create, get_path() );
-  CloseHandle(fd);
-  set_filetype(type_file);
+  catch ( fs::exception const &e ) {
+    throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
+  }
 #endif
 }
-
 
 void file::mkdir() {
-#if ! defined (WIN32)
-  if (::mkdir(c_str(),0777)) {
-    throw ZORBA_IO_EXCEPTION( mkdir, get_path() );
+#ifdef ZORBA_WITH_FILE_ACCESS
+  try {
+    fs::mkdir( c_str() );
+    set_filetype( type_directory );
   }
-  set_filetype(file::type_directory);
-#else
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  catch ( fs::exception const &e ) {
+    throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
   }
-  if (!CreateDirectoryW(wpath_str, NULL))
-  {
-    throw ZORBA_IO_EXCEPTION( CreateDirectory, get_path() );
-  }
-  set_filetype(file::type_directory);
 #endif
 }
 
-void file::deep_mkdir () {
+void file::deep_mkdir() {
+#ifdef ZORBA_WITH_FILE_ACCESS
   vector<file> files;
-  for (file f = *this; ! f.exists (); f = f.branch_path ())
-    files.push_back (f);
-  for (int i = files.size () - 1; i >= 0; i--) {
-    // cout << "mkdir " << files [i] << endl;
-    files [i].mkdir ();
-  }
-  set_filetype(file::type_directory);
+  for ( file f = *this; !f.exists(); f = f.branch_path() )
+    files.push_back( f );
+  for ( int i = files.size() - 1; i >= 0; --i )
+    files[i].mkdir();
+  set_filetype( type_directory );
+#endif
 }
 
-void file::remove(bool ignore) {
+void file::remove( bool ignore ) {
 #ifdef ZORBA_WITH_FILE_ACCESS
   if ( !fs::remove( c_str() ) ) {
     if ( !ignore )
-      throw ZORBA_IO_EXCEPTION( remove, get_path() );
+      throw ZORBA_IO_EXCEPTION( "remove()", get_path() );
     return;
   }
-  set_filetype(type_non_existent);
+  set_filetype( type_non_existent );
 #endif
 }
 
-
-void file::rmdir(bool ignore) {
-#if ! defined (WIN32)
-  if (::rmdir(c_str())) {
-    if ( !ignore )
-      throw ZORBA_IO_EXCEPTION( rmdir, get_path() );
-    return;
-  }
-#else
-  BOOL  retval;
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if (MultiByteToWideChar(CP_UTF8, 0, c_str(), -1,
-        wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0) {
-    //probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP, 0, c_str(), -1,
-      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
-  }
-  retval = RemoveDirectoryW(wpath_str);
-  if (!retval && !ignore) {
-    throw ZORBA_IO_EXCEPTION( RemoveDirectory, get_path() );
-  }
-#endif
-  set_filetype(file::type_non_existent);
+void file::rmdir( bool ignore ) {
+  remove( ignore );
 }
 
 #ifndef _WIN32_WCE
 void file::chdir() {
-  if (!is_directory()) return;
-#if ! defined (WIN32)
-  if (::chdir(c_str())) {
-    throw ZORBA_IO_EXCEPTION( chdir, get_path() );
+  if ( is_directory() ) {
+    try {
+      fs::chdir( c_str() );
+    }
+    catch ( fs::exception const &e ) {
+      throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
+    }
   }
-#else
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
-  }
-  if (::_wchdir(wpath_str)) {
-    throw ZORBA_IO_EXCEPTION( chdir, get_path() );
-  }
-#endif
 }
 #endif
 
-void file::rename(std::string const& newpath) {
-#if ! defined (WIN32)
-  if (::rename(c_str(), newpath.c_str())) {
-    throw ZORBA_IO_EXCEPTION( rename, get_path() );
+void file::rename( std::string const& newpath ) {
+#ifdef ZORBA_WITH_FILE_ACCESS
+  try {
+    fs::rename( c_str(), newpath );
   }
-  set_path(newpath);
-#else
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  catch ( fs::exception const &e ) {
+    throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
   }
-  WCHAR wnewpath_str[1024];
-  wnewpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wnewpath_str, sizeof(wnewpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wnewpath_str, sizeof(wnewpath_str)/sizeof(WCHAR));
-  }
-  if(!MoveFileW(wpath_str, wnewpath_str))
-  {
-    throw ZORBA_IO_EXCEPTION( MoveFile, get_path() );
-  }
+  set_path( newpath );
 #endif
 }
 
 #ifdef WIN32
-bool
-isValidDriveSegment(
-    zstring& aString)
-{
+bool isValidDriveSegment( zstring& aString ) {
   utf8::to_upper(aString);
   // the drive segment has one of the forms: "C:", "C%3A"
   size_t aStringLen = utf8::length(aString);
@@ -709,15 +574,9 @@ isValidDriveSegment(
     (aStringLen == 4 && !utf8::ends_with(aString, "%3A"))) {
     return false;
   }
-
-  char lDrive = aString.at(0);
-  // the string is already upper case
-  if (lDrive < 65 || lDrive > 90) {
-    return false;
-  }
-  return true;
+  return ascii::is_alpha( aString[0] );
 }
-#endif
+#endif /* WIN32 */
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

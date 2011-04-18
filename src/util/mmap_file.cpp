@@ -33,12 +33,12 @@ namespace zorba {
 void mmap_file::close() {
 #ifndef WIN32
   if ( addr_ && ::munmap( static_cast<char*>( addr_ ), size_ ) == -1 )
-    throw ZORBA_IO_EXCEPTION( munmap, path_ );
+    throw ZORBA_IO_EXCEPTION( "munmap()", path_ );
   if ( fd_ != -1 )
     ::close( fd_ );
 #else /* WIN32 */
   if ( addr_ && !::UnmapViewOfFile( addr_ ) )
-    throw ZORBA_IO_EXCEPTION( UnmapViewOfFile, path_ );
+    throw ZORBA_IO_EXCEPTION( "UnmapViewOfFile()", path_ );
   if ( mapping_ )
     ::CloseHandle( mapping_ );
   if ( fd_ != INVALID_HANDLE_VALUE )
@@ -65,7 +65,7 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
 
   struct stat stat_buf;
   if ( ::stat( path, &stat_buf ) == -1 )
-    throw ZORBA_IO_EXCEPTION( stat, path_ );
+    throw ZORBA_IO_EXCEPTION( "stat()", path_ );
   size_ = stat_buf.st_size;
 
   int flags = 0;
@@ -81,11 +81,11 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
   }
 
   if ( (fd_ = ::open( path, flags )) == -1 )
-    throw ZORBA_IO_EXCEPTION( open, path_ );
+    throw ZORBA_IO_EXCEPTION( "open()", path_ );
 
   if ( (addr_ = ::mmap( 0, size_, prot, MAP_SHARED, fd_, 0 )) == MAP_FAILED ) {
     addr_ = 0;
-    throw ZORBA_IO_EXCEPTION( mmap, path_ );
+    throw ZORBA_IO_EXCEPTION( "mmap()", path_ );
   }
 
 #else /* WIN32 */
@@ -122,16 +122,16 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
     wPath, createAccess, shareMode, NULL, OPEN_EXISTING, 0, NULL
   );
   if ( fd_ == INVALID_HANDLE_VALUE )
-    throw ZORBA_IO_EXCEPTION( CreateFile, path_ );
+    throw ZORBA_IO_EXCEPTION( "CreateFile()", path_ );
 
   if ( (size_ = ::GetFileSize( fd_, NULL )) == -1 )
-    throw ZORBA_IO_EXCEPTION( GetFileSize, path_ );
+    throw ZORBA_IO_EXCEPTION( "GetFileSize()", path_ );
 
   if ( !(mapping_ = ::CreateFileMapping( fd_, NULL, protect, 0, 0, NULL )) )
-    throw ZORBA_IO_EXCEPTION( CreateFileMapping, path_ );
+    throw ZORBA_IO_EXCEPTION( "CreateFileMapping()", path_ );
 
   if ( !(addr_ = ::MapViewOfFile( mapping_, mapAccess, 0, 0, 0 )) )
-    throw ZORBA_IO_EXCEPTION( MapViewOfFile, path_ );
+    throw ZORBA_IO_EXCEPTION( "MapViewOfFile()", path_ );
 #endif /* WIN32 */
 }
 
