@@ -1689,7 +1689,7 @@ void addMatchElement(store::Item_t &parent,
     GENV_ITEMFACTORY->createQName(group_element_name,
                                   XQUERY_FN_NS, "fn", "group");
     GENV_ITEMFACTORY->createQName(nr_attrib_name,
-                                  XQUERY_FN_NS, "fn", "nr");
+                                  "", "", "nr");
     store::Item_t group_elem;
     GENV_ITEMFACTORY->createElementNode(group_elem, match_elem, group_element_name, untyped_type_name, false, false, ns_binding, baseURI);
     char strid[40];
