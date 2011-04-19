@@ -158,11 +158,7 @@ public:
 public:
   SERIALIZABLE_CLASS(OrderByClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(OrderByClause)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theOrderSpecs;
-    ar & theStable;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   OrderByClause() {}
@@ -180,6 +176,45 @@ public:
 
   void open(static_context* sctx, PlanState& planState, uint32_t& offset);
   void reset(PlanState& planState);
+  void close(PlanState& planState); 
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class MaterializeClause : public ::zorba::serialization::SerializeBaseClass
+{
+  friend class FLWORIterator;
+
+protected:
+  QueryLoc                              theLocation;
+
+  std::vector<ForVarIter_t>             theInputForVars;
+  std::vector<LetVarIter_t>             theInputLetVars;
+  std::vector<std::vector<PlanIter_t> > theOutputForVarsRefs;
+  std::vector<std::vector<PlanIter_t> > theOutputLetVarsRefs;
+
+public:
+  SERIALIZABLE_CLASS(MaterializeClause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(MaterializeClause)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  MaterializeClause(
+      const QueryLoc& loc,
+      std::vector<ForVarIter_t>& inputForVars,
+      std::vector<LetVarIter_t>& inputLetVars,
+      std::vector<std::vector<PlanIter_t> >& outputForVarsRefs,
+      std::vector<std::vector<PlanIter_t> >& outputLetVarsRefs);
+
+  ~MaterializeClause();
+
+  void accept(PlanIterVisitor& v) const;
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void open(PlanState& planState, uint32_t& offset);
   void close(PlanState& planState); 
 };
 
@@ -257,11 +292,14 @@ public:
                        corresponding to the same LET var (and stored in
                        theTempSeqs)
 
+  theTuplesTable     :
+
   theSortTable       : The table that materializes a flwor tuple stream in inder
                        to sort it. The entries of this table are instances of
                        SortTuple (see gflwor/orderby_iterator.h).
   theDataTable       : The "data" corresponding the the sort tuples in 
                        theSortTable.
+
   theNumTuples       : The number of tuples in theSortTable.
   theCurTuplePos     : A position inside theSortTable. Used, together with
                        theOrderResultIter, to return individual flwor results
@@ -281,22 +319,27 @@ public:
   typedef std::vector<SortTuple> SortTable;
   typedef std::vector<store::Iterator_t> DataTable;
 
+  typedef std::vector<StreamTuple> TuplesTable;
+
 protected:
   checked_vector<long>           theVarBindingState;
   std::vector<store::TempSeq_t>  theTempSeqs;
   std::vector<store::Iterator_t> theTempSeqIters;
 
-  SortTable                     theSortTable;
-  DataTable                     theDataTable;
-  ulong                         theNumTuples;
-  ulong                         theCurTuplePos;
+  TuplesTable                    theTuplesTable;
 
-  store::Iterator_t             theOrderResultIter; 
+  SortTable                      theSortTable;
+  DataTable                      theDataTable;
 
-  GroupHashMap                * theGroupMap; 
-  GroupHashMap::iterator        theGroupMapIter;
+  ulong                          theNumTuples;
+  ulong                          theCurTuplePos;
 
-  bool                          theFirstResult;
+  store::Iterator_t              theOrderResultIter; 
+
+  GroupHashMap                 * theGroupMap; 
+  GroupHashMap::iterator         theGroupMapIter;
+
+  bool                           theFirstResult;
 
 public:
   FlworState();
@@ -345,14 +388,13 @@ private:
   PlanIter_t                theWhereClause;
   GroupByClause           * theGroupByClause;
   OrderByClause           * theOrderByClause;
+  MaterializeClause       * theMaterializeClause;
   PlanIter_t                theReturnClause; 
   bool                      theIsUpdating;
          
 public:
   SERIALIZABLE_CLASS(FLWORIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -363,37 +405,57 @@ public:
         PlanIter_t&                 whereClause,
         GroupByClause*              aGroupByClause,
         OrderByClause*              orderByClause,
+        MaterializeClause*          materializeClause,
         PlanIter_t&                 returnClause,
         bool                        aIsUpdating);
     
   ~FLWORIterator();
 
-  virtual bool isUpdating() const { return theIsUpdating; }
+  bool isUpdating() const { return theIsUpdating; }
 
   void openImpl(PlanState& planState, uint32_t& offset);
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
-  virtual uint32_t getStateSize() const;
+  uint32_t getStateSize() const;
 
-  virtual uint32_t getStateSizeOfSubtree() const;
+  uint32_t getStateSizeOfSubtree() const;
   
   void accept(PlanIterVisitor&) const;
 
 private:
-  bool bindVariable(ulong varNb, FlworState* flworState, PlanState& planState) const;
+  bool bindVariable(
+      ulong varNo,
+      FlworState* flworState,
+      PlanState& planState) const;
 
-  bool evalToBool(const PlanIter_t& checkIter, PlanState& planState) const;
+  bool evalToBool(
+      const PlanIter_t& checkIter,
+      PlanState& planState) const;
     
-  void materializeResultForSort(FlworState* flworState, PlanState& planState) const;
-  
-  void materializeGroupResultForSort(FlworState* flworState, PlanState& planStat) const;
+  void materializeStreamTuple(
+      FlworState* flworState, 
+      PlanState& planState) const;
 
-  void matVarsAndGroupBy(FlworState* flworState, PlanState& planState) const;
+  void materializeSortTupleAndResult(
+      FlworState* flworState,
+      PlanState& planState) const;
+  
+  void materializeGroupTuple(
+      FlworState* flworState,
+      PlanState& planState) const;
+
+  void rebindStreamTuple( 
+      FlworState* iterState,
+      PlanState& planState) const;
+
+  void materializeGroupResultForSort(
+      FlworState* flworState,
+      PlanState& planStat) const;
       
   void bindGroupBy(
-        GroupHashMap::iterator lGroupMapIter,
+        GroupHashMap::iterator groupMapIter,
         FlworState* flworState,
         PlanState& planState) const; 
 };

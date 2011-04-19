@@ -86,8 +86,8 @@ void OrderSpec::serialize(::zorba::serialization::Archiver& ar)
 
 void OrderSpec::accept(PlanIterVisitor& v) const
 {
-  v.beginVisitOrderBy(*theDomainIter);
-  v.endVisitOrderBy(*theDomainIter);
+  v.beginVisitOrderBySpec(*theDomainIter);
+  v.endVisitOrderBySpec(*theDomainIter);
 }
 
 
@@ -419,7 +419,7 @@ void OrderByIterator::materializeResultForSort(
   streamTuple.theItems.resize(numForVars);
   streamTuple.theSequences.resize(numLetVars);
 
-  for(ulong i = 0;  i < numForVars; ++i)
+  for (ulong i = 0;  i < numForVars; ++i)
   {
     store::Item_t forItem;
     consumeNext(forItem, theInputForVars[i], planState);
@@ -445,7 +445,8 @@ void OrderByIterator::bindOrderBy(
     OrderByState* iterState,
     PlanState& planState) const 
 {
-  StreamTuple& streamTuple = iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
+  StreamTuple& streamTuple = 
+  iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
 
   ulong numForVarsRefs = (ulong)theOutputForVarsRefs.size();
   for (ulong i = 0; i < numForVarsRefs; ++i)

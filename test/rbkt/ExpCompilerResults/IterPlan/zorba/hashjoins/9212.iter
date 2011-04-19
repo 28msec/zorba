@@ -48,9 +48,9 @@ Iterator tree for main query:
                 </ChildAxisIterator>
               </FnCountIterator>
             </ForVariable>
-            <OrderByClause>
+            <OrderBySpec>
               <ForVarIterator varname="anzahl"/>
-            </OrderByClause>
+            </OrderBySpec>
             <ReturnClause>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,gruppe)"/>

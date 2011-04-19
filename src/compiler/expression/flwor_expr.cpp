@@ -56,6 +56,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(group_clause)
 SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
 END_SERIALIZABLE_CLASS_VERSIONS(orderby_clause)
 
+SERIALIZABLE_CLASS_VERSIONS(materialize_clause)
+END_SERIALIZABLE_CLASS_VERSIONS(materialize_clause)
+
 SERIALIZABLE_CLASS_VERSIONS(count_clause)
 END_SERIALIZABLE_CLASS_VERSIONS(count_clause)
 
@@ -742,6 +745,30 @@ flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) const
                             theStableOrder,
                             theModifiers,
                             cloneExprs);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+materialize_clause::materialize_clause(
+    static_context* sctx,
+    const QueryLoc& loc)
+  :
+  flwor_clause(sctx, loc, flwor_clause::materialize_clause)
+{
+}
+
+
+void materialize_clause::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (flwor_clause*)this);
+}
+
+
+flwor_clause_t materialize_clause::clone(expr::substitution_t& subst) const
+{
+  ZORBA_ASSERT(false);
 }
 
 

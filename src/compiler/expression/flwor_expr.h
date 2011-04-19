@@ -34,6 +34,7 @@ class let_clause;
 class window_clause;
 class flwor_wincond;
 class orderby_clause;
+class materialize_clause;
 class group_clause;
 class flwor_expr;
 
@@ -43,6 +44,7 @@ typedef rchandle<let_clause> let_clause_t;
 typedef rchandle<window_clause> window_clause_t;
 typedef rchandle<flwor_wincond> flwor_wincond_t;
 typedef rchandle<orderby_clause> orderby_clause_t;
+typedef rchandle<materialize_clause> materialize_clause_t;
 typedef rchandle<group_clause> group_clause_t;
 
 typedef rchandle<flwor_expr> flwor_expr_t;
@@ -67,7 +69,8 @@ public:
     group_clause,
     order_clause,
     count_clause,
-    where_clause
+    where_clause,
+    materialize_clause
   } ClauseKind;
 
 protected:
@@ -531,6 +534,30 @@ public:
 };
 
 
+/***************************************************************************//**
+  Used to meterialize the tuple stream at the location where the clause
+  appears at. It is needed to implement sequential flwor exprs. Materialize
+  clauses are created and inserted in the flwor expr during codegen.
+********************************************************************************/
+class materialize_clause : public flwor_clause
+{
+  friend class ExprIterator;
+  friend class flwor_expr;
+
+public:
+  SERIALIZABLE_CLASS(materialize_clause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(materialize_clause, flwor_clause)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  materialize_clause(static_context* sctx,  const QueryLoc& loc);
+
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
 
 /***************************************************************************//**
   CountClause ::= "count" "$" VarName
@@ -585,6 +612,9 @@ public:
 
 
 /***************************************************************************//**
+
+  - For the Generalized FLWOR:
+
   FLWORExpr ::= InitialClause IntermediateClause* ReturnClause
 
   InitialClause ::= ForClause | LetClause | WindowClause
@@ -594,6 +624,18 @@ public:
                          GroupByClause |
                          OrderByClause |
                          CountClause
+
+  - For the traditional FLWOR:
+
+  FLWORExpr ::= InitialClause FLWORClauseList? ReturnClause
+
+  InitialClause ::= ForClause | LetClause
+
+  FLWORClauseList ::= (ForClause | LetClause)*
+                      WhereCluase?
+                      GroupByClause?
+                      OrderByClause?
+
 ********************************************************************************/
 class flwor_expr : public expr
 {

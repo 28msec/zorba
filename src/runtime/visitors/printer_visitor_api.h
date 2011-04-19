@@ -16,13 +16,13 @@
 #ifndef ZORBA_RUNTIME_PRINTER_VISITOR_API_H
 #define ZORBA_RUNTIME_PRINTER_VISITOR_API_H
 
-namespace zorba {
+namespace zorba
+{
 
-  class PlanIterator;
-  class IterPrinter;
+class PlanIterator;
+class IterPrinter;
 
-  void
-  print_iter_plan (IterPrinter& aPrinter, PlanIterator* aIter);
+void print_iter_plan(IterPrinter& aPrinter, PlanIterator* aIter);
 
 } /* namespace zorba */
 

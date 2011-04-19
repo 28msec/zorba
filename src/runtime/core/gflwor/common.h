@@ -53,6 +53,7 @@ inline void createTempSeq(
 class StreamTuple
 {
   friend class OrderByIterator;
+  friend class FLWORIterator;
 
 protected:
   std::vector<store::Item_t >    theItems;

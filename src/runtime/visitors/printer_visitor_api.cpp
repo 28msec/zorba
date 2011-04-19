@@ -17,14 +17,15 @@
 
 #include "runtime/visitors/printer_visitor.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  void
-  print_iter_plan (IterPrinter& aPrinter, PlanIterator* aIter)
-  {
-    PrinterVisitor v (aPrinter, aIter);
-    v.print ();
-  }
+void print_iter_plan(IterPrinter& aPrinter, PlanIterator* aIter)
+{
+  PrinterVisitor v(aPrinter, aIter);
+  v.print ();
+}
+
 
 } /* namespace zorba */
 

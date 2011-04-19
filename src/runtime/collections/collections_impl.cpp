@@ -1261,22 +1261,28 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
     nodes.push_back(node);
   }
-  collectionName = collection->getName();
 
-  collectionDecl = getCollection(
-      theSctx, collectionName, loc, theDynamicCollection, collection);
+  if (!nodes.empty())
+  {
+    collectionName = collection->getName();
 
+    collectionDecl = getCollection(theSctx,
+                                   collectionName,
+                                   loc,
+                                   theDynamicCollection,
+                                   collection);
 
-  // create the pul and add the primitive
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+    // create the pul and add the primitive
+    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDeleteFromCollection(collectionName, nodes, false, theDynamicCollection);
+    pul->addDeleteFromCollection(collectionName, nodes, false, theDynamicCollection);
 
-  // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[theChildren.size()-1]->reset(planState);
+    // this should not be necessary. we reset everything in the sequential iterator
+    theChildren[theChildren.size()-1]->reset(planState);
 
-  result = pul.release();
-  STACK_PUSH(result != NULL, state);
+    result = pul.release();
+    STACK_PUSH(result != NULL, state);
+  }
 
   STACK_END(state);
 }

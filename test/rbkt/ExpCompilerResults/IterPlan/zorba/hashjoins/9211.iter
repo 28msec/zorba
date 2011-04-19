@@ -40,9 +40,9 @@ Iterator tree for main query:
                 <SingletonIterator value="xs:integer(2)"/>
               </OpToIterator>
             </ForVariable>
-            <OrderByClause>
+            <OrderBySpec>
               <ForVarIterator varname="anzahl"/>
-            </OrderByClause>
+            </OrderBySpec>
             <ReturnClause>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,gruppe)"/>

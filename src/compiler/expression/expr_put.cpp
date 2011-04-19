@@ -230,10 +230,10 @@ ostream& for_clause::put(ostream& os) const
 ostream& let_clause::put(ostream& os) const
 {
 #if VERBOSE
-  BEGIN_PUT( LET );
+  BEGIN_PUT(LET);
 
   theVarExpr->put(os);
-  PUT_SUB( "SCORE", theScoreVarExpr );
+  PUT_SUB("SCORE", theScoreVarExpr);
 
   PUT_SUB(":=", theDomainExpr);
 
@@ -250,16 +250,16 @@ ostream& let_clause::put(ostream& os) const
 
 ostream& window_clause::put(ostream& os) const
 {
-  BEGIN_PUT( WINDOW );
+  BEGIN_PUT(WINDOW);
   theVarExpr->put(os);
-  PUT_SUB( "IN", theDomainExpr );
-  PUT_SUB( "START", theWinStartCond.getp() );
-  PUT_SUB( "STOP", theWinStopCond.getp() );
+  PUT_SUB("IN", theDomainExpr);
+  PUT_SUB("START", theWinStartCond.getp());
+  PUT_SUB("STOP", theWinStopCond.getp());
   END_PUT();
 }
 
 
-ostream& flwor_wincond::vars::put( ostream& os) const
+ostream& flwor_wincond::vars::put(ostream& os) const
 {
   BEGIN_PUT_NO_LOCATION( flwor_wincond::vars );
   PUT_SUB( "AT", posvar );
@@ -269,19 +269,19 @@ ostream& flwor_wincond::vars::put( ostream& os) const
   END_PUT();
 }
 
-ostream& flwor_wincond::put( ostream& os) const
+ostream& flwor_wincond::put(ostream& os) const
 {
-  BEGIN_PUT( flwor_wincond );
-  PUT_SUB( "IN-VARS", &get_in_vars() );
-  PUT_SUB( "OUT-VARS", &get_out_vars() );
-  PUT_SUB( "WHEN", theCondExpr );
+  BEGIN_PUT(flwor_wincond);
+  PUT_SUB("IN-VARS", &get_in_vars());
+  PUT_SUB("OUT-VARS", &get_out_vars());
+  PUT_SUB("WHEN", theCondExpr);
   END_PUT();
 }
 
 
-ostream& group_clause::put( ostream& os ) const 
+ostream& group_clause::put(ostream& os) const 
 {
-  BEGIN_PUT( group_clause );
+  BEGIN_PUT(group_clause);
 
   os << indent << "GROUP BY EXPRS";
 
@@ -305,9 +305,9 @@ ostream& group_clause::put( ostream& os ) const
 }
 
 
-ostream& orderby_clause::put( ostream &os ) const 
+ostream& orderby_clause::put(ostream& os) const 
 {
-  BEGIN_PUT( orderby_clause );
+  BEGIN_PUT(orderby_clause);
 
   //os << indent << "ORDER BY ";
 
@@ -334,9 +334,17 @@ ostream& orderby_clause::put( ostream &os ) const
 }
 
 
-ostream& flwor_expr::put( ostream& os) const
+ostream& materialize_clause::put(ostream& os) const 
 {
-  BEGIN_PUT( flwor_expr );
+  BEGIN_PUT(materialize_clause);
+
+  END_PUT();
+}
+
+
+ostream& flwor_expr::put(ostream& os) const
+{
+  BEGIN_PUT(flwor_expr);
 
   for (unsigned i = 0; i < num_clauses(); i++) 
   {

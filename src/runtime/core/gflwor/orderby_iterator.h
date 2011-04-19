@@ -157,10 +157,10 @@ public:
   typedef std::vector<StreamTuple> DataTable;
 
 protected:
-  SortTable           theSortTable;
-  DataTable           theDataTable;
-  ulong               theNumTuples;
-  ulong               theCurTuplePos;
+  SortTable    theSortTable;
+  DataTable    theDataTable;
+  ulong        theNumTuples;
+  ulong        theCurTuplePos;
 
 public:
   OrderByState();

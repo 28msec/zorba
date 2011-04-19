@@ -158,7 +158,9 @@ typedef rchandle<LetVarIterator> LetVarIter_t;
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-namespace plan_visitor_ns{
+namespace plan_visitor_ns
+{
+
 template <typename T> T pop_stack(std::stack<T> &stk)
 {
   assert (! stk.empty ());
@@ -172,7 +174,8 @@ template<class T> T& peek_stack(std::stack<T> &stk)
   ZORBA_ASSERT (! stk.empty ());
   return stk.top ();
 }
-}
+
+} // namespace plan_visitor_ns
 
 
 template <typename V>
@@ -244,7 +247,8 @@ typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 
 #ifndef ZORBA_NO_FULL_TEXT
 
-class plan_ftnode_visitor : public ftnode_visitor {
+class plan_ftnode_visitor : public ftnode_visitor 
+{
 public:
   typedef std::list<PlanIter_t> PlanIter_list_t;
 
@@ -439,6 +443,9 @@ void end_visit(expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -474,6 +481,9 @@ void end_visit(function_item_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -499,6 +509,9 @@ void end_visit(dynamic_function_invocation_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(function_trace_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -534,6 +547,9 @@ void end_visit(wrapper_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(block_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -557,6 +573,9 @@ void end_visit(block_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(apply_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -573,6 +592,9 @@ void end_visit(apply_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(var_decl_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -701,7 +723,8 @@ void general_var_codegen(const var_expr& var)
 
     // Look for the inner-most clause C that knows about this variable. C is
     // either the clause D_C that defines the var, or the inner-most orderby
-    // clause the comes after D_C and rebinds the var to its output.
+    // or materialize clause the comes after D_C and rebinds the var to its 
+    // output.
     long i = stackSize - 1;
     while(true)
     {
@@ -712,26 +735,36 @@ void general_var_codegen(const var_expr& var)
       ZORBA_ASSERT(i >= 0);
     }
 
-    // Create a var iter in the output of C.
+    // Create a var ref iter in the output of C.
     varIter = create_var_iter(var, isForVar);
 
-    theClauseStack[i]->theVarRebinds[varPos]->theOutputVarRefs.push_back(varIter);
+    FlworClauseVarMap* clauseVarMap = theClauseStack[i];
 
-    if (theClauseStack[i]->theIsGeneral)
+    flwor_expr* flworExpr = clauseVarMap->theClause->get_flwor_expr();
+
+    clauseVarMap->theVarRebinds[varPos]->theOutputVarRefs.push_back(varIter);
+
+    if (clauseVarMap->theIsGeneral || flworExpr->is_sequential())
     {
-      // For each orderby O after C, bind the var iter created by the previous
-      // clause to the input of O, and then create a new var iter and put it to
-      // the output of O.
+      // For each orderby or materialize clause O after C, bind the var iter 
+      // created by the previous clause to the input of O, and then create a new 
+      // var iter and put it to the output of O.
       for (++i; i < stackSize; ++i)
       {
-        ZORBA_ASSERT(theClauseStack[i]->find_var(&var) < 0);
+        clauseVarMap = theClauseStack[i];
 
-        if (theClauseStack[i]->theClause->get_kind() == flwor_clause::order_clause)
+        ZORBA_ASSERT(clauseVarMap->find_var(&var) < 0);
+
+        if ((clauseVarMap->theClause->get_kind() == flwor_clause::order_clause ||
+             clauseVarMap->theClause->get_kind() == flwor_clause::materialize_clause) &&
+            flworExpr == clauseVarMap->theClause->get_flwor_expr())
         {
           varRebind = new VarRebind;
+
+          clauseVarMap->theVarExprs.push_back(&var);
+          clauseVarMap->theVarRebinds.push_back(varRebind);
+
           varRebind->theInputVar = varIter;
-          theClauseStack[i]->theVarExprs.push_back(&var);
-          theClauseStack[i]->theVarRebinds.push_back(varRebind);
 
           varIter = create_var_iter(var, isForVar);
 
@@ -803,6 +836,14 @@ bool begin_visit(flwor_expr& v)
   CODEGEN_TRACE_IN("");
 
   bool isGeneral = v.is_general();
+
+  if (v.is_sequential() && !isGeneral)
+  {
+    materialize_clause* mat = 
+    new materialize_clause(v.get_sctx(), v.get_return_expr()->get_loc());
+
+    v.add_clause(mat);
+  }
 
   ulong numClauses = v.num_clauses();
 
@@ -883,6 +924,13 @@ bool begin_visit(flwor_expr& v)
         oc->get_column_expr(i)->accept(*this);
       }
 
+      visit_flwor_clause(c, isGeneral);
+
+      break;
+    }
+
+    case flwor_clause::materialize_clause:
+    {
       visit_flwor_clause(c, isGeneral);
 
       break;
@@ -1008,6 +1056,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
   }
 
   case flwor_clause::order_clause:
+  case flwor_clause::materialize_clause:
   {
     break;
   }
@@ -1443,6 +1492,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
   PlanIter_t returnIter;
   std::auto_ptr<flwor::OrderByClause> orderClause(NULL);
   std::auto_ptr<flwor::GroupByClause> groupClause(NULL);
+  std::auto_ptr<flwor::MaterializeClause> materializeClause(NULL);
   PlanIter_t whereIter;
   std::vector<flwor::ForLetClause> forletClauses;
 
@@ -1467,10 +1517,67 @@ void flwor_codegen(const flwor_expr& flworExpr)
       ZORBA_ASSERT(clauseVarMap->theClause == &c);
     }
 
+    switch (c.get_kind())
+    {
+    //
+    // MATERIALIZE
+    //
+    case flwor_clause::materialize_clause:
+    {
+      ulong numVars = (ulong)clauseVarMap->theVarRebinds.size();
+      ulong numForVars = 0;
+      ulong numLetVars = 0;
+
+      std::vector<ForVarIter_t> inputForVars(numVars);
+      std::vector<LetVarIter_t> inputLetVars(numVars);
+      std::vector<std::vector<PlanIter_t> > outputForVarsRefs(numVars);
+      std::vector<std::vector<PlanIter_t> > outputLetVarsRefs(numVars);
+
+      for (ulong i = 0; i < numVars; ++i)
+      {
+        VarRebind* varRebind = clauseVarMap->theVarRebinds[i].getp();
+        
+        ForVarIterator* forIter = dynamic_cast<ForVarIterator*>
+                                  (varRebind->theInputVar.getp());
+
+        if (forIter != NULL)
+        {
+          inputForVars[numForVars] = forIter;
+          
+          outputForVarsRefs[numForVars] = varRebind->theOutputVarRefs;
+          ++numForVars;
+        }
+        else
+        {
+          LetVarIterator* letIter = dynamic_cast<LetVarIterator*>
+                                    (varRebind->theInputVar.getp());
+          ZORBA_ASSERT(letIter != NULL);
+
+          inputLetVars[numLetVars] = letIter;
+          
+          outputLetVarsRefs[numLetVars] = varRebind->theOutputVarRefs;
+          ++numLetVars;
+        }
+      }
+      
+      inputForVars.resize(numForVars);
+      outputForVarsRefs.resize(numForVars);
+      inputLetVars.resize(numLetVars);
+      outputLetVarsRefs.resize(numLetVars);
+      
+      materializeClause.reset(new flwor::MaterializeClause(c.get_loc(),
+                                                           inputForVars,
+                                                           inputLetVars,
+                                                           outputForVarsRefs,
+                                                           outputLetVarsRefs));
+
+      break;
+    }
+
     //
     // ORDERBY
     //
-    if (c.get_kind() == flwor_clause::order_clause)
+    case flwor_clause::order_clause:
     {
       const orderby_clause* obc = static_cast<const orderby_clause*>(&c);
       unsigned numColumns = obc->num_columns();
@@ -1493,12 +1600,13 @@ void flwor_codegen(const flwor_expr& flworExpr)
       orderClause.reset(new flwor::OrderByClause(obc->get_loc(),
                                                  orderSpecs,
                                                  obc->is_stable()));
+      break;
     }
 
     //
     // GROUPBY
     //
-    else if (c.get_kind() == flwor_clause::group_clause)
+    case flwor_clause::group_clause:
     {
       std::vector<flwor::GroupingSpec> gspecs;
       std::vector<flwor::NonGroupingSpec> ngspecs;
@@ -1506,20 +1614,23 @@ void flwor_codegen(const flwor_expr& flworExpr)
       generate_groupby(clauseVarMap, gspecs, ngspecs);
 
       groupClause.reset(new flwor::GroupByClause(c.get_loc(), gspecs, ngspecs));
+
+      break;
     }
 
     //
     // WHERE
     //
-    else if (c.get_kind() == flwor_clause::where_clause)
+    case flwor_clause::where_clause:
     {
       whereIter = pop_itstack();
+      break;
     }
 
     //
     // FOR
     //
-    else if (c.get_kind() == flwor_clause::for_clause)
+    case flwor_clause::for_clause:
     {
       const for_clause* fc = static_cast<const for_clause *>(&c);
 
@@ -1559,12 +1670,14 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                                     varRefs,
                                                     domainIter));
       }
+
+      break;
     }
 
     //
     // LET
     //
-    else if (c.get_kind() == flwor_clause::let_clause)
+    case flwor_clause::let_clause:
     {
       const let_clause* lc = static_cast<const let_clause *>(&c);
 
@@ -1582,11 +1695,13 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                                   domainIter,
                                                   lc->lazyEval(),
                                                   true)); // materialize
+      break;
     }
 
-    else
+    default:
     {
       ZORBA_ASSERT(false);
+    }
     }
   }
 
@@ -1598,6 +1713,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                        whereIter,
                                        groupClause.release(),
                                        orderClause.release(),
+                                       materializeClause.release(),
                                        returnIter,
                                        flworExpr.is_updating());
   push_itstack(flworIter);
@@ -1640,7 +1756,6 @@ void generate_groupby(
 /*******************************************************************************
 
 ********************************************************************************/
-
 bool begin_visit(promote_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -1656,6 +1771,9 @@ void end_visit(promote_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -1726,6 +1844,9 @@ void end_visit(trycatch_expr& v)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool begin_visit(eval_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -1930,176 +2051,6 @@ bool begin_visit(insert_expr& v)
 #endif
 
   return true;
-}
-
-void end_visit(insert_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-
-  PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lSource = pop_itstack();
-  PlanIter_t lInsert = new InsertIterator(sctx, qloc, v.getType(), lSource, lTarget);
-  push_itstack(&*lInsert);
-}
-
-
-bool begin_visit(delete_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-
-  return true;
-}
-
-
-void end_visit(delete_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-  PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lDelete = new DeleteIterator(sctx, qloc, lTarget);
-  push_itstack(&*lDelete);
-}
-
-
-bool begin_visit(replace_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-
-  TypeManager* tm = v.get_type_manager();
-
-  expr* targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->get_return_type();
-
-  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(qloc));
-
-  return true;
-}
-
-
-void end_visit(replace_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-  PlanIter_t lReplacement = pop_itstack();
-  PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lReplace = new ReplaceIterator(sctx,
-                                            qloc,
-                                            v.getType(),
-                                            lTarget,
-                                            lReplacement);
-  push_itstack(&*lReplace);
-}
-
-
-bool begin_visit(rename_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-
-  TypeManager* tm = v.get_type_manager();
-
-  expr* targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->get_return_type();
-
-  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(qloc));
-
-  return true;
-}
-
-
-void end_visit(rename_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-  PlanIter_t lName = pop_itstack();
-  PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lRename;
-
-  expr* nameExpr = v.getNameExpr();
-
-  if (nameExpr->get_expr_kind() == name_cast_expr_kind)
-  {
-    name_cast_expr* nameCastExpr = static_cast<name_cast_expr*>(nameExpr);
-
-    lRename = new RenameIterator(sctx,
-                                 qloc,
-                                 lTarget,
-                                 lName,
-                                 nameCastExpr->get_namespace_context());
-  }
-  else
-  {
-    lRename = new RenameIterator(sctx, qloc, lTarget, lName, NULL);
-  }
-
-  push_itstack(&*lRename);
-}
-
-
-bool begin_visit(transform_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-
-  TypeManager* tm = v.get_type_manager();
-
-  std::vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
-  std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
-  for (; lIter != lEnd; ++lIter)
-  {
-    rchandle<var_expr> var = (*lIter)->getVar();
-    expr_t sourceExpr = (*lIter)->getExpr();
-    xqtref_t sourceType = sourceExpr->get_return_type();
-
-    if (TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
-      throw XQUERY_EXCEPTION(XUTY0013, ERROR_LOC(qloc));
-
-    uint64_t k = (uint64_t) &*var;
-    copy_var_iter_map.put(k, new std::vector<ForVarIter_t>());
-  }
-  return true;
-}
-
-void end_visit(transform_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-
-  PlanIter_t returnIter = pop_itstack();
-  PlanIter_t modifyIter = pop_itstack();
-
-  std::vector<CopyClause> lClauses;
-  std::stack<PlanIter_t> lInputs;
-  size_t lSize = v.size();
-  for (size_t i = 0; i < lSize; ++i)
-  {
-    lInputs.push(pop_itstack());
-  }
-
-  // Create a FOR var iterator into which the PUL produced by the modify
-  // iterator will be bound.
-  store::Item_t pulVarName;
-  GENV_ITEMFACTORY->createQName(pulVarName, "", "", "pulHolder");
-  PlanIter_t pulHolderIter = new ForVarIterator(sctx, modifyIter->loc, pulVarName);
-
-  // Create an ApplyIterator to apply the above PUL
-  PlanIter_t applyIter = new ApplyIterator(sctx, modifyIter->loc, pulHolderIter);
-
-  std::vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
-  std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
-  for(; lIter != lEnd; ++lIter)
-  {
-    PlanIter_t lInput = plan_visitor_ns::pop_stack(lInputs);
-    std::vector<ForVarIter_t>* lVarIters = 0;
-    var_expr* lVar = (*lIter)->getVar();
-    ZORBA_ASSERT(copy_var_iter_map.get((uint64_t)lVar, lVarIters));
-    lClauses.push_back(CopyClause(*lVarIters, lInput));
-  }
-
-  TransformIterator* transformIter = new TransformIterator(sctx,
-                                                           qloc,
-                                                           lClauses,
-                                                           modifyIter,
-                                                           pulHolderIter,
-                                                           applyIter,
-                                                           returnIter);
-  push_itstack(transformIter);
 }
 
 
@@ -2926,6 +2877,190 @@ void end_visit(order_expr& v)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  Updates (XQUF)                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+void end_visit(insert_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  PlanIter_t lTarget = pop_itstack();
+  PlanIter_t lSource = pop_itstack();
+  PlanIter_t lInsert = new InsertIterator(sctx, qloc, v.getType(), lSource, lTarget);
+  push_itstack(&*lInsert);
+}
+
+
+bool begin_visit(delete_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  return true;
+}
+
+
+void end_visit(delete_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lTarget = pop_itstack();
+  PlanIter_t lDelete = new DeleteIterator(sctx, qloc, lTarget);
+  push_itstack(&*lDelete);
+}
+
+
+bool begin_visit(replace_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  TypeManager* tm = v.get_type_manager();
+
+  expr* targetExpr = v.getTargetExpr();
+  xqtref_t targetType = targetExpr->get_return_type();
+
+  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(qloc));
+
+  return true;
+}
+
+
+void end_visit(replace_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lReplacement = pop_itstack();
+  PlanIter_t lTarget = pop_itstack();
+  PlanIter_t lReplace = new ReplaceIterator(sctx,
+                                            qloc,
+                                            v.getType(),
+                                            lTarget,
+                                            lReplacement);
+  push_itstack(&*lReplace);
+}
+
+
+bool begin_visit(rename_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  TypeManager* tm = v.get_type_manager();
+
+  expr* targetExpr = v.getTargetExpr();
+  xqtref_t targetType = targetExpr->get_return_type();
+
+  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(qloc));
+
+  return true;
+}
+
+
+void end_visit(rename_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t lName = pop_itstack();
+  PlanIter_t lTarget = pop_itstack();
+  PlanIter_t lRename;
+
+  expr* nameExpr = v.getNameExpr();
+
+  if (nameExpr->get_expr_kind() == name_cast_expr_kind)
+  {
+    name_cast_expr* nameCastExpr = static_cast<name_cast_expr*>(nameExpr);
+
+    lRename = new RenameIterator(sctx,
+                                 qloc,
+                                 lTarget,
+                                 lName,
+                                 nameCastExpr->get_namespace_context());
+  }
+  else
+  {
+    lRename = new RenameIterator(sctx, qloc, lTarget, lName, NULL);
+  }
+
+  push_itstack(&*lRename);
+}
+
+
+bool begin_visit(transform_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  TypeManager* tm = v.get_type_manager();
+
+  std::vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
+  std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
+  for (; lIter != lEnd; ++lIter)
+  {
+    rchandle<var_expr> var = (*lIter)->getVar();
+    expr_t sourceExpr = (*lIter)->getExpr();
+    xqtref_t sourceType = sourceExpr->get_return_type();
+
+    if (TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+      throw XQUERY_EXCEPTION(XUTY0013, ERROR_LOC(qloc));
+
+    uint64_t k = (uint64_t) &*var;
+    copy_var_iter_map.put(k, new std::vector<ForVarIter_t>());
+  }
+  return true;
+}
+
+void end_visit(transform_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  PlanIter_t returnIter = pop_itstack();
+  PlanIter_t modifyIter = pop_itstack();
+
+  std::vector<CopyClause> lClauses;
+  std::stack<PlanIter_t> lInputs;
+  size_t lSize = v.size();
+  for (size_t i = 0; i < lSize; ++i)
+  {
+    lInputs.push(pop_itstack());
+  }
+
+  // Create a FOR var iterator into which the PUL produced by the modify
+  // iterator will be bound.
+  store::Item_t pulVarName;
+  GENV_ITEMFACTORY->createQName(pulVarName, "", "", "pulHolder");
+  PlanIter_t pulHolderIter = new ForVarIterator(sctx, modifyIter->loc, pulVarName);
+
+  // Create an ApplyIterator to apply the above PUL
+  PlanIter_t applyIter = new ApplyIterator(sctx, modifyIter->loc, pulHolderIter);
+
+  std::vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
+  std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
+  for(; lIter != lEnd; ++lIter)
+  {
+    PlanIter_t lInput = plan_visitor_ns::pop_stack(lInputs);
+    std::vector<ForVarIter_t>* lVarIters = 0;
+    var_expr* lVar = (*lIter)->getVar();
+    ZORBA_ASSERT(copy_var_iter_map.get((uint64_t)lVar, lVarIters));
+    lClauses.push_back(CopyClause(*lVarIters, lInput));
+  }
+
+  TransformIterator* transformIter = new TransformIterator(sctx,
+                                                           qloc,
+                                                           lClauses,
+                                                           modifyIter,
+                                                           pulHolderIter,
+                                                           applyIter,
+                                                           returnIter);
+  push_itstack(transformIter);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  Full Text                                                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
 #ifndef ZORBA_NO_FULL_TEXT
 bool begin_visit(ftcontains_expr& v)
 {
@@ -3058,7 +3193,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 /******************************************************************************
 
- ******************************************************************************/
+******************************************************************************/
 
 PlanIter_t codegen(
     const char* descr,

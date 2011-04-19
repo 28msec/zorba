@@ -1178,9 +1178,9 @@ Iterator tree for raytracer:trace-ray:
               <LetVarIterator varname="distance"/>
             </FnExistsIterator>
           </WhereClause>
-          <OrderByClause>
+          <OrderBySpec>
             <LetVarIterator varname="distance"/>
-          </OrderByClause>
+          </OrderBySpec>
           <ReturnClause>
             <UDFunctionCallIterator>
               <FunctionTraceIterator>

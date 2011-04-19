@@ -224,6 +224,17 @@ PLAN_ITER_VISITOR (AndIterator);
 
   virtual void endVisitFlworForVariable() = 0;
 
+  virtual void beginVisitMaterializeClause() = 0;
+
+  virtual void endVisitMaterializeClause() = 0;
+
+  virtual void beginVisitMaterializeVariable(
+      bool isForVar,
+      ForVarIter_t inputVar,
+      const std::vector<PlanIter_t>& varRefs) = 0;
+
+  virtual void endVisitMaterializeVariable() = 0;
+
   virtual void beginVisitGroupByClause() = 0;
 
   virtual void endVisitGroupByClause() = 0;
@@ -244,9 +255,9 @@ PLAN_ITER_VISITOR (AndIterator);
 
   virtual void endVisitNonGroupVariable() = 0;
 
-  virtual void beginVisitOrderBy(const PlanIterator&) = 0;
+  virtual void beginVisitOrderBySpec(const PlanIterator&) = 0;
 
-  virtual void endVisitOrderBy(const PlanIterator&) = 0;
+  virtual void endVisitOrderBySpec(const PlanIterator&) = 0;
 
   virtual void beginVisitOrderByForVariable(
         ForVarIter_t inputVar,

@@ -786,6 +786,142 @@ void PrinterVisitor::endVisitFlworForVariable()
 }
 
 
+void PrinterVisitor::beginVisitOrderBySpec(const PlanIterator& a)
+{
+  thePrinter.startBeginVisit("OrderBySpec", ++theId);
+  thePrinter.endBeginVisit(theId);
+  a.accept(*this);
+}
+
+
+void PrinterVisitor::endVisitOrderBySpec(const PlanIterator& )
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void PrinterVisitor::beginVisitOrderByForVariable(
+    ForVarIter_t inputVar,
+    const std::vector<PlanIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("OrderByForVariable", theId);
+
+  std::ostringstream str1;
+  std::ostringstream str2;
+
+  str1 << inputVar->getVarName()->getStringValue() << " : " <<
+      inputVar.getp();
+
+  ulong numRefs = (ulong)varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str2 << varRefs[i].getp();
+    if (i < numRefs-1)
+      str2 << " ";
+  }
+
+  thePrinter.addAttribute("inputVar", str1.str());
+  if (! Properties::instance()->noTreeIds())
+    thePrinter.addAttribute("referenced-by", str2.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void PrinterVisitor::endVisitOrderByForVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void PrinterVisitor::beginVisitOrderByLetVariable(
+    LetVarIter_t inputVar,
+    const std::vector<PlanIter_t>& varRefs)
+{
+  thePrinter.startBeginVisit("OrderByLetVariable", theId);
+
+  std::ostringstream str1;
+  std::ostringstream str2;
+
+  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
+
+  ulong numRefs = (ulong)varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str2 << varRefs[i].getp();
+    if (i < numRefs-1)
+      str2 << " ";
+  }
+
+  thePrinter.addAttribute("inputVar", str1.str());
+  if (! Properties::instance()->noTreeIds())
+    thePrinter.addAttribute("referenced-by", str2.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void PrinterVisitor::endVisitOrderByLetVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void PrinterVisitor::beginVisitMaterializeClause()
+{
+  thePrinter.startBeginVisit("MaterializeClause", ++theId);
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void PrinterVisitor::endVisitMaterializeClause()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void PrinterVisitor::beginVisitMaterializeVariable(
+    bool forVar,
+    ForVarIter_t inputVar,
+    const std::vector<PlanIter_t>& varRefs)
+{
+  if (forVar)
+    thePrinter.startBeginVisit("MaterializeForVariable", theId);
+  else
+    thePrinter.startBeginVisit("MaterializeLetVariable", theId);
+
+  std::ostringstream str1;
+  std::ostringstream str2;
+
+  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
+
+  ulong numRefs = (ulong)varRefs.size();
+  for (ulong i = 0; i < numRefs; i++)
+  {
+    str2 << varRefs[i].getp();
+    if (i < numRefs-1)
+      str2 << " ";
+  }
+
+  thePrinter.addAttribute("inputVar", str1.str());
+  if (! Properties::instance()->noTreeIds())
+    thePrinter.addAttribute("referenced-by", str2.str());
+
+  thePrinter.endBeginVisit(theId);
+}
+
+
+void PrinterVisitor::endVisitMaterializeVariable()
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
 void PrinterVisitor::beginVisitGroupByClause()
 {
   thePrinter.startBeginVisit("GroupByClause", ++theId);
@@ -884,93 +1020,9 @@ void PrinterVisitor::endVisitNonGroupVariable()
 }
 
 
-void PrinterVisitor::beginVisitOrderBy(const PlanIterator& a)
-{
-  thePrinter.startBeginVisit("OrderByClause", ++theId);
-  thePrinter.endBeginVisit(theId);
-  a.accept(*this);
-}
-
-
-void PrinterVisitor::endVisitOrderBy(const PlanIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitOrderByForVariable(
-    ForVarIter_t inputVar,
-    const std::vector<PlanIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("OrderByForVariable", theId);
-
-  std::ostringstream str1;
-  std::ostringstream str2;
-
-  str1 << inputVar->getVarName()->getStringValue() << " : " <<
-      inputVar.getp();
-
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
-  {
-    str2 << varRefs[i].getp();
-    if (i < numRefs-1)
-      str2 << " ";
-  }
-
-  thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance()->noTreeIds())
-    thePrinter.addAttribute("referenced-by", str2.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitOrderByForVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitOrderByLetVariable(
-    LetVarIter_t inputVar,
-    const std::vector<PlanIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("OrderByLetVariable", theId);
-
-  std::ostringstream str1;
-  std::ostringstream str2;
-
-  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
-
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
-  {
-    str2 << varRefs[i].getp();
-    if (i < numRefs-1)
-      str2 << " ";
-  }
-
-  thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance()->noTreeIds())
-    thePrinter.addAttribute("referenced-by", str2.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitOrderByLetVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
 void PrinterVisitor::beginVisitWindowVariable(
-                              const std::string& varName,
-                              const std::vector<LetVarIter_t>& varRefs)
+    const std::string& varName,
+    const std::vector<LetVarIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("WindowVariable", theId);
 
@@ -1031,6 +1083,7 @@ void PrinterVisitor::endVisitWinCondVariable()
   thePrinter.endEndVisit();
 }
 
+
 void PrinterVisitor::beginVisitFlworReturn(const PlanIterator& a)
 {
   thePrinter.startBeginVisit("ReturnClause", ++theId);
@@ -1038,13 +1091,16 @@ void PrinterVisitor::beginVisitFlworReturn(const PlanIterator& a)
   a.accept(*this);
 }
 
+
 void PrinterVisitor::endVisitFlworReturn(const PlanIterator& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const CastIterator& a) {
+
+void PrinterVisitor::beginVisit(const CastIterator& a) 
+{
   thePrinter.startBeginVisit("CastIterator", ++theId);
   std::ostringstream lStream;
   TypeOps::serialize(lStream, *a.theCastType);
@@ -1081,43 +1137,48 @@ void PrinterVisitor::beginVisit(const CastableIterator& a) {
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const CastableIterator&) {
+void PrinterVisitor::endVisit(const CastableIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const FTContainsIterator& a) {
+void PrinterVisitor::beginVisit(const FTContainsIterator& a) 
+{
   thePrinter.startBeginVisit("FTContainsIterator", ++theId);
   // TODO
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const FTContainsIterator&) {
+void PrinterVisitor::endVisit(const FTContainsIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a) {
+void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a) 
+{
   thePrinter.startBeginVisit("flwor::OuterForIterator", ++theId);
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
   printCommons(  &a, theId );
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const flwor::OuterForIterator&) {
+void PrinterVisitor::endVisit(const flwor::OuterForIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
 
 #define TYPED_VAL_CMP( xqt )                                            \
-void PrinterVisitor::beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
+void PrinterVisitor::beginVisit(const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
     thePrinter.startBeginVisit("TypedValueCompareIterator_" #xqt, ++theId); \
     printCommons( &a, theId );                                          \
     thePrinter.endBeginVisit(theId);                                    \
 }                                                                     \
                                                                         \
-void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
+void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
     thePrinter.startEndVisit();                                         \
     thePrinter.endEndVisit();                                           \
 }

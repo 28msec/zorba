@@ -17,7 +17,7 @@ Iterator tree for main query:
         </ChildAxisIterator>
       </DescendantAxisIterator>
     </ForVariable>
-    <OrderByClause>
+    <OrderBySpec>
       <CastIterator type="xs:string">
         <FnDataIterator>
           <FnZeroOrOneIterator>
@@ -27,7 +27,7 @@ Iterator tree for main query:
           </FnZeroOrOneIterator>
         </FnDataIterator>
       </CastIterator>
-    </OrderByClause>
+    </OrderBySpec>
     <ReturnClause>
       <ElementIterator>
         <SingletonIterator value="xs:QName(,,item)"/>
