@@ -127,23 +127,31 @@ void SimpleCollection::addNode(
 {
   if (!nodeItem->isNode())
   {
-    ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-                      getName()->getStringValue(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+      ERROR_PARAMS( getName()->getStringValue() )
+    );
   }
 
   XmlNode* node = static_cast<XmlNode*>(nodeItem);
 
   if (node->getCollection() != NULL)
   {
-    ZORBA_ERROR_PARAM(ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
-                      node->getCollection()->getName()->getStringValue(),
-                      getName()->getStringValue());
+    throw ZORBA_EXCEPTION(
+      ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
+      ERROR_PARAMS(
+        getName()->getStringValue(),
+        node->getCollection()->getName()->getStringValue()
+      )
+    );
   }
 
   if (node->getParent() != NULL)
   {
-    ZORBA_ERROR_PARAM(ZSTR0011_COLLECTION_NON_ROOT_NODE,
-                      getName()->getStringValue(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0011_COLLECTION_NON_ROOT_NODE,
+      ERROR_PARAMS( getName()->getStringValue() )
+    );
   }
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
@@ -192,23 +200,31 @@ ulong SimpleCollection::addNodes(
   {
     if (!nodes[i]->isNode())
     {
-      ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-                        getName()->getStringValue(), "");
+      throw ZORBA_EXCEPTION(
+        ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+        ERROR_PARAMS( getName()->getStringValue() )
+      );
     }
 
     XmlNode* node = static_cast<XmlNode*>(nodes[i].getp());
 
     if (node->getCollection() != NULL)
     {
-      ZORBA_ERROR_PARAM(ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION, 
-                        node->getCollection()->getName()->getStringValue(),
-                        getName()->getStringValue());
+      throw ZORBA_EXCEPTION(
+        ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
+        ERROR_PARAMS(
+          getName()->getStringValue(),
+          node->getCollection()->getName()->getStringValue()
+        )
+      );
     }
 
     if (node->getParent() != NULL)
     {
-      ZORBA_ERROR_PARAM(ZSTR0011_COLLECTION_NON_ROOT_NODE,
-                        getName()->getStringValue(), "");
+      throw ZORBA_EXCEPTION(
+        ZSTR0011_COLLECTION_NON_ROOT_NODE,
+        ERROR_PARAMS( getName()->getStringValue() )
+      );
     }
     
     node->setCollection(this, targetPos + i);
@@ -248,8 +264,10 @@ bool SimpleCollection::removeNode(store::Item* nodeItem, ulong& position)
 {
   if (!nodeItem->isNode())
   {
-    ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-                      getName()->getStringValue(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+      ERROR_PARAMS( getName()->getStringValue() )
+    );
   }
 
   XmlNode* node = static_cast<XmlNode*>(nodeItem);
@@ -356,8 +374,10 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-                      getName()->getStringValue(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+      ERROR_PARAMS( getName()->getStringValue() )
+    );
   }
 
   if( theXmlTrees.empty() )

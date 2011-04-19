@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <stdio.h>
 #include <memory.h>
 #include <string>
@@ -40,7 +41,8 @@
 #include "zorbaerrors/assert.h"
 
 
-namespace zorba { namespace simplestore {
+namespace zorba {
+namespace simplestore {
 
 #ifndef NDEBUG
 
@@ -1124,8 +1126,7 @@ void FastXmlLoader::entityDecl(
   ZORBA_LOADER_CHECK_ERROR(loader);
 }
 
-#undef ZORBA_ERROR_DESC_CONTINUE
-
 
 } // namespace simplestore
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

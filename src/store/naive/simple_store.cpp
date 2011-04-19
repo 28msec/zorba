@@ -488,8 +488,10 @@ store::Index_t SimpleStore::createIndex(
 
   if (!spec.theIsTemp && theIndices.get(qname.getp(), index))
   {
-    ZORBA_ERROR_PARAM(ZSTR0001_INDEX_ALREADY_EXISTS,
-                      qname->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0001_INDEX_ALREADY_EXISTS,
+      ERROR_PARAMS( qname->getStringValue() )
+    );
   }
 
   if (spec.theIsGeneral && spec.theIsSorted)
@@ -716,8 +718,10 @@ store::Index_t SimpleStore::refreshIndex(
 
   if (!theIndices.get(non_const_items, index))
   {
-    ZORBA_ERROR_PARAM(ZSTR0002_INDEX_DOES_NOT_EXIST,
-                      qname->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0002_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( qname->getStringValue() )
+    );
   }
 
   deleteIndex(qname);
@@ -805,8 +809,10 @@ store::IC_t SimpleStore::activateIC(
 
   if (theICs.get(qname, ic))
   {
-    ZORBA_ERROR_PARAM(ZSTR0015_IC_ALREADY_EXISTS,
-                      qname->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0015_IC_ALREADY_EXISTS,
+      ERROR_PARAMS( qname->getStringValue() )
+    );
   }
 
   ic = new ICCollectionImpl(icQName, collectionQName);
@@ -833,8 +839,10 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 
   if (theICs.get(qname, ic))
   {
-    ZORBA_ERROR_PARAM(ZSTR0015_IC_ALREADY_EXISTS,
-                      qname->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0015_IC_ALREADY_EXISTS,
+      ERROR_PARAMS( qname->getStringValue() )
+    );
   }
 
   ic = new ICForeignKeyImpl(qname, fromCollectionQName, toCollectionQName);
@@ -854,8 +862,9 @@ SimpleStore::deactivateIC(const store::Item_t& icQName)
 
   if (!theICs.get(icQName.getp(), ic))
   {
-    ZORBA_ERROR_PARAM(ZSTR0016_IC_DOES_NOT_EXIST,
-                      icQName->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0016_IC_DOES_NOT_EXIST, ERROR_PARAMS( icQName->getStringValue() )
+    );
   }
 
   theICs.remove(icQName.getp());
@@ -900,8 +909,9 @@ store::Collection_t SimpleStore::createUriCollection(const zstring& uri)
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(ZSTR0008_COLLECTION_ALREADY_EXISTS, uri.c_str(), "");
-    return 0;
+    throw ZORBA_EXCEPTION(
+      ZSTR0008_COLLECTION_ALREADY_EXISTS, ERROR_PARAMS( uri )
+    );
   }
 
   return collection;
@@ -937,7 +947,9 @@ void SimpleStore::deleteUriCollection(const zstring& uri)
 
   if (!deleted)
   {
-    ZORBA_ERROR_PARAM(ZSTR0009_COLLECTION_NOT_FOUND, uri.c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0009_COLLECTION_NOT_FOUND, ERROR_PARAMS( uri )
+    );
   }
 }
 
@@ -962,8 +974,10 @@ store::Collection_t SimpleStore::createCollection(
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(ZSTR0008_COLLECTION_ALREADY_EXISTS, lName->getStringValue(), "");
-    return NULL;
+    throw ZORBA_EXCEPTION(
+      ZSTR0008_COLLECTION_ALREADY_EXISTS,
+      ERROR_PARAMS( lName->getStringValue() )
+    );
   }
 
   return collection;
@@ -981,7 +995,10 @@ void SimpleStore::addCollection(store::Collection_t& collection)
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(ZSTR0008_COLLECTION_ALREADY_EXISTS, lName->getStringValue(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0008_COLLECTION_ALREADY_EXISTS,
+      ERROR_PARAMS( lName->getStringValue() )
+    );
   }
 }
 
@@ -1019,7 +1036,9 @@ void SimpleStore::deleteCollection(
 
   if (!theCollections->remove(aName, aDynamicCollection))
   {
-    ZORBA_ERROR_PARAM(ZSTR0009_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0009_COLLECTION_NOT_FOUND, ERROR_PARAMS( aName->getStringValue() )
+    );
   }
 }
 

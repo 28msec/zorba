@@ -53,7 +53,7 @@ ZorbaException::ZorbaException( ZorbaException const &from ) :
 {
 }
 
-ZorbaException::ZorbaException( zorba::serialization::Archiver &ar ) 
+ZorbaException::ZorbaException( serialization::Archiver &ar ) 
 {
 }
 
@@ -101,10 +101,9 @@ ostream& ZorbaException::print( ostream &o ) const {
 
   o << err::dict::lookup( oss.str() ) << " [" << e.qname() << ']';
 
-  if ( char const *const w = what() ) {
+  if ( char const *const w = what() )
     if ( *w )
       o << ": " << w;
-  }
 
 #ifndef NDEBUG
   o << "; thrown at " << throw_file() << ':' << throw_line();
@@ -127,6 +126,15 @@ ZorbaException make_zorba_exception( char const *throw_file,
   err::parameters::value_type message( error.message() );
   params.substitute( &message );
   return ZorbaException( error, throw_file, throw_line, message.c_str() );
+}
+
+ZorbaException* new_zorba_exception( char const *throw_file,
+                                     ZorbaException::line_type throw_line,
+                                     Error const &error,
+                                     err::parameters const &params ) {
+  err::parameters::value_type message( error.message() );
+  params.substitute( &message );
+  return new ZorbaException( error, throw_file, throw_line, message.c_str() );
 }
 
 } // namespace internal

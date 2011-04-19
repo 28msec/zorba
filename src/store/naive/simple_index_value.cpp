@@ -99,8 +99,10 @@ bool ValueHashIndex::insert(
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue(), key->toString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
+      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
+    );
   }
 
   ValueIndexValue* valueSet = NULL;
@@ -144,8 +146,10 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
-                      theQname->getStringValue().c_str(), key->toString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
+      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
+    );
   }
 
   IndexMap::iterator pos = theMap.get(key);
@@ -191,9 +195,12 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 {
   if (cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
-    ZORBA_ERROR_PARAM(ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getName()->getStringValue().c_str(), 
-                      cond->getKindString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+      ERROR_PARAMS(
+        cond->getKindString(), theIndex->getName()->getStringValue()
+      )
+    );
   }
 
   theCondition = reinterpret_cast<IndexPointValueCondition*>(cond.getp());
@@ -202,9 +209,10 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 
   if (key->size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue().c_str(),
-                      key->toString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
+    );
   }
 
   theIndex->theMap.get(key, theResultSet);
@@ -319,8 +327,10 @@ bool ValueTreeIndex::insert(
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue().c_str(), key->toString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
+      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
+    );
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -371,8 +381,10 @@ bool ValueTreeIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
-                      theQname->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
+      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
+    );
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -420,9 +432,12 @@ void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
-    ZORBA_ERROR_PARAM(ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getName()->getStringValue().c_str(), 
-                      cond->getKindString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+      ERROR_PARAMS(
+        cond->getKindString(), theIndex->getName()->getStringValue()
+      )
+    );
   }
 
   if (cond->getKind() == store::IndexCondition::POINT_VALUE)
@@ -449,9 +464,10 @@ void ProbeValueTreeIndexIterator::initExact()
 
   if (key.size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue().c_str(), 
-                      key.toString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      ERROR_PARAMS( key.toString(), theIndex->getName()->getStringValue() )
+    );
   }
 
   theMapBegin = theIndex->theMap.find(&key);
@@ -484,9 +500,12 @@ void ProbeValueTreeIndexIterator::initBox()
 
   if (numRanges > theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0006_INDEX_INVALID_BOX_PROBE, 
-                      theIndex->getName()->getStringValue().c_str(),
-                      "The box condition has more columns than the index");
+    throw ZORBA_EXCEPTION(
+      ZSTR0006_INDEX_INVALID_BOX_PROBE,
+      ERROR_PARAMS(
+        theIndex->getName()->getStringValue(), ZED( BoxCondTooManyColumns )
+      )
+    );
   }
 
   theDoExtraFiltering = (numRanges > 1);
@@ -567,9 +586,12 @@ void ProbeValueTreeIndexIterator::initBox()
       if (comp > 0 || 
           (comp == 0 && (!flags[i].theLowerBoundIncl || !flags[i].theUpperBoundIncl)))
       { 
-        ZORBA_ERROR_PARAM(ZSTR0006_INDEX_INVALID_BOX_PROBE, 
-                          theIndex->getName()->getStringValue().c_str(),
-                          theBoxCond->toString());
+        throw ZORBA_EXCEPTION(
+          ZSTR0006_INDEX_INVALID_BOX_PROBE,
+          ERROR_PARAMS(
+            theIndex->getName()->getStringValue(), theBoxCond->toString()
+          )
+        );
       }
     }
   }
@@ -693,5 +715,6 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
 }
 
 
-}
-}
+} // namespace simplestore
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

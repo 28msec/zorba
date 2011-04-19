@@ -220,7 +220,7 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
 
     return stream.gcount();
   }
-  catch (std::iostream::failure e)
+  catch (std::iostream::failure const &e)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
                               ZSTR0020_LOADER_IO_ERROR, e.what());
@@ -309,7 +309,7 @@ store::Item_t DtdXmlLoader::loadXml(
                                 "Failed to initialize parser");
       delete[] theBuffer;
       abortload();
-			return NULL;
+      return NULL;
     }
 
     /****** new *******/
@@ -1308,7 +1308,7 @@ void DtdXmlLoader::warning(void * ctx, const char * msg, ... )
 /*******************************************************************************
 
 ********************************************************************************/
-xmlEntityPtr	DtdXmlLoader::getEntity(
+xmlEntityPtr  DtdXmlLoader::getEntity(
     void * ctx,
     const xmlChar * name)
 {
@@ -1344,8 +1344,6 @@ void DtdXmlLoader::entityDecl(
   ZORBA_LOADER_CHECK_ERROR(loader);
 }
 
-#undef ZORBA_ERROR_DESC_CONTINUE
-
-
 } // namespace simplestore
 } // namespace zorba
+/* vim:set et sw=2 ts=2 */

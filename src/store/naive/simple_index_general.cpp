@@ -519,9 +519,12 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
   if (theProbeKind != store::IndexCondition::POINT_VALUE &&
       theProbeKind != store::IndexCondition::POINT_GENERAL)
   {
-    ZORBA_ERROR_PARAM(ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getName()->getStringValue().c_str(), 
-                      cond->getKindString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+      ERROR_PARAMS(
+        cond->getKindString(), theIndex->getName()->getStringValue()
+      )
+    );
   }
 
   theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
@@ -1828,5 +1831,6 @@ bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
 }
 
 
-}
-}
+} // namespace simplestore
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

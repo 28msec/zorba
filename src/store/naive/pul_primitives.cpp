@@ -30,7 +30,8 @@
 #include "zorbaerrors/error_manager.h"
 
 
-namespace zorba { namespace simplestore {
+namespace zorba {
+namespace simplestore {
 
 #if 0
 #define TRACE(msg) std::cout << msg << << std::endl << std::endl;
@@ -1085,8 +1086,10 @@ void UpdDeleteIndex::apply()
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
-    ZORBA_ERROR_PARAM(ZSTR0002_INDEX_DOES_NOT_EXIST,
-                      theQName->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0002_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( theQName->getStringValue() )
+    );
   }
 
   store->deleteIndex(theQName);
@@ -1132,8 +1135,10 @@ void UpdRefreshIndex::apply()
 
   if ((theIndex = store.getIndex(theQName)) == NULL)
   {
-    ZORBA_ERROR_PARAM(ZSTR0002_INDEX_DOES_NOT_EXIST,
-                      theQName->getStringValue().c_str(), "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0002_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( theQName->getStringValue() )
+    );
   }
 
   store.refreshIndex(theQName, theIndex->getSpecification(), theSourceIter);
@@ -1370,6 +1375,7 @@ void UpdDeleteDocument::undo()
   }
 }
 
-}
-}
+} // namespace simplestore
+} // namespace zorba
 
+/* vim:set et sw=2 ts=2: */

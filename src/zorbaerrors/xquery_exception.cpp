@@ -42,7 +42,8 @@ XQueryException::XQueryException( XQueryException const &from ) :
   // as to future-proof the code and keep ABI compatibility.
 }
 
-XQueryException::XQueryException(zorba::serialization::Archiver &ar) : ZorbaException(ar)
+XQueryException::XQueryException( serialization::Archiver &ar ) :
+  ZorbaException( ar )
 {
 }
 
