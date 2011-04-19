@@ -20,8 +20,10 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
+#include <zorba/item.h>
 #include <zorba/error_handler.h>
 #include <zorba/xquery_exception.h>
+#include <zorba/user_exception.h>
 
 
 class Specification;
@@ -85,6 +87,19 @@ private:
                << "[line " << xe->source_line() << "]"
                << "[column " <<  xe->source_column() << "]"
                << "[file " <<  xe->source_uri() << "]";
+      if(zorba::UserException const *ue = dynamic_cast<zorba::UserException const*>(&e))
+      {
+        zorba::UserException::error_object_type  const & err_objs = ue->getErrorObject();
+        if(err_objs.size() > 0)
+        {
+          strdescr << " and ..." << std::endl << "User parameters:";
+          for(size_t i=0;i<err_objs.size();i++)
+          {
+            strdescr << std::endl;
+            strdescr << err_objs[i].getStringValue();
+          }
+        }
+      }
     }
     else
     {
