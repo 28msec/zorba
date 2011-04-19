@@ -213,23 +213,28 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
 
     if (stream.bad())
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZSTR0020_LOADER_IO_ERROR,
-                                "Input stream in bad state");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION(
+          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
+        )
+      );
     }
 
     return stream.gcount();
   }
   catch (std::iostream::failure const &e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                              ZSTR0020_LOADER_IO_ERROR, e.what());
+    theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION(
+        ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                              ZSTR0020_LOADER_IO_ERROR,
-                              "Unknown exception");
+    theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+    );
   }
 
   return -1;
@@ -280,18 +285,20 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZSTR0020_LOADER_IO_ERROR,
-                                "Unknown I/O error");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      );
       abortload();
       delete[] theBuffer;
       return NULL;
     }
     else if (numChars == 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZSTR0020_LOADER_IO_ERROR,
-                                "No input data.");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION(
+          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
+        )
+      );
       delete[] theBuffer;
       abortload();
       return NULL;
@@ -348,8 +355,9 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0020_LOADER_IO_ERROR,
-                                "Unknown I/O error");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      );
       delete[] theBuffer;
       abortload();
       return NULL;
@@ -1346,4 +1354,4 @@ void DtdXmlLoader::entityDecl(
 
 } // namespace simplestore
 } // namespace zorba
-/* vim:set et sw=2 ts=2 */
+/* vim:set et sw=2 ts=2: */

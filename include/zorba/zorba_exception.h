@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_EXCEPTION_API_H
-#define ZORBA_EXCEPTION_API_H
+#ifndef ZORBA_ZORBA_EXCEPTION_API_H
+#define ZORBA_ZORBA_EXCEPTION_API_H
 
 #include <iostream>
 #include <exception>
@@ -183,5 +183,5 @@ make_zorba_exception( char const *throw_file,
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif /* ZORBA_EXCEPTION_API_H */
+#endif /* ZORBA_ZORBA_EXCEPTION_API_H */
 /* vim:set et sw=2 ts=2: */

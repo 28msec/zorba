@@ -213,23 +213,26 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
 
     if (stream.bad())
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZSTR0020_LOADER_IO_ERROR,
-                                "Input stream in bad state");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION(
+          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
+        )
+      );
     }
 
     return stream.gcount();
   }
   catch (std::iostream::failure e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                              ZSTR0020_LOADER_IO_ERROR, e.what());
+    theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() ) )
+    );
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                              ZSTR0020_LOADER_IO_ERROR,
-                              "Unknown exception");
+    theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+    );
   }
 
   return -1;
@@ -272,17 +275,19 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                ZSTR0020_LOADER_IO_ERROR,
-                                "Unknown I/O error");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      );
       abortload();
       return NULL;
     }
     else if (numChars == 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                ZSTR0020_LOADER_IO_ERROR,
-                                "No input data.");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION(
+          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
+        )
+      );
       abortload();
       return NULL;
     }
@@ -314,8 +319,9 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0020_LOADER_IO_ERROR,
-                                "Unknown I/O error");
+      theErrorManager->addError(
+      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      );
       abortload();
       return NULL;
     }

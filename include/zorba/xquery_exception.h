@@ -251,6 +251,28 @@ make_xquery_exception( char const *throw_file,
   );
 }
 
+/**
+ * \internal
+ * Dynamically allocates an XQueryException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error.
+ * @param loc The error XQuery source-code location.
+ * @return Returns a new XQueryException.
+ */
+inline XQueryException*
+new_xquery_exception( char const *throw_file,
+                      ZorbaException::line_type throw_line,
+                      Error const &error,
+                      err::location const &loc = err::location::empty ) {
+  return new_xquery_exception(
+    throw_file, throw_line, error, err::parameters::empty, loc
+  );
+}
+
 } // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
