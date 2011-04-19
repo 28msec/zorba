@@ -22,12 +22,14 @@
 
 namespace zorba {
 
-namespace serialization{
+namespace serialization {
   class Archiver;
-  void operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
+  void operator&( Archiver&, ZorbaException*& );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+class XQueryException;
 
 namespace internal {
 
@@ -188,26 +190,22 @@ private:
   XQueryStackTrace query_trace_;
 
   friend XQueryException internal::make_xquery_exception(
-    char const*,
-    ZorbaException::line_type,
-    Error const&,
-    internal::err::parameters const&,
-    internal::err::location const&
+    char const*, ZorbaException::line_type, Error const&,
+    internal::err::parameters const&, internal::err::location const&
   );
 
   friend XQueryException* internal::new_xquery_exception(
-    char const*,
-    ZorbaException::line_type,
-    Error const&,
-    internal::err::parameters const&,
-    internal::err::location const&
+    char const*, ZorbaException::line_type, Error const&,
+    internal::err::parameters const&, internal::err::location const&
   );
 
   friend class UserException;
+
 protected:
-  //for plan serialization
-  XQueryException(zorba::serialization::Archiver &ar);
-  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
+  // for plan serialization
+  XQueryException( serialization::Archiver &ar );
+  friend void serialization::operator&( serialization::Archiver&,
+                                        ZorbaException*& );
 };
 
 #define MAKE_EXCEPTION_VAR(MAKE_FN,...) \
@@ -244,11 +242,10 @@ namespace internal {
  * @return Returns a new XQueryException.
  */
 inline XQueryException
-make_xquery_exception(
-    char const *throw_file,
-    ZorbaException::line_type throw_line,
-    Error const &error,
-    err::location const &loc = err::location::empty ) {
+make_xquery_exception( char const *throw_file,
+                       ZorbaException::line_type throw_line,
+                       Error const &error,
+                       err::location const &loc = err::location::empty ) {
   return make_xquery_exception(
     throw_file, throw_line, error, err::parameters::empty, loc
   );

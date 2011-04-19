@@ -8,15 +8,13 @@
 
 namespace zorba {
 
-class XQueryException;
 class XQueryStackTrace;
-//class XQueryStackTrace::Entry;
-class Entry;
 
-namespace serialization{
+namespace serialization {
   class Archiver;
-  void operator&(zorba::serialization::Archiver &ar, XQueryStackTrace &obj);
+  void operator&( Archiver&, XQueryStackTrace& );
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class XQueryStackTrace {
@@ -80,7 +78,7 @@ public:
     line_type line_;
     column_type col_;
   public:
-    //for plan serialization
+    // for plan serialization
     Entry();
   };
 
@@ -117,8 +115,9 @@ public:
 
 private:
   trace_t trace_;
-private:
-  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, XQueryStackTrace &obj);
+
+  friend void serialization::operator&( serialization::Archiver&,
+                                        XQueryStackTrace& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////

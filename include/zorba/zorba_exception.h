@@ -29,9 +29,9 @@ namespace zorba {
 
 class ZorbaException;
 
-namespace serialization{
+namespace serialization {
   class Archiver;
-  void operator&(Archiver &ar, ZorbaException *&obj);
+  void operator&( Archiver&, ZorbaException*& );
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -133,9 +133,10 @@ private:
   line_type throw_line_;
   std::string message_;
 protected:
-  //for plan serialization
-  ZorbaException(zorba::serialization::Archiver &ar);
-  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
+  // for plan serialization
+  ZorbaException( serialization::Archiver& );
+  friend void serialization::operator&( serialization::Archiver&,
+                                        ZorbaException*& );
 };
 
 /**
