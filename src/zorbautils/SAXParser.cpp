@@ -218,8 +218,11 @@ void zorba::SAXParser::error( void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  ZORBA_ERROR_DESC_CONTINUE(lParser.theErrorManager,
-                            ZSTR0021_LOADER_PARSING_ERROR, buf);
+  lParser.theErrorManager->addError(
+    NEW_ZORBA_EXCEPTION(
+      ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
+    )
+  );
 }
 
 

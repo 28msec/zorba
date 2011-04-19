@@ -25,9 +25,10 @@
 
 namespace zorba {
 
-namespace serialization{
+namespace serialization {
   class Archiver;
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class UserException;
@@ -116,9 +117,10 @@ private:
     internal::err::location const&, error_object_type*
   );
 
-  //for plan serialization
-  UserException(zorba::serialization::Archiver &ar);
-  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, ZorbaException *&obj);
+  // for plan serialization
+  UserException( serialization::Archiver& );
+  friend void serialization::operator&( serialization::Archiver&,
+                                        ZorbaException*& );
 };
 
 /**
@@ -148,7 +150,7 @@ namespace internal {
  * \endcode
  * XQuery function.
  * This function should not be called directly.
- * Instead, the \c USER_EXCEPTION macro should be used.
+ * Instead, the \c DEFAULT_USER_EXCEPTION macro should be used.
  *
  * @param throw_file The C++ source-code file name whence the exception was
  * thrown.           
@@ -197,7 +199,7 @@ make_user_exception( char const *throw_file,
  * @param throw_line The C++ source-code line number whence the exception was
  * thrown.
  * @param error The error code expressed as a QName.
- * @param description The error description
+ * @param description The error description.
  */
 ZORBA_DLL_PUBLIC UserException
 make_user_exception( char const *throw_file,
@@ -222,7 +224,7 @@ make_user_exception( char const *throw_file,
  * @param throw_line The C++ source-code line number whence the exception was
  * thrown.
  * @param error The error code expressed as a QName.
- * @param description The error description
+ * @param description The error description.
  * @param error_object The error object.
  */
 ZORBA_DLL_PUBLIC UserException
@@ -231,6 +233,19 @@ make_user_exception( char const *throw_file,
                      Item const &error, String const &description,
                      ItemSequence_t const &error_object );
 
+/**
+ * \internal
+ * Make a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.           
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error.
+ * @param params The error message parameters.
+ * @param loc The error XQuery source-code location.
+ * @param error_object The error object.
+ */
 ZORBA_DLL_PUBLIC UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
@@ -238,6 +253,18 @@ make_user_exception( char const *throw_file,
                      err::location const &loc,
                      error_object_type *error_object = 0 );
 
+/**
+ * \internal
+ * Make a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.           
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error.
+ * @param params The error message parameters.
+ * @param error_object The error object.
+ */
 inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
@@ -248,6 +275,17 @@ make_user_exception( char const *throw_file,
   );
 }
 
+/**
+ * \internal
+ * Make a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.           
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error.
+ * @param error_object The error object.
+ */
 inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,

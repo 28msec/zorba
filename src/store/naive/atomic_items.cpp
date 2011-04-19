@@ -142,8 +142,10 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   default:
   {
-    ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                          __FUNCTION__, typeid (*this).name ());
+    throw ZORBA_EXCEPTION(
+      ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+      ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+    );
   }
   }
 
@@ -271,8 +273,10 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
   default:
   {
-    ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                          __FUNCTION__, typeid (*this).name ());
+    throw ZORBA_EXCEPTION(
+      ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+      ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+    );
   }
   }
 
@@ -527,7 +531,12 @@ store::Item* QNameItem::getType() const
 
 store::Item_t QNameItem::getEBV() const
 {
-  throw XQUERY_EXCEPTION( FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "QName" ) );
+  throw XQUERY_EXCEPTION(
+    FORG0006,
+    ERROR_PARAMS(
+      ZED( OperationNotDef ), ZED( EffectiveBooleanValue ), "QName"
+    )
+  );
 }
 
 bool QNameItem::equals(
@@ -922,7 +931,7 @@ std::istream& StreamableStringItem::getStream()
   // the query needs to make sure that the stream is explicitly
   // materialized before
   if (!theIsSeekable && theIsConsumed) {
-    throw ZORBA_EXCEPTION(ZSTR0055_STREAMABLE_STRING_CONSUMED);
+    throw ZORBA_EXCEPTION( ZSTR0055_STREAMABLE_STRING_CONSUMED );
   } else {
     // if the stream is seekable, we seek to the beginning
     theIstream.seekg(0, std::ios::beg);

@@ -195,7 +195,7 @@ Item ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
   }
   else
   {
-    ZORBA_ERROR_DESC(ZSTR0040_TYPE_ERROR, lMessage);
+    throw ZORBA_EXCEPTION( ZSTR0040_TYPE_ERROR, ERROR_PARAMS( lMessage ) );
   }
   return &*lItem;
 }

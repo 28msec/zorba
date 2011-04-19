@@ -56,8 +56,10 @@ public:
   typedef std::vector<int32_t> DeweyID;
 
 public:
-  static const ulong MAX_BYTE_LEN = 255;
-  static const ulong MAX_BIT_LEN = MAX_BYTE_LEN * 8;
+  enum {
+    MAX_BYTE_LEN = 255,
+    MAX_BIT_LEN = MAX_BYTE_LEN * 8
+  };
 
 protected:
   static const ulong MAX_EMBEDDED_BYTE_LEN = 8;
@@ -368,10 +370,10 @@ private:
 } // namespace store
 } // namespace zorba
 
-#endif
-
+#endif /* ZORBA_STORE_ORDPATH_H */
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

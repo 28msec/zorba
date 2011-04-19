@@ -312,8 +312,12 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0021_LOADER_PARSING_ERROR,
-                                "Failed to initialize parser");
+      theErrorManager->addError(
+        NEW_ZORBA_EXCEPTION(
+          ZSTR0021_LOADER_PARSING_ERROR,
+          ERROR_PARAMS( ZED( ParserInitFailed ) )
+        )
+      );
       delete[] theBuffer;
       abortload();
       return NULL;
@@ -333,9 +337,13 @@ store::Item_t DtdXmlLoader::loadXml(
     if ( xmlParseDocument(ctxt)==-1 )
     {
       std::cout << "  xmlParseDocument: Error: Unable to create tree: " <<
-          ctxt->lastError.message << std::endl; std::cout.flush();
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0021_LOADER_PARSING_ERROR,
-                                "Unable to create tree");
+          ctxt->lastError.message << std::endl;
+      theErrorManager->addError(
+        NEW_ZORBA_EXCEPTION(
+          ZSTR0021_LOADER_PARSING_ERROR,
+          ERROR_PARAMS( ZED( ParserNoCreateTree ) )
+        )
+      );
       delete[] theBuffer;
       abortload();
       return NULL;
@@ -387,16 +395,21 @@ store::Item_t DtdXmlLoader::loadXml(
   {
     if (!theDocUri.empty())
     {
-      ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     ZSTR0021_LOADER_PARSING_ERROR,
-                                     "The document with URI " << theDocUri
-                                     <<" is not well formed", "");
+      theErrorManager->addError(
+        NEW_ZORBA_EXCEPTION(
+          ZSTR0021_LOADER_PARSING_ERROR,
+          ERROR_PARAMS( ZED( BadXMLDocument ), theDocUri )
+        )
+      );
     }
     else
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZSTR0021_LOADER_PARSING_ERROR,
-                                "Not well formed XML");
+      theErrorManager->addError(
+        NEW_ZORBA_EXCEPTION(
+          ZSTR0021_LOADER_PARSING_ERROR,
+          ERROR_PARAMS( ZED( BadXMLDocument ) )
+        )
+      );
     }
 
     abortload();
@@ -410,10 +423,12 @@ store::Item_t DtdXmlLoader::loadXml(
     if ( ctxt->lastError.code == XML_NS_ERR_UNDEFINED_NAMESPACE ||
         ctxt->lastError.code != XML_ERR_NO_DTD )
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                ZSTR0021_LOADER_PARSING_ERROR,
-                                "Not well formed XML");
-
+      theErrorManager->addError(
+        NEW_ZORBA_EXCEPTION(
+          ZSTR0021_LOADER_PARSING_ERROR,
+          ERROR_PARAMS( ZED( BadXMLDocument ) )
+        )
+      );
       abortload();
       return NULL;
 
@@ -424,8 +439,12 @@ store::Item_t DtdXmlLoader::loadXml(
   xmlDoc *doc = ctxt->myDoc;
   if (doc == NULL)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0021_LOADER_PARSING_ERROR,
-                              "Unable to create doc tree");
+    theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION(
+        ZSTR0021_LOADER_PARSING_ERROR,
+        ERROR_PARAMS( ZED( ParserNoCreateTree ) )
+      )
+    );
     abortload();
     return NULL;
   }
@@ -1289,8 +1308,11 @@ void DtdXmlLoader::error(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-                            ZSTR0021_LOADER_PARSING_ERROR, buf);
+  loader->theErrorManager->addError(
+    NEW_ZORBA_EXCEPTION(
+      ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
+    )
+  );
 }
 
 

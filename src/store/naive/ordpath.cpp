@@ -201,9 +201,10 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
 
   if (byteLen > MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS(ZSTR0030_NODEID_ERROR,
-                          "A nodeid requires more than " << MAX_BYTE_LEN
-                          << " bytes", "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0030_NODEID_ERROR,
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(MAX_BYTE_LEN) )
+    );
   }
 
   memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
@@ -744,8 +745,9 @@ void OrdPath::insertBeforeOrAfter(
   {
     if ( newcomp < -std::numeric_limits<int32_t>::max() + 2)
     {
-      ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                       "A nodeid component is too large to be encoded");
+      throw ZORBA_EXCEPTION(
+        ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+      );
     }
 
     newcomp += -2;
@@ -754,8 +756,9 @@ void OrdPath::insertBeforeOrAfter(
   {
     if ( newcomp > std::numeric_limits<int32_t>::max() - 2)
     {
-      ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                       "A nodeid component is too large to be encoded");
+      throw ZORBA_EXCEPTION(
+        ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+      );
     }
 
     newcomp += 2;
@@ -892,8 +895,9 @@ void OrdPath::insertInto(
     {
       if (newcomp1 < -std::numeric_limits<int32_t>::max() + 1)
       {
-        ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                         "A nodeid component is too large to be encoded");
+        throw ZORBA_EXCEPTION(
+          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+        );
       }
 
       newcomp1 -= 1;
@@ -902,8 +906,9 @@ void OrdPath::insertInto(
     {
       if (newcomp1 < -std::numeric_limits<int32_t>::max() + 2)
       {
-        ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                         "A nodeid component is too large to be encoded");
+        throw ZORBA_EXCEPTION(
+          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+        );
       }
 
       newcomp1 -= 2;
@@ -924,8 +929,9 @@ void OrdPath::insertInto(
     {
       if (newcomp1 > std::numeric_limits<int32_t>::max() - 1)
       {
-        ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                         "A nodeid component is too large to be encoded");
+        throw ZORBA_EXCEPTION(
+          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+        );
       }
 
       newcomp1 += 1;
@@ -934,8 +940,9 @@ void OrdPath::insertInto(
     {
       if (newcomp1 > std::numeric_limits<int32_t>::max() - 2)
       {
-        ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                         "A nodeid component is too large to be encoded");
+        throw ZORBA_EXCEPTION(
+          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+        );
       }
 
       newcomp1 += 2;
@@ -1034,9 +1041,10 @@ bool OrdPath::pushComp(
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS(ZSTR0030_NODEID_ERROR,
-                          "A nodeid requires more than " << MAX_BYTE_LEN
-                          << " bytes", "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0030_NODEID_ERROR,
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(MAX_BYTE_LEN) )
+    );
   }
 
   if (bitLen + bitsNeeded > maxBitLen)
@@ -1112,11 +1120,12 @@ void OrdPath::appendComp(int32_t value)
   OrdPath::bitsNeeded(value, bitsNeeded, eval, eval2);
 
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
-  if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
+  if (bytesNeeded > MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS(ZSTR0030_NODEID_ERROR,
-                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
-                           << " bytes", "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0030_NODEID_ERROR,
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int( MAX_BYTE_LEN ) )
+    );
   }
 
   if (bitLen + bitsNeeded <= MAX_EMBEDDED_BIT_LEN)
@@ -4007,9 +4016,10 @@ void OrdPathStack::pushChild()
   if (theByteIndex == OrdPath::MAX_BYTE_LEN ||
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
-    ZORBA_ERROR_PARAM_OSS(ZSTR0030_NODEID_ERROR,
-                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
-                          << " bytes", "");
+    throw ZORBA_EXCEPTION(
+      ZSTR0030_NODEID_ERROR,
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(OrdPath::MAX_BYTE_LEN) )
+    );
   }
 
   theDeweyId[theNumComps] = 1;
@@ -4050,8 +4060,9 @@ void OrdPathStack::popChild()
 
   if (theDeweyId[theNumComps - 1] > std::numeric_limits<int32_t>::max() - 2)
   {
-    ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                     "A nodeid component is too large to be encoded");
+    throw ZORBA_EXCEPTION(
+      ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+    );
   }
 
   theDeweyId[theNumComps - 1] += 2;
@@ -4083,8 +4094,9 @@ void OrdPathStack::nextChild()
 
   if (theDeweyId[theNumComps - 1] > std::numeric_limits<int32_t>::max() - 2)
   {
-    ZORBA_ERROR_DESC(ZSTR0030_NODEID_ERROR,
-                     "A nodeid component is too large to be encoded");
+    throw ZORBA_EXCEPTION(
+      ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+    );
   }
 
   theDeweyId[theNumComps - 1] += 2;
@@ -4176,10 +4188,10 @@ void OrdPathStack::compressComp(ulong comp, int32_t value)
 
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS(ZSTR0030_NODEID_ERROR,
-                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
-                          << " bytes", "");
-    return;
+    throw ZORBA_EXCEPTION(
+      ZSTR0030_NODEID_ERROR,
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(OrdPath::MAX_BYTE_LEN) )
+    );
   }
 
   if (overflow)
