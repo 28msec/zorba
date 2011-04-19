@@ -436,8 +436,6 @@ extern entry const dict_en[] = {
   { "ZXQP0030", "deadlock" },
   { "ZXQP0031", "malformed XQueryX input" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
-  { "ZXQP0034", "\"$1\": illegal UTF-8 byte" },
-  { "ZXQP0035", "\"$1\": illegal UTF-16 byte" },
   { "ZXQP0036", "BreakIterator creation failed" },
 
 #ifndef ZORBA_NO_FULL_TEXT

@@ -127,8 +127,6 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
 
   if ( error == ZXQP0031_MALFORMED_XQUERYX_INPUT
     || error == ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY
-    || error == ZXQP0034_ILLEGAL_UTF8_BYTE
-    || error == ZXQP0035_ILLEGAL_UTF16_BYTE
 #ifndef ZORBA_NO_FULL_TEXT
     || error == ZXQP8401_THESAURUS_VERSION_MISMATCH
     || error == ZXQP8402_THESAURUS_DATA_ERROR

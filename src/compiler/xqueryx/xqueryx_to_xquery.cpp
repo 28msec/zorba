@@ -82,13 +82,13 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
   if(!res)
   {
     xmlFreeDoc(doc);
-    throw ZORBA_EXCEPTION(ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY);
+    throw ZORBA_EXCEPTION( ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY );
   }
 /*  if ((ctxt->state == XSLT_STATE_ERROR) || (ctxt->state == XSLT_STATE_STOPPED))
   {
     xsltFreeTransformContext(ctxt);
     xmlFreeDoc(doc);
-    throw ZORBA_EXCEPTION(ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY);
+    throw ZORBA_EXCEPTION( ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY );
   }
   xsltFreeTransformContext(ctxt);
 */ 
