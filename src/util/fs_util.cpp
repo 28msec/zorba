@@ -198,11 +198,11 @@ void get_temp_file( char *path ) {
   // GetTempFileName() needs a 14-character cushion.
   DWORD const dw_result = ::GetTempPath( MAX_PATH - 14, wtemp );
   if ( !dw_result || dw_result > MAX_PATH )
-    throw fs::exception( "GetTempPath()", path );
+    throw fs::exception( "GetTempPath()", static_cast<char const*>(path) );
   WCHAR wpath[ MAX_PATH ];
   UINT const u_result = ::GetTempFileName( wtemp, TEXT("zxq"), 0, wpath );
   if ( !u_result )
-    throw fs::exception( "GetTempFileName()", path );
+    throw fs::exception( "GetTempFileName()", static_cast<char const*>(path) );
   win32::to_char( wpath, path );
 #endif /* WIN32 */
 }
