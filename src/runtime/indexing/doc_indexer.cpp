@@ -98,9 +98,10 @@ void DocIndexer::createIndexEntries(
       for (ulong i = 0; i < theNumColumns; ++i)
       {
         if (!thePlanWrapper->next((*key)[i]))
-        {
-          ZORBA_ERROR_DESC(ZXQP0019_INTERNAL_ERROR, "Incomplete key during index refresh");
-        }
+          throw ZORBA_EXCEPTION(
+            ZXQP0019_INTERNAL_ERROR,
+            ERROR_PARAMS( ZED( IncompleteKeyInIndexRefresh ) )
+          );
       }
       
       delta.resize(numEntries + 1);

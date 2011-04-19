@@ -438,10 +438,9 @@ std::istream* StandardModuleURIResolver::resolve(
   {
     if (!(*lIter)->checkModuleUri(uri.c_str()))
     {
-      std::string lErrorStr("It is forbidden to import the module");
-      lErrorStr += uri;
-      ZORBA_ERROR_DESC(ZXQP0029_MODULE_IMPORT_NOT_ALLOWED,
-                       lErrorStr);
+      throw ZORBA_EXCEPTION(
+        ZXQP0029_MODULE_IMPORT_NOT_ALLOWED, ERROR_PARAMS( uri )
+      );
     }
   }
   std::auto_ptr<std::istream> modfile(0); // result file

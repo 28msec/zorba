@@ -178,7 +178,11 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 
   if (planState.theStackDepth + 1 > 256)
-    ZORBA_ERROR_LOC_PARAM(ZXQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
+    throw XQUERY_EXCEPTION(
+      ZXQP0019_INTERNAL_ERROR,
+      ERROR_PARAMS( ZED( StackOverflow ) ),
+      ERROR_LOC( loc )
+    );
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.

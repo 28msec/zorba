@@ -69,7 +69,11 @@ PlanState::PlanState(
 void PlanState::checkDepth(const QueryLoc& loc)
 {
   if (theStackDepth > 256)
-    ZORBA_ERROR_LOC_PARAM(ZXQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
+    throw XQUERY_EXCEPTION(
+      ZXQP0019_INTERNAL_ERROR,
+      ERROR_PARAMS( ZED( StackOverflow ) ),
+      ERROR_LOC( loc )
+    );
 }
 
 
@@ -128,4 +132,5 @@ bool PlanIterator::consumeNext(
 #endif
 
 
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

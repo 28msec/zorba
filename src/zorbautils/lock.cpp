@@ -189,7 +189,7 @@ retry:
       if (theHaveUpgradeReq)
       {
         theMutex.unlock();
-        throw ZORBA_EXCEPTION(ZXQP0030_DEADLOCK);
+        throw ZORBA_EXCEPTION( ZXQP0030_DEADLOCK );
       }
 
       // Else, the thread is made to wait

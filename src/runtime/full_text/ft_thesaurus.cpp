@@ -111,7 +111,9 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
       th_path = fs::get_normalized_path( uri );
       break;
     default:
-      throw ZORBA_NOT_IMPLEMENTED( ERROR_PARAMS( ZED( NonFileThesaurusURI ) ) );
+      throw XQUERY_EXCEPTION(
+        ZXQP0015_NOT_IMPLEMENTED, ERROR_PARAMS( ZED( NonFileThesaurusURI ) )
+      );
   }
 
   ft_thesaurus *result;

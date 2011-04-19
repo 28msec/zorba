@@ -2045,8 +2045,11 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(theModuleNamespace))
   {
-    ZORBA_ERROR_LOC_PARAM(ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
-                          theModuleNamespace.c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE,
+      ERROR_PARAMS( theModuleNamespace ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
@@ -2549,8 +2552,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(targetNS))
   {
-    ZORBA_ERROR_LOC_PARAM(ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
-                          targetNS.c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE,
+      ERROR_PARAMS( targetNS ),
+      ERROR_LOC( loc )
+    );
   }
 
   // The namespace prefix specified in a module import must not be xml or xmlns
@@ -8603,8 +8609,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(fn_ns))
   {
-    ZORBA_ERROR_LOC_PARAM(ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
-                          fn_ns.c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE,
+      ERROR_PARAMS( fn_ns ),
+      ERROR_LOC( loc )
+    );
   }
 
   // Collect the arguments of this function in reverse order
@@ -12079,8 +12088,9 @@ void end_visit (const FTScope& v, void* /*visit_state*/) {
 
 void *begin_visit (const FTScoreVar& v) {
   TRACE_VISIT ();
-  throw ZORBA_NOT_IMPLEMENTED( ERROR_PARAMS( "score" ), ERROR_LOC( loc ) );
-  return no_state;
+  throw XQUERY_EXCEPTION(
+    ZXQP0015_NOT_IMPLEMENTED, ERROR_PARAMS( "score" ), ERROR_LOC( loc )
+  );
 }
 
 void end_visit (const FTScoreVar& v, void* /*visit_state*/) {

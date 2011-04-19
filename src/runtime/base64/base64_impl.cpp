@@ -67,10 +67,11 @@ bool Base64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
     else
     {
-      throw XQUERY_EXCEPTION(ZXQP0025_COULD_NOT_CREATE_ITEM, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION( ZXQP0025_ITEM_CREATION_FAILED, ERROR_LOC( loc ) );
     } 
   }
   STACK_END (state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

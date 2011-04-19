@@ -64,15 +64,21 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(pulItem, theChild, planState))
   {
     if (!pulItem->isPul())
-      ZORBA_ERROR_LOC_DESC(ZXQP0019_INTERNAL_ERROR, loc,
-                           "Expression does not return a pending update list");
+      throw XQUERY_EXCEPTION(
+        ZXQP0019_INTERNAL_ERROR,
+        ERROR_PARAMS( ZED( ExprNoReturnUpdateList ) ),
+        ERROR_LOC( loc )
+      );
 
     pul = static_cast<store::PUL*>(pulItem.getp());
 
     if (consumeNext(tmp, theChild, planState))
     {
-      ZORBA_ERROR_LOC_DESC(ZXQP0019_INTERNAL_ERROR, loc,
-                           "Expression returns more than one pending update lists");
+      throw XQUERY_EXCEPTION(
+        ZXQP0019_INTERNAL_ERROR,
+        ERROR_PARAMS( ZED( ExprReturnsTooManyUpdateLists ) ),
+        ERROR_LOC( loc )
+      );
     }
     apply_updates(ccb, gdctx, theSctx, pul, loc);
   }
@@ -167,5 +173,5 @@ UNARY_ACCEPT(ApplyIterator);
 
 
 
-}
-
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

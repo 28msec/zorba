@@ -920,8 +920,11 @@ RULE_REWRITE_POST(InlineFunctions)
       catch (...)
       {
         // TODO: this is caught here, because clone is not implemented for all expressions
-        ZORBA_ERROR_LOC_DESC(ZXQP0019_INTERNAL_ERROR, udf->getLoc(),
-                             "clone not implemented for expression");
+        throw XQUERY_EXCEPTION(
+          ZXQP0019_INTERNAL_ERROR,
+          ERROR_PARAMS( ZED( CloneNotImplemented ) ),
+          ERROR_LOC( udf->getLoc() )
+        );
       }
     }
   }

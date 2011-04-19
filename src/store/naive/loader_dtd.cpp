@@ -590,8 +590,9 @@ void DtdXmlLoader::startDocument(void * ctx)
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -671,8 +672,9 @@ void DtdXmlLoader::endDocument(void * ctx)
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -962,8 +964,9 @@ void DtdXmlLoader::startElement(
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -1094,8 +1097,9 @@ void  DtdXmlLoader::endElement(
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -1144,8 +1148,9 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -1196,8 +1201,9 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -1245,8 +1251,9 @@ void DtdXmlLoader::processingInstruction(
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -1287,8 +1294,9 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
+    loader.theErrorManager->addError(
+      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+    );
   }
 }
 

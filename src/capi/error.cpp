@@ -107,11 +107,7 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     || error == ZXQP0019_INTERNAL_ERROR
     || error == ZXQP0020_INVALID_URI
     || error == ZXQP0021_USER_ERROR
-    || error == ZXQP0022_GET_RESULTS_AS_DOM_FAILED
-    || error == ZXQP0023_GET_RESULTS_AS_SAX_FAILED
-    || error == ZXQP0025_COULD_NOT_CREATE_ITEM
-    || error == ZXQP0026_COULD_NOT_CREATE_THREAD
-    || error == ZXQP0026_CANNOT_INIT_STORE
+    || error == ZXQP0025_ITEM_CREATION_FAILED
     || error == ZXQP0027_MS_DOM_ERROR
     || error == ZXQP0028_FUNCTION_IMPL_NOT_FOUND
     || error == ZXQP0029_MODULE_IMPORT_NOT_ALLOWED

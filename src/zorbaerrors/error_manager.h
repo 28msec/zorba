@@ -108,14 +108,6 @@ private:
 #define ZORBA_IO_EXCEPTION(FUNC,PATH) \
   ZORBA_EXCEPTION( ZOSE0004_IO_ERROR, ERROR_PARAMS( PATH, ::zorba::error::get_os_err_string( FUNC ) ) )
 
-/**
- * \internal
- * Convenience macro for throwing "not implemented" exception.
- * \hideinitializer
- */
-#define ZORBA_NOT_IMPLEMENTED(...) \
-  XQUERY_EXCEPTION( ZXQP0015_NOT_IMPLEMENTED, __VA_ARGS__ )
-
 ////////// TEMPORARY TRANSITION MACROS: THESE WILL BE REMOVED /////////////////
 
 #define ZORBA_ERROR_DESC(LOCALNAME,MSG) \
