@@ -335,8 +335,8 @@ MaterializeClause::MaterializeClause(
 ********************************************************************************/
 void MaterializeClause::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<OrderByIterator>*)this);
 
+  ar & theLocation;
   ar & theInputForVars;
   ar & theInputLetVars;
   ar & theOutputForVarsRefs;
@@ -1203,8 +1203,9 @@ void FLWORIterator::materializeStreamTuple(
   for (ulong i = 0; i < numLetVars; ++i)
   {
     store::TempSeq_t letTempSeq;
+    const zorba::PlanIter_t   input_let_var = theMaterializeClause->theInputLetVars[i];
     createTempSeq(letTempSeq,
-                  theMaterializeClause->theInputLetVars[i],
+                  input_let_var,
                   planState,
                   false);
 
