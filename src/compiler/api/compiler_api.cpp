@@ -183,10 +183,9 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   if (typeid (*node) == typeid (ParseErrorNode))
   {
     ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
-    if (pen->useParam)
-      ZORBA_ERROR_VAR_LOC_PARAM(pen->err, pen->get_location(), pen->msg, "");
-    else
-      ZORBA_ERROR_VAR_LOC_DESC(pen->err, pen->get_location(), pen->msg);
+		throw XQUERY_EXCEPTION_VAR(
+			pen->err, ERROR_PARAMS( pen->msg ), ERROR_LOC( pen->get_location() )
+		);
   }
 
   return node;

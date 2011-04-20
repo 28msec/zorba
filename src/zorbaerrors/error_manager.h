@@ -53,7 +53,7 @@ public:
    * @param exception The exception to add.  The %ErrorManager takes ownership
    * of the exception.
    */
-  void addError( ZorbaException const *exception ) {
+  void add_error( ZorbaException const *exception ) {
     errors_.push_back( exception );
   }
 
@@ -63,8 +63,8 @@ public:
    * @param exception The exception to add.  The %ErrorManager takes ownership
    * of the exception.
    */
-  void addError( std::auto_ptr<ZorbaException> exception ) {
-    addError( exception.release() );
+  void add_error( std::auto_ptr<ZorbaException> exception ) {
+    add_error( exception.release() );
   }
 
   /**
@@ -72,8 +72,8 @@ public:
    *
    * @param exception The exception to add.  The exception is cloned.
    */
-  void addError( ZorbaException const &exception ) {
-    addError( exception.clone() );
+  void add_error( ZorbaException const &exception ) {
+    add_error( exception.clone() );
   }
 
   /**
@@ -81,7 +81,7 @@ public:
    *
    * @return Returns \c true only if there is at least one error.
    */
-  bool hasErrors() const {
+  bool has_errors() const {
     return !errors_.empty();
   }
 
@@ -90,7 +90,7 @@ public:
    *
    * @return Returns said exceptions.
    */
-  errors_type const& getErrors() const {
+  errors_type const& errors() const {
     return errors_;
   }
 
@@ -163,22 +163,6 @@ private:
 
 #define ZORBA_ERROR_LOC_PARAM(LOCALNAME,LOC,PARAM1,PARAM2) \
   throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(PARAM1,PARAM2), ERROR_LOC(LOC) )
-
-#define ZORBA_ERROR_VAR_LOC_PARAM(ERROR_VAR,LOC,PARAM1,PARAM2) \
-    throw XQUERY_EXCEPTION_VAR( ERROR_VAR, ERROR_PARAMS(PARAM1,PARAM2), ERROR_LOC(LOC) )
-
-#define ZORBA_ERROR_DESC_CONTINUE(ERR_MGR,LOCALNAME,MSG) \
-  (ERR_MGR)->addError( NEW_XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(MSG) ) )
-
-#define ZORBA_ERROR_PARAM_CONTINUE(ERR_MGR,LOCALNAME,PARAM1,PARAM2) \
-  (ERR_MGR)->addError( NEW_XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(PARAM1,PARAM2) ) )
-
-#define ZORBA_ERROR_PARAM_CONTINUE_OSS(ERR_MGR,LOCALNAME,PARAM1,PARAM2) \
-  do { \
-    std::ostringstream oss1; \
-    oss1 << PARAM1; \
-    (ERR_MGR)->addError( NEW_XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(oss1.str(),PARAM2) ) ); \
-  } while (0)
 
 } // namespace zorba
 

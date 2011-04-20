@@ -57,7 +57,7 @@ XQUERY_DEC_ERROR( XPTY0004 );
 /**
  * During the analysis phase, it is a static error if the static type assigned
  * to an expression other than the expression \c () or \c data(()) is
- * <code>empty-sequence()</code>.
+ * \c empty-sequence().
  */
 XQUERY_DEC_ERROR( XPST0005 );
 
@@ -591,7 +591,7 @@ XQUERY_DEC_ERROR( XTDE1340 );
 /**
  * It is a non-recoverable dynamic error if a component specifier within the
  * picture refers to components that are not available in the given type of
- * <code>$value</code>.
+ * \c $value.
  */
 XQUERY_DEC_ERROR( XTDE1350 );
 
@@ -727,32 +727,32 @@ XQUERY_DEC_ERROR( FODC0002 );
 XQUERY_DEC_ERROR( FODC0003 );
 
 /**
- * Invalid argument to <code>fn:collection</code>.
+ * Invalid argument to \c fn:collection().
  */
 XQUERY_DEC_ERROR( FODC0004 );
 
 /**
- * Invalid argument to <code>fn:doc</code> or <code>fn:doc-available</code>.
+ * Invalid argument to \c fn:doc() or \c fn:doc-available().
  */
 XQUERY_DEC_ERROR( FODC0005 );
 
 /**
- * Invalid content passed to <code>fn:parse()</code>.
+ * Invalid content passed to \c fn:parse().
  */
 XQUERY_DEC_ERROR( FODC0006 );
 
 /**
- * Base URI passed to <code>fn:parse()</code> is not a valid absolute URI.
+ * Base URI passed to \c fn:parse() is not a valid absolute URI.
  */
 XQUERY_DEC_ERROR( FODC0007 );
 
 /**
- * Invalid decimal format name supplied to <code>fn:format-number()</code>.
+ * Invalid decimal format name supplied to \c fn:format-number().
  */
 XQUERY_DEC_ERROR( FODF1280 );
 
 /**
- * Invalid <code>fn:format-number()</code> picture string.
+ * Invalid \c fn:format-number() picture string.
  */
 XQUERY_DEC_ERROR( FODF1310 );
 
@@ -772,12 +772,12 @@ XQUERY_DEC_ERROR( FODT0002 );
 XQUERY_DEC_ERROR( FODT0003 );
 
 /**
- * format-integer: Cannot cast $language to xs:language.
+ * format-integer: Cannot cast $language to \c xs:language.
  */
 XQUERY_DEC_ERROR( FOFI0001 );
 
 /**
- * format-integer: Invalid parameter
+ * format-integer: invalid parameter.
  */
 XQUERY_DEC_ERROR( FOFI0002 );
 
@@ -787,7 +787,7 @@ XQUERY_DEC_ERROR( FOFI0002 );
 XQUERY_DEC_ERROR( FONS0004 );
 
 /**
- * Base-URI not defined in the static context.
+ * Base-URI not defined in static context.
  */
 XQUERY_DEC_ERROR( FONS0005 );
 
@@ -797,23 +797,23 @@ XQUERY_DEC_ERROR( FONS0005 );
 XQUERY_DEC_ERROR( FORG0001 );
 
 /**
- * Invalid argument to <code>fn:resolve-uri()</code>.
+ * Invalid argument to \c fn:resolve-uri().
  */
 XQUERY_DEC_ERROR( FORG0002 );
 
 /**
- * <code>fn:zero-or-one</code> called with a sequence containing more than one
+ * \c fn:zero-or-one() called with a sequence containing more than one
  * item.
  */
 XQUERY_DEC_ERROR( FORG0003 );
 
 /**
- * <code>fn:one-or-more</code> called with a sequence containing no items.
+ * \c fn:one-or-more() called with a sequence containing no items.
  */
 XQUERY_DEC_ERROR( FORG0004 );
 
 /**
- * <code>fn:exactly-one</code> called with a sequence containing zero or more
+ * \c fn:exactly-one() called with a sequence containing zero or more
  * than one item.
  */
 XQUERY_DEC_ERROR( FORG0005 );
@@ -824,13 +824,12 @@ XQUERY_DEC_ERROR( FORG0005 );
 XQUERY_DEC_ERROR( FORG0006 );
 
 /**
- * The two arguments to fn:dateTime have inconsistent timezones.
+ * The two arguments to fn:dateTime() have inconsistent timezones.
  */
 XQUERY_DEC_ERROR( FORG0008 );
 
 /**
- * Error in resolving a relative URI against a base URI in
- * <code>fn:resolve-uri</code>.
+ * Error in resolving a relative URI against a base URI in \c fn:resolve-uri().
  */
 XQUERY_DEC_ERROR( FORG0009 );
 
@@ -860,18 +859,18 @@ XQUERY_DEC_ERROR( FORX0004 );
 XQUERY_DEC_ERROR( FOTY0012 );
 
 /**
- * An argument to <code>fn:data()</code> contains a node that does not have a
- * typed value.
+ * An argument to \c fn:data() contains a node that does not have a typed
+ * value.
  */
 XQUERY_DEC_ERROR( FOTY0013 );
 
 /**
- * The argument to <code>fn:string()</code> is a function item.
+ * The argument to \c fn:string() is a function item.
  */
 XQUERY_DEC_ERROR( FOTY0014 );
 
 /**
- * An argument to <code>fn:deep-equal()</code> contains a function item.
+ * An argument to \c fn:deep-equal() contains a function item.
  */
 XQUERY_DEC_ERROR( FOTY0015 );
 
@@ -888,38 +887,220 @@ XQUERY_DEC_ERROR( XSST0008 );
 
 ////////// XQuery Update Facility /////////////////////////////////////////////
 
+/**
+ * It is a static error if an updating expression is used in any position other
+ * than one of the following:
+ * - The topmost expression in the body of a query.
+ * - The \c modify clause of a transform expression.
+ * - The \c return clause of a FLWOR expression.
+ * - The \c return clauses of a typeswitch expression in which every \c return
+ *   clause contains an updating expression or a vacuous expression.
+ * - The \c then and \c else clauses of a conditional statement in which both
+ *   the \c then and \c else clauses contain either an updating expression or a
+ *   vacuous expression.
+ * - An operand of a comma expression in which each operand is either an
+ *   updating expression or a vacuous expression.
+ * - The content of a parenthesized expression.
+ * - The body of a function declaration in which the keyword \c updating is
+ *   specified.
+ */
 XQUERY_DEC_ERROR( XUST0001 );
+
+/**
+ * It is a static error if a simple expression that is not a vacuous expression
+ * is used in one of the following positions:
+ * - The \c modify clause of a transform expression.
+ * - The top-level expression in the body of a function declaration in which
+ *   the keyword \c updating is specified.
+ */
 XQUERY_DEC_ERROR( XUST0002 );
+
+/**
+ * It is a static error if a Prolog contains more than one revalidation
+ * declaration.
+ */
 XQUERY_DEC_ERROR( XUST0003 );
+
+/**
+ * It is a type error if the insertion sequence of an insert expression
+ * contains an attribute node following a node that is not an attribute node.
+ */
 XQUERY_DEC_ERROR( XUTY0004 );
+
+/**
+ * In an insert expression where <code>into</code>, <code>as first into</code>,
+ * or <code>as last into</code> is specified, it is a type error if the target
+ * expression returns a non-empty result that does not consist of a single
+ * element or document node.
+ */
 XQUERY_DEC_ERROR( XUTY0005 );
+
+/**
+ * In an insert expression where \c before or \c after is specified, it is a
+ * type error if the target expression returns a non-empty result that does not
+ * consist of a single element, text, comment, or processing instruction node.
+ */
 XQUERY_DEC_ERROR( XUTY0006 );
+
+/**
+ * It is a type error if the target expression of a delete expression does not
+ * return a sequence of zero or more nodes.
+ */
 XQUERY_DEC_ERROR( XUTY0007 );
+
+/**
+ * In a replace expression, it is a type error if the target expression returns
+ * a non-empty result that does not consist of a single element, attribute,
+ * text, comment, or processing instruction node.
+ */
 XQUERY_DEC_ERROR( XUTY0008 );
+
+/**
+ * In a replace expression where <code>value of</code> is not specified, it is
+ * a dynamic error if the node returned by the target expression does not have
+ * a parent.
+ */
 XQUERY_DEC_ERROR( XUDY0009 );
+
+/**
+ * In a replace expression where <code>value of</code> is not specified and the
+ * target is an element, text, comment, or processing instruction node, it is a
+ * type error if the replacement sequence does not consist of zero or more
+ * element, text, comment, or processing instruction nodes.
+ */
 XQUERY_DEC_ERROR( XUTY0010 );
+
+/**
+ * In a replace expression where <code>value of</code> is not specified and the
+ * target is an attribute node, it is a type error if the replacement sequence
+ * does not consist of zero or more attribute nodes.
+ */
 XQUERY_DEC_ERROR( XUTY0011 );
+
+/**
+ * In a rename expression, it is a type error if the target expression returns
+ * a non-empty result that does not consist of a single element, attribute, or
+ * processing instruction node.
+ */
 XQUERY_DEC_ERROR( XUTY0012 );
+
+/**
+ * In a transform expression, it is a type error if a source expression in the
+ * \c copy clause does not return a single node.
+ */
 XQUERY_DEC_ERROR( XUTY0013 );
+
+/**
+ * In a transform expression, it is a dynamic error if the \c modify clause
+ * modifies any node that was not created by the \c copy clause.
+ */
 XQUERY_DEC_ERROR( XUDY0014 );
+
+/**
+ * It is a dynamic error if any node is the target of more than one \c rename
+ * expression within the same query.
+ */
 XQUERY_DEC_ERROR( XUDY0015 );
+
+/**
+ * It is a dynamic error if any node is the target of more than one \c replace
+ * expression (without <code>value of</code> being specified) within the same
+ * query.
+ */
 XQUERY_DEC_ERROR( XUDY0016 );
+
+/**
+ * It is a dynamic error if any node is the target of more than one
+ * <code>replace value of</code> expression within the same query.
+ */
 XQUERY_DEC_ERROR( XUDY0017 );
+
+/**
+ * It is a dynamic error if a function that was declared to be \c external but
+ * not \c updating returns a non-empty pending update list.
+ */
 XQUERY_DEC_ERROR( XUDY0018 );
+
+/**
+ * It is a dynamic error if a function that was declared to be both \c external
+ * and \c updating returns a non-empty data model instance.
+ */
 XQUERY_DEC_ERROR( XUDY0019 );
-XQUERY_DEC_ERROR( XUDY0020 );
+
+/**
+ * It is a dynamic error if the XDM instance that would result from applying
+ * all the updates in a query violates any constraint specified in [XQuery 1.0
+ * and XPath 2.0 Data Model]. In this case, none of the updates in the query
+ * are made effective.
+ */
 XQUERY_DEC_ERROR( XUDY0021 );
+
+/**
+ * It is a type error if an insert expression specifies the insertion of an
+ * attribute node into a document node.
+ */
 XQUERY_DEC_ERROR( XUTY0022 );
+
+/**
+ * It is a dynamic error if an insert, replace, or rename expression affects an
+ * element node by introducing a new namespace binding that conflicts with one
+ * of its existing namespace bindings.
+ */
 XQUERY_DEC_ERROR( XUDY0023 );
+
+/**
+ * It is a dynamic error if the effect of a set of updating expressions is to
+ * introduce conflicting namespace bindings into an element node.
+ */
 XQUERY_DEC_ERROR( XUDY0024 );
-XQUERY_DEC_ERROR( XUDY0025 );
+
+/**
+ * It is a static error if a revalidation declaration in a Prolog specifies a
+ * revalidation mode that is not supported by the current implementation.
+ */
 XQUERY_DEC_ERROR( XUST0026 );
+
+/**
+ * It is a dynamic error if the target expression of an insert, replace, or
+ * rename expression evaluates to an empty sequence.
+ */
 XQUERY_DEC_ERROR( XUDY0027 );
+
+/**
+ * It is a static error if a function declaration specifies both \c updating
+ * and a return type.
+ */
 XQUERY_DEC_ERROR( XUST0028 );
+
+/**
+ * In an insert expression where \c before or \c after is specified, it is a
+ * dynamic error if the node returned by the target expression does not have a
+ * parent.
+ */
 XQUERY_DEC_ERROR( XUDY0029 );
+
+/**
+ * It is a dynamic error if an insert expression specifies the insertion of an
+ * attribute node before or after a child of a document node.
+ */
 XQUERY_DEC_ERROR( XUDY0030 );
+
+/**
+ * It is a dynamic error if multiple calls to \c fn:put() in the same snapshot
+ * specify the same URI (after resolution of relative URIs).
+ */
 XQUERY_DEC_ERROR( XUDY0031 );
+
+/**
+ * It is a dynamic error if the first operand of \c fn:put() is not a node of a
+ * supported kind.
+ */
 XQUERY_DEC_ERROR( FOUP0001 );
+
+/**
+ * It is a dynamic error if the second operand of \c fn:put() is not a valid
+ * lexical representation of the \c xs:anyURI type.
+ */
 XQUERY_DEC_ERROR( FOUP0002 );
 
 ////////// Serialization //////////////////////////////////////////////////////
@@ -1027,7 +1208,7 @@ XQUERY_DEC_ERROR( SEPM0016 );
 
 ////////// Zorba XQuery Processor Errors //////////////////////////////////////
 
-#define ZORBA_DEC_ERROR(ERR)  extern ZORBA_DLL_PUBLIC ZorbaError ERR
+#define ZORBA_DEC_ERROR(ERR) extern ZORBA_DLL_PUBLIC ZorbaError ERR
 
 /**
  * An "error" constant for "no error."

@@ -91,9 +91,9 @@ store::Item_t SimpleCollection::loadDocument(
 
   store::Item_t root = loader->loadXml(baseUri, docUri, stream);
 
-  if (lErrorManager.hasErrors()) 
+  if (lErrorManager.has_errors()) 
   {
-    lErrorManager.getErrors().front()->polymorphic_throw();
+    lErrorManager.errors().front()->polymorphic_throw();
   }
 
   if (root != NULL)

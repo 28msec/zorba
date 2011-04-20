@@ -1083,10 +1083,9 @@ store::Item_t SimpleStore::loadDocument(
 
   root = loader->loadXml(baseUri, docUri, stream);
 
-  if (lErrorManager.hasErrors())
+  if (lErrorManager.has_errors())
   {
-    ZORBA_ERROR_VAR_PARAM(lErrorManager.getErrors().front()->error(),
-                      lErrorManager.getErrors().front()->what(), "");
+    lErrorManager.errors().front()->polymorphic_throw();
   }
 
   if (root != NULL && loadProperties.getStoreDocument())

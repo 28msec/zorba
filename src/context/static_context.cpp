@@ -1808,7 +1808,9 @@ bool static_context::lookup_ns(
     }
     else if (err != err::ZXQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_VAR_LOC_PARAM(err, loc, prefix, "");
+      throw XQUERY_EXCEPTION_VAR(
+        err, ERROR_PARAMS( prefix ), ERROR_LOC( loc )
+      );
     }
     else
     {
@@ -1819,7 +1821,9 @@ bool static_context::lookup_ns(
   {
     if (err != err::ZXQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_VAR_LOC_PARAM(err, loc, prefix, "");
+      throw XQUERY_EXCEPTION_VAR(
+        err, ERROR_PARAMS( prefix ), ERROR_LOC( loc )
+      );
     }
     else
     {
@@ -1921,7 +1925,9 @@ void static_context::bind_var(
 
   if (!theVariablesMap->insert(qname, varExpr))
   {
-    ZORBA_ERROR_VAR_LOC_PARAM(err,loc, qname->getStringValue(), "");
+    throw XQUERY_EXCEPTION_VAR(
+      err, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
+    );
   }
 }
 

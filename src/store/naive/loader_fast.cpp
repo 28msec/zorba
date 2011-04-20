@@ -65,7 +65,7 @@ namespace simplestore {
 
 #define ZORBA_LOADER_CHECK_ERROR(loader) \
   do { \
-    if (loader.theErrorManager->hasErrors()) \
+    if (loader.theErrorManager->has_errors()) \
       return; \
   } while (0);
 
@@ -213,7 +213,7 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
 
     if (stream.bad())
     {
-      theErrorManager->addError(
+      theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION(
           ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
         )
@@ -224,13 +224,13 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
   }
   catch (std::iostream::failure e)
   {
-    theErrorManager->addError(
+    theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() ) )
     );
   }
   catch (...)
   {
-    theErrorManager->addError(
+    theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
     );
   }
@@ -275,7 +275,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      theErrorManager->addError(
+      theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
@@ -283,7 +283,7 @@ store::Item_t FastXmlLoader::loadXml(
     }
     else if (numChars == 0)
     {
-      theErrorManager->addError(
+      theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION(
           ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
         )
@@ -300,7 +300,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      theErrorManager->addError(
+      theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
           ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( ParserInitFailed ) )
@@ -314,7 +314,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
 
-      if (theErrorManager->hasErrors())
+      if (theErrorManager->has_errors())
       {
         abortload();
         return NULL;
@@ -323,7 +323,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      theErrorManager->addError(
+      theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
@@ -347,7 +347,7 @@ store::Item_t FastXmlLoader::loadXml(
 
   // The doc may be well formed, but it may have other kinds of errors,
   // e.g., unresolved ns prefixes.
-  if (theErrorManager->hasErrors())
+  if (theErrorManager->has_errors())
   {
     abortload();
     return NULL;
@@ -356,7 +356,7 @@ store::Item_t FastXmlLoader::loadXml(
   {
     if (!theDocUri.empty())
     {
-      theErrorManager->addError(
+      theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
           ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument ), theDocUri )
@@ -365,7 +365,7 @@ store::Item_t FastXmlLoader::loadXml(
     }
     else
     {
-      theErrorManager->addError(
+      theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
           ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument ) )
@@ -421,11 +421,11 @@ void FastXmlLoader::startDocument(void * ctx)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -503,11 +503,11 @@ void FastXmlLoader::endDocument(void * ctx)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -731,11 +731,11 @@ void FastXmlLoader::startElement(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -860,11 +860,11 @@ void  FastXmlLoader::endElement(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -911,11 +911,11 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -964,11 +964,11 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -1014,11 +1014,11 @@ void FastXmlLoader::processingInstruction(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -1059,11 +1059,11 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->addError( e );
+    loader.theErrorManager->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->addError(
+    loader.theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
     );
   }
@@ -1085,7 +1085,7 @@ void FastXmlLoader::error(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  loader->theErrorManager->addError(
+  loader->theErrorManager->add_error(
     NEW_ZORBA_EXCEPTION(
       ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
     )

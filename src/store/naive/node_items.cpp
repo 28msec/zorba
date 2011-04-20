@@ -2719,7 +2719,9 @@ void ElementNode::checkUniqueAttrs() const
 
       if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
       {
-        ZORBA_ERROR_PARAM_OSS(XUDY0021, attrName->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          XUDY0021, ERROR_PARAMS( attrName->getStringValue() )
+        );
       }
     }
   }
