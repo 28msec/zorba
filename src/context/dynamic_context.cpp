@@ -289,8 +289,6 @@ void dynamic_context::set_variable(
     );
   }
 
-  VarValue& var = theVarValues[varid];
-
   valueIter->open();
 
   // For now, use eager eval because the assignment expression may reference
@@ -302,6 +300,8 @@ void dynamic_context::set_variable(
                                                   false); // no lazy eval
 
   valueIter->close();
+
+  VarValue& var = theVarValues[varid];
 
   // variables can be set multiple times, so we need to make sure to remove
   // previously set temp sequences
