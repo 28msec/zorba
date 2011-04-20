@@ -3,6 +3,7 @@ declare namespace zorba="http://www.zorba-xquery.com";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
+
 declare function local:create-include() as xs:string
 {
   string-join((
@@ -15,6 +16,7 @@ declare function local:create-include() as xs:string
   ),'')
 };
 
+
 declare function local:create-class() as xs:string
 {
   string-join(('/**',$gen:newline,
@@ -26,15 +28,19 @@ declare function local:create-class() as xs:string
   '#include "runtime/visitors/planiter_visitor_impl_code.h"'),'')
 };
  
+
 (:type can be 'fwd-decl' or 'class' :)
 declare %sequential function local:process-files(
     $files as xs:string, 
     $type as xs:string) as xs:string
 {
-  let $xml-files as xs:string* := tokenize($files,',')
-  let $temp := for $file in $xml-files return local:process-file($file, $type)
-  return string-join($temp, $gen:newline)
+  declare $xml-files as xs:string* := tokenize($files,',');
+
+  declare $temp := for $file in $xml-files return local:process-file($file, $type);
+
+  string-join($temp, $gen:newline)
 };
+
 
 declare %sequential function local:process-file($file, $type as xs:string) as xs:string
 {
@@ -48,6 +54,7 @@ declare %sequential function local:process-file($file, $type as xs:string) as xs
   else ()
   ,$gen:newline)
 };
+
 
 declare function local:process-iter($iter, $type as xs:string) as xs:string
 {
@@ -71,42 +78,47 @@ declare function local:process-iter($iter, $type as xs:string) as xs:string
 
 declare %sequential function local:create-fwd-decl($files as xs:string) as xs:string
 {
-  let $temp := local:process-files($files,'fwd-decl')
-  return 
+  declare $temp := local:process-files($files,'fwd-decl');
+
   string-join(($temp, $gen:newline, $gen:newline,
-               '#include "runtime/visitors/planiter_visitor_impl_include.h"'),'')
+               '#include "runtime/visitors/planiter_visitor_impl_include.h"'),'');
 };
 
 
 declare variable $files as xs:string external;
 
-let $temp1 := local:create-fwd-decl($files)
-let $temp2 := local:process-files($files,'class')
-return
-string-join
-(
+block
+{
+  declare $temp1 := local:create-fwd-decl($files);
+
+  declare $temp2 := local:process-files($files,'class');
+
+  string-join
   (
-    gen:add-copyright(),
-    gen:add-guard-open('runtime_visitors_plan_iter_visitor'),
-    local:create-include(),
-    'namespace zorba{',
-    $temp1,
-    local:create-class(),
-    $temp2,
-    string-join
     (
+      gen:add-copyright(),
+      gen:add-guard-open('runtime_visitors_plan_iter_visitor'),
+      local:create-include(),
+      'namespace zorba{',
+      $temp1,
+      local:create-class(),
+      $temp2,
+      string-join
       (
-        $gen:indent,
-        '}; //class PlanIterVisitor',
-        $gen:newline,
-        '} //namespace zorba', 
-        $gen:newline
+        (
+          $gen:indent,
+          '}; //class PlanIterVisitor',
+          $gen:newline,
+          '} //namespace zorba', 
+          $gen:newline
+        ),
+        ''
       ),
-      ''
+      gen:add-guard-close(),
+      $gen:newline
     ),
-    gen:add-guard-close(),
-    $gen:newline
-  ),
-  string-join(($gen:newline),'
-')
-)
+    string-join(($gen:newline),'
+  ')
+  );
+}
+
