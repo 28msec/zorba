@@ -8,11 +8,15 @@ let $bodies := ()
 return
   if (http:check-params($request, $href, $bodies))
   then
-    let $req := ()
-    let $result := 
+    block
+    {
+      declare $req := ();
+      declare $result := 
                       http:bar((),
                                                 "",
-                                                ())
-    return "blubb"
-  else ();
+                                                ());
+      "blubb";
+    }
+  else 
+    ();
 
