@@ -87,7 +87,7 @@
 module namespace json = "http://www.zorba-xquery.com/modules/convertors/json";
 
 (:~
- : Import module for checking if html options element is validated.
+ : Import module for checking if json options element is validated.
  :)
 import module namespace zorba-schema = "http://www.zorba-xquery.com/modules/schema";
 
@@ -117,14 +117,74 @@ declare variable $json:errWrongParam as xs:QName := fn:QName($json:jsonNS, "json
  :        to configure the JSON mapping process that have to be validated against the 
  :        "http://www.zorba-xquery.com/modules/convertors/json-options" schema.
  : @return  a sequence of nodes according to either one of the mappings described above.
- : @error ZAPI0060 if any of the strings passed as parameter is not valid JSON.
+ : @error ZXQP0019 if any of the strings passed as parameter is not valid JSON.
  : @example rbkt/Queries/zorba/converters/jansson/parse_json_02.xq
  : @example rbkt/Queries/zorba/converters/jansson/parse_json_ml_01.xq
  :)
 declare function json:parse(
   $arg as xs:string?,
   $options as element(json-options:options)?
-) as document-node(element(*, xs:untyped)) external;
+) as document-node(element(*, xs:untyped))
+{
+  try {
+    let $validated-options := if(empty($options)) then
+                                $options
+                              else
+                                if(zorba-schema:is-validated($options)) then
+                                  $options
+                                else
+                                  validate{$options} 
+    return
+      json:parse-internal($arg, $validated-options)
+  } catch * ($ecode, $desc)
+  {
+    fn:error($json:errWrongParam, $desc)
+  }
+};
+
+(:~
+ : This function parses a JSON string and returns an XDM instance according
+ : to either one of the mappings described above.
+ :
+ : @param $arg a sequence of valid JSON strings.
+ : @return  a sequence of nodes according to Simple XDM-JSON mapping described above.
+ : @error ZXQP0019 if any of the strings passed as parameter is not valid JSON.
+ : @example rbkt/Queries/zorba/converters/jansson/parse_json_11.xq
+ :)
+declare function json:parse(
+  $arg as xs:string?
+) as document-node(element(*, xs:untyped))
+{
+  json:parse-internal($arg,
+                      <options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" >
+                        <jsonParam name="mapping" value="simple-json" />
+                      </options>)
+};
+
+(:~
+ : This function parses a JSON string and returns an XDM instance according
+ : to either one of the mappings described above.
+ :
+ : @param $arg a sequence of valid JSON strings.
+ : @return  a sequence of nodes according the JSON-ML mapping described above.
+ : @error ZXQP0019 if any of the strings passed as parameter is not valid JSON.
+ : @example rbkt/Queries/zorba/converters/jansson/parse_json_ml_05.xq
+ :)
+declare function json:parse-ml(
+  $arg as xs:string?
+) as document-node(element(*, xs:untyped))
+{
+  json:parse-internal($arg,
+                      <options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" >
+                        <jsonParam name="mapping" value="json-ml" />
+                      </options>)
+};
+
+declare %private function json:parse-internal(
+  $html as xs:string,
+  $options as element(json-options:options)?
+  ) as document-node(element(*, xs:untyped)) external;
+
 
 (:~
  : The serialize function takes a sequence of nodes as parameter and
@@ -136,11 +196,72 @@ declare function json:parse(
  :        to configure the JSON mapping process that have to be validated against the 
  :        "http://www.zorba-xquery.com/modules/convertors/json-options" schema.
  : @return a JSON string.
- : @error ZAPI0061 if the passed elements do not have a valid JSON structure.
+ : @error ZXQP0019 if the passed elements do not have a valid JSON structure.
  : @example rbkt/Queries/zorba/converters/jansson/serialize_json_01.xq
  : @example rbkt/Queries/zorba/converters/jansson/serialize_json_ml_01.xq
  :)
 declare function json:serialize(
   $xml as item()*, 
   $options as element(json-options:options)? 
-) as xs:string external;
+) as xs:string
+{
+  try {
+    let $validated-options := if(empty($options)) then
+                                $options
+                              else
+                                if(zorba-schema:is-validated($options)) then
+                                  $options
+                                else
+                                  validate{$options} 
+    return
+      json:serialize-internal($xml, $validated-options)
+  } catch * ($ecode, $desc)
+  {
+    fn:error($json:errWrongParam, $desc)
+  }
+};
+
+(:~
+ : The serialize function takes a sequence of nodes as parameter and
+ : transforms each element into a valid JSON string according to the
+ : Simple XDM-JSON mapping described above
+ :
+ : @param $xml a sequence of nodes.
+ : @return a JSON string.
+ : @error ZXQP0019 if the passed elements do not have a valid JSON structure.
+ : @example rbkt/Queries/zorba/converters/jansson/serialize_json_18.xq
+ :)
+declare function json:serialize(
+  $xml as item()* 
+) as xs:string
+{
+  json:serialize-internal($xml,
+                          <options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" >
+                            <jsonParam name="mapping" value="simple-json" />
+                          </options>)
+};
+
+(:~
+ : The serialize function takes a sequence of nodes as parameter and
+ : transforms each element into a valid JSON string according to the
+ : Simple XDM-JSON mapping described above
+ :
+ : @param $xml a sequence of nodes.
+ : @return a JSON string.
+ : @error ZXQP0019 if the passed elements do not have a valid JSON structure.
+ : @example rbkt/Queries/zorba/converters/jansson/serialize_json_ml_04.xq
+ :)
+declare function json:serialize-ml(
+  $xml as item()* 
+) as xs:string
+{
+  json:serialize-internal($xml,
+                          <options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" >
+                            <jsonParam name="mapping" value="json-ml" />
+                          </options>)
+};
+
+declare %private function json:serialize-internal(
+  $xml as item()*,
+  $options as element(json-options:options)?
+  ) as xs:string external;

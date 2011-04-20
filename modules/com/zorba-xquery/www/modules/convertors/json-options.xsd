@@ -15,7 +15,7 @@
                   <xs:simpleType>
                     <xs:restriction base="xs:string">
                       <xs:enumeration value="simple-json"/>
-                      <xs:enumeration value="jsonML"/>
+                      <xs:enumeration value="json-ml"/>
                     </xs:restriction>
                   </xs:simpleType>
                 </xs:attribute>

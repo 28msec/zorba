@@ -934,7 +934,10 @@ std::istream& StreamableStringItem::getStream()
     throw ZORBA_EXCEPTION( ZSTR0055_STREAMABLE_STRING_CONSUMED );
   } else {
     // if the stream is seekable, we seek to the beginning
-    theIstream.seekg(0, std::ios::beg);
+    // We are not using theIstream.seekg because the USER_ERROR that is thrown by Zorba is lost possibly in an internal try/catch of the seekg
+    std::streambuf * pbuf;
+    pbuf = theIstream.rdbuf();
+    pbuf->pubseekoff(0, std::ios::beg);
   }
   theIsConsumed = true;
   return theIstream;

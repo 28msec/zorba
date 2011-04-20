@@ -21,7 +21,8 @@ json:parse(('
     ],
   " Item"
   ]
-]'),<options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" >
+]'),<options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <jsonParam name="mapping" value="json-ml" />
             </options>)
 
@@ -85,7 +86,8 @@ json:parse(('
 "\u00A0"
 ]
 ]
-]'),<options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" >
+]'),<options xmlns="http://www.zorba-xquery.com/modules/convertors/json-options" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <jsonParam name="mapping" value="json-ml" />
             </options>)
 :)

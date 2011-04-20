@@ -75,6 +75,7 @@ char const* lookup( char const *key ) {
 
   range_type const result =
     ::equal_range( begin, end, entry_to_find, less_entry() );
+
   return result.first == result.second ? key : result.first->value;
 }
 

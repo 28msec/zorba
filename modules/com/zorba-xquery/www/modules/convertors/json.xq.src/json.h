@@ -19,8 +19,11 @@
 #include <map>
 
 #include <zorba/zorba.h>
+#include <zorba/iterator.h>
 #include <zorba/external_function.h>
 #include <zorba/external_module.h>
+
+#include "stringiterator_streambuf.h"
 
 namespace zorba
 {
@@ -96,7 +99,7 @@ namespace zorba
       ParseFunction(const JsonModule* aModule);
 
       virtual String
-      getLocalName() const { return "parse"; }
+      getLocalName() const { return "parse-internal"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -106,11 +109,49 @@ namespace zorba
 
     class SerializeFunction : public JsonFunction
     {
+      class StringStreamSequence : public ItemSequence, public Iterator, public StringIteratorStreamBuf
+      {
+      private:
+        Iterator_t     input_iter;
+        std::vector<std::vector<String> > headers;
+        int line_index;
+        bool has_next;
+        bool is_open;
+        int  open_count;
+
+        std::vector<String> line;
+        Item node_item;
+      public:
+        std::istream* is;
+        String        theMapping;
+        ItemFactory*  theFactory;
+        Item          streamable_item;
+      public:
+        StringStreamSequence(ItemSequence* input);
+        virtual ~StringStreamSequence() {}
+
+        //for Iterator
+        virtual void open();
+        virtual void close();
+        virtual bool isOpen() const;
+        virtual bool next( Item &result );
+
+        //for ItemSequence
+        Iterator_t getIterator() {return this;}
+
+        //for StringIteratorStreamBuf
+        virtual bool next(std::string &next_string);
+        virtual bool reset();
+
+        static void
+        destroyStream(std::istream& stream) { delete &stream; }
+
+      };
     public:
       SerializeFunction(const JsonModule* aModule);
 
       virtual String
-      getLocalName() const { return "serialize"; }
+      getLocalName() const { return "serialize-internal"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,

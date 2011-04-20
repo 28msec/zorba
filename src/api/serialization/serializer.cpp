@@ -364,14 +364,16 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
   // Streamable item
   char buffer[1024];
   int rollover = 0;
-  std::streamsize read_bytes;
+  std::streambuf *  pbuf;
+  std::streamsize   read_bytes;
   std::istream& is = item->getStream();
 
   // read bytes and do string expansion
   do
   {
-    is.read(buffer + rollover, 1024 - rollover);
-    read_bytes = is.gcount();
+    //std::istream::read uses a try/catch internally so the Zorba_Exception is lost: that is why we are using std::streambuf::sgetn
+    pbuf = is.rdbuf();
+    read_bytes = pbuf->sgetn(buffer + rollover, 1024 - rollover);
     rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
     memmove(buffer, buffer + 1024 - rollover, rollover);
   }
@@ -1650,7 +1652,8 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 {
   // Streamable item
   char buffer[1024];
-  std::streamsize read_bytes;
+  std::streambuf *  pbuf;
+  std::streamsize   read_bytes;
   std::istream& is = item->getStream();
 
   // prepare the stream
@@ -1664,8 +1667,9 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
   // read bytes and do string expansion
   do
   {
-    is.read(buffer, 1024);
-    read_bytes = is.gcount();
+    //std::istream::read uses a try/catch internally so the Zorba_Exception is lost: that is why we are using std::streambuf::sgetn
+    pbuf = is.rdbuf();
+    read_bytes = pbuf->sgetn(buffer, 1024);
     tr.write(buffer, read_bytes);
   }
   while (read_bytes > 0);

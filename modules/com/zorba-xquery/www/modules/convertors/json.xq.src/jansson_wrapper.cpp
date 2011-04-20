@@ -422,8 +422,6 @@ void JSON_serialize(
     return;
   }
 
-  std::cout << "aElement.getNodeKind() " << aElement.getNodeKind() << std::endl;
-
   if(!(aElement.getNodeKind() == store::StoreConsts::documentNode ||
        aElement.getNodeKind() == store::StoreConsts::elementNode))
   {

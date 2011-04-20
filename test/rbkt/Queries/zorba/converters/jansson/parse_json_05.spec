@@ -1,1 +1,1 @@
-Error: WrongParam
+Error: errWrongParam
