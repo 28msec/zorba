@@ -1640,13 +1640,6 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
       PlanIter_t domainIter = pop_itstack();
 
-      if (flworExpr.is_sequential())
-      {
-        domainIter = new MaterializeIterator(flworExpr.get_sctx(),
-                                             fc->get_expr()->get_loc(),
-                                             domainIter);
-      }
-
       std::vector<PlanIter_t>& varRefs = 
       clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
@@ -2068,7 +2061,8 @@ void end_visit(exit_expr& v)
   push_itstack (new FlowCtlIterator (sctx, qloc, argv, FlowCtlException::EXIT));
 }
 
-bool begin_visit(flowctl_expr& v) {
+bool begin_visit(flowctl_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
