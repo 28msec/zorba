@@ -147,9 +147,9 @@ public:
       resetFlag(FunctionConsts::isDeterministic);
   }
 
-  bool isUpdating() const { return getScriptingKind() & UPDATING_EXPR; }
+  bool isUpdating() const { return (getScriptingKind() & UPDATING_EXPR) != 0; }
 
-  bool isSequential() const { return getScriptingKind() & SEQUENTIAL_EXPR; }
+  bool isSequential() const { return (getScriptingKind() & SEQUENTIAL_EXPR) != 0; }
 
   void setAnnotations(AnnotationList* annotations) { theAnnotationList = annotations; }
 

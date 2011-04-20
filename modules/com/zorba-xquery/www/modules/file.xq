@@ -569,20 +569,11 @@ declare function file:list(
 declare function file:glob-to-regex(
   $pattern as xs:string
 ) {
-  fn:codepoints-to-string(
-    (
-      94                          (: prepend ^ :)
-      ,
-      for $char in fn:string-to-codepoints($pattern)
-      return
-        switch ($char)
-        case 63 return 46         (: ? -> . :)
-        case 46 return (92, 46)   (: . -> \. :)
-        case 42 return (46, 42)   (: * -> .* :)
-        default return $char
-      ,
-      36)                         (: append $ :)
-  )
+  let $pattern := fn:replace($pattern, '(\.|\[|\]|\\|\/|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
+  let $pattern := fn:replace($pattern, '\\\?', '.')
+  let $pattern := fn:replace($pattern, '\\\*', '.*')
+  return
+    fn:concat("^", $pattern, "$")
 };
 
 (:~
@@ -605,7 +596,7 @@ declare %nondeterministic function file:last-modified(
  : @param $file The file get the size.
  : @return An integer representing the size in bytes of the file.
  : @error FOFL0001 If the <pre>$file</pre> does not exist.
- : @error FOFL0001 If the <pre>$file</pre> points to a directory.
+ : @error FOFL0004 If the <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
 declare %nondeterministic function file:size(
@@ -683,21 +674,20 @@ declare function file:path-to-native($path as xs:string) as xs:string external;
 declare function file:base-name($path as xs:string) as xs:string
 {
   let $delim := file:directory-separator()
-  let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
   let $normalized-file := 
     let $n := file:prepare-for-dirname-and-base-name($path)
-		return if ($delim eq "\" and matches($n, "^[a-zA-Z]:$")) then
+		return if ($delim eq "\" and fn:matches($n, "^[a-zA-Z]:$")) then
 			concat($n, "\")
 		else $n
   return
-    if (matches($path, concat("^", $delim-escaped, "+$"))) then
+    if (matches($path, concat("^\", $delim, "+$"))) then
       ""
     else if (file:directory-separator() eq '\' and matches($path, "^[a-zA-Z]:\\?$")) then
       ""
     else if ($path eq "") then
       "."
     else
-      replace($normalized-file, concat("^.*", $delim-escaped), '')
+      replace($normalized-file, concat("^.*\", $delim), '')
 };
 
 (:~
@@ -740,23 +730,22 @@ declare function file:base-name($path as xs:string, $suffix as xs:string) as xs:
 declare function file:dir-name($path as xs:string) as xs:string
 {
   let $delim := file:directory-separator()
-  let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
   let $normalized-file := file:prepare-for-dirname-and-base-name($path)
   return
-    if (matches($path, concat("^", $delim-escaped, "+$"))) then
+    if (fn:matches($path, concat("^\", $delim, "+$"))) then
       $delim
     else if ($normalized-file eq $delim) then
       $delim
-    else if (file:directory-separator() eq '\' and matches($path, "^[a-zA-Z]:\\$")) then
+    else if (file:directory-separator() eq '\' and fn:matches($path, "^[a-zA-Z]:\\$")) then
       $path
-    else if (file:directory-separator() eq '\' and matches($normalized-file, "^[a-zA-Z]:$")) then
-      concat($normalized-file, '\')
+    else if (file:directory-separator() eq '\' and fn:matches($normalized-file, "^[a-zA-Z]:$")) then
+      fn:concat($normalized-file, '\')
     else if ($path eq "") then
       "."
-    else if (matches($normalized-file, $delim-escaped)) then
-      replace($normalized-file, concat('^(.*)', $delim-escaped,'.*'),
-                         '$1')
-    else "."
+    else if (fn:matches($normalized-file, fn:concat("\", $delim))) then
+      fn:replace($normalized-file, fn:concat('^(.*)\', $delim,'.*'), '$1')
+    else
+      "."
 };
 
 (:~
@@ -767,12 +756,11 @@ declare function file:dir-name($path as xs:string) as xs:string
 declare %private function file:prepare-for-dirname-and-base-name($path as xs:string) as xs:string
 {
   let $delim := file:directory-separator()
-  let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
   let $normalize-path := file:path-to-native($path)
   let $normalized :=
     if ($normalize-path eq $delim) then
       $normalize-path
     else
-      replace($normalize-path, concat($delim-escaped, '+$'), '')
+      fn:replace($normalize-path, fn:concat("\", $delim, '+$'), '')
   return $normalized
 };
