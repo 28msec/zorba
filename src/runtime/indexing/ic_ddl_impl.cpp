@@ -52,8 +52,11 @@ ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if ((vic = theSctx->lookup_ic(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0031_IC_IS_NOT_DECLARED, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0031_IC_IS_NOT_DECLARED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   // already activated => noop
@@ -105,14 +108,20 @@ DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (theSctx->lookup_ic(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0031_IC_IS_NOT_DECLARED, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0031_IC_IS_NOT_DECLARED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (GENV_STORE.getIC(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0032_IC_IS_NOT_ACTIVATED, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0032_IC_IS_NOT_ACTIVATED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
   else
   {
@@ -145,8 +154,11 @@ CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     
     if ( vic == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0031_IC_IS_NOT_DECLARED, loc,
-                            qname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0031_IC_IS_NOT_DECLARED,
+        ERROR_PARAMS( qname->getStringValue() ),
+        ERROR_LOC( loc )
+      );
     }        
     
     // run iterator
@@ -169,6 +181,5 @@ CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
-
-
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

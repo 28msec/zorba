@@ -547,8 +547,10 @@ void SimpleStore::populateValueIndex(
           domainItem->getCollection() == NULL &&
           !index->isTemporary())
       {
-        ZORBA_ERROR_PARAM(ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
-                          index->getName()->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+          ERROR_PARAMS( index->getName()->getStringValue() )
+        );
       }
 
       if (key == NULL)
@@ -611,8 +613,10 @@ void SimpleStore::populateGeneralIndex(
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
         {
-          ZORBA_ERROR_PARAM(ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
-                            index->getName()->getStringValue(), "");
+          throw XQUERY_EXCEPTION(
+            ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+            ERROR_PARAMS( index->getName()->getStringValue() )
+          );
         }
 
         // Compute the keys of the current domain node. We must check whether

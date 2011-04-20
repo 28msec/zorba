@@ -242,14 +242,20 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0021_INDEX_IS_NOT_DECLARED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (GENV_STORE.getIndex(qname) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0022_INDEX_EXISTS_ALREADY, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0022_INDEX_ALREADY_EXISTS,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   buildPlan = indexDecl->getBuildPlan(ccb, loc); 
@@ -299,14 +305,20 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (theSctx->lookup_index(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0021_INDEX_IS_NOT_DECLARED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (GENV_STORE.getIndex(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0023_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
@@ -359,14 +371,20 @@ bool RefreshIndexIterator::nextImpl(
 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0021_INDEX_IS_NOT_DECLARED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (GENV_STORE.getIndex(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-                          qname->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0023_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   buildPlan = indexDecl->getBuildPlan(ccb, loc); 
@@ -599,14 +617,20 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                              qnameItem->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0021_INDEX_IS_NOT_DECLARED,
+          ERROR_PARAMS( qnameItem->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
 
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-                              qnameItem->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+          ERROR_PARAMS( qnameItem->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -615,8 +639,11 @@ bool ProbeIndexPointValueIterator::nextImpl(
       
       if (state->theIndex == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-                              qnameItem->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0023_INDEX_DOES_NOT_EXIST,
+          ERROR_PARAMS( qnameItem->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
       
       state->theIterator = GENV_STORE.getIteratorFactory()->
@@ -751,21 +778,30 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                              qnameItem->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0021_INDEX_IS_NOT_DECLARED,
+          ERROR_PARAMS( qnameItem->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
 
       if (!state->theIndexDecl->isGeneral())
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED, loc,
-                              qnameItem->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED,
+          ERROR_PARAMS( qnameItem->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
 
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1 ||
           numChildren != 2)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-                              qnameItem->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+          ERROR_PARAMS( qnameItem->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -774,8 +810,11 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
 
       if (state->theIndex == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-                              qnameItem->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0023_INDEX_DOES_NOT_EXIST,
+          ERROR_PARAMS( qnameItem->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
 
       state->theIterator = GENV_STORE.getIteratorFactory()->
@@ -922,26 +961,38 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                            qname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0021_INDEX_IS_NOT_DECLARED,
+        ERROR_PARAMS( qname->getStringValue() ),
+        ERROR_LOC( loc )
+      );
     }
 
     if (indexDecl->getMethod() != IndexDecl::TREE)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
-                            qname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED,
+        ERROR_PARAMS( qname->getStringValue() ),
+        ERROR_LOC( loc )
+      );
     }
 
     if ((numChildren-1) % 6 != 0)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-                            qname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+        ERROR_PARAMS( qname->getStringValue() ),
+        ERROR_LOC( loc )
+      );
     }
 
     if (indexDecl->getKeyExpressions().size() * 6 > numChildren-1)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-                            qname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+        ERROR_PARAMS( qname->getStringValue() ),
+        ERROR_LOC( loc )
+      );
     }
 
     state->theIndex = (indexDecl->isTemp() ?
@@ -950,8 +1001,11 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     if (state->theIndex == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-                            qname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0023_INDEX_DOES_NOT_EXIST,
+        ERROR_PARAMS( qname->getStringValue() ),
+        ERROR_LOC( loc )
+      );
     }
 
     state->theIterator = GENV_STORE.getIteratorFactory()->

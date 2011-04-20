@@ -1257,15 +1257,18 @@ void normalize_fo(fo_expr* foExpr)
 
     if (qname != NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-                            foExpr->get_loc(),
-                            qname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+        ERROR_PARAMS( qname->getStringValue() ),
+        ERROR_LOC( foExpr->get_loc() )
+      );
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-                           foExpr->get_loc(),
-                           "Invalid number of arguments in index value probe");
+      throw XQUERY_EXCEPTION(
+        ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+        ERROR_LOC( foExpr->get_loc() )
+      );
     }
   }
 

@@ -68,16 +68,22 @@ protected:
     const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
     if (collectionDecl == 0  && !aDynamicCollection) 
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
-                            aName->getStringValue(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0001_COLLECTION_NOT_DECLARED,
+        ERROR_PARAMS( aName->getStringValue() ),
+        ERROR_LOC( aLoc )
+      );
     }
   
     coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   
     if (coll == NULL) 
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
-                            aName->getStringValue(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+        ERROR_PARAMS( aName->getStringValue() ),
+        ERROR_LOC( aLoc )
+      );
     }
   
     return collectionDecl;
@@ -112,8 +118,11 @@ protected:
 
       if (!collection->findNode(targetNode.getp(), targetPos)) 
       {
-        ZORBA_ERROR_LOC_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND, this->loc, 
-            collName->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDDY0011_COLLECTION_NODE_NOT_FOUND,
+          ERROR_PARAMS( collName->getStringValue() ),
+          ERROR_LOC( this->loc )
+        );
       }
     }
   
@@ -165,5 +174,6 @@ public:
   }
 };
 
-} /* namespace zorba */
-#endif
+} // namespace zorba
+#endif /* ZORBA_RUNTIME_COLLECTIONS_COLLECTIONS_BASE_H */
+/* vim:set et sw=2 ts=2: */

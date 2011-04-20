@@ -111,8 +111,10 @@ bool ValueHashIndex::insert(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
-                        theQname->getStringValue(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+        ERROR_PARAMS( theQname->getStringValue() )
+      );
     }
 
     valueSet->resize(valueSet->size() + 1);
@@ -356,8 +358,10 @@ bool ValueTreeIndex::insert(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
-                        theQname->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+        ERROR_PARAMS( theQname->getStringValue() )
+      );
     }
 
     pos->second->transfer_back(value);

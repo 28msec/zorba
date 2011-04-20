@@ -170,12 +170,13 @@ void ICCheckerImpl::actualCheck(const store::Item* collName,
     
     if ( !icConditionHolds )
     {
-      ZORBA_ERROR_PARAM(ZDDY0033_IC_NOT_MET, 
-                        icName->getStringValue(),
-                        collName->getStringValue());
+			throw XQUERY_EXCEPTION(
+				ZDDY0033_IC_NOT_MET, 
+				ERROR_PARAMS( icName->getStringValue(), collName->getStringValue() )
+			);
     }
   }
 } 
 
-}
+} // namespace zorba
 /* vim:set ts=2 sw=2: */

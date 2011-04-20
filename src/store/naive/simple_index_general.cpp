@@ -445,8 +445,10 @@ bool GeneralHashIndex::insertInMap(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
-                        theQname->getStringValue(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+        ERROR_PARAMS( theQname->getStringValue() )
+      );
     }
     
     valueSet->addNode(node, multikey, untyped);
@@ -1316,8 +1318,10 @@ bool GeneralTreeIndex::insertInMap(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
-                        theQname->getStringValue(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+        ERROR_PARAMS( theQname->getStringValue() )
+      );
     }
     
     pos->second->addNode(node, multikey, untyped);

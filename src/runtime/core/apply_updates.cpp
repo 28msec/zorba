@@ -114,8 +114,11 @@ apply_updates(
     
     if (zorbaIndex == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                            indexes[i]->getName()->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        ZDDY0021_INDEX_IS_NOT_DECLARED,
+        ERROR_PARAMS( indexes[i]->getName()->getStringValue() ),
+        ERROR_LOC( loc )
+      );
     }
 
     if (zorbaIndex->getMaintenanceMode() == IndexDecl::DOC_MAP)
