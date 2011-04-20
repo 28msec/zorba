@@ -109,24 +109,30 @@ declare %sequential function commons:testInitDir($dir as xs:string) as xs:string
   "SUCCESS";
 };
 
-declare %sequential function commons:testUnInitDir($dir as xs:string) as xs:string* {
+
+declare %sequential function commons:testUnInitDir($dir as xs:string) as xs:string* 
+{
   (: ==================================================================== :)
   (: delete the directory :)
   (: ========= :)
-  let $dirFullPath := file:resolve-path($dir)
-  let $s := commons:testDelete($dirFullPath)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning ("testUnInitDir failed - could not delete directory:", $dirFullPath)
-    else ();
+  declare $dirFullPath := file:resolve-path($dir);
+  declare $s := commons:testDelete($dirFullPath);
+
+  if (fn:not(commons:isSuccess($s))) 
+  then
+    exit returning ("testUnInitDir failed - could not delete directory:", $dirFullPath)
+  else
+    ();
   (: ==================================================================== :)
 
   "SUCCESS";
 };
 
+
 (: ******************************* COMMON EXTRAS ******************************** :)
 
-declare function commons:isSuccess($status as xs:string*) as xs:boolean {
+declare function commons:isSuccess($status as xs:string*) as xs:boolean 
+{
   if (fn:count($status) eq 0 or (fn:count($status) eq 1 and $status eq "SUCCESS")) then
     fn:true()
   else

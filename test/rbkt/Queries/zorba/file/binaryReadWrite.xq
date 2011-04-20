@@ -27,7 +27,9 @@ declare %sequential function local:thisTest() as xs:string* {
   "SUCCESS";
 };
 
-declare %sequential function local:main() as xs:string* {
+
+declare %sequential function local:main() as xs:string* 
+{
 
 (: ========================= :)
 (: ==== DIRECTORY INIT ===== :)
@@ -74,12 +76,16 @@ declare %sequential function local:main() as xs:string* {
   (: ==================================================================== :)
   (: initialize test - create test directory :)
   (: ========= :)
-  let $s := commons:testUnInitDir($testDir)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("DIRECTORY UNINIT - failed:
-", $s))
-    else ();  
+  block
+  {
+    declare $s := commons:testUnInitDir($testDir);
+
+    if (fn:not(commons:isSuccess($s))) 
+    then
+      exit returning commons:error(("DIRECTORY UNINIT - failed:", $s))
+    else 
+      ();  
+  };
 
   (: ==================================================================== :)
 
