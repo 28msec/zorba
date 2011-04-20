@@ -146,22 +146,33 @@ import schema namespace https = "http://expath.org/ns/http-client";
 declare %sequential function http:send-request(
   $request as element(https:request)?,
   $href as xs:string?,
-  $bodies as item()*) as item()+ {
+  $bodies as item()*) as item()+ 
+{
   if (http:check-params($request, $href, $bodies))
   then
-    let $req := if ($request) then
-      try {
-        validate { http:set-content-type($request) }
-      } catch XQDY0027 {
-        fn:error($err:HC005, "The request element is not valid.")
-      }
-    else ()
-    let $result := http:http-sequential-impl($req,
-                                             $href,
-                                             $bodies)
-    return http:tidy-result($result, fn:data($request/@override-media-type))
-  else ();
+    block
+    {
+      declare $req := if ($request) 
+                      then
+                        try 
+                        {
+                          validate { http:set-content-type($request) }
+                        }
+                        catch XQDY0027 
+                        {
+                          fn:error($err:HC005, "The request element is not valid.")
+                        }
+                      else
+                       ();
+
+      declare $result := http:http-sequential-impl($req, $href, $bodies);
+
+      http:tidy-result($result, fn:data($request/@override-media-type));
+    }
+  else 
+    ();
 };
+
 
 (:~
  : This function makes a GET request on a given URL.
@@ -227,17 +238,19 @@ declare function http:options($href as xs:string) as xs:string* {
  :)
 declare %sequential function http:put($href as xs:string, $body as item()) as item()+
 {
-  let $media-type as xs:string+ :=
+  declare $media-type as xs:string+ :=
     typeswitch($body)
       case xs:string return ("text/plain","text")
       case element() return ("text/xml", "xml")
-      default return ("text/plain","xml")
-  let $result := http:http-sequential-impl(validate {
+      default return ("text/plain","xml");
+
+  declare $result := http:http-sequential-impl(validate {
     <https:request href="{$href}" method="PUT">
       <https:body media-type="{$media-type[1]}" method="{$media-type[2]}">{$body}</https:body>
     </https:request>}
-    , (), ())
-  return http:tidy-result($result, ())
+    , (), ());
+
+  http:tidy-result($result, ());
 };
 
 (:~
@@ -278,28 +291,33 @@ declare %sequential function http:delete($href as xs:string) as item()+
  :)
 declare %sequential function http:post($href as xs:string, $body as item()) as item()+
 {
-  let $media-type as xs:string+ :=
+  declare $media-type as xs:string+ :=
     typeswitch($body)
       case xs:string return ("text/plain","text")
       case element() return ("text/xml", "xml")
-      default return ("text/plain","xml")
-  let $result := http:http-sequential-impl(validate {
+      default return ("text/plain","xml");
+
+  declare $result := http:http-sequential-impl(validate {
     <https:request href="{$href}" method="POST">
       <https:body media-type="{$media-type[1]}" method="{$media-type[2]}">{$body}</https:body>
     </https:request>}
-    , (), ())
-  return http:tidy-result($result, ())
+    , (), ());
+
+  http:tidy-result($result, ());
 };
+
 
 declare %private %sequential function http:http-sequential-impl(
   $request as schema-element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ external;
 
+
 declare %private %nondeterministic function http:http-nondeterministic-impl(
   $request as schema-element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ external;
+
 
 declare %private function http:tidy-result($result as item()+, $override-media-type as xs:string?) as item()+
 {
