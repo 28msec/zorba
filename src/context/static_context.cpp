@@ -2746,8 +2746,11 @@ void static_context::bind_collection(
 {
   if (lookup_collection(aCollection->getName()) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0001_COLLECTION_ALREADY_DECLARED, aLoc,
-                          aCollection->getName()->getStringValue(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0001_COLLECTION_ALREADY_DECLARED,
+      ERROR_PARAMS( aCollection->getName()->getStringValue() ),
+      ERROR_LOC( aLoc )
+    );
   }
 
   if (theCollectionMap == 0)
@@ -2880,8 +2883,11 @@ void static_context::bind_index(IndexDecl_t& index, const QueryLoc& loc)
 
   if (lookup_index(qname) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0021_INDEX_ALREADY_DECLARED, loc,
-                          qname->getStringValue(),  "");
+    throw XQUERY_EXCEPTION(
+      ZDST0021_INDEX_ALREADY_DECLARED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (theIndexMap == NULL)
@@ -3004,8 +3010,11 @@ void static_context::bind_ic(
 
   if (lookup_ic(qname) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0041_IC_IS_ALREADY_DECLARED, loc,
-                          qname->getStringValue(),  "");
+    throw XQUERY_EXCEPTION(
+      ZDST0041_IC_IS_ALREADY_DECLARED,
+      ERROR_PARAMS( qname->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (theICMap == NULL)
@@ -3767,9 +3776,14 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theCollectionMap->insert(pair.first, pair.second))
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0002_COLLECTION_ALREADY_IMPORTED, loc,
-                              pair.second->getName()->getStringValue(),
-                              module->get_module_namespace().c_str());
+        throw XQUERY_EXCEPTION(
+          ZDST0002_COLLECTION_ALREADY_IMPORTED,
+          ERROR_PARAMS(
+            pair.second->getName()->getStringValue(),
+            module->get_module_namespace()
+          ),
+          ERROR_LOC( loc )
+        );
       }
     }
   }
@@ -3787,9 +3801,13 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
       if (lookup_index(pair.first) != NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0022_INDEX_ALREADY_IMPORTED, loc,
-                              pair.first->getStringValue(),
-                              module->get_module_namespace().c_str());
+        throw XQUERY_EXCEPTION(
+          ZDST0022_INDEX_ALREADY_IMPORTED,
+          ERROR_PARAMS(
+            pair.first->getStringValue(), module->get_module_namespace()
+          ),
+          ERROR_LOC( loc )
+        );
       }
 
       if (!theIndexMap->insert(pair.first, pair.second))
@@ -3814,8 +3832,11 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theICMap->insert(pair.first, pair.second))
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0041_IC_IS_ALREADY_DECLARED, loc,
-                              pair.first->getStringValue().c_str(), "");
+        throw XQUERY_EXCEPTION(
+          ZDST0041_IC_IS_ALREADY_DECLARED,
+          ERROR_PARAMS( pair.first->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
     }
   }

@@ -50,9 +50,14 @@ void checkNodeType(
 
   if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType())))
   {
-    ZORBA_ERROR_LOC_PARAM(ZDTY0001_COLLECTION_INVALID_NODE_TYPE, loc, 
-                          collectionDecl->getName()->getStringValue(),
-                          TypeOps::toString(*tm->create_value_type(node)));
+    throw XQUERY_EXCEPTION(
+      ZDTY0001_COLLECTION_INVALID_NODE_TYPE,
+      ERROR_PARAMS(
+        TypeOps::toString( *tm->create_value_type( node ) ),
+        collectionDecl->getName()->getStringValue()
+      ),
+      ERROR_LOC( loc )
+    );
   }
 }
 
@@ -68,3 +73,4 @@ getCopyMode(
 }
 
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

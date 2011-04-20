@@ -1283,9 +1283,10 @@ longmap:
 
   default:
   {
-    ZORBA_ERROR_PARAM(ZDTY0012_INDEX_KEY_TYPE_ERROR, 
-                      getName()->getStringValue(), "");
-    return false;
+    throw XQUERY_EXCEPTION(
+      ZDTY0012_INDEX_KEY_TYPE_ERROR, 
+      ERROR_PARAMS( getName()->getStringValue() )
+    );
   }
   }
 }

@@ -271,9 +271,11 @@ void IndexDecl::analyze()
 
   if (theIsGeneral && numKeys > 1)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0035_INDEX_GENERAL_MULTIKEY, 
-                          theKeyExprs[1]->get_loc(),
-                          theName->getStringValue(), "");
+		throw XQUERY_EXCEPTION(
+			ZDST0035_INDEX_GENERAL_MULTIKEY,
+			ERROR_PARAMS( theName->getStringValue() ),
+			ERROR_LOC( theKeyExprs[1]->get_loc() )
+		);
   }
 
   // Check constraints on the key exprs
@@ -303,9 +305,11 @@ void IndexDecl::analyze()
     // theMaintenanceMode is initially set to REBUILD. If theMaintenanceMode
     // is not changed above (to DOC_MAP), then we throw an error because we
     // don't want to automatically rebuild the full index with every update. 
-    ZORBA_ERROR_LOC_PARAM(ZDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
-                          getDomainExpr()->get_loc(),
-                          theName->getStringValue(), "");
+		throw XQUERY_EXCEPTION(
+			ZDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
+			ERROR_PARAMS( theName->getStringValue() ),
+			ERROR_LOC( getDomainExpr()->get_loc() )
+		);
   }
 }
 
@@ -336,8 +340,11 @@ void IndexDecl::analyzeExprInternal(
 
     if (!func->isDeterministic())
     {
-      ZORBA_ERROR_LOC_PARAM(ZDST0028_INDEX_NOT_DETERMINISTIC, e->get_loc(),
-                            theName->getStringValue().c_str(), "");
+			throw XQUERY_EXCEPTION(
+				ZDST0028_INDEX_NOT_DETERMINISTIC,
+				ERROR_PARAMS( theName->getStringValue() ),
+				ERROR_LOC( e->get_loc() )
+			);
     }
 
     if (func->isSource())
@@ -355,14 +362,20 @@ void IndexDecl::analyzeExprInternal(
         }
         else
         {
-          ZORBA_ERROR_LOC_PARAM(ZDST0030_INDEX_NON_CONST_DATA_SOURCE, e->get_loc(),
-                                theName->getStringValue().c_str(), "");
+					throw XQUERY_EXCEPTION(
+						ZDST0030_INDEX_NON_CONST_DATA_SOURCE,
+						ERROR_PARAMS( theName->getStringValue() ),
+						ERROR_LOC( e->get_loc() )
+					);
         }
       }
       else
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0029_INDEX_INVALID_DATA_SOURCE, e->get_loc(),
-                              theName->getStringValue().c_str(), "");
+				throw XQUERY_EXCEPTION(
+					ZDST0029_INDEX_INVALID_DATA_SOURCE,
+					ERROR_PARAMS( theName->getStringValue() ),
+					ERROR_LOC( e->get_loc() )
+				);
       }
     }
   }
@@ -383,15 +396,21 @@ void IndexDecl::analyzeExprInternal(
   {
     if (e == dotVar)
     {
-      ZORBA_ERROR_LOC_PARAM(ZDST0032_INDEX_REFERENCES_CTX_ITEM, e->get_loc(),
-                            theName->getStringValue().c_str(), "");
+			throw XQUERY_EXCEPTION(
+				ZDST0032_INDEX_REFERENCES_CTX_ITEM,
+				ERROR_PARAMS( theName->getStringValue() ),
+				ERROR_LOC( e->get_loc() )
+			);
     }
 
     if (e != getDomainVariable() &&
         std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
     {
-      ZORBA_ERROR_LOC_PARAM(ZDST0031_INDEX_HAS_FREE_VARS, e->get_loc(),
-                            theName->getStringValue().c_str(), "");
+			throw XQUERY_EXCEPTION(
+				ZDST0031_INDEX_HAS_FREE_VARS,
+				ERROR_PARAMS( theName->getStringValue() ),
+				ERROR_LOC( e->get_loc() )
+			);
     }
   }
 
@@ -680,5 +699,5 @@ std::string IndexDecl::toString()
 }
 
 
-}
+} // namespace zorba
 /* vim:set ts=2 sw=2: */

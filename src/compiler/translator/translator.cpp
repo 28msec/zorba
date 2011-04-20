@@ -1134,8 +1134,11 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
     {
       if (e.error() == err::XPDY0002)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
-                              theIndexDecl->getName()->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDST0032_INDEX_REFERENCES_CTX_ITEM,
+          ERROR_PARAMS( theIndexDecl->getName()->getStringValue() ),
+          ERROR_LOC( loc )
+        );
       }
 
       throw;
@@ -3598,7 +3601,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // a collection declaration must allways be in a library module
   if (!inLibraryModule())
   {
-    throw XQUERY_EXCEPTION(ZDST0003_COLLECTION_DECL_IN_MAIN_MODULE, ERROR_LOC(v.get_location()));
+    throw XQUERY_EXCEPTION(
+      ZDST0003_COLLECTION_DECL_IN_MAIN_MODULE, ERROR_LOC( v.get_location() )
+    );
   }
 
   const QName* lName = v.getName();
@@ -3609,8 +3614,11 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   if (lExpandedQName->getNamespace() != theModuleNamespace)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, loc,
-                          lName->get_qname(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE,
+      ERROR_PARAMS( lName->get_qname() ),
+      ERROR_LOC( loc )
+    );
   }
 
   // Get the static type of the root nodes
@@ -3638,8 +3646,11 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
       (lUpdateMode == StaticContextConsts::decl_queue ||
        lUpdateMode == StaticContextConsts::decl_append_only))
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0005_COLLECTION_PROPERTIES_CONFLICT, loc,
-                          lName->get_qname(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0005_COLLECTION_PROPERTIES_CONFLICT,
+      ERROR_PARAMS( lName->get_qname() ),
+      ERROR_LOC( loc )
+    );
   }
 
   // Get the node modifier
@@ -3720,8 +3731,11 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (!inLibraryModule())
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0023_INDEX_DECL_IN_MAIN_MODULE, v.get_location(),
-                          qname->get_qname(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0023_INDEX_DECL_IN_MAIN_MODULE,
+      ERROR_PARAMS( qname->get_qname() ),
+      ERROR_LOC( v.get_location() )
+    );
   }
 
   // Expand the index qname (error is raised if qname resolution fails).
@@ -3730,8 +3744,11 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (qnameItem->getNamespace() != theModuleNamespace)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0036_INDEX_DECL_IN_FOREIGN_MODULE, loc,
-                          qname->get_qname(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0036_INDEX_DECL_IN_FOREIGN_MODULE,
+      ERROR_PARAMS( qname->get_qname() ),
+      ERROR_LOC( loc )
+    );
   }
 
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
@@ -3783,8 +3800,11 @@ void* begin_visit(const IndexKeyList& v)
 
   if (!domainExpr->is_simple())
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0033_INDEX_NON_SIMPLE_EXPR, domainExpr->get_loc(),
-                          index->getName()->getStringValue(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0033_INDEX_NON_SIMPLE_EXPR,
+      ERROR_PARAMS( index->getName()->getStringValue() ),
+      ERROR_LOC( domainExpr->get_loc() )
+    );
   }
 
   domainExpr = wrap_in_type_match(domainExpr,
@@ -3882,8 +3902,11 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     if (!keyExpr->is_simple())
     {
-      ZORBA_ERROR_LOC_PARAM(ZDST0033_INDEX_NON_SIMPLE_EXPR, keyExpr->get_loc(),
-                            index->getName()->getStringValue(), "");
+      throw XQUERY_EXCEPTION(
+        ZDST0033_INDEX_NON_SIMPLE_EXPR,
+        ERROR_PARAMS( index->getName()->getStringValue() ),
+        ERROR_LOC( keyExpr->get_loc() )
+      );
     }
 
     keyExpr = wrap_in_atomization(keyExpr);
@@ -3895,8 +3918,11 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       if (!index->isGeneral())
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
-                              index->getName()->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDST0027_INDEX_BAD_KEY_TYPE,
+          ERROR_PARAMS( index->getName()->getStringValue() ),
+          ERROR_LOC( keySpec->get_location() )
+        );
       }
     }
     else
@@ -3909,24 +3935,33 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
       if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, kloc))
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-                              index->getName()->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDST0027_INDEX_BAD_KEY_TYPE,
+          ERROR_PARAMS( index->getName()->getStringValue() ),
+          ERROR_LOC( kloc )
+        );
       }
 
       if (!index->isGeneral() &&
           (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
            TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE)))
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-                              index->getName()->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDST0027_INDEX_BAD_KEY_TYPE,
+          ERROR_PARAMS( index->getName()->getStringValue() ),
+          ERROR_LOC( kloc )
+        );
       }
 
       if (!index->isGeneral() &&
           quant != TypeConstants::QUANT_ONE &&
           quant != TypeConstants::QUANT_QUESTION)
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-                              index->getName()->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDST0027_INDEX_BAD_KEY_TYPE,
+          ERROR_PARAMS( index->getName()->getStringValue() ),
+          ERROR_LOC( kloc )
+        );
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
@@ -3941,8 +3976,11 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
            TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE, kloc) ||
            TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE, kloc)))
       {
-        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
-                              index->getName()->getStringValue(), "");
+        throw XQUERY_EXCEPTION(
+          ZDST0027_INDEX_BAD_KEY_TYPE,
+          ERROR_PARAMS( index->getName()->getStringValue() ),
+          ERROR_LOC( keySpec->get_location() )
+        );
       }
 
       keyExpr = wrap_in_type_match(keyExpr, type, err::ZDTY0011_INDEX_KEY_TYPE_ERROR);
@@ -4052,8 +4090,11 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
   if (!inLibraryModule())
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0044_IC_DECL_IN_MAIN_MODULE, v.get_location(),
-                          v.getName()->get_qname(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0044_IC_DECL_IN_MAIN_MODULE,
+      ERROR_PARAMS( v.getName()->get_qname() ),
+      ERROR_LOC( v.get_location() )
+    );
   }
 
   push_scope();
@@ -4651,8 +4692,11 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
   if (qnameItem->getNamespace() != theModuleNamespace)
   {
-    ZORBA_ERROR_LOC_PARAM(ZDST0048_IC_DECL_IN_FOREIGN_MODULE, loc,
-                          qname->get_qname(), "");
+    throw XQUERY_EXCEPTION(
+      ZDST0048_IC_DECL_IN_FOREIGN_MODULE,
+      ERROR_PARAMS( qname->get_qname() ),
+      ERROR_LOC( loc )
+    );
   }
 
   ValueIC_t vic;
