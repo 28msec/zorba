@@ -32,10 +32,10 @@ namespace zorba {
  *
  * @param xq_re The XQuery regular expression.
  * @param lib_re A pointer to the resuling library regular expression.
- * @param flags The flags to use.
+ * @param flags The flags to use, if any.
  */
 void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
-                        char const *flags );
+                        char const *flags = "" );
 
 ////////// classes ////////////////////////////////////////////////////////////
 

@@ -77,17 +77,17 @@ bool ends_with(
 
 ////////// regular expression matching ////////////////////////////////////////
 
-bool match_part( char const *in, char const *pattern, char const *flags );
+bool match_part( char const *in, char const *pattern, char const *flags = "" );
 
 template<class InputStringType> inline
 bool match_part( InputStringType const &in, char const *pattern,
-                 char const *flags ) {
+                 char const *flags = "" ) {
   return match_part( in.c_str(), pattern, flags );
 }
 
 template<class InputStringType,class PatternStringType> inline
 bool match_part( InputStringType const &in, PatternStringType const &pattern,
-                 char const *flags ) {
+                 char const *flags = "" ) {
   return match_part( in.c_str(), pattern.c_str(), flags );
 }
 
@@ -101,17 +101,17 @@ bool match_part( InputStringType const &in, PatternStringType const &pattern,
   return match_part( in.c_str(), pattern.c_str(), flags.c_str() );
 }
 
-bool match_whole( char const *in, char const *pattern, char const *flags );
+bool match_whole( char const *in, char const *pattern, char const *flags = "" );
 
 template<class InputStringType> inline
 bool match_whole( InputStringType const &in, char const *pattern,
-                  char const *flags ) {
+                  char const *flags = "" ) {
   return match_whole( in.c_str(), pattern, flags );
 }
 
 template<class InputStringType,class PatternStringType> inline
 bool match_whole( InputStringType const &in, PatternStringType const &pattern,
-                  char const *flags ) {
+                  char const *flags = "" ) {
   return match_whole( in.c_str(), pattern.c_str(), flags );
 }
 
@@ -140,7 +140,7 @@ bool match_whole( InputStringType const &in, PatternStringType const &pattern,
  * @return Returns \c true only if the replacement and conversion to UTF-8
  * succeeded.
  */
-template<class OutputStringType>
+template<class OutputStringType> inline
 bool replace_all( char const *in, char const *pattern, char const *flags,
                   char const *replacement, OutputStringType *out ) {
   unicode::regex re;
@@ -169,7 +169,7 @@ template<
   class InputStringType,
   class ReplacementStringType,
   class OutputStringType
->
+> inline
 bool replace_all( InputStringType const &in, char const *pattern,
                   char const *flags, ReplacementStringType const &replacement, 
                   OutputStringType *out ) {
@@ -201,7 +201,7 @@ template<
   class PatternStringType,
   class ReplacementStringType,
   class OutputStringType
->
+> inline
 bool replace_all( InputStringType const &in, PatternStringType const &pattern,
                   char const *flags, ReplacementStringType const &replacement,
                   OutputStringType *out ) {

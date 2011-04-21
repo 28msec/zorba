@@ -1905,7 +1905,7 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (!utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+  if (!utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     throw XQUERY_EXCEPTION(XQST0087, ERROR_LOC(loc));
 
   std::string versionStr = v.get_version().str();
