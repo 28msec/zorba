@@ -104,6 +104,8 @@ void block_expr::compute_scripting_kind2(
 {
   bool vacuous = true;
 
+  bool hasAssignedVars = (assignedVars && !(*assignedVars).empty());
+
   theScriptingKind = VACUOUS_EXPR;
 
   ulong numChildren = (ulong)theArgs.size();
@@ -112,24 +114,38 @@ void block_expr::compute_scripting_kind2(
   {
     short kind = theArgs[i]->get_scripting_detail();
 
-    if (theArgs[i]->get_expr_kind() == var_decl_expr_kind &&
-        assignedVars)
+    if (theArgs[i]->get_expr_kind() == var_decl_expr_kind)
     {
       var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i].getp());
 
       var_expr* varExpr = varDeclExpr->get_var_expr();
 
-      while (true)
+      expr* initExpr = varDeclExpr->get_init_expr();
+
+      if (initExpr != NULL)
       {
-        std::vector<var_expr*>::iterator ite = (*assignedVars).begin();
-        std::vector<var_expr*>::iterator end = (*assignedVars).end();
+        kind = theArgs[i]->get_scripting_detail();
 
-        ite = std::find(ite, end, varExpr);
+        if (kind != VACUOUS_EXPR)
+          vacuous = false;
+        
+        theScriptingKind |= kind;
+      }
 
-        if (ite != end)
-          ite = (*assignedVars).erase(ite);
-        else
-          break;
+      if (assignedVars)
+      {
+        while (true)
+        {
+          std::vector<var_expr*>::iterator ite = (*assignedVars).begin();
+          std::vector<var_expr*>::iterator end = (*assignedVars).end();
+          
+          ite = std::find(ite, end, varExpr);
+          
+          if (ite != end)
+            ite = (*assignedVars).erase(ite);
+          else
+            break;
+        }
       }
 
       continue;
@@ -144,10 +160,13 @@ void block_expr::compute_scripting_kind2(
   if (!vacuous)
     theScriptingKind &= ~VACUOUS_EXPR;
 
-  if (assignedVars && !(*assignedVars).empty())
-    theScriptingKind |= (VAR_SETTING_EXPR | SEQUENTIAL_EXPR);
-  else
-    theScriptingKind &= ~VAR_SETTING_EXPR;
+  if (hasAssignedVars)
+  {
+    if (!(*assignedVars).empty())
+      theScriptingKind |= (VAR_SETTING_EXPR | SEQUENTIAL_EXPR);
+    else
+      theScriptingKind &= ~VAR_SETTING_EXPR;
+  }
 
   if (theScriptingKind & UPDATING_EXPR)
     theScriptingKind &= ~SIMPLE_EXPR;
