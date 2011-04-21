@@ -378,8 +378,7 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
     if (!result->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     state->theCurrentPos = 0;
@@ -432,8 +431,7 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                             "The context item of an axis step is not a node");
+        throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
       }
     }
     while (state->theContextNode->getNodeKind() != store::StoreConsts::elementNode);
@@ -485,8 +483,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     state->theCurrentPos = 0;
@@ -521,8 +518,7 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     state->theCurrentPos = 0;
@@ -573,8 +569,7 @@ bool AncestorReverseAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     state->theCurrentPos = 0;
@@ -634,8 +629,7 @@ bool AncestorSelfAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     state->theCurrentPos = 0;
@@ -686,8 +680,7 @@ bool AncestorSelfReverseAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     state->theCurrentPos = 0;
@@ -760,8 +753,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                             "The context item of an axis step is not a node");
+        throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
       }
     }
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
@@ -824,8 +816,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                             "The context item of an axis step is not a node");
+        throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
       }
     }
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
@@ -908,8 +899,7 @@ bool LSiblingReverseAxisIterator::nextImpl(
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                             "The context item of an axis step is not a node");
+        throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
       }
     }
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
@@ -988,8 +978,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                             "The context item of an axis step is not a node");
+        throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
       }
     }
     while (!isElementOrDocumentNode(state->theContextNode.getp()));
@@ -1092,8 +1081,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                             "The context item of an axis step is not a node");
+        throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
       }
     }
     while (!isElementOrDocumentNode(state->theContextNode.getp()));
@@ -1176,8 +1164,7 @@ bool DescendantSelfAxisIterator::nextImpl(
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                             "The context item of an axis step is not a node");
+        throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
       }
     }
     while ((theTestKind == match_name_test || theTestKind == match_no_test) &&
@@ -1282,8 +1269,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     getNextContextNode = false;
@@ -1497,8 +1483,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     getNextContextNode = false;
@@ -1669,8 +1654,7 @@ bool FollowingAxisIterator::nextImpl(
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     getNextContextNode = false;

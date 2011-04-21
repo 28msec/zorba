@@ -918,7 +918,6 @@ void *ParseNodePrintDOTVisitor::begin_visit(const SchemaImport &n)
     return no_state;
 #else
   throw XQUERY_EXCEPTION(XQST0009);//xml schema not supported
-  return no_state;
 #endif
 }
 
@@ -3444,4 +3443,4 @@ void ParseNodePrintDOTVisitor::end_visit(const FTWordsValue&, void*)
 
 
 } // end namespace
-
+/* vim:set et sw=2 ts=2: */

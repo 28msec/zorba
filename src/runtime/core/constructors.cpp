@@ -315,15 +315,20 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (nodeName->getLocalName().empty())
   {
-    ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
-                     "Element name must not have an empty local part.");
+    throw XQUERY_EXCEPTION(
+      XQDY0074,
+      ERROR_PARAMS( "", ZED( NoEmptyLocalname ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (nodeName->getPrefix() == "xmlns" ||
         nodeName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
         (nodeName->getPrefix() == "xml" && nodeName->getNamespace() != "http://www.w3.org/XML/1998/namespace") ||
         (nodeName->getPrefix() != "xml" && nodeName->getNamespace() == "http://www.w3.org/XML/1998/namespace"))
-      throw XQUERY_EXCEPTION(XQDY0096, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XQDY0096, ERROR_PARAMS(nodeName->getStringValue()), ERROR_LOC(loc)
+      );
 
   typeName = (theTypePreserve ?
               GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME :
@@ -521,15 +526,20 @@ AttributeIterator::AttributeIterator(
   {
     if (theQName->getLocalName().empty())
     {
-      ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
-                           "Attribute name must not have an empty local part.");
+      throw XQUERY_EXCEPTION(
+        XQDY0074,
+        ERROR_PARAMS( "", ZED( NoEmptyLocalname ) ),
+        ERROR_LOC( loc )
+      );
     }
 
     if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (theQName->getNamespace().empty() &&
          ZSTREQ(theQName->getLocalName(), "xmlns")))
     {
-      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XQDY0044, ERROR_PARAMS( theQName->getStringValue() ), ERROR_LOC( loc )
+      );
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
@@ -538,7 +548,9 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xml") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
     {
-      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XQDY0044, ERROR_PARAMS( theQName->getStringValue() ), ERROR_LOC( loc )
+      );
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
@@ -547,7 +559,9 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xmlns") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
     {
-      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XQDY0044, ERROR_PARAMS( theQName->getStringValue() ), ERROR_LOC( loc )
+      );
     }
 
     if (ZSTREQ(theQName->getPrefix(), "xml") &&
@@ -597,15 +611,20 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     if (qname->getLocalName().empty())
     {
-      ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
-                           "Attribute name must not have an empty local part.");
+      throw XQUERY_EXCEPTION(
+        XQDY0074,
+        ERROR_PARAMS( "", ZED( NoEmptyLocalname ) ),
+        ERROR_LOC( loc )
+      );
     }
 
     if (ZSTREQ(qname->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (qname->getNamespace().empty() &&
          ZSTREQ(qname->getLocalName(), "xmlns")))
     {
-      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XQDY0044, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
+      );
     }
   }
   else
@@ -1298,13 +1317,15 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         // this needs to be checked and thrown here as the optimizer
         // might try to fold a const expression and would return a different error code
         if (theIsAttrName)
-          throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(XQDY0044, ERROR_PARAMS(name), ERROR_LOC(loc));
         else
-          throw XQUERY_EXCEPTION(XQDY0096, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(XQDY0096, ERROR_PARAMS(name), ERROR_LOC(loc));
       }
       else
         // the returned error codes are wrong for name casting => they must be changed
-        ZORBA_ERROR_LOC_DESC(XQDY0074, loc, "Item cannot be cast to QName.");
+        throw XQUERY_EXCEPTION(
+          XQDY0074, ERROR_PARAMS( "item" ), ERROR_LOC( loc )
+        );
     }
     else
     {

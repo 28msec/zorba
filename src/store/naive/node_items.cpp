@@ -2685,7 +2685,9 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
     AttributeNode* attr = static_cast<AttributeNode*>(*ite);
     if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
     {
-      ZORBA_ERROR_PARAM_OSS(XQDY0025, attrName->getStringValue(), "");
+      throw XQUERY_EXCEPTION(
+        XQDY0025, ERROR_PARAMS( attrName->getStringValue() )
+      );
     }
   }
 }

@@ -439,8 +439,11 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       if (consumeNext(lItem0, theChild0.getp(), planState) ||
           consumeNext(lItem1, theChild1.getp(), planState))
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                             "Value comparisons must not be made with sequences longer than one item.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( "", ZED( ValueCompOneItemOnly ) ),
+          ERROR_LOC( loc )
+        );
       }
     }
   }
@@ -858,10 +861,13 @@ bool CompareIterator::equal(
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                               "Cannot compare for equality an item of type "
-                               << type0->toString() << " with an item of type "
-                               << type1->toString());
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS(
+          type0->toString(), ZED( NoCompWithType ), type1->toString()
+        ),
+        ERROR_LOC( loc )
+      );
     }
   }
 }
@@ -907,10 +913,13 @@ long CompareIterator::compare(
       }
       else
       {
-        ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                                 "Cannot compare an item of type "
-                                 << type0->toString() << " with an item of type "
-                                 << type1->toString());
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS(
+            type0->toString(), ZED( NoCompWithType ), type1->toString()
+          ),
+          ERROR_LOC( loc )
+        );
       }
     }
     else if (TypeOps::is_subtype(tm, *type1, *type0))
@@ -933,10 +942,13 @@ long CompareIterator::compare(
       }
       else
       {
-        ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                                 "Cannot compare an item of type "
-                                 << type0->toString() << " with an item of type "
-                                 << type1->toString());
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS(
+            type0->toString(), ZED( NoCompWithType ), type1->toString()
+          ),
+          ERROR_LOC( loc )
+        );
       }
     }
   }
@@ -945,10 +957,13 @@ long CompareIterator::compare(
     // For example, two QName items do not have an order relationship.
     if (e.error() == err::ZSTR0040_TYPE_ERROR)
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                               "Cannot compare an item of type "
-                               << type0->toString() << " with an item of type "
-                               << type1->toString());
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS(
+          type0->toString(), ZED( NoCompWithType ), type1->toString()
+        ),
+        ERROR_LOC( loc )
+      );
     }
     throw;
   }
@@ -1048,8 +1063,11 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
 
     if (CONSUME(lItem0, 0) || CONSUME(lItem1, 1))
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, this->loc,
-                           "Value comparisons must not be made with sequences longer than one item.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( "", ZED( ValueCompOneItemOnly ) ),
+        ERROR_LOC( this->loc )
+      );
     }
   }
 

@@ -96,12 +96,6 @@ XQUERY_DEC_ERROR( XQST0012 );
 XQUERY_DEC_ERROR( XQST0013 );
 
 /**
- * An implementation that does not support the Module Feature raises a static
- * error if it encounters a module declaration or a module import.
- */
-XQUERY_DEC_ERROR( XQST0016 );
-
-/**
  * It is a static error if the expanded QName and number of arguments in a
  * function call do not match the name and arity of a function signature in the
  * static context.
@@ -422,7 +416,7 @@ XQUERY_DEC_ERROR( XQDY0072 );
  * It is a dynamic error if the value of the name expression in a computed
  * element or attribute constructor cannot be converted to an expanded QName
  * (for example, because it contains a namespace prefix not found in statically
- * known namespaces.)
+ * known namespaces).
  */
 XQUERY_DEC_ERROR( XQDY0074 );
 

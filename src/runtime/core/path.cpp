@@ -417,8 +417,7 @@ bool PathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
-                           "The context item of an axis step is not a node");
+      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
     }
 
     assert(state->theCurrentStep == 0);
@@ -669,3 +668,4 @@ FollowingAxisState::reset(PlanState& planState)
 };
 
 #endif
+/* vim:set et sw=2 ts=2: */

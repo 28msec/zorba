@@ -134,9 +134,9 @@ void SchemaValidatorImpl::validateAfterUpdate(
     return;
   }
   default:
-    ZORBA_ERROR_LOC_DESC(XQDY0061, theLoc,
-                "Argument in validate expression not a document or element node.");
-    return;
+    throw XQUERY_EXCEPTION(
+      XQDY0061, ERROR_PARAMS( ZED( NotDocOrElementNode ) ), ERROR_LOC( theLoc )
+    );
   }
 }
 
@@ -636,3 +636,4 @@ void SchemaValidatorImpl::validateSimpleContent(
 #endif //ZORBA_NO_XMLSCHEMA
 
 }// namespace zorba
+/* vim:set et sw=2 ts=2: */

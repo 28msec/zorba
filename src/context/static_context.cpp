@@ -2140,9 +2140,9 @@ void static_context::bind_fn(
 
   if (!is_global_root_sctx() && lookup_local_fn(qname, arity) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
-                          qname->getStringValue(),
-                          loc.getFilename());
+    throw XQUERY_EXCEPTION(
+      XQST0034, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
+    );
   }
 
   if (theFunctionMap == NULL)

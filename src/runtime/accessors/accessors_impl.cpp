@@ -76,8 +76,11 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       result = inNode->getNilled();
       STACK_PUSH(result != NULL, state);
     } else
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                            "The argument of the fn:nilled function is not a node");
+			throw XQUERY_EXCEPTION(
+				XPTY0004,
+				ERROR_PARAMS( "", ZED( FnNilledArgNotNode ) ),
+				ERROR_LOC( loc )
+			);
   }
 
   STACK_END (state);

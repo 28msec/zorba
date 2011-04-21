@@ -167,7 +167,9 @@ for_clause::for_clause(
     if (declaredType != NULL)
     {
       if (TypeOps::is_empty(tm, *declaredType))
-        ZORBA_ERROR_LOC_PARAM(XPTY0004, loc, "empty-sequence()", "");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( "empty-sequence()" ), ERROR_LOC( loc )
+        );
 
       xqtref_t domainType = domainExpr->get_return_type();
 
@@ -180,9 +182,14 @@ for_clause::for_clause(
           xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
           if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
           {
-            ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(),
-                                     "Cannot treat " << domainType->toString()
-                                     <<" as " << declaredType->toString());
+            throw XQUERY_EXCEPTION(
+              XPTY0004,
+              ERROR_PARAMS(
+                domainType->toString(),
+                ZED( NoTreatAs ), declaredType->toString()
+              ),
+              ERROR_LOC( get_loc() )
+            );
           }
 
           domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
@@ -307,9 +314,14 @@ let_clause::let_clause(
         xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
         if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
         {
-          ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(),
-                                   "Cannot treat " << domainType->toString()
-                                   <<" as " << declaredType->toString());
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS(
+              domainType->toString(),
+              ZED( NoTreatAs ), declaredType->toString()
+            ),
+            ERROR_LOC( get_loc() )
+          );
         }
 
         domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
@@ -1137,4 +1149,5 @@ expr_t flwor_expr::clone(substitution_t& subst) const
 }
 
 
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

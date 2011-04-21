@@ -1996,9 +1996,9 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
     XmlNode* attr = getAttr(i);
     if (attr->getNodeName()->equals(attrName))
     {
-      ZORBA_ERROR_PARAM_OSS(XQDY0025,
-                            "Attribute name " << *attrName->getStringValue() 
-                            << " is not unique", "");
+      throw XQUERY_EXCEPTION(
+        XQDY0025, ERROR_PARAMS( *attrName->getStringValue() )
+      );
     }
   }
 }

@@ -1693,7 +1693,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   Item lType = aQName.getType();
   if (lType.getStringValue() != "QName")
   {
-    throw XQUERY_EXCEPTION( XPTY0004 );
+    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( "QName" ) );
   }
 
   // test if function with given #args exists

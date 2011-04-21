@@ -1937,15 +1937,26 @@ void* begin_visit(const VersionDecl& v)
       maxversion = "1.0";
     // TODO: the error code might need to be changed after W3C solves
     // the bug report concerning modules of version 1.0 importing v1.1 libraries.
-    ZORBA_ERROR_LOC_DESC(XQST0031, loc, "An XQuery " + versionStr
-      + " version library cannot be imported by a " + maxversion + " version module.");
+    throw XQUERY_EXCEPTION(
+      XQST0031,
+      ERROR_PARAMS( versionStr, ZED( LibModVersionMismatch ), maxversion ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (version == StaticContextConsts::xquery_version_unknown)
-    throw XQUERY_EXCEPTION(XQST0031, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XQST0031,
+      ERROR_PARAMS( versionStr, ZED( BadXQueryVersion ) ),
+      ERROR_LOC( loc )
+    );
 
   if (version > theSctx->xquery_version())
-    throw XQUERY_EXCEPTION(XQST0031, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XQST0031,
+      ERROR_PARAMS( versionStr, ZED( BadXQueryVersion ) ),
+      ERROR_LOC( loc )
+    );
 
   theSctx->set_xquery_version(version);
 
@@ -3489,7 +3500,7 @@ void* begin_visit(const AnnotationParsenode& v)
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     throw XQUERY_EXCEPTION(
       XPST0003,
-      ERROR_PARAMS( theSctx->xquery_version(), ZED( BadXQueryVersion ) ),
+      ERROR_PARAMS( theSctx->xquery_version(), ZED( XQueryVersionV1_0 ) ),
       ERROR_LOC( loc )
     );
 
@@ -3527,7 +3538,7 @@ void* begin_visit(const CtxItemDecl& v)
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     throw XQUERY_EXCEPTION(
       XPST0003,
-      ERROR_PARAMS( theSctx->xquery_version(), ZED( BadXQueryVersion ) ),
+      ERROR_PARAMS( theSctx->xquery_version(), ZED( XQueryVersionV1_0 ) ),
       ERROR_LOC( loc )
     );
 
@@ -4959,7 +4970,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   {
     throw XQUERY_EXCEPTION(
       XPST0003,
-      ERROR_PARAMS( theSctx->xquery_version(), ZED( BadXQueryVersion ) ),
+      ERROR_PARAMS( theSctx->xquery_version(), ZED( XQueryVersionV1_0 ) ),
       ERROR_LOC( loc )
     );
   }
@@ -8449,22 +8460,28 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
       if (theModuleNamespace.empty())
       {
-        ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
-                                 "The variable "
-                                 << ve->get_name()->getStringValue()
-                                 << " has type " << declaredType->toString()
-                                 << ", which is not among the in-scope types"
-                                 << " of the main module.");
+        throw XQUERY_EXCEPTION_VAR(
+          error,
+          ERROR_PARAMS(
+            declaredType->toString(),
+            ZED( NoTypeInMainModule ),
+            ve->get_name()->getStringValue()
+          ),
+          ERROR_LOC( loc )
+        );
       }
       else
       {
-        ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
-                                 "The variable "
-                                 << ve->get_name()->getStringValue()
-                                 << " has type " << declaredType->toString()
-                                 << ", which is not among the in-scope types"
-                                 << " of module "
-                                 << theModuleNamespace);
+        throw XQUERY_EXCEPTION_VAR(
+          error,
+          ERROR_PARAMS(
+            declaredType->toString(),
+            ZED( NoTypeInModule ),
+            ve->get_name()->getStringValue(),
+            theModuleNamespace
+          ),
+          ERROR_LOC( loc )
+        );
       }
     }
 
@@ -8613,22 +8630,28 @@ void* begin_visit(const FunctionCall& v)
     {
       if (theModuleNamespace.empty())
       {
-        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                 "The function "
-                                 << f->getName()->getStringValue()
-                                 << " has type " << retType->toString()
-                                 << ", which is not among the in-scope types"
-                                 << " of the main module.");
+        throw XQUERY_EXCEPTION(
+          XQST0036,
+          ERROR_PARAMS(
+            retType->toString(),
+            ZED( NoTypeInMainModule ),
+            f->getName()->getStringValue()
+          ),
+          ERROR_LOC( loc )
+        );
       }
       else
       {
-        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                 "The function "
-                                 << f->getName()->getStringValue()
-                                 << " has type " << retType->toString()
-                                 << ", which is not among the in-scope types"
-                                 << " of module "
-                                 << theModuleNamespace);
+        throw XQUERY_EXCEPTION(
+          XQST0036,
+          ERROR_PARAMS(
+            retType->toString(),
+            ZED( NoTypeInModule ),
+            f->getName()->getStringValue(),
+            theModuleNamespace
+          ),
+          ERROR_LOC( loc )
+        );
       }
     }
 
@@ -8641,22 +8664,28 @@ void* begin_visit(const FunctionCall& v)
       {
         if (theModuleNamespace.empty())
         {
-          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                   "The function "
-                                   << f->getName()->getStringValue()
-                                   << " has type " << type->toString()
-                                   << ", which is not among the in-scope types"
-                                   << " of the main module.");
+          throw XQUERY_EXCEPTION(
+            XQST0036,
+            ERROR_PARAMS(
+              type->toString(),
+              ZED( NoTypeInMainModule ),
+              f->getName()->getStringValue()
+            ),
+            ERROR_LOC( loc )
+          );
         }
         else
         {
-          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                   "The function "
-                                   << f->getName()->getStringValue()
-                                   << " has type " << type->toString()
-                                   << ", which is not among the in-scope types"
-                                   << " of module "
-                                   << theModuleNamespace);
+          throw XQUERY_EXCEPTION(
+            XQST0036,
+            ERROR_PARAMS(
+              retType->toString(),
+              ZED( NoTypeInModule ),
+              f->getName()->getStringValue(),
+              theModuleNamespace
+            ),
+            ERROR_LOC( loc )
+          );
         }
       }
     }
@@ -11020,8 +11049,11 @@ void end_visit(const PITest& v, void* /*visit_state*/)
 
     if (!GenericCast::instance()->castableToNCName(lNormalizedTarget))
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "String literal in pi test cannot be converted to NCName");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( StringLiteral ), ZED( NoCastTo ), "NCName" ),
+        ERROR_LOC( loc )
+      );
     }
 
     // bugfix (see above); pass normalized string instead of original target

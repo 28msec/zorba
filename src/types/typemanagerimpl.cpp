@@ -221,10 +221,13 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   {
     if (error != err::ZXQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
-                               "A type with qname "
-                               << qname->getStringValue()
-                               << " is not in the in-scope schema definitions");
+			throw XQUERY_EXCEPTION_VAR(
+				error,
+				ERROR_PARAMS(
+					qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
+				),
+				ERROR_LOC( loc )
+			);
     }
     else
     {
@@ -243,10 +246,13 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     {
       if (error != err::ZXQP0000_NO_ERROR)
       {
-        ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
-                                 "A type with qname "
-                                 << qname->getStringValue()
-                                 << " is not in the in-scope schema definitions");
+				throw XQUERY_EXCEPTION_VAR(
+					error,
+					ERROR_PARAMS(
+						qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
+					),
+					ERROR_LOC( loc )
+				);
       }
       else
       {
@@ -266,10 +272,13 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   if (error != err::ZXQP0000_NO_ERROR)
   {
-    ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
-                             "A type with qname "
-                             << qname->getStringValue()
-                             << " is not in the in-scope schema definitions");
+		throw XQUERY_EXCEPTION_VAR(
+			error,
+			ERROR_PARAMS(
+				qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
+			),
+			ERROR_LOC( loc )
+		);
   }
   else
   {
@@ -328,10 +337,13 @@ xqtref_t TypeManagerImpl::create_named_type(
       {
         if (error != err::ZXQP0000_NO_ERROR)
         {
-          ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
-                                   "A type with qname "
-                                   << qname->getStringValue()
-                                   << " is not in the in-scope schema definitions");
+					throw XQUERY_EXCEPTION_VAR(
+						error,
+						ERROR_PARAMS(
+							qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
+						),
+						ERROR_LOC( loc )
+					);
         }
         else
         {
@@ -347,10 +359,13 @@ xqtref_t TypeManagerImpl::create_named_type(
 
     if (error != err::ZXQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
-                               "A type with qname " 
-                               << qname->getStringValue()
-                               << " is not in the in-scope schema definitions");
+			throw XQUERY_EXCEPTION_VAR(
+				error,
+				ERROR_PARAMS(
+					qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
+				),
+				ERROR_LOC( loc )
+			);
     }
     else
     {

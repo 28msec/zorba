@@ -39,6 +39,7 @@
 #include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/xerces_xmlcharray.h"
+#include "util/string_util.h"
 
 #include "types/schema/XercSchemaValidator.h"
 
@@ -1471,12 +1472,17 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
 
       if ( theStrictValidation && currentScope == Grammar::TOP_LEVEL_SCOPE )
       {
-        Error const& errorCode = err::XQDY0084;
-        std::ostringstream msg;
-        msg << "Schema global element definition not found: " <<
-          StrX(theLocalname.getRawBuffer()) << " @ " <<
-          StrX(fURIStringPool->getValueForId(uriId)) << ".";
-        ZORBA_ERROR_VAR_LOC_DESC( errorCode, theLoc, msg.str());
+        throw XQUERY_EXCEPTION(
+          XQDY0084,
+          ERROR_PARAMS(
+            BUILD_STRING(
+              StrX( theLocalname.getRawBuffer() ),
+              " @ ",
+              StrX( fURIStringPool->getValueForId( uriId ) )
+            )
+          ),
+          ERROR_LOC( theLoc )
+        );
       }
       else
         fValidator->emitError(errorCode, elemDecl->getFullName());
@@ -1567,10 +1573,13 @@ void SchemaValidatorFilter::error(
   }
 
   //std::cout << "SchemaValidatorFilter::error " << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl;
-  ZORBA_ERROR_LOC_DESC( XQDY0027, theLoc,
-      StrX(exc_msg.getRawBuffer()).localForm() );
+  throw XQUERY_EXCEPTION(
+    XQDY0027,
+    ERROR_PARAMS( StrX(exc_msg.getRawBuffer()).localForm() ),
+    ERROR_LOC( theLoc )
+  );
 }
 
 }  //namespace zorba
-
 #endif // ZORBA_NO_XMLSCHEMA
+/* vim:set et sw=2 ts=2: */

@@ -125,8 +125,11 @@ bool Validator::realValidationValue(
       {
         if (nr_child_elements)
         {
-          ZORBA_ERROR_LOC_DESC(XQDY0061, loc,
-            "Document node has more than one element for validation.");
+          throw XQUERY_EXCEPTION(
+            XQDY0061,
+            ERROR_PARAMS( ZED( DocNodeMultipleElements ) ),
+            ERROR_LOC( loc )
+          );
         }
         nr_child_elements++;
       }
@@ -142,9 +145,7 @@ bool Validator::realValidationValue(
 
     if ( validationMode == ParseConstants::val_strict )
     {
-      ZORBA_ERROR_LOC_DESC(XQDY0084, loc,
-            "No valid schema found for top level element.");
-      return false;
+      throw XQUERY_EXCEPTION( XQDY0084, ERROR_LOC( loc ) );
     }
     else
     {
