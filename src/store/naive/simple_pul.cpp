@@ -642,7 +642,7 @@ void PULImpl::addPut(store::Item_t& target, store::Item_t& uri)
 
     if (upd->theTargetUri == uri)
     {
-      throw XQUERY_EXCEPTION(XUDY0031);
+      throw XQUERY_EXCEPTION( XUDY0031, ERROR_PARAMS( uri->getStringValue() ) );
     }
   }
 
@@ -1023,7 +1023,9 @@ void PULImpl::mergeUpdates(store::Item* other)
       
       if (upd->theTargetUri->equals(otherUpd->theTargetUri))
       {
-        throw XQUERY_EXCEPTION(XUDY0031);
+        throw XQUERY_EXCEPTION(
+          XUDY0031, ERROR_PARAMS( upd->theTargetUri->getStringValue() )
+        );
       }
     }
 

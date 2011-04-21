@@ -1140,7 +1140,6 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
           ERROR_LOC( loc )
         );
       }
-
       throw;
     }
   }
@@ -1906,7 +1905,9 @@ void* begin_visit(const VersionDecl& v)
   TRACE_VISIT();
 
   if (!utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
-    throw XQUERY_EXCEPTION(XQST0087, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XQST0087, ERROR_PARAMS(v.get_encoding()), ERROR_LOC(loc)
+    );
 
   std::string versionStr = v.get_version().str();
 
@@ -3113,7 +3114,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   // TODO: remove this error
   if (v.is_updating() && v.get_return_type() != 0)
-    throw XQUERY_EXCEPTION(XUST0028, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION( XUST0028, ERROR_PARAMS( fname ), ERROR_LOC( loc ) );
 
   if (v.get_return_type() != NULL)
     pop_tstack();
@@ -5121,7 +5122,9 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
     expand_no_default_qname(pvarQName, pv->get_name(), loc);
 
     if (pvarQName->equals(varExpr->get_name()))
-      throw XQUERY_EXCEPTION(XQST0089, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XQST0089, ERROR_PARAMS(pvarQName->getStringValue()), ERROR_LOC(loc)
+      );
 
     posVarExpr = bind_var(pv->get_location(), pvarQName, var_expr::pos_var);
   }

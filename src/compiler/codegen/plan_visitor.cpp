@@ -1982,7 +1982,7 @@ bool begin_visit(insert_expr& v)
   xqtref_t sourceType = sourceExpr->get_return_type();
 
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(qloc));
+    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( qloc ) );
 
 #if XQUF_STATIC_TYPING_SAFE
 
@@ -1998,7 +1998,7 @@ bool begin_visit(insert_expr& v)
 
     if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
     {
-      throw XQUERY_EXCEPTION(XUTY0005, ERROR_LOC(qloc));
+      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( qloc ) );
     }
 
     if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR) ||
@@ -2006,7 +2006,7 @@ bool begin_visit(insert_expr& v)
         TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) ||
         TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION(XUTY0005, ERROR_LOC(qloc));
+      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( qloc ) );
     }
   }
   else
@@ -2028,7 +2028,7 @@ bool begin_visit(insert_expr& v)
     if (!TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
         !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION(XUTY0005, ERROR_LOC(qloc));
+      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( qloc ) );
     }
   }
   else
@@ -2038,7 +2038,7 @@ bool begin_visit(insert_expr& v)
         !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) &&
         !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION(XUTY0006, ERROR_LOC(qloc));
+      throw XQUERY_EXCEPTION( XUTY0006, ERROR_LOC( qloc ) );
     }
   }
 #endif
@@ -2916,7 +2916,7 @@ bool begin_visit(replace_expr& v)
   xqtref_t targetType = targetExpr->get_return_type();
 
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(qloc));
+    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( qloc ) );
 
   return true;
 }
@@ -2946,7 +2946,7 @@ bool begin_visit(rename_expr& v)
   xqtref_t targetType = targetExpr->get_return_type();
 
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(qloc));
+    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( qloc ) );
 
   return true;
 }

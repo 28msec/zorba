@@ -547,13 +547,6 @@ XQUERY_DEC_ERROR( XQST0093 );
 XQUERY_DEC_ERROR( XQDY0096 );
 
 /**
- * It is a static error for a decimal-format to specify a value that is not
- * legal for a given property, as described in statically known decimal
- * formats.
- */
-XQUERY_DEC_ERROR( XQST0097 );
-
-/**
  * It is a static error if, for any named or unnamed decimal format, the
  * properties representing characters used in a picture string do not each have
  * distinct values. These properties are decimal-separator-sign,
@@ -1053,12 +1046,6 @@ XQUERY_DEC_ERROR( XUDY0023 );
  * introduce conflicting namespace bindings into an element node.
  */
 XQUERY_DEC_ERROR( XUDY0024 );
-
-/**
- * It is a static error if a revalidation declaration in a Prolog specifies a
- * revalidation mode that is not supported by the current implementation.
- */
-XQUERY_DEC_ERROR( XUST0026 );
 
 /**
  * It is a dynamic error if the target expression of an insert, replace, or

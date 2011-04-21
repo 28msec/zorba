@@ -2536,11 +2536,9 @@ bool ElementNode::addBindingForQName(
       }
       else
       {
-        ZORBA_ERROR_DESC_OSS(XUDY0024,
-                             "The implied namespace binding of "
-                             << qname->show()
-                             << " conflicts with namespace binding ["
-                             << prefix << ", " << ns2 << "]");
+        throw XQUERY_EXCEPTION(
+          XUDY0024, ERROR_PARAMS( qname->show(), prefix, ns2 )
+        );
       }
     }
   }
@@ -2667,10 +2665,9 @@ void ElementNode::checkNamespaceConflict(
 
   if (found && ns2 != ns)
   {
-    ZORBA_ERROR_VAR_DESC_OSS(ecode,
-                         "The implied namespace binding of " << qname->show()
-                         << " conflicts with namespace binding ["
-                         << prefix << ", " << ns2 << "]");
+    throw XQUERY_EXCEPTION_VAR(
+      ecode, ERROR_PARAMS( qname->show(), prefix, ns2 )
+    );
   }
 }
 

@@ -218,8 +218,11 @@ int serializer::emitter::emit_expanded_string(
 #endif//ZORBA_NO_UNICODE
 
     // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
-    if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid((unsigned int)*chars))
-      ZORBA_ERROR_DESC(XQST0090, "Serialization error: codepoint #" + NumConversions::uintToStr((unsigned int)*chars) + " is not allowed in XML version 1.0.");
+    if (ser && ser->method == PARAMETER_VALUE_XML &&
+        ser->version == "1.0" && !xml::is_valid(static_cast<unsigned>(*chars)))
+      throw XQUERY_EXCEPTION(
+        XQST0090, ERROR_PARAMS( static_cast<unsigned>( *chars ), xml::v1_0 )
+      );
 
     /*
       Certain characters, specifically the control characters #x7F-#x9F, are
@@ -2235,3 +2238,4 @@ void serializer::serialize(
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

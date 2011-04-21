@@ -107,8 +107,7 @@ bool Validator::realValidationValue(
         sourceNode->getNodeKind()==store::StoreConsts::elementNode
        ) )
   {
-    ZORBA_ERROR_LOC_DESC(XQTY0030, loc,
-      "Argument in validate expression not a document or element node.");
+    throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
   }
 
   // verify number of child elements when source is a document node
@@ -277,10 +276,7 @@ bool Validator::realValidationValue(
   }
   default:
   {
-    ZORBA_ERROR_LOC_DESC(XQTY0030, loc,
-          "Argument in validate expression not a document or element node.");
-    result = NULL;
-    return false;
+    throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
   }
   }
 #endif // ZORBA_NO_XMLSCHEMA

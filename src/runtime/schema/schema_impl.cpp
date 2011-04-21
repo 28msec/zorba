@@ -54,10 +54,8 @@ ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (consumeNext(tmp, theChild, planState))
     {
-      ZORBA_ERROR_LOC_DESC(XQTY0030, loc, 
-                           "Argument in validate expression not a single element node.");
-      result = NULL;
-      STACK_PUSH(false, aState);
+      throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
+      // STACK_PUSH(false, aState); -- THIS IS NEVER REACHED
     }
     else
     {
@@ -73,8 +71,8 @@ ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   else
   {
-    ZORBA_ERROR_LOC_DESC( XQTY0030, loc, "Wrong arguments in validate expression.");
-    STACK_PUSH(false, aState);
+    throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
+    // STACK_PUSH(false, aState); -- THIS IS NEVER REACHED
   }
 
   STACK_END (aState);
@@ -146,4 +144,5 @@ ZorbaIsValidatedIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

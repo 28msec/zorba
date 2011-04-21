@@ -3578,18 +3578,34 @@ void static_context::add_decimal_format(
 {
   if (theDecimalFormats == NULL)
     theDecimalFormats = new std::vector<DecimalFormat_t>;
-
-  ulong num = (ulong)theDecimalFormats->size();
-  for (ulong i = 0; i < num; ++i)
-  {
-    const DecimalFormat_t& format = (*theDecimalFormats)[i];
-
-    if ((decimalFormat->isDefault() && format->isDefault()) ||
-        (!format->isDefault() &&
-         !decimalFormat->isDefault() &&
-         format->getName()->equals(decimalFormat->getName())))
+  else {
+    ulong num = (ulong)theDecimalFormats->size();
+    for (ulong i = 0; i < num; ++i)
     {
-      throw XQUERY_EXCEPTION(XQST0111, ERROR_LOC(loc));
+      const DecimalFormat_t& format = (*theDecimalFormats)[i];
+
+      if (decimalFormat->isDefault() && format->isDefault())
+      {
+        throw XQUERY_EXCEPTION(
+          XQST0111,
+          ERROR_PARAMS( ZED( TwoDefaultDecimalFormats ) ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      if (!format->isDefault() &&
+          !decimalFormat->isDefault() &&
+          format->getName()->equals(decimalFormat->getName()))
+      {
+        throw XQUERY_EXCEPTION(
+          XQST0111,
+          ERROR_PARAMS(
+            ZED( TwoDecimalFormatsSameName ),
+            format->getName()->getStringValue()
+          ),
+          ERROR_LOC( loc )
+        );
+      }
     }
   }
 

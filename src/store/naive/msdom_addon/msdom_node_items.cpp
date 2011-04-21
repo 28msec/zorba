@@ -1831,11 +1831,9 @@ bool ElementNode::addBindingForQName(
       }
       else
       {
-        ZORBA_ERROR_DESC_OSS(XUDY0024,
-                             "The implied namespace binding of "
-                             << qname->show()
-                             << " conflicts with namespace binding ["
-                             << prefix->str() << ", " << ns2->str() << "]");
+        throw XQUERY_EXCEPTION(
+          XUDY0024, ERROR_PARAMS( wname->show(), prefix->str(), ns2->str() )
+        );
       }
     }
   }
