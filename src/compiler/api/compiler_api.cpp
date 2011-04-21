@@ -310,27 +310,14 @@ parsenode_t XQueryCompiler::createMainModule(
 
   const zstring& lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
-  // bugfix for #2934414
-  // Check the library module's URI for validity. Raise an error with the
-  // location of the module declaration if the URI is not a valid absolute URI.
-  try
-  {
-    URI lURI(lib_namespace);
-    if(!lURI.is_absolute())
-    {
-			throw XQUERY_EXCEPTION(
-				XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
-				ERROR_LOC( mod_ast->get_decl()->get_location() )
-			);
-    }
-  }
-  catch (ZorbaException const& e)
-  {
+	URI lURI(lib_namespace);
+	if(!lURI.is_absolute())
+	{
 		throw XQUERY_EXCEPTION(
-			XQST0046, ERROR_PARAMS( e.what() ),
+			XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
 			ERROR_LOC( mod_ast->get_decl()->get_location() )
 		);
-  }
+	}
 
   // create a dummy main module
   std::stringstream lDocStream;

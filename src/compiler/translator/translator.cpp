@@ -2060,7 +2060,11 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   }
 
   if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
-    throw XQUERY_EXCEPTION(XQST0070, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XQST0070,
+      ERROR_PARAMS( theModulePrefix, ZED( NoRebindPrefix ) ),
+      ERROR_LOC( loc )
+    );
 
   theSctx->bind_ns(theModulePrefix, theModuleNamespace, loc);
 
@@ -2285,14 +2289,16 @@ void* begin_visit(const BaseURIDecl& v)
 
   CHK_SINGLE_DECL(hadBUriDecl, XQST0032);
 
+  zstring uri(v.get_base_uri());
   try
   {
-    zstring uri(v.get_base_uri());
     theSctx->set_base_uri(uri);
   }
   catch (ZorbaException const& e)
   {
-    throw XQUERY_EXCEPTION(XQST0046, ERROR_PARAMS( e.what() ), ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XQST0046, ERROR_PARAMS( uri, e.what() ), ERROR_LOC(loc)
+    );
   }
   return NULL;
 }
@@ -2351,14 +2357,19 @@ void* begin_visit(const NamespaceDecl& v)
   zstring pre = v.get_prefix();
   zstring uri = v.get_uri();
 
-  if (pre == "xmlns")
+  if (pre == "xml" || pre == "xmlns")
   {
-    ZORBA_ERROR_LOC_DESC(XQST0070, loc,
-                         "The namespace prefix \"xmlns\" cannot be bound to any URI.");
+    throw XQUERY_EXCEPTION(
+      XQST0070, ERROR_PARAMS( pre, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
+    );
   }
-  else if (pre == "xml" || uri == XML_NS || uri == XMLNS_NS)
+  else if (uri == XML_NS || uri == XMLNS_NS)
   {
-    throw XQUERY_EXCEPTION(XQST0070, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XQST0070,
+      ERROR_PARAMS( uri, ZED( NoBindURI ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   theSctx->bind_ns(pre, uri, loc);
@@ -2423,15 +2434,15 @@ void* begin_visit(const SchemaImport& v)
   {
     if (!prefix->get_default_bit() && targetNS.empty())
     {
-      ZORBA_ERROR_LOC_PARAM(XQST0057, loc,
-                            "(no target namespace uri specified)",
-                            targetNS.c_str());
+      throw XQUERY_EXCEPTION( XQST0057, ERROR_LOC( loc ) );
     }
 
     zstring pfx = prefix->get_prefix();
 
     if (pfx == "xml" || pfx == "xmlns")
-      throw XQUERY_EXCEPTION(XQST0070, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XQST0070, ERROR_PARAMS( pfx, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
+      );
 
     if (prefix->get_default_bit())
       theSctx->set_default_elem_type_ns(targetNS, loc);
@@ -2569,7 +2580,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
   if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
-    throw XQUERY_EXCEPTION(XQST0070, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XQST0070, ERROR_PARAMS( pfx, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
+    );
 
   // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
   if (targetNS.empty())
@@ -2578,7 +2591,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // It is a static error [err:XQST0047] if more than one module import in a
   // Prolog specifies the same target namespace
   if (! theImportedModules.insert(targetNS.str()).second)
-    throw XQUERY_EXCEPTION(XQST0047, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(XQST0047, ERROR_PARAMS(targetNS), ERROR_LOC(loc));
 
   // The namespace prefix specified in a module import must not be the same as
   // any namespace prefix bound in the same module by another module import,
@@ -2867,8 +2880,11 @@ void* begin_visit(const VFO_DeclList& v)
 
     if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
     {
-      ZORBA_ERROR_LOC_PARAM(XQST0045, func_decl->get_location(),
-                            qnameItem->getLocalName().str(), "");
+      throw XQUERY_EXCEPTION(
+        XQST0045,
+        ERROR_PARAMS( qnameItem->getLocalName() ),
+        ERROR_LOC( func_decl->get_location() )
+      );
     }
 
     if (! theModuleNamespace.empty() && ns != theModuleNamespace)
@@ -4008,7 +4024,11 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       collationUri = collationSpec->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
-        throw XQUERY_EXCEPTION(XQST0076, ERROR_LOC(keySpec->get_location()));
+        throw XQUERY_EXCEPTION(
+          XQST0076,
+          ERROR_PARAMS( collationUri ),
+          ERROR_LOC( keySpec->get_location() )
+        );
     }
     else if (ptype != NULL &&
              TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))
@@ -5722,7 +5742,9 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
       collationUri = mod->get_collation_spec()->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
-        throw XQUERY_EXCEPTION(XQST0076, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(
+          XQST0076, ERROR_PARAMS( collationUri ), ERROR_LOC( loc )
+        );
     }
 
     expr_t orderExpr = pop_nodestack();
@@ -9632,11 +9654,15 @@ void* begin_visit(const DirAttributeList& v)
       break;
 
     attr_expr* attrExpr = expr.dyn_cast<attr_expr>().getp();
+    store::Item const *const attExprName = attrExpr->getQName();
 
     for (unsigned long i = 0; i < numAttrs; i++)
     {
-      if (attributes[i]->getQName()->equals(attrExpr->getQName()))
-        throw XQUERY_EXCEPTION( XQST0040, ERROR_LOC(loc));
+      store::Item const *const attName = attributes[i]->getQName();
+      if (attName->equals(attExprName))
+        throw XQUERY_EXCEPTION(
+          XQST0040, ERROR_PARAMS( attName->getStringValue() ), ERROR_LOC(loc)
+        );
     }
 
     attributes.push_back(attrExpr);
@@ -9714,7 +9740,11 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       prefix = qname->get_localname();
 
       if (ZSTREQ(prefix, "xmlns"))
-        throw XQUERY_EXCEPTION(XQST0070, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(
+          XQST0070,
+          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
+          ERROR_LOC( loc )
+        );
     }
 
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr>().getp();
@@ -9753,11 +9783,21 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     if (have_uri)
     {
       if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)) ||
-           (ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
-           (ZSTREQ(prefix, "xmlns") && !ZSTREQ(uri, XMLNS_NS)) ||
-           (ZSTREQ(uri, XMLNS_NS) && !ZSTREQ(prefix, "xmlns")))
+          (ZSTREQ(prefix, "xmlns") && !ZSTREQ(uri, XMLNS_NS)))
       {
-        throw XQUERY_EXCEPTION(XQST0070, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(
+          XQST0070,
+          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
+          (ZSTREQ(uri, XMLNS_NS) && !ZSTREQ(prefix, "xmlns")))
+      {
+        throw XQUERY_EXCEPTION(
+          XQST0070, ERROR_PARAMS( uri, ZED( NoBindURI ) ), ERROR_LOC( loc )
+        );
       }
 
       theSctx->bind_ns(prefix, uri, loc, err::XQST0071);
@@ -9769,7 +9809,11 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     else if (valueExpr == NULL)
     {
       if (ZSTREQ(prefix, "xml"))
-        throw XQUERY_EXCEPTION(XQST0070, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(
+          XQST0070,
+          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
+          ERROR_LOC( loc )
+        );
 
       // unbind the prefix
       zstring empty;
@@ -11810,7 +11854,9 @@ void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_case_option() )
-    ZORBA_ERROR_LOC_DESC( FTST0019, loc, "multiple case options" );
+    throw XQUERY_EXCEPTION(
+      FTST0019, ERROR_PARAMS( "case" ), ERROR_LOC( loc )
+    );
   mo->set_case_option( new ftcase_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -11869,7 +11915,9 @@ void end_visit (const FTDiacriticsOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_diacritics_option() )
-    ZORBA_ERROR_LOC_DESC( FTST0019, loc, "multiple diacritics options" );
+    throw XQUERY_EXCEPTION(
+      FTST0019, ERROR_PARAMS( "diacriticics" ), ERROR_LOC( loc )
+    );
   mo->set_diacritics_option( new ftdiacritics_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -11922,7 +11970,7 @@ void end_visit (const FTExtensionSelection& v, void* /*visit_state*/) {
   if ( s )
     pop_ftstack();
   else
-    ZORBA_ERROR_LOC_DESC( XQST0079, loc, "" );
+    throw XQUERY_EXCEPTION( XQST0079, ERROR_LOC( loc ) );
   push_ftstack( new ftextension_selection( loc, v.get_pragma_list(), s ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -11953,7 +12001,9 @@ void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_language_option() )
-    ZORBA_ERROR_LOC_DESC( FTST0019, loc, "multiple language options" );
+    throw XQUERY_EXCEPTION(
+      FTST0019, ERROR_PARAMS( "language" ), ERROR_LOC( loc )
+    );
   mo->set_language_option( new ftlanguage_option( loc, v.get_language() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -12188,7 +12238,9 @@ void end_visit (const FTStemOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_stem_option() )
-    ZORBA_ERROR_LOC_DESC( FTST0019, loc, "multiple stem options" );
+    throw XQUERY_EXCEPTION(
+      FTST0019, ERROR_PARAMS( "stem" ), ERROR_LOC( loc )
+    );
   mo->set_stem_option( new ftstem_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -12251,7 +12303,9 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_stop_word_option() )
-    ZORBA_ERROR_LOC_DESC( FTST0019, loc, "multiple stop-word options" );
+    throw XQUERY_EXCEPTION(
+      FTST0019, ERROR_PARAMS( "stop words" ), ERROR_LOC( loc )
+    );
   ftstop_word_option *const sw =
     new ftstop_word_option( loc, stop_words, v.get_mode() );
   mo->set_stop_word_option( sw );
@@ -12311,7 +12365,9 @@ void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_thesaurus_option() )
-    ZORBA_ERROR_LOC_DESC( FTST0019, loc, "multiple thesaurus options" );
+    throw XQUERY_EXCEPTION(
+      FTST0019, ERROR_PARAMS( "thesaurus" ), ERROR_LOC( loc )
+    );
   ftthesaurus_option *const t =
     new ftthesaurus_option( loc, default_tid, list, v.no_thesaurus() );
   mo->set_thesaurus_option( t );
@@ -12381,7 +12437,9 @@ void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_wild_card_option() )
-    ZORBA_ERROR_LOC_DESC( FTST0019, loc, "multiple wild-card options" );
+    throw XQUERY_EXCEPTION(
+      FTST0019, ERROR_PARAMS( "wildcards" ), ERROR_LOC( loc )
+    );
   mo->set_wild_card_option( new ftwild_card_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }

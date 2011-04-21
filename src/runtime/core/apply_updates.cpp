@@ -115,7 +115,7 @@ apply_updates(
     if (zorbaIndex == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0021_INDEX_IS_NOT_DECLARED,
+        ZDDY0021_INDEX_NOT_DECLARED,
         ERROR_PARAMS( indexes[i]->getName()->getStringValue() ),
         ERROR_LOC( loc )
       );

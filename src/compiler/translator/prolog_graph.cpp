@@ -18,6 +18,8 @@
 
 #include "context/static_context.h"
 
+#include "util/string_util.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba 
 {
@@ -29,13 +31,10 @@ namespace zorba
 void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
 {
   std::string moduleNS = theModuleSctx->get_module_namespace();
-  std::ostringstream msg;
+  zstring varName;
   if ( v )
-    msg << '$' << v->getVarExpr()->get_name()->getStringValue();
-  else
-    msg << '-';
-
-  throw XQUERY_EXCEPTION(XQST0054, ERROR_PARAMS(msg.str()), ERROR_LOC(loc));
+    varName = BUILD_STRING('$', v->getVarExpr()->get_name()->getStringValue());
+  throw XQUERY_EXCEPTION(XQST0054, ERROR_PARAMS(varName), ERROR_LOC(loc));
 }
 
 
@@ -347,6 +346,5 @@ void PrologGraph::reorder_globals(std::list<GlobalBinding>& prologVarBindings)
 }
 
 
-
-}
-
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

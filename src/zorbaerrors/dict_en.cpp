@@ -161,7 +161,7 @@ extern entry const dict_en[] = {
   { "XQST0047", "\"$1\": duplicate target namespace" },
   { "XQST0048", "\"$1\": not in library namespace" },
   { "XQST0049", "\"$1\": duplicate variable declaration" },
-  { "XQST0054", "\"$1\": variable must not depend on itself" },
+  { "XQST0054", "${\"1\": }variable must not depend on itself" },
   { "XQST0055", "multiple copy-namespaces declarations" },
   { "XQST0057", "empty target namespace" },
   { "XQST0058", "\"$1\": duplicate target namespace" },
@@ -172,10 +172,9 @@ extern entry const dict_en[] = {
   { "XQST0067", "multiple construction declarations" },
   { "XQST0068", "multiple boundary-space declarations" },
   { "XQST0069", "multiple empty order declarations" },
-  { "XQST0070", "can not reuse \"xml\" or \"xmlns\" prefixes" },
+  { "XQST0070", "\"$1\": $2" },
   { "XQST0071", "\"$1\": duplicate namespace declaration attribute" },
-  { "XQST0075", "\"validate\" expression not supported" },
-  { "XQST0076", "unknown collation" },
+  { "XQST0076", "\"$1\": unknown collation" },
   { "XQST0079", "unknown pragma or empty expression" },
   { "XQST0085", "namespace URI is empty" },
   { "XQST0087", "\"$1\": invalid encoding" },
@@ -244,7 +243,7 @@ extern entry const dict_en[] = {
   { "XUTY0006", "target expression not a single element, text, comment, or processing instruction node" },
   { "XUTY0007", "target expression does not return a sequence of zero or more nodes" },
   { "XUTY0008", "target expression not a single element, attribute, text, comment, or processing instruction node" },
-  { "XUTY0010", "TODO" },
+  { "XUTY0010", "replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes" },
   { "XUTY0011", "replacement sequence does not consist of zero or more attribute nodes" },
   { "XUTY0012", "multiple elements, attributes, or processing-instruction nodes returned" },
   { "XUTY0013", "source expression of \"copy\" clause must return a single node" },
@@ -422,7 +421,7 @@ extern entry const dict_en[] = {
   { "ZXQP0028", "\"$1\": external function not bound" },
   { "ZXQP0029", "\"$1\": module import not allowed" },
   { "ZXQP0030", "deadlock" },
-  { "ZXQP0031", "malformed XQueryX xml input${: 1}" },
+  { "ZXQP0031", "malformed XQueryX XML input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
   { "ZXQP0036", "BreakIterator creation failed" },
 
@@ -502,6 +501,7 @@ extern entry const dict_en[] = {
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
   { "~MustBeNCName", "must be an xs:NCName" },
+  { "~NoBindURI", "namespace URI can not be bound to prefix" },
   { "~NoCastTo", "can not cast to $3${: 4}" },
   { "~NoCollectionURIResolver", "no collection URI resolver could be retrieved using SerializationCallback" },
   { "~NoCompareTypes", "can not compare item of type $2 with item of type $3" },
@@ -510,6 +510,7 @@ extern entry const dict_en[] = {
   { "~NoEmptySeqAsBaseURI", "can't treat empty sequence as base URI" },
   { "~NoHashItemOfType", "can not hash item of type $2" },
   { "~NoModuleURIResolver", "no module URI resolver could be retrieved using SerializationCallback" },
+  { "~NoRebindPrefix", "can not rebind predefined prefix" },
   { "~NoRegisteredSerializationCallback", "external module \"$2\" not available using registered SerializationCallback" },
   { "~NoResolveRelativeURI", "could not resolve relative URI" },
   { "~NoSerializationCallbackForDocColMod", "document, collection, or module resolver required but no SerializationCallback given" },
@@ -604,7 +605,7 @@ extern entry const dict_en[] = {
   { "~static error", "static error" },
   { "~type error", "type error" },
   { "~user-defined error", "user-defined error" },
-  { "~xqueryx_empty_content", "xqueryx content is empty"}
+  { "~xqueryx_empty_content", "xqueryx content is empty" }
 };
 DEF_DICT_END(en);
 

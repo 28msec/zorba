@@ -53,7 +53,7 @@ ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if ((vic = theSctx->lookup_ic(qname)) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0031_IC_IS_NOT_DECLARED,
+      ZDDY0031_IC_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -109,7 +109,7 @@ DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (theSctx->lookup_ic(qname) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0031_IC_IS_NOT_DECLARED,
+      ZDDY0031_IC_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -118,7 +118,7 @@ DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (GENV_STORE.getIC(qname) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0032_IC_IS_NOT_ACTIVATED,
+      ZDDY0032_IC_NOT_ACTIVATED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -155,7 +155,7 @@ CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if ( vic == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0031_IC_IS_NOT_DECLARED,
+        ZDDY0031_IC_NOT_DECLARED,
         ERROR_PARAMS( qname->getStringValue() ),
         ERROR_LOC( loc )
       );

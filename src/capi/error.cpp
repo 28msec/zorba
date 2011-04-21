@@ -135,16 +135,19 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
 
 XQC_Error Error::handle_and_convert_queryexception( XQC_ErrorHandler *handler,
                                                     XQueryException const &xe ) {
+  XQC_Error const xqc_error = Error::convert_xquery_error( xe.error() );
   if ( handler ) {
-    handler->error(handler,
-      Error::convert_xquery_error( xe.error() ),
-      NULL, // TODO: no error code uri??
-      xe.error().qname().localname(),
+    err::QName const &qname = xe.error().qname();
+    handler->error(
+      handler,
+      xqc_error,
+      qname.ns(),
+      qname.localname(),
       xe.what(),
       NULL // TODO: no support for passing argument to fn:error()
     );
   }
-  return Error::convert_xquery_error( xe.error() );
+  return xqc_error;
 }
 
 } // namespace zorbac

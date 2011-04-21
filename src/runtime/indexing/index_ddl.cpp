@@ -243,7 +243,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0021_INDEX_IS_NOT_DECLARED,
+      ZDDY0021_INDEX_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -306,7 +306,7 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (theSctx->lookup_index(qname) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0021_INDEX_IS_NOT_DECLARED,
+      ZDDY0021_INDEX_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -372,7 +372,7 @@ bool RefreshIndexIterator::nextImpl(
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0021_INDEX_IS_NOT_DECLARED,
+      ZDDY0021_INDEX_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -618,7 +618,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0021_INDEX_IS_NOT_DECLARED,
+          ZDDY0021_INDEX_NOT_DECLARED,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -779,7 +779,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0021_INDEX_IS_NOT_DECLARED,
+          ZDDY0021_INDEX_NOT_DECLARED,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -962,7 +962,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0021_INDEX_IS_NOT_DECLARED,
+        ZDDY0021_INDEX_NOT_DECLARED,
         ERROR_PARAMS( qname->getStringValue() ),
         ERROR_LOC( loc )
       );

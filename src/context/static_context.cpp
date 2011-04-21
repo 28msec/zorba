@@ -3017,7 +3017,7 @@ void static_context::bind_ic(
   if (lookup_ic(qname) != NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDST0041_IC_IS_ALREADY_DECLARED,
+      ZDST0041_IC_ALREADY_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -3855,7 +3855,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       if (!theICMap->insert(pair.first, pair.second))
       {
         throw XQUERY_EXCEPTION(
-          ZDST0041_IC_IS_ALREADY_DECLARED,
+          ZDST0041_IC_ALREADY_DECLARED,
           ERROR_PARAMS( pair.first->getStringValue() ),
           ERROR_LOC( loc )
         );
