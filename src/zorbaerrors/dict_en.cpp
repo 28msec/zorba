@@ -422,7 +422,7 @@ extern entry const dict_en[] = {
   { "ZXQP0028", "\"$1\": external function not bound" },
   { "ZXQP0029", "\"$1\": module import not allowed" },
   { "ZXQP0030", "deadlock" },
-  { "ZXQP0031", "malformed XQueryX input" },
+  { "ZXQP0031", "malformed XQueryX xml input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
   { "ZXQP0036", "BreakIterator creation failed" },
 
@@ -604,7 +604,7 @@ extern entry const dict_en[] = {
   { "~static error", "static error" },
   { "~type error", "type error" },
   { "~user-defined error", "user-defined error" },
-
+  { "~xqueryx_empty_content", "xqueryx content is empty"}
 };
 DEF_DICT_END(en);
 

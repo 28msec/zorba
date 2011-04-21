@@ -20,6 +20,8 @@
 
 #include <libxslt/xslt.h>
 #include <libxslt/transform.h>
+#include <libxml/xmlerror.h>
+#include <libxslt/xsltutils.h>
 
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #include "compiler/xqueryx/xqueryx_xslt.h"
@@ -36,10 +38,17 @@ XQueryXConvertor::XQueryXConvertor()
   //setup libxml
   xmlSubstituteEntitiesDefault(1);
   xmlLoadExtDtdDefaultValue = 1;
+
+  xmlSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
+  xsltSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
 }
 
 XQueryXConvertor::~XQueryXConvertor()
 {
+  //reset the error handlers for libxml2 and libxslt
+  initGenericErrorDefaultFunc(NULL);
+  xsltSetGenericErrorFunc(NULL, NULL);
+
   xsltFreeStylesheet((xsltStylesheetPtr)xqueryx_xslt);
   //free xslt
   xsltCleanupGlobals();
@@ -61,6 +70,23 @@ void XQueryXConvertor::XQueryX_init()
   inited = true;
 }
 
+void XQueryXConvertor::zorba_xslt_error_handler(void *ctx, const char *msg, ...)
+{
+  va_list args;
+  va_start( args, msg );
+  int     len;
+  std::string  *errstr = (std::string  *)ctx;
+  char    *buffer = NULL;
+
+  len = _vscprintf( msg, args ) + 1;
+    
+  buffer = (char*)malloc( len * sizeof(char) );
+
+  vsprintf( buffer, msg, args );
+  *errstr = buffer;
+  free(buffer);
+}
+
 char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
 {
   XQueryX_init();
@@ -70,7 +96,7 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
   doc = xmlParseDoc((xmlChar*)xqueryx);
 
   if(!doc)
-    throw ZORBA_EXCEPTION(ZXQP0031_MALFORMED_XQUERYX_INPUT);
+    throw ZORBA_EXCEPTION(ZXQP0031_MALFORMED_XQUERYX_INPUT, ERROR_PARAMS(errstr));
 
   //xsltTransformContextPtr ctxt;
   //ctxt = xsltNewTransformContext((xsltStylesheetPtr)xqueryx_xslt, doc);
@@ -82,7 +108,7 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
   if(!res)
   {
     xmlFreeDoc(doc);
-    throw ZORBA_EXCEPTION( ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY );
+    throw ZORBA_EXCEPTION( ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, ERROR_PARAMS(errstr) );
   }
 /*  if ((ctxt->state == XSLT_STATE_ERROR) || (ctxt->state == XSLT_STATE_STOPPED))
   {
@@ -101,6 +127,10 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
 
   xmlFreeDoc(res);
 	xmlFreeDoc(doc);
+  if(!xquery)
+  {
+    throw ZORBA_EXCEPTION( ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, ERROR_PARAMS(ZED(xqueryx_empty_content) ));
+  }
 
   return xquery;
 }

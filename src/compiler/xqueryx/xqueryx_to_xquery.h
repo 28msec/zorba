@@ -17,6 +17,8 @@
 #ifndef ZORBA_XQUERYX_TO_XQUERY_CONVERTOR
 #define ZORBA_XQUERYX_TO_XQUERY_CONVERTOR
 
+#include <string>
+
 namespace zorba {
 
 struct xsltStylesheet;
@@ -25,6 +27,7 @@ class XQueryXConvertor
 {
   xsltStylesheet*     xqueryx_xslt;
   bool                inited;
+  std::string         errstr;
 public:
   XQueryXConvertor();
   ~XQueryXConvertor();
@@ -37,6 +40,9 @@ public:
   bool  isXQueryX(char *xquery_str);
 
   void freeResult(char *result_str);
+
+
+  static void zorba_xslt_error_handler(void *ctx, const char *msg, ...);
 };
 
 };//end namespace zorba
