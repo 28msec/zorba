@@ -550,7 +550,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  materialize_clause(static_context* sctx,  const QueryLoc& loc);
+  materialize_clause(static_context* sctx, const QueryLoc& loc);
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 

@@ -2979,7 +2979,7 @@ void* begin_visit(const VFO_DeclList& v)
       }
       catch (XQueryException& e)
       {
-        set_source( e, loc );
+        set_source(e, loc);
         throw;
       }
 
@@ -2997,10 +2997,12 @@ void* begin_visit(const VFO_DeclList& v)
         if (ef->getLocalName().compare(qnameItem->getLocalName().str()) != 0)
         {
           ZORBA_ERROR_LOC_DESC_OSS(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
-              loc,
-              "The external function referred to by the localname \"" << qnameItem->getLocalName()
-              << "\" claims to have the localname " << ef->getLocalName()
-              << " which is not consistent.");
+                                   loc,
+                                   "The external function referred to by the localname \"" 
+                                   << qnameItem->getLocalName()
+                                   << "\" claims to have the localname " 
+                                   << ef->getLocalName()
+                                   << " which is not consistent.");
         }
       }
 
