@@ -68,10 +68,6 @@ Item ItemFactoryImpl::createAnyURI(const String& aURI)
 {
   zstring lString = Unmarshaller::getInternalString(aURI);
   
-//  if(!GenericCast::instance()->isCastable(lString,
-//      &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, &GENV_TYPESYSTEM))
-//    ZORBA_ERROR_DESC_OSS(FORG0001, "Value '" << lString << "' must be an xs:AnyURI.");
-
   store::Item_t lItem;
   theItemFactory->createAnyURI(lItem, lString);
   
@@ -82,10 +78,6 @@ Item ItemFactoryImpl::createAnyURI(const String& aURI)
 Item ItemFactoryImpl::createDate( const String& aDateValue )
 {
   zstring const &lString = Unmarshaller::getInternalString( aDateValue );
-
-//  if(!GenericCast::instance()->isCastable(lString,
-//      &*GENV_TYPESYSTEM.DATE_TYPE_ONE, &GENV_TYPESYSTEM))
-//    ZORBA_ERROR_DESC_OSS(FORG0001, "Value '" << lString << "' must be an xs:Date.");
 
   store::Item_t lItem;
   theItemFactory->createDate(lItem,  lString.c_str(), lString.size());

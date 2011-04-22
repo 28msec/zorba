@@ -1611,7 +1611,7 @@ bool GenericCast::castToAtomic(
   ErrorInfo lErrorInfo = {&*sourceType, aTargetType};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
-    throw TYPE_EXCEPTION( XPST0051, lErrorInfo );
+    throw XQUERY_EXCEPTION( XPST0051, ERROR_PARAMS( aTargetType ) );
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -1709,7 +1709,7 @@ bool GenericCast::castToAtomic(
   ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
-    throw TYPE_EXCEPTION( XPST0051, lErrorInfo );
+    throw XQUERY_EXCEPTION( XPST0051, ERROR_PARAMS( aTargetType ) );
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)

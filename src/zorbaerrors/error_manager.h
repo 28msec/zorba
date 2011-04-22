@@ -98,16 +98,6 @@ private:
   errors_type errors_;
 };
 
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * \internal
- * Convenience macro for throwing "I/O error" exception.
- * \hideinitializer
- */
-#define ZORBA_IO_EXCEPTION(FUNC,PATH) \
-  ZORBA_EXCEPTION( ZOSE0004_IO_ERROR, ERROR_PARAMS( PATH, ::zorba::error::get_os_err_string( FUNC ) ) )
-
 ////////// TEMPORARY TRANSITION MACROS: THESE WILL BE REMOVED /////////////////
 
 #define ZORBA_ERROR_DESC(LOCALNAME,MSG) \
@@ -133,33 +123,8 @@ private:
     ZORBA_ERROR_LOC_DESC( LOCALNAME, LOC, oss.str() ); \
   } while (0)
 
-#define ZORBA_ERROR_VAR_DESC_OSS(ERROR_VAR,MSG) \
-  do { \
-    std::ostringstream oss; \
-    oss << MSG; \
-    throw XQUERY_EXCEPTION_VAR( ERROR_VAR, ERROR_PARAMS(oss.str()) ); \
-  } while (0)
-
-#define ZORBA_ERROR_VAR_LOC_DESC_OSS(ERROR_VAR,LOC,MSG) \
-  do { \
-    std::ostringstream oss; \
-    oss << MSG; \
-    throw XQUERY_EXCEPTION_VAR( ERROR_VAR, ERROR_PARAMS(oss.str()), ERROR_LOC(LOC) ); \
-  } while (0)
-
 #define ZORBA_ERROR_PARAM(LOCALNAME,PARAM1,PARAM2) \
   throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(PARAM1,PARAM2) )
-
-#define ZORBA_ERROR_VAR_PARAM(ERROR_VAR,PARAM1,PARAM2) \
-  throw XQUERY_EXCEPTION_VAR( ERROR_VAR, ERROR_PARAMS(PARAM1,PARAM2) )
-
-#define ZORBA_ERROR_PARAM_OSS(LOCALNAME,PARAM1,PARAM2) \
-  do { \
-    std::ostringstream oss1, oss2; \
-    oss1 << PARAM1; \
-    oss2 << PARAM2; \
-    throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(oss1.str(), oss2.str()) ); \
-  } while (0)
 
 #define ZORBA_ERROR_LOC_PARAM(LOCALNAME,LOC,PARAM1,PARAM2) \
   throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(PARAM1,PARAM2), ERROR_LOC(LOC) )

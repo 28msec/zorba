@@ -3940,21 +3940,6 @@ ForwardAxis
         }
     ;
 
-  /*
-
-    |   NAMESPACE  DOUBLE_COLON
-        {
-            $$ = NULL;
-            // Namespace axis is not supported. Zorba must raise XPST0010
-            driver.set_expr(new ParseErrorNode(driver.createQueryLoc(@$),
-                                               XPST0010,
-                                               "Namespace axis is not supported",
-                                               false));
-            YYERROR;
-        }
-  */
-
-
 // [73]
 AbbrevForwardStep
     :   NodeTest

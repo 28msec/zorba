@@ -879,8 +879,7 @@ void XQueryImpl::executeSAX()
 
     if (theCompilerCB->isUpdating())
     {
-      ZORBA_ERROR_DESC(ZAPI0007_CANNOT_SERIALIZE_PUL,
-                       "Can't perform SAX serialization with an updating query.");
+      throw ZORBA_EXCEPTION( ZAPI0007_CANNOT_SERIALIZE_PUL );
     }
 
     theExecuting = true;

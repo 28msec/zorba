@@ -2977,13 +2977,15 @@ void* begin_visit(const VFO_DeclList& v)
         const signature& s = f->getSignature();
         if (!sig.equals(tm, s))
         {
-          ZORBA_ERROR_LOC_DESC_OSS(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
-              loc,
-              "The signature of the (registered) function ("
-              << qnameItem->getNamespace()
-              << ":" << qnameItem->getLocalName()
-              << ") does not match the signature of the function that is "
-              << "declared in the module.");
+          throw XQUERY_EXCEPTION(
+            ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL,
+            ERROR_PARAMS(
+              BUILD_STRING(
+                '{', qnameItem->getNamespace(), '}', qnameItem->getLocalName()
+              )
+            ),
+            ERROR_LOC( loc )
+          );
         }
 
         // set the function annotations to the values found in the func_decl
@@ -3014,22 +3016,25 @@ void* begin_visit(const VFO_DeclList& v)
       // via the StaticContextImpl::registerExternalModule() user api.
       if (ef == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
-                              loc,
-                              qnameItem->getNamespace().str(),
-                              qnameItem->getLocalName().str());
+        throw XQUERY_EXCEPTION(
+          ZXQP0008_FUNCTION_IMPL_NOT_FOUND,
+          ERROR_PARAMS(
+            BUILD_STRING(
+              '{', qnameItem->getNamespace(), '}', qnameItem->getLocalName()
+            )
+          ),
+          ERROR_LOC( loc )
+        );
       }
       else
       {
         if (ef->getLocalName().compare(qnameItem->getLocalName().str()) != 0)
         {
-          ZORBA_ERROR_LOC_DESC_OSS(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
-                                   loc,
-                                   "The external function referred to by the localname \"" 
-                                   << qnameItem->getLocalName()
-                                   << "\" claims to have the localname " 
-                                   << ef->getLocalName()
-                                   << " which is not consistent.");
+          throw XQUERY_EXCEPTION(
+            ZXQP0009_FUNCTION_LOCALNAME_MISMATCH,
+            ERROR_PARAMS( qnameItem->getLocalName(), ef->getLocalName() ),
+            ERROR_LOC( loc )
+          );
         }
       }
 
@@ -8606,10 +8611,15 @@ void* begin_visit(const FunctionCall& v)
     zstring version =
     (f->getXQueryVersion() == StaticContextConsts::xquery_version_1_0 ? "1.0" : "1.1");
 
-    ZORBA_ERROR_LOC_DESC_OSS(XPST0017, loc,
-                             "The " << f->getName()->getStringValue()
-                             << "() function is only available in the XQuery "
-                             << version << " processing mode.");
+    throw XQUERY_EXCEPTION(
+      XPST0017,
+      ERROR_PARAMS(
+        f->getName()->getStringValue(),
+        ZED( FnOnlyInXQueryVersion ),
+        version
+      ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (f != NULL && !theCurrentPrologVFDecl.isNull())
@@ -8742,7 +8752,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     if (f == NULL)
     {
       throw XQUERY_EXCEPTION(
-        XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ), ERROR_LOC( loc )
+        XPST0017,
+        ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), numArgs ),
+        ERROR_LOC( loc )
       );
     }
 
@@ -8818,7 +8830,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         break;
       default:
         throw XQUERY_EXCEPTION(
-          XPST0017, ERROR_PARAMS( "fn:number", numArgs ), ERROR_LOC( loc )
+          XPST0017,
+          ERROR_PARAMS( "fn:number", ZED( FnCallNotMatchSig ), numArgs ),
+          ERROR_LOC( loc )
         );
       }
 
@@ -8853,7 +8867,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       if (numArgs != 0)
         throw XQUERY_EXCEPTION(
-          XPST0017, ERROR_PARAMS( "fn:static-base-uri", numArgs ),
+          XPST0017,
+          ERROR_PARAMS(
+            "fn:static-base-uri", ZED( FnCallNotMatchSig ), numArgs
+          ),
           ERROR_LOC( loc )
         );
 
@@ -8926,7 +8943,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       if (numArgs < 2)
         throw XQUERY_EXCEPTION(
-          XPST0017, ERROR_PARAMS( "concat", numArgs ), ERROR_LOC( loc )
+          XPST0017,
+          ERROR_PARAMS( "concat", ZED( FnCallNotMatchSig ), numArgs ),
+          ERROR_LOC( loc )
         );
     }
     else if (localName == "doc")
@@ -8972,7 +8991,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     {
       throw XQUERY_EXCEPTION(
-        XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ),
+        XPST0017,
+        ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), numArgs ),
         ERROR_LOC( loc )
       );
     }
@@ -9001,7 +9021,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
 
       throw XQUERY_EXCEPTION(
-        XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ),
+        XPST0017,
+        ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig), numArgs ),
         ERROR_LOC( loc )
       );
     }
@@ -9030,7 +9051,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (! theSctx->is_imported_builtin_module(fn_ns))
       {
         throw XQUERY_EXCEPTION(
-          XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ),
+          XPST0017,
+          ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), numArgs ),
           ERROR_LOC( loc )
         );
       }
@@ -9156,7 +9178,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (numArgs == 0)
       {
         throw XQUERY_EXCEPTION(
-          XPST0017, ERROR_PARAMS( "invoke" ), ERROR_LOC( loc )
+          XPST0017,
+          ERROR_PARAMS( "invoke", ZED( FnCallNotMatchSig ) ),
+          ERROR_LOC( loc )
         );
       }
 
@@ -9346,8 +9370,11 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 
   if(!NumConversions::integerToUInt(v.getArity(), arity))
   {
-    ZORBA_ERROR_LOC_DESC(XPST0017, loc,
-      "Couldn't parse function arity. Maybe arity is too big.");
+    throw XQUERY_EXCEPTION(
+      XPST0017,
+      ERROR_PARAMS( v.getArity(), ZED( NoParseFnArity ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   // Get function implementation
@@ -9357,7 +9384,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   if (fn == 0)
   {
     throw XQUERY_EXCEPTION(
-      XPST0017, ERROR_PARAMS( qname->get_qname(), arity ),
+      XPST0017,
+      ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), arity ),
       ERROR_LOC( loc )
     );
   }
@@ -10590,7 +10618,9 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
-    ZORBA_ERROR_LOC_PARAM(XPST0051, loc, qname->get_qname (), "");
+    throw XQUERY_EXCEPTION(
+      XPST0051, ERROR_PARAMS( qname->get_qname() ), ERROR_LOC( loc )
+    );
   else
     theTypeStack.push (t);
 }
@@ -11540,7 +11570,7 @@ void* begin_visit(const BlockBody& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    ZORBA_ERROR_LOC_DESC(XPST0003, loc, "");
+    throw XQUERY_EXCEPTION( XPST0003, ERROR_LOC( loc ) );
 
   bool topLevel = (!inLibraryModule() && theNodeStack.empty());
   bool inEval = theCCB->theIsEval;

@@ -102,6 +102,9 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
   if ( error == ZXQP0001_DYNAMIC_RUNTIME_ERROR
     || error == ZXQP0005_NOT_SUPPORTED
     || error == ZXQP0006_ASSERT_FAILED
+    || error == ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL
+    || error == ZXQP0008_FUNCTION_IMPL_NOT_FOUND
+    || error == ZXQP0009_FUNCTION_LOCALNAME_MISMATCH
     || error == ZXQP0013_FXCHARHEAP_EXCEPTION
     || error == ZXQP0015_NOT_IMPLEMENTED
     || error == ZXQP0019_INTERNAL_ERROR
@@ -109,7 +112,7 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     || error == ZXQP0021_USER_ERROR
     || error == ZXQP0025_ITEM_CREATION_FAILED
     || error == ZXQP0027_MS_DOM_ERROR
-    || error == ZXQP0028_FUNCTION_IMPL_NOT_FOUND
+    || error == ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED
     || error == ZXQP0029_MODULE_IMPORT_NOT_ALLOWED
     || error == ZXQP0030_DEADLOCK
     || error == ZXQP0036_BREAKITERATOR_CREATION_FAILED

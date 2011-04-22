@@ -592,10 +592,10 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
         {
           if (lModule->getURI().c_str() != fileURL)
           {
-            ZORBA_ERROR_DESC_OSS(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
-                                 "The module loaded from " << potentialModuleFile
-                                 << "doesn't provide the required target namespace "
-                                 << "(" << lURI.toString() << ").");
+            throw ZORBA_EXCEPTION(
+              ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED,
+              ERROR_PARAMS( lURI.toString(), potentialModuleFile )
+            );
           }
         }
 

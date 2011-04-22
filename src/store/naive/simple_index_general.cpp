@@ -535,9 +535,10 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
 
   if (key->size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue().c_str(),
-                      key->toString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
+    );
   }
 
   if (theProbeKind == store::IndexCondition::POINT_VALUE)
@@ -1426,9 +1427,10 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
   if (key->size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue().c_str(),
-                      key->toString());
+    throw ZORBA_EXCEPTION(
+      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
+    );
   }
 
   if (theProbeKind == store::IndexCondition::POINT_VALUE)

@@ -131,7 +131,8 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
       ERROR_PARAMS(
         BUILD_STRING(
           '{', qnameItem->getNamespace(), '}', qnameItem->getLocalName()
-        )
+        ),
+        ZED( Variable )
       )
     );
   }
@@ -176,10 +177,12 @@ var_expr* DynamicContextImpl::get_var_expr(
 
   if (var == NULL)
   {
-    ZORBA_ERROR_DESC_OSS(XPST0008,
-                         "Failed to set the value of variable {" 
-                         << inVarUri << "}" << inVarLocalName
-                         << " because no such variable was found");
+    throw XQUERY_EXCEPTION(
+      XPST0008,
+      ERROR_PARAMS(
+        BUILD_STRING( '{', inVarUri, '}', inVarLocalName ), ZED( Variable )
+      )
+    );
   }
 
   return var;
@@ -262,7 +265,6 @@ bool DynamicContextImpl::setVariable(
       {
         return false;
       }
-
       throw;
     }
 
@@ -307,7 +309,6 @@ bool DynamicContextImpl::setVariable(
       {
         return false;
       }
-
       throw;
     }
 
@@ -356,7 +357,6 @@ bool DynamicContextImpl::setVariable(
       {
         return false;
       }
-
       throw;
     }
 

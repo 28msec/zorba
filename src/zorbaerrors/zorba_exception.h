@@ -48,7 +48,15 @@ ZorbaException* new_zorba_exception( char const *throw_file,
  * \hideinitializer
  */
 #define NEW_ZORBA_EXCEPTION(...) \
-  MAKE_EXCEPTION_VAR( internal::new_zorba_exception, zorba::err:: __VA_ARGS__ )
+  MAKE_EXCEPTION_VAR( internal::new_zorba_exception, ::zorba::err:: __VA_ARGS__ )
+
+/**
+ * \internal
+ * Convenience macro for throwing "I/O error" exception.
+ * \hideinitializer
+ */
+#define ZORBA_IO_EXCEPTION(FUNC,PATH) \
+  ZORBA_EXCEPTION( ZOSE0004_IO_ERROR, ERROR_PARAMS( PATH, ::zorba::error::get_os_err_string( FUNC ) ) )
 
 } // namespace internal
 

@@ -2164,7 +2164,11 @@ void end_visit(fo_expr& v)
   {
     throw XQUERY_EXCEPTION(
       XPST0017,
-      ERROR_PARAMS( func->getName()->getStringValue(), argv.size() ),
+      ERROR_PARAMS(
+        func->getName()->getStringValue(),
+        ZED( FnCallNotMatchSig ),
+        argv.size()
+      ),
       ERROR_LOC( loc )
     );
   }
