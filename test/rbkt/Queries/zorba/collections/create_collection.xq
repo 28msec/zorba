@@ -13,7 +13,12 @@ declare %sequential function local:create-and-insert() {
   exit returning manip:is-available-collection(xs:QName("ns:test3")) and fn:count(manip:collection(xs:QName("ns:test3"))) eq 10;
 };
 
-let $create := local:create()
-let $create-and-insert := local:create-and-insert()
-return
-  $create or $create-and-insert
+
+block
+{
+  declare $create := local:create();
+
+  declare $create-and-insert := local:create-and-insert();
+
+  $create or $create-and-insert;
+}

@@ -3091,7 +3091,7 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 /***************************************************************************//**
 
 ********************************************************************************/
-bool static_context::is_known_collation(const std::string& uri)
+bool static_context::is_known_collation(const std::string& uri) const
 {
   std::string resolvedURI = resolve_relative_uri(uri).str();
 
@@ -3117,7 +3117,7 @@ bool static_context::is_known_collation(const std::string& uri)
 ********************************************************************************/
 XQPCollator* static_context::get_collator(
      const std::string& uri,
-     const QueryLoc& loc)
+     const QueryLoc& loc) const
 {
   std::string resolvedURI = resolve_relative_uri(uri).str();
 
@@ -3138,9 +3138,9 @@ XQPCollator* static_context::get_collator(
     sctx = sctx->theParent;
   }
 
-  throw XQUERY_EXCEPTION(
-    FOCH0002, ERROR_PARAMS( uri, ZED( NotInStaticCtx ) ), ERROR_LOC( loc )
-  );
+  throw XQUERY_EXCEPTION(FOCH0002, 
+                         ERROR_PARAMS(uri, ZED(NotInStaticCtx)),
+                         ERROR_LOC(loc));
 }
 
 
@@ -3185,7 +3185,7 @@ const std::string& static_context::get_default_collation(const QueryLoc& loc) co
 /***************************************************************************//**
 
 ********************************************************************************/
-XQPCollator* static_context::get_default_collator(const QueryLoc& loc)
+XQPCollator* static_context::get_default_collator(const QueryLoc& loc) const
 {
   const std::string& default_collation = get_default_collation(loc);
   return get_collator(default_collation, loc);

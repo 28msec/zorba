@@ -12,5 +12,9 @@ declare %sequential function local:test()
          }
 };
 
-let $doc := local:test()
-return $doc
+
+block
+{
+  declare $doc := local:test();
+  $doc;
+}

@@ -24,19 +24,26 @@ let $params :=
     <output:method value="text"/>
   </output:serialization-parameters>
 return
-  if (file:exists($query-file-normalized)) then
-    let $query-options := (
-      '--iter-plan-test',
-      '--print-iterator-tree',
-      '--no-tree-ids',
-      $query-file-normalized
-    )
-    (: generate iterplan with apitest :)
-    let $query-result := process:exec($apitest-path-normalized, $query-options)
-    let $query-stdout as xs:string := xs:string($query-result/stdout/text())
-    let $expected-text as xs:string := file:read-text($expected-file-normalized)
-    return
-      block {
+  if (file:exists($query-file-normalized)) 
+  then
+    block
+    {
+      declare $query-options := (
+        '--iter-plan-test',
+        '--print-iterator-tree',
+        '--no-tree-ids',
+        $query-file-normalized
+      );
+
+      (: generate iterplan with apitest :)
+      declare $query-result := process:exec($apitest-path-normalized, $query-options);
+
+      declare $query-stdout as xs:string := xs:string($query-result/stdout/text());
+
+      declare $expected-text as xs:string := file:read-text($expected-file-normalized);
+
+      block 
+      {
         file:create-directory(file:dir-name($result-file-normalized));
         file:write($result-file-normalized, $query-stdout, $params);
         (
@@ -51,6 +58,7 @@ return
 ",
               "Expected Result: ", $expected-file)
         );
-      }
+      };
+    }
   else
     fn:concat("Passed! But only because query file ", $query-file, " not found. Test was not executed!")

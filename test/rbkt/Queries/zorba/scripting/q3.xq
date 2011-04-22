@@ -16,7 +16,7 @@ declare %sequential function local:bar()
     {
       declare $rand := local:foo();
 
-      $sequence[$rand]
+      $sequence[$rand];
     }
 };
 

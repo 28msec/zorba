@@ -6,6 +6,28 @@ declare %sequential function local:f($n)
 
   if ($n eq 0)
   then 0
+  else block { declare $y := local:f($x); ($y + $x); }
+};
+
+
+block
+{
+  declare $y := local:f(4);
+  declare $z := local:f(3);
+  $y + $z + $x;
+}
+
+
+(:
+
+declare variable $x := 42;
+
+declare sequential function local:f($n) 
+{
+  declare $x := $n - 1;
+
+  if ($n eq 0)
+  then 0
   else (let $y := local:f($x) return $y + $x)
 };
 
@@ -14,3 +36,5 @@ declare %sequential function local:f($n)
 let $y := local:f(4)
 let $z := local:f(3)
 return $y + $z + $x
+
+:)

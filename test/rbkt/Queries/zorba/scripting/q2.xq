@@ -12,8 +12,13 @@ declare function local:bar()
 {
   for $i in (1 to 10)
   return
-  let $rand := local:foo()
-  return $sequence[$rand]
+    block
+    {
+      declare $rand := local:foo();
+
+      $sequence[$rand];
+    }
 };
+
 
 local:bar()

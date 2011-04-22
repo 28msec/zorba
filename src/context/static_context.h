@@ -867,15 +867,15 @@ public:
   //
 	void add_collation(const std::string& uri, const QueryLoc& loc);
 
-  bool is_known_collation(const std::string& uri);
+  bool is_known_collation(const std::string& uri) const;
 
-  XQPCollator* get_collator(const std::string& uri, const QueryLoc& loc);
+  XQPCollator* get_collator(const std::string& uri, const QueryLoc& loc) const;
 
   void set_default_collation(const std::string& uri, const QueryLoc& loc);
 
   const std::string& get_default_collation(const QueryLoc& loc) const;
 
-  XQPCollator* get_default_collator(const QueryLoc& loc);
+  XQPCollator* get_default_collator(const QueryLoc& loc) const;
 
   void get_collations(std::vector<std::string>& collations) const;
 

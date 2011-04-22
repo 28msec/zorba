@@ -215,6 +215,7 @@ OrderByClause::OrderByClause(
 ********************************************************************************/
 void OrderByClause::serialize(::zorba::serialization::Archiver& ar)
 {
+  ar & theLocation;
   ar & theOrderSpecs;
   ar & theStable;
 }
@@ -241,11 +242,11 @@ uint32_t OrderByClause::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
 
-  std::vector<OrderSpec>::const_iterator iter;
+  std::vector<OrderSpec>::const_iterator ite = theOrderSpecs.begin();
   std::vector<OrderSpec>::const_iterator end = theOrderSpecs.end();
-  for (iter = theOrderSpecs.begin(); iter != end; ++iter)
+  for (; ite != end; ++ite)
   {
-    size += iter->theDomainIter->getStateSizeOfSubtree();
+    size += ite->theDomainIter->getStateSizeOfSubtree();
   }
 
   return size;
@@ -255,22 +256,25 @@ uint32_t OrderByClause::getStateSizeOfSubtree() const
 /***************************************************************************//**
 
 ********************************************************************************/
-void OrderByClause::open(static_context* sctx, PlanState& planState, uint32_t& offset)
+void OrderByClause::open(
+    const static_context* sctx, 
+    PlanState& planState, 
+    uint32_t& offset)
 {
-  std::vector<OrderSpec>::iterator iter = theOrderSpecs.begin();
+  std::vector<OrderSpec>::iterator ite = theOrderSpecs.begin();
   std::vector<OrderSpec>::const_iterator end = theOrderSpecs.end();
 
-  for (; iter != end; ++iter)
+  for (; ite != end; ++ite)
   {
-    iter->open(planState, offset);
+    ite->open(planState, offset);
 
-    if (iter->theCollation.size() != 0) 
+    if (ite->theCollation.size() != 0) 
     {
-      iter->theCollator = sctx->get_collator(iter->theCollation, theLocation);
+      ite->theCollator = sctx->get_collator(ite->theCollation, theLocation);
     }
     else
     {
-      iter->theCollator = sctx->get_default_collator(theLocation);
+      ite->theCollator = sctx->get_default_collator(theLocation);
     }
   }
 }
@@ -281,11 +285,11 @@ void OrderByClause::open(static_context* sctx, PlanState& planState, uint32_t& o
 ********************************************************************************/
 void OrderByClause::reset(PlanState& planState)
 {
-  std::vector<OrderSpec>::iterator iter = theOrderSpecs.begin();
+  std::vector<OrderSpec>::iterator ite = theOrderSpecs.begin();
   std::vector<OrderSpec>::iterator end = theOrderSpecs.end();
-  for (; iter != end; iter++)
+  for (; ite != end; ++ite)
   {
-    iter->theDomainIter->reset(planState);
+    ite->theDomainIter->reset(planState);
   }
 }
 
@@ -295,11 +299,11 @@ void OrderByClause::reset(PlanState& planState)
 ********************************************************************************/
 void OrderByClause::close(PlanState& planState)
 {
-  std::vector<OrderSpec>::iterator iter = theOrderSpecs.begin();
+  std::vector<OrderSpec>::iterator ite = theOrderSpecs.begin();
   std::vector<OrderSpec>::iterator end = theOrderSpecs.end();
-  for (; iter != end; iter++)
+  for (; ite != end; ++ite)
   {
-    iter->theDomainIter->close(planState);
+    ite->theDomainIter->close(planState);
   }
 }
 
@@ -325,7 +329,8 @@ MaterializeClause::MaterializeClause(
   theInputForVars(inputForVars),
   theInputLetVars(inputLetVars),
   theOutputForVarsRefs(outputForVarsRefs),
-  theOutputLetVarsRefs(outputLetVarsRefs) 
+  theOutputLetVarsRefs(outputLetVarsRefs),
+  theStable(true)
 {
 }
 
@@ -335,8 +340,10 @@ MaterializeClause::MaterializeClause(
 ********************************************************************************/
 void MaterializeClause::serialize(::zorba::serialization::Archiver& ar)
 {
-
   ar & theLocation;
+  ar & theOrderSpecs;
+  ar & theStable;
+
   ar & theInputForVars;
   ar & theInputLetVars;
   ar & theOutputForVarsRefs;
@@ -349,6 +356,20 @@ void MaterializeClause::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 MaterializeClause::~MaterializeClause()
 {
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void MaterializeClause::addSort(
+    const QueryLoc& loc,
+    std::vector<OrderSpec>& orderSpecs,
+    bool stable)
+{
+  theLocation = loc;
+  theOrderSpecs.swap(orderSpecs);
+  theStable = stable;
 }
 
 
@@ -373,6 +394,13 @@ void MaterializeClause::accept(PlanIterVisitor& v) const
   {
     v.beginVisitMaterializeVariable(false, theInputForVars[i], theOutputForVarsRefs[i]);
     v.endVisitMaterializeVariable();
+  }
+
+  std::vector<OrderSpec>::const_iterator ite = theOrderSpecs.begin();
+  std::vector<OrderSpec>::const_iterator end = theOrderSpecs.end();
+  for (; ite != end; ++ite)
+  {
+    ite->accept(v);
   }
 
   v.endVisitMaterializeClause();
@@ -402,6 +430,13 @@ uint32_t MaterializeClause::getStateSizeOfSubtree() const
     size += (*ite2)->getStateSizeOfSubtree();
   }
 
+  std::vector<OrderSpec>::const_iterator ite3 = theOrderSpecs.begin();
+  std::vector<OrderSpec>::const_iterator end3 = theOrderSpecs.end();
+  for (; ite3 != end3; ++ite3)
+  {
+    size += ite3->theDomainIter->getStateSizeOfSubtree();
+  }
+
   return size;
 }
 
@@ -409,7 +444,10 @@ uint32_t MaterializeClause::getStateSizeOfSubtree() const
 /***************************************************************************//**
 
 ********************************************************************************/
-void MaterializeClause::open(PlanState& planState, uint32_t& offset)
+void MaterializeClause::open(
+    const static_context* sctx, 
+    PlanState& planState, 
+    uint32_t& offset)
 {
   std::vector<ForVarIter_t>::iterator ite1 = theInputForVars.begin();
   std::vector<ForVarIter_t>::iterator end1 = theInputForVars.end();
@@ -425,6 +463,23 @@ void MaterializeClause::open(PlanState& planState, uint32_t& offset)
   for (; ite2 != end2; ++ite2)
   {
     (*ite2)->open(planState, offset);
+  }
+
+  std::vector<OrderSpec>::iterator ite3 = theOrderSpecs.begin();
+  std::vector<OrderSpec>::const_iterator end3 = theOrderSpecs.end();
+
+  for (; ite3 != end3; ++ite3)
+  {
+    ite3->open(planState, offset);
+
+    if (ite3->theCollation.size() != 0) 
+    {
+      ite3->theCollator = sctx->get_collator(ite3->theCollation, theLocation);
+    }
+    else
+    {
+      ite3->theCollator = sctx->get_default_collator(theLocation);
+    }
   }
 }
 
@@ -448,6 +503,27 @@ void MaterializeClause::close(PlanState& planState)
   for (; ite2 != end2; ++ite2)
   {
     (*ite2)->close(planState);
+  }
+
+  std::vector<OrderSpec>::iterator ite3 = theOrderSpecs.begin();
+  std::vector<OrderSpec>::iterator end3 = theOrderSpecs.end();
+  for (; ite3 != end3; ++ite3)
+  {
+    ite3->theDomainIter->close(planState);
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void MaterializeClause::reset(PlanState& planState)
+{
+  std::vector<OrderSpec>::iterator ite = theOrderSpecs.begin();
+  std::vector<OrderSpec>::iterator end = theOrderSpecs.end();
+  for (; ite != end; ++ite)
+  {
+    ite->theDomainIter->reset(planState);
   }
 }
 
@@ -793,7 +869,15 @@ FLWORIterator::FLWORIterator(
 {
   if (theOrderByClause != 0 && theOrderByClause->theOrderSpecs.size() == 0)
   {
-    theOrderByClause = 0;
+    theOrderByClause = NULL;
+  }
+
+  if (theOrderByClause && theMaterializeClause)
+  {
+    theMaterializeClause->addSort(theOrderByClause->theLocation,
+                                  theOrderByClause->theOrderSpecs,
+                                  theOrderByClause->theStable);
+    theOrderByClause = NULL; 
   }
 }
 
@@ -1203,9 +1287,8 @@ void FLWORIterator::materializeStreamTuple(
   for (ulong i = 0; i < numLetVars; ++i)
   {
     store::TempSeq_t letTempSeq;
-    const zorba::PlanIter_t   input_let_var = theMaterializeClause->theInputLetVars[i];
     createTempSeq(letTempSeq,
-                  input_let_var,
+                  theMaterializeClause->theInputLetVars[i],
                   planState,
                   false);
 
@@ -1520,7 +1603,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
     theOrderByClause->open(theSctx, planState, offset);
 
   if (theMaterializeClause)
-    theMaterializeClause->open(planState, offset);
+    theMaterializeClause->open(theSctx, planState, offset);
 
   if (theGroupByClause || theOrderByClause)
   {
@@ -1565,6 +1648,9 @@ void FLWORIterator::resetImpl(PlanState& planState) const
 
   if (theOrderByClause != NULL)
     theOrderByClause->reset(planState);
+
+  if (theMaterializeClause != NULL)
+    theMaterializeClause->reset(planState);
   
   if (theGroupByClause != NULL)
     theGroupByClause->reset(planState);

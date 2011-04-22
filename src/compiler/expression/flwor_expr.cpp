@@ -102,8 +102,8 @@ forletwin_clause::forletwin_clause(
   if (theVarExpr != NULL)
     theVarExpr->set_flwor_clause(this);
   // TODO: decide on this
-  expr::checkNonUpdating(theDomainExpr);
-  //expr::checkSimpleExpr(theDomainExpr);
+  //expr::checkNonUpdating(theDomainExpr);
+  expr::checkSimpleExpr(theDomainExpr);
 }
 
 

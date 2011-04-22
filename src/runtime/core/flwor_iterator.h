@@ -174,9 +174,11 @@ public:
 
   uint32_t getStateSizeOfSubtree() const;
 
-  void open(static_context* sctx, PlanState& planState, uint32_t& offset);
-  void reset(PlanState& planState);
+  void open(const static_context* sctx, PlanState& planState, uint32_t& offset);
+
   void close(PlanState& planState); 
+
+  void reset(PlanState& planState);
 };
 
 
@@ -195,6 +197,9 @@ protected:
   std::vector<std::vector<PlanIter_t> > theOutputForVarsRefs;
   std::vector<std::vector<PlanIter_t> > theOutputLetVarsRefs;
 
+  std::vector<OrderSpec>                theOrderSpecs;
+  bool                                  theStable;
+
 public:
   SERIALIZABLE_CLASS(MaterializeClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(MaterializeClause)
@@ -210,12 +215,20 @@ public:
 
   ~MaterializeClause();
 
+  void addSort(
+      const QueryLoc& loc,
+      std::vector<OrderSpec>& orderSpecs,
+      bool stable);
+
   void accept(PlanIterVisitor& v) const;
 
   uint32_t getStateSizeOfSubtree() const;
 
-  void open(PlanState& planState, uint32_t& offset);
+  void open(const static_context* sctx, PlanState& planState, uint32_t& offset);
+
   void close(PlanState& planState); 
+
+  void reset(PlanState& planState);
 };
 
 
