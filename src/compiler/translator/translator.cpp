@@ -1936,7 +1936,7 @@ void* begin_visit(const VersionDecl& v)
     else
       maxversion = "1.0";
     // TODO: the error code might need to be changed after W3C solves
-    // the bug report concerning modules of version 1.0 importing v1.1 libraries.
+    // the bug report concerning modules of version 1.0 importing v3.0 libraries.
     throw XQUERY_EXCEPTION(
       XQST0031,
       ERROR_PARAMS( versionStr, ZED( LibModVersionMismatch ), maxversion ),
@@ -8609,7 +8609,7 @@ void* begin_visit(const FunctionCall& v)
   if (f != NULL && f->getXQueryVersion() > theSctx->xquery_version())
   {
     zstring version =
-    (f->getXQueryVersion() == StaticContextConsts::xquery_version_1_0 ? "1.0" : "1.1");
+    (f->getXQueryVersion() == StaticContextConsts::xquery_version_1_0 ? "1.0" : "3.0");
 
     throw XQUERY_EXCEPTION(
       XPST0017,
