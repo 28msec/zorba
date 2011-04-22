@@ -31,7 +31,7 @@ namespace zorba
 BINARY_ITER(FnDateTimeConstructorIterator);
 
 
-// XQuery 1.1 DateTime formatting
+// XQuery 3.0 DateTime formatting
 class FnFormatDateTimeIterator : public NaryBaseIterator<FnFormatDateTimeIterator,
                                                          PlanIteratorState >
 {

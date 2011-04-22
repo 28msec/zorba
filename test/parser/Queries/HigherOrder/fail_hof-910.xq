@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 (: Higher Order Functions :)
 (: In SequenceType syntax, Result type required if argument type given :)
 (: Author - Michael Kay, Saxonica :)

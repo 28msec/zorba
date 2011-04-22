@@ -116,7 +116,7 @@ extern "C" {
     (*get_default_collation)(Zorba_StaticContext *context, const char** uri);
 
     /**
-     * Sets the XQuery processor's version to either xquery_version_1_0 or xquery_version_1_1.
+     * Sets the XQuery processor's version to either xquery_version_1_0 or xquery_version_3_0.
      *
      * \param context The XQC_StaticContext that this function pointer is a member of
      * \param mode The xquery_version_t to set in the given context.

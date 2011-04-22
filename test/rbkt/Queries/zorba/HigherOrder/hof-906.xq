@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 (: Higher Order Functions :)
 (: apply data() to a function item :)
 (: Author - Michael Kay, Saxonica :)

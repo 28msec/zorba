@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 (: Higher Order Functions :)
 (: partial-apply supplying an incorrect function parameter :)
 (: Author - Michael Kay, Saxonica :)

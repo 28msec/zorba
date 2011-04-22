@@ -170,8 +170,8 @@ public:
 
 
 /***************************************************************************//**
-  XQuery 1.1 static context
-	[http://www.w3.org/TR/xquery/#id-xq-context-components]
+  XQuery 3.0 static context
+	[http://www.w3.org/TR/2010/WD-xquery-30-20101214/#static_context]
 
   Class static_context implements a node in the hierarchy of static contextes.
   The root of this hierarchy is a global (singleton) sctx that is shared by all

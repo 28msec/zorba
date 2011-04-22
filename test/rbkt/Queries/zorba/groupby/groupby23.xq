@@ -1,5 +1,5 @@
 
-xquery version "1.1";
+xquery version "3.0";
 
 for $item in doc('input.xml')/data/item
 let $key := $item/foo

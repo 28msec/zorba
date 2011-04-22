@@ -314,7 +314,7 @@ public:
     :
     function(sig, FunctionConsts::FN_HEAD_1)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -331,7 +331,7 @@ public:
     :
     function(sig, FunctionConsts::FN_TAIL_1)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();

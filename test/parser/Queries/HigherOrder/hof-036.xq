@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 (: Higher Order Functions :)
 (: Heterogeneous sequence of atomics and functions on rhs of "/" - not clear if this is allowed :)
 (: Author - Michael Kay, Saxonica :)

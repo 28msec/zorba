@@ -40,8 +40,8 @@ declare function local:create-func-version($function) as xs:string?
   if ($function/zorba:signature/@version = "1.0")
   then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_1_0;")
   else 
-    if ($function/zorba:signature/@version = "1.1")
-    then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_1_1;")
+    if ($function/zorba:signature/@version = "3.0")
+    then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_3_0;")
     else ()    
 };
 

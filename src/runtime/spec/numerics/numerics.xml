@@ -126,12 +126,12 @@
     <zorba:description author="Zorba Team">fn:format-number</zorba:description>
     
     <zorba:function>
-      <zorba:signature localname="format-number" prefix="fn" version="1.1">
+      <zorba:signature localname="format-number" prefix="fn" version="3.0">
         <zorba:param>xs:anyAtomicType?</zorba:param>
         <zorba:param>xs:string</zorba:param>
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
-      <zorba:signature localname="format-number" prefix="fn" version="1.1">
+      <zorba:signature localname="format-number" prefix="fn" version="3.0">
         <zorba:param>xs:anyAtomicType?</zorba:param>
         <zorba:param>xs:string</zorba:param>
         <zorba:param>xs:string</zorba:param>
@@ -150,12 +150,12 @@
   <zorba:description author="Zorba Team">fn:format-integer</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="format-integer" prefix="fn" version="1.1">
+    <zorba:signature localname="format-integer" prefix="fn" version="3.0">
       <zorba:param>xs:integer?</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="format-integer" prefix="fn" version="1.1">
+    <zorba:signature localname="format-integer" prefix="fn" version="3.0">
       <zorba:param>xs:integer?</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:param>xs:string</zorba:param>

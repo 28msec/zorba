@@ -45,7 +45,7 @@ public:
   fn_function_name(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();
@@ -59,7 +59,7 @@ public:
   fn_function_arity(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();
@@ -73,7 +73,7 @@ public:
   fn_partial_apply(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();

@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 (: Higher Order Functions :)
 (: Implicit atomization works for various kinds of functions :)
 (: Author - Michael Kay, Saxonica :)

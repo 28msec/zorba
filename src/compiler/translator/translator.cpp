@@ -1917,9 +1917,9 @@ void* begin_visit(const VersionDecl& v)
   {
     version = StaticContextConsts::xquery_version_1_0;
   }
-  else if (versionStr == "1.1")
+  else if (versionStr == "3.0")
   {
-    version = StaticContextConsts::xquery_version_1_1;
+    version = StaticContextConsts::xquery_version_3_0;
   }
   else
   {
@@ -1931,8 +1931,8 @@ void* begin_visit(const VersionDecl& v)
     version > theMaxLibModuleVersion)
   {
     zstring maxversion;
-    if (theMaxLibModuleVersion == StaticContextConsts::xquery_version_1_1)
-      maxversion = "1.1";
+    if (theMaxLibModuleVersion == StaticContextConsts::xquery_version_3_0)
+      maxversion = "3.0";
     else
       maxversion = "1.0";
     // TODO: the error code might need to be changed after W3C solves
@@ -5081,7 +5081,7 @@ void* begin_visit(const ForClause& v)
 
   if (v.has_allowing_empty())
   {
-    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
       throw XQUERY_EXCEPTION(
         XPST0003, ERROR_PARAMS( ZED( OuterForClause11 ) ), ERROR_LOC( loc )
       );
@@ -5287,7 +5287,7 @@ void* begin_visit(const WindowClause& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     throw XQUERY_EXCEPTION(
       XPST0003, ERROR_PARAMS( ZED( WindowClause11 ) ), ERROR_LOC( loc )
     );
@@ -5908,7 +5908,7 @@ void* begin_visit(const CountClause& v)
 {
   TRACE_VISIT ();
 
-  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     throw XQUERY_EXCEPTION(
       XPST0003, ERROR_PARAMS( ZED( CountClause11 ) ), ERROR_LOC( loc )
     );
@@ -6077,7 +6077,7 @@ void* begin_visit(const SwitchExpr& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
     throw XQUERY_EXCEPTION(XPST0003,
                            ERROR_PARAMS(ZED(SwitchExpr11)),
@@ -11201,7 +11201,7 @@ void* begin_visit(const TryExpr& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
     throw XQUERY_EXCEPTION(XPST0003,
                            ERROR_PARAMS(ZED(TryCatchExpr11)),

@@ -58,8 +58,8 @@ void root_static_context::init()
   theImplementationBaseUri = ZORBA_NS;
   compute_base_uri();
 
-  // default xquery version is 1.1
-  set_xquery_version(StaticContextConsts::xquery_version_1_1);
+  // default xquery version is 3.0
+  set_xquery_version(StaticContextConsts::xquery_version_3_0);
   set_xpath_compatibility(StaticContextConsts::xpath2_0);
 
   for (const char *const *p = default_ns_initializers; *p != NULL; p += 2)

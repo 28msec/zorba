@@ -236,7 +236,7 @@ public:
 
 %rename(XQueryVersionEnum) xquery_version_t;
 %rename(XQUERY_VERSION_1_0) xquery_version_1_0;
-%rename(XQUERY_VERSION_1_1) xquery_version_1_1;
+%rename(XQUERY_VERSION_3_0) xquery_version_3_0;
 
 %rename(ValidationModeEnum) validation_mode_t;
 %rename(VALIDATE_SKIP) validate_skip;

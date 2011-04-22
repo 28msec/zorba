@@ -361,7 +361,7 @@ public:
   fn_analyze_string(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();

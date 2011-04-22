@@ -48,9 +48,9 @@ typedef enum { preserve_space, strip_space } boundary_space_mode_t;
  */
 typedef enum { preserve_cons, strip_cons } construction_mode_t;
 
-/** \brief The XQuery version, taken from the version declaration, an XQuery 1.1 feature.
+/** \brief The XQuery version, taken from the version declaration, an XQuery 3.0 feature.
  */
-typedef enum { xquery_version_1_0 = 100, xquery_version_1_1 = 110 } xquery_version_t;
+typedef enum { xquery_version_1_0 = 100, xquery_version_3_0 = 300 } xquery_version_t;
 
 /** \brief Revalidation mode as defined in
  *         http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration

@@ -181,7 +181,7 @@ namespace zorba {
       virtual String
       getDefaultCollation() const = 0;
 
-      /** \brief Set the XQuery processing mode (version 1.0 or 1.1).
+      /** \brief Set the XQuery processing mode (version 1.0 or 3.0).
        *
        *
        * @param aMode the XQuery version.
@@ -190,7 +190,7 @@ namespace zorba {
       virtual bool
       setXQueryVersion( xquery_version_t aMode ) = 0;
 
-      /** \brief Get the XQuery processing mode (version 1.0 or 1.1).
+      /** \brief Get the XQuery processing mode (version 1.0 or 3.0).
        *
        *
        * @return xquery_version_t the XQuery version processing mode.

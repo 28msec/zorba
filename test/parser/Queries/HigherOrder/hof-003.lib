@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 module namespace m="http://example.com/hof-003";
 
 declare function m:f() as xs:integer {

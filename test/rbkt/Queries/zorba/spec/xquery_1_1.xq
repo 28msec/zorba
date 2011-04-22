@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 
 import module namespace util = "http://www.zorba-xquery.com/util" at "xquery_spec.xqi";
 

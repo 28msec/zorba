@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 (: Higher Order Functions :)
 (: Pass a sequence of functions that require coercion in different ways :)
 (: Author - Michael Kay, Saxonica :)

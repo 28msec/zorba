@@ -508,7 +508,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_DT_4)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   PlanIter_t codegen(
@@ -530,7 +530,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_DT_2)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   PlanIter_t codegen(
@@ -552,7 +552,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_D_4)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   PlanIter_t codegen(
@@ -574,7 +574,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_D_2)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   PlanIter_t codegen(
@@ -596,7 +596,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_T_4)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   PlanIter_t codegen(
@@ -618,7 +618,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_T_2)
   {
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   PlanIter_t codegen(

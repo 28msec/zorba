@@ -114,7 +114,7 @@ public:
   fn_format_number(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();
@@ -128,7 +128,7 @@ public:
   fn_format_integer(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
-    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();

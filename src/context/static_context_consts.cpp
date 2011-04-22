@@ -24,8 +24,8 @@ std::ostream& operator<<( std::ostream &o, xquery_version_t v ) {
   switch ( v ) {
     case xquery_version_1_0:
       return o << "1.0";
-    case xquery_version_1_1:
-      return o << "1.1";
+    case xquery_version_3_0:
+      return o << "3.0";
     default:
       return o << "unknown";
   }

@@ -1,4 +1,4 @@
-xquery version "1.1";
+xquery version "3.0";
 
 declare function local:Y($f) {
 function($a) { $f(local:Y($f), $a) }

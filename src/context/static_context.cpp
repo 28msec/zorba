@@ -3319,9 +3319,9 @@ void static_context::set_xquery_version(const std::string& v)
   {
     lVersion = StaticContextConsts::xquery_version_1_0;
   }
-  else if (v == "1.1")
+  else if (v == "3.0")
   {
-    lVersion = StaticContextConsts::xquery_version_1_1;
+    lVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   set_xquery_version(lVersion);
