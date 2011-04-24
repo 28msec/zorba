@@ -72,7 +72,9 @@ zstring get_os_err_string( char const *what, os_code code = get_os_err_code() );
  * @return Returns said error string.
  */
 template<class StringType> inline
-typename ztd::enable_if<ztd::has_c_str<StringType>::value,zstring>::type
+typename ztd::enable_if<
+  ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,zstring
+>::type
 get_os_err_string( StringType const &what, os_code code = get_os_err_code() ) {
   return get_os_err_string( what.c_str(), code );
 }

@@ -58,40 +58,89 @@ struct enable_if<true,T> {
 
 /**
  * \internal
+ * Base class for SFINAE (Substitution Failure Is Not An Error) types.
+ */
+class sfinae_base {
+protected:
+  typedef char no;
+  typedef char yes[2];
+public:
+  void suppress_all_member_functions_are_private_warning();
+};
+
+/**
+ * \internal
  * Declares a class that can be used to determine whether a given type \c T has
  * a particular member function with a certain signature.
  * For example:
  * \code
- * ZORBA_DECL_HAS_MEM_FN( c_str, char const* (T::*)() const);
+ * ZORBA_DECL_HAS_MEM_FN( c_str );
  *
  * template<typename T> inline
- * typename enable_if<has_c_str<T>::value,std::string>::type
+ * typename enable_if<has_c_str<T,char const* (T::*)() const>::value,
+ *                    std::string>::type
  * to_string( T const &t ) {
  *   // case where T has c_str()
  * }
  *
  * template<typename T> inline
- * typename enable_if<!has_c_str<T>::value,std::string>::type
+ * typename enable_if<!has_c_str<T,char const* (T::*)() const>::value,
+ *                     std::string>::type
  * to_string( T const &t ) {
  *   // case where T does not have c_str()
  * }
  * \endcode
- * Note: the identifier in the member function signature used to represent the
- * class type must be called \c T.
  * \hideinitializer
  */
-#define ZORBA_DECL_HAS_MEM_FN(FN_NAME,...)                                    \
-  template<typename U>                                                        \
-  class has_##FN_NAME {                                                       \
-    typedef char yes[1];                                                      \
-    typedef char no[2];                                                       \
-    template<typename SignatureType,SignatureType> struct type_check;         \
-    template<class T> static yes& test(type_check<__VA_ARGS__,&T::FN_NAME>*); \
-    template<class T> static no& test(...);                                   \
-  public:                                                                     \
-    static bool const value = sizeof( test<U>(0) ) == sizeof( yes );          \
-    static void suppress_all_member_functions_are_private_warning();          \
+#define ZORBA_DECL_HAS_MEM_FN(FN_NAME)                                \
+  template<typename T,typename S>                                     \
+  class has_##FN_NAME : public sfinae_base {                          \
+    template<typename SignatureType,SignatureType> struct type_check; \
+    template<class U> static yes& test(type_check<S,&U::FN_NAME>*);   \
+    template<class U> static no& test(...);                           \
+  public:                                                             \
+    static bool const value = sizeof( test<T>(0) ) == sizeof( yes );  \
   }
+
+namespace has_insertion_operator_impl {
+  typedef char no;
+  typedef char yes[2];
+
+  struct any_t {
+    template<typename T> any_t( T const& );
+  };
+
+  //
+  // Dummy operator for when there is no global operator<< otherwise declared
+  // for type T.
+  //
+  no operator<<( std::ostream const&, any_t const& );
+
+  yes& test( std::ostream& );
+  no   test( no );
+
+  template<typename T>
+  class has_insertion_operator {
+    static std::ostream &s;
+    static T const &t;
+  public:
+    static bool const value = sizeof( test(s << t) ) == sizeof( yes );
+  };
+} // namespace has_insertion_operator_impl
+
+/**
+ * \internal
+ * A class that can be used to determine whether a given type \c T has a global
+ * <code>std::ostream& operator<<(std::ostream&,T const&)</code> defined for
+ * it.
+ *
+ * @tparam T The type to check.
+ */
+template<typename T>
+struct has_insertion_operator :
+  has_insertion_operator_impl::has_insertion_operator<T>
+{
+};
 
 ////////// c_str() /////////////////////////////////////////////////////////////
 
@@ -148,24 +197,24 @@ template<> struct less<char const*> :
 
 ////////// To-string conversion ////////////////////////////////////////////////
 
-ZORBA_DECL_HAS_MEM_FN( c_str, char const* (T::*)() const );
-ZORBA_DECL_HAS_MEM_FN( str, std::string (T::*)() const );
-ZORBA_DECL_HAS_MEM_FN( toString, std::string (T::*)() const );
+ZORBA_DECL_HAS_MEM_FN( c_str );
+ZORBA_DECL_HAS_MEM_FN( str );
+ZORBA_DECL_HAS_MEM_FN( toString );
 
 /**
  * \internal
  * Converts an object to its string representation.
  *
+ * @tparam T The object type that:
+ *  - is not a pointer
+ *  - has an <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
  * @tparam OutputStringType The output string type.
- * @tparam T The object type.
  * @param t The object.
  * @Param out The output string.
  */
 template<typename T,class OutputStringType> inline
 typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
-                && !has_c_str<T>::value
-                && !has_str<T>::value
-                && !has_toString<T>::value,
+                && has_insertion_operator<T>::value,
                    void>::type
 to_string( T const &t, OutputStringType *out ) {
   std::ostringstream o;
@@ -178,13 +227,16 @@ to_string( T const &t, OutputStringType *out ) {
  * Specialization of \c to_string() for class types that have a \c c_str()
  * member function.
  *
- * @tparam T The class type.
+ * @tparam T The class type that:
+ *  - has no <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
+ *  - has <code>char const* (T::*)() const</code> defined
  * @tparam OutputStringType The output string type.
  * @param t The object.
  * @Param out The output string.
  */
 template<class T,class OutputStringType> inline
-typename enable_if<has_c_str<T>::value,void>::type
+typename enable_if<!has_insertion_operator<T>::value
+                && has_c_str<T,char const* (T::*)() const>::value,void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.c_str();
 }
@@ -200,7 +252,10 @@ to_string( T const &t, OutputStringType *out ) {
  * @Param out The output string.
  */
 template<class T,class OutputStringType> inline
-typename enable_if<has_str<T>::value && !has_c_str<T>::value,void>::type
+typename enable_if<!has_insertion_operator<T>::value
+                && !has_c_str<T,char const* (T::*)() const>::value
+                && has_str<T,std::string (T::*)() const>::value,
+                   void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.str();
 }
@@ -216,7 +271,9 @@ to_string( T const &t, OutputStringType *out ) {
  * @Param out The output string.
  */
 template<class T,class OutputStringType> inline
-typename enable_if<has_toString<T>::value,void>::type
+typename enable_if<!has_insertion_operator<T>::value
+                && has_toString<T,std::string (T::*)() const>::value,
+                   void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.toString();
 }
