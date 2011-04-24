@@ -40,7 +40,11 @@ IsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (CONSUME (lItem0, 0)) {
     if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:is-same-node must have nodes as parameters.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( OpIsSameNodeMustHaveNodes ) ),
+          ERROR_LOC( loc )
+        );
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 0); 
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool),
@@ -64,7 +68,11 @@ NodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (CONSUME (lItem0, 0)) {
     if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-before must have nodes as parameters.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( OpNodeBeforeMustHaveNodes ) ),
+          ERROR_LOC( loc )
+        );
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == -1); 
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool), aState);
@@ -86,7 +94,11 @@ NodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (CONSUME (lItem0, 0)) {
     if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-after must have nodes as parameters.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( OpNodeAfterMustHaveNodes ) ),
+          ERROR_LOC( loc )
+        );
       }
       lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 1); 
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool), aState);
@@ -95,4 +107,5 @@ NodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (aState);
 }
 
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

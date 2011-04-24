@@ -168,8 +168,9 @@ bool DocumentContentIterator::nextImpl(store::Item_t& result, PlanState& planSta
     if (result->isNode() &&
         result->getNodeKind() == store::StoreConsts::attributeNode)
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "A Document Node must not contain attribute nodes!");
+      throw XQUERY_EXCEPTION(
+        XPTY0004, ERROR_PARAMS( ZED( NoAttrNodesInDocument ) ), ERROR_LOC( loc )
+      );
     }
 
     STACK_PUSH(true, state);
@@ -835,7 +836,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   if (consumeNext(temp, theChild0, planState))
-      // TODO: needs type in error message
+    // TODO: needs type in error message
     throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(loc));
 
   // TODO: check if lItem is string, raise XPTY0004 if not
@@ -1286,15 +1287,17 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                         "Empty sequences cannot be cast to QName.");
+    throw XQUERY_EXCEPTION(
+      XPTY0004, ERROR_PARAMS( ZED( EmptySeqNoCastToQName ) ), ERROR_LOC( loc )
+    );
   }
   valid = true;
 
   if (consumeNext(temp, theChild, planState))
   {
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                         "Sequences with more than one item cannot be cast to QName.");
+    throw XQUERY_EXCEPTION(
+      XPTY0004, ERROR_PARAMS( ZED( SeqNoCastToQName ) ), ERROR_LOC( loc )
+    );
   }
 
   try

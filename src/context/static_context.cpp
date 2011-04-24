@@ -234,7 +234,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       {
         throw ZORBA_EXCEPTION(
           ZCSE0013_UNABLE_TO_LOAD_QUERY,
-          ERROR_PARAMS( ZED( NoRegisteredSerializationCallback ), lURI )
+          ERROR_PARAMS( ZED( NoRegisteredSerializationCallback_2 ), lURI )
         );
       }
     }
@@ -3600,7 +3600,7 @@ void static_context::add_decimal_format(
         throw XQUERY_EXCEPTION(
           XQST0111,
           ERROR_PARAMS(
-            ZED( TwoDecimalFormatsSameName ),
+            ZED( TwoDecimalFormatsSameName_2 ),
             format->getName()->getStringValue()
           ),
           ERROR_LOC( loc )

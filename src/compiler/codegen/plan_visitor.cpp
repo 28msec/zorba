@@ -2166,7 +2166,7 @@ void end_visit(fo_expr& v)
       XPST0017,
       ERROR_PARAMS(
         func->getName()->getStringValue(),
-        ZED( FnCallNotMatchSig ),
+        ZED( FnCallNotMatchSig_3o ),
         argv.size()
       ),
       ERROR_LOC( loc )
@@ -2249,8 +2249,9 @@ bool begin_visit(name_cast_expr& v)
       TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     return true;
 
-  // TODO: needs type name in error message
-  throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(qloc));
+  throw XQUERY_EXCEPTION(
+    XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), targetType ), ERROR_LOC( qloc )
+  );
 }
 
 void end_visit(name_cast_expr& v)

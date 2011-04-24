@@ -36,11 +36,11 @@ namespace zorba {
 
 
 #define CHECK_IN_SCOPE(tm, type, loc) \
-if (type.get_manager() != tm && type.get_manager() != &GENV_TYPESYSTEM) \
-{                                                                       \
-  if (!TypeOps::is_in_scope(tm, type))                                  \
-    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( type.toString(), ZED( NotAmongInScopeSchemaTypes ) ) ); \
-}
+  { \
+  TypeManager const *const ttm = type.get_manager(); \
+  if (ttm != tm && ttm != &GENV_TYPESYSTEM && !TypeOps::is_in_scope(tm,type)) \
+    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), type, ZED( NotAmongInScopeSchemaTypes ) ) ); \
+  }
 
 
 /*******************************************************************************

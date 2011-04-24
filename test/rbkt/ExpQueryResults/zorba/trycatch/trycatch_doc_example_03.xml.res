@@ -1,1 +1,1 @@
-err:XPTY0004 "xs:integer": invalid type: arithmetic operation not defined with type xs:string
+err:XPTY0004 arithmetic operation not defined between types "xs:integer" and "xs:string"

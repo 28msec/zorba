@@ -67,12 +67,18 @@ static XQPCollator* getCollator(
   store::Item_t temp;
 
   if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "An empty sequence is not allowed as collation parameter");
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS( ZED( NoEmptySeqAsCollationParam ) ),
+      ERROR_LOC( loc )
+    );
 
   if (PlanIterator::consumeNext(temp, iter, planState))
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "A sequence of more then one item is not allowed as collation parameter");
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS( ZED( NoSeqAsCollationParam ) ),
+      ERROR_LOC( loc )
+    );
 
   xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
 

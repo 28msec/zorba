@@ -545,18 +545,22 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
   {
     if (theIndex->theMultiKeyFlag)
     {
-      ZORBA_ERROR_DESC_OSS(XPTY0004,
-                           "During a value probe on index "
-                           << theIndex->getName()->getStringValue()
-                           << " a node was found that has more than one key values");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS(
+          ZED( NoMultiKeyNodeValues_2 ), theIndex->getName()->getStringValue()
+        )
+      );
     }
 
     if (theIndex->theUntypedFlag)
     {
-      ZORBA_ERROR_DESC_OSS(XPTY0004,
-                           "During a value probe on index "
-                           << theIndex->getName()->getStringValue()
-                           << " a node was found that has an untyped key value");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS(
+          ZED( NoUntypedKeyNodeValue_2 ), theIndex->getName()->getStringValue()
+        )
+      );
     }
   }
   
@@ -1437,18 +1441,22 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
   {
     if (theIndex->theMultiKeyFlag)
     {
-      ZORBA_ERROR_DESC_OSS(XPTY0004,
-                           "During a value probe on index "
-                           << theIndex->getName()->getStringValue()
-                           << " a node was found that has more than one key values");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS(
+          ZED( NoMultiKeyNodeValues_2 ), theIndex->getName()->getStringValue()
+        )
+      );
     }
 
     if (theIndex->theUntypedFlag)
     {
-      ZORBA_ERROR_DESC_OSS(XPTY0004,
-                           "During a value probe on index "
-                           << theIndex->getName()->getStringValue()
-                           << " a node was found that has an untyped key value");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS(
+          ZED( NoUntypedKeyNodeValue_2 ), theIndex->getName()->getStringValue()
+        )
+      );
     }
   }
 
@@ -1806,18 +1814,24 @@ bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
       {
         if ((*theIte).theMultiKey)
         {
-          ZORBA_ERROR_DESC_OSS(XPTY0004,
-                               "During a value probe on index "
-                               << theIndex->getName()->getStringValue()
-                               << " a node was found that has more than one key values");
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS(
+              ZED( NoMultiKeyNodeValues_2 ),
+              theIndex->getName()->getStringValue()
+            )
+          );
         }
 
         if ((*theIte).theUntyped)
         {
-          ZORBA_ERROR_DESC_OSS(XPTY0004,
-                               "During a value probe on index "
-                               << theIndex->getName()->getStringValue()
-                               << " a node was found that has an untyped key value");
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS(
+              ZED( NoUntypedKeyNodeValue_2 ),
+              theIndex->getName()->getStringValue()
+            )
+          );
         }
       }
 

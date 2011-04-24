@@ -1693,7 +1693,9 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   Item lType = aQName.getType();
   if (lType.getStringValue() != "QName")
   {
-    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( "QName" ) );
+    throw XQUERY_EXCEPTION(
+      XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), "QName" )
+    );
   }
 
   // test if function with given #args exists
@@ -1705,7 +1707,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
     throw XQUERY_EXCEPTION(
       XPST0017,
       ERROR_PARAMS(
-        aQName.getStringValue(), ZED( FnCallNotMatchSig ), aNumArgs
+        aQName.getStringValue(), ZED( FnCallNotMatchSig_3o ), aNumArgs
       )
     );
   }
@@ -1724,7 +1726,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   {
     throw XQUERY_EXCEPTION(
       XPST0017,
-      ERROR_PARAMS( aQName.getStringValue(), ZED( FnCallNotMatchSig ) )
+      ERROR_PARAMS( aQName.getStringValue(), ZED( FnCallNotMatchSig_3o ) )
     );
   }
 

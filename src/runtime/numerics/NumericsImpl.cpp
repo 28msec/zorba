@@ -565,8 +565,9 @@ bool NumArithIterator<Operation>::nextImpl(
       
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
-        ZORBA_ERROR_DESC(XPTY0004,
-                         "Arithmetic operation has a sequence longer than one as an operand.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
+        );
       STACK_PUSH(res, state);
     }
   }
@@ -672,10 +673,11 @@ bool NumArithIterator<Operation>::computeAtomic(
     }
     default:
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, aLoc,
-                               "Numeric operation not defined between the given types ("
-                               << type0->toString() << " and "
-                               << type1->toString() << ").");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
+        ERROR_LOC( aLoc )
+      );
     }
     }
   }
@@ -752,8 +754,9 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
       
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
-        ZORBA_ERROR_DESC(XPTY0004,
-                         "Arithmetic operation has a sequence longer than one as an operand.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
+        );
       STACK_PUSH ( res, state );
     }
   }
@@ -870,8 +873,11 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "Wrong operand type for a unary arithmetic operation.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, ZED( UnaryArithOp ) ),
+        ERROR_LOC( loc )
+      );
     }
     
     STACK_PUSH(true, state);

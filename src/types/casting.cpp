@@ -67,7 +67,7 @@ struct ErrorInfo
 
 
 #define TYPE_EXCEPTION( ERROR_CODE, ERROR_INFO ) \
-  XQUERY_EXCEPTION( ERROR_CODE, ERROR_PARAMS( (ERROR_INFO).theSourceType, ZED( NoCastTo ), (ERROR_INFO).theTargetType ) )
+  XQUERY_EXCEPTION( ERROR_CODE, ERROR_PARAMS( (ERROR_INFO).theSourceType, ZED( NoCastTo_34o ), (ERROR_INFO).theTargetType ) )
 
 
 /*******************************************************************************
@@ -1889,9 +1889,14 @@ bool GenericCast::castToQName(
   else if (!TypeOps::is_subtype(tm, *sourceType, *rtm.STRING_TYPE_ONE) &&
            !TypeOps::is_equal(tm, *sourceType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                             "Item of type " << sourceType->toString()
-                             << " cannot be cast to QName.");
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS(
+        ZED( BadType_23o ), sourceType,
+        ZED( NoCastTo_45o ), "QName"
+      ),
+      ERROR_LOC( loc )
+    );
   }
 
   ErrorInfo errorInfo = { sourceType.getp(), rtm.QNAME_TYPE_ONE.getp() };

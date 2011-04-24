@@ -1337,7 +1337,9 @@ void FLWORIterator::materializeSortTupleAndResult(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        ZORBA_ERROR_DESC(XPTY0004, "Expected a singleton");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
+        );
       }
     }
     else
@@ -1404,8 +1406,13 @@ void FLWORIterator::materializeGroupTuple(
           store::Item_t temp;
           if (typedValueIter->next(temp))
           {
-            ZORBA_ERROR_DESC(XPTY0004,
-                             "Expected a singleton (atomization has more than one value)" );
+            throw XQUERY_EXCEPTION(
+              XPTY0004,
+              ERROR_PARAMS(
+                ZED( SingletonExpected_2o ),
+                ZED( AtomizationHasMoreThanOneValue )
+              )
+            );
           }
         }
       }
@@ -1414,7 +1421,9 @@ void FLWORIterator::materializeGroupTuple(
       store::Item_t temp;
       if (consumeNext(temp, specIter->theInput, planState))
       {
-        ZORBA_ERROR_DESC(XPTY0004, "Expected a singleton");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
+        );
       }
     }
 
@@ -1772,7 +1781,6 @@ void FLWORIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-
-
-}
-}
+} // namespace flwor
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

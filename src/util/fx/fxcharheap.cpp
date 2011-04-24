@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "util/fx/fxcharheap.h"
 
 #ifndef _WIN32_WCE
@@ -39,16 +40,14 @@
 #include "zorbaerrors/error_manager.h"
 
 using namespace std;
+
 namespace zorba {
 
 void fxcharheap::ioexception( string const& msg ) const {
-  ostringstream oss;
-#ifndef _WIN32_WCE
-  oss << msg << " [" << strerror(errno) << ']';
-#else
-  oss << msg;
-#endif
-  ZORBA_ERROR_DESC( ZXQP0013_FXCHARHEAP_EXCEPTION, oss.str() );
+  throw ZORBA_EXCEPTION(
+    ZXQP0013_FXCHARHEAP_EXCEPTION,
+    ERROR_PARAMS( msg, error::get_os_err_string() )
+  );
 }
 
 
@@ -301,4 +300,5 @@ bool operator!=(fxcharheap::fxcharheap_iterator const& x,
 }
 
 
-}  /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

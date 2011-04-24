@@ -236,7 +236,8 @@ to_string( T const &t, OutputStringType *out ) {
  */
 template<class T,class OutputStringType> inline
 typename enable_if<!has_insertion_operator<T>::value
-                && has_c_str<T,char const* (T::*)() const>::value,void>::type
+                && has_c_str<T,char const* (T::*)() const>::value,
+                void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.c_str();
 }

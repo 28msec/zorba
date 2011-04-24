@@ -182,8 +182,10 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (theQuantifier == TypeConstants::QUANT_ONE)
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "Empty sequences cannot be cast to a type with quantifier ONE."
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( EmptySeqNoCastToTypeWithQuantOne ) ),
+        ERROR_LOC( loc )
       );
     }
   }
@@ -201,8 +203,8 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       catch (XQueryException &e)
       {
-	set_source( e, loc );
-	throw;
+  set_source( e, loc );
+  throw;
       }
     }
     else
@@ -213,17 +215,18 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       catch (XQueryException &e)
       {
-	set_source( e, loc );
-	throw;
+        set_source( e, loc );
+        throw;
       }
     }
 
-    //--
     if (consumeNext(lItem, theChild.getp(), planState))
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                               "Sequence with more than one item cannot be cast"
-                               << " to a type with quantifier ONE or QUESTION.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( NoSeqCastToTypeWithQuantOneOrQuestion ) ),
+        ERROR_LOC( loc )
+      );
     }
 
     STACK_PUSH(valid, state);
@@ -350,13 +353,23 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring type = thePromoteType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-            (theFnQName.getp() != NULL)?
-                "An empty sequence is not allowed as the result of the function " 
-                + theFnQName->getStringValue() + "() which returns " + type + "."
-            :   
-                "An empty sequence cannot be promoted to the " + type + " type.");
+      zstring const type = thePromoteType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
+      if ( theFnQName.getp() )
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS(
+            ZED( EmptySeqNotAsFunctionResult_23 ),
+            theFnQName->getStringValue(),
+            type
+          ),
+          ERROR_LOC( loc )
+        );
+      else
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( EmptySeqNoPromoteTo ), type ),
+          ERROR_LOC( loc )
+        );
     }
   }
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
@@ -364,13 +377,25 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     if(consumeNext(temp, theChild.getp(), planState))
     {
-      zstring type = thePromoteType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_QUESTION? "?" : "");
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-        (theFnQName.getp() != NULL)?
-            "A sequence with more than one item cannot be promoted to the required result of the function " 
-            + theFnQName->getStringValue() + "() which returns " + type + "."
-        :
-            "Type promotion not possible on sequence with more than one item");
+      if ( theFnQName.getp() )
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS(
+            ZED( NoSeqTypePromotion_23 ),
+            BUILD_STRING(
+              thePromoteType->toSchemaString(),
+              (theQuantifier == TypeConstants::QUANT_QUESTION ? "?" : "")
+            ),
+            theFnQName->getStringValue()
+          ),
+          ERROR_LOC( loc )
+        );
+      else
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( NoSeqTypePromotion ) ),
+          ERROR_LOC( loc )
+        );
     }
 
     // catch exceptions to add/change the error location
@@ -378,14 +403,27 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-          (theFnQName.getp() != NULL)?
-              "Type promotion not possible: " + tm->create_value_type(lItem)->toSchemaString()
-              + " -> " + thePromoteType->toSchemaString() + " when returning the result of the function "
-              + theFnQName->getStringValue() + "()."
-          :
-              "Type promotion not possible: " + tm->create_value_type(lItem)->toSchemaString()
-              + " -> " + thePromoteType->toSchemaString());
+        if ( theFnQName.getp() )
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS(
+              ZED( NoTypePromotion_234 ),
+              tm->create_value_type(lItem)->toSchemaString(),
+              thePromoteType->toSchemaString(),
+              theFnQName->getStringValue()
+            ),
+            ERROR_LOC( loc )
+          );
+        else
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS(
+              ZED( NoTypePromotion_23 ),
+              tm->create_value_type(lItem)->toSchemaString(),
+              thePromoteType->toSchemaString()
+            ),
+            ERROR_LOC( loc )
+          );
       }
     }
     catch(XQueryException &e)
@@ -402,14 +440,27 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-          (theFnQName.getp() != NULL)?
-              "Type promotion not possible: " + tm->create_value_type(lItem)->toSchemaString()
-              + " -> " + thePromoteType->toSchemaString() + " when returning the result of the function "
-              + theFnQName->getStringValue() + "()."
-          :
-              "Type promotion not possible: " + tm->create_value_type(lItem)->toSchemaString()
-              + " -> " + thePromoteType->toSchemaString());
+        if ( theFnQName.getp() )
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS(
+              ZED( NoTypePromotion_234 ),
+              tm->create_value_type(lItem)->toSchemaString(),
+              thePromoteType->toSchemaString(),
+              theFnQName->getStringValue()
+            ),
+            ERROR_LOC( loc )
+          );
+        else
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS(
+              ZED( NoTypePromotion_23 ),
+              tm->create_value_type(lItem)->toSchemaString(),
+              thePromoteType->toSchemaString()
+            ),
+            ERROR_LOC( loc )
+          );
       }
       else
       {
@@ -570,5 +621,5 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
 NARY_ACCEPT(EitherNodesOrAtomicsIterator);
 
 
-} /* namespace zorba */
-
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

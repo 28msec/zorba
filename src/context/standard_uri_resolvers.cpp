@@ -148,7 +148,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
   else
   {
     throw XQUERY_EXCEPTION(
-      FODC0002, ERROR_PARAMS( lURI, ZED( BadURIScheme ), lURI.get_scheme() )
+      FODC0002, ERROR_PARAMS( lURI, ZED( BadURIScheme_3 ), lURI.get_scheme() )
     );
   }
 

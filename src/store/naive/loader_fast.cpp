@@ -359,7 +359,7 @@ store::Item_t FastXmlLoader::loadXml(
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
           ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS( ZED( BadXMLDocument ), theDocUri )
+          ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
         )
       );
     }
@@ -368,7 +368,7 @@ store::Item_t FastXmlLoader::loadXml(
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
           ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS( ZED( BadXMLDocument ) )
+          ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
         )
       );
     }

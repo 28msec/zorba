@@ -441,7 +441,7 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         throw XQUERY_EXCEPTION(
           XPTY0004,
-          ERROR_PARAMS( "", ZED( ValueCompOneItemOnly ) ),
+          ERROR_PARAMS( ZED( NoSeqInValueComp ) ),
           ERROR_LOC( loc )
         );
       }
@@ -864,7 +864,8 @@ bool CompareIterator::equal(
       throw XQUERY_EXCEPTION(
         XPTY0004,
         ERROR_PARAMS(
-          type0->toString(), ZED( NoCompWithType ), type1->toString()
+          ZED( BadType_23o ), type0->toString(),
+          ZED( NoCompareWithType_4 ), type1->toString()
         ),
         ERROR_LOC( loc )
       );
@@ -916,7 +917,8 @@ long CompareIterator::compare(
         throw XQUERY_EXCEPTION(
           XPTY0004,
           ERROR_PARAMS(
-            type0->toString(), ZED( NoCompWithType ), type1->toString()
+            ZED( BadType_23o ), type0->toString(),
+            ZED( NoCompareWithType_4 ), type1->toString()
           ),
           ERROR_LOC( loc )
         );
@@ -945,7 +947,8 @@ long CompareIterator::compare(
         throw XQUERY_EXCEPTION(
           XPTY0004,
           ERROR_PARAMS(
-            type0->toString(), ZED( NoCompWithType ), type1->toString()
+            ZED( BadType_23o ), type0->toString(),
+            ZED( NoCompareWithType_4 ), type1->toString()
           ),
           ERROR_LOC( loc )
         );
@@ -960,7 +963,8 @@ long CompareIterator::compare(
       throw XQUERY_EXCEPTION(
         XPTY0004,
         ERROR_PARAMS(
-          type0->toString(), ZED( NoCompWithType ), type1->toString()
+          ZED( BadType_23o ), type0->toString(),
+          ZED( NoCompareWithType_4 ), type1->toString()
         ),
         ERROR_LOC( loc )
       );
@@ -1065,7 +1069,7 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
     {
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( "", ZED( ValueCompOneItemOnly ) ),
+        ERROR_PARAMS( ZED( NoSeqInValueComp ) ),
         ERROR_LOC( this->loc )
       );
     }
@@ -1141,13 +1145,21 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
     count0 = 1;
 
   if (count0 && consumeNext(tItem0, theChild0.getp(), planState))
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "Cannot test atomic values equivalence for sequences longer than one item.");
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS( ZED( NoSeqTestedForAtomicEquiv ) ),
+      ERROR_LOC( loc )
+    );
 
   if (consumeNext(lItem1, theChild1.getp(), planState))
     count1 = 1;
 
   if (count1 && consumeNext(tItem1, theChild1.getp(), planState))
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "Cannot test atomic values equivalence for sequences longer than one item.");
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS( ZED( NoSeqTestedForAtomicEquiv ) ),
+      ERROR_LOC( loc )
+    );
 
   if (count0 == 0 && count1 == 0)
   {

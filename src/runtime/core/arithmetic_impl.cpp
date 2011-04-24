@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <sstream>
-
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/assert.h"
 #include "zorbaerrors/dict.h"
@@ -59,15 +57,13 @@ void ArithOperationsCommons::createError(
     TypeConstants::atomic_type_code_t aType0,
     TypeConstants::atomic_type_code_t aType1)
 {
-  std::stringstream lStream;
-  lStream << "The operation '";
-  lStream << aOp;
-  lStream << "' is not possible with parameters of the type ";
-  tm->create_builtin_atomic_type(aType0, TypeConstants::QUANT_ONE)->serialize_ostream(lStream);
-  lStream << " and ";
-  tm->create_builtin_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize_ostream(lStream);
-  lStream << ".";
-  ZORBA_ERROR_LOC_DESC(XPTY0004, *aLoc, lStream.str());
+  xqtref_t t0 = tm->create_builtin_atomic_type(aType0,TypeConstants::QUANT_ONE);
+  xqtref_t t1 = tm->create_builtin_atomic_type(aType1,TypeConstants::QUANT_ONE);
+  throw XQUERY_EXCEPTION(
+    XPTY0004,
+    ERROR_PARAMS( ZED( OperationNotPossibleWithTypes_234 ), aOp, *t0, *t1 ),
+    ERROR_LOC( aLoc )
+  );
 }
 
 
@@ -114,8 +110,11 @@ bool GenericArithIterator<Operation>::nextImpl(
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, this->loc, 
-        "An operand of an arithmetic operation is a sequences with more than one item.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
+          ERROR_LOC( this->loc )
+        );
       }
 
       STACK_PUSH ( status, state );
@@ -295,7 +294,7 @@ bool GenericArithIterator<Operation>::compute(
   
   throw XQUERY_EXCEPTION(
     XPTY0004,
-    ERROR_PARAMS( type0->toString(), ZED( BadMathTypes ), type1->toString() ),
+    ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
     ERROR_LOC( aLoc )
   );
 

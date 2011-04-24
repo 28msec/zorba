@@ -534,7 +534,7 @@ store::Item_t QNameItem::getEBV() const
   throw XQUERY_EXCEPTION(
     FORG0006,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), ZED( EffectiveBooleanValue ), "QName"
+      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "QName"
     )
   );
 }
@@ -1558,7 +1558,7 @@ xs_long IntegerItem::getLongValue() const
 
   throw XQUERY_EXCEPTION(
     FORG0001,
-    ERROR_PARAMS( theValue, ZED( CastFromToFailed ), "integer", "long" )
+    ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
   );
 }
 

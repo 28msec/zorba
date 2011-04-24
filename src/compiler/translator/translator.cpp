@@ -1939,7 +1939,7 @@ void* begin_visit(const VersionDecl& v)
     // the bug report concerning modules of version 1.0 importing v3.0 libraries.
     throw XQUERY_EXCEPTION(
       XQST0031,
-      ERROR_PARAMS( versionStr, ZED( LibModVersionMismatch ), maxversion ),
+      ERROR_PARAMS( versionStr, ZED( LibModVersionMismatch_3 ), maxversion ),
       ERROR_LOC( loc )
     );
   }
@@ -3190,7 +3190,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       if (!body->is_updating_or_vacuous())
       {
         throw XQUERY_EXCEPTION(XUST0002,
-                               ERROR_PARAMS(ZED(XUST0002_UDF), fname),
+                               ERROR_PARAMS(ZED(XUST0002_UDF_2), fname),
                                ERROR_LOC(loc));
       }
     }
@@ -3201,7 +3201,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     else if (body->is_updating() || theHaveUpdatingExitExprs)
     {
       throw XQUERY_EXCEPTION(XUST0001,
-                             ERROR_PARAMS(ZED(XUST0001_UDF), fname),
+                             ERROR_PARAMS(ZED(XUST0001_UDF_2), fname),
                              ERROR_LOC(loc));
     }
 
@@ -3505,7 +3505,9 @@ void* begin_visit(const AnnotationParsenode& v)
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     throw XQUERY_EXCEPTION(
       XPST0003,
-      ERROR_PARAMS( theSctx->xquery_version(), ZED( XQueryVersionV1_0 ) ),
+      ERROR_PARAMS(
+        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
+      ),
       ERROR_LOC( loc )
     );
 
@@ -3543,7 +3545,9 @@ void* begin_visit(const CtxItemDecl& v)
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     throw XQUERY_EXCEPTION(
       XPST0003,
-      ERROR_PARAMS( theSctx->xquery_version(), ZED( XQueryVersionV1_0 ) ),
+      ERROR_PARAMS(
+        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
+      ),
       ERROR_LOC( loc )
     );
 
@@ -4975,7 +4979,9 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   {
     throw XQUERY_EXCEPTION(
       XPST0003,
-      ERROR_PARAMS( theSctx->xquery_version(), ZED( XQueryVersionV1_0 ) ),
+      ERROR_PARAMS(
+        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
+      ),
       ERROR_LOC( loc )
     );
   }
@@ -8468,8 +8474,9 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION_VAR(
           error,
           ERROR_PARAMS(
+            ZED( BadType_23o ),
             declaredType->toString(),
-            ZED( NoTypeInMainModule ),
+            ZED( NoTypeInMainModule_4 ),
             ve->get_name()->getStringValue()
           ),
           ERROR_LOC( loc )
@@ -8480,8 +8487,9 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION_VAR(
           error,
           ERROR_PARAMS(
+            ZED( BadType_23o ),
             declaredType->toString(),
-            ZED( NoTypeInModule ),
+            ZED( NoTypeInModule_45 ),
             ve->get_name()->getStringValue(),
             theModuleNamespace
           ),
@@ -8615,7 +8623,7 @@ void* begin_visit(const FunctionCall& v)
       XPST0017,
       ERROR_PARAMS(
         f->getName()->getStringValue(),
-        ZED( FnOnlyInXQueryVersion ),
+        ZED( FnOnlyInXQueryVersion_3 ),
         version
       ),
       ERROR_LOC( loc )
@@ -8643,8 +8651,9 @@ void* begin_visit(const FunctionCall& v)
         throw XQUERY_EXCEPTION(
           XQST0036,
           ERROR_PARAMS(
+            ZED( BadType_23o ),
             retType->toString(),
-            ZED( NoTypeInMainModule ),
+            ZED( NoTypeInMainModule_4 ),
             f->getName()->getStringValue()
           ),
           ERROR_LOC( loc )
@@ -8655,8 +8664,9 @@ void* begin_visit(const FunctionCall& v)
         throw XQUERY_EXCEPTION(
           XQST0036,
           ERROR_PARAMS(
+            ZED( BadType_23o ),
             retType->toString(),
-            ZED( NoTypeInModule ),
+            ZED( NoTypeInModule_45 ),
             f->getName()->getStringValue(),
             theModuleNamespace
           ),
@@ -8677,8 +8687,9 @@ void* begin_visit(const FunctionCall& v)
           throw XQUERY_EXCEPTION(
             XQST0036,
             ERROR_PARAMS(
+              ZED( BadType_23o ),
               type->toString(),
-              ZED( NoTypeInMainModule ),
+              ZED( NoTypeInMainModule_4 ),
               f->getName()->getStringValue()
             ),
             ERROR_LOC( loc )
@@ -8689,8 +8700,9 @@ void* begin_visit(const FunctionCall& v)
           throw XQUERY_EXCEPTION(
             XQST0036,
             ERROR_PARAMS(
+              ZED( BadType_23o ),
               retType->toString(),
-              ZED( NoTypeInModule ),
+              ZED( NoTypeInModule_45 ),
               f->getName()->getStringValue(),
               theModuleNamespace
             ),
@@ -8753,7 +8765,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       throw XQUERY_EXCEPTION(
         XPST0017,
-        ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), numArgs ),
+        ERROR_PARAMS(
+          qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
+        ),
         ERROR_LOC( loc )
       );
     }
@@ -8831,7 +8845,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       default:
         throw XQUERY_EXCEPTION(
           XPST0017,
-          ERROR_PARAMS( "fn:number", ZED( FnCallNotMatchSig ), numArgs ),
+          ERROR_PARAMS( "fn:number", ZED( FnCallNotMatchSig_3o ), numArgs ),
           ERROR_LOC( loc )
         );
       }
@@ -8869,7 +8883,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION(
           XPST0017,
           ERROR_PARAMS(
-            "fn:static-base-uri", ZED( FnCallNotMatchSig ), numArgs
+            "fn:static-base-uri", ZED( FnCallNotMatchSig_3o ), numArgs
           ),
           ERROR_LOC( loc )
         );
@@ -8944,7 +8958,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (numArgs < 2)
         throw XQUERY_EXCEPTION(
           XPST0017,
-          ERROR_PARAMS( "concat", ZED( FnCallNotMatchSig ), numArgs ),
+          ERROR_PARAMS( "concat", ZED( FnCallNotMatchSig_3o ), numArgs ),
           ERROR_LOC( loc )
         );
     }
@@ -8992,7 +9006,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       throw XQUERY_EXCEPTION(
         XPST0017,
-        ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), numArgs ),
+        ERROR_PARAMS(
+          qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
+        ),
         ERROR_LOC( loc )
       );
     }
@@ -9022,7 +9038,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       throw XQUERY_EXCEPTION(
         XPST0017,
-        ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig), numArgs ),
+        ERROR_PARAMS(
+          qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
+        ),
         ERROR_LOC( loc )
       );
     }
@@ -9052,7 +9070,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       {
         throw XQUERY_EXCEPTION(
           XPST0017,
-          ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), numArgs ),
+          ERROR_PARAMS(
+            qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
+          ),
           ERROR_LOC( loc )
         );
       }
@@ -9179,7 +9199,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       {
         throw XQUERY_EXCEPTION(
           XPST0017,
-          ERROR_PARAMS( "invoke", ZED( FnCallNotMatchSig ) ),
+          ERROR_PARAMS( "invoke", ZED( FnCallNotMatchSig_3o ) ),
           ERROR_LOC( loc )
         );
       }
@@ -9385,7 +9405,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   {
     throw XQUERY_EXCEPTION(
       XPST0017,
-      ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig ), arity ),
+      ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig_3o ), arity ),
       ERROR_LOC( loc )
     );
   }
@@ -9651,7 +9671,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname())
   {
     throw XQUERY_EXCEPTION(XPST0003,
-                           ERROR_PARAMS(ZED(StartEndTagMismatch),
+                           ERROR_PARAMS(ZED(StartEndTagMismatch_23),
                                         start_tag->get_qname(),
                                         end_tag->get_qname()),
                            ERROR_LOC(loc));
@@ -11081,7 +11101,10 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     {
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( StringLiteral ), ZED( NoCastTo ), "NCName" ),
+        ERROR_PARAMS(
+          ZED( BadType_23o ), lNormalizedTarget,
+          ZED( NoCastTo_45o ), "NCName"
+        ),
         ERROR_LOC( loc )
       );
     }

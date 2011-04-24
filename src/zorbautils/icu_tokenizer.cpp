@@ -279,7 +279,8 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
           case '{':
             if ( in_brace )
               throw XQUERY_EXCEPTION(
-                FTDY0020, ERROR_PARAMS( "", ZED( BadCharInBraces ), *utf8_buf  )
+                FTDY0020,
+                ERROR_PARAMS( "", ZED( BadCharInBraces_3 ), *utf8_buf  )
               );
             HANDLE_BACKSLASH();
             if ( in_wild ) {
@@ -326,17 +327,17 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
             break;
           if ( !isdigit( *c ) )
             throw XQUERY_EXCEPTION(
-              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit ), *c )
+              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
             );
         }
         if ( i == utf8_len || *c != ',' )
           throw XQUERY_EXCEPTION(
-            FTDY0020, ERROR_PARAMS( "", ZED( CharExpected ), ',' )
+            FTDY0020, ERROR_PARAMS( "", ZED( CharExpected_3 ), ',' )
           );
         for ( ++i, ++c; i < utf8_len; ++i, ++c ) {
           if ( !isdigit( *c ) )
             throw XQUERY_EXCEPTION(
-              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit ), *c )
+              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
             );
         }
       }
@@ -352,7 +353,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
 #     endif
       if ( in_brace )
         throw XQUERY_EXCEPTION(
-          FTDY0020, ERROR_PARAMS( "", ZED( BadTokenInBraces ), utf8_word )
+          FTDY0020, ERROR_PARAMS( "", ZED( BadTokenInBraces_3 ), utf8_word )
         );
       IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
     }

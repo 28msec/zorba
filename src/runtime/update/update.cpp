@@ -695,14 +695,20 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (!consumeNext(lNewname, theChild1, aPlanState))
   {
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-                         "Empty sequences cannot be cast to QName.");
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS( ZED( EmptySeqNoCastToQName ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (consumeNext(temp, theChild1, aPlanState))
   {
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-                         "Sequences with more than one item cannot be cast to QName.");
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS( ZED( SeqNoCastToQName ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   try

@@ -397,7 +397,9 @@ void OrderByIterator::materializeResultForSort(
       store::Item_t temp;
       if (consumeNext(temp, theOrderSpecs[i].theDomainIter, planState)) 
       {
-        ZORBA_ERROR_DESC(XPTY0004, "Expected a singleton");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
+        );
       }
     }
     else
@@ -464,3 +466,4 @@ void OrderByIterator::bindOrderBy(
   
 } //Namespace flwor
 } //Namespace zorba
+/* vim:set et sw=2 ts=2: */

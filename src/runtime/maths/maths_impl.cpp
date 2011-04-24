@@ -285,8 +285,9 @@ FmodIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
-        ZORBA_ERROR_DESC(XPTY0004,
-                         "Fmod function has a sequence longer than one as an operand.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp ), "fmod" )
+        );
       STACK_PUSH(true, state);
     }
   }
@@ -319,8 +320,9 @@ LdexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
-        ZORBA_ERROR_DESC(XPTY0004,
-                         "Ldexp function has a sequence longer than one as an operand.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp ), "ldexp" )
+        );
       STACK_PUSH(true, state);
     }
   }
@@ -379,8 +381,11 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
           xs_integer n1_integer = n1->getIntegerValue();
           if(!NumConversions::integerToInt(n1_integer, n1_int))
           {
-            ZORBA_ERROR_LOC_DESC( XPTY0004,
-                                  loc, "Second operator cannot be casted from Integer to C language int.");
+            throw XQUERY_EXCEPTION(
+              XPTY0004,
+              ERROR_PARAMS( ZED( NoCastToCInt_2 ), n1_integer ),
+              ERROR_LOC( loc )
+            );
           }
           GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_int));
         }
@@ -392,15 +397,19 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
         }
         else
         {
-          ZORBA_ERROR_LOC_DESC( XPTY0004,
-                                loc, "Wrong second operand type for math:pow.");
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "math:pow" ),
+            ERROR_LOC( loc )
+          );
         }
       }
 
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
-        ZORBA_ERROR_DESC(XPTY0004,
-                         "math:pow function has a sequence longer than one as an operand.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp ), "math:pow" )
+        );
       STACK_PUSH(true, state);
     }
   }
@@ -554,4 +563,5 @@ FrexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   }
   STACK_END (state);
 }
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

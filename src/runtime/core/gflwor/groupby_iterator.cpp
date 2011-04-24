@@ -378,8 +378,11 @@ void GroupByIterator::matVarsAndGroupBy(
       // than 1 item.
       if (consumeNext(temp, theGroupingSpecs[i].theInput.getp(), aPlanState)) 
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                             "The value of a groupby variable has more than one items.");
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( GroupByVarHasMoreThanOneItem_2 ) ),
+          ERROR_LOC( loc )
+        );
       }
 
       store::Iterator_t typedValueIter;
@@ -401,9 +404,11 @@ void GroupByIterator::matVarsAndGroupBy(
             
             if (typedValueIter->next(temp))
             {
-              ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                                       "Atomization of a groupby variable produces "
-                                       << "more than one items.");
+              throw XQUERY_EXCEPTION(
+                XPTY0004,
+                ERROR_PARAMS( ZED( AtomizationOfGroupByMakesMoreThanOneItem ) ),
+                ERROR_LOC( loc )
+              );
             }
           }
         }

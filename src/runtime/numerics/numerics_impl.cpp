@@ -122,14 +122,20 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "Wrong operand type for fn:abs.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:abs" ),
+        ERROR_LOC( loc )
+      );
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "fn:abs has a sequence longer than one as an operand.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:abs" ),
+        ERROR_LOC( loc )
+      );
     }
     STACK_PUSH ( true, state );
   }
@@ -181,14 +187,20 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     else
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004,
-                           loc, "Wrong operand type for fn:ceiling.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:ceiling" ),
+        ERROR_LOC( loc )
+      );
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "fn:ceiling has a sequence longer than one as an operand.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:ceiling" ),
+        ERROR_LOC( loc )
+      );
     }
     STACK_PUSH ( true, state );
   }
@@ -240,14 +252,20 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     else
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004,
-                           loc, "Wrong operand type for fn:floor.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:floor" ),
+        ERROR_LOC( loc )
+      );
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ) )
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "fn:floor has a sequence longer than one as an operand.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:floor" ),
+        ERROR_LOC( loc )
+      );
     }
     STACK_PUSH (true, state );
   }
@@ -312,13 +330,20 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     else
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "Wrong operand type for fn:round.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:round" ),
+        ERROR_LOC( loc )
+      );
     }
 
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "fn:round has a sequence longer than one as an operator.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:round" ),
+        ERROR_LOC( loc )
+      );
     }
     STACK_PUSH (true, state );
   }
@@ -380,14 +405,20 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     else
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "Wrong operand type for fn:round-half-to-even.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:round-half-to-even" ),
+        ERROR_LOC( loc )
+      );
     }
 
     if ( consumeNext(item, theChildren [0].getp(), planState ))
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "fn:round-half-to-even has a sequence longer than one as an operand.");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:round-half-to-even" ),
+        ERROR_LOC( loc )
+      );
     }
     STACK_PUSH ( true, state );
   }

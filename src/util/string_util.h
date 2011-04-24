@@ -399,16 +399,6 @@ inline bool split( InputStringType const &in, DelimStringType const &delim,
 
 using internal::ztd::to_string;
 
-template<typename T> inline
-typename enable_if<ZORBA_TR1_NS::is_fundamental<T>::value
-                || ZORBA_TR1_NS::is_enum<T>::value,
-                   std::string>::type
-to_string( T const &t ) {
-  std::ostringstream o;
-  o << t;
-  return o.str();
-}
-
 /**
  * Converts an object to its string representation.
  *
@@ -418,8 +408,7 @@ to_string( T const &t ) {
  */
 template<typename T> inline
 typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
-                && !has_c_str<T,char const* (T::*)() const>::value
-                && !has_str<T,std::string (T::*)() const>::value,
+                && has_insertion_operator<T>::value,
                    std::string>::type
 to_string( T const &t ) {
   std::ostringstream o;
@@ -436,7 +425,8 @@ to_string( T const &t ) {
  * @return Returns a string representation of the object.
  */
 template<class T> inline
-typename enable_if<has_c_str<T,char const* (T::*)() const>::value,
+typename enable_if<!has_insertion_operator<T>::value
+                && has_c_str<T,char const* (T::*)() const>::value,
                    std::string>::type
 to_string( T const &t ) {
   return t.c_str();
@@ -451,8 +441,9 @@ to_string( T const &t ) {
  * @return Returns a string representation of the object.
  */
 template<class T> inline
-typename enable_if<has_str<T,std::string (T::*)() const>::value
-                && !has_c_str<T,char const* (T::*)() const>::value,
+typename enable_if<!has_insertion_operator<T>::value
+                && !has_c_str<T,char const* (T::*)() const>::value
+                && has_str<T,std::string (T::*)() const>::value,
                 std::string>::type
 to_string( T const &t ) {
   return t.str();

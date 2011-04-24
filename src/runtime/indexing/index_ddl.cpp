@@ -57,14 +57,16 @@ static void checkKeyType(
   if (indexKeyType != NULL &&
       !TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                             "The type of a search key does not mathch the type"
-                             << " of the corresponding index key for index "
-                             << indexDecl->getName()->getStringValue()
-                             << ". The search key has type "
-                             << searchKeyType->toString()
-                             << " and the expected key type is "
-                             << indexKeyType->toString());
+    throw XQUERY_EXCEPTION(
+      XPTY0004,
+      ERROR_PARAMS(
+        ZED( SearchKeyTypeMismatch_234 ),
+        searchKeyType->toString(),
+        indexDecl->getName()->getStringValue(),
+        indexKeyType->toString()
+      ),
+      ERROR_LOC( loc )
+    );
   }
   else if (indexKeyType == NULL)
   {
@@ -75,11 +77,15 @@ static void checkKeyType(
          (TypeOps::is_subtype(tm, *searchKeyType, *rtm.NOTATION_TYPE_ONE) ||
           TypeOps::is_subtype(tm, *searchKeyType, *rtm.HEXBINARY_TYPE_ONE))))
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc, 
-                               "Cannot probe index "
-                               << indexDecl->getName()->getStringValue()
-                               << " with a search key of type "
-                               << searchKeyType->toString());
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS(
+          ZED( SearchKeyTypeNoProbeIndex_23 ),
+          searchKeyType->toString(),
+          indexDecl->getName()->getStringValue()
+        ),
+        ERROR_LOC( loc )
+      );
     }
   }
 }

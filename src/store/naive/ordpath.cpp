@@ -203,7 +203,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
   {
     throw ZORBA_EXCEPTION(
       ZSTR0030_NODEID_ERROR,
-      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(MAX_BYTE_LEN) )
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(MAX_BYTE_LEN) )
     );
   }
 
@@ -1043,7 +1043,7 @@ bool OrdPath::pushComp(
   {
     throw ZORBA_EXCEPTION(
       ZSTR0030_NODEID_ERROR,
-      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(MAX_BYTE_LEN) )
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(MAX_BYTE_LEN) )
     );
   }
 
@@ -1124,7 +1124,7 @@ void OrdPath::appendComp(int32_t value)
   {
     throw ZORBA_EXCEPTION(
       ZSTR0030_NODEID_ERROR,
-      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int( MAX_BYTE_LEN ) )
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int( MAX_BYTE_LEN ) )
     );
   }
 
@@ -4018,7 +4018,7 @@ void OrdPathStack::pushChild()
   {
     throw ZORBA_EXCEPTION(
       ZSTR0030_NODEID_ERROR,
-      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(OrdPath::MAX_BYTE_LEN) )
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(OrdPath::MAX_BYTE_LEN) )
     );
   }
 
@@ -4190,7 +4190,7 @@ void OrdPathStack::compressComp(ulong comp, int32_t value)
   {
     throw ZORBA_EXCEPTION(
       ZSTR0030_NODEID_ERROR,
-      ERROR_PARAMS( ZED( NodeIDNeedsBytes ), int(OrdPath::MAX_BYTE_LEN) )
+      ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(OrdPath::MAX_BYTE_LEN) )
     );
   }
 

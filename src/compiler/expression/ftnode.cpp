@@ -402,7 +402,10 @@ ftlanguage_option::ftlanguage_option(
 {
   if ( !GenericCast::instance()->castableToLanguage( lang ) )
     throw XQUERY_EXCEPTION(
-      XPTY0004, ERROR_PARAMS( lang, ZED( NoCastTo ), "language" ),
+      XPTY0004,
+      ERROR_PARAMS(
+        ZED( BadType_23o ), lang, ZED( NoCastTo_45o ), "xs:language"
+      ),
       ERROR_LOC( loc )
     );
   if ( !(lang_ = locale::find_lang( lang.c_str() )) )

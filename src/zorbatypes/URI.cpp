@@ -655,7 +655,8 @@ void URI::initialize(const zstring& uri, bool have_base)
             !ZSTREQ(lAuthUri, "localhost")) 
         {
           throw XQUERY_EXCEPTION(
-            XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( BadFileURIAuthority ) )
+            XQST0046,
+            ERROR_PARAMS( lTrimmedURI, ZED( BadFileURIAuthority_2 ), lAuthUri )
           );
         }
 
@@ -926,18 +927,18 @@ void URI::initializePath(const zstring& uri)
           unicode::code_point lHex1 = lCodepoints[++lIndex];
           if(!ascii::is_xdigit(lHex1))
             throw XQUERY_EXCEPTION(
-              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), lHex1 )
+              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex1 )
             );
           unicode::code_point lHex2 = lCodepoints[++lIndex];
           if(!ascii::is_xdigit(lHex2))
             throw XQUERY_EXCEPTION(
-              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), lHex2 )
+              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex2 )
             );
         }
         else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
         {
           throw XQUERY_EXCEPTION(
-            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar ), lCp )
+            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
           );
         }
         ++lIndex;
@@ -965,7 +966,7 @@ void URI::initializePath(const zstring& uri)
         else if (!is_reservered_or_unreserved_char(lCp) && valid)
         {
           throw XQUERY_EXCEPTION(
-            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar ), lCp )
+            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
           );
         }
         ++lIndex;

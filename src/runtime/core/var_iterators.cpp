@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -67,7 +67,7 @@ CtxVarDeclareIterator::CtxVarDeclareIterator(
     ulong varid,
     const store::Item_t& varName,
     bool isExtern,
-    bool singleItem) 
+    bool singleItem)
   :
   NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>(sctx, loc, args),
   theVarId(varid),
@@ -80,9 +80,9 @@ CtxVarDeclareIterator::CtxVarDeclareIterator(
 
 void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, 
+  serialize_baseclass(ar,
   (NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
-  
+
   ar & theVarId;
   ar & theVarName;
   ar & theIsExternal;
@@ -108,17 +108,25 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         store::Item_t item;
 
         if (! consumeNext(item, theChildren[0], planState))
-          ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
-        
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+            ERROR_LOC( loc )
+          );
+
         dctx->set_variable(theVarId, theVarName, loc, item);
-        
+
         if (consumeNext(item, theChildren[0], planState))
-          ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
+          throw XQUERY_EXCEPTION(
+            XPTY0004,
+            ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+            ERROR_LOC( loc )
+          );
       }
       else
       {
         store::Iterator_t planIter = new PlanIteratorWrapper(theChildren[0], planState);
-        
+
         dctx->set_variable(theVarId, theVarName, loc, planIter);
       }
     }
@@ -140,9 +148,9 @@ NARY_ACCEPT(CtxVarDeclareIterator);
 
 void CtxVarAssignIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, 
+  serialize_baseclass(ar,
   (UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
-  
+
   ar & theVarId;
   ar & theVarName;
   ar & theIsLocal;
@@ -160,7 +168,11 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (theSingleItem)
   {
     if (! consumeNext(item, theChild, planState))
-			ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+        ERROR_LOC( loc )
+      );
 
     if (theIsLocal)
       planState.theLocalDynCtx->set_variable(theVarId, theVarName, loc, item);
@@ -168,7 +180,11 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
       planState.theGlobalDynCtx->set_variable(theVarId, theVarName, loc, item);
 
     if (consumeNext(item, theChild, planState))
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
+      throw XQUERY_EXCEPTION(
+        XPTY0004,
+        ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+        ERROR_LOC( loc )
+      );
   }
   else
   {
@@ -196,7 +212,7 @@ UNARY_ACCEPT(CtxVarAssignIterator);
 
 void CtxVarIsSetIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, 
+  serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>*)this);
 
   ar & theVarId;
@@ -239,18 +255,18 @@ CtxVarState::~CtxVarState()
 }
 
 
-void CtxVarState::reset(PlanState& planState) 
-{ 
-  PlanIteratorState::reset(planState); 
+void CtxVarState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
 
-  if (theSourceIter != NULL) 
+  if (theSourceIter != NULL)
     theSourceIter->reset();
 }
 
 
 CtxVarIterator::CtxVarIterator(
     static_context* sctx,
-    const QueryLoc& loc, 
+    const QueryLoc& loc,
     ulong varid,
     const store::Item_t& varName,
     bool isLocal)
@@ -266,7 +282,7 @@ CtxVarIterator::CtxVarIterator(
 
 void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, 
+  serialize_baseclass(ar,
   (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
 
   ar & theVarId;
@@ -278,7 +294,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool CtxVarIterator::setTargetPos(xs_long v) 
+bool CtxVarIterator::setTargetPos(xs_long v)
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -289,22 +305,22 @@ bool CtxVarIterator::setTargetPos(xs_long v)
 }
 
 
-bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v) 
+bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v)
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
-    theTargetPosIter = v; 
+    theTargetPosIter = v;
     return true;
   }
   return false;
 }
 
 
-bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v) 
+bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
   if (theTargetPos == 0 && theTargetLenIter == NULL)
   {
-    theTargetLenIter = v; 
+    theTargetLenIter = v;
     return true;
   }
   return false;
@@ -326,7 +342,7 @@ uint32_t CtxVarIterator::getStateSizeOfSubtree() const
   }
   else
   {
-    return size + getStateSize(); 
+    return size + getStateSize();
   }
 }
 
@@ -384,7 +400,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xs_long startPos;
   xs_long len;
 
-  dynamic_context* dctx = (theIsLocal ? 
+  dynamic_context* dctx = (theIsLocal ?
                            planState.theLocalDynCtx :
                            planState.theGlobalDynCtx);
 
@@ -418,7 +434,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         state->theTempSeq->getItem((ulong)startPos, result);
       }
-      
+
       if (result)
         STACK_PUSH(true, state);
     }
@@ -476,7 +492,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       while (state->thePos < state->theLastPos)
       {
         state->theTempSeq->getItem(state->thePos++, result);
-        
+
         if (result)
           STACK_PUSH(true, state);
         else
@@ -517,7 +533,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         state->theTempSeq->getItem((ulong)startPos, result);
       }
-      
+
       if (result)
         STACK_PUSH(true, state);
     }
@@ -596,8 +612,8 @@ ForVarIterator::ForVarIterator(
     static_context* sctx,
     const QueryLoc& loc,
     store::Item* name)
-  : 
-  NoaryBaseIterator<ForVarIterator, ForVarState >(sctx, loc), 
+  :
+  NoaryBaseIterator<ForVarIterator, ForVarState >(sctx, loc),
   theVarName(name)
 {
 }
@@ -648,11 +664,11 @@ LetVarState::~LetVarState()
 }
 
 
-void LetVarState::reset(PlanState& planState) 
-{ 
-  PlanIteratorState::reset(planState); 
+void LetVarState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
 
-  if (theSourceIter != NULL) 
+  if (theSourceIter != NULL)
     theSourceIter->reset();
 }
 
@@ -679,7 +695,7 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool LetVarIterator::setTargetPos(xs_long v) 
+bool LetVarIterator::setTargetPos(xs_long v)
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -690,22 +706,22 @@ bool LetVarIterator::setTargetPos(xs_long v)
 }
 
 
-bool LetVarIterator::setTargetPosIter(const PlanIter_t& v) 
+bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
-    theTargetPosIter = v; 
+    theTargetPosIter = v;
     return true;
   }
   return false;
 }
 
 
-bool LetVarIterator::setTargetLenIter(const PlanIter_t& v) 
+bool LetVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
   if (theTargetPos == 0 && theTargetLenIter == NULL)
   {
-    theTargetLenIter = v; 
+    theTargetLenIter = v;
     return true;
   }
   return false;
@@ -737,7 +753,7 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
     {
       value->getItem((ulong)theTargetPos, state->theItem);
     }
-    else 
+    else
     {
       state->theSourceIter = state->theTempSeq->getIterator();
       state->theSourceIter->open();
@@ -752,7 +768,7 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 void LetVarIterator::bind(
     store::TempSeq_t& value,
     PlanState& planState,
-    ulong startPos, 
+    ulong startPos,
     ulong endPos)
 {
   LetVarState* state;
@@ -924,7 +940,7 @@ uint32_t LetVarIterator::getStateSizeOfSubtree() const
   }
   else
   {
-    return getStateSize(); 
+    return getStateSize();
   }
 }
 
@@ -943,4 +959,5 @@ void LetVarIterator::accept(PlanIterVisitor& v) const
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

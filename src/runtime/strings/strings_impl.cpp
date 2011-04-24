@@ -284,9 +284,11 @@ bool ConcatStrIterator::nextImpl(
 
       if (consumeNext(lItem, *iter, planState))
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-          "A sequence with more than one item is not allowed as argument to fn:concat");
-        break;
+        throw XQUERY_EXCEPTION(
+          XPTY0004,
+          ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:concat" ),
+          ERROR_LOC( loc )
+        );
       }
     }
   }
@@ -1409,7 +1411,7 @@ bool FnReplaceIterator::nextImpl(
           default:
             throw XQUERY_EXCEPTION(
               FORX0004,
-              ERROR_PARAMS( replacement, ZED( BadCharAfter ), *c, '\\' ),
+              ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '\\' ),
               ERROR_LOC( loc )
             );
         }
@@ -1418,7 +1420,7 @@ bool FnReplaceIterator::nextImpl(
         if ( !ascii::is_digit( *c ) )
           throw XQUERY_EXCEPTION(
             FORX0004,
-            ERROR_PARAMS( replacement, ZED( BadCharAfter ), *c, '$' ),
+            ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '$' ),
             ERROR_LOC( loc )
           );
         if ( *c - '0' <= num_capturing_groups ) {
@@ -1443,13 +1445,13 @@ bool FnReplaceIterator::nextImpl(
     if ( got_backslash )
       throw XQUERY_EXCEPTION(
         FORX0004,
-        ERROR_PARAMS( replacement, ZED( TrailingChar ), '\\' ),
+        ERROR_PARAMS( replacement, ZED( TrailingChar_3 ), '\\' ),
         ERROR_LOC( loc )
       );
     if ( got_dollar )
       throw XQUERY_EXCEPTION(
         FORX0004,
-        ERROR_PARAMS( replacement, ZED( TrailingChar ), '$' ),
+        ERROR_PARAMS( replacement, ZED( TrailingChar_3 ), '$' ),
         ERROR_LOC( loc )
       );
   } // local scope

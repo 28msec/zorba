@@ -555,7 +555,7 @@ void Base16::insertData(const char* str, size_t len)
     else
     {
       throw XQUERY_EXCEPTION(
-        FORG0001, ERROR_PARAMS( lChar, ZED( BadHexDigit ) )
+        FORG0001, ERROR_PARAMS( lChar, ZED( BadHexDigit_3 ), lChar )
       );
     }
   }

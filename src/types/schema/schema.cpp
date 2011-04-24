@@ -1565,10 +1565,7 @@ bool Schema::parseUserAtomicTypes(
     transcode(idve.getMessage(), msg);
 
     throw XQUERY_EXCEPTION(
-      FORG0001,
-      ERROR_PARAMS(
-        textValue, ZED( NoCastTo ), TypeOps::toString( *aTargetType ), msg
-      )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), aTargetType, msg )
     );
   }
   catch(const OutOfMemoryException&)
@@ -1707,7 +1704,7 @@ bool Schema::parseUserUnionTypes(
 
   throw XQUERY_EXCEPTION(
     FORG0001,
-    ERROR_PARAMS( textValue, ZED( NoCastTo ), udXQType->toSchemaString() )
+    ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), udXQType->toSchemaString() )
   );
 }
 

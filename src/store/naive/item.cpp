@@ -224,7 +224,7 @@ uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 {
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS( ZED( NoHashItemOfType ), getType()->getStringValue() )
+    ERROR_PARAMS( ZED( NoHashItemOfType_2 ), getType()->getStringValue() )
   );
 };
 
@@ -237,7 +237,7 @@ bool Item::equals(
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( NoCompareTypes ),
+      ZED( NoCompareTypes_23 ),
       getType()->getStringValue(), other->getType()->getStringValue()
     )
   );
@@ -252,7 +252,7 @@ long Item::compare(
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( NoCompareTypes ),
+      ZED( NoCompareTypes_23 ),
       getType()->getStringValue(), other->getType()->getStringValue()
     )
   );
@@ -264,7 +264,7 @@ Item_t Item::getEBV() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
       getType()->getStringValue()
     )
   );
@@ -276,7 +276,7 @@ zstring Item::getStringValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
       getType()->getStringValue()
     )
   );
@@ -288,7 +288,7 @@ void Item::getStringValue2(zstring& val) const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
       getType()->getStringValue()
     )
   );
@@ -300,7 +300,7 @@ void Item::appendStringValue(zstring& buf) const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), ZED( EffectiveBooleanValue ),
+      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
       getType()->getStringValue()
     )
   );
@@ -339,7 +339,7 @@ const zstring& Item::getNamespace() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getNamespace()",
+      ZED( OperationNotDef_23 ), "Item::getNamespace()",
       getType()->getStringValue()
     )
   );
@@ -354,7 +354,7 @@ const zstring& Item::getPrefix() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getPrefix()",
+      ZED( OperationNotDef_23 ), "Item::getPrefix()",
       getType()->getStringValue()
     )
   );
@@ -369,7 +369,7 @@ const zstring& Item::getLocalName() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getLocalName()",
+      ZED( OperationNotDef_23 ), "Item::getLocalName()",
       getType()->getStringValue()
     )
   );
@@ -384,7 +384,7 @@ const zstring& Item::getString() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getString()",
+      ZED( OperationNotDef_23 ), "Item::getString()",
       getType()->getStringValue()
     )
   );
@@ -399,7 +399,7 @@ xs_base64Binary Item::getBase64BinaryValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getBase64BinaryValue()",
+      ZED( OperationNotDef_23 ), "Item::getBase64BinaryValue()",
       getType()->getStringValue()
     )
   );
@@ -413,7 +413,7 @@ bool Item::getBooleanValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getBooleanValue()",
+      ZED( OperationNotDef_23 ), "Item::getBooleanValue()",
       getType()->getStringValue()
     )
   );
@@ -429,7 +429,7 @@ xs_decimal Item::getDecimalValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getDecimalValue()",
+      ZED( OperationNotDef_23 ), "Item::getDecimalValue()",
       getType()->getStringValue()
     )
   );
@@ -446,7 +446,7 @@ xs_integer Item::getIntegerValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getIntegerValue()",
+      ZED( OperationNotDef_23 ), "Item::getIntegerValue()",
       getType()->getStringValue()
     )
   );
@@ -461,7 +461,7 @@ xs_long Item::getLongValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getLongValue()",
+      ZED( OperationNotDef_23 ), "Item::getLongValue()",
       getType()->getStringValue()
     )
   );
@@ -476,7 +476,7 @@ xs_int Item::getIntValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getIntValue()",
+      ZED( OperationNotDef_23 ), "Item::getIntValue()",
       getType()->getStringValue()
     )
   );
@@ -491,7 +491,7 @@ xs_short Item::getShortValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getShortValue()",
+      ZED( OperationNotDef_23 ), "Item::getShortValue()",
       getType()->getStringValue()
     )
   );
@@ -505,7 +505,7 @@ xs_byte Item::getByteValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getByteValue()",
+      ZED( OperationNotDef_23 ), "Item::getByteValue()",
       getType()->getStringValue()
     )
   );
@@ -521,7 +521,7 @@ xs_uinteger Item::getUnsignedIntegerValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getUnsignedIntegerValue()",
+      ZED( OperationNotDef_23 ), "Item::getUnsignedIntegerValue()",
       getType()->getStringValue()
     )
   );
@@ -536,7 +536,7 @@ xs_ulong Item::getUnsignedLongValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getUnsignedLongValue()",
+      ZED( OperationNotDef_23 ), "Item::getUnsignedLongValue()",
       getType()->getStringValue()
     )
   );
@@ -551,7 +551,7 @@ xs_uint Item::getUnsignedIntValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getUnsignedIntValue()",
+      ZED( OperationNotDef_23 ), "Item::getUnsignedIntValue()",
       getType()->getStringValue()
     )
   );
@@ -566,7 +566,7 @@ xs_ushort Item::getUnsignedShortValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getUnsignedShortValue()",
+      ZED( OperationNotDef_23 ), "Item::getUnsignedShortValue()",
       getType()->getStringValue()
     )
   );
@@ -581,7 +581,7 @@ xs_ubyte Item::getUnsignedByteValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getUnsignedByteValue()",
+      ZED( OperationNotDef_23 ), "Item::getUnsignedByteValue()",
       getType()->getStringValue()
     )
   );
@@ -596,7 +596,7 @@ xs_float Item::getFloatValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getFloatValue()",
+      ZED( OperationNotDef_23 ), "Item::getFloatValue()",
       getType()->getStringValue()
     )
   );
@@ -611,7 +611,7 @@ xs_double Item::getDoubleValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getDoubleValue()",
+      ZED( OperationNotDef_23 ), "Item::getDoubleValue()",
       getType()->getStringValue()
     )
   );
@@ -626,7 +626,7 @@ const xs_date& Item::getDateValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getDateValue()",
+      ZED( OperationNotDef_23 ), "Item::getDateValue()",
       getType()->getStringValue()
     )
   );
@@ -640,7 +640,7 @@ const xs_dateTime& Item::getDateTimeValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getDateTimeValue()",
+      ZED( OperationNotDef_23 ), "Item::getDateTimeValue()",
       getType()->getStringValue()
     )
   );
@@ -655,7 +655,7 @@ const xs_time& Item::getTimeValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getTimeValue()",
+      ZED( OperationNotDef_23 ), "Item::getTimeValue()",
       getType()->getStringValue()
     )
   );
@@ -670,7 +670,7 @@ const xs_gDay& Item::getGDayValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getGDayValue()",
+      ZED( OperationNotDef_23 ), "Item::getGDayValue()",
       getType()->getStringValue()
     )
   );
@@ -684,7 +684,7 @@ const xs_gMonth& Item::getGMonthValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getGMonthValue()",
+      ZED( OperationNotDef_23 ), "Item::getGMonthValue()",
       getType()->getStringValue()
     )
   );
@@ -698,7 +698,7 @@ const xs_gMonthDay& Item::getGMonthDayValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getGMonthDayValue()",
+      ZED( OperationNotDef_23 ), "Item::getGMonthDayValue()",
       getType()->getStringValue()
     )
   );
@@ -723,7 +723,7 @@ const xs_gYearMonth& Item::getGYearMonthValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getGYearMonthValue()",
+      ZED( OperationNotDef_23 ), "Item::getGYearMonthValue()",
       getType()->getStringValue()
     )
   );
@@ -737,7 +737,7 @@ const xs_duration& Item::getDurationValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getDurationValue()",
+      ZED( OperationNotDef_23 ), "Item::getDurationValue()",
       getType()->getStringValue()
     )
   );
@@ -751,7 +751,7 @@ const xs_dayTimeDuration& Item::getDayTimeDurationValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getDayTimeDurationValue()",
+      ZED( OperationNotDef_23 ), "Item::getDayTimeDurationValue()",
       getType()->getStringValue()
     )
   );
@@ -765,7 +765,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getYearMonthDurationValue()",
+      ZED( OperationNotDef_23 ), "Item::getYearMonthDurationValue()",
       getType()->getStringValue()
     )
   );
@@ -780,7 +780,7 @@ xs_hexBinary Item::getHexBinaryValue() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::getHexBinaryValue()",
+      ZED( OperationNotDef_23 ), "Item::getHexBinaryValue()",
       getType()->getStringValue()
     )
   );
@@ -805,7 +805,7 @@ bool Item::isPosOrNegInf() const
   throw ZORBA_EXCEPTION(
     ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
-      ZED( OperationNotDef ), "Item::isPosOrNegInf()",
+      ZED( OperationNotDef_23 ), "Item::isPosOrNegInf()",
       getType()->getStringValue()
     )
   );

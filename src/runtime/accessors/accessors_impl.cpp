@@ -78,7 +78,7 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     } else
 			throw XQUERY_EXCEPTION(
 				XPTY0004,
-				ERROR_PARAMS( "", ZED( FnNilledArgNotNode ) ),
+				ERROR_PARAMS( ZED( FnNilledArgNotNode ) ),
 				ERROR_LOC( loc )
 			);
   }

@@ -168,7 +168,9 @@ for_clause::for_clause(
     {
       if (TypeOps::is_empty(tm, *declaredType))
         throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( "empty-sequence()" ), ERROR_LOC( loc )
+          XPTY0004,
+          ERROR_PARAMS( ZED( BadType_23o ), "empty-sequence" ),
+          ERROR_LOC( loc )
         );
 
       xqtref_t domainType = domainExpr->get_return_type();
@@ -185,8 +187,8 @@ for_clause::for_clause(
             throw XQUERY_EXCEPTION(
               XPTY0004,
               ERROR_PARAMS(
-                domainType->toString(),
-                ZED( NoTreatAs ), declaredType->toString()
+                ZED( BadType_23o ), domainType->toString(),
+                ZED( NoTreatAs_4 ), declaredType->toString()
               ),
               ERROR_LOC( get_loc() )
             );
@@ -317,8 +319,8 @@ let_clause::let_clause(
           throw XQUERY_EXCEPTION(
             XPTY0004,
             ERROR_PARAMS(
-              domainType->toString(),
-              ZED( NoTreatAs ), declaredType->toString()
+              ZED( BadType_23o ), domainType->toString(),
+              ZED( NoTreatAs_4 ), declaredType->toString()
             ),
             ERROR_LOC( get_loc() )
           );

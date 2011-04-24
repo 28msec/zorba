@@ -66,7 +66,7 @@ bool XercesParseUtils::parseXSBoolean(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "boolean" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "boolean" )
     );
   }
 }
@@ -95,7 +95,7 @@ bool XercesParseUtils::parseXSInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "integer" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "integer" )
     );
   }
 }
@@ -124,7 +124,8 @@ bool XercesParseUtils::parseXSPositiveInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "positiveInteger" )
+      FORG0001,
+      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "positiveInteger" )
     );
   }
 }
@@ -153,7 +154,8 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "nonPositiveInteger" )
+      FORG0001,
+      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "nonPositiveInteger" )
     );
   }
 }
@@ -182,7 +184,8 @@ bool XercesParseUtils::parseXSNegativeInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "negativeInteger" )
+      FORG0001,
+      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "negativeInteger" )
     );
   }
 }
@@ -210,7 +213,8 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "nonNegativeInteger" )
+      FORG0001,
+      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "nonNegativeInteger" )
     );
   }
 }
@@ -239,7 +243,7 @@ bool XercesParseUtils::parseXSUnsignedByte(
   {
     throw XQUERY_EXCEPTION(
       FORG0001, 
-      ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedByte" )
+      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedByte" )
     );
   }
 }
@@ -267,7 +271,7 @@ bool XercesParseUtils::parseXSUnsignedShort(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedShort" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedShort" )
     );
   }
 }
@@ -295,7 +299,7 @@ bool XercesParseUtils::parseXSUnsignedInt(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedInt" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedInt" )
     );
   }
 }
@@ -323,7 +327,7 @@ bool XercesParseUtils::parseXSUnsignedLong(
   {
     throw XQUERY_EXCEPTION(
       FORG0001, 
-      ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedLong" )
+      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedLong" )
     );
   }
 }
@@ -351,7 +355,7 @@ bool XercesParseUtils::parseXSByte(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "byte" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "byte" )
     );
   }
 }
@@ -379,7 +383,7 @@ bool XercesParseUtils::parseXSShort(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "short" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "short" )
     );
   }
 }
@@ -407,7 +411,7 @@ bool XercesParseUtils::parseXSInt(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "int" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "int" )
     );
   }
 }
@@ -435,7 +439,7 @@ bool XercesParseUtils::parseXSLong(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "long" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "long" )
     );
   }
 }
@@ -473,7 +477,7 @@ bool XercesParseUtils::parseXSFloat(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "float" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "float" )
   );
 }
 
@@ -509,7 +513,7 @@ bool XercesParseUtils::parseXSDouble(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "double" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "double" )
   );
 }
 
@@ -537,7 +541,7 @@ bool XercesParseUtils::parseXSDecimal(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "decimal" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "decimal" )
     );
   }
 }
@@ -595,7 +599,7 @@ return factory->createToken(result, textValue2);
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NMToken" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NMToken" )
     );
   }
 }
@@ -624,7 +628,7 @@ bool XercesParseUtils::parseXSNMToken(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NMToken" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NMToken" )
     );
   }
 }
@@ -654,7 +658,7 @@ bool XercesParseUtils::parseXSName(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "Name" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "Name" )
     );
   }
 }
@@ -683,7 +687,7 @@ bool XercesParseUtils::parseXSNCName(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NCName" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NCName" )
     );
   }
 }
@@ -712,7 +716,7 @@ bool XercesParseUtils::parseXSID(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "ID" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "ID" )
     );
   }
 }
@@ -741,7 +745,7 @@ bool XercesParseUtils::parseXSIDRef(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "IDREF" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "IDREF" )
     );
   }
 }
@@ -770,7 +774,7 @@ bool XercesParseUtils::parseXSEntity(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "ENTITY" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "ENTITY" )
     );
   }
 }
@@ -799,7 +803,7 @@ bool XercesParseUtils::parseXSNotation(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NOTATION" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NOTATION" )
     );
   }
 }
@@ -850,7 +854,7 @@ bool XercesParseUtils::parseXSDateTime(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "dateTime" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "dateTime" )
   );
 }
 
@@ -891,7 +895,7 @@ bool XercesParseUtils::parseXSDate(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "date" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "date" )
   );
 }
 
@@ -937,7 +941,7 @@ bool XercesParseUtils::parseXSTime(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "time" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "time" )
   );
 }
 
@@ -973,7 +977,7 @@ bool XercesParseUtils::parseXSGYearMonth(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gYearMonth" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gYearMonth" )
   );
 }
 
@@ -1008,7 +1012,7 @@ bool XercesParseUtils::parseXSGYear(
   }
   
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gYear" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gYear" )
   );
 }
 
@@ -1043,7 +1047,7 @@ bool XercesParseUtils::parseXSGMonthDay(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gMonthDay" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gMonthDay" )
   );
 }
 
@@ -1077,7 +1081,7 @@ bool XercesParseUtils::parseXSGDay(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gDay" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gDay" )
   );
 }
 
@@ -1111,7 +1115,7 @@ bool XercesParseUtils::parseXSGMonth(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gDay" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gDay" )
   );
 }
 
@@ -1149,7 +1153,7 @@ bool XercesParseUtils::parseXSDuration(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "duration" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "duration" )
   );
 }
 
@@ -1167,7 +1171,8 @@ bool XercesParseUtils::parseXSYearMonthDuration(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "yearMonthDuration" )
+    FORG0001,
+    ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "yearMonthDuration" )
   );
 }
 
@@ -1185,7 +1190,8 @@ bool XercesParseUtils::parseXSDayTimeDuration(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "dayTimeDuration" )
+    FORG0001,
+    ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "dayTimeDuration" )
   );
 }
 
@@ -1234,7 +1240,7 @@ bool XercesParseUtils::parseXSBase64Binary(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "base64Binary" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "base64Binary" )
   );
 }
 
@@ -1261,7 +1267,7 @@ bool XercesParseUtils::parseXSHexBinary(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "hexBinary" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "hexBinary" )
   );
 }
 
@@ -1288,7 +1294,7 @@ bool XercesParseUtils::parseXSAnyUri(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "anyURI" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "anyURI" )
   );
 }
 

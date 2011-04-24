@@ -59,10 +59,10 @@ zstring get_os_err_string( char const *what, os_code code ) {
   LocalFree( werr_string );
 #endif /* WIN32 */
   if ( what && *what ) {
-    result = err::dict::lookup( ZED( OSWhatFailedError ) );
+    result = err::dict::lookup( ZED( OSWhatFailedError_123 ) );
     params = ERROR_PARAMS( what, code, err_string );
   } else {
-    result = err::dict::lookup( ZED( OSFailedError ) );
+    result = err::dict::lookup( ZED( OSFailedError_12 ) );
     params = ERROR_PARAMS( code, err_string );
   }
   params.substitute( &result );
@@ -73,7 +73,6 @@ zstring get_os_err_string( char const *what, os_code code ) {
 
 } // namespace error
 } // namespace zorba
-
 /*
  * Local variables:
  * mode: c++

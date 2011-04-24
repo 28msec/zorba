@@ -31,6 +31,7 @@ namespace zorba {
 namespace ztd {
 
 using internal::ztd::enable_if;
+using internal::ztd::has_insertion_operator;
 using internal::ztd::less;
 
 ///////////////////////////////////////////////////////////////////////////////
