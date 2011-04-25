@@ -131,7 +131,7 @@ extern entry const dict_en[] = {
   { "XQDY0025", "\"$1\": duplicate attribute name" },
   { "XQDY0026", "computed processing instrucion must not contain \"?>\"" },
   { "XQDY0027", "\"$1\": unexpected validity property" },
-  { "XQDY0041", "\"$1\": can not cast to xs:NCName" },
+  { "XQDY0041", "can not cast to xs:NCName" },
   { "XQDY0044", "\"$1\": invalid attibute node-name" },
   { "XQDY0061", "invalid validate expression operand${: 1}" },
   { "XQDY0064", "\"XML\": invalid name expression" },

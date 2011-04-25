@@ -10256,10 +10256,12 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
     while (curRef < end)
     {
       int d = xml::parse_entity(curRef, &content);
-      if (d<0)
-        throw XQUERY_EXCEPTION(XQST0090, ERROR_LOC(loc));
-      else
-        curRef += d;
+      if (d<0) {
+        throw XQUERY_EXCEPTION(
+          XQST0090, ERROR_PARAMS( curRef, xml::v1_1 ), ERROR_LOC( loc )
+        );
+      }
+      curRef += d;
 
       if (curRef >= end)
         break;
