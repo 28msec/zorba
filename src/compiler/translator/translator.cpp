@@ -3604,7 +3604,7 @@ void* begin_visit(const OptionDecl& v)
   expand_no_default_qname(qnameItem, v.get_qname(), loc);
 
   if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
-    throw XQUERY_EXCEPTION(XPST0081, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(XPST0081, ERROR_PARAMS(""), ERROR_LOC(loc));
 
   theSctx->bind_option(qnameItem, value);
 
