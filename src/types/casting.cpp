@@ -67,7 +67,7 @@ struct ErrorInfo
 
 
 #define TYPE_EXCEPTION( ERROR_CODE, ERROR_INFO ) \
-  XQUERY_EXCEPTION( ERROR_CODE, ERROR_PARAMS( (ERROR_INFO).theSourceType, ZED( NoCastTo_34o ), (ERROR_INFO).theTargetType ) )
+  XQUERY_EXCEPTION( ERROR_CODE, ERROR_PARAMS( *(ERROR_INFO).theSourceType, ZED( NoCastTo_34o ), *(ERROR_INFO).theTargetType ) )
 
 
 /*******************************************************************************
@@ -1892,7 +1892,7 @@ bool GenericCast::castToQName(
     throw XQUERY_EXCEPTION(
       XPTY0004,
       ERROR_PARAMS(
-        ZED( BadType_23o ), sourceType,
+        ZED( BadType_23o ), *sourceType,
         ZED( NoCastTo_45o ), "QName"
       ),
       ERROR_LOC( loc )

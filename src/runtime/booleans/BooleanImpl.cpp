@@ -864,8 +864,8 @@ bool CompareIterator::equal(
       throw XQUERY_EXCEPTION(
         XPTY0004,
         ERROR_PARAMS(
-          ZED( BadType_23o ), type0->toString(),
-          ZED( NoCompareWithType_4 ), type1->toString()
+          ZED( BadType_23o ), *type0,
+          ZED( NoCompareWithType_4 ), *type1
         ),
         ERROR_LOC( loc )
       );
@@ -917,8 +917,8 @@ long CompareIterator::compare(
         throw XQUERY_EXCEPTION(
           XPTY0004,
           ERROR_PARAMS(
-            ZED( BadType_23o ), type0->toString(),
-            ZED( NoCompareWithType_4 ), type1->toString()
+            ZED( BadType_23o ), *type0,
+            ZED( NoCompareWithType_4 ), *type1
           ),
           ERROR_LOC( loc )
         );
@@ -947,8 +947,8 @@ long CompareIterator::compare(
         throw XQUERY_EXCEPTION(
           XPTY0004,
           ERROR_PARAMS(
-            ZED( BadType_23o ), type0->toString(),
-            ZED( NoCompareWithType_4 ), type1->toString()
+            ZED( BadType_23o ), *type0,
+            ZED( NoCompareWithType_4 ), *type1
           ),
           ERROR_LOC( loc )
         );
@@ -963,8 +963,8 @@ long CompareIterator::compare(
       throw XQUERY_EXCEPTION(
         XPTY0004,
         ERROR_PARAMS(
-          ZED( BadType_23o ), type0->toString(),
-          ZED( NoCompareWithType_4 ), type1->toString()
+          ZED( BadType_23o ), *type0,
+          ZED( NoCompareWithType_4 ), *type1
         ),
         ERROR_LOC( loc )
       );
