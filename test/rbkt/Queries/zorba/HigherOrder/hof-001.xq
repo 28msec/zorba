@@ -1,4 +1,4 @@
-xquery version "3.0";
+xquery version "1.1";
 (: Higher Order Functions :)
 (: inline function literal, user-defined function :)
 (: Author - Michael Kay, Saxonica :)

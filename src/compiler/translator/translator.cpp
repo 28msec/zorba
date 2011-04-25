@@ -1917,6 +1917,11 @@ void* begin_visit(const VersionDecl& v)
   {
     version = StaticContextConsts::xquery_version_1_0;
   }
+  //1.1 is the same as 3.0
+  else if (versionStr == "1.1")
+  {
+    version = StaticContextConsts::xquery_version_3_0;
+  }
   else if (versionStr == "3.0")
   {
     version = StaticContextConsts::xquery_version_3_0;
