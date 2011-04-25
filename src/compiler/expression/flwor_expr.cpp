@@ -187,8 +187,8 @@ for_clause::for_clause(
             throw XQUERY_EXCEPTION(
               XPTY0004,
               ERROR_PARAMS(
-                ZED( BadType_23o ), domainType->toString(),
-                ZED( NoTreatAs_4 ), declaredType->toString()
+                ZED( BadType_23o ), *domainType,
+                ZED( NoTreatAs_4 ), *declaredType
               ),
               ERROR_LOC( get_loc() )
             );
@@ -319,8 +319,8 @@ let_clause::let_clause(
           throw XQUERY_EXCEPTION(
             XPTY0004,
             ERROR_PARAMS(
-              ZED( BadType_23o ), domainType->toString(),
-              ZED( NoTreatAs_4 ), declaredType->toString()
+              ZED( BadType_23o ), *domainType,
+              ZED( NoTreatAs_4 ), *declaredType
             ),
             ERROR_LOC( get_loc() )
           );

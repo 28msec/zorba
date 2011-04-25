@@ -133,7 +133,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:abs" ),
+        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:abs" ),
         ERROR_LOC( loc )
       );
     }
@@ -198,7 +198,7 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:ceiling" ),
+        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:ceiling" ),
         ERROR_LOC( loc )
       );
     }
@@ -263,7 +263,7 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:floor" ),
+        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:floor" ),
         ERROR_LOC( loc )
       );
     }
@@ -341,7 +341,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:round" ),
+        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:round" ),
         ERROR_LOC( loc )
       );
     }
@@ -416,7 +416,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     {
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp ), "fn:round-half-to-even" ),
+        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:round-half-to-even" ),
         ERROR_LOC( loc )
       );
     }

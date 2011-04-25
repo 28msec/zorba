@@ -110,7 +110,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         if (! consumeNext(item, theChildren[0], planState))
           throw XQUERY_EXCEPTION(
             XPTY0004,
-            ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+            ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
             ERROR_LOC( loc )
           );
 
@@ -119,7 +119,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         if (consumeNext(item, theChildren[0], planState))
           throw XQUERY_EXCEPTION(
             XPTY0004,
-            ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+            ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
             ERROR_LOC( loc )
           );
       }
@@ -170,7 +170,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (! consumeNext(item, theChild, planState))
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+        ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
         ERROR_LOC( loc )
       );
 
@@ -182,7 +182,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (consumeNext(item, theChild, planState))
       throw XQUERY_EXCEPTION(
         XPTY0004,
-        ERROR_PARAMS( ZED( VarValMustBeSingleItem ), theVarName ),
+        ERROR_PARAMS( ZED( VarValMustBeSingleItem_2 ), theVarName ),
         ERROR_LOC( loc )
       );
   }

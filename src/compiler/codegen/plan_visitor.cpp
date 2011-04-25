@@ -2250,7 +2250,7 @@ bool begin_visit(name_cast_expr& v)
     return true;
 
   throw XQUERY_EXCEPTION(
-    XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), targetType ), ERROR_LOC( qloc )
+    XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), *targetType ), ERROR_LOC( qloc )
   );
 }
 

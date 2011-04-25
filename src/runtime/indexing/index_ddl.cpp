@@ -61,9 +61,9 @@ static void checkKeyType(
       XPTY0004,
       ERROR_PARAMS(
         ZED( SearchKeyTypeMismatch_234 ),
-        searchKeyType->toString(),
+        *searchKeyType,
         indexDecl->getName()->getStringValue(),
-        indexKeyType->toString()
+        *indexKeyType
       ),
       ERROR_LOC( loc )
     );
@@ -81,7 +81,7 @@ static void checkKeyType(
         XPTY0004,
         ERROR_PARAMS(
           ZED( SearchKeyTypeNoProbeIndex_23 ),
-          searchKeyType->toString(),
+          *searchKeyType,
           indexDecl->getName()->getStringValue()
         ),
         ERROR_LOC( loc )
