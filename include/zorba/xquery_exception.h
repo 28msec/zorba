@@ -170,6 +170,9 @@ public:
   // inherited
   std::auto_ptr<ZorbaException> clone() const;
   void polymorphic_throw() const;
+
+protected:
+  // inherited
   std::ostream& print( std::ostream &o ) const;
 
 private:

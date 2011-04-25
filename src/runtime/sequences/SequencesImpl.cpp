@@ -234,14 +234,9 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   catch(ZorbaException &e)
   {
     if(e.error() == err::XPTY0004)
-    {
-      throw XQUERY_EXCEPTION(FORG0006, ERROR_LOC(loc));
-    }
-    else
-    {
-			set_source( e, loc );
-      throw;
-    }
+			e.set_error( err::FORG0006 );
+		set_source( e, loc );
+		throw;
   }
 }
 

@@ -93,18 +93,20 @@ public:
   }
 
   /**
-   * Prints the exception to the given ostream.
-   *
-   * @param o The ostream to print to.
-   * @return Returns \a o.
-   */
-  virtual std::ostream& print( std::ostream &o ) const;
-
-  /**
    * Throws itself polymorphically; see
    * http://www.parashift.com/c++-faq-lite/exceptions.html#faq-17.16
    */
   virtual void polymorphic_throw() const;
+
+  /**
+   * Sets the error.
+   *
+   * @param error The error.
+   */
+  void set_error( Error const &error ) throw() {
+    // TODO: remove const_cast; SF bug #3290451
+    error_ = const_cast<Error*>( &error );
+  }
 
   /**
    * Gets the C++ source-code file name whence this exception was thrown.
@@ -127,16 +129,27 @@ public:
   // inherited
   char const* what() const throw();
 
+protected:
+  /**
+   * Prints the exception to the given ostream.
+   *
+   * @param o The ostream to print to.
+   * @return Returns \a o.
+   */
+  virtual std::ostream& print( std::ostream &o ) const;
+
+  friend std::ostream& operator<<( std::ostream&, ZorbaException const& );
+
+  // for plan serialization
+  ZorbaException( serialization::Archiver& );
+  friend void serialization::operator&( serialization::Archiver&,
+                                        ZorbaException*& );
+
 private:
   Error /*const*/ *error_;
   std::string throw_file_;
   line_type throw_line_;
   std::string message_;
-protected:
-  // for plan serialization
-  ZorbaException( serialization::Archiver& );
-  friend void serialization::operator&( serialization::Archiver&,
-                                        ZorbaException*& );
 };
 
 /**
