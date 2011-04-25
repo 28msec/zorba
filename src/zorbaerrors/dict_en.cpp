@@ -461,7 +461,6 @@ extern entry const dict_en[] = {
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },
-  { "~BadType", "invalid type" },
   { "~BadTypeFor_23", "\"$2\": invalid type for $3" },
   { "~BadType_23o", "\"$2\": invalid type${: 3}" },
   { "~BadURIScheme_3", "\"$3\": unknown URI scheme" },
