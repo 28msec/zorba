@@ -519,7 +519,7 @@ extern entry const dict_en[] = {
   { "~MustBeNCName", "must be an xs:NCName" },
   { "~NoAttrNodesInDocument", "document node must not contain attribute nodes" },
   { "~NoBindURI", "namespace URI can not be bound to prefix" },
-  { "~NoCastToCInt_2", "\"$2\": 2nd operand can not be cast from xs:integer to C++ \"int\"" },
+  { "~NoCastToCInt_2", "\"$2\": 2nd operand can not be cast from \"xs:integer\" to C++ \"int\"" },
   { "~NoCastTo_34o", "can not cast to \"$3\"${: 4}" },
   { "~NoCastTo_45o", "can not cast to \"$4\"${: 5}" },
   { "~NoCollectionURIResolver", "no collection URI resolver could be retrieved using SerializationCallback" },
