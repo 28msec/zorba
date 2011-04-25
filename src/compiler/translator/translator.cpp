@@ -8480,7 +8480,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
           error,
           ERROR_PARAMS(
             ZED( BadType_23o ),
-            declaredType->toString(),
+            *declaredType,
             ZED( NoTypeInMainModule_4 ),
             ve->get_name()->getStringValue()
           ),
@@ -8493,7 +8493,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
           error,
           ERROR_PARAMS(
             ZED( BadType_23o ),
-            declaredType->toString(),
+            *declaredType,
             ZED( NoTypeInModule_45 ),
             ve->get_name()->getStringValue(),
             theModuleNamespace
@@ -8657,7 +8657,7 @@ void* begin_visit(const FunctionCall& v)
           XQST0036,
           ERROR_PARAMS(
             ZED( BadType_23o ),
-            retType->toString(),
+            *retType,
             ZED( NoTypeInMainModule_4 ),
             f->getName()->getStringValue()
           ),
@@ -8670,7 +8670,7 @@ void* begin_visit(const FunctionCall& v)
           XQST0036,
           ERROR_PARAMS(
             ZED( BadType_23o ),
-            retType->toString(),
+            *retType,
             ZED( NoTypeInModule_45 ),
             f->getName()->getStringValue(),
             theModuleNamespace
@@ -8693,7 +8693,7 @@ void* begin_visit(const FunctionCall& v)
             XQST0036,
             ERROR_PARAMS(
               ZED( BadType_23o ),
-              type->toString(),
+              *type,
               ZED( NoTypeInMainModule_4 ),
               f->getName()->getStringValue()
             ),
@@ -8706,7 +8706,7 @@ void* begin_visit(const FunctionCall& v)
             XQST0036,
             ERROR_PARAMS(
               ZED( BadType_23o ),
-              retType->toString(),
+              *retType,
               ZED( NoTypeInModule_45 ),
               f->getName()->getStringValue(),
               theModuleNamespace
