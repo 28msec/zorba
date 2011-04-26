@@ -28,7 +28,7 @@
 #include "zorbaerrors/dict.h"
 
 #include "context/static_context.h"
-#include "context/standard_uri_resolvers.h"
+#include "context/uri_resolver.h"
 
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
@@ -50,10 +50,10 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lURIItem = 0;
   zstring strval;
   std::string uriStr;
-  std::string fileUrl;
-  std::auto_ptr<std::istream> lFile;
   static_context* lSctx;
-  StandardModuleURIResolver* lModuleResolver = 0;
+  std::auto_ptr<impl::Resource> lResource;
+  impl::StreamResource* lStream;
+  std::auto_ptr<std::istream> lFile;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
@@ -76,17 +76,10 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lSctx = theSctx;
   lItem->getStringValue2(strval);
   lURI = lSctx->resolve_relative_uri(strval);
-
-  if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
-    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( lURI ), ERROR_LOC( loc ) );
-
-  lModuleResolver = GENV.getModuleURIResolver();
-
-  // we get the ownership of the input stream
-  // TODO: we have to find a way to tell user defined resolvers when their input stream
-  // can be freed. The current solution might leed to problems on Windows.
-  uriStr = lURIItem->getStringValue().str();
-  lFile.reset(lModuleResolver->resolve(uriStr, *lSctx, fileUrl));
+  lResource = lSctx->resolve_uri(lURI, impl::Resource::MODULE);
+  lStream = static_cast<impl::StreamResource*>(lResource.get());
+  // We take ownership of the stream
+  lFile = lStream->getStream();
 
   // now, do the real work
   if (lFile.get() && lFile->good())

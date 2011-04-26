@@ -34,9 +34,12 @@
 #include "store/api/item_factory.h"
 #include "util/utf8_util.h"
 #include "types/schema/xercesIncludes.h"
+#include "context/uri_resolver.h"
 
 #ifndef ZORBA_NO_XMLSCHEMA
 #include <zorbatypes/xerces_xmlcharray.h>
+#include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/util/BinInputStream.hpp>
 #endif //ZORBA_NO_XMLSCHEMA
 
 
@@ -76,38 +79,113 @@ static void transcode(const XMLCh* const str, zstring& res)
   XMLString::release(&trStr);
 }
 
-SchemaLocationEntityResolver::SchemaLocationEntityResolver(
-    const XMLCh* logical_uri,
-    std::string& location)
-  :
-  theLocation(location),
-  theLogicalURI(logical_uri)
+/**
+ * A Xerces BinInputStream that returns bytes from a std::istream.
+ */
+class IstreamBinInputStream : public XERCES_CPP_NAMESPACE::BinInputStream
 {
-}
-
-
-InputSource* SchemaLocationEntityResolver::resolveEntity(
-    const XMLCh* const publicId,
-    const XMLCh* const systemID)
-{
-  TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemID) );
-
-
-  if (XMLString::compareString(systemID, theLogicalURI) == 0)
+public:
+  IstreamBinInputStream(std::istream* aStream)
+    : theStream(aStream)
   {
-    XMLChArray xerces_xsdURL (theLocation.c_str());
-    XMLURL url (xerces_xsdURL.get ());
-    // URLInputSource is a Xerces class that provides for the parser access to
-    // data which is referenced via a URL, as apposed to a local file name. The
-    // objective of this class is to create an input stream via which the parser
-    // can spool in data from the referenced source.
-    return new URLInputSource(url);
   }
-  else
+
+  // QQQ This should return XMLFilePos, but in Xerces 2.8.0 it was unsigned int
+  virtual unsigned int curPos() const
   {
+    return theStream->tellg();
+  }
+
+  virtual unsigned int readBytes
+  (XMLByte * const toFill, const unsigned int maxToRead)
+  {
+    // QQQ Is this reinterpret_cast necessary? Is it safe? Can I just
+    // pump the chars from read() to the XMLBytes Xerces wants?
+    char* const lToFill = reinterpret_cast<char*>(toFill);
+    theStream->read(lToFill, maxToRead);
+    return static_cast<unsigned int>(theStream->gcount());
+  }
+
+  virtual const XMLCh* getContentType() const
+  {
+    // QQQ? No implementation yet
     return NULL;
   }
-}
+
+private:
+  std::istream* theStream;
+};
+
+/**
+ * A Xerces InputSource that returns a IstreamBinInputStream.
+ */
+class IstreamInputSource : public XERCES_CPP_NAMESPACE::InputSource
+{
+public:
+  IstreamInputSource(std::istream* aStream)
+    : theStream(aStream)
+  {
+  }
+
+  virtual XERCES_CPP_NAMESPACE::BinInputStream* makeStream() const
+  {
+    return new IstreamBinInputStream(theStream);
+  }
+
+private:
+  std::istream* theStream;
+};
+
+/**
+ * A Xerces EntityResolver that looks for a specific URL and returns
+ * InputSource that reads from a particular std::istream.
+ */
+class SchemaLocationEntityResolver : 
+    public XERCES_CPP_NAMESPACE::EntityResolver
+{
+public:
+  /**
+   * EntityResolver method
+   */
+  XERCES_CPP_NAMESPACE::InputSource* resolveEntity(
+    const XMLCh* const publicId,
+    const XMLCh* const systemId)
+  {
+    TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemId) );
+    if (XMLString::compareString(systemId, theLogicalURI) == 0)
+    {
+      InputSource* lRetval = new IstreamInputSource(theStream.get());
+      lRetval->setSystemId(thePhysicalURI);
+      return lRetval;
+    }
+    else
+    {
+      return NULL;
+    }
+  }
+
+  SchemaLocationEntityResolver(
+    const XMLCh* const aLogicalURI,
+    impl::StreamResource* aStreamResource)
+    : theLogicalURI(aLogicalURI)
+  {
+    // Take memory ownership of the istream here
+    theStream = aStreamResource->getStream();
+    // Take memory ownership of the translated system ID
+    thePhysicalURI = XERCES_CPP_NAMESPACE::XMLString::transcode
+      (aStreamResource->getStreamUrl().c_str());
+  }
+
+  ~SchemaLocationEntityResolver()
+  {
+    XERCES_CPP_NAMESPACE::XMLString::release(&thePhysicalURI);
+  }
+
+private:
+  const XMLCh * theLogicalURI;
+  std::auto_ptr<std::istream> theStream;
+  XMLCh * thePhysicalURI;
+};
 
 #endif //ZORBA_NO_XMLSCHEMA
 
@@ -160,7 +238,8 @@ Schema::Schema(TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
-  theUdTypesCache = new serializable_hashmap<xqtref_t>;
+  // QQQ should be zstring
+  theUdTypesCache = new serializable_hashmap<std::string, xqtref_t>;
 #endif
 }
 
@@ -205,8 +284,8 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
   Registers an imported schema into the curent grammar
 *******************************************************************************/
 void Schema::registerXSD(const char* xsdURL,
-                         std::string& location,
-                         const QueryLoc& loc)
+  impl::StreamResource* stream,
+  const QueryLoc& loc)
 {
   std::auto_ptr<SAX2XMLReader> parser;
 
@@ -237,21 +316,17 @@ void Schema::registerXSD(const char* xsdURL,
     ////parser->setFeature(XMLUni::fgXercesLoadSchema, true);
     // disables network resolver
     parser->setFeature(XMLUni::fgXercesDisableDefaultEntityResolution, true);
+    // skip DTDs
+    parser->setFeature(XMLUni::fgXercesLoadExternalDTD, false);
 
     parser->setProperty(XMLUni::fgXercesScannerName,
                         (void *)XMLUni::fgSGXMLScanner);
-
-    // this doesn't seem to work
-    //XMLChArray extSchemaLocation("namespace /location/file.xsd");
-    //parser->setFeature(XMLUni::fgXercesSchemaExternalSchemaLocation,
-    //  extSchemaLocation.get());
-
 
     LoadSchemaErrorHandler handler(loc);
     parser->setErrorHandler(&handler);
 
     XMLChArray xerces_xsdURL(xsdURL);
-    SchemaLocationEntityResolver lEntityResolver(xerces_xsdURL.get(), location);
+    SchemaLocationEntityResolver lEntityResolver(xerces_xsdURL.get(), stream);
     parser->setEntityResolver(&lEntityResolver);
 
     //this works but using loadProlog

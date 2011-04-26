@@ -346,6 +346,24 @@ namespace zorba {
       virtual bool
       registerModule(ExternalModule* aModule) = 0;
 
+      /**
+       * \brief Register a URI Mapper which will transform a given URI
+       * into several alternate potential URIs.
+       *
+       * QQQ doc
+       */
+      virtual void
+      registerURIMapper(URIMapper* aMapper) = 0;
+
+      /**
+       * \brief Register a URL Resolver which will transform a given
+       * URL into a Resource.
+       *
+       * QQQ doc
+       */
+      virtual void
+      registerURLResolver(URLResolver* aResolver) = 0;
+
       virtual void
       setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver) = 0;
 
@@ -378,12 +396,6 @@ namespace zorba {
       virtual TypeIdentifier_t
       getCollectionType(const String& aCollectionUri) const = 0;
 
-      virtual void
-      addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver) = 0;
-
-      virtual std::vector<SchemaURIResolver*>
-      getSchemaURIResolvers() const = 0;
-
 #ifndef ZORBA_NO_FULL_TEXT
       virtual void
       addStopWordsURIResolver(FullTextURIResolver* aFullTextUriResolver) = 0;
@@ -403,15 +415,6 @@ namespace zorba {
       virtual void
       removeStemmerProvider( StemmerProvider const* ) = 0;
 #endif /* ZORBA_NO_FULL_TEXT */
-
-      virtual void
-      addModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
-
-      virtual std::vector<ModuleURIResolver*>
-      getModuleURIResolvers() const = 0;
-
-      virtual void
-      removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
 
       /** \brief Check if a function with the given name and arity are registered in the context.
        */

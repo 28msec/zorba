@@ -92,7 +92,8 @@ protected:
     ~VarValue(); 
   };
 
-  typedef hashmap<dctx_value_t> ValueMap;
+  // QQQ zstring?
+  typedef hashmap<std::string, dctx_value_t> ValueMap;
 
   typedef ItemPointerHashMap<store::Index_t> IndexMap;
 

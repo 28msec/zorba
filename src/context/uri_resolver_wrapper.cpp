@@ -141,45 +141,6 @@ store::Collection_t CollectionURIResolverWrapper::resolve(
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-SchemaURIResolverWrapper::SchemaURIResolverWrapper(SchemaURIResolver* aSchemaResolver)
-  :
-  theSchemaResolver(aSchemaResolver)
-{
-}
-
-
-std::string SchemaURIResolverWrapper::resolve(
-    const store::Item_t& aURI,
-    static_context* aStaticContext,
-    std::vector<store::Item_t>& aAtList,
-    zstring& aFileUri)
-{
-  StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
-  Item               lURIItem(aURI.getp());
-  std::vector<Item>  lAtList;
-  
-  std::vector<store::Item_t>::iterator lIter;
-  for (lIter = aAtList.begin(); lIter != aAtList.end(); ++lIter)
-  {
-    lAtList.push_back(Item(*lIter));
-  }
-  
-  // we have the ownership; it will be destroyed automatically once we leave this function
-  std::auto_ptr<SchemaURIResolverResult> lResult =
-    theSchemaResolver->resolve(lURIItem,
-                               &lOuterStaticContext, lAtList);
-
-  if (lResult->getError() == URIResolverResult::UR_NOERROR) 
-  {
-    return Unmarshaller::getInternalString(lResult->getSchema()).c_str();
-  }
-  return "";
-}
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 
@@ -210,52 +171,6 @@ FullTextURIResolverWrapper::resolve(
   return "";
 }
 #endif
-
-
-/*******************************************************************************
-
-********************************************************************************/
-ModuleURIResolverWrapper::ModuleURIResolverWrapper(ModuleURIResolver* aModuleResolver)
-  :
-  theModuleResolver(aModuleResolver)
-{
-}
-
-
-void ModuleURIResolverWrapper::resolveTargetNamespace(
-    const std::string& nsURI,
-    static_context& sctx,
-    std::vector<std::string>& compURIs)
-{
-  StaticContextImpl apiSctx(&sctx, 0);
-
-  std::auto_ptr<ModuleURIResolverResult> result =
-  theModuleResolver->resolveTargetNamespace(nsURI, apiSctx);
-
-  if (result->getError() == URIResolverResult::UR_NOERROR) 
-  {
-    result->getComponentURIs(compURIs);
-  }
-}
-
-
-std::istream* ModuleURIResolverWrapper::resolve(
-    const std::string& uri,
-    static_context& sctx,
-    std::string& url)
-{
-  StaticContextImpl apiSctx(&sctx, 0);
-
-  std::auto_ptr<ModuleURIResolverResult> result =
-  theModuleResolver->resolve(uri, apiSctx);
-
-  if (result->getError() == URIResolverResult::UR_NOERROR) 
-  {
-    result->getModuleURL(url);
-    return result->getModuleStream();
-  }
-  return 0;
-}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

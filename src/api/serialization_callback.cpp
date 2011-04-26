@@ -30,7 +30,9 @@ namespace zorba {
   DocumentURIResolver*
   SerializationCallback::getDocumentURIResolver() const { return 0; }
 
-  ModuleURIResolver*
-  SerializationCallback::getModuleURIResolver(size_t /*i*/) const { return 0; }
+  URIMapper*
+  SerializationCallback::getURIMapper(size_t i) const { return 0; }
 
+  URLResolver*
+  SerializationCallback::getURLResolver(size_t i) const { return 0; }
 } /* namespace zorba */

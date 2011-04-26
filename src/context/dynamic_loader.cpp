@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 #include "context/dynamic_loader.h"
+#include "context/static_context.h"
 
 #ifdef UNIX
 #  include <dlfcn.h>
 #endif
+
 #ifdef WIN32
 #  include <strsafe.h>
 #endif
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbatypes/URI.h"
+#include "zorba/external_module.h"
+#include "zorba/zorbastring.h"
+#include "context/get_current_lib_suffix.h"
+#include <fstream>
 #include "util/error_util.h"
 
 namespace zorba {
 
-ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
+ExternalModule*
+DynamicLoader::loadModule(const zstring& aFile) const
 {
   // function pointer to create a module
   ExternalModule* (*createModule)() = NULL;
@@ -82,6 +90,16 @@ ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
 }
 
 
+DynamicLoader::DynamicLoader()
+{}
+
+DynamicLoader&
+DynamicLoader::getInstance()
+{
+  static DynamicLoader singleton;
+  return singleton;
+}
+
 DynamicLoader::~DynamicLoader()
 {
   for (LibrarySet_t::const_iterator lIter = theLibraries.begin();
@@ -95,6 +113,127 @@ DynamicLoader::~DynamicLoader()
   }
 }
 
+ExternalModule*
+DynamicLoader::getExternalModule
+(zstring const& aNsURI, static_context& aSctx)
+{
+  std::vector<zstring> lModulePaths;
+  aSctx.get_full_module_paths(lModulePaths);
+
+  std::auto_ptr<std::istream> modfile(0); // result file
+
+  if (lModulePaths.size() != 0)
+  {
+    URI lURI(aNsURI);
+
+    zstring lLibraryName = computeLibraryName(lURI);
+    zstring lLibraryNameDebug = computeLibraryName(lURI, true);
+
+    // check all module path in the according order
+    // the higher in the hirarchy the static context is
+    // the higher the priority of its module paths
+    for (std::vector<zstring>::const_iterator ite = lModulePaths.begin();
+        ite != lModulePaths.end();
+         ++ite)
+    {
+      zstring potentialModuleFile = (*ite);
+      zstring potentialModuleFileDebug = potentialModuleFile;
+      potentialModuleFile.append(lLibraryName);
+      potentialModuleFileDebug.append(lLibraryNameDebug);
+
+      std::auto_ptr<std::istream> modfile
+        (new std::ifstream(potentialModuleFile.c_str()));
+      
+      if (!modfile->good()) {
+        modfile.reset(new std::ifstream(potentialModuleFileDebug.c_str()));
+        potentialModuleFile = potentialModuleFileDebug;
+      }
+
+      if (modfile->good())
+      {
+        ExternalModule* lModule = getInstance().loadModule(potentialModuleFile);
+        if (lModule)
+        {
+          if (lModule->getURI().c_str() != aNsURI)
+          {
+            throw ZORBA_EXCEPTION(
+              ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED,
+              ERROR_PARAMS( lURI, potentialModuleFile )
+              );
+          }
+        }
+
+        return lModule;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+zstring
+DynamicLoader::computeLibraryName
+(const URI& aURI, bool aUseDebugDir /* = false */)
+{
+  zstring lPathNotation = aURI.toPathNotation();
+
+  // get the module file name
+  size_t lIndexOfLastSlash = lPathNotation.find_last_of("/");
+
+  zstring lFileName;
+  zstring lBranchPath;
+
+  // is the URI ends in '/'
+  if (lIndexOfLastSlash == lPathNotation.size())
+  {
+    lBranchPath = lPathNotation;
+  }
+  else
+  {
+    // is '/' is not found
+    if (lIndexOfLastSlash == std::string::npos)
+    {
+      lFileName = lPathNotation;
+    }
+    else
+    {
+      lFileName = lPathNotation.substr(lIndexOfLastSlash + 1);
+      lBranchPath = lPathNotation.substr(0, lIndexOfLastSlash + 1);
+    }
+
+    // remove .xq from the end of the file if present
+    // bugfix: find_last_of didn't do the right thing
+    size_t lIndexOfXQ = lFileName.find(".xq");
+    if (lIndexOfXQ != std::string::npos && lIndexOfXQ == lFileName.size() - 3)
+    {
+      lFileName.erase(lIndexOfXQ );
+    }
+  }
+
+  // create the name of the file
+  // win32: module.dll
+  // apple: libmodule.dylib
+  // other unix: libmodule.so
+  std::ostringstream lLibraryName;
+  lLibraryName << lBranchPath;
+#ifdef WIN32
+  if (aUseDebugDir) {
+    lLibraryName << "Debug\\";
+  }
+  lLibraryName << lFileName << get_current_lib_suffix() << ".dll";
+#else
+  if (aUseDebugDir) {
+    lLibraryName << "Debug/";
+  }
+#ifdef APPLE
+  lLibraryName << "lib" << lFileName << get_current_lib_suffix() << ".dylib";
+#else
+  lLibraryName << "lib" << lFileName << get_current_lib_suffix() << ".so";
+#endif
+#endif
+
+  return lLibraryName.str();
+}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -26,39 +26,217 @@
 #include <zorba/zorbastring.h>
 
 /**
-  * @file uri_resolvers.h
-  * @brief This header file defines all uri resolvers.
-  *
-  * %Zorba has a very flexible uri resolver mechanism. %Zorba has three ways to
-  * map a namespace to its physical location:
-  *
-  * 1. The system uri resolvers tries to resolves the physical location of a
-  *  library module according to its namespace URI. This approach is equivalent
-  *  to the one used in Java with CLASSPATH.
-  *
-  * 2. User-defined URI Resolvers: %Zorba has hooks to allow user-defined URI
-  *  resolvers to be used for resolving the module source. This process of
-  *  declaring and registering new URI resolvers to the static context is done
-  *  using %Zorba C++ API. User-defined URI resolvers are similar to user-defined
-  *  class loaders in the Java platform.
-  *
-  * 3. Literal URI resolving: %Zorba treats the module namespace URI has a
-  *  literal URL of the module physical location.
-  *
-  * To implement the second possibility, a user has to implement uri resolvers.
-  * The user can subclass as many uri resolvers as she wants to and she can
-  * also register as many uri resolvers in the static context as she wants to.
-  * If she registeres more than one uri resolver, %Zorba will try to resolve a
-  * namespace with the one resolver after the other in the order the user
-  * registered them. But there can be at most one DocumentURIResolver and also
-  * most one CollectionURIResolver.
-  *
-  * To add a uri resolver, the corresponding methods in the static context.
-  * Please see the documentation of the corresponding class or the StaticContext
-  * to know which method you have to use, to register or remove a uri resolver.
-  */
+ * @file uri_resolvers.h
+ * @brief This header file defines all uri resolvers.
+ *
+ * %Zorba has a very flexible uri resolver mechanism.
+ *
+ * QQQ Complete documentation
+ * QQQ file should be renamed uri_resolver.h
+ */
 
 namespace zorba {
+
+/**
+ * @brief The class representing the result of URL resolution.
+ *
+ * This class is the final output of the URI resolution process. All
+ * URL resolvers return results using subclasses of this class.
+ */
+class ZORBA_DLL_PUBLIC Resource
+{
+  public:
+  /**
+   * @brief enum listing the types of entities that may be represented
+   * by URIs, and hence may be looked up via the URI resolution
+   * mechanism.
+   */
+  // QQQ Hmm... having the enum values for Kind and EntityType all end
+  // up as Resource::FOO is ugly.
+  enum EntityType {
+    SCHEMA,
+    MODULE,
+    THESAURUS,
+    STOP_WORDS
+  };
+
+  /**
+   * @brief enum listing the concrete subclasses of Resource that
+   * exist (so far only one).
+   */
+  enum Kind {
+    STREAM
+  };
+
+  /**
+   * @brief Return the Kind of Resource this is, ie., which concrete
+   * subclass this object is actually an instance of.  (This is to
+   * avoid the requirement of RTTI.)
+   */
+  Kind getKind() throw ();
+
+  virtual ~Resource() = 0;
+
+  protected:
+
+  Resource(Kind aKind);
+
+  private:
+
+  Kind theKind;
+};
+
+/**
+ * @ brief Concrete Resource subclass representing access to an entity
+ * via a stream.
+ */
+class ZORBA_DLL_PUBLIC StreamResource : public Resource
+{
+  public:
+
+  /**
+   * @brief Public constructor from istream.
+   *
+   * Due to the auto_ptr<>, the Resource object will take memory
+   * ownership of the istream, and Zorba will free it when it is no
+   * longer required.
+   *
+   * Please note that, while istreams are normally stack objects (ie,
+   * local variables, not allocated with "new"), you must not
+   * construct a Resource with a pointer to a stack object! Always
+   * create your istreams with "new" before passing to this constructor.
+   */
+  StreamResource(std::auto_ptr<std::istream> aStream);
+
+  /**
+   * @brief Retrieve the istream associated with this Resource, and
+   * take memory ownership of it.
+   */
+  std::auto_ptr<std::istream> getStream() throw ();
+
+  private:
+
+  std::auto_ptr<std::istream> theStream;
+};
+
+/**
+ * @brief Interface for URL resolving.
+ *
+ * Subclass this to provide a URL resolver to the method
+ * StaticContext::addURLResolver().
+ */
+class ZORBA_DLL_PUBLIC URLResolver
+{
+  public:
+
+  virtual ~URLResolver();
+
+  /**
+   * @brief Transforms an input URL into a Resource.
+   *
+   * The "aEntityType" parameter informs the URLResolver what type of
+   * entity is being referenced by the URL. URLResolvers may choose to
+   * make use of this information to alter their behaviour.
+   * URLResolvers must ensure that they return a concrete subclass of
+   * Resource which is compatible with the entity type being resolved.
+   *
+   * Implementers of this method should do nothing if they do not know
+   * how to resolve the URL.  They should create and return a Resource
+   * if they were successfully able to resolve the URL.
+   *
+   * Implementers may throw any exception if they believe that they
+   * are canonical for the URL and yet had some error arise attempting
+   * to resolve it.  Note that because there may be several possible
+   * URLs attempted, Zorba will catch any exceptions thrown and
+   * continue until all all URLs have failed. Zorba will not re-throw
+   * any of these exceptions directly. However, if the exception
+   * thrown extends std::exception, Zorba will make efforts to ensure
+   * that its error message is included in the exception which is
+   * ultimately thrown. For any other thrown objects, only the fact
+   * that an exception occurred will be remembered; the exception
+   * object itself will be discarded.
+   *
+   * In any case, if they create a Resource, Zorba will take memory
+   * ownership of the Resource and delete it when it is no longer
+   * needed.
+   */
+  virtual Resource* resolveURL(const zorba::String& aUrl,
+    Resource::EntityType aEntityType) = 0;
+};
+
+/**
+ * @brief Interface for URI mapping.
+ *
+ * Subclass this to provide a URI mapper to the method
+ * StaticContext::addURIMapper().
+ */
+class ZORBA_DLL_PUBLIC URIMapper
+{
+  public:
+
+  virtual ~URIMapper();
+
+  /**
+   * @brief Transform an input URI into a set of output URIs.
+   *
+   * The "aEntityType" parameter informs the URIMapper what type of
+   * entity is being referenced by URI. URIMappers may choose to make
+   * use of this information to alter their behaviour.
+   *
+   * Implementers of this method should provide output URIs by adding
+   * them to the oUris output parameter, using the push_back()
+   * method. They should not otherwise view or manipulate this vector.
+   *
+   * If a URIMapper does not wish to provide any output URIs for the
+   * given input URI, they should simply do nothing and return. In
+   * this case, Zorba will continue with the original, unmapped URI.
+   */
+  virtual void mapURI(const zorba::String aUri,
+    Resource::EntityType aEntityType, std::vector<zorba::String>& oUris) 
+    throw () = 0;
+
+  /**
+   * @brief enum defining legal return values for mapperKind().
+   */
+  enum Kind {
+    COMPONENT,
+    CANDIDATE
+  };
+
+  /**
+   * @brief Declare whether this is a "component" or "candidate" URI
+   * mapper.
+   *
+   * Zorba supports two different kinds of URI mapping. The first,
+   * "component URI mapping", is to allow mapping from an input URI to
+   * a set of URIs which, taken together, comprise the entire entity
+   * to be resolved. This is currently only supported for module
+   * import, where it can be used to load a module which is physically
+   * stored in multiple library module files.
+   *
+   * "Candidate URI mapping" is to allow mapping from an input URI to
+   * a set or URIs which are *potential* identifiers of the entity
+   * being resolved. Each of these URIs will be treated to any
+   * subsequent URI mappers, and then treated as URLs and passed in
+   * turn to all registered URLResolvers. This type of URI mapping is
+   * supported for all uses of URIs in Zorba. It can be used for
+   * example to redirect http: URIs to locally-cached file: URLs, or
+   * to provide several alternative locations for a given resource.
+   */
+  virtual Kind mapperKind() throw () = 0;
+
+  /**
+   * @brief Constant indicating that Zorba should deny access to the
+   * given URI.
+   *
+   * If any kind of URIMapper returns this value at any point in the
+   * vector of URIs, Zorba will cause the resolution of this URI to be
+   * denied with an error.  This can be used, for example, to suppress
+   * importing particular modules by URI.
+   */
+  const zorba::String DENY_ACCESS;
+};
+
 
 /**
   * @brief The base class for results of the URI resolvers.
@@ -304,71 +482,6 @@ class ZORBA_DLL_PUBLIC CollectionURIResolver
           XmlDataManager* aXmlDataManager) = 0;
 };
   
-/**
-  * @brief The result from a SchemaURIResolver.
-  *
-  * This class has to be subclassed by an implementer of SchemaURIResolver.
-  * The instance of this class serves as a container for either an error code
-  * and desciption, or the resolved schema.
-  *
-  * @sa URIResolverResult
-  */
-class ZORBA_DLL_PUBLIC SchemaURIResolverResult : public URIResolverResult 
-{
- public:
-  virtual ~SchemaURIResolverResult() {}
-
-  /**
-    * @brief Returns the schema.
-    *
-    * This method has to be implemented by the user and should return a
-    * schema if there was no error.
-    */
-  virtual String
-  getSchema() const = 0;
-};
-
-/**
-  * @brief A schema uri resolver.
-  *
-  * If you want to give %Zorba hints, where to resolve schemas by uri, this
-  * class can be subclassed. Before subclassing this class, one should make sure
-  * that she understands the resolving mechanisms from %Zorba, since in most
-  * cases the default behaviour should be sufficient.
-  *
-  * To add a schema uri resolver to the static context, use
-  * StaticContext::addSchemaURIResolver. There can only be as many schema uri
-  * resolvers as desired in the static context and %Zorba will try to resolve
-  * schemas with all of them in the order they were added to the static context.
-  */
-class ZORBA_DLL_PUBLIC SchemaURIResolver
-{
- public:
-  virtual ~SchemaURIResolver() {}
-
-  /**
-    * @brief Resolves a schema uri.
-    *
-    * This method gets called, when %Zorba tries to resolve a schema uri.
-    *
-    * @param aUri The uri of the schema which should be resolved.
-    * @param aStaticContext The current static context.
-    * @param aAtList The location hints given in the query.
-    * @param aFileUri The file uri, if the resolve was successful. The user can
-    *  set this either to the URI or return a string with the whole schema in
-    *  the SchemaURIResolverResult. If the user provides a url, %Zorba will
-    *  be able to stream the result.
-    *
-    * @returns A SchemaURIResolverResult with an error code or (if aFileUri is
-    *  not set and the resolving was successful) a string with the schema.
-    */
-  virtual std::auto_ptr<SchemaURIResolverResult>
-  resolve(const Item& aURI,
-          StaticContext* aStaticContext,
-          std::vector<Item>& aAtList,
-          String* aFileUri = 0) = 0;
-};
-
 #ifndef ZORBA_NO_FULL_TEXT
 /**
   * @brief The result of a FullTextURIResolver.
@@ -403,34 +516,6 @@ class ZORBA_DLL_PUBLIC FullTextURIResolver
   resolve(const Item& aURI, StaticContext* aStaticContext) = 0;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
-
-class ZORBA_DLL_PUBLIC ModuleURIResolverResult : public URIResolverResult
-{
- public:
-  virtual ~ModuleURIResolverResult() {}
-  
-  virtual std::istream* getModuleStream() const = 0;
-
-  virtual void getModuleURL(std::string&) const = 0;
-
-  virtual void getComponentURIs(std::vector<std::string>&) const = 0;
-};
-
-
-class ZORBA_DLL_PUBLIC ModuleURIResolver
-{
- public:
-  virtual ~ModuleURIResolver() {}
-
-  virtual std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
-        const String& aTargetNamespaceURI,
-        const StaticContext& aStaticContext) = 0;
-
-  virtual std::auto_ptr<ModuleURIResolverResult> resolve(
-        const String& aURI,
-        const StaticContext& aStaticContext) = 0;
-};
-
 
 } /* namespace zorba */
 

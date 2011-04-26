@@ -33,13 +33,15 @@
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
 #include "context/internal_uri_resolvers.h"
+#include "context/uri_resolver.h"
+#include "compiler/parser/xquery_driver.h"
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/stemmer.h"
 
 #include "common/shared_types.h"
 #include "util/stl_util.h"
-
+#include "util/auto_vector.h"
 
 namespace zorba
 {
@@ -256,23 +258,9 @@ public:
   ----------------
   URI resolver used for retrieving W3C collections (used by fn:collection).
 
-  theSchemaResolvers :
-  -------------------
-  Vector of URI resolvers used for retrieving a schema given the schema's target
-  namespace and an optional list of URLs that may store the schema.
-
   theFullTextResolvers :
   -------------------
   Vector of URI resolvers used for retrieving a full-text component given a URI.
-
-  theModuleResolvers :
-  -------------------
-  Vector of URI resolvers used for retrieving (a) the URIs of the components of
-  a module given the module's target namespece and then (b) a module component
-  given its URI. Actually, the URI resolvers registered in this vector are used
-  by the (singleton) StandardModuleURIResolver, which implements the full module
-  resolution protocol (see ./standard_uri_resolvers.cpp). Normally, the URI
-  resolvers registered here are user-provided ones.
 
   theModulePaths :
   ----------------
@@ -486,11 +474,13 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
+  ztd::auto_vector<impl::URIMapper>       theURIMappers;
+
+  ztd::auto_vector<impl::URLResolver>     theURLResolvers;
+
   InternalDocumentURIResolver           * theDocResolver;
 
   InternalCollectionURIResolver         * theColResolver;
-
-  std::vector<InternalSchemaURIResolver*> theSchemaResolvers;
 
 #ifndef ZORBA_NO_FULL_TEXT
   std::vector<InternalFullTextURIResolver*> theStopWordsResolvers;
@@ -502,11 +492,9 @@ protected:
   stemmer_providers_t                     theStemmerProviders;
 #endif
 
-  std::vector<InternalModuleURIResolver*> theModuleResolvers;
+  checked_vector<zstring>                 theModulePaths;
 
-  checked_vector<std::string>             theModulePaths;
-
-	ExternalModuleMap                     * theExternalModulesMap;
+  ExternalModuleMap                     * theExternalModulesMap;
 
   rchandle<TypeManager>                   theTypemgr;
 
@@ -647,6 +635,35 @@ public:
   //
   // URI Resolution
   //
+
+  /**
+   * Add a URIMapper to be used by this static context when resolving
+   * URIs to resources.
+   */
+  void add_uri_mapper(impl::URIMapper* aMapper) throw ();
+
+  /**
+   * Add a URLResolver to be used by this static context when
+   * resolving URIs to resources.
+   */
+  void add_url_resolver(impl::URLResolver* aResolver) throw ();
+
+  /**
+   * Given a URI, return a Resource for that URI.
+   */
+  std::auto_ptr<impl::Resource> resolve_uri
+  (zstring const& aUri, impl::Resource::EntityType aEntityType) const;
+
+  /**
+   * Given a URI, populate a vector with a list of component URIs.  If
+   * no component URIs are available, the vector will be populated
+   * with (only) the input URI.
+   */
+  void get_component_uris
+  (zstring const& aUri, impl::Resource::EntityType aEntityType,
+    std::vector<zstring>& oComponents) const;
+
+  // QQQ old stuff below
   void set_document_uri_resolver(InternalDocumentURIResolver*);
 
   InternalDocumentURIResolver* get_document_uri_resolver() const;
@@ -654,12 +671,6 @@ public:
   void set_collection_uri_resolver(InternalCollectionURIResolver*);
 
   InternalCollectionURIResolver* get_collection_uri_resolver() const;
-
-  void add_schema_uri_resolver(InternalSchemaURIResolver*);
-
-  void get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>& resolvers) const;
-
-  void remove_schema_uri_resolver(InternalSchemaURIResolver*);
 
 #ifndef ZORBA_NO_FULL_TEXT
   void add_stop_words_uri_resolver(InternalFullTextURIResolver*);
@@ -683,17 +694,11 @@ public:
   void remove_stemmer_provider( core::StemmerProvider const *p );
 #endif
 
-  void add_module_uri_resolver(InternalModuleURIResolver*);
+  void set_module_paths(const std::vector<zstring>& aModulePaths);
 
-  void remove_module_uri_resolver(InternalModuleURIResolver*);
+  void get_module_paths(std::vector<zstring>& aModulePaths) const;
 
-  void get_module_uri_resolvers(std::vector<InternalModuleURIResolver*>& resolvers) const;
-
-  void set_module_paths(const std::vector<std::string>& aModulePaths);
-
-  void get_module_paths(std::vector<std::string>& aModulePaths) const;
-
-  void get_full_module_paths(std::vector<std::string>& aFullModulePaths) const;
+  void get_full_module_paths(std::vector<zstring>& aFullModulePaths) const;
 
   // Module import checkers
 
@@ -782,9 +787,9 @@ public:
 
   void getLocalVariables(std::vector<var_expr_t>& aVarialeList) const;
 
-	void set_context_item_type(xqtref_t& t);
+  void set_context_item_type(xqtref_t& t);
 
-	const XQType* get_context_item_type() const;
+  const XQType* get_context_item_type() const;
 
 
   //
@@ -816,7 +821,7 @@ public:
   //
   // Documents
   //
-	void bind_document(const zstring& uri, xqtref_t& t);
+  void bind_document(const zstring& uri, xqtref_t& t);
 
   const XQType* lookup_document(const zstring& uri);
 
@@ -825,13 +830,13 @@ public:
   //
   // W3C Collections
   //
-	void bind_w3c_collection(zstring& uri, xqtref_t& t);
+  void bind_w3c_collection(zstring& uri, xqtref_t& t);
 
   const XQType* lookup_w3c_collection(const zstring& uri);
 
-	void set_default_w3c_collection_type(xqtref_t& t);
+  void set_default_w3c_collection_type(xqtref_t& t);
 
-	const XQType* get_default_w3c_collection_type();
+  const XQType* get_default_w3c_collection_type();
 
   //
   // XQDDF Collections
@@ -865,7 +870,7 @@ public:
   //
   // Collations
   //
-	void add_collation(const std::string& uri, const QueryLoc& loc);
+  void add_collation(const std::string& uri, const QueryLoc& loc);
 
   bool is_known_collation(const std::string& uri) const;
 
@@ -897,35 +902,35 @@ public:
 
   void set_xquery_version(const std::string& v);
 
-	StaticContextConsts::xpath_compatibility_t xpath_compatibility() const;
+  StaticContextConsts::xpath_compatibility_t xpath_compatibility() const;
 
-	void set_xpath_compatibility(StaticContextConsts::xpath_compatibility_t v);
+  void set_xpath_compatibility(StaticContextConsts::xpath_compatibility_t v);
 
-	StaticContextConsts::construction_mode_t construction_mode() const;
+  StaticContextConsts::construction_mode_t construction_mode() const;
 
-	void set_construction_mode(StaticContextConsts::construction_mode_t v);
+  void set_construction_mode(StaticContextConsts::construction_mode_t v);
 
-	StaticContextConsts::inherit_mode_t inherit_mode() const;
+  StaticContextConsts::inherit_mode_t inherit_mode() const;
 
   void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
 
-	StaticContextConsts::preserve_mode_t preserve_mode() const;
+  StaticContextConsts::preserve_mode_t preserve_mode() const;
 
   void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
 
-	StaticContextConsts::ordering_mode_t ordering_mode() const;
+  StaticContextConsts::ordering_mode_t ordering_mode() const;
 
   bool is_in_ordered_mode() const;
 
-	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
+  void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
 
-	StaticContextConsts::empty_order_mode_t empty_order_mode() const;
+  StaticContextConsts::empty_order_mode_t empty_order_mode() const;
 
-	void set_empty_order_mode(StaticContextConsts::empty_order_mode_t v);
+  void set_empty_order_mode(StaticContextConsts::empty_order_mode_t v);
 
-	StaticContextConsts::boundary_space_mode_t boundary_space_mode() const;
+  StaticContextConsts::boundary_space_mode_t boundary_space_mode() const;
 
-	void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
+  void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
 
   StaticContextConsts::validation_mode_t validation_mode() const;
 
@@ -977,11 +982,22 @@ protected:
   bool check_parent_is_root();
 
   void set_parent_as_root();
+
+private:
+
+  void apply_uri_mappers(zstring const& aUri,
+    impl::Resource::EntityType aEntityType,
+    impl::URIMapper::Kind aMapperKind,
+    std::vector<zstring>& oUris) const throw ();
+
+  void apply_url_resolvers(std::vector<zstring>& aUrls,
+    impl::Resource::EntityType aEntityType,
+    std::auto_ptr<impl::Resource>& oResource, zstring& oErrorMessage) const;
 };
 
 
 }
-#endif /*	ZORBA_CONTEXT_STATIC_CONTEXT_H */
+#endif /* ZORBA_CONTEXT_STATIC_CONTEXT_H */
 
 /*
  * Local variables:

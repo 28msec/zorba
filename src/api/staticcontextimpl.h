@@ -28,8 +28,6 @@ namespace zorba {
 
   class ErrorHandler;
   class static_context;
-  class ModuleURIResolverWrapper;
-  class SchemaURIResolverWrapper;
 #ifndef ZORBA_NO_FULL_TEXT
   class FullTextURIResolverWrapper;
   namespace core {
@@ -64,10 +62,6 @@ protected:
   bool                                theUserErrorHandler;
 
   // remeber all the resolver wrappers that this context has created
-  std::map<ModuleURIResolver*,
-           ModuleURIResolverWrapper*> theModuleWrappers;
-  std::map<SchemaURIResolver*,
-           SchemaURIResolverWrapper*> theSchemaWrappers;
 #ifndef ZORBA_NO_FULL_TEXT
   std::map<FullTextURIResolver*,
            FullTextURIResolverWrapper*> theStopWordsWrappers;
@@ -182,6 +176,12 @@ public:
   getDocumentType(const String& aDocUri) const;
 
   virtual void
+  registerURIMapper(URIMapper* aMapper);
+
+  virtual void
+  registerURLResolver(URLResolver* aResolver);
+
+  virtual void
   setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver);
 
   virtual DocumentURIResolver*
@@ -198,15 +198,6 @@ public:
 
   virtual TypeIdentifier_t
   getCollectionType(const String& aCollectionUri) const;
-
-  virtual void
-  addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
-
-  virtual void
-  removeSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
-
-  virtual std::vector<SchemaURIResolver*>
-  getSchemaURIResolvers() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void
@@ -233,15 +224,6 @@ public:
   virtual void
   removeStemmerProvider( StemmerProvider const* );
 #endif /* ZORBA_NO_FULL_TEXT */
-
-  virtual void
-  addModuleURIResolver(ModuleURIResolver* aModuleUriResolver);
-
-  virtual std::vector<ModuleURIResolver*>
-  getModuleURIResolvers() const;
-
-  virtual void
-  removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver);
 
   virtual bool
   containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;

@@ -57,22 +57,6 @@ public:
 };
   
 
-/*******************************************************************************
-
-********************************************************************************/
-class InternalSchemaURIResolver
-{
-public:
-  virtual ~InternalSchemaURIResolver() {}
-      
-  virtual std::string resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext,
-        std::vector<store::Item_t>& aAtList,
-        zstring& aFileUri) = 0;
-};
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 
@@ -87,33 +71,6 @@ public:
           static_context* aStaticContext) = 0;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
-
-/*******************************************************************************
-
-********************************************************************************/
-class InternalModuleURIResolver
-{
-public:
-  virtual ~InternalModuleURIResolver() {}
-
-  virtual void resolveTargetNamespace(
-        const std::string& nsURI,
-        static_context& sctx,
-        std::vector<std::string>& compURIs) = 0;
-
-  virtual std::istream* resolve(
-        const std::string& uri,
-        static_context& sctx,
-        std::string& url) = 0;
-#if 0
-  virtual ExternalModule* getExternalModule(
-        const zstring& aFileUri,
-        static_context& sctx)
-  {
-    return NULL;
-  }
-#endif
-};
 
 } /* namespace zorba */
 

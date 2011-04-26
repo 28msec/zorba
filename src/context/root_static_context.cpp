@@ -17,6 +17,8 @@
 #include "context/root_static_context.h"
 #include "context/namespace_context.h"
 #include "context/uri_resolver_wrapper.h"
+#include "context/default_url_resolvers.h"
+#include "context/default_uri_mappers.h"
 #include "context/standard_uri_resolvers.h"
 
 #include "types/root_typemanager.h"
@@ -91,12 +93,17 @@ void root_static_context::init()
 
   set_default_w3c_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
-  // TODO move into globalenv
+
+  // TODO move into globalenv? memory leaks?
+  add_url_resolver(new impl::ZorbaFileURLResolver());
+  add_url_resolver(new impl::ZorbaHTTPURLResolver());
+  add_uri_mapper(new impl::ZorbaAutoFSURIMapper());
+
   set_document_uri_resolver(new StandardDocumentURIResolver());
   set_collection_uri_resolver(new StandardCollectionURIResolver());
   set_validation_mode(StaticContextConsts::lax_validation);
 
-  std::vector<std::string> lRootModulePaths;
+  std::vector<zstring> lRootModulePaths;
 #ifdef WIN32
   //add first the relative path to zorba_simplestore.dll (this dll)
   WCHAR  wdll_path[1024];
@@ -112,9 +119,9 @@ void root_static_context::init()
     if(last_slash)
     {
       last_slash[1] = 0;
-      std::string fileURL;
+      zstring fileURL;
       fileURL = dll_path;
-      fileURL += "..\\include\\zorba\\modules\\";
+      fileURL = fileURL.append("..\\include\\zorba\\modules\\");
       lRootModulePaths.push_back(fileURL);
     }
   }

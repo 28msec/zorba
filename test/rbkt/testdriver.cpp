@@ -160,8 +160,8 @@ main(int argc, char** argv)
     bool isW3Ctest = isW3CFTtest || isW3CXQTStest;
     std::string lQueryWithoutSuffix = 
     std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
-    std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
-    std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
+    std::auto_ptr<zorba::TestSchemaURIMapper>        smapper;
+    std::auto_ptr<zorba::TestModuleURIMapper>        mmapper;
     std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
     std::auto_ptr<zorba::TestDocumentURIResolver>    dresolver;
     // Create the static context. If this is a w3c query, install special uri
@@ -179,15 +179,15 @@ main(int argc, char** argv)
       std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
       std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
 
-      resolver.reset(new zorba::TestSchemaURIResolver(uri_map_file.c_str()));
+      smapper.reset(new zorba::TestSchemaURIMapper(uri_map_file.c_str()));
 
-      mresolver.reset(new zorba::TestModuleURIResolver(mod_map_file.c_str(),
-                                                       lQueryWithoutSuffix));
+      mmapper.reset(new zorba::TestModuleURIMapper
+        (mod_map_file.c_str(), lQueryWithoutSuffix));
 
       cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
                                                            rbkt_src_dir));
-      lContext->addSchemaURIResolver ( resolver.get() );
-      lContext->addModuleURIResolver ( mresolver.get() );
+      lContext->registerURIMapper( smapper.get() );
+      lContext->registerURIMapper( mmapper.get() );
       lContext->setCollectionURIResolver ( cresolver.get() );
 
       // the w3c testsuite always uses xquery 1.0

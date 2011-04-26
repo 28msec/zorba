@@ -65,12 +65,12 @@ namespace zorba {
   class String;
 
   // uri resolvers
+  class URIMapper;
+  class Resource;
+  class URLResolver;
   class DocumentURIResolver;
   class CollectionURIResolver;
-  class SchemaURIResolver;
   class FullTextURIResolver;
-  class ModuleURIResolver;
-
   class ModuleImportChecker;
 
   struct DeclaredCollection;

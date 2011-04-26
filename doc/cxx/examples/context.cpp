@@ -347,73 +347,38 @@ context_example_10(Zorba* aZorba)
 }
 
 
-class PrologModuleURIResolverResult : public ModuleURIResolverResult
-{
-  friend class PrologModuleURIResolver;
-
-protected:
-  std::istream             * theModule;
-  std::vector<std::string>   theComponentURIs;
-
-public:
-  std::istream* getModuleStream() const
-  {
-    return theModule;
-  }
-
-  void getModuleURL(std::string& url) const
-  {
-  }
-
-  void getComponentURIs(std::vector<std::string>& uris) const
-  {
-    uris = theComponentURIs;
-  }
-};
-
-
-class PrologModuleURIResolver : public ModuleURIResolver
+class PrologModuleURLResolver : public URLResolver
 {
 public:
-  virtual ~PrologModuleURIResolver() {}
+  virtual ~PrologModuleURLResolver() {}
 
-  std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
-        const String& aTargetNamespaceURI,
-        const StaticContext& aStaticContext)
+  virtual Resource* resolveURL(
+        const String& aUrl,
+        Resource::EntityType aEntityType)
   {
-    std::auto_ptr<PrologModuleURIResolverResult>
-    lResult(new PrologModuleURIResolverResult());
-
-    std::string compURI = aTargetNamespaceURI.c_str();
-    lResult->theComponentURIs.push_back(compURI);
-
-    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
-  }
-
-  std::auto_ptr<ModuleURIResolverResult> resolve(
-        const String& aURI,
-        const StaticContext& aStaticContext)
-  {
-    std::auto_ptr<PrologModuleURIResolverResult>
-    lResult(new PrologModuleURIResolverResult());
-
-    if (aURI == "http://www.zorba-xquery.com/mymodule")
+    if (aEntityType == Resource::MODULE &&
+      aUrl == "http://www.zorba-xquery.com/mymodule") 
     {
-      std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
-
-      (*lQuery) << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
-                << "import module namespace manip = 'http://www.zorba-xquery.com/modules/store/static-collections/manipulation';" << std::endl
-                << "declare variable $mymodule:var  := 'myvar';" << std::endl
-                << "declare collection mymodule:collection;" << std::endl
-                << "declare automatically maintained value equality index mymodule:index" << std::endl
-                << "  on nodes manip:collection(xs:QName('mymodule:collection'))" << std::endl
-                << "  by ./foo as xs:string;" << std::endl;
       // we have only one module
-      lResult->theModule = lQuery.release();
-      lResult->setError(URIResolverResult::UR_NOERROR);
+      std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
+      (*lQuery)
+        << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
+        << "import module namespace manip = 'http://www.zorba-xquery.com/modules/store/static-collections/manipulation';" << std::endl
+        << "declare variable $mymodule:var  := 'myvar';" << std::endl
+        << "declare collection mymodule:collection;" << std::endl
+        << "declare automatically maintained value equality index mymodule:index" << std::endl
+        << "  on nodes manip:collection(xs:QName('mymodule:collection'))" << std::endl
+        << "  by ./foo as xs:string;" << std::endl;
+      return new StreamResource(std::auto_ptr<std::istream>(lQuery));
+        // (std::auto_ptr<std::istream>(
+        //   new std::istringstream
+        //   ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
+        //     "declare function lm:foo() { 'foo' }; "
+        //     "declare function lm:ext() external;")));
     }
-
-    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+    else {
+      return NULL;
+    }
   }
 };
 
@@ -429,8 +394,8 @@ bool
 context_example_11(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
-  PrologModuleURIResolver lResolver;
-  lContext->addModuleURIResolver(&lResolver);
+  PrologModuleURLResolver lResolver;
+  lContext->registerURLResolver(&lResolver);
 
   try {
     Zorba_CompilerHints_t hints;
@@ -530,8 +495,8 @@ bool
 context_example_13(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
-  PrologModuleURIResolver lResolver;
-  lContext->addModuleURIResolver(&lResolver);
+  PrologModuleURLResolver lResolver;
+  lContext->registerURLResolver(&lResolver);
 
   callback_data c, i;
   c.b = false;

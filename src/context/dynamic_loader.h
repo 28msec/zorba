@@ -23,22 +23,23 @@
 namespace zorba {
 
 class ExternalModule;
+class URI;
 
 class DynamicLoader
 {
 public:
-  static DynamicLoader* getInstance()
-  {
-    static DynamicLoader lLoader;
-
-    return &lLoader;
-  }
-
-  ExternalModule* getModule(const zstring& aFile) const;
-
-  virtual ~DynamicLoader();
+  static ExternalModule* getExternalModule
+  (zstring const& aNsURI, static_context& aSctx);
 
 private:
+
+  DynamicLoader();
+  ~DynamicLoader();
+  static DynamicLoader& getInstance();
+
+  ExternalModule* loadModule(const zstring& aFile) const;
+  static zstring computeLibraryName(const URI& aURI, bool aUseDebugDir = false);
+
 
 #ifdef WIN32
   typedef std::set<HMODULE> LibrarySet_t;

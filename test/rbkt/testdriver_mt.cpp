@@ -317,15 +317,12 @@ DWORD WINAPI thread_main(LPVOID param)
   std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
   std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
 
-  std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
-  std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
-  std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
+  std::auto_ptr<zorba::TestSchemaURIMapper> smapper
+    (new zorba::TestSchemaURIMapper(uri_map_file.c_str(), false));
+  std::auto_ptr<zorba::TestModuleURIMapper> mmapper;
+  std::auto_ptr<zorba::TestCollectionURIResolver> cresolver
+    (new zorba::TestCollectionURIResolver(col_map_file.c_str(), rbkt_src_dir));
   std::auto_ptr<zorba::TestDocumentURIResolver>    dresolver;
-
-  resolver.reset(new zorba::TestSchemaURIResolver(uri_map_file.c_str(), false));
-
-  cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
-                                                       rbkt_src_dir));
 
   while (1)
   {
@@ -454,13 +451,13 @@ DWORD WINAPI thread_main(LPVOID param)
 
     if (queries->theIsW3Cbucket) 
     {
-      mresolver.reset(new zorba::TestModuleURIResolver(mod_map_file.c_str(),
-                                                       testName,
-                                                       false));
-      sctx->addSchemaURIResolver(resolver.get());
-      sctx->addModuleURIResolver(mresolver.get());
-      sctx->setCollectionURIResolver(cresolver.get());
+      mmapper.reset
+        (new zorba::TestModuleURIMapper(mod_map_file.c_str(),
+          testName, false));
+      sctx->registerURIMapper(smapper.get());
+      sctx->registerURIMapper(mmapper.get());
 
+      sctx->setCollectionURIResolver(cresolver.get());
       sctx->setXQueryVersion(xquery_version_1_0);
       sctx->setTraceStream(queries->theOutput);
     }

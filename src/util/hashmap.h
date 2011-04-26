@@ -48,10 +48,10 @@ namespace zorba {
 
 /*___________________________________________________________
 |
-|  Hash map: string -> <class V>
+|  Hash map: string (or equivalent) -> <class V>
 |____________________________________________________________*/
 
-template<class V>   // V = value type
+template<class K, class V>   // V = value type, K = key type
 class HASHMAP    // key type = string
 #ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
                   : public ::zorba::serialization::SerializeBaseClass   
@@ -63,7 +63,7 @@ public:
     : public ::zorba::serialization::SerializeBaseClass
 #endif
   {
-    std::string key;
+    K key;
     V val;
 
     public:
@@ -78,9 +78,9 @@ public:
 #endif
     entry() {}
 
-    entry(std::string const& k, V v) : key(k), val(v) {}
+    entry(K const& k, V v) : key(k), val(v) {}
 
-    entry(char const* k, uint32_t l, V v) : key(std::string(k,0,l)), val(v) {}
+    entry(char const* k, uint32_t l, V v) : key(K(k,0,l)), val(v) {}
 
     entry(entry const& e) :
 #ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
@@ -88,7 +88,7 @@ public:
 #endif
       key(e.key), val(e.val) {}
 
-    entry(const char* k1, std::string const& k2, V v) : val(v)
+    entry(const char* k1, K const& k2, V v) : val(v)
     {
       key = k1;
       key += k2;
@@ -105,7 +105,7 @@ public:
       key = e.key; val = e.val; return *this; 
     }
 
-    bool matchKey2(const char* key1, const std::string& key2) const
+    bool matchKey2(const char* key1, const K& key2) const
     {
       const char* k = key.c_str();
       while(*key1)
@@ -216,7 +216,7 @@ public: // housekeeping
   void resize();                            // double the hash table
 
   V getentryVal(uint32_t n) const { return v[n].val; }
-  const std::string& getentryKey(uint32_t n) const { return v[n].key; }
+  const K& getentryKey(uint32_t n) const { return v[n].key; }
   void displayentry(uint32_t n) const;
   void displayEntries() const;
 
@@ -227,34 +227,34 @@ public: // iterator interface
   typename checked_vector<entry>::const_iterator end() const { return v.end(); }
 
 public: // map interface
-  bool put(std::string const& key, V val, bool replace = true); 
+  bool put(K const& key, V val, bool replace = true); 
   bool put(char const* key, V val, bool replace = true); 
   bool put(char const* key, uint32_t, V val, bool replace = true);
-  bool put2(const char* key1, std::string const& key2, V val, bool replace = true);
+  bool put2(const char* key1, K const& key2, V val, bool replace = true);
 
-  bool find(std::string const& key, uint32_t& index) const; 
+  bool find(K const& key, uint32_t& index) const; 
   bool find(char const* key, uint32_t& index) const;
   bool find(char const* key, uint32_t len, uint32_t&) const;
-  bool find2(const char* key1, std::string const& key2, uint32_t& index) const;
+  bool find2(const char* key1, K const& key2, uint32_t& index) const;
 
-  bool get(std::string const& key, V& result) const;
+  bool get(K const& key, V& result) const;
   bool get(char const* key, V& result) const;
   bool get(char const* key, uint32_t, V&) const;
-  bool get2(const char *key1, std::string const& key2, V& result) const;
+  bool get2(const char *key1, K const& key2, V& result) const;
 
 public: // the hash functions
-  uint32_t h(std::string const& key) const;
+  uint32_t h(K const& key) const;
   uint32_t h(char const*) const;
   uint32_t h(char const*, uint32_t len) const;
-  uint32_t h(const char* key1, const std::string& key2) const;
+  uint32_t h(const char* key1, const K& key2) const;
 
 };
 
 /*******************************************************************************
 
 ********************************************************************************/
-template<class V>
-HASHMAP<V>::HASHMAP(uint32_t initial_size, float load_factor)
+template<class K, class V>
+HASHMAP<K,V>::HASHMAP(uint32_t initial_size, float load_factor)
 :
   sz(0),
   tsz(initial_size),
@@ -269,8 +269,8 @@ HASHMAP<V>::HASHMAP(uint32_t initial_size, float load_factor)
 /*******************************************************************************
 
 ********************************************************************************/
-template<class V>
-HASHMAP<V>::HASHMAP(HASHMAP<V> const& m)
+template<class K, class V>
+HASHMAP<K,V>::HASHMAP(HASHMAP<K,V> const& m)
 :
   sz(m.sz),
   tsz(m.tsz),
@@ -295,8 +295,8 @@ HASHMAP<V>::HASHMAP(HASHMAP<V> const& m)
 /*******************************************************************************
 
 ********************************************************************************/
-template<class V>
-HASHMAP<V>::~HASHMAP()
+template<class K, class V>
+HASHMAP<K,V>::~HASHMAP()
 {
 }
 
@@ -304,8 +304,8 @@ HASHMAP<V>::~HASHMAP()
 /*******************************************************************************
 
 ********************************************************************************/
-template<class V>
-inline void HASHMAP<V>::clear()
+template<class K, class V>
+inline void HASHMAP<K,V>::clear()
 {
   sz = 0;
   v.clear();
@@ -317,8 +317,8 @@ inline void HASHMAP<V>::clear()
 /*******************************************************************************
 
 ********************************************************************************/
-template<class V>
-void HASHMAP<V>::displayentry(uint32_t n) const
+template<class K, class V>
+void HASHMAP<K,V>::displayentry(uint32_t n) const
 {
   std::cout << "tab["<<n<<"] = ("<<v[n].key<<','<<v[n].val<<std::endl;
 }
@@ -327,8 +327,8 @@ void HASHMAP<V>::displayentry(uint32_t n) const
 /*******************************************************************************
 
 ********************************************************************************/
-template<class V>
-void HASHMAP<V>::displayEntries() const
+template<class K, class V>
+void HASHMAP<K,V>::displayEntries() const
 {
   typename checked_vector<entry>::const_iterator it;
   for (it = v.begin(); it!=v.end(); it++) {
@@ -341,8 +341,8 @@ void HASHMAP<V>::displayEntries() const
 /*******************************************************************************
   Double the size of the hash table and rehash all existing entries.
 ********************************************************************************/
-template<class V>
-inline void HASHMAP<V>::resize()
+template<class K, class V>
+inline void HASHMAP<K,V>::resize()
 {
   int oldIndex;
 
@@ -381,8 +381,8 @@ inline void HASHMAP<V>::resize()
 
   Return true if key was in map already, else false.
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::put(const std::string& key, V val, bool replace)
+template<class K, class V>
+inline bool HASHMAP<K,V>::put(const K& key, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -412,8 +412,8 @@ inline bool HASHMAP<V>::put(const std::string& key, V val, bool replace)
 
   Return true if key was in map already, else false.
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::put(const char* key, V val, bool replace)
+template<class K, class V>
+inline bool HASHMAP<K,V>::put(const char* key, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -443,8 +443,8 @@ inline bool HASHMAP<V>::put(const char* key, V val, bool replace)
 
   Return true if key was in map already, else false.
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::put(const char* key, uint32_t len, V val, bool replace)
+template<class K, class V>
+inline bool HASHMAP<K,V>::put(const char* key, uint32_t len, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -474,10 +474,10 @@ inline bool HASHMAP<V>::put(const char* key, uint32_t len, V val, bool replace)
 
   Return true if key was in map already, else false.
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::put2(
+template<class K, class V>
+inline bool HASHMAP<K,V>::put2(
     const char* key1,
-    const std::string& key2,
+    const K& key2,
     V val,
     bool replace)
 {
@@ -505,8 +505,8 @@ inline bool HASHMAP<V>::put2(
 /*******************************************************************************
   Get a copy of the value for a given key, return false if key not found
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::get(const std::string& key, V& result) const
+template<class K, class V>
+inline bool HASHMAP<K,V>::get(const K& key, V& result) const
 {
   uint32_t h0;
   if (find(key, h0))
@@ -521,8 +521,8 @@ inline bool HASHMAP<V>::get(const std::string& key, V& result) const
 /*******************************************************************************
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::get(const char* key, V& result) const
+template<class K, class V>
+inline bool HASHMAP<K,V>::get(const char* key, V& result) const
 {
   uint32_t h0;
   if (find(key,h0)) 
@@ -537,8 +537,8 @@ inline bool HASHMAP<V>::get(const char* key, V& result) const
 /*******************************************************************************
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::get(const char* key, uint32_t len, V& result) const
+template<class K, class V>
+inline bool HASHMAP<K,V>::get(const char* key, uint32_t len, V& result) const
 {
   uint32_t h0;
   if (find(key,len,h0)) 
@@ -553,8 +553,8 @@ inline bool HASHMAP<V>::get(const char* key, uint32_t len, V& result) const
 /*******************************************************************************
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::get2(const char* key1, const std::string& key2, V& result) const
+template<class K, class V>
+inline bool HASHMAP<K,V>::get2(const char* key1, const K& key2, V& result) const
 {
   uint32_t h0;
   if (find2(key1, key2, h0)) 
@@ -573,8 +573,8 @@ inline bool HASHMAP<V>::get2(const char* key1, const std::string& key2, V& resul
   is not already in the map, return false and the (free) hash bucket where the
   key should be inserted. 
 ********************************************************************************/  
-template<class V>
-inline bool HASHMAP<V>::find(const std::string& key, uint32_t& bucket) const
+template<class K, class V>
+inline bool HASHMAP<K,V>::find(const K& key, uint32_t& bucket) const
 {
   uint32_t h0 = h(key);
   bool result = false;
@@ -605,8 +605,8 @@ inline bool HASHMAP<V>::find(const std::string& key, uint32_t& bucket) const
   is not already in the map, return false and the (free) hash bucket where the
   key should be inserted. 
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::find(const char* key, uint32_t& bucket) const
+template<class K, class V>
+inline bool HASHMAP<K,V>::find(const char* key, uint32_t& bucket) const
 {
   uint32_t h0 = h(key);
   bool result = false;
@@ -639,8 +639,8 @@ inline bool HASHMAP<V>::find(const char* key, uint32_t& bucket) const
 
   NOTE: method does case-insesitive string comparison when looking for the key
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::find(const char* key, uint32_t len, uint32_t& bucket) const
+template<class K, class V>
+inline bool HASHMAP<K,V>::find(const char* key, uint32_t len, uint32_t& bucket) const
 {
   uint32_t h0 = h(key, len);
   bool result = false;
@@ -672,10 +672,10 @@ inline bool HASHMAP<V>::find(const char* key, uint32_t len, uint32_t& bucket) co
   is not already in the map, return false and the (free) hash bucket where the
   key should be inserted. 
 ********************************************************************************/
-template<class V>
-inline bool HASHMAP<V>::find2(
+template<class K, class V>
+inline bool HASHMAP<K,V>::find2(
     const char* key1,
-    const std::string& key2,
+    const K& key2,
     uint32_t& bucket) const
 {
   uint32_t h0 = h(key1, key2);
@@ -703,31 +703,31 @@ inline bool HASHMAP<V>::find2(
 /*******************************************************************************
   The hash functions
 ********************************************************************************/
-template<class V>
-inline uint32_t HASHMAP<V>::h(const std::string& key) const
+template<class K, class V>
+inline uint32_t HASHMAP<K,V>::h(const K& key) const
 {
-  return  hashfun::h32(key) % tsz;
+  return  hashfun::h32(key.c_str(), FNV_32_INIT) % tsz;
 }
 
 
-template<class V>
-inline uint32_t HASHMAP<V>::h(const char* key) const
+template<class K, class V>
+inline uint32_t HASHMAP<K,V>::h(const char* key) const
 {
   return  hashfun::h32(key, FNV_32_INIT) % tsz;
 }
 
 
-template<class V>
-inline uint32_t HASHMAP<V>::h(const char* key, uint32_t len) const
+template<class K, class V>
+inline uint32_t HASHMAP<K,V>::h(const char* key, uint32_t len) const
 {
   return  hashfun::h32(key, len, FNV_32_INIT) % tsz;
 }
 
 
-template<class V>
-inline uint32_t HASHMAP<V>::h(const char *key1, const std::string& key2) const
+template<class K, class V>
+inline uint32_t HASHMAP<K,V>::h(const char *key1, const K& key2) const
 {
-  return  hashfun::h32(key2, hashfun::h32(key1)) % tsz;
+  return  hashfun::h32(key2.c_str(), key2.length(), hashfun::h32(key1)) % tsz;
 }
 
 

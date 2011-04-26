@@ -33,6 +33,7 @@
 #include "types/schema/schema.h"
 #include "context/root_static_context.h"
 #include "context/standard_uri_resolvers.h"
+#include "context/default_url_resolvers.h"
 #include "functions/library.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
@@ -129,8 +130,7 @@ void GlobalEnvironment::init(store::Store* store)
     XQueryCompilerSubsystem::create();
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
-  m_globalEnv->m_module_resolver    = new StandardModuleURIResolver();
-  m_globalEnv->m_schema_resolver    = new StandardSchemaURIResolver();
+  m_globalEnv->m_http_resolver      = new impl::ZorbaHTTPURLResolver();
 
 #ifndef ZORBA_NO_FULL_TEXT
   m_globalEnv->m_stop_words_resolver = new StandardFullTextURIResolver();
@@ -143,8 +143,8 @@ void GlobalEnvironment::init(store::Store* store)
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
-  delete m_globalEnv->m_schema_resolver;
-  delete m_globalEnv->m_module_resolver;
+  delete m_globalEnv->m_http_resolver;
+
 #ifndef ZORBA_NO_FULL_TEXT
   delete m_globalEnv->m_stop_words_resolver;
   delete m_globalEnv->m_thesaurus_resolver;

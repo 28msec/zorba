@@ -23,49 +23,30 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
+#include <zorba/iterator.h>
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 
 /** Schema Resolver */
-class ValidationTestSchemaURIResolverResult: public SchemaURIResolverResult
+class ValidationTestSchemaURIMapper: public URIMapper
 {
-  public:
-    virtual String getSchema() const { return theSchema; }
+public:
+  virtual ~ValidationTestSchemaURIMapper(){}
+  
+  virtual URIMapper::Kind mapperKind() throw() { return URIMapper::CANDIDATE; }
 
-  protected:
-    friend class ValidationTestSchemaURIResolver;
-    String theSchema;
-};
-
-class ValidationTestSchemaURIResolver: public SchemaURIResolver
-{
-  public:
-    virtual ~ValidationTestSchemaURIResolver(){}
-
-    virtual std::auto_ptr<SchemaURIResolverResult>
-    resolve(
-      const Item& aURI,
-      StaticContext* aStaticContext,
-      std::vector<Item>& aLocationHints,
-      String* aFileURI
-    )
-    {
-      std::auto_ptr<ValidationTestSchemaURIResolverResult> lResult(
-          new ValidationTestSchemaURIResolverResult());
-
-      if(aURI.getStringValue() == "http://www.zorba-xquery.com/helloworld")
-      {
-        lResult->theSchema = "http://zorba-xquery.com/tutorials/helloworld.xsd";
-        lResult->setError(URIResolverResult::UR_NOERROR);
-      } else {
-        lResult->setError(URIResolverResult::UR_XQST0057);
-        std::stringstream lErrorStream;
-        lErrorStream << "Schema could not be found " << aURI.getStringValue();
-        lResult->setErrorDescription(lErrorStream.str());
-      }
-
-      return std::auto_ptr<SchemaURIResolverResult>(lResult.release());
-    };
+  virtual void mapURI(const zorba::String aUri,
+    Resource::EntityType aEntityType,
+    std::vector<zorba::String>& oUris) throw ()
+  {
+    if (aEntityType != Resource::SCHEMA) {
+      return;
+    }
+    if(aUri == "http://www.zorba-xquery.com/helloworld") {
+      oUris.push_back("http://zorba-xquery.com/tutorials/helloworld.xsd");
+    }
+  }
 };
 
 bool
@@ -74,15 +55,15 @@ item_validation(Zorba* aZorba)
   try {
     StaticContext_t lContext = aZorba->createStaticContext();
 
-    ValidationTestSchemaURIResolver lResolver;
+    ValidationTestSchemaURIMapper lMapper;
 
-    lContext->addSchemaURIResolver(&lResolver);
+    lContext->registerURIMapper(&lMapper);
 
     std::ostringstream lQueryStream;
 
     lQueryStream << "import schema namespace h = 'http://www.zorba-xquery.com/helloworld';"
                  << std::endl
-                 << "<h:p>Hello World!</h:p>";
+                 << "<p>Hello World!</p>";
 
     XQuery_t lQuery = aZorba->compileQuery(lQueryStream.str(), lContext);
   
@@ -111,9 +92,9 @@ item_validation_with_error(Zorba* aZorba)
   try {
     StaticContext_t lContext = aZorba->createStaticContext();
 
-    ValidationTestSchemaURIResolver lResolver;
+    ValidationTestSchemaURIMapper lMapper;
 
-    lContext->addSchemaURIResolver(&lResolver);
+    lContext->registerURIMapper(&lMapper);
 
     std::ostringstream lQueryStream;
 
@@ -148,9 +129,9 @@ item_validation_with_error2(Zorba* aZorba)
   try {
     StaticContext_t lContext = aZorba->createStaticContext();
 
-    ValidationTestSchemaURIResolver lResolver;
+    ValidationTestSchemaURIMapper lMapper;
 
-    lContext->addSchemaURIResolver(&lResolver);
+    lContext->registerURIMapper(&lMapper);
 
     std::ostringstream lQueryStream;
 
@@ -184,18 +165,26 @@ validate(int argc, char* argv[])
 {
   Zorba* lZorba = Zorba::getInstance(zorba::StoreManager::getStore());
 
+  int retval = 0;
+
+  std::cout << "item_validation()" << std::endl;
   if (!item_validation(lZorba)) {
-    return 1;
+    retval = 1;
+    std::cout << "  ...failed!" << std::endl;
   }
 
+  std::cout << "item_validation_with_error()" << std::endl;
   if (!item_validation_with_error(lZorba)) {
-    return 2;
+    retval = 1;
+    std::cout << "  ...failed!" << std::endl;
   }
 
+  std::cout << "item_validatio_nwith_error2()" << std::endl;
   if (!item_validation_with_error2(lZorba)) {
-    return 2;
+    retval = 1;
+    std::cout << "  ...failed!" << std::endl;
   }
 
-  return 0;
+  return retval;
 }
 

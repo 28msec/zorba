@@ -70,30 +70,6 @@ protected:
   CollectionURIResolver* theColResolver;
 };
 
-
-/*******************************************************************************
-
-********************************************************************************/
-class SchemaURIResolverWrapper : public InternalSchemaURIResolver
-{
-public:
-  SchemaURIResolverWrapper(SchemaURIResolver*);
-  
-  virtual ~SchemaURIResolverWrapper() {}
-      
-  virtual std::string resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext,
-        std::vector<store::Item_t>& aAtList,
-        zstring& aFileUri);
-
-protected:
-  friend class StaticContextImpl;
-
-  SchemaURIResolver* theSchemaResolver;
-};
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 
@@ -115,34 +91,6 @@ protected:
   FullTextURIResolver* theFullTextResolver;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class ModuleURIResolverWrapper : public InternalModuleURIResolver
-{
-  friend class StaticContextImpl;
-
-protected:
-  ModuleURIResolver* theModuleResolver;
-
-public:
-  ModuleURIResolverWrapper(ModuleURIResolver*);
-  
-  virtual ~ModuleURIResolverWrapper() {}
-
-  void resolveTargetNamespace(
-        const std::string& nsURI,
-        static_context& sctx,
-        std::vector<std::string>& compURIs);
-
-  std::istream* resolve(
-        const std::string& uri,
-        static_context& sctx,
-        std::string& url);
-};
-
 
 } /* namespace zorba */
 

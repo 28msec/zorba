@@ -29,6 +29,9 @@ SET(CONTEXT_SRCS
     dynamic_loader.cpp
     sctx_map_iterator.cpp
     module_import_checker.cpp
+    uri_resolver.cpp
+    default_url_resolvers.cpp
+    default_uri_mappers.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

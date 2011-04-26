@@ -29,9 +29,13 @@ namespace zorba {
 class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
-class StandardModuleURIResolver;
-class StandardSchemaURIResolver;
 class StandardFullTextURIResolver;
+
+namespace impl {
+class ZorbaHTTPURLResolver;
+class ZorbaFileURLResolver;
+class ZorbaAutoFSURIMapper;
+}
 
 namespace store {
 class Store;
@@ -56,8 +60,10 @@ private:
   XQueryXConvertor            * xqueryx_convertor;
 #endif
 
-  StandardModuleURIResolver   * m_module_resolver;
-  StandardSchemaURIResolver   * m_schema_resolver;
+  impl::ZorbaHTTPURLResolver  * m_http_resolver;
+  impl::ZorbaFileURLResolver  * m_file_resolver;
+  impl::ZorbaAutoFSURIMapper  * m_autofs_mapper;
+
 #ifndef ZORBA_NO_FULL_TEXT
   StandardFullTextURIResolver* m_stop_words_resolver;
   StandardFullTextURIResolver* m_thesaurus_resolver;
@@ -103,9 +109,11 @@ public:
 
   store::IteratorFactory* getIteratorFactory();
 
-  StandardModuleURIResolver* getModuleURIResolver() const { return m_module_resolver; }
+  impl::ZorbaHTTPURLResolver* getHTTPURLResolver() const { return m_http_resolver; }
 
-  StandardSchemaURIResolver* getSchemaURIResolver() const { return m_schema_resolver; }
+  impl::ZorbaFileURLResolver* getFileURLResolver() const { return m_file_resolver; }
+
+  impl::ZorbaAutoFSURIMapper* getAutoFSURIMapper() const { return m_autofs_mapper; }
 
 #ifndef ZORBA_NO_FULL_TEXT
   StandardFullTextURIResolver* getStopWordsURIResolver() const { return m_stop_words_resolver; }

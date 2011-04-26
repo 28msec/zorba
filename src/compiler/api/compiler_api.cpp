@@ -25,7 +25,6 @@
 #include "system/properties.h"
 
 #include "context/static_context.h"
-#include "context/standard_uri_resolvers.h"
 
 #include "functions/function.h"
 #include "functions/udf.h"
@@ -34,6 +33,7 @@
 #include "types/root_typemanager.h"
 #include "types/typemanagerimpl.h"
 
+#include "context/uri_resolver.h"
 #include "compiler/api/compiler_api_impl.h"
 #include "compiler/api/compilercb.h"
 
@@ -77,8 +77,7 @@ static void print_ast_tree(const parsenode *n, const std::string& name)
 ********************************************************************************/
 XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB)
   :
-  theCompilerCB(aCompilerCB),
-  theResolver(0)
+  theCompilerCB(aCompilerCB)
 {
 }
 
@@ -88,7 +87,6 @@ XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB)
 ********************************************************************************/
 XQueryCompiler::~XQueryCompiler()
 {
-  delete theResolver;
 }
 
 
@@ -183,9 +181,9 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   if (typeid (*node) == typeid (ParseErrorNode))
   {
     ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
-		throw XQUERY_EXCEPTION_VAR(
-			pen->err, ERROR_PARAMS( pen->msg ), ERROR_LOC( pen->get_location() )
-		);
+    throw XQUERY_EXCEPTION_VAR(
+      pen->err, ERROR_PARAMS( pen->msg ), ERROR_LOC( pen->get_location() )
+      );
   }
 
   return node;
@@ -247,7 +245,7 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   if ( lExpr == NULL )
   {
     // TODO: can this happen?
-		throw ZORBA_EXCEPTION( ZAPI0002_XQUERY_COMPILATION_FAILED );
+    throw ZORBA_EXCEPTION( ZAPI0002_XQUERY_COMPILATION_FAILED );
   }
 
   return lExpr;
@@ -292,9 +290,46 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 }
 
 
-/*******************************************************************************
+/******************************************************************************
+  This is a small helper class used when the user wants to compile a library
+  module. The ONLY place it is used (and should be used) is in the 
+  XQueryCompiler::createMainModule method below.
+*******************************************************************************/
+class FakeLibraryModuleURLResolver : public impl::URLResolver
+{
+public:
+  FakeLibraryModuleURLResolver
+  (zstring const& aLibraryModuleNamespace, 
+    zstring const& aLibraryModuleFilename, std::istream& aStream)
+    : theLibraryModuleNamespace(aLibraryModuleNamespace),
+      theLibraryModuleFilename(aLibraryModuleFilename),
+      theStream(aStream)
+  {}
+  virtual ~FakeLibraryModuleURLResolver()
+  {}
+
+  virtual impl::Resource* resolveURL
+  (zstring const& aUrl, impl::Resource::EntityType aEntityType)
+  {
+    if (aUrl != theLibraryModuleNamespace) {
+      return NULL;
+    }
+    assert (theStream.good());
+    return new impl::StreamResource
+      (std::auto_ptr<std::istream>(new std::istream(theStream.rdbuf())),
+        theLibraryModuleFilename);
+  }
+
+private:
+  zstring theLibraryModuleNamespace;
+  zstring theLibraryModuleFilename;
+  std::istream& theStream;
+};
+
+
+/******************************************************************************
   Create a dummy main module to wrap a library module.
-********************************************************************************/
+******************************************************************************/
 parsenode_t XQueryCompiler::createMainModule(
     parsenode_t aLibraryModule,
     std::istream& aXQuery,
@@ -303,37 +338,35 @@ parsenode_t XQueryCompiler::createMainModule(
   //get the namespace from the LibraryModule
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
   if (!mod_ast)
-		throw ZORBA_EXCEPTION(
-			ZAPI0002_XQUERY_COMPILATION_FAILED,
-			ERROR_PARAMS( ZED( BadLibraryModule ) )
-		);
+    throw ZORBA_EXCEPTION(
+      ZAPI0002_XQUERY_COMPILATION_FAILED,
+      ERROR_PARAMS( ZED( BadLibraryModule ) )
+      );
 
   const zstring& lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
-	URI lURI(lib_namespace);
-	if(!lURI.is_absolute())
-	{
-		throw XQUERY_EXCEPTION(
-			XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
-			ERROR_LOC( mod_ast->get_decl()->get_location() )
-		);
-	}
+  URI lURI(lib_namespace);
+  if(!lURI.is_absolute())
+  {
+    throw XQUERY_EXCEPTION(
+      XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
+      ERROR_LOC( mod_ast->get_decl()->get_location() )
+      );
+  }
 
-  // create a dummy main module
+  // Set up the original query stream as the result of resolving the
+  // library module's URI
+  aXQuery.clear();
+  aXQuery.seekg(0);
+  FakeLibraryModuleURLResolver* aFakeResolver =
+    new FakeLibraryModuleURLResolver(lib_namespace.str(), aFileName, aXQuery);
+  theCompilerCB->theRootSctx->add_url_resolver(aFakeResolver);
+
+  // create a dummy main module and parse it
   std::stringstream lDocStream;
   zstring tmp;
   zorba::xml::escape(lib_namespace, &tmp);
   lDocStream << "import module namespace m = '" << tmp << "'; 1";
-
-  aXQuery.clear();
-  aXQuery.seekg(0);
-
-  theResolver = new StandardLibraryModuleURIResolver(aXQuery,
-                                                     lib_namespace.str(),
-                                                     aFileName.str());
-
-  theCompilerCB->theRootSctx->add_module_uri_resolver(theResolver);
-
   return parse(lDocStream, aFileName);
 }
 

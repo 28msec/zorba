@@ -56,12 +56,14 @@ END_SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqtref_t>, 3)
+// QQQ should be zstring?
+typedef serializable_hashmap<std::string,xqtref_t> SER_HASHMAP_T;
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, SER_HASHMAP_T, 3)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, SER_HASHMAP_T::entry, 3)
 
 
 //

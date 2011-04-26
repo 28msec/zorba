@@ -273,12 +273,12 @@ main(int argc, char** argv)
       zorba::StaticContext_t lContext = engine->createStaticContext();
       std::string path = lQueryFile.get_path();
 
-      std::auto_ptr<zorba::TestSchemaURIResolver> resolver;
+      std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
       if (path.find("w3c_update_testsuite") != std::string::npos) 
       {
         std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
-        resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
-        lContext->addSchemaURIResolver( resolver.get() );
+        smapper.reset(new zorba::TestSchemaURIMapper( uri_map_file.c_str() ));
+        lContext->registerURIMapper( smapper.get() );
 #if 1
         if (path.find("Val") != std::string::npos)
           lContext->setBoundarySpacePolicy(preserve_space);

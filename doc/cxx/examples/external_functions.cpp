@@ -612,80 +612,33 @@ StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& a
 /***************************************************************************//**
 
 ********************************************************************************/
-class MyModuleURIResolverResult : public ModuleURIResolverResult
-{
-  friend class MyModuleURIResolver2;
-
-protected:
-  std::istream             * theModule;
-  std::vector<std::string>   theComponentURIs;
-
-public:
-  std::istream* getModuleStream() const 
-  {
-    return theModule;
-  }
-
-  void getModuleURL(std::string& url) const
-  {
-  }
-
-  void getComponentURIs(std::vector<std::string>& uris) const 
-  {
-    uris = theComponentURIs;
-  }
-};
-
-
-class MyModuleURIResolver2 : public ModuleURIResolver
+class MyModuleURLResolver : public URLResolver
 {
 public:
-  ~MyModuleURIResolver2() {}
+  ~MyModuleURLResolver() {}
 
-  std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
-        const String& aTargetNamespaceURI,
-        const StaticContext& aStaticContext)
+  virtual Resource* resolveURL(
+        const String& aUrl,
+        Resource::EntityType aEntityType)
   {
-    std::auto_ptr<MyModuleURIResolverResult>
-    lResult(new MyModuleURIResolverResult());
-
-    std::string compURI = aTargetNamespaceURI.c_str();
-    lResult->theComponentURIs.push_back(compURI);
-
-    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
-  }
-
-  std::auto_ptr<ModuleURIResolverResult> resolve(
-        const String& aURI,
-        const StaticContext& aStaticContext)
-  {
-    std::auto_ptr<MyModuleURIResolverResult> lResult(new MyModuleURIResolverResult());
-
-    if (aURI == "http://www.zorba-xquery.com/mymodule") 
+    if (aEntityType == Resource::MODULE &&
+      aUrl == "http://www.zorba-xquery.com/mymodule") 
     {
       // we have only one module
-      lResult->theModule = new std::istringstream(
-      "module namespace lm = 'http://www.zorba-xquery.com/mymodule'; \
-       declare function lm:foo() { 'foo' }; \
-       declare function lm:ext() external;");
-
-      lResult->setError(URIResolverResult::UR_NOERROR);
-    } 
-    else
-    {
-      lResult->setError(URIResolverResult::UR_XQST0046);
-      std::stringstream lErrorStream;
-      lErrorStream << "Module not found " << aURI;
-      lResult->setErrorDescription(lErrorStream.str());
+      return new StreamResource
+        (std::auto_ptr<std::istream>(
+          new std::istringstream
+          ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
+            "declare function lm:foo() { 'foo' }; "
+            "declare function lm:ext() external;")));
     }
-
-    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+    else {
+      return NULL;
+    }
   }
 };
 
-
 class MyModuleExternalFunction;
-
 
 class MyModuleExternal : public ExternalModule
 {
@@ -761,8 +714,8 @@ bool func_example_5(Zorba* aZorba)
 {
 	StaticContext_t sctx = aZorba->createStaticContext();
 
-  MyModuleURIResolver2 moduleResolver;
-  sctx->addModuleURIResolver(&moduleResolver);
+  MyModuleURLResolver moduleResolver;
+  sctx->registerURLResolver(&moduleResolver);
 
   MyModuleExternal lExternalModule(aZorba);
   sctx->registerModule(&lExternalModule);

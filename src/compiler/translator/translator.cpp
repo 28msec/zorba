@@ -253,8 +253,8 @@ class ModulesInfo
 {
 public:
   CompilerCB                   * theCCB;
-  hashmap<static_context_t>      mod_sctx_map;
-  hashmap<std::string>           mod_ns_map;
+  hashmap<zstring, static_context_t>      mod_sctx_map;
+  hashmap<zstring, zstring>           mod_ns_map;
   checked_vector<expr_t>         theInitExprs;
   std::auto_ptr<static_context>  globalSctx;
 
@@ -2089,7 +2089,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   ZORBA_ASSERT(found);
 
   static_context_t lTmpCtx;
-  found = theModulesInfo->mod_sctx_map.get(uri.str(), lTmpCtx);
+  found = theModulesInfo->mod_sctx_map.get(uri, lTmpCtx);
   ZORBA_ASSERT(found);
 
   export_sctx = lTmpCtx.getp();
@@ -2472,51 +2472,63 @@ void* begin_visit(const SchemaImport& v)
   ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
   ZORBA_ASSERT(targetNSItem != NULL);
 
+  // Form up a vector of candidate URIs: any location hints, followed
+  // by the imported URI itself.
+  std::vector<zstring> lCandidates;
   const URILiteralList* atlist = v.get_at_list();
-  std::vector<store::Item_t> atUriItemList;
-
   if (atlist != NULL)
   {
     for (ulong i = 0; i < atlist->size(); ++i)
     {
       // If current uri is relative, turn it to an absolute one, using the
       // base uri from the sctx.
-      zstring at = theSctx->resolve_relative_uri((*atlist)[i]);
-
-      store::Item_t atUriItem;
-      ITEM_FACTORY->createAnyURI(atUriItem, at);
-      ZORBA_ASSERT(atUriItem != NULL);
-      atUriItemList.push_back(atUriItem);
+      lCandidates.push_back(theSctx->resolve_relative_uri((*atlist)[i]));
     }
   }
-
-  InternalSchemaURIResolver* lSchemaResolver = GENV.getSchemaURIResolver();
+  zstring lNsURI = targetNSItem->getStringValue();
+  lCandidates.push_back(lNsURI);
 
   try
   {
-    std::string lSchemaUri;
-    zstring schemaFile;
-    lSchemaUri = lSchemaResolver->resolve(targetNSItem,
-                                          theSctx,
-                                          atUriItemList,
-                                          schemaFile);
+    std::auto_ptr<impl::Resource> lSchema;
+    for (std::vector<zstring>::iterator lIter = lCandidates.begin();
+         lIter != lCandidates.end(); lIter++) {
+      try {
+        lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA);
+        if (lSchema.get() != NULL &&
+          lSchema->getKind() == impl::Resource::STREAM) {
+          break;
+        }
+      }
+      catch (ZorbaException const& e) {
+        if (e.error() != err::XQST0059 || *lIter != lNsURI) {
+          // If this exception is a "resource not found", then we need
+          // to continue on and try the next candidate unless this was
+          // the final one. So just ignore the exception.
+        }
+        else {
+          throw;
+        }
+      }
+    }
 
-    TypeManager* tm = theSctx->get_typemanager();
+    // If we got this far, we have a valid StreamResource.
 
     // Create a Schema obj and register it in the typemanger, if the typemanager
     // does not have a schema obj already
+    TypeManager* tm = theSctx->get_typemanager();
     tm->initializeSchema();
     Schema* schema_p = tm->getSchema();
 
     // Make Xerxes load and parse the xsd file and create a Xerces
     // representaton of it.
-    schema_p->registerXSD(targetNSItem->getStringValue().c_str(),
-                          lSchemaUri,
-                          loc);
+    impl::StreamResource* lStream =
+      static_cast<impl::StreamResource*>(lSchema.get());
+    schema_p->registerXSD(lNsURI.c_str(), lStream, loc);
   }
   catch (XQueryException& e)
   {
-    set_source( e, loc );
+    set_source(e, loc);
     throw;
   }
 
@@ -2600,7 +2612,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       XQST0070, ERROR_PARAMS( pfx, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
     );
 
-  // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
+  // The first URILiteral in a module import must be of nonzero length
+  // [err:XQST0088]
   if (targetNS.empty())
     throw XQUERY_EXCEPTION(XQST0088, ERROR_LOC(loc));
 
@@ -2622,10 +2635,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   const URILiteralList* atlist = v.get_at_list();
 
-  // If the imported module X is a "pure builtin" one (i.e., contains decalrations
-  // of zorba builtin functions only), then we don't need to process it. We just
-  // need to record in the root sctx of the importing module that X has been
-  // imported.
+  // If the imported module X is a "pure builtin" one (i.e., contains
+  // decalrations of zorba builtin functions only), then we don't need
+  // to process it. We just need to record in the root sctx of the
+  // importing module that X has been imported.
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
     theRootSctx->add_imported_builtin_module(targetNS);
@@ -2644,20 +2657,20 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 #endif
   }
 
-  InternalModuleURIResolver* standardModuleResolver = GENV.getModuleURIResolver();
+  // Create a list of absolute uris identifying the components of the
+  // module being imported. If there are no "at" clauses, try to
+  // generate the component URI from the target namespace. This is
+  // done using one or more user-provided module resolvers. If no such
+  // resolvers were provided, or if they don't know about the target
+  // namespace, the target namespace itself will be used as the (sole)
+  // component URI. If there are "at" clauses, then any relative URIs
+  // that are listed there are converted to absolute ones, using the
+  // base uri from the sctx.
 
-  // Create a list of absolute uris identifying the components of the module
-  // being imported. If there are no "at" clauses, try to generate the component
-  // URI from the target namespace. This is done using one or more user-provided
-  // module resolvers. If no such resolvers were provided, or if they don't know
-  // about the target namespace, the target namespace itself will be used as the
-  // (sole) component URI. If there are "at" clauses, then any relative URIs that
-  // are listed there are converted to absolute ones, using the base uri from the
-  // sctx.
-  std::vector<std::string> compURIs;
+  std::vector<zstring> compURIs;
   if (atlist == NULL || atlist->size() == 0)
   {
-    standardModuleResolver->resolveTargetNamespace(targetNS.str(), *theSctx, compURIs);
+    theSctx->get_component_uris(targetNS, impl::Resource::MODULE, compURIs);
   }
   else
   {
@@ -2669,12 +2682,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   // Take each of the URIs collected above and import the module's functions
   // and variables into the current static context.
-  for (std::vector<std::string>::const_iterator ite = compURIs.begin();
+  for (std::vector<zstring>::const_iterator ite = compURIs.begin();
        ite != compURIs.end();
        ++ite)
   {
     // Get the location uri for the module to import.
-    const std::string& compURI = *ite;
+    const zstring compURI = *ite;
 
     // If this import forms a cycle in a chain of module imports, skip it.
     // If the importing module is referencing any variable or function of
@@ -2698,12 +2711,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
     // importedNS is the target namespace of the imported module, as declared
     // inside the module itself.
-    std::string importedNS;
+    zstring importedNS;
     static_context_t importedSctx = NULL;
 
-    // Check whether we have already imported a module component from the current
-    // uri. If so, check that the target ns of what we imported before is the
-    // same as what we are trying to import now.
+    // Check whether we have already imported a module component from
+    // the current uri. If so, check that the target ns of what we
+    // imported before is the same as what we are trying to import
+    // now.
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
@@ -2724,17 +2738,29 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // the input stream.
       // TODO: we have to find a way to tell user defined resolvers when their
       // input stream can be freed. The current solution might leed to problems
-      // on Windows.
-      std::string compURL;
+      // on Windows. QQQ think this is fixed by new scheme
+      zstring compURL;
       std::auto_ptr<std::istream> modfile;
 
       try
       {
-        modfile.reset(standardModuleResolver->resolve(compURI, *theSctx, compURL));
+        std::auto_ptr<impl::Resource> lResource =
+          theSctx->resolve_uri(compURI, impl::Resource::MODULE);
+        if (lResource.get() != NULL && 
+          lResource->getKind() == impl::Resource::STREAM) {
+          impl::StreamResource* lStreamResource = 
+            static_cast<impl::StreamResource*>(lResource.get());
+          modfile = lStreamResource->getStream();
+          compURL = lStreamResource->getStreamUrl();
+        }
+        else {
+          // QQQ what to do with wrong Resource kind?
+          std::cout << "Got no Resources!" << std::endl;
+        }
       }
       catch (XQueryException& e)
       {
-        set_source( e, loc );
+        set_source(e, loc);
         throw;
       }
 
@@ -2774,15 +2800,17 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       short moduleRootSctxId = (short)theCCB->theSctxMap.size() + 1;
       (theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
-      // Create an sctx where the imported module is going to register all the
-      // variable and function declarations that appear in its prolog. After the
-      // translation of the imported module is done, this sctx will be merged
-      // with the sctx of the importing module.
+      // Create an sctx where the imported module is going to register
+      // all the variable and function declarations that appear in its
+      // prolog. After the translation of the imported module is done,
+      // this sctx will be merged with the sctx of the importing
+      // module.
       importedSctx = independentSctx->create_child_context();
       importedSctx->set_module_namespace(targetNS);
 
-      // Register the imported_sctx in theModulesInfo->mod_sctx_map so that it is
-      // accessible by both the importing and the imported modules.
+      // Register the imported_sctx in theModulesInfo->mod_sctx_map so
+      // that it is accessible by both the importing and the imported
+      // modules.
       theModulesInfo->mod_sctx_map.put(compURI, importedSctx);
 
       // Parse the imported module
@@ -2838,13 +2866,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       theModulesInfo->mod_ns_map.put(compURI, importedNS);
 
 #ifdef ZORBA_WITH_DEBUGGER
-      // If we compile in with the debugger turned on, we add the namespace
-      // uri into a map, that allows the debugger to set breakpoints at a
+      // If we compile in debug mode, we add the namespace uri into a
+      // map, that allows the debugger to set breakpoints at a
       // namespace uri and line number
       if (theCCB->theDebuggerCommons)
       {
-        theCCB->theDebuggerCommons->addModuleUriMapping(importedNS,
-                                                        compURL.c_str());
+        theCCB->theDebuggerCommons->addModuleUriMapping
+          (importedNS.str(), compURL.c_str());
       }
 #endif
     }
@@ -2855,7 +2883,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // We might even be able to assert() here (not sure though).
     theSctx->import_module(importedSctx.getp(), loc);
 
-  } // for (vector<std::string>::iterator ite = lURIs.begin();
+  } // for (vector<zstring>::iterator ite = lURIs.begin();
 }
 
 

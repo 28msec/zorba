@@ -40,11 +40,18 @@ namespace zorba {
       getDocumentURIResolver() const;
 
       /**
-       * Get the i-th ModuleURIResolver that has been registered
-       * before serialization.
+       * Get the i-th URIMapper that was registered before
+       * serialization.
        */
-      virtual ModuleURIResolver*
-      getModuleURIResolver(size_t i) const;
+      virtual URIMapper*
+      getURIMapper(size_t i) const;
+
+      /**
+       * Get the i-th URLResolver that was registered before
+       * serialization.
+       */
+      virtual URLResolver*
+      getURLResolver(size_t i) const;
   };
 
 } /* namespace zorba */

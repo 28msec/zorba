@@ -59,28 +59,6 @@ public:
         static_context* aStaticContext);
 };
 
-
-/*******************************************************************************
-
-********************************************************************************/
-class StandardSchemaURIResolver : public InternalSchemaURIResolver
-{
-public:
-  virtual ~StandardSchemaURIResolver() {}
-      
-  virtual std::string resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext,
-        std::vector<store::Item_t>& aAtList,
-        zstring& aFileUri);
-
-protected:
-  static zstring checkSchemaPath(
-        const std::vector<std::string>& aSchemaPath,
-        const store::Item_t& aUri);
-};
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 
@@ -95,75 +73,6 @@ public:
           static_context* aStaticContext);
 };
 #endif /* ZORBA_NO_FULL_TEXT */
-
-/*******************************************************************************
-
-********************************************************************************/
-class StandardModuleURIResolver : public InternalModuleURIResolver
-{
-public:
-  virtual ~StandardModuleURIResolver() {}
-
-  virtual void resolveTargetNamespace(
-        const std::string& nsURI,
-        static_context& sctx,
-        std::vector<std::string>& compURIs);
-
-  virtual std::istream* resolve(
-        const std::string& uri,
-        static_context& sctx,
-        std::string& url);
-
-  virtual ExternalModule* getExternalModule(
-        const zstring& aFileUri,
-        static_context& sctx);
-
-protected:
-  static std::istream* checkModulePath(
-        const std::vector<std::string>& aModulePaths,
-        const std::string& uri,
-        zstring& url);
-
-  static std::string computeLibraryName(const URI& aURI, bool aUseDebugDir = false);
-};
-
-
-/*******************************************************************************
-  This is a small helper class used when the user whants to compile a library
-  module. The ONLY place it is used (and should be used) is in the 
-  XQueryCompiler::createMainModule method.
-********************************************************************************/
-class StandardLibraryModuleURIResolver : public InternalModuleURIResolver
-{
-private:
-  std::istream  & theStream;
-  std::string     theLibraryModuleNamespace;
-  std::string     theFileName;
-  
-public:
-  StandardLibraryModuleURIResolver(
-        std::istream& aXQuery,
-        const std::string& lib_namespace,
-        const std::string& aFileName)
-    :
-    theStream(aXQuery),
-    theLibraryModuleNamespace(lib_namespace),
-    theFileName(aFileName)
-  {
-  }
-  
-  virtual ~StandardLibraryModuleURIResolver() {}
-  
-  void resolveTargetNamespace(
-        const std::string& nsURI,
-        static_context& sctx,
-        std::vector<std::string>& compURIs);
-
-  std::istream* resolve(
-        const std::string& uri,
-        static_context& sctx,
-        std::string& url);
-};
 
 } /* namespace zorba */
 

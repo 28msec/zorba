@@ -84,18 +84,7 @@ TestDocumentURIResolver::resolve(const Item& aURI,
 /******************************************************************************
 
 *******************************************************************************/
-TestSchemaURIResolverResult::~TestSchemaURIResolverResult()
-{
-}
-
-
-String TestSchemaURIResolverResult::getSchema() const
-{
-  return theSchema;
-}
-
-
-TestSchemaURIResolver::TestSchemaURIResolver(const char* file, bool verbose) 
+TestSchemaURIMapper::TestSchemaURIMapper(const char* file, bool verbose) 
   :
   map_file ( file ),
   theVerbose(verbose)  
@@ -103,12 +92,12 @@ TestSchemaURIResolver::TestSchemaURIResolver(const char* file, bool verbose)
 }
 
 
-TestSchemaURIResolver::~TestSchemaURIResolver() 
+TestSchemaURIMapper::~TestSchemaURIMapper() 
 {
 }
 
 
-void TestSchemaURIResolver::initialize()
+void TestSchemaURIMapper::initialize()
 {
   std::string path ( map_file );
   for (int i = 0; i < 2; i++) {
@@ -136,50 +125,35 @@ void TestSchemaURIResolver::initialize()
   urifile.close();
 }
 
-
-std::auto_ptr<SchemaURIResolverResult>
-TestSchemaURIResolver::resolve (
-    const Item & aURI,
-    StaticContext * aStaticContext,
-    std::vector<Item>& aAtList,
-    String* aFileURI)
+void
+TestSchemaURIMapper::mapURI
+(const String aURI, Resource::EntityType aEntityType,
+  std::vector<String>& oUris) throw ()
 {
+  if (aEntityType != Resource::SCHEMA) {
+    return;
+  }
+
   if ( uri_map.empty () ) {
     initialize ();
   }
-  std::auto_ptr<TestSchemaURIResolverResult>result(new TestSchemaURIResolverResult());
-  String request = aURI.getStringValue ();
-  std::map <String, String >::iterator it = uri_map.find ( request );
+  std::map<String, String>::iterator it = uri_map.find (aURI );
   if ( it != uri_map.end () ) {
-    const String  target = uri_map [ request ];
-    result -> theSchema = target;
+    const String target = it->second;
 
     if (theVerbose)
-      std::cout << "Resolved schema " << aURI.getStringValue () << " -> " 
-                << result->theSchema << std::endl;
-  } else {
-    // todo Location hint is not used at all
-    result -> setError ( URIResolverResult::UR_XQST0059 );
-    std::stringstream lErrorStream;
-    lErrorStream << "Schema not found " << aURI.getStringValue();
-    //std::cerr << "Schema not found " << aURI.getStringValue() << std::endl;
-    result->setErrorDescription(lErrorStream.str());
+      std::cout << "Resolved schema " << aURI << " -> " << target << std::endl;
+
+    oUris.push_back(target);
   }
-  
-  return std::auto_ptr<SchemaURIResolverResult> ( result );
 }
 
 
 /******************************************************************************
 
 *******************************************************************************/
-void TestModuleURIResolverResult::getComponentURIs(std::vector<std::string>& uris) const
-{
-  uris = theComponentURIs;
-}
 
-
-TestModuleURIResolver::TestModuleURIResolver(
+TestModuleURIMapper::TestModuleURIMapper(
     const char* file,
     const std::string& test,
     bool verbose) 
@@ -191,7 +165,7 @@ TestModuleURIResolver::TestModuleURIResolver(
 }
 
 
-TestModuleURIResolver::TestModuleURIResolver(
+TestModuleURIMapper::TestModuleURIMapper(
     const char* file,
     bool verbose) 
   :
@@ -202,12 +176,12 @@ TestModuleURIResolver::TestModuleURIResolver(
 }
 
 
-TestModuleURIResolver::~TestModuleURIResolver ()
+TestModuleURIMapper::~TestModuleURIMapper ()
 {
 }
 
 
-void TestModuleURIResolver::initialize()
+void TestModuleURIMapper::initialize()
 {
   std::string::size_type pos;
   std::string pfx;
@@ -273,81 +247,35 @@ void TestModuleURIResolver::initialize()
   urifile.close();
 }
 
-
-std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolveTargetNamespace(
-    const String& nsURI,
-    const StaticContext& sctx)
+void TestModuleURIMapper::mapURI
+(const String aURI, Resource::EntityType aEntityType,
+  std::vector<String>& oUris) throw ()
 {
   if (theUriMap.empty()) 
   {
     initialize();
   }
 
-  std::auto_ptr<TestModuleURIResolverResult> result(new TestModuleURIResolverResult());
-
   std::pair<UriMap::const_iterator, UriMap::const_iterator> range;
+  std::string lURIString = aURI.c_str();
 
-  std::string localNsURI = nsURI.c_str();
-
-  range = theUriMap.equal_range(localNsURI);
+  range = theUriMap.equal_range(lURIString);
 
   if (range.first == range.second)
   {
-    result->setError(URIResolverResult::UR_XQST0059);
-    std::stringstream lErrorStream;
-    lErrorStream << "Module not found " << nsURI;
-    //std::cerr << "Module not found " << nsURI << std::endl;
-    result->setErrorDescription(lErrorStream.str());
+    // Didn't find anything to map this URI to, so do nothing
+    std::cerr << "Asked to import URI " << lURIString <<
+      " which is not mentioned in " << theMapFile << std::endl;
+    return;
   }
 
   UriMap::const_iterator ite;
   for (ite = range.first; ite != range.second; ++ite)
   {
-    result->theComponentURIs.push_back(ite->second);
+    oUris.push_back(ite->second);
     if (theVerbose)
-      std::cout << "Resolved module " << nsURI << " -> " << ite->second << std::endl;
+      std::cout << "Resolved module " << aURI << " -> " << ite->second << std::endl;
   }
-
-  return std::auto_ptr<ModuleURIResolverResult>(result.release());
-}
-
-
-std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
-    const String& uri,
-    const StaticContext& sctx)
-{
-  if (theUriMap.empty()) 
-  {
-    initialize();
-  }
-
-  std::auto_ptr<TestModuleURIResolverResult> result(new TestModuleURIResolverResult());
-
-  std::string filename = uri.c_str();
-#ifdef WIN32
-  filename = filename.substr(8); // strip the "file:///" prefix
-#else
-  filename = filename.substr(7); // strip the "file://" prefix
-#endif
-
-  result->theModule = new std::ifstream(filename.c_str());
-
-  if (result->theModule->good())
-  {
-    result->setError(URIResolverResult::UR_NOERROR);
-  }
-  else
-  {
-    result->setError(URIResolverResult::UR_XQST0059);
-    std::stringstream lErrorStream;
-    lErrorStream << "Module file not found " << filename;
-    //std::cerr << "Module file not found " << filename << std::endl;
-    result->setErrorDescription(lErrorStream.str());
-    delete result->theModule;
-    result->theModule = 0;
-  }
-
-  return std::auto_ptr<ModuleURIResolverResult>(result.release());
 }
 
 

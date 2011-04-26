@@ -48,6 +48,8 @@ SET(API_SRCS
     serializerimpl.cpp
     base64impl.cpp
     uriimpl.cpp
+    uri_resolver.cpp
+    uri_resolver_wrappers.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

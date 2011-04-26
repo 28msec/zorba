@@ -65,24 +65,7 @@ class TestDocumentURIResolver : public DocumentURIResolver
 /******************************************************************************
 
 *******************************************************************************/
-class TestSchemaURIResolverResult : public SchemaURIResolverResult
-{
-protected:
-  friend class TestSchemaURIResolver;
-
-  String theSchema;
-
-public:
-  virtual ~TestSchemaURIResolverResult();
-
-  virtual String getSchema () const;
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-class TestSchemaURIResolver : public SchemaURIResolver 
+class TestSchemaURIMapper : public URIMapper 
 {
 private:
   std::string                map_file;
@@ -90,15 +73,14 @@ private:
   bool                       theVerbose;
 
 public:
-  TestSchemaURIResolver(const char* file, bool verbose = true);
+  TestSchemaURIMapper(const char* file, bool verbose = true);
 
-  virtual ~TestSchemaURIResolver();
+  virtual ~TestSchemaURIMapper();
 
-  virtual std::auto_ptr<SchemaURIResolverResult>
-  resolve(const Item & aURI,
-          StaticContext * aStaticContext,
-          std::vector<Item>& aAtList,
-          String* aFileUri = 0);
+  virtual URIMapper::Kind mapperKind() throw() { return URIMapper::CANDIDATE; }
+
+  virtual void mapURI(const String aURI, Resource::EntityType aEntityType,
+    std::vector<String>& oUris) throw ();
 
 private:
   void initialize ();
@@ -108,7 +90,7 @@ private:
 /******************************************************************************
 
 *******************************************************************************/
-class TestModuleURIResolver : public ModuleURIResolver
+class TestModuleURIMapper : public URIMapper
 {
   typedef std::multimap<std::string, std::string> UriMap;
 
@@ -120,49 +102,26 @@ private:
   UriMap         theUriMap;
 
 public :
-  TestModuleURIResolver(
+  TestModuleURIMapper(
         const char* file,
         const std::string& test,
-        bool verbode = true);
+        bool verbose = true);
 
-  TestModuleURIResolver(
+  TestModuleURIMapper(
         const char* file,
-        bool verbode = true);
+        bool verbose = true);
 
-  virtual ~TestModuleURIResolver();
+  virtual ~TestModuleURIMapper();
 
   void setTest(const std::string& test) { theTest = test; }
 
-  std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
-        const String& aTargetNamespaceURI,
-        const StaticContext& aStaticContext);
+  virtual URIMapper::Kind mapperKind() throw() { return URIMapper::COMPONENT; }
 
-  std::auto_ptr<ModuleURIResolverResult> resolve(
-        const String&,
-        const StaticContext& aStaticContext);
+  virtual void mapURI(const String aURI, Resource::EntityType aEntityType,
+    std::vector<String>& oUris) throw ();
 
 private:
   void initialize();
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-class TestModuleURIResolverResult : public ModuleURIResolverResult
-{
-  friend class TestModuleURIResolver;
-
-protected:
-  std::istream             * theModule;
-  std::vector<std::string>   theComponentURIs;
-
-public:
-  std::istream* getModuleStream() const { return theModule; }
-
-  void getModuleURL(std::string& url) const { }
-
-  void getComponentURIs(std::vector<std::string>& uris) const;
 };
 
 
@@ -209,31 +168,24 @@ public:
 class TestSerializationCallback : public zorba::SerializationCallback
 {
   CollectionURIResolver *my_collection_resolver;
-  ModuleURIResolver *my_module_resolver;
+  URIMapper *my_uri_mapper;
   public:
     TestSerializationCallback(CollectionURIResolver* my_collection_resolver,
-                              ModuleURIResolver* my_module_resolver)
+                              URIMapper* my_uri_mapper)
     {
       this->my_collection_resolver = my_collection_resolver;
-      this->my_module_resolver = my_module_resolver;
+      this->my_uri_mapper = my_uri_mapper;
     }
                               
     virtual ~TestSerializationCallback() {}
 
-    virtual ExternalModule*
-      getExternalModule(const String& aURI) const {return NULL;}
-
-    virtual bool
-      getTraceStream(std::ostream*&) const { return false; }
-
     virtual CollectionURIResolver*
-      getCollectionURIResolver() const {return my_collection_resolver;}
+    getCollectionURIResolver() const {return my_collection_resolver;}
 
-    virtual DocumentURIResolver*
-      getDocumentURIResolver() const {return NULL;}
+  virtual URIMapper*
+    getURIMapper(size_t /* i */) const {return my_uri_mapper;}
 
-    virtual ModuleURIResolver*
-      getModuleURIResolver(size_t /*i*/) const { return my_module_resolver; }
+
 };
 
 #ifndef ZORBA_NO_FULL_TEXT

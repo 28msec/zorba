@@ -149,8 +149,6 @@ class serializer;
 /* URI resolvers */
 class InternalDocumentURIResolver;
 class InternalCollectionURIResolver;
-class InternalSchemaURIResolver;
-class InternalModuleURIResolver;
 
 } // namespace zorba
 

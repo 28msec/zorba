@@ -79,7 +79,7 @@ and contains the following notice:
    the Snowball software.
 
 
-The file src/util/less.h is copyright 2998 Paul J. Lucas and contains the
+The file src/util/less.h is copyright 1998 Paul J. Lucas and contains the
 following notice:
 
    Redistribution and use in source and binary forms, with or without
@@ -106,6 +106,15 @@ following notice:
    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
    POSSIBILITY OF SUCH DAMAGE.
+
+
+The file src/util/auto_vector.h is slightly modified from code
+originally copyright 2003 Reliable Software which contains the
+following notice:
+
+   Any use, commercial or noncommercial of this code
+   is hereby granted, under the condition
+   that this copyright notice be not removed.
 
 
 Furthermore, this software depends / makes use of:

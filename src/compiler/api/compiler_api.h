@@ -23,8 +23,6 @@
 
 namespace zorba {
 
-class StandardLibraryModuleURIResolver;
-
 
 class XQueryCompiler 
 {
@@ -32,11 +30,6 @@ public:
 
   CompilerCB  * theCompilerCB;
 
-private:
-  // only needed for compile-checking library modules
-  StandardLibraryModuleURIResolver  * theResolver;
-
-public:
   XQueryCompiler(CompilerCB* aCompilerCB);
     
   virtual ~XQueryCompiler();

@@ -15,6 +15,7 @@
  */
 #include <assert.h>
 #include <algorithm>
+#include <memory>
 
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
@@ -35,6 +36,7 @@
 #include "context/root_static_context.h"
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
+#include "context/dynamic_loader.h"
 #include "context/decimal_format.h"
 #include "context/sctx_map_iterator.h"
 
@@ -51,7 +53,7 @@
 #include "zorbatypes/URI.h"
 
 #include "api/unmarshaller.h"
-
+#include "api/uri_resolver_wrappers.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "system/globalenv.h"
@@ -181,10 +183,10 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     // serialize out: the uri of the module that is used in this plan
 
     zstring lURI = Unmarshaller::getInternalString(module->getURI());
-	  ar.set_is_temp_field(true);
+    ar.set_is_temp_field(true);
     ar.dont_allow_delay();
     ar & lURI;
-	  ar.set_is_temp_field(false);
+    ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
     ar & sctx;
   }
@@ -194,18 +196,16 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     //               get the externalmodule from the user's
     //               registered serialization callback
     zstring lURI;
-	  ar.set_is_temp_field(true);
+    ar.set_is_temp_field(true);
     ar & lURI;
-	  ar.set_is_temp_field(false);
+    ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
     ar & sctx;
 
     if (dyn_loaded_module)
     {
-      StandardModuleURIResolver* moduleResolver = GENV.getModuleURIResolver();
-
       ZORBA_ASSERT(sctx);
-      module = moduleResolver->getExternalModule(lURI, *sctx);
+      module = DynamicLoader::getExternalModule(lURI, *sctx);
 
       // no way to get the module
       if (!module)
@@ -637,20 +637,22 @@ static_context::~static_context()
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
   bool lUserDocResolver, lUserColResolver;
-  size_t lNumModuleResolvers;
+  size_t lNumURIMappers, lNumURLResolvers;
   if (ar.is_serializing_out())
   {
     // serialize out: remember whether a doc and collection
     //                resolver was registered by the user
     lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL));
     lUserColResolver = ((theColResolver != NULL) && (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) == NULL));
-    lNumModuleResolvers = theModuleResolvers.size();
+    lNumURIMappers = theURIMappers.size();
+    lNumURLResolvers = theURLResolvers.size();
 
-	  ar.set_is_temp_field(true);
+    ar.set_is_temp_field(true);
     ar & lUserDocResolver;
     ar & lUserColResolver;
-    ar & lNumModuleResolvers;
-	  ar.set_is_temp_field(false);
+    ar & lNumURIMappers;
+    ar & lNumURLResolvers;
+    ar.set_is_temp_field(false);
   }
   else
   {
@@ -659,14 +661,16 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     //               if null is returned
     SerializationCallback* lCallback = ar.getUserCallback();
 
-	  ar.set_is_temp_field(true);
+    ar.set_is_temp_field(true);
     ar & lUserDocResolver; // doc resolver passed by the user
     ar & lUserColResolver; // col resolver passed by the user
-    ar & lNumModuleResolvers; // number of module resolvers passed by the user
-	  ar.set_is_temp_field(false);
+    ar & lNumURIMappers;   // number of URIMappers passed by the user
+    ar & lNumURLResolvers; // number of URLResolvers passed by the user
+    ar.set_is_temp_field(false);
 
     // callback required but not available
-    if ((lUserDocResolver || lUserColResolver || lNumModuleResolvers) && !lCallback)
+    if ((lUserDocResolver || lUserColResolver ||
+        lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
       throw ZORBA_EXCEPTION(
         ZCSE0013_UNABLE_TO_LOAD_QUERY,
@@ -696,16 +700,30 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       }
       set_collection_uri_resolver(new CollectionURIResolverWrapper(lColResolver));
     }
-    if (lNumModuleResolvers) {
-      for (size_t i = 0; i < lNumModuleResolvers; ++i) {
-        ModuleURIResolver* lModResolver = lCallback->getModuleURIResolver(i);
-        if (!lModResolver) {
+    if (lNumURIMappers) {
+      for (size_t i = 0; i < lNumURIMappers; ++i) {
+        zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
+        if (!lURIMapper) {
           throw ZORBA_EXCEPTION(
             ZCSE0013_UNABLE_TO_LOAD_QUERY,
             ERROR_PARAMS( ZED( NoModuleURIResolver ) )
           );
         }
-        add_module_uri_resolver(new ModuleURIResolverWrapper(lModResolver));
+        // QQQ memory management?
+        add_uri_mapper(new URIMapperWrapper(*lURIMapper));
+      }
+    }
+    if (lNumURLResolvers) {
+      for (size_t i = 0; i < lNumURLResolvers; ++i) {
+        zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
+        if (!lURLResolver) {
+          ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
+                               "Couldn't load pre-compiled query because"
+                               " URLResolver could not be retrieved"
+                               " using the given SerializationCallback");
+        }
+        // QQQ memory management?
+        add_url_resolver(new URLResolverWrapper(*lURLResolver));
       }
     }
   }
@@ -723,9 +741,9 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
     // serialize out: remember whether the user registered a trace stream
     lUserTraceStream = (theTraceStream != 0);
 
-	  ar.set_is_temp_field(true);
+    ar.set_is_temp_field(true);
     ar & lUserTraceStream;
-	  ar.set_is_temp_field(false);
+    ar.set_is_temp_field(false);
   }
   else
   {
@@ -733,9 +751,9 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
     //               std::cerr is used if non was registered
     SerializationCallback* lCallback = ar.getUserCallback();
 
-	  ar.set_is_temp_field(true);
+    ar.set_is_temp_field(true);
     ar & lUserTraceStream; // trace stream passed by the user
-	  ar.set_is_temp_field(false);
+    ar.set_is_temp_field(false);
 
     // callback required but not available
     if (lUserTraceStream && !lCallback)
@@ -1252,9 +1270,8 @@ void static_context::compute_base_uri()
 }
 
 
-/***************************************************************************//**
+/***************************************************************************/
 
-********************************************************************************/
 zstring
 static_context::resolve_relative_uri(
     const zstring& aUri,
@@ -1265,10 +1282,6 @@ static_context::resolve_relative_uri(
   return lResolvedUri.toString();
 }
 
-
-/***************************************************************************//**
-
-********************************************************************************/
 zstring
 static_context::resolve_relative_uri(
     const zstring& aRelativeUri,
@@ -1281,15 +1294,153 @@ static_context::resolve_relative_uri(
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  URI Resolution                                                             //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  URI Resolution                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
+void static_context::add_uri_mapper(impl::URIMapper* aMapper) throw ()
+{
+  theURIMappers.push_back(std::auto_ptr<impl::URIMapper>(aMapper));
+}
+
+void static_context::add_url_resolver(impl::URLResolver* aResolver) throw ()
+{
+  theURLResolvers.push_back(std::auto_ptr<impl::URLResolver>(aResolver));
+}
+
+std::auto_ptr<impl::Resource>
+static_context::resolve_uri
+(zstring const& aUri, impl::Resource::EntityType aEntityType) const
+{
+  std::vector<zstring> lUris;
+  apply_uri_mappers(aUri, aEntityType, impl::URIMapper::CANDIDATE, lUris);
+
+  std::auto_ptr<impl::Resource> lRetval;
+  zstring lErrorMessage;
+  apply_url_resolvers(lUris, aEntityType, lRetval, lErrorMessage);
+
+  if (lRetval.get() != NULL) {
+    return lRetval;
+  }
+
+  // Never found anything - throw "Resource not found" exception.
+  // QQQ Should throw a different exception if the Resource is of an
+  // inappropriate type for EntityType. And, XQST is probaly the wrong
+  // exception - right for importing schema or modules, wrong for
+  // other things.
+  if (lErrorMessage != "") {
+    throw XQUERY_EXCEPTION(XQST0059, ERROR_PARAMS(aUri, lErrorMessage));
+  }
+  else {
+    throw XQUERY_EXCEPTION(XQST0059, ERROR_PARAMS(aUri));
+  }
+}
+
+void
+static_context::get_component_uris
+(zstring const& aUri, impl::Resource::EntityType aEntityType,
+  std::vector<zstring>& oComponents) const
+{
+  apply_uri_mappers(aUri, aEntityType, impl::URIMapper::COMPONENT, oComponents);
+  if (oComponents.size() == 0) {
+    oComponents.push_back(aUri);
+  }
+}
+
+void
+static_context::apply_uri_mappers
+(zstring const& aUri, impl::Resource::EntityType aEntityType,
+  impl::URIMapper::Kind aMapperKind, std::vector<zstring>& oUris) const throw ()
+{
+  // Initialize list with the one input URI.
+  oUris.push_back(aUri);
+
+  // Iterate upwards through the static_context tree...
+  for (static_context const* sctx = this;
+       sctx != NULL; sctx = sctx->theParent)
+  {
+    // Iterate through all available mappers on this static_context...
+    for (ztd::auto_vector<impl::URIMapper>::const_iterator mapper =
+           sctx->theURIMappers.begin();
+         mapper != sctx->theURIMappers.end(); mapper++)
+    {
+      // Only call mappers of the appropriate kind
+      if ((*mapper)->mapperKind() != aMapperKind) {
+        continue;
+      }
+
+      // Create new list (currently empty) for this mapper
+      std::vector<zstring> lResultUris;
+
+      // Iterate through all URIs on the current list...
+      for (std::vector<zstring>::iterator uri = oUris.begin();
+           uri != oUris.end(); uri++)
+      {
+        // And call the current mapper with the current URI.
+        size_t lNumResultUris = lResultUris.size();
+        (*mapper)->mapURI(*uri, aEntityType, *this, lResultUris);
+        if (lNumResultUris == lResultUris.size()) {
+          // Mapper didn't map this URI to anything new, therefore add
+          // the original URI to the result list
+          lResultUris.push_back(*uri);
+        }
+      }
+
+      // Now repeat process with the next mapper using the new list of
+      // URIs.
+      oUris = lResultUris;
+    }
+  }
+}
+
+void
+static_context::apply_url_resolvers
+(std::vector<zstring>& aUrls, impl::Resource::EntityType aEntityType,
+  std::auto_ptr<impl::Resource>& oResource, zstring& oErrorMessage) const
+{
+  oErrorMessage = "";
+
+  // Iterate through all candidate URLs...
+  for (std::vector<zstring>::iterator url = aUrls.begin();
+       url != aUrls.end(); url++) {
+
+    // Iterate upwards through the static_context tree...
+    for (static_context const* sctx = this;
+         sctx != NULL; sctx = sctx->theParent)
+    {
+      // Iterate through all available resolvers on this static_context...
+      for (ztd::auto_vector<impl::URLResolver>::const_iterator resolver =
+             sctx->theURLResolvers.begin();
+           resolver != sctx->theURLResolvers.end(); resolver++)
+      {
+        try {
+          // Take ownership of returned Resource (if any)
+          oResource.reset((*resolver)->resolveURL(*url, aEntityType));
+          if (oResource.get() != NULL) {
+            // Populate the URL used to load this Resource
+            oResource->setUrl(*url);
+            return;
+          }
+        }
+        catch (const std::exception& e) {
+          if (oErrorMessage == "") {
+            // Really no point in saving anything more than the first message
+            oErrorMessage = e.what();
+          }
+        }
+        catch (...) {
+          // Not much we can do here except try the rest of the
+          // candidate URIs
+        }
+      }
+    }
+  }
+}
 
 /***************************************************************************//**
-
+QQQ delete all these empty comment headers
 ********************************************************************************/
 void static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDocResolver)
 {
@@ -1336,51 +1487,6 @@ InternalCollectionURIResolver* static_context::get_collection_uri_resolver() con
   return (theParent != NULL ?
           dynamic_cast<static_context*>(theParent)->get_collection_uri_resolver() :
           0);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::add_schema_uri_resolver(
-    InternalSchemaURIResolver* aSchemaResolver)
-{
-  theSchemaResolvers.push_back(aSchemaResolver);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::get_schema_uri_resolvers(
-    std::vector<InternalSchemaURIResolver*>& aResolvers) const
-{
-  if (theParent != NULL)
-  {
-    static_cast<static_context*>(theParent)->get_schema_uri_resolvers(aResolvers);
-  }
-
-  aResolvers.insert(aResolvers.end(),
-                    theSchemaResolvers.begin(),
-                    theSchemaResolvers.end());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::remove_schema_uri_resolver(
-    InternalSchemaURIResolver* aResolver)
-{
-  std::vector<InternalSchemaURIResolver*>::iterator ite;
-  for (ite = theSchemaResolvers.begin(); ite != theSchemaResolvers.end(); ++ite)
-  {
-    if (aResolver == *ite)
-    {
-      theSchemaResolvers.erase(ite);
-      return; // no duplicates in the vector
-    }
-  }
 }
 
 
@@ -1464,55 +1570,11 @@ void static_context::remove_thesaurus_uri_resolver(
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::add_module_uri_resolver(
-    InternalModuleURIResolver* aModuleResolver)
-{
-  theModuleResolvers.push_back(aModuleResolver);
-}
-
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::remove_module_uri_resolver(
-    InternalModuleURIResolver* aResolver)
-{
-  std::vector<InternalModuleURIResolver*>::iterator ite;
-  for (ite = theModuleResolvers.begin(); ite != theModuleResolvers.end(); ++ite)
-  {
-    if (aResolver == *ite)
-    {
-      theModuleResolvers.erase(ite);
-      return; // no duplicates in the vector
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::get_module_uri_resolvers(
-    std::vector<InternalModuleURIResolver*>& lResolvers) const
-{
-  if (theParent != NULL)
-  {
-    theParent->get_module_uri_resolvers(lResolvers);
-  }
-
-  lResolvers.insert(lResolvers.end(),
-                    theModuleResolvers.begin(),
-                    theModuleResolvers.end());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::set_module_paths(const std::vector<std::string>& paths)
+void static_context::set_module_paths(const std::vector<zstring>& paths)
 {
   theModulePaths = paths;
 }
@@ -1521,7 +1583,7 @@ void static_context::set_module_paths(const std::vector<std::string>& paths)
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_module_paths(std::vector<std::string>& paths) const
+void static_context::get_module_paths(std::vector<zstring>& paths) const
 {
   paths.insert(paths.end(), theModulePaths.begin(), theModulePaths.end());
 }
@@ -1530,7 +1592,7 @@ void static_context::get_module_paths(std::vector<std::string>& paths) const
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::get_full_module_paths(std::vector<std::string>& paths) const
+void static_context::get_full_module_paths(std::vector<zstring>& paths) const
 {
   if (theParent != NULL)
   {
@@ -2529,7 +2591,7 @@ void static_context::find_functions(
   created and is provided directly by the application. Otherwise, it is an
   external module that is created and loaded dynamically by zorba from a lib
   file that is stored somewhere in the in-scope module paths (see
-  StandardModuleURIResolver::getExternalModule method and how this method is
+  DynamicLoader::getExternalModule method and how this method is
   invoked by the static_context::lookup_external_function method below).
 ********************************************************************************/
 void static_context::bind_external_module(
@@ -2587,8 +2649,7 @@ StatelessExternalFunction* static_context::lookup_external_function(
   // URI resolver
   if (!found)
   {
-    StandardModuleURIResolver* moduleResolver = GENV.getModuleURIResolver();
-    lModule = moduleResolver->getExternalModule(aURI, *this);
+    lModule = DynamicLoader::getExternalModule(aURI, *this);
 
     // no way to get the module
     if (!lModule)

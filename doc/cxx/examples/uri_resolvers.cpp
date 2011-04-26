@@ -27,43 +27,27 @@
 using namespace zorba;
 
 /** Schema Resolver */
-class MySchemaURIResolverResult: public SchemaURIResolverResult
+class MySchemaURIMapper: public URIMapper
 {
   public:
-    virtual String getSchema() const { return theSchema; }
 
-  protected:
-    friend class MySchemaURIResolver;
-    String theSchema;
+  virtual ~MySchemaURIMapper() {}
+
+  virtual URIMapper::Kind mapperKind() throw() { return URIMapper::CANDIDATE; }
+
+  virtual void mapURI(const zorba::String aUri,
+    Resource::EntityType aEntityType,
+    std::vector<zorba::String>& oUris) throw ()
+  {
+    if (aEntityType != Resource::SCHEMA) {
+      return;
+    }
+    if(aUri == "http://www.zorba-xquery.com/helloworld") {
+      oUris.push_back("http://zorba-xquery.com/tutorials/helloworld.xsd");
+    }
+  }
 };
 
-class MySchemaURIResolver: public SchemaURIResolver
-{
-  public:
-    virtual ~MySchemaURIResolver(){}
-
-    virtual std::auto_ptr<SchemaURIResolverResult>
-    resolve(
-      const Item& aURI,
-      StaticContext* aStaticContext,
-      std::vector<Item>& aLocationHints,
-      String* aFileURI
-    )
-    {
-      std::auto_ptr<MySchemaURIResolverResult> lResult(new MySchemaURIResolverResult());
-      if(aURI.getStringValue() == "http://www.zorba-xquery.com/schemas/helloworld")
-      {
-        lResult->theSchema = "http://zorba-xquery.com/tutorials/helloworld.xsd";
-        lResult->setError(URIResolverResult::UR_NOERROR);
-      } else {
-        lResult->setError(URIResolverResult::UR_XQST0057);
-        std::stringstream lErrorStream;
-        lErrorStream << "Schema could not be found " << aURI.getStringValue();
-        lResult->setErrorDescription(lErrorStream.str());
-      }
-      return std::auto_ptr<SchemaURIResolverResult>(lResult.release());
-    };
-};
 
 /** Document Resolver */
 class MyDocumentURIResolverResult : public DocumentURIResolverResult
@@ -215,82 +199,44 @@ resolver_example_2(Zorba* aZorba)
     return false;
   }
 
-	return true;
+  return true;
 }
 
 
-class MyModuleURIResolverResult : public ModuleURIResolverResult
+
+// Call this MyModuleURLResolver2 to avoid conflicts with
+// MyModuleURLResolver in external_functions.cpp
+class MyModuleURLResolver2 : public URLResolver
 {
-  friend class MyModuleURIResolver;
+  public:
+  virtual ~MyModuleURLResolver2() {}
 
-protected:
-  std::istream             * theModule;
-  std::vector<std::string>   theComponentURIs;
-
-public:
-  virtual std::istream* getModuleStream() const 
+  virtual Resource* resolveURL(
+        const String& aUrl,
+        Resource::EntityType aEntityType)
   {
-    return theModule;
-  }
-
-  void getModuleURL(std::string& url) const
-  {
-  }
-
-  void getComponentURIs(std::vector<std::string>& uris) const 
-  {
-    uris = theComponentURIs;
-  }
-};
-
-
-class MyModuleURIResolver : public ModuleURIResolver
-{
-public:
-  virtual ~MyModuleURIResolver() {}
-
-  std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
-        const String& aTargetNamespaceURI,
-        const StaticContext& aStaticContext)
-  {
-    std::auto_ptr<MyModuleURIResolverResult>
-    lResult(new MyModuleURIResolverResult());
-
-    std::string compURI = aTargetNamespaceURI.c_str();
-    lResult->theComponentURIs.push_back(compURI);
-
-    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
-  }
-
-  std::auto_ptr<ModuleURIResolverResult> resolve(
-        const String& aURI,
-        const StaticContext& aStaticContext)
-  {
-    std::auto_ptr<MyModuleURIResolverResult> lResult(new MyModuleURIResolverResult());
-
-    if (aURI == "http://www.zorba-xquery.com/mymodule") 
+    if (aEntityType == Resource::MODULE &&
+      aUrl == "http://www.zorba-xquery.com/mymodule") 
     {
       // we have only one module
-      lResult->theModule = new std::istringstream("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; declare function lm:foo() { 'foo' };");
-      lResult->setError(URIResolverResult::UR_NOERROR);
-    } 
-    else
-    {
-      lResult->setError(URIResolverResult::UR_XQST0046);
-      std::stringstream lErrorStream;
-      lErrorStream << "Module not found " << aURI;
-      lResult->setErrorDescription(lErrorStream.str());
+      return new StreamResource
+        (std::auto_ptr<std::istream>(
+          new std::istringstream
+          ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
+            "declare function lm:foo() { 'foo' };")));
     }
-
-    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+    else {
+      return NULL;
+    }
   }
 };
 
+// QQQ this is NOT really much of a test of the SerializationCallback feature
 class URIResolverSerializationCallback : public SerializationCallback
 {
   public:
-    virtual ModuleURIResolver*
-    getModuleURIResolver(size_t /*i*/) const
+    virtual URLResolver*
+    getURLResolver(size_t /*i*/) const
     {
       return 0;
     }
@@ -302,9 +248,9 @@ resolver_example_3(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
-  MyModuleURIResolver lResolver;
+  MyModuleURLResolver2 lResolver;
 
-  lContext->addModuleURIResolver(&lResolver);
+  lContext->registerURLResolver(&lResolver);
 
   try {
     XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/mymodule'; lm:foo()", lContext); 
@@ -327,6 +273,7 @@ resolver_example_3(Zorba* aZorba)
     URIResolverSerializationCallback lCallback; 
     XQuery_t lQuery2 = aZorba->createQuery();
     lQuery2->loadExecutionPlan(lSerializedQuery, &lCallback);
+    std::cout << lQuery2 << std::endl;
     return false;
   } catch (ZorbaException& e) {
     std::cerr << e.what() << std::endl;
@@ -339,17 +286,21 @@ resolver_example_4(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
-  MySchemaURIResolver lResolver;
+  MySchemaURIMapper lMapper;
 
-  lContext->addSchemaURIResolver(&lResolver);
+  lContext->registerURIMapper(&lMapper);
 
   try {
-    XQuery_t lQuery = aZorba->compileQuery("import schema namespace lm='http://www.zorba-xquery.com/schemas/helloworld'; validate{ <p>Hello World!</p> }", lContext); 
+    XQuery_t lQuery = aZorba->compileQuery
+      ("import schema namespace lm="
+        "'http://www.zorba-xquery.com/helloworld'; "
+        "validate{ <p>Hello World!</p> }", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
     std::cerr << e.what() << std::endl;
     return false;
   }
+
   return true;
 }
 

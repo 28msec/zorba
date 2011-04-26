@@ -319,3 +319,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3281365)
 #ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
+
+EXPECTED_FAILURE(test/rbkt/zorba/eval/eval8 3292817)
+EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_mod1 3292817)

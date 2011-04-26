@@ -23,6 +23,7 @@
 #ifdef CYGWIN
 #undef WIN32
 #endif
+#include <iostream>
 #endif // ZORBA_NO_XMLSCHEMA
 
 #include <zorba/api_shared_types.h>
@@ -48,29 +49,11 @@ namespace XERCES_CPP_NAMESPACE {
 namespace zorba
 {
 
-
-#ifndef ZORBA_NO_XMLSCHEMA
-/******************************************************************************
-
-*******************************************************************************/
-class SchemaLocationEntityResolver : public XERCES_CPP_NAMESPACE::EntityResolver
+// Forward reference
+namespace impl
 {
-protected:
-    std::string theLocation;
-  const XMLCh * theLogicalURI;
-
-public:
-  SchemaLocationEntityResolver(
-        const XMLCh* const logical_uri,
-        std::string& location);
-
-  XERCES_CPP_NAMESPACE::InputSource* resolveEntity(
-        const XMLCh* const publicId,
-        const XMLCh* const systemId);
-};
-#endif // ZORBA_NO_XMLSCHEMA
-
-
+  class StreamResource;
+}
 
 /*******************************************************************************
 
@@ -87,7 +70,8 @@ private:
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool * theGrammarPool;
-  serializable_hashmap<xqtref_t>       * theUdTypesCache;
+  // QQQ use zstring?
+  serializable_hashmap<std::string,xqtref_t>       * theUdTypesCache;
 #endif // ZORBA_NO_XMLSCHEMA
 
 public:
@@ -116,8 +100,8 @@ public:
   }
 
   void registerXSD(
-        const char* xsdFileName,
-        std::string& location,
+        const char* xsdURL,
+        impl::StreamResource* aStreamResource,
         const QueryLoc& loc);
 
   void getSubstitutionHeadForElement(
