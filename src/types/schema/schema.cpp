@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <string>
 
 #include "compiler/parser/query_loc.h"
@@ -37,10 +38,17 @@
 #include "context/uri_resolver.h"
 
 #ifndef ZORBA_NO_XMLSCHEMA
-#include <zorbatypes/xerces_xmlcharray.h>
-#include <xercesc/util/XercesDefs.hpp>
-#include <xercesc/util/BinInputStream.hpp>
-#endif //ZORBA_NO_XMLSCHEMA
+# include <xercesc/util/XercesVersion.hpp>
+# if XERCES_VERSION_MAJOR < 3
+    typedef unsigned int XMLFilePos;
+    typedef unsigned int Zorba_readBytes_type;
+#else 
+    typedef XMLSize_t Zorba_readBytes_type;
+# endif
+# include <xercesc/util/XercesDefs.hpp>
+# include <xercesc/util/BinInputStream.hpp>
+# include <zorbatypes/xerces_xmlcharray.h>
+#endif /* ZORBA_NO_XMLSCHEMA */
 
 
 //using namespace std;
@@ -91,13 +99,13 @@ public:
   }
 
   // QQQ This should return XMLFilePos, but in Xerces 2.8.0 it was unsigned int
-  virtual unsigned int curPos() const
+  virtual XMLFilePos curPos() const
   {
     return theStream->tellg();
   }
 
-  virtual unsigned int readBytes
-  (XMLByte * const toFill, const unsigned int maxToRead)
+  virtual Zorba_readBytes_type readBytes
+  (XMLByte * const toFill, const Zorba_readBytes_type maxToRead)
   {
     // QQQ Is this reinterpret_cast necessary? Is it safe? Can I just
     // pump the chars from read() to the XMLBytes Xerces wants?

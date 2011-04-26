@@ -44,6 +44,8 @@
 #include "testdriver_comparator.h"
 #include "testdriver_common.h"
 
+#define BOOST_FILESYSTEM_VERSION 2
+
 // These are included last because they define the <stdint.h>'s INTMAX_C and UINTMAX_C
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
