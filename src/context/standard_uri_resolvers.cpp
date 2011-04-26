@@ -118,7 +118,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);
 #else
-    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI.toString() ) );
+    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI ) );
 #endif
   }
   else if (ZSTREQ(lURI.get_scheme(), "http") ||
@@ -132,7 +132,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     }
     catch ( uri::fetch_exception const &e ) {
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( lURI.toString(), e.what() )
+        FODC0002, ERROR_PARAMS( lURI, e.what() )
       );
     }
 
@@ -154,7 +154,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
 
   if (lResultDoc == NULL)
   {
-    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI.toString() ) );
+    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI ) );
   }
 
   return lResultDoc;
@@ -276,7 +276,10 @@ StandardSchemaURIResolver::resolve(
     }
     else
     {
-      ZORBA_ERROR_PARAM(XQST0059, lResolvedURI, aURI->getStringValue().c_str());
+      throw XQUERY_EXCEPTION(
+        XQST0059,
+        ERROR_PARAMS( aURI->getStringValue(), lResolvedURI )
+      );
     }
 #endif
   }
@@ -366,7 +369,10 @@ StandardFullTextURIResolver::resolve(
     if (lFile->exists()) {
       return lResolvedURI.str();
     } else {
-      ZORBA_ERROR_PARAM(XQST0059, lResolvedURI, aURI->getStringValue().c_str());
+      throw XQUERY_EXCEPTION(
+        XQST0059,
+        ERROR_PARAMS( aURI->getStringValue(), lResolvedURI )
+      );
     }
 #endif /* ZORBA_WITH_FILE_ACCESS */
   }
@@ -594,7 +600,7 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
           {
             throw ZORBA_EXCEPTION(
               ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED,
-              ERROR_PARAMS( lURI.toString(), potentialModuleFile )
+              ERROR_PARAMS( lURI, potentialModuleFile )
             );
           }
         }

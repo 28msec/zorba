@@ -361,10 +361,10 @@ T1_TO_T2(str, aURI)
     zstring resolvedUri = uriVal.toString();
     return aFactory->createAnyURI(result, resolvedUri);
   }
-  catch (ZorbaException const & e)
+  catch (ZorbaException& e)
   {
-    ZORBA_ERROR_DESC_OSS(FORG0001, e.what());
-    return false;
+    e.set_error( err::FORG0001 );
+    throw;
   }
 }
 

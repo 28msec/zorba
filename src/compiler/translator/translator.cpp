@@ -2310,11 +2310,11 @@ void* begin_visit(const BaseURIDecl& v)
   {
     theSctx->set_base_uri(uri);
   }
-  catch (ZorbaException const& e)
+  catch (ZorbaException& e)
   {
-    throw XQUERY_EXCEPTION(
-      XQST0046, ERROR_PARAMS( uri, e.what() ), ERROR_LOC(loc)
-    );
+    e.set_error( err::XQST0046 );
+    set_source( e, loc );
+    throw;
   }
   return NULL;
 }
@@ -2707,7 +2707,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
+        throw XQUERY_EXCEPTION(
+          XQST0059,
+          ERROR_PARAMS( targetNS, compURI ),
+          ERROR_LOC( loc )
+        );
 
       bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
       ZORBA_ASSERT(found);
@@ -2736,7 +2740,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       if (modfile.get() == NULL || ! *modfile)
       {
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
+        throw XQUERY_EXCEPTION(
+          XQST0059,
+          ERROR_PARAMS( targetNS, compURI ),
+          ERROR_LOC( loc )
+        );
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -2797,7 +2805,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
+        throw XQUERY_EXCEPTION(
+          XQST0059,
+          ERROR_PARAMS( targetNS, compURI ),
+          ERROR_LOC( loc )
+        );
 
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
@@ -2805,7 +2817,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION(XQST0088, ERROR_LOC(loc));
 
       if (importedNS != targetNS)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
+        throw XQUERY_EXCEPTION(
+          XQST0059,
+          ERROR_PARAMS( targetNS, compURI ),
+          ERROR_LOC( loc )
+        );
 
       // translate the imported module
       translate_aux(theRootTranslator,

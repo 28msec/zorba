@@ -122,12 +122,20 @@ bool FnBooleanIterator::effectiveBooleanValue(
     else
     {
       if (is_sequence)
-        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Wrong arguments in fn:boolean function. "
-          + zstring("Effective boolean value is not defined for a sequence of two or more items that starts with a ")
-          + type->toString()
-          + ".");
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+          ERROR_PARAMS(
+            ZED( BadArgTypeForFn_2o34 ), "", "fn:boolean",
+            ZED( EBVNotDefSeq_5 ), *type
+          ),
+          ERROR_LOC( loc )
+        );
       else
-        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Wrong arguments in fn:boolean function.");
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+          ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), "", "fn:boolean" ),
+          ERROR_LOC( loc )
+        );
     }
   }
 

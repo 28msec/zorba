@@ -675,8 +675,10 @@ void URI::initialize(const zstring& uri, bool have_base)
   {
     if (valid)
     {
-       ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid URI syntax for the \""
-                            << theScheme << "\" scheme.");
+      throw XQUERY_EXCEPTION(
+        XQST0046,
+        ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
+      );
      }
   }
 
@@ -921,8 +923,9 @@ void URI::initializePath(const zstring& uri)
         {
           if ( lIndex + 2 >= lEnd )
           {
-            ZORBA_ERROR_DESC_OSS(XQST0046,
-                                 "Invalid hex sequence in URI \"" << uri << "\" .");
+            throw XQUERY_EXCEPTION(
+              XQST0046, ERROR_PARAMS( uri, ZED( BadHexSequence ) )
+            );
           }
           unicode::code_point lHex1 = lCodepoints[++lIndex];
           if(!ascii::is_xdigit(lHex1))
@@ -1043,14 +1046,14 @@ void URI::set_scheme(const zstring& new_scheme)
 {
   if ( new_scheme.empty() ) 
   {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "URI scheme is empty");  
+    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( "", ZED( NoURIScheme ) ) );
   }
 
   if ( ! is_conformant_scheme_name(new_scheme) ) 
   {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "URI contains a scheme \"" 
-                         << new_scheme
-                         << "\" that is not a conformant URI scheme");
+    throw XQUERY_EXCEPTION(
+      XQST0046, ERROR_PARAMS( "", ZED( BadURIScheme_3 ), new_scheme )
+    );
   }
 
   theScheme = new_scheme;
@@ -1196,7 +1199,7 @@ void URI::resolve(const URI* base_uri)
 
   if ( base_uri == 0 && toString().empty() ) 
   {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
+    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( "", ZED( ZeroLenURI ) ) );
   }
 
   if ( toString().empty() ) 

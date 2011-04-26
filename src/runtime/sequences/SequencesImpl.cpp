@@ -179,7 +179,11 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           }
           else
           {
-            ZORBA_ERROR_LOC_DESC( FORG0006, loc,  "Promotion not possible");
+						throw XQUERY_EXCEPTION(
+							FORG0006,
+							ERROR_PARAMS( ZED( PromotionImpossible ) ),
+							ERROR_LOC( loc )
+						);
           }
         }
         else

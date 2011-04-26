@@ -1225,42 +1225,68 @@ store::Item_t DateTimeItem::getEBV() const
   {
     case DateTime::DATE_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:Date" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Date"
+        )
       );
 
     case DateTime::TIME_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:Time" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Time"
+        )
       );
 
     case DateTime::GYEARMONTH_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GYearMonth" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
+          "xs:GYearMonth"
+        )
       );
 
     case DateTime::GYEAR_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GYear" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GYear"
+        )
       );
 
     case DateTime::GMONTH_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GMonth" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GMonth"
+        )
       );
 
     case DateTime::GMONTHDAY_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GMonthDay" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
+          "xs:GMonthDay"
+        )
       );
 
     case DateTime::GDAY_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GDay" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GDay"
+        )
       );
 
     default:
       throw XQUERY_EXCEPTION(
-        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "DateTime" )
+        FORG0006,
+        ERROR_PARAMS(
+          ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "dateTime"
+        )
       );
   }
   return NULL;
@@ -1338,7 +1364,10 @@ store::Item* DurationItem::getType() const
 store::Item_t DurationItem::getEBV() const
 {
   throw XQUERY_EXCEPTION(
-    FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "Duration" )
+    FORG0006,
+    ERROR_PARAMS(
+      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "duration"
+    )
   );
 }
 

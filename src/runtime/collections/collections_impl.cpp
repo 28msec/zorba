@@ -1670,8 +1670,11 @@ ZorbaDeleteNodesLastIterator::getCollection(
   coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
-                          aName->getStringValue(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+      ERROR_PARAMS( aName->getStringValue() ),
+      ERROR_LOC( aLoc )
+    );
   }
   return collectionDecl;
 }
@@ -1735,8 +1738,11 @@ IsAvailableCollectionIterator::getCollection(
   coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
-                          aName->getStringValue(), "");
+    throw XQUERY_EXCEPTION(
+      ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+      ERROR_PARAMS( aName->getStringValue() ),
+      ERROR_LOC( aLoc )
+    );
   }
   return collectionDecl;
 }

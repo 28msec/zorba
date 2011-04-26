@@ -171,8 +171,11 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(state->theSearchItem, theChildren[1].getp(), planState))
   {
-    ZORBA_ERROR_LOC_DESC( FORG0006, loc,
-         "An empty sequence is not allowed as the search item of fn:index-of");
+		throw XQUERY_EXCEPTION(
+			FORG0006,
+			ERROR_PARAMS( ZED( EmptySeqNoSearchItem ) ),
+			ERROR_LOC( loc )
+		);
   }
 
   if ( theChildren.size() == 3 )
@@ -381,8 +384,11 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(lPositionItem, theChildren[1].getp(), planState))
   {
-    ZORBA_ERROR_LOC_DESC( FORG0006,
-         loc, "An empty sequence is not allowed as second argument to of fn:remove.");
+		throw XQUERY_EXCEPTION(
+			FORG0006,
+			ERROR_PARAMS( ZED( EmptySeqNoFnRemoveArg ) ),
+			ERROR_LOC( loc )
+		);
   }
   state->thePosition = lPositionItem->getIntegerValue();
 
@@ -1235,48 +1241,96 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       lHitNumeric = true;
       if ( lHitYearMonth )
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
-                                 "Invalid argument type " << lRunningType->toString()
-                                 << " for function fn:avg. Expected type "
-                                 << lYearMonthDuration->toString() << ".");
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+					ERROR_PARAMS(
+						ZED( BadArgTypeForFn_2o34o ),
+						*lRunningType,
+						"fn:avg",
+						ZED( ExpectedType_5 ),
+						*lYearMonthDuration
+					),
+          ERROR_LOC( loc )
+        );
       if ( lHitDayTime )
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
-                                 "Invalid argument type " << lRunningType->toString()
-                                 << " for function fn:avg. Expected type "
-                                 << lDayTimeDuration->toString() << ".");
-
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+          ERROR_PARAMS(
+						ZED( BadArgTypeForFn_2o34o ),
+						*lRunningType,
+						"fn:avg",
+						ZED( ExpectedType_5 ),
+						*lDayTimeDuration
+					),
+          ERROR_LOC( loc )
+        );
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lYearMonthDuration))
     {
       lHitYearMonth = true;
       if (lHitNumeric)
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
-                                 "Invalid argument type " << lRunningType->toString()
-                                 << " for function fn:avg. Expected a numeric type.");
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+          ERROR_PARAMS(
+						ZED( BadArgTypeForFn_2o34o ),
+						*lRunningType,
+						"fn:avg",
+						ZED( ExpectedNumericType )
+					),
+          ERROR_LOC( loc )
+        );
       if (lHitDayTime)
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
-                                 "Invalid argument type " << lRunningType->toString()
-                                 << " for function fn:avg. Expected type "
-                                 << lDayTimeDuration->toString() << ".");
-
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+          ERROR_PARAMS(
+						ZED( BadArgTypeForFn_2o34o ),
+						*lRunningType,
+						"fn:avg",
+						ZED( ExpectedType_5 ),
+						*lDayTimeDuration
+					),
+          ERROR_LOC( loc )
+        );
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lDayTimeDuration))
     {
       lHitDayTime = true;
       if ( lHitNumeric )
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
-                                 "Invalid argument type " << lRunningType->toString()
-                                 << " for function fn:avg. Expected a numeric type.");
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+          ERROR_PARAMS(
+						ZED( BadArgTypeForFn_2o34o ),
+						*lRunningType,
+						"fn:avg",
+						ZED( ExpectedNumericType )
+					),
+          ERROR_LOC( loc )
+        );
       if ( lHitYearMonth )
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
-                                 "Invalid argument type " << lRunningType->toString()
-                                 << " for function fn:avg. Expected type "
-                                 << lYearMonthDuration->toString() << ".");
+        throw XQUERY_EXCEPTION(
+          FORG0006,
+          ERROR_PARAMS(
+						ZED( BadArgTypeForFn_2o34o ),
+						*lRunningType,
+						"fn:avg",
+						ZED( ExpectedType_5 ),
+						*lYearMonthDuration
+					),
+          ERROR_LOC( loc )
+        );
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC(FORG0006, loc,
-                           "The fn:avg function only accepts numeric or duration types.");
+			throw XQUERY_EXCEPTION(
+				FORG0006,
+				ERROR_PARAMS(
+					ZED( BadArgTypeForFn_2o34o ),
+					*lRunningType,
+					"fn:avg",
+					ZED( ExpectedNumericOrDurationType )
+				),
+				ERROR_LOC( loc )
+			);
     }
 
     if ( lCount++ == 0 )
@@ -1342,7 +1396,11 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!TypeOps::is_numeric(tm, *lResultType) &&
         (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
          TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
-      throw XQUERY_EXCEPTION(FORG0006, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+				FORG0006,
+				ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), *lResultType, "fn:sum" ),
+				ERROR_LOC(loc)
+			);
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {
@@ -1378,10 +1436,13 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       else
       {
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
-                                 "Sum is not possible with parameters of type "
-                                 << TypeOps::toString(*lResultType) << " and "
-                                 << TypeOps::toString(*lRunningType) );
+				throw XQUERY_EXCEPTION(
+					FORG0006,
+					ERROR_PARAMS(
+						ZED( SumImpossibleWithTypes_23 ), *lResultType, *lRunningType
+					),
+					ERROR_LOC( loc )
+				);
       }
     }
 
@@ -1735,12 +1796,14 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         }
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
-      catch (ZorbaException const& e)
+      catch (ZorbaException& e)
       {
         if(e.error() == err::XQST0046) //the value of a URILiteral is of nonzero length and is not in the lexical space of xs:anyURI.
-          ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.what());
+					e.set_error( err::FODC0005 );
         else
-          ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.what());
+					e.set_error( err::FODC0002 );
+				set_source( e, loc );
+				throw;
       }
 
       try
@@ -1754,9 +1817,11 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                                                false);
         fillTime(t0, t0user, planState);
       }
-      catch (ZorbaException const& e)
+      catch (ZorbaException& e)
       {
-        ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.what());
+				e.set_error( err::FODC0002 );
+				set_source( e, loc );
+				throw;
       }
 
       STACK_PUSH(true, state);

@@ -86,8 +86,13 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(TraceIteratorState, state, planState);
 
   if (!consumeNext(state->theTagItem, theChildren[1], planState)) {
-    ZORBA_ERROR_LOC_DESC( FORG0006, loc,
-        "An empty sequence is not allowed as as second argument to fn:trace");
+    throw XQUERY_EXCEPTION(
+      FORG0006,
+      ERROR_PARAMS(
+        ZED( BadArgTypeForFn_2o34o ), ZED( EmptySequence ), "fn:trace"
+      ),
+      ERROR_LOC( loc )
+    );
   }
 
   state->theOS = theSctx->get_trace_stream();
