@@ -42,7 +42,7 @@
 # if XERCES_VERSION_MAJOR < 3
     typedef unsigned int XMLFilePos;
     typedef unsigned int Zorba_readBytes_type;
-#else 
+# else 
     typedef XMLSize_t Zorba_readBytes_type;
 # endif
 # include <xercesc/util/XercesDefs.hpp>
