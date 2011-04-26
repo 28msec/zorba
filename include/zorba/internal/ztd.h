@@ -210,7 +210,7 @@ ZORBA_DECL_HAS_MEM_FN( toString );
  *  - has an <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
  * @tparam OutputStringType The output string type.
  * @param t The object.
- * @Param out The output string.
+ * @param out The output string.
  */
 template<typename T,class OutputStringType> inline
 typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
@@ -232,7 +232,7 @@ to_string( T const &t, OutputStringType *out ) {
  *  - has <code>char const* (T::*)() const</code> defined
  * @tparam OutputStringType The output string type.
  * @param t The object.
- * @Param out The output string.
+ * @param out The output string.
  */
 template<class T,class OutputStringType> inline
 typename enable_if<!has_insertion_operator<T>::value
@@ -250,7 +250,7 @@ to_string( T const &t, OutputStringType *out ) {
  * @tparam T The class type.
  * @tparam OutputStringType The output string type.
  * @param t The object.
- * @Param out The output string.
+ * @param out The output string.
  */
 template<class T,class OutputStringType> inline
 typename enable_if<!has_insertion_operator<T>::value
@@ -269,7 +269,7 @@ to_string( T const &t, OutputStringType *out ) {
  * @tparam T The class type.
  * @tparam OutputStringType The output string type.
  * @param t The object.
- * @Param out The output string.
+ * @param out The output string.
  */
 template<class T,class OutputStringType> inline
 typename enable_if<!has_insertion_operator<T>::value
@@ -286,7 +286,7 @@ to_string( T const &t, OutputStringType *out ) {
  * @tparam T The pointer type.
  * @tparam OutputStringType The output string type.
  * @param t The pointer.
- * @Param out The output string.
+ * @param out The output string.
  */
 template<typename T,class OutputStringType> inline
 typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
@@ -303,7 +303,7 @@ to_string( T p, OutputStringType *out ) {
  *
  * @tparam OutputStringType The output string type.
  * @param s The C string.
- * @Param out The output string.
+ * @param out The output string.
  */
 template<class OutputStringType> inline
 void to_string( char const *s, OutputStringType *out ) {
