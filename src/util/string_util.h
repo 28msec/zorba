@@ -50,7 +50,7 @@ public:
    *
    * @tparam T The object type.
    * @param t The object.
-   * @return returns \c *this.
+   * @return Returns \c *this.
    */
   template<typename T>
   string_builder& operator=( T const &t ) {
@@ -65,7 +65,7 @@ public:
    *
    * @tparam T The object type.
    * @param t The object.
-   * @return returns \c *this.
+   * @return Returns \c *this.
    */
   template<typename T>
   string_builder& operator<<( T const &t ) {
@@ -79,7 +79,7 @@ public:
    *
    * @tparam T The object type.
    * @param t The object.
-   * @return returns \c *this.
+   * @return Returns \c *this.
    */
   template<typename T>
   string_builder& operator,( T const &t ) {
