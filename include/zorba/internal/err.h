@@ -25,15 +25,17 @@
 #include "ztd.h"
 
 namespace zorba {
-namespace internal{
-  namespace err{
-  class location;
+
+namespace internal {
+  namespace err {
+    class location;
+  }
 }
-}
-namespace serialization{
+namespace serialization {
   class Archiver;
-  void operator&(zorba::serialization::Archiver &ar, zorba::internal::err::location &obj);
+  void operator&( serialization::Archiver&, internal::err::location& );
 }
+
 namespace internal {
 namespace err {
 
@@ -157,9 +159,8 @@ private:
   line_type line_;
   column_type column_;
 
-private:
-  //for plan serialization
-  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, location &obj);
+  // for plan serialization
+  friend void serialization::operator&( serialization::Archiver&, location& );
 };
 
 /**

@@ -134,7 +134,7 @@ inline std::ostream& operator<<( std::ostream &o, string_builder const &sb ) {
  * \endcode
  * \hideinitializer
  */
-#define BUILD_STRING(...) (zorba::ztd::string_builder() << __VA_ARGS__)
+#define BUILD_STRING(...) (::zorba::ztd::string_builder() << __VA_ARGS__)
 
 ////////// String equality /////////////////////////////////////////////////////
 
@@ -183,7 +183,7 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
  * A macro for calling equals() with a second argument of a string literal.
  */
 #define ZSTREQ(STRING,LITERAL) \
-        zorba::ztd::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
+        ::zorba::ztd::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
 ////////// String splitting ////////////////////////////////////////////////////
 
