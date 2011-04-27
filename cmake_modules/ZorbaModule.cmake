@@ -130,16 +130,16 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
     SET(TESTNAME "${CMAKE_PROJECT_NAME}/${TESTFILE}")
     # QQQ hard-coded src/ directory
     IF(WIN32)
-    ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
-      --rbkt-src "${CMAKE_SOURCE_DIR}/test"
-      --module-path "${CMAKE_SOURCE_DIR}/src/;${CMAKE_BINARY_DIR}/src/"
-      "${TESTFILE}")
+      SET(PATH_SEP ";")
     ELSE(WIN32)
+      SET(PATH_SEP ":")
+    ENDIF(WIN32)
+    
     ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
       --rbkt-src "${CMAKE_SOURCE_DIR}/test"
-      --module-path "${CMAKE_SOURCE_DIR}/src:${CMAKE_BINARY_DIR}/src"
+      --module-path "${CMAKE_SOURCE_DIR}/src/${PATH_SEP}${CMAKE_BINARY_DIR}/src/${SECONDARY_MODULE_PATHS}"
       "${TESTFILE}")
-    ENDIF(WIN32)
+      
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
     MATH(EXPR TESTMOD "${TESTCOUNTER}%100")
     IF (${TESTMOD} EQUAL 0)
@@ -148,3 +148,9 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
   ENDFOREACH(TESTFILE)
   MESSAGE(STATUS "Added ${TESTCOUNTER} tests in ${TEST_DIR}")
 ENDMACRO(ADD_TEST_DIRECTORY)
+
+# Convenience Macro for Setting up configure files for it to be exported as a secondary Module Dependency
+MACRO(SET_EXTERNAL_MODULE_CONFIG)
+CONFIGURE_FILE("${MODULE_CONFIG_PATH}"
+  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake" @ONLY)
+ENDMACRO(SET_EXTERNAL_MODULE_CONFIG)
