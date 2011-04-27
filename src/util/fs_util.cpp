@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <zorba/util/path.h>
+
 #ifndef WIN32
 # include <fcntl.h>                     /* for creat(2) */
 # include <cstdio>
@@ -95,7 +97,7 @@ static bool to_wchar( char const *path, LPWSTR wpath ) {
 void make_absolute_impl( char const *path, char *abs_path ) {
 #ifndef WINCE
   WCHAR wpath[ MAX_PATH ];
-  to_wchar( path.c_str(), wpath );
+  to_wchar( path, wpath );
   WCHAR wfull_path[ MAX_PATH ];
   DWORD const result = ::GetFullPathName(
     wpath, sizeof( wpath ) / sizeof( wpath[0] ), wfull_path, NULL
@@ -161,9 +163,9 @@ zstring curdir() {
   win32::to_char( wpath, path );
   if ( !is_absolute( path ) ) {
     // GetCurrentDirectory() sometimes misses drive letter.
-    zstring temp( path );
-    resolve_relative( temp );
-    return temp;
+    filesystem_path   fspath( path );
+    fspath.resolve_relative();
+    return fspath.get_path();
   }
 #endif /* WIN32 */
   return path;

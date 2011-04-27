@@ -636,7 +636,7 @@ void make_absolute( PathStringType &path ) {
 #else
     char temp[ MAX_PATH ];
     win32::make_absolute_impl( path.c_str(), temp );
-    path = result;
+    path = temp;
 #endif /* WIN32 */
   }
 }
