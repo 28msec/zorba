@@ -214,13 +214,13 @@ void fetch( char const *uri, std::iostream &result );
  * Fetches a resource from the given URI.  Supported URI schemes are: "file",
  * "ftp", "http", and "https".
  *
- * @tparam StringType The URI string type.
+ * @tparam URIStringType The URI string type.
  * @param uri The URI specifying the resource.
  * @param result The stream to which to write the resource to.
  * @throws fetch_exception if there was a problem fetching the resource.
  */
-template<class StringType> inline
-void fetch( StringType const &uri, std::iostream &result ) {
+template<class URIStringType> inline
+void fetch( URIStringType const &uri, std::iostream &result ) {
   fetch( uri.c_str(), result );
 }
 
@@ -230,14 +230,14 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
 /**
  * Fetches a resource from the given URI to a local file.
  *
- * @tparam StringType The path's string type.
+ * @tparam PathStringType The path's string type.
  * @param uri The URI specifying the resouce.
  * @param path On return, contains the path of the fetched resource.
  * @param is_temp If not \c NULL, on return this is set to \c true if the local
  * file is a nrely created temporary file; \c false otherwise.
  */
-template<class StringType> inline
-void fetch( char const *uri, StringType *path, bool *is_temp = 0 ) {
+template<class PathStringType> inline
+void fetch( char const *uri, PathStringType *path, bool *is_temp = 0 ) {
   char path_buf[ MAX_PATH ];
   fetch_to_path_impl( uri, path_buf, is_temp );
   *path = path_buf;
