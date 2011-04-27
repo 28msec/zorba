@@ -886,18 +886,28 @@ void PrinterVisitor::endVisitMaterializeClause()
 
 void PrinterVisitor::beginVisitMaterializeVariable(
     bool forVar,
-    ForVarIter_t inputVar,
+    PlanIter_t inputVar,
     const std::vector<PlanIter_t>& varRefs)
 {
-  if (forVar)
-    thePrinter.startBeginVisit("MaterializeForVariable", theId);
-  else
-    thePrinter.startBeginVisit("MaterializeLetVariable", theId);
-
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
+  if (forVar)
+  {
+    thePrinter.startBeginVisit("MaterializeForVariable", theId);
+
+    ForVarIterator* iter = static_cast<ForVarIterator*>(inputVar.getp());
+
+    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+  }
+  else
+  {
+    thePrinter.startBeginVisit("MaterializeLetVariable", theId);
+
+    LetVarIterator* iter = static_cast<LetVarIterator*>(inputVar.getp());
+
+    str1 << iter->getVarName()->getStringValue() << " : " << iter;
+  }
 
   ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)

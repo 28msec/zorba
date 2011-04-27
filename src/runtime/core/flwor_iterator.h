@@ -305,18 +305,28 @@ public:
                        corresponding to the same LET var (and stored in
                        theTempSeqs)
 
-  theTuplesTable     :
+  theTuplesTable     : The table that materializes the tuple stream before
+                       computing the return clause. This is needed in case the
+                       return expr is a sequential one. 
 
-  theSortTable       : The table that materializes a flwor tuple stream in inder
-                       to sort it. The entries of this table are instances of
+  theSortTable       : The table that materializes the sort tuples in order to
+                       sort them. The entries of this table are instances of
                        SortTuple (see gflwor/orderby_iterator.h).
-  theDataTable       : The "data" corresponding the the sort tuples in 
-                       theSortTable.
+
+  theResultTable     : If the flwor expr is non-sequential and contains orderby,
+                       then for each stream tuple, both the sort tuple and the
+                       return expr are evaluated and stored. before the next
+                       stream tuple is evaluated. The sort tuple is stored in 
+                       theSortTable, and the result of the return expr is stored
+                       in theResultTable. The result is stored in the form of
+                       an iterator over a temp seq that stores the actual result.
 
   theNumTuples       : The number of tuples in theSortTable.
+
   theCurTuplePos     : A position inside theSortTable. Used, together with
                        theOrderResultIter, to return individual flwor results
                        after the full result set has been materialized and sorted. 
+
   theOrderResultIter : The iterator I over a temp sequence that stores the result
                        of return clause for the tuple pointed to by theCurTuplePos.
 
@@ -330,7 +340,8 @@ class FlworState : public PlanIteratorState
 
 public:
   typedef std::vector<SortTuple> SortTable;
-  typedef std::vector<store::Iterator_t> DataTable;
+
+  typedef std::vector<store::Iterator_t> ResultTable;
 
   typedef std::vector<StreamTuple> TuplesTable;
 
@@ -342,7 +353,8 @@ protected:
   TuplesTable                    theTuplesTable;
 
   SortTable                      theSortTable;
-  DataTable                      theDataTable;
+
+  ResultTable                    theResultTable;
 
   ulong                          theNumTuples;
   ulong                          theCurTuplePos;
@@ -362,12 +374,12 @@ public:
   void init(PlanState& state, const std::vector<ForLetClause>& forletClauses);
           
   void init(
-        PlanState& state,
-        TypeManager* tm,
-        const std::vector<ForLetClause>& forletClauses,
-        std::vector<OrderSpec>* orderSpecs,
-        const QueryLoc& groupbyLoc,
-        std::vector<GroupingSpec>* groupingSpecs);
+      PlanState& state,
+      TypeManager* tm,
+      const std::vector<ForLetClause>& forletClauses,
+      std::vector<OrderSpec>* orderSpecs,
+      const QueryLoc& groupbyLoc,
+      std::vector<GroupingSpec>* groupingSpecs);
   
   void reset(PlanState&);
 
@@ -412,15 +424,15 @@ public:
 
 public:
   FLWORIterator(
-        static_context*             sctx,
-        const QueryLoc&             loc,
-        std::vector<ForLetClause>&  forLetClauses,
-        PlanIter_t&                 whereClause,
-        GroupByClause*              aGroupByClause,
-        OrderByClause*              orderByClause,
-        MaterializeClause*          materializeClause,
-        PlanIter_t&                 returnClause,
-        bool                        aIsUpdating);
+      static_context*             sctx,
+      const QueryLoc&             loc,
+      std::vector<ForLetClause>&  forLetClauses,
+      PlanIter_t&                 whereClause,
+      GroupByClause*              aGroupByClause,
+      OrderByClause*              orderByClause,
+      MaterializeClause*          materializeClause,
+      PlanIter_t&                 returnClause,
+      bool                        aIsUpdating);
     
   ~FLWORIterator();
 
@@ -459,18 +471,23 @@ private:
       FlworState* flworState,
       PlanState& planState) const;
 
-  void rebindStreamTuple( 
+  void rebindStreamTuple(
+      ulong tuplePos, 
       FlworState* iterState,
       PlanState& planState) const;
 
-  void materializeGroupResultForSort(
+  void rebindGroupTuple(
+      GroupHashMap::iterator groupMapIter,
       FlworState* flworState,
-      PlanState& planStat) const;
-      
-  void bindGroupBy(
-        GroupHashMap::iterator groupMapIter,
-        FlworState* flworState,
-        PlanState& planState) const; 
+      PlanState& planState) const; 
+
+  void rebindGroupTuplesForMaterialize(
+      FlworState* iterState,
+      PlanState& planState) const;
+
+  void rebindGroupTuplesForSort(
+      FlworState* iterState,
+      PlanState& planState) const;
 };
 
 

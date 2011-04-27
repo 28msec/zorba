@@ -630,16 +630,18 @@ protected:
       std::istream& aStream,
       void (*streamDestroyer)( std::istream & stream ),
       bool seekable = false)
-    : theIstream(aStream),
-      theIsMaterialized(false),
-      theIsConsumed(false),
-      theIsSeekable(seekable),
-      theStreamDestroyer(streamDestroyer)
+    :
+    theIstream(aStream),
+    theIsMaterialized(false),
+    theIsConsumed(false),
+    theIsSeekable(seekable),
+    theStreamDestroyer(streamDestroyer)
   {
   }
 
   void materialize() const;
 };
+
 
 /*******************************************************************************
   class NormalizedStringItem

@@ -230,7 +230,7 @@ PLAN_ITER_VISITOR (AndIterator);
 
   virtual void beginVisitMaterializeVariable(
       bool isForVar,
-      ForVarIter_t inputVar,
+      PlanIter_t inputVar,
       const std::vector<PlanIter_t>& varRefs) = 0;
 
   virtual void endVisitMaterializeVariable() = 0;

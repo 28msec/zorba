@@ -930,11 +930,15 @@ std::istream& StreamableStringItem::getStream()
   // if a query requires a stream to be consumed more than once,
   // the query needs to make sure that the stream is explicitly
   // materialized before
-  if (!theIsSeekable && theIsConsumed) {
+  if (!theIsSeekable && theIsConsumed) 
+  {
     throw ZORBA_EXCEPTION( ZSTR0055_STREAMABLE_STRING_CONSUMED );
-  } else {
-    // if the stream is seekable, we seek to the beginning
-    // We are not using theIstream.seekg because the USER_ERROR that is thrown by Zorba is lost possibly in an internal try/catch of the seekg
+  }
+  else
+  {
+    // if the stream is seekable, we seek to the beginning.
+    // We are not using theIstream.seekg because the USER_ERROR that is thrown
+    // by Zorba is lost possibly in an internal try/catch of the seekg
     std::streambuf * pbuf;
     pbuf = theIstream.rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
@@ -953,7 +957,8 @@ void StreamableStringItem::materialize() const
   lSsi->theIsConsumed = true;
 
   char lBuf[4096];
-  while (theIstream) {
+  while (theIstream) 
+  {
     lStream.read(lBuf, sizeof(lBuf));
     lSsi->theValue.append(lBuf, static_cast<unsigned int>(lStream.gcount()));
   }

@@ -142,7 +142,7 @@ void endVisitMaterializeClause();
 
 void beginVisitMaterializeVariable(
       bool isForVar,
-      ForVarIter_t inputVar,
+      PlanIter_t inputVar,
       const std::vector<PlanIter_t>& varRefs);
 
 void endVisitMaterializeVariable();

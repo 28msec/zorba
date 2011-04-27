@@ -380,19 +380,19 @@ void MaterializeClause::accept(PlanIterVisitor& v) const
 { 
   v.beginVisitMaterializeClause();
 
-  ulong numForVars = (ulong)theInputForVars.size();
+  ulong numVars = (ulong)theInputForVars.size();
 
-  for (ulong i = 0; i < numForVars; ++i)
+  for (ulong i = 0; i < numVars; ++i)
   {
     v.beginVisitMaterializeVariable(true, theInputForVars[i], theOutputForVarsRefs[i]);
     v.endVisitMaterializeVariable();
   }
 
-  numForVars = (ulong)theInputLetVars.size();
+  numVars = (ulong)theInputLetVars.size();
 
-  for (ulong i = 0; i < numForVars; ++i)
+  for (ulong i = 0; i < numVars; ++i)
   {
-    v.beginVisitMaterializeVariable(false, theInputForVars[i], theOutputForVarsRefs[i]);
+    v.beginVisitMaterializeVariable(false, theInputLetVars[i], theOutputLetVarsRefs[i]);
     v.endVisitMaterializeVariable();
   }
 
@@ -781,13 +781,15 @@ void FlworState::reset(PlanState& planState)
 
   if (theOrderResultIter != NULL)
   {
-    clearSortTable();
-    theDataTable.clear();
+    theResultTable.clear();
     theNumTuples = 0;
     theCurTuplePos = 0;
 
     theOrderResultIter = 0;
   }
+
+  if (!theSortTable.empty())
+    clearSortTable();
 
   theTuplesTable.clear();
 
@@ -930,10 +932,10 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t curItem;
   std::auto_ptr<store::PUL> pul;
 
-  FlworState* iterState;
-  DEFAULT_STACK_INIT(FlworState, iterState, planState);
+  FlworState* state;
+  DEFAULT_STACK_INIT(FlworState, state, planState);
 
-  assert(iterState->theVarBindingState.size() > 0);
+  assert(state->theVarBindingState.size() > 0);
 
   if (theIsUpdating)
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
@@ -946,7 +948,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // Try to bind the current variable. If the binding of the variable is
       // successfull, we procede with the next binding level. Else, we go a
       // level back and try the previous level
-      if (bindVariable(curVar, iterState, planState))
+      if (bindVariable(curVar, state, planState))
       {
         ++curVar;
       }
@@ -959,31 +961,88 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           if (theMaterializeClause)
           {
-            iterState->theCurTuplePos = 0;
-            iterState->theNumTuples = (ulong)iterState->theTuplesTable.size();
-
-            while (iterState->theCurTuplePos < iterState->theNumTuples)
+            // GroupBy ? OrderBy Materialize
+            if (!theMaterializeClause->theOrderSpecs.empty())
             {
-              if (!iterState->theFirstResult)
-                theReturnClause->reset(planState);
-
-              iterState->theFirstResult = false;
-
-              rebindStreamTuple(iterState, planState);
-
-              while (consumeNext(result, theReturnClause, planState)) 
+              if (theGroupByClause)
               {
-                STACK_PUSH(true, iterState);
+                rebindGroupTuplesForMaterialize(state, planState);
               }
-              
-              ++(iterState->theCurTuplePos);
+
+              {
+                SortTupleCmp cmp(theMaterializeClause->theLocation,
+                                 planState.theLocalDynCtx,
+                                 theSctx->get_typemanager(),
+                                 &theMaterializeClause->theOrderSpecs);
+
+                if (theMaterializeClause->theStable)
+                {
+                  std::stable_sort(state->theSortTable.begin(),
+                                   state->theSortTable.end(),
+                                   cmp);
+                }
+                else
+                {
+                  std::sort(state->theSortTable.begin(),
+                            state->theSortTable.end(),
+                            cmp);
+                }
+              }
+
+              state->theCurTuplePos = 0;
+              state->theNumTuples = (ulong)state->theTuplesTable.size();
+
+              while (state->theCurTuplePos < state->theNumTuples)
+              {
+                if (!state->theFirstResult)
+                  theReturnClause->reset(planState);
+                
+                state->theFirstResult = false;
+
+                rebindStreamTuple(state->theSortTable[state->theCurTuplePos].theDataPos,
+                                  state,
+                                  planState);
+
+                while (consumeNext(result, theReturnClause, planState)) 
+                {
+                  STACK_PUSH(true, state);
+                }
+                
+                ++(state->theCurTuplePos);
+              }
+            }
+
+            // Materialize
+            else
+            {
+              state->theCurTuplePos = 0;
+              state->theNumTuples = (ulong)state->theTuplesTable.size();
+
+              while (state->theCurTuplePos < state->theNumTuples)
+              {
+                if (!state->theFirstResult)
+                  theReturnClause->reset(planState);
+                
+                state->theFirstResult = false;
+                
+                rebindStreamTuple(state->theCurTuplePos, state, planState);
+
+                while (consumeNext(result, theReturnClause, planState)) 
+                {
+                  STACK_PUSH(true, state);
+                }
+                
+                ++(state->theCurTuplePos);
+              }
             }
           }
+
+          // GroupBy? OrderBy (no Materialize)
           else if (theOrderByClause)
           {
             if (theGroupByClause)
             {
-              materializeGroupResultForSort(iterState, planState);
+              rebindGroupTuplesForSort(state, planState);
             }
 
             {
@@ -994,28 +1053,28 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
               if (theOrderByClause->theStable)
               {
-                std::stable_sort(iterState->theSortTable.begin(),
-                                 iterState->theSortTable.end(),
+                std::stable_sort(state->theSortTable.begin(),
+                                 state->theSortTable.end(),
                                  cmp);
               }
               else
               {
-                std::sort(iterState->theSortTable.begin(),
-                          iterState->theSortTable.end(),
+                std::sort(state->theSortTable.begin(),
+                          state->theSortTable.end(),
                           cmp);
               }
             }
 
-            iterState->theCurTuplePos = 0;
-            iterState->theNumTuples = (ulong)iterState->theSortTable.size();
+            state->theCurTuplePos = 0;
+            state->theNumTuples = (ulong)state->theSortTable.size();
 
-            while (iterState->theCurTuplePos < iterState->theNumTuples)
+            while (state->theCurTuplePos < state->theNumTuples)
             {
-              iterState->theOrderResultIter.transfer(iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos]);
+              state->theOrderResultIter.transfer(state->theResultTable[state->theSortTable[state->theCurTuplePos].theDataPos]);
 
-              iterState->theOrderResultIter->open();
+              state->theOrderResultIter->open();
 
-              while (iterState->theOrderResultIter->next(result))
+              while (state->theOrderResultIter->next(result))
               {
                 if (theIsUpdating)
                 {
@@ -1024,27 +1083,29 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                 }
                 else
                 {
-                  STACK_PUSH(true, iterState);
+                  STACK_PUSH(true, state);
                 }
               }
 
-             iterState->theOrderResultIter->close();
+             state->theOrderResultIter->close();
 
-              ++(iterState->theCurTuplePos);
+              ++(state->theCurTuplePos);
             }
           }
+
+          // GroupBy Materialize? (no 0rderBy)
           else if (theGroupByClause)
           {
-            iterState->theGroupMapIter = iterState->theGroupMap->begin();
+            state->theGroupMapIter = state->theGroupMap->begin();
 
-            while (iterState->theGroupMapIter != iterState->theGroupMap->end())
+            while (state->theGroupMapIter != state->theGroupMap->end())
             {
-              if (!iterState->theFirstResult)
+              if (!state->theFirstResult)
                 theReturnClause->reset(planState);
 
-              iterState->theFirstResult = false;
+              state->theFirstResult = false;
 
-              bindGroupBy(iterState->theGroupMapIter, iterState, planState);
+              rebindGroupTuple(state->theGroupMapIter, state, planState);
 
               while(consumeNext(result, theReturnClause, planState)) 
               {
@@ -1055,18 +1116,18 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                 }
                 else
                 {
-                  STACK_PUSH(true, iterState);
+                  STACK_PUSH(true, state);
                 }
               }
 
-              ++iterState->theGroupMapIter;
+              ++state->theGroupMapIter;
             }
           }
 
           if (theIsUpdating)
           {
             result = pul.release();
-            STACK_PUSH(true, iterState);
+            STACK_PUSH(true, state);
           }
 
           goto stop;
@@ -1080,7 +1141,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           // begining. So, we mark this var's state as "to be reset", so that
           // the domain expr of the var will be reset before we try to compute
           // its new set of values.
-          iterState->theVarBindingState[curVar] = -1;
+          state->theVarBindingState[curVar] = -1;
           --curVar;
         }
       }
@@ -1094,22 +1155,22 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // have to  materialize the result.
       if (theGroupByClause)
       {
-        materializeGroupTuple(iterState, planState);
+        materializeGroupTuple(state, planState);
       }
       else if (theMaterializeClause)
       {
-        materializeStreamTuple(iterState, planState);
+        materializeStreamTuple(state, planState);
       }
       else
       {
-        if (!iterState->theFirstResult)
+        if (!state->theFirstResult)
           theReturnClause->reset(planState);
 
-        iterState->theFirstResult = false;
+        state->theFirstResult = false;
 
         if (theOrderByClause)
         {
-          materializeSortTupleAndResult(iterState, planState);
+          materializeSortTupleAndResult(state, planState);
         }
         else if (theIsUpdating)
         {
@@ -1124,7 +1185,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           while (consumeNext(result, theReturnClause, planState))
           {
-            STACK_PUSH(true, iterState);
+            STACK_PUSH(true, state);
           }
         }
       }
@@ -1135,7 +1196,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
  stop:
-  STACK_END(iterState);
+  STACK_END(state);
 }
 
 
@@ -1297,15 +1358,52 @@ void FLWORIterator::materializeStreamTuple(
 
     theMaterializeClause->theInputLetVars[i]->reset(planState);
   }
+
+  // Create the sort tuple
+
+  std::vector<OrderSpec>& orderSpecs = theMaterializeClause->theOrderSpecs;
+  ulong numSpecs = (ulong)orderSpecs.size();
+
+  if (numSpecs == 0)
+    return;
+
+  FlworState::SortTable& sortTable = iterState->theSortTable;
+  sortTable.resize(numTuples + 1);
+
+  std::vector<store::Item*>& sortTuple = sortTable[numTuples].theKeyValues;
+  sortTuple.resize(numSpecs);
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    store::Item_t sortKeyItem;
+    if (consumeNext(sortKeyItem, orderSpecs[i].theDomainIter, planState))
+    {
+      sortTuple[i] = sortKeyItem.release();
+
+      store::Item_t temp;
+      if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
+      {
+        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o)));
+      }
+    }
+    else
+    {
+      sortTuple[i] = NULL;
+    }
+
+    orderSpecs[i].theDomainIter->reset(planState);
+  }
+
+  sortTable[numTuples].theDataPos = numTuples;
 }
 
 
 /***************************************************************************//**
   All FOR and LET vars are bound when this method is called. The method computes
   the sort tuple ST and the return-clause sequence R for the current var 
-  bindings. Then, it inserts I(R) into theDataTable, where I is an iterator over
+  bindings. Then, it inserts I(R) into theReultTable, where I is an iterator over
   the temp seq storing R, and the pair (ST, P) into theSortTable, where P is the
-  position of I(R) within theDataTable.
+  position of I(R) within theReultTable.
 ********************************************************************************/
 void FLWORIterator::materializeSortTupleAndResult(
     FlworState* iterState,
@@ -1314,11 +1412,11 @@ void FLWORIterator::materializeSortTupleAndResult(
   ZORBA_ASSERT(theOrderByClause);
 
   FlworState::SortTable& sortTable = iterState->theSortTable;
-  FlworState::DataTable& dataTable = iterState->theDataTable;
+  FlworState::ResultTable& resultTable = iterState->theResultTable;
 
   ulong numTuples = (ulong)sortTable.size();
   sortTable.resize(numTuples + 1);
-  dataTable.resize(numTuples + 1);
+  resultTable.resize(numTuples + 1);
 
   // Create the sort tuple
 
@@ -1338,9 +1436,7 @@ void FLWORIterator::materializeSortTupleAndResult(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
-        );
+        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
     else
@@ -1357,7 +1453,7 @@ void FLWORIterator::materializeSortTupleAndResult(
   store::TempSeq_t resultSeq = GENV_STORE.createTempSeq(iterWrapper, false, false);
   store::Iterator_t resultIter = resultSeq->getIterator();
 
-  dataTable[numTuples].transfer(resultIter);
+  resultTable[numTuples].transfer(resultIter);
 }
 
 
@@ -1393,7 +1489,7 @@ void FLWORIterator::materializeGroupTuple(
 
     bool status = consumeNext(tupleItem, specIter->theInput, planState);
 
-    if(status)
+    if (status)
     {
       store::Iterator_t typedValueIter;
 
@@ -1407,13 +1503,9 @@ void FLWORIterator::materializeGroupTuple(
           store::Item_t temp;
           if (typedValueIter->next(temp))
           {
-            throw XQUERY_EXCEPTION(
-              XPTY0004,
-              ERROR_PARAMS(
-                ZED( SingletonExpected_2o ),
-                ZED( AtomizationHasMoreThanOneValue )
-              )
-            );
+            throw XQUERY_EXCEPTION(XPTY0004,
+                                   ERROR_PARAMS(ZED(SingletonExpected_2o),
+                                                ZED(AtomizationHasMoreThanOneValue)));
           }
         }
       }
@@ -1422,9 +1514,7 @@ void FLWORIterator::materializeGroupTuple(
       store::Item_t temp;
       if (consumeNext(temp, specIter->theInput, planState))
       {
-        throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
-        );
+        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
 
@@ -1473,41 +1563,17 @@ void FLWORIterator::materializeGroupTuple(
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-void FLWORIterator::materializeGroupResultForSort(
-    FlworState* iterState,
-    PlanState& planState) const
-{
-  GroupHashMap* groupMap = iterState->theGroupMap;
-
-  GroupHashMap::iterator groupMapIter = groupMap->begin();
-  GroupHashMap::iterator groupMapEnd = groupMap->end();
-
-  while (groupMapIter != groupMapEnd)
-  {
-    bindGroupBy(groupMapIter, iterState, planState);
-  
-    materializeSortTupleAndResult(iterState, planState);
-
-    theReturnClause->reset(planState);
-
-    ++groupMapIter;
-  }
-}
-
-
 /***************************************************************************//**
   Binds the values in current tuple of the group map to the var references
   that appear after the groupby clause. 
 ********************************************************************************/
 void FLWORIterator::rebindStreamTuple( 
+    ulong tuplePos,
     FlworState* iterState,
     PlanState& planState) const
 {
   StreamTuple& streamTuple = 
-  iterState->theTuplesTable[iterState->theCurTuplePos];
+  iterState->theTuplesTable[tuplePos];
 
   ulong numForVarsRefs = (ulong)theMaterializeClause->theOutputForVarsRefs.size();
 
@@ -1529,11 +1595,59 @@ void FLWORIterator::rebindStreamTuple(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void FLWORIterator::rebindGroupTuplesForSort(
+    FlworState* iterState,
+    PlanState& planState) const
+{
+  GroupHashMap* groupMap = iterState->theGroupMap;
+
+  GroupHashMap::iterator groupMapIter = groupMap->begin();
+  GroupHashMap::iterator groupMapEnd = groupMap->end();
+
+  while (groupMapIter != groupMapEnd)
+  {
+    rebindGroupTuple(groupMapIter, iterState, planState);
+  
+    materializeSortTupleAndResult(iterState, planState);
+
+    theReturnClause->reset(planState);
+
+    ++groupMapIter;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void FLWORIterator::rebindGroupTuplesForMaterialize(
+    FlworState* iterState,
+    PlanState& planState) const
+{
+  GroupHashMap* groupMap = iterState->theGroupMap;
+
+  GroupHashMap::iterator groupMapIter = groupMap->begin();
+  GroupHashMap::iterator groupMapEnd = groupMap->end();
+
+  while (groupMapIter != groupMapEnd)
+  {
+    rebindGroupTuple(groupMapIter, iterState, planState);
+  
+    materializeStreamTuple(iterState, planState);
+
+    ++groupMapIter;
+  }
+}
+
+
 /***************************************************************************//**
   Binds the values in current tuple of the group map to the var references
   that appear after the groupby clause. 
 ********************************************************************************/
-void FLWORIterator::bindGroupBy( 
+void FLWORIterator::rebindGroupTuple( 
     GroupHashMap::iterator groupMapIter,
     FlworState* iterState,
     PlanState& planState) const

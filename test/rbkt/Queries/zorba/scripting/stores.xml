@@ -1,0 +1,14 @@
+<stores>
+  <store>
+    <store-number>1</store-number>
+    <state>CA</state>
+  </store>
+  <store>
+    <store-number>2</store-number>
+    <state>CA</state>
+  </store>
+  <store>
+    <store-number>3</store-number>
+    <state>MA</state>
+  </store>
+</stores>

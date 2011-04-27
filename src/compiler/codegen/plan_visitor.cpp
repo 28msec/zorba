@@ -755,9 +755,10 @@ void general_var_codegen(const var_expr& var)
 
         ZORBA_ASSERT(clauseVarMap->find_var(&var) < 0);
 
-        if ((clauseVarMap->theClause->get_kind() == flwor_clause::order_clause ||
-             clauseVarMap->theClause->get_kind() == flwor_clause::materialize_clause) &&
-            flworExpr == clauseVarMap->theClause->get_flwor_expr())
+        if (flworExpr == clauseVarMap->theClause->get_flwor_expr() &&
+            ((clauseVarMap->theClause->get_kind() == flwor_clause::order_clause &&
+              !flworExpr->is_sequential()) ||
+             clauseVarMap->theClause->get_kind() == flwor_clause::materialize_clause))
         {
           varRebind = new VarRebind;
 
@@ -837,7 +838,9 @@ bool begin_visit(flwor_expr& v)
 
   bool isGeneral = v.is_general();
 
-  if (v.is_sequential() && !isGeneral)
+  if (v.is_sequential() && 
+      !isGeneral &&
+      (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
   {
     materialize_clause* mat = 
     new materialize_clause(v.get_sctx(), v.get_return_expr()->get_loc());
