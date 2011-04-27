@@ -102,29 +102,66 @@ public:
     static bool const value = sizeof( test<T>(0) ) == sizeof( yes );  \
   }
 
+/**
+ * \internal
+ * This namespace is used only to bundle the implementation details for
+ * implementing \c has_insertion_operator<T>.
+ * This implementation is based on http://stackoverflow.com/questions/4434569/
+ */
 namespace has_insertion_operator_impl {
   typedef char no;
   typedef char yes[2];
 
+  /**
+   * This dummy class is used to make the matching of the dummy operator<<()
+   * \e worse than the global \c operator<<(), if any.
+   */
   struct any_t {
     template<typename T> any_t( T const& );
   };
 
-  //
-  // Dummy operator for when there is no global operator<< otherwise declared
-  // for type T.
-  //
+  /**
+   * This dummy operator is matched only when there is \e no global
+   * operator<<() otherwise declared for type \c T.
+   *
+   * @return Returns a \c no that selects defined(no).
+   */
   no operator<<( std::ostream const&, any_t const& );
 
-  yes& test( std::ostream& );
-  no   test( no );
+  /**
+   * This function is matched only when there \e is a global \c operator<<()
+   * declared for type \c T because \c operator<<()'s return type is
+   * \c std::ostream&.
+   *
+   * @return Returns a yes& whose \c sizeof() equals \c sizeof(yes).
+   */
+  yes& defined( std::ostream& );
 
+  /**
+   * This function is matched only when the dummy \c operator<<() is matched.
+   *
+   * @return Returns a no whose \c sizeof() equals \c sizeof(no).
+   */
+  no defined( no );
+
+  /**
+   * The implementation class that can be used to determine whether a given
+   * type \c T has a global <code>std::ostream& operator<<(std::ostream&,T
+   * const&)</code> defined for it.  However, do not use this class directly.
+   *
+   * @tparam The type to check.
+   */
   template<typename T>
   class has_insertion_operator {
     static std::ostream &s;
     static T const &t;
   public:
-    static bool const value = sizeof( test(s << t) ) == sizeof( yes );
+    /**
+     * This is \c true only when the type \c T has a global \c operator<<()
+     * declared for it.
+     * \hideinitializer
+     */
+    static bool const value = sizeof( defined( s << t ) ) == sizeof( yes );
   };
 } // namespace has_insertion_operator_impl
 
@@ -133,6 +170,14 @@ namespace has_insertion_operator_impl {
  * A class that can be used to determine whether a given type \c T has a global
  * <code>std::ostream& operator<<(std::ostream&,T const&)</code> defined for
  * it.
+ * For example:
+ * \code
+ * template<typename T> inline
+ * typename enable_if<has_insertion_operator<T>::value,std::string>::value
+ * to_string( T const &t ) {
+ *   // case where T has operator<<(ostream&,T const&)
+ * }
+ * \endcode
  *
  * @tparam T The type to check.
  */
