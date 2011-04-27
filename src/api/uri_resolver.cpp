@@ -49,6 +49,9 @@ namespace zorba {
  * base destructor somewhere.
  *************/
 
+  URIMapper::URIMapper()
+  {}
+
   URIMapper::~URIMapper()
   {}
 
@@ -56,6 +59,9 @@ namespace zorba {
  * URIResolver is an abstract class, but we have to define its vtbl
  * and base destructor somewhere.
  *************/
+
+  URLResolver::URLResolver()
+  {}
 
   URLResolver::~URLResolver()
   {}

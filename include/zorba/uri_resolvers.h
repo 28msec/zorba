@@ -129,6 +129,7 @@ class ZORBA_DLL_PUBLIC URLResolver
 {
   public:
 
+  URLResolver();
   virtual ~URLResolver();
 
   /**
@@ -174,6 +175,7 @@ class ZORBA_DLL_PUBLIC URIMapper
 {
   public:
 
+  URIMapper();
   virtual ~URIMapper();
 
   /**

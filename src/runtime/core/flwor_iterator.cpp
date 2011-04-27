@@ -1287,8 +1287,9 @@ void FLWORIterator::materializeStreamTuple(
   for (ulong i = 0; i < numLetVars; ++i)
   {
     store::TempSeq_t letTempSeq;
+    const PlanIter_t    var_plan = theMaterializeClause->theInputLetVars[i];
     createTempSeq(letTempSeq,
-                  theMaterializeClause->theInputLetVars[i],
+                  var_plan,
                   planState,
                   false);
 
