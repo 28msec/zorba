@@ -221,21 +221,21 @@ public:
   static parameters const empty;
 
   /**
-   * Constructs a %parameters object having \a n parameters.
-   *
-   * @param n The number of parameters in the range [0,9].
+   * Constructs a %parameters object.
    */
-  explicit parameters( unsigned n = 0 );
+  parameters();
 
   /**
-   * Gets the i'th parameter value.
-   * Parameter numbers start at 1.
+   * Adds the string representation of the given object as the next parameter.
    *
-   * @param i The parameter to get.
-   * @return Returns said parameter value.
+   * @tparam T The object type.
+   * @param t The object.
+   * @return Returns \c *this.
    */
-  value_type& operator[]( size_type i ) {
-    return params_[ i - 1 ];
+  template<typename T>
+  parameters& operator,( T const &t ) {
+    params_.push_back( ztd::to_string( t ) );
+    return *this;
   }
 
   /**
@@ -273,117 +273,6 @@ private:
 
   value_type lookup_param( size_type i ) const;
 };
-
-/**
- * Makes a parameters object with no parameters.
- *
- * @return Returns said parameters object.
- */
-inline parameters make_parameters() {
-  return parameters( 0 );
-}
-
-/**
- * Makes a parameters object with 1 parameter.
- *
- * @tparam T1 The type of the parameter.
- * @param p1 The parameter.
- * @return Returns said parameters object.
- */
-template<typename T1>
-inline parameters make_parameters( T1 const &p1 ) {
-  parameters p( 1 );
-  ztd::to_string( p1, &p[1] );
-  return p;
-}
-
-/**
- * Makes a parameters object with 2 parameters.
- *
- * @tparam T1 The type of the first parameter.
- * @tparam T2 The type of the second parameter.
- * @param p1 The first parameter.
- * @param p2 The second parameter.
- * @return Returns said parameters object.
- */
-template<typename T1,typename T2>
-inline parameters make_parameters( T1 const &p1, T2 const &p2 ) {
-  parameters p( 2 );
-  ztd::to_string( p1, &p[1] );
-  ztd::to_string( p2, &p[2] );
-  return p;
-}
-
-/**
- * Makes a parameters object with 3 parameters.
- *
- * @tparam T1 The type of the first parameter.
- * @tparam T2 The type of the second parameter.
- * @tparam T3 The type of the third parameter.
- * @param p1 The first parameter.
- * @param p2 The second parameter.
- * @param p3 The third parameter.
- * @return Returns said parameters object.
- */
-template<typename T1,typename T2,typename T3>
-inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3 ) {
-  parameters p( 3 );
-  ztd::to_string( p1, &p[1] );
-  ztd::to_string( p2, &p[2] );
-  ztd::to_string( p3, &p[3] );
-  return p;
-}
-
-/**
- * Makes a parameters object with 4 parameters.
- *
- * @tparam T1 The type of the first parameter.
- * @tparam T2 The type of the second parameter.
- * @tparam T3 The type of the third parameter.
- * @tparam T4 The type of the fourth parameter.
- * @param p1 The first parameter.
- * @param p2 The second parameter.
- * @param p3 The third parameter.
- * @param p4 The fourth parameter.
- * @return Returns said parameters object.
- */
-template<typename T1,typename T2,typename T3,typename T4>
-inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3,
-                                   T4 const &p4 ) {
-  parameters p( 4 );
-  ztd::to_string( p1, &p[1] );
-  ztd::to_string( p2, &p[2] );
-  ztd::to_string( p3, &p[3] );
-  ztd::to_string( p4, &p[4] );
-  return p;
-}
-
-/**
- * Makes a parameters object with 5 parameters.
- *
- * @tparam T1 The type of the first parameter.
- * @tparam T2 The type of the second parameter.
- * @tparam T3 The type of the third parameter.
- * @tparam T4 The type of the fourth parameter.
- * @tparam T5 The type of the fifth parameter.
- * @param p1 The first parameter.
- * @param p2 The second parameter.
- * @param p3 The third parameter.
- * @param p4 The fourth parameter.
- * @param p5 The fifth parameter.
- * @return Returns said parameters object.
- */
-template<typename T1,typename T2,typename T3,typename T4,typename T5>
-inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3,
-                                   T4 const &p4, T5 const &p5 ) {
-  parameters p( 5 );
-  ztd::to_string( p1, &p[1] );
-  ztd::to_string( p2, &p[2] );
-  ztd::to_string( p3, &p[3] );
-  ztd::to_string( p4, &p[4] );
-  ztd::to_string( p4, &p[5] );
-  return p;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 

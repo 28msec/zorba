@@ -270,7 +270,7 @@ std::ostream& operator<<( std::ostream &o, type t );
  * \endcode
  * \hideinitializer
  */
-#define ERROR_PARAMS ::zorba::internal::err::make_parameters
+#define ERROR_PARAMS(...) (::zorba::internal::err::parameters(), __VA_ARGS__)
 
 ///////////////////////////////////////////////////////////////////////////////
 

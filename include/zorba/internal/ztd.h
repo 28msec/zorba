@@ -208,38 +208,36 @@ ZORBA_DECL_HAS_MEM_FN( toString );
  * @tparam T The object type that:
  *  - is not a pointer
  *  - has an <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
- * @tparam OutputStringType The output string type.
  * @param t The object.
- * @param out The output string.
+ * @return Returns a string representation of the object.
  */
-template<typename T,class OutputStringType> inline
+template<typename T> inline
 typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
                 && has_insertion_operator<T>::value,
-                   void>::type
-to_string( T const &t, OutputStringType *out ) {
+                   std::string>::type
+to_string( T const &t ) {
   std::ostringstream o;
   o << t;
-  *out = o.str();
+  return o.str();
 }
 
 /**
  * \internal
  * Specialization of \c to_string() for class types that have a \c c_str()
- * member function.
+ * member function, i.e., string types.
  *
  * @tparam T The class type that:
  *  - has no <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
- *  - has <code>char const* (T::*)() const</code> defined
- * @tparam OutputStringType The output string type.
+ *  - has <code>char const* T::c_str() const</code> defined
  * @param t The object.
- * @param out The output string.
+ * @return Returns a string representation of the object.
  */
-template<class T,class OutputStringType> inline
+template<class T> inline
 typename enable_if<!has_insertion_operator<T>::value
                 && has_c_str<T,char const* (T::*)() const>::value,
-                void>::type
-to_string( T const &t, OutputStringType *out ) {
-  *out = t.c_str();
+                   std::string>::type
+to_string( T const &t ) {
+  return t.c_str();
 }
 
 /**
@@ -247,18 +245,20 @@ to_string( T const &t, OutputStringType *out ) {
  * Specialization of \c to_string() for class types that have a \c str()
  * member function.
  *
- * @tparam T The class type.
- * @tparam OutputStringType The output string type.
+ * @tparam T The class type that:
+ *  - has no <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
+ *  - has no <code>char const* T::c_str() const</code> defined
+ *  - has <code>std::string T::str() const</code> defined
  * @param t The object.
- * @param out The output string.
+ * @return Returns a string representation of the object.
  */
-template<class T,class OutputStringType> inline
+template<class T> inline
 typename enable_if<!has_insertion_operator<T>::value
                 && !has_c_str<T,char const* (T::*)() const>::value
                 && has_str<T,std::string (T::*)() const>::value,
-                   void>::type
-to_string( T const &t, OutputStringType *out ) {
-  *out = t.str();
+                std::string>::type
+to_string( T const &t ) {
+  return t.str();
 }
 
 /**
@@ -266,17 +266,18 @@ to_string( T const &t, OutputStringType *out ) {
  * Specialization of \c to_string() for class types that have a \c toString()
  * member function.
  *
- * @tparam T The class type.
- * @tparam OutputStringType The output string type.
+ * @tparam T The class type that:
+ *  - has no <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
+ *  - has <code>std::string T::toString() const</code> defined
  * @param t The object.
- * @param out The output string.
+ * @return Returns a string representation of the object.
  */
-template<class T,class OutputStringType> inline
+template<class T> inline
 typename enable_if<!has_insertion_operator<T>::value
                 && has_toString<T,std::string (T::*)() const>::value,
-                   void>::type
-to_string( T const &t, OutputStringType *out ) {
-  *out = t.toString();
+                   std::string>::type
+to_string( T const &t ) {
+  return t.toString();
 }
 
 /**
@@ -284,30 +285,25 @@ to_string( T const &t, OutputStringType *out ) {
  * Specialization of \c to_string() for pointer types.
  *
  * @tparam T The pointer type.
- * @tparam OutputStringType The output string type.
- * @param t The pointer.
- * @param out The output string.
+ * @param p The pointer.
+ * @return If \a p is not \c NULL, returns the result of \c to_string(*p);
+ * otherwise returns \c "<null>".
  */
-template<typename T,class OutputStringType> inline
-typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
-to_string( T p, OutputStringType *out ) {
-  if ( p )
-    to_string( *p, out );
-  else
-    *out = "<null>";
+template<typename T> inline
+typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,std::string>::type
+to_string( T p ) {
+  return p ? to_string( *p ) : "<null>";
 }
 
 /**
  * \internal
  * Specialization of \c to_string() for C strings.
  *
- * @tparam OutputStringType The output string type.
  * @param s The C string.
- * @param out The output string.
+ * @return Returns a string representation of the object.
  */
-template<class OutputStringType> inline
-void to_string( char const *s, OutputStringType *out ) {
-  *out = s;
+inline std::string to_string( char const *s ) {
+  return s;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

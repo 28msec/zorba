@@ -119,8 +119,7 @@ namespace err {
 location const location::empty;
 parameters const parameters::empty;
 
-parameters::parameters( unsigned n ) : params_( n ) {
-  assert( n <= 9 );
+parameters::parameters() {
 }
 
 parameters::value_type parameters::lookup_param( size_type i ) const {
