@@ -74,6 +74,17 @@ enum type {
   other   // named pipe, character/block special, socket, etc.
 };
 
+////////// Windows ////////////////////////////////////////////////////////////
+
+#ifdef WIN32
+namespace win32 {
+
+// Do not use this function directly.
+void make_absolute_impl( char const *path, char *abs_path );
+
+} // namespace win32
+#endif /* WIN32 */
+
 ////////// Exceptions /////////////////////////////////////////////////////////
 
 /**
@@ -191,6 +202,18 @@ template<class PathStringType> inline
 void chdir( PathStringType const &path ) {
   chdir( path.c_str() );
 }
+
+#endif /* ZORBA_WITH_FILE_ACCESS */
+
+/**
+ * Gets the current directory.
+ *
+ * @return Returns said directory.
+ * @throws fs::exception if it fails.
+ */
+zstring curdir();
+
+#ifdef ZORBA_WITH_FILE_ACCESS
 
 /**
  * Creates a directory.
@@ -460,7 +483,7 @@ inline bool is_absolute( char const *path ) {
 #ifndef WIN32
   return path[0] == '/';
 #else
-  return ascii::is_alpha( path[0] ) && path[1] == ':';
+  return ascii::is_alpha( path[0] ) && path[1] == ':' && path[2] == '\\';
 #endif /* WIN32 */
 }
 
@@ -596,6 +619,26 @@ inline void append( PathStringType1 &path1, char const *path2 ) {
 template<class PathStringType1,class PathStringType2>
 inline void append( PathStringType1 &path1, PathStringType2 const &path2 ) {
   append( path1, path2.c_str() );
+}
+
+/**
+ * Makes a relative path into an absolute path.
+ *
+ * @tparam PathStringType The \a path string type.
+ * @param path The path to make absolute.
+ */
+template<class PathStringType> inline
+void make_absolute( PathStringType &path ) {
+  if ( !is_absolute( path ) ) {
+#ifndef WIN32
+    path.insert( 0, 1, '/' );
+    path.insert( 0, curdir().c_str() );
+#else
+    char temp[ MAX_PATH ];
+    win32::make_absolute_impl( path.c_str(), temp );
+    path = result;
+#endif /* WIN32 */
+  }
 }
 
 ////////// Temporary files ////////////////////////////////////////////////////

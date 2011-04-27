@@ -92,6 +92,20 @@ static bool to_wchar( char const *path, LPWSTR wpath ) {
   return !!::MultiByteToWideChar( CP_ACP, 0, path, -1, wpath, MAX_PATH );
 }
 
+void make_absolute_impl( char const *path, char *abs_path ) {
+#ifndef WINCE
+  WCHAR wpath[ MAX_PATH ];
+  to_wchar( path.c_str(), wpath );
+  WCHAR wfull_path[ MAX_PATH ];
+  DWORD const result = ::GetFullPathName(
+    wpath, sizeof( wpath ) / sizeof( wpath[0] ), wfull_path, NULL
+  );
+  if ( !result )
+    throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
+  to_char( wfull_path, abs_path );
+#endif /* WINCE */
+}
+
 } // namespace win32
 
 #endif /* WIN32 */
@@ -134,6 +148,26 @@ void create( char const *path ) {
 }
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
+
+zstring curdir() {
+  char path[ MAX_PATH ];
+#ifndef WIN32
+  if ( !::getcwd( path, sizeof( path ) ) )
+    throw ZORBA_IO_EXCEPTION( "getcwd()", "" );
+#else
+  WCHAR wpath[ MAX_PATH ];
+  if ( !::GetCurrentDirectory( sizeof( wpath ) / sizeof( wpath[0] ), wpath ) )
+    throw ZORBA_IO_EXCEPTION( "GetCurrentDirectory()", "" );
+  win32::to_char( wpath, path );
+  if ( !is_absolute( path ) ) {
+    // GetCurrentDirectory() sometimes misses drive letter.
+    zstring temp( path );
+    resolve_relative( temp );
+    return temp;
+  }
+#endif /* WIN32 */
+  return path;
+}
 
 zstring get_normalized_path( char const *path, char const *base ) {
   if ( !path[0] )

@@ -78,23 +78,7 @@ const char* filesystem_path::get_path_separator() {
 }
 
 filesystem_path::filesystem_path() {
-#ifdef WIN32
-  char buf [MAX_PATH];
-  WCHAR wbuf[MAX_PATH];
-  
-  GetCurrentDirectoryW (sizeof (wbuf)/sizeof(WCHAR), wbuf);
-  WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, buf, sizeof(buf), NULL, NULL);
-
-  path = buf;
- // GetCurrentDirectory sometimes misses drive letter
-  resolve_relative ();
-#else
-  char buf[1024];
-  if (getcwd (buf, sizeof (buf)) == NULL) {
-    throw ZORBA_IO_EXCEPTION( "getcwd()", buf );
-  }
-  else path = buf;
-#endif
+  path = fs::curdir().c_str();
 }
 
 filesystem_path::filesystem_path (const string &path_, int flags)
@@ -124,34 +108,7 @@ filesystem_path::is_complete () const
 void
 filesystem_path::resolve_relative ()
 {
-  if (! is_complete ()) {
-#ifdef WIN32
-    // call GetFullPathName as per
-    // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx
-
-#ifndef WINCE//for win ce don't bother with relative paths
-  char fullpath[1024];
-  fullpath[0] = 0;
-  wchar_t *wfullpath;
-	wfullpath = new wchar_t[1024];
-	wchar_t *wpath;
-	int wpath_len = path.length() + 10;
-	wpath = new wchar_t[wpath_len];
-  wpath[0] = 0;
-	if(MultiByteToWideChar(CP_UTF8, 0, path.c_str(), -1, wpath, wpath_len) == 0)
-	{//error case, maybe there is an invalid utf-8 char, try windows ACP
-    MultiByteToWideChar(CP_ACP, 0, path.c_str(), -1, wpath, wpath_len);
-  }
-  GetFullPathNameW(wpath, 1024, wfullpath, NULL);
-	delete[] wpath;
-	WideCharToMultiByte(CP_UTF8, 0, wfullpath, -1, fullpath, sizeof(fullpath), NULL, NULL);
-	delete[] wfullpath;
-  *this = fullpath;
-#endif
-#else
-    *this = filesystem_path (filesystem_path (), *this);
-#endif
-  }
+  fs::make_absolute( path );
 }
 
 bool

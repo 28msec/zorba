@@ -367,7 +367,7 @@ extern entry const dict_en[] = {
   { "ZOSE0001", "\"$1\": file not found${: 2}" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
-  { "ZOSE0004", "\"$1\": I/O error${: 2}" },
+  { "ZOSE0004", "${\"1\": }I/O error${: 2}" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
