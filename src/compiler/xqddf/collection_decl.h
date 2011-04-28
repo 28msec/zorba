@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_CONTEXT_STATICALLY_KNOWN_COLLECTION_H
 #define ZORBA_CONTEXT_STATICALLY_KNOWN_COLLECTION_H
 

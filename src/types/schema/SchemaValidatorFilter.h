@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef _SCHEMAVALIDATORFILTER_H
 #define _SCHEMAVALIDATORFILTER_H
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_FXARRAY_H
 #define ZORBA_FXARRAY_H
 #include "common/common.h"

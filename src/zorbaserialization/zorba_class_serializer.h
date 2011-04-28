@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#pragma once
 #ifndef ZORBA_SPECIFIC_CLASS_SERIALIZATION
 #define ZORBA_SPECIFIC_CLASS_SERIALIZATION
 

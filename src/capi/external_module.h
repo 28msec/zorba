@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBAC_EXTERNAL_MODULE_CAPI_H
 #define ZORBAC_EXTERNAL_MODULE_CAPI_H
 

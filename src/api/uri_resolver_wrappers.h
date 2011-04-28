@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#pragma once
 #ifndef ZORBA_URI_RESOLVER_WRAPPERS_H
 #define ZORBA_URI_RESOLVER_WRAPPERS_H
 

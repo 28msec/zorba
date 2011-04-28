@@ -160,7 +160,7 @@
  *
  *      $Id: m_apm_lc.h,v 1.45 2007/12/04 01:26:02 mike Exp $
  */
-
+#pragma once
 #ifndef M__APM_LOCAL_INC
 #define M__APM_LOCAL_INC
 

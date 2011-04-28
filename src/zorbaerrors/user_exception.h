@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#pragma once
 #ifndef ZORBA_USER_EXCEPTION_H
 #define ZORBA_USER_EXCEPTION_H
 

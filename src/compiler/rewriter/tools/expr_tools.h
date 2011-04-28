@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_REWRITER_EXPR_TOOLS_H
 #define ZORBA_REWRITER_EXPR_TOOLS_H
 

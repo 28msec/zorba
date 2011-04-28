@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#pragma once
 #ifndef ZORBA_FULL_TEXT_XQFTTS_RELATIONSHIP_H
 #define ZORBA_FULL_TEXT_XQFTTS_RELATIONSHIP_H
 

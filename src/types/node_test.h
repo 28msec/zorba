@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_TYPES_NODE_TEST_H
 #define ZORBA_TYPES_NODE_TEST_H
 

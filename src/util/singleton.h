@@ -12,6 +12,7 @@
 //     suitability of this software for any purpose. It is provided "as is" 
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
+#pragma once
 #ifndef LOKI_SINGLETON_INC_
 #define LOKI_SINGLETON_INC_
 

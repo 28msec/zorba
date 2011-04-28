@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_COMPILER_REWRITER_RULESET_H
 #define ZORBA_COMPILER_REWRITER_RULESET_H
 

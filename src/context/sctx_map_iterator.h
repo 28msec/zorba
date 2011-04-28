@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_SCTX_MAP_ITERATOR_H
 #define ZORBA_SCTX_MAP_ITERATOR_H
 

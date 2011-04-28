@@ -17,7 +17,7 @@
  *
  *  This software is provided "as is" without express or implied warranty.
  */
-
+#pragma once
 #ifndef M__APM__INCLUDED
 #define M__APM__INCLUDED
 

@@ -19,7 +19,7 @@
  *   - added validateProcessorStipulatedTypeName
  *      - a XMLSchema 1.0 feature not implemented by Xerces
  */
-
+#pragma once
 #ifndef ZORBA_EVENTSCHEMAVALIDATOR_H_
 #define ZORBA_EVENTSCHEMAVALIDATOR_H_
 

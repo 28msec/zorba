@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#pragma once
 #ifndef TEST_ZORBA_SERIALIZATION_ARCHIVER
 #define TEST_ZORBA_SERIALIZATION_ARCHIVER
 

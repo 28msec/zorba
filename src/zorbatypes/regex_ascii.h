@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_MINIMAL_REGULAR_EXPRESSIONS_14_MAY_2008
 #define ZORBA_MINIMAL_REGULAR_EXPRESSIONS_14_MAY_2008
 

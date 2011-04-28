@@ -16,7 +16,7 @@
 
 // ZORBA_ASSERT (and the deprecated Assert) survive in release mode
 // and raise errors via the Zorba error API
-
+#pragma once
 #ifndef ZORBA_ASSERT_H
 #define ZORBA_ASSERT_H
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #if !defined ZORBA_HASHMAP_H && !defined ZORBA_HASHMAP_WITH_SERIALIZATION || !defined ZORBA_HASHMAP_SERIALIZATION_H && defined ZORBA_HASHMAP_WITH_SERIALIZATION
 #ifndef ZORBA_HASHMAP_WITH_SERIALIZATION
 #define ZORBA_HASHMAP_H

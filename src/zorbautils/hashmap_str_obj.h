@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_HASHMAP_CHAR_PTR_TO_CLASS_POINTER
 #define ZORBA_HASHMAP_CHAR_PTR_TO_CLASS_POINTER
 

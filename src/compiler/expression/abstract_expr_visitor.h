@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_ABSTRACT_EXPR_VISITOR_H
 #define ZORBA_ABSTRACT_EXPR_VISITOR_H
 

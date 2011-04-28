@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
+#pragma once
 #ifndef ZORBAC_CDYNAMIC_CONTEXT_H
 #define ZORBAC_CDYNAMIC_CONTEXT_H
 

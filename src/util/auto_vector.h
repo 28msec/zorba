@@ -1,3 +1,4 @@
+#pragma once
 #if !defined AUTO_VECTOR_H
 #define AUTO_VECTOR_H
 //------------------------------------

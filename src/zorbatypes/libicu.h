@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 #ifndef ZORBA_LIBICU_H
 #if defined CYGWIN
 #  define U_HAVE_INTTYPES 0
