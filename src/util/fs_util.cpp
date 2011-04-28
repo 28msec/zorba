@@ -202,6 +202,7 @@ zstring get_normalized_path( char const *path, char const *base ) {
     result = result.substr( slash );
     uri::decode( result );
 #ifdef WIN32
+    replace_foreign( &result );
     if ( !is_absolute( result ) )
       throw XQUERY_EXCEPTION(
         XPTY0004,
@@ -209,7 +210,6 @@ zstring get_normalized_path( char const *path, char const *base ) {
           ZED( QuotedColon_23 ), result, ZED( NoDriveSpecification )
         )
       );
-    replace_foreign( &result );
 #endif /* WIN32 */
   } else {
     zstring path2( path );
