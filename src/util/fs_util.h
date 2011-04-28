@@ -483,7 +483,7 @@ inline bool is_absolute( char const *path ) {
 #ifndef WIN32
   return path[0] == '/';
 #else
-  return ascii::is_alpha( path[0] ) && path[1] == ':' && path[2] == '\\';
+  return ascii::is_alpha( path[0] ) && path[1] == ':' && (path[2] == '\\' || path[2] == '/');
 #endif /* WIN32 */
 }
 
