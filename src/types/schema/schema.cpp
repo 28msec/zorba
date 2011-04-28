@@ -98,7 +98,6 @@ public:
   {
   }
 
-  // QQQ This should return XMLFilePos, but in Xerces 2.8.0 it was unsigned int
   virtual XMLFilePos curPos() const
   {
     return theStream->tellg();
