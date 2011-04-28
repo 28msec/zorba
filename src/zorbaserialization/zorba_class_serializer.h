@@ -47,7 +47,7 @@ void operator&(Archiver &ar, MAPM &obj);
 void operator&(Archiver &ar, XQPCollator *&obj);
 void operator&(Archiver &ar, store::Item* &obj);
 //void operator&(Archiver &ar, std::vector<rchandle<function> >*& obj);
-void operator&(Archiver &ar, Error *&obj);
+void operator&(Archiver &ar, const Error *&obj);
 void operator&(Archiver &ar, ZorbaException *&obj);
 void operator&(Archiver &ar, zorba::internal::err::location &obj);
 void operator&(Archiver &ar, zorba::Item &obj);

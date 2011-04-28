@@ -979,7 +979,7 @@ void operator&(Archiver &ar, zorba::store::TempSeq *obj)
   );
 }
 
-void operator&(Archiver &ar, Error *&obj)
+void operator&(Archiver &ar, const Error *&obj)
 {
   if(ar.is_serializing_out())
   {
@@ -994,9 +994,10 @@ void operator&(Archiver &ar, Error *&obj)
     }
     bool is_ref;
     assert(!ar.is_serialize_base_class());
-    UserError *user_err = dynamic_cast<UserError*>(obj);
-    XQueryError *xquery_err = dynamic_cast<XQueryError*>(obj);
-    ZorbaError *zorba_err = dynamic_cast<ZorbaError*>(obj);
+    Error *err = const_cast<Error*>(obj);
+    UserError *user_err = dynamic_cast<UserError*>(err);
+    XQueryError *xquery_err = dynamic_cast<XQueryError*>(err);
+    ZorbaError *zorba_err = dynamic_cast<ZorbaError*>(err);
     char err_type[20];
     sprintf(err_type, "u%dx%dz%d", 
             user_err != NULL ? 1 : 0,

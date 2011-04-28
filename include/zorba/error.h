@@ -24,7 +24,7 @@ namespace zorba {
 class Error;
 namespace serialization{
   class Archiver;
-  void operator&(zorba::serialization::Archiver &ar, Error *&obj);
+  void operator&(zorba::serialization::Archiver &ar, const Error *&obj);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ private:
 
   //for plan serialization
   UserError(zorba::serialization::Archiver &ar);
-  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, Error *&obj);
+  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, const Error *&obj);
 };
 
 ///////////////////////////////////////////////////////////////////////////////

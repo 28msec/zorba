@@ -490,7 +490,7 @@ treat_expr::treat_expr(
     store::Item_t fnQname)
   :
   cast_base_expr(sctx, loc, treat_expr_kind, inputExpr, type),
-  theError((Error*)&err),
+  theError(&err),
   theCheckPrime(check_prime),
   theFnQName(fnQname)
 {

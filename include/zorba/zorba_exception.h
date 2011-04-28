@@ -146,7 +146,7 @@ protected:
                                         ZorbaException*& );
 
 private:
-  Error /*const*/ *error_;
+  Error const *error_;
   std::string throw_file_;
   line_type throw_line_;
   std::string message_;

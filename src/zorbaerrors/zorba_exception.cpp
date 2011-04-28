@@ -33,7 +33,7 @@ namespace zorba {
 
 ZorbaException::ZorbaException( Error const &error, char const *throw_file,
                                 line_type throw_line, char const *message ) :
-  error_( (Error*)error.clone() ),
+  error_( error.clone() ),
   throw_file_( throw_file ),
   throw_line_( throw_line ),
   message_( message )
@@ -46,7 +46,7 @@ ZorbaException::ZorbaException( Error const &error, char const *throw_file,
 
 ZorbaException::ZorbaException( ZorbaException const &from ) :
   std::exception( from ),
-  error_( (Error*)from.error_->clone() ),
+  error_( from.error_->clone() ),
   throw_file_( from.throw_file_ ),
   throw_line_( from.throw_line_ ),
   message_( from.message_ )

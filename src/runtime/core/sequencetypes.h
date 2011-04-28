@@ -218,7 +218,7 @@ private:
   xqtref_t theTreatType;
   TypeConstants::quantifier_t theQuantifier;
   bool check_prime;
-  Error                      *theErrorCode;
+  const Error                *theErrorCode;
   store::Item_t								theFnQName;      // Stores the QName of the function, if the promote expr
                                                // is used to cast the function's body to its result type
 

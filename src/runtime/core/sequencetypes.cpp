@@ -492,7 +492,7 @@ TreatIterator::TreatIterator(
   :
   UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, aLoc, aChild),
   check_prime(check_prime_),
-  theErrorCode((Error*)&aErrorCode),
+  theErrorCode(&aErrorCode),
   theFnQName(fnQName)
 {
   theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *aTreatType);
