@@ -15,51 +15,9 @@
  :)
 
 (:~
- :    <p>
- :      <h1>Namespace conventions</h1>
- :      <p>The module defined by this document does define several functions in the namespace
- :          <code>http://www.zorba-xquery.com/modules/file</code>. In this document, the <code>file</code> prefix,
- :        when used, is bound to this namespace URI.</p>
- :    </p>
- :    <p>
- :      <h1>File paths vs. URIs</h1>
- :      <p>In order to make this file API more accessible, the paths of the files are specified as
- :        strings. The syntax of the path strings is operating system dependent. The following forms are accepted
- :        and interpreted as described below.</p>
- :      <ul>
- :        <li>Operating system paths - absolute or relative paths are accepted:
- :          <ul>
- :            <li><code>C:\Test Dir\my file.xml</code>: An absolute path on Windows platforms.</li>
- :            <li><code>C:/Test Dir\my file.xml</code>: An absolute path on Windows platforms that
- :              tollerates slashes instead of backslashes.</li>
- :            <li><code>C:\\\Test Dir//\\my file.xml</code>: An absolute path on Windows platforms
- :              that tollerates an arbitrary number of slashes and backslashes.</li>
- :            <li><code>/Test Dir/my file.xml</code>: An absolute path on UNIX-based platforms
- :              that tollerates an arbitrary number of slashes.</li>
- :            <li><code>//Test Dir////my file.xml</code>: An absolute path on UNIX-based
- :              platforms.</li>
- :            <li><code>my file.xml</code>: A relative path. The file should be searched for 
- :              starting with the location pointed by the base URI of the current module.</li>
- :          </ul>
- :        </li>
- :        <li>File URIs - only absolute paths are accepted:
- :          <ul>
- :            <li><code>file:///C:/Test%20Dir/my%20file.xml</code>: An absolute path on Windows
- :              platforms.</li>
- :            <li><code>file:///C:/Test Dir/my file.xml</code>: An absolute path on Windows
- :              platforms. The URI tolerates spaces.</li>
- :            <li><code>file:///C:/Test%20Dir///my%20file.xml</code>: An absolute path on Windows
- :              platforms. The URI tolerates an arbitrary number of slashes.</li>
- :            <li><code>file:///Test%20Dir/my%20file.xml</code>: An absolute path on UNIX-based
- :              platforms.</li>
- :            <li><code>file://localhost/Test%20Dir/my%20file.xml</code>: A URI that accepts
- :              <code>localhost</code> as the autority of the URI.</li>
- :          </ul>
- :        </li>
- :      </ul>
- :    </p>
- :
+ : This module implements the file API EXPath specification available at http://expath.org/spec/file
  : @author Gabriel Petrovay, Matthias Brantner, Markus Pilman
+ : @see http://expath.org/spec/file
  :)
 module namespace file = "http://www.zorba-xquery.com/modules/file";
 
@@ -81,7 +39,7 @@ import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serializati
  :    content.
  : @return The empty sequence.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:append(
   $file as xs:string,
@@ -102,7 +60,7 @@ declare %sequential function file:append(
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:append-binary(
   $file as xs:string,
@@ -116,7 +74,7 @@ declare %sequential function file:append-binary(
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %private %sequential function file:append-text(
   $file as xs:string,
@@ -134,7 +92,7 @@ declare %private %sequential function file:append-text(
  :    <pre>$destination</pre> points to an existing file.
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:copy(
   $source as xs:string,
@@ -151,7 +109,7 @@ declare %sequential function file:copy(
  : @return The empty sequence.
  : @error FOFL0002 If the directory cannot be created because of an already
  :    existing file.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:create-directory(
   $dir as xs:string
@@ -166,7 +124,7 @@ declare %sequential function file:create-directory(
  : @param $path The path/URI of the file or directory to delete.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$path</pre> path does not exist.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:delete(
   $path as xs:string
@@ -187,7 +145,7 @@ declare %sequential function file:delete(
  : @param $file The path/URI of the file to delete.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$file</pre> path does not exist.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %private %sequential function file:delete-file-impl(
   $file as xs:string
@@ -200,7 +158,7 @@ declare %private %sequential function file:delete-file-impl(
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$dir</pre> path does not exist.
  : @error FOFL0003 If <pre>$dir</pre> does not point to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %private %sequential function file:delete-directory-impl(
   $dir as xs:string
@@ -259,7 +217,7 @@ declare %nondeterministic function file:is-file(
  :    <pre>$destination</pre> points to an existing file.
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's parent
  :    directory does not exist either.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:move(
   $source as xs:string,
@@ -278,7 +236,7 @@ declare %sequential function file:move(
  : @return The content of the file as Base64.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %nondeterministic function file:read-binary(
   $file as xs:string
@@ -295,7 +253,7 @@ declare %nondeterministic function file:read-binary(
  : @return The content of the file as string.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare function file:read-text(
   $file as xs:string
@@ -317,7 +275,7 @@ declare function file:read-text(
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0004 If <pre>$source</pre> points to a directory.
  : @error FOFL0006 If <pre>$encoding</pre> is not supported.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %nondeterministic function file:read-text(
   $file as xs:string,
@@ -335,7 +293,7 @@ declare %nondeterministic function file:read-text(
  : @return The content of the file as a sequence of strings.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare function file:read-text-lines(
   $file as xs:string
@@ -362,7 +320,7 @@ declare function file:read-text-lines(
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0004 If <pre>$source</pre> points to a directory.
  : @error FOFL0006 If <pre>$encoding</pre> is not supported.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare function file:read-text-lines(
   $file as xs:string,
@@ -419,7 +377,7 @@ declare %private %sequential function file:copy-directory(
  :        content.
  : @return The empty sequence.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:write(
   $file as xs:string,
@@ -440,7 +398,7 @@ declare %sequential function file:write(
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:write-binary(
   $file as xs:string,
@@ -454,7 +412,7 @@ declare %sequential function file:write-binary(
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %sequential function file:write-binary(
   $file as xs:string,
@@ -471,7 +429,7 @@ declare %sequential function file:write-binary(
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %private %sequential function file:write-text(
   $file as xs:string,
@@ -487,7 +445,7 @@ declare %private %sequential function file:write-text(
  : @param $dir The path/URI of the directory to retrieve the children from.
  : @return The sequence of names of the direct children.
  : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %nondeterministic function file:list(
   $dir as xs:string
@@ -506,7 +464,7 @@ declare %nondeterministic function file:list(
  :    performed recursively.
  : @return A sequence of relative paths.
  : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare function file:list(
   $path as xs:string,
@@ -543,7 +501,7 @@ declare function file:list(
  : @param $pattern The file name pattern.
  : @return A sequence of file names matching the pattern.
  : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare function file:list(
   $path as xs:string,
@@ -584,7 +542,7 @@ declare function file:glob-to-regex(
  :    timestamp from.
  : @return The date and time of the last modification of the item.
  : @error FOFL0001 If the <pre>$path</pre> does not exist.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %nondeterministic function file:last-modified(
   $path as xs:string
@@ -597,7 +555,7 @@ declare %nondeterministic function file:last-modified(
  : @return An integer representing the size in bytes of the file.
  : @error FOFL0001 If the <pre>$file</pre> does not exist.
  : @error FOFL0004 If the <pre>$file</pre> points to a directory.
- : @error FOFL0000 If any other error occurs.
+ : @error FOFL9999 If any other error occurs.
  :)
 declare %nondeterministic function file:size(
   $file as xs:string
@@ -656,6 +614,7 @@ declare function file:path-to-uri(
  :
  : @param $path The uri or path to normalize.
  : @return The native path corresponding to <pre>$path</pre>.
+ : @error FOFL9999 If an error occurs while trying to obtain the native path.
  :)
 declare function file:path-to-native($path as xs:string) as xs:string external;
 

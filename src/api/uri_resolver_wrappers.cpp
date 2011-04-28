@@ -87,8 +87,6 @@ namespace zorba
           assert(false);
       }
     }
-    else {
-      return NULL;
-    }
+    return NULL;
   }
 } /* namespace zorba */
