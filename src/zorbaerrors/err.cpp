@@ -73,7 +73,7 @@ bool operator==( QName const &q1, char const *q2 ) {
       // Assume EQName notation, i.e., "uri:localname".
       //
       if ( char const *colon = ::strchr( q2, ':' ) )
-        if ( colon = strchr( colon + 1, ':' ) )
+        if ( (colon = strchr( colon + 1, ':' )) )
           if ( char const *const q1_ns = q1.ns() )
             if ( ::strncmp( q1_ns, q2, colon - q2 ) == 0 )
               if ( char const *const q1_local = q1.localname() )
