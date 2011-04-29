@@ -13,3 +13,7 @@
 # limitations under the License.
 
 # Nothing to do in this directory.
+
+IF(ZORBA_WITH_FILE_ACCESS)
+  GENERATE_MODULE_LIBRARY(file "")
+ENDIF(ZORBA_WITH_FILE_ACCESS)

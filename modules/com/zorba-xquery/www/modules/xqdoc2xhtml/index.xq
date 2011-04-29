@@ -22,9 +22,10 @@
  :)
 module namespace xqdoc2html  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
 
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace xqd  = "http://www.zorba-xquery.com/modules/xqdoc";
 import module namespace err  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error";
+
+import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";

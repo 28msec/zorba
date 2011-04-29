@@ -42,8 +42,14 @@ LIST(REMOVE_ITEM TESTFILES
 
 # Crashes on Windows: 3284881, 3071699 (fix 3284881 before 3071699)
   zorba/HigherOrder/hof-101.xq
-
 )
+IF(WIN32)
+  LIST(REMOVE_ITEM TESTFILES
+  # Crashes on Windows: 3292817
+    zorba/eval/eval8.xq
+    zorba/eval/eval_mod1.xq
+  )
+ENDIF(WIN32)
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
 # of this dir
@@ -303,7 +309,7 @@ IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
   EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3284888)
-  EXPECTED_FAILURE(test/rbkt/zorba/block/local_var3 3288799)
+#  EXPECTED_FAILURE(test/rbkt/zorba/block/local_var3 3288799)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
@@ -320,5 +326,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3281365)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
-EXPECTED_FAILURE(test/rbkt/zorba/eval/eval8 3292817)
-EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_mod1 3292817)
+IF(NOT WIN32)
+  # these test have been removed on Windows because they crash
+  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval8 3292817)
+  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_mod1 3292817)
+ENDIF(NOT WIN32)

@@ -38,14 +38,14 @@
 SET(ZORBA_WORKS)
 IF(EXISTS ${ZORBA_EXE})
   EXECUTE_PROCESS(COMMAND ${ZORBA_EXE}
-    -q "import module namespace file = 'http://www.zorba-xquery.com/modules/file'; file:exists( 'a non existant file' )"
+    -q "import module namespace file = 'http://expath.org/ns/file'; file:exists( 'a non existant file' )"
     RESULT_VARIABLE ZORBA_WORKS_RES
     OUTPUT_VARIABLE ZORBA_WORKS_OUTPUT)
   IF(NOT ZORBA_WORKS_RES EQUAL 0)
     SET(ZORBA_WORKS FALSE)
     MESSAGE(STATUS "[WARNING] Zorba Command Line Utility at \"${ZORBA_EXE}\ "
       "does not work properly and cannot generate the runtime source files. "
-      "This will cause the repository version of thiese files to be used."
+      "This will cause the repository version of these files to be used. "
       "(Output from Zorba test command: ${ZORBA_WORKS_OUTPUT}")
   ELSE(NOT ZORBA_WORKS_RES EQUAL 0)
     SET(ZORBA_WORKS TRUE)

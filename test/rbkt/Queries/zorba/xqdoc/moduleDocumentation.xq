@@ -1,4 +1,4 @@
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
 import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";

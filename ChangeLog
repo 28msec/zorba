@@ -18,8 +18,7 @@ version 2.0
   * added the fn:serialize function (XQuery Functions and Operators 3.0)
   * removed the serialize module (http://www.zorba-xquery.com/modules/serialize) since this
     functionality is now covered by the built-in function fn:serialize
-  * updated the file module (http://www.zorba-xquery.com/modules/file) to the new http://expath.org/
-    file module specification
+  * updated the file module to the new http://expath.org/ file module specification. The new module is now in the http://expath.org/ns/file namespace
 
 version 1.4
   * added a datetime library module with nondeterministic functions

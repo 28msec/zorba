@@ -19,7 +19,7 @@
  : @author Gabriel Petrovay, Matthias Brantner, Markus Pilman
  : @see http://expath.org/spec/file
  :)
-module namespace file = "http://www.zorba-xquery.com/modules/file";
+module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 

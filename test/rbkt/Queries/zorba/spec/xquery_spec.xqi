@@ -1,10 +1,10 @@
 module namespace util = "http://www.zorba-xquery.com/util";
 
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
-import module namespace http-expath = "http://expath.org/ns/http-client";
-
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
+
+import module namespace http-expath = "http://expath.org/ns/http-client";
+import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 

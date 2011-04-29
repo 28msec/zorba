@@ -29,7 +29,7 @@
  :)
 module namespace xsl-fo = "http://www.zorba-xquery.com/modules/xsl-fo";
 
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
 
 (:~
  : This is the name of the error which gets thrown, if zorba is unable

@@ -1,7 +1,7 @@
 declare namespace zorba="http://www.zorba-xquery.com";
 
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
 
 declare %sequential function local:get-files($files as xs:string) as xs:string
 {

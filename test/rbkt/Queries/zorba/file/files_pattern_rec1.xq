@@ -1,4 +1,4 @@
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
 
 declare variable $path as xs:string external;
 

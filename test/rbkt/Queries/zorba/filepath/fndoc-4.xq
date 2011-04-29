@@ -3,7 +3,8 @@
 (: absolute file paths, but instead should resolve them as relative URIs :)
 (: relative to the base URI). :)
 
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
+
 declare base-uri "test:///foo";
 declare variable $rbkt as xs:string external;
 

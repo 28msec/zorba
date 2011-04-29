@@ -1,6 +1,7 @@
 (: fn:doc() should accept absolute file URIs. :)
 
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
+
 declare variable $rbkt as xs:string external;
 
 (: Use the "file" module to give us a URI. :)

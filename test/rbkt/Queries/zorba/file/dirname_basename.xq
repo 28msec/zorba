@@ -1,5 +1,5 @@
 import module namespace os = "http://www.zorba-xquery.com/modules/os";
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
 
 declare function local:do($path) {
   fn:concat(file:dir-name($path),"-",file:base-name($path))
@@ -17,7 +17,6 @@ if (os:operating-system() eq "Windows") then
  let $path8 := "G:\\\\\"
  let $path9 := "g:"
  let $path10 := "H:\"
- let $path11 := "file:///h:"
  let $path12 := "file:///I:/"
  let $path13 := "file:///i:///"
  return
@@ -33,7 +32,6 @@ if (os:operating-system() eq "Windows") then
    local:do($path8) eq "G:\-" and 
    local:do($path9) eq "g:\-" and 
    local:do($path10) eq "H:\-" and 
-   local:do($path11) eq "h:\-" and 
    local:do($path12) eq "I:\-" and
    local:do($path13) eq "i:\-"
  )

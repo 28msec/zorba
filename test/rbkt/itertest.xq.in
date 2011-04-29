@@ -1,4 +1,4 @@
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
 import module namespace process = "http://www.zorba-xquery.com/modules/process";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";

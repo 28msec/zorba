@@ -38,7 +38,7 @@ module namespace string = "http://www.zorba-xquery.com/modules/string";
  :         item was not a streamable string.
  :
  : @see string:is-streamable
- : @see {http://www.zorba-xquery.com/modules/file}read-text
+ : @see {http://expath.org/ns/file}read-text
  :)
 declare function string:materialize($s as xs:string) as xs:string external;
 

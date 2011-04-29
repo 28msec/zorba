@@ -1,6 +1,7 @@
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace base64 = "http://www.zorba-xquery.com/modules/base64";
-import module namespace commons = "http://www.zorba-xquery.com/modules/file/tests/commons" at "common.xqlib";
+import module namespace commons = "http://expath.org/ns/file/tests/commons" at "common.xqlib";
+
+import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
