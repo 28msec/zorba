@@ -42,12 +42,12 @@ public:
 
   bool errors() const
   {
-    return !m_errors.empty();
+    return !m_qnames.empty();
   }
 
-  const std::vector<std::string>& getErrorList() const
+  std::vector<std::string> const& getErrorQNames() const
   {
-    return m_errors;
+    return m_qnames;
   }
 
   const std::vector<zorba::String>& getErrorDescs() const
@@ -57,7 +57,7 @@ public:
   
   void clear()
   {
-    m_errors.clear();
+    m_qnames.clear();
     m_desc.clear();
   }
 
@@ -72,14 +72,16 @@ public:
   }
 
 private:
-  std::vector<std::string>    m_errors;
+  std::vector<std::string>    m_qnames;
   std::vector<zorba::String>  m_desc;
   std::string                 theErrorFile;
 
   void registerError(const zorba::ZorbaException& e)
   {
-    m_errors.push_back( e.error().qname().localname() );
     std::ostringstream strdescr;
+    strdescr << e.error().qname().ns() << ":" << e.error().qname().localname();
+    m_qnames.push_back(strdescr.str());
+    strdescr.clear();
 
     if(zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>(&e))
     {

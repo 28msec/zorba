@@ -1,1 +1,1 @@
-Error: XQST0098
+Error: http://www.w3.org/2005/xqt-errors:XQST0098

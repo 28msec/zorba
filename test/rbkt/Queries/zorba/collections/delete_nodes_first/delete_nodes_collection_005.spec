@@ -1,1 +1,1 @@
-Error: ZDDY0001
+Error: http://www.zorba-xquery.com/:ZDDY0001

@@ -1,1 +1,1 @@
-Error: FORG0006
+Error: http://www.w3.org/2005/xqt-errors:FORG0006

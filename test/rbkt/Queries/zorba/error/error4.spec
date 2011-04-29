@@ -1,1 +1,1 @@
-Error: XPST0005
+Error: http://www.example.com:testerror

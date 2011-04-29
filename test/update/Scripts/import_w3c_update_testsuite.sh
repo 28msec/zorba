@@ -129,7 +129,10 @@ string-join (
       return concat("Compare: ", $outfile/text(), " ", $outfile/@compare),
 
       for $error in $state/expected-error
-      return concat("Error: ", $error/text())
+      return concat("Error: ",
+                    if ($error/text() eq "*")
+                      then "" else "http://www.w3.org/2005/xqt-errors:",
+                    $error/text())
     ),
 
     "end"

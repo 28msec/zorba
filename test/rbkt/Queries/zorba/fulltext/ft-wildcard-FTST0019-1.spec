@@ -1,1 +1,1 @@
-Error: FTST0019
+Error: http://www.w3.org/2005/xqt-errors:FTST0019

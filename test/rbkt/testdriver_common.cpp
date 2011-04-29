@@ -94,17 +94,17 @@ void slurp_file (
 ********************************************************************************/
 bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec)
 {
-  std::string star("*");
-  const std::vector<std::string>& errors = errHandler.getErrorList();
-  for(std::vector<std::string>::const_iterator i = errors.begin();
-      i != errors.end();
-      ++i)
+  static std::string star("*");
+  std::vector<std::string> const& qnames = errHandler.getErrorQNames();
+  for(std::vector<std::string>::const_iterator actual = qnames.begin();
+      actual != qnames.end();
+      actual++)
   {
-    for(std::vector<std::string>::const_iterator j = aSpec->errorsBegin();
-        j != aSpec->errorsEnd();
-        ++j)
+    for(std::vector<std::string>::const_iterator expect = aSpec->errorsBegin();
+        expect != aSpec->errorsEnd();
+        expect++)
     {
-      if ((i->compare(*j) == 0) || (j->compare(star)) == 0)
+      if ((*actual == *expect) || (*expect == star))
         return true;
     }
   }
@@ -142,13 +142,13 @@ void printErrors(const TestErrorHandler& errHandler, const char* msg, bool print
       output << msg << ":" << std::endl;
   }
 
-  const std::vector<std::string>& errors = errHandler.getErrorList();
+  const std::vector<std::string>& qnames = errHandler.getErrorQNames();
   const std::vector<zorba::String>& descs = errHandler.getErrorDescs();
 
-  std::vector<std::string>::const_iterator codeIter = errors.begin();
+  std::vector<std::string>::const_iterator codeIter = qnames.begin();
   std::vector<zorba::String>::const_iterator descIter = descs.begin();
 
-  for(; codeIter != errors.end(); ++codeIter, ++descIter)
+  for(; codeIter != qnames.end(); ++codeIter, ++descIter)
   {
     assert (descIter != descs.end());
     if (printInFile)

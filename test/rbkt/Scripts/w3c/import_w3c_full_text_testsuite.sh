@@ -309,8 +309,9 @@ if (@errs) {
   open (SPEC, ">>$specfile");
   open (SPECX, ">>$xqueryxspecfile");
   foreach (@errs) {
-    print SPEC "Error:$_\n";
-    print SPECX "Error:$_\n";
+    my ($qname) = /^\*$/ ? "*" : "http://www.w3.org/2005/xqt-errors:$_\n";
+    print SPEC "Error: $qname\n";
+    print SPECX "Error: $qname\n";
   }
   close (SPEC);
   close (SPECX);

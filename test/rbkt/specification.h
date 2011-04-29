@@ -445,18 +445,6 @@ public:
           if(lIter == tokens.end() ) { return false; }
           setTimezone(lIter->begin(), lIter->end());
         }
-        else if ( lIter->find("Error:") != std::string::npos ) 
-        {
-          addError(lIter->begin()+lIter->find(":")+1, lIter->end());
-        }
-        else if ( lIter->find("Date:") != std::string::npos  ) 
-        {
-          setDate(lIter->begin()+lIter->find(":")+1, lIter->end());
-        }
-        else if ( lIter->find("Timezone:") != std::string::npos ) 
-        {
-          setTimezone(lIter->begin()+lIter->find(":")+1, lIter->end());
-        }
         else
         {
           break;
