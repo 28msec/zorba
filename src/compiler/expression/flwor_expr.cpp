@@ -168,7 +168,7 @@ for_clause::for_clause(
     {
       if (TypeOps::is_empty(tm, *declaredType))
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( BadType_23o ), "empty-sequence" ),
           ERROR_LOC( loc )
         );
@@ -185,7 +185,7 @@ for_clause::for_clause(
           if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
           {
             throw XQUERY_EXCEPTION(
-              XPTY0004,
+              err::XPTY0004,
               ERROR_PARAMS(
                 ZED( BadType_23o ), *domainType,
                 ZED( NoTreatAs_4 ), *declaredType
@@ -317,7 +317,7 @@ let_clause::let_clause(
         if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
         {
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS(
               ZED( BadType_23o ), *domainType,
               ZED( NoTreatAs_4 ), *declaredType

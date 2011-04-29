@@ -51,7 +51,7 @@ void checkNodeType(
   if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType())))
   {
     throw XQUERY_EXCEPTION(
-      ZDTY0001_COLLECTION_INVALID_NODE_TYPE,
+      zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE,
       ERROR_PARAMS(
         TypeOps::toString( *tm->create_value_type( node ) ),
         collectionDecl->getName()->getStringValue()

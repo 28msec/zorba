@@ -57,7 +57,7 @@ checkType(const Item& aItem, const String& aLocalname)
     object.member;\
     UNIT_ASSERT(false); \
   } catch (ZorbaException &e) { \
-    UNIT_ASSERT (e.error() == err::ZSTR0040_TYPE_ERROR); \
+    UNIT_ASSERT (e.error() == zerr::ZSTR0040_TYPE_ERROR); \
   }
 
 
@@ -160,7 +160,7 @@ itemfactory(int argc, char* argv[])
     lItem.getPrefix();
     UNIT_ASSERT(false);
   } catch (ZorbaException &e) {
-    UNIT_ASSERT (e.error() == err::ZSTR0040_TYPE_ERROR);
+    UNIT_ASSERT (e.error() == zerr::ZSTR0040_TYPE_ERROR);
   }
 //    CHECK_NOT_IMPLEMENTED (lItem, getPrefix());
     CHECK_NOT_IMPLEMENTED (lItem, getLocalName());

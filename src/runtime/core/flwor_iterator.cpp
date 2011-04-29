@@ -1383,7 +1383,9 @@ void FLWORIterator::materializeStreamTuple(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o)));
+        throw XQUERY_EXCEPTION(
+          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
+        );
       }
     }
     else
@@ -1436,7 +1438,9 @@ void FLWORIterator::materializeSortTupleAndResult(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o)));
+        throw XQUERY_EXCEPTION(
+          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
+        );
       }
     }
     else
@@ -1503,7 +1507,7 @@ void FLWORIterator::materializeGroupTuple(
           store::Item_t temp;
           if (typedValueIter->next(temp))
           {
-            throw XQUERY_EXCEPTION(XPTY0004,
+            throw XQUERY_EXCEPTION(err::XPTY0004,
                                    ERROR_PARAMS(ZED(SingletonExpected_2o),
                                                 ZED(AtomizationHasMoreThanOneValue)));
           }
@@ -1514,7 +1518,9 @@ void FLWORIterator::materializeGroupTuple(
       store::Item_t temp;
       if (consumeNext(temp, specIter->theInput, planState))
       {
-        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o)));
+        throw XQUERY_EXCEPTION(
+          err::XPTY0004, ERROR_PARAMS(ZED(SingletonExpected_2o))
+        );
       }
     }
 

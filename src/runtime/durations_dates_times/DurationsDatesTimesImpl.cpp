@@ -125,7 +125,7 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
     }
     catch (InvalidTimezoneException const&)
     {
-      throw XQUERY_EXCEPTION(FODT0003);
+      throw XQUERY_EXCEPTION(err::FODT0003);
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }
@@ -156,7 +156,7 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     }
     catch (InvalidTimezoneException const&)
     {
-      throw XQUERY_EXCEPTION(FODT0003);
+      throw XQUERY_EXCEPTION(err::FODT0003);
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }
@@ -606,7 +606,7 @@ bool FnFormatDateTimeIterator::nextImpl(
 
         default:
           throw XQUERY_EXCEPTION(
-            XTDE1340, ERROR_PARAMS( pictureString ), ERROR_LOC( loc )
+            err::XTDE1340, ERROR_PARAMS( pictureString ), ERROR_LOC( loc )
           );
         }
 
@@ -625,12 +625,12 @@ bool FnFormatDateTimeIterator::nextImpl(
         // min_width_modifier is -3, there was an error in the picture
         if (modifier.min_width_modifier == -3)
           throw XQUERY_EXCEPTION(
-            XTDE1340, ERROR_PARAMS( pictureString ), ERROR_LOC( loc )
+            err::XTDE1340, ERROR_PARAMS( pictureString ), ERROR_LOC( loc )
           );
 
         int data_type = get_data_type(component);
         if (data_type != -1 && (!DateTime::FACET_MEMBERS[facet_type][data_type]))
-          throw XQUERY_EXCEPTION(XTDE1350, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(err::XTDE1350, ERROR_LOC(loc));
 
         switch (component)
         {

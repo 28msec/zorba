@@ -195,7 +195,7 @@ int serializer::emitter::emit_expanded_string(
 
       // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
       if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
-        throw XQUERY_EXCEPTION( FOCH0001, ERROR_PARAMS( cp ) );
+        throw XQUERY_EXCEPTION( err::FOCH0001, ERROR_PARAMS( cp ) );
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
@@ -221,7 +221,8 @@ int serializer::emitter::emit_expanded_string(
     if (ser && ser->method == PARAMETER_VALUE_XML &&
         ser->version == "1.0" && !xml::is_valid(static_cast<unsigned>(*chars)))
       throw XQUERY_EXCEPTION(
-        XQST0090, ERROR_PARAMS( static_cast<unsigned>( *chars ), xml::v1_0 )
+        err::XQST0090,
+        ERROR_PARAMS( static_cast<unsigned>( *chars ), xml::v1_0 )
       );
 
     /*
@@ -231,7 +232,7 @@ int serializer::emitter::emit_expanded_string(
       in the instance of the data model.
     */
     if (ser && ser->method == PARAMETER_VALUE_HTML && *chars >= 0x7F && *chars <= 0x9f)
-      throw XQUERY_EXCEPTION( SERE0014, ERROR_PARAMS( *chars ) );
+      throw XQUERY_EXCEPTION( err::SERE0014, ERROR_PARAMS( *chars ) );
 
     /*
       In addition, the non-whitespace control characters #x1 through #x1F and
@@ -405,7 +406,7 @@ void serializer::emitter::emit_item(store::Item* item)
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
     throw XQUERY_EXCEPTION(
-      SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
+      err::SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
     );
   }
   else
@@ -1706,7 +1707,7 @@ void serializer::text_emitter::emit_item(store::Item* item)
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
     throw XQUERY_EXCEPTION(
-      SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
+      err::SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
     );
   }
   else
@@ -1914,7 +1915,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
       indent = PARAMETER_VALUE_NO;
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
   else if (!strcmp(aName, "standalone"))
@@ -1927,7 +1928,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
       standalone = PARAMETER_VALUE_OMIT;
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNoOmit ) )
+        err::SEPM0016,
+        ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNoOmit ) )
       );
   }
   else if (!strcmp(aName, "omit-xml-declaration"))
@@ -1938,7 +1940,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
       omit_xml_declaration = PARAMETER_VALUE_NO;
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
   else if (!strcmp(aName, "byte-order-mark"))
@@ -1949,7 +1951,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
       byte_order_mark = PARAMETER_VALUE_NO;
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
   else if (!strcmp(aName, "undeclare-prefixes"))
@@ -1960,7 +1962,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
   else if (!strcmp(aName, "method"))
@@ -1977,7 +1979,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
       method = PARAMETER_VALUE_BINARY;
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
       );
   }
   else if (!strcmp(aName, "include-content-type"))
@@ -1988,7 +1990,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
       include_content_type = PARAMETER_VALUE_NO;
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
   else if (!strcmp(aName, "encoding"))
@@ -2001,7 +2003,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
 #endif
     else
       throw XQUERY_EXCEPTION(
-        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
       );
   }
   else if (!strcmp(aName, "media-type"))
@@ -2027,7 +2029,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else
   {
-    throw XQUERY_EXCEPTION( SEPM0016, ERROR_PARAMS( aValue, aName ) );
+    throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
   }
 }
 
@@ -2052,7 +2054,7 @@ serializer::validate_parameters(void)
     if (method == PARAMETER_VALUE_XML) {
       if (version != "1.0" && version != "1.1")
         throw XQUERY_EXCEPTION(
-          SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
+          err::SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
         );
     }
 
@@ -2065,16 +2067,16 @@ serializer::validate_parameters(void)
     if (omit_xml_declaration == PARAMETER_VALUE_YES) {
       if (standalone != PARAMETER_VALUE_OMIT)
         throw XQUERY_EXCEPTION(
-          SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
+          err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
         );
       if (version != "1.0" && !doctype_system.empty())
         throw XQUERY_EXCEPTION(
-          SEPM0009, ERROR_PARAMS( ZED( SEPM0009_Not10 ) )
+          err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_Not10 ) )
         );
     }
 
     if (undeclare_prefixes == PARAMETER_VALUE_YES && version == "1.0")
-      throw XQUERY_EXCEPTION( SEPM0010 );
+      throw XQUERY_EXCEPTION( err::SEPM0010 );
   }
 
   if (method == PARAMETER_VALUE_HTML) {
@@ -2083,7 +2085,7 @@ serializer::validate_parameters(void)
       version = "4.0";
     } else if (!(ztd::equals(version, "4.0", 3) || ztd::equals(version, "4.01", 4))) {
       throw XQUERY_EXCEPTION(
-        SESU0013, ERROR_PARAMS( version, "HTML", "\"4.0\", \"4.01\"" )
+        err::SESU0013, ERROR_PARAMS( version, "HTML", "\"4.0\", \"4.01\"" )
       );
     }
   }
@@ -2174,7 +2176,8 @@ serializer::serialize(
     if (method != PARAMETER_VALUE_XML &&
         method != PARAMETER_VALUE_XHTML) {
       throw ZORBA_EXCEPTION(
-        ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, ERROR_PARAMS( method )
+        zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,
+        ERROR_PARAMS( method )
       );
     }
     // it's OK now, build a SAX emmiter
@@ -2189,7 +2192,7 @@ serializer::serialize(
   while (aObject->next(lItem)) {
     // PUL's cannot be serialized
     if (lItem->isPul()) {
-      throw ZORBA_EXCEPTION(ZAPI0007_CANNOT_SERIALIZE_PUL);
+      throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
@@ -2228,7 +2231,7 @@ void serializer::serialize(
 
     // PUL's cannot be serialized
     if (lItem->isPul()) {
-      throw ZORBA_EXCEPTION(ZAPI0007_CANNOT_SERIALIZE_PUL);
+      throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);

@@ -112,7 +112,8 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
       break;
     default:
       throw XQUERY_EXCEPTION(
-        ZXQP0015_NOT_IMPLEMENTED, ERROR_PARAMS( ZED( NonFileThesaurusURI ) )
+        zerr::ZXQP0015_NOT_IMPLEMENTED,
+        ERROR_PARAMS( ZED( NonFileThesaurusURI ) )
       );
   }
 

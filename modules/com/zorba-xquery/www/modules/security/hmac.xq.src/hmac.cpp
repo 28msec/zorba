@@ -39,14 +39,14 @@ namespace zorba { namespace security {
       std::stringstream lErrorMessage;
       lErrorMessage << "An empty-sequence is not allowed as "
                     << aIndex << ". parameter.";
-      throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
     }
     zorba::String lTmpString = lItem.getStringValue();
     if (args_iter->next(lItem)) {
       std::stringstream lErrorMessage;
       lErrorMessage << "A sequence of more then one item is not allowed as "
         << aIndex << ". parameter.";
-      throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
     }
     args_iter->close();
     return lTmpString;

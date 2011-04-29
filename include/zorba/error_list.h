@@ -20,9 +20,10 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 
+namespace zorba {
+
 #define XQUERY_DEC_ERROR(ERR) extern ZORBA_DLL_PUBLIC XQueryError ERR
 
-namespace zorba {
 namespace err {
 
 ////////// XQuery Errors //////////////////////////////////////////////////////
@@ -1175,9 +1176,16 @@ XQUERY_DEC_ERROR( SERE0015 );
  */
 XQUERY_DEC_ERROR( SEPM0016 );
 
-////////// Zorba XQuery Processor Errors //////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+} // namespace err
+
+#undef XQUERY_DEC_ERROR
 #define ZORBA_DEC_ERROR(ERR) extern ZORBA_DLL_PUBLIC ZorbaError ERR
+
+namespace zerr {
+
+////////// Zorba XQuery Processor Errors //////////////////////////////////////
 
 /**
  * An "error" constant for "no error."
@@ -1358,10 +1366,9 @@ ZORBA_DEC_ERROR( ZSTR0055_STREAMABLE_STRING_CONSUMED );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#undef XQUERY_DEC_ERROR
 #undef ZORBA_DEC_ERROR
 
-} // namespace err
+} // namespace zerr
 } // namespace zorba
 #endif /* ZORBA_ERROR_LIST_API_H */
 /* vim:set et sw=2 ts=2: */

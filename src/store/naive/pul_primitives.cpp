@@ -634,7 +634,7 @@ void UpdPut::apply()
   }
   catch(ZorbaException const& e)
   {
-    if (e.error() == err::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
+    if (e.error() == zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
     {
       theOldDocument = store->getDocument(theTargetUri->getStringValue());
 
@@ -751,7 +751,7 @@ void UpdDeleteCollection::apply()
 
   if (!indexes.empty())
     throw XQUERY_EXCEPTION(
-      ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
+      zerr::ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
       ERROR_PARAMS( collection->getName()->getStringValue() )
     );
 
@@ -760,7 +760,7 @@ void UpdDeleteCollection::apply()
 
   if (!activeICs.empty())
     throw XQUERY_EXCEPTION(
-      ZDDY0014_COLLECTION_BAD_DESTROY_ICS,
+      zerr::ZDDY0014_COLLECTION_BAD_DESTROY_ICS,
       ERROR_PARAMS( collection->getName()->getStringValue() )
     );
 
@@ -771,7 +771,7 @@ void UpdDeleteCollection::apply()
     XmlTree* tree = root->getTree();
     if (tree->getRefCount() > 1)
       throw XQUERY_EXCEPTION(
-        ZDDY0015_COLLECTION_BAD_DESTROY_NODES,
+        zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES,
         ERROR_PARAMS( collection->getName()->getStringValue() )
       );
   }
@@ -1052,10 +1052,10 @@ void UpdCreateIndex::apply()
   }
   catch(ZorbaException const& e)
   {
-    if (e.error() == err::ZSTR0045_DUPLICATE_NODE_ERROR)
+    if (e.error() == zerr::ZSTR0045_DUPLICATE_NODE_ERROR)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
+        zerr::ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
         ERROR_PARAMS( theQName->getStringValue() )
       );
     }
@@ -1095,7 +1095,7 @@ void UpdDeleteIndex::apply()
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0002_INDEX_DOES_NOT_EXIST,
+      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
       ERROR_PARAMS( theQName->getStringValue() )
     );
   }
@@ -1144,7 +1144,7 @@ void UpdRefreshIndex::apply()
   if ((theIndex = store.getIndex(theQName)) == NULL)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0002_INDEX_DOES_NOT_EXIST,
+      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
       ERROR_PARAMS( theQName->getStringValue() )
     );
   }

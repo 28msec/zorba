@@ -31,7 +31,7 @@ namespace zorba {
  * \hideinitializer
  */
 #define NEW_XQUERY_EXCEPTION(...) \
-  MAKE_EXCEPTION_VAR( internal::new_xquery_exception, zorba::err:: __VA_ARGS__ )
+  MAKE_EXCEPTION_VAR( internal::new_xquery_exception, zorba:: __VA_ARGS__ )
 
 ////////// XQuery error source location ///////////////////////////////////////
 

@@ -68,14 +68,14 @@ static XQPCollator* getCollator(
 
   if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( NoEmptySeqAsCollationParam ) ),
       ERROR_LOC( loc )
     );
 
   if (PlanIterator::consumeNext(temp, iter, planState))
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( NoSeqAsCollationParam ) ),
       ERROR_LOC( loc )
     );
@@ -172,7 +172,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (!consumeNext(state->theSearchItem, theChildren[1].getp(), planState))
   {
 		throw XQUERY_EXCEPTION(
-			FORG0006,
+			err::FORG0006,
 			ERROR_PARAMS( ZED( EmptySeqNoSearchItem ) ),
 			ERROR_LOC( loc )
 		);
@@ -385,7 +385,7 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (!consumeNext(lPositionItem, theChildren[1].getp(), planState))
   {
 		throw XQUERY_EXCEPTION(
-			FORG0006,
+			err::FORG0006,
 			ERROR_PARAMS( ZED( EmptySeqNoFnRemoveArg ) ),
 			ERROR_LOC( loc )
 		);
@@ -689,12 +689,12 @@ FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         if (!lNextItem->equals(result))
         {
-					throw XQUERY_EXCEPTION( FORG0003, ERROR_LOC( loc ) );
+					throw XQUERY_EXCEPTION( err::FORG0003, ERROR_LOC( loc ) );
         }
       }
       else
       {
-				throw XQUERY_EXCEPTION( FORG0003, ERROR_LOC( loc ) );
+				throw XQUERY_EXCEPTION( err::FORG0003, ERROR_LOC( loc ) );
       }
     }
 
@@ -715,7 +715,7 @@ FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChildren[0].getp(), planState))
   {
-		throw XQUERY_EXCEPTION( FORG0004, ERROR_LOC( loc ) );
+		throw XQUERY_EXCEPTION( err::FORG0004, ERROR_LOC( loc ) );
   }
   do
   {
@@ -761,7 +761,7 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   else
   {
     if (theRaiseError)
-			throw XQUERY_EXCEPTION( FORG0005, ERROR_LOC( loc ) );
+			throw XQUERY_EXCEPTION( err::FORG0005, ERROR_LOC( loc ) );
     else
       GENV_ITEMFACTORY->createBoolean(result, false);
   }
@@ -1060,7 +1060,7 @@ bool FnDeepEqualIterator::nextImpl(
 
     if (arg1->isFunction() || arg2->isFunction()) 
     {
-			throw XQUERY_EXCEPTION( FOTY0015, ERROR_LOC( loc ) );
+			throw XQUERY_EXCEPTION( err::FOTY0015, ERROR_LOC( loc ) );
     }
 
     equal = equal && DeepEqual(loc,
@@ -1242,7 +1242,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       lHitNumeric = true;
       if ( lHitYearMonth )
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
 					ERROR_PARAMS(
 						ZED( BadArgTypeForFn_2o34o ),
 						*lRunningType,
@@ -1254,7 +1254,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         );
       if ( lHitDayTime )
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
           ERROR_PARAMS(
 						ZED( BadArgTypeForFn_2o34o ),
 						*lRunningType,
@@ -1270,7 +1270,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       lHitYearMonth = true;
       if (lHitNumeric)
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
           ERROR_PARAMS(
 						ZED( BadArgTypeForFn_2o34o ),
 						*lRunningType,
@@ -1281,7 +1281,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         );
       if (lHitDayTime)
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
           ERROR_PARAMS(
 						ZED( BadArgTypeForFn_2o34o ),
 						*lRunningType,
@@ -1297,7 +1297,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       lHitDayTime = true;
       if ( lHitNumeric )
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
           ERROR_PARAMS(
 						ZED( BadArgTypeForFn_2o34o ),
 						*lRunningType,
@@ -1308,7 +1308,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         );
       if ( lHitYearMonth )
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
           ERROR_PARAMS(
 						ZED( BadArgTypeForFn_2o34o ),
 						*lRunningType,
@@ -1322,7 +1322,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
 			throw XQUERY_EXCEPTION(
-				FORG0006,
+				err::FORG0006,
 				ERROR_PARAMS(
 					ZED( BadArgTypeForFn_2o34o ),
 					*lRunningType,
@@ -1397,7 +1397,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
          TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
       throw XQUERY_EXCEPTION(
-				FORG0006,
+				err::FORG0006,
 				ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), *lResultType, "fn:sum" ),
 				ERROR_LOC(loc)
 			);
@@ -1437,7 +1437,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       else
       {
 				throw XQUERY_EXCEPTION(
-					FORG0006,
+					err::FORG0006,
 					ERROR_PARAMS(
 						ZED( SumImpossibleWithTypes_23 ), *lResultType, *lRunningType
 					),

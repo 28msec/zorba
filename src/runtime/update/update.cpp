@@ -80,7 +80,7 @@ void areNodeModifiersViolated(
     if (lDeclColl == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0001_COLLECTION_NOT_DECLARED,
+        zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
         ERROR_PARAMS( lColl->getName()->getStringValue() ),
         ERROR_LOC( aLoc )
       );
@@ -90,7 +90,7 @@ void areNodeModifiersViolated(
     {
     case StaticContextConsts::read_only:
       throw XQUERY_EXCEPTION(
-        ZDDY0010_COLLECTION_CONST_NODE_UPDATE,
+        zerr::ZDDY0010_COLLECTION_CONST_NODE_UPDATE,
         ERROR_PARAMS( lColl->getName()->getStringValue() ),
         ERROR_LOC( aLoc )
       );
@@ -153,7 +153,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
   
   if (!consumeNext(target, theChild1, aPlanState))
-    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( loc ) );
 
   if (theType == store::UpdateConsts::BEFORE ||
       theType == store::UpdateConsts::AFTER)
@@ -161,13 +161,13 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
     if (!target->isNode() ||
         target->getNodeKind() == store::StoreConsts::attributeNode ||
         target->getNodeKind() == store::StoreConsts::documentNode)
-      throw XQUERY_EXCEPTION( XUTY0006, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0006, ERROR_LOC( loc ) );
 
     if (consumeNext(temp, theChild1, aPlanState))
-      throw XQUERY_EXCEPTION( XUTY0006, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0006, ERROR_LOC( loc ) );
 
     if (target->getParent() == NULL)
-      throw XQUERY_EXCEPTION( XUDY0029, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XUDY0029, ERROR_LOC( loc ) );
 
     parent = target->getParent();
 
@@ -188,10 +188,10 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
         if (numNodes > 0)
-          throw XQUERY_EXCEPTION( XUTY0004, ERROR_LOC( loc ) );
+          throw XQUERY_EXCEPTION( err::XUTY0004, ERROR_LOC( loc ) );
 
         if (!elemParent)
-          throw XQUERY_EXCEPTION( XUDY0030, ERROR_LOC( loc ) );
+          throw XQUERY_EXCEPTION( err::XUDY0030, ERROR_LOC( loc ) );
 
         attrs[numAttrs++].transfer(source);
         if (numAttrs == attrs.size())
@@ -238,16 +238,16 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   else
   {
     if (!target->isNode())
-      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( loc ) );
 
     targetKind = target->getNodeKind();
 
     if (targetKind != store::StoreConsts::documentNode &&
         targetKind != store::StoreConsts::elementNode)
-      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( loc ) );
 
     if (consumeNext(temp, theChild1, aPlanState))
-      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( loc ) );
 
     elemTarget = (targetKind == store::StoreConsts::elementNode);
 
@@ -263,10 +263,10 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
         if (numNodes > 0)
-          throw XQUERY_EXCEPTION( XUTY0004, ERROR_LOC( loc ) );
+          throw XQUERY_EXCEPTION( err::XUTY0004, ERROR_LOC( loc ) );
 
         if (!elemTarget)
-          throw XQUERY_EXCEPTION( XUTY0022, ERROR_LOC( loc ) );
+          throw XQUERY_EXCEPTION( err::XUTY0022, ERROR_LOC( loc ) );
 
         attrs[numAttrs++].transfer(source);
         if (numAttrs == attrs.size())
@@ -337,7 +337,7 @@ DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   while (consumeNext(target, theChild, aPlanState))
   {
     if (!target->isNode())
-      throw XQUERY_EXCEPTION( XUTY0007, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0007, ERROR_LOC( loc ) );
 
     areNodeModifiersViolated(theSctx, target, loc);
 
@@ -412,13 +412,13 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
-    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( loc ) );
 
   if (consumeNext(temp, theChild0, aPlanState))
-    throw XQUERY_EXCEPTION( XUTY0008, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XUTY0008, ERROR_LOC( loc ) );
 
   if (!lTarget->isNode())
-     throw XQUERY_EXCEPTION( XUTY0008, ERROR_LOC( loc ) );
+     throw XQUERY_EXCEPTION( err::XUTY0008, ERROR_LOC( loc ) );
 
   lTargetKind = lTarget->getNodeKind();
 
@@ -428,14 +428,14 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
          lTargetKind == store::StoreConsts::commentNode ||
          lTargetKind == store::StoreConsts::piNode))
   {
-    throw XQUERY_EXCEPTION( XUTY0008, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XUTY0008, ERROR_LOC( loc ) );
   }
 
   if (theType == store::UpdateConsts::NODE) // replace node ...
   {
     if (lTarget->getParent() == 0)
     {
-      throw XQUERY_EXCEPTION(XUDY0009, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XUDY0009, ERROR_LOC(loc));
     }
 
     lParent = lTarget->getParent();
@@ -457,7 +457,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         if (!lWith->isNode() ||
             lWith->getNodeKind() != store::StoreConsts::attributeNode)
         {
-          throw XQUERY_EXCEPTION(XUTY0011, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(err::XUTY0011, ERROR_LOC(loc));
         }
 
         lWith = lWith->copy(NULL, lCopyMode);
@@ -473,7 +473,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       while (consumeNext(lWith, theChild1, aPlanState))
       {
         if (!lWith->isNode())
-          throw XQUERY_EXCEPTION(XUTY0010, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(err::XUTY0010, ERROR_LOC(loc));
 
         lWithKind = lWith->getNodeKind();
 
@@ -482,7 +482,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
               || lWithKind == store::StoreConsts::commentNode
               || lWithKind == store::StoreConsts::piNode))
         {
-          throw XQUERY_EXCEPTION(XUTY0010, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(err::XUTY0010, ERROR_LOC(loc));
         }
 
         lWith = lWith->copy(NULL, lCopyMode);
@@ -598,12 +598,12 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       if (lTargetKind == store::StoreConsts::commentNode &&
           (content.find("--") != zstring::npos || ascii::ends_with(content, "-", 1)))
       {
-        throw XQUERY_EXCEPTION(XQDY0072, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQDY0072, ERROR_LOC(loc));
       }
       else if (lTargetKind == store::StoreConsts::piNode &&
                content.find("?>") != zstring::npos)
       {
-        throw XQUERY_EXCEPTION(XQDY0026, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQDY0026, ERROR_LOC(loc));
       }
 
       areNodeModifiersViolated(theSctx, lTarget, loc);
@@ -671,11 +671,11 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
   {
-    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( loc ) );
   }
   
   if (!lTarget->isNode())
-    throw XQUERY_EXCEPTION(XUTY0012, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XUTY0012, ERROR_LOC(loc));
 
   lTargetKind = lTarget->getNodeKind();
 
@@ -683,12 +683,12 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         lTargetKind == store::StoreConsts::attributeNode ||
         lTargetKind == store::StoreConsts::piNode))
   {
-    throw XQUERY_EXCEPTION(XUTY0012, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XUTY0012, ERROR_LOC(loc));
   }
 
   if (consumeNext(temp, theChild0, aPlanState))
   {
-    throw XQUERY_EXCEPTION(XUTY0012, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XUTY0012, ERROR_LOC(loc));
   }
 
   areNodeModifiersViolated(theSctx, lTarget, loc);
@@ -696,7 +696,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   if (!consumeNext(lNewname, theChild1, aPlanState))
   {
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( EmptySeqNoCastToQName ) ),
       ERROR_LOC( loc )
     );
@@ -705,7 +705,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   if (consumeNext(temp, theChild1, aPlanState))
   {
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( SeqNoCastToQName ) ),
       ERROR_LOC( loc )
     );
@@ -727,7 +727,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     {
       // the returned error codes are wrong for name casting => they must be changed
       throw XQUERY_EXCEPTION(
-        XQDY0074, ERROR_PARAMS( "item" ), ERROR_LOC( loc )
+        err::XQDY0074, ERROR_PARAMS( "item" ), ERROR_LOC( loc )
       );
     }
     else
@@ -848,12 +848,12 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       if (!consumeNext(lCopyNode, copyClause.theInput, aPlanState) ||
           !lCopyNode->isNode())
       {
-        throw XQUERY_EXCEPTION(XUTY0013, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(loc));
       }
 
       if (consumeNext(temp, copyClause.theInput, aPlanState))
       {
-        throw XQUERY_EXCEPTION(XUTY0013, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(loc));
       }
 
       copyNodes[i] = lCopyNode->copy(NULL, lCopyMode);

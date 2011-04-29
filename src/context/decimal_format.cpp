@@ -60,10 +60,11 @@ bool DecimalFormat::validate(const QueryLoc& loc) const
           isPictureStringProperty(theParams[j].first)
           &&
           theParams[i].second == theParams[j].second)
-        throw XQUERY_EXCEPTION(XQST0098, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQST0098, ERROR_LOC(loc));
     }
 
   return true;
 }
 
-}	/* namespace zorba */
+}	// namespace zorba
+/* vim:set et sw=2 ts=2: */

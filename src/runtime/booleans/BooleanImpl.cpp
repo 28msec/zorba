@@ -123,7 +123,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
     {
       if (is_sequence)
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
           ERROR_PARAMS(
             ZED( BadArgTypeForFn_2o34 ), "", "fn:boolean",
             ZED( EBVNotDefSeq_5 ), *type
@@ -132,7 +132,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
         );
       else
         throw XQUERY_EXCEPTION(
-          FORG0006,
+          err::FORG0006,
           ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), "", "fn:boolean" ),
           ERROR_LOC( loc )
         );
@@ -448,7 +448,7 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           consumeNext(lItem1, theChild1.getp(), planState))
       {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( NoSeqInValueComp ) ),
           ERROR_LOC( loc )
         );
@@ -508,7 +508,7 @@ bool CompareIterator::valueComparison(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() == err::ZSTR0041_NAN_COMPARISON)
+    if (e.error() == zerr::ZSTR0041_NAN_COMPARISON)
       return false;
     throw;
   }
@@ -676,7 +676,7 @@ bool CompareIterator::generalComparison(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() == err::ZSTR0041_NAN_COMPARISON)
+    if (e.error() == zerr::ZSTR0041_NAN_COMPARISON)
       return false;
     throw;
   }
@@ -870,7 +870,7 @@ bool CompareIterator::equal(
     else
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( BadType_23o ), *type0,
           ZED( NoCompareWithType_4 ), *type1
@@ -923,7 +923,7 @@ long CompareIterator::compare(
       else
       {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS(
             ZED( BadType_23o ), *type0,
             ZED( NoCompareWithType_4 ), *type1
@@ -953,7 +953,7 @@ long CompareIterator::compare(
       else
       {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS(
             ZED( BadType_23o ), *type0,
             ZED( NoCompareWithType_4 ), *type1
@@ -966,10 +966,10 @@ long CompareIterator::compare(
   catch(ZorbaException const& e)
   {
     // For example, two QName items do not have an order relationship.
-    if (e.error() == err::ZSTR0040_TYPE_ERROR)
+    if (e.error() == zerr::ZSTR0040_TYPE_ERROR)
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( BadType_23o ), *type0,
           ZED( NoCompareWithType_4 ), *type1
@@ -1076,7 +1076,7 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
     if (CONSUME(lItem0, 0) || CONSUME(lItem1, 1))
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( NoSeqInValueComp ) ),
         ERROR_LOC( this->loc )
       );
@@ -1154,7 +1154,7 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
 
   if (count0 && consumeNext(tItem0, theChild0.getp(), planState))
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( NoSeqTestedForAtomicEquiv ) ),
       ERROR_LOC( loc )
     );
@@ -1164,7 +1164,7 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
 
   if (count1 && consumeNext(tItem1, theChild1.getp(), planState))
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( NoSeqTestedForAtomicEquiv ) ),
       ERROR_LOC( loc )
     );

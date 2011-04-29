@@ -479,14 +479,14 @@ void Archiver::check_simple_field(bool retval,
   if(!retval)
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #ifndef NDEBUG
   if(!is_simple)
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #endif
@@ -496,14 +496,14 @@ void Archiver::check_simple_field(bool retval,
   if(strcmp(type, required_type))
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #endif
   if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 }
@@ -520,14 +520,14 @@ void Archiver::check_nonclass_field(bool retval,
   if(!retval)
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #ifndef NDEBUG
   if(is_simple || is_class)
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #endif
@@ -537,14 +537,14 @@ void Archiver::check_nonclass_field(bool retval,
   if(strcmp(type, required_type))
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #endif
   if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 }
@@ -561,14 +561,14 @@ void Archiver::check_class_field(bool retval,
   if(!retval)
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0001_NONEXISTENT_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #ifndef NDEBUG
   if(is_simple || !is_class)
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #endif
@@ -578,14 +578,14 @@ void Archiver::check_class_field(bool retval,
   if(strcmp(type, required_type))
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 #endif
   if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
     );
   }
 }
@@ -684,7 +684,8 @@ void Archiver::finalize_input_serialization()
     if(!ptr)
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0004_UNRESOLVED_FIELD_REFERENCE, ERROR_PARAMS( it->referencing )
+        zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE,
+        ERROR_PARAMS( it->referencing )
       );
     }
     //search the list for the pointer
@@ -699,7 +700,8 @@ void Archiver::finalize_input_serialization()
       if(cls_factory == NULL)
       {
          throw ZORBA_EXCEPTION(
-          ZCSE0003_UNRECOGNIZED_CLASS_FIELD, ERROR_PARAMS( it->class_name )
+          zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD,
+          ERROR_PARAMS( it->class_name )
         );
       }
       cls_factory->cast_ptr((SerializeBaseClass*)ptr, (*it).ptr);
@@ -764,7 +766,7 @@ void Archiver::root_tag_is_read()
   if(archive_version != g_zorba_classes_version)
   {
     throw ZORBA_EXCEPTION(
-      ZCSE0012_INCOMPATIBLE_ARCHIVE_VERSION,
+      zerr::ZCSE0012_INCOMPATIBLE_ARCHIVE_VERSION,
       ERROR_PARAMS( archive_version, g_zorba_classes_version )
     );
   }
@@ -1096,7 +1098,7 @@ bool Archiver::check_allowed_delays(archive_field *parent_field)
       {
         //impossible to solve situation
         //need to change the serialization order somewhere
-        throw ZORBA_EXCEPTION(ZCSE0014_INFINITE_CIRCULAR_DEPENDENCIES);
+        throw ZORBA_EXCEPTION(zerr::ZCSE0014_INFINITE_CIRCULAR_DEPENDENCIES);
       }
       //exchange fields
       exchange_mature_fields(child, child->refered);

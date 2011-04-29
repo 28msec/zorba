@@ -489,7 +489,7 @@ store::Index_t SimpleStore::createIndex(
   if (!spec.theIsTemp && theIndices.get(qname.getp(), index))
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0001_INDEX_ALREADY_EXISTS,
+      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
       ERROR_PARAMS( qname->getStringValue() )
     );
   }
@@ -547,8 +547,8 @@ void SimpleStore::populateValueIndex(
           domainItem->getCollection() == NULL &&
           !index->isTemporary())
       {
-        throw XQUERY_EXCEPTION(
-          ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+        throw ZORBA_EXCEPTION(
+          zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
           ERROR_PARAMS( index->getName()->getStringValue() )
         );
       }
@@ -560,7 +560,7 @@ void SimpleStore::populateValueIndex(
       {
         if (!aSourceIter->next((*key)[i]))
           throw ZORBA_EXCEPTION(
-            ZXQP0019_INTERNAL_ERROR,
+            zerr::ZXQP0019_INTERNAL_ERROR,
             ERROR_PARAMS( ZED( IncompleteKeyInIndexBuild ) )
           );
       }
@@ -613,8 +613,8 @@ void SimpleStore::populateGeneralIndex(
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
         {
-          throw XQUERY_EXCEPTION(
-            ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+          throw ZORBA_EXCEPTION(
+            zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
             ERROR_PARAMS( index->getName()->getStringValue() )
           );
         }
@@ -723,7 +723,7 @@ store::Index_t SimpleStore::refreshIndex(
   if (!theIndices.get(non_const_items, index))
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0002_INDEX_DOES_NOT_EXIST,
+      zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
       ERROR_PARAMS( qname->getStringValue() )
     );
   }
@@ -814,7 +814,7 @@ store::IC_t SimpleStore::activateIC(
   if (theICs.get(qname, ic))
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0015_IC_ALREADY_EXISTS,
+      zerr::ZSTR0015_IC_ALREADY_EXISTS,
       ERROR_PARAMS( qname->getStringValue() )
     );
   }
@@ -844,7 +844,7 @@ store::IC_t SimpleStore::activateForeignKeyIC(
   if (theICs.get(qname, ic))
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0015_IC_ALREADY_EXISTS,
+      zerr::ZSTR0015_IC_ALREADY_EXISTS,
       ERROR_PARAMS( qname->getStringValue() )
     );
   }
@@ -867,7 +867,8 @@ SimpleStore::deactivateIC(const store::Item_t& icQName)
   if (!theICs.get(icQName.getp(), ic))
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0016_IC_DOES_NOT_EXIST, ERROR_PARAMS( icQName->getStringValue() )
+      zerr::ZSTR0016_IC_DOES_NOT_EXIST,
+      ERROR_PARAMS( icQName->getStringValue() )
     );
   }
 
@@ -914,7 +915,7 @@ store::Collection_t SimpleStore::createUriCollection(const zstring& uri)
   if (!inserted)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0008_COLLECTION_ALREADY_EXISTS, ERROR_PARAMS( uri )
+      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS, ERROR_PARAMS( uri )
     );
   }
 
@@ -952,7 +953,7 @@ void SimpleStore::deleteUriCollection(const zstring& uri)
   if (!deleted)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0009_COLLECTION_NOT_FOUND, ERROR_PARAMS( uri )
+      zerr::ZSTR0009_COLLECTION_NOT_FOUND, ERROR_PARAMS( uri )
     );
   }
 }
@@ -979,7 +980,7 @@ store::Collection_t SimpleStore::createCollection(
   if (!inserted)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0008_COLLECTION_ALREADY_EXISTS,
+      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
       ERROR_PARAMS( lName->getStringValue() )
     );
   }
@@ -1000,7 +1001,7 @@ void SimpleStore::addCollection(store::Collection_t& collection)
   if (!inserted)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0008_COLLECTION_ALREADY_EXISTS,
+      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS,
       ERROR_PARAMS( lName->getStringValue() )
     );
   }
@@ -1041,7 +1042,8 @@ void SimpleStore::deleteCollection(
   if (!theCollections->remove(aName, aDynamicCollection))
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0009_COLLECTION_NOT_FOUND, ERROR_PARAMS( aName->getStringValue() )
+      zerr::ZSTR0009_COLLECTION_NOT_FOUND,
+      ERROR_PARAMS( aName->getStringValue() )
     );
   }
 }
@@ -1134,7 +1136,7 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
   if (node == NULL || !node->isNode())
   {
     throw ZORBA_EXCEPTION(
-      ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS( uri )
+      zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS( uri )
     );
   }
 
@@ -1148,7 +1150,7 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
   if (!inserted && node.getp() != root.getp())
   {
     throw ZORBA_EXCEPTION(
-      ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS( uri )
+      zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS( uri )
     );
   }
   else if (inserted)
@@ -1356,7 +1358,9 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   ulong prefixlen = (ulong)strlen("zorba://node_reference/");
 
   if (strncmp(str.c_str(), "zorba://node_reference/", prefixlen))
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   const char* start;
   long tmp = 0;
@@ -1370,12 +1374,16 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp < 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   start = next;
 
   if (*start != '/')
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   ++start;
 
@@ -1387,12 +1395,16 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp <= 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   start = next;
 
   if (*start != '/')
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   ++start;
 
@@ -1404,12 +1416,16 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp <= 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   start = next;
 
   if (*start != '/')
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   ++start;
 
@@ -1425,11 +1441,15 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   else if (*start == 'c')
     attributeNode = false;
   else
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   ++start;
   if (*start != '/')
-    throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+    );
 
   ++start;
 

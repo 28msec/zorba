@@ -160,7 +160,7 @@ bool DynamicFnCallIterator::nextImpl(
       consumeNext(item, theChildren[0], planState)) 
   {
     // TODO: needs type in error message
-    throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(loc));
   }
 
   fnItem = static_cast<FunctionItem*>(funcItem.getp());

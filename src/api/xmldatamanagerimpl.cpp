@@ -161,7 +161,7 @@ Item XmlDataManagerImpl::loadDocument(
   ZORBA_DM_TRY
   {
     if ( ! stream.good() )
-			throw ZORBA_EXCEPTION( ZOSE0003_STREAM_READ_FAILURE );
+			throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
 
     const zstring& docUri = Unmarshaller::getInternalString(uri);
 

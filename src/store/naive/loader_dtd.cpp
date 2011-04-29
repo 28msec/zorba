@@ -215,7 +215,7 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
     {
       theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION(
-          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
+          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
         )
       );
     }
@@ -226,14 +226,14 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
   {
     theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION(
-        ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )
+        zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )
       )
     );
   }
   catch (...)
   {
     theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
     );
   }
 
@@ -286,7 +286,7 @@ store::Item_t DtdXmlLoader::loadXml(
     if (numChars < 0)
     {
       theErrorManager->add_error(
-      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
       delete[] theBuffer;
@@ -296,7 +296,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION(
-          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
+          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
         )
       );
       delete[] theBuffer;
@@ -314,7 +314,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( ParserInitFailed ) )
         )
       );
@@ -340,7 +340,7 @@ store::Item_t DtdXmlLoader::loadXml(
           ctxt->lastError.message << std::endl;
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( ParserNoCreateTree ) )
         )
       );
@@ -364,7 +364,7 @@ store::Item_t DtdXmlLoader::loadXml(
     if (numChars < 0)
     {
       theErrorManager->add_error(
-      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       delete[] theBuffer;
       abortload();
@@ -397,7 +397,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
         )
       );
@@ -406,7 +406,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
         )
       );
@@ -425,7 +425,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
         )
       );
@@ -441,7 +441,7 @@ store::Item_t DtdXmlLoader::loadXml(
   {
     theErrorManager->add_error(
       NEW_ZORBA_EXCEPTION(
-        ZSTR0021_LOADER_PARSING_ERROR,
+        zerr::ZSTR0021_LOADER_PARSING_ERROR,
         ERROR_PARAMS( ZED( ParserNoCreateTree ) )
       )
     );
@@ -591,7 +591,7 @@ void DtdXmlLoader::startDocument(void * ctx)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -673,7 +673,7 @@ void DtdXmlLoader::endDocument(void * ctx)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -965,7 +965,7 @@ void DtdXmlLoader::startElement(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1098,7 +1098,7 @@ void  DtdXmlLoader::endElement(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1149,7 +1149,7 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1202,7 +1202,7 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1252,7 +1252,7 @@ void DtdXmlLoader::processingInstruction(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1295,7 +1295,7 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1318,7 +1318,7 @@ void DtdXmlLoader::error(void * ctx, const char * msg, ... )
   va_end(args);
   loader->theErrorManager->add_error(
     NEW_ZORBA_EXCEPTION(
-      ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
+      zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
     )
   );
 }

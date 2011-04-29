@@ -17,9 +17,10 @@
 #include <zorba/error_list.h>
 
 namespace zorba {
-namespace err {
 
 #define XQUERY_DEF_ERROR(ERR) XQueryError ERR( #ERR )
+
+namespace err {
 
 ////////// XQuery Errors //////////////////////////////////////////////////////
 
@@ -221,9 +222,15 @@ XQUERY_DEF_ERROR( SERE0014 );
 XQUERY_DEF_ERROR( SERE0015 );
 XQUERY_DEF_ERROR( SEPM0016 );
 
-////////// Zorba API Errors ///////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace err
+
+namespace zerr {
 
 #define ZORBA_DEF_ERROR(QNAME,ERR) ZorbaError QNAME##_##ERR( #QNAME )
+
+////////// Zorba API Errors ///////////////////////////////////////////////////
 
 ZORBA_DEF_ERROR( ZAPI0002,XQUERY_COMPILATION_FAILED );
 ZORBA_DEF_ERROR( ZAPI0003,XQUERY_NOT_COMPILED );
@@ -400,6 +407,6 @@ ZORBA_DEF_ERROR( ZXQD0002,DOCUMENT_NOT_VALID );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace err
+} // namespace zerr
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

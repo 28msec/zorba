@@ -589,7 +589,7 @@ void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
   PUT_ALL_MATCHES( amj );
 
   if ( !ALL_EMPTY_N( ami, excludes ) || !ALL_EMPTY_N( amj, excludes ) )
-    throw XQUERY_EXCEPTION( FTDY0017 );
+    throw XQUERY_EXCEPTION( err::FTDY0017 );
 
   if ( ALL_EMPTY_N( amj, includes ) )
     result = ami;
@@ -908,7 +908,7 @@ void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
 
   if ( !ALL_EMPTY_N( am, excludes ) )
     throw XQUERY_EXCEPTION(
-      XPST0003, ERROR_PARAMS( ZED( AllMatchesHasExcludes ) )
+      err::XPST0003, ERROR_PARAMS( ZED( AllMatchesHasExcludes ) )
     );
 
   if ( mode == ft_range_mode::at_least )
@@ -1204,7 +1204,7 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 
   ft_thesaurus::ptr thesaurus( ft_thesaurus::get( tid.get_uri(), qt0.lang() ) );
   if ( !thesaurus.get() )
-    throw XQUERY_EXCEPTION( FTST0018, ERROR_PARAMS( tid.get_uri() ) );
+    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( tid.get_uri() ) );
 
   ft_thesaurus::iterator_ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )

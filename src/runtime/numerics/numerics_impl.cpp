@@ -123,7 +123,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:abs" ),
         ERROR_LOC( loc )
       );
@@ -132,7 +132,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:abs" ),
         ERROR_LOC( loc )
       );
@@ -188,7 +188,7 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:ceiling" ),
         ERROR_LOC( loc )
       );
@@ -197,7 +197,7 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:ceiling" ),
         ERROR_LOC( loc )
       );
@@ -253,7 +253,7 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:floor" ),
         ERROR_LOC( loc )
       );
@@ -262,7 +262,7 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if ( consumeNext(item, theChildren[0].getp(), planState ) )
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:floor" ),
         ERROR_LOC( loc )
       );
@@ -331,7 +331,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:round" ),
         ERROR_LOC( loc )
       );
@@ -340,7 +340,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:round" ),
         ERROR_LOC( loc )
       );
@@ -406,7 +406,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     else
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:round-half-to-even" ),
         ERROR_LOC( loc )
       );
@@ -415,7 +415,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     if ( consumeNext(item, theChildren [0].getp(), planState ))
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:round-half-to-even" ),
         ERROR_LOC( loc )
       );
@@ -536,7 +536,7 @@ static void errorIfTwoOrMore(zstring const& part, const char* sep, QueryLoc& loc
   if (pos != zstring::npos)
   {
     if (part.find(sep, strlen(sep), pos+1) != zstring::npos)
-      throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XTDE1310, ERROR_LOC(loc));
   }
 }
 
@@ -556,13 +556,13 @@ static void parsePart(
   if (str.find(info.percent.c_str()) != zstring::npos &&
       str.find(info.per_mille.c_str()) != zstring::npos)
   {
-    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
+    throw XQUERY_EXCEPTION(err::XTDE1310, ERROR_LOC(info.loc));
   }
 
   if (str.find(info.digit_sign.c_str()) == zstring::npos &&
       str.find(info.zero_digit.c_str()) == zstring::npos)
   {
-    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
+    throw XQUERY_EXCEPTION(err::XTDE1310, ERROR_LOC(info.loc));
   }
 
   // get grouping separators
@@ -597,10 +597,10 @@ static void parsePart(
       ((!fractional && first_digit_sign > last_zero_sign)
         ||
         (fractional && first_digit_sign < last_zero_sign)))
-    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
+    throw XQUERY_EXCEPTION(err::XTDE1310, ERROR_LOC(info.loc));
 
   if (part.grouping_pos.size() > 0 && part.grouping_pos[0] == 0)
-    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
+    throw XQUERY_EXCEPTION(err::XTDE1310, ERROR_LOC(info.loc));
 
   if (part.grouping_pos.size() > 0)
   {
@@ -910,7 +910,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     info.loc = loc;
     if (!isAllowedType(result->getType()))
       // TODO: needs type in error message
-      throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(info.loc));
+      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(info.loc));
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);
 
@@ -934,7 +934,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         zstring ns;
         zstring prefix = tmp.substr(0, tmp.find(':'));
-        if (theSctx->lookup_ns(ns, prefix, loc, err::ZXQP0000_NO_ERROR))
+        if (theSctx->lookup_ns(ns, prefix, loc, zerr::ZXQP0000_NO_ERROR))
         {
           GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmp.substr(tmp.find(':')+1));
           break;
@@ -943,7 +943,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         // The prefix is not in the known namespaces, the only posibility left is to be invoked from an EnclosedIterator
         if (planState.theNodeConstuctionPath.empty()) {
           // SF bug #3284853: add ERROR_PARAMS() below with decimal format name
-          throw XQUERY_EXCEPTION(FODF1280, ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(err::FODF1280, ERROR_LOC(loc));
         }
 
         store::NsBindings bindings;
@@ -959,12 +959,12 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       if (formatName.isNull())
         throw XQUERY_EXCEPTION(
-          FODF1280, ERROR_PARAMS( "<null>" ), ERROR_LOC( loc )
+          err::FODF1280, ERROR_PARAMS( "<null>" ), ERROR_LOC( loc )
         );
 
       if ( (df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName)).getp() == NULL )
         throw XQUERY_EXCEPTION(
-          FODF1280, ERROR_PARAMS( formatName->getStringValue() ),
+          err::FODF1280, ERROR_PARAMS( formatName->getStringValue() ),
           ERROR_LOC( loc )
         );
 

@@ -50,7 +50,7 @@ static void parse_digits( zstring const &ws_pat, zstring::const_iterator &ws_c,
       break;
     if ( !isdigit( *ws_c ) )
       throw XQUERY_EXCEPTION(
-        FTDY0020, ERROR_PARAMS( ws_pat, ZED( BadDecDigit_3 ), *ws_c )
+        err::FTDY0020, ERROR_PARAMS( ws_pat, ZED( BadDecDigit_3 ), *ws_c )
       );
   }
 }
@@ -122,7 +122,7 @@ static void wildcard_to_icu_pattern( zstring const &ws_pat, zstring *icu_pat ) {
 
   if ( got_backslash )
     throw XQUERY_EXCEPTION(
-      FTDY0020, ERROR_PARAMS( ws_pat, ZED( TrailingChar_3 ), '\\' )
+      err::FTDY0020, ERROR_PARAMS( ws_pat, ZED( TrailingChar_3 ), '\\' )
     );
 }
 
@@ -140,7 +140,7 @@ ft_wildcard::ft_wildcard( zstring const &ws_pat ) {
   }
   catch ( XQueryException const &xe ) {
     if ( xe.error() == err::FORX0002 )
-      throw XQUERY_EXCEPTION( FTDY0020, ERROR_PARAMS( "", xe.what() ) );
+      throw XQUERY_EXCEPTION( err::FTDY0020, ERROR_PARAMS( "", xe.what() ) );
     throw;
   }
 }

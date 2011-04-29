@@ -172,14 +172,14 @@ void fo_expr::compute_scripting_kind()
 
       if (is_updating() && !(argKind & UPDATING_EXPR))
       {
-        throw XQUERY_EXCEPTION(XUST0001,
+        throw XQUERY_EXCEPTION(err::XUST0001,
                                ERROR_PARAMS(ZED(XUST0001_CONCAT)),
                                ERROR_LOC(theArgs[i]->get_loc()));
       }
 
       if (i > 0 && !is_updating() && (argKind & UPDATING_EXPR))
       {
-        throw XQUERY_EXCEPTION(XUST0001,
+        throw XQUERY_EXCEPTION(err::XUST0001,
                                ERROR_PARAMS(ZED(XUST0001_CONCAT)),
                                ERROR_LOC(theArgs[i]->get_loc()));
       }
@@ -223,7 +223,7 @@ void fo_expr::compute_scripting_kind()
 
       if (arg->is_updating())
       {
-        throw XQUERY_EXCEPTION(XUST0001,
+        throw XQUERY_EXCEPTION(err::XUST0001,
                                ERROR_PARAMS(ZED(XUST0001_Generic)),
                                ERROR_LOC(theArgs[i]->get_loc()));
       }

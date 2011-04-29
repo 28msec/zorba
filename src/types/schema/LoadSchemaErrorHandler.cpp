@@ -62,7 +62,7 @@ if ( e.getSystemId() != NULL )
   os << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
-  ZORBA_ERROR_LOC_DESC( XQST0059, theQueryLoc, os.str());
+  ZORBA_ERROR_LOC_DESC( err::XQST0059, theQueryLoc, os.str());
 }
 
 void LoadSchemaErrorHandler::fatalError(const XERCES_CPP_NAMESPACE::SAXParseException& e)
@@ -81,7 +81,7 @@ if ( e.getSystemId() != NULL )
   os << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
-  ZORBA_ERROR_LOC_DESC( XQST0059, theQueryLoc, os.str());
+  ZORBA_ERROR_LOC_DESC( err::XQST0059, theQueryLoc, os.str());
 }
 
 void LoadSchemaErrorHandler::warning(const XERCES_CPP_NAMESPACE::SAXParseException& e)

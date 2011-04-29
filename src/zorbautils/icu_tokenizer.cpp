@@ -133,7 +133,7 @@ void ICU_Tokenizer::create_iterators( iso639_1::type lang,
     )
   );
   if ( U_FAILURE( status ) )
-    throw ZORBA_EXCEPTION( ZXQP0036_BREAKITERATOR_CREATION_FAILED );
+    throw ZORBA_EXCEPTION( zerr::ZXQP0036_BREAKITERATOR_CREATION_FAILED );
 
   rbbi_ptr sent_it(
     dynamic_cast<RuleBasedBreakIterator*>(
@@ -141,7 +141,7 @@ void ICU_Tokenizer::create_iterators( iso639_1::type lang,
     )
   );
   if ( U_FAILURE( status ) )
-    throw ZORBA_EXCEPTION( ZXQP0036_BREAKITERATOR_CREATION_FAILED );
+    throw ZORBA_EXCEPTION( zerr::ZXQP0036_BREAKITERATOR_CREATION_FAILED );
 
   result.word_ = word_it.release();
   result.sent_ = sent_it.release();
@@ -279,7 +279,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
           case '{':
             if ( in_brace )
               throw XQUERY_EXCEPTION(
-                FTDY0020,
+                err::FTDY0020,
                 ERROR_PARAMS( "", ZED( BadCharInBraces_3 ), *utf8_buf  )
               );
             HANDLE_BACKSLASH();
@@ -296,7 +296,8 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
             }
             if ( in_wild )
               throw XQUERY_EXCEPTION(
-                FTDY0020, ERROR_PARAMS( "", ZED( ClosingBraceWithoutOpen ) )
+                err::FTDY0020,
+                ERROR_PARAMS( "", ZED( ClosingBraceWithoutOpen ) )
               );
             break;
           default:
@@ -327,17 +328,17 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
             break;
           if ( !isdigit( *c ) )
             throw XQUERY_EXCEPTION(
-              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
+              err::FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
             );
         }
         if ( i == utf8_len || *c != ',' )
           throw XQUERY_EXCEPTION(
-            FTDY0020, ERROR_PARAMS( "", ZED( CharExpected_3 ), ',' )
+            err::FTDY0020, ERROR_PARAMS( "", ZED( CharExpected_3 ), ',' )
           );
         for ( ++i, ++c; i < utf8_len; ++i, ++c ) {
           if ( !isdigit( *c ) )
             throw XQUERY_EXCEPTION(
-              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
+              err::FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
             );
         }
       }
@@ -353,7 +354,8 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
 #     endif
       if ( in_brace )
         throw XQUERY_EXCEPTION(
-          FTDY0020, ERROR_PARAMS( "", ZED( BadTokenInBraces_3 ), utf8_word )
+          err::FTDY0020,
+          ERROR_PARAMS( "", ZED( BadTokenInBraces_3 ), utf8_word )
         );
       IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
     }
@@ -379,7 +381,7 @@ next:
 
   if ( in_brace )
     throw XQUERY_EXCEPTION(
-      FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar ), '}' )
+      err::FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar ), '}' )
     );
   t.send( payload, callback );
 }

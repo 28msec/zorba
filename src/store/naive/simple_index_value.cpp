@@ -100,7 +100,7 @@ bool ValueHashIndex::insert(
   if (key->size() != getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
+      zerr::ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
       ERROR_PARAMS( key->toString(), theQname->getStringValue() )
     );
   }
@@ -111,8 +111,8 @@ bool ValueHashIndex::insert(
   {
     if (isUnique())
     {
-      throw XQUERY_EXCEPTION(
-        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      throw ZORBA_EXCEPTION(
+        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
         ERROR_PARAMS( theQname->getStringValue() )
       );
     }
@@ -149,7 +149,7 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
   if (key->size() != getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
+      zerr::ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
       ERROR_PARAMS( key->toString(), theQname->getStringValue() )
     );
   }
@@ -198,7 +198,7 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
   if (cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+      zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
       ERROR_PARAMS(
         cond->getKindString(), theIndex->getName()->getStringValue()
       )
@@ -212,7 +212,7 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
   if (key->size() != theIndex->getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
       ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
     );
   }
@@ -330,7 +330,7 @@ bool ValueTreeIndex::insert(
   if (key->size() != getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
+      zerr::ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
       ERROR_PARAMS( key->toString(), theQname->getStringValue() )
     );
   }
@@ -358,8 +358,8 @@ bool ValueTreeIndex::insert(
   {
     if (isUnique())
     {
-      throw XQUERY_EXCEPTION(
-        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      throw ZORBA_EXCEPTION(
+        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
         ERROR_PARAMS( theQname->getStringValue() )
       );
     }
@@ -386,7 +386,7 @@ bool ValueTreeIndex::remove(const store::IndexKey* key, store::Item_t& value)
   if (key->size() != getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
+      zerr::ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
       ERROR_PARAMS( key->toString(), theQname->getStringValue() )
     );
   }
@@ -437,7 +437,7 @@ void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+      zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
       ERROR_PARAMS(
         cond->getKindString(), theIndex->getName()->getStringValue()
       )
@@ -469,7 +469,7 @@ void ProbeValueTreeIndexIterator::initExact()
   if (key.size() != theIndex->getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
       ERROR_PARAMS( key.toString(), theIndex->getName()->getStringValue() )
     );
   }
@@ -505,7 +505,7 @@ void ProbeValueTreeIndexIterator::initBox()
   if (numRanges > theIndex->getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0006_INDEX_INVALID_BOX_PROBE,
+      zerr::ZSTR0006_INDEX_INVALID_BOX_PROBE,
       ERROR_PARAMS(
         theIndex->getName()->getStringValue(), ZED( BoxCondTooManyColumns )
       )
@@ -591,7 +591,7 @@ void ProbeValueTreeIndexIterator::initBox()
           (comp == 0 && (!flags[i].theLowerBoundIncl || !flags[i].theUpperBoundIncl)))
       { 
         throw ZORBA_EXCEPTION(
-          ZSTR0006_INDEX_INVALID_BOX_PROBE,
+          zerr::ZSTR0006_INDEX_INVALID_BOX_PROBE,
           ERROR_PARAMS(
             theIndex->getName()->getStringValue(), theBoxCond->toString()
           )

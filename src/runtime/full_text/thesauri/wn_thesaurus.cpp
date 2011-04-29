@@ -197,9 +197,13 @@ static zstring get_wordnet_path( zstring path ) {
         loop = false;
         break;
       case fs::non_existent:
-        throw ZORBA_EXCEPTION( ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( path ) );
+        throw ZORBA_EXCEPTION(
+          zerr::ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( path )
+        );
       default:
-        throw ZORBA_EXCEPTION( ZOSE0002_NOT_PLAIN_FILE, ERROR_PARAMS( path ) );
+        throw ZORBA_EXCEPTION(
+          zerr::ZOSE0002_NOT_PLAIN_FILE, ERROR_PARAMS( path )
+        );
     }
   }
   return path;
@@ -446,7 +450,7 @@ thesaurus::wordnet_file_checker::wordnet_file_checker( mmap_file const &file ) {
   file_version[ sizeof( version_type ) ] = '\0';
   if ( ::strcmp( file_version, our_version ) != 0 )
     throw ZORBA_EXCEPTION(
-      ZXQP8401_THESAURUS_VERSION_MISMATCH,
+      zerr::ZXQP8401_THESAURUS_VERSION_MISMATCH,
       ERROR_PARAMS( file_version, our_version )
     );
 
@@ -455,7 +459,7 @@ thesaurus::wordnet_file_checker::wordnet_file_checker( mmap_file const &file ) {
   uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
   if ( file_endian != Magic_Number )
     throw ZORBA_EXCEPTION(
-      ZXQP8402_THESAURUS_DATA_ERROR,
+      zerr::ZXQP8402_THESAURUS_DATA_ERROR,
       ERROR_PARAMS( ZED( WrongWordNetEndianness ) )
     );
 }

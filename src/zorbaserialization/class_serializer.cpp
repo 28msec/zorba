@@ -585,7 +585,7 @@ void operator&(Archiver &ar, bool &obj)
     else
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
       );
     }
 
@@ -682,7 +682,7 @@ void operator&(Archiver &ar, std::string* &obj)
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
       );
     }
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
@@ -725,7 +725,7 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+        zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
       );
     }
     if(field_treat == ARCHIVE_FIELD_IS_PTR)

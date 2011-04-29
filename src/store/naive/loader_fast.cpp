@@ -215,7 +215,7 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
     {
       theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION(
-          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
+          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
         )
       );
     }
@@ -225,13 +225,15 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
   catch (std::iostream::failure e)
   {
     theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() ) )
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )
+      )
     );
   }
   catch (...)
   {
     theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
     );
   }
 
@@ -276,7 +278,7 @@ store::Item_t FastXmlLoader::loadXml(
     if (numChars < 0)
     {
       theErrorManager->add_error(
-      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
       return NULL;
@@ -285,7 +287,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       theErrorManager->add_error(
       	NEW_ZORBA_EXCEPTION(
-          ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
+          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
         )
       );
       abortload();
@@ -302,7 +304,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( ParserInitFailed ) )
         )
       );
@@ -324,7 +326,7 @@ store::Item_t FastXmlLoader::loadXml(
     if (numChars < 0)
     {
       theErrorManager->add_error(
-      	NEW_ZORBA_EXCEPTION( ZSTR0020_LOADER_IO_ERROR )
+      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
       return NULL;
@@ -358,7 +360,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
         )
       );
@@ -367,7 +369,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       theErrorManager->add_error(
         NEW_ZORBA_EXCEPTION(
-          ZSTR0021_LOADER_PARSING_ERROR,
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
         )
       );
@@ -426,7 +428,7 @@ void FastXmlLoader::startDocument(void * ctx)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -508,7 +510,7 @@ void FastXmlLoader::endDocument(void * ctx)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -736,7 +738,7 @@ void FastXmlLoader::startElement(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -865,7 +867,7 @@ void  FastXmlLoader::endElement(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -916,7 +918,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -969,7 +971,7 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1019,7 +1021,7 @@ void FastXmlLoader::processingInstruction(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1064,7 +1066,7 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
     );
   }
 }
@@ -1087,7 +1089,7 @@ void FastXmlLoader::error(void * ctx, const char * msg, ... )
   va_end(args);
   loader->theErrorManager->add_error(
     NEW_ZORBA_EXCEPTION(
-      ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
+      zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
     )
   );
 }

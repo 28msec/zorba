@@ -1473,7 +1473,7 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
       if ( theStrictValidation && currentScope == Grammar::TOP_LEVEL_SCOPE )
       {
         throw XQUERY_EXCEPTION(
-          XQDY0084,
+          err::XQDY0084,
           ERROR_PARAMS(
             BUILD_STRING(
               StrX( theLocalname.getRawBuffer() ),
@@ -1574,7 +1574,7 @@ void SchemaValidatorFilter::error(
 
   //std::cout << "SchemaValidatorFilter::error " << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl;
   throw XQUERY_EXCEPTION(
-    XQDY0027,
+    err::XQDY0027,
     ERROR_PARAMS( StrX(exc_msg.getRawBuffer()).localForm() ),
     ERROR_LOC( theLoc )
   );

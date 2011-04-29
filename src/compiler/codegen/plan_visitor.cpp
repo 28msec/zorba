@@ -1985,7 +1985,7 @@ bool begin_visit(insert_expr& v)
   xqtref_t sourceType = sourceExpr->get_return_type();
 
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( qloc ) );
+    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
 #if XQUF_STATIC_TYPING_SAFE
 
@@ -1996,12 +1996,12 @@ bool begin_visit(insert_expr& v)
     if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
         TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION(XUTY0022, ERROR_LOC(qloc));
+      throw XQUERY_EXCEPTION(err::XUTY0022, ERROR_LOC(qloc));
     }
 
     if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
     {
-      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( qloc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
     }
 
     if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR) ||
@@ -2009,7 +2009,7 @@ bool begin_visit(insert_expr& v)
         TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) ||
         TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( qloc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
     }
   }
   else
@@ -2025,13 +2025,13 @@ bool begin_visit(insert_expr& v)
     if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
         TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION(XUTY0022, ERROR_LOC(qloc));
+      throw XQUERY_EXCEPTION(err::XUTY0022, ERROR_LOC(qloc));
     }
 
     if (!TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
         !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION( XUTY0005, ERROR_LOC( qloc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
     }
   }
   else
@@ -2041,7 +2041,7 @@ bool begin_visit(insert_expr& v)
         !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) &&
         !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
     {
-      throw XQUERY_EXCEPTION( XUTY0006, ERROR_LOC( qloc ) );
+      throw XQUERY_EXCEPTION( err::XUTY0006, ERROR_LOC( qloc ) );
     }
   }
 #endif
@@ -2166,7 +2166,7 @@ void end_visit(fo_expr& v)
   else
   {
     throw XQUERY_EXCEPTION(
-      XPST0017,
+      err::XPST0017,
       ERROR_PARAMS(
         func->getName()->getStringValue(),
         ZED( FnCallNotMatchSig_3o ),
@@ -2253,7 +2253,9 @@ bool begin_visit(name_cast_expr& v)
     return true;
 
   throw XQUERY_EXCEPTION(
-    XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), *targetType ), ERROR_LOC( qloc )
+    err::XPTY0004,
+    ERROR_PARAMS( ZED( BadType_23o ), *targetType ),
+    ERROR_LOC( qloc )
   );
 }
 
@@ -2291,7 +2293,7 @@ void end_visit(validate_expr& v)
                                      const_cast<store::Item*>(v.get_type_name())));
 #else
   //no schema support
-  throw XQUERY_EXCEPTION(XQST0009, ERROR_LOC(qloc));
+  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(qloc));
 #endif
 }
 
@@ -2924,7 +2926,7 @@ bool begin_visit(replace_expr& v)
   xqtref_t targetType = targetExpr->get_return_type();
 
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( qloc ) );
+    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
   return true;
 }
@@ -2954,7 +2956,7 @@ bool begin_visit(rename_expr& v)
   xqtref_t targetType = targetExpr->get_return_type();
 
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
-    throw XQUERY_EXCEPTION( XUDY0027, ERROR_LOC( qloc ) );
+    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
   return true;
 }
@@ -3003,7 +3005,7 @@ bool begin_visit(transform_expr& v)
     xqtref_t sourceType = sourceExpr->get_return_type();
 
     if (TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
-      throw XQUERY_EXCEPTION(XUTY0013, ERROR_LOC(qloc));
+      throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(qloc));
 
     uint64_t k = (uint64_t) &*var;
     copy_var_iter_map.put(k, new std::vector<ForVarIter_t>());

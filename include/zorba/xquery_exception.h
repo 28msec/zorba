@@ -226,7 +226,7 @@ protected:
  * \hideinitializer
  */
 #define XQUERY_EXCEPTION(...) \
-  XQUERY_EXCEPTION_VAR( ::zorba::err:: __VA_ARGS__ )
+  XQUERY_EXCEPTION_VAR( ::zorba:: __VA_ARGS__ )
 
 ///////////////////////////////////////////////////////////////////////////////
 

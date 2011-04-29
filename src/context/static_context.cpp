@@ -211,7 +211,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       if (!module)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS( ZED( NoExternalModuleFromDLL ), lURI )
         );
       }
@@ -223,7 +223,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       if (!lCallback)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS( ZED( NoSerializationCallbackForModule ), lURI )
         );
       }
@@ -233,7 +233,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       if (!module)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS( ZED( NoRegisteredSerializationCallback_2 ), lURI )
         );
       }
@@ -673,7 +673,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
         lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0013_UNABLE_TO_LOAD_QUERY,
+        zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
         ERROR_PARAMS( ZED( NoSerializationCallbackForDocColMod ) )
       );
     }
@@ -683,7 +683,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       if (!lDocResolver)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS( ZED( NoDocumentURIResolver ) )
         );
       }
@@ -694,7 +694,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       CollectionURIResolver* lColResolver = lCallback->getCollectionURIResolver();
       if (!lColResolver) {
         throw ZORBA_EXCEPTION(
-          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS( ZED( NoCollectionURIResolver ) )
         );
       }
@@ -705,7 +705,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
         if (!lURIMapper) {
           throw ZORBA_EXCEPTION(
-            ZCSE0013_UNABLE_TO_LOAD_QUERY,
+            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
             ERROR_PARAMS( ZED( NoModuleURIResolver ) )
           );
         }
@@ -717,7 +717,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       for (size_t i = 0; i < lNumURLResolvers; ++i) {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
         if (!lURLResolver) {
-          ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          ZORBA_ERROR_DESC_OSS(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
                                "Couldn't load pre-compiled query because"
                                " URLResolver could not be retrieved"
                                " using the given SerializationCallback");
@@ -759,7 +759,7 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
     if (lUserTraceStream && !lCallback)
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0013_UNABLE_TO_LOAD_QUERY,
+        zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
         ERROR_PARAMS( ZED( NoSerializationCallbackForTraceStream ) )
       );
     }
@@ -768,7 +768,7 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
       bool lTraceStream =  lCallback->getTraceStream(theTraceStream);
       if (!lTraceStream) {
         throw ZORBA_EXCEPTION(
-          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS( ZED( BadTraceStream ) )
         );
       }
@@ -1128,7 +1128,7 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
   if (from_prolog)
   {
     if (theBaseUriInfo->theHavePrologBaseUri)
-      throw XQUERY_EXCEPTION(XQST0032);
+      throw XQUERY_EXCEPTION(err::XQST0032);
 
     theBaseUriInfo->thePrologBaseUri = uri;
     theBaseUriInfo->theHavePrologBaseUri = true;
@@ -1331,10 +1331,10 @@ static_context::resolve_uri
   // exception - right for importing schema or modules, wrong for
   // other things.
   if (lErrorMessage != "") {
-    throw XQUERY_EXCEPTION(XQST0059, ERROR_PARAMS(aUri, lErrorMessage));
+    throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(aUri, lErrorMessage));
   }
   else {
-    throw XQUERY_EXCEPTION(XQST0059, ERROR_PARAMS(aUri));
+    throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(aUri));
   }
 }
 
@@ -1787,7 +1787,7 @@ void static_context::set_default_elem_type_ns(
   }
   else
   {
-    throw XQUERY_EXCEPTION(XQST0066, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
   }
 }
 
@@ -1822,7 +1822,7 @@ void static_context::set_default_function_ns(
   }
   else
   {
-    throw XQUERY_EXCEPTION(XQST0066, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XQST0066, ERROR_LOC(loc));
   }
 }
 
@@ -1868,7 +1868,7 @@ bool static_context::lookup_ns(
     {
       return theParent->lookup_ns(ns, prefix, loc, err);
     }
-    else if (err != err::ZXQP0000_NO_ERROR)
+    else if (err != zerr::ZXQP0000_NO_ERROR)
     {
       throw XQUERY_EXCEPTION_VAR(
         err, ERROR_PARAMS( prefix ), ERROR_LOC( loc )
@@ -1881,7 +1881,7 @@ bool static_context::lookup_ns(
   }
   else if (!prefix.empty() && ns.empty())
   {
-    if (err != err::ZXQP0000_NO_ERROR)
+    if (err != zerr::ZXQP0000_NO_ERROR)
     {
       throw XQUERY_EXCEPTION_VAR(
         err, ERROR_PARAMS( prefix ), ERROR_LOC( loc )
@@ -2023,7 +2023,7 @@ var_expr* static_context::lookup_var(
     sctx = sctx->theParent;
   }
 
-  if (error != err::ZXQP0000_NO_ERROR)
+  if (error != zerr::ZXQP0000_NO_ERROR)
     throw XQUERY_EXCEPTION_VAR(
       error, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
     );
@@ -2203,7 +2203,7 @@ void static_context::bind_fn(
   if (!is_global_root_sctx() && lookup_local_fn(qname, arity) != NULL)
   {
     throw XQUERY_EXCEPTION(
-      XQST0034, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
+      err::XQST0034, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
     );
   }
 
@@ -2612,7 +2612,7 @@ void static_context::bind_external_module(
   if (!theExternalModulesMap->insert(uri, modinfo))
   {
     throw ZORBA_EXCEPTION(
-      ZAPI0019_MODULE_ALREADY_REGISTERED, ERROR_PARAMS( uri )
+      zerr::ZAPI0019_MODULE_ALREADY_REGISTERED, ERROR_PARAMS( uri )
     );
   }
 }
@@ -2814,7 +2814,7 @@ void static_context::bind_collection(
   if (lookup_collection(aCollection->getName()) != NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDST0001_COLLECTION_ALREADY_DECLARED,
+      zerr::ZDST0001_COLLECTION_ALREADY_DECLARED,
       ERROR_PARAMS( aCollection->getName()->getStringValue() ),
       ERROR_LOC( aLoc )
     );
@@ -2951,7 +2951,7 @@ void static_context::bind_index(IndexDecl_t& index, const QueryLoc& loc)
   if (lookup_index(qname) != NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDST0021_INDEX_ALREADY_DECLARED,
+      zerr::ZDST0021_INDEX_ALREADY_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -3078,7 +3078,7 @@ void static_context::bind_ic(
   if (lookup_ic(qname) != NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDST0041_IC_ALREADY_DECLARED,
+      zerr::ZDST0041_IC_ALREADY_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -3137,7 +3137,9 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 
   if (collator == NULL)
   {
-    throw XQUERY_EXCEPTION( FOCH0002, ERROR_PARAMS( uri ), ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      err::FOCH0002, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+    );
   }
   else
   {
@@ -3199,7 +3201,7 @@ XQPCollator* static_context::get_collator(
     sctx = sctx->theParent;
   }
 
-  throw XQUERY_EXCEPTION(FOCH0002, 
+  throw XQUERY_EXCEPTION(err::FOCH0002, 
                          ERROR_PARAMS(uri, ZED(NotInStaticCtx)),
                          ERROR_LOC(loc));
 }
@@ -3213,7 +3215,7 @@ void static_context::set_default_collation(
     const QueryLoc& loc)
 {
   if (theDefaultCollation != NULL || !is_known_collation(uri))
-    throw XQUERY_EXCEPTION(XQST0038, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XQST0038, ERROR_LOC(loc));
 
   zstring resolvedUri = resolve_relative_uri(uri);
 
@@ -3648,7 +3650,7 @@ void static_context::add_decimal_format(
       if (decimalFormat->isDefault() && format->isDefault())
       {
         throw XQUERY_EXCEPTION(
-          XQST0111,
+          err::XQST0111,
           ERROR_PARAMS( ZED( TwoDefaultDecimalFormats ) ),
           ERROR_LOC( loc )
         );
@@ -3659,7 +3661,7 @@ void static_context::add_decimal_format(
           format->getName()->equals(decimalFormat->getName()))
       {
         throw XQUERY_EXCEPTION(
-          XQST0111,
+          err::XQST0111,
           ERROR_PARAMS(
             ZED( TwoDecimalFormatsSameName_2 ),
             format->getName()->getStringValue()
@@ -3860,7 +3862,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       if (!theCollectionMap->insert(pair.first, pair.second))
       {
         throw XQUERY_EXCEPTION(
-          ZDST0002_COLLECTION_ALREADY_IMPORTED,
+          zerr::ZDST0002_COLLECTION_ALREADY_IMPORTED,
           ERROR_PARAMS(
             pair.second->getName()->getStringValue(),
             module->get_module_namespace()
@@ -3885,7 +3887,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       if (lookup_index(pair.first) != NULL)
       {
         throw XQUERY_EXCEPTION(
-          ZDST0022_INDEX_ALREADY_IMPORTED,
+          zerr::ZDST0022_INDEX_ALREADY_IMPORTED,
           ERROR_PARAMS(
             pair.first->getStringValue(), module->get_module_namespace()
           ),
@@ -3916,7 +3918,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       if (!theICMap->insert(pair.first, pair.second))
       {
         throw XQUERY_EXCEPTION(
-          ZDST0041_IC_ALREADY_DECLARED,
+          zerr::ZDST0041_IC_ALREADY_DECLARED,
           ERROR_PARAMS( pair.first->getStringValue() ),
           ERROR_LOC( loc )
         );

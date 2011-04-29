@@ -103,7 +103,9 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   else
   {
     throw XQUERY_EXCEPTION(
-      XQST0046, ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ), ERROR_LOC( loc )
+      err::XQST0046,
+      ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ),
+      ERROR_LOC( loc )
     );
   }
 

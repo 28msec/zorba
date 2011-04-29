@@ -80,7 +80,7 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
     case 'c': 
       if(is_ordinal_set)
       {
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
+        throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_ordinal_set = true;
       *is_ordinal = false;
@@ -88,7 +88,7 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
     case 'o': 
       if(is_ordinal_set)
       {
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
+        throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_ordinal_set = true;
       *is_ordinal = true;
@@ -96,7 +96,7 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
     case 'a': 
       if(is_traditional_set)
       {
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
+        throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_traditional_set = true;
       *is_traditional = false;
@@ -104,13 +104,13 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
     case 't': 
       if(is_traditional_set)
       {
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
+        throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_traditional_set = true;
       *is_traditional = true;
       break;
     default:
-      throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
+      throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
     }
   }
   if(picture_size <= (off+i))
@@ -118,7 +118,7 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
   c = utf8_picture[off+i];
   if(c != '(')
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
+    throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
   }
   i++;
   bool has_dash = false;
@@ -131,7 +131,7 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
     {
       if(has_dash)
       {
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
+        throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
       }
       has_dash = true;
     }
@@ -141,12 +141,12 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
   }
   if((off+i) >= picture_size)
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_optional_format_modifier_not_closed), utf8_picture));
+    throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_optional_format_modifier_not_closed), utf8_picture));
   }
   i++;
   if((off+i) < picture_size)
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)utf8_picture[off+i]));
+    throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)utf8_picture[off+i]));
   }
 }
 
@@ -204,7 +204,7 @@ void FormatIntegerIterator::formatIntegerRoman(xs_integer valueInteger, zstring 
 
   if (valueInteger > xs_integer::parseInt(3000))
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_gt_3000), valueInteger));
+    throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_value_gt_3000), valueInteger));
   }
   else if (valueInteger >= integer_1000)
   {
@@ -776,7 +776,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     pictureString = picture_item->getStringValue();
     if(utf8_picture.size() == 0)
     {
-      throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_picture_empty)), ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_picture_empty)), ERROR_LOC(loc));
     }
 
     if (theChildren.size() == 3) 
@@ -785,7 +785,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       languageString = language_item->getStringValue();
       if(!GenericCast::isCastable(languageString, &*rtm.LANGUAGE_TYPE_ONE, tm))
       {
-        throw XQUERY_EXCEPTION(FOFI0001, ERROR_PARAMS( languageString ), ERROR_LOC( loc )
+        throw XQUERY_EXCEPTION(err::FOFI0001, ERROR_PARAMS( languageString ), ERROR_LOC( loc )
         );
       }
     }
@@ -886,7 +886,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         NumConversions::integerToInt(valueInteger, val_int);
         if((val_int < 1) || (val_int > 20))
         {
-          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_20), val_int), ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_20), val_int), ERROR_LOC(loc));
         }
         utf8_result += (c0 + val_int - 1);
       }
@@ -907,7 +907,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         NumConversions::integerToInt(valueInteger, val_int);
         if((val_int < 1) || (val_int > 10))
         {
-          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_10), val_int), ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_10), val_int), ERROR_LOC(loc));
         }
         utf8_result += (c0 + val_int - 1);
       }
@@ -943,7 +943,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       }
       else
       {
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_bad_picture_format), pictureString), ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_bad_picture_format), pictureString), ERROR_LOC(loc));
       }
     }
     catch (ZorbaException& e)

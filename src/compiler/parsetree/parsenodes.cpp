@@ -821,7 +821,7 @@ void FunctionDecl::parse_annotations()
     {
       if (theUpdating)
       {
-        throw XQUERY_EXCEPTION(XSST0001,
+        throw XQUERY_EXCEPTION(err::XSST0001,
                                ERROR_PARAMS(theName->get_qname()),
                                ERROR_LOC(loc));
       }
@@ -832,7 +832,7 @@ void FunctionDecl::parse_annotations()
     {
       if (theSequential)
       {
-        throw XQUERY_EXCEPTION(XSST0001,
+        throw XQUERY_EXCEPTION(err::XSST0001,
                                ERROR_PARAMS(theName->get_qname()),
                                ERROR_LOC(loc));
       }
@@ -970,7 +970,7 @@ void AnnotationListParsenode::validate() const
         theAnnotations[i]->get_qname()->get_localname() == "private")
     {
       if (have_public_or_private)
-        throw XQUERY_EXCEPTION(XQST0106, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
 
       have_public_or_private = true;
     }
@@ -978,7 +978,7 @@ void AnnotationListParsenode::validate() const
              theAnnotations[i]->get_qname()->get_localname() == "nondeterministic")
     {
       if (have_determ_or_nondeterm)
-        throw XQUERY_EXCEPTION(XQST0106, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
 
       have_determ_or_nondeterm = true;
     }
@@ -986,7 +986,7 @@ void AnnotationListParsenode::validate() const
              theAnnotations[i]->get_qname()->get_localname() == "nonassignable")
     {
       if (have_assignable)
-        throw XQUERY_EXCEPTION(XQST0106, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
 
       have_assignable = true;
     }
@@ -994,7 +994,7 @@ void AnnotationListParsenode::validate() const
              theAnnotations[i]->get_qname()->get_localname() == "nonsequential")
     {
       if (have_sequential)
-        throw XQUERY_EXCEPTION(XQST0106, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
 
       have_sequential = true;
     }
@@ -1002,7 +1002,7 @@ void AnnotationListParsenode::validate() const
              theAnnotations[i]->get_qname()->get_localname() == "nonupdating")
     {
       if (have_updating)
-        throw XQUERY_EXCEPTION(XQST0106, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
 
       have_updating = true;
     }
@@ -1113,7 +1113,7 @@ CollectionDecl::CollectionDecl(
 Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
-    return err::ZXQP0000_NO_ERROR;
+    return zerr::ZXQP0000_NO_ERROR;
 
   bool setUpdateMode = false;
   bool setOrderMode = false;
@@ -1126,7 +1126,7 @@ Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_unordered:
     {
       if (setOrderMode)
-        return err::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
+        return zerr::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
 
       setOrderMode = true;
       break;
@@ -1137,17 +1137,17 @@ Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_const:
     {
       if (setUpdateMode)
-        return err::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
+        return zerr::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
 
       setUpdateMode = true;
       break;
     }
     default:
-      return err::ZDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
+      return zerr::ZDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
     } // switch
   }
 
-  return err::ZXQP0000_NO_ERROR;
+  return zerr::ZXQP0000_NO_ERROR;
 }
 
 void CollectionDecl::accept( parsenode_visitor &v ) const
@@ -1246,7 +1246,7 @@ AST_IndexDecl::AST_IndexDecl(
 Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
-    return err::ZXQP0000_NO_ERROR;
+    return zerr::ZXQP0000_NO_ERROR;
 
   bool setUnique = false;
   bool setUsage = false;
@@ -1260,7 +1260,7 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
       case StaticContextConsts::decl_non_unique:
       {
         if (setUnique)
-          return err::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
         setUnique = true;
         break;
@@ -1271,7 +1271,7 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
       case StaticContextConsts::decl_general_range:
       {
         if (setUsage)
-          return err::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
         setUsage = true;
         break;
@@ -1280,17 +1280,17 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
       case StaticContextConsts::decl_automatic:
       {
         if (setMaintenance)
-          return err::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
         setMaintenance = true;
         break;
       }
       default:
-        return err::ZDST0026_INDEX_INVALID_PROPERTY_VALUE;
+        return zerr::ZDST0026_INDEX_INVALID_PROPERTY_VALUE;
     }
   }
 
-  return err::ZXQP0000_NO_ERROR;
+  return zerr::ZXQP0000_NO_ERROR;
 }
 
 void AST_IndexDecl::accept( parsenode_visitor &v ) const

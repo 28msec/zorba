@@ -417,7 +417,7 @@ bool PathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (!state->theContextNode->isNode())
     {
-      throw XQUERY_EXCEPTION( XPTY0020, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
     }
 
     assert(state->theCurrentStep == 0);

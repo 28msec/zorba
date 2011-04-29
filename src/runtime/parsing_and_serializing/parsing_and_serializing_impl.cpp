@@ -75,13 +75,17 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       lValidatedBaseUri = URI(result->getStringValue());
     } catch (ZorbaException const& /* e */) {
       throw XQUERY_EXCEPTION(
-        FODC0007, ERROR_PARAMS( result->getStringValue() ), ERROR_LOC( loc )
+        err::FODC0007,
+        ERROR_PARAMS( result->getStringValue() ),
+        ERROR_LOC( loc )
       );
     }
 
     if (!lValidatedBaseUri.is_absolute()) {
       throw XQUERY_EXCEPTION(
-        FODC0007, ERROR_PARAMS( lValidatedBaseUri.toString() ), ERROR_LOC( loc )
+        err::FODC0007,
+        ERROR_PARAMS( lValidatedBaseUri.toString() ),
+        ERROR_LOC( loc )
       );
     }
 
@@ -96,7 +100,7 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
   } catch (ZorbaException const& e) {
     throw XQUERY_EXCEPTION(
-      FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc )
+      err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc )
     );
   }
   STACK_PUSH(true, state);

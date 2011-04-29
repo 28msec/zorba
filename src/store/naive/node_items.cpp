@@ -1914,7 +1914,7 @@ XmlNode* ElementNode::copyInternal(
             (typeName->equals(GET_STORE().theSchemaTypeNames[XS_QNAME]) ||
              typeName->equals(GET_STORE().theSchemaTypeNames[XS_NOTATION])))
         {
-          throw XQUERY_EXCEPTION(XQTY0086);
+          throw XQUERY_EXCEPTION(err::XQTY0086);
         }
       }
 
@@ -2220,7 +2220,7 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
   else
   {
     throw XQUERY_EXCEPTION(
-      FOTY0012,
+      err::FOTY0012,
       ERROR_PARAMS( theName->getStringValue(), getType()->getStringValue() )
     );
   }
@@ -2537,7 +2537,7 @@ bool ElementNode::addBindingForQName(
       else
       {
         throw XQUERY_EXCEPTION(
-          XUDY0024, ERROR_PARAMS( qname->show(), prefix, ns2 )
+          err::XUDY0024, ERROR_PARAMS( qname->show(), prefix, ns2 )
         );
       }
     }
@@ -2686,7 +2686,7 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
     if (!attr->isHidden() && attr->getNodeName()->equals(attrName))
     {
       throw XQUERY_EXCEPTION(
-        XQDY0025, ERROR_PARAMS( attrName->getStringValue() )
+        err::XQDY0025, ERROR_PARAMS( attrName->getStringValue() )
       );
     }
   }
@@ -2719,7 +2719,7 @@ void ElementNode::checkUniqueAttrs() const
       if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
       {
         throw XQUERY_EXCEPTION(
-          XUDY0021, ERROR_PARAMS( attrName->getStringValue() )
+          err::XUDY0021, ERROR_PARAMS( attrName->getStringValue() )
         );
       }
     }

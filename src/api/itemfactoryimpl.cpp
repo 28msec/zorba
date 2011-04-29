@@ -109,12 +109,12 @@ Item ItemFactoryImpl::createQName(
   
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
+      err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
     );
 
   if (lPrefix.size() && !GenericCast::instance()->castableToNCName(lPrefix.c_str()))
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( lPrefix, ZED( MustBeNCName ) )
+      err::FORG0001, ERROR_PARAMS( lPrefix, ZED( MustBeNCName ) )
     );
   
   store::Item_t lItem;
@@ -132,7 +132,7 @@ Item ItemFactoryImpl::createQName(
 
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
+      err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
     );
   
   store::Item_t lItem;
@@ -155,7 +155,7 @@ ItemFactoryImpl::createQName(const String& aQNameString)
     theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
     if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
       throw XQUERY_EXCEPTION(
-        FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
+        err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
       );
   }
   return &*lItem;
@@ -167,7 +167,7 @@ Item ItemFactoryImpl::createNCName(const String& aValue)
 
   if (!GenericCast::instance()->castableToNCName(lString.c_str()))
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( lString, ZED( MustBeNCName ) )
+      err::FORG0001, ERROR_PARAMS( lString, ZED( MustBeNCName ) )
     );
   
   store::Item_t lItem;
@@ -187,7 +187,9 @@ Item ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
   }
   else
   {
-    throw ZORBA_EXCEPTION( ZSTR0040_TYPE_ERROR, ERROR_PARAMS( lMessage ) );
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0040_TYPE_ERROR, ERROR_PARAMS( lMessage )
+    );
   }
   return &*lItem;
 }

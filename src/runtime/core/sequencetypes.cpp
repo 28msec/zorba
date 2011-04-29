@@ -183,7 +183,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theQuantifier == TypeConstants::QUANT_ONE)
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( EmptySeqNoCastToTypeWithQuantOne ) ),
         ERROR_LOC( loc )
       );
@@ -223,7 +223,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (consumeNext(lItem, theChild.getp(), planState))
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( NoSeqCastToTypeWithQuantOneOrQuestion ) ),
         ERROR_LOC( loc )
       );
@@ -356,7 +356,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       zstring const type = thePromoteType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
       if ( theFnQName.getp() )
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS(
             ZED( EmptySeqNotAsFunctionResult_23 ),
             theFnQName->getStringValue(),
@@ -366,7 +366,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         );
       else
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( EmptySeqNoPromoteTo ), type ),
           ERROR_LOC( loc )
         );
@@ -379,7 +379,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       if ( theFnQName.getp() )
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS(
             ZED( NoSeqTypePromotion_23 ),
             BUILD_STRING(
@@ -392,7 +392,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         );
       else
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( NoSeqTypePromotion ) ),
           ERROR_LOC( loc )
         );
@@ -405,7 +405,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if ( theFnQName.getp() )
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS(
               ZED( NoTypePromotion_234 ),
               tm->create_value_type(lItem)->toSchemaString(),
@@ -416,7 +416,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           );
         else
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS(
               ZED( NoTypePromotion_23 ),
               tm->create_value_type(lItem)->toSchemaString(),
@@ -442,7 +442,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if ( theFnQName.getp() )
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS(
               ZED( NoTypePromotion_234 ),
               tm->create_value_type(lItem)->toSchemaString(),
@@ -453,7 +453,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           );
         else
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS(
               ZED( NoTypePromotion_23 ),
               tm->create_value_type(lItem)->toSchemaString(),
@@ -609,7 +609,7 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
     while (CONSUME (result, 0))
     {
       if (lState->atomics != result->isAtomic ())
-        throw XQUERY_EXCEPTION (XPTY0018, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION (err::XPTY0018, ERROR_LOC(loc));
       STACK_PUSH (true, lState);
     }
   }

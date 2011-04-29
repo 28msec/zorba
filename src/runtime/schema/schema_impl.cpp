@@ -54,7 +54,7 @@ ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (consumeNext(tmp, theChild, planState))
     {
-      throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XQTY0030, ERROR_LOC( loc ) );
       // STACK_PUSH(false, aState); -- THIS IS NEVER REACHED
     }
     else
@@ -71,7 +71,7 @@ ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   else
   {
-    throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XQTY0030, ERROR_LOC( loc ) );
     // STACK_PUSH(false, aState); -- THIS IS NEVER REACHED
   }
 

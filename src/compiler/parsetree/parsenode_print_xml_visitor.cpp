@@ -326,7 +326,7 @@ void *begin_visit(const SchemaImport &n)
     INDENT_INC; NL;
     return no_state;
 #else
-  throw XQUERY_EXCEPTION(XQST0009);
+  throw XQUERY_EXCEPTION(err::XQST0009);
 #endif
 }
 

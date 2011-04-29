@@ -107,7 +107,7 @@ bool Validator::realValidationValue(
         sourceNode->getNodeKind()==store::StoreConsts::elementNode
        ) )
   {
-    throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XQTY0030, ERROR_LOC( loc ) );
   }
 
   // verify number of child elements when source is a document node
@@ -126,7 +126,7 @@ bool Validator::realValidationValue(
         if (nr_child_elements)
         {
           throw XQUERY_EXCEPTION(
-            XQDY0061,
+            err::XQDY0061,
             ERROR_PARAMS( ZED( DocNodeMultipleElements ) ),
             ERROR_LOC( loc )
           );
@@ -145,7 +145,7 @@ bool Validator::realValidationValue(
 
     if ( validationMode == ParseConstants::val_strict )
     {
-      throw XQUERY_EXCEPTION( XQDY0084, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XQDY0084, ERROR_LOC( loc ) );
     }
     else
     {
@@ -277,7 +277,7 @@ bool Validator::realValidationValue(
   }
   default:
   {
-    throw XQUERY_EXCEPTION( XQTY0030, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::XQTY0030, ERROR_LOC( loc ) );
   }
   }
 #endif // ZORBA_NO_XMLSCHEMA

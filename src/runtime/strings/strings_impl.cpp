@@ -78,7 +78,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
         {
           if (!xml::is_valid(lCode))
             throw XQUERY_EXCEPTION(
-              FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )
+              err::FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )
             );
 
           try 
@@ -94,7 +94,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
         else
         {
           throw XQUERY_EXCEPTION(
-            FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )
+            err::FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )
           );
         }
       }
@@ -285,7 +285,7 @@ bool ConcatStrIterator::nextImpl(
       if (consumeNext(lItem, *iter, planState))
       {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:concat" ),
           ERROR_LOC( loc )
         );
@@ -660,7 +660,7 @@ bool NormalizeUnicodeIterator::nextImpl(
     else
     {
       throw XQUERY_EXCEPTION(
-        FOCH0003, ERROR_PARAMS( normForm ), ERROR_LOC( loc )
+        err::FOCH0003, ERROR_PARAMS( normForm ), ERROR_LOC( loc )
       );
     }
 
@@ -1385,7 +1385,7 @@ bool FnReplaceIterator::nextImpl(
   
   if (tmp)
     throw XQUERY_EXCEPTION(
-      FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
+      err::FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
     );
 
   { // local scope
@@ -1410,7 +1410,7 @@ bool FnReplaceIterator::nextImpl(
             continue;
           default:
             throw XQUERY_EXCEPTION(
-              FORX0004,
+              err::FORX0004,
               ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '\\' ),
               ERROR_LOC( loc )
             );
@@ -1419,7 +1419,7 @@ bool FnReplaceIterator::nextImpl(
       if ( got_dollar ) {
         if ( !ascii::is_digit( *c ) )
           throw XQUERY_EXCEPTION(
-            FORX0004,
+            err::FORX0004,
             ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '$' ),
             ERROR_LOC( loc )
           );
@@ -1444,13 +1444,13 @@ bool FnReplaceIterator::nextImpl(
     } // FOR_EACH
     if ( got_backslash )
       throw XQUERY_EXCEPTION(
-        FORX0004,
+        err::FORX0004,
         ERROR_PARAMS( replacement, ZED( TrailingChar_3 ), '\\' ),
         ERROR_LOC( loc )
       );
     if ( got_dollar )
       throw XQUERY_EXCEPTION(
-        FORX0004,
+        err::FORX0004,
         ERROR_PARAMS( replacement, ZED( TrailingChar_3 ), '$' ),
         ERROR_LOC( loc )
       );
@@ -1545,7 +1545,7 @@ bool FnTokenizeIterator::nextImpl(
 
   if(tmp)
     throw XQUERY_EXCEPTION(
-      FORX0003, ERROR_PARAMS( state->thePattern ), ERROR_LOC( loc )
+      err::FORX0003, ERROR_PARAMS( state->thePattern ), ERROR_LOC( loc )
     );
 
 

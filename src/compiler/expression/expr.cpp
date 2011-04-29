@@ -225,13 +225,13 @@ void if_expr::compute_scripting_kind()
   {
     if (theThenExpr->is_updating() && !theElseExpr->is_updating_or_vacuous())
     {
-      throw XQUERY_EXCEPTION(XUST0001, 
+      throw XQUERY_EXCEPTION(err::XUST0001, 
                              ERROR_PARAMS(ZED(XUST0001_IF)),
                              ERROR_LOC(get_loc()));
     }
     else if (theElseExpr->is_updating() && !theThenExpr->is_updating_or_vacuous())
     {
-      throw XQUERY_EXCEPTION(XUST0001, 
+      throw XQUERY_EXCEPTION(err::XUST0001, 
                              ERROR_PARAMS(ZED(XUST0001_IF)),
                              ERROR_LOC(get_loc()));
     }

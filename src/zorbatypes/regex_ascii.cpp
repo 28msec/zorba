@@ -902,7 +902,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
         case 'p'://catEsc
         case 'P'://complEsc
           //ignore the prop for now
-          throw XQUERY_EXCEPTION( FORX0002 );
+          throw XQUERY_EXCEPTION( err::FORX0002 );
         case 's'://[#x20\t\n\r]
           switch(source[0])
           {
@@ -965,7 +965,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
         case 'w':
         case 'W':
         default:
-          throw XQUERY_EXCEPTION( FORX0002 );
+          throw XQUERY_EXCEPTION( err::FORX0002 );
       }
       return false;
     }

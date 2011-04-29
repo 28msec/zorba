@@ -597,7 +597,9 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
                                             &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
                                             &GENV_TYPESYSTEM))
     {
-      throw XQUERY_EXCEPTION( ZXQP0020_INVALID_URI, ERROR_PARAMS( baseURI ) );
+      throw ZORBA_EXCEPTION(
+        zerr::ZXQP0020_INVALID_URI, ERROR_PARAMS( baseURI )
+      );
     }
 
     theCtx->set_base_uri(baseURI, false);
@@ -1508,7 +1510,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   if (lType.getStringValue() != "QName")
   {
     throw XQUERY_EXCEPTION(
-      XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), "QName" )
+      err::XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), "QName" )
     );
   }
 
@@ -1519,7 +1521,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   if (lFunctions.empty())
   {
     throw XQUERY_EXCEPTION(
-      XPST0017,
+      err::XPST0017,
       ERROR_PARAMS(
         aQName.getStringValue(), ZED( FnCallNotMatchSig_3o ), aNumArgs
       )
@@ -1539,7 +1541,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   if (!lFunc)
   {
     throw XQUERY_EXCEPTION(
-      XPST0017,
+      err::XPST0017,
       ERROR_PARAMS( aQName.getStringValue(), ZED( FnCallNotMatchSig_3o ) )
     );
   }

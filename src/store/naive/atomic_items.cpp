@@ -143,7 +143,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   default:
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
       ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
     );
   }
@@ -274,7 +274,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   default:
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
       ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
     );
   }
@@ -532,7 +532,7 @@ store::Item* QNameItem::getType() const
 store::Item_t QNameItem::getEBV() const
 {
   throw XQUERY_EXCEPTION(
-    FORG0006,
+    err::FORG0006,
     ERROR_PARAMS(
       ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "QName"
     )
@@ -932,7 +932,7 @@ std::istream& StreamableStringItem::getStream()
   // materialized before
   if (!theIsSeekable && theIsConsumed) 
   {
-    throw ZORBA_EXCEPTION( ZSTR0055_STREAMABLE_STRING_CONSUMED );
+    throw ZORBA_EXCEPTION( zerr::ZSTR0055_STREAMABLE_STRING_CONSUMED );
   }
   else
   {
@@ -1197,7 +1197,7 @@ bool DateTimeItem::equals(
   }
   catch (InvalidTimezoneException const&)
   {
-    throw XQUERY_EXCEPTION(FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003);
   }
 }
 
@@ -1213,7 +1213,7 @@ long DateTimeItem::compare(
   }
   catch (InvalidTimezoneException const&)
   {
-    throw XQUERY_EXCEPTION(FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003);
   }
 }
 
@@ -1230,7 +1230,7 @@ store::Item_t DateTimeItem::getEBV() const
   {
     case DateTime::DATE_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Date"
         )
@@ -1238,7 +1238,7 @@ store::Item_t DateTimeItem::getEBV() const
 
     case DateTime::TIME_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:Time"
         )
@@ -1246,7 +1246,7 @@ store::Item_t DateTimeItem::getEBV() const
 
     case DateTime::GYEARMONTH_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
           "xs:GYearMonth"
@@ -1255,7 +1255,7 @@ store::Item_t DateTimeItem::getEBV() const
 
     case DateTime::GYEAR_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GYear"
         )
@@ -1263,7 +1263,7 @@ store::Item_t DateTimeItem::getEBV() const
 
     case DateTime::GMONTH_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GMonth"
         )
@@ -1271,7 +1271,7 @@ store::Item_t DateTimeItem::getEBV() const
 
     case DateTime::GMONTHDAY_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ),
           "xs:GMonthDay"
@@ -1280,7 +1280,7 @@ store::Item_t DateTimeItem::getEBV() const
 
     case DateTime::GDAY_FACET:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "xs:GDay"
         )
@@ -1288,7 +1288,7 @@ store::Item_t DateTimeItem::getEBV() const
 
     default:
       throw XQUERY_EXCEPTION(
-        FORG0006,
+        err::FORG0006,
         ERROR_PARAMS(
           ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "dateTime"
         )
@@ -1369,7 +1369,7 @@ store::Item* DurationItem::getType() const
 store::Item_t DurationItem::getEBV() const
 {
   throw XQUERY_EXCEPTION(
-    FORG0006,
+    err::FORG0006,
     ERROR_PARAMS(
       ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "duration"
     )
@@ -1591,7 +1591,7 @@ xs_long IntegerItem::getLongValue() const
     return longValue;
 
   throw XQUERY_EXCEPTION(
-    FORG0001,
+    err::FORG0001,
     ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
   );
 }

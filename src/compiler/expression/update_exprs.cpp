@@ -281,7 +281,7 @@ void transform_expr::setModifyExpr(expr* e)
 
   if (! theModifyExpr->is_updating_or_vacuous())
   {
-    throw XQUERY_EXCEPTION(XUST0002,
+    throw XQUERY_EXCEPTION(err::XUST0002,
                            ERROR_PARAMS(ZED(XUST0002_Transform)),
                            ERROR_LOC(theModifyExpr->get_loc()));
   }

@@ -283,7 +283,7 @@ void dynamic_context::set_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     throw XQUERY_EXCEPTION(
-      XPDY0002,
+      err::XPDY0002,
       ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
       ERROR_LOC( loc )
     );
@@ -342,7 +342,7 @@ void dynamic_context::set_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     throw XQUERY_EXCEPTION(
-      XPDY0002,
+      err::XPDY0002,
       ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
       ERROR_LOC( loc )
     );
@@ -393,7 +393,7 @@ void dynamic_context::get_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     throw XQUERY_EXCEPTION(
-      XPDY0002,
+      err::XPDY0002,
       ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
       ERROR_LOC( loc )
     );
@@ -402,7 +402,7 @@ void dynamic_context::get_variable(
   if (theVarValues[varid].theState == VarValue::declared)
   {
     throw XQUERY_EXCEPTION(
-      XPDY0002,
+      err::XPDY0002,
       ERROR_PARAMS( varname->getStringValue(), ZED( VariabledHasNoValue ) ),
       ERROR_LOC( loc )
     );

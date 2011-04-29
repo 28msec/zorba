@@ -379,7 +379,7 @@ void GroupByIterator::matVarsAndGroupBy(
       if (consumeNext(temp, theGroupingSpecs[i].theInput.getp(), aPlanState)) 
       {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( GroupByVarHasMoreThanOneItem_2 ) ),
           ERROR_LOC( loc )
         );
@@ -405,7 +405,7 @@ void GroupByIterator::matVarsAndGroupBy(
             if (typedValueIter->next(temp))
             {
               throw XQUERY_EXCEPTION(
-                XPTY0004,
+                err::XPTY0004,
                 ERROR_PARAMS( ZED( AtomizationOfGroupByMakesMoreThanOneItem ) ),
                 ERROR_LOC( loc )
               );

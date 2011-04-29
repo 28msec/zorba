@@ -99,7 +99,7 @@ void DocIndexer::createIndexEntries(
       {
         if (!thePlanWrapper->next((*key)[i]))
           throw ZORBA_EXCEPTION(
-            ZXQP0019_INTERNAL_ERROR,
+            zerr::ZXQP0019_INTERNAL_ERROR,
             ERROR_PARAMS( ZED( IncompleteKeyInIndexRefresh ) )
           );
       }

@@ -599,7 +599,7 @@ void URI::initialize(const zstring& uri, bool have_base)
         lTrimmedURILength > 0)
     {
       throw XQUERY_EXCEPTION(
-        XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( NoURIScheme ) )
+        err::XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( NoURIScheme ) )
       );
     }
   }
@@ -620,7 +620,7 @@ void URI::initialize(const zstring& uri, bool have_base)
     if (lIndex >= lTrimmedURILength)
     {
       throw XQUERY_EXCEPTION(
-        XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( NoURIAuthority ) )
+        err::XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( NoURIAuthority ) )
       );
     }
     else
@@ -655,7 +655,7 @@ void URI::initialize(const zstring& uri, bool have_base)
             !ZSTREQ(lAuthUri, "localhost")) 
         {
           throw XQUERY_EXCEPTION(
-            XQST0046,
+            err::XQST0046,
             ERROR_PARAMS( lTrimmedURI, ZED( BadFileURIAuthority_2 ), lAuthUri )
           );
         }
@@ -676,7 +676,7 @@ void URI::initialize(const zstring& uri, bool have_base)
     if (valid)
     {
       throw XQUERY_EXCEPTION(
-        XQST0046,
+        err::XQST0046,
         ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
       );
      }
@@ -704,7 +704,9 @@ void URI::initializeScheme(const zstring& uri)
   
   if ( valid && lSchemeSeparatorIdx == zstring::npos ) 
   {
-    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( uri, ZED( NoURIScheme ) ) );
+    throw XQUERY_EXCEPTION(
+      err::XQST0046, ERROR_PARAMS( uri, ZED( NoURIScheme ) )
+    );
   }
   else
   {
@@ -924,24 +926,24 @@ void URI::initializePath(const zstring& uri)
           if ( lIndex + 2 >= lEnd )
           {
             throw XQUERY_EXCEPTION(
-              XQST0046, ERROR_PARAMS( uri, ZED( BadHexSequence ) )
+              err::XQST0046, ERROR_PARAMS( uri, ZED( BadHexSequence ) )
             );
           }
           unicode::code_point lHex1 = lCodepoints[++lIndex];
           if(!ascii::is_xdigit(lHex1))
             throw XQUERY_EXCEPTION(
-              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex1 )
+              err::XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex1 )
             );
           unicode::code_point lHex2 = lCodepoints[++lIndex];
           if(!ascii::is_xdigit(lHex2))
             throw XQUERY_EXCEPTION(
-              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex2 )
+              err::XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex2 )
             );
         }
         else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
         {
           throw XQUERY_EXCEPTION(
-            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
+            err::XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
           );
         }
         ++lIndex;
@@ -969,7 +971,7 @@ void URI::initializePath(const zstring& uri)
         else if (!is_reservered_or_unreserved_char(lCp) && valid)
         {
           throw XQUERY_EXCEPTION(
-            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
+            err::XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
           );
         }
         ++lIndex;
@@ -1046,13 +1048,15 @@ void URI::set_scheme(const zstring& new_scheme)
 {
   if ( new_scheme.empty() ) 
   {
-    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( "", ZED( NoURIScheme ) ) );
+    throw XQUERY_EXCEPTION(
+      err::XQST0046, ERROR_PARAMS( "", ZED( NoURIScheme ) )
+    );
   }
 
   if ( ! is_conformant_scheme_name(new_scheme) ) 
   {
     throw XQUERY_EXCEPTION(
-      XQST0046, ERROR_PARAMS( "", ZED( BadURIScheme_3 ), new_scheme )
+      err::XQST0046, ERROR_PARAMS( "", ZED( BadURIScheme_3 ), new_scheme )
     );
   }
 
@@ -1199,7 +1203,9 @@ void URI::resolve(const URI* base_uri)
 
   if ( base_uri == 0 && toString().empty() ) 
   {
-    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( "", ZED( ZeroLenURI ) ) );
+    throw XQUERY_EXCEPTION(
+      err::XQST0046, ERROR_PARAMS( "", ZED( ZeroLenURI ) )
+    );
   }
 
   if ( toString().empty() ) 

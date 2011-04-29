@@ -349,13 +349,13 @@ void Schema::registerXSD(const char* xsdURL,
   }
   catch (const OutOfMemoryException&)
   {
-    ZORBA_ERROR_LOC_DESC(XQST0059, loc,
+    ZORBA_ERROR_LOC_DESC(err::XQST0059, loc,
 			 std::string("OutOfMemoryException during parsing ") +
 			 std::string(xsdURL));
   }
   catch (const XMLException& e)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XQST0059, loc,
+    ZORBA_ERROR_LOC_DESC_OSS(err::XQST0059, loc,
 			     "Error during parsing: " << xsdURL << " "
 			     << StrX(e.getMessage()));
   }
@@ -365,7 +365,7 @@ void Schema::registerXSD(const char* xsdURL,
   }
   catch (...)
   {
-    ZORBA_ERROR_LOC_DESC(XQST0059, loc,
+    ZORBA_ERROR_LOC_DESC(err::XQST0059, loc,
 			 std::string("Unexpected exception during parsing: ") +
 			 std::string(xsdURL));
   }
@@ -390,7 +390,7 @@ void Schema::getTypeNameFromElementName(
   if (!typeDef)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( qname->getStringValue(), ZED( SchemaElementName ) ),
       ERROR_LOC( loc )
     );
@@ -419,7 +419,7 @@ void Schema::getTypeNameFromAttributeName(
   if (!typeDef)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( qname->getStringValue(), ZED( SchemaAttributeName ) ),
       ERROR_LOC( loc )
     );
@@ -456,7 +456,7 @@ xqtref_t Schema::createXQTypeFromElementName(
   if (!typeDef)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( qname->getStringValue(), ZED( SchemaElementName ) ),
       ERROR_LOC( loc )
     );
@@ -488,7 +488,7 @@ xqtref_t Schema::createXQTypeFromAttributeName(
   if (!typeDef)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( qname->getStringValue(), ZED( SchemaAttributeName ) ),
       ERROR_LOC( loc )
     );
@@ -1600,7 +1600,7 @@ bool Schema::parseUserAtomicTypes(
       if (!xsiTypeDV)
       {
         throw XQUERY_EXCEPTION(
-          FORG0001, ERROR_PARAMS( aTargetType, ZED( NoTypeInCtx ) )
+          err::FORG0001, ERROR_PARAMS( aTargetType, ZED( NoTypeInCtx ) )
         );
       }
 
@@ -1621,7 +1621,7 @@ bool Schema::parseUserAtomicTypes(
           xsiTypeDV->validate(xchTextValue.get());
         }
         else
-          ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix <<
+          ZORBA_ERROR_DESC_OSS(err::FORG0001, "Prefix '" << prefix <<
               "' not found in current namespace context.");
       }
       else
@@ -1632,7 +1632,7 @@ bool Schema::parseUserAtomicTypes(
     }
     else
     {
-      ZORBA_ERROR_DESC_OSS(FORG0001,
+      ZORBA_ERROR_DESC_OSS(err::FORG0001,
                            "Uri '" << typeQName->getNamespace()
                            << "' not found in current schema context.");
       wasError = true;
@@ -1647,7 +1647,8 @@ bool Schema::parseUserAtomicTypes(
     transcode(idve.getMessage(), msg);
 
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), aTargetType, msg )
+      err::FORG0001,
+      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), aTargetType, msg )
     );
   }
   catch(const OutOfMemoryException&)
@@ -1785,7 +1786,7 @@ bool Schema::parseUserUnionTypes(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001,
+    err::FORG0001,
     ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), udXQType->toSchemaString() )
   );
 }
@@ -1958,7 +1959,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
      ar & le_be_value_first_char;
      if((size_of_size_t2 != size_of_size_t) || (le_be_value_first_char != le_be_value.cvalue[0]))
      {
-       throw ZORBA_EXCEPTION(ZCSE0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
+       throw ZORBA_EXCEPTION(zerr::ZCSE0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
      }
      if(!is_grammar_NULL)
      {

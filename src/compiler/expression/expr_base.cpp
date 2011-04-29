@@ -82,7 +82,7 @@ void expr::checkNonUpdating(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001, 
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
@@ -93,14 +93,14 @@ void expr::checkSimpleExpr(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001, 
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
 
   if (e != 0 && e->is_sequential())
   {
-    throw XQUERY_EXCEPTION(XSST0006, ERROR_LOC(e->get_loc()));
+    throw XQUERY_EXCEPTION(err::XSST0006, ERROR_LOC(e->get_loc()));
   }
 }
 
@@ -229,7 +229,7 @@ void expr::checkScriptingKind() const
 {
   if (is_updating() && is_sequential())
   {
-    throw XQUERY_EXCEPTION(XSST0005,  ERROR_LOC(get_loc()));
+    throw XQUERY_EXCEPTION(err::XSST0005,  ERROR_LOC(get_loc()));
   }
 
 #ifndef NDEBUG
@@ -274,7 +274,9 @@ expr_t expr::clone() const
 
 expr_t expr::clone(substitution_t& subst) const
 {
-  throw XQUERY_EXCEPTION( ZXQP0019_INTERNAL_ERROR, ERROR_LOC( get_loc() ) );
+  throw XQUERY_EXCEPTION(
+    zerr::ZXQP0019_INTERNAL_ERROR, ERROR_LOC( get_loc() )
+  );
 }
 
 
@@ -1067,5 +1069,5 @@ xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 }
 
 
-}
-
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

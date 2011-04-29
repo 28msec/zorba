@@ -202,7 +202,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
   if (byteLen > MAX_BYTE_LEN)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0030_NODEID_ERROR,
+      zerr::ZSTR0030_NODEID_ERROR,
       ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(MAX_BYTE_LEN) )
     );
   }
@@ -240,7 +240,9 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+        throw ZORBA_EXCEPTION(
+          zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+        );
 
       buf[i] <<= 4;
       start++;
@@ -253,7 +255,9 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        throw ZORBA_EXCEPTION( ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
+        throw ZORBA_EXCEPTION(
+          zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
+        );
 
       start++;
       i++;
@@ -746,7 +750,7 @@ void OrdPath::insertBeforeOrAfter(
     if ( newcomp < -std::numeric_limits<int32_t>::max() + 2)
     {
       throw ZORBA_EXCEPTION(
-        ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+        zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
       );
     }
 
@@ -757,7 +761,7 @@ void OrdPath::insertBeforeOrAfter(
     if ( newcomp > std::numeric_limits<int32_t>::max() - 2)
     {
       throw ZORBA_EXCEPTION(
-        ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+        zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
       );
     }
 
@@ -896,7 +900,7 @@ void OrdPath::insertInto(
       if (newcomp1 < -std::numeric_limits<int32_t>::max() + 1)
       {
         throw ZORBA_EXCEPTION(
-          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+          zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
         );
       }
 
@@ -907,7 +911,7 @@ void OrdPath::insertInto(
       if (newcomp1 < -std::numeric_limits<int32_t>::max() + 2)
       {
         throw ZORBA_EXCEPTION(
-          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+          zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
         );
       }
 
@@ -930,7 +934,7 @@ void OrdPath::insertInto(
       if (newcomp1 > std::numeric_limits<int32_t>::max() - 1)
       {
         throw ZORBA_EXCEPTION(
-          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+          zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
         );
       }
 
@@ -941,7 +945,7 @@ void OrdPath::insertInto(
       if (newcomp1 > std::numeric_limits<int32_t>::max() - 2)
       {
         throw ZORBA_EXCEPTION(
-          ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+          zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
         );
       }
 
@@ -1042,7 +1046,7 @@ bool OrdPath::pushComp(
   if (bytesNeeded > MAX_BYTE_LEN)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0030_NODEID_ERROR,
+      zerr::ZSTR0030_NODEID_ERROR,
       ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(MAX_BYTE_LEN) )
     );
   }
@@ -1123,7 +1127,7 @@ void OrdPath::appendComp(int32_t value)
   if (bytesNeeded > MAX_BYTE_LEN)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0030_NODEID_ERROR,
+      zerr::ZSTR0030_NODEID_ERROR,
       ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int( MAX_BYTE_LEN ) )
     );
   }
@@ -4017,7 +4021,7 @@ void OrdPathStack::pushChild()
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0030_NODEID_ERROR,
+      zerr::ZSTR0030_NODEID_ERROR,
       ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(OrdPath::MAX_BYTE_LEN) )
     );
   }
@@ -4061,7 +4065,7 @@ void OrdPathStack::popChild()
   if (theDeweyId[theNumComps - 1] > std::numeric_limits<int32_t>::max() - 2)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+      zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
     );
   }
 
@@ -4095,7 +4099,7 @@ void OrdPathStack::nextChild()
   if (theDeweyId[theNumComps - 1] > std::numeric_limits<int32_t>::max() - 2)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
+      zerr::ZSTR0030_NODEID_ERROR, ERROR_PARAMS( ZED( NodeIDTooBig ) )
     );
   }
 
@@ -4189,7 +4193,7 @@ void OrdPathStack::compressComp(ulong comp, int32_t value)
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0030_NODEID_ERROR,
+      zerr::ZSTR0030_NODEID_ERROR,
       ERROR_PARAMS( ZED( NodeIDNeedsBytes_2 ), int(OrdPath::MAX_BYTE_LEN) )
     );
   }

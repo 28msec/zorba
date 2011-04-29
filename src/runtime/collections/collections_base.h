@@ -69,7 +69,7 @@ protected:
     if (collectionDecl == 0  && !aDynamicCollection) 
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0001_COLLECTION_NOT_DECLARED,
+        zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
         ERROR_PARAMS( aName->getStringValue() ),
         ERROR_LOC( aLoc )
       );
@@ -80,7 +80,7 @@ protected:
     if (coll == NULL) 
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+        zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
         ERROR_PARAMS( aName->getStringValue() ),
         ERROR_LOC( aLoc )
       );
@@ -119,7 +119,7 @@ protected:
       if (!collection->findNode(targetNode.getp(), targetPos)) 
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0011_COLLECTION_NODE_NOT_FOUND,
+          zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
           ERROR_PARAMS( collName->getStringValue() ),
           ERROR_LOC( this->loc )
         );

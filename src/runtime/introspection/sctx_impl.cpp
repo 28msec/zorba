@@ -103,7 +103,7 @@ bool StaticNamespaceBindingIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, err::ZXQP0000_NO_ERROR))
+  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, zerr::ZXQP0000_NO_ERROR))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, ns), state);
   }

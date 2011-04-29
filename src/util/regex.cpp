@@ -53,7 +53,7 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
         case 's': icu_flags |= UREGEX_DOTALL          ; break;
         case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
         default:
-          throw XQUERY_EXCEPTION( FORX0001, ERROR_PARAMS( *f ) );
+          throw XQUERY_EXCEPTION( err::FORX0001, ERROR_PARAMS( *f ) );
       }
     }
   }
@@ -61,7 +61,7 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
 }
 
 #define INVALID_RE_EXCEPTION(...) \
-  XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
+  XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
@@ -236,7 +236,9 @@ void regex::compile( string const &u_pattern, char const *flags,
       icu_error_key = ZED_PREFIX;
       icu_error_key += u_errorName( status );
     }
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern, icu_error_key ) );
+    throw XQUERY_EXCEPTION(
+      err::FORX0002, ERROR_PARAMS( pattern, icu_error_key )
+    );
   }
 }
 

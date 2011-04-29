@@ -87,7 +87,7 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(state->theTagItem, theChildren[1], planState)) {
     throw XQUERY_EXCEPTION(
-      FORG0006,
+      err::FORG0006,
       ERROR_PARAMS(
         ZED( BadArgTypeForFn_2o34o ), ZED( EmptySequence ), "fn:trace"
       ),

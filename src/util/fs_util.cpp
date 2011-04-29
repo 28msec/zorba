@@ -173,24 +173,26 @@ zstring curdir() {
 
 zstring get_normalized_path( char const *path, char const *base ) {
   if ( !path[0] )
-    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( ZED( EmptyPath ) ) );
+    throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( ZED( EmptyPath ) ) );
   zstring result;
   if ( ascii::begins_with( path, "file://" ) ) {
     result = path + 7;
     if ( result.empty() )
       throw XQUERY_EXCEPTION(
-        XPTY0004, ERROR_PARAMS( ZED( QuotedColon_23 ), path, ZED( EmptyPath ) )
+        err::XPTY0004,
+        ERROR_PARAMS( ZED( QuotedColon_23 ), path, ZED( EmptyPath ) )
       );
     zstring::size_type slash = result.find( '/' );
     if ( slash == zstring::npos )
       throw XQUERY_EXCEPTION(
-        XPTY0004, ERROR_PARAMS( ZED( QuotedColon_23 ), path, ZED( BadPath ) )
+        err::XPTY0004,
+        ERROR_PARAMS( ZED( QuotedColon_23 ), path, ZED( BadPath ) )
       );
     if ( slash > 0 ) {
       zstring const authority( result.substr( 0, slash ) );
       if ( authority != "localhost" )
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS(
             ZED( QuotedColon_23 ), authority, ZED( NonLocalhostAuthority )
           )
@@ -205,7 +207,7 @@ zstring get_normalized_path( char const *path, char const *base ) {
     replace_foreign( &result );
     if ( !is_absolute( result ) )
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( QuotedColon_23 ), result, ZED( NoDriveSpecification )
         )

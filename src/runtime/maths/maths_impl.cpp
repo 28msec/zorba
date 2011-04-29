@@ -286,7 +286,7 @@ FmodIterator::nextImpl (store::Item_t& result, PlanState& planState) const
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
         throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fmod" )
+          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fmod" )
         );
       STACK_PUSH(true, state);
     }
@@ -321,7 +321,7 @@ LdexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
         throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "ldexp" )
+          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "ldexp" )
         );
       STACK_PUSH(true, state);
     }
@@ -382,7 +382,7 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
           if(!NumConversions::integerToInt(n1_integer, n1_int))
           {
             throw XQUERY_EXCEPTION(
-              XPTY0004,
+              err::XPTY0004,
               ERROR_PARAMS( ZED( NoCastToCInt_2 ), n1_integer ),
               ERROR_LOC( loc )
             );
@@ -398,7 +398,7 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
         else
         {
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "math:pow" ),
             ERROR_LOC( loc )
           );
@@ -408,7 +408,7 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
         throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "math:pow" )
+          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "math:pow" )
         );
       STACK_PUSH(true, state);
     }

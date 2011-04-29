@@ -106,7 +106,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     if (lInStream.is_open() == false)
     {
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( decodedURI, ZED( FileNotFoundOrReadable ) )
+        err::FODC0002, ERROR_PARAMS( decodedURI, ZED( FileNotFoundOrReadable ) )
       );
     }
 
@@ -116,7 +116,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);
 #else
-    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI ) );
+    throw XQUERY_EXCEPTION( err::FODC0002, ERROR_PARAMS( lURI ) );
 #endif
   }
   else if (ZSTREQ(lURI.get_scheme(), "http") ||
@@ -130,7 +130,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     }
     catch ( uri::fetch_exception const &e ) {
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( lURI, e.what() )
+        err::FODC0002, ERROR_PARAMS( lURI, e.what() )
       );
     }
 
@@ -140,19 +140,20 @@ store::Item_t StandardDocumentURIResolver::resolve(
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);
 #else
-    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI ) );
+    throw XQUERY_EXCEPTION( err::FODC0002, ERROR_PARAMS( lURI ) );
 #endif
   }
   else
   {
     throw XQUERY_EXCEPTION(
-      FODC0002, ERROR_PARAMS( lURI, ZED( BadURIScheme_3 ), lURI.get_scheme() )
+      err::FODC0002,
+      ERROR_PARAMS( lURI, ZED( BadURIScheme_3 ), lURI.get_scheme() )
     );
   }
 
   if (lResultDoc == NULL)
   {
-    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI ) );
+    throw XQUERY_EXCEPTION( err::FODC0002, ERROR_PARAMS( lURI ) );
   }
 
   return lResultDoc;
@@ -189,7 +190,9 @@ StandardCollectionURIResolver::resolve(
   }
   catch (ZorbaException const& e)
   {
-    throw XQUERY_EXCEPTION( FODC0004, ERROR_PARAMS( lUriString, e.what() ) );
+    throw XQUERY_EXCEPTION(
+      err::FODC0004, ERROR_PARAMS( lUriString, e.what() )
+    );
   }
 
   // try to get it from the store again
@@ -244,7 +247,7 @@ StandardFullTextURIResolver::resolve(
       return lResolvedURI.str();
     } else {
       throw XQUERY_EXCEPTION(
-        XQST0059,
+        err::XQST0059,
         ERROR_PARAMS( aURI->getStringValue(), lResolvedURI )
       );
     }

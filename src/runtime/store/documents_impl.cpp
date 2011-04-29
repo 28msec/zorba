@@ -58,7 +58,7 @@ bool AddDocumentIterator::nextImpl(
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
     throw XQUERY_EXCEPTION(
-      FODC0004,
+      err::FODC0004,
       ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
       ERROR_LOC( loc )
     );
@@ -67,7 +67,7 @@ bool AddDocumentIterator::nextImpl(
   // check if document already exists in the store
   if (GENV_STORE.getDocument(lResolvedUriString) != NULL) {
     throw XQUERY_EXCEPTION(
-      ZAPI0020_DOCUMENT_ALREADY_EXISTS,
+      zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS,
       ERROR_PARAMS( lResolvedUriString ),
       ERROR_LOC( loc )
     );
@@ -112,7 +112,7 @@ bool RemoveDocumentIterator::nextImpl(
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
     throw XQUERY_EXCEPTION(
-      FODC0004,
+      err::FODC0004,
       ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
       ERROR_LOC( loc )
     );
@@ -121,7 +121,7 @@ bool RemoveDocumentIterator::nextImpl(
   // check if document exists in the store
   if (GENV_STORE.getDocument(lResolvedUriString) == NULL) {
     throw XQUERY_EXCEPTION(
-      ZXQD0002_DOCUMENT_NOT_VALID,
+      zerr::ZXQD0002_DOCUMENT_NOT_VALID,
       ERROR_PARAMS( lResolvedUriString, ZED( NoURIInStore ) ),
       ERROR_LOC( loc )
     );
@@ -164,7 +164,7 @@ bool RetrieveDocumentIterator::nextImpl(
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
     throw XQUERY_EXCEPTION(
-      FODC0004,
+      err::FODC0004,
       ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
       ERROR_LOC( loc )
     );
@@ -173,7 +173,7 @@ bool RetrieveDocumentIterator::nextImpl(
   // check if document exists in the store
   if ((result = GENV_STORE.getDocument(lResolvedUriString)) == NULL) {
     throw XQUERY_EXCEPTION(
-      ZXQD0002_DOCUMENT_NOT_VALID,
+      zerr::ZXQD0002_DOCUMENT_NOT_VALID,
       ERROR_PARAMS( lResolvedUriString, ZED( NoURIInStore ) ),
       ERROR_LOC( loc )
     );
@@ -257,7 +257,7 @@ bool IsAvailableDocumentIterator::nextImpl(
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
     throw XQUERY_EXCEPTION(
-      FODC0004,
+      err::FODC0004,
       ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
       ERROR_LOC( loc )
     );

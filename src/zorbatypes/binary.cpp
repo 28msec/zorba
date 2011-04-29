@@ -347,7 +347,7 @@ void Base64::insertData(const char* str, size_t len)
       else
       {
         throw XQUERY_EXCEPTION(
-          FORG0001, ERROR_PARAMS( "==", ZED( Base64EqualsEquals ) )
+          err::FORG0001, ERROR_PARAMS( "==", ZED( Base64EqualsEquals ) )
         );
       }
     }
@@ -362,7 +362,7 @@ void Base64::insertData(const char* str, size_t len)
         break;
       default:
         throw XQUERY_EXCEPTION(
-          FORG0001, ERROR_PARAMS( '=', ZED( Base64Equals ) )
+          err::FORG0001, ERROR_PARAMS( '=', ZED( Base64Equals ) )
         );
       }
     }
@@ -373,7 +373,7 @@ void Base64::insertData(const char* str, size_t len)
     else
     {
       throw XQUERY_EXCEPTION(
-        FORG0001, ERROR_PARAMS( str[i], ZED( Base64BadChar ) )
+        err::FORG0001, ERROR_PARAMS( str[i], ZED( Base64BadChar ) )
       );
     }
   }
@@ -381,7 +381,7 @@ void Base64::insertData(const char* str, size_t len)
   if (theData.size() % 4 != 0) 
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )
+      err::FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )
     );
   }
 }
@@ -536,7 +536,7 @@ void Base16::insertData(const char* str, size_t len)
   if (len % 2 != 0) 
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( "", ZED( HexBinaryMustBeEven ) )
+      err::FORG0001, ERROR_PARAMS( "", ZED( HexBinaryMustBeEven ) )
     );
   }
 
@@ -555,7 +555,7 @@ void Base16::insertData(const char* str, size_t len)
     else
     {
       throw XQUERY_EXCEPTION(
-        FORG0001, ERROR_PARAMS( lChar, ZED( BadHexDigit_3 ), lChar )
+        err::FORG0001, ERROR_PARAMS( lChar, ZED( BadHexDigit_3 ), lChar )
       );
     }
   }

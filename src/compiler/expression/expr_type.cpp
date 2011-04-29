@@ -249,7 +249,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
       else if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
       {
-        throw XQUERY_EXCEPTION(XPTY0020, ERROR_LOC(get_loc()));
+        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(get_loc()));
       }
       else
       {
@@ -315,7 +315,7 @@ void expr::compute_return_type(bool deep, bool* modified)
         else
         {
           throw XQUERY_EXCEPTION(
-            ZDDY0001_COLLECTION_NOT_DECLARED,
+            zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
             ERROR_PARAMS( qname->getStringValue() ),
             ERROR_LOC( get_loc() )
           );
@@ -801,13 +801,13 @@ static xqtref_t axis_step_type(
         testSchemaType != NULL &&
         ! testSchemaType->equals(RTM.XS_UNTYPED_ATOMIC_QNAME))
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
     else if ((testKind == match_elem_test || testKind == match_doc_test) &&
              testSchemaType != NULL &&
              ! testSchemaType->equals(RTM.XS_UNTYPED_QNAME))
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
   }
 
@@ -818,7 +818,7 @@ static xqtref_t axis_step_type(
     // Doc nodes do not have parent
     if (inNodeKind == store::StoreConsts::documentNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     // Only element or doc nodes are reachable via the parent axis.
@@ -826,14 +826,14 @@ static xqtref_t axis_step_type(
         testNodeKind != store::StoreConsts::elementNode && 
         testNodeKind != store::StoreConsts::anyNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     // Doc nodes cannot be parents of attribute nodes
     if (inNodeKind == store::StoreConsts::attributeNode &&
         testNodeKind == store::StoreConsts::documentNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
@@ -846,7 +846,7 @@ static xqtref_t axis_step_type(
     // Doc nodes do not have ancestors
     if (inNodeKind == store::StoreConsts::documentNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     // Only element or doc nodes are reachable via the ancestor axis.
@@ -854,7 +854,7 @@ static xqtref_t axis_step_type(
         testNodeKind != store::StoreConsts::elementNode && 
         testNodeKind != store::StoreConsts::anyNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     if (testNodeKind == store::StoreConsts::elementNode)
@@ -906,14 +906,14 @@ self:
         inNodeKind != store::StoreConsts::anyNode &&
         inNodeKind != testNodeKind)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     if (testNodeName != NULL &&
         inNodeName != NULL &&
         !inNodeName->equals(testNodeName))
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     switch (inNodeKind)
@@ -1010,13 +1010,13 @@ self:
         inNodeKind == store::StoreConsts::piNode ||
         inNodeKind == store::StoreConsts::commentNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     if (testNodeKind == store::StoreConsts::documentNode ||
         testNodeKind == store::StoreConsts::attributeNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     switch (testNodeKind)
@@ -1049,7 +1049,7 @@ self:
     if (inNodeKind != store::StoreConsts::elementNode &&
         inNodeKind != store::StoreConsts::anyNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     // only attribute nodes are reachable via the attribute axis.
@@ -1058,7 +1058,7 @@ self:
         testKind != match_attr_test &&
         testKind != match_xs_attr_test)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     if ((testKind == match_name_test && wildKind == match_no_wild) ||
@@ -1090,7 +1090,7 @@ self:
     if (inNodeKind == store::StoreConsts::documentNode ||
         testNodeKind == store::StoreConsts::documentNode)
     {
-      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
 
     if ((axisKind == axis_kind_following_sibling ||
@@ -1098,7 +1098,7 @@ self:
         (inNodeKind == store::StoreConsts::attributeNode ||
          testNodeKind == store::StoreConsts::attributeNode))
     {
-      //throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
+      //throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
       return RTM.EMPTY_TYPE;
     }
 

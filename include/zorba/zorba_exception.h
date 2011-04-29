@@ -167,7 +167,7 @@ inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
  * \hideinitializer
  */
 #define ZORBA_EXCEPTION(...) \
-  ::zorba::internal::make_zorba_exception( __FILE__, __LINE__, ::zorba::err:: __VA_ARGS__ )
+  ::zorba::internal::make_zorba_exception( __FILE__, __LINE__, ::zorba:: __VA_ARGS__ )
 
 ///////////////////////////////////////////////////////////////////////////////
 

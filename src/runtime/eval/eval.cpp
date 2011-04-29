@@ -253,7 +253,7 @@ void EvalIterator::copyOuterVariables(
   {
     var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
                                               loc,
-                                              err::ZXQP0000_NO_ERROR);
+                                              zerr::ZXQP0000_NO_ERROR);
     ZORBA_ASSERT(evalVar);
 
     evalVar->set_unique_id(maxOuterVarId);
@@ -297,7 +297,7 @@ void EvalIterator::setExternalVariables(
 
     var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
                                                 loc, 
-                                                err::ZXQP0000_NO_ERROR);
+                                                zerr::ZXQP0000_NO_ERROR);
 
     if (globalVar == NULL)
       continue;
@@ -347,7 +347,7 @@ PlanIter_t EvalIterator::compile(
 
   rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
   if (mm == NULL)
-    throw XQUERY_EXCEPTION(XPST0003, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
   expr_t rootExpr;
   PlanIter_t rootIter = compiler.compile(ast, false, rootExpr, maxOuterVarId);
@@ -356,17 +356,17 @@ PlanIter_t EvalIterator::compile(
   if (theScriptingKind == SIMPLE_EXPR)
   {
     if (!rootExpr->is_simple())
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
   }
   else if (theScriptingKind == UPDATE_EXPR)
   {
     if (!rootExpr->is_updating())
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
   }
   else if (theScriptingKind == SEQUENTIAL_EXPR)
   {
     if (!rootExpr->is_sequential())
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
   }
 #endif
   return rootIter;

@@ -54,13 +54,14 @@ DynamicLoader::loadModule(const zstring& aFile) const
   HMODULE handle = LoadLibraryW(wpath_str);
   if (!handle)
     throw ZORBA_EXCEPTION(
-      ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( aFile, error::get_os_err_string() )
+      zerr::ZOSE0001_FILE_NOT_FOUND,
+      ERROR_PARAMS( aFile, error::get_os_err_string() )
     );
 
   createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
   if (createModule == NULL)
     throw ZORBA_EXCEPTION(
-      ZAPI0015_CREATEMODULE_NOT_FOUND,
+      zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
       ERROR_PARAMS( aFile, error::get_os_err_string() )
     );
 
@@ -68,7 +69,7 @@ DynamicLoader::loadModule(const zstring& aFile) const
   void* handle = dlopen(aFile.c_str(), RTLD_NOW);
   if (!handle)
     throw ZORBA_EXCEPTION(
-      ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( aFile, dlerror() )
+      zerr::ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( aFile, dlerror() )
     );
 
   createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
@@ -76,7 +77,7 @@ DynamicLoader::loadModule(const zstring& aFile) const
   {
     dlclose(handle);
     throw ZORBA_EXCEPTION(
-      ZAPI0015_CREATEMODULE_NOT_FOUND,
+      zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
       ERROR_PARAMS( aFile, dlerror() )
     );
   }
@@ -157,9 +158,9 @@ DynamicLoader::getExternalModule
           if (lModule->getURI().c_str() != aNsURI)
           {
             throw ZORBA_EXCEPTION(
-              ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED,
+              zerr::ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED,
               ERROR_PARAMS( lURI, potentialModuleFile )
-              );
+            );
           }
         }
 

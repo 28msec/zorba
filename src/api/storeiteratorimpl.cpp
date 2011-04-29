@@ -119,7 +119,7 @@ void StoreIteratorImpl::open()
   try
   {
     if (theIsOpen)  
-      throw ZORBA_EXCEPTION(ZAPI0041_ITERATOR_ALREADY_OPEN);
+      throw ZORBA_EXCEPTION(zerr::ZAPI0041_ITERATOR_ALREADY_OPEN);
 
     SYNC_CODE(
     if (!theHaveLock)
@@ -144,7 +144,7 @@ bool StoreIteratorImpl::next(Item& aItem)
   try
   {
     if (!theIsOpen)  
-      throw ZORBA_EXCEPTION(ZAPI0040_ITERATOR_NOT_OPEN);
+      throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
     SYNC_CODE(
     if (!theHaveLock)
@@ -174,7 +174,7 @@ void StoreIteratorImpl::close()
   try
   {
     if (!theIsOpen)  
-      throw ZORBA_EXCEPTION(ZAPI0040_ITERATOR_NOT_OPEN);
+      throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
     theIterator->close();
 

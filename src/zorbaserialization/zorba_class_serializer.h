@@ -440,7 +440,7 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
       if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }
@@ -449,7 +449,7 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
       if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }
@@ -459,7 +459,7 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
       (field_treat == ARCHIVE_FIELD_IS_BASECLASS))
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0009_CLASS_NOT_SERIALIZABLE, ERROR_PARAMS( "rchandle<T>*" )
+        zerr::ZCSE0009_CLASS_NOT_SERIALIZABLE, ERROR_PARAMS( "rchandle<T>*" )
       );
 
       bool is_temp = false;
@@ -497,13 +497,13 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
       }catch(...)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0004_UNRESOLVED_FIELD_REFERENCE, ERROR_PARAMS( id )
+          zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE, ERROR_PARAMS( id )
         );
       }
       if(!obj)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }

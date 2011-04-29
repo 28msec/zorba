@@ -402,14 +402,16 @@ ftlanguage_option::ftlanguage_option(
 {
   if ( !GenericCast::instance()->castableToLanguage( lang ) )
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS(
         ZED( BadType_23o ), lang, ZED( NoCastTo_45o ), "xs:language"
       ),
       ERROR_LOC( loc )
     );
   if ( !(lang_ = locale::find_lang( lang.c_str() )) )
-    throw XQUERY_EXCEPTION( FTST0009, ERROR_PARAMS( lang ), ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      err::FTST0009, ERROR_PARAMS( lang ), ERROR_LOC( loc )
+    );
 }
 
 void ftlanguage_option::serialize( serialization::Archiver &ar ) {

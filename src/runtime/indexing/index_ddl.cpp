@@ -58,7 +58,7 @@ static void checkKeyType(
       !TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
   {
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS(
         ZED( SearchKeyTypeMismatch_234 ),
         *searchKeyType,
@@ -78,7 +78,7 @@ static void checkKeyType(
           TypeOps::is_subtype(tm, *searchKeyType, *rtm.HEXBINARY_TYPE_ONE))))
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( SearchKeyTypeNoProbeIndex_23 ),
           *searchKeyType,
@@ -249,7 +249,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0021_INDEX_NOT_DECLARED,
+      zerr::ZDDY0021_INDEX_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -258,7 +258,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (GENV_STORE.getIndex(qname) != NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0022_INDEX_ALREADY_EXISTS,
+      zerr::ZDDY0022_INDEX_ALREADY_EXISTS,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -312,7 +312,7 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (theSctx->lookup_index(qname) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0021_INDEX_NOT_DECLARED,
+      zerr::ZDDY0021_INDEX_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -321,7 +321,7 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (GENV_STORE.getIndex(qname) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0023_INDEX_DOES_NOT_EXIST,
+      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -378,7 +378,7 @@ bool RefreshIndexIterator::nextImpl(
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0021_INDEX_NOT_DECLARED,
+      zerr::ZDDY0021_INDEX_NOT_DECLARED,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -387,7 +387,7 @@ bool RefreshIndexIterator::nextImpl(
   if (GENV_STORE.getIndex(qname) == NULL)
   {
     throw XQUERY_EXCEPTION(
-      ZDDY0023_INDEX_DOES_NOT_EXIST,
+      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
       ERROR_PARAMS( qname->getStringValue() ),
       ERROR_LOC( loc )
     );
@@ -624,7 +624,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0021_INDEX_NOT_DECLARED,
+          zerr::ZDDY0021_INDEX_NOT_DECLARED,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -633,7 +633,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -646,7 +646,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       if (state->theIndex == NULL)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0023_INDEX_DOES_NOT_EXIST,
+          zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -785,7 +785,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0021_INDEX_NOT_DECLARED,
+          zerr::ZDDY0021_INDEX_NOT_DECLARED,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -794,7 +794,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       if (!state->theIndexDecl->isGeneral())
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED,
+          zerr::ZDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -804,7 +804,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
           numChildren != 2)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -817,7 +817,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       if (state->theIndex == NULL)
       {
         throw XQUERY_EXCEPTION(
-          ZDDY0023_INDEX_DOES_NOT_EXIST,
+          zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
           ERROR_PARAMS( qnameItem->getStringValue() ),
           ERROR_LOC( loc )
         );
@@ -968,7 +968,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0021_INDEX_NOT_DECLARED,
+        zerr::ZDDY0021_INDEX_NOT_DECLARED,
         ERROR_PARAMS( qname->getStringValue() ),
         ERROR_LOC( loc )
       );
@@ -977,7 +977,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if (indexDecl->getMethod() != IndexDecl::TREE)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED,
+        zerr::ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED,
         ERROR_PARAMS( qname->getStringValue() ),
         ERROR_LOC( loc )
       );
@@ -986,7 +986,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if ((numChildren-1) % 6 != 0)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+        zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
         ERROR_PARAMS( qname->getStringValue() ),
         ERROR_LOC( loc )
       );
@@ -995,7 +995,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if (indexDecl->getKeyExpressions().size() * 6 > numChildren-1)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+        zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
         ERROR_PARAMS( qname->getStringValue() ),
         ERROR_LOC( loc )
       );
@@ -1008,7 +1008,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if (state->theIndex == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0023_INDEX_DOES_NOT_EXIST,
+        zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
         ERROR_PARAMS( qname->getStringValue() ),
         ERROR_LOC( loc )
       );

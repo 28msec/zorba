@@ -445,8 +445,8 @@ bool GeneralHashIndex::insertInMap(
   {
     if (isUnique())
     {
-      throw XQUERY_EXCEPTION(
-        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      throw ZORBA_EXCEPTION(
+        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
         ERROR_PARAMS( theQname->getStringValue() )
       );
     }
@@ -522,7 +522,7 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
       theProbeKind != store::IndexCondition::POINT_GENERAL)
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+      zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
       ERROR_PARAMS(
         cond->getKindString(), theIndex->getName()->getStringValue()
       )
@@ -536,7 +536,7 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
   if (key->size() != theIndex->getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
       ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
     );
   }
@@ -546,7 +546,7 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     if (theIndex->theMultiKeyFlag)
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( NoMultiKeyNodeValues_2 ), theIndex->getName()->getStringValue()
         )
@@ -556,7 +556,7 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     if (theIndex->theUntypedFlag)
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( NoUntypedKeyNodeValue_2 ), theIndex->getName()->getStringValue()
         )
@@ -1288,8 +1288,8 @@ longmap:
 
   default:
   {
-    throw XQUERY_EXCEPTION(
-      ZDTY0012_INDEX_KEY_TYPE_ERROR, 
+    throw ZORBA_EXCEPTION(
+      zerr::ZDTY0012_INDEX_KEY_TYPE_ERROR, 
       ERROR_PARAMS( getName()->getStringValue() )
     );
   }
@@ -1324,8 +1324,8 @@ bool GeneralTreeIndex::insertInMap(
   {
     if (isUnique())
     {
-      throw XQUERY_EXCEPTION(
-        ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      throw ZORBA_EXCEPTION(
+        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
         ERROR_PARAMS( theQname->getStringValue() )
       );
     }
@@ -1432,7 +1432,7 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
   if (key->size() != theIndex->getNumColumns())
   {
     throw ZORBA_EXCEPTION(
-      ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
       ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
     );
   }
@@ -1442,7 +1442,7 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     if (theIndex->theMultiKeyFlag)
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( NoMultiKeyNodeValues_2 ), theIndex->getName()->getStringValue()
         )
@@ -1452,7 +1452,7 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     if (theIndex->theUntypedFlag)
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS(
           ZED( NoUntypedKeyNodeValue_2 ), theIndex->getName()->getStringValue()
         )
@@ -1815,7 +1815,7 @@ bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
         if ((*theIte).theMultiKey)
         {
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS(
               ZED( NoMultiKeyNodeValues_2 ),
               theIndex->getName()->getStringValue()
@@ -1826,7 +1826,7 @@ bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
         if ((*theIte).theUntyped)
         {
           throw XQUERY_EXCEPTION(
-            XPTY0004,
+            err::XPTY0004,
             ERROR_PARAMS(
               ZED( NoUntypedKeyNodeValue_2 ),
               theIndex->getName()->getStringValue()

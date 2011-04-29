@@ -170,8 +170,8 @@ void ICCheckerImpl::actualCheck(const store::Item* collName,
     
     if ( !icConditionHolds )
     {
-			throw XQUERY_EXCEPTION(
-				ZDDY0033_IC_NOT_MET, 
+			throw ZORBA_EXCEPTION(
+				zerr::ZDDY0033_IC_NOT_MET, 
 				ERROR_PARAMS( icName->getStringValue(), collName->getStringValue() )
 			);
     }

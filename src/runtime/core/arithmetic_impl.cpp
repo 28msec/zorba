@@ -60,7 +60,7 @@ void ArithOperationsCommons::createError(
   xqtref_t t0 = tm->create_builtin_atomic_type(aType0,TypeConstants::QUANT_ONE);
   xqtref_t t1 = tm->create_builtin_atomic_type(aType1,TypeConstants::QUANT_ONE);
   throw XQUERY_EXCEPTION(
-    XPTY0004,
+    err::XPTY0004,
     ERROR_PARAMS( ZED( OperationNotPossibleWithTypes_234 ), aOp, *t0, *t1 ),
     ERROR_LOC( aLoc )
   );
@@ -111,7 +111,7 @@ bool GenericArithIterator<Operation>::nextImpl(
           this->consumeNext(n1, this->theChild1.getp(), planState))
       {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
           ERROR_LOC( this->loc )
         );
@@ -293,7 +293,7 @@ bool GenericArithIterator<Operation>::compute(
   
   
   throw XQUERY_EXCEPTION(
-    XPTY0004,
+    err::XPTY0004,
     ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
     ERROR_LOC( aLoc )
   );
@@ -513,7 +513,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DAT
   }
   catch (InvalidTimezoneException const&) 
   {
-    throw XQUERY_EXCEPTION(FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003);
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -536,7 +536,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>(
   }
   catch (InvalidTimezoneException const&)
   {
-    throw XQUERY_EXCEPTION(FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003);
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -559,7 +559,7 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>(
   }
   catch (InvalidTimezoneException const&)
   {
-    throw XQUERY_EXCEPTION(FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003);
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -581,9 +581,9 @@ bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_
   std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
-    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
   else
     d.reset(i0->getYearMonthDurationValue() * (i1->getDoubleValue()));
   
@@ -603,9 +603,9 @@ bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_
   std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
-    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
   else
     d.reset(i0->getDayTimeDurationValue() * (i1->getDoubleValue()));
   
@@ -659,9 +659,9 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DO
     d = std::auto_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
   }
   else if ( i1->getDoubleValue().isZero() )
-    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
-    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
   else
     d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
 
@@ -685,9 +685,9 @@ bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DO
     d.reset(new Duration());
   }
   else if ( i1->getDoubleValue().isZero() )
-    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
-    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
   else
     d.reset(i0->getDayTimeDurationValue() / i1->getDoubleValue());
 

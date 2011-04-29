@@ -40,7 +40,7 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
 	  is->read(preface_string + preface_len, 1);
 	  if(is->gcount() < 1)
 	  {
-      throw ZORBA_EXCEPTION(ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
 	  }
     if(preface_string[preface_len] == 0)
       break;
@@ -48,7 +48,7 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   }
   if(strcmp(preface_string, ZORBA_BIN_SERIALIZED_PLAN_STRING))
   {
-    throw ZORBA_EXCEPTION(ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    throw ZORBA_EXCEPTION(zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
   }
 
   in_buffer = (unsigned char*)malloc(BUFFER_SEGMENT_SIZE);
@@ -74,12 +74,12 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
 #ifndef NDEBUG
   if(is_release)
   {
-    throw ZORBA_EXCEPTION(ZCSE0016_CANNOT_LOAD_FROM_RELEASE_TO_DEBUG);
+    throw ZORBA_EXCEPTION(zerr::ZCSE0016_CANNOT_LOAD_FROM_RELEASE_TO_DEBUG);
   }
 #else
   if(!is_release)
   {
-    throw ZORBA_EXCEPTION(ZCSE0017_CANNOT_LOAD_FROM_DEBUG_TO_RELEASE);
+    throw ZORBA_EXCEPTION(zerr::ZCSE0017_CANNOT_LOAD_FROM_DEBUG_TO_RELEASE);
   }
 #endif
 
@@ -169,7 +169,7 @@ void BinArchiver::serialize_out()
 {
   if(!os)
   {
-    throw ZORBA_EXCEPTION(ZCSE0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
+    throw ZORBA_EXCEPTION(zerr::ZCSE0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
   }
 
   prepare_serialize_out();
@@ -517,7 +517,7 @@ void BinArchiver::read_string(std::string &str)
   //  if(is->gcount() < 1)
   //  {
   //    throw ZORBA_EXCEPTION(
-  //      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+  //      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
   //    );
   //  }
   //  
@@ -540,7 +540,7 @@ void BinArchiver::read_string(char* str)
   //  if(is->gcount() < 1)
   //  {
   //    throw ZORBA_EXCEPTION(
-  //      ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+  //      zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
   //    );
   //  }
   //  *str = c;
@@ -690,7 +690,7 @@ bool BinArchiver::read_next_field_impl( char **type,
 {
   if(!is)
   {
-    throw ZORBA_EXCEPTION(ZCSE0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
+    throw ZORBA_EXCEPTION(zerr::ZCSE0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
   }
 
   *type = NULL;
@@ -768,7 +768,7 @@ void BinArchiver::read_end_current_level_impl()
   tempbyte = read_bits(8);
   if(tempbyte != 0xFF)
   {
-    throw ZORBA_EXCEPTION(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(last_id));
+    throw ZORBA_EXCEPTION(zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS(last_id));
   }
 #endif
 }

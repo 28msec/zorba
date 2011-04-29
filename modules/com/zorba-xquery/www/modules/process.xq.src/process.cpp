@@ -108,9 +108,9 @@ void throw_last_error(const zorba::String& aFilename, unsigned int aLineNumber){
 #ifdef UNICODE
   char error_str[1024];
   WideCharToMultiByte(CP_UTF8, 0, lErrorBuffer, -1, error_str, sizeof(error_str), NULL, NULL);
-  throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( error_str, aFilename, aLineNumber ) );
+  throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( error_str, aFilename, aLineNumber ) );
 #else
-  throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorBuffer, aFilename, aLineNumber ) );
+  throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorBuffer, aFilename, aLineNumber ) );
 #endif
 }
 
@@ -234,7 +234,7 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       || !CreatePipe(&lErrRead,&lStdErr,&lSecurityAttributes,1024*1024) // std::cerr >> lErrRead
     ){
     throw XQUERY_EXCEPTION(
-        XPTY0004, ERROR_PARAMS("Couldn't create one of std::cout/std::cerr pipe for child process execution.")
+        err::XPTY0004, ERROR_PARAMS("Couldn't create one of std::cout/std::cerr pipe for child process execution.")
     );
   };
   
@@ -254,7 +254,7 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       lErrorMsg 
         << "Couldn't get exit code from child process. Executed command: '" << aCommand << "'.";
       throw XQUERY_EXCEPTION(
-        XPTY0004,ERROR_PARAMS( lErrorMsg.str().c_str() )
+        err::XPTY0004,ERROR_PARAMS( lErrorMsg.str().c_str() )
       );
     }
   

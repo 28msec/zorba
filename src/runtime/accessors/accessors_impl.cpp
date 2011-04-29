@@ -77,7 +77,7 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       STACK_PUSH(result != NULL, state);
     } else
 			throw XQUERY_EXCEPTION(
-				XPTY0004,
+				err::XPTY0004,
 				ERROR_PARAMS( ZED( FnNilledArgNotNode ) ),
 				ERROR_LOC( loc )
 			);
@@ -101,7 +101,7 @@ bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   {
     if (inVal->isFunction()) 
     {
-			throw XQUERY_EXCEPTION( FOTY0014, ERROR_LOC( loc ) );
+			throw XQUERY_EXCEPTION( err::FOTY0014, ERROR_LOC( loc ) );
     }
     state->hasOutput = true;
     inVal->getStringValue2(strval);
@@ -137,7 +137,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (result->isFunction())
     {
-			throw XQUERY_EXCEPTION( FOTY0013, ERROR_LOC( loc ) );
+			throw XQUERY_EXCEPTION( err::FOTY0013, ERROR_LOC( loc ) );
     }
     if (result->isAtomic())
     {

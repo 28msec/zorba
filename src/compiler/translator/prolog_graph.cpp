@@ -34,7 +34,7 @@ void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
   zstring varName;
   if ( v )
     varName = BUILD_STRING('$', v->getVarExpr()->get_name()->getStringValue());
-  throw XQUERY_EXCEPTION(XQST0054, ERROR_PARAMS(varName), ERROR_LOC(loc));
+  throw XQUERY_EXCEPTION(err::XQST0054, ERROR_PARAMS(varName), ERROR_LOC(loc));
 }
 
 

@@ -498,7 +498,7 @@ bool BasicItemFactory::createDateTime(
     xs_date const &d = date->getDateValue();
     xs_time const &t = time->getTimeValue();
     if (! createDateTime(result, &d, &t))
-      throw XQUERY_EXCEPTION( FORG0008, ERROR_PARAMS( d, t ) );
+      throw XQUERY_EXCEPTION( err::FORG0008, ERROR_PARAMS( d, t ) );
 
     return true;
   }
@@ -1039,7 +1039,7 @@ bool BasicItemFactory::createElementNode(
 
   if ( typeName == NULL )
     throw ZORBA_EXCEPTION(
-      ZAPI0014_INVALID_ARGUMENT,
+      zerr::ZAPI0014_INVALID_ARGUMENT,
       ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
     );
 
@@ -1133,7 +1133,7 @@ bool BasicItemFactory::createElementNode(
 
   if ( typeName == NULL )
     throw ZORBA_EXCEPTION(
-      ZAPI0014_INVALID_ARGUMENT,
+      zerr::ZAPI0014_INVALID_ARGUMENT,
       ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
     );
 

@@ -183,7 +183,7 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
     ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
     throw XQUERY_EXCEPTION_VAR(
       pen->err, ERROR_PARAMS( pen->msg ), ERROR_LOC( pen->get_location() )
-      );
+		);
   }
 
   return node;
@@ -245,7 +245,7 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   if ( lExpr == NULL )
   {
     // TODO: can this happen?
-    throw ZORBA_EXCEPTION( ZAPI0002_XQUERY_COMPILATION_FAILED );
+    throw ZORBA_EXCEPTION( zerr::ZAPI0002_XQUERY_COMPILATION_FAILED );
   }
 
   return lExpr;
@@ -339,9 +339,9 @@ parsenode_t XQueryCompiler::createMainModule(
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
   if (!mod_ast)
     throw ZORBA_EXCEPTION(
-      ZAPI0002_XQUERY_COMPILATION_FAILED,
+      zerr::ZAPI0002_XQUERY_COMPILATION_FAILED,
       ERROR_PARAMS( ZED( BadLibraryModule ) )
-      );
+		);
 
   const zstring& lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
@@ -349,9 +349,9 @@ parsenode_t XQueryCompiler::createMainModule(
   if(!lURI.is_absolute())
   {
     throw XQUERY_EXCEPTION(
-      XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
+      err::XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
       ERROR_LOC( mod_ast->get_decl()->get_location() )
-      );
+		);
   }
 
   // Set up the original query stream as the result of resolving the

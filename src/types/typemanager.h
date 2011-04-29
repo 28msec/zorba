@@ -100,13 +100,13 @@ public:
         store::Item* qname,
         TypeConstants::quantifier_t quantifier,
         const QueryLoc& loc = QueryLoc::null,
-        const Error& error = err::ZXQP0000_NO_ERROR) const = 0;
+        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
 
   virtual xqtref_t create_named_type(
         store::Item* qname,
         TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE,
         const QueryLoc& loc = QueryLoc::null,
-        const Error& error = err::ZXQP0000_NO_ERROR) const = 0;
+        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
 
   virtual xqtref_t create_any_item_type(
         TypeConstants::quantifier_t quantifier) const = 0;

@@ -219,7 +219,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   // type (because, otherwise it would have been found above). So we return NULL.
   if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
   {
-    if (error != err::ZXQP0000_NO_ERROR)
+    if (error != zerr::ZXQP0000_NO_ERROR)
     {
 			throw XQUERY_EXCEPTION_VAR(
 				error,
@@ -244,7 +244,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
     if (namedType == NULL)
     {
-      if (error != err::ZXQP0000_NO_ERROR)
+      if (error != zerr::ZXQP0000_NO_ERROR)
       {
 				throw XQUERY_EXCEPTION_VAR(
 					error,
@@ -270,7 +270,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   }
 #endif
 
-  if (error != err::ZXQP0000_NO_ERROR)
+  if (error != zerr::ZXQP0000_NO_ERROR)
   {
 		throw XQUERY_EXCEPTION_VAR(
 			error,
@@ -335,7 +335,7 @@ xqtref_t TypeManagerImpl::create_named_type(
 
       if (namedType == NULL)
       {
-        if (error != err::ZXQP0000_NO_ERROR)
+        if (error != zerr::ZXQP0000_NO_ERROR)
         {
 					throw XQUERY_EXCEPTION_VAR(
 						error,
@@ -357,7 +357,7 @@ xqtref_t TypeManagerImpl::create_named_type(
     }
 #endif
 
-    if (error != err::ZXQP0000_NO_ERROR)
+    if (error != zerr::ZXQP0000_NO_ERROR)
     {
 			throw XQUERY_EXCEPTION_VAR(
 				error,
@@ -740,7 +740,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
   if (m_schema == NULL)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( elemName->getStringValue(), ZED( SchemaElementName ) ),
       ERROR_LOC( loc )
     );
@@ -769,7 +769,7 @@ void TypeManagerImpl::get_schema_element_typename(
   if (m_schema == NULL)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( elemName->getStringValue(), ZED( SchemaElementName ) ),
       ERROR_LOC( loc )
     );
@@ -793,7 +793,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   if (m_schema == NULL)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( attrName->getStringValue(), ZED( SchemaAttributeName ) ),
       ERROR_LOC( loc )
     );
@@ -823,7 +823,7 @@ void TypeManagerImpl::get_schema_attribute_typename(
   if (m_schema == NULL)
   {
     throw XQUERY_EXCEPTION(
-      XPST0008,
+      err::XPST0008,
       ERROR_PARAMS( attrName->getStringValue(), ZED( SchemaAttributeName ) ),
       ERROR_LOC( loc )
     );

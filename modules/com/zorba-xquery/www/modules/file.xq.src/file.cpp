@@ -107,7 +107,7 @@ ReadBinaryFunction::evaluate(
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
 
   if (lItem.isNull()) {
-    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( "Error while building the base64binary item." ) );
+    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( "Error while building the base64binary item." ) );
   }
 
   return ItemSequence_t(new SingletonItemSequence(lItem));

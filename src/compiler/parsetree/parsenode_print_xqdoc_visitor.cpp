@@ -211,7 +211,7 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
   catch (ZorbaException const& e)
   {
     throw ZORBA_EXCEPTION(
-      ZXQD0002_DOCUMENT_NOT_VALID,
+      zerr::ZXQD0002_DOCUMENT_NOT_VALID,
       ERROR_PARAMS( aString, ZED( BadXMLForXQDoc_3 ), e.what() )
     );
   }
@@ -561,7 +561,7 @@ void add_invoked_function (
   if (ite == theNamespaces.end()) 
   {
     throw ZORBA_EXCEPTION(
-      ZXQD0001_PREFIX_NOT_DECLARED,
+      zerr::ZXQD0001_PREFIX_NOT_DECLARED,
       ERROR_PARAMS( aPrefix, aLocalName, aLocation )
     );
   }

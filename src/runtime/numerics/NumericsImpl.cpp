@@ -300,7 +300,7 @@ bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMA
   xs_decimal ld1 = i1->getDecimalValue();
   if ( ld1 == Integer::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createDecimal (result,  ld0 / ld1 );
 }
@@ -319,7 +319,7 @@ bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGE
   xs_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
   if ( ll1 == Integer::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createDecimal (result,  ll0 / ll1 );
 }
@@ -342,19 +342,19 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
 
   if ( d1 == Double::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
 
   if (i0->isNaN() || i1->isNaN()) 
   {
     throw XQUERY_EXCEPTION(
-      FOAR0002, ERROR_PARAMS( ZED( DivisionNoNaN ) ), ERROR_LOC( loc )
+      err::FOAR0002, ERROR_PARAMS( ZED( DivisionNoNaN ) ), ERROR_LOC( loc )
     );
   }
   if (i0->isPosOrNegInf()) 
   {
     throw XQUERY_EXCEPTION(
-      FOAR0002, ERROR_PARAMS( ZED( DivisionNoINF ) ), ERROR_LOC( loc )
+      err::FOAR0002, ERROR_PARAMS( ZED( DivisionNoINF ) ), ERROR_LOC( loc )
     );
   }
 
@@ -384,19 +384,19 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
   xs_float f1 = i1->getFloatValue();
   if ( f1 == xs_float::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
 
   if (i0->isNaN() || i1->isNaN()) 
   {
     throw XQUERY_EXCEPTION(
-      FOAR0002, ERROR_PARAMS( ZED( DivisionNoNaN ) ), ERROR_LOC( loc )
+      err::FOAR0002, ERROR_PARAMS( ZED( DivisionNoNaN ) ), ERROR_LOC( loc )
     );
   }
   if (i0->isPosOrNegInf()) 
   {
     throw XQUERY_EXCEPTION(
-      FOAR0002, ERROR_PARAMS( ZED( DivisionNoINF ) ), ERROR_LOC( loc )
+      err::FOAR0002, ERROR_PARAMS( ZED( DivisionNoINF ) ), ERROR_LOC( loc )
     );
   }
   if (i0->isPosOrNegInf()) 
@@ -427,7 +427,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS
 
   if ( ld1 == Decimal::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createInteger(result, Integer::parseDecimal(ld0 / ld1));
 }
@@ -447,7 +447,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS
 
   if ( ll1 == Integer::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createInteger (result, ll0 / ll1);
 }
@@ -498,7 +498,7 @@ bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>
 
   if ( ld1 == Decimal::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createDecimal(result,  ld0 % ld1);
 }
@@ -518,7 +518,7 @@ bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>
 
   if ( ll1 == Integer::parseInt(0) )
   {
-    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createInteger(result, ll0 % ll1);
 }
@@ -566,7 +566,7 @@ bool NumArithIterator<Operation>::nextImpl(
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
         throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
+          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
         );
       STACK_PUSH(res, state);
     }
@@ -674,7 +674,7 @@ bool NumArithIterator<Operation>::computeAtomic(
     default:
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
         ERROR_LOC( aLoc )
       );
@@ -755,7 +755,7 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
       if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
           this->consumeNext(n1, this->theChild1.getp(), planState))
         throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
+          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqAsArithOp ) )
         );
       STACK_PUSH ( res, state );
     }
@@ -874,7 +874,7 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
     else
     {
       throw XQUERY_EXCEPTION(
-        XPTY0004,
+        err::XPTY0004,
         ERROR_PARAMS( ZED( BadTypeFor_23 ), type, ZED( UnaryArithOp ) ),
         ERROR_LOC( loc )
       );

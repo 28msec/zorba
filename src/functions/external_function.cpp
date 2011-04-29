@@ -85,7 +85,7 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
     if (theImpl == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZXQP0008_FUNCTION_IMPL_NOT_FOUND,
+        zerr::ZXQP0008_FUNCTION_IMPL_NOT_FOUND,
         ERROR_PARAMS( BUILD_STRING( '{', theNamespace, '}', lLocalName ) ),
         ERROR_LOC( theLoc )
       );

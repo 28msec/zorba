@@ -65,7 +65,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (!pulItem->isPul())
       throw XQUERY_EXCEPTION(
-        ZXQP0019_INTERNAL_ERROR,
+        zerr::ZXQP0019_INTERNAL_ERROR,
         ERROR_PARAMS( ZED( ExprNoReturnUpdateList ) ),
         ERROR_LOC( loc )
       );
@@ -75,7 +75,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (consumeNext(tmp, theChild, planState))
     {
       throw XQUERY_EXCEPTION(
-        ZXQP0019_INTERNAL_ERROR,
+        zerr::ZXQP0019_INTERNAL_ERROR,
         ERROR_PARAMS( ZED( ExprReturnsTooManyUpdateLists ) ),
         ERROR_LOC( loc )
       );
@@ -115,7 +115,7 @@ apply_updates(
     if (zorbaIndex == NULL)
     {
       throw XQUERY_EXCEPTION(
-        ZDDY0021_INDEX_NOT_DECLARED,
+        zerr::ZDDY0021_INDEX_NOT_DECLARED,
         ERROR_PARAMS( indexes[i]->getName()->getStringValue() ),
         ERROR_LOC( loc )
       );

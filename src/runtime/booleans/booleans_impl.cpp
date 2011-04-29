@@ -41,7 +41,7 @@ IsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( OpIsSameNodeMustHaveNodes ) ),
           ERROR_LOC( loc )
         );
@@ -69,7 +69,7 @@ NodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( OpNodeBeforeMustHaveNodes ) ),
           ERROR_LOC( loc )
         );
@@ -95,7 +95,7 @@ NodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (CONSUME (lItem1, 1)) {
       if (!lItem0->isNode() || !lItem0->isNode()) {
         throw XQUERY_EXCEPTION(
-          XPTY0004,
+          err::XPTY0004,
           ERROR_PARAMS( ZED( OpNodeAfterMustHaveNodes ) ),
           ERROR_LOC( loc )
         );

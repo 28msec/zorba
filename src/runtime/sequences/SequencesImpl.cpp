@@ -71,14 +71,14 @@ static XQPCollator* getCollator(
 
   if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( NoEmptySeqAsCollationParam ) ),
       ERROR_LOC( loc )
     );
 
   if (PlanIterator::consumeNext(temp, iter, planState))
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS( ZED( NoSeqAsCollationParam ) ),
       ERROR_LOC( loc )
     );
@@ -180,7 +180,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           else
           {
 						throw XQUERY_EXCEPTION(
-							FORG0006,
+							err::FORG0006,
 							ERROR_PARAMS( ZED( PromotionImpossible ) ),
 							ERROR_LOC( loc )
 						);
@@ -296,7 +296,7 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if(!consumeNext(state->theDocNode, theChildren[1], planState))
     {
 			throw XQUERY_EXCEPTION(
-				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+				err::FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
 			);
     }
 
@@ -308,7 +308,7 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
     {
 			throw XQUERY_EXCEPTION(
-				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+				err::FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
 			);
     }
 
@@ -430,7 +430,7 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
     if(!consumeNext(state->theDocNode, theChildren[1], planState))
     {
 			throw XQUERY_EXCEPTION(
-				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+				err::FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
 			);
     }
 
@@ -442,7 +442,7 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
     if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
     {
 			throw XQUERY_EXCEPTION(
-				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+				err::FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
 			);
     }
 
@@ -573,7 +573,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if(!consumeNext(state->theDocNode, theChildren[1], planState))
     {
 			throw XQUERY_EXCEPTION(
-				FODC0001, ERROR_PARAMS( "fn:idref" ), ERROR_LOC( loc )
+				err::FODC0001, ERROR_PARAMS( "fn:idref" ), ERROR_LOC( loc )
 			);
     }
 
@@ -585,7 +585,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
     {
 			throw XQUERY_EXCEPTION(
-				FODC0001, ERROR_PARAMS( "fn:idref" ), ERROR_LOC( loc )
+				err::FODC0001, ERROR_PARAMS( "fn:idref" ), ERROR_LOC( loc )
 			);
     }
 

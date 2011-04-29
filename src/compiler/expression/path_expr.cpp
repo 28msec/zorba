@@ -71,7 +71,7 @@ void relpath_expr::add_back(expr_t step)
 {
   if (step->is_updating())
   {
-    throw XQUERY_EXCEPTION(XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001, 
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(get_loc()));
   }
@@ -100,7 +100,7 @@ void relpath_expr::compute_scripting_kind()
 
     if (step->is_updating())
     {
-      throw XQUERY_EXCEPTION(XUST0001, 
+      throw XQUERY_EXCEPTION(err::XUST0001, 
                              ERROR_PARAMS(ZED(XUST0001_Generic)),
                              ERROR_LOC(get_loc()));
     }

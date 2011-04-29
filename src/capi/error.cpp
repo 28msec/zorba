@@ -24,6 +24,7 @@ namespace zorbac {
 
 XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
   using namespace zorba::err;
+  using namespace zorba::zerr;
 
   if ( error == ZXQP0000_NO_ERROR )
     return XQC_NO_ERROR;

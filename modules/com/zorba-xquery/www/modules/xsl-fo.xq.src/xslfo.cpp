@@ -114,7 +114,7 @@ StatelessExternalFunction* XSLFOModule::getExternalFunction(const String& localN
 }
 
 void FindApacheFopFunction::throwError(std::string aName) const {
-  throw ZORBA_EXCEPTION( ZXQP0021_USER_ERROR, ERROR_PARAMS( aName ) );
+  throw ZORBA_EXCEPTION( zerr::ZXQP0021_USER_ERROR, ERROR_PARAMS( aName ) );
 }
 
 ItemSequence_t FindApacheFopFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
@@ -396,7 +396,7 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     Item lRes = theFactory->createBase64Binary(base64S.c_str(), base64S.length());
     return ItemSequence_t(new SingletonItemSequence(lRes));
   } catch (VMOpenException&) {
-    throw ZORBA_EXCEPTION(ZXQP0021_USER_ERROR, ERROR_PARAMS("xsl-fo:VM001|ERROR: Could not start the Java VM (is the classpath set?)") );
+    throw ZORBA_EXCEPTION(zerr::ZXQP0021_USER_ERROR, ERROR_PARAMS("xsl-fo:VM001|ERROR: Could not start the Java VM (is the classpath set?)") );
   } catch (JavaException&) {
     jclass stringWriterClass = env->FindClass("java/io/StringWriter");
     jclass printWriterClass = env->FindClass("java/io/PrintWriter");
@@ -419,7 +419,7 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     std::string err("JAVA_ERROR|");
     err += s.str();
     env->ExceptionClear();
-    throw ZORBA_EXCEPTION(ZXQP0021_USER_ERROR, ERROR_PARAMS( err ));
+    throw ZORBA_EXCEPTION(zerr::ZXQP0021_USER_ERROR, ERROR_PARAMS( err ));
   }
   return ItemSequence_t(new EmptySequence());
 }

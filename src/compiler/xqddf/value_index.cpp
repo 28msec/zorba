@@ -272,7 +272,7 @@ void IndexDecl::analyze()
   if (theIsGeneral && numKeys > 1)
   {
 		throw XQUERY_EXCEPTION(
-			ZDST0035_INDEX_GENERAL_MULTIKEY,
+			zerr::ZDST0035_INDEX_GENERAL_MULTIKEY,
 			ERROR_PARAMS( theName->getStringValue() ),
 			ERROR_LOC( theKeyExprs[1]->get_loc() )
 		);
@@ -306,7 +306,7 @@ void IndexDecl::analyze()
     // is not changed above (to DOC_MAP), then we throw an error because we
     // don't want to automatically rebuild the full index with every update. 
 		throw XQUERY_EXCEPTION(
-			ZDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
+			zerr::ZDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
 			ERROR_PARAMS( theName->getStringValue() ),
 			ERROR_LOC( getDomainExpr()->get_loc() )
 		);
@@ -341,7 +341,7 @@ void IndexDecl::analyzeExprInternal(
     if (!func->isDeterministic())
     {
 			throw XQUERY_EXCEPTION(
-				ZDST0028_INDEX_NOT_DETERMINISTIC,
+				zerr::ZDST0028_INDEX_NOT_DETERMINISTIC,
 				ERROR_PARAMS( theName->getStringValue() ),
 				ERROR_LOC( e->get_loc() )
 			);
@@ -363,7 +363,7 @@ void IndexDecl::analyzeExprInternal(
         else
         {
 					throw XQUERY_EXCEPTION(
-						ZDST0030_INDEX_NON_CONST_DATA_SOURCE,
+						zerr::ZDST0030_INDEX_NON_CONST_DATA_SOURCE,
 						ERROR_PARAMS( theName->getStringValue() ),
 						ERROR_LOC( e->get_loc() )
 					);
@@ -372,7 +372,7 @@ void IndexDecl::analyzeExprInternal(
       else
       {
 				throw XQUERY_EXCEPTION(
-					ZDST0029_INDEX_INVALID_DATA_SOURCE,
+					zerr::ZDST0029_INDEX_INVALID_DATA_SOURCE,
 					ERROR_PARAMS( theName->getStringValue() ),
 					ERROR_LOC( e->get_loc() )
 				);
@@ -397,7 +397,7 @@ void IndexDecl::analyzeExprInternal(
     if (e == dotVar)
     {
 			throw XQUERY_EXCEPTION(
-				ZDST0032_INDEX_REFERENCES_CTX_ITEM,
+				zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM,
 				ERROR_PARAMS( theName->getStringValue() ),
 				ERROR_LOC( e->get_loc() )
 			);
@@ -407,7 +407,7 @@ void IndexDecl::analyzeExprInternal(
         std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
     {
 			throw XQUERY_EXCEPTION(
-				ZDST0031_INDEX_HAS_FREE_VARS,
+				zerr::ZDST0031_INDEX_HAS_FREE_VARS,
 				ERROR_PARAMS( theName->getStringValue() ),
 				ERROR_LOC( e->get_loc() )
 			);

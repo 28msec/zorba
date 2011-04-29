@@ -79,7 +79,8 @@ public:
         if(m_data)
         {
 					throw ZORBA_EXCEPTION(
-						ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "TupleField" )
+						zerr::ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
+						ERROR_PARAMS( "TupleField" )
 					);
         }
         if(!ar.is_serializing_out())

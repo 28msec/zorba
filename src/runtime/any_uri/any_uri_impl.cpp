@@ -72,7 +72,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           strBase = theSctx->get_base_uri();
           if (strBase.empty()) 
           {
-            throw XQUERY_EXCEPTION( FONS0005, ERROR_LOC( loc ) );
+            throw XQUERY_EXCEPTION( err::FONS0005, ERROR_LOC( loc ) );
           }
         }
         else if (consumeNext(item, theChildren[1], planState )) 
@@ -83,7 +83,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         else
         {
           throw XQUERY_EXCEPTION(
-            FORG0009,
+            err::FORG0009,
             ERROR_PARAMS( ZED( NoEmptySeqAsBaseURI ) ),
             ERROR_LOC( loc )
           );
@@ -93,7 +93,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       catch (ZorbaException const& e) 
       {
         throw XQUERY_EXCEPTION(
-          FORG0002, ERROR_PARAMS( strBase, e.what() ), ERROR_LOC( loc )
+          err::FORG0002, ERROR_PARAMS( strBase, e.what() ), ERROR_LOC( loc )
         );
       }
 
@@ -105,7 +105,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       catch (ZorbaException const& e) 
       {
         throw XQUERY_EXCEPTION(
-          FORG0002, ERROR_PARAMS( strRelative, e.what() ), ERROR_LOC( loc )
+          err::FORG0002, ERROR_PARAMS( strRelative, e.what() ), ERROR_LOC( loc )
         );
       }
     }

@@ -145,7 +145,7 @@ namespace zorbac {
     if (lRes == XQC_END_OF_SEQUENCE)
       return false;
     if (lRes != XQC_NO_ERROR)
-      throw ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR );
+      throw ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR );
 
     // theItem will have been set by the user calling back to one
     // of the Zorba_ItemSetter methods.

@@ -179,7 +179,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   if (planState.theStackDepth + 1 > 256)
     throw XQUERY_EXCEPTION(
-      ZXQP0019_INTERNAL_ERROR,
+      zerr::ZXQP0019_INTERNAL_ERROR,
       ERROR_PARAMS( ZED( StackOverflow ) ),
       ERROR_LOC( loc )
     );
@@ -499,7 +499,7 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
       if (!theFunction)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0013_UNABLE_TO_LOAD_QUERY,
+          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(
 						ZED( NoExternalFunction ),
 						BUILD_STRING( '{', theNamespace, '}', lLocalname )
@@ -615,12 +615,12 @@ bool StatelessExtFunctionCallIterator::nextImpl(
     if (theIsUpdating)
     {
       if (!result->isPul())
-        throw XQUERY_EXCEPTION(XUDY0019, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XUDY0019, ERROR_LOC(loc));
     }
     else
     {
       if (result->isPul())
-        throw XQUERY_EXCEPTION(XUDY0018, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XUDY0018, ERROR_LOC(loc));
     }
     STACK_PUSH(true, state);
   }

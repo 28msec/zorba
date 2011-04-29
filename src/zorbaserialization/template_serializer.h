@@ -269,7 +269,7 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
       if(!obj)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }
@@ -440,7 +440,7 @@ void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
       if(!obj)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }
@@ -550,7 +550,7 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
       if(!obj)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }
@@ -667,7 +667,7 @@ void operator&(Archiver &ar, T &obj)
     if(version > T::class_versions[T::class_versions_count-1].class_version)
     {
       throw ZORBA_EXCEPTION(
-        ZCSE0005_CLASS_VERSION_TOO_NEW,
+        zerr::ZCSE0005_CLASS_VERSION_TOO_NEW,
         ERROR_PARAMS(
           obj.get_class_name_str(), version,
           T::class_versions[T::class_versions_count-1].class_version
@@ -689,7 +689,7 @@ void operator&(Archiver &ar, T &obj)
         if(oldv < 0)
           oldv = 0;
           throw ZORBA_EXCEPTION(
-            ZCSE0006_CLASS_VERSION_TOO_OLD,
+            zerr::ZCSE0006_CLASS_VERSION_TOO_OLD,
             ERROR_PARAMS(
               obj.get_class_name_str(), version,
               T::class_versions[v].class_version,
@@ -779,14 +779,14 @@ void operator&(Archiver &ar, T *&obj)
       if(strcmp(type, T::get_class_name_str_static()))
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
 #endif
       if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }
@@ -795,7 +795,7 @@ void operator&(Archiver &ar, T *&obj)
       if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }
@@ -808,7 +808,7 @@ void operator&(Archiver &ar, T *&obj)
       if(cls_factory == NULL)
       {
          throw ZORBA_EXCEPTION(
-          ZCSE0003_UNRECOGNIZED_CLASS_FIELD, ERROR_PARAMS( type )
+          zerr::ZCSE0003_UNRECOGNIZED_CLASS_FIELD, ERROR_PARAMS( type )
         );
       }
       new_obj = cls_factory->create_new(ar);
@@ -817,7 +817,7 @@ void operator&(Archiver &ar, T *&obj)
       {
         delete new_obj;obj=NULL;
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD,
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD,
           ERROR_PARAMS( id, type, typeid(T).name() )
         );
       }
@@ -829,7 +829,7 @@ void operator&(Archiver &ar, T *&obj)
       {
         delete new_obj;obj=NULL;
         throw ZORBA_EXCEPTION(
-          ZCSE0005_CLASS_VERSION_TOO_NEW,
+          zerr::ZCSE0005_CLASS_VERSION_TOO_NEW,
           ERROR_PARAMS(
             obj->get_class_name_str(), version,
             obj->get_classversion(obj->get_version_count()-1).class_version
@@ -854,7 +854,7 @@ void operator&(Archiver &ar, T *&obj)
           
           delete new_obj;obj=NULL;
           throw ZORBA_EXCEPTION(
-            ZCSE0006_CLASS_VERSION_TOO_OLD,
+            zerr::ZCSE0006_CLASS_VERSION_TOO_OLD,
             ERROR_PARAMS(
               obj->get_class_name_str(), version,
               ver.class_version,
@@ -886,7 +886,7 @@ void operator&(Archiver &ar, T *&obj)
       if(version > obj->T::get_classversion(obj->T::get_version_count()-1).class_version)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0005_CLASS_VERSION_TOO_NEW,
+          zerr::ZCSE0005_CLASS_VERSION_TOO_NEW,
           ERROR_PARAMS(
             obj->T::get_class_name_str(), version,
             obj->T::get_classversion(obj->T::get_version_count()-1).class_version
@@ -908,7 +908,7 @@ void operator&(Archiver &ar, T *&obj)
           if(oldv < 0)
             oldv = 0;
             throw ZORBA_EXCEPTION(
-              ZCSE0006_CLASS_VERSION_TOO_OLD,
+              zerr::ZCSE0006_CLASS_VERSION_TOO_OLD,
               ERROR_PARAMS(
                 obj->T::get_class_name_str(), version,
                 obj->T::get_classversion(v).class_version,
@@ -932,13 +932,13 @@ void operator&(Archiver &ar, T *&obj)
       }catch(...)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0004_UNRESOLVED_FIELD_REFERENCE, ERROR_PARAMS( id )
+          zerr::ZCSE0004_UNRESOLVED_FIELD_REFERENCE, ERROR_PARAMS( id )
         );
       }
       if(!obj)
       {
         throw ZORBA_EXCEPTION(
-          ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
+          zerr::ZCSE0002_INCOMPATIBLE_INPUT_FIELD, ERROR_PARAMS( id )
         );
       }
     }

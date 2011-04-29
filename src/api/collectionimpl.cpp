@@ -111,7 +111,8 @@ CollectionImpl::addNodes(const Iterator_t& aIterator)
     Iterator* lIter = aIterator.get();
     if (!lIter)
       throw ZORBA_EXCEPTION(
-        ZAPI0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
+        zerr::ZAPI0014_INVALID_ARGUMENT,
+        ERROR_PARAMS( "null", ZED( BadIterator ) )
       );
 
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);

@@ -398,7 +398,7 @@ void OrderByIterator::materializeResultForSort(
       if (consumeNext(temp, theOrderSpecs[i].theDomainIter, planState)) 
       {
         throw XQUERY_EXCEPTION(
-          XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
+          err::XPTY0004, ERROR_PARAMS( ZED( SingletonExpected_2o ) )
         );
       }
     }

@@ -137,7 +137,7 @@ T1_TO_T2(str, flt)
   if (Float::parseString(strval.c_str(), n))
     return aFactory->createFloat(result, n);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -147,7 +147,7 @@ T1_TO_T2(str, dbl)
   if (Double::parseString(strval.c_str(), n))
     return aFactory->createDouble(result, n);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -157,7 +157,7 @@ T1_TO_T2(str, dec)
   if (NumConversions::strToDecimal(strval.c_str(), n))
     return aFactory->createDecimal(result, n);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -167,7 +167,7 @@ T1_TO_T2(str, int)
   if (NumConversions::strToInteger(strval.c_str(), n))
     return aFactory->createInteger(result, n);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -179,7 +179,7 @@ T1_TO_T2(str, dur)
   if (0 == (err = Duration::parseDuration(strval.c_str(), strval.size(), d)))
     return aFactory->createDuration(result, &d);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -191,7 +191,7 @@ T1_TO_T2(str, yMD)
   if (0 == (err = Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d)))
     return aFactory->createYearMonthDuration(result, &d);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -203,7 +203,7 @@ T1_TO_T2(str, dTD)
   if (0 == (err = Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d)))
     return aFactory->createDayTimeDuration(result, &d);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -213,7 +213,7 @@ T1_TO_T2(str, dT)
   if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt))
     return aFactory->createDateTime(result, &dt);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -223,7 +223,7 @@ T1_TO_T2(str, tim)
   if (0 == DateTime::parseTime(strval.c_str(), strval.size(), t))
     return aFactory->createTime(result, &t);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -233,7 +233,7 @@ T1_TO_T2(str, dat)
   if (0 == DateTime::parseDate(strval.c_str(), strval.size(), d))
     return aFactory->createDate(result, &d);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -243,7 +243,7 @@ T1_TO_T2(str, gYM)
   if (0 == DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym))
     return aFactory->createGYearMonth(result, &ym);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -253,7 +253,7 @@ T1_TO_T2(str, gYr)
   if (0 == DateTime::parseGYear(strval.c_str(), strval.size(), y))
     return aFactory->createGYear(result, &y);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -263,7 +263,7 @@ T1_TO_T2(str, gMD)
   if (0 == DateTime::parseGMonthDay(strval.c_str(), strval.size(), md))
     return aFactory->createGMonthDay(result, &md);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -273,7 +273,7 @@ T1_TO_T2(str, gDay)
   if (0 == DateTime::parseGDay(strval.c_str(), strval.size(), d))
     return aFactory->createGDay(result, &d);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -283,7 +283,7 @@ T1_TO_T2(str, gMon)
   if (0 == DateTime::parseGMonth(strval.c_str(), strval.size(), m))
     return aFactory->createGMonth(result, &m);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -320,14 +320,14 @@ T1_TO_T2(str, bool)
   }
   else
   {
-    throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
   }
 
   pos = str - strval.c_str();
   ascii::skip_whitespace(strval.c_str(), len, &pos);
 
   if (pos != len)
-    throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 
   return aFactory->createBoolean(result, lRetValue);
 }
@@ -339,7 +339,7 @@ T1_TO_T2(str, b64)
   if (xs_base64Binary::parseString(strval, n))
     return aFactory->createBase64Binary(result, n);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -349,7 +349,7 @@ T1_TO_T2(str, hxB)
   if (xs_hexBinary::parseString(strval, n))
     return aFactory->createHexBinary(result, n);
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -377,7 +377,7 @@ T1_TO_T2(str, QN)
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
 
   if (idx != lidx)
-    throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 
   zstring nsuri;
   zstring prefix;
@@ -397,19 +397,19 @@ T1_TO_T2(str, QN)
     prefix = strval.substr(0, idx);
 
     if (!GenericCast::instance()->castableToNCName(prefix))
-      throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+      throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 
     if (nsCtx)
     {
       if (!nsCtx->findBinding(prefix, nsuri))
-        throw XQUERY_EXCEPTION( FONS0004, ERROR_PARAMS( prefix ) );
+        throw XQUERY_EXCEPTION( err::FONS0004, ERROR_PARAMS( prefix ) );
     }
 
     local = strval.substr(idx + 1);
   }
 
   if (!GenericCast::instance()->castableToNCName(local))
-    throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 
   return aFactory->createQName(result, nsuri, prefix, local);
 }
@@ -433,7 +433,7 @@ T1_TO_T2(str, NOT)
     local = strval;
 
   if (!nsCtx->findBinding(prefix, uri))
-    ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix << "' not found in current namespace context.");
+    ZORBA_ERROR_DESC_OSS(err::FORG0001, "Prefix '" << prefix << "' not found in current namespace context.");
 
   store::Item_t qname;
   aFactory->createQName(qname, uri, prefix, local);
@@ -627,7 +627,7 @@ T1_TO_T2(flt, dec)
   if (xs_decimal::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createDecimal(result, n);
 
-  throw TYPE_EXCEPTION( FOCA0002, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
 }
 
 
@@ -637,7 +637,7 @@ T1_TO_T2(flt, int)
   if (xs_integer::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createInteger(result, n);
 
-  throw TYPE_EXCEPTION( FOCA0002, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
 }
 
 
@@ -675,7 +675,7 @@ T1_TO_T2(dbl, dec)
   if (xs_decimal::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createDecimal(result, n);
 
-  throw TYPE_EXCEPTION( FOCA0002, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
 }
 
 
@@ -685,7 +685,7 @@ T1_TO_T2(dbl, int)
   if (xs_integer::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createInteger(result, n);
 
-  throw TYPE_EXCEPTION( FOCA0002, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
 }
 
 
@@ -1306,7 +1306,7 @@ bool str_down(
     ZORBA_ASSERT(false);
   }
 
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -1426,7 +1426,7 @@ bool int_down(
   default:
     ZORBA_ASSERT (false);
   }
-  throw TYPE_EXCEPTION( FORG0001, aErrorInfo );
+  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
 }
 
 
@@ -1611,7 +1611,7 @@ bool GenericCast::castToAtomic(
   ErrorInfo lErrorInfo = {&*sourceType, aTargetType};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
-    throw XQUERY_EXCEPTION( XPST0051, ERROR_PARAMS( aTargetType ) );
+    throw XQUERY_EXCEPTION( err::XPST0051, ERROR_PARAMS( aTargetType ) );
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -1649,7 +1649,7 @@ bool GenericCast::castToAtomic(
     CastFunc lCastFunc = theCastMatrix[theMapping[sourceTypeCode]]
                                       [theMapping[targetTypeCode]];
     if (lCastFunc == 0)
-      throw TYPE_EXCEPTION( XPTY0004, lErrorInfo );
+      throw TYPE_EXCEPTION( err::XPTY0004, lErrorInfo );
 
     valid = (*lCastFunc)(result,
                          lItem,
@@ -1709,7 +1709,7 @@ bool GenericCast::castToAtomic(
   ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
-    throw XQUERY_EXCEPTION( XPST0051, ERROR_PARAMS( aTargetType ) );
+    throw XQUERY_EXCEPTION( err::XPST0051, ERROR_PARAMS( aTargetType ) );
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -1742,22 +1742,22 @@ bool GenericCast::castToAtomic(
 
   if (lSourceTypeCode == TypeConstants::XS_NOTATION ||
       lTargetTypeCode == TypeConstants::XS_NOTATION)
-    throw TYPE_EXCEPTION( XPST0080, lErrorInfo );
+    throw TYPE_EXCEPTION( err::XPST0080, lErrorInfo );
 
   if (lSourceTypeCode == TypeConstants::XS_ANY_ATOMIC ||
       lTargetTypeCode == TypeConstants::XS_ANY_ATOMIC)
-    throw TYPE_EXCEPTION( XPST0080, lErrorInfo );
+    throw TYPE_EXCEPTION( err::XPST0080, lErrorInfo );
 
   if (lTargetTypeCode == TypeConstants::XS_NCNAME &&
       lSourceTypeCode != TypeConstants::XS_STRING &&
       lSourceTypeCode != TypeConstants::XS_NCNAME &&
       lSourceTypeCode != TypeConstants::XS_UNTYPED_ATOMIC)
-    throw TYPE_EXCEPTION( XPTY0004, lErrorInfo );
+    throw TYPE_EXCEPTION( err::XPTY0004, lErrorInfo );
 
   CastFunc lCastFunc = theCastMatrix[theMapping[lSourceTypeCode]]
                                     [theMapping[lTargetTypeCode]];
   if (lCastFunc == 0)
-    throw TYPE_EXCEPTION( XPTY0004, lErrorInfo );
+    throw TYPE_EXCEPTION( err::XPTY0004, lErrorInfo );
 
   bool valid = (*lCastFunc)(result,
                             aItem,
@@ -1808,7 +1808,7 @@ void castToUserDefinedType(
   if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
       (TypeOps::get_atomic_type_code(*aSourceType) != TypeConstants::XS_STRING))
   {
-    throw TYPE_EXCEPTION( FORG0001, lErrorInfo );
+    throw TYPE_EXCEPTION( err::FORG0001, lErrorInfo );
   }
 
   const UserDefinedXQType* udt =
@@ -1890,7 +1890,7 @@ bool GenericCast::castToQName(
            !TypeOps::is_equal(tm, *sourceType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
     throw XQUERY_EXCEPTION(
-      XPTY0004,
+      err::XPTY0004,
       ERROR_PARAMS(
         ZED( BadType_23o ), *sourceType,
         ZED( NoCastTo_45o ), "QName"
@@ -1908,7 +1908,7 @@ bool GenericCast::castToQName(
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
   if (idx != lidx)
-    throw TYPE_EXCEPTION( FORG0001, errorInfo );
+    throw TYPE_EXCEPTION( err::FORG0001, errorInfo );
 
   zstring prefix;
   zstring nsuri;
@@ -1928,19 +1928,19 @@ bool GenericCast::castToQName(
     prefix = strval.substr(0, idx);
 
     if (!GenericCast::instance()->castableToNCName(prefix))
-      throw TYPE_EXCEPTION( FORG0001, errorInfo );
+      throw TYPE_EXCEPTION( err::FORG0001, errorInfo );
 
     if (nsCtx)
     {
       if (!nsCtx->findBinding(prefix, nsuri))
-        throw XQUERY_EXCEPTION( FONS0004, ERROR_PARAMS( prefix ) );
+        throw XQUERY_EXCEPTION( err::FONS0004, ERROR_PARAMS( prefix ) );
     }
 
     local = strval.substr(idx + 1);
   }
 
   if (!GenericCast::instance()->castableToNCName(local.c_str()))
-    throw TYPE_EXCEPTION( FORG0001, errorInfo );
+    throw TYPE_EXCEPTION( err::FORG0001, errorInfo );
 
   return GENV_ITEMFACTORY->createQName(result, nsuri, prefix, local);
 }

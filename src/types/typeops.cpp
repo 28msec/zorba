@@ -39,7 +39,7 @@ namespace zorba {
   { \
   TypeManager const *const ttm = type.get_manager(); \
   if (ttm != tm && ttm != &GENV_TYPESYSTEM && !TypeOps::is_in_scope(tm,type)) \
-    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), type, ZED( NotAmongInScopeSchemaTypes ) ) ); \
+    throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), type, ZED( NotAmongInScopeSchemaTypes ) ) ); \
   }
 
 
@@ -199,8 +199,8 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   }
   else if (type.type_kind() == XQType::FUNCTION_TYPE_KIND)
   {
-    throw XQUERY_EXCEPTION(
-      ZXQP0015_NOT_IMPLEMENTED,
+    throw ZORBA_EXCEPTION(
+      zerr::ZXQP0015_NOT_IMPLEMENTED,
       ERROR_PARAMS( "TypeOps::is_in_scope() for function-item types" )
     );
   }

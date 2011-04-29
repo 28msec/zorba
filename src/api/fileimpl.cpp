@@ -348,11 +348,11 @@ FileImpl::openInputStream(std::ifstream& aInStream, bool binary, bool trimByteOr
 
     if (!theInternalFile->exists())
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
+        err::FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
       );
     if (!theInternalFile->is_file())
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( lPath, ZED( NotPlainFile ) )
+        err::FODC0002, ERROR_PARAMS( lPath, ZED( NotPlainFile ) )
       );
 
     std::ios_base::openmode lMode = std::ifstream::in;
@@ -377,7 +377,7 @@ FileImpl::openInputStream(std::ifstream& aInStream, bool binary, bool trimByteOr
 
     if (aInStream.is_open() == false)
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
+        err::FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
       );
 
     if (trimByteOrderMark) {
@@ -398,7 +398,7 @@ FileImpl::openOutputStream(std::ofstream& aOutStream, bool binary, bool append) 
 
     if (theInternalFile->exists() && !theInternalFile->is_file())
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( lPath, ZED( NotPlainFile ) )
+        err::FODC0002, ERROR_PARAMS( lPath, ZED( NotPlainFile ) )
       );
 
     std::ios_base::openmode lMode = std::ifstream::out;
@@ -424,7 +424,7 @@ FileImpl::openOutputStream(std::ofstream& aOutStream, bool binary, bool append) 
 
     if (aOutStream.is_open() == false)
       throw XQUERY_EXCEPTION(
-        FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
+        err::FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
       );
   ZORBA_CATCH
 }

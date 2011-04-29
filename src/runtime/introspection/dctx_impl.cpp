@@ -73,7 +73,7 @@ bool IsAvailableCollectionIterator::nextImpl(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() != err::ZDDY0003_COLLECTION_DOES_NOT_EXIST)
+    if (e.error() != zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST)
     {
       throw;
     }

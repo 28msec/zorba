@@ -135,7 +135,9 @@ void SchemaValidatorImpl::validateAfterUpdate(
   }
   default:
     throw XQUERY_EXCEPTION(
-      XQDY0061, ERROR_PARAMS( ZED( NotDocOrElementNode ) ), ERROR_LOC( theLoc )
+      err::XQDY0061,
+      ERROR_PARAMS( ZED( NotDocOrElementNode ) ),
+      ERROR_LOC( theLoc )
     );
   }
 }

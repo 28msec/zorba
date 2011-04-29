@@ -435,7 +435,7 @@ private:
         bool done = !arg0_iter->next(result);
         if (done && theIsEmpty)
         {
-          throw XQUERY_EXCEPTION( XPTY0004,
+          throw XQUERY_EXCEPTION( err::XPTY0004,
 		ERROR_PARAMS( "Argument must not be the empty sequence." ) );
         }
         theIsEmpty = false;
