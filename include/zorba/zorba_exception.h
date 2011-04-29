@@ -104,8 +104,7 @@ public:
    * @param error The error.
    */
   void set_error( Error const &error ) throw() {
-    // TODO: remove const_cast; SF bug #3290451
-    error_ = const_cast<Error*>( &error );
+    error_ = &error;
   }
 
   /**
