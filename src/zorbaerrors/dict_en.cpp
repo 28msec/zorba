@@ -232,7 +232,7 @@ extern entry const dict_en[] = {
   { "XUDY0029", "node has no parent in \"insert\" expression (with \"before\" or \"after\")" },
   { "XUDY0030", "insertion of attrhbute node before or after document node child" },
   { "XUDY0031", "\"$1\": same URI used in multiple calls to fn:put() in same snapshot" },
-  { "XUST0001", "updating expression not allowed here" },
+  { "XUST0001", "$1" },
   { "XUST0002", "simple expression not allowed here" },
   { "XUST0003", "multiple revalidation declarations" },
   { "XUST0028", "\"$1\": function can not be updating with a return type" },

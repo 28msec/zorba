@@ -170,18 +170,21 @@ void fo_expr::compute_scripting_kind()
 
       vacuous = false;
 
-      if (is_updating() && !(argKind & UPDATING_EXPR))
+      if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
       {
-        throw XQUERY_EXCEPTION(err::XUST0001,
-                               ERROR_PARAMS(ZED(XUST0001_CONCAT)),
-                               ERROR_LOC(theArgs[i]->get_loc()));
-      }
-
-      if (i > 0 && !is_updating() && !is_vacuous() && (argKind & UPDATING_EXPR))
-      {
-        throw XQUERY_EXCEPTION(err::XUST0001,
-                               ERROR_PARAMS(ZED(XUST0001_CONCAT)),
-                               ERROR_LOC(theArgs[i]->get_loc()));
+        if (is_updating() && !(argKind & UPDATING_EXPR) && argKind != VACUOUS_EXPR)
+        {
+          throw XQUERY_EXCEPTION(err::XUST0001,
+                                 ERROR_PARAMS(ZED(XUST0001_CONCAT)),
+                                 ERROR_LOC(theArgs[i]->get_loc()));
+        }
+        
+        if (i > 0 && !is_updating() && !is_vacuous() && (argKind & UPDATING_EXPR))
+        {
+          throw XQUERY_EXCEPTION(err::XUST0001,
+                                 ERROR_PARAMS(ZED(XUST0001_CONCAT)),
+                                 ERROR_LOC(theArgs[i]->get_loc()));
+        }
       }
 
       theScriptingKind |= argKind;
@@ -189,6 +192,9 @@ void fo_expr::compute_scripting_kind()
 
     if (!vacuous)
       theScriptingKind &= ~VACUOUS_EXPR;
+
+    if (theScriptingKind & UPDATING_EXPR)
+      theScriptingKind &= ~SIMPLE_EXPR;
 
     if (theScriptingKind & SEQUENTIAL_EXPR)
       theScriptingKind &= ~SIMPLE_EXPR;

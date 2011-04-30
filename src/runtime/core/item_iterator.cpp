@@ -55,6 +55,7 @@ bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
   result = theValue;
   STACK_PUSH ( result != NULL, state );
   STACK_END (state);
@@ -74,23 +75,23 @@ IfThenElseIterator::IfThenElseIterator(
     PlanIter_t& aThenIter,
     PlanIter_t& aElseIter,
     bool aIsUpdating,
-    bool aIsBooleanIter )
+    bool aIsBooleanIter)
   :
-  Batcher<IfThenElseIterator> ( sctx, loc ),
-  theCondIter ( aCondIter ),
-  theThenIter ( aThenIter ),
-  theElseIter ( aElseIter ),
-  theIsUpdating ( aIsUpdating ),
-  theIsBooleanIter ( aIsBooleanIter )
+  Batcher<IfThenElseIterator>(sctx, loc),
+  theCondIter(aCondIter),
+  theThenIter(aThenIter),
+  theElseIter(aElseIter),
+  theIsUpdating(aIsUpdating),
+  theIsBooleanIter(aIsBooleanIter)
 { }
 
 
 void IfThenElseIterator::accept(PlanIterVisitor& v) const 
 {
   v.beginVisit(*this);
-  theCondIter->accept ( v );
-  theThenIter->accept ( v );
-  theElseIter->accept ( v );
+  theCondIter->accept(v);
+  theThenIter->accept(v);
+  theElseIter->accept(v);
   v.endVisit(*this);
 }
 
@@ -98,61 +99,72 @@ void IfThenElseIterator::accept(PlanIterVisitor& v) const
 bool IfThenElseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   IfThenElseIteratorState* state;
-  DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );
+  DEFAULT_STACK_INIT(IfThenElseIteratorState, state, planState);
 
-  if ( theIsBooleanIter ) {
+  if (theIsBooleanIter) 
+  {
     store::Item_t condResult;
     consumeNext ( condResult, theCondIter.getp(), planState );
     state->theThenUsed = condResult->getBooleanValue();
-  } else {
-    state->theThenUsed = FnBooleanIterator::effectiveBooleanValue ( this->loc,
-                 planState, theCondIter );
   }
-
-  while ( true )
+  else
   {
-    STACK_PUSH (
-      consumeNext ( result, (state->theThenUsed ? theThenIter.getp() : theElseIter.getp()), planState ), 
-      state 
-    );
+    state->theThenUsed = FnBooleanIterator::effectiveBooleanValue(this->loc,
+                                                                  planState,
+                                                                  theCondIter);
   }
 
-  STACK_END (state);
+  while (true)
+  {
+    STACK_PUSH(consumeNext(result,
+                           (state->theThenUsed ? theThenIter.getp() : theElseIter.getp()),
+                           planState), 
+               state);
+  }
+
+  STACK_END(state);
 }
 
 
-void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) 
+void IfThenElseIterator::openImpl(PlanState& planState, uint32_t& offset) 
 {
-  StateTraitsImpl<IfThenElseIteratorState>::createState(planState, theStateOffset, offset);
+  StateTraitsImpl<IfThenElseIteratorState>::
+  createState(planState, theStateOffset, offset);
 
-  theCondIter->open( planState, offset );
-  theThenIter->open( planState , offset);
-  theElseIter->open( planState , offset);
+  theCondIter->open(planState, offset);
+  theThenIter->open(planState , offset);
+  theElseIter->open(planState , offset);
 }
 
-void IfThenElseIterator::resetImpl ( PlanState& planState ) const
+
+void IfThenElseIterator::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<IfThenElseIteratorState>::reset(planState, theStateOffset);
   
-  theCondIter->reset( planState );
-  theThenIter->reset( planState );
-  theElseIter->reset( planState );
+  theCondIter->reset(planState);
+  theThenIter->reset(planState);
+  theElseIter->reset(planState);
 }
 
-void IfThenElseIterator::closeImpl ( PlanState& planState ) const
+
+void IfThenElseIterator::closeImpl(PlanState& planState) const
 {
-  theCondIter->close( planState );
-  theThenIter->close( planState );
-  theElseIter->close( planState );
+  theCondIter->close(planState);
+  theThenIter->close(planState);
+  theElseIter->close(planState);
 
   StateTraitsImpl<IfThenElseIteratorState>::destroyState(planState, theStateOffset);
 }
 
-uint32_t IfThenElseIterator::getStateSizeOfSubtree() const {
+
+uint32_t IfThenElseIterator::getStateSizeOfSubtree() const 
+{
   return getStateSize() 
       + theCondIter->getStateSizeOfSubtree()
       + theThenIter->getStateSizeOfSubtree()
       + theElseIter->getStateSizeOfSubtree();
 }
+
+
 } /* namespace zorba */
 

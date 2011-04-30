@@ -72,28 +72,24 @@ void areNodeModifiersViolated(
     const QueryLoc& aLoc)
 {
   const store::Collection* lColl = aTarget->getCollection();
-  if (lColl != 0) 
+  if (lColl != 0 && !lColl->isDynamic()) 
   {
     const StaticallyKnownCollection* lDeclColl = 
-      aSctx->lookup_collection(lColl->getName());
+    aSctx->lookup_collection(lColl->getName());
 
     if (lDeclColl == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-        ERROR_PARAMS( lColl->getName()->getStringValue() ),
-        ERROR_LOC( aLoc )
-      );
+      throw XQUERY_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+                             ERROR_PARAMS(lColl->getName()->getStringValue()),
+                             ERROR_LOC(aLoc));
     }
 
     switch(lDeclColl->getNodeModifier()) 
     {
     case StaticContextConsts::read_only:
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0010_COLLECTION_CONST_NODE_UPDATE,
-        ERROR_PARAMS( lColl->getName()->getStringValue() ),
-        ERROR_LOC( aLoc )
-      );
+      throw XQUERY_EXCEPTION(zerr::ZDDY0010_COLLECTION_CONST_NODE_UPDATE,
+                             ERROR_PARAMS( lColl->getName()->getStringValue() ),
+                             ERROR_LOC(aLoc));
 
     case StaticContextConsts::mutable_node:
       // good to go

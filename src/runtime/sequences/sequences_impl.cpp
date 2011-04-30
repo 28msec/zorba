@@ -118,39 +118,20 @@ void FnConcatIterator::resetImpl(PlanState& planState) const
 
 bool FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  std::auto_ptr<store::PUL> pul;
-
   FnConcatIteratorState* state;
   DEFAULT_STACK_INIT(FnConcatIteratorState, state, planState);
-
-  if (theIsUpdating)
-    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   for (; state->theCurIter != state->theEndIter; ++state->theCurIter)
   {
     while(consumeNext(result, (*state->theCurIter).getp(), planState))
     {
-      if (theIsUpdating)
-      {
-        ZORBA_FATAL(result->isPul(), "");
-
-        pul->mergeUpdates(result);
-      }
-      else
-      {
-        STACK_PUSH(true, state);
-      }
+      STACK_PUSH(true, state);
     }
-  }
-
-  if (theIsUpdating)
-  {
-    result = pul.release();
-    STACK_PUSH(result != NULL, state);
   }
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.1.3 fn:index-of

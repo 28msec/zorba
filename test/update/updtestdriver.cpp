@@ -276,6 +276,8 @@ main(int argc, char** argv)
       std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
       if (path.find("w3c_update_testsuite") != std::string::npos) 
       {
+        lContext->setXQueryVersion(xquery_version_1_0);
+
         std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
         smapper.reset(new zorba::TestSchemaURIMapper( uri_map_file.c_str() ));
         lContext->registerURIMapper( smapper.get() );
