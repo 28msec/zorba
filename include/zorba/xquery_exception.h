@@ -202,6 +202,9 @@ private:
     internal::err::parameters const&, internal::err::location const&
   );
 
+  friend void set_source( ZorbaException&, char const*, line_type, column_type,
+                          bool );
+
   friend class UserException;
 
 protected:

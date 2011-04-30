@@ -145,6 +145,22 @@ XQueryException* new_xquery_exception( char const *throw_file,
 
 } // namespace internal
 
+void set_source( ZorbaException &ze, char const *file,
+                 XQueryException::line_type line,
+                 XQueryException::column_type col,
+                 bool overwrite ) {
+  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) ) {
+    if ( !xe->has_source() || overwrite )
+      xe->set_source( file, line, col );
+  } else {
+    XQueryException xe(
+      ze.error(), ze.throw_file(), ze.throw_line(), ze.what()
+    );
+    xe.set_source( file, line, col );
+    throw xe;
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

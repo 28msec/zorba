@@ -37,7 +37,9 @@ namespace zorba {
 
 /**
  * Sets the XQuery source location of the given ZorbaException but only if it's
- * actually an XQueryException.
+ * actually an XQueryException.  If it's actually a ZorbaException, constructs
+ * a new XQueryException (copying the information from the ZorbaException) and
+ * throws it.
  *
  * @param ze The ZorbaException to set the location of.
  * @param file The XQuery file name.
@@ -47,14 +49,10 @@ namespace zorba {
  * doesn't already have one; if \c true, always sets the location even if the
  * exception already has one.
  */
-inline void set_source( ZorbaException &ze, char const *file,
-                        XQueryException::line_type line,
-                        XQueryException::column_type col,
-                        bool overwrite = true ) {
-  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) )
-    if ( !xe->has_source() || overwrite )
-      xe->set_source( file, line, col );
-}
+void set_source( ZorbaException &ze, char const *file,
+                 XQueryException::line_type line,
+                 XQueryException::column_type col,
+                 bool overwrite = true );
 
 /**
  * Sets the XQuery source location of the given ZorbaException but only if it's
