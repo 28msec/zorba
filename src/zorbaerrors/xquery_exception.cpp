@@ -153,11 +153,11 @@ void set_source( ZorbaException &ze, char const *file,
     if ( !xe->has_source() || overwrite )
       xe->set_source( file, line, col );
   } else {
-    XQueryException xe(
+    XQueryException new_xe(
       ze.error(), ze.throw_file(), ze.throw_line(), ze.what()
     );
-    xe.set_source( file, line, col );
-    throw xe;
+    new_xe.set_source( file, line, col );
+    throw new_xe;
   }
 }
 
