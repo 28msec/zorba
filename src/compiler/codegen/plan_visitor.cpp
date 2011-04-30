@@ -588,7 +588,7 @@ void end_visit(apply_expr& v)
 
   PlanIter_t arg = pop_itstack();
 
-  push_itstack(new ApplyIterator(sctx, qloc, arg));
+  push_itstack(new ApplyIterator(sctx, qloc, v.discardsXDM(), arg));
 }
 
 
@@ -3035,7 +3035,7 @@ void end_visit(transform_expr& v)
   PlanIter_t pulHolderIter = new ForVarIterator(sctx, modifyIter->loc, pulVarName);
 
   // Create an ApplyIterator to apply the above PUL
-  PlanIter_t applyIter = new ApplyIterator(sctx, modifyIter->loc, pulHolderIter);
+  PlanIter_t applyIter = new ApplyIterator(sctx, modifyIter->loc, true, pulHolderIter);
 
   std::vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
   std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();

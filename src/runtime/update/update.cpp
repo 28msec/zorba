@@ -813,8 +813,9 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   std::vector<ForVarIter_t>::const_iterator lVarRefIter; 
   std::vector<ForVarIter_t>::const_iterator lVarRefEnd;
-  store::ItemHandle<store::PUL> lPul;
+  store::Item_t pulItem;
   store::Item_t validationPul;
+  store::PUL_t pul;
   store::Item_t temp;
   store::Item_t lItem;
   store::Item_t lCopyNode;
@@ -825,6 +826,8 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
+
+  pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
@@ -841,7 +844,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
     // For each copy var compute the target node and bind that node to all
     // references of the copy var.
-    for(ulong i = 0; i < numCopyClauses; i++)
+    for (ulong i = 0; i < numCopyClauses; i++)
     {
       const CopyClause& copyClause = theCopyClauses[i];
 
@@ -869,20 +872,21 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     // Generate the PUL for the modify clause. Assumption: Codegen did the
     // check if theModifyIter is an updating expr, empty seq producing expr
     // or an error expr. If a PUL is generated, then apply its updates.
-    if (consumeNext(lItem, theModifyIter, aPlanState))
+    while (consumeNext(pulItem, theModifyIter, aPlanState))
     {
-      ZORBA_FATAL(lItem->isPul(), "");
-
-      lPul = static_cast<store::PUL *>(lItem.getp());
-
-      // check that every target node in the lPul is inside the tree rooted
-      // at some of the copied nodes.
-      lPul->checkTransformUpdates(copyNodes);
-
-      // apply the pul
-      static_cast<ForVarIterator*>(thePulHolderIter.getp())->bind(lPul, aPlanState);
-      consumeNext(temp, theApplyIter, aPlanState);
+      if (pulItem->isPul())
+      {
+        pul->mergeUpdates(pulItem);
+      }
     }
+
+    // check that every target node in the lPul is inside the tree rooted
+    // at some of the copied nodes.
+    pul->checkTransformUpdates(copyNodes);
+
+    // apply the pul
+    static_cast<ForVarIterator*>(thePulHolderIter.getp())->bind(pul.getp(), aPlanState);
+    consumeNext(temp, theApplyIter, aPlanState);
   }
 
   // Compute and return the results

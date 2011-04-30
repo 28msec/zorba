@@ -617,7 +617,9 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
 /***************************************************************************//**
   Create a sequence type based on the kind and content of an item.
 ********************************************************************************/
-xqtref_t TypeManagerImpl::create_value_type(const store::Item* item, const QueryLoc& loc) const 
+xqtref_t TypeManagerImpl::create_value_type(
+    const store::Item* item,
+    const QueryLoc& loc) const 
 {
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
@@ -702,7 +704,8 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item, const Query
       ZORBA_ASSERT(false);
     }
     }
-  } // else if (item->isNode())
+  }
+
   else if (item->isFunction())
   {
     const FunctionItem* lFItem = static_cast<const FunctionItem*>(item);
@@ -716,6 +719,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item, const Query
 
     return new FunctionXQType(this, lParamTypes, lRetType, quant);
   } // else if (item->isFunction())
+
   else
   {
     ZORBA_ASSERT(false);

@@ -668,14 +668,14 @@ void PULImpl::addSetElementType(
 {
   UpdatePrimitive* upd = 
   GET_STORE().getPULFactory().createUpdSetElementType(this,
-                        target,
-                        typeName,
-                        value,
-                        haveValue,
-                        haveEmptyValue,
-                        haveTypedValue,
-                        false,
-                        isInSubstitutionGroup);
+                                                      target,
+                                                      typeName,
+                                                      value,
+                                                      haveValue,
+                                                      haveEmptyValue,
+                                                      haveTypedValue,
+                                                      false,
+                                                      isInSubstitutionGroup);
 
   theValidationList.push_back(upd);
 }
@@ -694,14 +694,14 @@ void PULImpl::addSetElementType(
 
   UpdatePrimitive* upd =
   GET_STORE().getPULFactory().createUpdSetElementType(this,
-                        target,
-                        typeName,
-                        typedValue,
-                        haveValue,
-                        haveEmptyValue,
-                        haveTypedValue,
-                        true,
-                        isInSubstitutionGroup);
+                                                      target,
+                                                      typeName,
+                                                      typedValue,
+                                                      haveValue,
+                                                      haveEmptyValue,
+                                                      haveTypedValue,
+                                                      true,
+                                                      isInSubstitutionGroup);
 
   theValidationList.push_back(upd);
 }
@@ -713,7 +713,11 @@ void PULImpl::addSetAttributeType(
     store::Item_t& typedValue)
 {
   UpdatePrimitive* upd = 
-  GET_STORE().getPULFactory().createUpdSetAttributeType(this, target, typeName, typedValue, false);
+  GET_STORE().getPULFactory().createUpdSetAttributeType(this, 
+                                                        target,
+                                                        typeName,
+                                                        typedValue,
+                                                        false);
 
   theValidationList.push_back(upd);
 }
@@ -727,7 +731,11 @@ void PULImpl::addSetAttributeType(
   store::Item_t typedValue = new ItemVector(typedValueV);
 
   UpdatePrimitive* upd =
-  GET_STORE().getPULFactory().createUpdSetAttributeType(this, target, typeName, typedValue, true);
+  GET_STORE().getPULFactory().createUpdSetAttributeType(this,
+                                                        target,
+                                                        typeName,
+                                                        typedValue,
+                                                        true);
 
   theValidationList.push_back(upd);
 }
@@ -1066,6 +1074,12 @@ void PULImpl::mergeUpdates(store::Item* other)
                   theDeleteDocumentList,
                   otherp->theDeleteDocumentList,
                   UP_LIST_NONE);
+
+  // merge validation primitives
+  mergeUpdateList(NULL,
+                  theValidationList,
+                  otherp->theValidationList,
+                  UP_LIST_NONE);
 }
 
 
@@ -1137,7 +1151,7 @@ void PULImpl::mergeUpdateList(
       target = BASE_NODE(otherUpd->theTarget);
 
     NodeUpdates* targetUpdates = NULL;
-    bool found = (target == NULL ?
+    bool found = (target == NULL || myPul == NULL?
                   false : 
                   myPul->theNodeToUpdatesMap.get(target, targetUpdates));
 
@@ -1146,7 +1160,7 @@ void PULImpl::mergeUpdateList(
       myList.push_back(otherUpd);
       otherList[i] = NULL;
 
-      if (target)
+      if (target && myPul)
       {
         targetUpdates = new NodeUpdates(1);
         (*targetUpdates)[0] = otherUpd;

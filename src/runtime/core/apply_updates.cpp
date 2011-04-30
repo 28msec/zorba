@@ -47,52 +47,95 @@ END_SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
 /*******************************************************************************
 
 ********************************************************************************/
+void ApplyIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  theXDMItems.clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ApplyIterator::ApplyIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    bool discardXDM,
+    PlanIter_t& arg) 
+  :
+  UnaryBaseIterator<ApplyIterator, ApplyIteratorState>(sctx, loc, arg),
+  theDiscardXDM(discardXDM)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ApplyIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<ApplyIterator, ApplyIteratorState>*)this);
+
+  ar & theDiscardXDM;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
-  store::Item_t tmp;
-  store::Item_t pulItem;
-  store::PUL* pul;
-
   dynamic_context* gdctx = planState.theGlobalDynCtx;
   CompilerCB* ccb = planState.theCompilerCB;
 
+  store::Item_t item;
+  ulong numItems = 0;
+  std::auto_ptr<store::PUL> pul;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  ApplyIteratorState* state;
+  DEFAULT_STACK_INIT(ApplyIteratorState, state, planState);
+
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   // Note: updating expr might not return a pul because of vacuous exprs
-  if (consumeNext(pulItem, theChild, planState))
+  while (consumeNext(item, theChild, planState))
   {
-    if (!pulItem->isPul())
-      throw XQUERY_EXCEPTION(
-        zerr::ZXQP0019_INTERNAL_ERROR,
-        ERROR_PARAMS( ZED( ExprNoReturnUpdateList ) ),
-        ERROR_LOC( loc )
-      );
-
-    pul = static_cast<store::PUL*>(pulItem.getp());
-
-    if (consumeNext(tmp, theChild, planState))
+    if (item->isPul())
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZXQP0019_INTERNAL_ERROR,
-        ERROR_PARAMS( ZED( ExprReturnsTooManyUpdateLists ) ),
-        ERROR_LOC( loc )
-      );
+      pul->mergeUpdates(item);
     }
-    apply_updates(ccb, gdctx, theSctx, pul, loc);
+    else if (!theDiscardXDM)
+    {
+      state->theXDMItems.resize(++numItems);
+      state->theXDMItems.back().transfer(item);
+    }
   }
+
+  apply_updates(ccb, gdctx, theSctx, pul.get(), loc);
+
+  state->theXDMIte = state->theXDMItems.begin();
+  state->theXDMEnd = state->theXDMItems.end();
+  
+  for (; state->theXDMIte != state->theXDMEnd; ++state->theXDMIte)
+  {
+    result.transfer((*state->theXDMIte));
+    STACK_PUSH(true, state);
+  }
+
+  state->theXDMItems.clear();
 
   STACK_END(state);
 }
 
-void
-apply_updates(
-      CompilerCB* ccb,
-      dynamic_context* gdctx,
-      static_context* sctx,
-      store::PUL* pul,
-      const QueryLoc& loc)
+
+void apply_updates(
+    CompilerCB* ccb,
+    dynamic_context* gdctx,
+    static_context* sctx,
+    store::PUL* pul,
+    const QueryLoc& loc)
 {
   SchemaValidatorImpl validator(loc, sctx);
   ICCheckerImpl icChecker(sctx, gdctx);
@@ -164,11 +207,11 @@ apply_updates(
       indexPul->applyUpdates(inherit);
     }
   }
-    catch (XQueryException& e)
-    {
-      set_source( e, loc );
-      throw;
-    }
+  catch (XQueryException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
 }
 
 

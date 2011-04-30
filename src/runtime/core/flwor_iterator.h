@@ -288,52 +288,72 @@ public:
 
 /*******************************************************************************
 
-  theVarBindingState : A vector that stores, for each LET var, if the var is
-                       already bound or not, and for for each FOR var its
-                       positional integer value.
+  - theVarBindingState :
+  ----------------------
+  A vector that stores, for each LET var, if the var is already bound or not,
+  and for for each FOR var its positional integer value.
 
-  theTempSeqs        : For each LET var, this vector stores a handle to a temp
-                       seq that will store the "current" value of the LET var.
-                       Note: The size of the vector is equal to the total number
-                       of FOR/LET variables. The entry at position "pos" 
-                       corresponds to the variable that, suntactically, appears
-                       at position "pos" within the flwor expr. The entries
-                       corresponding to FOR vars are left empty. 
-  theTempSeqIters    : For each LET var, this vector stores a handle to a
-                       PlanIteratorWrapper over the subplan that computes the
-                       domain expr of the LET var. This PlanIteratorWrapper is
-                       given as input to the init() method of the temp seq 
-                       corresponding to the same LET var (and stored in
-                       theTempSeqs)
+  - theTempSeqs : 
+  ---------------
+  For each LET var, this vector stores a handle to a temp seq that will store 
+  the "current" value of the LET var. Note: The size of the vector is equal to 
+  the total number of FOR/LET variables. The entry at position "pos" corresponds
+  to the variable that, suntactically, appears at position "pos" within the 
+  flwor expr. The entries corresponding to FOR vars are left empty. 
 
-  theTuplesTable     : The table that materializes the tuple stream before
-                       computing the return clause. This is needed in case the
-                       return expr is a sequential one. 
+  - theTempSeqIters : 
+  -------------------
+  For each LET var, this vector stores a handle to a PlanIteratorWrapper over 
+  the subplan that computes the domain expr of the LET var. This 
+  PlanIteratorWrapper is given as input to the init() method of the temp seq 
+  corresponding to the same LET var (and stored in theTempSeqs).
 
-  theSortTable       : The table that materializes the sort tuples in order to
-                       sort them. The entries of this table are instances of
-                       SortTuple (see gflwor/orderby_iterator.h).
+  - theTuplesTable :
+  ------------------ 
+  The table that materializes the tuple stream before computing the return 
+  clause. This is needed only if  the return expr is a sequential one. 
 
-  theResultTable     : If the flwor expr is non-sequential and contains orderby,
-                       then for each stream tuple, both the sort tuple and the
-                       return expr are evaluated and stored. before the next
-                       stream tuple is evaluated. The sort tuple is stored in 
-                       theSortTable, and the result of the return expr is stored
-                       in theResultTable. The result is stored in the form of
-                       an iterator over a temp seq that stores the actual result.
+  - theSortTable :
+  ---------------- 
+  The table that materializes the sort tuples in order to sort them. The entries
+  of this table are instances of SortTuple (see gflwor/orderby_iterator.h).
 
-  theNumTuples       : The number of tuples in theSortTable.
+  - theResultTable : 
+  ------------------
+  If the flwor expr is non-sequential and contains orderby, then for each stream
+  tuple, both the sort tuple and the return expr are evaluated and stored before
+  the next stream tuple is evaluated. The sort tuple is stored in theSortTable,
+  and the result of the return expr is stored in theResultTable. The result is 
+  stored in the form of an iterator over a temp seq that stores the actual result.
 
-  theCurTuplePos     : A position inside theSortTable. Used, together with
-                       theOrderResultIter, to return individual flwor results
-                       after the full result set has been materialized and sorted. 
+  - theNumTuples :
+  ---------------- 
+  The number of tuples in theTuplesTable or theSortTable.
 
-  theOrderResultIter : The iterator I over a temp sequence that stores the result
-                       of return clause for the tuple pointed to by theCurTuplePos.
+  - theCurTuplePos :
+  ---------------- 
+  The "current" position inside theTuplesTable or theSortTable. It is used after
+  theTuplesTable or theSortTable has been fully materialized, to iterate over 
+  the tuples and evaluate and return the results of the return clause for each
+  tuple. 
 
-  theGroupMap        :
+  - theOrderResultIter : 
+  ----------------------
+  The iterator I over a temp sequence that stores the result of return clause 
+  for the tuple pointed to by theCurTuplePos.
 
-  theGroupMapIter    :
+  - theGroupMap :
+  ---------------
+
+  - theGroupMapIter :
+  -------------------
+
+  - thePUL :
+  ----------
+
+  - theFirstResult :
+  ------------------
+
 ********************************************************************************/
 class FlworState : public PlanIteratorState
 {
@@ -348,7 +368,9 @@ public:
 
 protected:
   checked_vector<long>           theVarBindingState;
+
   std::vector<store::TempSeq_t>  theTempSeqs;
+
   std::vector<store::Iterator_t> theTempSeqIters;
 
   TuplesTable                    theTuplesTable;
@@ -358,12 +380,16 @@ protected:
   ResultTable                    theResultTable;
 
   ulong                          theNumTuples;
+
   ulong                          theCurTuplePos;
 
   store::Iterator_t              theOrderResultIter; 
 
   GroupHashMap                 * theGroupMap; 
+
   GroupHashMap::iterator         theGroupMapIter;
+
+  store::PUL_t                   thePUL;
 
   bool                           theFirstResult;
 

@@ -26,7 +26,49 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-UNARY_ITER(ApplyIterator);
+class ApplyIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t>            theXDMItems;
+
+  std::vector<store::Item_t>::iterator theXDMIte;
+  std::vector<store::Item_t>::iterator theXDMEnd;
+
+public:
+  void reset(PlanState& state);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class ApplyIterator : public UnaryBaseIterator<ApplyIterator,
+                                               ApplyIteratorState>
+{
+private:
+  bool  theDiscardXDM;
+
+public:
+  SERIALIZABLE_CLASS(ApplyIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  ApplyIterator,
+  UnaryBaseIterator<ApplyIterator, ApplyIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  ApplyIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        bool discardXDM,
+        PlanIter_t& arg);
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
 
 void
 apply_updates(

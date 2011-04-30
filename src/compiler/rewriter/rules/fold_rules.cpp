@@ -309,7 +309,16 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       curUnfoldable = ANNOTATION_TRUE_FIXED;
       break;
     }
-    
+  
+    case delete_expr_kind:
+    case insert_expr_kind:
+    case rename_expr_kind:
+    case replace_expr_kind:
+    {
+      curUnfoldable = ANNOTATION_TRUE_FIXED;
+      break;
+    }
+
     default:
     {
       break;

@@ -222,31 +222,34 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     TypeManager* tm = body->get_type_manager();
 
 #if 1
-    // Set the return type of the function to the type of its body. But do not
-    // do it if the body type is a user-defined type because the udf may be
-    // used in another module which does not import the schema that describes 
-    // this user-defined type.
-    xqtref_t bodyType = body->get_return_type();
-    xqtref_t declaredType = udf->getSignature().returnType();
-
-    bool udt = (bodyType->type_kind() == XQType::USER_DEFINED_KIND);
-
-    if (bodyType->type_kind() == XQType::NODE_TYPE_KIND)
+    if (!udf->isExiting())
     {
-      const NodeXQType* nodeType = static_cast<const NodeXQType*>(bodyType.getp());
-      
-      xqtref_t contentType = nodeType->get_content_type();
+      // Set the return type of the function to the type of its body. But do not
+      // do it if the body type is a user-defined type because the udf may be
+      // used in another module which does not import the schema that describes 
+      // this user-defined type.
+      xqtref_t bodyType = body->get_return_type();
+      xqtref_t declaredType = udf->getSignature().returnType();
 
-      udt = (contentType->type_kind() == XQType::USER_DEFINED_KIND);
-    }
+      bool udt = (bodyType->type_kind() == XQType::USER_DEFINED_KIND);
 
-    if ( !udt &&
-         !TypeOps::is_equal(tm, *bodyType, *declaredType) &&
-         TypeOps::is_subtype(tm, *bodyType, *declaredType))
-    {
-      udf->getSignature().returnType() = bodyType;
-      if (!udf->isLeaf())
-        continue;
+      if (bodyType->type_kind() == XQType::NODE_TYPE_KIND)
+      {
+        const NodeXQType* nodeType = static_cast<const NodeXQType*>(bodyType.getp());
+        
+        xqtref_t contentType = nodeType->get_content_type();
+
+        udt = (contentType->type_kind() == XQType::USER_DEFINED_KIND);
+      }
+
+      if ( !udt &&
+           !TypeOps::is_equal(tm, *bodyType, *declaredType) &&
+           TypeOps::is_subtype(tm, *bodyType, *declaredType))
+      {
+        udf->getSignature().returnType() = bodyType;
+        if (!udf->isLeaf())
+          continue;
+      }
     }
 #endif
 

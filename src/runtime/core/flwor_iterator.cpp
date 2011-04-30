@@ -930,15 +930,11 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   ulong curVar = 0;
   store::Item_t curItem;
-  std::auto_ptr<store::PUL> pul;
 
   FlworState* state;
   DEFAULT_STACK_INIT(FlworState, state, planState);
 
   assert(state->theVarBindingState.size() > 0);
-
-  if (theIsUpdating)
-    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   while (true)
   {
@@ -961,7 +957,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           if (theMaterializeClause)
           {
-            // GroupBy ? OrderBy Materialize
+            // GroupBy? OrderBy Materialize
             if (!theMaterializeClause->theOrderSpecs.empty())
             {
               if (theGroupByClause)
@@ -1076,15 +1072,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
               while (state->theOrderResultIter->next(result))
               {
-                if (theIsUpdating)
-                {
-                  ZORBA_FATAL(result->isPul(), "");
-                  pul->mergeUpdates(result);
-                }
-                else
-                {
-                  STACK_PUSH(true, state);
-                }
+                STACK_PUSH(true, state);
               }
 
              state->theOrderResultIter->close();
@@ -1109,25 +1097,11 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
               while(consumeNext(result, theReturnClause, planState)) 
               {
-                if (theIsUpdating)
-                {
-                  ZORBA_FATAL(result->isPul(), "");
-                  pul->mergeUpdates(result);
-                }
-                else
-                {
-                  STACK_PUSH(true, state);
-                }
+                STACK_PUSH(true, state);
               }
 
               ++state->theGroupMapIter;
             }
-          }
-
-          if (theIsUpdating)
-          {
-            result = pul.release();
-            STACK_PUSH(true, state);
           }
 
           goto stop;
@@ -1150,9 +1124,9 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // After binding all variables, we check first the where clause
     if (theWhereClause == NULL || evalToBool(theWhereClause, planState))
     {
-      // If we do not need to do ordering, grouping, or pul gneration, we 
-      // compute and return the items produced by the ReturnClause. Else, we
-      // have to  materialize the result.
+      // If we do not need to do ordering or grouping, we compute and return
+      // the items produced by the ReturnClause. Else, we have to materialize
+      // the result.
       if (theGroupByClause)
       {
         materializeGroupTuple(state, planState);
@@ -1161,6 +1135,15 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         materializeStreamTuple(state, planState);
       }
+      else if (theOrderByClause)
+      {
+        if (!state->theFirstResult)
+          theReturnClause->reset(planState);
+
+        state->theFirstResult = false;
+
+        materializeSortTupleAndResult(state, planState);
+      }
       else
       {
         if (!state->theFirstResult)
@@ -1168,25 +1151,9 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
         state->theFirstResult = false;
 
-        if (theOrderByClause)
+        while (consumeNext(result, theReturnClause, planState))
         {
-          materializeSortTupleAndResult(state, planState);
-        }
-        else if (theIsUpdating)
-        {
-          while(consumeNext(curItem, theReturnClause, planState)) 
-          {
-            ZORBA_FATAL(curItem->isPul(), "");
-            
-            pul->mergeUpdates(curItem);
-          }
-        }
-        else
-        {
-          while (consumeNext(result, theReturnClause, planState))
-          {
-            STACK_PUSH(true, state);
-          }
+          STACK_PUSH(true, state);
         }
       }
     }

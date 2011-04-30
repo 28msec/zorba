@@ -177,7 +177,7 @@ void fo_expr::compute_scripting_kind()
                                ERROR_LOC(theArgs[i]->get_loc()));
       }
 
-      if (i > 0 && !is_updating() && (argKind & UPDATING_EXPR))
+      if (i > 0 && !is_updating() && !is_vacuous() && (argKind & UPDATING_EXPR))
       {
         throw XQUERY_EXCEPTION(err::XUST0001,
                                ERROR_PARAMS(ZED(XUST0001_CONCAT)),
