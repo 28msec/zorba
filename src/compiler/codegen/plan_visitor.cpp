@@ -757,7 +757,7 @@ void general_var_codegen(const var_expr& var)
 
         if (flworExpr == clauseVarMap->theClause->get_flwor_expr() &&
             ((clauseVarMap->theClause->get_kind() == flwor_clause::order_clause &&
-              !flworExpr->is_sequential()) ||
+              flworExpr->is_general()) ||
              clauseVarMap->theClause->get_kind() == flwor_clause::materialize_clause))
         {
           varRebind = new VarRebind;
@@ -838,14 +838,36 @@ bool begin_visit(flwor_expr& v)
 
   bool isGeneral = v.is_general();
 
-  if (v.is_sequential() && 
-      !isGeneral &&
-      (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
+  if (v.is_sequential())
   {
-    materialize_clause* mat = 
-    new materialize_clause(v.get_sctx(), v.get_return_expr()->get_loc());
+    if (!isGeneral &&
+        (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
+    {
+      materialize_clause* mat = 
+      new materialize_clause(v.get_sctx(), v.get_return_expr()->get_loc());
 
-    v.add_clause(mat);
+      v.add_clause(mat);
+    }
+    else if (isGeneral)
+    {
+      const flwor_clause* lastClause = v[v.num_clauses()-1];
+
+      if (lastClause->get_kind() != flwor_clause::order_clause &&
+          lastClause->get_kind() != flwor_clause::group_clause)
+      {
+        std::vector<OrderModifier> modifiers;
+        std::vector<expr_t> orderingExprs;
+
+        orderby_clause* mat = 
+          new orderby_clause(v.get_sctx(), 
+                             v.get_return_expr()->get_loc(),
+                             true,
+                             modifiers,
+                             orderingExprs);
+
+        v.add_clause(mat);
+      }
+    }
   }
 
   ulong numClauses = v.num_clauses();
