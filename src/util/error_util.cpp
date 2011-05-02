@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <sstream>
 #ifndef WIN32
 # include <cstdio>
 # include <cstring>
@@ -28,7 +29,6 @@
 
 #include "error_util.h"
 #include "stl_util.h"
-#include "string_util.h"
 
 namespace zorba {
 namespace os_error {
@@ -41,15 +41,36 @@ exception::~exception() throw() {
   // out-of-line since it's virtual
 }
 
-string exception::make_what( char const *function, char const *path ) {
-  return BUILD_STRING( '"', path, "\": ", get_err_string( function ) );
+string exception::make_what( char const *function, char const *path,
+                             char const *err_string ) {
+  ostringstream oss;
+  if ( path && *path )
+    oss << '"' << path << "\": ";
+  if ( err_string && *err_string )
+    oss << err_string;
+  else
+    oss << get_err_string( function );
+  return oss.str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-zstring get_err_string( char const *what, code_type code ) {
+string format_err_string( char const *function, code_type code,
+                          char const *err_string ) {
   internal::err::parameters params;
   internal::err::parameters::value_type result;
+  if ( function && *function ) {
+    result = err::dict::lookup( ZED( OSWhatFailedError_123 ) );
+    params = ERROR_PARAMS( function, code, err_string );
+  } else {
+    result = err::dict::lookup( ZED( OSFailedError_12 ) );
+    params = ERROR_PARAMS( code, err_string );
+  }
+  params.substitute( &result );
+  return result;
+}
+
+string get_err_string( char const *function, code_type code ) {
 #ifndef WIN32
   char err_string[ 128 ];
   ::strerror_r( code, err_string, sizeof( err_string ) );
@@ -70,15 +91,7 @@ zstring get_err_string( char const *what, code_type code ) {
   );
   LocalFree( werr_string );
 #endif /* WIN32 */
-  if ( what && *what ) {
-    result = err::dict::lookup( ZED( OSWhatFailedError_123 ) );
-    params = ERROR_PARAMS( what, code, err_string );
-  } else {
-    result = err::dict::lookup( ZED( OSFailedError_12 ) );
-    params = ERROR_PARAMS( code, err_string );
-  }
-  params.substitute( &result );
-  return zstring( result );
+  return format_err_string( function, code, err_string );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
