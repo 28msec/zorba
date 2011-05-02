@@ -28,19 +28,31 @@
 
 #include "error_util.h"
 #include "stl_util.h"
+#include "string_util.h"
 
 namespace zorba {
-namespace error {
+namespace os_error {
 
 using namespace std;
 
+////////// exception //////////////////////////////////////////////////////////
+
+exception::~exception() throw() {
+  // out-of-line since it's virtual
+}
+
+string exception::make_what( char const *function, char const *path ) {
+  return BUILD_STRING( '"', path, "\": ", get_err_string( function ) );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
-zstring get_os_err_string( char const *what, os_code code ) {
+zstring get_err_string( char const *what, code_type code ) {
   internal::err::parameters params;
   internal::err::parameters::value_type result;
 #ifndef WIN32
-  char const *const err_string = ::strerror( code );
+  char err_string[ 128 ];
+  ::strerror_r( code, err_string, sizeof( err_string ) );
 #else
   LPWSTR werr_string;
   FormatMessage(
@@ -71,7 +83,7 @@ zstring get_os_err_string( char const *what, os_code code ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace error
+} // namespace os_error
 } // namespace zorba
 /*
  * Local variables:

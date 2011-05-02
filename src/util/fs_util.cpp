@@ -46,18 +46,6 @@ inline void replace_foreign( zstring *path ) {
 #endif /* WIN32 */
 }
 
-////////// fs::exception //////////////////////////////////////////////////////
-
-exception::~exception() throw() {
-  // out-of-line since it's virtual
-}
-
-string exception::make_what( char const *function, char const *path ) {
-  return BUILD_STRING(
-    '"', path, "\": ", error::get_os_err_string( function )
-  );
-}
-
 ////////// Windows functions //////////////////////////////////////////////////
 
 #ifdef WIN32

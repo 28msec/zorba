@@ -29,24 +29,120 @@
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
-namespace error {
+namespace os_error {
 
 ////////// types //////////////////////////////////////////////////////////////
 
 #ifdef WIN32
-typedef DWORD os_code;
+typedef DWORD code_type;
 #else
-typedef int os_code;
+typedef int code_type;
 #endif /* WIN32 */
 
-////////// operating system errors ////////////////////////////////////////////
+////////// Exceptions /////////////////////////////////////////////////////////
+
+/**
+ * An %exception is-a std::runtime_error for reporting errors with operating
+ * system functions.
+ */
+class exception : public std::runtime_error {
+public:
+  /**
+   * Constructs an %exception.
+   *
+   * @param function The name of the operating system function that failed.
+   * @param path The full path of the file or directory involved in the failure.
+   */
+  explicit exception( char const *function, char const *path = "" ) :
+    std::runtime_error( make_what( function, path ) ),
+    function_( function ), path_( path )
+  {
+  }
+
+  /**
+   * Constructs an %exception.
+   *
+   * @tparam FunctionStringType The \a function string type.
+   * @param function The name of the operating system function that failed.
+   * @param path The full path of the file or directory involved in the failure.
+   */
+  template<class FunctionStringType>
+  explicit exception( FunctionStringType const &function,
+                      char const *path = "" ) :
+    std::runtime_error( make_what( function.c_str(), path ) ),
+    function_( function ), path_( path )
+  {
+  }
+
+  /**
+   * Constructs an %exception.
+   *
+   * @tparam PathStringType The \a path string type.
+   * @param function The name of the operating system function that failed.
+   * @param path The full path of the file or directory involved in the failure.
+   */
+  template<class PathStringType>
+  explicit exception( char const *function,
+                      PathStringType const &path = "" ) :
+    std::runtime_error( make_what( function, path.c_str() ) ),
+    function_( function ), path_( path )
+  {
+  }
+
+  /**
+   * Constructs an %exception.
+   *
+   * @tparam FunctionStringType The \a function string type.
+   * @tparam PathStringType The \a path string type.
+   * @param function The name of the operating system function that failed.
+   * @param path The full path of the file or directory involved in the failure.
+   */
+  template<class FunctionStringType,class PathStringType>
+  explicit exception( FunctionStringType const &function,
+                      PathStringType const &path = "" ) :
+    std::runtime_error( make_what( function.c_str(), path.c_str() ) ),
+    function_( function ), path_( path )
+  {
+  }
+
+  /**
+   * Destroys an %exception.
+   */
+  ~exception() throw();
+
+  /**
+   * Gets the name of the operating system function that failed.
+   *
+   * @return Returns said function name.
+   */
+  zstring const& function() const throw() {
+    return function_;
+  }
+
+  /**
+   * Gets the full path of the file or directory involved in the failure.
+   *
+   * @return Returns said path.
+   */
+  zstring const& path() const throw() {
+    return path_;
+  }
+
+protected:
+  static std::string make_what( char const *function, char const *path );
+
+  zstring function_;
+  zstring path_;
+};
+
+////////// Operating system errors ////////////////////////////////////////////
 
 /**
  * Gets the most recent operating system error code.
  *
  * @return Returns said error code.
  */
-inline os_code get_os_err_code() {
+inline code_type get_err_code() {
 #ifdef WIN32
   return ::GetLastError();
 #else
@@ -61,7 +157,7 @@ inline os_code get_os_err_code() {
  * @param code The operating system error code.
  * @return Returns said error string.
  */
-zstring get_os_err_string( char const *what, os_code code = get_os_err_code() );
+zstring get_err_string( char const *what, code_type code = get_err_code() );
 
 /**
  * Gets the error string for the given operating system error code.
@@ -76,8 +172,8 @@ typename ztd::enable_if<
   ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
   zstring
 >::type
-get_os_err_string( StringType const &what, os_code code = get_os_err_code() ) {
-  return get_os_err_string( what.c_str(), code );
+get_err_string( StringType const &what, code_type code = get_err_code() ) {
+  return get_err_string( what.c_str(), code );
 }
 
 /**
@@ -86,13 +182,13 @@ get_os_err_string( StringType const &what, os_code code = get_os_err_code() ) {
  * @param code The operating system error code.
  * @return Returns said error string.
  */
-inline zstring get_os_err_string( os_code code = get_os_err_code() ) {
-  return get_os_err_string( NULL, code );
+inline zstring get_err_string( code_type code = get_err_code() ) {
+  return get_err_string( NULL, code );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace error
+} // namespace os_error
 } // namespace zorba
 
 #endif /* ZORBA_ERROR_UTIL_H */
