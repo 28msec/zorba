@@ -19,8 +19,8 @@
 
 #include <algorithm>
 #include <iostream>
-#include <stdexcept>
 
+#include "curl_util.h"
 #include "error_util.h"
 #include "fs_util.h"
 #include "stl_util.h"
@@ -191,7 +191,7 @@ void encode( StringType &s, bool encode_slash = true ) {
 
 ////////// Fetching ///////////////////////////////////////////////////////////
 
-typedef os_error::exception exception;
+typedef curl::exception exception;
 
 /**
  * Fetches a resource from the given URI.  Supported URI schemes are: "file",
@@ -251,6 +251,11 @@ void fetch( URIStringType const &uri, PathStringType *file,
             bool *is_temp = 0 ) {
   fetch( uri.c_str(), file, is_temp );
 }
+
+////////// streaming //////////////////////////////////////////////////////////
+
+typedef curl::streambuf streambuf;
+typedef curl::istream istream;
 
 ///////////////////////////////////////////////////////////////////////////////
 

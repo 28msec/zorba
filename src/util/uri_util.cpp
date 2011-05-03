@@ -20,10 +20,6 @@
 
 #include <zorba/config.h>
 
-#ifdef ZORBA_WITH_REST
-#include <curl/curl.h>
-#endif
-
 #ifdef WIN32
 #include "system/globalenv.h"
 #endif /* WIN32 */
@@ -31,6 +27,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zstring.h"
 
+#include "curl_util.h"
 #include "fs_util.h"
 #include "less.h"
 #include "uri_util.h"
@@ -107,88 +104,28 @@ ZORBA_DLL_PUBLIC extern char const uri_safe[256] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static size_t curl_write_fn( void *ptr, size_t size, size_t nmemb,
-                             void *data ) {
-  char const *const char_buf = static_cast<char const*>( ptr );
-  size_t const real_size = size * nmemb;
-  iostream &stream = *static_cast<iostream*>( data );
+extern "C" {
 
-  stream.write( char_buf, static_cast<streamsize>( real_size ) );
+static size_t fetch_curl_write_fn( void *ptr, size_t size, size_t nmemb,
+                                   void *data ) {
+  size *= nmemb;
+  iostream &stream = *static_cast<iostream*>( data );
+  stream.write(
+    static_cast<char const*>( ptr ), static_cast<streamsize>( size )
+  );
   // TODO: should check to see if write() failed
-  return real_size;
+  return size;
 }
+
+} // extern "C"
 
 void fetch( char const *uri, iostream &result ) {
 #ifdef ZORBA_WITH_REST
-  //
-  // Having cURL initialization wrapped by a class and using a singleton static
-  // instance guarantees that cURL is initialized exactly once before use and
-  // and also is cleaned-up at program termination (when destructors for static
-  // objects are called).
-  //
-  struct curl_initializer {
-    curl_initializer() {
-      if ( CURLcode curl_code = curl_global_init( CURL_GLOBAL_ALL ) )
-        throw exception(
-          "curl_global_init()", "", curl_easy_strerror( curl_code )
-        );
-    }
-    ~curl_initializer() {
-      curl_global_cleanup();
-    }
-  };
-  static curl_initializer initializer;
-
-  CURL *curl = curl_easy_init();
-  curl_easy_setopt( curl, CURLOPT_URL, uri );
-  curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write_fn );
-  curl_easy_setopt( curl, CURLOPT_WRITEDATA, static_cast<void*>( &result ) );
-
-  // Tells cURL to fail silently if the HTTP code returned >= 400.
-  curl_easy_setopt( curl, CURLOPT_FAILONERROR, 1 );
-
-  // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
-  // thus cURL will do an infinite number of redirects.
-  curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 );
-
-#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE
-  curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, 0 );
-  //
-  // CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the
-  // Common Name or Subject Alternate Name field in the certificate matches the
-  // name of the server.
-  //
-  // tested with https://www.npr.org/rss/rss.php?id=1001
-  // about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
-#else
-# ifdef WIN32
-  // set the root CA certificates file path
-  if ( GENV.g_curl_root_CA_certificates_path[0] )
-    curl_easy_setopt(
-      curl, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path
-    );
-# endif /* WIN32 */
-#endif /* ZORBA_VERIFY_PEER_SSL_CERTIFICATE */
-
-  //
-  // Some servers don't like requests that are made without a user-agent field,
-  // so we provide one.
-  //
-  curl_easy_setopt( curl, CURLOPT_USERAGENT, "libcurl-agent/1.0" );
-
-  CURLcode const curl_code = curl_easy_perform( curl );
-  if ( curl_code ) {
-    //
-    // Workaround for a problem in cURL: curl_easy_cleanup() fails if
-    // curl_easy_perform() returned an error.
-    //
-    curl_easy_reset( curl );
-  }
-  curl_easy_cleanup( curl );
+  CURL *const curl_ptr = curl::create( uri, fetch_curl_write_fn, &result );
+  CURLcode const curl_code = curl_easy_perform( curl_ptr );
+  curl::destroy( curl_ptr );
   if ( curl_code )
-    throw exception(
-      "curl_easy_perform()", uri, curl_easy_strerror( curl_code )
-    );
+    throw exception( "curl_easy_perform()", uri, curl_code );
 #else
   throw ZORBA_EXCEPTION(
     zerr::ZXQP0005_NOT_SUPPORTED, ERROR_PARAMS( "HTTP GET" )
