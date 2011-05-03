@@ -101,6 +101,15 @@ public:
   void open( char const *uri );
 
   /**
+   * Tests whether the buffer is open.
+   *
+   * @return Returns \c true only if the buffer is open.
+   */
+  bool is_open() const {
+    return !!curl_;
+  }
+
+  /**
    * Closes this %streambuf.
    */
   void close();
@@ -146,6 +155,7 @@ public:
   istream( char const *uri ) : streambuf( uri ), std::istream( this ) { }
 
   using streambuf::open;
+  using streambuf::is_open;
   using streambuf::close;
 };
 
