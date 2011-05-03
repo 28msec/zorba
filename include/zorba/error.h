@@ -22,9 +22,9 @@
 namespace zorba {
 
 class Error;
-namespace serialization{
+namespace serialization {
   class Archiver;
-  void operator&(zorba::serialization::Archiver &ar, const Error *&obj);
+  void operator&( serialization::Archiver&, const Error*& );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -143,9 +143,10 @@ private:
   friend class UserException;
   friend UserError make_user_error( char const*, char const*, char const* );
 
-  //for plan serialization
-  UserError(zorba::serialization::Archiver &ar);
-  friend void zorba::serialization::operator&(zorba::serialization::Archiver &ar, const Error *&obj);
+  // for plan serialization
+  UserError( serialization::Archiver& );
+  friend void serialization::operator&( serialization::Archiver&,
+                                        const Error*& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
