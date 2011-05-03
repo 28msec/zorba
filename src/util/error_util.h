@@ -51,10 +51,12 @@ public:
   /**
    * Constructs an %exception.
    *
-   * @param function The name of the operating system function that failed.
-   * @param path The full path of the file or directory involved in the failure.
-   * @param err_string The error string to use instead of the operating system
-   * error string, if any.
+   * @param function The name of the operating system function that failed, if
+   * any.
+   * @param path The full path of the file or directory involved in the
+   * failure, if any.
+   * @param err_string If not \c NULL, the error string to use instead of the
+   * operating system error string; if empty, no error string is used.
    */
   exception( char const *function, char const *path,
              char const *err_string = 0 ) :
