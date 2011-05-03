@@ -129,7 +129,9 @@ void fetch( char const *uri, iostream &result ) {
   struct curl_initializer {
     curl_initializer() {
       if ( CURLcode curl_code = curl_global_init( CURL_GLOBAL_ALL ) )
-        throw fetch_exception( curl_easy_strerror( curl_code ) );
+        throw exception(
+          "curl_global_init()", "", curl_easy_strerror( curl_code )
+        );
     }
     ~curl_initializer() {
       curl_global_cleanup();
@@ -184,7 +186,9 @@ void fetch( char const *uri, iostream &result ) {
   }
   curl_easy_cleanup( curl );
   if ( curl_code )
-    throw fetch_exception( curl_easy_strerror( curl_code ) );
+    throw exception(
+      "curl_easy_perform()", uri, curl_easy_strerror( curl_code )
+    );
 #else
   throw ZORBA_EXCEPTION(
     zerr::ZXQP0005_NOT_SUPPORTED, ERROR_PARAMS( "HTTP GET" )

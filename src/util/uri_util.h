@@ -21,6 +21,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "error_util.h"
 #include "fs_util.h"
 #include "stl_util.h"
 
@@ -190,15 +191,7 @@ void encode( StringType &s, bool encode_slash = true ) {
 
 ////////// Fetching ///////////////////////////////////////////////////////////
 
-/**
- * A %fetch_exception is-a std::runtime_error for reporting errors with
- * fetch().
- */
-class fetch_exception : public std::runtime_error {
-public:
-  explicit fetch_exception( std::string const &what ) :
-    std::runtime_error( what ) { }
-};
+typedef os_error::exception exception;
 
 /**
  * Fetches a resource from the given URI.  Supported URI schemes are: "file",
@@ -206,7 +199,7 @@ public:
  *
  * @param uri The URI specifying the resource.
  * @param result The stream to which to write the resource to.
- * @throws fetch_exception if there was a problem fetching the resource.
+ * @throws uri::exception if there was a problem fetching the resource.
  */
 void fetch( char const *uri, std::iostream &result );
 
@@ -217,7 +210,7 @@ void fetch( char const *uri, std::iostream &result );
  * @tparam URIStringType The URI string type.
  * @param uri The URI specifying the resource.
  * @param result The stream to which to write the resource to.
- * @throws fetch_exception if there was a problem fetching the resource.
+ * @throws uri::exception if there was a problem fetching the resource.
  */
 template<class URIStringType> inline
 void fetch( URIStringType const &uri, std::iostream &result ) {

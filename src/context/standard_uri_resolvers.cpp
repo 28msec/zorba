@@ -128,7 +128,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     try {
       uri::fetch(lURI.toString(), iss);
     }
-    catch ( uri::fetch_exception const &e ) {
+    catch ( uri::exception const &e ) {
       throw XQUERY_EXCEPTION(
         err::FODC0002, ERROR_PARAMS( lURI, e.what() )
       );

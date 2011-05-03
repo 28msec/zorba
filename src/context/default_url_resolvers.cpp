@@ -59,7 +59,7 @@ ZorbaHTTPURLResolver::resolveURL
   if (ascii::begins_with(aUrl, "http://example.com") ||
     ascii::begins_with(aUrl, "http://www.example.com"))
   {
-    throw uri::fetch_exception("illegal host");
+    throw uri::exception("", aUrl.c_str(), "illegal host");
   }
   std::auto_ptr<std::stringstream> lStream(new std::stringstream());
   uri::fetch(aUrl.c_str(), (*lStream.get()));
