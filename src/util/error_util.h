@@ -100,6 +100,15 @@ protected:
  * Formats an error string.
  *
  * @param function The function that failed or \c NULL.
+ * @param err_string The error string.
+ * @return Returns said error string.
+ */
+std::string format_err_string( char const *function, char const *err_string );
+
+/**
+ * Formats an error string.
+ *
+ * @param function The function that failed or \c NULL.
  * @param code The operating system error code.
  * @param err_string The error string.
  * @return Returns said error string.

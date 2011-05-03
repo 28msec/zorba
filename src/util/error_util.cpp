@@ -46,8 +46,8 @@ string exception::make_what( char const *function, char const *path,
   ostringstream oss;
   if ( path && *path )
     oss << '"' << path << "\": ";
-  if ( err_string && *err_string )
-    oss << err_string;
+  if ( err_string )
+    oss << format_err_string( function, err_string );
   else
     oss << get_err_string( function );
   return oss.str();
@@ -55,15 +55,28 @@ string exception::make_what( char const *function, char const *path,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+string format_err_string( char const *function, char const *err_string ) {
+  if ( function && *function ) {
+    using namespace internal::err;
+    parameters::value_type result =
+      err::dict::lookup( ZED( FunctionFailed_12o ) );
+    parameters const params( ERROR_PARAMS( function, err_string ) );
+    params.substitute( &result );
+    return result;
+  } else {
+    return err_string;
+  }
+}
+
 string format_err_string( char const *function, code_type code,
                           char const *err_string ) {
   internal::err::parameters params;
   internal::err::parameters::value_type result;
   if ( function && *function ) {
-    result = err::dict::lookup( ZED( OSWhatFailedError_123 ) );
+    result = err::dict::lookup( ZED( FunctionFailedErrorCodeMessage_123 ) );
     params = ERROR_PARAMS( function, code, err_string );
   } else {
-    result = err::dict::lookup( ZED( OSFailedError_12 ) );
+    result = err::dict::lookup( ZED( ErrorCodeMessage_12 ) );
     params = ERROR_PARAMS( code, err_string );
   }
   params.substitute( &result );
