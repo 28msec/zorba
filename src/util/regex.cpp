@@ -28,14 +28,28 @@
 #include "stl_util.h"
 
 #ifndef ZORBA_NO_UNICODE
-#include <unicode/uversion.h>
-#endif
+# include <unicode/uversion.h>
+#endif /* ZORBA_NO_UNICODE */
 
 using namespace std;
 U_NAMESPACE_USE
 
 #define bs_c "\\p{L}\\d.:\\p{M}-"       /* \c equivalent contents */
 #define bs_i "\\p{L}_:"                 /* \i equivalent contents */
+
+#ifndef U_ICU_VERSION_MAJOR_NUM
+# error "U_ICU_VERSION_MAJOR_NUM not defined"
+#endif /* U_ICU_VERSION_MAJOR_NUM */
+
+#if U_ICU_VERSION_MAJOR_NUM < 4
+//
+// UREGEX_LITERAL is only in ICU since 4.0.  For earlier versions, we define it
+// ourselves.  Of course it won't have any effect since it's not implemented in
+// ICU, but we implement it ourselves anyway since, even though the constant is
+// defined in 4.0, it's not actually implemented as of 4.4.
+//
+# define UREGEX_LITERAL 16
+#endif /* U_ICU_VERSION_MAJOR_NUM */
 
 namespace zorba {
 
@@ -50,11 +64,23 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
       switch ( *f ) {
         case 'i': icu_flags |= UREGEX_CASE_INSENSITIVE; break;
         case 'm': icu_flags |= UREGEX_MULTILINE       ; break;
+        case 'q': icu_flags |= UREGEX_LITERAL         ; break;
         case 's': icu_flags |= UREGEX_DOTALL          ; break;
         case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0001, ERROR_PARAMS( *f ) );
       }
+    }
+    if ( icu_flags & UREGEX_LITERAL ) {
+      //
+      // XQuery 3.0 F&O: 5.6.1.1: If [the 'q' flag] is used together with the
+      // m, s, or x flag, that flag has no effect.
+      //
+      icu_flags &= ~(
+        UREGEX_MULTILINE  | // 'm'
+        UREGEX_DOTALL     | // 's'
+        UREGEX_COMMENTS     // 'x'
+      );
     }
   }
   return icu_flags;
@@ -67,6 +93,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
   icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
   bool const i_flag = (icu_flags & UREGEX_CASE_INSENSITIVE) != 0;
+  bool const q_flag = (icu_flags & UREGEX_LITERAL) != 0;
   bool const x_flag = (icu_flags & UREGEX_COMMENTS) != 0;
 
   icu_re->clear();
@@ -83,7 +110,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     if ( got_backslash ) {
       if ( x_flag && !in_char_class && ascii::is_space( *xq_c ) ) {
         //
-        // XQuery F&O: 7.6.1.1: If [the 'x' flag is] present, whitespace
+        // XQuery 3.0 F&O 5.6.1.1: If [the 'x' flag is] present, whitespace
         // characters ... in the regular expression are removed prior to
         // matching with one exception: whitespace characters within character
         // class expressions ... are not removed.
@@ -111,7 +138,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
             if ( in_char_class ) {
               //
-              // XQuery F&O 7.6.1: Within a character class expression,
+              // XQuery 3.0 F&O 5.6.1: Within a character class expression,
               // \ followed by a digit is invalid.
               //
               throw INVALID_RE_EXCEPTION(
@@ -126,7 +153,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     } else {
       if ( in_backref ) {
         //
-        // XQuery F&O 7.6.1: The construct \N where N is a single digit is
+        // XQuery 3.0 F&O 5.6.1: The construct \N where N is a single digit is
         // always recognized as a back-reference; if this is followed by
         // further digits, these digits are taken to be part of the back-
         // reference if and only if the resulting number NN is such that the
@@ -138,7 +165,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         else
           in_backref = false;
         //
-        // XQuery F&O 7.6.1: The regular expression is invalid if a back-
+        // XQuery 3.0 F&O 5.6.1: The regular expression is invalid if a back-
         // reference refers to a subexpression that does not exist or whose
         // closing right parenthesis occurs after the back-reference.
         //
@@ -156,20 +183,33 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           got_backslash = true;
           continue;
         case '(':
-          cap_sub.push_back( true );
+          if ( q_flag )
+            *icu_re += '\\';
+          else
+            cap_sub.push_back( true );
           break;
         case ')':
-          if ( cap_sub.empty() )
-            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
-          if ( !cap_sub.back() )
-            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
-          cap_sub.back() = false;
+          if ( q_flag )
+            *icu_re += '\\';
+          else {
+            if ( cap_sub.empty() )
+              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
+            if ( !cap_sub.back() )
+              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
+            cap_sub.back() = false;
+          }
           break;
         case '[':
-          in_char_class = true;
+          if ( q_flag )
+            *icu_re += '\\';
+          else
+            in_char_class = true;
           break;
         case ']':
-          in_char_class = false;
+          if ( q_flag )
+            *icu_re += '\\';
+          else
+            in_char_class = false;
           break;
         default:
           if ( x_flag && ascii::is_space( *xq_c ) ) {
@@ -189,8 +229,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
   if ( i_flag ) {
     //
-    // XQuery F&O 7.6.1.1: All other constructs are unaffected by the "i" flag.
-    // For example, "\p{Lu}" continues to match upper-case letters only.
+    // XQuery 3.0 F&O 5.6.1.1: All other constructs are unaffected by the "i"
+    // flag.  For example, "\p{Lu}" continues to match upper-case letters only.
     //
     // However, ICU lower-cases everything for the 'i' flag; hence we have to
     // turn off the 'i' flag for just the \p{Lu}.
@@ -223,7 +263,7 @@ namespace unicode {
 
 void regex::compile( string const &u_pattern, char const *flags,
                      char const *pattern ) {
-  icu_flags_t const icu_flags = convert_xquery_flags( flags );
+  icu_flags_t const icu_flags = convert_xquery_flags( flags ) & ~UREGEX_LITERAL;
   delete matcher_;
   UErrorCode status = U_ZERO_ERROR;
   matcher_ = new RegexMatcher( u_pattern, icu_flags, status );
