@@ -543,6 +543,7 @@ extern entry const dict_en[] = {
   { "~NoEmptySeqAsBaseURI", "can't treat empty sequence as base URI" },
   { "~NoEmptySeqAsCollationParam", "empty-sequence not allowed as collation parameter" },
   { "~NoHashItemOfType_2", "can not hash item of type \"$2\"" },
+  { "~NoInputData", "no input data" },
   { "~NoModuleURIResolver", "no module URI resolver could be retrieved using SerializationCallback" },
   { "~NoMultiKeyNodeValues_2", "node with more than one key value found during probe on index \"$2\"" },
   { "~NoParseFnArity", "could not parse function arity (maybe it's too large)" },
