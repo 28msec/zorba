@@ -104,6 +104,7 @@ ZORBA_DLL_PUBLIC extern char const uri_safe[256] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_REST
 extern "C" {
 
 static size_t fetch_curl_write_fn( void *ptr, size_t size, size_t nmemb,
@@ -118,6 +119,7 @@ static size_t fetch_curl_write_fn( void *ptr, size_t size, size_t nmemb,
 }
 
 } // extern "C"
+#endif /* ZORBA_WITH_REST */
 
 void fetch( char const *uri, iostream &result ) {
 #ifdef ZORBA_WITH_REST

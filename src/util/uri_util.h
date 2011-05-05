@@ -191,7 +191,11 @@ void encode( StringType &s, bool encode_slash = true ) {
 
 ////////// Fetching ///////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_REST
 typedef curl::exception exception;
+#else
+typedef os_error::exception exception;
+#endif /* ZORBA_WITH_REST */
 
 /**
  * Fetches a resource from the given URI.  Supported URI schemes are: "file",
@@ -254,8 +258,10 @@ void fetch( URIStringType const &uri, PathStringType *file,
 
 ////////// streaming //////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_REST
 typedef curl::streambuf streambuf;
 typedef curl::istream istream;
+#endif /* ZORBA_WITH_REST */
 
 ///////////////////////////////////////////////////////////////////////////////
 
