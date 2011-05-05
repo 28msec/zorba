@@ -60,7 +60,6 @@ class StaticContextImpl;
                      that the arg expr will have more than one consumers, and as
                      a result we can bind all those V references to the same
                      arg wrapper.
-  theExitValue     :
 ********************************************************************************/
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
@@ -70,7 +69,6 @@ public:
   uint32_t                       thePlanStateSize;
   bool                           thePlanOpen;
   std::vector<store::Iterator_t> theArgWrappers;
-  store::Iterator_t              theExitValue;
 
   UDFunctionCallIteratorState();
 
@@ -109,14 +107,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc, 
         std::vector<PlanIter_t>& args, 
-        const user_function* aUDF)
-    :
-    NaryBaseIterator<UDFunctionCallIterator,
-                     UDFunctionCallIteratorState>(sctx, loc, args), 
-    theUDF(const_cast<user_function*>(aUDF)),
-    theIsDynamic(false)
-  {
-  }
+        const user_function* aUDF);
 
   ~UDFunctionCallIterator() {}
     

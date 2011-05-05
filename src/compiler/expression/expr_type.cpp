@@ -629,9 +629,9 @@ void expr::compute_return_type(bool deep, bool* modified)
     // bugfix for bug #3042043
     for (size_t i = 0; i < e->theArgs.size(); ++i)
     {
-      if (dynamic_cast<exit_expr*>(e->theArgs[i].getp()) // exit expression
-          || i == e->theArgs.size() - 1) 
-      { // last expression
+      if (//dynamic_cast<exit_expr*>(e->theArgs[i].getp()) || // exit expression
+          i == e->theArgs.size() - 1) 
+      {
         if (!newType.getp()) // first exit expression or last expression
         {
           newType = e->theArgs[i]->get_return_type();
@@ -669,8 +669,38 @@ void expr::compute_return_type(bool deep, bool* modified)
     // TODO: should this be the empty-sequence type ???? Or should we check
     // for an exit operand when computing the type of any other expr and
     // just skip the exit ????
+#if 0
     exit_expr* e = static_cast<exit_expr*>(this);
     newType = e->theExpr->get_return_type();
+    break;
+#else
+    theType = rtm.EMPTY_TYPE;
+    return;
+#endif
+  }
+
+  case exit_catcher_expr_kind:
+  {
+    exit_catcher_expr* e = static_cast<exit_catcher_expr*>(this);
+
+    expr* body = e->theExpr;
+
+    newType = e->theExpr->get_return_type();
+
+    std::vector<expr*> exitExprs;
+    
+    body->get_exprs_of_kind(exit_expr_kind, exitExprs);
+
+    ulong numExitExprs = exitExprs.size();
+    ulong i;
+
+    for (i = 0; i < numExitExprs; ++i)
+    {
+      newType = TypeOps::union_type(*newType.getp(),
+                                    *exitExprs[i]->get_return_type(),
+                                    tm);
+    }
+
     break;
   }
 

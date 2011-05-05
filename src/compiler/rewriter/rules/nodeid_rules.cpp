@@ -163,6 +163,14 @@ expr_t MarkConsumerNodeProps::apply(
     break;
   }
 
+  case exit_catcher_expr_kind :
+  {
+    exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
+    pushdown_ignores_sorted_nodes(node, e->get_expr());
+    pushdown_ignores_duplicate_nodes(node, e->get_expr());
+    break;
+  }
+
   case flwor_expr_kind: 
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(node);
@@ -414,28 +422,33 @@ expr_t MarkConsumerNodeProps::apply(
   case pi_expr_kind :
   case text_expr_kind :
   case doc_expr_kind :
+
   case axis_step_expr_kind :
   case const_expr_kind :
-  case debugger_expr_kind :   // TODO
-  case delete_expr_kind :     // TODO
-  case eval_expr_kind :       // TODO
-  case exit_expr_kind :       // TODO
   case extension_expr_kind :  // TODO
   case flowctl_expr_kind :    // TODO
-#ifndef ZORBA_NO_FULL_TEXT
-    case ft_expr_kind :         // TODO
-#endif
   case gflwor_expr_kind :     // TODO
-  case insert_expr_kind :     // TODO
   case match_expr_kind :
   case name_cast_expr_kind :  // TODO
-  case rename_expr_kind :     // TODO
-  case replace_expr_kind :    // TODO
-  case transform_expr_kind :  // TODO
   case trycatch_expr_kind :   // TODO
   case validate_expr_kind :   // TODO
   case var_expr_kind :
+
+#ifndef ZORBA_NO_FULL_TEXT
+  case ft_expr_kind :         // TODO
+#endif
+
+  case insert_expr_kind :     // TODO
+  case delete_expr_kind :     // TODO
+  case rename_expr_kind :     // TODO
+  case replace_expr_kind :    // TODO
+  case transform_expr_kind :  // TODO
+
   case while_expr_kind :      // TODO
+  case exit_expr_kind :       // TODO
+
+  case eval_expr_kind :       // TODO
+  case debugger_expr_kind :   // TODO
   case dynamic_function_invocation_expr_kind : // TODO
   case function_item_expr_kind : // TODO
   {

@@ -59,9 +59,6 @@ enum expr_kind_t
   extension_expr_kind,
   flwor_expr_kind,
   fo_expr_kind,
-#ifndef ZORBA_NO_FULL_TEXT
-	ft_expr_kind,
-#endif /* ZORBA_NO_FULL_TEXT */
   gflwor_expr_kind,
   if_expr_kind,
   instanceof_expr_kind,
@@ -80,6 +77,10 @@ enum expr_kind_t
   function_item_expr_kind,
   trycatch_expr_kind,
 
+#ifndef ZORBA_NO_FULL_TEXT
+	ft_expr_kind,
+#endif /* ZORBA_NO_FULL_TEXT */
+
   delete_expr_kind,
   insert_expr_kind,
   rename_expr_kind,
@@ -90,6 +91,7 @@ enum expr_kind_t
   var_decl_expr_kind,
   apply_expr_kind,
   exit_expr_kind,
+  exit_catcher_expr_kind,
   flowctl_expr_kind,
   while_expr_kind,
 
@@ -283,6 +285,8 @@ public:
   bool contains_expr(const expr* e) const;
 
   bool contains_node_construction() const;
+
+  void get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const;
 
   bool is_map(expr* e, static_context* sctx) const;
 

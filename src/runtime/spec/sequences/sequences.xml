@@ -44,7 +44,7 @@
     op:concatenate
   </zorba:description>
 
-  <zorba:function annIsUpdating="true">
+  <zorba:function>
 
     <zorba:signature localname="concatenate" prefix="op">
       <zorba:param>item()*</zorba:param>
@@ -65,12 +65,6 @@
                   brief="iterator pointing to the child that is currently being processed"/>
     <zorba:member type="std::vector&lt;PlanIter_t&gt;::const_iterator" name="theEndIter" brief=""/>
   </zorba:state>
-
-  <zorba:constructor>
-      <zorba:parameter type="bool" name="aIsUpdating" />
-  </zorba:constructor>
-
-  <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
 
 </zorba:iterator>
 

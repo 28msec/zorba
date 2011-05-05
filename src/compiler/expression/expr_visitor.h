@@ -83,6 +83,7 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(var_decl_expr);
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(apply_expr);
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(exit_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(exit_catcher_expr);
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(while_expr);
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(flowctl_expr);
 

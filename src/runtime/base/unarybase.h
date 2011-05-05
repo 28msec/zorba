@@ -49,7 +49,10 @@ public:
   }
 
 public:
-  UnaryBaseIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t& child)
+  UnaryBaseIterator(
+      static_context* sctx,
+      const QueryLoc& loc, 
+      const PlanIter_t& child)
     :
     Batcher<IterType>(sctx, loc),
     theChild(child)

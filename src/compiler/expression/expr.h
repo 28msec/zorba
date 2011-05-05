@@ -280,9 +280,9 @@ class treat_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  const Error  *theError;
-  bool          theCheckPrime;
-  store::Item_t theFnQName;
+  const Error  * theError;
+  bool           theCheckPrime;
+  store::Item_t  theFnQName;
 
 public:
   SERIALIZABLE_CLASS(treat_expr)

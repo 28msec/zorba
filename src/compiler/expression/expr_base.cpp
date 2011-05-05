@@ -18,6 +18,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_visitor.h"
@@ -644,6 +645,30 @@ bool expr::contains_node_construction() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void expr::get_exprs_of_kind(expr_kind_t kind, std::vector<expr*>& exprs) const
+{
+  if (kind == get_expr_kind())
+  {
+    exprs.push_back(const_cast<expr*>(this));
+  }
+
+  ExprConstIterator iter(this);
+  while(!iter.done())
+  {
+    const expr* ce = iter.get_expr();
+    if (ce)
+    {
+      ce->get_exprs_of_kind(kind, exprs);
+    }
+
+    iter.next();
+  }
+}
+
+
+/*******************************************************************************
   If "this" is a var_expr or a wrapper_expr over a var_expr, return the var_expr;
   otherwise return NULL.
 ********************************************************************************/
@@ -701,16 +726,17 @@ bool expr::is_map(expr* e, static_context* sctx) const
 
 bool expr::is_map_internal(const expr* e, bool& found) const
 {
-  if (found) {
+  if (found)
     return true;
-  }
 
-  if (this == e) {
+  if (this == e) 
+  {
     found = true;
     return true;
   }
 
-  switch(get_expr_kind()) {
+  switch(get_expr_kind()) 
+  {
 #ifdef ZORBA_WITH_DEBUGGER
   case debugger_expr_kind:
   {
@@ -971,6 +997,12 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case flowctl_expr_kind:
   case while_expr_kind:
     return false; // TODO
+
+  case exit_catcher_expr_kind:
+  {
+    const exit_catcher_expr* catcherExpr = static_cast<const exit_catcher_expr*>(this);
+    return catcherExpr->get_expr()->is_map_internal(e, found);
+  }
 
   case insert_expr_kind:
   case delete_expr_kind:

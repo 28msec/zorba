@@ -442,7 +442,6 @@ private:
   OrderByClause           * theOrderByClause;
   MaterializeClause       * theMaterializeClause;
   PlanIter_t                theReturnClause; 
-  bool                      theIsUpdating;
          
 public:
   SERIALIZABLE_CLASS(FLWORIterator);
@@ -458,12 +457,9 @@ public:
       GroupByClause*              aGroupByClause,
       OrderByClause*              orderByClause,
       MaterializeClause*          materializeClause,
-      PlanIter_t&                 returnClause,
-      bool                        aIsUpdating);
+      PlanIter_t&                 returnClause);
     
   ~FLWORIterator();
-
-  bool isUpdating() const { return theIsUpdating; }
 
   void openImpl(PlanState& planState, uint32_t& offset);
   bool nextImpl(store::Item_t& result, PlanState& planState) const;

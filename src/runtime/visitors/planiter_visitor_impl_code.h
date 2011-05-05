@@ -349,3 +349,9 @@ PLAN_ITER_VISITOR (AndIterator);
   PLAN_ITER_VISITOR(EvalIterator);
 
   PLAN_ITER_VISITOR(MaterializeIterator);
+
+PLAN_ITER_VISITOR(SequentialIterator);
+PLAN_ITER_VISITOR(LoopIterator);
+PLAN_ITER_VISITOR(ExitIterator);
+PLAN_ITER_VISITOR(ExitCatcherIterator);
+PLAN_ITER_VISITOR(FlowCtlIterator);

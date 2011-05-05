@@ -299,6 +299,37 @@ public:
 
 
 /*******************************************************************************
+  A "helper" expr to catch the ExitExpr thrown by an exit_expr.
+********************************************************************************/
+class exit_catcher_expr : public expr 
+{
+  friend class ExprIterator;
+  friend class expr;
+
+private:
+  expr_t theExpr;
+
+public:
+  SERIALIZABLE_CLASS(exit_catcher_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_catcher_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  exit_catcher_expr(static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
+
+  expr* get_expr() const { return theExpr.getp(); }
+
+  void compute_scripting_kind();
+
+  expr_t clone(substitution_t& s) const;
+
+  void accept(expr_visitor&);
+
+	std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 class flowctl_expr : public expr 

@@ -209,6 +209,12 @@ public:
 /*******************************************************************************
   Iterator which checks if a sequence is an instance of the target type. If not,
   an error is thrown.
+
+  theTreatType  :
+  theQuantifier :
+  theErrorCode  :
+  theFnQName    : Stores the QName of the function, if the treat iterator is 
+                  used to check the result type a function.
 ********************************************************************************/
 class TreatIterator : public UnaryBaseIterator<TreatIterator,
                                                PlanIteratorState> 
@@ -216,13 +222,11 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator,
   friend class PrinterVisitor;
 
 private:
-  xqtref_t theTreatType;
+  xqtref_t                    theTreatType;
   TypeConstants::quantifier_t theQuantifier;
-  bool check_prime;
-  const Error                *theErrorCode;
-  store::Item_t								theFnQName;      // Stores the QName of the function, if the promote expr
-                                               // is used to cast the function's body to its result type
-
+  bool                        check_prime;
+  const Error               * theErrorCode;
+  store::Item_t								theFnQName;
 
 public:
   SERIALIZABLE_CLASS(TreatIterator);

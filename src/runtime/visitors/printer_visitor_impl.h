@@ -301,3 +301,9 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(EvalIterator);
 
   DECLARE_VISITOR(MaterializeIterator);
+
+  DECLARE_VISITOR(SequentialIterator);
+  DECLARE_VISITOR(ExitIterator);
+  DECLARE_VISITOR(ExitCatcherIterator);
+  DECLARE_VISITOR(LoopIterator);
+  DECLARE_VISITOR(FlowCtlIterator);

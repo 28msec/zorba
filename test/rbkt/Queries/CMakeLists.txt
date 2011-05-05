@@ -309,7 +309,6 @@ IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
   EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3284888)
-#  EXPECTED_FAILURE(test/rbkt/zorba/block/local_var3 3288799)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
@@ -326,8 +325,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3281365)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
-IF(NOT WIN32)
-  # these test have been removed on Windows because they crash
-  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval8 3292817)
-  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_mod1 3292817)
-ENDIF(NOT WIN32)

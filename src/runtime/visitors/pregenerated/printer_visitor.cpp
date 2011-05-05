@@ -54,7 +54,6 @@
 #include "runtime/qnames/qnames.h"
 #include "runtime/random/random.h"
 #include "runtime/schema/schema.h"
-#include "runtime/scripting/scripting.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
 #include "runtime/strings/strings.h"
@@ -2358,48 +2357,6 @@ void PrinterVisitor::endVisit ( const ZorbaIsValidatedIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaIsValidatedIterator>
-
-
-// <SequentialIterator>
-void PrinterVisitor::beginVisit ( const SequentialIterator& a) {
-  thePrinter.startBeginVisit("SequentialIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SequentialIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SequentialIterator>
-
-
-// <LoopIterator>
-void PrinterVisitor::beginVisit ( const LoopIterator& a) {
-  thePrinter.startBeginVisit("LoopIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const LoopIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </LoopIterator>
-
-
-// <FlowCtlIterator>
-void PrinterVisitor::beginVisit ( const FlowCtlIterator& a) {
-  thePrinter.startBeginVisit("FlowCtlIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FlowCtlIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FlowCtlIterator>
 
 
 // <FnConcatIterator>

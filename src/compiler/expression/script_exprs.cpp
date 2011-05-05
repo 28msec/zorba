@@ -40,18 +40,22 @@ END_SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
 SERIALIZABLE_CLASS_VERSIONS(exit_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(exit_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(exit_catcher_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(exit_catcher_expr)
+
 SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(while_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(while_expr)
 
-DEF_EXPR_ACCEPT (block_expr)
-DEF_EXPR_ACCEPT (apply_expr)
-DEF_EXPR_ACCEPT (var_decl_expr)
-DEF_EXPR_ACCEPT (exit_expr)
-DEF_EXPR_ACCEPT (flowctl_expr)
-DEF_EXPR_ACCEPT (while_expr)
+DEF_EXPR_ACCEPT(block_expr)
+DEF_EXPR_ACCEPT(apply_expr)
+DEF_EXPR_ACCEPT(var_decl_expr)
+DEF_EXPR_ACCEPT(exit_expr)
+DEF_EXPR_ACCEPT(exit_catcher_expr)
+DEF_EXPR_ACCEPT(flowctl_expr)
+DEF_EXPR_ACCEPT(while_expr)
 
 
 /*******************************************************************************
@@ -329,6 +333,43 @@ expr_t exit_expr::clone(substitution_t& subst) const
 {
   return new exit_expr(theSctx, get_loc(), get_value()->clone(subst));
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+exit_catcher_expr::exit_catcher_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& inExpr)
+  :
+  expr(sctx, loc, exit_catcher_expr_kind),
+  theExpr(inExpr)
+{
+  compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+void exit_catcher_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theExpr;
+}
+
+
+void exit_catcher_expr::compute_scripting_kind()
+{
+  theScriptingKind = theExpr->get_scripting_detail();
+}
+
+
+expr_t exit_catcher_expr::clone(substitution_t& subst) const
+{
+  return new exit_catcher_expr(theSctx, get_loc(), get_expr()->clone(subst));
+}
+
 
 
 /*******************************************************************************

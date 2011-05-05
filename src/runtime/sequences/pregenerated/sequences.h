@@ -58,8 +58,6 @@ public:
 
 class FnConcatIterator : public NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>
 { 
-protected:
-  bool theIsUpdating; //
 public:
   SERIALIZABLE_CLASS(FnConcatIterator);
 
@@ -70,23 +68,17 @@ public:
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>*)this);
-
-    ar & theIsUpdating;
   }
 
   FnConcatIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool aIsUpdating)
+    std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(sctx, loc, children),
-    theIsUpdating(aIsUpdating)
+    NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(sctx, loc, children)
   {}
 
   virtual ~FnConcatIterator();
-
-  bool isUpdating() const { return theIsUpdating; }
 
   void accept(PlanIterVisitor& v) const;
 

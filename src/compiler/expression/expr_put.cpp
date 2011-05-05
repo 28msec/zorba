@@ -810,25 +810,28 @@ ostream& replace_expr::put( ostream& os) const
   END_PUT();
 }
 
-ostream& rename_expr::put( ostream& os) const
+ostream& rename_expr::put(ostream& os) const
 {
-  BEGIN_PUT( rename_expr );
+  BEGIN_PUT(rename_expr);
   theTargetExpr->put(os);
-  PUT_SUB( ",", theNameExpr );
+  PUT_SUB(",", theNameExpr);
   END_PUT();
 }
 
-ostream& copy_clause::put( ostream& os) const
+
+ostream& copy_clause::put(ostream& os) const
 {
-  BEGIN_PUT( copy );
+  BEGIN_PUT(copy);
   theVar->put(os);
   theExpr->put(os);
   END_PUT();
 }
 
-ostream& transform_expr::put( ostream& os) const
+
+ostream& transform_expr::put(ostream& os) const
 {
-  BEGIN_PUT( transform_expr );
+  BEGIN_PUT(transform_expr);
+
   for (vector<rchandle<copy_clause> >::const_iterator it = theCopyClauses.begin();
        it != theCopyClauses.end(); ++it)
   {
@@ -836,29 +839,40 @@ ostream& transform_expr::put( ostream& os) const
     e->put(os);
   }
   theModifyExpr->put(os);
-  PUT_SUB( ",", theReturnExpr );
+  PUT_SUB(",", theReturnExpr);
   END_PUT();
 }
 
-ostream& exit_expr::put( ostream& os) const
+
+ostream& exit_expr::put(ostream& os) const
 {
-  BEGIN_PUT( exit_expr );
+  BEGIN_PUT(exit_expr);
   theExpr->put(os);
   END_PUT();
 }
 
-ostream& flowctl_expr::put( ostream& os) const
+
+ostream& exit_catcher_expr::put(ostream& os) const
 {
-  BEGIN_PUT( flowctl_expr );
+  BEGIN_PUT(exit_catcher_expr);
+  theExpr->put(os);
   END_PUT();
 }
 
-ostream& while_expr::put( ostream& os) const
+
+ostream& flowctl_expr::put(ostream& os) const
 {
-  BEGIN_PUT( while_expr );
+  BEGIN_PUT(flowctl_expr);
+  END_PUT();
+}
+
+ostream& while_expr::put(ostream& os) const
+{
+  BEGIN_PUT(while_expr);
   theBody->put(os);
   END_PUT();
 }
+
 
 }  // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -110,8 +110,12 @@ private:
 #define ZORBA_ERROR_LOC_DESC(LOCALNAME,LOC,MSG) \
   throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(MSG), ERROR_LOC(LOC) )
 
-#define ZORBA_ERROR_VAR_LOC_DESC(ERROR_VAR,LOC,MSG) \
-  throw XQUERY_EXCEPTION_VAR( ERROR_VAR, ERROR_PARAMS(MSG), ERROR_LOC(LOC) )
+#define ZORBA_ERROR_VAR_LOC_OSS(ERROR_VAR,LOC,MSG)                      \
+  do {                                                                  \
+    std::ostringstream oss;                                             \
+    oss << MSG;                                                         \
+    throw XQUERY_EXCEPTION_VAR(ERROR_VAR, ERROR_PARAMS(oss.str()), ERROR_LOC(LOC)); \
+  } while (0)
 
 #define ZORBA_ERROR_LOC_DESC_OSS(LOCALNAME,LOC,MSG) \
   do { \

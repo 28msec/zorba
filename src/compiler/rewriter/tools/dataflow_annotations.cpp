@@ -74,12 +74,32 @@ void DataflowAnnotationsComputer::compute(expr* e)
     }
     else
     {
+      default_walk(e);
       PROPOGATE_SORTED_NODES(exp->get_expr(), exp);
       PROPOGATE_DISTINCT_NODES(exp->get_expr(), exp);
     }
 
     break;
   }
+
+  case exit_catcher_expr_kind: 
+  {
+    default_walk(e);
+    generic_compute(e);
+    break;
+  }
+
+  case exit_expr_kind:
+  {
+    default_walk(e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
+    break;
+  }
+
+  case flowctl_expr_kind:       // TODO
+  case while_expr_kind:         // TODO
+    break;
 
   case wrapper_expr_kind:
     compute_wrapper_expr(static_cast<wrapper_expr *>(e));
@@ -198,9 +218,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
   case ft_expr_kind:            // TODO
 #endif
   case eval_expr_kind:          // TODO
-  case exit_expr_kind:          // TODO
-  case flowctl_expr_kind:       // TODO
-  case while_expr_kind:         // TODO
   case debugger_expr_kind:      // TODO
     break;
     

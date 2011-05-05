@@ -23,7 +23,7 @@ namespace zorba
 void print_iter_plan(IterPrinter& aPrinter, PlanIterator* aIter)
 {
   PrinterVisitor v(aPrinter, aIter);
-  v.print ();
+  v.print();
 }
 
 

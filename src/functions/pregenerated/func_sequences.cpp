@@ -40,7 +40,7 @@ PlanIter_t op_concatenate::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnConcatIterator(sctx, loc, argv, ann.is_updating() );
+  return new FnConcatIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_index_of::codegen(

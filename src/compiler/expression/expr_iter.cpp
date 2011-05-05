@@ -622,6 +622,18 @@ void ExprIterator::next()
     break;
   }
 
+  case exit_catcher_expr_kind:
+  {
+    exit_catcher_expr* catcherExpr = static_cast<exit_catcher_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(catcherExpr->theExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
 #ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
   {

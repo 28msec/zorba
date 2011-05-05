@@ -354,22 +354,21 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         theQuantifier == TypeConstants::QUANT_ONE)
     {
       zstring const type = thePromoteType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
-      if ( theFnQName.getp() )
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS(
-            ZED( EmptySeqNotAsFunctionResult_23 ),
-            theFnQName->getStringValue(),
-            type
-          ),
-          ERROR_LOC( loc )
-        );
+
+      if (theFnQName.getp())
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0004,
+                               ERROR_PARAMS(ZED(EmptySeqNotAsFunctionResult_23),
+                                            theFnQName->getStringValue(),
+                                            type),
+                               ERROR_LOC(loc));
+      }
       else
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( EmptySeqNoPromoteTo ), type ),
-          ERROR_LOC( loc )
-        );
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0004,
+                               ERROR_PARAMS(ZED(EmptySeqNoPromoteTo), type),
+                               ERROR_LOC(loc));
+      }
     }
   }
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
@@ -378,24 +377,23 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if(consumeNext(temp, theChild.getp(), planState))
     {
       if ( theFnQName.getp() )
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS(
-            ZED( NoSeqTypePromotion_23 ),
-            BUILD_STRING(
-              thePromoteType->toSchemaString(),
-              (theQuantifier == TypeConstants::QUANT_QUESTION ? "?" : "")
-            ),
-            theFnQName->getStringValue()
-          ),
-          ERROR_LOC( loc )
-        );
+      {
+        std::string tmp = BUILD_STRING(thePromoteType->toSchemaString(),
+                                       (theQuantifier == TypeConstants::QUANT_QUESTION ?
+                                        "?" : ""));
+
+        throw XQUERY_EXCEPTION(err::XPTY0004,
+                               ERROR_PARAMS(ZED(NoSeqTypePromotion_23),
+                                            tmp,
+                                            theFnQName->getStringValue()),
+                               ERROR_LOC(loc));
+      }
       else
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqTypePromotion ) ),
-          ERROR_LOC( loc )
-        );
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0004,
+                               ERROR_PARAMS(ZED(NoSeqTypePromotion)),
+                               ERROR_LOC(loc));
+      }
     }
 
     // catch exceptions to add/change the error location
@@ -403,27 +401,25 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
+        xqtref_t valueType = tm->create_value_type(lItem);
+
         if ( theFnQName.getp() )
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS(
-              ZED( NoTypePromotion_234 ),
-              tm->create_value_type(lItem)->toSchemaString(),
-              thePromoteType->toSchemaString(),
-              theFnQName->getStringValue()
-            ),
-            ERROR_LOC( loc )
-          );
+        {
+          throw XQUERY_EXCEPTION(err::XPTY0004,
+                                 ERROR_PARAMS(ZED(NoTypePromotion_234),
+                                              valueType->toSchemaString(),
+                                              thePromoteType->toSchemaString(),
+                                              theFnQName->getStringValue()),
+                                 ERROR_LOC(loc));
+        }
         else
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS(
-              ZED( NoTypePromotion_23 ),
-              tm->create_value_type(lItem)->toSchemaString(),
-              thePromoteType->toSchemaString()
-            ),
-            ERROR_LOC( loc )
-          );
+        {
+          throw XQUERY_EXCEPTION(err::XPTY0004,
+                                 ERROR_PARAMS(ZED(NoTypePromotion_23),
+                                              valueType->toSchemaString(),
+                                              thePromoteType->toSchemaString()),
+                                 ERROR_LOC(loc));
+        }
       }
     }
     catch(XQueryException &e)
@@ -441,6 +437,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
         if ( theFnQName.getp() )
+        {
           throw XQUERY_EXCEPTION(
             err::XPTY0004,
             ERROR_PARAMS(
@@ -449,9 +446,10 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
               thePromoteType->toSchemaString(),
               theFnQName->getStringValue()
             ),
-            ERROR_LOC( loc )
-          );
+            ERROR_LOC(loc));
+        }
         else
+        {
           throw XQUERY_EXCEPTION(
             err::XPTY0004,
             ERROR_PARAMS(
@@ -459,8 +457,8 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
               tm->create_value_type(lItem)->toSchemaString(),
               thePromoteType->toSchemaString()
             ),
-            ERROR_LOC( loc )
-          );
+            ERROR_LOC(loc));
+        }
       }
       else
       {
@@ -511,15 +509,25 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE)
+    if (theQuantifier == TypeConstants::QUANT_PLUS || 
+        theQuantifier == TypeConstants::QUANT_ONE)
     {
-      zstring type = theTreatType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
-      ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc, 
-        (theFnQName.getp() != NULL)?
-                  "An empty sequence is not allowed as the result of the function " 
-                  + theFnQName->getStringValue() + "() which returns " + type + "."
-              :   
-                  "Cannot treat empty sequence as " + type + ".");
+      zstring type = theTreatType->toSchemaString() + 
+                     (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
+
+      if (theFnQName.getp() != NULL)
+      {
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+                                "An empty sequence is not allowed as the result "
+                                << "of the function " 
+                                << theFnQName->getStringValue() 
+                                << "() which returns " << type << ".");
+      }
+      else
+      {
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+                                "Cannot treat empty sequence as " << type << ".");
+      }
     }
   }
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
@@ -527,35 +535,44 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (consumeNext(temp, theChild.getp(), planState))
     {
-      zstring type = theTreatType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "?" : "");
-      ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc, 
-          (theFnQName.getp() != NULL)?
-                "A sequence with more than one item cannot be the result of the function " 
-                + theFnQName->getStringValue() + "() which returns " + type + "."
-            :   
-                "Cannot treat sequence with more than one item as " + type + ".");
+      zstring type = theTreatType->toSchemaString() + 
+                     (theQuantifier == TypeConstants::QUANT_PLUS? "?" : "");
+
+      if (theFnQName.getp() != NULL)
+      {
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+                                "A sequence with more than one item cannot be "
+                                << "the result of the function " 
+                                << theFnQName->getStringValue() 
+                                << "() which returns " << type << ".");
+      }
+      else
+      {
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+                                "Cannot treat sequence with more than one item as "
+                                << type << ".");
+      }
     }
 
     if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
     {
-      zstring msg = (theFnQName.getp() != NULL)?
-              "Cannot treat " + tm->create_value_type(result)->toSchemaString() 
-              + " as " + theTreatType->toSchemaString() + " when returning the result of the function "
-              + theFnQName->getStringValue() + "()."
-          :
-              "Cannot treat " + tm->create_value_type(result)->toSchemaString() 
-              + " as " + theTreatType->toSchemaString() + ".";
+      xqtref_t valueType = tm->create_value_type(result);
 
-      xqtref_t subtype = tm->create_value_type(result);
-      if (subtype->type_kind() == XQType::ATOMIC_TYPE_KIND &&
-        theTreatType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
-        static_cast<const AtomicXQType*>(subtype.getp())->get_type_code() == TypeConstants::XS_STRING &&
-        static_cast<const AtomicXQType*>(theTreatType.getp())->get_type_code() == TypeConstants::XS_QNAME)
+      if (theFnQName.getp() != NULL)
       {
-        msg += " Treating as xs:QName is permitted only if the xs:string is written as a string literal.";
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
+                                "Cannot treat " << valueType->toSchemaString() 
+                                << " as " << theTreatType->toSchemaString()
+                                << " when returning the result of the function "
+                                << theFnQName->getStringValue() << "().");
       }
-
-      ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc, msg);
+      else
+      {
+        ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc, 
+                                "Cannot treat " << valueType->toSchemaString() 
+                                << " as " << theTreatType->toSchemaString()
+                                << ".");
+      }
     }
     else
     {
@@ -568,14 +585,22 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
       {
-        ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc,
-          (theFnQName.getp() != NULL)?
-              "Cannot treat " + tm->create_value_type(result)->toSchemaString() 
-              + " as " + theTreatType->toSchemaString() + " when returning the result of the function "
-              + theFnQName->getStringValue() + "()."
-          :
-              "Cannot treat " + tm->create_value_type(result)->toSchemaString() 
-              + " as " + theTreatType->toSchemaString());
+        xqtref_t valueType = tm->create_value_type(result);
+
+        if (theFnQName.getp() != NULL)
+        {
+          ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
+                                  "Cannot treat " + valueType->toSchemaString() 
+                                  << " as " << theTreatType->toSchemaString()
+                                  << " when returning the result of the function "
+                                  << theFnQName->getStringValue() << "().");
+        }
+        else
+        {
+          ZORBA_ERROR_VAR_LOC_OSS(*theErrorCode, loc,
+                                  "Cannot treat " << valueType->toSchemaString() 
+                                  << " as " << theTreatType->toSchemaString());
+        }
       }
       else
       {

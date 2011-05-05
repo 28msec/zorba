@@ -54,6 +54,7 @@
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"
 #include "runtime/misc/materialize.h"
+#include "runtime/scripting/scripting.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -1376,4 +1377,10 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
   PRINTER_VISITOR_DEFINITION(EvalIterator);
 
   PRINTER_VISITOR_DEFINITION(MaterializeIterator);
+
+  PRINTER_VISITOR_DEFINITION(SequentialIterator);
+  PRINTER_VISITOR_DEFINITION(ExitIterator);
+  PRINTER_VISITOR_DEFINITION(ExitCatcherIterator);
+  PRINTER_VISITOR_DEFINITION(LoopIterator);
+  PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
 }

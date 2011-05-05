@@ -856,8 +856,7 @@ FLWORIterator::FLWORIterator(
     GroupByClause* aGroupByClauses,
     OrderByClause* orderByClause,
     MaterializeClause* materializeClause,
-    PlanIter_t& aReturnClause,
-    bool aIsUpdating)
+    PlanIter_t& aReturnClause)
   :
   Batcher<FLWORIterator>(sctx, loc),
   theForLetClauses(aForLetClauses),
@@ -866,8 +865,7 @@ FLWORIterator::FLWORIterator(
   theGroupByClause(aGroupByClauses),
   theOrderByClause(orderByClause),
   theMaterializeClause(materializeClause),
-  theReturnClause(aReturnClause),
-  theIsUpdating(aIsUpdating)
+  theReturnClause(aReturnClause)
 {
   if (theOrderByClause != 0 && theOrderByClause->theOrderSpecs.size() == 0)
   {
@@ -919,7 +917,6 @@ void FLWORIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theOrderByClause;  //can be null
   ar & theMaterializeClause;  //can be null
   ar & theReturnClause; 
-  ar & theIsUpdating;
 }
 
 

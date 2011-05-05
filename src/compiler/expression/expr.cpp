@@ -1452,7 +1452,7 @@ expr_t eval_expr::clone(substitution_t& s) const
     new_eval->add_var(cloneVar, theArgs[i]->clone(s));
   }
 
-  return new_eval.release();
+  return new_eval.getp();
 }
 
 

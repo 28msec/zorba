@@ -111,17 +111,18 @@ class AndIterator;
   class CtxVarAssignIterator;
   class CtxVarIsSetIterator;
 
-  class EvalIterator;
   class FnDateTimeConstructorIterator;
   class FnAdjustToTimeZoneIterator_1;
   class FnAdjustToTimeZoneIterator_2;
   class FnFormatDateTimeIterator;
+
   class InsertIterator;
   class DeleteIterator;
   class ReplaceIterator;
   class RenameIterator;
   class TransformIterator;
   class ApplyIterator;
+
   class FTContainsIterator;
 
   class ZorbaSchemaTypeIterator;
@@ -170,6 +171,11 @@ class EvalIterator;
 
 class MaterializeIterator;
 
+class SequentialIterator;
+class ExitIterator;
+class ExitCatcherIterator;
+class LoopIterator;
+class FlowCtlIterator;
 
 #define PLAN_ITER_VISITOR(class)                \
 virtual void beginVisit ( const class& ) = 0;  \

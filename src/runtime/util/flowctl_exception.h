@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef FLOWCTL_EXCEPTION
-#define FLOWCTL_EXCEPTION 
+#ifndef RUNTIME_FLOWCTL_EXCEPTION
+#define RUNTIME_FLOWCTL_EXCEPTION 
 
 #include "common/common.h"
 #include "store/api/iterator.h"
@@ -55,7 +55,14 @@ public:
   virtual ~ExitException();
 };
 
+
 } // namespace zorba
 
 #endif /* FLOWCTL_EXCEPTION */
 /* vim:set et sw=2 ts=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

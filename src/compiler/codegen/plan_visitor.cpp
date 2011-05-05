@@ -62,7 +62,6 @@
 #include "runtime/core/constructors.h"
 #include "runtime/core/apply_updates.h"
 #include "runtime/core/path_iterators.h"
-//#include "runtime/core/path.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
@@ -1732,8 +1731,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                        groupClause.release(),
                                        orderClause.release(),
                                        materializeClause.release(),
-                                       returnIter,
-                                       flworExpr.is_updating());
+                                       returnIter);
   push_itstack(flworIter);
 }
 
@@ -2081,10 +2079,22 @@ bool begin_visit(exit_expr& v)
 void end_visit(exit_expr& v) 
 {
   CODEGEN_TRACE_OUT("");
-  checked_vector<PlanIter_t> argv;
-  argv.push_back (pop_itstack ());
-  push_itstack (new FlowCtlIterator (sctx, qloc, argv, FlowCtlException::EXIT));
+  push_itstack(new ExitIterator(sctx, qloc, pop_itstack()));
 }
+
+
+bool begin_visit(exit_catcher_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(exit_catcher_expr& v) 
+{
+  CODEGEN_TRACE_OUT("");
+  push_itstack(new ExitCatcherIterator(sctx, qloc, pop_itstack()));
+}
+
 
 bool begin_visit(flowctl_expr& v) 
 {
@@ -2096,7 +2106,7 @@ void end_visit(flowctl_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   enum FlowCtlException::action a;
-  switch (v.get_action ()) 
+  switch (v.get_action()) 
   {
   case flowctl_expr::BREAK:
     a = FlowCtlException::BREAK;
@@ -2107,9 +2117,10 @@ void end_visit(flowctl_expr& v)
   default:
     ZORBA_FATAL(false, "");
   }
-  checked_vector<PlanIter_t> argv;
-  push_itstack (new FlowCtlIterator (sctx, qloc, argv, a));
+
+  push_itstack(new FlowCtlIterator(sctx, qloc, a));
 }
+
 
 bool begin_visit(while_expr& v) 
 {
@@ -2120,9 +2131,7 @@ bool begin_visit(while_expr& v)
 void end_visit(while_expr& v) 
 {
   CODEGEN_TRACE_OUT("");
-  checked_vector<PlanIter_t> argv;
-  argv.push_back (pop_itstack ());
-  push_itstack(new LoopIterator (sctx, qloc, argv));
+  push_itstack(new LoopIterator (sctx, qloc, pop_itstack()));
 }
 
 
@@ -2184,18 +2193,53 @@ void end_visit(fo_expr& v)
           dynamic_cast<EnclosedIterator*>(iter.getp())->setTextContent();
       }
     }
+#if 0
+    else if (func->isUdf())
+    {
+      const user_function* udf = static_cast<const user_function*>(func);
+
+      if (udf->isExiting())
+      {
+        TypeManager* tm = v.get_type_manager();
+
+        const xqtref_t& udfType = udf->getSignature().returnType();
+
+        expr* body = udf->getBody();
+
+        std::vector<expr*> exitExprs;
+        ulong numExitExprs;
+        ulong i;
+
+        body->get_exprs_of_kind(exit_expr_kind, exitExprs);
+
+        for (i = 0; i < numExitExprs; ++i)
+        {
+          if (!TypeOps::is_subtype(tm,
+                                   *exitExprs[i]->get_return_type(),
+                                   *udfType,
+                                   loc))
+            break;
+        }
+
+        if (i < numExitExprs)
+        {
+          UDFunctionCallIterator* udfIter = 
+          dynamic_cast<UDFunctionCallIterator*>(iter.getp());
+
+          ZORBA_ASSERT(udfIter != NULL);
+          udfIter->setCheckType();
+        }
+      }
+    }
+#endif
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0017,
-      ERROR_PARAMS(
-        func->getName()->getStringValue(),
-        ZED( FnCallNotMatchSig_3o ),
-        argv.size()
-      ),
-      ERROR_LOC( loc )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0017,
+                           ERROR_PARAMS(func->getName()->getStringValue(),
+                                        ZED(FnCallNotMatchSig_3o),
+                                        argv.size()),
+                           ERROR_LOC(loc));
   }
 }
 
@@ -2579,7 +2623,8 @@ bool begin_visit(axis_step_expr& v)
 }
 
 
-void end_visit(axis_step_expr& v) {
+void end_visit(axis_step_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 
@@ -2612,7 +2657,8 @@ bool begin_visit(match_expr& v)
 
     axisItep->setWildKind(wildKind);
 
-    if (wildKind == match_no_wild) {
+    if (wildKind == match_no_wild) 
+    {
       axisItep->setQName(v.getQName());
     }
     else if (wildKind == match_prefix_wild)
@@ -2633,7 +2679,8 @@ bool begin_visit(match_expr& v)
     axisItep->setNodeKind(v.getNodeKind());
     axisItep->setQName(v.getQName());
     store::Item *typeName = v.getTypeName();
-    if (typeName != NULL) {
+    if (typeName != NULL) 
+    {
       axisItep->setType(sctx->get_typemanager()->create_named_type(typeName));
     }
     axisItep->setNilledAllowed(v.getNilledAllowed());
@@ -2723,8 +2770,8 @@ void end_visit(elem_expr& v)
   if (!theConstructorsStack.empty())
     top_elem_expr = dynamic_cast<elem_expr*>(theConstructorsStack.top());
 
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())
-      ||
+  if (theConstructorsStack.empty() ||
+      is_enclosed_expr(theConstructorsStack.top()) ||
       (top_elem_expr != NULL && top_elem_expr->getQNameExpr()->contains_expr(e)))
   {
     isRoot = true;

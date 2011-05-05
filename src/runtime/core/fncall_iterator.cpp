@@ -134,6 +134,23 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+UDFunctionCallIterator::UDFunctionCallIterator(
+    static_context* sctx,
+    const QueryLoc& loc, 
+    std::vector<PlanIter_t>& args, 
+    const user_function* aUDF)
+  :
+  NaryBaseIterator<UDFunctionCallIterator,
+                   UDFunctionCallIteratorState>(sctx, loc, args), 
+  theUDF(const_cast<user_function*>(aUDF)),
+  theIsDynamic(false)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
@@ -178,11 +195,9 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 
   if (planState.theStackDepth + 1 > 256)
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0019_INTERNAL_ERROR,
-      ERROR_PARAMS( ZED( StackOverflow ) ),
-      ERROR_LOC( loc )
-    );
+    throw XQUERY_EXCEPTION(zerr::ZXQP0019_INTERNAL_ERROR,
+                           ERROR_PARAMS(ZED(StackOverflow)),
+                           ERROR_LOC(loc));
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
@@ -303,45 +318,20 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
     }
 
-    for (;;)
+    while (consumeNext(result, state->thePlan, *state->thePlanState))
     {
-      bool success;
-      try
-      {
-        success = consumeNext(result, state->thePlan, *state->thePlanState);
-      }
-      catch (ExitException &e)
-      {
-        state->theExitValue = e.val;
-        success = false;
-      }
-
-      if (success)
-      {
-        STACK_PUSH(true, state);
-      }
-      else
-      {
-        break;
-      }
-    }
-
-    if (state->theExitValue != NULL)
-    {
-      while (state->theExitValue->next(result))
-        STACK_PUSH(true, state);
+      STACK_PUSH(true, state);
     }
 
     STACK_END(state);
   }
   catch (ZorbaException& err)
   {
-    recordStackTrace(
-        theUDF->getLoc(),
-        loc,
-        theUDF->getName(),
-        (unsigned int)theUDF->getArgVars().size(),
-        err);
+    recordStackTrace(theUDF->getLoc(),
+                     loc,
+                     theUDF->getName(),
+                     (unsigned int)theUDF->getArgVars().size(),
+                     err);
     throw;
   }
 }

@@ -426,6 +426,9 @@ public:
   theHaveUpdatingExitExprs :
   --------------------------
 
+  theHaveSequentialExitExprs :
+  ----------------------------
+
   theAssignedVars :
   -------------------
 
@@ -551,6 +554,8 @@ protected:
 
   bool                                   theHaveUpdatingExitExprs;
 
+  bool                                   theHaveSequentialExitExprs;
+
   std::vector<std::vector<var_expr*> >   theAssignedVars;
 
   int                                    theTempVarCounter;
@@ -623,6 +628,7 @@ TranslatorImpl(
   theScopeDepth(0),
   thePrologGraph(rootSctx),
   theHaveUpdatingExitExprs(false),
+  theHaveSequentialExitExprs(false),
   theTempVarCounter(1),
   theIsInIndexDomain(false),
   hadBSpaceDecl(false),
@@ -3164,6 +3170,7 @@ void* begin_visit(const FunctionDecl& v)
   theCurrentPrologVFDecl = PrologGraphVertex(f);
 
   theHaveUpdatingExitExprs = false;
+  theHaveSequentialExitExprs = false;
 
   return no_state;
 }
@@ -3177,31 +3184,9 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   const zstring& fname = v.get_name()->get_qname();
 
-#if 0
-  // UDFs should not have an annotation about determinism.
-  // TODO is this still true ????
-  if (!v.is_external() && v.get_annotations() != NULL &&
-      (v.get_annotations()->has_deterministic() ||
-       v.get_annotations()->has_nondeterministic()))
-  {
-    if (v.get_annotations()->has_deterministic())
-    {
-      throw XQUERY_EXCEPTION(err::XPST0003,
-                             ERROR_PARAMS(ZED(ExternFnDeterministic)),
-                             ERROR_LOC(loc));
-    }
-    else
-    {
-      throw XQUERY_EXCEPTION(err::XPST0003,
-                             ERROR_PARAMS(ZED(ExternFnNondeterministic)),
-                             ERROR_LOC(loc));
-    }
-  }
-#endif
-
   // TODO: remove this error
   if (v.is_updating() && v.get_return_type() != 0)
-    throw XQUERY_EXCEPTION( err::XUST0028, ERROR_PARAMS( fname ), ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(err::XUST0028, ERROR_PARAMS(fname), ERROR_LOC(loc));
 
   if (v.get_return_type() != NULL)
     pop_tstack();
@@ -3235,7 +3220,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
     else if (v.is_updating())
     {
-      if (body->is_sequential())
+      if (body->is_sequential() || theHaveSequentialExitExprs)
       {
         throw XQUERY_EXCEPTION(err::XSST0003, ERROR_PARAMS(fname), ERROR_LOC(loc));
       }
@@ -3247,7 +3232,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
                                ERROR_LOC(loc));
       }
     }
-    else if (body->is_sequential())
+    else if (body->is_sequential() || theHaveSequentialExitExprs)
     {
       throw XQUERY_EXCEPTION(err::XSST0004, ERROR_PARAMS(fname), ERROR_LOC(loc));
     }
@@ -3279,6 +3264,11 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       body = flwor.getp();
 
       udf->setArgVars(args);
+    }
+
+    if (udf->isExiting())
+    {
+      body = new exit_catcher_expr(theRootSctx, loc, body);
     }
 
     // Wrap the UDF body to the type-related expr that enforce the declared
@@ -11818,6 +11808,10 @@ void end_visit(const ExitExpr& v, void* visit_state)
     {
       childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
     }
+  }
+  else if (childExpr->is_sequential())
+  {
+    theHaveSequentialExitExprs = true;
   }
 
   if (inUDFBody())

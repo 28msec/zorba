@@ -421,7 +421,7 @@ public:
     {
       if(loc != NULL)
       {
-	set_source( e, loc );
+        set_source(e, loc);
         throw;
       }
     }

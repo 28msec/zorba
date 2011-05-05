@@ -578,7 +578,7 @@ PlanIter_t fn_union::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  return new FnConcatIterator(sctx, loc, argv, false);
+  return new FnConcatIterator(sctx, loc, argv);
 }
 
 
