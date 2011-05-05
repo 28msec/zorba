@@ -23,15 +23,17 @@
 #include "ztd.h"
 
 namespace zorba {
-namespace internal{
-template<typename StringType>
-class ZORBA_DLL_PUBLIC VariableQName;
-  }
-namespace serialization{
+
+namespace internal {
+  template<typename StringType>
+  class ZORBA_DLL_PUBLIC VariableQName;
+}
+namespace serialization {
   class Archiver;
   template<typename StringType>
-  void operator&(zorba::serialization::Archiver &ar, zorba::internal::VariableQName<StringType> &obj);
+  void operator&( serialization::Archiver&, internal::VariableQName<StringType>& );
 }
+
 namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,11 +101,12 @@ private:
   StringType prefix_;
   StringType localname_;
 
-  //for plan serialization
+  // for plan serialization
 public:
-  VariableQName(zorba::serialization::Archiver &ar) {}
+  VariableQName( serialization::Archiver& ) { }
 private:
-  friend void zorba::serialization::operator&<>(zorba::serialization::Archiver &ar, VariableQName &obj);
+  friend void serialization::operator&<>( serialization::Archiver&,
+                                          VariableQName& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -127,11 +130,18 @@ public:
   ZorbaErrQName( char const *localname ) : base_type( localname ) { }
 
   /**
-   * Gets the type of error this QName represents.
+   * Gets the category of error this QName represents.
    *
-   * @return Returns said type.
+   * @return Returns said kind.
    */
-  zorba::err::type error_type() const;
+  zorba::err::category error_category() const;
+
+  /**
+   * Gets the kind of error this QName represents.
+   *
+   * @return Returns said kind.
+   */
+  zorba::err::kind error_kind() const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -155,11 +165,18 @@ public:
   XQueryErrQName( char const *localname ) : base_type( localname ) { }
 
   /**
-   * Gets the type of error this QName represents.
+   * Gets the category of error this QName represents.
    *
-   * @return Returns said type.
+   * @return Returns said kind.
    */
-  zorba::err::type error_type() const;
+  zorba::err::category error_category() const;
+
+  /**
+   * Gets the kind of error this QName represents.
+   *
+   * @return Returns said kind.
+   */
+  zorba::err::kind error_kind() const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

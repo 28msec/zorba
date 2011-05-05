@@ -221,15 +221,16 @@ bool operator!=( StringType const &q1, QName const &q2 ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An err::type is the type of error.
+ * An err::category is the category of error.
  */
-enum type {
-  UNKNOWN,                              // must have integer value of 0
+enum category {
+  UNKNOWN_CATEGORY,                     // must have integer value of 0
 
-  XQUERY_DYNAMIC,
+  XQUERY_CORE,
+  XQUERY_FULL_TEXT,
+  XQUERY_SCRIPTING,
   XQUERY_SERIALIZATION,
-  XQUERY_STATIC,
-  XQUERY_TYPE,
+  XQUERY_UPDATE,
   XQUERY_USER_DEFINED,                  // for fn:error()
 
   ZORBA_XQP,                            // Zorba XQuery Processor
@@ -241,14 +242,34 @@ enum type {
 };
 
 /**
- * Emits the given err::type to the given ostream.
+ * Emits the given err::category to the given ostream.
  *
  * @param o The ostream to emit to.
- * @param t The type to emit.
+ * @param c The category to emit.
  * @return Returns \a o.
  */
 ZORBA_DLL_PUBLIC
-std::ostream& operator<<( std::ostream &o, type t );
+std::ostream& operator<<( std::ostream &o, category c );
+
+/**
+ * An err::kind is the kind of error.
+ */
+enum kind {
+  UNKNOWN_KIND,                         // must have integer value of 0
+  XQUERY_DYNAMIC,
+  XQUERY_STATIC,
+  XQUERY_TYPE
+};
+
+/**
+ * Emits the given err::kind to the given ostream.
+ *
+ * @param o The ostream to emit to.
+ * @param k The kind to emit.
+ * @return Returns \a o.
+ */
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream &o, kind k );
 
 ///////////////////////////////////////////////////////////////////////////////
 

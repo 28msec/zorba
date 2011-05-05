@@ -56,6 +56,7 @@ private:
 };
 
 /**
+ * \internal
  * A %SystemError is-an Error for built-in errors.
  *
  * @tparam QNameType The QName type.
@@ -76,7 +77,7 @@ public:
 
   // inherited
   zorba::err::QName const& qname() const { return qname_; }
-  zorba::err::type type() const { return qname_.error_type(); }
+  zorba::err::kind kind() const { return qname_.error_kind(); }
 
 protected:
   // inherited

@@ -28,22 +28,38 @@ namespace internal {
 char const XQueryErrQName::NAMESPACE[] = XQUERY_ERR_NS;
 char const XQueryErrQName::PREFIX[] = "err";
 
-zorba::err::type XQueryErrQName::error_type() const {
+zorba::err::category XQueryErrQName::error_category() const {
   using namespace zorba::err;
 
   char const *const name = localname();
 
-  if ( name[0] == 'S' )
+  if ( ascii::begins_with( name, "FT", 2 ) )
+    return XQUERY_FULL_TEXT;
+  if ( ascii::begins_with( name, "SE", 2 ) )
     return XQUERY_SERIALIZATION;
-  switch ( name[2] ) {
-    case 'D': return XQUERY_DYNAMIC;
-    case 'S': return XQUERY_STATIC;
-    case 'T': return XQUERY_TYPE;
-  }
-  if ( ascii::begins_with( name, "FO", 2 ) )
+  if ( ascii::begins_with( name, "XS", 2 ) )
+    return XQUERY_SCRIPTING;
+  if ( ascii::begins_with( name, "XU", 2 ) )
+    return XQUERY_UPDATE;
+
+  return XQUERY_CORE;
+}
+
+zorba::err::kind XQueryErrQName::error_kind() const {
+  using namespace zorba::err;
+
+  char const *const name = localname();
+
+  if ( ::strncmp( name + 2, "DY", 2 ) == 0 )
+    return XQUERY_DYNAMIC;
+  if ( ::strncmp( name + 2, "ST", 2 ) == 0 )
+    return XQUERY_STATIC;
+  if ( ::strncmp( name + 2, "TY", 2 ) == 0 )
+    return XQUERY_TYPE;
+  if ( ::strncmp( name, "FO", 2 ) == 0 )
     return XQUERY_DYNAMIC;              // all F&O errors are dynamic
 
-  return UNKNOWN;
+  return UNKNOWN_KIND;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,7 +67,7 @@ zorba::err::type XQueryErrQName::error_type() const {
 char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
 char const ZorbaErrQName::PREFIX[] = "zerr";
 
-zorba::err::type ZorbaErrQName::error_type() const {
+zorba::err::category ZorbaErrQName::error_category() const {
   using namespace zorba::err;
 
   char const *const name = localname();
@@ -66,6 +82,10 @@ zorba::err::type ZorbaErrQName::error_type() const {
     case 'X': return ZORBA_XQP;
     default : ZORBA_ASSERT( false );
   }
+}
+
+zorba::err::kind ZorbaErrQName::error_kind() const {
+  return zorba::err::UNKNOWN_KIND;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

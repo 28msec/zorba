@@ -44,11 +44,18 @@ public:
   virtual err::QName const& qname() const = 0;
 
   /**
-   * Gets the type of this error.
+   * Gets the category of this error.
    *
-   * @return Returns said type.
+   * @return Returns said category.
    */
-  virtual err::type type() const = 0;
+  virtual err::category category() const;
+
+  /**
+   * Gets the kind of this error.
+   *
+   * @return Returns said kind.
+   */
+  virtual err::kind kind() const;
 
   /**
    * Gets the error message of this error.
@@ -121,7 +128,7 @@ public:
 
   // inherited
   err::QName const& qname() const;
-  err::type type() const;
+  err::category category() const;
 
 protected:
   // inherited

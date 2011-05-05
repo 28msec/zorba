@@ -69,15 +69,10 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  switch ( error.type() ) {
-    case XQUERY_DYNAMIC:
-      return XQC_DYNAMIC_ERROR;
+  switch ( error.category() ) {
+
     case XQUERY_SERIALIZATION:
       return XQC_SERIALIZATION_ERROR;
-    case XQUERY_STATIC:
-      return XQC_STATIC_ERROR;
-    case XQUERY_TYPE:
-      return XQC_TYPE_ERROR;
 
     case ZORBA_API:
       if ( error == ZAPI0002_XQUERY_COMPILATION_FAILED )
@@ -96,6 +91,13 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
 
     default:                            // suppresses warning
       break;
+  }
+
+  switch ( error.kind() ) {
+    case XQUERY_DYNAMIC: return XQC_DYNAMIC_ERROR;
+    case XQUERY_STATIC : return XQC_STATIC_ERROR;
+    case XQUERY_TYPE   : return XQC_TYPE_ERROR;
+    default            : break;         // suppresses warning
   }
 
   ////////// Zorba errors /////////////////////////////////////////////////////

@@ -42,6 +42,14 @@ void Error::destroy() const {
   delete this;
 }
 
+err::category Error::category() const {
+  return err::UNKNOWN_CATEGORY;
+}
+
+err::kind Error::kind() const {
+  return err::UNKNOWN_KIND;
+}
+
 char const* Error::message() const {
   return err::dict::lookup( qname().localname() );
 }
@@ -70,7 +78,7 @@ err::QName const& UserError::qname() const {
   return qname_;
 }
 
-err::type UserError::type() const {
+err::category UserError::category() const {
   return err::XQUERY_USER_DEFINED;
 }
 

@@ -88,15 +88,17 @@ void ZorbaException::polymorphic_throw() const {
 ostream& ZorbaException::print( ostream &o ) const {
   //
   // We need to create an error phrase (e.g., "static error") and look that up
-  // as a unit rather than looking up the error type word and "error"
+  // as a unit rather than looking up the error kind word and "error"
   // separately because many languages have the word order reversed (e.g.,
-  // "erreur statique" in French).
+  // "static error" becomes "erreur statique" in French).
   //
   ostringstream oss;
   oss << ZED_PREFIX;
   Error const &e = error();
-  if ( err::type const t = e.type() )
-    oss << t << ' ';
+  if ( err::category const c = e.category() )
+    oss << c << ' ';
+  if ( err::kind const k = e.kind() )
+    oss << k << ' ';
   oss << "error";
 
   o << err::dict::lookup( oss.str() ) << " [" << e.qname() << ']';

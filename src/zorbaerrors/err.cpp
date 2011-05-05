@@ -88,17 +88,33 @@ bool operator==( QName const &q1, char const *q2 ) {
   return false;
 }
 
-ostream& operator<<( ostream &o, type t ) {
+ostream& operator<<( ostream &o, kind k ) {
   //
   // It's OK for these to be only in English: they're looked-up in the error
   // dictionary later.
   //
-  switch ( t ) {
+  switch ( k ) {
     case XQUERY_DYNAMIC      : o << "dynamic"               ; break;
-    case XQUERY_SERIALIZATION: o << "serialization"         ; break;
     case XQUERY_STATIC       : o << "static"                ; break;
     case XQUERY_TYPE         : o << "type"                  ; break;
+    default                  : /* suppresses warning */       break;
+  }
+  return o;
+}
+
+ostream& operator<<( ostream &o, category c ) {
+  //
+  // It's OK for these to be only in English: they're looked-up in the error
+  // dictionary later.
+  //
+  switch ( c ) {
+    //   XQUERY_CORE         : /* nothing */
+    case XQUERY_FULL_TEXT    : o << "full-text"             ; break;
+    case XQUERY_SCRIPTING    : o << "scripting"             ; break;
+    case XQUERY_SERIALIZATION: o << "serialization"         ; break;
+    case XQUERY_UPDATE       : o << "update"                ; break;
     case XQUERY_USER_DEFINED : o << "user-defined"          ; break;
+
     case ZORBA_API           : o << "Zorba API"             ; break;
     case ZORBA_DDF           : o << "Zorba data-definition" ; break;
     case ZORBA_OS            : o << "operating system"      ; break;
