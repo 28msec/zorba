@@ -163,7 +163,7 @@ extern entry const dict_en[] = {
   { "XQST0055", "multiple copy-namespaces declarations" },
   { "XQST0057", "empty target namespace" },
   { "XQST0058", "\"$1\": duplicate target namespace" },
-  { "XQST0059", "\"$1\": target namespace not found for schema/module $2" },
+  { "XQST0059", "\"$1\": target namespace not found for schema/module${ 2}" },
   { "XQST0060", "\"$1\": function name has a null namespace URI" },
   { "XQST0065", "multiple ordering mode declaraions" },
   { "XQST0066", "multiple element/type/function namespace declarations" },
