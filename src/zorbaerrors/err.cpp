@@ -68,16 +68,29 @@ bool operator==( QName const &q1, char const *q2 ) {
           if ( ::strncmp( q1_ns, q2_ns, rbrace - q2_ns ) == 0 )
             if ( char const *const q1_local = q1.localname() )
               return ::strcmp( q1_local, rbrace + 1 ) == 0;
-    } else {
+    } else if ( char const *const hash = ::strchr( q2, '#' ) ) {
       //
-      // Assume EQName notation, i.e., "uri:localname".
+      // XQuery 3.0, 2.3.2 Identifying and Reporting Errors:
       //
-      if ( char const *colon = ::strchr( q2, ':' ) )
-        if ( (colon = strchr( colon + 1, ':' )) )
-          if ( char const *const q1_ns = q1.ns() )
-            if ( ::strncmp( q1_ns, q2, colon - q2 ) == 0 )
-              if ( char const *const q1_local = q1.localname() )
-                return ::strcmp( q1_local, colon + 1 ) == 0;
+      //    An error can be represented by a URI reference that is derived from
+      //    the error QName as follows: an error with namespace URI NS and
+      //    local part LP can be represented as the URI reference NS#LP . For
+      //    example, an error whose QName is err:XPST0017 could be represented
+      //    as http://www.w3.org/2005/xqt-errors#XPST0017.
+      //
+      if ( char const *const q1_ns = q1.ns() )
+        if ( ::strncmp( q1_ns, q2, hash - q2 ) == 0 )
+          if ( char const *const q1_local = q1.localname() )
+            return ::strcmp( q1_local, hash + 1 ) == 0;
+    } else if ( char const *colon = ::strchr( q2, ':' ) ) {
+      //
+      // Assume EQName notation, i.e., URILiteral:NCName.
+      //
+      if ( (colon = strchr( colon + 1, ':' )) )
+        if ( char const *const q1_ns = q1.ns() )
+          if ( ::strncmp( q1_ns, q2, colon - q2 ) == 0 )
+            if ( char const *const q1_local = q1.localname() )
+              return ::strcmp( q1_local, colon + 1 ) == 0;
     }
   } else {
     //
