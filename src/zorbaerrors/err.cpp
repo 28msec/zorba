@@ -107,10 +107,10 @@ ostream& operator<<( ostream &o, kind k ) {
   // dictionary later.
   //
   switch ( k ) {
-    case XQUERY_DYNAMIC      : o << "dynamic"               ; break;
-    case XQUERY_STATIC       : o << "static"                ; break;
-    case XQUERY_TYPE         : o << "type"                  ; break;
-    default                  : /* suppresses warning */       break;
+    case XQUERY_DYNAMIC: o << "dynamic"           ; break;
+    case XQUERY_STATIC : o << "static"            ; break;
+    case XQUERY_TYPE   : o << "type"              ; break;
+    default            : /* suppresses warning */   break;
   }
   return o;
 }
