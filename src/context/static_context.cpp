@@ -1330,12 +1330,7 @@ static_context::resolve_uri
   // inappropriate type for EntityType. And, XQST is probaly the wrong
   // exception - right for importing schema or modules, wrong for
   // other things.
-  if (lErrorMessage != "") {
-    throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(aUri, lErrorMessage));
-  }
-  else {
-    throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(aUri));
-  }
+  throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(aUri, lErrorMessage));
 }
 
 void
