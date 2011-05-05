@@ -560,7 +560,7 @@ void SimpleStore::populateValueIndex(
       {
         if (!aSourceIter->next((*key)[i]))
           throw ZORBA_EXCEPTION(
-            zerr::ZXQP0019_INTERNAL_ERROR,
+            zerr::ZXQP0003_INTERNAL_ERROR,
             ERROR_PARAMS( ZED( IncompleteKeyInIndexBuild ) )
           );
       }

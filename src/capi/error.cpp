@@ -101,14 +101,14 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
   ////////// Zorba errors /////////////////////////////////////////////////////
 
   if ( error == ZXQP0001_DYNAMIC_RUNTIME_ERROR
+    || error == ZXQP0002_ASSERT_FAILED
+    || error == ZXQP0003_INTERNAL_ERROR
+    || error == ZXQP0004_NOT_IMPLEMENTED
     || error == ZXQP0005_NOT_SUPPORTED
-    || error == ZXQP0006_ASSERT_FAILED
     || error == ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL
     || error == ZXQP0008_FUNCTION_IMPL_NOT_FOUND
     || error == ZXQP0009_FUNCTION_LOCALNAME_MISMATCH
     || error == ZXQP0013_FXCHARHEAP_EXCEPTION
-    || error == ZXQP0015_NOT_IMPLEMENTED
-    || error == ZXQP0019_INTERNAL_ERROR
     || error == ZXQP0020_INVALID_URI
     || error == ZXQP0021_USER_ERROR
     || error == ZXQP0025_ITEM_CREATION_FAILED
@@ -129,7 +129,8 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     || error == ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY
 #ifndef ZORBA_NO_FULL_TEXT
     || error == ZXQP8401_THESAURUS_VERSION_MISMATCH
-    || error == ZXQP8402_THESAURUS_DATA_ERROR
+    || error == ZXQP8402_THESAURUS_ENDIANNESS_MISMATCH
+    || error == ZXQP8403_THESAURUS_DATA_ERROR
 #endif /* ZORBA_NO_FULL_TEXT */
   )
     return XQC_INVALID_ARGUMENT;

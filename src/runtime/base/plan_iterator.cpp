@@ -70,7 +70,7 @@ void PlanState::checkDepth(const QueryLoc& loc)
 {
   if (theStackDepth > 256)
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0019_INTERNAL_ERROR,
+      zerr::ZXQP0003_INTERNAL_ERROR,
       ERROR_PARAMS( ZED( StackOverflow ) ),
       ERROR_LOC( loc )
     );

@@ -29,7 +29,7 @@ namespace zorba {
  * @param condition The string representation of the condition that failed.
  * @param file The C++ source-code file name where the assertion failed.
  * @param line The C++ source-code line number where the assertion failed.
- * @throws ZXQP0006_ASSERT_FAILED
+ * @throws ZXQP0002_ASSERT_FAILED
  */
 void assertion_failed( char const *condition, char const *file, int line );
 

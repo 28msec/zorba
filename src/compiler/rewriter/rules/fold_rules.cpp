@@ -930,7 +930,7 @@ RULE_REWRITE_POST(InlineFunctions)
       {
         // TODO: this is caught here, because clone is not implemented for all expressions
         throw XQUERY_EXCEPTION(
-          zerr::ZXQP0019_INTERNAL_ERROR,
+          zerr::ZXQP0003_INTERNAL_ERROR,
           ERROR_PARAMS( ZED( CloneNotImplemented ) ),
           ERROR_LOC( udf->getLoc() )
         );

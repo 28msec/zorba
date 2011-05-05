@@ -200,8 +200,8 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   else if (type.type_kind() == XQType::FUNCTION_TYPE_KIND)
   {
     throw ZORBA_EXCEPTION(
-      zerr::ZXQP0015_NOT_IMPLEMENTED,
-      ERROR_PARAMS( "TypeOps::is_in_scope() for function-item types" )
+      zerr::ZXQP0004_NOT_IMPLEMENTED,
+      ERROR_PARAMS( ZED( TypeOps_is_in_scope_ForFunctionItemTypes ) )
     );
   }
   else

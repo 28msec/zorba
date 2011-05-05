@@ -458,10 +458,7 @@ thesaurus::wordnet_file_checker::wordnet_file_checker( mmap_file const &file ) {
   byte_ptr += sizeof( uint32_t );
   uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
   if ( file_endian != Magic_Number )
-    throw ZORBA_EXCEPTION(
-      zerr::ZXQP8402_THESAURUS_DATA_ERROR,
-      ERROR_PARAMS( ZED( WrongWordNetEndianness ) )
-    );
+    throw ZORBA_EXCEPTION( zerr::ZXQP8402_THESAURUS_ENDIANNESS_MISMATCH );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

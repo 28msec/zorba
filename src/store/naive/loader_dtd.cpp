@@ -591,7 +591,7 @@ void DtdXmlLoader::startDocument(void * ctx)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }
@@ -673,7 +673,7 @@ void DtdXmlLoader::endDocument(void * ctx)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }
@@ -965,7 +965,7 @@ void DtdXmlLoader::startElement(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }
@@ -1098,7 +1098,7 @@ void  DtdXmlLoader::endElement(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }
@@ -1149,7 +1149,7 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }
@@ -1202,7 +1202,7 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }
@@ -1252,7 +1252,7 @@ void DtdXmlLoader::processingInstruction(
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }
@@ -1295,7 +1295,7 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   catch (...)
   {
     loader.theErrorManager->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR )
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
 }

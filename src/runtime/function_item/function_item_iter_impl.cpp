@@ -108,7 +108,7 @@ PartialApplyIterator::nextImpl(
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   throw XQUERY_EXCEPTION(
-    zerr::ZXQP0015_NOT_IMPLEMENTED,
+    zerr::ZXQP0004_NOT_IMPLEMENTED,
     ERROR_PARAMS( "fn:partial-apply()" ),
     ERROR_LOC( loc )
   );

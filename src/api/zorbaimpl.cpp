@@ -263,13 +263,13 @@ void ZorbaImpl::notifyError( ErrorHandler *eh, ZorbaException const &ze ) {
 
 void ZorbaImpl::notifyError( ErrorHandler *eh, std::string const &aDesc ) {
   eh->error(
-    ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(aDesc) )
+    ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(aDesc) )
   );
 }
 
 
 void ZorbaImpl::notifyError( ErrorHandler *eh ) {
-  eh->error( ZORBA_EXCEPTION( zerr::ZXQP0019_INTERNAL_ERROR ) );
+  eh->error( ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR ) );
 }
 
 

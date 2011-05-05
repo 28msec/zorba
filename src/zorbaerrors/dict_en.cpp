@@ -404,16 +404,16 @@ extern entry const dict_en[] = {
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
+  { "ZXQP0002", "\"$1\": assertion failed" },
+  { "ZXQP0003", "internal error${: 1}" },
+  { "ZXQP0004", "not yet implemented: $1" },
   { "ZXQP0005", "\"$1\": not supported" },
-  { "ZXQP0006", "\"$1\": assertion failed" },
   { "ZXQP0007", "\"$1\": function signature does not match declaration" },
   { "ZXQP0008", "\"$1\": function implementation not found" },
   { "ZXQP0009", "\"$1\": function referred to by this local-name has the local-name \"$2\" instead" },
   { "ZXQP0013", "FxCharHeap error: $1 ($2)" },
-  { "ZXQP0015", "not yet implemented: $1" },
   { "ZXQP0016", "\"$1\": reserved module target namespace" },
   { "ZXQP0017", "file access disabled" },
-  { "ZXQP0019", "internal error${: 1}" },
   { "ZXQP0020", "\"$1\": invalid URI${: 2}" },
   { "ZXQP0021", "user error" },
   { "ZXQP0024", "XML does not match schema${: \"1\"}${ 2}" },
@@ -428,7 +428,8 @@ extern entry const dict_en[] = {
 
 #ifndef ZORBA_NO_FULL_TEXT
   { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
-  { "ZXQP8402", "thesaurus data error${: 1}" },
+  { "ZXQP8402", "thesaurus data endianness does not match CPU" },
+  { "ZXQP8403", "thesaurus data error${: 1}" },
 #endif /* ZORBA_NO_FULL_TEXT */
 
   /////////////////////////////////////////////////////////////////////////////
@@ -615,6 +616,7 @@ extern entry const dict_en[] = {
   { "~TwoDecimalFormatsSameName_2", "\"$2\": two decimal formats with this name" },
   { "~TwoDefaultDecimalFormats", "two default decimal formats" },
   { "~TypeIsNotSubtype", "item type is not a subtype of \"$3\"" },
+  { "~TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },
   { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
   { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
   { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
@@ -643,7 +645,6 @@ extern entry const dict_en[] = {
   { "~VariabledHasNoValue", "variable has no value" },
   { "~VariabledUndeclared", "undeclared variable" },
   { "~WindowClause11", "\"window\" clause only available in XQuery 1.1 or later" },
-  { "~WrongWordNetEndianness", "wrong endianness" },
   { "~XQueryVersionAtLeast10_2", "\"$2\": XQuery version must be at least 1.0" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },

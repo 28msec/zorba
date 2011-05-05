@@ -12326,7 +12326,7 @@ void end_visit (const FTScope& v, void* /*visit_state*/) {
 void *begin_visit (const FTScoreVar& v) {
   TRACE_VISIT ();
   throw XQUERY_EXCEPTION(
-    zerr::ZXQP0015_NOT_IMPLEMENTED, ERROR_PARAMS( "score" ), ERROR_LOC( loc )
+    zerr::ZXQP0004_NOT_IMPLEMENTED, ERROR_PARAMS( "score" ), ERROR_LOC( loc )
   );
 }
 

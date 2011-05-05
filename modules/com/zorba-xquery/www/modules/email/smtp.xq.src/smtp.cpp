@@ -91,7 +91,7 @@ namespace zorba
           std::stringstream lErrorMessage;
           lErrorMessage << "Mail could not be sent. Here is the log:" << std::endl;
           lErrorMessage << lDiagnostics.str();
-          throwError(lErrorMessage.str(), zerr::ZXQP0019_INTERNAL_ERROR);
+          throwError(lErrorMessage.str(), zerr::ZXQP0003_INTERNAL_ERROR);
         }
         
         
