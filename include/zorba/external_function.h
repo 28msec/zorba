@@ -24,5 +24,6 @@
 #include <zorba/pure_stateless_function.h>
 #include <zorba/nonepure_stateless_function.h>
 #include <zorba/item_sequence.h>
+#include <zorba/user_exception.h>
 
 #endif

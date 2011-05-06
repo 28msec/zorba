@@ -274,7 +274,10 @@ WriterFileFunction::evaluate(
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (lFile->isDirectory()) {
-    error(/* FOFL0004, "The path denotes an existing directory: " + lFile->getFilePath() */);
+    std::ostringstream lSs;
+    lSs << "The path denotes an existing directory: " << lFile->getFilePath();
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0004");
+    throw USER_EXCEPTION(lQName, lSs.str());
   }
 
   bool lBinary = isBinary();
@@ -283,7 +286,10 @@ WriterFileFunction::evaluate(
   // throw an error if the file exists and we don't want to overwrite,
   // but if we append, we don't care because we always write
   if (!lAppend && lFile->exists() && aArgs.size() == 3 && !getOneBooleanArg(aArgs, 2)) {
-    error(/* FOFL0002, "The file already exists: " + lFile->getFilePath() */);
+    std::ostringstream lSs;
+    lSs << "The file already exists: " << lFile->getFilePath();
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
+    throw USER_EXCEPTION(lQName, lSs.str());
   }
 
   // open the output stream in the desired write mode

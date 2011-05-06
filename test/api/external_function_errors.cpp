@@ -87,7 +87,7 @@ public:
   evaluate(const StatelessExternalFunction::Arguments_t& args) const
   {
     // test raising an error with noqname (i.e. will be defaulted to FOER0000)
-    error();
+    throw DEFAULT_USER_EXCEPTION();
     return ItemSequence_t(0);
   }
 
@@ -115,7 +115,7 @@ public:
     String lLocalname = "myerror";
     Item lQName = theModule->getItemFactory()->createQName(
           lNamespace, lLocalname);
-    error(lQName);
+    throw USER_EXCEPTION(lQName);
     return ItemSequence_t(0);
   }
 
@@ -142,7 +142,7 @@ public:
     // test raising an error with an empty qname (i.e. will be defaulted to FOER0000)
     // and a description
     Item lQName;
-    error(lQName, "test error description");
+    throw USER_EXCEPTION(lQName, "test error description");
     return ItemSequence_t(0);
   }
 
@@ -175,7 +175,7 @@ public:
     String lErrorObjectString = "error object";
     Item lErrorObject = theModule->getItemFactory()->createString(lErrorObjectString);
     ItemSequence_t tmp( new SingletonItemSequence(lErrorObject));
-    error(lQName, "test error description", tmp);
+    throw USER_EXCEPTION(lQName, "test error description", tmp);
     return ItemSequence_t(0);
   }
 

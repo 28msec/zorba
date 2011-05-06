@@ -20,6 +20,7 @@
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/user_exception.h>
 
 #include "http_request_handler.h"
 #include "request_parser.h"
@@ -206,8 +207,7 @@ namespace zorba {
       }
 
       if (lRetCode) {
-        zorba::Item lError = aFactory->createQName("http://expath.org/ns/error", "HC001");
-        aFunctionData->error(lError, "An HTTP error occurred.");
+        throw USER_EXCEPTION(aFactory->createQName("http://expath.org/ns/error", "HC001"), "An HTTP error occurred");
       }
 
       return ItemSequence_t(lRespHandler.getResult());

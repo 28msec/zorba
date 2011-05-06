@@ -33,7 +33,6 @@ SET(API_SRCS
     collectionimpl.cpp
     options.cpp
     functionimpl.cpp
-    external_function_data.cpp
     storeiteratorimpl.cpp
     vectoriterator.cpp
     iterator_singleton.cpp

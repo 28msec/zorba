@@ -29,6 +29,9 @@ class FileModule : public ExternalModule
 private:
   static ItemFactory* theFactory;
 
+public:
+  static const char* theNamespace;
+
 protected:
   class ltstr
   {
@@ -47,7 +50,7 @@ public:
   virtual ~FileModule();
   
   virtual String
-  getURI() const { return "http://expath.org/ns/file"; }
+  getURI() const { return theNamespace; }
   
   virtual StatelessExternalFunction*
   getExternalFunction(const String& aLocalname);

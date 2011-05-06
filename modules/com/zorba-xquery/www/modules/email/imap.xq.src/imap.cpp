@@ -71,7 +71,7 @@ StatusFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -106,7 +106,7 @@ CreateFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -143,7 +143,7 @@ DeleteFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -179,7 +179,7 @@ RenameFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -227,7 +227,7 @@ ListFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -264,7 +264,7 @@ SubscribeFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -300,7 +300,7 @@ UnsubscribeFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -336,7 +336,7 @@ ExpungeFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -388,7 +388,7 @@ SearchFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -444,7 +444,7 @@ CopyFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -494,7 +494,7 @@ FetchEnvelopeFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -533,7 +533,7 @@ FetchSubjectFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -571,7 +571,7 @@ FetchFromFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -625,7 +625,7 @@ FetchFlagsFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -676,7 +676,7 @@ SetFlagsFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -744,7 +744,7 @@ FetchUidFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -776,7 +776,7 @@ FetchMessageSequenceNumberFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -815,7 +815,7 @@ FetchMessageFunction::evaluate(
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
 }
@@ -1042,7 +1042,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
-    error(lQName, lErrorMessage);
+    throw USER_EXCEPTION(lQName, lErrorMessage);
   }
 }
 

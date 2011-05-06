@@ -99,7 +99,7 @@ namespace zorba
       } catch (ImapException& e) {
         std::string lErrorMessage = e.get_message();
         Item lQName = SMTPModule::getItemFactory()->createQName(SMTPModule::getURIString(), "imap", e.get_localname());
-        error(lQName, lErrorMessage);
+        throw USER_EXCEPTION(lQName, lErrorMessage);
       }
       return ItemSequence_t(NULL);
     }

@@ -1,5 +1,6 @@
 #pragma once
 #include <zorba/zorba.h>
+#include <zorba/user_exception.h>
 #include <curl/curl.h>
 
 namespace zorba {
@@ -23,8 +24,7 @@ namespace zorba {
           if (*theHeaderList) {
             curl_slist_free_all(*theHeaderList);
           }
-          Item lError = theFactory->createQName(aNamespace, aLocalName);
-          theFunctionData->error(lError, aDescription);
+          throw USER_EXCEPTION(theFactory->createQName(aNamespace, aLocalName), aDescription);
         }
     };
 

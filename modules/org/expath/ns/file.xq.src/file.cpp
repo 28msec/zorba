@@ -241,14 +241,16 @@ CopyFunction::evaluate(
   if (!(lSrcFile->exists())) {
     std::stringstream lSs;
     lSs << "The source path does not exist: " << lSrcFile->getFilePath();
-    error(/*FOFL0001, lSs.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0001");
+    throw USER_EXCEPTION(lQName, lSs.str());
   }
 
   // is this a file (the recursive version is implemented in XQuery)
   if (!(lSrcFile->isFile())) {
     std::stringstream lSs;
     lSs << "The source of a non-recursive copy cannot be a directory: " << lSrcFile->getFilePath();
-    error(/*FOFL0004, lSs.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0004");
+    throw USER_EXCEPTION(lQName, lSs.str());
   }
 
   // do we have to overwrite an existing file?
@@ -261,7 +263,8 @@ CopyFunction::evaluate(
   if (!lOverwrite && lDst->isFile()) {
     std::stringstream lSs;
     lSs << "The destination path already exists: " << lDst->getFilePath();
-    error(/*FOFL0002, lSs.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
+    throw USER_EXCEPTION(lQName, lSs.str());
   }
 
   if (lDst->isDirectory()) {
@@ -276,11 +279,13 @@ CopyFunction::evaluate(
   if (lDst->isDirectory()) {
     std::stringstream lSs;
     lSs << "The destination path already exists: : " << lDst->getFilePath();
-    error(/*FOFL0002, lSs.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
+    throw USER_EXCEPTION(lQName, lSs.str());
   } else if (lDst->isFile() && !lOverwrite) {
     std::stringstream lSs;
     lSs << "The destination path already exists: " << lDst->getFilePath();
-    error(/*FOFL0002, lSs.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
+    throw USER_EXCEPTION(lQName, lSs.str());
   }
 
   // open the output stream in the desired write mode
@@ -398,7 +403,8 @@ LastModifiedFunction::evaluate(
   if(!lFile->exists()) {
     std::stringstream lErrorMessage;
     lErrorMessage << "The provided path/URI does not exist: " << lFile->getFilePath();
-    error(/*FOFL0001, lErrorMessage.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0001");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str());
   }
 
   time_t lTime = lFile->lastModified();
@@ -443,13 +449,15 @@ SizeFunction::evaluate(
   if(!lFile->exists()) {
     std::stringstream lErrorMessage;
     lErrorMessage << "The provided path/URI does not exist: " << lFile->getFilePath();
-    error(/*FOFL0001, lErrorMessage.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0001");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str());
   }
 
   if(lFile->isDirectory()) {
     std::stringstream lErrorMessage;
     lErrorMessage << "The provided path/URI must not point to a directory: " << lFile->getFilePath();
-    error(/*FOFL0004, lErrorMessage.str()*/);
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str());
   }
 
   return ItemSequence_t(new SingletonItemSequence(

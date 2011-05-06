@@ -22,6 +22,7 @@
 #include <zorba/iterator.h>
 #include <zorba/item_factory.h>
 #include <zorba/store_consts.h>
+#include <zorba/user_exception.h>
 
 #include "mime_handler.h"
 #include "email_function.h"

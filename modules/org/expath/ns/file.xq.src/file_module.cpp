@@ -22,6 +22,8 @@ namespace zorba { namespace filemodule {
 
   ItemFactory* FileModule::theFactory = 0;
 
+  const char* FileModule::theNamespace = "http://expath.org/ns/file";
+
 
 FileModule::~FileModule()
 {

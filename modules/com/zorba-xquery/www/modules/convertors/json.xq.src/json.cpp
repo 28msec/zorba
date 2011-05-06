@@ -110,13 +110,13 @@ ParseFunction::evaluate(
     {
       zorba::Item lError = theModule->getItemFactory()->createQName(theModule->getURI(), "WrongParam");
       lErrorLogSs << "Mapping type '" << lJsonMapping << "' not supported.\nPossible values are 'simple-json' or 'json-ml'.";
-      ExternalFunctionData::error(lError, lErrorLogSs.str());
+      throw USER_EXCEPTION(lError, lErrorLogSs.str());
     }
 
     if(!lErrorLogSs.str().empty())
     {
       zorba::Item lError = theModule->getItemFactory()->createQName(theModule->getURI(), "WrongParam");
-      ExternalFunctionData::error(lError, lErrorLogSs.str());
+      throw USER_EXCEPTION(lError, lErrorLogSs.str());
     }
 
     XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
@@ -235,7 +235,7 @@ SerializeFunction::evaluate(
     {
       zorba::Item lError = theModule->getItemFactory()->createQName(theModule->getURI(), "WrongParam");
       lErrorLogSs << "Mapping type '" << lJsonMapping << "' not supported.\nPossible values are 'simple-json' or 'json-ml'.";
-      ExternalFunctionData::error(lError, lErrorLogSs.str());
+      throw USER_EXCEPTION(lError, lErrorLogSs.str());
     }
 
     StringStreamSequence  *stream_sequence = new StringStreamSequence((ItemSequence*)aArgs[0]);
