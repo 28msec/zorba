@@ -55,14 +55,14 @@ DynamicLoader::loadModule(const zstring& aFile) const
   if (!handle)
     throw ZORBA_EXCEPTION(
       zerr::ZOSE0001_FILE_NOT_FOUND,
-      ERROR_PARAMS( aFile, error::get_os_err_string() )
+      ERROR_PARAMS( aFile, os_error::get_err_string() )
     );
 
   createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
   if (createModule == NULL)
     throw ZORBA_EXCEPTION(
       zerr::ZAPI0015_CREATEMODULE_NOT_FOUND,
-      ERROR_PARAMS( aFile, error::get_os_err_string() )
+      ERROR_PARAMS( aFile, os_error::get_err_string() )
     );
 
 #else
