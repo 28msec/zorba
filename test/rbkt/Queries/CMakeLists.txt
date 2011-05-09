@@ -319,10 +319,5 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3299356)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3299353)
 
-# removed temporarely
-#IF(WIN32)
-#  EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_parse7 3193250)
-#ENDIF(WIN32)
-
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
