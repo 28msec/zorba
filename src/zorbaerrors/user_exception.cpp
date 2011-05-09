@@ -141,13 +141,13 @@ UserException make_user_exception( char const *throw_file,
   );
 }
 
-UserException make_usery_exception( char const *throw_file,
-                                    ZorbaException::line_type throw_line,
-                                    Error const &error,
-                                    err::parameters const &params,
-                                    err::location const &loc,
-                                    UserException::error_object_type
-                                     *error_object ) {
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Error const &error,
+                                   err::parameters const &params,
+                                   err::location const &loc,
+                                   UserException::error_object_type
+                                    *error_object ) {
   err::parameters::value_type message( error.message() );
   params.substitute( &message );
   zorba::err::QName const &qname = error.qname();
