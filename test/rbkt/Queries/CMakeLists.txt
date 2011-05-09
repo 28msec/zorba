@@ -315,8 +315,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3281365)
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3281365)
+
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3299356)
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3299353)
 
 # removed temporarely
 #IF(WIN32)

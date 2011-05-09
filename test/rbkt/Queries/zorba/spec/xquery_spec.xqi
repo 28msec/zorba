@@ -15,7 +15,7 @@ declare variable $util:xquery_version_3_0 := "3.0";
 used local variables instead of passing the specURI defined as an external variable because of 
 opened bug #3152386
 :)
-declare sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
+declare %sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
   let $serParams := 
     <output:serialization-parameters>
         <output:method value="xml"/>
@@ -36,12 +36,12 @@ declare sequential function util:download-and-write-spec($specVersion as xs:stri
       file:write($docPath, http-expath:send-request($req, ())[2], $serParams)
 };
 
-declare sequential function util:create-spec-function-arity-sequence(
+declare %sequential function util:create-spec-function-arity-sequence(
   $docPath as xs:string,
   $xquery_version as xs:string)
 as xs:string* {
 
-  let $docSpec := file:read-xml($docPath)
+  let $docSpec := fn:doc($docPath)
 
   let $functionsSpec :=
     (for $x in $docSpec//*:div[@class="div3"]
