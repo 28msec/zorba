@@ -242,7 +242,7 @@ bool
 StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
 {
   if(!theIsOpen) {
-    throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(
+    throw USER_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(
       "StreamableItemSequence Iterator consumed without open" ) );  
   }
   if (theHasNext) {

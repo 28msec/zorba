@@ -15,7 +15,6 @@
  */
 
 #include <zorba/error_list.h>
-#include <zorba/zorba_exception.h>
 
 #include "stringiterator_streambuf.h"
 

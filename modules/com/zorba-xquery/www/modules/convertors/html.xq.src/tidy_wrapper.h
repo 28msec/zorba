@@ -30,7 +30,7 @@
 #include <zorba/xmldatamanager.h>
 #include <zorba/error.h>
 #include <zorba/error_list.h>
-#include <zorba/zorba_exception.h>
+#include <zorba/user_exception.h>
 #include <zorba/external_function_data.h>
 #include <zorba/zorba.h>
 
@@ -86,7 +86,7 @@ namespace zorba
     {
       if (ok != yes)
       {
-        throw ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( "Could not set Tidy option" ) );
+        throw USER_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( "Could not set Tidy option" ) );
       }
     }
     
@@ -94,7 +94,7 @@ namespace zorba
     {
       if (rc > 1)
       {
-        throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( errMsg ) );
+        throw USER_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( errMsg ) );
       }
     }
     
