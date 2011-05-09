@@ -60,14 +60,19 @@ declare function zi:add-guard-open($name as xs:string) as xs:string
                       string-join(('#define',$guardName),' ')), $zi:newline)  
 };
 
-
-declare function zi:function-kind($sig) as xs:string
+declare function zi:arity($sig) as xs:string
 {
   let $numParams := count($sig/zorba:param)
   let $variadic := if ($numParams eq 2 and $sig/zorba:param[2]/text() eq "true")
                    then fn:true()
                    else fn:false()
   return
+  if ($variadic) then "N"
+  else xs:string($numParams)
+};
+
+declare function zi:function-kind($sig) as xs:string
+{
   upper-case(
     replace(
       fn:concat($sig/@prefix,
@@ -76,9 +81,7 @@ declare function zi:function-kind($sig) as xs:string
                 then fn:substring($sig/@localname, 2)
                 else $sig/@localname,
                 "_",
-                if ($variadic)
-                then "N"
-                else xs:string($numParams)),
+                zi:arity($sig)),
       "-", "_")
    )
 };

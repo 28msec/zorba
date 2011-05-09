@@ -71,10 +71,10 @@ declare function local:process($doc,
             else
               "",
 
-            local:create-function($iter, $function),
+            local:create-functions($iter, $function),
             $gen:newline,
 
-            local:propagateInputToOutput($function),
+            local:propagate($function),
 
             if (exists($iter/@preprocessorGuard))
             then
@@ -99,19 +99,34 @@ declare function local:process($doc,
                   '')
 };
 
+declare function local:propagate($function) as xs:string?
+{
+  let $xq30 := count($function//zorba:signature[@version eq "3.0"])
+  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
+  let $sigs := count($function//zorba:signature)
+  let $xq10 := ($sigs - $xq30) - $xq11  
+  return
+    concat(
+    if(($xq30 > 0 ) or ($xq11 > 0)) then 
+      local:propagateInputToOutput($function,"_3_0") else (),
+    if($xq10 >0) then 
+      local:propagateInputToOutput($function,"") else ()
+    )    
+};
 
 (:
  : Generate the propagatesInputToOutput method
  : @param function is the root element for the function whose 
  :        propagatesInputToOutput method is to be generated.
- : 
+ : @param suffix is "_3_0" is this is a XQuery 3.0 function, "" otherwise
+ :
  : This function element can either have a propagatesInputToOutput or
  : propagatesOne attribute. If no such element is present, the default
  : is propagatesInputToOutput="true" is assumed.
  :)
-declare function local:propagateInputToOutput($function) as xs:string
+declare function local:propagateInputToOutput($function, $suffix as xs:string) as xs:string
 {
-  let $name := local:function-name($function)
+  let $name := concat(local:function-name($function), $suffix)
   return
     if (exists($function/@propagatesInputToOutput) and
         exists($function/@propagatesOne))
@@ -142,8 +157,20 @@ declare function local:propagateInputToOutput($function) as xs:string
           "" (: inherit from function class :)
 };
 
+declare function local:create-functions($iter, $function) as xs:string?
+{
+  let $xq30 := count($function//zorba:signature[@version eq "3.0"])
+  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
+  let $sigs := count($function//zorba:signature)
+  let $xq10 := ($sigs - $xq30) - $xq11  
+  return
+    concat(
+    if(($xq30 > 0 ) or ($xq11 > 0)) then local:create-function($iter, $function,"_3_0") else (),
+    if($xq10 >0) then local:create-function($iter, $function,"") else ()
+    )    
+};
 
-declare function local:create-function($iter, $function) as xs:string?
+declare function local:create-function($iter, $function, $suffix as xs:string) as xs:string?
 { 
   if (not($function/@generateCodegen) or $function/@generateCodegen = 'true')
   then
@@ -152,7 +179,7 @@ declare function local:create-function($iter, $function) as xs:string?
       (: TODO user fn:error :)
       'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
     else
-      let $name := local:function-name($function)
+      let $name := concat(local:function-name($function), $suffix)
       let $ret := if($iter/@name = "") then "return NULL;"
                   else string-join(( 'return new ',
                                       local:iterator-call($iter, $function), ';'),'')
@@ -207,6 +234,15 @@ declare function local:iterator-call($iter, $function) as xs:string
   )
 };
 
+declare function local:createSuffix($signature) as xs:string?
+{
+  if ($signature/@version eq "1.0") then ""
+  else 
+    if (($signature/@version eq "3.0") or
+        ($signature/@version eq "1.1"))
+    then "_3_0"
+    else ""
+};
 
 declare function local:create-context($iter, $function, $mapping) as xs:string?
 {
@@ -223,7 +259,7 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
                                else 
                                  "",
                                $gen:indent,
-                               'DECL_WITH_KIND(sctx, ', local:function-name($function), ',',
+                               'DECL_WITH_KIND(sctx, ', concat(local:function-name($function),local:createSuffix($sig)), ',',
                                $gen:newline, gen:indent(3),
                                '(createQName("',
                                local:get-zorba-ns($sig/@prefix, $mapping), 

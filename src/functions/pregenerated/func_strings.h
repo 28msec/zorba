@@ -108,6 +108,18 @@ public:
 
 
 //fn:string-join
+class fn_string_join_3_0 : public function
+{
+public:
+  fn_string_join_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  CODEGEN_DECL();
+};
+
+//fn:string-join
 class fn_string_join : public function
 {
 public:
@@ -355,13 +367,12 @@ public:
 
 
 //fn:analyze-string
-class fn_analyze_string : public function
+class fn_analyze_string_3_0 : public function
 {
 public:
-  fn_analyze_string(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_analyze_string_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
-    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();

@@ -35,73 +35,102 @@ declare function local:process-file($doc) as xs:string
               return local:create-function($iter, $function), $gen:newline)
 };
 
-declare function local:create-func-version($function) as xs:string?
+declare function local:create-func-version($signature) as xs:string?
 {
-  if ($function/zorba:signature/@version = "1.0")
+  if ($signature/@version eq "1.0")
   then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_1_0;")
   else 
-    if (($function/zorba:signature/@version = "3.0") or
-        ($function/zorba:signature/@version = "1.1"))
+    if (($signature/@version eq "3.0") or
+        ($signature/@version eq "1.1"))
     then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_3_0;")
     else ()    
 };
 
+declare function local:create-function-arity($iter, $function, $funcVersion as xs:string) as xs:string?
+{
+  let $name := concat(local:function-name($function), 
+               if(ends-with($funcVersion,"3_0;")) then "_3_0"
+               else ())
+  return
+    string-join(
+    (
+    if ( exists($iter/@preprocessorGuard) )
+    then
+      $iter/@preprocessorGuard
+    else
+      "",
+  
+    $gen:newline, $gen:newline,
+    local:description($function),
+    $gen:newline,
+  
+    'class ', $name, ' : public ', local:base-class($function),
+  
+    $gen:newline, '{',  $gen:newline,
+  
+    'public:', $gen:newline, $gen:indent,
+  
+    let $setNoneDeterministic := if ($function/@isDeterministic = 'false')
+                                 then 
+                                   "setDeterministic(false);&#xA;"
+                                 else ""
+(:    let $funcVersion := local:create-func-version($function//zorba:signature[$arity]) :)
+    return 
+      concat($name, '(const signature&amp; sig, FunctionConsts::FunctionKind kind)',
+             $gen:newline, $gen:indent,
+             $gen:indent, ': ',
+             local:base-class($function), '(sig, kind) {&#xA;', $setNoneDeterministic, $funcVersion, '&#xA;}'),
+  
+  $gen:newline,
+        
+  local:add-specialization($function),
+  local:add-methods($function),
+  $gen:newline,
+  
+  $gen:indent, 'CODEGEN_DECL();', $gen:newline,
+  
+  '};',
+  
+  if ( exists($iter/@preprocessorGuard) )
+  then
+    concat($gen:newline, "#endif")
+  else ""
+  )
+  , '')
+};
+
+declare function local:create-function-XQuery-30($iter, $function) as xs:string?
+{
+  let $xq30 := count($function//zorba:signature[@version eq "3.0"])
+  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
+  let $sigs := count($function//zorba:signature)
+  let $xq10 := ($sigs - $xq30) - $xq11  
+  return
+    concat(
+    if(($xq30 > 0 ) or ($xq11 > 0)) then
+       local:create-function-arity( $iter, 
+                                    $function,
+                                    "theXQueryVersion = StaticContextConsts::xquery_version_3_0;")
+    else (),
+    if($xq10 >0) then
+      local:create-function-arity($iter, 
+                                  $function,
+                                  "")
+    else ()
+    )    
+};
+
 declare function local:create-function($iter, $function) as xs:string?
 { 
-  let $name := local:function-name($function)
-  return
-    if (fn:not($iter/@generateCodegen) or $iter/@generateCodegen eq "true") 
+  if (fn:not($iter/@generateCodegen) or $iter/@generateCodegen eq "true") 
+  then
+    if(count($function/zorba:signature) = 0)
     then
-      if(count($function/zorba:signature) = 0)
-      then 
-        (: TODO user fn:error :)
-        'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
-      else 
-        string-join(
-          (
-          if ( exists($iter/@preprocessorGuard) )
-          then
-            $iter/@preprocessorGuard
-          else
-            "",
-
-          $gen:newline, $gen:newline,
-          local:description($function),
-          $gen:newline,
-
-          'class ', $name, ' : public ', local:base-class($function),
-
-          $gen:newline, '{',  $gen:newline,
-
-          'public:', $gen:newline, $gen:indent,
-
-          let $setNoneDeterministic := if ($function/@isDeterministic = 'false')
-                                       then 
-                                         "setDeterministic(false);&#xA;"
-                                       else ""
-          let $funcVersion := local:create-func-version($function)
-          return 
-            concat($name, '(const signature&amp; sig, FunctionConsts::FunctionKind kind)',
-                   $gen:newline, $gen:indent,
-                   $gen:indent, ': ',
-                   local:base-class($function), '(sig, kind) {&#xA;', $setNoneDeterministic, $funcVersion, '&#xA;}'),
-
-        $gen:newline,
-              
-        local:add-specialization($function),
-        local:add-methods($function),
-        $gen:newline,
-
-        $gen:indent, 'CODEGEN_DECL();', $gen:newline,
-
-        '};',
-
-        if ( exists($iter/@preprocessorGuard) )
-        then
-          concat($gen:newline, "#endif")
-        else ""
-      )
-     , '')
+      (: TODO user fn:error :)
+      'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
+    else
+      local:create-function-XQuery-30($iter, $function)
+      (: local:create-function-arity($iter, $function, xs:integer(1)) :)
   else
     ()
 };

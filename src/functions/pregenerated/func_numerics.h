@@ -108,13 +108,12 @@ public:
 
 
 //fn:format-number
-class fn_format_number : public function
+class fn_format_number_3_0 : public function
 {
 public:
-  fn_format_number(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_format_number_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
-    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();
@@ -122,13 +121,12 @@ public:
 
 
 //fn:format-integer
-class fn_format_integer : public function
+class fn_format_integer_3_0 : public function
 {
 public:
-  fn_format_integer(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_format_integer_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
-    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();

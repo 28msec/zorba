@@ -80,6 +80,15 @@ PlanIter_t fn_concat::codegen(
   return new ConcatStrIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_string_join_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new StringJoinIterator(sctx, loc, argv);
+}
 PlanIter_t fn_string_join::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -270,7 +279,7 @@ PlanIter_t fn_tokenize::codegen(
   return new FnTokenizeIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_analyze_string::codegen(
+PlanIter_t fn_analyze_string_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -347,6 +356,13 @@ void populate_context_strings(static_context* sctx)
       true,
       GENV_TYPESYSTEM.STRING_TYPE_ONE),
       FunctionConsts::FN_CONCAT_N);
+
+
+  DECL_WITH_KIND(sctx, fn_string_join_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","string-join"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_STRING_JOIN_1);
 
 
   DECL_WITH_KIND(sctx, fn_string_join,
@@ -597,7 +613,7 @@ void populate_context_strings(static_context* sctx)
       FunctionConsts::FN_TOKENIZE_3);
 
 
-  DECL_WITH_KIND(sctx, fn_analyze_string,
+  DECL_WITH_KIND(sctx, fn_analyze_string_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -605,7 +621,7 @@ void populate_context_strings(static_context* sctx)
       FunctionConsts::FN_ANALYZE_STRING_2);
 
 
-  DECL_WITH_KIND(sctx, fn_analyze_string,
+  DECL_WITH_KIND(sctx, fn_analyze_string_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,

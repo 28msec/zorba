@@ -39,13 +39,12 @@ void populate_context_function_item_iter(static_context* sctx);
 
 
 //fn:function-name
-class fn_function_name : public function
+class fn_function_name_3_0 : public function
 {
 public:
-  fn_function_name(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_function_name_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
-    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();
@@ -53,13 +52,12 @@ public:
 
 
 //fn:function-arity
-class fn_function_arity : public function
+class fn_function_arity_3_0 : public function
 {
 public:
-  fn_function_arity(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_function_arity_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
-    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();
@@ -67,13 +65,12 @@ public:
 
 
 //fn:partial-apply
-class fn_partial_apply : public function
+class fn_partial_apply_3_0 : public function
 {
 public:
-  fn_partial_apply(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_partial_apply_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
-    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   CODEGEN_DECL();

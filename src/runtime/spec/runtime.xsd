@@ -61,6 +61,14 @@
       <xs:enumeration value="nary"/>
     </xs:restriction>
   </xs:simpleType>
+  
+  <xs:simpleType name="xquery-version-enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="3.0"/>
+      <xs:enumeration value="1.1"/>
+      <xs:enumeration value="1.0"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:complexType name="iterator">
     <xs:sequence>
@@ -108,6 +116,7 @@
     </xs:sequence>
     <xs:attribute name="localname" type="xs:string" use="required"/>
     <xs:attribute name="prefix" type="namespace-prefix-enum" use="required"/>
+    <xs:attribute name="version" type="xquery-version-enum" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="methods">

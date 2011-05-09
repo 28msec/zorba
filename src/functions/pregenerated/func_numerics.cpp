@@ -80,7 +80,7 @@ PlanIter_t fn_round_half_to_even::codegen(
   return new RoundHalfToEvenIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_format_number::codegen(
+PlanIter_t fn_format_number_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -90,7 +90,7 @@ PlanIter_t fn_format_number::codegen(
   return new FormatNumberIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_format_integer::codegen(
+PlanIter_t fn_format_integer_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -153,7 +153,7 @@ void populate_context_numerics(static_context* sctx)
       FunctionConsts::FN_ROUND_HALF_TO_EVEN_2);
 
 
-  DECL_WITH_KIND(sctx, fn_format_number,
+  DECL_WITH_KIND(sctx, fn_format_number_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","format-number"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -161,7 +161,7 @@ void populate_context_numerics(static_context* sctx)
       FunctionConsts::FN_FORMAT_NUMBER_2);
 
 
-  DECL_WITH_KIND(sctx, fn_format_number,
+  DECL_WITH_KIND(sctx, fn_format_number_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","format-number"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -170,7 +170,7 @@ void populate_context_numerics(static_context* sctx)
       FunctionConsts::FN_FORMAT_NUMBER_3);
 
 
-  DECL_WITH_KIND(sctx, fn_format_integer,
+  DECL_WITH_KIND(sctx, fn_format_integer_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","format-integer"),
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -178,7 +178,7 @@ void populate_context_numerics(static_context* sctx)
       FunctionConsts::FN_FORMAT_INTEGER_2);
 
 
-  DECL_WITH_KIND(sctx, fn_format_integer,
+  DECL_WITH_KIND(sctx, fn_format_integer_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","format-integer"),
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
