@@ -320,9 +320,11 @@ bool StringJoinIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(item, theChildren[1].getp(), planState);
-
-  item->getStringValue2(separator);
+  if(theChildren.size() > 1)
+  {
+    consumeNext(item, theChildren[1].getp(), planState);
+    item->getStringValue2(separator);
+  }
 
   if (separator.empty())
   {
