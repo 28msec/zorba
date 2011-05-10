@@ -717,10 +717,10 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       for (size_t i = 0; i < lNumURLResolvers; ++i) {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
         if (!lURLResolver) {
-          ZORBA_ERROR_DESC_OSS(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-                               "Couldn't load pre-compiled query because"
-                               " URLResolver could not be retrieved"
-                               " using the given SerializationCallback");
+          throw ZORBA_EXCEPTION(
+            zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
+            ERROR_PARAMS( ZED( NoModuleURIResolver ) )
+          );
         }
         // QQQ memory management?
         add_url_resolver(new URLResolverWrapper(*lURLResolver));
