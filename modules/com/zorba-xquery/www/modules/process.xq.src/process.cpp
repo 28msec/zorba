@@ -38,7 +38,7 @@
 #include <zorba/item_factory.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/error_list.h>
-#include <zorba/xquery_exception.h>
+#include <zorba/user_exception.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/file.h>
 
@@ -108,9 +108,9 @@ void throw_last_error(const zorba::String& aFilename, unsigned int aLineNumber){
 #ifdef UNICODE
   char error_str[1024];
   WideCharToMultiByte(CP_UTF8, 0, lErrorBuffer, -1, error_str, sizeof(error_str), NULL, NULL);
-  throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( error_str, aFilename, aLineNumber ) );
+  throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( error_str, aFilename, aLineNumber ) );
 #else
-  throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorBuffer, aFilename, aLineNumber ) );
+  throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorBuffer, aFilename, aLineNumber ) );
 #endif
 }
 

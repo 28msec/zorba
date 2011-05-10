@@ -24,7 +24,7 @@
 #include <zorba/serializer.h>
 #include <zorba/store_consts.h>
 #include <zorba/util/path.h>
-#include <zorba/xquery_exception.h>
+#include <zorba/user_exception.h>
 #include <zorba/zorba.h>
 
 #include "file_module.h"
@@ -202,7 +202,7 @@ FileFunction::throwError(
     const std::string aErrorMessage,
     const Error& aErrorType)
 {
-  throw XQUERY_EXCEPTION_VAR(aErrorType, ERROR_PARAMS( aErrorMessage.c_str() ));
+  throw USER_EXCEPTION(aErrorType, ERROR_PARAMS( aErrorMessage.c_str() ));
 }
 
 #ifdef WIN32

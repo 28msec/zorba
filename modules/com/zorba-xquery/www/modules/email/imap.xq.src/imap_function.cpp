@@ -21,7 +21,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/iterator.h>
-#include <zorba/xquery_exception.h>
+#include <zorba/user_exception.h>
 #include <zorba/error_list.h>
 
 #include "imap_function.h"

@@ -21,7 +21,7 @@
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/error_list.h>
-#include <zorba/xquery_exception.h>
+#include <zorba/user_exception.h>
 #include <zorba/item_factory.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/base64.h>
@@ -40,14 +40,14 @@ zorba::String getOneStringArgument(const StatelessExternalFunction::Arguments_t&
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+    throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
       << aIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+    throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   args_iter->close();
   return lTmpString;
@@ -63,14 +63,14 @@ static zorba::String getNodeText(
   if (!(args_iter->next(lItem))) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " << aArgumentIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+    throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   std::stringstream lTmpStream;
   zorba::String lText = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as " << aArgumentIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+    throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   args_iter->close();
   return lText;
@@ -139,7 +139,7 @@ protected:
       const std::string aErrorMessage,
       const Error& aErrorType)
   {
-    throw XQUERY_EXCEPTION_VAR( aErrorType, ERROR_PARAMS( aErrorMessage ) );
+    throw USER_EXCEPTION( aErrorType, ERROR_PARAMS( aErrorMessage ) );
   }
 
 public:

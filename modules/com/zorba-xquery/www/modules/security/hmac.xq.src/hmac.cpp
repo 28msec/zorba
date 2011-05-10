@@ -22,7 +22,7 @@
 #include <zorba/error_list.h>
 #include <zorba/item_factory.h>
 #include <zorba/singleton_item_sequence.h>
-#include <zorba/xquery_exception.h>
+#include <zorba/user_exception.h>
 
 #include "hmac_sha1.h"
 
@@ -39,14 +39,14 @@ namespace zorba { namespace security {
       std::stringstream lErrorMessage;
       lErrorMessage << "An empty-sequence is not allowed as "
                     << aIndex << ". parameter.";
-      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+      throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
     }
     zorba::String lTmpString = lItem.getStringValue();
     if (args_iter->next(lItem)) {
       std::stringstream lErrorMessage;
       lErrorMessage << "A sequence of more then one item is not allowed as "
         << aIndex << ". parameter.";
-      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+      throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
     }
     args_iter->close();
     return lTmpString;
@@ -126,7 +126,7 @@ HMACSHA1Function::throwError(
     const std::string aErrorMessage,
     const Error& aErrorType)
 {
-  throw XQUERY_EXCEPTION_VAR(aErrorType, ERROR_PARAMS( aErrorMessage ) );
+  throw USER_EXCEPTION(aErrorType, ERROR_PARAMS( aErrorMessage ) );
 }
 } /* namespace security */ } /* namespace zorba */
 

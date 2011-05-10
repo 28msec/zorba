@@ -27,7 +27,7 @@
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/util/path.h>
-#include <zorba/xquery_exception.h>
+#include <zorba/user_exception.h>
 
 #include "file_module.h"
 
@@ -107,7 +107,7 @@ ReadBinaryFunction::evaluate(
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
 
   if (lItem.isNull()) {
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( "Error while building the base64binary item." ) );
+    throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( "Error while building the base64binary item." ) );
   }
 
   return ItemSequence_t(new SingletonItemSequence(lItem));
