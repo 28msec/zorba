@@ -25,13 +25,17 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/zorba.h>
+#include "hash.h"
 
 #include "md5_impl.h"
 #include "sha1.h"
 
 namespace zorba { namespace security {
 
-zorba::String getOneStringArgument(const StatelessExternalFunction::Arguments_t& aArgs, int aIndex)
+zorba::String getOneStringArgument(
+    const HashModule* aModule,
+    const StatelessExternalFunction::Arguments_t& aArgs,
+    int aIndex)
 {
   zorba::Item lItem;
   Iterator_t args_iter = aArgs[aIndex]->getIterator();
@@ -40,20 +44,25 @@ zorba::String getOneStringArgument(const StatelessExternalFunction::Arguments_t&
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ) );
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
       << aIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
   args_iter->close();
   return lTmpString;
 }
 
 static zorba::String getNodeText(
+    const HashModule* aModule,
     const StatelessExternalFunction::Arguments_t&  aArgs,
     int                 aArgumentIndex)
 {
@@ -63,84 +72,46 @@ static zorba::String getNodeText(
   if (!(args_iter->next(lItem))) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " << aArgumentIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str()));
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
   std::stringstream lTmpStream;
   zorba::String lText = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as " << aArgumentIndex << ". parameter.";
-    throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ) );
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
   args_iter->close();
   return lText;
 }
 
-
-class HashModule : public ExternalModule
+HashModule::~HashModule()
 {
-private:
-  static ItemFactory* theFactory;
-
-protected:
-  class ltstr
-  {
-  public:
-    bool operator()(const String& s1, const String& s2) const
-    {
-      return s1.compare(s2) < 0;
-    }
-  };
-
-  typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
-  FuncMap_t theFunctions;
-
-public:
-  virtual ~HashModule()
-  {
-    for (FuncMap_t::const_iterator lIter = theFunctions.begin();
-         lIter != theFunctions.end(); ++lIter) {
-      delete lIter->second;
-    }
-    theFunctions.clear();
+  for (FuncMap_t::const_iterator lIter = theFunctions.begin();
+       lIter != theFunctions.end(); ++lIter) {
+    delete lIter->second;
   }
+  theFunctions.clear();
+}
 
-  virtual String
-  getURI() const { return "http://www.zorba-xquery.com/modules/security/hash"; }
 
-  virtual StatelessExternalFunction*
-  getExternalFunction(const String& aLocalname);
-
-  virtual void
-  destroy()
-  {
-    if (!dynamic_cast<HashModule*>(this)) {
-      return;
-    }
-    delete this;
+void
+HashModule::destroy()
+{
+  if (!dynamic_cast<HashModule*>(this)) {
+    return;
   }
-
-  static ItemFactory*
-  getItemFactory()
-  {
-    if(!theFactory)
-      theFactory = Zorba::getInstance(0)->getItemFactory();
-    return theFactory;
-  }
-
-};
+  delete this;
+}
 
 class HashFunction : public PureStatelessExternalFunction
 {
 protected:
   const HashModule* theModule;
-
-  static void throwError(
-      const std::string aErrorMessage,
-      const Error& aErrorType)
-  {
-    throw XQUERY_EXCEPTION_VAR( aErrorType, ERROR_PARAMS( aErrorMessage ) );
-  }
 
 public:
   HashFunction(const HashModule* aModule): theModule(aModule){}
@@ -152,8 +123,8 @@ public:
   virtual zorba::ItemSequence_t
   evaluate(const Arguments_t& aArgs) const
   {
-    std::string lText = (getNodeText(aArgs, 0)).c_str();
-    std::string lAlg = (getOneStringArgument(aArgs, 1)).c_str();
+    std::string lText = (getNodeText(theModule, aArgs, 0)).c_str();
+    std::string lAlg = (getOneStringArgument(theModule, aArgs, 1)).c_str();
     zorba::String lHash;
     if (lAlg == "sha1") {
       CSHA1 lSha1;

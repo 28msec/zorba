@@ -74,6 +74,7 @@ FileFunction::getURI() const
 
 String
 FileFunction::getOneStringArg(
+  const FileModule* aModule,
   const StatelessExternalFunction::Arguments_t& aArgs,
   int aPos)
 {
@@ -84,14 +85,18 @@ FileFunction::getOneStringArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " 
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
   args_iter->close();
   return lTmpString;
@@ -118,10 +123,11 @@ FileFunction::getOneBooleanArg(
 
 String
 FileFunction::getFilePathString(
+    const FileModule* aModule,
     const StatelessExternalFunction::Arguments_t& aArgs,
     int aPos)
 {
-  String lFileArg = getOneStringArg(aArgs, aPos);
+  String lFileArg = getOneStringArg(aModule, aArgs, aPos);
 
   return (filesystem_path::normalize_path
     (lFileArg.c_str(), getCurrentPath().c_str()));
@@ -147,6 +153,7 @@ FileFunction::pathToFullOSPath(const String& aPath) {
 
 String
 FileFunction::getEncodingArg(
+    const FileModule* aModule,
     const StatelessExternalFunction::Arguments_t& aArgs,
     unsigned int aPos)
 {
@@ -166,7 +173,9 @@ FileFunction::getEncodingArg(
     // the rest are not supported encodings
     std::stringstream lErrorMessage;
     lErrorMessage << "Unsupported encoding: " << lEncoding;
-    throwError(lErrorMessage.str(), zerr::ZXQP0003_INTERNAL_ERROR);
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "ZXQP003_INTERNAL_ERROR");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
 
   return lEncoding;
@@ -181,12 +190,14 @@ FileFunction::pathToOSPath(const String& aPath) {
 }
 
 String
-FileFunction::pathToUriString(const String& aPath) {
+FileFunction::pathToUriString(const FileModule* aModule, const String& aPath) {
   std::stringstream lErrorMessage;
 
   if(aPath.startsWith("file://")) {
     lErrorMessage << "Please provide a path, not a URI";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
 
   File_t lFile = File::createFile(aPath.c_str());
@@ -195,14 +206,6 @@ FileFunction::pathToUriString(const String& aPath) {
 
 
   return String(lPath);
-}
-
-void
-FileFunction::throwError(
-    const std::string aErrorMessage,
-    const Error& aErrorType)
-{
-  throw USER_EXCEPTION(aErrorType, ERROR_PARAMS( aErrorMessage.c_str() ));
 }
 
 #ifdef WIN32
@@ -242,8 +245,9 @@ bool
 StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
 {
   if(!theIsOpen) {
-    throw USER_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(
-      "StreamableItemSequence Iterator consumed without open" ) );  
+    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace,
+        "ZXQP003_INTERNAL_ERROR");
+    throw USER_EXCEPTION(lQName, "StreamableItemSequence Iterator consumed without open" );
   }
   if (theHasNext) {
     aResult = theItemSequence->theItem;
@@ -270,7 +274,7 @@ WriterFileFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = getFilePathString(aArgs, 0);
+  String lFileStr = getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (lFile->isDirectory()) {

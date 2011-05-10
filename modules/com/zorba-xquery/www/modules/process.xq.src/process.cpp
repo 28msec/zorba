@@ -105,12 +105,14 @@ void throw_last_error(const zorba::String& aFilename, unsigned int aLineNumber){
           (LPTSTR)&lpvMessageBuffer, 0, NULL);
   wsprintf(lErrorBuffer,TEXT("Process Error Code: %d - Message= %s"),GetLastError(), (TCHAR *)lpvMessageBuffer);
   LocalFree(lpvMessageBuffer);
+  Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/process",
+      "XPTY0004");
 #ifdef UNICODE
   char error_str[1024];
   WideCharToMultiByte(CP_UTF8, 0, lErrorBuffer, -1, error_str, sizeof(error_str), NULL, NULL);
-  throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( error_str, aFilename, aLineNumber ) );
+  throw USER_EXCEPTION(lQName, error_str);
 #else
-  throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorBuffer, aFilename, aLineNumber ) );
+  throw USER_EXCEPTION(lQName, lErrorBuffer);
 #endif
 }
 
@@ -233,8 +235,8 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       !CreatePipe(&lOutRead,&lStdOut,&lSecurityAttributes,1024*1024) // std::cout >> lOutRead
       || !CreatePipe(&lErrRead,&lStdErr,&lSecurityAttributes,1024*1024) // std::cerr >> lErrRead
     ){
-    throw XQUERY_EXCEPTION(
-        err::XPTY0004, ERROR_PARAMS("Couldn't create one of std::cout/std::cerr pipe for child process execution.")
+    throw USER_EXCEPTION(
+        err::XPTY0004, "Couldn't create one of std::cout/std::cerr pipe for child process execution."
     );
   };
   
@@ -253,8 +255,8 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       std::stringstream lErrorMsg;
       lErrorMsg 
         << "Couldn't get exit code from child process. Executed command: '" << aCommand << "'.";
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,ERROR_PARAMS( lErrorMsg.str().c_str() )
+      throw USER_EXCEPTION(
+        err::XPTY0004, lErrorMsg.str().c_str()
       );
     }
   
@@ -465,10 +467,8 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
-    throw USER_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( lErrorMessage )
-    );
+    Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/process", "XPTY0004");
+    USER_EXCEPTION(lQName, lErrorMessage.str());
   }
 
   zorba::String lTmpString = lItem.getStringValue();
@@ -477,10 +477,8 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throw USER_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( lErrorMessage )
-    );
+    Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/process", "XPTY0004");
+    USER_EXCEPTION(lQName, lErrorMessage.str());
   }
   args_iter->close();
   return lTmpString;

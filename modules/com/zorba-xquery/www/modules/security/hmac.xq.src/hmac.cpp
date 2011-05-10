@@ -39,14 +39,18 @@ namespace zorba { namespace security {
       std::stringstream lErrorMessage;
       lErrorMessage << "An empty-sequence is not allowed as "
                     << aIndex << ". parameter.";
-      throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+      Item lQName = Zorba::getInstance(0)->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hmac",
+          "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage.str() );
     }
     zorba::String lTmpString = lItem.getStringValue();
     if (args_iter->next(lItem)) {
       std::stringstream lErrorMessage;
       lErrorMessage << "A sequence of more then one item is not allowed as "
         << aIndex << ". parameter.";
-      throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
+      Item lQName = Zorba::getInstance(0)->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hmac",
+          "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage.str() );
     }
     args_iter->close();
     return lTmpString;
@@ -119,14 +123,6 @@ HMACSHA1Function::evaluate(const Arguments_t& aArgs) const
     std::string lKey = (getOneStringArgument(aArgs, 1)).c_str();
     lItem = theModule->getItemFactory()->createString(hmacSHA1(lBaseString, lKey));
     return zorba::ItemSequence_t(new zorba::SingletonItemSequence(lItem));
-}
-
-void
-HMACSHA1Function::throwError(
-    const std::string aErrorMessage,
-    const Error& aErrorType)
-{
-  throw USER_EXCEPTION(aErrorType, ERROR_PARAMS( aErrorMessage ) );
 }
 } /* namespace security */ } /* namespace zorba */
 

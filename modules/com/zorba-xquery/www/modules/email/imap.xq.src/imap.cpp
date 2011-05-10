@@ -47,11 +47,13 @@ StatusFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     ImapClient::Instance().status(lHostName, lUserName, lPassword, lMailbox.c_str());
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+          "XPTY0004");
+      USER_EXCEPTION(lQName, lErrorMessage);
     }  
     
     unsigned long lMessages;
@@ -70,7 +72,7 @@ StatusFunction::evaluate(
                                                     theModule->getItemFactory()->createString(lResultString.c_str())));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -94,18 +96,20 @@ CreateFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailboxName = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailboxName = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     bool lResult = ImapClient::Instance().create(lHostName, lUserName, lPassword, lMailboxName.c_str());
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+          "XPTY0004");
+      USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -130,19 +134,21 @@ DeleteFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailboxName = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailboxName = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     bool lResult = ImapClient::Instance().delete_mailbox(lHostName, lUserName, lPassword, lMailboxName.c_str());
     std::string lErrorMessage = ImapClient::Instance().getError();
     
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+          "XPTY0004");
+      USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -166,19 +172,21 @@ RenameFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailboxFromName = ImapFunction::getOneStringArg(aArgs, 1);
-    String lMailboxToName = ImapFunction::getOneStringArg(aArgs, 2);
+    String lMailboxFromName = ImapFunction::getOneStringArg(theModule, aArgs, 1);
+    String lMailboxToName = ImapFunction::getOneStringArg(theModule, aArgs, 2);
     bool lResult = ImapClient::Instance().rename(lHostName, lUserName, lPassword, lMailboxFromName.c_str(), lMailboxToName.c_str());
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+          "XPTY0004");
+      USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -203,14 +211,16 @@ ListFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lReferencePath = ImapFunction::getOneStringArg(aArgs, 1);
-    String lPattern = ImapFunction::getOneStringArg(aArgs, 2);
-    bool lOnlySuscribed = ImapFunction::getOneBoolArg(aArgs, 3);
+    String lReferencePath = ImapFunction::getOneStringArg(theModule, aArgs, 1);
+    String lPattern = ImapFunction::getOneStringArg(theModule, aArgs, 2);
+    bool lOnlySuscribed = ImapFunction::getOneBoolArg(theModule, aArgs, 3);
     
     std::vector<std::string> lListedMailboxes = ImapClient::Instance().list(lHostName, lUserName, lPassword, lReferencePath.c_str(), lPattern.c_str(), lOnlySuscribed);
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+          "XPTY0004");
+      USER_EXCEPTION(lQName, lErrorMessage);
     }
     // explicitly return an empty sequence if there are no elements to return
     if (lListedMailboxes.size() == 0) {
@@ -226,7 +236,7 @@ ListFunction::evaluate(
     return ItemSequence_t(new VectorItemSequence(lItemVector));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -251,19 +261,20 @@ SubscribeFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     
     bool lResult = ImapClient::Instance().subscription(lHostName, lUserName, lPassword, lMailbox.c_str(), true);
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -287,19 +298,20 @@ UnsubscribeFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     
     bool lResult = ImapClient::Instance().subscription(lHostName, lUserName, lPassword, lMailbox.c_str(), false);
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -323,19 +335,20 @@ ExpungeFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     
     bool lResult = ImapClient::Instance().expunge(lHostName, lUserName, lPassword, lMailbox.c_str());
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -359,8 +372,8 @@ SearchFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
-    String lCriteria = ImapFunction::getOneStringArg(aArgs, 2);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
+    String lCriteria = ImapFunction::getOneStringArg(theModule, aArgs, 2);
     // get none or one boolean arg
     bool lUid = false;
     Item lItem;
@@ -375,7 +388,8 @@ SearchFunction::evaluate(
     // throw zorba exception if we have an error log
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     int lVectorSize =(int)lFoundSequenceNumbers.size();
@@ -387,7 +401,7 @@ SearchFunction::evaluate(
     return ItemSequence_t(new VectorItemSequence(lItemVector));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -411,8 +425,8 @@ CopyFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailboxFrom = ImapFunction::getOneStringArg(aArgs, 1);
-    String lMailboxTo = ImapFunction::getOneStringArg(aArgs, 2);
+    String lMailboxFrom = ImapFunction::getOneStringArg(theModule, aArgs, 1);
+    String lMailboxTo = ImapFunction::getOneStringArg(theModule, aArgs, 2);
     // find out if we are working with uid's instead of sequence numbers.
     bool lUid = false;
     Item lItem;
@@ -436,14 +450,15 @@ CopyFunction::evaluate(
     bool lResult = ImapClient::Instance().copy(lHostName, lUserName, lPassword, lMailboxFrom.c_str(), lMailboxTo.c_str(), lMessageNumbers, lUid, lCopy);
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -467,7 +482,7 @@ FetchEnvelopeFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);  
     
@@ -485,7 +500,8 @@ FetchEnvelopeFunction::evaluate(
     
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     
@@ -493,7 +509,7 @@ FetchEnvelopeFunction::evaluate(
     return ItemSequence_t(new SingletonItemSequence(lParent));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -518,13 +534,14 @@ FetchSubjectFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     String lResult = ImapClient::Instance().fetchSubject(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber);
     
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     
@@ -532,7 +549,7 @@ FetchSubjectFunction::evaluate(
                                                     theModule->getItemFactory()->createString(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -556,13 +573,14 @@ FetchFromFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     String lResult = ImapClient::Instance().fetchFrom(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber);
     
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     
@@ -570,7 +588,7 @@ FetchFromFunction::evaluate(
                                                     theModule->getItemFactory()->createString(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -595,7 +613,7 @@ FetchFlagsFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     bool lUid = false;
     Item lItem;
@@ -614,7 +632,8 @@ FetchFlagsFunction::evaluate(
     
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     
@@ -624,7 +643,7 @@ FetchFlagsFunction::evaluate(
     return ItemSequence_t(new SingletonItemSequence(lFlagsItem));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -649,7 +668,7 @@ SetFlagsFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     
     std::vector<int> lFlags(6, 0);
@@ -668,14 +687,15 @@ SetFlagsFunction::evaluate(
     
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     
     return ItemSequence_t(new SingletonItemSequence(
                                                     theModule->getItemFactory()->createBoolean(true)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -735,7 +755,7 @@ FetchUidFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     unsigned long lResult = ImapClient::Instance().convertNumber(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber, true);
     
@@ -743,7 +763,7 @@ FetchUidFunction::evaluate(
                                                     theModule->getItemFactory()->createLong(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -767,7 +787,7 @@ FetchMessageSequenceNumberFunction::evaluate(
     std::string lUserName;
     std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     unsigned long lResult = ImapClient::Instance().convertNumber(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber, false);
     
@@ -775,7 +795,7 @@ FetchMessageSequenceNumberFunction::evaluate(
                                                     theModule->getItemFactory()->createLong(lResult)));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -801,11 +821,11 @@ FetchMessageFunction::evaluate(
   try {
     std::string lHostName;  std::string lUserName;  std::string lPassword;
     ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
-    String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+    String lMailbox = ImapFunction::getOneStringArg(theModule, aArgs, 1);
     
     unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     
-    bool lUid = ImapFunction::getOneBoolArg(aArgs, 3);
+    bool lUid = ImapFunction::getOneBoolArg(theModule, aArgs, 3);
     
     Item lParent;
     FetchMessageFunction::getMessage(theModule, lParent, lHostName.c_str(), lUserName.c_str(), lPassword.c_str
@@ -814,7 +834,7 @@ FetchMessageFunction::evaluate(
     return ItemSequence_t(new SingletonItemSequence(lParent));
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
   return ItemSequence_t(NULL);
@@ -851,7 +871,8 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     Item lEnvelopeItem;
     std::string lErrorMessage = ImapClient::Instance().getError();
     if (lErrorMessage.size() != 0) {
-      ImapFunction::throwImapError(lErrorMessage);
+      Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
+      throw USER_EXCEPTION(lQName, lErrorMessage);
     }
     /* begin construction of envelope
      * Important: if we only want the envelope, then the envelope MUST be qualified (being the root of the DOM)
@@ -881,7 +902,8 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     }
     /* create the date node if needed */
     if (lEnvelope->date) {
-      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "date", "http://www.w3.org/2001/XMLSchema", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
+      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "date", "http://www.w3.org/2001/XMLSchema", "string", ImapFunction::getDateTime(aModule,
+            reinterpret_cast<const char*>(lEnvelope->date)));
     }
     // create from node if needed
     if (lEnvelope->from) {
@@ -1041,7 +1063,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     }
   } catch (ImapException& e) {
     std::string lErrorMessage = e.get_message();
-    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage);
   }
 }

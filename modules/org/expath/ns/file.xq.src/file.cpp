@@ -47,7 +47,7 @@ CreateDirectoryFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   lFile->mkdir(true);
@@ -68,7 +68,7 @@ DeleteFileImplFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   lFile->remove();
@@ -89,7 +89,7 @@ ReadBinaryFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
@@ -107,7 +107,9 @@ ReadBinaryFunction::evaluate(
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
 
   if (lItem.isNull()) {
-    throw USER_EXCEPTION(err::XPTY0004, ERROR_PARAMS( "Error while building the base64binary item." ) );
+    Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+        "XPTY0004");
+    throw USER_EXCEPTION(lQName, "Error while building the base64binary item." );
   }
 
   return ItemSequence_t(new SingletonItemSequence(lItem));
@@ -126,13 +128,13 @@ ReadTextFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (aArgs.size() == 2) {
     // since Zorba currently only supports UTF-8 we only call this function
     // to reject any other encoding requested bu the user
-    getEncodingArg(aArgs, 1);
+    getEncodingArg(theModule, aArgs, 1);
   }
   
   std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence());
@@ -158,7 +160,7 @@ ExistsFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   bool   lFileExists = false;
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->exists()) {
@@ -183,7 +185,7 @@ IsDirectoryFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isDirectory()) {
@@ -207,7 +209,7 @@ IsFileFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isFile()) {
@@ -232,9 +234,9 @@ CopyFunction::evaluate(
 {
   bool lResult = false;
 
-  String lSrcFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lSrcFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lSrcFile = File::createFile(lSrcFileStr.c_str());
-  String lDstStr = FileFunction::getFilePathString(aArgs, 1);
+  String lDstStr = FileFunction::getFilePathString(theModule, aArgs, 1);
   File_t lDst = File::createFile(lDstStr.c_str());
 
   // do we have something to copy?
@@ -323,7 +325,7 @@ ListFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (!lFile->isDirectory()) {
@@ -397,7 +399,7 @@ LastModifiedFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if(!lFile->exists()) {
@@ -443,7 +445,7 @@ SizeFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if(!lFile->exists()) {
@@ -509,7 +511,7 @@ ResolvePathFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lPathStr = FileFunction::getFilePathString(aArgs, 0);
+  String lPathStr = FileFunction::getFilePathString(theModule, aArgs, 0);
   String lResult = FileFunction::pathToOSPath(lPathStr);
 
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(lResult)));
@@ -528,8 +530,8 @@ PathToUriFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lPathStr = FileFunction::getFilePathString(aArgs, 0);
-  String lResult = FileFunction::pathToUriString(lPathStr);
+  String lPathStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lResult = FileFunction::pathToUriString(theModule, lPathStr);
 
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(lResult)));
 }

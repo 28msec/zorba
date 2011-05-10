@@ -32,11 +32,6 @@ namespace zorba
       protected:
         const SMTPModule*     theModule;
 
-        static void
-        throwError( const std::string aErrorMessage,
-                    const Error& aErrorType);
-        
-       
       public:
         SMTPFunction(const SMTPModule* aModule);
 

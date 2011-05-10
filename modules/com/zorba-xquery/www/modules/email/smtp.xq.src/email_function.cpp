@@ -91,15 +91,5 @@ namespace zorba
         aMailbox = lEmail.substring(0, lIndexOfAt).c_str(); 
         aHost = lEmail.substring(lIndexOfAt+1, lEmail.length()-lIndexOfAt-1).c_str();
     }
-
-
-
-    void
-    SMTPFunction::throwError( const std::string aErrorMessage,
-                              const Error& aErrorType)
-    {
-      throw USER_EXCEPTION( aErrorType, ERROR_PARAMS( aErrorMessage ) );
-    }
-
   } // namespace email
 } // namespace zorba

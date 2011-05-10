@@ -9,7 +9,6 @@ module namespace imap = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email';
 
-
 (:~
  : Returns the status of a given mailbox.
  : The status of a mailbox contains:

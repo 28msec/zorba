@@ -86,7 +86,9 @@ namespace zorba
     {
       if (ok != yes)
       {
-        throw USER_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( "Could not set Tidy option" ) );
+        Item lQName = Zorba::getInstance(0)->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/convertors/html",
+            "ZXQP0003_INTERNAL_ERROR");
+        throw USER_EXCEPTION(lQName, "Could not set Tidy option");
       }
     }
     
@@ -94,7 +96,9 @@ namespace zorba
     {
       if (rc > 1)
       {
-        throw USER_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( errMsg ) );
+        Item lQName = Zorba::getInstance(0)->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/convertors/html",
+            "ZXQP0003_INTERNAL_ERROR");
+        throw USER_EXCEPTION(lQName, errMsg );
       }
     }
     

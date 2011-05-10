@@ -42,13 +42,9 @@ namespace zorba { namespace filemodule {
     protected:
       const FileModule* theModule;
 
-      static void
-      throwError(
-          const std::string errorMessage,
-          const Error& errorType);
-
       static String
       getOneStringArg(
+          const FileModule* aModule,
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
 
@@ -59,11 +55,13 @@ namespace zorba { namespace filemodule {
 
       static String
       getFilePathString(
+          const FileModule* aModule,
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
 
       static String
       getEncodingArg(
+          const FileModule* aModule,
           const StatelessExternalFunction::Arguments_t& args,
           unsigned int pos);
 
@@ -80,7 +78,7 @@ namespace zorba { namespace filemodule {
       pathToOSPath(const String& path);
 
       static String
-      pathToUriString(const String& path);
+      pathToUriString(const FileModule* aModule, const String& path);
 
     public:
       FileFunction(const FileModule* module);

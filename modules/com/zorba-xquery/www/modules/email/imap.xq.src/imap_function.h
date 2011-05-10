@@ -32,8 +32,6 @@ namespace zorba { namespace emailmodule {
   protected:
       const ImapModule* theModule;
 
-      static void throwImapError(const std::string aErrorMessage);
-
       static void
       getHostUserPassword(const StatelessExternalFunction::Arguments_t& aArgs,
                           int aPos,
@@ -42,8 +40,11 @@ namespace zorba { namespace emailmodule {
                           std::string& aPassword);
 
       static String
-      getOneStringArg(const StatelessExternalFunction::Arguments_t& args,
-                      int pos);
+      getOneStringArg(
+          const ImapModule* aModule,
+          const StatelessExternalFunction::Arguments_t& args,
+          int pos);
+
       static std::string
       getMessageNumbers(const StatelessExternalFunction::Arguments_t& args,
                         int pos);
@@ -53,15 +54,19 @@ namespace zorba { namespace emailmodule {
                           int pos);
 
      static bool
-     getOneBoolArg(const StatelessExternalFunction::Arguments_t& args,
-                   int pos);
+     getOneBoolArg(
+       const ImapModule* aModule,
+       const StatelessExternalFunction::Arguments_t& args,
+       int pos);
 
     /*
      * Converts a dateTime string as returned by the c-client (e.g. Tue, 24
      * Aug 2010 16:26:10 +0200'DD) into a xs:dateTime format.
      */
     static std::string
-    getDateTime(const std::string& aCClientDateTime);
+    getDateTime(
+      const ImapModule* aModule,
+      const std::string& aCClientDateTime);
 
     static std::string
     getContentType(const unsigned short aType, const char* aSubtype);

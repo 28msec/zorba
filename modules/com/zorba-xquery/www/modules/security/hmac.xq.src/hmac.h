@@ -71,12 +71,6 @@ namespace zorba { namespace security {
   {
     protected:
       const HMACModule* theModule;
-
-      static void
-      throwError(
-          const std::string aErrorMessage,
-          const Error& aErrorType);
-
     private:
 
     public:

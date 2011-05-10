@@ -45,15 +45,6 @@ ImapFunction::getURI() const
 }
 
 void 
-ImapFunction::throwImapError(const std::string aErrorMessage) {
-  throw USER_EXCEPTION(
-    err::XPTY0004,
-    ERROR_PARAMS( aErrorMessage )
-  );
-}  
-
-
-void 
 ImapFunction::getHostUserPassword(const StatelessExternalFunction::Arguments_t& aArgs,
                                   int aPos,
                                   std::string& aHost,
@@ -78,6 +69,7 @@ ImapFunction::getHostUserPassword(const StatelessExternalFunction::Arguments_t& 
 
 String
 ImapFunction::getOneStringArg(
+    const ImapModule* aModule,
     const StatelessExternalFunction::Arguments_t& aArgs,
     int aPos)
 {
@@ -88,20 +80,32 @@ ImapFunction::getOneStringArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
+<<<<<<< .mine
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+        "XPTY0004");
+    USER_EXCEPTION(lQName, lErrorMessage.str());
+=======
     throw USER_EXCEPTION(
       err::XPTY0004,
       ERROR_PARAMS( lErrorMessage.str() )
     );
+>>>>>>> .r10382
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
+<<<<<<< .mine
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+        "XPTY0004");
+    USER_EXCEPTION(lQName, lErrorMessage.str());
+=======
     throw USER_EXCEPTION(
       err::XPTY0004,
       ERROR_PARAMS( lErrorMessage.str() )
     );
+>>>>>>> .r10382
   }
   args_iter->close();
   return lTmpString;
@@ -142,6 +146,7 @@ ImapFunction::getOneMessageNumber(
 
 bool
 ImapFunction::getOneBoolArg(
+    const ImapModule* aModule,
     const StatelessExternalFunction::Arguments_t& aArgs,
     int aPos)
 {
@@ -152,20 +157,32 @@ ImapFunction::getOneBoolArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
+<<<<<<< .mine
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+        "XPTY0004");
+    USER_EXCEPTION(lQName, lErrorMessage.str());
+=======
     throw USER_EXCEPTION(
       err::XPTY0004,
       ERROR_PARAMS( lErrorMessage.str() )
     );
+>>>>>>> .r10382
   }
   bool lTmpBool = lItem.getBooleanValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
+<<<<<<< .mine
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+        "XPTY0004");
+    USER_EXCEPTION(lQName, lErrorMessage.str());
+=======
     throw USER_EXCEPTION(
       err::XPTY0004,
       ERROR_PARAMS( lErrorMessage.str() )
     );
+>>>>>>> .r10382
   }
   args_iter->close();
   return lTmpBool;
@@ -173,7 +190,9 @@ ImapFunction::getOneBoolArg(
 
 
 std::string
-ImapFunction::getDateTime(const std::string& aCClientDateTime) {
+ImapFunction::getDateTime(
+  const ImapModule* aModule,
+  const std::string& aCClientDateTime) {
   std::stringstream lResult;    
   std::stringstream lDateTimeStream(aCClientDateTime);
   std::string lBuffer;
@@ -191,10 +210,16 @@ ImapFunction::getDateTime(const std::string& aCClientDateTime) {
   size_t lMonthNumber = lMonths.find(lTokens[2]);
   // if the month was not found, were really in trouble!
   if (lMonthNumber == std::string::npos) {
+<<<<<<< .mine
+    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/imap",
+        "XPTY0004");
+    USER_EXCEPTION(lQName, "Error while processing month in date of message");
+=======
     throw USER_EXCEPTION(
       err::XPTY0004,
       ERROR_PARAMS( "Error while processing month in date of message" )
     );
+>>>>>>> .r10382
   }  
   lMonthNumber = lMonthNumber/3 + 1;
   // make sure its MM and not just <
@@ -484,7 +509,7 @@ ImapFunction::createContentTypeAttributes(const ImapModule* aModule,
       /* build the contentDispositionModificationDate attribute */ 
       Item lContentDispositionModificationDateName = aModule->getItemFactory()->createQName("", "contentDispostion-modification-date");
       Item lContentDispositionModificationDateType = aModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "string");
-      Item lContentDispositionModificationDateText = aModule->getItemFactory()->createTextNode(lNullItem, String(getDateTime(aContentDispositionModificationDate)));
+      Item lContentDispositionModificationDateText = aModule->getItemFactory()->createTextNode(lNullItem, String(getDateTime(aModule, aContentDispositionModificationDate)));
       aModule->getItemFactory()->createAttributeNode(aParent, lContentDispositionModificationDateName, lContentDispositionModificationDateType, lContentDispositionModificationDateText);
     }
   }
