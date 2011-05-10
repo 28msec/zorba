@@ -95,8 +95,6 @@ protected:
   const ProcessModule* theModule;
 
   String getOneStringArgument (const Arguments_t& aArgs, int index) const;
-  static void throwError(const std::string errorMessage,
-    const Error& errorType);
 };
 
 

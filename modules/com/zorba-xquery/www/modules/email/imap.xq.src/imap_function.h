@@ -32,11 +32,6 @@ namespace zorba { namespace emailmodule {
   protected:
       const ImapModule* theModule;
 
-      static void
-      throwError(
-          const std::string errorMessage,
-          const Error& errorType);
-
       static void throwImapError(const std::string aErrorMessage);
 
       static void

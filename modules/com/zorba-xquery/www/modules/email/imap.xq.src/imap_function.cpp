@@ -44,19 +44,12 @@ ImapFunction::getURI() const
   return theModule->getURI();
 }
 
-void
-ImapFunction::throwError(
-    const std::string aErrorMessage,
-    const Error& aErrorType)
-{
-  throw XQUERY_EXCEPTION_VAR(
-    aErrorType, ERROR_PARAMS( aErrorMessage.c_str() )
-  );
-}
-
 void 
 ImapFunction::throwImapError(const std::string aErrorMessage) {
-  throwError(aErrorMessage, err::XPTY0004); 
+  throw USER_EXCEPTION(
+    err::XPTY0004,
+    ERROR_PARAMS( aErrorMessage )
+  );
 }  
 
 
@@ -95,14 +88,20 @@ ImapFunction::getOneStringArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    throw USER_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( lErrorMessage.str() )
+    );
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    throw USER_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( lErrorMessage.str() )
+    );
   }
   args_iter->close();
   return lTmpString;
@@ -153,14 +152,20 @@ ImapFunction::getOneBoolArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    throw USER_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( lErrorMessage.str() )
+    );
   }
   bool lTmpBool = lItem.getBooleanValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    throw USER_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( lErrorMessage.str() )
+    );
   }
   args_iter->close();
   return lTmpBool;
@@ -186,7 +191,10 @@ ImapFunction::getDateTime(const std::string& aCClientDateTime) {
   size_t lMonthNumber = lMonths.find(lTokens[2]);
   // if the month was not found, were really in trouble!
   if (lMonthNumber == std::string::npos) {
-    throwError("Error while processing month in date of message", err::XPTY0004);
+    throw USER_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( "Error while processing month in date of message" )
+    );
   }  
   lMonthNumber = lMonthNumber/3 + 1;
   // make sure its MM and not just <

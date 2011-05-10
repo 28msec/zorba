@@ -465,7 +465,10 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    throw USER_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( lErrorMessage )
+    );
   }
 
   zorba::String lTmpString = lItem.getStringValue();
@@ -474,17 +477,13 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    throw USER_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( lErrorMessage )
+    );
   }
   args_iter->close();
   return lTmpString;
-}
-
-void ExecFunction::throwError(
-    const std::string aErrorMessage,
-    const Error& aErrorType)
-{
-  throw XQUERY_EXCEPTION_VAR(aErrorType, ERROR_PARAMS( aErrorMessage.c_str() ));
 }
 
 /******************************************************************************
