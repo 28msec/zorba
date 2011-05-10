@@ -948,13 +948,13 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
     
     /* creating the <body> node */ 
-    static Item lBodyName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
-    static Item lBodyType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "bodyTypeChoice");
-    static Item lBodyItem = aModule->getItemFactory()->createElementNode(aParent, lBodyName, lBodyType, false, false, ns_binding); 
+    Item lBodyName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
+    Item lBodyType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "bodyTypeChoice");
+    Item lBodyItem = aModule->getItemFactory()->createElementNode(aParent, lBodyName, lBodyType, false, false, ns_binding); 
     /* in case of non-multipart, just add the body to the message */
     
-    static Item lMultipartParentName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipart");
-    static Item lMultipartParentType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipartType");
+    Item lMultipartParentName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipart");
+    Item lMultipartParentType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipartType");
     Item lMultipartParent; 
     // using a vector instead of a stack, because including stack will clash with the c-client include ... 
     std::vector<BODY*> lBodies;
