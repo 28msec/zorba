@@ -91,8 +91,8 @@ private:
                << "[file " <<  xe->source_uri() << "]";
       if(zorba::UserException const *ue = dynamic_cast<zorba::UserException const*>(&e))
       {
-        zorba::UserException::error_object_type  const & err_objs = ue->getErrorObject();
-        if(err_objs.size() > 0)
+        zorba::UserException::error_object_type  const & err_objs = ue->error_object();
+        if(!err_objs.empty())
         {
           strdescr << " and ..." << std::endl << "User parameters:";
           for(size_t i=0;i<err_objs.size();i++)

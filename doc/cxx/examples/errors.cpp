@@ -112,7 +112,7 @@ error_example_5(Zorba* aZorba)
   } catch (UserException const& e) {
     // get the error object of an error that was raised
     // using the fn:error function
-    UserException::error_object_type const &error = e.getErrorObject();
+    UserException::error_object_type const &error = e.error_object();
 
     UserException::error_object_type::const_iterator it;
     for ( it = error.begin(); it != error.end(); ++it ) {

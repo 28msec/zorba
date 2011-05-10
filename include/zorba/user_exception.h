@@ -84,7 +84,7 @@ public:
    *
    * @return Returns said error object.
    */
-  error_object_type const& getErrorObject() const throw() {
+  error_object_type const& error_object() const throw() {
     return error_object_;
   }
 

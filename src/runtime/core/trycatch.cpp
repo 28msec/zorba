@@ -233,7 +233,7 @@ TryCatchIterator::bindErrorVars(
 	std::vector<store::Item_t> eObjs;
 
 	if ( UserException const *ue = dynamic_cast<UserException const*>( &e ) ) {
-		UserException::error_object_type const &eo = ue->getErrorObject();
+		UserException::error_object_type const &eo = ue->error_object();
 		if ( !eo.empty() )
 			convert_error_object( eo, &eObjs );
 	}
