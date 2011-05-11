@@ -28,6 +28,8 @@ SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src")
 SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_SOURCE_DIR}/cmake_modules")
 SET(Zorba_USE_FILE     "${CMAKE_CURRENT_SOURCE_DIR}/ZorbaUse.cmake")
 GET_TARGET_PROPERTY(Zorba_TESTDRIVER testdriver LOCATION)
+SET(Zorba_EXTERNALMODULECONFIG_FILE
+  "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
 
@@ -39,6 +41,8 @@ SET(Zorba_LIBRARY_DIRS "${CMAKE_INSTALL_PREFIX}/lib")
 SET(Zorba_USE_FILE "${CMAKE_INSTALL_PREFIX}/${ZORBA_SHARE_DIR}/ZorbaUse.cmake")
 SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_INSTALL_PREFIX}/${ZORBA_SHARE_DIR}")
 SET(Zorba_TESTDRIVER "${CMAKE_INSTALL_PREFIX}/bin/testdriver")
+SET(Zorba_EXTERNALMODULECONFIG_FILE
+  "${CMAKE_INSTALL_PREFIX}/${ZORBA_SHARE_DIR}/ExternalModuleConfig.cmake.in")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
 INSTALL(FILES
@@ -54,12 +58,18 @@ INSTALL(FILES
   DESTINATION ${ZORBA_SHARE_DIR})
 
 
-# Create ZorbaUse.cmake file for sharing build settings and macros
+# Install ZorbaUse.cmake file for sharing build settings and macros
 # with dependent projects.
 INSTALL(FILES
   "${CMAKE_CURRENT_SOURCE_DIR}/ZorbaUse.cmake"
   DESTINATION ${ZORBA_SHARE_DIR})
 
+
+# Install ExternalModuleConfig.cmake.in as-is (will be configured by
+# the modules themselves)
+INSTALL(FILES
+  "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in"
+  DESTINATION ${ZORBA_SHARE_DIR})
 
 
 ADD_SUBDIRECTORY(fedora)

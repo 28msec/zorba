@@ -14,12 +14,43 @@
 
 INCLUDE (ZorbaModule)
 
-# all external module libraries are generated in the directory
-# of the corresponding .xq file
 MESSAGE(STATUS "Add com")
 ADD_SUBDIRECTORY(com)
 MESSAGE(STATUS "Add org")
 ADD_SUBDIRECTORY(org)
+
+# Add external module projects - any subdirectories of a directory
+# named "zorba_modules" as a sibling to the main Zorba source
+# directory.
+
+# First, configure the moduleConfig.cmake file for each module
+# project. We must do this "manually" before doing any
+# ADD_SUBDIRECTORY()s, so that all the config files are built and
+# ready for other modules' FIND_PACKAGE() calls. We also add all
+# module build dirs to CMAKE_PREFIX_PATH for the same reason.
+SET (modules_dir "${CMAKE_SOURCE_DIR}/../zorba_modules")
+FILE (GLOB modules RELATIVE "${modules_dir}" "${modules_dir}/*")
+LIST (REVERSE modules)
+FOREACH (module ${modules})
+  SET (module_builddir "${modules_dir}/${module}/build")
+  FILE (MAKE_DIRECTORY "${module_builddir}")
+  # This is duplicating the code in ZorbaModule's
+  # SET_EXTERNAL_MODULE_CONFIG macro
+  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/config/ExternalModuleConfig.cmake.in"
+    "${module_builddir}/${module}Config.cmake")
+  LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
+ENDFOREACH (module)
+
+# Each of these projects will also want to be able to
+# FIND_PACKAGE(Zorba), so add our own build dir to the CMake module
+# path
+LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
+
+# Now, iterate through all the module projects again and actually add
+# them to this Zorba project.
+FOREACH (module ${modules})
+  ADD_SUBDIRECTORY("${modules_dir}/${module}" "${modules_dir}/${module}/build")
+ENDFOREACH (module)
 
 # QQQ This install logic should be part of a more fully-feature macro
 # that is used for ALL modules (whether or not they have C++ code);

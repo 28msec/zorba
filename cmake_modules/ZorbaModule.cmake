@@ -46,7 +46,8 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   # named "src/" or "modules/"; otherwise, set ZORBA_MODULE_ROOT_DIR
   # prior to calling this macro.
   SET(ZORBA_MODULE_RELPATH)
-  SET(possible_roots "${CMAKE_SOURCE_DIR}/modules" "${CMAKE_SOURCE_DIR}/src")
+  SET(possible_roots "${CMAKE_SOURCE_DIR}/modules" "${CMAKE_SOURCE_DIR}/src"
+    "${PROJECT_SOURCE_DIR}/modules" "${PROJECT_SOURCE_DIR}/src")
   IF (ZORBA_MODULE_ROOT_DIR)
     LIST(APPEND possible_roots "${ZORBA_MODULE_ROOT_DIR}")
   ENDIF (ZORBA_MODULE_ROOT_DIR)
@@ -127,17 +128,16 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
     RELATIVE "${TEST_DIR}/Queries" "${TEST_DIR}/Queries/*.xq")
   SET(TESTCOUNTER 0)
   FOREACH(TESTFILE ${TESTFILES})
-    SET(TESTNAME "${CMAKE_PROJECT_NAME}/${TESTFILE}")
-    # QQQ hard-coded src/ directory
+    SET(TESTNAME "${PROJECT_NAME}/${TESTFILE}")
+
     IF(WIN32)
       SET(PATH_SEP ";")
     ELSE(WIN32)
       SET(PATH_SEP ":")
     ENDIF(WIN32)
-    
     ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
-      --rbkt-src "${CMAKE_SOURCE_DIR}/test"
-      --module-path "${CMAKE_SOURCE_DIR}/src/${PATH_SEP}${CMAKE_BINARY_DIR}/src/${SECONDARY_MODULE_PATHS}"
+      --rbkt-src "${TEST_DIR}"
+      --module-path "${PROJECT_SOURCE_DIR}/src/${PATH_SEP}${PROJECT_BINARY_DIR}/src/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
       "${TESTFILE}")
       
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
@@ -149,8 +149,9 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
   MESSAGE(STATUS "Added ${TESTCOUNTER} tests in ${TEST_DIR}")
 ENDMACRO(ADD_TEST_DIRECTORY)
 
-# Convenience Macro for Setting up configure files for it to be exported as a secondary Module Dependency
+# Convenience Macro for Setting up configure files for it to be
+# exported as a secondary Module Dependency
 MACRO(SET_EXTERNAL_MODULE_CONFIG)
-CONFIGURE_FILE("${MODULE_CONFIG_PATH}"
-  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake" @ONLY)
+CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
 ENDMACRO(SET_EXTERNAL_MODULE_CONFIG)

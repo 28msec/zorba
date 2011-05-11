@@ -21,7 +21,8 @@
 #  Zorba_TESTDRIVER   - the Zorba testdriver executable
 #  ZORBA_STORE_NAMES  - all available store implementations
 #  Zorba_USE_FILE     - file which projects depending on Zorba should INCLUDE()
-
+#  Zorba_EXTERNALMODULECONFIG_FILE - file which modules should use to
+#    export their module paths for dependent modules
 
 # Tell the user project where to find our headers, libraries, and
 # CMake modules
@@ -37,6 +38,10 @@ SET(ZORBA_VERSION "@ZORBA_VERSION@")
 # Tell the user project where to find the "USE" file.
 # This file uses the above settings to configure the user project.
 SET(Zorba_USE_FILE "@Zorba_USE_FILE@")
+
+# Set the path to ExternalModuleConfig.cmake.in, used by module
+# projects to export their module paths.
+SET(Zorba_EXTERNALMODULECONFIG_FILE "@Zorba_EXTERNALMODULECONFIG_FILE@")
 
 IF(NOT Zorba_FIND_QUIETLY)
   MESSAGE(STATUS "Found Zorba @ZORBA_VERSION@ (stores: ${ZORBA_STORE_NAMES})")

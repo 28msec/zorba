@@ -26,6 +26,9 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/src)
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/test)
 INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
 
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaAddTest.cmake)
+
 ADD_SUBDIRECTORY(api)
 ADD_SUBDIRECTORY(rbkt)
 ADD_SUBDIRECTORY(extern)
@@ -39,14 +42,12 @@ SET (TEST_PLAN_SERIALIZER_SRCS
     test_plan_serializer.cpp
     timer.cpp)
 
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
-
-
 #
 # apitest
 #
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "apitest.cpp" "" "" "")
+
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
   
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("path_test" "path_test.cpp" "" "" "")
   

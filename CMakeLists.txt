@@ -442,11 +442,16 @@ ENDIF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
 
 ADD_SUBDIRECTORY(scripts)
 ADD_SUBDIRECTORY(cmake_modules)
-# add this here because we need the file target
-# later for the generation of runtime and functions
-ADD_SUBDIRECTORY(modules)
 
+# Subdirectory ordering: We need to include "test" before "config" so
+# ZorbaConfig knows about testdriver. We need to include "config"
+# before "modules" so external modules will be able to find
+# ZorbaConfig.cmake.
+
+ADD_SUBDIRECTORY(test)
+ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(include)
+ADD_SUBDIRECTORY(modules)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)
 ADD_SUBDIRECTORY(src)
@@ -457,9 +462,7 @@ IF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
 ENDIF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
 
 ADD_SUBDIRECTORY(bin)
-ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(doc)
-ADD_SUBDIRECTORY(config)
 
 # add the uninstall support
 # QQQ move to config/
