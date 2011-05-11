@@ -113,7 +113,7 @@ declare %private %sequential function xqdoc2html:clear-folder(
     for $file in file:list($folderPath, fn:true())
     let $extension := fn:tokenize($file, "\.")[fn:last()]
     return
-      if ($extension = $extensions) then
+      if (fn:exists(fn:distinct-values($extension[.=$extensions]))) then
         file:delete(fn:concat($folderPath, file:directory-separator(), $file))
       else
         ()
@@ -150,11 +150,14 @@ declare %private %sequential function xqdoc2html:gather-and-copy(
     let $fileDestinationPath := 
     fn:concat($destinationPath, file:directory-separator(), $fileName)
 
-    return block
+    return
+      file:copy($fileSourcePath,$fileDestinationPath);
+    
+    (:return block
     {
-      file:copy(fn:trace($fileSourcePath, "$fileSourcePath = "),
+      file:copy(fn:trace($fileSourcePath,      "$fileSourcePath      = "),
                 fn:trace($fileDestinationPath, "$fileDestinationPath = "));
-    };
+    };:)
 };
 
 (:~
@@ -172,7 +175,6 @@ declare %private %sequential function xqdoc2html:copy-files(
   $extensions       as xs:string+)
 {
   file:create-directory($destinationPath);
-  xqdoc2html:clear-folder($destinationPath, $extensions);
   xqdoc2html:gather-and-copy($sourcePath, $destinationPath, $extensions);
 };
 
@@ -191,7 +193,7 @@ declare %private %sequential function xqdoc2html:copy-xqsrc-folders(
 {
   file:create-directory($xqSrcPath);
 
-  xqdoc2html:clear-folder($xqSrcPath, ("cpp", "h"));
+  xqdoc2html:clear-folder($xqSrcPath, ("src"));
     
   (: gather all .xq.src folders :)
   let $xqSrcFolders := file:list($modulePath, fn:true(), "*xq.src")
@@ -243,12 +245,12 @@ declare %sequential function xqdoc2html:copy-xhtml-requisites(
       $xqPath         := fn:concat($xhtmlPath,      file:directory-separator(), "modules"),
       $imagesPath     := fn:concat($xhtmlPath,      file:directory-separator(), "images"),
       $libPath        := fn:concat($xhtmlPath,      file:directory-separator(), "lib"),
-      $cssPath        := fn:concat($xhtmlPath,      file:directory-separator(), "css"),
+      $cssPath        := fn:concat($xhtmlPath,      file:directory-separator(), "styles"),
       $templatesPath  := fn:concat($xhtmlPath,      file:directory-separator(), "templates"),
       $examplesPath   := fn:concat($xhtmlPath,      file:directory-separator(), "examples")
   return
     block {
-      (: first - create the xhtml folder is it does not exist already :)
+      (: first - create the xhtml folder if it does not exist already :)
       file:create-directory($xhtmlPath);
 
       (: second - clear the folder of all the files with these extensions :)
@@ -259,7 +261,7 @@ declare %sequential function xqdoc2html:copy-xhtml-requisites(
       xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath, ("gif", "svg"));
       xqdoc2html:copy-files($xhtmlRequisitesPath, $libPath, "js");
       xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath, "css");
-      xqdoc2html:copy-files($xhtmlRequisitesPath, $templatesPath, "html");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, $templatesPath, "html"); 
 
       xqdoc2html:copy-xqsrc-folders($modulesPath, $xqSrcPath);
 
