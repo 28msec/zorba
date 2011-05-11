@@ -116,6 +116,19 @@ public:
 };
 
 
+//fn:has-children
+class fn_has_children_3_0 : public function
+{
+public:
+  fn_has_children_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

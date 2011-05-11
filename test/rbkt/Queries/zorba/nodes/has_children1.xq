@@ -1,0 +1,1 @@
+fn:has-children(<a/>)

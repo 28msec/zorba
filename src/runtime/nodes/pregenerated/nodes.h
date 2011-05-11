@@ -216,6 +216,40 @@ public:
 };
 
 
+/**
+ * fn:has-children
+ * Author: Zorba Team
+ */
+class FnHasChildrenIterator : public NaryBaseIterator<FnHasChildrenIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnHasChildrenIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnHasChildrenIterator,
+    NaryBaseIterator<FnHasChildrenIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnHasChildrenIterator, PlanIteratorState>*)this);
+  }
+
+  FnHasChildrenIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnHasChildrenIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnHasChildrenIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

@@ -171,6 +171,34 @@ FnLangIterator::~FnLangIterator() {}
 // </FnLangIterator>
 
 
+// <FnHasChildrenIterator>
+const char* FnHasChildrenIterator::class_name_str = "FnHasChildrenIterator";
+FnHasChildrenIterator::class_factory<FnHasChildrenIterator>
+FnHasChildrenIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnHasChildrenIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnHasChildrenIterator::class_versions_count =
+sizeof(FnHasChildrenIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnHasChildrenIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnHasChildrenIterator::~FnHasChildrenIterator() {}
+
+// </FnHasChildrenIterator>
+
+
 
 }
 

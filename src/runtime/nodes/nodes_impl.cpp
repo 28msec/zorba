@@ -208,5 +208,31 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+bool FnHasChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t     item, child1;
+  store::Iterator_t children;
+  bool              has_children = false;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if(theChildren.size() && consumeNext(item, theChildren[0].getp(), planState))
+  {
+    children = item->getChildren();
+    if(!children.isNull())
+    {
+      children->open();
+      if(children->next(child1))
+        has_children = true;
+      children->close();
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, has_children), state);
+
+  STACK_END (state);
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

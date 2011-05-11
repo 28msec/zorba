@@ -305,6 +305,8 @@ namespace zorba{
 
     class FnLangIterator;
 
+    class FnHasChildrenIterator;
+
     class AbsIterator;
 
     class CeilingIterator;
@@ -903,6 +905,9 @@ public:
 
     virtual void beginVisit ( const FnLangIterator& ) = 0;
     virtual void endVisit   ( const FnLangIterator& ) = 0;
+
+    virtual void beginVisit ( const FnHasChildrenIterator& ) = 0;
+    virtual void endVisit   ( const FnHasChildrenIterator& ) = 0;
 
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;

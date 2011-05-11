@@ -90,6 +90,16 @@ PlanIter_t fn_number::codegen(
   return NULL;
 }
 
+PlanIter_t fn_has_children_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnHasChildrenIterator(sctx, loc, argv);
+}
+
 void populate_context_nodes(static_context* sctx)
 {
   DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
@@ -158,6 +168,13 @@ void populate_context_nodes(static_context* sctx)
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
       FunctionConsts::FN_NUMBER_1);
+
+
+  DECL_WITH_KIND(sctx, fn_has_children_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","has-children"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_HAS_CHILDREN_1);
 
 }
 

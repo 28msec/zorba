@@ -2022,6 +2022,20 @@ void PrinterVisitor::endVisit ( const FnLangIterator& ) {
 // </FnLangIterator>
 
 
+// <FnHasChildrenIterator>
+void PrinterVisitor::beginVisit ( const FnHasChildrenIterator& a) {
+  thePrinter.startBeginVisit("FnHasChildrenIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnHasChildrenIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnHasChildrenIterator>
+
+
 // <AbsIterator>
 void PrinterVisitor::beginVisit ( const AbsIterator& a) {
   thePrinter.startBeginVisit("AbsIterator", ++theId);

@@ -150,4 +150,24 @@
 
 </zorba:iterator>
 
+  <!--
+/*******************************************************************************
+* 13.4 fn:has-children
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnHasChildrenIterator">
+
+    <zorba:description author="Zorba Team">fn:has-children</zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="has-children" prefix="fn" version="3.0">
+        <zorba:param>node()?</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+  </zorba:iterator>
+
 </zorba:iterators>
