@@ -20,7 +20,7 @@
  : @author Stephanie Russell
  :
  :)
-module namespace  err = "http://www.zorba-xquery.com/modules/oauth/errors" ;
+module namespace  err = "http://www.zorba-xquery.com/modules/oauth/error";
 
 (:~
  : Errors namespace URI.

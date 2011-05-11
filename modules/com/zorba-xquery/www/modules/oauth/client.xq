@@ -20,7 +20,7 @@ import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
 (:~
  : Use err module functions for throwing errors.
  :)
-import module namespace err="http://www.zorba-xquery.com/modules/oauth/errors";
+import module namespace err="http://www.zorba-xquery.com/modules/oauth/error";
 
 declare namespace op = "http://www.zorba-xquery.org/options";
 
