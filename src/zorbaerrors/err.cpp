@@ -107,10 +107,10 @@ ostream& operator<<( ostream &o, kind k ) {
   // dictionary later.
   //
   switch ( k ) {
-    case XQUERY_DYNAMIC: o << "dynamic"           ; break;
-    case XQUERY_STATIC : o << "static"            ; break;
-    case XQUERY_TYPE   : o << "type"              ; break;
-    default            : /* suppresses warning */   break;
+    case UNKNOWN_KIND  : o << "unknown"; break;
+    case XQUERY_DYNAMIC: o << "dynamic"; break;
+    case XQUERY_STATIC : o << "static" ; break;
+    case XQUERY_TYPE   : o << "type"   ; break;
   }
   return o;
 }
@@ -121,6 +121,8 @@ ostream& operator<<( ostream &o, category c ) {
   // dictionary later.
   //
   switch ( c ) {
+    case UNKNOWN_CATEGORY    : o << "unknown"               ; break;
+
     //   XQUERY_CORE         : /* nothing */
     case XQUERY_FULL_TEXT    : o << "full-text"             ; break;
     case XQUERY_SCRIPTING    : o << "scripting"             ; break;
@@ -134,6 +136,7 @@ ostream& operator<<( ostream &o, category c ) {
     case ZORBA_SERIALIZATION : o << "Zorba serialization"   ; break;
     case ZORBA_STORE         : o << "Zorba store"           ; break;
     case ZORBA_XQP           : o << "Zorba"                 ; break;
+
     default                  : /* suppresses warning */       break;
   }
   return o;
