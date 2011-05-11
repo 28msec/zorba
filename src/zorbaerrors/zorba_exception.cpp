@@ -119,13 +119,11 @@ char const* ZorbaException::what() const throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace internal {
-
 ZorbaException make_zorba_exception( char const *throw_file,
                                      ZorbaException::line_type throw_line,
                                      Error const &error,
-                                     err::parameters const &params ) {
-  err::parameters::value_type message( error.message() );
+                                     internal::err::parameters const &params ) {
+  internal::err::parameters::value_type message( error.message() );
   params.substitute( &message );
   return ZorbaException( error, throw_file, throw_line, message.c_str() );
 }
@@ -133,13 +131,11 @@ ZorbaException make_zorba_exception( char const *throw_file,
 ZorbaException* new_zorba_exception( char const *throw_file,
                                      ZorbaException::line_type throw_line,
                                      Error const &error,
-                                     err::parameters const &params ) {
-  err::parameters::value_type message( error.message() );
+                                     internal::err::parameters const &params ) {
+  internal::err::parameters::value_type message( error.message() );
   params.substitute( &message );
   return new ZorbaException( error, throw_file, throw_line, message.c_str() );
 }
-
-} // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -89,7 +89,7 @@ bool func_example_0(Zorba* aZorba)
     return true;
   }
 
-	return false;
+  return false;
 }
 
 
@@ -209,7 +209,7 @@ private:
 
 bool func_example_1(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyExternalModule module;
   sctx->registerModule(&module);
@@ -219,10 +219,10 @@ bool func_example_1(Zorba* aZorba)
             << "declare function foo:bar1($a1, $a2) external;" << std::endl
             << "foo:bar1((1,2,3), (4,5,6))" << std::endl;
 
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
   std::cout << query << std::endl;
 
-	return true;
+  return true;
 }
 
 
@@ -337,17 +337,17 @@ bool func_example_2_1(Zorba* aZorba)
             << "declare function foo:bar2($a1, $a2) external;" << std::endl
             << "foo:bar2((1,2,3), (4,5,6))" << std::endl;
 
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
   std::cout << query << std::endl;
 
-	return true;
+  return true;
 }
 
 
 bool func_example_2_2(Zorba* aZorba)
 {
-	StaticContext_t lContext = aZorba->createStaticContext();
+  StaticContext_t lContext = aZorba->createStaticContext();
 
   MyExternalModule lModule;
   
@@ -360,11 +360,11 @@ bool func_example_2_2(Zorba* aZorba)
         << "let $s2 := (4,5,6)" << std::endl
         << "for $x in 1 to 6 return (foo:bar2($s1, $s2)[7-$x])" << std::endl;
 
-	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
+  XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
 
   std::cout << lQuery << std::endl;
 
-	return true;
+  return true;
 }
 
 
@@ -435,8 +435,8 @@ private:
         bool done = !arg0_iter->next(result);
         if (done && theIsEmpty)
         {
-          throw XQUERY_EXCEPTION( err::XPTY0004,
-		ERROR_PARAMS( "Argument must not be the empty sequence." ) );
+          throw USER_EXCEPTION( err::XPTY0004,
+    ERROR_PARAMS( "Argument must not be the empty sequence." ) );
         }
         theIsEmpty = false;
         return !done;
@@ -459,7 +459,7 @@ private:
 
 bool func_example_3_1(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyExternalModule module;
   sctx->registerModule(&module);
@@ -470,19 +470,19 @@ bool func_example_3_1(Zorba* aZorba)
             << "let $s1 := ()" << std::endl
             << "for $x in 1 to 6 return (foo:bar3($s1))" << std::endl;
     
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
   try 
   {
     std::cout << query << std::endl;
   }
-  catch (ZorbaException& ex) 
+  catch (ZorbaException const& ex) 
   {
     std::cerr << ex << std::endl;
-    return ex.error().kind() == err::XQUERY_TYPE;
+    return true; //ex.error().kind() == err::XQUERY_TYPE;
   }
 
-	return false;
+  return false;
 }
 
 
@@ -527,7 +527,7 @@ public:
 
 bool func_example_4_1(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyExternalModule module;
   sctx->registerModule(&module);
@@ -537,7 +537,7 @@ bool func_example_4_1(Zorba* aZorba)
             << "declare function foo:bar4() external;" << std::endl
             << "for $x in 1 to 6 return (foo:bar4())" << std::endl;
     
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
   DynamicContext* lDynContext = query->getDynamicContext();
 
@@ -555,7 +555,7 @@ bool func_example_4_1(Zorba* aZorba)
     return ex.error().kind() == err::XQUERY_STATIC;
   }
 
-	return true;
+  return true;
 }
 
 
@@ -712,7 +712,7 @@ public:
 
 bool func_example_5(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyModuleURLResolver moduleResolver;
   sctx->registerURLResolver(&moduleResolver);
@@ -791,4 +791,4 @@ int external_functions(int argc, char* argv[])
   zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
-
+/* vim:set et sw=2 ts=2: */

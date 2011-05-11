@@ -23,7 +23,22 @@ namespace zorba {
 
 ////////// ZorbaException creation ////////////////////////////////////////////
 
-namespace internal {
+/**
+ * Makes a ZorbaException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error.
+ * @param params The error message parameters.
+ * @return Returns a new ZorbaException.
+ */
+ZorbaException make_zorba_exception( char const *throw_file,
+                                     ZorbaException::line_type throw_line,
+                                     Error const &error,
+                                     internal::err::parameters const &params =
+                                      internal::err::parameters::empty );
 
 /**
  * Dynamically allocates a Zorbaxception.
@@ -39,8 +54,15 @@ namespace internal {
 ZorbaException* new_zorba_exception( char const *throw_file,
                                      ZorbaException::line_type throw_line,
                                      Error const &error,
-                                     err::parameters const &params =
-                                      err::parameters::empty );
+                                     internal::err::parameters const &params =
+                                      internal::err::parameters::empty );
+
+/**
+ * The macro to use to create a ZorbaException.
+ * \hideinitializer
+ */
+#define ZORBA_EXCEPTION(...) \
+  ::zorba::make_zorba_exception( __FILE__, __LINE__, ::zorba:: __VA_ARGS__ )
 
 /**
  * Creates a dynamically allocated Zorbaxception using the local name of an
@@ -48,17 +70,14 @@ ZorbaException* new_zorba_exception( char const *throw_file,
  * \hideinitializer
  */
 #define NEW_ZORBA_EXCEPTION(...) \
-  MAKE_EXCEPTION_VAR( internal::new_zorba_exception, ::zorba:: __VA_ARGS__ )
+  ::zorba::new_zorba_exception( __FILE__, __LINE__, ::zorba:: __VA_ARGS__ )
 
 /**
- * \internal
  * Convenience macro for throwing "I/O error" exception.
  * \hideinitializer
  */
 #define ZORBA_IO_EXCEPTION(FUNC,PATH) \
   ZORBA_EXCEPTION( zerr::ZOSE0004_IO_ERROR, ERROR_PARAMS( PATH, ::zorba::os_error::get_err_string( FUNC ) ) )
-
-} // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
 

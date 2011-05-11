@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-#include <iostream>
-
 #include <zorba/config.h>
 
 #ifdef ZORBA_HAVE_EXECINFO_H
-#include <cstdlib>
-#include <execinfo.h>
-#endif
+# include <cstdlib>
+# include <execinfo.h>
+#endif /* ZORBA_HAVE_EXECINFO_H */
+#include <iostream>
 
 #include <zorba/error_list.h>
-#include <zorba/zorba_exception.h>
+
+#include "zorba_exception.h"
 
 #ifdef WIN32
 #include "StackWalker.h"
-#endif // WIN32
+#endif /* WIN32 */
 
 using namespace std;
 

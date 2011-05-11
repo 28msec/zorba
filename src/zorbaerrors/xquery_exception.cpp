@@ -114,14 +114,12 @@ ostream& XQueryException::print( ostream &o ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace internal {
-
 XQueryException make_xquery_exception( char const *throw_file,
                                        ZorbaException::line_type throw_line,
                                        Error const &error,
-                                       err::parameters const &params,
-                                       err::location const &loc ) {
-  err::parameters::value_type message( error.message() );
+                                       internal::err::parameters const &params,
+                                       internal::err::location const &loc ) {
+  internal::err::parameters::value_type message( error.message() );
   params.substitute( &message );
   XQueryException xe( error, throw_file, throw_line, message.c_str() );
   if ( loc )
@@ -142,8 +140,6 @@ XQueryException* new_xquery_exception( char const *throw_file,
     xe->set_source( loc.file(), loc.line(), loc.column() );
   return xe;
 }
-
-} // namespace internal
 
 void set_source( ZorbaException &ze, char const *file,
                  XQueryException::line_type line,

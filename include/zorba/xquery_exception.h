@@ -29,52 +29,6 @@ namespace serialization {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class XQueryException;
-
-namespace internal {
-
-/**
- * \internal
- * Makes an XQueryException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error message parameters.
- * @param loc The error XQuery source-code location.
- * @return Returns a new XQueryException.
- */
-ZORBA_DLL_PUBLIC XQueryException
-make_xquery_exception( char const *throw_file,
-                       ZorbaException::line_type throw_line,
-                       Error const &error, err::parameters const &params,
-                       err::location const &loc = err::location::empty );
-
-/**
- * \internal
- * Dynamically allocates an XQueryException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error message parameters.
- * @param loc The error XQuery source-code location.
- * @return Returns a new XQueryException.
- */
-ZORBA_DLL_PUBLIC XQueryException*
-new_xquery_exception( char const *throw_file,
-                      ZorbaException::line_type throw_line,
-                      Error const &error, err::parameters const &params,
-                      err::location const &loc = err::location::empty );
-
-} // namespace internal
-
-///////////////////////////////////////////////////////////////////////////////
-
 /**
  * An %XQueryException is-a ZorbaException for errors with the user's XQuery.
  * An %XQueryException therefore also contains the XQuery source URI, line, and
@@ -192,12 +146,12 @@ private:
   internal::err::location source_loc_;
   XQueryStackTrace query_trace_;
 
-  friend XQueryException internal::make_xquery_exception(
+  friend XQueryException make_xquery_exception(
     char const*, ZorbaException::line_type, Error const&,
     internal::err::parameters const&, internal::err::location const&
   );
 
-  friend XQueryException* internal::new_xquery_exception(
+  friend XQueryException* new_xquery_exception(
     char const*, ZorbaException::line_type, Error const&,
     internal::err::parameters const&, internal::err::location const&
   );
@@ -213,73 +167,6 @@ protected:
   friend void serialization::operator&( serialization::Archiver&,
                                         ZorbaException*& );
 };
-
-#define MAKE_EXCEPTION_VAR(MAKE_FN,...) \
-  ::zorba::MAKE_FN( __FILE__, __LINE__, __VA_ARGS__ )
-
-/**
- * Creates an XQueryException using the given Error variable.
- * \hideinitializer
- */
-#define XQUERY_EXCEPTION_VAR(...) \
-  MAKE_EXCEPTION_VAR( internal::make_xquery_exception, __VA_ARGS__ )
-
-/**
- * Creates an XQueryException using the local name of an error.
- * \hideinitializer
- */
-#define XQUERY_EXCEPTION(...) \
-  XQUERY_EXCEPTION_VAR( ::zorba:: __VA_ARGS__ )
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace internal {
-
-/**
- * \internal
- * Makes an XQueryException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param loc The error XQuery source-code location.
- * @return Returns a new XQueryException.
- */
-inline XQueryException
-make_xquery_exception( char const *throw_file,
-                       ZorbaException::line_type throw_line,
-                       Error const &error,
-                       err::location const &loc = err::location::empty ) {
-  return make_xquery_exception(
-    throw_file, throw_line, error, err::parameters::empty, loc
-  );
-}
-
-/**
- * \internal
- * Dynamically allocates an XQueryException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param loc The error XQuery source-code location.
- * @return Returns a new XQueryException.
- */
-inline XQueryException*
-new_xquery_exception( char const *throw_file,
-                      ZorbaException::line_type throw_line,
-                      Error const &error,
-                      err::location const &loc = err::location::empty ) {
-  return new_xquery_exception(
-    throw_file, throw_line, error, err::parameters::empty, loc
-  );
-}
-
-} // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
 

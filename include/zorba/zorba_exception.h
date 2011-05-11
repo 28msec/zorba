@@ -44,19 +44,6 @@ public:
   typedef internal::err::location::line_type line_type;
 
   /**
-   * Constructs a %ZorbaException.
-   *
-   * @param error The error.
-   * @param throw_file The C++ source-code file name whence the exception was
-   * thrown.
-   * @param throw_line The C++ source-code line number whence the exception was
-   * thrown.
-   * @param message The error message.
-   */
-  ZorbaException( Error const &error, char const *throw_file,
-                  line_type throw_line, char const *message );
-
-  /**
    * Copy-constructs a %ZorbaException.
    *
    * @param from The %ZorbaException to copy from.
@@ -130,6 +117,19 @@ public:
 
 protected:
   /**
+   * Constructs a %ZorbaException.
+   *
+   * @param error The error.
+   * @param throw_file The C++ source-code file name whence the exception was
+   * thrown.
+   * @param throw_line The C++ source-code line number whence the exception was
+   * thrown.
+   * @param message The error message.
+   */
+  ZorbaException( Error const &error, char const *throw_file,
+                  line_type throw_line, char const *message );
+
+  /**
    * Prints the exception to the given ostream.
    *
    * @param o The ostream to print to.
@@ -139,16 +139,25 @@ protected:
 
   friend std::ostream& operator<<( std::ostream&, ZorbaException const& );
 
-  // for plan serialization
-  ZorbaException( serialization::Archiver& );
-  friend void serialization::operator&( serialization::Archiver&,
-                                        ZorbaException*& );
-
 private:
   Error const *error_;
   std::string throw_file_;
   line_type throw_line_;
   std::string message_;
+
+  friend ZorbaException make_zorba_exception(
+    char const*, line_type, Error const&, internal::err::parameters const&
+  );
+
+  friend ZorbaException* new_zorba_exception(
+    char const*, line_type, Error const&, internal::err::parameters const&
+  );
+
+protected:
+  // for plan serialization
+  ZorbaException( serialization::Archiver& );
+  friend void serialization::operator&( serialization::Archiver&,
+                                        ZorbaException*& );
 };
 
 /**
@@ -161,36 +170,6 @@ private:
 inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
   return e.print( o );
 }
-
-/**
- * The macro to use to create a ZorbaException.
- * \hideinitializer
- */
-#define ZORBA_EXCEPTION(...) \
-  ::zorba::internal::make_zorba_exception( __FILE__, __LINE__, ::zorba:: __VA_ARGS__ )
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace internal {
-
-/**
- * \internal
- * Makes a ZorbaException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error message parameters.
- * @return Returns a new ZorbaException.
- */
-ZORBA_DLL_PUBLIC ZorbaException
-make_zorba_exception( char const *throw_file,
-                      ZorbaException::line_type throw_line, Error const &error,
-                      err::parameters const &params = err::parameters::empty );
-
-} // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
 

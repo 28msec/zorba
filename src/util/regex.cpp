@@ -18,10 +18,10 @@
 #include <vector>
 
 #include <zorba/error_list.h>
-#include <zorba/xquery_exception.h>
 
 #include "zorbaerrors/assert.h"
 #include "zorbaerrors/dict.h"
+#include "zorbaerrors/xquery_exception.h"
 
 #include "ascii_util.h"
 #include "regex.h"
