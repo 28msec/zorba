@@ -63,7 +63,7 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   try 
   {
-    lTargetUri = URI(resolvedUriString);
+    lTargetUri = URI(uriString);
   }
   catch (XQueryException& e)
   {
