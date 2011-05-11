@@ -53,9 +53,13 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   uriString = uriItem->getStringValue();
 
+#if 0
   resolvedUriString = theSctx->resolve_relative_uri(uriString, false);
 
   GENV_ITEMFACTORY->createAnyURI(resolvedUriItem, resolvedUriString);
+#else
+  GENV_ITEMFACTORY->createAnyURI(resolvedUriItem, uriString);
+#endif
 
   try 
   {
@@ -63,7 +67,8 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   catch (XQueryException& e)
   {
-    set_source( e, loc );
+    set_source(e, loc);
+    e.set_error(err::FOUP0002);
     throw;
   }
 

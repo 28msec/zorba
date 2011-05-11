@@ -1730,7 +1730,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     catch (XQueryException& e)
     {
-      set_source( e, loc );
+      set_source(e, loc);
       throw;
     }
 
@@ -1751,9 +1751,10 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         // the moment, we assume any "unknown" schemes are probably
         // Windows drive letters.
         zstring baseUri = theSctx->get_base_uri();
-        if ( ( (uri::get_scheme(uriString) == uri::none) ||
-            (uri::get_scheme(uriString) == uri::unknown) ) &&
-          (uri::get_scheme(baseUri) == uri::file) ) {
+        if ((uri::get_scheme(uriString) == uri::none ||
+             uri::get_scheme(uriString) == uri::unknown) &&
+            uri::get_scheme(baseUri) == uri::file) 
+        {
           // Ok, we assume it's a filesystem path. First normalize it.
           zstring normalizedPath =
             fs::get_normalized_path(uriString, zstring(""));
@@ -1761,31 +1762,37 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           // want when base URI represents a file. So, when the
           // normalized path is relative, we pretend it's a relative
           // URI and resolve it as such.
-          if (fs::is_absolute(normalizedPath)) {
+          if (fs::is_absolute(normalizedPath)) 
+          {
             URI::encode_file_URI(normalizedPath, resolvedURIString);
           }
-          else {
+          else 
+          {
 #ifdef WIN32
             ascii::replace_all(normalizedPath, '\\', '/');
 #endif
-            resolvedURIString =
-              theSctx->resolve_relative_uri(normalizedPath, true);
+            resolvedURIString = theSctx->resolve_relative_uri(normalizedPath, true);
           }
         }
-        else {
+        else 
+        {
           resolvedURIString = theSctx->resolve_relative_uri(uriString, true);
         }
-        GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
       catch (ZorbaException& e)
       {
-        if(e.error() == err::XQST0046) //the value of a URILiteral is of nonzero length and is not in the lexical space of xs:anyURI.
-					e.set_error( err::FODC0005 );
+        if (e.error() == err::XQST0046) 
+          //the value of a URILiteral is of nonzero length and is not in the
+          // lexical space of xs:anyURI.
+          e.set_error(err::FODC0005);
         else
-					e.set_error( err::FODC0002 );
-				set_source( e, loc );
-				throw;
+          e.set_error(err::FODC0002);
+        
+        set_source(e, loc);
+        throw;
       }
+
+      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
 
       try
       {
@@ -1800,15 +1807,15 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       catch (ZorbaException& e)
       {
-				e.set_error( err::FODC0002 );
-				set_source( e, loc );
+				e.set_error(err::FODC0002);
+				set_source(e, loc);
 				throw;
       }
 
       STACK_PUSH(true, state);
     }
-
   } // return empty sequence if input is the empty sequence
+
   STACK_END (state);
 }
 

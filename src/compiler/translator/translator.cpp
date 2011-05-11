@@ -2796,7 +2796,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       else
         moduleRootSctx = independentSctx->create_child_context();
 
-      if (targetNS == "http://www.zorba-xquery.com/modules/file")
+      if (targetNS == "http://expath.org/ns/file")
       {
         // We want the baseURI property of the module sctx to be the full
         // pathname of the query file.
