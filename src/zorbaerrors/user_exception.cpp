@@ -39,7 +39,8 @@ UserException::UserException( char const *ns, char const *prefix,
     error_object->swap( error_object_ );
 }
 
-UserException::UserException(zorba::serialization::Archiver &ar) : XQueryException(ar)
+UserException::UserException( serialization::Archiver &ar ) :
+  XQueryException( ar )
 {
 }
 
