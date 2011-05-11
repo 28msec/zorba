@@ -33,4 +33,4 @@ module namespace hmac = "http://www.zorba-xquery.com/modules/security/hmac";
 declare function hmac:sha1(
   $message as xs:string,
   $secret-key as xs:string
-) external;
+) as xs:string external;

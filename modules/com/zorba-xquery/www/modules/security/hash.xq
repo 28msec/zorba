@@ -22,9 +22,6 @@
  :)
 module namespace hash = "http://www.zorba-xquery.com/modules/security/hash";
 
-import module namespace alg = "http://www.zorba-xquery.com/modules/security/algorithms";
-
-
 (:~
  : Computes the MD5 hash of the text content of the node provided as parameter.
  :
@@ -47,27 +44,6 @@ declare function hash:sha1($value as xs:string) as xs:string
   hash:hash-unchecked(<a>{$value}</a>, "sha1")
 };
 
-
-(:~
- : Computes the hash of the text content of the node provided as parameter.
- :
- : @param $value The node whose text content will be hashed.
- : @param $alg The algorithm to use for this hashing operation. Currently only
- :		       "MD5" and "SHA1" algorithms are available. This parameter is
- :             case insensitive.
- : @return The hash of the node's text content.
- : @error An error is thrown if the hash algorithm is not supported.
- :)
-declare function hash:hash($value as node(), $alg as xs:string) as xs:string
-{
-  let $a := fn:lower-case($alg)
-  return
-    if ($alg:supported-algorithms = $a) then
-      hash:hash-unchecked($value, $a)
-    else
-      fn:error($alg:unknown-algorithm)
-};
-
 (:~
  : This function is only used internally and should not be called directly by the
  : user - it does not check, if the requested algorithm is supported.
@@ -77,5 +53,5 @@ declare function hash:hash($value as node(), $alg as xs:string) as xs:string
  :        "MD5" and "SHA1" algorithms are available. This parameter is case insensitive.
  : @return The MD5 hash of the node's text content.
  :)
-declare function hash:hash-unchecked($value as node(), $alg as xs:string) as xs:string external;
+declare %private function hash:hash-unchecked($value as node(), $alg as xs:string) as xs:string external;
 
