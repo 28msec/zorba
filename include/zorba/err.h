@@ -253,11 +253,36 @@ std::ostream& operator<<( std::ostream &o, category c );
 
 /**
  * An err::kind is the kind of error.
+ * See: http://www.w3.org/TR/xquery-30/#id-kinds-of-errors
  */
 enum kind {
   UNKNOWN_KIND,                         // must have integer value of 0
-  XQUERY_DYNAMIC,
+
+  /**
+   * A static error is an error that must be detected during the static
+   * analysis phase. A syntax error is an example of a static error.
+   */
   XQUERY_STATIC,
+
+  /**
+   * A dynamic error is an error that must be detected during the dynamic
+   * evaluation phase and may be detected during the static analysis phase.
+   * Numeric overflow is an example of a dynamic error.
+   */
+  XQUERY_DYNAMIC,
+
+  /**
+   * A type error may be raised during the static analysis phase or the dynamic
+   * evaluation phase.
+   * 
+   * During the static analysis phase, a type error occurs when the static type
+   * of an expression does not match the expected type of the context in which
+   * the expression occurs.
+   *
+   * During the dynamic evaluation phase, a type error occurs when the dynamic
+   * type of a value does not match the expected type of the context in which
+   * the value occurs.
+   */
   XQUERY_TYPE
 };
 
