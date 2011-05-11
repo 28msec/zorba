@@ -105,7 +105,7 @@ void throw_last_error(const zorba::String& aFilename, unsigned int aLineNumber){
           (LPTSTR)&lpvMessageBuffer, 0, NULL);
   wsprintf(lErrorBuffer,TEXT("Process Error Code: %d - Message= %s"),GetLastError(), (TCHAR *)lpvMessageBuffer);
   LocalFree(lpvMessageBuffer);
-  Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/process",
+  Item lQName = ProcessModule::getItemFactory()->createQName("http://www.zorba-xquery.com/modules/process",
       "XPTY0004");
 #ifdef UNICODE
   char error_str[1024];
@@ -235,8 +235,8 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       !CreatePipe(&lOutRead,&lStdOut,&lSecurityAttributes,1024*1024) // std::cout >> lOutRead
       || !CreatePipe(&lErrRead,&lStdErr,&lSecurityAttributes,1024*1024) // std::cerr >> lErrRead
     ){
-    throw USER_EXCEPTION(
-        err::XPTY0004, "Couldn't create one of std::cout/std::cerr pipe for child process execution."
+    Item lQName = ProcessModule::getItemFactory()->createQName("http://www.zorba-xquery.com/modules/process", "XPTY0004");
+    USER_EXCEPTION(lQName, "Couldn't create one of std::cout/std::cerr pipe for child process execution."
     );
   };
   
@@ -255,8 +255,8 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       std::stringstream lErrorMsg;
       lErrorMsg 
         << "Couldn't get exit code from child process. Executed command: '" << aCommand << "'.";
-      throw USER_EXCEPTION(
-        err::XPTY0004, lErrorMsg.str().c_str()
+      Item lQName = ProcessModule::getItemFactory()->createQName("http://www.zorba-xquery.com/modules/process", "XPTY0004");
+      USER_EXCEPTION(lQName, lErrorMsg.str().c_str()
       );
     }
   
