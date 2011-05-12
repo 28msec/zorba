@@ -62,6 +62,28 @@ make_user_exception( char const *throw_file,
                      char const *description, err::location const &loc,
                      error_object_type *error_object = 0 );
 
+/**
+ * \internal
+ * Makes a UserException.
+ * This function should not be called directly.
+ * Instead, the \c USER_EXCEPTION macro should be used.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.           
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error.
+ * @param description The error description.
+ * @param loc The XQuery source-code location.
+ * @param error_object The error object, if any.
+ * @return Returns a new UserException.
+ */
+UserException // MAKE_USER_EXCEPTION_CC_LT_E_CC_EL_EOT_X
+make_user_exception( char const *throw_file,
+                     ZorbaException::line_type throw_line, Error const &error,
+                     char const *description, err::location const &loc,
+                     error_object_type *error_object = 0 );
+
 } // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,8 +134,28 @@ private:
                  char const *throw_file, line_type throw_line,
                  char const *description, error_object_type *error_object );
 
+  /**
+   * Constructs a %UserException.
+   *
+   * @param error The error.
+   * @param throw_file The source-code file name whence the exception was
+   * thrown.
+   * @param throw_line The source-code line number whence the exception was
+   * thrown.
+   * @param description The error description.
+   * @param error_object The error object.
+   */
+  UserException( Error const &error,
+                 char const *throw_file, line_type throw_line,
+                 char const *description, error_object_type *error_object );
+
   friend UserException internal::make_user_exception(
     char const*, line_type, char const*, char const*, char const*, char const*,
+    internal::err::location const&, error_object_type*
+  );
+
+  friend UserException internal::make_user_exception(
+    char const*, line_type, Error const&, char const*,
     internal::err::location const&, error_object_type*
   );
 

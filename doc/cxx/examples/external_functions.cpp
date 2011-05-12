@@ -83,7 +83,7 @@ bool func_example_0(Zorba* aZorba)
     lContext->registerModule(&lModule);
     lContext->registerModule(&lModule); // only allowed to register it once
   }
-  catch (ZorbaException &e) 
+  catch (ZorbaException const &e) 
   {
     std::cerr << "some exception " << e << std::endl;
     return true;
@@ -481,7 +481,7 @@ bool func_example_3_1(Zorba* aZorba)
   catch (ZorbaException const& ex) 
   {
     std::cerr << ex << std::endl;
-    return true; //ex.error().kind() == err::XQUERY_TYPE;
+    return ex.error().kind() == err::XQUERY_TYPE;
   }
 
   return false;
@@ -551,7 +551,7 @@ bool func_example_4_1(Zorba* aZorba)
   {
     std::cout << query << std::endl;
   }
-  catch (ZorbaException& ex) 
+  catch (ZorbaException const &ex) 
   {
     std::cerr << ex << std::endl;
     return ex.error().kind() == err::XQUERY_STATIC;
@@ -734,7 +734,7 @@ bool func_example_5(Zorba* aZorba)
 
     std::cout << query << std::endl;
   }
-  catch (ZorbaException& ex) 
+  catch (ZorbaException const &ex) 
   {
     std::cerr << ex << std::endl;
     return false; // type exception expected

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <zorba/error_list.h>
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 
@@ -34,6 +35,15 @@ UserException::UserException( char const *ns, char const *prefix,
     *(new UserError( ns, prefix, localname )), throw_file, throw_line,
     description
   )
+{
+  if ( error_object )
+    error_object->swap( error_object_ );
+}
+
+UserException::UserException( Error const &error, char const *throw_file,
+                              line_type throw_line, char const *description,
+                              error_object_type *error_object ) :
+  XQueryException( error, throw_file, throw_line, description )
 {
   if ( error_object )
     error_object->swap( error_object_ );
@@ -71,6 +81,18 @@ UserException make_user_exception( char const *throw_file,
   UserException ue(
     ns, prefix, localname, throw_file, throw_line, description, error_object
   );
+  if ( loc )
+    ue.set_source( loc.file(), loc.line(), loc.column() );
+  return ue;
+}
+
+// MAKE_USER_EXCEPTION_CC_LT_E_CC_EL_EOT_X
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Error const &error, char const *description,
+                                   err::location const &loc,
+                                   error_object_type *error_object ) {
+  UserException ue( error, throw_file, throw_line, description, error_object );
   if ( loc )
     ue.set_source( loc.file(), loc.line(), loc.column() );
   return ue;
@@ -148,10 +170,8 @@ UserException make_user_exception( char const *throw_file,
       i->close();
     }
   }
-  zorba::err::QName const &qname = error.qname();
   return make_user_exception(
-    throw_file, throw_line, qname.ns(), qname.prefix(), qname.localname(),
-    description.c_str(), &error_object
+    throw_file, throw_line, error, description.c_str(), &error_object
   );
 }
 
@@ -161,10 +181,9 @@ UserException make_user_exception( char const *throw_file,
                                    Error const &error,
                                    String const &description,
                                    error_object_type *error_object ) {
-  zorba::err::QName const &qname = error.qname();
   return make_user_exception(
-    throw_file, throw_line, qname.ns(), qname.prefix(), qname.localname(),
-    description.c_str(), error_object
+    throw_file, throw_line, error, description.c_str(), err::location::empty,
+    error_object
   );
 }
 
@@ -175,20 +194,18 @@ UserException make_user_exception( char const *throw_file,
                                    char const *description,
                                    err::location const &loc,
                                    error_object_type *error_object ) {
-  char const *ns, *prefix, *localname;
-  if ( qname.isNull() ) {
-    ns = XQUERY_ERR_NS;
-    prefix = "err";
-    localname = "FOER0000";
-  } else {
-    ns = qname->getNamespace().c_str();
-    prefix = qname->getPrefix().c_str();
-    localname = qname->getLocalName().c_str();
-  }
+  if ( qname.isNull() )
+    return make_user_exception(
+      throw_file, throw_line, zorba::err::FOER0000, description, loc,
+      error_object
+    );
 
   return make_user_exception(
-    throw_file, throw_line, ns, prefix, localname, description, loc,
-    error_object
+    throw_file, throw_line,
+    qname->getNamespace().c_str(),
+    qname->getPrefix().c_str(),
+    qname->getLocalName().c_str(),
+    description, loc, error_object
   );
 }
 
