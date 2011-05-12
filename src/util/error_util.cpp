@@ -20,6 +20,7 @@
 # include <cstring>
 #else
 # include <windows.h>
+# include <tchar.h>
 # include <strsafe.h>
 #endif /* WIN32 */
 

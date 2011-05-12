@@ -30,7 +30,6 @@
 #include <stdio.h>
 
 #ifdef WIN32
-#include <tchar.h>
 #ifndef _WIN32_WCE
 #include <io.h>
 #include <direct.h>
