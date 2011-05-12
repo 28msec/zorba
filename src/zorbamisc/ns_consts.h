@@ -20,7 +20,6 @@
 // TODO make these static members of the context
 
 ///////////////////////////////////////////////////////////////////////////////
-#define XQUERY_MATH_FN_NS  "http://www.w3.org/2005/xpath-functions/math"
 
 #define W3C_NS                  "http://www.w3.org/"
 #define W3C_CODEPT_COLLATION_NS \
@@ -33,6 +32,7 @@
 #define XML_SCHEMA_NS           W3C_NS "2001/XMLSchema"
 #define XQUERY_ERR_NS           W3C_NS "2005/xqt-errors"
 #define XQUERY_LOCAL_FN_NS      W3C_NS "2005/xquery-local-functions"
+#define XQUERY_MATH_FN_NS       W3C_NS "2005/xpath-functions/math"
 #define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
 
 ///////////////////////////////////////////////////////////////////////////////
