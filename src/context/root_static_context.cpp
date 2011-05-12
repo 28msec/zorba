@@ -33,19 +33,6 @@
 namespace zorba 
 {
 
-static const char *const default_ns_initializers [] = 
-{
-  "err", XQUERY_ERR_NS,
-  "fn", XQUERY_FN_NS,
-  "local", XQUERY_LOCAL_FN_NS,
-  "math", XQUERY_MATH_FN_NS,
-  "xml", XML_NS,
-  "xs", XML_SCHEMA_NS,
-  "xsi", XSI_NS,
-  "zerr", ZORBA_ERR_NS,
-  NULL, NULL
-};
-
 
 root_static_context::root_static_context() : static_context()
 {
@@ -64,7 +51,20 @@ void root_static_context::init()
   set_xquery_version(StaticContextConsts::xquery_version_3_0);
   set_xpath_compatibility(StaticContextConsts::xpath2_0);
 
-  for (const char *const *p = default_ns_initializers; *p != NULL; p += 2)
+  const char* const default_ns_initializers[] = 
+    {
+      "err", XQUERY_ERR_NS,
+      "fn", static_context::W3C_FN_NS.c_str(),
+      "local", XQUERY_LOCAL_FN_NS,
+      "math", XQUERY_MATH_FN_NS,
+      "xml", XML_NS,
+      "xs", XML_SCHEMA_NS,
+      "xsi", XSI_NS,
+      "zerr", ZORBA_ERR_NS,
+      NULL, NULL
+    };
+
+  for (const char* const* p = default_ns_initializers; *p != NULL; p += 2)
   {
     zstring pfx(p[0]);
     zstring ns (p[1]);
@@ -73,7 +73,7 @@ void root_static_context::init()
 
   set_default_elem_type_ns(zstring(), loc);   
 
-  set_default_function_ns(XQUERY_FN_NS, loc);
+  set_default_function_ns(W3C_FN_NS, loc);
 
   set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 

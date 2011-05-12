@@ -427,7 +427,13 @@ public:
   static const zstring DOT_VAR_NAME;
   static const zstring DOT_POS_VAR_NAME;
 
+  static const zstring W3C_NS_PREFIX;
   static const zstring ZORBA_NS_PREFIX;
+
+  //
+  // http://www.w3.org/2005/xpath-functions
+  //
+  static const zstring W3C_FN_NS;
 
   //
   // Namespaces of external modules declaring zorba builtin functions
@@ -453,6 +459,7 @@ public:
   // Namespaces of virtual modules declaring zorba builtin functions
   //
   static const zstring ZORBA_UTIL_FN_NS;
+  static const zstring ZORBA_SCRIPTING_FN_NS;
 
   //
   // Namespaces of virtual modules declaring internal builtin functions of
@@ -562,6 +569,8 @@ protected:
 
 public:
   static bool is_builtin_module(const zstring& ns);
+
+  static bool is_builtin_virtual_module(const zstring& ns);
 
   static bool is_non_pure_builtin_module(const zstring& ns);
 

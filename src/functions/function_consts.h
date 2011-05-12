@@ -31,6 +31,8 @@ typedef enum
 
   FN_UNORDERED_1,
 
+  FN_APPLY_1,
+
   FN_HEAD_1,
   FN_TAIL_1,
 

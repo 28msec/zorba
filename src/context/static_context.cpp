@@ -254,7 +254,13 @@ const zstring
 static_context::DOT_POS_VAR_NAME = "$$pos";
 
 const zstring
+static_context::W3C_NS_PREFIX = "http://www.w3.org/";
+
+const zstring
 static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
+
+const zstring
+static_context::W3C_FN_NS = W3C_NS_PREFIX + "2005/xpath-functions";
 
 const zstring
 static_context::ZORBA_MATH_FN_NS = NS_PRE + "modules/math";
@@ -308,6 +314,9 @@ const zstring
 static_context::ZORBA_UTIL_FN_NS = NS_PRE + "zorba/util-functions";
 
 const zstring
+static_context::ZORBA_SCRIPTING_FN_NS = NS_PRE + "zorba/scripting";
+
+const zstring
 static_context::ZORBA_STRING_FN_NS = NS_PRE + "modules/string";
 
 
@@ -344,8 +353,25 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_INTROSP_DCTX_FN_NS ||
             ns == ZORBA_REFLECTION_FN_NS ||
+            ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS ||
             ns == ZORBA_STRING_FN_NS);
+  }
+
+  return false;
+}
+
+
+/***************************************************************************//**
+  Static method to check if a given target namespace identifies a zorba
+  builtin virtual module.
+********************************************************************************/
+bool static_context::is_builtin_virtual_module(const zstring& ns)
+{
+  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  {
+    return (ns == ZORBA_SCRIPTING_FN_NS ||
+            ns == ZORBA_UTIL_FN_NS);
   }
 
   return false;
@@ -2451,7 +2477,7 @@ void static_context::get_functions(
 
               const zstring& ns = f->getName()->getNamespace();
 
-              if (ns != XQUERY_FN_NS)
+              if (ns != W3C_FN_NS)
               {
                 if (ns == XQUERY_OP_NS || ns == ZORBA_OP_NS)
                   continue;
@@ -2507,7 +2533,7 @@ void static_context::get_functions(
 
                 const zstring& ns = f->getName()->getNamespace();
 
-                if (ns != XQUERY_FN_NS)
+                if (ns != W3C_FN_NS)
                 {
                   if (ns == XQUERY_OP_NS || ns == ZORBA_OP_NS)
                     continue;

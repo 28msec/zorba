@@ -859,23 +859,24 @@ DECL(sctx, op_atomic_values_equivalent,
 void populate_context_booleans_impl(static_context* sctx)
 {
   const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
+  const char* fn_ns = static_context::W3C_FN_NS.c_str();
 
   // Boolean
   DECL(sctx, fn_true,
-       (createQName(XQUERY_FN_NS, "", "true"),
+       (createQName(fn_ns, "", "true"),
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, fn_false,
-       (createQName(XQUERY_FN_NS, "", "false"),
+       (createQName(fn_ns, "", "false"),
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, fn_boolean,
-       (createQName(XQUERY_FN_NS, "", "boolean"),
+       (createQName(fn_ns, "", "boolean"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
   
   DECL(sctx, fn_not,
-       (createQName(XQUERY_FN_NS, "", "not"),
+       (createQName(fn_ns, "", "not"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 

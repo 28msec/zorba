@@ -637,10 +637,11 @@ public:
 void populate_context_durations_dates_times_impl(static_context *sctx)
 {
   const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
+  const char* fn_ns = static_context::W3C_FN_NS.c_str();
 
 // begin date time
 DECL(sctx, fn_datetime_ctor,
-     (createQName(XQUERY_FN_NS,"", "dateTime"),
+     (createQName(fn_ns,"", "dateTime"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
@@ -784,40 +785,40 @@ DECL(sctx, op_sub_dtd_from_t,
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
 
 DECL(sctx, fn_adjust_dt_to_tz_1,
-     (createQName(XQUERY_FN_NS, "", "adjust-dateTime-to-timezone"),
+     (createQName(fn_ns, "", "adjust-dateTime-to-timezone"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_dt_to_tz_2,
-     (createQName (XQUERY_FN_NS, "", "adjust-dateTime-to-timezone"),
+     (createQName (fn_ns, "", "adjust-dateTime-to-timezone"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_d_to_tz_1,
-     (createQName (XQUERY_FN_NS, "", "adjust-date-to-timezone"),
+     (createQName (fn_ns, "", "adjust-date-to-timezone"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_d_to_tz_2,
-     (createQName (XQUERY_FN_NS, "", "adjust-date-to-timezone"),
+     (createQName (fn_ns, "", "adjust-date-to-timezone"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_t_to_tz_1,
-     (createQName (XQUERY_FN_NS, "", "adjust-time-to-timezone"),
+     (createQName (fn_ns, "", "adjust-time-to-timezone"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_t_to_tz_2,
-     (createQName (XQUERY_FN_NS, "", "adjust-time-to-timezone"),
+     (createQName (fn_ns, "", "adjust-time-to-timezone"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION));
 
 DECL(sctx, fn_format_datetime_4,
-     (createQName (XQUERY_FN_NS, "", "format-dateTime"),
+     (createQName (fn_ns, "", "format-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
@@ -826,13 +827,13 @@ DECL(sctx, fn_format_datetime_4,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 DECL(sctx, fn_format_datetime_2,
-     (createQName (XQUERY_FN_NS, "", "format-dateTime"),
+     (createQName (fn_ns, "", "format-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 DECL(sctx, fn_format_date_4,
-     (createQName (XQUERY_FN_NS, "", "format-date"),
+     (createQName (fn_ns, "", "format-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
@@ -841,13 +842,13 @@ DECL(sctx, fn_format_date_4,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 DECL(sctx, fn_format_date_2,
-     (createQName (XQUERY_FN_NS, "", "format-date"),
+     (createQName (fn_ns, "", "format-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 DECL(sctx, fn_format_time_4,
-     (createQName (XQUERY_FN_NS, "", "format-time"),
+     (createQName (fn_ns, "", "format-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
@@ -856,7 +857,7 @@ DECL(sctx, fn_format_time_4,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 DECL(sctx, fn_format_time_2,
-     (createQName (XQUERY_FN_NS, "", "format-time"),
+     (createQName (fn_ns, "", "format-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));

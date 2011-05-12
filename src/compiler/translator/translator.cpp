@@ -100,6 +100,12 @@
 
 #define NODE_SORT_OPT
 
+
+#define RAISE_ERROR(errcode, loc, params)                     \
+  throw XQUERY_EXCEPTION(errcode,                             \
+                         params,                              \
+                         ERROR_LOC(loc));
+
 namespace zorba
 {
 
@@ -2493,6 +2499,7 @@ void* begin_visit(const SchemaImport& v)
       lCandidates.push_back(theSctx->resolve_relative_uri((*atlist)[i]));
     }
   }
+
   zstring lNsURI = targetNSItem->getStringValue();
   lCandidates.push_back(lNsURI);
 
@@ -2500,21 +2507,28 @@ void* begin_visit(const SchemaImport& v)
   {
     std::auto_ptr<impl::Resource> lSchema;
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
-         lIter != lCandidates.end(); lIter++) {
-      try {
+         lIter != lCandidates.end();
+         ++lIter) 
+    {
+      try 
+      {
         lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA);
         if (lSchema.get() != NULL &&
-          lSchema->getKind() == impl::Resource::STREAM) {
+          lSchema->getKind() == impl::Resource::STREAM) 
+        {
           break;
         }
       }
-      catch (ZorbaException const& e) {
-        if (e.error() != err::XQST0059 || *lIter != lNsURI) {
+      catch (ZorbaException const& e) 
+      {
+        if (e.error() != err::XQST0059 || *lIter != lNsURI) 
+        {
           // If this exception is a "resource not found", then we need
           // to continue on and try the next candidate unless this was
           // the final one. So just ignore the exception.
         }
-        else {
+        else 
+        {
           throw;
         }
       }
@@ -2660,7 +2674,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       return;
     }
 #else
-    if (targetNS == static_context::ZORBA_UTIL_FN_NS)
+    if (static_context::is_builtin_virtual_module(targetNS))
     {
       return;
     }
@@ -2731,11 +2745,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS( targetNS, compURI ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
 
       bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
       ZORBA_ASSERT(found);
@@ -2755,15 +2765,19 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       try
       {
         std::auto_ptr<impl::Resource> lResource =
-          theSctx->resolve_uri(compURI, impl::Resource::MODULE);
+        theSctx->resolve_uri(compURI, impl::Resource::MODULE);
+
         if (lResource.get() != NULL && 
-          lResource->getKind() == impl::Resource::STREAM) {
+            lResource->getKind() == impl::Resource::STREAM) 
+        {
           impl::StreamResource* lStreamResource = 
-            static_cast<impl::StreamResource*>(lResource.get());
+          static_cast<impl::StreamResource*>(lResource.get());
+
           modfile = lStreamResource->getStream();
           compURL = lStreamResource->getStreamUrl();
         }
-        else {
+        else 
+        {
           // QQQ what to do with wrong Resource kind?
           std::cout << "Got no Resources!" << std::endl;
         }
@@ -2776,11 +2790,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       if (modfile.get() == NULL || ! *modfile)
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS( targetNS, compURI ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -2843,11 +2853,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS( targetNS, compURI ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
 
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
@@ -2855,11 +2861,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
 
       if (importedNS != targetNS)
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS( targetNS, compURI ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
 
       // translate the imported module
       translate_aux(theRootTranslator,
@@ -2948,13 +2950,13 @@ void* begin_visit(const VFO_DeclList& v)
     if (ns.empty())
       throw XQUERY_EXCEPTION(err::XQST0060, ERROR_LOC(loc));
 
-    if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
+    if (ns == static_context::W3C_FN_NS ||
+        ns == XML_NS ||
+        ns == XML_SCHEMA_NS ||
+        ns == XSI_NS)
     {
-      throw XQUERY_EXCEPTION(
-        err::XQST0045,
-        ERROR_PARAMS( qnameItem->getLocalName() ),
-        ERROR_LOC( func_decl->get_location() )
-      );
+      RAISE_ERROR(err::XQST0045, func_decl->get_location(),
+      ERROR_PARAMS(qnameItem->getLocalName()));
     }
 
     if (! theModuleNamespace.empty() && ns != theModuleNamespace)
@@ -3036,15 +3038,11 @@ void* begin_visit(const VFO_DeclList& v)
         const signature& s = f->getSignature();
         if (!sig.equals(tm, s))
         {
-          throw XQUERY_EXCEPTION(
-            zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL,
-            ERROR_PARAMS(
-              BUILD_STRING(
-                '{', qnameItem->getNamespace(), '}', qnameItem->getLocalName()
-              )
-            ),
-            ERROR_LOC( loc )
-          );
+          RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
+          ERROR_PARAMS(BUILD_STRING('{',
+                                    qnameItem->getNamespace(),
+                                    '}',
+                                    qnameItem->getLocalName())));
         }
 
         // set the function annotations to the values found in the func_decl
@@ -8663,15 +8661,11 @@ void* begin_visit(const FunctionCall& v)
     zstring version =
     (f->getXQueryVersion() == StaticContextConsts::xquery_version_1_0 ? "1.0" : "3.0");
 
-    throw XQUERY_EXCEPTION(
-      err::XPST0017,
-      ERROR_PARAMS(
-        f->getName()->getStringValue(),
-        ZED( FnOnlyInXQueryVersion_3 ),
-        version
-      ),
-      ERROR_LOC( loc )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0017,
+                           ERROR_PARAMS(f->getName()->getStringValue(),
+                                        ZED(FnOnlyInXQueryVersion_3),
+                                        version),
+                           ERROR_LOC(loc));
   }
 
   if (f != NULL && !theCurrentPrologVFDecl.isNull())
@@ -8692,30 +8686,20 @@ void* begin_visit(const FunctionCall& v)
     {
       if (theModuleNamespace.empty())
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0036,
-          ERROR_PARAMS(
-            ZED( BadType_23o ),
-            *retType,
-            ZED( NoTypeInMainModule_4 ),
-            f->getName()->getStringValue()
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0036, loc,
+        ERROR_PARAMS(ZED(BadType_23o),
+                     *retType,
+                     ZED(NoTypeInMainModule_4),
+                     f->getName()->getStringValue()));
       }
       else
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0036,
-          ERROR_PARAMS(
-            ZED( BadType_23o ),
-            *retType,
-            ZED( NoTypeInModule_45 ),
-            f->getName()->getStringValue(),
-            theModuleNamespace
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0036, loc,
+        ERROR_PARAMS(ZED(BadType_23o),
+                     *retType,
+                     ZED(NoTypeInModule_45),
+                     f->getName()->getStringValue(),
+                     theModuleNamespace));
       }
     }
 
@@ -8728,30 +8712,20 @@ void* begin_visit(const FunctionCall& v)
       {
         if (theModuleNamespace.empty())
         {
-          throw XQUERY_EXCEPTION(
-            err::XQST0036,
-            ERROR_PARAMS(
-              ZED( BadType_23o ),
-              *type,
-              ZED( NoTypeInMainModule_4 ),
-              f->getName()->getStringValue()
-            ),
-            ERROR_LOC( loc )
-          );
+          RAISE_ERROR(err::XQST0036, loc,
+          ERROR_PARAMS(ZED(BadType_23o),
+                       *type,
+                       ZED(NoTypeInMainModule_4),
+                       f->getName()->getStringValue()));
         }
         else
         {
-          throw XQUERY_EXCEPTION(
-            err::XQST0036,
-            ERROR_PARAMS(
-              ZED( BadType_23o ),
-              *retType,
-              ZED( NoTypeInModule_45 ),
-              f->getName()->getStringValue(),
-              theModuleNamespace
-            ),
-            ERROR_LOC( loc )
-          );
+          RAISE_ERROR(err::XQST0036, loc,
+          ERROR_PARAMS(ZED(BadType_23o),
+                       *retType,
+                       ZED(NoTypeInModule_45),
+                       f->getName()->getStringValue(),
+                       theModuleNamespace));
         }
       }
     }
@@ -8778,11 +8752,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(fn_ns))
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE,
-      ERROR_PARAMS( fn_ns ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ERROR_PARAMS(fn_ns));
   }
 
   // Collect the arguments of this function in reverse order
@@ -8803,17 +8774,14 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   function* f = lookup_fn(qname, numArgs, loc);
 
   // Some special processing is required for certain "fn" functions
-  if (fn_ns == XQUERY_FN_NS)
+  if (fn_ns == static_context::W3C_FN_NS)
   {
     if (f == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPST0017,
-        ERROR_PARAMS(
-          qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qname->get_qname(),
+                   ZED(FnCallNotMatchSig_3o),
+                   numArgs));
     }
 
     if (localName == "head")
@@ -8887,11 +8855,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        throw XQUERY_EXCEPTION(
-          err::XPST0017,
-          ERROR_PARAMS( "fn:number", ZED( FnCallNotMatchSig_3o ), numArgs ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPST0017, loc,
+        ERROR_PARAMS("fn:number", ZED(FnCallNotMatchSig_3o), numArgs));
       }
 
       var_expr_t tv = create_temp_var(loc, var_expr::let_var);
@@ -8924,14 +8889,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     else if (localName == "static-base-uri")
     {
       if (numArgs != 0)
-        throw XQUERY_EXCEPTION(
-          err::XPST0017,
-          ERROR_PARAMS(
-            "fn:static-base-uri", ZED( FnCallNotMatchSig_3o ), numArgs
-          ),
-          ERROR_LOC( loc )
-        );
-
+        RAISE_ERROR(err::XPST0017, loc,
+        ERROR_PARAMS("fn:static-base-uri",
+                     ZED(FnCallNotMatchSig_3o),
+                     numArgs));
+      
       zstring baseuri = theSctx->get_base_uri();
       if (baseuri.empty())
         push_nodestack(create_empty_seq(loc));
@@ -9000,11 +8962,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     else if (localName == "concat")
     {
       if (numArgs < 2)
-        throw XQUERY_EXCEPTION(
-          err::XPST0017,
-          ERROR_PARAMS( "concat", ZED( FnCallNotMatchSig_3o ), numArgs ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPST0017, loc,
+        ERROR_PARAMS("concat", ZED(FnCallNotMatchSig_3o), numArgs));
     }
     else if (localName == "doc")
     {
@@ -9026,9 +8985,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
               URI docURI(uri_string, true);//with validate
             }
           }
-          catch(XQueryException &e)
+          catch(XQueryException& e)
           {
-            set_source( e, loc );
+            set_source(e, loc);
             throw;
           }
         }
@@ -9036,6 +8995,31 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
   }
 
+  // xqsx:apply function is converted to an apply expr
+  else if (f != NULL && f->getKind() == FunctionConsts::FN_APPLY_1)
+  {
+    expr_t applyExpr = new apply_expr(theRootSctx, loc, arguments[0], false);
+    push_nodestack(applyExpr);
+    return;
+  }
+
+  //  Check if it is a zorba builtin function, and if so,
+  // make sure that the module it belongs to has been imported.
+  else if (f != NULL &&
+           f->isBuiltin() &&
+           fn_ns != static_context::W3C_FN_NS &&
+           fn_ns != XQUERY_MATH_FN_NS &&
+           fn_ns != theModuleNamespace)
+  {
+    if (! theSctx->is_imported_builtin_module(fn_ns))
+    {
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qname->get_qname(),
+                   ZED(FnCallNotMatchSig_3o),
+                   numArgs));
+    }
+  }
+  
   numArgs = (ulong)arguments.size();  // recompute size
 
   // Check if this is a call to a type constructor function
@@ -9048,13 +9032,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
         TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPST0017,
-        ERROR_PARAMS(
-          qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qname->get_qname(),
+                   ZED(FnCallNotMatchSig_3o),
+                   numArgs));
     }
 
     push_nodestack(create_cast_expr(loc, arguments[0], type, true));
@@ -9080,13 +9061,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
       }
 
-      throw XQUERY_EXCEPTION(
-        err::XPST0017,
-        ERROR_PARAMS(
-          qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qname->get_qname(),
+                   ZED(FnCallNotMatchSig_3o),
+                   numArgs));
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf
@@ -9100,25 +9078,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         user_function* udf = dynamic_cast<user_function*>(f1);
         ZORBA_ASSERT(udf != NULL);
         udf->setLeaf(false);
-      }
-    }
-
-    // It's not a udf. Check if it is a zorba builtin function, and if so,
-    // make sure that the module it belongs to has been imported.
-    else if (f->isBuiltin() &&
-             fn_ns != XQUERY_FN_NS &&
-             fn_ns != XQUERY_MATH_FN_NS &&
-             fn_ns != theModuleNamespace)
-    {
-      if (! theSctx->is_imported_builtin_module(fn_ns))
-      {
-        throw XQUERY_EXCEPTION(
-          err::XPST0017,
-          ERROR_PARAMS(
-            qname->get_qname(), ZED( FnCallNotMatchSig_3o ), numArgs
-          ),
-          ERROR_LOC( loc )
-        );
       }
     }
 
@@ -9222,9 +9181,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
          let $temp_invoke_var2   := arg1Expr
          ...
          let $temp_invoke_varN+1 := argNExpr
-         let $query := concat("\"", string(namespace-uri-from-QName(temp_invoke_var1)), "\":",
-                                    string(local-name-from-QName(temp_invoke_var1)),
-                                    "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
+         let $query := concat("\"",
+                              string(namespace-uri-from-QName(temp_invoke_var1)),
+                              "\":",
+                              string(local-name-from-QName(temp_invoke_var1)),
+                              "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
          return eval { $query }
       */
 
@@ -9241,11 +9202,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       if (numArgs == 0)
       {
-        throw XQUERY_EXCEPTION(
-          err::XPST0017,
-          ERROR_PARAMS( "invoke", ZED( FnCallNotMatchSig_3o ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPST0017, loc,
+        ERROR_PARAMS("invoke", ZED(FnCallNotMatchSig_3o)));
       }
 
       // create a flwor with LETs to hold the parameters
@@ -9272,7 +9230,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         var_expr_t var = create_var(loc, qnameItem, var_expr::let_var);
         temp_vars.push_back(var);
 
-        if (i==0)
+        if (i == 0)
           lc = wrap_in_letclause(qnameExpr, var);
         else
           lc = wrap_in_letclause(arguments[i], var);
@@ -9285,17 +9243,33 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         if (i>0)
           query_params += "$" + var->get_name()->getStringValue();
       }
+
       query_params = "(" + query_params + ")";
 
       // Expanded QName's namespace URI
-      expr_t namespaceExpr  = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_NAMESPACE_URI_FROM_QNAME_1), temp_vars[0]);
-      namespaceExpr         = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), namespaceExpr);
+      expr_t namespaceExpr =
+      new fo_expr(theRootSctx,
+                  loc,
+                  GET_BUILTIN_FUNCTION(FN_NAMESPACE_URI_FROM_QNAME_1),
+                  temp_vars[0]);
+
+      namespaceExpr = 
+      new fo_expr(theRootSctx,
+                  loc,
+                  GET_BUILTIN_FUNCTION(FN_STRING_1),
+                  namespaceExpr);
 
       // Expanded QName's local name
-      expr_t localExpr      = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1), temp_vars[0]);
-      localExpr             = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
+      expr_t localExpr = 
+      new fo_expr(theRootSctx,
+                  loc,
+                  GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1),
+                  temp_vars[0]);
+      
+      localExpr = 
+      new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
-      // qnameExpr    := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
+      // qnameExpr := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
       std::vector<expr_t> concat_args;
       concat_args.push_back(new const_expr(theRootSctx, loc, "\""));
       concat_args.push_back(namespaceExpr);
@@ -9303,10 +9277,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       concat_args.push_back(localExpr);
       concat_args.push_back(new const_expr(theRootSctx, loc, query_params));
 
-      qnameExpr             = new fo_expr(theRootSctx,
-                                          loc,
-                                          GET_BUILTIN_FUNCTION(FN_CONCAT_N),
-                                          concat_args);
+      qnameExpr = new fo_expr(theRootSctx,
+                              loc,
+                              GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                              concat_args);
 
       rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
                                                    loc,
@@ -9432,13 +9406,10 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
 
-  if(!NumConversions::integerToUInt(v.getArity(), arity))
+  if (!NumConversions::integerToUInt(v.getArity(), arity))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0017,
-      ERROR_PARAMS( v.getArity(), ZED( NoParseFnArity ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0017, loc,
+    ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));
   }
 
   // Get function implementation
@@ -9447,11 +9418,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   // raise XPST0017 if function could not be found
   if (fn == 0)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0017,
-      ERROR_PARAMS( qname->get_qname(), ZED( FnCallNotMatchSig_3o ), arity ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0017, loc,
+    ERROR_PARAMS(qname->get_qname(), ZED(FnCallNotMatchSig_3o), arity));
   }
 
   // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
@@ -9714,11 +9682,10 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 
   if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname())
   {
-    throw XQUERY_EXCEPTION(err::XPST0003,
-                           ERROR_PARAMS(ZED(StartEndTagMismatch_23),
-                                        start_tag->get_qname(),
-                                        end_tag->get_qname()),
-                           ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(StartEndTagMismatch_23),
+                 start_tag->get_qname(),
+                 end_tag->get_qname()));
   }
 
   if (v.get_dir_content_list() != NULL)
@@ -10684,11 +10651,13 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
-    throw XQUERY_EXCEPTION(
-      err::XPST0051, ERROR_PARAMS( qname->get_qname() ), ERROR_LOC( loc )
-    );
+  {
+    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+  }
   else
+  {
     theTypeStack.push (t);
+  }
 }
 
 

@@ -5,7 +5,7 @@
   <zorba:namespaces>
 
     <zorba:namespace uri="http://www.w3.org/2005/xpath-functions"
-                     define="XQUERY_FN_NS"
+                     define="W3C_FN_NS"
                      prefix="fn"/>
 
     <zorba:namespace uri="http://www.w3.org/2005/xpath-functions/math"

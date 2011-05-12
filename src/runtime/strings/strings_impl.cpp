@@ -1629,7 +1629,7 @@ static void addNonMatchElement(store::Item_t &parent,
   GENV_ITEMFACTORY->createQName(untyped_type_name,
                                 "http://www.w3.org/2001/XMLSchema", "", "untyped");
   GENV_ITEMFACTORY->createQName(non_match_element_name,
-                                XQUERY_FN_NS, "fn", "non-match");
+                                static_context::W3C_FN_NS, "fn", "non-match");
   GENV_ITEMFACTORY->createElementNode(non_match_elem, parent, non_match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
   //utf8_it += (match_start2 - match_end1);
   zstring                non_match_str;
@@ -1663,7 +1663,7 @@ void addMatchElement(store::Item_t &parent,
   GENV_ITEMFACTORY->createQName(untyped_type_name,
                                 "http://www.w3.org/2001/XMLSchema", "", "untyped");
   GENV_ITEMFACTORY->createQName(match_element_name,
-                                XQUERY_FN_NS, "fn", "match");
+                                static_context::W3C_FN_NS, "fn", "match");
   store::Item_t match_elem;
   GENV_ITEMFACTORY->createElementNode(match_elem, parent, match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
   int    match_startg = match_start2;
@@ -1691,7 +1691,7 @@ void addMatchElement(store::Item_t &parent,
     match_endg = rx.get_match_end(i+1);
     //add group match text
     GENV_ITEMFACTORY->createQName(group_element_name,
-                                  XQUERY_FN_NS, "fn", "group");
+                                  static_context::W3C_FN_NS, "fn", "group");
     GENV_ITEMFACTORY->createQName(nr_attrib_name,
                                   "", "", "nr");
     store::Item_t group_elem;
@@ -1839,7 +1839,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     GENV_ITEMFACTORY->createQName(untyped_type_name,
                                   "http://www.w3.org/2001/XMLSchema", "", "untyped");
     GENV_ITEMFACTORY->createQName(result_element_name,
-                                  XQUERY_FN_NS, "fn", "analyze-string-result");
+                                  static_context::W3C_FN_NS, "fn", "analyze-string-result");
     GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);
 
     int nr_retry = 0;

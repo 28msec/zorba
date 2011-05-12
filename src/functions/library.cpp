@@ -58,6 +58,7 @@
 #include "functions/func_documents.h"
 #include "functions/func_eval.h"
 #include "functions/func_reflection.h"
+#include "functions/func_apply.h"
 
 #include "functions/func_function_item_iter.h"
 
@@ -77,9 +78,11 @@ void library_init()
 {
 }
 
+
 void BuiltinFunctionLibrary::create(static_context* sctx)
 {
   zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+
   ar.set_loading_hardcoded_objects(true);
 
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
@@ -123,6 +126,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_Hoisting(sctx);
   populate_context_eval(sctx);
   populate_context_reflection(sctx);
+  populate_context_apply(sctx);
 
   ar.set_loading_hardcoded_objects(false);
 }
