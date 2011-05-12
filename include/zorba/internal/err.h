@@ -163,46 +163,6 @@ private:
   friend void serialization::operator&( serialization::Archiver&, location& );
 };
 
-/**
- * \internal
- * Makes an empty location.
- *
- * @return Returns said location.
- */
-inline location make_location() {
-  return location();
-}
-
-/**
- * \internal
- * Makes a location.
- *
- * @param file The name of the file where the error occurred.
- * @param line The line number of the file where the error occurred.
- * @param column The column number, if any, of the file where the error
- * occurred.
- */
-inline location make_location( char const *file, location::line_type line,
-                               location::column_type column = 0 ) {
-  return location( file, line, column );
-}
-
-/**
- * \internal
- * Makes a location.
- *
- * @tparam StringType The string type for \a file.
- * @param file The name of the file where the error occurred.
- * @param line The line number of the file where the error occurred.
- * @param column The column number, if any, of the file where the error
- * occurred.
- */
-template<class StringType> inline
-location make_location( StringType const &file, location::line_type line,
-                        location::column_type column = 0 ) {
-  return location( file, line, column );
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 /**

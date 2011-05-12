@@ -435,8 +435,10 @@ private:
         bool done = !arg0_iter->next(result);
         if (done && theIsEmpty)
         {
-          throw USER_EXCEPTION( err::XPTY0004,
-    ERROR_PARAMS( "Argument must not be the empty sequence." ) );
+          throw USER_EXCEPTION(
+            err::XPTY0004,
+            "argument must not be the empty sequence"
+          );
         }
         theIsEmpty = false;
         return !done;

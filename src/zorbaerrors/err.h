@@ -44,26 +44,98 @@ QNameType to_QName( store::Item_t const &qname ) {
   );
 }
 
-} // namespace err
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Makes an empty location.
+ *
+ * @return Returns said location.
+ */
+inline internal::err::location make_location() {
+  return internal::err::location();
+}
+
+/**
+ * This is a simple pass-rhough function so that the \c ERROR_LOC macro
+ * can be passed an \c err::location.
+ *
+ * @param loc The error location.
+ */
+inline internal::err::location const&
+make_location( internal::err::location const &loc ) {
+  return loc;
+}
+
+/**
+ * Makes a location.
+ *
+ * @param file The name of the file where the error occurred.
+ * @param line The line number of the file where the error occurred.
+ * @param column The column number, if any, of the file where the error
+ * occurred.
+ */
+inline internal::err::location
+make_location( char const *file, internal::err::location::line_type line,
+               internal::err::location::column_type column = 0 ) {
+  return internal::err::location( file, line, column );
+}
+
+/**
+ * Makes a location.
+ *
+ * @tparam StringType The string type for \a file.
+ * @param file The name of the file where the error occurred.
+ * @param line The line number of the file where the error occurred.
+ * @param column The column number, if any, of the file where the error
+ * occurred.
+ */
+template<class StringType> inline internal::err::location
+make_location( StringType const &file, internal::err::location::line_type line,
+               internal::err::location::column_type column = 0 ) {
+  return internal::err::location( file, line, column );
+}
+
+/**
+ * TODO
+ */
+inline internal::err::location make_location( QueryLoc const &loc ) {
+  return internal::err::location(
+    loc.getFilename(), loc.getLineno(), loc.getColumnBegin()
+  );
+}
+
+/**
+ * TODO
+ */
+inline internal::err::location make_location( QueryLoc const *loc ) {
+  return loc ? make_location( *loc ) : internal::err::location::empty;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace internal {
-namespace err {
+/**
+ * Creates an error location.
+ * Example:
+ * \code
+ * throw XQUERY_EXCEPTION( XPST0001, ERROR_LOC( file, line, col ) );
+ * \endcode
+ * \hideinitializer
+ */
+#define ERROR_LOC ::zorba::err::make_location
 
-inline location make_location( QueryLoc const &loc ) {
-  return location( loc.getFilename(), loc.getLineno(), loc.getColumnBegin() );
-}
-
-inline location make_location( QueryLoc const *loc ) {
-  return loc ? make_location( *loc ) : location::empty;
-}
-
-} // namespace err
-} // namespace internal
+/**
+ * Creates a set of error parameters.
+ * Example:
+ * \code
+ * throw XQUERY_EXCEPTION( XPST0001, ERROR_PARAMS( param1, param2, ... ) );
+ * \endcode
+ * \hideinitializer                     
+ */
+#define ERROR_PARAMS(...) (::zorba::internal::err::parameters(), __VA_ARGS__)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace err
 } // namespace zorba
 
 #endif /* ZORBA_ERR_H */

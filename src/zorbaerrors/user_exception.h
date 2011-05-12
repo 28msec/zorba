@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_USER_EXCEPTION_H
 #define ZORBA_USER_EXCEPTION_H
@@ -60,96 +61,18 @@ namespace internal {
  * @param prefix The error code's prefix.
  * @param localname The error code's local-name.
  * @param description The error description.
- * @param loc The XQuery source-code location.
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line, 
-                     char const *ns, char const *prefix, char const *localname,
-                     char const *description, QueryLoc const &loc,
-                     error_object_type *error_object = 0 );
-
-/**
- * Makes a UserException.
- *
- * @tparam DescriptionStringType The description's string type.
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param ns The error code's namespace.
- * @param prefix The error code's prefix.
- * @param localname The error code's local-name.
- * @param description The error description.
- * @param loc The XQuery source-code location.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-template<class DescriptionStringType> inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     char const *ns, char const *prefix, char const *localname,
-                     DescriptionStringType const &description,
-                     QueryLoc const &loc,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, ns, prefix, localname, description.c_str(), loc,
-    error_object
-  );
-}
-
-/**
- * Makes a UserException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param ns The error code's namespace.
- * @param prefix The error code's prefix.
- * @param localname The error code's local-name.
- * @param description The error description.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-inline UserException
+inline UserException // MAKE_USER_EXCEPTION_CC_LT_4CC_EOT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      char const *ns, char const *prefix, char const *localname,
                      char const *description,
                      error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line, ns, prefix, localname, description, QueryLoc::null,
-    error_object
-  );
-}
-
-/**
- * Makes a UserException.
- *
- * @tparam DescriptionStringType The description's string type.
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param ns The error code's namespace.
- * @param prefix The error code's prefix.
- * @param localname The error code's local-name.
- * @param description The error description.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-template<class DescriptionStringType> inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     char const *ns, char const *prefix, char const *localname,
-                     DescriptionStringType const &description,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, ns, prefix, localname, description.c_str(),
-    QueryLoc::null, error_object
+    throw_file, throw_line, ns, prefix, localname, description,
+    err::location::empty, error_object
   );
 }
 
@@ -162,179 +85,57 @@ make_user_exception( char const *throw_file,
  * thrown.
  * @param qname The error code's QName.
  * @param description The error description.
- * @param loc The XQuery source-code location.
  * @param error_object The error object, if any.
+ * @param loc The error location.
  * @return Returns a new UserException.
  */
-UserException
+UserException // MAKE_USER_EXCEPTION_CC_LT_I_CC_EL_EOT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      Item const &qname, char const *description,
-                     QueryLoc const &loc,
+                     err::location const &loc,
                      error_object_type *error_object = 0 );
 
 /**
  * Makes a UserException.
  *
- * @tparam DescriptionStringType The description's string type.
  * @param throw_file The C++ source-code file name whence the exception was
  * thrown.
  * @param throw_line The C++ source-code line number whence the exception was
  * thrown.
  * @param qname The error code's QName.
  * @param description The error description.
- * @param loc The XQuery source-code location.
+ * @param loc The error location.
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-template<class DescriptionStringType> inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     Item const &qname,
-                     DescriptionStringType const &description,
-                     QueryLoc const &loc,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, qname, description.c_str(), loc, error_object
-  );
-}
-
-/**
- * Makes a UserException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param qname The error code's QName.
- * @param description The error description.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     Item const &qname, char const *description,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, qname, description, QueryLoc::null, error_object
-  );
-}
-
-/**
- * Makes a UserException.
- *
- * @tparam DescriptionStringType The description's string type.
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param qname The error code's QName.
- * @param description The error description.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-template<class DescriptionStringType> inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     Item const &qname,
-                     DescriptionStringType const &description,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, qname, description.c_str(), QueryLoc::null,
-    error_object
-  );
-}
-
-/**
- * Makes a UserException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param qname The error code's QName.
- * @param description The error description.
- * @param loc The XQuery source-code location.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-UserException
+UserException // MAKE_USER_EXCEPTION_CC_LT_SI_CC_EL_EOT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      store::Item_t const &qname, char const *description,
-                     QueryLoc const &loc,
+                     err::location const &loc,
                      error_object_type *error_object = 0 );
 
 /**
  * Makes a UserException.
  *
- * @tparam DescriptionStringType The description's string type.
  * @param throw_file The C++ source-code file name whence the exception was
  * thrown.
  * @param throw_line The C++ source-code line number whence the exception was
  * thrown.
  * @param qname The error code's QName.
  * @param description The error description.
- * @param loc The XQuery source-code location.
+ * @param loc The error location.
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-template<class DescriptionStringType> inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     store::Item_t const &qname,
-                     DescriptionStringType const &description,
-                     QueryLoc const &loc,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, qname, description.c_str(), loc, error_object
-  );
-}
-
-/**
- * Makes a UserException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param qname The error code's QName.
- * @param description The error description.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-inline UserException
+inline UserException // MAKE_USER_EXCEPTION_CC_LT_SI_CC_EOT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      store::Item_t const &qname, char const *description,
                      error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line, qname, description, QueryLoc::null, error_object
-  );
-}
-
-/**
- * Makes a UserException.
- *
- * @tparam DescriptionStringType The description's string type.
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param qname The error code's QName.
- * @param description The error description.
- * @param error_object The error object, if any.
- * @return Returns a new UserException.
- */
-template<class DescriptionStringType> inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     store::Item_t const &qname,
-                     DescriptionStringType const &description,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, qname, description.c_str(), QueryLoc::null,
+    throw_file, throw_line, qname, description, err::location::empty,
     error_object
   );
 }

@@ -71,7 +71,9 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  throw USER_EXCEPTION( err_qname, description, loc, &lErrorObject );
+  throw USER_EXCEPTION(
+    err_qname, description.c_str(), ERROR_LOC( loc ), &lErrorObject
+  );
 
   STACK_END(state);
 }

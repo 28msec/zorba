@@ -60,19 +60,46 @@ void UserException::polymorphic_throw() const {
 
 namespace internal {
 
+// MAKE_USER_EXCEPTION_CC_LT_4CC_EL_EOT_X
 UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line ) {
-  Item empty;
-  return make_user_exception( throw_file, throw_line, empty );
+                                   ZorbaException::line_type throw_line,
+                                   char const *ns, char const *prefix,
+                                   char const *localname,
+                                   char const *description,
+                                   err::location const &loc,
+                                   error_object_type *error_object ) {
+  UserException ue(
+    ns, prefix, localname, throw_file, throw_line, description, error_object
+  );
+  if ( loc )
+    ue.set_source( loc.file(), loc.line(), loc.column() );
+  return ue;
 }
 
+// MAKE_USER_EXCEPTION_CC_LT_X
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line ) {
+  Item no_item;
+  return make_user_exception( throw_file, throw_line, no_item );
+}
+
+// MAKE_USER_EXCEPTION_CC_LT_I_X
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
                                    Item const &error ) {
-  String empty;
-  return make_user_exception( throw_file, throw_line, error, empty );
+  String no_description;
+  return make_user_exception( throw_file, throw_line, error, no_description );
 }
 
+// MAKE_USER_EXCEPTION_CC_LT_E_X
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Error const &error ) {
+  String no_description;
+  return make_user_exception( throw_file, throw_line, error, no_description );
+}
+
+// MAKE_USER_EXCEPTION_CC_LT_I_S_X
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
                                    Item const &error,
@@ -83,6 +110,7 @@ UserException make_user_exception( char const *throw_file,
   );
 }
 
+// MAKE_USER_EXCEPTION_CC_LT_I_S_IS_X
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
                                    Item const &error,
@@ -99,31 +127,53 @@ UserException make_user_exception( char const *throw_file,
     }
   }
   return make_user_exception(
-    throw_file, throw_line, error, description.c_str(), QueryLoc::null,
+    throw_file, throw_line, error, description.c_str(), err::location::empty,
     &error_object
   );
 }
 
+// MAKE_USER_EXCEPTION_CC_LT_E_S_IS_X
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
-                                   Item const &qname,
-                                   char const *description,
-                                   QueryLoc const &loc,
-                                   error_object_type *error_object ) {
-  store::Item_t store_qname;
-  if ( !qname.isNull() )
-    store_qname = Unmarshaller::getInternalItem( qname );
-
+                                   Error const &error,
+                                   String const &description,
+                                   ItemSequence_t const &error_item_seq ) {
+  UserException::error_object_type error_object;
+  if ( error_item_seq.get() ) {
+    if ( Iterator_t i = error_item_seq->getIterator() ) {
+      i->open();
+      Item item;
+      while ( i->next( item ) )
+        error_object.push_back( item );
+      i->close();
+    }
+  }
+  zorba::err::QName const &qname = error.qname();
   return make_user_exception(
-    throw_file, throw_line, store_qname, description, loc, error_object
+    throw_file, throw_line, qname.ns(), qname.prefix(), qname.localname(),
+    description.c_str(), &error_object
   );
 }
 
+// MAKE_USER_EXCEPTION_CC_LT_E_S_EOT_X
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Error const &error,
+                                   String const &description,
+                                   error_object_type *error_object ) {
+  zorba::err::QName const &qname = error.qname();
+  return make_user_exception(
+    throw_file, throw_line, qname.ns(), qname.prefix(), qname.localname(),
+    description.c_str(), error_object
+  );
+}
+
+// MAKE_USER_EXCEPTION_CC_LT_SI_CC_EL_EOT_X
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
                                    store::Item_t const &qname,
                                    char const *description,
-                                   QueryLoc const &loc,
+                                   err::location const &loc,
                                    error_object_type *error_object ) {
   char const *ns, *prefix, *localname;
   if ( qname.isNull() ) {
@@ -142,51 +192,20 @@ UserException make_user_exception( char const *throw_file,
   );
 }
 
+// MAKE_USER_EXCEPTION_CC_LT_I_CC_EL_EOT_X
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
-                                   Error const &error,
-                                   err::parameters const &params,
-                                   err::location const &loc,
-                                   UserException::error_object_type
-                                    *error_object ) {
-  err::parameters::value_type message( error.message() );
-  params.substitute( &message );
-  zorba::err::QName const &qname = error.qname();
-  return make_user_exception(
-    throw_file, throw_line, qname.ns(), qname.prefix(), qname.localname(),
-    message.c_str(), loc, error_object
-  );
-}
-
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
-                                   char const *ns, char const *prefix,
-                                   char const *localname,
-                                   char const *description, QueryLoc const &loc,
-                                   error_object_type *error_object ) {
-  err::location const eloc(
-    loc.getFilename(), loc.getLineno(), loc.getColumnBegin() 
-  );
-  return make_user_exception(
-    throw_file, throw_line, ns, prefix, localname, description, eloc,
-    error_object
-  );
-}
-
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
-                                   char const *ns, char const *prefix,
-                                   char const *localname,
+                                   Item const &qname,
                                    char const *description,
                                    err::location const &loc,
-                                   UserException::error_object_type
-                                    *error_object ) {
-  UserException ue(
-    ns, prefix, localname, throw_file, throw_line, description, error_object
+                                   error_object_type *error_object ) {
+  store::Item_t store_qname;
+  if ( !qname.isNull() )
+    store_qname = Unmarshaller::getInternalItem( qname );
+
+  return make_user_exception(
+    throw_file, throw_line, store_qname, description, loc, error_object
   );
-  if ( loc )
-    ue.set_source( loc.file(), loc.line(), loc.column() );
-  return ue;
 }
 
 } // namespace internal

@@ -23,9 +23,8 @@
 # include <strsafe.h>
 #endif /* WIN32 */
 
-#include <zorba/err.h>
-
 #include "zorbaerrors/dict.h"
+#include "zorbaerrors/err.h"
 
 #include "error_util.h"
 #include "stl_util.h"

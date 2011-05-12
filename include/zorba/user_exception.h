@@ -55,7 +55,7 @@ typedef std::vector<Item> error_object_type;
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-UserException
+UserException // MAKE_USER_EXCEPTION_CC_LT_4CC_EL_EOT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      char const *ns, char const *prefix, char const *localname,
@@ -157,7 +157,7 @@ namespace internal {
  * @param throw_line The C++ source-code line number whence the exception was
  * thrown.
  */
-ZORBA_DLL_PUBLIC UserException
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line );
 
@@ -178,9 +178,32 @@ make_user_exception( char const *throw_file,
  * thrown.
  * @param error The error code expressed as a QName.
  */
-ZORBA_DLL_PUBLIC UserException
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_I_X
 make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line, Item const &error );
+                     ZorbaException::line_type throw_line,
+                     Item const &error );
+
+/**
+ * \internal
+ * Makes a UserException.
+ * This provides for the:
+ * \code
+ * fn:error($error as xs:QName)
+ * \endcode
+ * XQuery function.
+ * This function should not be called directly.
+ * Instead, the \c USER_EXCEPTION macro should be used.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.           
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error code expressed as a QName.
+ */
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_X
+make_user_exception( char const *throw_file,
+                     ZorbaException::line_type throw_line,
+                     Error const &error );
 
 /**
  * \internal
@@ -201,10 +224,10 @@ make_user_exception( char const *throw_file,
  * @param error The error code expressed as a QName.
  * @param description The error description.
  */
-ZORBA_DLL_PUBLIC UserException
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_I_S_X
 make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line, Item const &error,
-                     String const &description );
+                     ZorbaException::line_type throw_line,
+                     Item const &error, String const &description );
 
 /**
  * \internal
@@ -227,7 +250,7 @@ make_user_exception( char const *throw_file,
  * @param description The error description.
  * @param error_object The error object.
  */
-ZORBA_DLL_PUBLIC UserException
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_I_S_IS_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      Item const &error, String const &description,
@@ -235,66 +258,57 @@ make_user_exception( char const *throw_file,
 
 /**
  * \internal
- * Make a UserException.
+ * Makes a UserException.
+ * This provides for the:
+ * \code
+ * fn:error($error as xs:QName,
+ *          $description as xs:string,
+ *          $error-object as item()*)
+ * \endcode
+ * XQuery function.
+ * This function should not be called directly.
+ * Instead, the \c USER_EXCEPTION macro should be used.
  *
  * @param throw_file The C++ source-code file name whence the exception was
  * thrown.           
  * @param throw_line The C++ source-code line number whence the exception was
  * thrown.
- * @param error The error.
- * @param params The error message parameters.
- * @param loc The error XQuery source-code location.
+ * @param error The error code expressed as a QName.
+ * @param description The error description.
  * @param error_object The error object.
  */
-ZORBA_DLL_PUBLIC UserException
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_S_IS_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
-                     Error const &error, err::parameters const &params,
-                     err::location const &loc,
+                     Error const &error, String const &description,
+                     ItemSequence_t const &error_object );
+
+/**
+ * \internal
+ * Makes a UserException.
+ * This provides for the:
+ * \code
+ * fn:error($error as xs:QName,
+ *          $description as xs:string,
+ *          $error-object as item()*)
+ * \endcode
+ * XQuery function.
+ * This function should not be called directly.
+ * Instead, the \c USER_EXCEPTION macro should be used.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.           
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param error The error code expressed as a QName.
+ * @param description The error description.
+ * @param error_object The error object.
+ */
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_S_EOT_X
+make_user_exception( char const *throw_file,
+                     ZorbaException::line_type throw_line,
+                     Error const &error, String const &description,
                      error_object_type *error_object = 0 );
-
-/**
- * \internal
- * Make a UserException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error message parameters.
- * @param error_object The error object.
- */
-inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     Error const &error, err::parameters const &params,
-                     error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, error, params, err::location::empty, error_object
-  );
-}
-
-/**
- * \internal
- * Make a UserException.
- *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param error_object The error object.
- */
-inline UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     Error const &error, error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line, error, err::parameters::empty,
-    err::location::empty, error_object
-  );
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 

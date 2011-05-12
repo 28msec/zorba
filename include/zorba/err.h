@@ -298,28 +298,6 @@ std::ostream& operator<<( std::ostream &o, kind k );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * Creates an error location.
- * Example:
- * \code
- * throw XQUERY_EXCEPTION( XPST0001, ERROR_LOC( file, line, col ) );
- * \endcode
- * \hideinitializer
- */
-#define ERROR_LOC ::zorba::internal::err::make_location
-
-/**
- * Creates a set of error parameters.
- * Example:
- * \code
- * throw XQUERY_EXCEPTION( XPST0001, ERROR_PARAMS( param1, param2, ... ) );
- * \endcode
- * \hideinitializer
- */
-#define ERROR_PARAMS(...) (::zorba::internal::err::parameters(), __VA_ARGS__)
-
-///////////////////////////////////////////////////////////////////////////////
-
 } // namespace err
 } // namespace zorba
 
