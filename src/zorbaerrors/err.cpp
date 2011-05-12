@@ -42,8 +42,18 @@ ostream& operator<<( ostream &o, QName const &qn ) {
     o << prefix << ':';
   else {
     char const *const ns = qn.ns();
-    if ( ns && *ns )
-      o << '{' << ns << '}';
+    if ( ns && *ns ) {
+      //
+      // From <http://www.w3.org/TR/xquery-30/#id-identifying-errors>:
+      //
+      //    An error can be represented by a URI reference that is derived from
+      //    the error QName as follows: an error with namespace URI NS and
+      //    local part LP can be represented as the URI reference NS#LP . For
+      //    example, an error whose QName is err:XPST0017 could be represented
+      //    as http://www.w3.org/2005/xqt-errors#XPST0017.
+      //
+      o << ns << '#';
+    }
   }
   char const *const local = qn.localname();
   if ( local && *local )
