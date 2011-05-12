@@ -15,6 +15,13 @@
  */
 
 #include <sstream>
+
+#include "zorbaerrors/dict.h"
+#include "zorbaerrors/err.h"
+
+#include "error_util.h"
+#include "stl_util.h"
+
 #ifndef WIN32
 # include <cstdio>
 # include <cstring>
@@ -23,12 +30,6 @@
 # include <tchar.h>
 # include <strsafe.h>
 #endif /* WIN32 */
-
-#include "zorbaerrors/dict.h"
-#include "zorbaerrors/err.h"
-
-#include "error_util.h"
-#include "stl_util.h"
 
 namespace zorba {
 namespace os_error {
