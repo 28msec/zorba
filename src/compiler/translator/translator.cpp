@@ -10899,13 +10899,13 @@ void* begin_visit(const SchemaElementTest& v)
       throw;
     }
   }
-#else//ZORBA_NO_XMLSCHEMA
+#else /* ZORBA_NO_XMLSCHEMA */
   throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_SUPPORTED,
-    ERROR_PARAMS( "XML schema" ),
+    zerr::ZXQP0005_NOT_ENABLED,
+    ERROR_PARAMS( ZED( XMLSchema ) ),
     ERROR_LOC( v.get_location() )
   );
-#endif
+#endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
 
@@ -11017,13 +11017,13 @@ void* begin_visit(const SchemaAttributeTest& v)
     theTypeStack.push(seqmatch);
   }
 
-#else//ZORBA_NO_XMLSCHEMA
+#else /* ZORBA_NO_XMLSCHEMA */
   throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_SUPPORTED,
-    ERROR_PARAMS( "XML schema" ),
+    zerr::ZXQP0005_NOT_ENABLED,
+    ERROR_PARAMS( ZED( XMLSchema ) ),
     ERROR_LOC( v.get_location() )
   );
-#endif
+#endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
 

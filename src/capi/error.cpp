@@ -106,7 +106,7 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     || error == ZXQP0002_ASSERT_FAILED
     || error == ZXQP0003_INTERNAL_ERROR
     || error == ZXQP0004_NOT_IMPLEMENTED
-    || error == ZXQP0005_NOT_SUPPORTED
+    || error == ZXQP0005_NOT_ENABLED
     || error == ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL
     || error == ZXQP0008_FUNCTION_IMPL_NOT_FOUND
     || error == ZXQP0009_FUNCTION_LOCALNAME_MISMATCH
