@@ -20,12 +20,12 @@
  : @author Markus Pilman
  :
  :)
-module namespace err = "http://expath.org/ns/error";
+module namespace err = "http://www.zorba-xquery.com/modules/error";
 
 (:~
  : Error namespace URI.
  :)
-declare variable $err:errNS as xs:string := "http://expath.org/ns/error";
+declare variable $err:errNS as xs:string := "http://www.zorba-xquery.com/modules/error";
 
 (:~
  : An HTTP error occurred.

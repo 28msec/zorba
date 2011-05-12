@@ -36,9 +36,6 @@ ENDIF(ZORBA_TEST_XQUERYX)
 # THIS HAS TO BE ADDRESSED ASAP.
 LIST(REMOVE_ITEM TESTFILES
 
-# Test disabled because it hangs - bug 3281369
-  zorba/http_client/http1-redirect.xq
-
 # Crashes on Windows: 3284881, 3071699 (fix 3284881 before 3071699)
   zorba/HigherOrder/hof-101.xq
 )
@@ -179,17 +176,6 @@ FOREACH(TESTFILE ${TESTFILES})
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_FULL_TEXT)
   ENDIF (ZORBA_NO_FULL_TEXT)
-  # Check if ImageMagick libraries are found, if not then skip tests
-  IF (NOT ImageMagick_Magick++_FOUND OR
-      NOT ImageMagick_MagickCore_FOUND OR
-      NOT ImageMagick_MagickWand_FOUND)
-    STRING(REGEX MATCH "image/" NEEDS_MAGICK "${TESTNAME}")
-    IF (NEEDS_MAGICK)
-      SET (SKIP_TEST 1)
-    ENDIF (NEEDS_MAGICK)
-  ENDIF (NOT ImageMagick_Magick++_FOUND OR
-         NOT ImageMagick_MagickCore_FOUND OR
-         NOT ImageMagick_MagickWand_FOUND)
 
   # If WordNet thesaurus not found, skip ft-thesaurus-true tests
   IF (NOT ZORBA_WORDNET_FOUND)

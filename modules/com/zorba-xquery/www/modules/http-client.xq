@@ -106,10 +106,8 @@
  :)
 module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
-import module namespace err = "http://expath.org/ns/error";
+import module namespace err = "http://www.zorba-xquery.com/modules/error";
 
-import module namespace tidy="http://www.zorba-xquery.com/modules/convertors/html";
-import schema namespace tidy-options="http://www.zorba-xquery.com/modules/convertors/html-options";
 
 import schema namespace https = "http://expath.org/ns/http-client";
 
@@ -167,7 +165,7 @@ declare %sequential function http:send-request(
 
       declare $result := http:http-sequential-impl($req, $href, $bodies);
 
-      http:tidy-result($result, fn:data($request/@override-media-type));
+     $result
     }
   else 
     ();
@@ -191,7 +189,7 @@ declare %sequential function http:send-request(
  :)
 declare function http:get($href as xs:string) as item()+
 {
-  http:tidy-result(http:http-nondeterministic-impl((), $href, ()), ())
+  http:http-nondeterministic-impl((), $href, ())
 };
 
 (:~
@@ -250,7 +248,7 @@ declare %sequential function http:put($href as xs:string, $body as item()) as it
     </https:request>}
     , (), ());
 
-  http:tidy-result($result, ());
+  $result
 };
 
 (:~
@@ -303,7 +301,7 @@ declare %sequential function http:post($href as xs:string, $body as item()) as i
     </https:request>}
     , (), ());
 
-  http:tidy-result($result, ());
+  $result
 };
 
 
@@ -319,17 +317,6 @@ declare %private %nondeterministic function http:http-nondeterministic-impl(
   $bodies as item()*) as item()+ external;
 
 
-declare %private function http:tidy-result($result as item()+, $override-media-type as xs:string?) as item()+
-{
-  $result[1],
-  for $body at $pos in fn:subsequence($result, 2)
-  let $media-type := ($override-media-type, $result[1]//https:body[$pos]/@media-type/fn:data(.))[1]
-  return
-    if ($media-type eq "text/html") then
-      tidy:parse($body)
-    else
-      $body
-};
 
 (:~
  : This function takes an https:body element, copies it, and

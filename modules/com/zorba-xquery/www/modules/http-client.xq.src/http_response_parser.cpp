@@ -250,7 +250,7 @@ namespace zorba { namespace http_client {
       XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
       return lDM->parseDocument(aStream);
     } catch (...) {
-      theErrorThrower.raiseException("http://expath.org/ns/error", 
+      theErrorThrower.raiseException("http://www.zorba-xquery.com/modules/error", 
           "HC002", "Error parsing the entity content as XML.");
       //compiler does not recognize, that this function throws an exception, so we just
       // return something

@@ -1,1 +1,0 @@
-<r>François Yergeau</r>

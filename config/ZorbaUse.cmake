@@ -26,3 +26,9 @@ LINK_DIRECTORIES(${Zorba_LIBRARY_DIRS})
 
 # Load Zorba module support macros.
 INCLUDE("${Zorba_CMAKE_MODULES_DIR}/ZorbaModule.cmake")
+
+IF(WIN32)
+# Load Zorba module support macros.
+INCLUDE("${Zorba_CMAKE_MODULES_DIR}/Windows/ProxyFindModule.cmake")
+ENDIF(WIN32)
+

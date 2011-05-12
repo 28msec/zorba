@@ -207,7 +207,7 @@ namespace zorba {
       }
 
       if (lRetCode) {
-        throw USER_EXCEPTION(aFactory->createQName("http://expath.org/ns/error", "HC001"), "An HTTP error occurred");
+        throw USER_EXCEPTION(aFactory->createQName("http://www.zorba-xquery.com/modules/error", "HC001"), "An HTTP error occurred");
       }
 
       return ItemSequence_t(lRespHandler.getResult());
