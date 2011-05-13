@@ -34,8 +34,6 @@ namespace serialization {
  */
 class ZORBA_DLL_PUBLIC Error {
 public:
-  virtual ~Error();
-
   /**
    * Gets the QName for this error.
    *
@@ -65,6 +63,8 @@ public:
   virtual char const* message() const;
 
 protected:
+  virtual ~Error();
+
   virtual Error const* clone() const = 0;
   virtual void destroy() const;
 
