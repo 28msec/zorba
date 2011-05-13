@@ -55,8 +55,8 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new IsDirectoryFunction(this);
     } else if (aLocalname.equals("is-file")) {
       lFunc = new IsFileFunction(this);
-    } else if (aLocalname.equals("copy")) {
-      lFunc = new CopyFunction(this);
+    } else if (aLocalname.equals("copy-file-impl")) {
+      lFunc = new CopyFileImplFunction(this);
     } else if (aLocalname.equals("write-text")) {
       lFunc = new WriteTextFunction(this);
     } else if (aLocalname.equals("write-binary")) {

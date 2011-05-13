@@ -58,13 +58,13 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class CopyFunction : public FileFunction
+  class CopyFileImplFunction : public FileFunction
   {
     public:
-      CopyFunction(const FileModule* aModule);
+      CopyFileImplFunction(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "copy"; }
+      getLocalName() const { return "copy-file-impl"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,

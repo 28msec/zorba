@@ -84,12 +84,12 @@ declare %private %sequential function file:append-text(
 (:~
  : Copies a file or a directory given a source and a destination path/URI.
  :
- : @param $source The path/URI of the file to copy.
- : @param $destination The detination path/URI.
+ : @param $source The path/URI of the file or directory to copy.
+ : @param $destination The destination path/URI.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If <pre>$source</pre> points to a directory and
- :    <pre>$destination</pre> points to an existing file.
+ : @error FOFL0002 If the computed destination points to a file system item
+ :    with a different type than the <pre>$source</pre>.
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
  : @error FOFL9999 If any other error occurs.
@@ -97,7 +97,100 @@ declare %private %sequential function file:append-text(
 declare %sequential function file:copy(
   $source as xs:string,
   $destination as xs:string
+) as empty-sequence()
+{
+  if (file:exists($source)) then
+    if (file:is-directory($source)) then
+      file:copy-directory-impl($source, $destination)
+    else
+      file:copy-file-impl($source, $destination)
+  else
+    fn:error(xs:QName("file:FOFL0001"), fn:concat("The source path does not exists: ", $source))
+};
+
+(:~
+ : Copies a file given a source and a destination path/URI.
+ :
+ : @param $sourceFile The path/URI of the file to copy.
+ : @param $destination The destination path/URI.
+ : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0002 If the computed destination points to directory.
+ : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ :    parent directory does not exist either.
+ : @error FOFL0004 If <pre>$sourceFile</pre> points to a directory.
+ : @error FOFL9999 If any other error occurs.
+ :)
+declare %private %sequential function file:copy-file-impl(
+  $sourceFile as xs:string,
+  $destination as xs:string
 ) as empty-sequence() external;
+
+(:~
+ : Copies a source directory recursively to a destination path/URI.
+ :
+ : @param $sourceDir The path/URI of the directory to copy.
+ : @param $destination The destination path/URI.
+ : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0002 If <pre>$destination</pre> points to an existing file.
+ : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ :    parent directory does not exist either.
+ : @error FOFL9999 If any other error occurs.
+ :)
+declare %private %sequential function file:copy-directory-impl(
+  $sourceDir as xs:string,
+  $destination as xs:string
+) as empty-sequence()
+{
+  if (file:is-file($destination)) then
+    fn:error(xs:QName("file:FOFL0002"), fn:concat("The specified destination path already exists: ", $destination))
+  else if (fn:not(file:exists($destination))) then
+    let $dirname := file:dir-name($destination)
+    let $basename := file:base-name($destination)
+    return
+      if (fn:not(file:exists($dirname))) then
+        fn:error(xs:QName("file:FOFL0003"), fn:concat("The destination directory does not exist: ", $dirname))
+      else
+        block {
+          file:create-directory($destination);
+          file:copy-directory-content($sourceDir, $destination);
+        }
+
+  else
+    let $basename := file:base-name($sourceDir)
+    let $newdir := fn:concat($destination, file:directory-separator(), $basename)
+    return
+      block {
+        file:create-directory($newdir);
+        file:copy-directory-content($sourceDir, $newdir);
+      }
+};
+
+(:~
+ : Copies the content of a given directory to an existing destination
+ : directory.
+ :
+ : @param $sourceDir The path/URI of the directory to copy the content from.
+ : @param $destination The destination directory path/URI.
+ : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0003 If <pre>$destination</pre> directory does not exist.
+ : @error FOFL9999 If any other error occurs.
+ :)
+declare %private %sequential function file:copy-directory-content(
+  $sourceDir as xs:string,
+  $destination as xs:string
+) as empty-sequence()
+{
+  if (file:is-directory($destination)) then
+    for $item in file:list($sourceDir)
+    let $fullPath := fn:concat($sourceDir, file:directory-separator(), $item)
+    return
+      file:copy($fullPath, $destination)
+  else
+    fn:error(xs:QName("file:FOFL0003"), fn:concat("The specified destination directory does not exist: ", $destination))    
+};
 
 (:~
  : Creates a directory.
@@ -136,7 +229,7 @@ declare %sequential function file:delete(
     else
       file:delete-file-impl($path)
   else
-    fn:error(xs:QName("err:FOFL0001"), fn:concat("The path does not exists: ", $path))
+    fn:error(xs:QName("file:FOFL0001"), fn:concat("The path does not exists: ", $path))
 };
 
 (:~

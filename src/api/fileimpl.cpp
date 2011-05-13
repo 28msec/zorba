@@ -221,23 +221,10 @@ void
 FileImpl::remove()
 {
   ZORBA_TRY
-    //TODO: Throw proper errors
-
-    // precondition
-    if (!theInternalFile->exists()) {
-      throw "A the file or directory does not exist at this path.";
-    }
-
     if (theInternalFile->is_directory()) {
       theInternalFile->rmdir(false);
     } else {
       theInternalFile->remove(false);
-    }
-
-    // postcondition
-    // if the file/dir still exists
-    if (theInternalFile->exists()) {
-      throw "The file or directory at this path could not be deleted.";
     }
   ZORBA_CATCH
 }
@@ -309,28 +296,11 @@ void
 FileImpl::mkdir(bool aRecursive)
 {
   ZORBA_TRY
-    // precondition
-    std::string lPath(theInternalFile->get_path());
-
-    if (theInternalFile->exists() && !theInternalFile->is_directory()) {
-      throw "FOFL0002"; // "A file already exist at this path: " << lPath
-    }
-
-    if (!aRecursive && theInternalFile->exists()) {
-      throw "FOFL0004"; // "The directory already exists: " << lPath
-    }
-
     if (aRecursive) {
       theInternalFile->deep_mkdir();
     } else {
       theInternalFile->mkdir();
     }
-
-    // postcondition
-    if (!(theInternalFile->is_directory())) {
-      throw "FOFL0000"; // "Can not create directory: " << lPath
-    }
-
   ZORBA_CATCH
 }
 

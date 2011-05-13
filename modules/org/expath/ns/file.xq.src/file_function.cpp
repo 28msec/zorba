@@ -66,6 +66,18 @@ FileFunction::~FileFunction()
 {
 }
 
+void
+FileFunction::raiseFileError(
+  const std::string& aQName,
+  const std::string& aMessage,
+  const std::string& aPath) const
+{
+  std::stringstream lErrorMessage;
+  lErrorMessage << aMessage << ": " << aPath;
+  Item lQName = theModule->getItemFactory()->createQName(getURI(), "file", aQName);
+  throw USER_EXCEPTION(lQName, lErrorMessage.str());
+}
+
 String
 FileFunction::getURI() const
 {
@@ -74,9 +86,8 @@ FileFunction::getURI() const
 
 String
 FileFunction::getOneStringArg(
-  const FileModule* aModule,
   const StatelessExternalFunction::Arguments_t& aArgs,
-  int aPos)
+  unsigned int aPos) const
 {
   Item lItem;
   Iterator_t args_iter = aArgs[aPos]->getIterator();
@@ -85,7 +96,9 @@ FileFunction::getOneStringArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " 
                   << aPos << ". parameter.";
-    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+    Item lQName = theModule->getItemFactory()->createQName(
+        "http://www.w3.org/2005/xqt-errors",
+        "err",
         "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
@@ -94,7 +107,9 @@ FileFunction::getOneStringArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+    Item lQName = theModule->getItemFactory()->createQName(
+        "http://www.w3.org/2005/xqt-errors",
+        "err",
         "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
@@ -105,7 +120,7 @@ FileFunction::getOneStringArg(
 bool
 FileFunction::getOneBooleanArg(
   const StatelessExternalFunction::Arguments_t& aArgs,
-  int aPos)
+  unsigned int aPos) const
 {
   bool lResult = false;
 
@@ -123,11 +138,10 @@ FileFunction::getOneBooleanArg(
 
 String
 FileFunction::getFilePathString(
-    const FileModule* aModule,
-    const StatelessExternalFunction::Arguments_t& aArgs,
-    int aPos)
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  unsigned int aPos) const
 {
-  String lFileArg = getOneStringArg(aModule, aArgs, aPos);
+  String lFileArg = getOneStringArg(aArgs, aPos);
 
   return (filesystem_path::normalize_path
     (lFileArg.c_str(), getCurrentPath().c_str()));
@@ -144,7 +158,7 @@ FileFunction::pathSeparator() {
 }
 
 String
-FileFunction::pathToFullOSPath(const String& aPath) {
+FileFunction::pathToFullOSPath(const String& aPath) const {
   File_t lFile = File::createFile(aPath.c_str());
   std::string lPath = lFile->getFilePath();
 
@@ -153,9 +167,8 @@ FileFunction::pathToFullOSPath(const String& aPath) {
 
 String
 FileFunction::getEncodingArg(
-    const FileModule* aModule,
-    const StatelessExternalFunction::Arguments_t& aArgs,
-    unsigned int aPos)
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  unsigned int aPos) const
 {
   // the default file encoding
   zorba::String lEncoding("UTF-8");
@@ -173,7 +186,8 @@ FileFunction::getEncodingArg(
     // the rest are not supported encodings
     std::stringstream lErrorMessage;
     lErrorMessage << "Unsupported encoding: " << lEncoding;
-    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+    Item lQName = theModule->getItemFactory()->createQName(
+        "http://www.zorba-xquery.com/errors",
         "ZXQP003_INTERNAL_ERROR");
     throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
@@ -182,7 +196,7 @@ FileFunction::getEncodingArg(
 }
 
 String
-FileFunction::pathToOSPath(const String& aPath) {
+FileFunction::pathToOSPath(const String& aPath) const {
   File_t lFile = File::createFile(aPath.c_str());
   std::string lPath = lFile->getFilePath();
 
@@ -190,12 +204,14 @@ FileFunction::pathToOSPath(const String& aPath) {
 }
 
 String
-FileFunction::pathToUriString(const FileModule* aModule, const String& aPath) {
+FileFunction::pathToUriString(const String& aPath) const {
   std::stringstream lErrorMessage;
 
   if(aPath.startsWith("file://")) {
     lErrorMessage << "Please provide a path, not a URI";
-    Item lQName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
+    Item lQName = theModule->getItemFactory()->createQName(
+        "http://www.w3.org/2005/xqt-errors",
+        "err",
         "XPTY0004");
     throw USER_EXCEPTION(lQName, lErrorMessage.str() );
   }
@@ -244,7 +260,7 @@ StreamableFileFunction::~StreamableFileFunction()
 bool
 StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
 {
-  if(!theIsOpen) {
+  if (!theIsOpen) {
     Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace,
         "ZXQP003_INTERNAL_ERROR");
     throw USER_EXCEPTION(lQName, "StreamableItemSequence Iterator consumed without open" );
@@ -274,66 +290,67 @@ WriterFileFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
+  // precondition
   if (lFile->isDirectory()) {
-    std::ostringstream lSs;
-    lSs << "The path denotes an existing directory: " << lFile->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0004");
-    throw USER_EXCEPTION(lQName, lSs.str());
+    raiseFileError("FOFL0004", "The given path points to a directory", lFile->getFilePath());
   }
 
   bool lBinary = isBinary();
   bool lAppend = isAppend();
 
-  // throw an error if the file exists and we don't want to overwrite,
-  // but if we append, we don't care because we always write
-  if (!lAppend && lFile->exists() && aArgs.size() == 3 && !getOneBooleanArg(aArgs, 2)) {
-    std::ostringstream lSs;
-    lSs << "The file already exists: " << lFile->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
-    throw USER_EXCEPTION(lQName, lSs.str());
-  }
+  // actual write
+  try {
 
-  // open the output stream in the desired write mode
-  std::ofstream lOutStream;
-  lFile->openOutputStream(lOutStream, lBinary, isAppend());
+    // open the output stream in the desired write mode
+    std::ofstream lOutStream;
+    lFile->openOutputStream(lOutStream, lBinary, isAppend());
 
-  // if this is a binary write
-  if (lBinary) {
-    Zorba_SerializerOptions lOptions;
-    lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
-    Serializer_t lSerializer = Serializer::createSerializer(lOptions);
-    lSerializer->serialize(aArgs[1], lOutStream);
-  }
-  // if we only write text
-  else {
-    Item lStringItem;
-    Iterator_t lContentSeq = aArgs[1]->getIterator();
-    lContentSeq->open();
-    // for each item (string or base64Binary) in the content sequence
-    while (lContentSeq->next(lStringItem)) {
-      // if the item is streamable make use of the stream
-      if (lStringItem.isStreamable()) {
-        std::istream& lInStream = lStringItem.getStream();
-        char lBuf[1024];
-        while (!lInStream.eof()) {
-          lInStream.read(lBuf, 1024);
-          lOutStream.write(lBuf, lInStream.gcount());
+    // if this is a binary write
+    if (lBinary) {
+      Zorba_SerializerOptions lOptions;
+      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
+      Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+      lSerializer->serialize(aArgs[1], lOutStream);
+    }
+    // if we only write text
+    else {
+      Item lStringItem;
+      Iterator_t lContentSeq = aArgs[1]->getIterator();
+      lContentSeq->open();
+      // for each item (string or base64Binary) in the content sequence
+      while (lContentSeq->next(lStringItem)) {
+        // if the item is streamable make use of the stream
+        if (lStringItem.isStreamable()) {
+          std::istream& lInStream = lStringItem.getStream();
+          char lBuf[1024];
+          while (!lInStream.eof()) {
+            lInStream.read(lBuf, 1024);
+            lOutStream.write(lBuf, lInStream.gcount());
+          }
+        }
+        // else write the string value
+        else {
+          zorba::String lString = lStringItem.getStringValue();
+          lOutStream.write(lString.c_str(), lString.bytes());
         }
       }
-      // else write the string value
-      else {
-        zorba::String lString = lStringItem.getStringValue();
-        lOutStream.write(lString.c_str(), lString.bytes());
-      }
+      lContentSeq->close();
     }
-    lContentSeq->close();
-  }
 
-  // close the file stream
-  lOutStream.close();
+    // close the file stream
+    lOutStream.close();
+
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not read file";
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not read file", lFile->getFilePath());
+  }
 
   return ItemSequence_t(new EmptySequence());
 }

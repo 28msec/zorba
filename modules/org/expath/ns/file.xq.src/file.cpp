@@ -47,10 +47,30 @@ CreateDirectoryFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  lFile->mkdir(true);
+  // precondition
+  if (lFile->isFile()) {
+    raiseFileError("FOFL0002", "A file already exists at this path", lFile->getFilePath());
+  }
+
+  // actual mkdir
+  try {
+    lFile->mkdir(true);
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not create directory";
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not create directory", lFile->getFilePath());
+  }
+
+  // postcondition
+  if (!(lFile->isDirectory())) {
+    raiseFileError("FOFL9999", "Can not create directory", lFile->getFilePath());
+  }
 
   return ItemSequence_t(new EmptySequence());
 }
@@ -68,10 +88,30 @@ DeleteFileImplFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  lFile->remove();
+  // precondition
+  if (!lFile->exists()) {
+    raiseFileError("FOFL0001", "A file or directory does not exist at this path", lFile->getFilePath());
+  }
+
+  // actual remove
+  try {
+    lFile->remove();
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not delete file";
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not delete directory", lFile->getFilePath());
+  }
+
+  // postcondition
+  if (lFile->exists()) {
+    raiseFileError("FOFL9999", "The file at this path could not be deleted", lFile->getFilePath());
+  }
 
   return ItemSequence_t(new EmptySequence());
 }
@@ -89,26 +129,44 @@ ReadBinaryFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  std::ifstream lInStream;
-  lFile->openInputStream(lInStream, true, false);
+  // preconditions
+  if (!lFile->exists()) {
+    raiseFileError("FOFL0001", "A file does not exist at this path", lFile->getFilePath());
+  }
+  if (lFile->isDirectory()) {
+    raiseFileError("FOFL0004", "The given path points to a directory", lFile->getFilePath());
+  }
 
-  std::stringstream lStrStream;
-  char lBuf[1024];
-  while (!lInStream.eof()) {
-    lInStream.read(lBuf, 1024);
-    lStrStream.write(lBuf, lInStream.gcount());
-  }  
+  // actual read
+  Item lItem;
+  try {
+    std::ifstream lInStream;
+    lFile->openInputStream(lInStream, true, false);
 
-  String lContent(lStrStream.str());
-  String lEncodedContent = encoding::Base64::encode(lContent);
-  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
+    std::stringstream lStrStream;
+    char lBuf[1024];
+    while (!lInStream.eof()) {
+      lInStream.read(lBuf, 1024);
+      lStrStream.write(lBuf, lInStream.gcount());
+    }  
+
+    String lContent(lStrStream.str());
+    String lEncodedContent = encoding::Base64::encode(lContent);
+    lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not read file";
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not read file", lFile->getFilePath());
+  }
 
   if (lItem.isNull()) {
-    Item lQName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/security/hash",
-        "XPTY0004");
+    Item lQName = theModule->getItemFactory()->createQName("http://www.w3.org/2005/xqt-errors", "err", "XPTY0004");
     throw USER_EXCEPTION(lQName, "Error while building the base64binary item." );
   }
 
@@ -128,13 +186,21 @@ ReadTextFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
+
+  // preconditions
+  if (!lFile->exists()) {
+    raiseFileError("FOFL0001", "A file does not exist at this path", lFile->getFilePath());
+  }
+  if (lFile->isDirectory()) {
+    raiseFileError("FOFL0004", "The given path points to a directory", lFile->getFilePath());
+  }
 
   if (aArgs.size() == 2) {
     // since Zorba currently only supports UTF-8 we only call this function
     // to reject any other encoding requested bu the user
-    getEncodingArg(theModule, aArgs, 1);
+    getEncodingArg(aArgs, 1);
   }
   
   std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence());
@@ -160,7 +226,7 @@ ExistsFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   bool   lFileExists = false;
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->exists()) {
@@ -185,7 +251,7 @@ IsDirectoryFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isDirectory()) {
@@ -209,7 +275,7 @@ IsFileFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isFile()) {
@@ -221,54 +287,32 @@ IsFileFunction::evaluate(
 
 //*****************************************************************************
 
-CopyFunction::CopyFunction(const FileModule* aModule)
+CopyFileImplFunction::CopyFileImplFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
 
 ItemSequence_t
-CopyFunction::evaluate(
+CopyFileImplFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  bool lResult = false;
-
-  String lSrcFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lSrcFileStr = getFilePathString(aArgs, 0);
   File_t lSrcFile = File::createFile(lSrcFileStr.c_str());
-  String lDstStr = FileFunction::getFilePathString(theModule, aArgs, 1);
+  String lDstStr = getFilePathString(aArgs, 1);
   File_t lDst = File::createFile(lDstStr.c_str());
 
-  // do we have something to copy?
-  if (!(lSrcFile->exists())) {
-    std::stringstream lSs;
-    lSs << "The source path does not exist: " << lSrcFile->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0001");
-    throw USER_EXCEPTION(lQName, lSs.str());
+  // preconditions
+  if (!lSrcFile->exists()) {
+    raiseFileError("FOFL0001", "A file does not exist at this path", lSrcFile->getFilePath());
+  }
+  // is this a file? (the recursive version is implemented in XQuery)
+  if (lSrcFile->isDirectory()) {
+    raiseFileError("FOFL0004", "This operation is non-recursive. The source path points to a directory", lSrcFile->getFilePath());
   }
 
-  // is this a file (the recursive version is implemented in XQuery)
-  if (!(lSrcFile->isFile())) {
-    std::stringstream lSs;
-    lSs << "The source of a non-recursive copy cannot be a directory: " << lSrcFile->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0004");
-    throw USER_EXCEPTION(lQName, lSs.str());
-  }
-
-  // do we have to overwrite an existing file?
-  bool lOverwrite = false;
-  if (aArgs.size() == 3) {
-    lOverwrite = getOneBooleanArg(aArgs, 2);
-  }
-
-  // stop if not overwriting and the destination file exists
-  if (!lOverwrite && lDst->isFile()) {
-    std::stringstream lSs;
-    lSs << "The destination path already exists: " << lDst->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
-    throw USER_EXCEPTION(lQName, lSs.str());
-  }
-
+  // do we copy into a directory?
   if (lDst->isDirectory()) {
     lDstStr = lDst->getFilePath();
     String lSrcPath = lSrcFile->getFilePath();
@@ -278,36 +322,44 @@ CopyFunction::evaluate(
     lDst = File::createFile(lDstStr.c_str());
   }
 
+  // is the destination still is a directory?
   if (lDst->isDirectory()) {
-    std::stringstream lSs;
-    lSs << "The destination path already exists: : " << lDst->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
-    throw USER_EXCEPTION(lQName, lSs.str());
-  } else if (lDst->isFile() && !lOverwrite) {
-    std::stringstream lSs;
-    lSs << "The destination path already exists: " << lDst->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0002");
-    throw USER_EXCEPTION(lQName, lSs.str());
+    raiseFileError("FOFL0002", "The destination path already exists", lSrcFile->getFilePath());
   }
 
-  // open the output stream in the desired write mode
-  std::ifstream lInStream;
-  std::ofstream lOutStream;
-  lSrcFile->openInputStream(lInStream, true, false);
-  lDst->openOutputStream(lOutStream, true, false);
+  // do we copy a file to its own location?
+  if (lSrcFile->getFilePath() == lDst->getFilePath()) {
+    raiseFileError("FOFL9999", "The source and destination paths can not point to the same file", lSrcFile->getFilePath());
+  }
 
-  // copy the data
-  char lBuf[1024];
-  while (!lInStream.eof()) {
-    lInStream.read(lBuf, 1024);
-    lOutStream.write(lBuf, lInStream.gcount());
-  }  
+  // actual copy
+  try {
 
-  // close the streams
-  lInStream.close();
-  lOutStream.close();
+    // open the output stream in the desired write mode
+    std::ifstream lInStream;
+    std::ofstream lOutStream;
+    lSrcFile->openInputStream(lInStream, true, false);
+    lDst->openOutputStream(lOutStream, true, false);
 
-  lResult = true;
+    // copy the data
+    char lBuf[1024];
+    while (!lInStream.eof()) {
+      lInStream.read(lBuf, 1024);
+      lOutStream.write(lBuf, lInStream.gcount());
+    }  
+
+    // close the streams
+    lInStream.close();
+    lOutStream.close();
+
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not copy file";
+    raiseFileError("FOFL9999", lSs.str(), lSrcFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not copy file", lSrcFile->getFilePath());
+  }
 
   return ItemSequence_t(new EmptySequence());
 }
@@ -325,15 +377,29 @@ ListFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
+  // precondition
   if (!lFile->isDirectory()) {
-    return ItemSequence_t(new EmptySequence());
+    raiseFileError("FOFL0003", "The specified path does not point to a directory", lFile->getFilePath());
   }
 
-  DirectoryIterator_t lIter = lFile->files();
-  return ItemSequence_t(new IteratorBackedItemSequence(lIter, theModule->getItemFactory()));
+  // actual list
+  try {
+    DirectoryIterator_t lIter = lFile->files();
+    return ItemSequence_t(new IteratorBackedItemSequence(lIter, theModule->getItemFactory()));
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not list directory";
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not list directory", lFile->getFilePath());
+  }
+
+  // dummy, this will never be called
+  return ItemSequence_t(new EmptySequence());
 }
 
 ListFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
@@ -399,23 +465,33 @@ LastModifiedFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  if(!lFile->exists()) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "The provided path/URI does not exist: " << lFile->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0001");
-    throw USER_EXCEPTION(lQName, lErrorMessage.str());
+  // precondition
+  if (!lFile->exists()) {
+    raiseFileError("FOFL0001", "A file or directory does not exist at this path", lFile->getFilePath());
   }
 
-  time_t lTime = lFile->lastModified();
-  struct tm *lT = localtime(&lTime);
+  // actual last modified
+  try {
+    time_t lTime = lFile->lastModified();
+    struct tm *lT = localtime(&lTime);
+    int gmtOffset = LastModifiedFunction::getGmtOffset();
 
-  int gmtOffset = LastModifiedFunction::getGmtOffset();
+    return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createDateTime(1900 + lT->tm_year, lT->tm_mon, lT->tm_mday, lT->tm_hour, lT->tm_min, lT->tm_sec, gmtOffset)));
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not retrieve the last modification timestamp of";
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not retrieve the last modification timestamp of", lFile->getFilePath());
+  }
 
-  return ItemSequence_t(new SingletonItemSequence(
-    theModule->getItemFactory()->createDateTime(1900 + lT->tm_year, lT->tm_mon, lT->tm_mday, lT->tm_hour, lT->tm_min, lT->tm_sec, gmtOffset)));
+  // dummy, this will never be called
+  return ItemSequence_t(new EmptySequence());
 }
 
 int
@@ -445,25 +521,32 @@ SizeFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(theModule, aArgs, 0);
+  String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  if(!lFile->exists()) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "The provided path/URI does not exist: " << lFile->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0001");
-    throw USER_EXCEPTION(lQName, lErrorMessage.str());
+  // preconditions
+  if (!lFile->exists()) {
+    raiseFileError("FOFL0001", "A file does not exist at this path", lFile->getFilePath());
+  }
+  if (lFile->isDirectory()) {
+    raiseFileError("FOFL0004", "The given path points to a directory", lFile->getFilePath());
   }
 
-  if(lFile->isDirectory()) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "The provided path/URI must not point to a directory: " << lFile->getFilePath();
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace, "FOFL0004");
-    throw USER_EXCEPTION(lQName, lErrorMessage.str());
+  // actual size
+  File::FileSize_t lFs = -1;
+  try {
+    lFs = lFile->getSize();
+  } catch (ZorbaException& ze) {
+    std::stringstream lSs;
+    lSs << "An unknown error occured: " << ze.what() << "Can not retrieve the file size of";
+    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  } catch (...) {
+    //assert(false); if this happens errors are not proprly thrown
+    raiseFileError("FOFL9999", "Can not retrieve the file size of", lFile->getFilePath());
   }
 
   return ItemSequence_t(new SingletonItemSequence(
-    theModule->getItemFactory()->createInteger(lFile->getSize())));
+    theModule->getItemFactory()->createInteger(lFs)));
 }
 
 //*****************************************************************************
@@ -511,10 +594,31 @@ ResolvePathFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lPathStr = FileFunction::getFilePathString(theModule, aArgs, 0);
-  String lResult = FileFunction::pathToOSPath(lPathStr);
+  String lPathStr = getFilePathString(aArgs, 0);
+  String lResult = pathToOSPath(lPathStr);
 
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(lResult)));
+}
+
+//*****************************************************************************
+
+PathToNativeFunction::PathToNativeFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+PathToNativeFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                                const StaticContext* aSctxCtx,
+                                const DynamicContext* aDynCtx) const
+{
+  Item pathItem;
+  Iterator_t arg0_iter = args[0]->getIterator();
+  arg0_iter->open();
+  arg0_iter->next(pathItem);
+  arg0_iter->close();
+  String osPath = filesystem_path::normalize_path(pathItem.getStringValue().c_str());
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(osPath)));
 }
 
 //*****************************************************************************
@@ -530,8 +634,8 @@ PathToUriFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lPathStr = FileFunction::getFilePathString(theModule, aArgs, 0);
-  String lResult = FileFunction::pathToUriString(theModule, lPathStr);
+  String lPathStr = getFilePathString(aArgs, 0);
+  String lResult = pathToUriString(lPathStr);
 
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(lResult)));
 }
@@ -602,34 +706,6 @@ AppendBinaryFunction::isAppend() const {
 bool
 AppendBinaryFunction::isBinary() const {
   return true;
-}
-
-//*****************************************************************************
-
-
-//*****************************************************************************
-//*****************************************************************************
-// the functions above have been updated to the new file API spec
-//*****************************************************************************
-//*****************************************************************************
-
-PathToNativeFunction::PathToNativeFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-PathToNativeFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                                const StaticContext* aSctxCtx,
-                                const DynamicContext* aDynCtx) const
-{
-  Item pathItem;
-  Iterator_t arg0_iter = args[0]->getIterator();
-  arg0_iter->open();
-  arg0_iter->next(pathItem);
-  arg0_iter->close();
-  String osPath = filesystem_path::normalize_path(pathItem.getStringValue().c_str());
-  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(osPath)));
 }
 
 //*****************************************************************************

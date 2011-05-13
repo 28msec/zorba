@@ -42,43 +42,46 @@ namespace zorba { namespace filemodule {
     protected:
       const FileModule* theModule;
 
-      static String
+      void
+      raiseFileError(
+          const std::string& qName,
+          const std::string& message,
+          const std::string& path) const;
+
+      String
       getOneStringArg(
-          const FileModule* aModule,
-          const StatelessExternalFunction::Arguments_t& args,
-          int pos);
+        const StatelessExternalFunction::Arguments_t& args,
+        unsigned int pos) const;
 
-      static bool
+      bool
       getOneBooleanArg(
-          const StatelessExternalFunction::Arguments_t& args,
-          int pos);
+        const StatelessExternalFunction::Arguments_t& args,
+        unsigned int pos) const;
 
-      static String
+      String
       getFilePathString(
-          const FileModule* aModule,
-          const StatelessExternalFunction::Arguments_t& args,
-          int pos);
+        const StatelessExternalFunction::Arguments_t& args,
+        unsigned int pos) const;
 
-      static String
+      String
       getEncodingArg(
-          const FileModule* aModule,
-          const StatelessExternalFunction::Arguments_t& args,
-          unsigned int pos);
+        const StatelessExternalFunction::Arguments_t& args,
+        unsigned int pos) const;
+
+      String
+      pathToFullOSPath(const String& path) const;
+
+      String
+      pathToOSPath(const String& path) const;
+
+      String
+      pathToUriString(const String& path) const;
 
       static String
       directorySeparator();
 
       static String
       pathSeparator();
-
-      static String
-      pathToFullOSPath(const String& path);
-
-      static String
-      pathToOSPath(const String& path);
-
-      static String
-      pathToUriString(const FileModule* aModule, const String& path);
 
     public:
       FileFunction(const FileModule* module);
@@ -116,20 +119,27 @@ namespace zorba { namespace filemodule {
                 theHasNext(true)
             { }
 
-            virtual void open()
+            virtual void
+            open()
             {
               theIsOpen = true;
               theHasNext = true;
             }
-            virtual void close()
+
+            virtual void
+            close()
             {
               theIsOpen = false;
             }
-            virtual bool isOpen() const
+
+            virtual bool
+            isOpen() const
             {
               return theIsOpen;
             }
-            bool next(Item& aResult);
+
+            bool
+            next(Item& aResult);
         };
 
         Item          theItem;
