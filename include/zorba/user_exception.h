@@ -55,7 +55,7 @@ typedef std::vector<Item> error_object_type;
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-UserException // MAKE_USER_EXCEPTION_CC_LT_4CC_EL_EOT_X
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_4CC_EL_EOT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      char const *ns, char const *prefix, char const *localname,
@@ -78,7 +78,7 @@ make_user_exception( char const *throw_file,
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-UserException // MAKE_USER_EXCEPTION_CC_LT_E_CC_EL_EOT_X
+ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_CC_EL_EOT_X
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line, Error const &error,
                      char const *description, err::location const &loc,
