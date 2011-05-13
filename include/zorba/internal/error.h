@@ -43,8 +43,7 @@ public:
   }
 
 private:
-  typedef std::map<char const*,Error const*, ztd::less<char const*> > map_type;
-
+  typedef std::map<char const*,Error const*,ztd::less<char const*> > map_type;
   static map_type& get_map();
 
   SystemErrorBase( char const *localname ) {
@@ -76,8 +75,9 @@ public:
   }
 
   // inherited
-  zorba::err::QName const& qname() const { return qname_; }
+  zorba::err::category category() const { return qname_.error_category(); }
   zorba::err::kind kind() const { return qname_.error_kind(); }
+  zorba::err::QName const& qname() const { return qname_; }
 
 protected:
   // inherited
