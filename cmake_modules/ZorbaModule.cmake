@@ -120,6 +120,46 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   ENDIF (WIN32)
 ENDMACRO(GENERATE_MODULE_LIBRARY)
 
+# The expected_failure() function is used to mark a test which is currently
+# failing, but is being worked on.
+#
+# Usage: expected_failure (testname bugid)
+#  where "testname" is the full test name and "bugid" is the Sourceforge
+#  Tracker artifact ID.
+MACRO(expected_failure testname bugid)
+  # The meat: flip the "will_fail" flag
+  get_test_property ("${testname}" WILL_FAIL willfail)
+  if (willfail)
+    set (willfail 0)
+  else (willfail)
+    set (willfail 1)
+  endif (willfail)
+
+  FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+    # simplestore executable doesn't need an extension
+    SET(SUFFIX)
+    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+      SET(SUFFIX "_${ZORBA_STORE_NAME}")
+    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+
+    set_tests_properties ("${testname}${SUFFIX}"
+      PROPERTIES WILL_FAIL ${willfail})
+
+    # Also store the name and bug ID of this test in our output file
+    file (APPEND "${expected_failures_file}"
+      "<Test name=\"${testname}${SUFFIX}\" bug=\"${bugid}\"/>")
+  ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+
+ENDMACRO(expected_failure)
+
+# Initialize output file when first included
+set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
+file (WRITE "${expected_failures_file}" "<ExpectedFailures>")
+
+# Call this MACRO to close out output file
+MACRO(close_expected_failures)
+  file (APPEND "${expected_failures_file}" "</ExpectedFailures>")
+ENDMACRO(close_expected_failures)
 
 # Convenience macro for adding tests in a standard format. QQQ doc!
 MACRO(ADD_TEST_DIRECTORY TEST_DIR)

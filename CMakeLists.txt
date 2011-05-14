@@ -145,9 +145,11 @@ IF(WIN32)
   INCLUDE(ProxyFindModule)
 ENDIF(WIN32)
 
-# Include this now (very early) to ensure the "expected_failure()" function
-# is available to anyone who might add tests.
-INCLUDE(ExpectedFailure)
+# ZorbaModule includes a number of generally-useful utility functions,
+# including expected_failure().  Include it now (very early) to ensure
+# the "expected_failure()" function is available to anyone who might
+# add tests.
+INCLUDE(ZorbaModule)
 
 ################################################################################
 #                                                                              #

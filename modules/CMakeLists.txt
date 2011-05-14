@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-INCLUDE (ZorbaModule)
-
 MESSAGE(STATUS "Add com")
 ADD_SUBDIRECTORY(com)
 MESSAGE(STATUS "Add org")
@@ -47,9 +45,11 @@ ENDFOREACH (module)
 LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 
 # Now, iterate through all the module projects again and actually add
-# them to this Zorba project.
+# them to this Zorba project. Create a binary directory for them
+# inside our own.
 FOREACH (module ${modules})
-  ADD_SUBDIRECTORY("${modules_dir}/${module}" "${modules_dir}/${module}/build")
+  ADD_SUBDIRECTORY("${modules_dir}/${module}"
+    "${CMAKE_BINARY_DIR}/zorba_modules/${module}")
 ENDFOREACH (module)
 
 # QQQ This install logic should be part of a more fully-feature macro
