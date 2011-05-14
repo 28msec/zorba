@@ -705,7 +705,7 @@ void CtxItemDecl::accept(parsenode_visitor& v) const
   Local declarations:
   -------------------
 
-  VarDeclStatement ::= ("local" Annotation*)? "variable" 
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
                        "$" VarName TypeDeclaration? (":=" ExprSingle)?
                        ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
@@ -1456,6 +1456,17 @@ void BlockBody::accept(parsenode_visitor& v) const
   END_VISITOR();
 }
 
+/*******************************************************************************
+  TODO
+********************************************************************************/
+void ApplyExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+
+  ACCEPT(apply_expr_h);
+
+  END_VISITOR();
+}
 
 /*******************************************************************************
   [37] QueryBody ::= Expr

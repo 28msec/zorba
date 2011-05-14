@@ -307,9 +307,8 @@ declare variable $files external;
 let $pieces as xs:string* := tokenize($file,'/')
 let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pieces)])-4)
 return
-  block 
   {
-    set $doc := fn:parse-xml(file:read-text($file))/zorba:iterators;
+    variable $doc := fn:parse-xml(file:read-text($file))/zorba:iterators;
     string-join((gen:add-copyright(),
                  $gen:newline,
                  gen:add-guard-open(string-join(('functions_',$name),'')),
@@ -331,5 +330,5 @@ return
                  ' * End:',
                  ' */'),
                 $gen:newline),
-    $gen:newline;
+    $gen:newline
   }

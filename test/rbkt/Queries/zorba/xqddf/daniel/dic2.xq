@@ -6,29 +6,28 @@ init:create-collection($xqddf-test:white-collection);
 
 init:activate-integrity-constraint($xqddf-test:dic2);
 
-block{
+{
 <newline>
 </newline>
 },
-block
 {
 for $i in fn:doc("auction.xml")//item
-return $i/name;
+return $i/name
 },
-block{
+{
 <newline> a
 </newline>
 },
-block{
+{
 for $i in fn:doc("auction.xml")//item
 return 
-    block{block{$i/name;},
-    block{manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));};};
+    {{$i/name},
+    {manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
 },
-block{
+{
 <newline> a
 </newline>
 },
-block{
-manip:collection($xqddf-test:white-collection)/name;
-};
+{
+manip:collection($xqddf-test:white-collection)/name
+}

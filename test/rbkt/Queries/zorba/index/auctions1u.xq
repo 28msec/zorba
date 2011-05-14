@@ -7,22 +7,20 @@ import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
 declare variable $emp-id := $auctions:PersonId;
 declare variable $emp-city := $auctions:PersonCity;
 
-block
 {
   auctions:create-db();
 
   for $x in auctions:probe-point-id($emp-id, "person1")
-  return <person id = "{$x/@id}">{$x/name}</person>;
+  return <person id = "{$x/@id}">{$x/name}</person>
 }
 ,
-block
 {
   insert node
     <person id="person50"><name>Some Name</name><city>Amsterdam</city></person>
   as first into
     manip:collection($auctions:auctions)/site/people
-  ,
-  manip:refresh-index($emp-id);
+  ;
+  manip:refresh-index($emp-id)
   (: don't refresh the emp-city index manually because it's done automatically :)
 }
 ,
@@ -40,7 +38,6 @@ return <person id = "{$x/@id}">{$x/name}</person>
 for $x in auctions:probe-point-city($emp-city, "Amsterdam")
 return <person id = "{$x/@id}">{$x/name}</person>
 ,
-block
 {
   manip:insert-nodes($auctions:auctions, doc("auctions2.xml"));
 }

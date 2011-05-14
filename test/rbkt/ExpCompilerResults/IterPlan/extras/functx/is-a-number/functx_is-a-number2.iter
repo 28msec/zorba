@@ -2,22 +2,15 @@ Iterator tree for const-folded expr:
 <FunctionTraceIterator>
   <TypedValueCompareIterator_STRING>
     <FnStringIterator>
-      <flwor::FLWORIterator>
-        <LetVariable name="$$temp70" materialize="true">
+      <IfThenElseIterator>
+        <CastableIterator type="xs:double">
           <SingletonIterator value="xs:integer(123)"/>
-        </LetVariable>
-        <ReturnClause>
-          <IfThenElseIterator>
-            <CastableIterator type="xs:double">
-              <LetVarIterator varname="$$temp70"/>
-            </CastableIterator>
-            <CastIterator type="xs:double">
-              <LetVarIterator varname="$$temp70"/>
-            </CastIterator>
-            <SingletonIterator value="xs:double(NaN)"/>
-          </IfThenElseIterator>
-        </ReturnClause>
-      </flwor::FLWORIterator>
+        </CastableIterator>
+        <CastIterator type="xs:double">
+          <SingletonIterator value="xs:integer(123)"/>
+        </CastIterator>
+        <SingletonIterator value="xs:double(NaN)"/>
+      </IfThenElseIterator>
     </FnStringIterator>
     <SingletonIterator value="xs:string(NaN)"/>
   </TypedValueCompareIterator_STRING>

@@ -953,7 +953,7 @@ public:
   Local declarations:
   -------------------
 
-  VarDeclStatement ::= ("local" Annotation*)? "variable" 
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
                        "$" VarName TypeDeclaration? (":=" ExprSingle)?
                        ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
@@ -1036,7 +1036,7 @@ public:
   rchandle<AnnotationListParsenode> theAnnotations;
 
   VarNameAndType(
-      const QueryLoc& loc_, 
+      const QueryLoc& loc_,
       rchandle<QName> name,
       rchandle<SequenceType> type,
       rchandle<AnnotationListParsenode> annotations)
@@ -1880,6 +1880,26 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+/*******************************************************************************
+  ApplyExpr
+********************************************************************************/
+class ApplyExpr : public exprnode
+{
+protected:
+  rchandle<exprnode>    apply_expr_h;
+
+public:
+  ApplyExpr(const QueryLoc& loc_, rchandle<exprnode> apply_expr_)
+    :
+    exprnode(loc_), apply_expr_h(apply_expr_)
+  {
+  }
+
+  const rchandle<exprnode>& get_apply_expr() { return apply_expr_h; }
+
+  void accept(parsenode_visitor&) const;
+
+};
 
 /*******************************************************************************
   FLWORExpr ::= InitialClause FLWORClauseList? ReturnClause

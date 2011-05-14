@@ -15,16 +15,16 @@ declare function local:check($nodes)
 
 dyn:create-collection($coll);
 
-set $content := dyn:apply-insert-nodes-first($coll, for $i  in 1 to 10 return <b>{$i}</b>);
+$content := dyn:apply-insert-nodes-first($coll, for $i  in 1 to 10 return <b>{$i}</b>);
 local:check(dyn:collection($coll)[position() <= 10]);
 
-set $content := dyn:apply-insert-nodes-last($coll, for $i  in 1 to 10 return <c>{$i}</c>);
+$content := dyn:apply-insert-nodes-last($coll, for $i  in 1 to 10 return <c>{$i}</c>);
 local:check(dyn:collection($coll)[position() > last() - 10]);
 
-set $content := dyn:apply-insert-nodes-before($coll, dyn:collection($coll)[2], for $i  in 1 to 10 return <d>{$i}</d>);
+$content := dyn:apply-insert-nodes-before($coll, dyn:collection($coll)[2], for $i  in 1 to 10 return <d>{$i}</d>);
 local:check($coll)[1 < position() and position() <= 11];
 
-set $content := dyn:apply-insert-nodes-after($coll, dyn:collection($coll)[2], for $i  in 1 to 10 return <e>{$i}</e>);
+$content := dyn:apply-insert-nodes-after($coll, dyn:collection($coll)[2], for $i  in 1 to 10 return <e>{$i}</e>);
 local:check($coll)[2 < position() and position() <= 12];
 
-dyn:collection($coll);
+dyn:collection($coll)

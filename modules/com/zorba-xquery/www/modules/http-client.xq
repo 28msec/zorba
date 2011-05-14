@@ -148,9 +148,8 @@ declare %sequential function http:send-request(
 {
   if (http:check-params($request, $href, $bodies))
   then
-    block
     {
-      declare $req := if ($request) 
+      variable $req := if ($request) 
                       then
                         try 
                         {
@@ -163,12 +162,12 @@ declare %sequential function http:send-request(
                       else
                        ();
 
-      declare $result := http:http-sequential-impl($req, $href, $bodies);
+      variable $result := http:http-sequential-impl($req, $href, $bodies);
 
      $result
     }
   else 
-    ();
+    ()
 };
 
 
@@ -236,13 +235,13 @@ declare function http:options($href as xs:string) as xs:string* {
  :)
 declare %sequential function http:put($href as xs:string, $body as item()) as item()+
 {
-  declare $media-type as xs:string+ :=
+  variable $media-type as xs:string+ :=
     typeswitch($body)
       case xs:string return ("text/plain","text")
       case element() return ("text/xml", "xml")
       default return ("text/plain","xml");
 
-  declare $result := http:http-sequential-impl(validate {
+  variable $result := http:http-sequential-impl(validate {
     <https:request href="{$href}" method="PUT">
       <https:body media-type="{$media-type[1]}" method="{$media-type[2]}">{$body}</https:body>
     </https:request>}
@@ -289,13 +288,13 @@ declare %sequential function http:delete($href as xs:string) as item()+
  :)
 declare %sequential function http:post($href as xs:string, $body as item()) as item()+
 {
-  declare $media-type as xs:string+ :=
+  variable $media-type as xs:string+ :=
     typeswitch($body)
       case xs:string return ("text/plain","text")
       case element() return ("text/xml", "xml")
       default return ("text/plain","xml");
 
-  declare $result := http:http-sequential-impl(validate {
+  variable $result := http:http-sequential-impl(validate {
     <https:request href="{$href}" method="POST">
       <https:body media-type="{$media-type[1]}" method="{$media-type[2]}">{$body}</https:body>
     </https:request>}

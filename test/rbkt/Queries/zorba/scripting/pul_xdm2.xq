@@ -25,4 +25,4 @@ xqsx:apply(local:test3()),
 ",
 
 dyn:collection($col)
-);
+)

@@ -36,4 +36,4 @@ declare function local:analyze ($s as node() ) as node()
 
 
 
-local:analyze(<foo><bar1/><bar1/><bar2/></foo>);
+local:analyze(<foo><bar1/><bar1/><bar2/></foo>)

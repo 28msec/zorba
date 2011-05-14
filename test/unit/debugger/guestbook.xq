@@ -15,8 +15,8 @@ declare %sequential function guestbook:add()
   exit returning guestbook:list();
 };
 
-declare %sequential function guestbook:list() {
-  
+declare %sequential function guestbook:list() 
+{  
   let $entries := manip:collection($guestbook:entries)
   let $num_entries := fn:count($entries)
   return 
@@ -32,5 +32,5 @@ declare %sequential function guestbook:list() {
              {fn:data($entry/@author)}</b><br/>
           <span style='float:left;color: #aaaaaa;'>{ $numbering  }</span>
           {$entry/text()}
-        </div>;
+        </div>
 };

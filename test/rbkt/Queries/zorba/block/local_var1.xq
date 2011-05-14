@@ -2,8 +2,8 @@ declare variable $x := 1;
 
 declare %sequential function local:f () 
 {
-  declare $x := 2;
-  declare $y := $x;
+  variable $x := 2;
+  variable $y := $x;
   $y
 };
 

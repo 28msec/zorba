@@ -15,12 +15,11 @@ declare %sequential function local:main() as xs:string* {
   (: ==================================================================== :)
   (: initialize test - create test directory :)
   (: ========= :)
-  let $s := commons:testInitDir($testDir)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("DIRECTORY INIT - failed:
-", $s))
-    else ();  
+  variable $s1 := commons:testInitDir($testDir);
+  if (fn:not(commons:isSuccess($s1))) then
+    exit returning commons:error(("DIRECTORY INIT - failed:
+", $s1));
+  else ();  
 
 (: ========================= :)
 (: = FILE READS AND WRITES = :)
@@ -31,58 +30,52 @@ declare %sequential function local:main() as xs:string* {
   (: ==================================================================== :)
   (: write some XML to a file :)
   (: ========= :)
-  let $s := commons:testWriteXml($outFile, $xml)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("FILE R/W - DEFAULT XML - could not write to file:", $outFile))
-    else ();
+  variable $s2 := commons:testWriteXml($outFile, $xml);
+  if (fn:not(commons:isSuccess($s2))) then
+    exit returning commons:error(("FILE R/W - DEFAULT XML - could not write to file:", $outFile));
+  else ();
 
   (: ==================================================================== :)
   (: the written XML file must exist :)
   (: ========= :)
-  let $s := commons:testExists($outFile)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("FILE R/W - DEFAULT XML - could not find the written file:", $outFile))
-    else ();
+  variable $s3 := commons:testExists($outFile);
+  if (fn:not(commons:isSuccess($s3))) then
+    exit returning commons:error(("FILE R/W - DEFAULT XML - could not find the written file:", $outFile));
+  else ();
 
   (: ==================================================================== :)
   (: read the written XML from the file :)
   (: ========= :)
-  let $s := commons:testReadAndCompareXml($outFile, $xml)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("FILE R/W - DEFAULT XML - incorrect read from file:", $outFile))
-    else ();
+  variable $s4 := commons:testReadAndCompareXml($outFile, $xml);
+  if (fn:not(commons:isSuccess($s4))) then
+    exit returning commons:error(("FILE R/W - DEFAULT XML - incorrect read from file:", $outFile));
+  else ();
 
 (: ======= METHOD XML ====== :)
 
   (: ==================================================================== :)
   (: write again but test the XML serialization method :)
   (: ========= :)
-  let $s := commons:testWriteSerializeXml($outFile, $xml)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("FILE R/W - METHOD XML - could write-serialize to file:", $outFile))
-    else ();
+  variable $s5 := commons:testWriteSerializeXml($outFile, $xml);
+  if (fn:not(commons:isSuccess($s5))) then
+    exit returning commons:error(("FILE R/W - METHOD XML - could write-serialize to file:", $outFile));
+  else ();
 
   (: ==================================================================== :)
   (: the written XML file must exist :)
   (: ========= :)
-  let $s := commons:testExists($outFile)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("FILE R/W - METHOD XML - could not find the written file:", $outFile))
-    else ();
+  variable $s6 := commons:testExists($outFile);
+  if (fn:not(commons:isSuccess($s6))) then
+    exit returning commons:error(("FILE R/W - METHOD XML - could not find the written file:", $outFile));
+  else ();
 
   (: ==================================================================== :)
   (: read the written XML from the file :)
   (: ========= :)
-  let $s := commons:testReadAndCompareXml($outFile, $xml)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("FILE R/W - METHOD XML - incorrect read from file:", $outFile))
-    else ();
+  variable $s7 := commons:testReadAndCompareXml($outFile, $xml);
+  if (fn:not(commons:isSuccess($s7))) then
+    exit returning commons:error(("FILE R/W - METHOD XML - incorrect read from file:", $outFile));
+  else ();
 
 (: ========================= :)
 (: === DIRECTORY UNINIT ==== :)
@@ -91,20 +84,19 @@ declare %sequential function local:main() as xs:string* {
   (: ==================================================================== :)
   (: initialize test - create test directory :)
   (: ========= :)
-  block
   {
-    declare $s := commons:testUnInitDir($testDir);
+    variable $s := commons:testUnInitDir($testDir);
 
     if (fn:not(commons:isSuccess($s))) 
     then
-      exit returning commons:error(("DIRECTORY UNINIT - failed:", $s))
+      exit returning commons:error(("DIRECTORY UNINIT - failed:", $s));
     else 
       ();
-  };
+  }
 
   (: ==================================================================== :)
 
-  "SUCCESS";
+  "SUCCESS"
 };
 
 local:main()

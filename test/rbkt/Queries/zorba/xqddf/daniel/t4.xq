@@ -7,4 +7,4 @@ init:create-collection($xqddf-test:white-collection, (<wb>1</wb>,<wb>2</wb>,<wb>
 init:create-collection($xqddf-test:blue-collection, (<bb>1</bb>,<bb>2</bb>,<bb>3</bb>,<bb>4</bb>,<bb>5</bb>,<bb>6</bb>,<bb>7</bb>,<bb>8</bb>,<bb>9</bb>,<bb>10</bb>));
 
 manip:delete-node-first($xqddf-test:white-collection);
-manip:collection($xqddf-test:white-collection);
+manip:collection($xqddf-test:white-collection)

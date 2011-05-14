@@ -1,1 +1,1 @@
-exit returning 1
+exit returning 1;

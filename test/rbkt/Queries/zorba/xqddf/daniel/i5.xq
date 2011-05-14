@@ -15,12 +15,12 @@ return
 
 manip:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
-block
+
 {
-manip:probe-index-point-value($xqddf-test:index1, "United States")[1]; 
+manip:probe-index-point-value($xqddf-test:index1, "United States")[1]
 },
-block
+
 {
 manip:probe-index-range-value($xqddf-test:index2,
-                              1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]; 
-};
+                              1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]
+}

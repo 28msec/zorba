@@ -26,9 +26,8 @@ let $params :=
 return
   if (file:exists($query-file-normalized)) 
   then
-    block
     {
-      declare $query-options := (
+      variable $query-options := (
         '--iter-plan-test',
         '--print-iterator-tree',
         '--no-tree-ids',
@@ -36,13 +35,12 @@ return
       );
 
       (: generate iterplan with apitest :)
-      declare $query-result := process:exec($apitest-path-normalized, $query-options);
+      variable $query-result := process:exec($apitest-path-normalized, $query-options);
 
-      declare $query-stdout as xs:string := xs:string($query-result/stdout/text());
+      variable $query-stdout as xs:string := xs:string($query-result/stdout/text());
 
-      declare $expected-text as xs:string := file:read-text($expected-file-normalized);
+      variable $expected-text as xs:string := file:read-text($expected-file-normalized);
 
-      block 
       {
         file:create-directory(file:dir-name($result-file-normalized));
         file:write($result-file-normalized, $query-stdout, $params);
@@ -57,8 +55,8 @@ return
               "Command to generate iterator tree: ", $apitest-path, " ", fn:string-join($query-options," "), "
 ",
               "Expected Result: ", $expected-file)
-        );
-      };
+        )
+      }
     }
   else
     fn:concat("Passed! But only because query file ", $query-file, " not found. Test was not executed!")

@@ -17,5 +17,5 @@ declare %sequential function n:foo()
   init:create-index(xs:QName("n:index"));
 
   manip:insert-nodes(xs:QName("n:foo"), <a/>);
-  1;
+  1
 };

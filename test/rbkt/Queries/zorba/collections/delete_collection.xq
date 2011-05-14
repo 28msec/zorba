@@ -22,21 +22,18 @@ declare %sequential function local:delete()
 };
 
 
-block
 {
-  declare $create := local:create();
-  declare $delete := local:delete();
+  variable $create := local:create();
+  variable $delete := local:delete();
 
   if (fn:not($create or $delete)) 
   then
     fn:false()
   else
-    block
     {
-      declare $create := local:create();
+      variable $create := local:create();
 
-      $create;
-    };
-
+      $create
+    }
 }
 

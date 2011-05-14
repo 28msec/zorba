@@ -8,7 +8,7 @@ init:create-collection($m:empc);
 
 init:activate-integrity-constraint(xs:QName("m:ic_uniqueKey"));
 
-
+{
 (: employees :)
 manip:insert-nodes($m:empc, 
    <emp>
@@ -21,7 +21,7 @@ manip:insert-nodes($m:empc,
      <id>2</id>
    </emp>
   )
-;
+};
 
 manip:insert-nodes($m:empc, 
    <emp>
@@ -32,4 +32,4 @@ manip:insert-nodes($m:empc,
 fn:data(manip:collection($m:empc)/id)
 ,
 let $ids := manip:collection($m:empc)/id 
-return fn:count( $ids ) eq fn:count( fn:distinct-values( $ids ) );
+return fn:count( $ids ) eq fn:count( fn:distinct-values( $ids ) )

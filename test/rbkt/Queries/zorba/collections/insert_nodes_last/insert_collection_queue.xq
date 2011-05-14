@@ -7,4 +7,4 @@ init:create-collection(xs:QName("ns:collection_queue"));
 
 manip:insert-nodes-last(xs:QName("ns:collection_queue"), <a/>);
 
-manip:collection(xs:QName("ns:collection_queue"));
+manip:collection(xs:QName("ns:collection_queue"))

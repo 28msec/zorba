@@ -15,13 +15,13 @@ manip:insert-nodes($m:empc,
      <id>1</id>
    </emp>
   )
-,
+;
 manip:insert-nodes($m:empc, 
    <emp>
      <id>2</id>
    </emp>
   )
-,
+;
 manip:insert-nodes($m:empc, 
    <emp>
      <id>3</id>
@@ -30,4 +30,4 @@ manip:insert-nodes($m:empc,
 
 fn:data( manip:collection($m:empc)/id ),
 every $id in manip:collection($m:empc)/id 
-satisfies $id > 0;
+satisfies $id > 0

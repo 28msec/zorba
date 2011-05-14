@@ -15,4 +15,4 @@ return
 manip:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-manip:probe-index-point-value($xqddf-test:index2, 2)[1]; 
+manip:probe-index-point-value($xqddf-test:index2, 2)[1]

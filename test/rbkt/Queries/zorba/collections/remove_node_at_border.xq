@@ -4,28 +4,28 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 
 declare %sequential function local:init() {
   init:create-collection($ns:collection_1);
-  manip:insert-nodes($ns:collection_1, (<x/>,<y/>));
+  manip:insert-nodes($ns:collection_1, (<x/>,<y/>))
 };
 
 declare %sequential function local:testa() {
   try {
-    block {
+    {
       manip:delete-node-first($ns:collection_1);
-      manip:collection($ns:collection_1);
+      exit returning manip:collection($ns:collection_1);
     }
   } catch * ($error, $desc) {
-    ("a",$error, $desc)
+    exit returning ("a",$error, $desc);
   }
 };
 
 declare %sequential function local:testb() {
   try {
-    block {
+    {
       manip:delete-node-last($ns:collection_1);
-      manip:collection($ns:collection_1);
+      exit returning manip:collection($ns:collection_1);
     }
   } catch * ($error, $desc) {
-    ("b",$error, $desc)
+    exit returning ("b",$error, $desc);
   }
 };
 
@@ -34,7 +34,7 @@ declare %sequential function local:main() {
   (
     local:testa(),
     local:testb()
-  );
+  )
 };
 
 local:main()

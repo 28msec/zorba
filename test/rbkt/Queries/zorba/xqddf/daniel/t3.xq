@@ -10,4 +10,4 @@ let $n := <a><b>bnm</b><c></c></a>
 return manip:insert-nodes-before($xqddf-test:ordered-collection, 
                                 manip:collection($xqddf-test:ordered-collection)[fn:string() eq "2"],
                                 $n);
-manip:collection($xqddf-test:ordered-collection);
+manip:collection($xqddf-test:ordered-collection)

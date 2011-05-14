@@ -26,9 +26,9 @@ manip:insert-nodes($m:empc,
    <emp>
      <id>1</id>
    </emp>
-  );
+  ),
 
 fn:data(manip:collection($m:empc)/id)
 ,
 let $ids := manip:collection($m:empc)/id 
-return fn:count( $ids ) eq fn:count( fn:distinct-values( $ids ) );
+return fn:count( $ids ) eq fn:count( fn:distinct-values( $ids ) )

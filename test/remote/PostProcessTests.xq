@@ -29,7 +29,7 @@ declare %sequential function l:xform($a) {
   where data($exp/@name) eq data($failure/Name)
   return replace node $failure/@Status with attribute Status { "passed" };
 
-  $a;
+  $a
 };
 
 l:xform($tests)

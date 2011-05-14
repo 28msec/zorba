@@ -27,7 +27,7 @@ manip:insert-nodes($m:empc,
    <emp>
      <id>3</id>
    </emp>
-  );
+  ),
 
 (: transactions :)
 (: not all empids have corespondent in employees/id - m:ic_foreignKey fails :)
@@ -35,7 +35,7 @@ manip:insert-nodes($m:trnc,
    <sale>
      <empid>1</empid>
    </sale>
-  );
+  ),
 
 manip:insert-nodes($m:trnc, 
    <sale>
@@ -47,7 +47,7 @@ manip:insert-nodes($m:trnc,
    <sale>
      <empid>100</empid>
    </sale>
-  );
+  ),
 
 
 <emps>{ fn:data(manip:collection($m:empc)/id ) }</emps>
@@ -58,4 +58,4 @@ every $x in manip:collection($m:trnc)
        satisfies
          some $y in manip:collection($m:empc)
          satisfies $y/id eq $x/empid
-;
+

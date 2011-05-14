@@ -9,5 +9,5 @@ declare variable $zm-C:var as xs:string external;
 
 declare function zm-C:getVar ()
 {
-  $zm-C:var;
+  $zm-C:var
 };

@@ -5,8 +5,8 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 
 declare function local:testa() {
   try {
-    block {
-      manip:collection($ns:http);
+    {
+      manip:collection($ns:http)
     }
   } catch * ($error) {
     ("a",$error)
@@ -15,8 +15,8 @@ declare function local:testa() {
 
 declare function local:testb() {
   try {
-    block {
-      manip:index-of($ns:http, <a/>);
+    {
+      manip:index-of($ns:http, <a/>)
     }
   } catch * ($error) {
     ("b",$error)
@@ -25,61 +25,61 @@ declare function local:testb() {
 
 declare %sequential function local:testc() {
   try {
-    block {
+    {
       init:delete-collection($ns:http);
     }
   } catch * ($error) {
-    ("c",$error)
+    exit returning ("c",$error);
   }
 };
 
 declare %sequential function local:testd() {
   try {
-    block {
+    {
       manip:insert-nodes-first($ns:http, <a/>);
     }
   } catch * ($error) {
-    ("d",$error)
+    exit returning ("d",$error);
   }
 };
 
 declare %sequential function local:teste() {
   try {
-    block {
+    {
       manip:insert-nodes-last($ns:http, <a/>);
     }
   } catch * ($error) {
-    ("e",$error)
+    exit returning ("e",$error);
   }
 };
 
 declare %sequential function local:testf() {
   try {
-    block {
+    {
       manip:insert-nodes-before($ns:http, <a/>, <a/>);
     }
   } catch * ($error) {
-    ("f",$error)
+    exit returning ("f",$error);
   }
 };
 
 declare %sequential function local:testg() {
   try {
-    block {
+    {
       manip:insert-nodes-after($ns:http, <a/>, <a/>);
     }
   } catch * ($error) {
-    ("g",$error)
+    exit returning ("g",$error);
   }
 };
 
 declare %sequential function local:testi() {
   try {
-    block {
+    {
       manip:delete-nodes(<a/>);
     }
   } catch * ($error) {
-    ("i",$error)
+    exit returning ("i",$error);
   }
 };
 
@@ -93,7 +93,7 @@ declare %sequential function local:main() {
     local:testf(),
     local:testg(),
     local:testi()
-  );
+  )
 };
 
 local:main()

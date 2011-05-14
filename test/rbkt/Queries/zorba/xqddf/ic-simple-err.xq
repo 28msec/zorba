@@ -23,5 +23,5 @@ manip:insert-nodes($m:empc,
      <salary>600</salary>
    </emp>
   )
-;
+
 

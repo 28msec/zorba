@@ -12,14 +12,13 @@ declare %sequential function local:test()
   let $c := count(coll:collection($col)) + $j
   order by $c
   return
-    block 
     {
       coll:delete-nodes(coll:collection($col)[$i]);
       coll:insert-nodes-first($col, <x i="{$i}">{$c}</x>);
       coll:insert-nodes-last($col, <x i="{$i}">{$c}</x>);
-    };
+    }
 
-  coll:collection($col);
+  coll:collection($col)
 };
 
 local:test()

@@ -9,13 +9,14 @@ declare variable $nl := "
 declare %sequential function local:calc-one ($s as xs:string) as xs:boolean 
 {
   if (string-length ($s) = 0) then
-    exit returning false ()
-  else block {
+    exit returning false ();
+  else {
     zorba:print (("Result: ", refl:eval-simple($s), $nl));
     exit returning true();
-  };
+  }
 };
 
 while (local:calc-one (zorba:read-line ()))
-{ (); }
-
+{ 
+  () 
+}

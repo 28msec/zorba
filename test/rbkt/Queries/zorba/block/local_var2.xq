@@ -2,19 +2,18 @@ declare variable $x := 42;
 
 declare %sequential function local:f($n) 
 {
-  declare $x := $n - 1;
+  variable $x := $n - 1;
 
   if ($n eq 0)
   then 0
-  else block { declare $y := local:f($x); ($y + $x); }
+  else { variable $y := local:f($x); ($y + $x) }
 };
 
 
-block
 {
-  declare $y := local:f(4);
-  declare $z := local:f(3);
-  $y + $z + $x;
+  variable $y := local:f(4);
+  variable $z := local:f(3);
+  $y + $z + $x
 }
 
 

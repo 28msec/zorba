@@ -17,14 +17,14 @@ manip:insert-nodes($m:empc,
      <salary>300</salary>
    </emp>
   )
-,
+;
 manip:insert-nodes($m:empc, 
    <emp>
      <id>2</id>
      <salary>400</salary>
    </emp>
   )
-,
+;
 manip:insert-nodes($m:empc, 
    <emp>
      <id>3</id>
@@ -61,4 +61,4 @@ every $x in manip:collection($m:trnc)
        satisfies
          some $y in manip:collection($m:empc)
          satisfies $y/id eq $x/empid
-;
+

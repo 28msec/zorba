@@ -64,12 +64,12 @@ expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
   checked_vector<expr_t> lNewArgs;
   for (checked_vector<expr_t>::const_iterator lIter = theArgs.begin();
        lIter != theArgs.end();
-       ++lIter) 
+       ++lIter)
   {
     lNewArgs.push_back((*lIter)->clone(s));
   }
 
-  return new dynamic_function_invocation_expr(theSctx, 
+  return new dynamic_function_invocation_expr(theSctx,
                                               get_loc(),
                                               theExpr->clone(s),
                                               lNewArgs);
@@ -143,6 +143,12 @@ void function_item_expr::add_variable(expr* var)
 }
 
 
+const std::vector<expr_t>& function_item_expr::get_vars() const
+{
+  return theScopedVariables;
+}
+
+
 void function_item_expr::set_function(user_function_t& udf)
 {
   theFunction = udf;
@@ -170,8 +176,8 @@ expr_t function_item_expr::clone(substitution_t& s) const
 
   std::vector<expr_t> lNewVariables;
   for (std::vector<expr_t>::const_iterator lIter = theScopedVariables.begin();
-       lIter != theScopedVariables.end(); 
-       ++lIter) 
+       lIter != theScopedVariables.end();
+       ++lIter)
   {
     lNewExpr->add_variable((*lIter)->clone(s));
   }

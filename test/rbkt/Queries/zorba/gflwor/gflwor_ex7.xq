@@ -34,5 +34,5 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
 
 
 init:create-collection($data:users);
-local:get($data:users, ", 1+1");
+local:get($data:users, ", 1+1")
 

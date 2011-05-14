@@ -15,9 +15,9 @@ declare %sequential function local:insert() {
 
 declare variable $x := 0;
 
-set $x := local:create();
+$x := local:create();
 
 if (fn:not($x)) then
   fn:false()
 else 
-  local:insert();
+  local:insert()

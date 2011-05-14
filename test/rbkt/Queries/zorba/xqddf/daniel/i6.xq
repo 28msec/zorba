@@ -15,26 +15,26 @@ return
 
 manip:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
-block{
+{
 <newline>
 </newline>
 },
-block
+
 {
-manip:probe-index-point-value($xqddf-test:index1, "United States")[1]/name; 
+manip:probe-index-point-value($xqddf-test:index1, "United States")[1]/name
 },
-block
+
 {
-manip:probe-index-range-value($xqddf-test:index2, 1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]; 
+manip:probe-index-range-value($xqddf-test:index2, 1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]
 },
-block{
+{
 rename node manip:collection($xqddf-test:white-collection)[1]/location as "location2";
 },
-block{
+{
 <newline> a
 </newline>
 },
-block
+
 {
-manip:probe-index-point-value($xqddf-test:index1, "United States")[1]/name;
-};
+manip:probe-index-point-value($xqddf-test:index1, "United States")[1]/name
+}

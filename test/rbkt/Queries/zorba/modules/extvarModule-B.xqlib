@@ -10,5 +10,5 @@ at "extvarModule-C.xqlib";
 
 declare function zm-B:getVar ()
 {
-  zm-C:getVar();
+  zm-C:getVar()
 };

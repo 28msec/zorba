@@ -54,12 +54,12 @@ declare function gdata:login($account as xs:string*, $password as xs:string+, $s
                                                                             </payload>)
     return
         if($result/rest:status-code/text()="200") then
-            block {
+            {
                 replace value of node $gdata:id with $account;
                 replace value of node $gdata:authToken with fn:substring-after($result/rest:payload/text(), "Auth=");
                 true();
             }
-        else false()
+        else false();
 };
 
 declare function gdata:get-headers() as element(rest:headers)

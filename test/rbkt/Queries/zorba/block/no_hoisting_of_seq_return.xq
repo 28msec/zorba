@@ -1,6 +1,6 @@
 declare %sequential function local:foo() 
 {
-  1;  
+  1
 };
 
 for $x in (1,2,3)

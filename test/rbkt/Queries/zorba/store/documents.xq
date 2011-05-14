@@ -12,7 +12,7 @@ declare %sequential function local:add-twice()
   try {
     doc:add("foo", document { <foo>bar</foo> });
   } catch zerr:ZAPI0020 {
-    "caught duplicate attempt to add a document"
+    exit returning "caught duplicate attempt to add a document";
   }
 };
 
@@ -26,7 +26,7 @@ declare %sequential function local:remove-twice()
   try {
     doc:remove("foo");
   } catch zerr:ZXQD0002 ($err) {
-    "caught attempt to remove a document that doesn't exist"
+    exit returning "caught attempt to remove a document that doesn't exist";
   }
 };
 
@@ -46,7 +46,6 @@ declare function local:resolve()
   } catch FODC0004 {
     "caught attempt to resolve an invalid uri"
   }
-
 };
 
 string-join(

@@ -14,18 +14,18 @@ declare %sequential function local:thisTest() as xs:string* {
   (: read the image file (binary) :)
   (: ========= :)
   let $base64In := commons:testReadBinary($inFile)
-  return block {
+  return {
     file:write-binary(
       $outFile,
       $base64In);
     let $base64Out := commons:testReadBinary($outFile)
     return
       if ($base64In ne $base64Out) then
-        exit returning "the initial and the final base64 did not match"
+        exit returning "the initial and the final base64 did not match";
       else ();
-  };
+  }
 
-  "SUCCESS";
+  "SUCCESS"
 };
 
 
@@ -39,11 +39,10 @@ declare %sequential function local:main() as xs:string*
   (: ==================================================================== :)
   (: initialize test - create test directory :)
   (: ========= :)
-  let $s := commons:testInitDir($testDir)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("DIRECTORY INIT - failed: 
-", $s))
+  variable $s1 := commons:testInitDir($testDir);
+  if (fn:not(commons:isSuccess($s1))) then
+    exit returning commons:error(("DIRECTORY INIT - failed: 
+", $s1));
     else ();
 
 (: ========================= :)
@@ -53,21 +52,19 @@ declare %sequential function local:main() as xs:string*
   (: ==================================================================== :)
   (: the image file to read must exist :)
   (: ========= :)
-  let $s := commons:testExists($inFile)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("Could not find the image to read:
-", $s))
-    else ();
+  variable $s2 := commons:testExists($inFile);
+  if (fn:not(commons:isSuccess($s2))) then
+    exit returning commons:error(("Could not find the image to read:
+", $s2));
+  else ();
 
   (: ==================================================================== :)
   (: perform this test - binary read and write :)
   (: ========= :)
-  let $s := local:thisTest()
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("Binary r/w failed:
-", $s))
+  variable $s3 := local:thisTest();
+  if (fn:not(commons:isSuccess($s3))) then
+    exit returning commons:error(("Binary r/w failed:
+", $s3));
     else ();
 
 (: ========================= :)
@@ -77,20 +74,19 @@ declare %sequential function local:main() as xs:string*
   (: ==================================================================== :)
   (: initialize test - create test directory :)
   (: ========= :)
-  block
   {
-    declare $s := commons:testUnInitDir($testDir);
+    variable $s := commons:testUnInitDir($testDir);
 
     if (fn:not(commons:isSuccess($s))) 
     then
-      exit returning commons:error(("DIRECTORY UNINIT - failed:", $s))
+      exit returning commons:error(("DIRECTORY UNINIT - failed:", $s));
     else 
       ();  
-  };
+  }
 
   (: ==================================================================== :)
 
-  "SUCCESS";
+  "SUCCESS"
 
 };
 

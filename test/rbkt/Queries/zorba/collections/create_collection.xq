@@ -14,11 +14,10 @@ declare %sequential function local:create-and-insert() {
 };
 
 
-block
 {
-  declare $create := local:create();
+  variable $create := local:create();
 
-  declare $create-and-insert := local:create-and-insert();
+  variable $create-and-insert := local:create-and-insert();
 
-  $create or $create-and-insert;
+  $create or $create-and-insert
 }

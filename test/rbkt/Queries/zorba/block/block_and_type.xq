@@ -4,8 +4,8 @@
  :)
 declare %sequential function local:test($x as element(person)) as element(person) 
 {
-  insert node <age>123</age> into $x; 
-  $x; 
+  insert node <age>123</age> into $x;
+  $x
 };
 
 local:test(<person/>)

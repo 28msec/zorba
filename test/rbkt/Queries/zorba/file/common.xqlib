@@ -28,15 +28,15 @@ declare %sequential function commons:testExists($path as xs:string) as xs:string
 declare %sequential function commons:testCreateDirectory($path as xs:string) as xs:string* {
   try {
     file:create-directory($path);
-    "SUCCESS";
+    exit returning "SUCCESS";
   } catch * {
-    exit returning ("testCreateDirectory failed for path:", $path)
+    exit returning ("testCreateDirectory failed for path:", $path);
   }
 };
 
 declare %sequential function commons:testWriteXml($path as xs:string, $xml as item()) as xs:string* {
   file:write($path, $xml, ());
-  "SUCCESS";
+  "SUCCESS"
 };
 
 declare %sequential function commons:testReadAndCompareXml($path as xs:string, $xml as item()) as xs:string* {
@@ -58,8 +58,8 @@ declare %sequential function commons:testDelete($path as xs:string) as xs:string
     file:delete($path);
     "SUCCESS";
   } catch * {
-    exit returning ("testDelete failed for path:", $path)
-  };
+    exit returning ("testDelete failed for path:", $path);
+  }
 };
 
 declare %sequential function commons:testWriteSerializeXml($path as xs:string, $xml as item()) as xs:string* {
@@ -80,33 +80,30 @@ declare %sequential function commons:testInitDir($dir as xs:string) as xs:string
   (: ==================================================================== :)
   (: the test directory must not exist :)
   (: ========= :)
-  let $s := commons:testExists($dir)
-  return
-    if (commons:isSuccess($s)) then
-      exit returning ("testInitDir failed - directory already exists:", $dir)
-    else ();
+  variable $s1 := commons:testExists($dir);
+  if (commons:isSuccess($s1)) then
+    exit returning ("testInitDir failed - directory already exists:", $dir);
+  else ();
 
   (: ==================================================================== :)
   (: it must be able to create the test directory :)
   (: ========= :)
-  let $s := commons:testCreateDirectory($dir)
-  return 
-    if (fn:not(commons:isSuccess($s))) then
-      (: exit returning ("testInitDir failed - could not create directory:", $dir) :)
-      ()
-    else ();
+  variable $s2 := commons:testCreateDirectory($dir);
+  if (fn:not(commons:isSuccess($s2))) then
+    (: exit returning ("testInitDir failed - could not create directory:", $dir) :)
+    ();
+  else ();
 
   (: ==================================================================== :)
   (: the test directory must exist :)
   (: ========= :)
-  let $s := commons:testExists($dir)
-  return 
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning ("testInitDir failed - directory must exists:", $dir)
-    else ();
+  variable $s3 := commons:testExists($dir);
+  if (fn:not(commons:isSuccess($s3))) then
+    exit returning ("testInitDir failed - directory must exists:", $dir);
+  else ();
   (: ==================================================================== :)
 
-  "SUCCESS";
+  "SUCCESS"
 };
 
 
@@ -115,17 +112,17 @@ declare %sequential function commons:testUnInitDir($dir as xs:string) as xs:stri
   (: ==================================================================== :)
   (: delete the directory :)
   (: ========= :)
-  declare $dirFullPath := file:resolve-path($dir);
-  declare $s := commons:testDelete($dirFullPath);
+  variable $dirFullPath := file:resolve-path($dir);
+  variable $s := commons:testDelete($dirFullPath);
 
   if (fn:not(commons:isSuccess($s))) 
   then
-    exit returning ("testUnInitDir failed - could not delete directory:", $dirFullPath)
+    exit returning ("testUnInitDir failed - could not delete directory:", $dirFullPath);
   else
     ();
   (: ==================================================================== :)
 
-  "SUCCESS";
+  "SUCCESS"
 };
 
 

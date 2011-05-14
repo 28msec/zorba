@@ -10,13 +10,12 @@ declare %sequential function local:test()
 
   let $x := coll:collection($col)[1]/c
   return
-    block 
     {
       coll:delete-nodes(coll:collection($col)[1]);
       coll:insert-nodes-first($col, <x>{$x}</x>);
-    };
+    }
 
-  coll:collection($col);
+  coll:collection($col)
 };
 
 local:test()

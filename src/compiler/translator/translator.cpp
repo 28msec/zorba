@@ -2767,10 +2767,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         std::auto_ptr<impl::Resource> lResource =
         theSctx->resolve_uri(compURI, impl::Resource::MODULE);
 
-        if (lResource.get() != NULL && 
+        if (lResource.get() != NULL &&
             lResource->getKind() == impl::Resource::STREAM) 
         {
-          impl::StreamResource* lStreamResource = 
+          impl::StreamResource* lStreamResource =
           static_cast<impl::StreamResource*>(lResource.get());
 
           modfile = lStreamResource->getStream();
@@ -11713,6 +11713,28 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void* begin_visit(const ApplyExpr& v)
+{
+  // TODO
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const ApplyExpr& v, void* visit_state)
+{
+  // TODO
+  expr_t param = pop_nodestack();
+
+  push_nodestack(new apply_expr(theRootSctx,
+                                param->get_loc(),
+                                param,
+                                true)); // discard XDM
+
+  TRACE_VISIT_OUT();
+}
 
 /*******************************************************************************
 

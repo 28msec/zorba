@@ -22,4 +22,5 @@ test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-01
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFunctions/ST-Data001
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-context
 test/rbkt/w3c_testsuite/XQuery/Functions/NumericFunc/RoundFunc/K-RoundFunc-2
-
+test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K-Literals-30
+test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ConDocNode/K2-ConDocNode-2

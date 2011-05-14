@@ -13,42 +13,42 @@ declare %sequential function local:init() {
 
 declare %sequential function local:testa_1() {
   try {
-    block {
+    {
       manip:insert-nodes-first($ns:coll_1, <a/>);
     }
   } catch * ($error) {
-    ("a",$error)
+    exit returning ("a",$error);
   }
 };
 
 
 declare %sequential function local:testa_2() {
   try {
-    block {
+    {
       manip:insert-nodes-first($ns:coll_2, <a/>);
     }
   } catch * ($error) {
-    ("a",$error)
+    exit returning ("a",$error);
   }
 };
 
 declare %sequential function local:testa_3() {
   try {
-    block {
+    {
       manip:insert-nodes-first($ns:coll_3, <a/>);
     }
   } catch * ($error) {
-    ("a",$error)
+    exit returning ("a",$error);
   }
 };
 
 declare %sequential function local:testb_1() {
   try {
-    block {
+    {
       manip:insert-nodes-last($ns:coll_1, <b/>);
     }
   } catch * ($error) {
-    ("b",$error)
+    exit returning ("b",$error);
   }
 };
 
@@ -65,66 +65,66 @@ declare %sequential function local:testb_3() {
 
 declare %sequential function local:testc_1() {
   try {
-    block {
+    {
       manip:insert-nodes-before($ns:coll_1, manip:collection($ns:coll_1)[1], <c/>);
     }
   } catch * ($error) {
-    ("c",$error)
+    exit returning ("c",$error);
   }
 };
 
 
 declare %sequential function local:testc_2() {
   try {
-    block {
+    {
       manip:insert-nodes-before($ns:coll_2, manip:collection($ns:coll_2)[1], <c/>);
     }
   } catch * ($error) {
-    ("c",$error)
+    exit returning ("c",$error);
   }
 };
 
 
 declare %sequential function local:testc_3() {
   try {
-    block {
+    {
       manip:insert-nodes-before($ns:coll_3, manip:collection($ns:coll_3)[1], <c/>);
     }
   } catch * ($error) {
-    ("c",$error)
+    exit returning ("c",$error);
   }
 };
 
 
 declare %sequential function local:testd_1() {
   try {
-    block {
+    {
       manip:insert-nodes-after($ns:coll_1, manip:collection($ns:coll_1)[last()], <d/>);
     }
   } catch * ($error) {
-    ("d",$error)
+    exit returning ("d",$error);
   }
 };
 
 
 declare %sequential function local:testd_2() {
   try {
-    block {
+    {
       manip:insert-nodes-after($ns:coll_2, manip:collection($ns:coll_2)[last()], <d/>);
     }
   } catch * ($error) {
-    ("d",$error)
+    exit returning ("d",$error);
   }
 };
 
 
 declare %sequential function local:testd_3() {
   try {
-    block {
+    {
       manip:insert-nodes-after($ns:coll_3, manip:collection($ns:coll_3)[last()], <d/>);
     }
   } catch * ($error) {
-    ("d",$error)
+    exit returning ("d",$error);
   }
 };
 
@@ -147,7 +147,7 @@ declare %sequential function local:main() {
     <coll_1>{manip:collection($ns:coll_1)}</coll_1>,
     <coll_2>{manip:collection($ns:coll_2)}</coll_2>,
     <coll_3>{manip:collection($ns:coll_3)}</coll_3>
-  );
+  )
 };
 
 local:main()

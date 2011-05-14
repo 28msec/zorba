@@ -7,4 +7,4 @@
 import module namespace zm-A = "http://zorbatest.lambda.nu/modules-A"
 at "extvarModule-A.xqlib";
 
-zm-A:getVar();
+zm-A:getVar()

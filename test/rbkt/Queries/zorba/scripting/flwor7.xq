@@ -8,14 +8,14 @@ declare variable $gid as xs:integer := 0;
   let $category := doc("products.xml")/*/product[name = $sales/product-name]/category
   group by $state, $category
   order by $state, $category
-  return block
+  return 
   {
-    set $gid := $gid + 1;
+    $gid := $gid + 1;
 
     <group id = "{$gid}">
       {$state, $category}
       <total-qty>{sum($sales/qty)}</total-qty>
-    </group>;
+    </group>
   }
 }
 </result>

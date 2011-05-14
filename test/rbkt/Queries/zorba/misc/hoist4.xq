@@ -7,12 +7,11 @@ let $doc := <root>
 for $a in $doc/foo
 for $b in $a//boo
 return
-block
 {
-  declare $x := $b/@id;
+  variable $x := $b/@id;
 
   for $c in 1 to $x
-  return $a/@id + 2 * $x + $c; 
+  return $a/@id + 2 * $x + $c
 }
 
 (:

@@ -30,10 +30,10 @@ declare %sequential function local:testXQDoc($modulesPath as xs:string)
         local:test-module($xqdoc),
         local:test-functions($xqdoc),
         local:test-variables($xqdoc)
-      )
+      );
     } catch * ($ec, $em){
       exit returning fn:concat("ERROR: ", $ec, " Message: ", $em, "
-processing file: ", $filePath)
+processing file: ", $filePath);
     }
 };
 
@@ -132,9 +132,8 @@ declare function local:test-variable(
             ()
 };
 
-let $errors := local:testXQDoc($modulesPath)
-return
-    if (exists($errors)) then (
+variable $errors := local:testXQDoc($modulesPath);
+if (exists($errors)) then (
         concat("
 ------------------------------------------------
 ERROR COUNT: ", count($errors), "

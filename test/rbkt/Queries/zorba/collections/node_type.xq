@@ -19,11 +19,11 @@ declare %sequential function local:init()
 declare %sequential function local:testa_1() 
 {
   try {
-    block {
+    {
       manip:insert-nodes-first($ns:collection, <a/>);
     }
   } catch * ($error) {
-    ("a",$error)
+    exit returning ("a",$error);
   }
 };
 
@@ -37,11 +37,11 @@ declare %sequential function local:testa_2()
 declare %sequential function local:testb_1() 
 {
   try {
-    block {
+    {
       manip:insert-nodes-last($ns:collection, <b/>);
     }
   } catch * ($error) {
-    ("b",$error)
+    exit returning ("b",$error);
   }
 };
 
@@ -55,13 +55,13 @@ declare %sequential function local:testb_2()
 declare %sequential function local:testc_1() 
 {
   try {
-    block {
+    {
       let $x as schema-element(s:person) := manip:collection($ns:collection)[1]
       return
         manip:insert-nodes-before($ns:collection, $x, <c/>);
     }
   } catch * ($error) {
-    ("c",$error)
+    exit returning ("c",$error);
   }
 };
 
@@ -78,13 +78,13 @@ declare %sequential function local:testc_2()
 declare %sequential function local:testd_1() 
 {
   try {
-    block {
+    {
       let $x as schema-element(s:person) := manip:collection($ns:collection)[1]
       return
         manip:insert-nodes-after($ns:collection, $x, <d/>);
     }
   } catch * ($error) {
-    ("d",$error)
+    exit returning ("d",$error);
   }
 };
 
@@ -100,13 +100,13 @@ declare %sequential function local:testd_2()
 declare %sequential function local:testf_1() 
 {
   try {
-    block {
+    {
       let $x as schema-element(s:person) := manip:collection($ns:collection)[1]
       return
         insert node <abc>4</abc> into $x;
     }
   } catch * ($error) {
-    ("f",$error)
+    exit returning ("f",$error);
   }
 };
 
@@ -134,7 +134,7 @@ declare %sequential function local:main()
     local:testf_1(),
     local:testf_2(),
     <collection>{manip:collection($ns:collection)}</collection>
-  );
+  )
 };
 
 local:main()

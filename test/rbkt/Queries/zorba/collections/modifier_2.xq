@@ -14,11 +14,11 @@ declare %sequential function local:init() {
 declare %sequential function local:testa_1() 
 {
   try {
-    block {
+    {
       manip:delete-nodes(subsequence(manip:collection($ns:coll_1), 1, 2));
     }
   } catch * ($error) {
-    ("a",$error)
+    exit returning ("a",$error);
   }
 };
 
@@ -26,11 +26,11 @@ declare %sequential function local:testa_1()
 declare %sequential function local:testa_2() 
 {
   try {
-    block {
+    {
       manip:delete-nodes(subsequence(manip:collection($ns:coll_2), 1, 2));
     }
   } catch * ($error) {
-    ("a",$error)
+    exit returning ("a",$error);
   }
 };
 
@@ -38,11 +38,11 @@ declare %sequential function local:testa_2()
 declare %sequential function local:testa_3() 
 {
   try {
-    block {
+    {
       manip:delete-nodes(subsequence(manip:collection($ns:coll_3), 2, 2));
     }
   } catch * ($error) {
-    ("a",$error)
+    exit returning ("a",$error);
   }
 };
 
@@ -63,7 +63,7 @@ declare %sequential function local:main() {
     <coll_1>{manip:collection($ns:coll_1)}</coll_1>,
     <coll_2>{manip:collection($ns:coll_2)}</coll_2>,
     <coll_3>{manip:collection($ns:coll_3)}</coll_3>
-  );
+  )
 };
 
 local:main()

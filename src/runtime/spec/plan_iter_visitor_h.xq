@@ -34,9 +34,9 @@ declare %sequential function local:process-files(
     $files as xs:string, 
     $type as xs:string) as xs:string
 {
-  declare $xml-files as xs:string* := tokenize($files,',');
+  variable $xml-files as xs:string* := tokenize($files,',');
 
-  declare $temp := for $file in $xml-files return local:process-file($file, $type);
+  variable $temp := for $file in $xml-files return local:process-file($file, $type);
 
   string-join($temp, $gen:newline)
 };
@@ -78,20 +78,19 @@ declare function local:process-iter($iter, $type as xs:string) as xs:string
 
 declare %sequential function local:create-fwd-decl($files as xs:string) as xs:string
 {
-  declare $temp := local:process-files($files,'fwd-decl');
+  variable $temp := local:process-files($files,'fwd-decl');
 
   string-join(($temp, $gen:newline, $gen:newline,
-               '#include "runtime/visitors/planiter_visitor_impl_include.h"'),'');
+               '#include "runtime/visitors/planiter_visitor_impl_include.h"'),'')
 };
 
 
 declare variable $files as xs:string external;
 
-block
 {
-  declare $temp1 := local:create-fwd-decl($files);
+  variable $temp1 := local:create-fwd-decl($files);
 
-  declare $temp2 := local:process-files($files,'class');
+  variable $temp2 := local:process-files($files,'class');
 
   string-join
   (
@@ -119,6 +118,6 @@ block
     ),
     string-join(($gen:newline),'
   ')
-  );
+  )
 }
 

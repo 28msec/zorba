@@ -8,7 +8,7 @@ init:create-collection($m:empc);
 
 init:activate-integrity-constraint(xs:QName("m:ic_simple"));
 
-
+{
 (: employees - all values inserted in a single update, m:ic_simple holds :)
 manip:insert-nodes($m:empc, 
    <emp>
@@ -26,7 +26,8 @@ manip:insert-nodes($m:empc,
    <emp>
      <salary>400</salary>
    </emp>
-  );
+  )
+};
 
 sum( manip:collection($m:empc)/salary ),
-sum( manip:collection($m:empc)/salary ) gt 1000;
+sum( manip:collection($m:empc)/salary ) gt 1000

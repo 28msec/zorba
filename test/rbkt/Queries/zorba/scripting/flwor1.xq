@@ -9,12 +9,11 @@ declare %sequential function local:test3()
 
   for $x in dyn:collection($col)
   return
-    block 
     {
       dyn:insert-nodes-last($col, <c></c>);
-    };
+    }
 
-  dyn:collection($col);
+  dyn:collection($col)
 };
 
 local:test3()

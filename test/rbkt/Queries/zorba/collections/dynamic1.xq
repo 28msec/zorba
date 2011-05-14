@@ -16,8 +16,8 @@ dyn:insert-nodes-after($coll, dyn:collection($coll)[2], for $i  in 1 to 10 retur
 dyn:delete-nodes(dyn:collection($coll)[last()-2]);
 dyn:delete-node-last($coll);
 dyn:delete-node-first($coll);
-set $available-colls := dyn:available-collections();
-set $is-available := dyn:is-available-collection($coll);
-set $content := for $i in dyn:collection($coll) return copy $j := $i modify () return $j;
-set $name := dyn:collection-name(dyn:collection($coll)[1]);
-$available-colls, $is-available, $name, $content;
+$available-colls := dyn:available-collections();
+$is-available := dyn:is-available-collection($coll);
+$content := for $i in dyn:collection($coll) return copy $j := $i modify () return $j;
+$name := dyn:collection-name(dyn:collection($coll)[1]);
+$available-colls, $is-available, $name, $content

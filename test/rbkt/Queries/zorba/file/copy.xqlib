@@ -4,12 +4,12 @@ import module namespace file = "http://expath.org/ns/file";
 
 declare %sequential function fct:test-copy($rbktPath as xs:string, $file as xs:string) {
 
-  declare $fileSrc := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file);
-  declare $fileDest := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file, ".out");
+  variable $fileSrc := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file);
+  variable $fileDest := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file, ".out");
 
   (: make sure the output file does not exist :)
   if (file:exists($fileDest)) then
-    exit returning "The output file already exists. This is not good!"
+    exit returning "The output file already exists. This is not good!";
   else
     ();
 
@@ -19,8 +19,8 @@ declare %sequential function fct:test-copy($rbktPath as xs:string, $file as xs:s
   (: read both files back and compare :)
   let $src := file:read-binary($fileSrc)
   let $dest := file:read-binary($fileDest)
-  return block {
-    declare $result := $src eq $dest;
+  return {
+    variable $result := $src eq $dest;
 
     (: delete the file before we terminate :)
     file:delete($fileDest);
@@ -28,6 +28,6 @@ declare %sequential function fct:test-copy($rbktPath as xs:string, $file as xs:s
     if (file:exists($fileDest)) then
       "The output file must not be here anymore. This is not good!"
     else
-      $result;  
-  };
+      $result
+  }
 };

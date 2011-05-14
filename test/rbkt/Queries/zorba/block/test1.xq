@@ -11,15 +11,14 @@ declare function local:benchmark($last-benchmark)
 };
 
 
-block 
 {
-declare $last-benchmark;
+  variable $last-benchmark;
 
-let $l := local:last-benchmark()
-return
-  if (not($l))
-  then set $last-benchmark := try { fn:error(xs:QName("local:blub")) } catch * { () }
-  else ();
+  let $l := local:last-benchmark()
+  return
+    if (not($l))
+    then $last-benchmark := try { fn:error(xs:QName("local:blub")) } catch * { () };
+    else ();
 
-local:benchmark($last-benchmark);
+  local:benchmark($last-benchmark);
 }

@@ -9,12 +9,11 @@ declare %sequential function local:test3()
 
   for $item in dyn:collection($col)
   return
-    block
     {
       dyn:delete-nodes($item);
-    };
+    }
 
-  fn:empty(dyn:collection($col));
+  fn:empty(dyn:collection($col))
 };
 
 

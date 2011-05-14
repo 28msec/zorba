@@ -9,11 +9,11 @@ init:create-collection($xqddf-test:blue-collection, (<bb>1</bb>,<bb>2</bb>,<bb>3
 let $n := <a><b>bnm</b><c></c></a>
 return (manip:insert-nodes($xqddf-test:white-collection, $n),
         manip:insert-nodes($xqddf-test:blue-collection, $n/a/b));
-block
+
 {
-manip:collection($xqddf-test:white-collection);
+manip:collection($xqddf-test:white-collection)
 },
-block
+
 {
-manip:collection($xqddf-test:blue-collection);
-};
+manip:collection($xqddf-test:blue-collection)
+}

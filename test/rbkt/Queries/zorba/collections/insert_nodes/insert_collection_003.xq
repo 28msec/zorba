@@ -7,4 +7,4 @@ init:create-collection(xs:QName("ns:collection_unordered"));
 
 manip:insert-nodes(xs:QName("ns:collection_unordered"), <a/>);
 
-manip:collection(xs:QName("ns:collection_unordered"));
+manip:collection(xs:QName("ns:collection_unordered"))

@@ -8,49 +8,49 @@ declare %sequential function local:init() {
 
 declare %sequential function local:test1() {
   try {
-    block {
+    {
       let $x as element() := manip:collection($ns:coll_1)[1]
       return
         insert node <x/> into $x;
     }
   } catch * ($error) {
-    ("1",$error)
+    exit returning ("1",$error);
   }
 };
 
 declare %sequential function local:test2() {
   try {
-    block {
+    {
       let $x as element() := manip:collection($ns:coll_1)[1]
       return
         delete node $x;
     }
   } catch * ($error) {
-    ("2",$error)
+    exit returning ("2",$error);
   }
 };
 
 declare %sequential function local:test3() {
   try {
-    block {
+    {
       let $x as element() := manip:collection($ns:coll_1)[1]
       return
         rename node $x as "blabla";
     }
   } catch * ($error) {
-    ("3",$error)
+    exit returning ("3",$error);
   }
 };
 
 declare %sequential function local:test4() {
   try {
-    block {
+    {
       let $x as element() := manip:collection($ns:coll_1)[1]
       return
         replace node $x/x with <y/>;
     }
   } catch * ($error) {
-    ("4",$error)
+    exit returning ("4",$error);
   }
 };
 
@@ -61,7 +61,7 @@ declare %sequential function local:main() {
     local:test2(),
     local:test3(),
     local:test4()
-  );
+  )
 };
 
 local:main()

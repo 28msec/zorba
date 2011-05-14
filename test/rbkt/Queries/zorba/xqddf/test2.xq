@@ -13,6 +13,6 @@ manip:insert-nodes($foo, doc("test2.xml"));
 
 init:create-index($idx);
 
-manip:probe-index-point-value($idx, xs:long(501321));
+manip:probe-index-point-value($idx, xs:long(501321))
 
 

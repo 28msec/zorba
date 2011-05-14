@@ -11,9 +11,9 @@ declare function l:getLastPage($page as node()*)
          else <test>1</test>
 };
 
-set $page := l:getLastPage($page);
+variable $page := l:getLastPage($page);
 
 for $rec in $page
   let $id := concat($rec/text(), "")
   let $old_rec := $old_list[id/text() eq $id]
-return $rec;
+return $rec

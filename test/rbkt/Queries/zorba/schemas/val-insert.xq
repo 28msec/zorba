@@ -9,4 +9,4 @@ insert node validate {
     </d:product>
   } into $local:x/a;
 
-$local:x;
+$local:x

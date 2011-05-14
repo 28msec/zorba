@@ -15,11 +15,10 @@ declare updating function local:delete($n as node(), $x as xs:boolean)
 
 declare variable $doc := <root><a id="1"/><a id="2"/><a id="3"/><a id="4"/></root>;
 
-block
 {
-for $node in $doc/a
-return local:delete($node, fn:true());
+  for $node in $doc/a
+  return local:delete($node, fn:true());
 
-$doc;
+  $doc
 }
 

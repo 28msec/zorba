@@ -9,4 +9,4 @@ init:create-collection($xqddf-test:blue-collection, (<bb>1</bb>,<bb>2</bb>,<bb>3
 
 manip:delete-nodes-first($xqddf-test:white-collection, 10 cast as xs:unsignedLong);
 
-manip:collection($xqddf-test:white-collection);
+manip:collection($xqddf-test:white-collection)

@@ -26,8 +26,8 @@ manip:insert-nodes($m:empc,
    <emp>
      <id>0</id>
    </emp>
-  );
+  ),
 
 fn:data( manip:collection($m:empc)/id ),
 every $id in manip:collection($m:empc)/id 
-satisfies $id > 0;
+satisfies $id > 0

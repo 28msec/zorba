@@ -2,19 +2,18 @@
 declare %sequential function local:test() 
 {
   let $indexHtmlDoc := <doc/>
-  return block 
+  return 
          {
            for $module in (<m id="5"/>, <m id="2"/>, <m id="4"/>, <m id="1"/>)
            order by $module/@id
            return insert nodes <mi>{$module/@id}</mi> as last into $indexHtmlDoc;
 
-           $indexHtmlDoc;
+           $indexHtmlDoc
          }
 };
 
 
-block
 {
-  declare $doc := local:test();
-  $doc;
+  variable $doc := local:test();
+  $doc
 }

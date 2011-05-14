@@ -11,7 +11,7 @@ declare %sequential function local:trick($object as xs:string) as xs:integer
   return
     if ($s) 
     then
-      exit returning "hat"
+      exit returning "hat";
     else 
       exit returning 1;
 };

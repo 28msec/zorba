@@ -5,9 +5,9 @@ import module namespace file = "http://expath.org/ns/file";
 
 declare %sequential function local:get-files($files as xs:string) as xs:string
 {
-  declare $xml-files as xs:string* := tokenize($files,',');
+  variable $xml-files as xs:string* := tokenize($files,',');
 
-  declare $temp := for $file in $xml-files return local:process-file($file);
+  variable $temp := for $file in $xml-files return local:process-file($file);
 
   string-join($temp, $gen:newline)
 };
@@ -128,9 +128,8 @@ declare function local:printer-visitor-definition($iter) as xs:string
 
 declare variable $files as xs:string external;
 
-block
 {
-  declare $temp := local:get-files($files);
+  variable $temp := local:get-files($files);
 
   string-join((gen:add-copyright(),
                local:create-includes($files),
@@ -138,6 +137,6 @@ block
                local:create-class(),
                $temp,
                '}'),
-              string-join(($gen:newline,$gen:newline),''));
+              string-join(($gen:newline,$gen:newline),''))
 }
 

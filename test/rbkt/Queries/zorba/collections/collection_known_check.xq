@@ -7,8 +7,8 @@ declare variable $name as xs:QName := xs:QName("ns:name");
 
 declare %sequential function local:testa() {
   try {
-    block {
-      manip:is-available-collection($name);
+    {
+      manip:is-available-collection($name)
     }
   } catch * ($error) {
     ("a",$error)
@@ -17,8 +17,8 @@ declare %sequential function local:testa() {
 
 declare %sequential function local:testb() {
   try {
-    block {
-      manip:collection($name);
+    {
+      manip:collection($name)
     }
   } catch * ($error) {
     ("b",$error)
@@ -27,8 +27,8 @@ declare %sequential function local:testb() {
 
 declare %sequential function local:testc() {
   try {
-    block {
-      manip:index-of($name, <a/>);
+    {
+      manip:index-of($name, <a/>)
     }
   } catch * ($error) {
     ("c",$error)
@@ -37,71 +37,71 @@ declare %sequential function local:testc() {
 
 declare %sequential function local:testd() {
   try {
-    block {
+    {
       init:create-collection($name);
     }
   } catch * ($error) {
-    ("d",$error)
+    exit returning ("d",$error);
   }
 };
 
 declare %sequential function local:teste() {
   try {
-    block {
+    {
       init:delete-collection($name);
     }
   } catch * ($error) {
-    ("e",$error)
+    exit returning ("e",$error);
   }
 };
 
 declare %sequential function local:testf() {
   try {
-    block {
+    {
       manip:insert-nodes-first($name, <a/>);
     }
   } catch * ($error) {
-    ("f",$error)
+    exit returning ("f",$error);
   }
 };
 
 declare %sequential function local:testg() {
   try {
-    block {
+    {
       manip:insert-nodes-last($name, <a/>);
     }
   } catch * ($error) {
-    ("g",$error)
+    exit returning ("g",$error);
   }
 };
 
 declare %sequential function local:testh() {
   try {
-    block {
+    {
       manip:insert-nodes-before($name, <a/>, <a/>);
     }
   } catch * ($error) {
-    ("h",$error)
+    exit returning ("h",$error);
   }
 };
 
 declare %sequential function local:testi() {
   try {
-    block {
+    {
       manip:insert-nodes-after($name, <a/>, <a/>);
     }
   } catch * ($error) {
-    ("i",$error)
+    exit returning ("i",$error);
   }
 };
 
 declare %sequential function local:testk() {
   try {
-    block {
+    {
       manip:delete-nodes(<a/>);
     }
   } catch * ($error) {
-    ("k",$error)
+    exit returning ("k",$error);
   }
 };
 
@@ -117,7 +117,7 @@ declare %sequential function local:main() {
     local:testh(),
     local:testi(),
     local:testk()
-  );
+  )
 };
 
 local:main()

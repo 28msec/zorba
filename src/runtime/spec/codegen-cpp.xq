@@ -326,10 +326,9 @@ let $name := substring($pieces[count($pieces)],
                        1,
                        string-length($pieces[count($pieces)])-4)
 return
-  block 
   {
-    set $mappings_doc := fn:parse-xml(file:read-text($mappings));
-    set $file_doc := fn:parse-xml(file:read-text($file));
+    variable $mappings_doc := fn:parse-xml(file:read-text($mappings));
+    variable $file_doc := fn:parse-xml(file:read-text($file));
 
     string-join((gen:add-copyright(),
                  local:includes($file_doc),
@@ -340,5 +339,5 @@ return
                 ),
                 string-join(($gen:newline, $gen:newline),'
 ')
-    );
+    )
   }

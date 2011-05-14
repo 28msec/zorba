@@ -425,7 +425,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 "if" { return token::IF; }
 "returning" { return token::RETURNING; }
-"block" { return token::BLOCK; }
+
 "exit" { return token::EXIT; }
 "with" { return token::WITH; }
 "break" { return token::BREAK; }
@@ -441,8 +441,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "text" { return token::TEXT; }
 "comment" { return token::COMMENT; }
 "function" { return token::FUNCTION; }
-"deterministic" { return token::DETERMINISTIC; }
-"nondeterministic" { return token::NONDETERMINISTIC; }
 "simple" { return token::SIMPLE; }
 "updating" { return token::UPDATING; }
 "sequential" { return token::SEQUENTIAL; }
@@ -482,9 +480,10 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "version" { return token::VERSION; }
 "option" { return token::OPTION; }
 "at" { return token::AT; }
-"revalidation" { return token::REVALIDATION;}
+"revalidation" { return token::REVALIDATION; }
 "as" { return token::AS; }
-"try" { return token::TRY;}
+"try" { return token::TRY; }
+"local" { return token::LOCAL; }
 
   /* Axes */
 "ancestor-or-self" { return token::ANCESTOR_OR_SELF; }

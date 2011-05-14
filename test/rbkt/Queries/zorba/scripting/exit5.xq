@@ -11,7 +11,7 @@ declare %sequential function local:trick($object as xs:string)
   return
     exit returning ("hat:", $s);
 
-  "THIS IS THE SECRET";
+  "THIS IS THE SECRET"
 };
 
 
@@ -19,7 +19,7 @@ declare %sequential function local:magician()
 {
   let $s := local:trick("rabbit")
   return
-    exit returning $s
+    exit returning $s;
 };
 
 

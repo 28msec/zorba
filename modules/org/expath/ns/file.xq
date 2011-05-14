@@ -152,18 +152,18 @@ declare %private %sequential function file:copy-directory-impl(
       if (fn:not(file:exists($dirname))) then
         fn:error(xs:QName("file:FOFL0003"), fn:concat("The destination directory does not exist: ", $dirname))
       else
-        block {
+        {
           file:create-directory($destination);
-          file:copy-directory-content($sourceDir, $destination);
+          file:copy-directory-content($sourceDir, $destination)
         }
 
   else
     let $basename := file:base-name($sourceDir)
     let $newdir := fn:concat($destination, file:directory-separator(), $basename)
     return
-      block {
+      {
         file:create-directory($newdir);
-        file:copy-directory-content($sourceDir, $newdir);
+        file:copy-directory-content($sourceDir, $newdir)
       }
 };
 
@@ -261,11 +261,11 @@ declare %private %sequential function file:delete-directory-impl(
   let $fullPath := fn:concat($dir, file:directory-separator(), $item)
   return
     if (file:is-directory($fullPath)) then
-      file:delete-directory-impl($fullPath)
+      file:delete-directory-impl($fullPath);
     else
       file:delete-file-impl($fullPath);
     
-  file:delete-file-impl($dir);
+  file:delete-file-impl($dir)
 };
 
 (:~
@@ -441,7 +441,7 @@ declare %private %sequential function file:copy-directory(
   let $name := file:base-name($sourceDir)
   let $destDir := fn:concat($destinationDir, file:directory-separator(), $name)
   return
-    block {
+    {
       file:create-directory($destDir);
 
       for $item in file:list($sourceDir)
@@ -451,7 +451,7 @@ declare %private %sequential function file:copy-directory(
         if (file:is-directory($fullSrcPath)) then
           file:copy-directory($fullSrcPath, $fullDestPath)
         else
-          file:copy($fullSrcPath, $fullDestPath);
+          file:copy($fullSrcPath, $fullDestPath)
     }
 };
 

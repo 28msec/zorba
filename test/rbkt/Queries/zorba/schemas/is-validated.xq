@@ -34,14 +34,14 @@ declare function local:nested()
 
 declare %sequential function local:update()
 {
-  set $var := validate strict { 
+  $var := validate strict { 
                  <s:person>
                    <s:name>david</s:name>
                    <s:age>123</s:age>
                  </s:person> 
               };
   delete node $var/s:age;
-  schema:is-validated($var);
+  schema:is-validated($var)
 };
 
 local:simple(), local:nested(), local:update()

@@ -402,7 +402,7 @@ void* begin_visit(const FunctionDecl& n)
   if (n.is_sequential())
     os << "%sequential ";
 
-  if (!n.is_deterministic()) 
+  if (!n.is_deterministic())
     os << "%nondeterministic ";
 
   if (n.is_private())
@@ -427,12 +427,12 @@ void* begin_visit(const FunctionDecl& n)
     lParameters.push(lReturnType.str());
   }
 
-  if(n.get_body()) 
+  if(n.get_body())
   {
     os << '{';
     n.get_body()->accept(*this);
     os << '}';
-  } 
+  }
   else if(n.is_external())
   {
     os << " external";
@@ -1369,6 +1369,7 @@ DEFAULT_END_VISIT (ReverseAxis);
     DEFAULT_END_VISIT (EnclosedExpr);
 
     DEFAULT_VISIT (BlockBody)
+    DEFAULT_VISIT (ApplyExpr)
     DEFAULT_VISIT (Expr)
 
     void* begin_visit(const ExtensionExpr& n)

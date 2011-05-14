@@ -166,7 +166,7 @@ Iterator tree for main query:
                   </CastIterator>
                 </GenericArithIterator_AddOperation>
               </ForVariable>
-              <LetVariable name="dow" materialize="true">
+              <ForVariable name="dow">
                 <FunctionTraceIterator>
                   <NumArithIterator_ModOperation>
                     <CastIterator type="xs:integer">
@@ -183,7 +183,7 @@ Iterator tree for main query:
                     <SingletonIterator value="xs:integer(7)"/>
                   </NumArithIterator_ModOperation>
                 </FunctionTraceIterator>
-              </LetVariable>
+              </ForVariable>
               <ReturnClause>
                 <ElementIterator>
                   <SingletonIterator value="xs:QName(,,tr)"/>
@@ -355,21 +355,18 @@ Iterator tree for fxx:net-working-days-n:
   <LetVariable name="dates" materialize="true">
     <LetVarIterator varname="dates"/>
   </LetVariable>
-  <ForVariable name="total">
-    <LetVarIterator varname="total"/>
-  </ForVariable>
   <ReturnClause>
     <IfThenElseIterator>
       <CompareIterator>
         <ForVarIterator varname="s"/>
         <ForVarIterator varname="f"/>
       </CompareIterator>
-      <ForVarIterator varname="total"/>
+      <LetVarIterator varname="total"/>
       <IfThenElseIterator>
-        <LogicIterator>
+        <AndIterator>
           <FunctionTraceIterator>
             <IfThenElseIterator>
-              <LogicIterator>
+              <OrIterator>
                 <TypedValueCompareIterator_INTEGER>
                   <NumArithIterator_ModOperation>
                     <CastIterator type="xs:integer">
@@ -400,7 +397,7 @@ Iterator tree for fxx:net-working-days-n:
                   </NumArithIterator_ModOperation>
                   <SingletonIterator value="xs:integer(6)"/>
                 </TypedValueCompareIterator_INTEGER>
-              </LogicIterator>
+              </OrIterator>
               <SingletonIterator value="xs:boolean(false)"/>
               <SingletonIterator value="xs:boolean(true)"/>
             </IfThenElseIterator>
@@ -411,7 +408,7 @@ Iterator tree for fxx:net-working-days-n:
               <LetVarIterator varname="dates"/>
             </CompareIterator>
           </FnBooleanIterator>
-        </LogicIterator>
+        </AndIterator>
         <UDFunctionCallIterator>
           <PromoteIterator type="xs:date">
             <GenericArithIterator_AddOperation>
@@ -422,7 +419,7 @@ Iterator tree for fxx:net-working-days-n:
           <ForVarIterator varname="f"/>
           <LetVarIterator varname="dates"/>
           <SpecificNumArithIterator_AddOperation_INTEGER>
-            <ForVarIterator varname="total"/>
+            <LetVarIterator varname="total"/>
             <SingletonIterator value="xs:integer(1)"/>
           </SpecificNumArithIterator_AddOperation_INTEGER>
         </UDFunctionCallIterator>
@@ -435,7 +432,7 @@ Iterator tree for fxx:net-working-days-n:
           </PromoteIterator>
           <ForVarIterator varname="f"/>
           <LetVarIterator varname="dates"/>
-          <ForVarIterator varname="total"/>
+          <LetVarIterator varname="total"/>
         </UDFunctionCallIterator>
       </IfThenElseIterator>
     </IfThenElseIterator>

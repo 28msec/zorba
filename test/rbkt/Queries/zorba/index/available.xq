@@ -15,7 +15,7 @@ declare %sequential function local:test_create() {
     for $x in manip:available-indexes()
     order by xs:string($x)
     return $x
-  );
+  )
 };
 
 declare %sequential function local:test_delete() {
@@ -25,7 +25,7 @@ declare %sequential function local:test_delete() {
     manip:is-available-index(xs:QName("decl:coll2_index")),
     manip:is-available-index(xs:QName("decl:coll3_index")),
     manip:available-indexes()
-  );
+  )
 };
 
 local:test_create(),local:test_delete()

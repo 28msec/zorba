@@ -15,4 +15,4 @@ return
 
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-manip:probe-index-point-value($xqddf-test:index1, "United States")[1]; 
+manip:probe-index-point-value($xqddf-test:index1, "United States")[1]

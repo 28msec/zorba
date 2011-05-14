@@ -41,7 +41,7 @@ private:
 string getFileName(const string& aFileName)
 {
   string::size_type lIndex = aFileName.find_last_of("/\\");
-  if (lIndex == string::npos) 
+  if (lIndex == string::npos)
   {
     return aFileName;
   }
@@ -59,13 +59,13 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
   }
   list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
   list<XQDocAnnotation>::const_iterator lIt;
-    
+
   if (!aComment->getDescription().empty() ||
       lAnnotations.begin() != lAnnotations.end() ||
       aComment->hasVersion() ||
       aComment->hasReturn() ||
       aComment->isDeprecated()) {
-    
+
     list<XQDocAnnotation> lAuthorAnn;
     list<XQDocAnnotation> lParamAnn;
     list<XQDocAnnotation> lErrorAnn;
@@ -101,7 +101,7 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
     theFactory->createElementNode(lCommentElem, result,
                                   lCommentQName, lTypeName,
                                   true, false, theNSBindings, theBaseURI);
-    
+
     // description
     if (!aComment->getDescription().empty()) {
       printCommentFragment(lCommentElem, aComment->getDescription().str(), "description");
@@ -139,19 +139,19 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
     if (aComment->isDeprecated()) {
       printCommentFragment(lCommentElem, aComment->getDeprecatedComment().str(), "deprecated");
     }
-    
+
     // see
     for (lIt = lSeeAnn.begin(); lIt != lSeeAnn.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
       printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "see");
     }
-    
+
     // since
     for (lIt = lSinceAnn.begin(); lIt != lSinceAnn.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
       printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "since");
     }
-    
+
     // library
     for (lIt = lLibraryAnn.begin(); lIt != lLibraryAnn.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
@@ -183,8 +183,8 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
   ostringstream os;
   os << "<root>" << aString << "</root>";
   istringstream is(os.str());
-  
-  try 
+
+  try
   {
     store::LoadProperties loadProperties;
     loadProperties.setStoreDocument(false);
@@ -195,7 +195,7 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
     store::Iterator_t lIter = lContent->getChildren();
     store::Item_t lRootElem;
     lIter->open();
-    if (lIter->next(lRootElem)) 
+    if (lIter->next(lRootElem))
     {
       store::Iterator_t lIter2 = lRootElem->getChildren();
       lIter2->open();
@@ -217,7 +217,7 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
   }
 }
 
-  
+
 protected:
   store::Item_t&       theResult;
 
@@ -302,28 +302,28 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
                                 true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(theImports, theResult, 
+  theFactory->createElementNode(theImports, theResult,
                                 lImportsQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(theVariables, theResult, 
+  theFactory->createElementNode(theVariables, theResult,
                                 lVariablesQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(theFunctions, theResult, 
+  theFactory->createElementNode(theFunctions, theResult,
                                 lFunctionsQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
   // date version
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(lDateElem, lControlElem, 
+  theFactory->createElementNode(lDateElem, lControlElem,
                                 lDateQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(lVersionElem, lControlElem, 
+  theFactory->createElementNode(lVersionElem, lControlElem,
                                 lVersionQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
@@ -388,7 +388,7 @@ void end_visit(const MainModule& n, void* /*visit_state*/)
 
   // <uri>filename</uri>
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(lURIElem, theModule, 
+  theFactory->createElementNode(lURIElem, theModule,
                                 lURIQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
@@ -417,11 +417,11 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
   theFactory->createString(lAttrValue, lAttrString);
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createAttributeNode(lTypeAttr, theModule, 
+  theFactory->createAttributeNode(lTypeAttr, theModule,
                                   lTypeQName, lTypeName, lAttrValue);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(lURIElem, theModule, 
+  theFactory->createElementNode(lURIElem, theModule,
                                 lURIQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
@@ -474,7 +474,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 
   theFactory->createAttributeNode(
       lArityQName, lFuncElem, lArityQName, lTypeName, lArityValue);
-  
+
   if(n.is_private())
   {
     zstring lPrivateString("true");
@@ -511,7 +511,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   // function element. After this, clear the set of invoked functions
   // to be prepared for the next function declaration
   for (map<string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
-       lIter != theInvokedFunc.end(); ++lIter) 
+       lIter != theInvokedFunc.end(); ++lIter)
   {
     store::CopyMode lCopyMode;
     (*lIter).second->copy(lFuncElem.getp(), lCopyMode);
@@ -558,7 +558,7 @@ void add_invoked_function (
       false, false, theNSBindings, theBaseURI);
 
   map<zstring, zstring>::iterator ite = theNamespaces.find(aPrefix);
-  if (ite == theNamespaces.end()) 
+  if (ite == theNamespaces.end())
   {
     throw ZORBA_EXCEPTION(
       zerr::ZXQD0001_PREFIX_NOT_DECLARED,
@@ -629,7 +629,7 @@ void end_visit(const VarDecl& n, void*)
   // function element. After this, clear the set of invoked functions
   // to be prepared for the next function declaration
   for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
-       lIter != theInvokedFunc.end(); ++lIter) 
+       lIter != theInvokedFunc.end(); ++lIter)
   {
     store::CopyMode lCopyMode;
     (*lIter).second->copy(lVariableElem.getp(), lCopyMode);
@@ -717,7 +717,7 @@ void end_visit(const SchemaImport& n, void*)
   // collect prefix -> uri mappings for properly
   // reporting function invocations (see FunctionCall)
   zstring lPrefix;
-  if (!n.get_prefix()->get_default_bit()) 
+  if (!n.get_prefix()->get_default_bit())
   {
     lPrefix = n.get_prefix()->get_prefix();
   }
@@ -739,6 +739,7 @@ XQDOC_NO_BEGIN_END_TAG (AttributeTest)
 XQDOC_NO_BEGIN_END_TAG (AxisStep)
 XQDOC_NO_BEGIN_END_TAG (BaseURIDecl)
 XQDOC_NO_BEGIN_END_TAG (BlockBody)
+XQDOC_NO_BEGIN_END_TAG (ApplyExpr)
 XQDOC_NO_BEGIN_END_TAG (BoundarySpaceDecl)
 XQDOC_NO_BEGIN_END_TAG (CaseClauseList)
 XQDOC_NO_BEGIN_END_TAG (CastableExpr)

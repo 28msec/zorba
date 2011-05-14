@@ -6,28 +6,28 @@ init:create-collection($xqddf-test:white-collection);
 
 init:activate-integrity-constraint($xqddf-test:eic1);
 
-block{
+{
 <newline>
 </newline>
 },
-block{
+{
 for $i in fn:doc("auction.xml")//item
-return fn:string(($i/description/parlist/listitem/text)[1]);
+return fn:string(($i/description/parlist/listitem/text)[1])
 },
-block{
+{
 <newline> a
 </newline>
 },
-block{
+{
 for $i in fn:doc("auction.xml")//item
 return 
-   block{block{fn:string(($i/description/parlist/listitem/text)[1]);},
-   block{ manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));};};
+   {{fn:string(($i/description/parlist/listitem/text)[1])},
+   { manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
 },
-block{
+{
 <newline> a
 </newline>
 },
-block{
-manip:collection($xqddf-test:white-collection)/description/parlist/listitem/text;
-};
+{
+manip:collection($xqddf-test:white-collection)/description/parlist/listitem/text
+}

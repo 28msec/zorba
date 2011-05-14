@@ -4,24 +4,22 @@ declare variable $result := ();
 
 declare %sequential function local:f($n) 
 {
-  declare $x := 42, $y := $n;
+  variable $x := 42, $y := $n;
 
   for $i in (1, 2)
   return
-    block
     {
-      declare $dummy := (set $x := $i + $y);
-      $x;
+      variable $dummy := {$x := $i + $y; };
+      $x
     }
 };
 
 
 for $i in (10, 20, 30)
 return
-  block
   {
-    declare $dummy := (set $result := local:f($i));
-    $result;
+    variable $dummy := { $result := local:f($i); };
+    $result
   }
 
 

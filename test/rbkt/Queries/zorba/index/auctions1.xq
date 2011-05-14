@@ -173,4 +173,4 @@ return <open_auction>{$id}</open_auction>,
 "
 "
 
-);
+)

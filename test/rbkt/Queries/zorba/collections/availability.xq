@@ -14,7 +14,7 @@ declare %sequential function local:create() {
     return $x,
     manip:is-available-collection($ns:collection_1),
     manip:is-available-collection(xs:QName("ns:test3"))
-  );
+  )
 };
 
 declare %sequential function local:delete() {
@@ -25,14 +25,14 @@ declare %sequential function local:delete() {
     for $x in manip:available-collections()
     order by xs:string($x)
     return $x
-  );
+  )
 };
 
 declare %sequential function local:main() {
   (
     local:create(),
     local:delete()
-  );
+  )
 };
 
 local:main()

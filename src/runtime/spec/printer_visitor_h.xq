@@ -5,11 +5,11 @@ import module namespace file = "http://expath.org/ns/file";
 
 declare %sequential function local:get-files($files as xs:string) as xs:string
 {
-  declare $xml-files as xs:string* := tokenize($files,',');
-  declare $temp := for $file in $xml-files
+  variable $xml-files as xs:string* := tokenize($files,',');
+  variable $temp := for $file in $xml-files
                    return local:process-file($file);
 
-  string-join($temp, concat($gen:newline, $gen:newline));
+  string-join($temp, concat($gen:newline, $gen:newline))
 };
 
 
@@ -83,9 +83,8 @@ declare function local:create-includes() as xs:string
 
 declare variable $files as xs:string external;
 
-block
 {
-  declare $temp := local:get-files($files);
+  variable $temp := local:get-files($files);
 
   string-join((gen:add-copyright(),
                gen:add-guard-open('runtime_printer_visitor'),
@@ -99,6 +98,6 @@ block
                $gen:newline,
                '} //namespace zorba',$gen:newline),''),
               gen:add-guard-close()),
-              string-join(($gen:newline,$gen:newline),''));
+              string-join(($gen:newline,$gen:newline),''))
 }
 

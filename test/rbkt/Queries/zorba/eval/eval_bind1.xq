@@ -14,9 +14,9 @@ util:eval-simple
 '
 declare namespace ns2 = "NS1";
 
-declare variable $ns2:x := 2;
+variable $ns2:x := 2;
 
-declare variable $ns3:x := 20;
+variable $ns3:x := 20;
 
 $ns1:x + $ns1:y + $ns3:x
 ' 
