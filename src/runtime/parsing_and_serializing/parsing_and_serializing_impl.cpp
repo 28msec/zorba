@@ -124,6 +124,9 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
     store::Iterator_t lIterWrapper = new PlanIteratorWrapper(theChildren[0], aPlanState);
     zorba::serializer lSerializer(aPlanState.theCompilerCB->theErrorManager);
 
+    // defaults
+    lSerializer.setParameter("omit-xml-declaration", "yes");
+
     // if have serialization parameters
     if (theChildren.size() == 2 && consumeNext(lParams, theChildren[1].getp(), aPlanState)) {
       // get the children iterator
@@ -135,21 +138,26 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
       while (lElemIter->next(lChildElem)) {
         // consider only the elements (this should be taken care of by the schema)
         if (lParams->isNode() && lParams->getNodeKind() == store::StoreConsts::elementNode) {
-          store::Iterator_t lAttrIter = lChildElem->getAttributes();
-          lAttrIter->open();
-          store::Item_t lAttribute;
-          // iterate over the attributes
-          while (lAttrIter->next(lAttribute)) {
-            store::Item_t lAttributeQName = lAttribute->getNodeName();
+          store::Item_t lChildName = lChildElem->getNodeName();
+          if (lChildName->getLocalName() == "use-character-maps") {
+            // TODO: once zorba the serializer supports character maps
+          } else {
+            store::Iterator_t lAttrIter = lChildElem->getAttributes();
+            lAttrIter->open();
+            store::Item_t lAttribute;
+            // iterate over the attributes
+            while (lAttrIter->next(lAttribute)) {
+              store::Item_t lAttributeQName = lAttribute->getNodeName();
 
-            // the attribute must have the local name "value" (this should be taken care of by the schema)
-            if (lAttributeQName->getLocalName() == "value") {
-              store::Item_t lChildElemQName = lChildElem->getNodeName();
-              lSerializer.setParameter(lChildElemQName->getLocalName().c_str(), lAttribute->getStringValue().c_str());
-              break;
+              // the attribute must have the local name "value" (this should be taken care of by the schema)
+              if (lAttributeQName->getLocalName() == "value") {
+                store::Item_t lChildElemQName = lChildElem->getNodeName();
+                lSerializer.setParameter(lChildElemQName->getLocalName().c_str(), lAttribute->getStringValue().c_str());
+                break;
+              }
             }
+            lAttrIter->close();
           }
-          lAttrIter->close();
         }
       }
       lElemIter->close();
