@@ -3,7 +3,8 @@ module namespace util = "http://www.zorba-xquery.com/util";
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
-import module namespace http-expath = "http://expath.org/ns/http-client";
+(: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
+(:import module namespace http-expath = "http://expath.org/ns/http-client"; :)
 import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
@@ -15,6 +16,8 @@ declare variable $util:xquery_version_3_0 := "3.0";
 used local variables instead of passing the specURI defined as an external variable because of 
 opened bug #3152386
 :)
+(: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
+(:
 declare %sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
   let $serParams := 
     <output:serialization-parameters>
@@ -35,7 +38,7 @@ declare %sequential function util:download-and-write-spec($specVersion as xs:str
     return
       file:write($docPath, http-expath:send-request($req, ())[2], $serParams)
 };
-
+:)
 declare %sequential function util:create-spec-function-arity-sequence(
   $docPath as xs:string,
   $xquery_version as xs:string)
