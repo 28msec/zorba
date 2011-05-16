@@ -272,19 +272,38 @@ const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
 const zstring
-static_context::ZORBA_STORE_COLLECTIONS = NS_PRE + "modules/store/collections";
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL = NS_PRE + "modules/store/dynamic/collections/ddl";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_INIT
-  = NS_PRE + "modules/store/static-collections/initialization";
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML = NS_PRE + "modules/store/dynamic/collections/dml";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_MANIP
-  = NS_PRE + "modules/store/static-collections/manipulation";
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL
+  = NS_PRE + "modules/store/static/collections/ddl";
 
 const zstring
-static_context::ZORBA_STORE_DOCUMENTS
-  = static_context::ZORBA_NS_PREFIX + "modules/store/documents";
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML
+  = NS_PRE + "modules/store/static/collections/dml";
+
+const zstring
+static_context::ZORBA_STORE_STATIC_INDEXES_DDL
+  = NS_PRE + "modules/store/static/indexes/ddl";
+
+const zstring
+static_context::ZORBA_STORE_STATIC_INDEXES_DML
+  = NS_PRE + "modules/store/static/indexes/dml";
+
+const zstring
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL
+  = NS_PRE + "modules/store/static/integrity_constraints/ddl";
+
+const zstring
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML
+  = NS_PRE + "modules/store/static/tegrity_constraints/dml";
+
+const zstring
+static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS
+  = static_context::ZORBA_NS_PREFIX + "modules/store/dynamic/documents";
 
 const zstring
 static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
@@ -341,10 +360,15 @@ bool static_context::is_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
-            ns == ZORBA_STORE_DOCUMENTS ||
-            ns == ZORBA_STORE_COLLECTIONS ||
-            ns == ZORBA_STORE_STATIC_COLLECTIONS_INIT ||
-            ns == ZORBA_STORE_STATIC_COLLECTIONS_MANIP ||
+            ns == ZORBA_STORE_DYNAMIC_DOCUMENTS ||
+            ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL ||
+            ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML ||
+            ns == ZORBA_STORE_STATIC_COLLECTIONS_DDL ||
+            ns == ZORBA_STORE_STATIC_COLLECTIONS_DML ||
+            ns == ZORBA_STORE_STATIC_INDEXES_DDL ||
+            ns == ZORBA_STORE_STATIC_INDEXES_DML ||
+            ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL ||
+            ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML ||
             ns == ZORBA_SCHEMA_FN_NS ||
             ns == ZORBA_TIDY_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||

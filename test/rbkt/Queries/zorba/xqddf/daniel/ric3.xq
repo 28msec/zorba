@@ -1,13 +1,14 @@
 
 import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
-init:create-collection($xqddf-test:white-collection);
-init:create-collection($xqddf-test:blue-collection);
+ddl:create-collection($xqddf-test:white-collection);
+ddl:create-collection($xqddf-test:blue-collection);
 
-init:activate-integrity-constraint($xqddf-test:ric1);
+ic_ddl:activate-integrity-constraint($xqddf-test:ric1);
 
 
 {
@@ -33,10 +34,10 @@ for $i in fn:doc("auction.xml")//item
 return 
     
     { 
-       { $i/name },
-       { manip:insert-nodes($xqddf-test:blue-collection,
+      { $i/name },
+      { dml:insert-nodes($xqddf-test:blue-collection,
                                  (copy $copyi := $i modify () return $copyi)); },
-       { manip:insert-nodes($xqddf-test:white-collection,
+      { dml:insert-nodes($xqddf-test:white-collection,
                                  (copy $copyi := $i modify () return $copyi)); }
     }
 },
@@ -49,12 +50,11 @@ return
 
 
 {
-  replace value of node manip:collection($xqddf-test:blue-collection)[1]/name 
+  replace value of node dml:collection($xqddf-test:blue-collection)[1]/name 
           with "replaced name";
 },
 
 
 {
-  manip:collection($xqddf-test:white-collection)/name;
+  dml:collection($xqddf-test:white-collection)/name;
 }
-

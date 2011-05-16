@@ -1,14 +1,16 @@
 module namespace def = "http://www.28msec.com/blub/default";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 declare collection def:user as node()*;
 
 declare variable $def:user := xs:QName("def:user");
  
 declare automatically maintained unique value equality index def:user-by-uid
-  on nodes manip:collection(xs:QName("def:user"))
+  on nodes dml:collection(xs:QName("def:user"))
   by xs:string(@uid) as xs:string;
 
 declare variable $def:user-by-uid := xs:QName("def:user-by-uid");
@@ -16,11 +18,11 @@ declare variable $def:user-by-uid := xs:QName("def:user-by-uid");
 
 declare %sequential function def:init()
 {
-  init:create-collection($def:user);
+  ddl:create-collection($def:user);
 
-  init:create-index($def:user-by-uid);
+  index_ddl:create-index($def:user-by-uid);
 
-  manip:insert-nodes($def:user,
+  dml:insert-nodes($def:user,
     (
       <user uid='1'>Matthias</user>,
       <user uid='2'>David</user>,
@@ -33,5 +35,5 @@ declare %sequential function def:init()
 
 declare function def:query()
 {
-  manip:probe-index-point-value(xs:QName("def:user-by-uid"), 1)
+  index_dml:probe-index-point-value(xs:QName("def:user-by-uid"), 1)
 };

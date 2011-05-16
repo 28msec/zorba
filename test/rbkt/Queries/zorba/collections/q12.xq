@@ -1,11 +1,11 @@
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare %sequential function local:foo($collName as xs:QName) {
-  init:create-collection($collName,<a/>);
-  let $a := manip:collection($collName)
-  return manip:insert-nodes-last($collName, <b/>);
+  ddl:create-collection($collName,<a/>);
+  let $a := dml:collection($collName)
+  return dml:insert-nodes-last($collName, <b/>);
   exit returning ();
 };
 

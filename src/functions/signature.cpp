@@ -243,7 +243,8 @@ bool signature::equals(const TypeManager* tm, const signature& s) const
   if (!theQName->equals(s.theQName.getp()))
     return false;
 
-  for (size_t i = 0; i < theTypes.size(); ++i)
+  assert (s.theTypes.size() == theTypes.size() || theIsVariadic );
+  for (size_t i = 0; i < s.theTypes.size(); ++i)
   {
     if (!TypeOps::is_equal(tm, *theTypes[i].getp(), *s.theTypes[i].getp()))
     {

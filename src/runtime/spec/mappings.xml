@@ -33,23 +33,48 @@
                      prefix="fn-zorba-schema"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static-collections/initialization"
-      define="ZORBA_STORE_STATIC_COLLECTIONS_INIT"
-      prefix="zorba-store-collections-static-init"/>
+      uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl"
+      define="ZORBA_STORE_STATIC_COLLECTIONS_DML"
+      prefix="zorba-store-collections-static-ddl"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static-collections/manipulation"
-      define="ZORBA_STORE_STATIC_COLLECTIONS_MANIP"
-      prefix="zorba-store-collections-static-manip"/>
+      uri="http://www.zorba-xquery.com/modules/store/static/collections/dml"
+      define="ZORBA_STORE_STATIC_COLLECTIONS_DML"
+      prefix="zorba-store-collections-static-dml"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/collections"
-      define="ZORBA_STORE_COLLECTIONS"
-      prefix="zorba-store-collections"/>
+      uri="http://www.zorba-xquery.com/modules/store/static/indexes/ddl"
+      define="ZORBA_STORE_STATIC_INDEXES_DML"
+      prefix="zorba-store-indexes-static-ddl"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/indexes/dml"
+      define="ZORBA_STORE_STATIC_INDEXES_DML"
+      prefix="zorba-store-indexes-static-dml"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl"
+      define="ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML"
+      prefix="zorba-store-integrity_constraints-static-ddl"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml"
+      define="ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML"
+      prefix="zorba-store-integrity_constraints-static-dml"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl"
+      define="ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL"
+      prefix="zorba-store-dynamic-collections-ddl"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
+      define="ZORBA_STORE_DYNAMIC_COLLECTIONS_DML"
+      prefix="zorba-store-dynamic-collections-dml"/>
     
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/documents"
-      define="ZORBA_STORE_DOCUMENTS"
+      uri="http://www.zorba-xquery.com/modules/store/dynamic/documents"
+      define="ZORBA_STORE_DYNAMIC_DOCUMENTS"
       prefix="zorba-store-documents"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/csv2xml"

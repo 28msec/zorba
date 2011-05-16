@@ -1,6 +1,6 @@
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
 declare variable $input-context1 external;
 
-init:create-collection(xs:QName('ns:collection_1'), fn:doc($input-context1)//*)
+ddl:create-collection(xs:QName('ns:collection_1'), fn:doc($input-context1)//*)

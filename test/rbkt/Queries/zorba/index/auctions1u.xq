@@ -1,5 +1,7 @@
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                        "auctions_module1.xqlib";
@@ -18,9 +20,9 @@ declare variable $emp-city := $auctions:PersonCity;
   insert node
     <person id="person50"><name>Some Name</name><city>Amsterdam</city></person>
   as first into
-    manip:collection($auctions:auctions)/site/people
+    dml:collection($auctions:auctions)/site/people
   ;
-  manip:refresh-index($emp-id)
+  index_dml:refresh-index($emp-id)
   (: don't refresh the emp-city index manually because it's done automatically :)
 }
 ,
@@ -39,7 +41,7 @@ for $x in auctions:probe-point-city($emp-city, "Amsterdam")
 return <person id = "{$x/@id}">{$x/name}</person>
 ,
 {
-  manip:insert-nodes($auctions:auctions, doc("auctions2.xml"));
+  dml:insert-nodes($auctions:auctions, doc("auctions2.xml"));
 }
 ,
 "

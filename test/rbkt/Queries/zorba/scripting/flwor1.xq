@@ -1,19 +1,19 @@
-
-import module namespace dyn = "http://www.zorba-xquery.com/modules/store/collections";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare variable $col := xs:QName("myCollection");
 
 declare %sequential function local:test3()
 {
-  dyn:create-collection($col, (<a></a>,<b></b>));
+  ddl:create-collection($col, (<a></a>,<b></b>));
 
-  for $x in dyn:collection($col)
+  for $x in dml:collection($col)
   return
     {
-      dyn:insert-nodes-last($col, <c></c>);
+      dml:insert-nodes-last($col, <c></c>);
     }
 
-  dyn:collection($col)
+  dml:collection($col)
 };
 
 local:test3()

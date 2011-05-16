@@ -1,31 +1,32 @@
 import module namespace m = 'xqueryzorba.org/test/xqddf/ic' at 'ic.xqlib';
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
 
 
-init:create-collection($m:empc);  
-init:create-collection($m:trnc);  
+ddl:create-collection($m:empc);  
+ddl:create-collection($m:trnc);  
 
-init:activate-integrity-constraint(xs:QName("m:ic_foreignKey"));
+ic_ddl:activate-integrity-constraint(xs:QName("m:ic_foreignKey"));
 
 
 (: employees :)
-manip:insert-nodes($m:empc, 
+dml:insert-nodes($m:empc, 
    <emp>
      <id>1</id>
      <salary>300</salary>
    </emp>
   )
 ;
-manip:insert-nodes($m:empc, 
+dml:insert-nodes($m:empc, 
    <emp>
      <id>2</id>
      <salary>400</salary>
    </emp>
   )
 ;
-manip:insert-nodes($m:empc, 
+dml:insert-nodes($m:empc, 
    <emp>
      <id>3</id>
      <salary>600</salary>
@@ -34,31 +35,31 @@ manip:insert-nodes($m:empc,
 
 (: transactions :)
 (: all empids have corespondent in employees/id - m:ic_foreignKey holds :)
-manip:insert-nodes($m:trnc, 
+dml:insert-nodes($m:trnc, 
    <sale>
      <empid>1</empid>
    </sale>
   );
 
-manip:insert-nodes($m:trnc, 
+dml:insert-nodes($m:trnc, 
    <sale>
      <empid>2</empid>
    </sale>
   );
 
-manip:insert-nodes($m:trnc, 
+dml:insert-nodes($m:trnc, 
    <sale>
      <empid>1</empid>
    </sale>
   );
 
 
-<emps>{ fn:data(manip:collection($m:empc)/id ) }</emps>
+<emps>{ fn:data(dml:collection($m:empc)/id ) }</emps>
 ,
-<sales>{ fn:data(manip:collection($m:trnc)/empid ) }</sales>
+<sales>{ fn:data(dml:collection($m:trnc)/empid ) }</sales>
 ,
-every $x in manip:collection($m:trnc) 
+every $x in dml:collection($m:trnc) 
        satisfies
-         some $y in manip:collection($m:empc)
+         some $y in dml:collection($m:empc)
          satisfies $y/id eq $x/empid
 

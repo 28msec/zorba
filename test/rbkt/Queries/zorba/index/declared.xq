@@ -1,11 +1,11 @@
 import module namespace decl = "http://www.test.com/" at "declared.xqlib";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
 (
-  init:is-declared-index(xs:QName("decl:abcd")),
-  init:is-declared-index(xs:QName("decl:coll1_index")),
-  for $x in init:declared-indexes()
+  index_ddl:is-declared-index(xs:QName("decl:abcd")),
+  index_ddl:is-declared-index(xs:QName("decl:coll1_index")),
+  for $x in index_ddl:declared-indexes()
   order by xs:string($x)
   return $x
 )

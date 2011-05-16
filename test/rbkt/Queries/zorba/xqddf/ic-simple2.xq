@@ -1,35 +1,36 @@
 import module namespace m = 'xqueryzorba.org/test/xqddf/ic' at 'ic.xqlib';
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
 
 
-init:create-collection($m:empc);  
+ddl:create-collection($m:empc);  
 
-init:activate-integrity-constraint(xs:QName("m:ic_simple"));
+ic_ddl:activate-integrity-constraint(xs:QName("m:ic_simple"));
 
 {
 (: employees - even if element salary is missing in one collection item 
    m:ic_simple holds 
 :)
-manip:insert-nodes($m:empc, 
+dml:insert-nodes($m:empc, 
    <emp>
      <!-- no salary element -->
    </emp>
   ),
 
-manip:insert-nodes($m:empc, 
+dml:insert-nodes($m:empc, 
    <emp>
      <salary>600</salary>
    </emp>
   ),
 
-manip:insert-nodes($m:empc, 
+dml:insert-nodes($m:empc, 
    <emp>
      <salary>700</salary>
    </emp>
   )
 };
 
-sum( manip:collection($m:empc)/salary ),
-sum( manip:collection($m:empc)/salary ) gt 1000
+sum( dml:collection($m:empc)/salary ),
+sum( dml:collection($m:empc)/salary ) gt 1000

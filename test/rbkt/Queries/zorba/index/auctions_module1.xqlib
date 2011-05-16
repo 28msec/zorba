@@ -1,8 +1,10 @@
 
 module namespace auctions = "http://www.w3.org/TestModules/auctions";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 declare variable $auctions:auctions := xs:QName("auctions:auctions");
 declare variable $auctions:PersonId := xs:QName("auctions:PersonId");
@@ -20,7 +22,7 @@ declare collection auctions:auctions as node()*;
 :)
 
 declare unique value range manually maintained index auctions:PersonId
-on nodes manip:collection(xs:QName("auctions:auctions"))/site/people/person
+on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by xs:string(fn:data(./@id)) as xs:string;
 
 
@@ -30,7 +32,7 @@ by xs:string(fn:data(./@id)) as xs:string;
 :)
 
 declare value range automatically maintained index auctions:PersonCity
-on nodes manip:collection(xs:QName("auctions:auctions"))/site/people/person
+on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by xs:string(.//city) as xs:string;
 
 
@@ -39,7 +41,7 @@ by xs:string(.//city) as xs:string;
 :)
 
 declare general equality manually maintained index auctions:PersonWatches
-on nodes manip:collection(xs:QName("auctions:auctions"))/site/people/person
+on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by (for $x in ./watches/watch/@open_auction return xs:string($x)) as xs:string*;
 
 
@@ -48,7 +50,7 @@ by (for $x in ./watches/watch/@open_auction return xs:string($x)) as xs:string*;
 :)
 
 declare general equality manually maintained index auctions:PersonWatches2
-on nodes manip:collection(xs:QName("auctions:auctions"))/site/people/person
+on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by (for $x in ./watches/watch/@open_auction return $x);
 
 
@@ -58,7 +60,7 @@ by (for $x in ./watches/watch/@open_auction return $x);
 :)
 
 declare general range manually maintained index auctions:AuctionDates
-on nodes manip:collection(xs:QName("auctions:auctions"))//open_auction
+on nodes dml:collection(xs:QName("auctions:auctions"))//open_auction
 by (for $x in ./bidder/date return xs:date($x)) as xs:date*;
 
 
@@ -68,7 +70,7 @@ by (for $x in ./bidder/date return xs:date($x)) as xs:date*;
 :)
 
 declare general range manually maintained index auctions:AuctionDates2
-on nodes manip:collection(xs:QName("auctions:auctions"))//open_auction
+on nodes dml:collection(xs:QName("auctions:auctions"))//open_auction
 by (for $x in ./bidder/date return $x);
 
 
@@ -78,27 +80,27 @@ by (for $x in ./bidder/date return $x);
 
 declare %sequential function auctions:create-db()
 {
-  init:create-collection($auctions:auctions);
+  ddl:create-collection($auctions:auctions);
 
-  manip:insert-nodes($auctions:auctions, doc("auctions1.xml"));
+  dml:insert-nodes($auctions:auctions, doc("auctions1.xml"));
 
-  init:create-index($auctions:PersonId);
+  index_ddl:create-index($auctions:PersonId);
 
-  init:create-index($auctions:PersonCity);
+  index_ddl:create-index($auctions:PersonCity);
 
-  init:create-index($auctions:PersonWatches);
+  index_ddl:create-index($auctions:PersonWatches);
 
-  init:create-index($auctions:PersonWatches2);
+  index_ddl:create-index($auctions:PersonWatches2);
 
-  init:create-index($auctions:AuctionDates);
+  index_ddl:create-index($auctions:AuctionDates);
 
-  init:create-index($auctions:AuctionDates2);
+  index_ddl:create-index($auctions:AuctionDates2);
 };
 
 
 declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:string)
 {
-  manip:probe-index-point-value($indexName, $id)
+  index_dml:probe-index-point-value($indexName, $id)
 };
 
 
@@ -108,7 +110,7 @@ declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:strin
 
 declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:string)
 {
-  manip:probe-index-range-value($indexName,
+  index_dml:probe-index-range-value($indexName,
                                 $id,
                                 "",
                                 xs:boolean("true"), 
@@ -120,7 +122,7 @@ declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:strin
 
 declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:string?)
 {
-  manip:probe-index-point-value($indexName, $city)
+  index_dml:probe-index-point-value($indexName, $city)
 };
 
 
@@ -130,7 +132,7 @@ declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:s
 
 declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:string)
 {
-  manip:probe-index-range-value($indexName,
+  index_dml:probe-index-range-value($indexName,
                                 $city,
                                 "",
                                 xs:boolean("true"),
@@ -149,6 +151,6 @@ declare function auctions:probe-point-watch(
     $indexName as xs:QName,
     $auctions as xs:string*)
 {
-  manip:probe-index-point-general($indexName, $auctions)
+  index_dml:probe-index-point-general($indexName, $auctions)
 };
 

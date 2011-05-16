@@ -23,6 +23,15 @@ declare variable $z:categories :=
         <category name="image" uri="http://www.zorba-xquery.com/modules/image" color="moccasin" ui="7"/>
         <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" color="tan" ui="8"/>
         <category name="security" uri="http://www.zorba-xquery.com/modules/security" color="RosyBrown" ui="9"/>
+        <category name="store" uri="http://www.zorba-xquery.com/modules/store" color="tan" ui="17">
+          <category name="dynamic" uri="http://www.zorba-xquery.com/modules/store/dynamic" color="tan" ui="18">
+            <category name="documents" uri="http://www.zorba-xquery.com/modules/store/dynamic/documents" color="tan" ui="19"/>
+            <category name="collections" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections" color="tan" ui="20">
+              <category name="ddl" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl" color="tan" ui="21"/>
+              <category name="dml" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml" color="tan" ui="22"/>
+            </category>
+          </category>
+        </category>
         <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" color="wheat" ui="10"/>
         <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" color="LightGreen" ui="11">
           <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" color="forestgreen" ui="12"/>

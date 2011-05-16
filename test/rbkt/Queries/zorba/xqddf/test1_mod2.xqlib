@@ -1,7 +1,7 @@
 module namespace module2 = "http://www.zorba-xquery.com/module2";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 import module namespace module1 = "http://www.zorba-xquery.com/module1" at "test1_mod1.xqlib";
 
@@ -12,13 +12,13 @@ declare variable $module2:coll as xs:QName := xs:QName("module2:coll");
 
 declare %sequential function module2:init()
 {
-  init:create-collection(xs:QName("module2:coll"), (<a><test/></a>, <b><test/></b>));
+  ddl:create-collection(xs:QName("module2:coll"), (<a><test/></a>, <b><test/></b>));
 };
 
 
 declare %sequential function module2:do()
 {
-  let $a := manip:collection($module2:coll)[1]
+  let $a := dml:collection($module2:coll)[1]
   return module1:update($a, <b/>);
-  manip:collection($module2:coll);
+  dml:collection($module2:coll);
 };

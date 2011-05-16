@@ -5,12 +5,12 @@
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
 
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 
 declare collection idx:auctions as node()*;
 
 
 declare value range manually maintained index idx:foo 
-on nodes (manip:collection(xs:QName("idx:auctions"))/site/people/person, "1")
+on nodes (dml:collection(xs:QName("idx:auctions"))/site/people/person, "1")
 by fn:data(./@id) as xs:string;

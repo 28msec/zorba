@@ -2,8 +2,10 @@
 import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                    "auctions_module1.xqlib";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 auctions:create-db();
 
@@ -45,7 +47,7 @@ return <person id = "{$x/@id}">{$x//watches}</person>,
 
 ",
 
-for $x in manip:probe-index-point-general($auctions:PersonWatches2, 
+for $x in index_dml:probe-index-point-general($auctions:PersonWatches2, 
                                           ("open_auction6", "open_auction2"))
 return <person id = "{$x/@id}">{$x//watches}</person>,
 
@@ -55,7 +57,7 @@ return <person id = "{$x/@id}">{$x//watches}</person>,
 
 try
 {
-   manip:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
+   index_dml:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
 }
 catch * ($code, $desc)
 {
@@ -72,7 +74,7 @@ Probing the typed AuctionDates sorted general index
 
 try
 { 
-  manip:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))
+  index_dml:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))
 }
 catch * ($code, $desc)
 {
@@ -85,7 +87,7 @@ catch * ($code, $desc)
 
 try
 {
-  manip:probe-index-point-value($auctions:AuctionDates, 10)
+  index_dml:probe-index-point-value($auctions:AuctionDates, 10)
 }
 catch * ($code, $desc)
 {
@@ -96,7 +98,7 @@ catch * ($code, $desc)
 
 ",
 
-for $id in manip:probe-index-point-general($auctions:AuctionDates, 
+for $id in index_dml:probe-index-point-general($auctions:AuctionDates, 
                                            (xs:date("2000-12-04"),
                                             xs:date("2000-01-03"),
                                             xs:date("1998-08-18")))/@id
@@ -108,7 +110,7 @@ return <open_auction>{$id}</open_auction>,
 
 try
 {
-  manip:probe-index-point-general($auctions:AuctionDates, 
+  index_dml:probe-index-point-general($auctions:AuctionDates, 
                                   (xs:date("2000-12-04"), "2000-12-04"))
 }
 catch * ($code, $desc)
@@ -126,7 +128,7 @@ Probing the untyped AuctionDates2 sorted general index
 
 try
 {
-  manip:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))
+  index_dml:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))
 }
 catch * ($code, $desc)
 {
@@ -139,7 +141,7 @@ catch * ($code, $desc)
 
 try
 {
-  manip:probe-index-point-value($auctions:AuctionDates2, 10)
+  index_dml:probe-index-point-value($auctions:AuctionDates2, 10)
 }
 catch * ($code, $desc)
 {
@@ -152,7 +154,7 @@ catch * ($code, $desc)
 
 
 
-for $id in manip:probe-index-point-general($auctions:AuctionDates2, 
+for $id in index_dml:probe-index-point-general($auctions:AuctionDates2, 
                                            (xs:date("2000-12-04"),
                                             xs:date("2000-01-03"),
                                             xs:date("1998-08-18")))/@id
@@ -162,7 +164,7 @@ return <open_auction>{$id}</open_auction>,
 
 ",
 
-for $id in manip:probe-index-point-general($auctions:AuctionDates2, 
+for $id in index_dml:probe-index-point-general($auctions:AuctionDates2, 
                                            ("2000-12-04",
                                             "2000-01-03",
                                             10.23,

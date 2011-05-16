@@ -1,8 +1,10 @@
 import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-init:create-collection($xqddf-test:white-collection);
+ddl:create-collection($xqddf-test:white-collection);
 
 {
 <newline>
@@ -12,21 +14,21 @@ init:create-collection($xqddf-test:white-collection);
 
 for $i in fn:doc("auction.xml")//item
 return 
-    manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
+    dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
 
-init:create-index($xqddf-test:index1)
+index_ddl:create-index($xqddf-test:index1)
 },
 {
-manip:insert-nodes($xqddf-test:white-collection, <item><location>Earth3</location></item>);
+dml:insert-nodes($xqddf-test:white-collection, <item><location>Earth3</location></item>);
 },
 {
-manip:probe-index-point-value($xqddf-test:index1, "Earth3")[1]
+index_dml:probe-index-point-value($xqddf-test:index1, "Earth3")[1]
 },
 {
 try{
   {
-    manip:insert-nodes($xqddf-test:white-collection, <item><location>Earth</location></item>);
-    manip:insert-nodes($xqddf-test:white-collection, "")
+    dml:insert-nodes($xqddf-test:white-collection, <item><location>Earth</location></item>);
+    dml:insert-nodes($xqddf-test:white-collection, "")
   }
 }
 catch * { "
@@ -37,5 +39,5 @@ cannot insert empty item in white collection"}
 </newline>
 },
 {
-manip:probe-index-point-value($xqddf-test:index1, "Earth")[1];
+index_dml:probe-index-point-value($xqddf-test:index1, "Earth")[1]; 
 }

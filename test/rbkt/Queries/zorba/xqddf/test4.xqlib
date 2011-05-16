@@ -1,21 +1,22 @@
 module namespace n = "http://www.28msec.com/test";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
 declare namespace d = "http://www.28msec.com/d/";
 
 declare collection n:foo as node();
 
 declare automatically maintained non unique value equality index n:index
-  on nodes manip:collection(xs:QName("n:foo"))
+  on nodes dml:collection(xs:QName("n:foo"))
   by (if (fn:data(d:userrecord/d:company)) then d:userrecord/d:company else "none") as xs:string;
 
 declare %sequential function n:foo()
 {
-  init:create-collection(xs:QName("n:foo"));
-  init:create-index(xs:QName("n:index"));
+  ddl:create-collection(xs:QName("n:foo"));
+  index_ddl:create-index(xs:QName("n:index"));
 
-  manip:insert-nodes(xs:QName("n:foo"), <a/>);
+  dml:insert-nodes(xs:QName("n:foo"), <a/>);
   1
 };

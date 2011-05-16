@@ -1,23 +1,24 @@
-import module namespace coll = "http://www.zorba-xquery.com/modules/store/collections";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare variable $col := xs:QName("myCollection");
 
 declare %sequential function local:test()
 {
-  coll:create-collection($col, (<a><c>1</c></a>,<b>2</b>));
+  ddl:create-collection($col, (<a><c>1</c></a>,<b>2</b>));
 
   for $i in (1 to 3)
   where $i > 1
   for $j in (1 to 2)
-  let $c := count(coll:collection($col)) + $j
+  let $c := count(dml:collection($col)) + $j
   return
     {
-      coll:delete-nodes(coll:collection($col)[$i]);
-      coll:insert-nodes-first($col, <x i="{$i}">{$c}</x>);
-      coll:insert-nodes-last($col, <x i="{$i}">{$c}</x>);
+      dml:delete-nodes(dml:collection($col)[$i]);
+      dml:insert-nodes-first($col, <x i="{$i}">{$c}</x>);
+      dml:insert-nodes-last($col, <x i="{$i}">{$c}</x>);
     }
 
-  coll:collection($col)
+  dml:collection($col)
 };
 
 local:test()

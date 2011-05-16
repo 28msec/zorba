@@ -1,7 +1,7 @@
 module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 declare collection xqddf-test:white-collection as node()*;
 
@@ -14,11 +14,11 @@ declare variable $xqddf-test:blue-collection := xs:QName("xqddf-test:blue-collec
 declare variable $xqddf-test:ordered-collection := xs:QName("xqddf-test:ordered-collection");
 
 declare automatically maintained value equality index xqddf-test:index1
-on nodes manip:collection(xs:QName("xqddf-test:white-collection"))
+on nodes dml:collection(xs:QName("xqddf-test:white-collection"))
 by fn:string(./location) as xs:string;
 
 declare manually maintained value range index xqddf-test:index2
-on nodes manip:collection(xs:QName("xqddf-test:white-collection"))
+on nodes dml:collection(xs:QName("xqddf-test:white-collection"))
 by fn:count(.//incategory) as xs:integer;
 
 declare variable $xqddf-test:index1 := xs:QName("xqddf-test:index1");

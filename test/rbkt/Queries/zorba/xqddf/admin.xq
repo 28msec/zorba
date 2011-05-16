@@ -1,5 +1,8 @@
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
 import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd";
 
@@ -8,25 +11,25 @@ import module namespace news-data = "http://www.news.org/data" at "news-data.xql
 
 declare sequential function local:init() 
 {
-  init:create-collection($news-data:employees);
+  ddl:create-collection($news-data:employees);
   
-  init:create-collection($news-data:articles);
+  ddl:create-collection($news-data:articles);
   
-  init:create-collection($news-data:months, (
+  ddl:create-collection($news-data:months, (
     validate {<news:month name="Jan"></news:month>}, 
     validate {<news:month name="Dec"></news:month>}) );
 
-  init:create-index($news-data:CityEmp);
+  index_ddl:create-index($news-data:CityEmp);
 
-  init:create-index($news-data:ArtCountEmp);
+  index_ddl:create-index($news-data:ArtCountEmp);
 
-  init:activate-integrity-constraint($news-data:UniqueId);
+  ic_ddl:activate-integrity-constraint($news-data:UniqueId);
 
-  init:activate-integrity-constraint($news-data:AuthorName);
+  ic_ddl:activate-integrity-constraint($news-data:AuthorName);
 
-  init:activate-integrity-constraint($news-data:ArticleEmployees);
+  ic_ddl:activate-integrity-constraint($news-data:ArticleEmployees);
 
-  manip:insert-nodes($news-data:employees, 
+  dml:insert-nodes($news-data:employees, 
     (
     validate {
     <news:employee id="100">
@@ -42,7 +45,7 @@ declare sequential function local:init()
     )
   );
 
-  manip:insert-nodes($news-data:articles, 
+  dml:insert-nodes($news-data:articles, 
     (
     <articles>
       <empid>100</empid>
@@ -52,7 +55,7 @@ declare sequential function local:init()
     )
   );
 
-  manip:refresh-index($news-data:ArtCountEmp);
+  index_dml:refresh-index($news-data:ArtCountEmp);
 };
 
 
@@ -60,19 +63,19 @@ declare sequential function local:do()
 {
   block 
   {
-    for $emp in manip:collection($news-data:employees)[.//news:position/@kind eq "journalist"]
-    let $articles := for $art in manip:collection($news-data:articles)[.//author//name eq $emp/news:name]
+    for $emp in dml:collection($news-data:employees)[.//news:position/@kind eq "journalist"]
+    let $articles := for $art in dml:collection($news-data:articles)[.//author//name eq $emp/news:name]
                      order by $art//date
                      return $art
     return <result>{$emp}<articles>{$articles//title}</articles></result>
   },
   block 
   {
-    manip:probe-index-point-value($news-data:CityEmp, "Paris")
+    index_dml:probe-index-point-value($news-data:CityEmp, "Paris")
   },
   block 
   {
-    manip:probe-index-range-value($news-data:ArtCountEmp,
+    index_dml:probe-index-range-value($news-data:ArtCountEmp,
                                   100, (), true(), false(), true(), false())
   }
 };
@@ -82,8 +85,8 @@ declare sequential function local:done()
 {
   block 
   {
-    manip:delete-nodes($news-data:articles, 
-      manip:collection($news-data:articles)[.//date lt "01/01/2000"]
+    dml:delete-nodes($news-data:articles, 
+      dml:collection($news-data:articles)[.//date lt "01/01/2000"]
     );
   }
 };

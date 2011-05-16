@@ -21,10 +21,13 @@
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :)
-module namespace doc = "http://www.zorba-xquery.com/modules/store/documents";
+module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
 (:~
- : Adds a binding uri-document to the store. 
+ : Adds a document to the store. The document is bound to the URI
+ : given as first parameter. This URI is the name of the document and
+ : can be used by the doc:document() function to retrieve
+ : the document from the store.
  :
  : @param $uri The URI of the document. If a relative URI is given, the URI
  :        is made absolute using the static base URI of the module.
@@ -41,10 +44,11 @@ declare updating function doc:add(
   $doc as document-node()) external;
 
 (:~
- : Removes the document with the given URI from the store. If a relative URI is given,
- : the URI is made absolute using the static base URI of the module.
+ : Removes the document with the given URI from the store.
  :
- : @param $uri The URI of the document to remove.
+ : @param $uri The URI of the document to remove. If a relative URI is given,
+ : the URI is made absolute using the static base URI of the module.
+
  : @return Returns an empty XDM instance and a pending update list which, when
  :         applied, removes the document bound to the given URI.
  :
@@ -54,12 +58,12 @@ declare updating function doc:add(
 declare updating function doc:remove($uri as xs:string) external;
 
 (:~
- : Returns the document with the given URI from the store. If a relative URI is given,
+ : Returns the document with the given URI from the store.
+ :
+ : @param $uri The URI of the document to retrieve. If a relative URI is given,
  : the URI is made absolute using the static base URI of the module.
  :
- : @param $uri The URI of the document to retrieve.
  : @return Returns the document bound to the given URI.
- :         applied, removes the document bound to the given URI.
  :
  : @error XQD0001 if no document with the given URI exists in the store.
  : @error FODC0004 if the given URI is not valid or couldn't be absolutized.
@@ -75,10 +79,11 @@ declare function doc:document($uri as xs:string) as document-node() external;
 declare function doc:available-documents() as xs:string* external;
 
 (:~
- : Returns true if a document with the given URI exists in the store. If a relative URI is given,
+ : Returns true if a document with the given URI exists in the store.
+ :
+ : @param $uri The URI of the document to check for. If a relative URI is given,
  : the URI is made absolute using the static base URI of the module.
  :
- : @param $uri The URI of the document to check for.
  : @return Returns true if a document with the given URI exists in the store or false otherwise.
  :
  : @error FODC0004 if the given URI is not valid or couldn't be absolutized.

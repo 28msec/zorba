@@ -1,5 +1,5 @@
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 declare namespace ns = "http://example.org/datamodule/";
 
-manip:index-of(xs:QName('ns:collection_333'), <a/>)
+dml:index-of(xs:QName('ns:collection_333'), <a/>)

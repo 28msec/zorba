@@ -3,11 +3,10 @@
 :)
 
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
 import module namespace idx = "http://www.w3.org/TestModules/idx" at
                               "error_module2.xqlib";
 
-init:create-index(xs:QName("idx:foo"));
-init:drop-index(xs:QName("idx:foo"));
+index_ddl:create-index(xs:QName("idx:foo"));
+index_ddl:drop-index(xs:QName("idx:foo"));

@@ -301,7 +301,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     switch (funcKind) 
     {
-    case FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1:
+    case FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1:
     {
       const store::Item* qname = e->theArgs[0]->getQName(theSctx);
 

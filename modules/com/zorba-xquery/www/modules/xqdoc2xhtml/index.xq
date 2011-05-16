@@ -865,6 +865,20 @@ declare %sequential function xqdoc2html:configure-xhtml (
 };
 
 (:~
+ : Recursive helper
+ :)
+declare %private %sequential function xqdoc2html:create-module-table-rec(
+  $category as element(category)*,
+  $moduleUri,
+  $table) {
+  for $cat in $category
+  return {
+    xqdoc2html:create-module-helper($table, $cat, $moduleUri);
+    xqdoc2html:create-module-table-rec($cat/category, $moduleUri, $table/li[fn:last()]/ul)
+  };
+};
+
+(:~
  : This function creates the categories in the menu.
  :
  : @param $leftMenu the menu.
@@ -876,26 +890,7 @@ declare %private %sequential function xqdoc2html:create-module-table(
   $leftMenu as element(menu), 
   $root, 
   $moduleUri) { 
-  for $cat1 in $leftMenu/category
-  return {
-    xqdoc2html:create-module-helper($root, $cat1, $moduleUri);
-    for $cat2 in $cat1/category
-    let $table2 := $root/li[fn:last()]/ul
-    return {
-      xqdoc2html:create-module-helper($table2, $cat2, $moduleUri);
-      for $cat3 in $cat2/category
-      let $table3 := $root/li[fn:last()]/ul/li[fn:last()]/ul
-      return {
-        xqdoc2html:create-module-helper($table3, $cat3, $moduleUri);
-        for $cat4 in $cat3/category
-        let $table4 := $root/li[fn:last()]/ul/li[fn:last()]/ul/li[fn:last()]/ul
-        return {
-          xqdoc2html:create-module-helper($table4, $cat4, $moduleUri)
-        }
-      }
-    }
-  };
-  
+  xqdoc2html:create-module-table-rec($leftMenu/category, $moduleUri, $root);
   $root
 };
 
@@ -1069,7 +1064,27 @@ declare %sequential function xqdoc2html:main(
         <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
         <category name="security" uri="http://www.zorba-xquery.com/modules/security" />
         <category name="store" uri="http://www.zorba-xquery.com/modules/store">
-          <category name="static-collections" uri="http://www.zorba-xquery.com/modules/store/static-collections"/>
+          <category name="dynamic" uri="http://www.zorba-xquery.com/modules/store/dynamic">
+            <category name="documents" uri="http://www.zorba-xquery.com/modules/store/dynamic/documents"/>
+            <category name="collections" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections">
+              <category name="ddl" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl"/>
+              <category name="dml" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"/>
+            </category>
+          </category>
+          <category name="static" uri="http://www.zorba-xquery.com/modules/store/static">
+            <category name="collections" uri="http://www.zorba-xquery.com/modules/store/static/collections">
+              <category name="ddl" uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl"/>
+              <category name="dml" uri="http://www.zorba-xquery.com/modules/store/static/collections/dml"/>
+            </category>
+            <category name="indexes" uri="http://www.zorba-xquery.com/modules/store/static/indexes">
+              <category name="ddl" uri="http://www.zorba-xquery.com/modules/store/static/indexes/ddl"/>
+              <category name="dml" uri="http://www.zorba-xquery.com/modules/store/static/indexes/dml"/>
+            </category>
+            <category name="integrity constraints" uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints">
+              <category name="ddl" uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl"/>
+              <category name="dml" uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml"/>
+            </category>
+          </category>
         </category>
         <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
         <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" >

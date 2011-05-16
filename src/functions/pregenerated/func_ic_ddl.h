@@ -38,11 +38,11 @@ void populate_context_ic_ddl(static_context* sctx);
 
 
 
-//zorba-store-collections-static-init:activate-integrity-constraint
-class zorba_store_collections_static_init_activate_integrity_constraint : public function
+//zorba-store-integrity_constraints-static-ddl:activate-integrity-constraint
+class zorba_store_integrity_constraints_static_ddl_activate_integrity_constraint : public function
 {
 public:
-  zorba_store_collections_static_init_activate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_integrity_constraints_static_ddl_activate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -55,11 +55,11 @@ public:
 };
 
 
-//zorba-store-collections-static-init:deactivate-integrity-constraint
-class zorba_store_collections_static_init_deactivate_integrity_constraint : public function
+//zorba-store-integrity_constraints-static-ddl:deactivate-integrity-constraint
+class zorba_store_integrity_constraints_static_ddl_deactivate_integrity_constraint : public function
 {
 public:
-  zorba_store_collections_static_init_deactivate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_integrity_constraints_static_ddl_deactivate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -72,11 +72,11 @@ public:
 };
 
 
-//zorba-store-collections-static-manip:check-integrity-constraint
-class zorba_store_collections_static_manip_check_integrity_constraint : public function
+//zorba-store-integrity_constraints-static-dml:check-integrity-constraint
+class zorba_store_integrity_constraints_static_dml_check_integrity_constraint : public function
 {
 public:
-  zorba_store_collections_static_manip_check_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_integrity_constraints_static_dml_check_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

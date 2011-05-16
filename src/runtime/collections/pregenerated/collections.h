@@ -629,7 +629,7 @@ public:
 
 /**
  * 
- *      zorba:apply-insertnodes-before
+ *      zorba:apply-insert-nodes-before
  *    
  * Author: Zorba Team
  */

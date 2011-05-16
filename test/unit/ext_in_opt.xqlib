@@ -2,7 +2,7 @@ module namespace mod1 = "http://www.zorba-xquery.com/mod1";
 
 import module namespace mod2 = "http://www.zorba-xquery.com/mod2" at "file:///${CMAKE_CURRENT_BINARY_DIR}/ext_in_opt2.xqlib";
 
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 declare collection mod1:projects as node()*;
 declare collection mod1:modules as node()*;
@@ -11,7 +11,7 @@ declare collection mod1:modules as node()*;
 declare function mod1:retrieve()
 {
   let $user := mod2:bar("abc")
-  for $project in manip:collection(xs:QName('mod1:projects'))[xs:boolean(@visibility) = true() or @owner=$user]
+  for $project in dml:collection(xs:QName('mod1:projects'))[xs:boolean(@visibility) = true() or @owner=$user]
   return <element/>
 };
 
@@ -21,5 +21,5 @@ as element()
 {
   let $projects := mod1:retrieve()
   for $project in $projects
-  return manip:collection(xs:QName('mod1:modules'))
+  return dml:collection(xs:QName('mod1:modules'))
 };

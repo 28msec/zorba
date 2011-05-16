@@ -1,11 +1,11 @@
-
-import module namespace dyn = "http://www.zorba-xquery.com/modules/store/collections";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare variable $col := xs:QName("myCollection");
 
 declare %updating function local:test3()
 {
-  for $x in dyn:collection($col)
+  for $x in dml:collection($col)
   return
     (
       delete node $x,
@@ -14,7 +14,7 @@ declare %updating function local:test3()
 };
 
 
-dyn:create-collection($col, (<a></a>,<b></b>));
+ddl:create-collection($col, (<a></a>,<b></b>));
 
 (
 local:test3(),
@@ -22,6 +22,6 @@ local:test3(),
 "
 ",
 
-dyn:collection($col)
+dml:collection($col)
 )
 

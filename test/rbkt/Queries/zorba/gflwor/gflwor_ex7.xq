@@ -1,5 +1,5 @@
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
 
@@ -11,7 +11,7 @@ declare variable $local:error := xs:QName('data:error');
 
 declare function local:get($collection as xs:QName, $query as xs:string?) 
 {
-  let $expr   := concat('manip:collection($collection)',
+  let $expr   := concat('dml:collection($collection)',
                          if($query) then $query else "[position() lt 50]",
                          ""
                         )
@@ -21,7 +21,7 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
       util:eval-simple 
       (
         concat(
-          'import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";',
+          'import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";',
           $expr
         )
       )
@@ -33,6 +33,6 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
 };
 
 
-init:create-collection($data:users);
+ddl:create-collection($data:users);
 local:get($data:users, ", 1+1")
 

@@ -15,45 +15,27 @@
 :)
 
 (:~
- : This modules defines a set of functions for managing persistent, ordered, and
- : updatable collections.
- :
+ : This modules defines a set of functions to modify a collection or retrieve the nodes
+ : contained in a particular collection.
  : Such collections are identified by QNames and come into existence (i.e. be available)
- : by calling one of the two create-collection functions and be destroyed by
- : the delete-collection function.
+ : by calling one of the two create-collection functions of the 
+ : <tt>http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</tt>
+ : module.
  :
  : The variable $content passed to any of the insert functions is evaluated
  : as though it were an enclosed expression in an element constructor.
  : The result of this step is a sequence of nodes to be inserted into the collection.
  :
  : In contrast to the functions in the module 
- : <tt>http://www.zorba-xquery.com/modules/store/static-collections/initialization</tt>
+ : <tt>http://www.zorba-xquery.com/modules/store/static/collections/dml</tt>
  : the function in this module operate on collections which do not have to
  : be statically declared in the prolog.
  :
+ : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
  :)
-module namespace dyn = "http://www.zorba-xquery.com/modules/store/collections";
-
-(:~
- : The function returns true if a collection with the given QName is available,
- : i.e. has been created using any of the two create-collection functions of
- : this module.
- :
- : @param $name The QName of the collection that is being checked.
- : @return true if the collection is available and false otherwise.
- :)
-declare function dyn:is-available-collection($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames representing the collections that are
- : available.
- :
- : @return A sequence of QNames, one for each available collection. Any empty
- :         sequence is returned if no collections are available.
- :)
-declare function dyn:available-collections() as xs:QName* external;
+module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 (:~
  : The insert-nodes-first function is an updating function. It returns a pending
@@ -67,7 +49,7 @@ declare function dyn:available-collections() as xs:QName* external;
  :
  : @error XDDY0003 if the collection identified by $name is not available.
  :)
-declare updating function dyn:insert-nodes-first(
+declare updating function dml:insert-nodes-first(
   $name as xs:QName,
   $content as node()*) external;
 
@@ -84,7 +66,7 @@ declare updating function dyn:insert-nodes-first(
  : @error XDDY0003 if the collection identified by $name is not available.
  :
  :)
-declare updating function dyn:insert-nodes-last(
+declare updating function dml:insert-nodes-last(
   $name as xs:QName,
   $content as node()*) external;
 
@@ -104,7 +86,7 @@ declare updating function dyn:insert-nodes-last(
  : @error XDDY0003 if the collection identified by $name is not available.
  : @error XDDY0011 if the target node is not contained in the collection.
  :)
-declare updating function dyn:insert-nodes-before($name as xs:QName,
+declare updating function dml:insert-nodes-before($name as xs:QName,
                                                     $target as node(),
                                                     $content as node()*) external;
 
@@ -113,12 +95,12 @@ declare updating function dyn:insert-nodes-before($name as xs:QName,
  : update list which, when applied, inserts copies of the given node as following siblings
  : of $target into the collection identified by the name parameter.
  :
- : @param $name The name of the collection to which the nodes should :        be added.
+ : @param $name The name of the collection to which the nodes should
+ :        be added.
  : @param $target The node in the collection after which the $content
  :        sequence should be inserted.
  : @param $content The sequences of nodes whose copies that should be added to the new
  :        collection.
- :        contained in the collection $name.
  :
  : @return The result of the function is an empty XDM instance and a pending update list
  :         that contains an upd:insertNodesAfter($name, $target, $list) update primitive.
@@ -126,7 +108,7 @@ declare updating function dyn:insert-nodes-before($name as xs:QName,
  : @error XDDY0003 if the collection identified by $name is not available.
  : @error XDDY0011 if the target node is not contained in the collection.
  :)
-declare updating function dyn:insert-nodes-after($name as xs:QName,
+declare updating function dml:insert-nodes-after($name as xs:QName,
                                                   $pos as node(),
                                                   $content as node()*) external;
 
@@ -143,9 +125,9 @@ declare updating function dyn:insert-nodes-after($name as xs:QName,
  :         inserted at the beginning of the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
- : @see dyn:insert-nodes-first
+ : @see dml:insert-nodes-first
  :)
-declare %sequential function dyn:apply-insert-nodes-first(
+declare %sequential function dml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()* external;
 
@@ -161,9 +143,9 @@ declare %sequential function dyn:apply-insert-nodes-first(
  :         inserted at the end of the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
- : @see dyn:insert-nodes-last
+ : @see dml:insert-nodes-last
  :)
-declare %sequential function dyn:apply-insert-nodes-last(
+declare %sequential function dml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()* external;
 
@@ -181,9 +163,9 @@ declare %sequential function dyn:apply-insert-nodes-last(
  :         inserted into the collection preceding the target node.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
- : @see dyn:insert-nodes-before
+ : @see dml:insert-nodes-before
  :)
-declare %sequential function dyn:apply-insert-nodes-before(
+declare %sequential function dml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()* external;
@@ -202,9 +184,9 @@ declare %sequential function dyn:apply-insert-nodes-before(
  :         inserted into the collection following the target node.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
- : @see dyn:insert-nodes-after
+ : @see dml:insert-nodes-after
  :)
-declare %sequential function dyn:apply-insert-nodes-after(
+declare %sequential function dml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()* external;
@@ -221,7 +203,7 @@ declare %sequential function dyn:apply-insert-nodes-after(
  :        or not all nodes of the $target sequence belong to the same collection.
  :        the collection identified by the $name parameter.
  :)
-declare updating function dyn:delete-nodes($target as node()*) external;
+declare updating function dml:delete-nodes($target as node()*) external;
 
 (:~
  : The delete-node-first function is an updating function that deletes the
@@ -234,7 +216,7 @@ declare updating function dyn:delete-nodes($target as node()*) external;
  :
  : @error XDDY0011 if the collection doesn't contain any node.
  :)
-declare updating function dyn:delete-node-first($name as xs:QName) external;
+declare updating function dml:delete-node-first($name as xs:QName) external;
 
 (:~
  : The delete-nodes-first function is an updating function that deletes the
@@ -249,7 +231,7 @@ declare updating function dyn:delete-node-first($name as xs:QName) external;
  :
  : @error XDDY0011 if the collection doesn't contain the given number of nodes.
  :)
-declare updating function dyn:delete-nodes-first(
+declare updating function dml:delete-nodes-first(
   $name as xs:QName,
   $number as xs:unsignedLong) external;
 
@@ -266,7 +248,7 @@ declare updating function dyn:delete-nodes-first(
  :        for the expaned QName $name.
  : @error XDDY0011 if the collection doesn't contain any node.
  :)
-declare updating function dyn:delete-node-last($name as xs:QName) external;
+declare updating function dml:delete-node-last($name as xs:QName) external;
 
 
 (:~
@@ -284,7 +266,7 @@ declare updating function dyn:delete-node-last($name as xs:QName) external;
  :        for the expaned QName $name.
  : @error XDDY0011 if the collection doesn't contain the given number of nodes.
  :)
-declare updating function dyn:delete-nodes-last(
+declare updating function dml:delete-nodes-last(
   $name as xs:QName,
   $number as xs:unsignedLong) external;
 
@@ -301,7 +283,7 @@ declare updating function dyn:delete-nodes-last(
  :        for the expaned QName $name.
  : @error XDDY0011 if node is not contained in the collection.
  :)
-declare function dyn:index-of(
+declare function dml:index-of(
   $name as xs:QName,
   $node as node()) as xs:integer external;
 
@@ -316,7 +298,7 @@ declare function dyn:index-of(
  : @error XDDY0009 If available collections does not provide a mapping
  :        for the expaned QName $name.
  :)
-declare function dyn:collection($name as xs:QName) as node()* external;
+declare function dml:collection($name as xs:QName) as node()* external;
 
 (:~
  : This function returns the name of the collection the given node belongs
@@ -328,73 +310,4 @@ declare function dyn:collection($name as xs:QName) as node()* external;
  :
  : @error XDDY0011 if the given node does not belong to a collection.
  :)
-declare function dyn:collection-name($node as node()) as xs:QName external;
-
-(:~
- : The create-collection function is an updating function that adds
- : a mapping from the expanded QName $name to an empty sequence
- : to the map of available collections.
- :
- : Once the resulting pending update is applied, dyn:is-available-collection
- : will return true when invoked with $name as a parameter.
- :
- : @param $name The QName of the collection to add to the map of available
- :        collections.
- : @return The result of the function is an empty XDM instance and a 
- :         pending update list that contains the upd:createCollection($name)
- :         primitive.
- :
- : @error XDDY0002 if available collections already contains a collection with the
- :        given name.
- :)
-declare updating function dyn:create-collection($name as xs:QName) external;
-
-(:~
- : The create-collection function is an updating function that adds
- : a mapping from the expanded QName $name to an empty sequence
- : to the map of available collections.
- : 
- : Also, the functions adds copies of the nodes given by the sequence $arg to the
- : collection.
- : 
- : Once the resulting pending update is applied, dyn:is-available-collection
- : will return true when invoked with $name as a parameter.
- : Moreover, calling the function dyn:collection will return the nodes
- : that have been added to the collection
- :
- : @param $name The QName of the collection to add to the map of available
- :        collections.
- : @param $content The sequences of nodes whose copies should be added to the new collection.
- : @return The result of the function is an empty XDM instance and a 
- :         pending update list that contains an upd:createCollection($name)
- :         primitive and an upd:insertNodesFirst($name, $list) update primitive.
- :
- : @error XDDY0002 if available collections already contains a collection with the
- :        given name.
- :
- : @see dyn:create-collection
- : @see dyn:insert-nodes-last
- :)
-declare updating function dyn:create-collection(
-  $name as xs:QName,
-  $content as node()*) external;
-
-
-(:~
- : The delete-collection function is an updating function that removes
- : the collection with the given name.
- :
- : Once the resulting pending update is applied, dyn:is-available-collection
- : will return false when invoked with $name as a parameter.
- :
- : @param $name The QName of the collection to delete.
- : @return The result of the function is an empty XDM instance and a pending
- :         update list that contains the upd:deleteCollection($name)
- :         update primitive.
- :
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0015 when applied any node contained in the collection to be deleted
- :        is still referenced by any variable.
- :
- :)
-declare updating function dyn:delete-collection($name as xs:QName) external;
+declare function dml:collection-name($node as node()) as xs:QName external;

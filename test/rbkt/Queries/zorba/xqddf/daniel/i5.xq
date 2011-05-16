@@ -1,26 +1,28 @@
 import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 
-init:create-collection($xqddf-test:white-collection);
+ddl:create-collection($xqddf-test:white-collection);
 
-init:create-index($xqddf-test:index1);
-init:create-index($xqddf-test:index2);
+index_ddl:create-index($xqddf-test:index1);
+index_ddl:create-index($xqddf-test:index2);
 
 for $i in fn:doc("auction.xml")//item
 return 
-    manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
+    dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
 
 
-manip:refresh-index($xqddf-test:index2);
+index_dml:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
 {
-manip:probe-index-point-value($xqddf-test:index1, "United States")[1]
+index_dml:probe-index-point-value($xqddf-test:index1, "United States")[1]
 },
 
 {
-manip:probe-index-range-value($xqddf-test:index2,
+index_dml:probe-index-range-value($xqddf-test:index2,
                               1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]
 }

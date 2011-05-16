@@ -1,4 +1,4 @@
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
-manip:insert-nodes-first(xs:QName('ns:collection_333'), <a/>)
+dml:insert-nodes-first(xs:QName('ns:collection_333'), <a/>)

@@ -1,6 +1,6 @@
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 import module namespace ns = "http://www.example.com/example" at "../collection_001.xqdata";
 
-manip:delete-nodes-first(xs:QName("ns:collection"), xs:unsignedLong(1));
+dml:delete-nodes-first(xs:QName("ns:collection"), xs:unsignedLong(1));
 

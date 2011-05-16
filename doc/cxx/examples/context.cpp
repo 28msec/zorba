@@ -363,11 +363,11 @@ public:
       std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
       (*lQuery)
         << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
-        << "import module namespace manip = 'http://www.zorba-xquery.com/modules/store/static-collections/manipulation';" << std::endl
+        << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl
         << "declare variable $mymodule:var  := 'myvar';" << std::endl
         << "declare collection mymodule:collection;" << std::endl
         << "declare automatically maintained value equality index mymodule:index" << std::endl
-        << "  on nodes manip:collection(xs:QName('mymodule:collection'))" << std::endl
+        << "  on nodes dml:collection(xs:QName('mymodule:collection'))" << std::endl
         << "  by ./foo as xs:string;" << std::endl;
       return new StreamResource(std::auto_ptr<std::istream>(lQuery));
         // (std::auto_ptr<std::istream>(
@@ -401,10 +401,10 @@ context_example_11(Zorba* aZorba)
     Zorba_CompilerHints_t hints;
     std::stringstream lProlog;
     lProlog << "import module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
-            << "import module namespace init = 'http://www.zorba-xquery.com/modules/store/static-collections/initialization';"
+            << "import module namespace ddl = 'http://www.zorba-xquery.com/modules/store/static/collections/ddl';"
             << std::endl
             << "declare function local:collections() { " << std::endl
-            << "  init:declared-collections()" << std::endl
+            << "  ddl:declared-collections()" << std::endl
             << "};" << std::endl;
     lContext->loadProlog(lProlog.str(), hints);
 

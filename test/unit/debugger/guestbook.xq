@@ -1,12 +1,12 @@
 module namespace guestbook = "http://www.28msec.com/template/guestbook/guestbook";
 
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 declare ordered collection guestbook:entries as node()*;
 declare variable $guestbook:entries as xs:QName := xs:QName('guestbook:entries');
 
 declare %sequential function guestbook:add()
 {
-  manip:insert-nodes-last(
+  dml:insert-nodes-last(
       $guestbook:entries,
       <entry author='blub' date='{fn:current-date()}' time='{fn:current-time()}'>
        test
@@ -17,7 +17,7 @@ declare %sequential function guestbook:add()
 
 declare %sequential function guestbook:list() 
 {  
-  let $entries := manip:collection($guestbook:entries)
+  let $entries := dml:collection($guestbook:entries)
   let $num_entries := fn:count($entries)
   return 
     if($num_entries = 0)

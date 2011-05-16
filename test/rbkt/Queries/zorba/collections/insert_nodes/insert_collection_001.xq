@@ -1,6 +1,6 @@
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 import module namespace ns = "http://www.example.com/example" at "../collection_001.xqdata";
 
-manip:insert-nodes(xs:QName("ns:collection22"), <a/>);
+dml:insert-nodes(xs:QName("ns:collection22"), <a/>);
 

@@ -1,10 +1,10 @@
 module namespace test2="www.test2.com";
 
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 
 declare collection test2:foo as node()*;
 
 declare manually maintained value equality index test2:idx 
-on nodes manip:collection(xs:QName("test2:foo"))//node 
+on nodes dml:collection(xs:QName("test2:foo"))//node 
 by xs:decimal(./@val) as xs:decimal;

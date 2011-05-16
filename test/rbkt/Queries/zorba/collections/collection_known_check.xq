@@ -1,5 +1,5 @@
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 declare namespace ns = "http://www.unknown.com/";
 
@@ -8,7 +8,7 @@ declare variable $name as xs:QName := xs:QName("ns:name");
 declare %sequential function local:testa() {
   try {
     {
-      manip:is-available-collection($name)
+      ddl:is-available-collection($name)
     }
   } catch * ($error) {
     ("a",$error)
@@ -18,7 +18,7 @@ declare %sequential function local:testa() {
 declare %sequential function local:testb() {
   try {
     {
-      manip:collection($name)
+      dml:collection($name)
     }
   } catch * ($error) {
     ("b",$error)
@@ -28,7 +28,7 @@ declare %sequential function local:testb() {
 declare %sequential function local:testc() {
   try {
     {
-      manip:index-of($name, <a/>)
+      dml:index-of($name, <a/>)
     }
   } catch * ($error) {
     ("c",$error)
@@ -38,7 +38,7 @@ declare %sequential function local:testc() {
 declare %sequential function local:testd() {
   try {
     {
-      init:create-collection($name);
+      ddl:create-collection($name);
     }
   } catch * ($error) {
     exit returning ("d",$error);
@@ -48,7 +48,7 @@ declare %sequential function local:testd() {
 declare %sequential function local:teste() {
   try {
     {
-      init:delete-collection($name);
+      ddl:delete-collection($name);
     }
   } catch * ($error) {
     exit returning ("e",$error);
@@ -58,7 +58,7 @@ declare %sequential function local:teste() {
 declare %sequential function local:testf() {
   try {
     {
-      manip:insert-nodes-first($name, <a/>);
+      dml:insert-nodes-first($name, <a/>);
     }
   } catch * ($error) {
     exit returning ("f",$error);
@@ -68,7 +68,7 @@ declare %sequential function local:testf() {
 declare %sequential function local:testg() {
   try {
     {
-      manip:insert-nodes-last($name, <a/>);
+      dml:insert-nodes-last($name, <a/>);
     }
   } catch * ($error) {
     exit returning ("g",$error);
@@ -78,7 +78,7 @@ declare %sequential function local:testg() {
 declare %sequential function local:testh() {
   try {
     {
-      manip:insert-nodes-before($name, <a/>, <a/>);
+      dml:insert-nodes-before($name, <a/>, <a/>);
     }
   } catch * ($error) {
     exit returning ("h",$error);
@@ -88,7 +88,7 @@ declare %sequential function local:testh() {
 declare %sequential function local:testi() {
   try {
     {
-      manip:insert-nodes-after($name, <a/>, <a/>);
+      dml:insert-nodes-after($name, <a/>, <a/>);
     }
   } catch * ($error) {
     exit returning ("i",$error);
@@ -98,7 +98,7 @@ declare %sequential function local:testi() {
 declare %sequential function local:testk() {
   try {
     {
-      manip:delete-nodes(<a/>);
+      dml:delete-nodes(<a/>);
     }
   } catch * ($error) {
     exit returning ("k",$error);

@@ -69,12 +69,12 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="collection" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="collection" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="collection" prefix="zorba-store-collections">
+      <zorba:signature localname="collection" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
@@ -125,13 +125,13 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="index-of" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="index-of" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="index-of" prefix="zorba-store-collections">
+      <zorba:signature localname="index-of" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
@@ -174,23 +174,23 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-collections-static-init">
+      <zorba:signature localname="create-collection" prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-collections-static-init">
+      <zorba:signature localname="create-collection" prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-collections">
+      <zorba:signature localname="create-collection" prefix="zorba-store-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-collections">
+      <zorba:signature localname="create-collection" prefix="zorba-store-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -233,12 +233,12 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="delete-collection" prefix="zorba-store-collections-static-init">
+      <zorba:signature localname="delete-collection" prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-collection" prefix="zorba-store-collections">
+      <zorba:signature localname="delete-collection" prefix="zorba-store-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -282,7 +282,7 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="insert-nodes" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="insert-nodes" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -330,13 +330,13 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="insert-nodes-first" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="insert-nodes-first" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-first" prefix="zorba-store-collections">
+      <zorba:signature localname="insert-nodes-first" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -377,13 +377,13 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="insert-nodes-last" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="insert-nodes-last" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-last" prefix="zorba-store-collections">
+      <zorba:signature localname="insert-nodes-last" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -423,14 +423,14 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="insert-nodes-before" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="insert-nodes-before" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-before" prefix="zorba-store-collections">
+      <zorba:signature localname="insert-nodes-before" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
@@ -471,14 +471,14 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="insert-nodes-after" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="insert-nodes-after" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="insert-nodes-after" prefix="zorba-store-collections">
+      <zorba:signature localname="insert-nodes-after" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
@@ -522,7 +522,7 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="apply-insert-nodes" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
@@ -568,13 +568,13 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-first" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="apply-insert-nodes-first" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-first" prefix="zorba-store-collections">
+      <zorba:signature localname="apply-insert-nodes-first" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
@@ -613,13 +613,13 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-last" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="apply-insert-nodes-last" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-last" prefix="zorba-store-collections">
+      <zorba:signature localname="apply-insert-nodes-last" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
@@ -653,19 +653,19 @@
   base="ZorbaCollectionIteratorHelper&lt;ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>">
 
     <zorba:description author="Zorba Team">
-      zorba:apply-insertnodes-before
+      zorba:apply-insert-nodes-before
     </zorba:description>
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-before" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="apply-insert-nodes-before" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-before" prefix="zorba-store-collections">
+      <zorba:signature localname="apply-insert-nodes-before" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
@@ -704,14 +704,14 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="apply-insert-nodes-after" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="apply-insert-nodes-after" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="apply-insert-nodes-after" prefix="zorba-store-collections">
+      <zorba:signature localname="apply-insert-nodes-after" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
@@ -751,12 +751,12 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="delete-nodes" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="delete-nodes" prefix="zorba-store-collections-static-dml">
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes" prefix="zorba-store-collections">
+      <zorba:signature localname="delete-nodes" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -798,23 +798,23 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="delete-node-first" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="delete-node-first" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-first" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="delete-nodes-first" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-node-first" prefix="zorba-store-collections">
+      <zorba:signature localname="delete-node-first" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-first" prefix="zorba-store-collections">
+      <zorba:signature localname="delete-nodes-first" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -855,23 +855,23 @@
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="delete-node-last" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="delete-node-last" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-last" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="delete-nodes-last" prefix="zorba-store-collections-static-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-node-last" prefix="zorba-store-collections">
+      <zorba:signature localname="delete-node-last" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-last" prefix="zorba-store-collections">
+      <zorba:signature localname="delete-nodes-last" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -912,12 +912,12 @@
 
     <zorba:function>
 
-      <zorba:signature localname="collection-name" prefix="zorba-store-collections-static-manip">
+      <zorba:signature localname="collection-name" prefix="zorba-store-collections-static-dml">
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:QName</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="collection-name" prefix="zorba-store-collections">
+      <zorba:signature localname="collection-name" prefix="zorba-store-dynamic-collections-dml">
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:QName</zorba:output>
       </zorba:signature>
@@ -942,13 +942,13 @@
 
     <zorba:function generateCodegen="false">
       <zorba:signature localname="is-available-collection"
-                       prefix="zorba-store-collections-static-manip">
+                       prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
 
       <zorba:signature localname="is-available-collection"
-                       prefix="zorba-store-collections">
+                       prefix="zorba-store-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -988,12 +988,12 @@
     <zorba:function generateCodegen="false">
 
       <zorba:signature localname="available-collections"
-                       prefix="zorba-store-collections-static-manip">
+                       prefix="zorba-store-collections-static-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
 
       <zorba:signature localname="available-collections"
-        prefix="zorba-store-collections">
+        prefix="zorba-store-dynamic-collections-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
 
@@ -1028,7 +1028,7 @@
 
     <zorba:function>
       <zorba:signature localname="is-available-index"
-        prefix="zorba-store-collections-static-manip">
+        prefix="zorba-store-indexes-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -1053,7 +1053,7 @@
 
     <zorba:function>
       <zorba:signature localname="available-indexes"
-                       prefix="zorba-store-collections-static-manip">
+                       prefix="zorba-store-indexes-static-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
       <zorba:methods>
@@ -1081,7 +1081,7 @@
 
     <zorba:function>
       <zorba:signature localname="is-activated-integrity-constraint"
-                       prefix="zorba-store-collections-static-manip">
+                       prefix="zorba-store-integrity_constraints-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -1104,7 +1104,7 @@
 
     <zorba:function>
       <zorba:signature localname="activated-integrity-constraints"
-                       prefix="zorba-store-collections-static-manip">
+                       prefix="zorba-store-integrity_constraints-static-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
       <zorba:methods>
@@ -1133,7 +1133,7 @@
 
     <zorba:function>
       <zorba:signature localname="is-declared-collection"
-                       prefix="zorba-store-collections-static-init">
+                       prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -1153,7 +1153,7 @@
 
     <zorba:function>
       <zorba:signature localname="declared-collections"
-                       prefix="zorba-store-collections-static-init">
+                       prefix="zorba-store-collections-static-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>
@@ -1177,7 +1177,7 @@
 
     <zorba:function>
       <zorba:signature localname="is-declared-index"
-                       prefix="zorba-store-collections-static-init">
+                       prefix="zorba-store-indexes-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -1197,7 +1197,7 @@
 
     <zorba:function>
       <zorba:signature localname="declared-indexes"
-                       prefix="zorba-store-collections-static-init">
+                       prefix="zorba-store-indexes-static-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>
@@ -1221,7 +1221,7 @@
 
     <zorba:function>
       <zorba:signature localname="is-declared-integrity-constraint"
-                       prefix="zorba-store-collections-static-init">
+                       prefix="zorba-store-integrity_constraints-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -1241,7 +1241,7 @@
 
     <zorba:function>
       <zorba:signature localname="declared-integrity-constraints"
-                       prefix="zorba-store-collections-static-init">
+                       prefix="zorba-store-integrity_constraints-static-ddl">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>

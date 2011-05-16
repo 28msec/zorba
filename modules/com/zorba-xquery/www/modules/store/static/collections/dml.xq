@@ -15,78 +15,23 @@
 :)
 
 (:~
- : This module defines a set of functions to deal with XQueries's Data Definition Facility
- : in Zorba (XQDDF).
- : For example, it provides functions to check if a given collection, index, or integrity
- : constraint has been created using any of the create-* functions of the initialization module.
- : Moreover it provides function to insert or remove nodes from a collection, check an
- : integrity contraint, or explicitly probe an index.
+ : This modules defines a set of functions to modify a collection or retrieve the nodes
+ : contained in a particular collection.
+ : Such collections are identified by QNames and come into existence (i.e. be available)
+ : by calling one of the two create-collection functions of the 
+ : <tt>http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</tt>
+ : module.
  :
  : The variable $content passed to any of the insert functions is evaluated
  : as though it were an enclosed expression in an element constructor.
  : The result of this step is a sequence of nodes to be inserted into the collection.
  :
- : @see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/XQDDF.html"
- :        target="_blank">Zorba Data Definition Facility</a>
- : @see http://www.zorba-xquery.com/modules/store/static-collections/initialization
+ : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
  :)
-module namespace dml = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
-
-(:~
- : The function returns true if a collection with the given QName is available
- : (i.e. has been created).
- :
- : @param $name The QName of the collection that is being checked.
- : @return true if the collection is available and false otherwise.
- :)
-declare function dml:is-available-collection($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames of the collections that are
- : available. The sequence will be empty if there are no collections.
- :
- : @return A sequence of QNames, one for each available collection, or an emtpy sequence.
- :)
-declare function dml:available-collections() as xs:QName*  external;
-
-(:~
- : The function returns true if an index with the given QName is available.
- : (i.e. has been created).
- :
- : @param $name The QName of the index that is being checked.
- : @return true if the index is available and false otherwise.
- :)
-declare function dml:is-available-index($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames representing the indexes that are
- : available. The sequence will be empty if there are no indexes.
- :
- : @return A sequence of QNames, one for each available index, or an empty
- : sequence if none are.
- :)
-declare function dml:available-indexes() as xs:QName* external;
-
-(:~
- : The function checks if an integrity constraint with the given QName is activated.
- :
- : @param $name The QName of the constraint that is being checked.
- : @return true if the integrity constraint has is activated and false otherwise.
- :)
-declare function dml:is-activated-integrity-constraint($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames representing the integrity 
- : constraints that are activated. The sequence will be empty if there are 
- : none.
- :
- : @return A sequence of QNames, one for each activated integrity constraint,
- : or an empty sequence.
- :)
-declare function dml:activated-integrity-constraints() as xs:QName*  external;
+module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 (:~
  : The insert-nodes function is an updating function that inserts
@@ -465,126 +410,3 @@ declare function dml:index-of(
  : @error XDDY0003 if the collection identified by $name is not available.
  :)
 declare function dml:collection($name as xs:QName) as node()*  external;
-
-(:~
- : The check-integrity-constraint function checks if the constraints
- : specified by the expanded QName $name is valid in the database.
- :
- : @param $name The QName of the integrity constraint to check.
- : @return true if the constraints are valid in the database, false otherwise.
- :
- : @error XDDY0031 if the integrity constraint identified by $name is not declared.
- : @error XDDY0032 if the integrity constraint identified by $name is not available.
- :)
-declare function dml:check-integrity-constraint(
-  $name as xs:QName) as xs:boolean external;
-
-(:~
- : The probe function retrieves the domain nodes associated with a particular
- : search condition, which is presented as a single key tuple. This function 
- : accept a variable number of arguments.
- : 
- :   dml:probe-index-point($indexUri as xs:QName,
- :                        $key1     as xs:anyAtomictType,
- :                        ...,
- :                        $keyM     as xs:anyAtomicType) as node()*
- :
- : The first argument is always a QName identifying an index. The rest of the 
- : arguments specify the search condition, which is given as a number of 
- : atomic items comprising a key tuple. This number must be equal to the number
- : of indexspecs found in the index declaration [err:XDDY0025]. If the index 
- : contains an entry with the given key tuple, the associated domain nodes are
- : returned. Otherwise, the empty sequence is returned.
- :
- : @param $name The QName of the index.
- : @param $key1 The search condition.
- : @return The sequence of domain nodes or an empty sequence.
- : @error If available indexes does not provide a mapping for
- :        the expanded QName $name.
-declare function dml:probe-index-point-value(
-  $name as xs:QName, 
-  $key1 as xs:anyAtomicType*) as node()*  external; 
-:)
-
-(:~
- : The probe function retrieves the domain nodes associated with a particular
- : search condition, which is presented as a range of key tuples. This function 
- : accept a variable number of arguments.
- :
- : dml:probe-index-range($indexUri                 as xs:QName,
- :                         $rangeLowerBound1         as xs:anyAtomicType?,
- :                         $rangeUpperBound1         as xs:anyAtomicType?,
- :                         $rangeHaveLowerBound1     as xs:boolean,
- :                         $rangeHaveupperBound1     as xs:boolean,
- :                         $rangeLowerBoundIncluded1 as xs:boolean,
- :                         $rangeupperBoundIncluded1 as xs:boolean,
- :                         ....,
- :                         $rangeLowerBoundM         as xs:anyAtomicType?,
- :                         $rangeUpperBoundM         as xs:anyAtomicType?,
- :                         $rangeHaveLowerBoundM     as xs:boolean,
- :                         $rangeHaveupperBoundM     as xs:boolean,
- :                         $rangeLowerBoundIncludedM as xs:boolean,
- :                         $rangeupperBoundIncludedM as xs:boolean) as node()*
- :
- : To describe the semantics of this function, we start by defining the i-th 
- : key column of an index as the set of key items produced by evaluating the 
- : i-th keyspec of the index for every domain node. Then, the search condition 
- : of a range probe can be defined as a number of rangespecs, where a 
- : rangespec describes a constraint on the values of a key column. The first 
- : rangespec applies to the first key column, the second rangespec to the 
- : second key column, etc. The number of rangespecs must be less or equal to 
- : the number of keyspecs found in the declaration of the given index. 
- : Each rangespec consists of 6 values:
- :
- :   * rangeLowerBound : The lower bound in a range of key values.
- :   * rangeUpperBound : The upper bound in a range of key values.
- :   * rangeHaveLowerBound : If false, then there is no lower bound, or 
- :     equivalently, the lower bound is -INFINITY (the actual rangeLowerBound 
- :     value is ignored). Otherwise, the lower bound is the one given by the 
- :     rangeLowerBound value. The effective lower bound of the range is either 
- :     the rangeLowerBound if rangeHaveLowerBound is true, or -INFINITY if 
- :     rangeHaveLowerBound is false.
- :   * rangeHaveUpperBound : If false, then there is no upper bound, or 
- :     equivalently, the upper bound is +INFINITY (the actual rangeUpperBound 
- :     value is ignored). Otherwise, the upper bound is the one given by the 
- :     rangeUpperBound value. The effective upper bound of the range is either
- :     the rangeUpperBound if rangeHaveUpperBound is true, or +INFINITY if 
- :     rangeHaveUpperBound is false.
- :   * rangeLowerBoundIncluded : If false, then the range is open from below,
- :     i.e., the rangeLowerBound value is not considered part of the range. 
- :     Otherwise, the range is closed from below, i.e., the rangeLowerBound 
- :     value is part of the range.
- :   * rangeUpperBoundIncluded : If false, then the range is open from above,
- :     i.e., the rangeUpperBound value is not considered part of the range. 
- :     Otherwise, the range is closed from above, i.e., the rangeUpperBound 
- :     value is part of the range.
- :
- : @param $name The QName of the index.
- : @param $rangeLowerBound1 The lower bound in a range of key values.
- : @param $rangeUpperBound1 The upper bound in a range of key values.
- : @param $rangeHaveLowerBound If false, then there is no lower bound, or 
- :          equivalently, the lower bound is -INFINITY. Otherwise, the lower 
- :          bound is the one given by the rangeLowerBound value. 
- : @param $rangeHaveUpperBound If false, then there is no upper bound, or 
- :          equivalently, the upper bound is +INFINITY. Otherwise, the upper 
- :          bound is the one given by the rangeUpperBound value. 
- : @param $rangeLowerBoundIncluded If false, then the range is open from below, 
- :          i.e., the rangeLowerBound value is not considered part of the 
- :          range. Otherwise, the range is closed from below, i.e., the 
- :          rangeLowerBound value is part of the range. 
- : @param $rangeUpperBoundIncluded If false, then the range is open from above, 
- :          i.e., the rangeUpperBound value is not considered part of the 
- :          range. Otherwise, the range is closed from above, i.e., the 
- :          rangeUpperBound value is part of the range.  
- : @return The sequence of domain nodes.
- : @error If available indexes does not provide a mapping for
- :        the expanded QName $name.
-declare function dml:probe-index-range($name as xs:QName, 
-  $rangeLowerBound1         as xs:anyAtomicType?,
-  $rangeUpperBound1         as xs:anyAtomicType?,
-  $rangeHaveLowerBound1     as xs:boolean,
-  $rangeHaveupperBound1     as xs:boolean,
-  $rangeLowerBoundIncluded1 as xs:boolean,
-  $rangeupperBoundIncluded1 as xs:boolean) as node()*  external;
-:)
-

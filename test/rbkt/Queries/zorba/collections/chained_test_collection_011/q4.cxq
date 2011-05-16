@@ -1,2 +1,2 @@
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
-manip:available-collections()
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+ddl:available-collections()
