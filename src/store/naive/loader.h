@@ -30,7 +30,7 @@
 namespace zorba 
 { 
   
-class ErrorManager; 
+class XQueryDiagnostics; 
 
 namespace store 
 {
@@ -58,7 +58,7 @@ class NsBindingsContext;
   theBuffer       : A buffer to read chunks of the source stream in.
 
   theFactory      : The item factory of the store.
-  theErrorManager : 
+  theXQueryDiagnostics : 
 
   theTraceLevel   :
 
@@ -80,7 +80,7 @@ protected:
 
   BasicItemFactory               * theFactory;
 
-  ErrorManager                   * theErrorManager;
+  XQueryDiagnostics              * theXQueryDiagnostics;
 
   long                             theTraceLevel;
 
@@ -92,12 +92,12 @@ protected:
 public:
   XmlLoader(
         BasicItemFactory* factory,
-        ErrorManager* errorManager,
+        XQueryDiagnostics* xqueryDiagnostics,
         bool dataguide)
     :
     ctxt(NULL),
     theFactory(factory),
-    theErrorManager(errorManager),
+    theXQueryDiagnostics(xqueryDiagnostics),
     theTraceLevel(0),
     theBuildDataGuide(dataguide)
   {
@@ -153,7 +153,7 @@ protected:
 public:
   FastXmlLoader(
         BasicItemFactory* factory,
-        ErrorManager* errorManager,
+        XQueryDiagnostics* xqueryDiagnostics,
         bool dataguide);
 
   ~FastXmlLoader();
@@ -274,7 +274,7 @@ protected:
 public:
   DtdXmlLoader(
         BasicItemFactory* factory,
-        ErrorManager* errorManager,
+        XQueryDiagnostics* xqueryDiagnostics,
         bool dataguide);
 
   ~DtdXmlLoader();

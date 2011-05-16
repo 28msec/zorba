@@ -481,7 +481,7 @@ bool func_example_3_1(Zorba* aZorba)
   catch (ZorbaException const& ex) 
   {
     std::cerr << ex << std::endl;
-    return ex.error().kind() == err::XQUERY_TYPE;
+    return ex.diagnostic().kind() == diagnostic::XQUERY_TYPE;
   }
 
   return false;
@@ -554,7 +554,7 @@ bool func_example_4_1(Zorba* aZorba)
   catch (ZorbaException const &ex) 
   {
     std::cerr << ex << std::endl;
-    return ex.error().kind() == err::XQUERY_STATIC;
+    return ex.diagnostic().kind() == diagnostic::XQUERY_STATIC;
   }
 
   return true;

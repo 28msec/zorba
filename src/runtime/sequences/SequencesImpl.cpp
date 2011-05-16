@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include "zorbautils/fatal.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbatypes/URI.h"
 
 // For timing
@@ -237,8 +237,8 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   catch(ZorbaException &e)
   {
-    if(e.error() == err::XPTY0004)
-			e.set_error( err::FORG0006 );
+    if(e.diagnostic() == err::XPTY0004)
+			e.set_diagnostic( err::FORG0006 );
 		set_source( e, loc );
 		throw;
   }

@@ -248,7 +248,7 @@ void IndexDecl::analyze()
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() != err::XPST0008)
+    if (e.diagnostic() != err::XPST0008)
     {
       throw;
     }

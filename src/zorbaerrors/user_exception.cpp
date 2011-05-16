@@ -28,11 +28,11 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 UserException::UserException( char const *ns, char const *prefix,
-                              char const *localname, char const *throw_file,
-                              line_type throw_line, char const *description,
+                              char const *localname, char const *raise_file,
+                              line_type raise_line, char const *description,
                               error_object_type *error_object ) :
   XQueryException(
-    *(new UserError( ns, prefix, localname )), throw_file, throw_line,
+    *(new UserError( ns, prefix, localname )), raise_file, raise_line,
     description
   )
 {
@@ -40,10 +40,10 @@ UserException::UserException( char const *ns, char const *prefix,
     error_object->swap( error_object_ );
 }
 
-UserException::UserException( Error const &error, char const *throw_file,
-                              line_type throw_line, char const *description,
+UserException::UserException( Error const &error, char const *raise_file,
+                              line_type raise_line, char const *description,
                               error_object_type *error_object ) :
-  XQueryException( error, throw_file, throw_line, description )
+  XQueryException( error, raise_file, raise_line, description )
 {
   if ( error_object )
     error_object->swap( error_object_ );
@@ -71,15 +71,15 @@ void UserException::polymorphic_throw() const {
 namespace internal {
 
 // MAKE_USER_EXCEPTION_CC_LT_4CC_EL_EOT_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    char const *ns, char const *prefix,
                                    char const *localname,
                                    char const *description,
-                                   err::location const &loc,
+                                   diagnostic::location const &loc,
                                    error_object_type *error_object ) {
   UserException ue(
-    ns, prefix, localname, throw_file, throw_line, description, error_object
+    ns, prefix, localname, raise_file, raise_line, description, error_object
   );
   if ( loc )
     ue.set_source( loc.file(), loc.line(), loc.column() );
@@ -87,54 +87,54 @@ UserException make_user_exception( char const *throw_file,
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_E_CC_EL_EOT_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Error const &error, char const *description,
-                                   err::location const &loc,
+                                   diagnostic::location const &loc,
                                    error_object_type *error_object ) {
-  UserException ue( error, throw_file, throw_line, description, error_object );
+  UserException ue( error, raise_file, raise_line, description, error_object );
   if ( loc )
     ue.set_source( loc.file(), loc.line(), loc.column() );
   return ue;
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line ) {
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line ) {
   Item no_item;
-  return make_user_exception( throw_file, throw_line, no_item );
+  return make_user_exception( raise_file, raise_line, no_item );
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_I_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Item const &error ) {
   String no_description;
-  return make_user_exception( throw_file, throw_line, error, no_description );
+  return make_user_exception( raise_file, raise_line, error, no_description );
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_E_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Error const &error ) {
   String no_description;
-  return make_user_exception( throw_file, throw_line, error, no_description );
+  return make_user_exception( raise_file, raise_line, error, no_description );
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_I_S_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Item const &error,
                                    String const &description ) {
   ItemSequence_t empty_seq;
   return make_user_exception(
-    throw_file, throw_line, error, description, empty_seq
+    raise_file, raise_line, error, description, empty_seq
   );
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_I_S_IS_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Item const &error,
                                    String const &description,
                                    ItemSequence_t const &error_item_seq ) {
@@ -149,14 +149,14 @@ UserException make_user_exception( char const *throw_file,
     }
   }
   return make_user_exception(
-    throw_file, throw_line, error, description.c_str(), err::location::empty,
-    &error_object
+    raise_file, raise_line, error, description.c_str(),
+    diagnostic::location::empty, &error_object
   );
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_E_S_IS_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Error const &error,
                                    String const &description,
                                    ItemSequence_t const &error_item_seq ) {
@@ -171,37 +171,37 @@ UserException make_user_exception( char const *throw_file,
     }
   }
   return make_user_exception(
-    throw_file, throw_line, error, description.c_str(), &error_object
+    raise_file, raise_line, error, description.c_str(), &error_object
   );
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_E_S_EOT_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Error const &error,
                                    String const &description,
                                    error_object_type *error_object ) {
   return make_user_exception(
-    throw_file, throw_line, error, description.c_str(), err::location::empty,
-    error_object
+    raise_file, raise_line, error, description.c_str(),
+    diagnostic::location::empty, error_object
   );
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_SI_CC_EL_EOT_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    store::Item_t const &qname,
                                    char const *description,
-                                   err::location const &loc,
+                                   diagnostic::location const &loc,
                                    error_object_type *error_object ) {
   if ( qname.isNull() )
     return make_user_exception(
-      throw_file, throw_line, zorba::err::FOER0000, description, loc,
+      raise_file, raise_line, zorba::err::FOER0000, description, loc,
       error_object
     );
 
   return make_user_exception(
-    throw_file, throw_line,
+    raise_file, raise_line,
     qname->getNamespace().c_str(),
     qname->getPrefix().c_str(),
     qname->getLocalName().c_str(),
@@ -210,18 +210,18 @@ UserException make_user_exception( char const *throw_file,
 }
 
 // MAKE_USER_EXCEPTION_CC_LT_I_CC_EL_EOT_X
-UserException make_user_exception( char const *throw_file,
-                                   ZorbaException::line_type throw_line,
+UserException make_user_exception( char const *raise_file,
+                                   ZorbaException::line_type raise_line,
                                    Item const &qname,
                                    char const *description,
-                                   err::location const &loc,
+                                   diagnostic::location const &loc,
                                    error_object_type *error_object ) {
   store::Item_t store_qname;
   if ( !qname.isNull() )
     store_qname = Unmarshaller::getInternalItem( qname );
 
   return make_user_exception(
-    throw_file, throw_line, store_qname, description, loc, error_object
+    raise_file, raise_line, store_qname, description, loc, error_object
   );
 }
 

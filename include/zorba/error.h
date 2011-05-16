@@ -17,109 +17,37 @@
 #ifndef ZORBA_ERROR_API_H
 #define ZORBA_ERROR_API_H
 
+#include <zorba/internal/system_diagnostic.h>
 #include <zorba/internal/qname.h>
 
 namespace zorba {
 
-class Error;
+class Diagnostic;
 namespace serialization {
   class Archiver;
-  void operator&( serialization::Archiver&, const Error*& );
+  void operator&( serialization::Archiver&, const Diagnostic*& );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * An %Error is the base class for all Zorba errors.
- */
-class ZORBA_DLL_PUBLIC Error {
-public:
-  /**
-   * Gets the QName for this error.
-   *
-   * @return Returns said QName.
-   */
-  virtual err::QName const& qname() const = 0;
-
-  /**
-   * Gets the category of this error.
-   *
-   * @return Returns said category.
-   */
-  virtual err::category category() const;
-
-  /**
-   * Gets the kind of this error.
-   *
-   * @return Returns said kind.
-   */
-  virtual err::kind kind() const;
-
-  /**
-   * Gets the error message of this error.
-   *
-   * @return Returns said message.
-   */
-  virtual char const* message() const;
-
-protected:
-  virtual ~Error();
-
-  virtual Error const* clone() const = 0;
-  virtual void destroy() const;
-
-  friend class ZorbaException;
-};
+typedef Diagnostic Error;
 
 /**
- * Compares two errors for equality.
- *
- * @param q1 The first error.
- * @param q2 The second error.
- * @return Returns \c true only if the errors' QNames are equal.
+ * An %XQueryErrorCode is a diagnostic for all XQuery-specific errors.
  */
-inline bool operator==( Error const &e1, Error const &e2 ) {
-  return e1.qname() == e2.qname();
-}
+typedef internal::SystemDiagnostic<internal::XQueryErrQName> XQueryErrorCode;
 
 /**
- * Compares two errors for inequality.
- *
- * @param q1 The first error.
- * @param q2 The second error.
- * @return Returns \c true only if the errors' QNames are not equal.
+ * A %ZorbaErrorCode is a diagnostic for all Zorba-specific errors.
  */
-inline bool operator!=( Error const &e1, Error const &e2 ) {
-  return !(e1 == e2);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-} // namespace zorba
-
-#include <zorba/internal/error.h>
-#include <zorba/internal/qname.h>
-
-namespace zorba {
+typedef internal::SystemDiagnostic<internal::ZorbaErrQName> ZorbaErrorCode;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An %XQueryError is an error for all XQuery-specific errors.
+ * A %UserError is-a Diagnostic for user-defined errors via \c fn:error().
  */
-typedef internal::SystemError<internal::XQueryErrQName> XQueryError;
-
-/**
- * A %ZorbaError is an error for all Zorba-specific errors.
- */
-typedef internal::SystemError<internal::ZorbaErrQName> ZorbaError;
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * A %UserError is-an Error for user-defined errors via \c fn:error().
- */
-class ZORBA_DLL_PUBLIC UserError : public Error {
+class ZORBA_DLL_PUBLIC UserError : public Diagnostic {
 public:
   /**
    * Destroys a %UserError.
@@ -127,12 +55,12 @@ public:
   ~UserError();
 
   // inherited
-  err::QName const& qname() const;
-  err::category category() const;
+  diagnostic::QName const& qname() const;
+  diagnostic::category category() const;
 
 protected:
   // inherited
-  Error const* clone() const;
+  Diagnostic const* clone() const;
 
 private:
   typedef internal::VariableQName<std::string> QName;
@@ -153,7 +81,7 @@ private:
   // for plan serialization
   UserError( serialization::Archiver& );
   friend void serialization::operator&( serialization::Archiver&,
-                                        const Error*& );
+                                        const Diagnostic*& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////

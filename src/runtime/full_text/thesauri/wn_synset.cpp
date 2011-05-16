@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/dict.h"
 
 #include "decode_base128.h"

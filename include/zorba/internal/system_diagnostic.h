@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_INTERNAL_ERROR_H
-#define ZORBA_INTERNAL_ERROR_H
+#ifndef ZORBA_INTERNAL_SYSTEM_DIAGNOSTIC_H
+#define ZORBA_INTERNAL_SYSTEM_DIAGNOSTIC_H
 
 #include <map>
 
-#include <zorba/error.h>
+#include <zorba/diagnostic.h>
 
 #include "ztd.h"
 
@@ -28,60 +28,64 @@ namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class ZORBA_DLL_PUBLIC SystemErrorBase : public Error {
+class ZORBA_DLL_PUBLIC SystemDiagnosticBase : public Diagnostic {
 public:
   /**
-   * Given an error's local-name, finds its corresponding %Error object.
+   * Given a diagnostic's local-name, finds its corresponding %Diagnostic
+   * object.
    *
    * @param localname The local-name.
-   * @return Returns the corresponding %Error object or \c NULL if not found.
+   * @return Returns the corresponding %Diagnostic object or \c NULL if not
+   * found.
    */
-  static Error const* find( char const *localname ) {
+  static Diagnostic const* find( char const *localname ) {
     map_type const &m = get_map();
     map_type::const_iterator const i = m.find( localname );
     return i != m.end() ? i->second : 0;
   }
 
 private:
-  typedef std::map<char const*,Error const*,ztd::less<char const*> > map_type;
+  typedef std::map<char const*,Diagnostic const*,ztd::less<char const*> >
+          map_type;
+
   static map_type& get_map();
 
-  SystemErrorBase( char const *localname ) {
+  SystemDiagnosticBase( char const *localname ) {
     get_map()[ localname ] = this;
   }
 
-  // Only a SystemError can derive from SystemErrorBase.
-  template<class QNameType> friend class SystemError;
+  // Only a SystemDiagnostic can derive from SystemDiagnosticBase.
+  template<class QNameType> friend class SystemDiagnostic;
 };
 
 /**
  * \internal
- * A %SystemError is-an Error for built-in errors.
+ * A %SystemDiagnostic is-a Diagnostic for built-in diagnostics.
  *
  * @tparam QNameType The QName type.
  */
 template<class QNameType>
-class ZORBA_DLL_PUBLIC SystemError : public SystemErrorBase {
+class ZORBA_DLL_PUBLIC SystemDiagnostic : public SystemDiagnosticBase {
 public:
 
   /**
-   * Constructs a %SystemError.
+   * Constructs a %SystemDiagnostic.
    *
-   * @param localname The local-name of the error.
+   * @param localname The local-name of the diagnostic.
    */
-  SystemError( char const *localname ) :
-    SystemErrorBase( localname ), qname_( localname )
+  SystemDiagnostic( char const *localname ) :
+    SystemDiagnosticBase( localname ), qname_( localname )
   {
   }
 
   // inherited
-  zorba::err::category category() const { return qname_.error_category(); }
-  zorba::err::kind kind() const { return qname_.error_kind(); }
-  zorba::err::QName const& qname() const { return qname_; }
+  zorba::diagnostic::category category() const { return qname_.category(); }
+  zorba::diagnostic::kind kind() const { return qname_.kind(); }
+  zorba::diagnostic::QName const& qname() const { return qname_; }
 
 protected:
   // inherited
-  Error const* clone() const { return this; }
+  Diagnostic const* clone() const { return this; }
   void destroy() const { /* do nothing */ }
 
 private:
@@ -92,5 +96,5 @@ private:
 
 } // namespace internal
 } // namespace zorba
-#endif /* ZORBA_INTERNAL_ERROR_H */
+#endif /* ZORBA_INTERNAL_SYSTEM_DIAGNOSTIC_H */
 /* vim:set et sw=2 ts=2: */

@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-#pragma once
-#ifndef ZORBA_DIAGNOSTIC_DICT_IMPL_H
-#define ZORBA_DIAGNOSTIC_DICT_IMPL_H
+#ifndef ZORBA_XQUERY_WARNING_API_H
+#define ZORBA_XQUERY_WARNING_API_H
+
+#include <zorba/internal/qname.h>
+#include <zorba/internal/system_diagnostic.h>
+#include <zorba/xquery_exception.h>
 
 namespace zorba {
-namespace diagnostic {
-namespace dict {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+typedef Diagnostic Warning;
 
 /**
- * A dictionary %entry.
+ * A %ZorbaWarningCode is a diagnostic for all Zorba-specific warnings.
  */
-struct entry {
-  char const *key;
-  char const *value;
-};
+typedef internal::SystemDiagnostic<internal::ZorbaWarningQName>
+        ZorbaWarningCode;
 
-#define DEF_DICT_END(LANG) \
-  extern ::zorba::diagnostic::dict::entry const *const dict_##LANG##_end = \
-    dict_##LANG + sizeof( dict_##LANG ) / sizeof( dict_##LANG[0] )
+/**
+ * Re-use an XQueryException as an %XQueryWarning to:
+ *  - leverage all the localization and printing code
+ *  - allow warnings to be treated as exceptions and thrown
+ */
+typedef XQueryException XQueryWarning;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace dict
-} // namespace diagnostic
 } // namespace zorba
-#endif /* ZORBA_DIAGNOSTIC_DICT_IMPL_H */
+#endif /* ZORBA_XQUERY_WARNING_API_H */
 /* vim:set et sw=2 ts=2: */

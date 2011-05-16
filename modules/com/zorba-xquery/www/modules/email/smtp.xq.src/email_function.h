@@ -21,8 +21,6 @@
 
 namespace zorba
 {
-  class Error;
-
   namespace emailmodule
   {
     class SMTPModule;

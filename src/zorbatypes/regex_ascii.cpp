@@ -16,7 +16,7 @@
 
 #include <ctype.h>
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "regex_ascii.h"
 #include "string.h"

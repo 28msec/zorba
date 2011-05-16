@@ -20,7 +20,7 @@
 #include <zorba/error.h>
 
 #include "util/stl_util.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/dict.h"
 
 #include "ft_wildcard.h"
@@ -138,9 +138,9 @@ ft_wildcard::ft_wildcard( zstring const &ws_pat ) {
   try {
     regex_.compile( icu_pat );
   }
-  catch ( XQueryException const &xe ) {
-    if ( xe.error() == err::FORX0002 )
-      throw XQUERY_EXCEPTION( err::FTDY0020, ERROR_PARAMS( "", xe.what() ) );
+  catch ( XQueryException &xe ) {
+    if ( xe.diagnostic() == err::FORX0002 )
+      xe.set_diagnostic( err::FTDY0020 );
     throw;
   }
 }

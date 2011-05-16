@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 #include "zorbaerrors/user_exception.h"
 
@@ -160,7 +160,7 @@ TryCatchIterator::matchedCatch(
     for(i = nts.begin(); i != nts.end(); ++i)
     {
       const NodeNameTest& nt = **i;
-			err::QName const &err_name = e.error().qname();
+			diagnostic::QName const &err_name = e.diagnostic().qname();
       if (nt.matches(err_name.localname(), err_name.ns()))
       {
         state->theCatchIterator = cc.catch_expr;
@@ -184,7 +184,7 @@ TryCatchIterator::bindErrorVars(
 
   // bind the error code (always)
   store::Item_t lErrorCodeItem;
-	err::QName const &err_name = e.error().qname();
+	diagnostic::QName const &err_name = e.diagnostic().qname();
   GENV_ITEMFACTORY->createQName(
       lErrorCodeItem,
       err_name.ns(),

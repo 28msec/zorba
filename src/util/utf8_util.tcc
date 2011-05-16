@@ -24,7 +24,7 @@
 #include <cctype>
 
 #include "util/string/string_traits.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 namespace zorba {
 namespace utf8 {

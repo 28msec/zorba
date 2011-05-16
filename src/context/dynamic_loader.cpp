@@ -24,7 +24,7 @@
 #  include <strsafe.h>
 #endif
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbatypes/URI.h"
 #include "zorba/external_module.h"
 #include "zorba/zorbastring.h"

@@ -53,10 +53,10 @@ namespace internal {
 /**
  * Makes a UserException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param ns The error code's namespace.
  * @param prefix The error code's prefix.
  * @param localname The error code's local-name.
@@ -65,24 +65,24 @@ namespace internal {
  * @return Returns a new UserException.
  */
 inline UserException // MAKE_USER_EXCEPTION_CC_LT_4CC_EOT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      char const *ns, char const *prefix, char const *localname,
                      char const *description,
                      error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line, ns, prefix, localname, description,
-    err::location::empty, error_object
+    raise_file, raise_line, ns, prefix, localname, description,
+    diagnostic::location::empty, error_object
   );
 }
 
 /**
  * Makes a UserException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param qname The error code's QName.
  * @param description The error description.
  * @param error_object The error object, if any.
@@ -90,19 +90,19 @@ make_user_exception( char const *throw_file,
  * @return Returns a new UserException.
  */
 UserException // MAKE_USER_EXCEPTION_CC_LT_I_CC_EL_EOT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      Item const &qname, char const *description,
-                     err::location const &loc,
+                     diagnostic::location const &loc,
                      error_object_type *error_object = 0 );
 
 /**
  * Makes a UserException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param qname The error code's QName.
  * @param description The error description.
  * @param loc The error location.
@@ -110,19 +110,19 @@ make_user_exception( char const *throw_file,
  * @return Returns a new UserException.
  */
 UserException // MAKE_USER_EXCEPTION_CC_LT_SI_CC_EL_EOT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      store::Item_t const &qname, char const *description,
-                     err::location const &loc,
+                     diagnostic::location const &loc,
                      error_object_type *error_object = 0 );
 
 /**
  * Makes a UserException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param qname The error code's QName.
  * @param description The error description.
  * @param loc The error location.
@@ -130,12 +130,12 @@ make_user_exception( char const *throw_file,
  * @return Returns a new UserException.
  */
 inline UserException // MAKE_USER_EXCEPTION_CC_LT_SI_CC_EOT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      store::Item_t const &qname, char const *description,
                      error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line, qname, description, err::location::empty,
+    raise_file, raise_line, qname, description, diagnostic::location::empty,
     error_object
   );
 }

@@ -48,7 +48,7 @@
 #include "regex.h"
 #include "uri_util.h"
 #include "utf8_util.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/xquery_exception.h"
 
 

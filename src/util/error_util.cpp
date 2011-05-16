@@ -24,7 +24,7 @@
 #endif /* WIN32 */
 
 #include "zorbaerrors/dict.h"
-#include "zorbaerrors/err.h"
+#include "zorbaerrors/diagnostic.h"
 
 #include "error_util.h"
 #include "stl_util.h"
@@ -56,9 +56,9 @@ string exception::make_what( char const *function, char const *path,
 
 string format_err_string( char const *function, char const *err_string ) {
   if ( function && *function ) {
-    using namespace internal::err;
+    using namespace internal::diagnostic;
     parameters::value_type result =
-      err::dict::lookup( ZED( FunctionFailed_12o ) );
+      diagnostic::dict::lookup( ZED( FunctionFailed_12o ) );
     parameters const params( ERROR_PARAMS( function, err_string ) );
     params.substitute( &result );
     return result;
@@ -69,13 +69,16 @@ string format_err_string( char const *function, char const *err_string ) {
 
 string format_err_string( char const *function, code_type code,
                           char const *err_string ) {
-  internal::err::parameters params;
-  internal::err::parameters::value_type result;
+  using namespace internal::diagnostic;
+  parameters params;
+  parameters::value_type result;
   if ( function && *function ) {
-    result = err::dict::lookup( ZED( FunctionFailedErrorCodeMessage_123 ) );
+    result = diagnostic::dict::lookup(
+      ZED( FunctionFailedErrorCodeMessage_123 )
+    );
     params = ERROR_PARAMS( function, code, err_string );
   } else {
-    result = err::dict::lookup( ZED( ErrorCodeMessage_12 ) );
+    result = diagnostic::dict::lookup( ZED( ErrorCodeMessage_12 ) );
     params = ERROR_PARAMS( code, err_string );
   }
   params.substitute( &result );

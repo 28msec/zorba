@@ -36,13 +36,13 @@ class ZorbaException
   { return std::string(theException->what()); }
 
   virtual zorba::Error const& getErrorCode () const
-  { return theException->error(); }
+  { return theException->diagnostic(); }
 
   virtual unsigned int getFileLineNumber () const
-  { return theException->throw_line(); }
+  { return theException->raise_line(); }
 
   virtual std::string getFileName () const
-  { return std::string(theException->throw_file()); }
+  { return std::string(theException->raise_file()); }
 
   static std::string getErrorCodeAsString(zorba::Error const &error)
   { 

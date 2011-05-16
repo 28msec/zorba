@@ -68,7 +68,7 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   catch (XQueryException& e)
   {
     set_source(e, loc);
-    e.set_error(err::FOUP0002);
+    e.set_diagnostic(err::FOUP0002);
     throw;
   }
 

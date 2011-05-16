@@ -201,7 +201,7 @@ class TestErrorHandler : public zorba::ErrorHandler {
     void registerError(const zorba::ZorbaException& e)
     {
       std::ostringstream oss;
-      oss << e.error().qname();
+      oss << e.diagnostic().qname();
       m_errors.push_back(oss.str());
       m_desc.push_back(e.what());
     }

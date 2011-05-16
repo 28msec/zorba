@@ -79,7 +79,7 @@ private:
   void registerError(const zorba::ZorbaException& e)
   {
     std::ostringstream strdescr;
-    strdescr << e.error().qname().ns() << ":" << e.error().qname().localname();
+    strdescr << e.diagnostic().qname().ns() << ":" << e.diagnostic().qname().localname();
     m_qnames.push_back(strdescr.str());
     strdescr.clear();
 

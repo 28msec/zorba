@@ -23,13 +23,13 @@ zorba::SAXParser::SAXParser(
     store::ItemFactory &factory, 
     const zstring& baseUri, 
     const zstring& docUri, 
-    ErrorManager* errorManager)
+    XQueryDiagnostics* xqueryDiagnostics)
   :
   theFactory(factory),
   theBaseUri(baseUri),
   theDocUri(docUri),
   theSucceeded(false),
-  theErrorManager(errorManager)
+  theXQueryDiagnostics(xqueryDiagnostics)
 {
   m_stream = new std::ostringstream();
 }
@@ -218,7 +218,7 @@ void zorba::SAXParser::error( void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  lParser.theErrorManager->add_error(
+  lParser.theXQueryDiagnostics->add_error(
     NEW_ZORBA_EXCEPTION(
       zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
     )

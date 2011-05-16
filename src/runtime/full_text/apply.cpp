@@ -26,7 +26,7 @@
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/dict.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbamisc/ns_consts.h"
 #include "zorbautils/tokenizer.h"
 

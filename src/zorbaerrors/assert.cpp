@@ -24,7 +24,7 @@
 
 #include <zorba/error_list.h>
 
-#include "err.h"
+#include "diagnostic.h"
 #include "zorba_exception.h"
 
 #ifdef WIN32

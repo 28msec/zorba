@@ -22,7 +22,7 @@
 #endif /* WIN32 */
 
 #include "util/error_util.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "mmap_file.h"
 

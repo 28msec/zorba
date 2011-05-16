@@ -87,7 +87,7 @@
 #include "zorbautils/string_util.h"
 #include "zorbautils/fatal.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/dict.h"
 
 #include "util/ascii_util.h"
@@ -1144,7 +1144,7 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
     }
     catch (ZorbaException const& e)
     {
-      if (e.error() == err::XPDY0002)
+      if (e.diagnostic() == err::XPDY0002)
       {
         throw XQUERY_EXCEPTION(
           zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM,
@@ -2324,7 +2324,7 @@ void* begin_visit(const BaseURIDecl& v)
   }
   catch (ZorbaException& e)
   {
-    e.set_error( err::XQST0046 );
+    e.set_diagnostic( err::XQST0046 );
     set_source( e, loc );
     throw;
   }
@@ -2521,7 +2521,7 @@ void* begin_visit(const SchemaImport& v)
       }
       catch (ZorbaException const& e) 
       {
-        if (e.error() != err::XQST0059 || *lIter != lNsURI) 
+        if (e.diagnostic() != err::XQST0059 || *lIter != lNsURI) 
         {
           // If this exception is a "resource not found", then we need
           // to continue on and try the next candidate unless this was
@@ -7040,7 +7040,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
         }
         else
         {
-          if (e.error() == err::FORG0001)
+          if (e.diagnostic() == err::FORG0001)
             throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
           else
             throw XQUERY_EXCEPTION(err::XPST0081, ERROR_LOC(loc));
@@ -8477,7 +8477,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   }
   catch (const ZorbaException& e)
   {
-    if (e.error() == err::XPST0008 && theHaveModuleImportCycle)
+    if (e.diagnostic() == err::XPST0008 && theHaveModuleImportCycle)
     {
       store::Item_t qnameItem;
       expand_no_default_qname(qnameItem, v.get_name(), loc);

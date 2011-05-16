@@ -24,7 +24,7 @@
 # include <unistd.h>                    /* for chdir(2) */
 #endif /* WIN32 */
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "ascii_util.h"
 #include "fs_util.h"

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_ZORBA_EXCEPTION_H
 #define ZORBA_ZORBA_EXCEPTION_H
@@ -26,36 +27,38 @@ namespace zorba {
 /**
  * Makes a ZorbaException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error message parameters.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
+ * @param diagnostic The diagnostic.
+ * @param params The message parameters.
  * @return Returns a new ZorbaException.
  */
-ZorbaException make_zorba_exception( char const *throw_file,
-                                     ZorbaException::line_type throw_line,
-                                     Error const &error,
-                                     internal::err::parameters const &params =
-                                      internal::err::parameters::empty );
+ZorbaException
+make_zorba_exception( char const *raise_file,
+                      ZorbaException::line_type raise_line,
+                      Diagnostic const &diagnostic,
+                      internal::diagnostic::parameters const &params =
+                        internal::diagnostic::parameters::empty );
 
 /**
  * Dynamically allocates a Zorbaxception.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error message parameters.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
+ * @param diagnostic The diagnostic.
+ * @param params The message parameters.
  * @return Returns a new Zorbaxception.
  */
-ZorbaException* new_zorba_exception( char const *throw_file,
-                                     ZorbaException::line_type throw_line,
-                                     Error const &error,
-                                     internal::err::parameters const &params =
-                                      internal::err::parameters::empty );
+ZorbaException*
+new_zorba_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
+                     Diagnostic const &diagnostic,
+                     internal::diagnostic::parameters const &params =
+                      internal::diagnostic::parameters::empty );
 
 /**
  * The macro to use to create a ZorbaException.

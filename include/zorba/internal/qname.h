@@ -18,7 +18,7 @@
 #define ZORBA_INTERNAL_QNAME_H
 
 #include <zorba/config.h>
-#include <zorba/err.h>
+#include <zorba/diagnostic.h>
 
 #include "ztd.h"
 
@@ -31,7 +31,8 @@ namespace internal {
 namespace serialization {
   class Archiver;
   template<typename StringType>
-  void operator&( serialization::Archiver&, internal::VariableQName<StringType>& );
+  void operator&( serialization::Archiver&,
+                  internal::VariableQName<StringType>& );
 }
 
 namespace internal {
@@ -39,8 +40,8 @@ namespace internal {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %FixedQName is-an err::QName that has a fixed namespace and prefix, but a
- * variable local-name.
+ * A %FixedQName is-an diagnostic::QName that has a fixed namespace and prefix,
+ * but a variable local-name.
  *
  * @tparam QNameTraits A class that contains static \c NAMESPACE and \c PREFIX
  * members.
@@ -50,7 +51,7 @@ namespace internal {
  * for the entire lifetime of this object.
  */
 template<class QNameTraits,typename LocalnameType>
-class ZORBA_DLL_PUBLIC FixedQName : public zorba::err::QName {
+class ZORBA_DLL_PUBLIC FixedQName : public zorba::diagnostic::QName {
 public:
 
   /**
@@ -71,8 +72,8 @@ private:
 };
 
 /**
- * A %VariableQName is-an err::QName that has a variable namespace, prefix, and
- * local-name.
+ * A %VariableQName is-an diagnostic::QName that has a variable namespace,
+ * prefix, and local-name.
  *
  * @tparam StringType The type to use to store the namespace, prefix, and
  * local-name.  Note that this can be either a string type or <code>char
@@ -80,7 +81,7 @@ private:
  * pointed-to C strings will exist for the entire lifetime of this object.
  */
 template<typename StringType>
-class ZORBA_DLL_PUBLIC VariableQName : public zorba::err::QName {
+class ZORBA_DLL_PUBLIC VariableQName : public zorba::diagnostic::QName {
 public:
 
   /**
@@ -134,14 +135,14 @@ public:
    *
    * @return Returns said kind.
    */
-  zorba::err::category error_category() const;
+  zorba::diagnostic::category category() const;
 
   /**
    * Gets the kind of error this QName represents.
    *
    * @return Returns said kind.
    */
-  zorba::err::kind error_kind() const;
+  zorba::diagnostic::kind kind() const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -169,14 +170,49 @@ public:
    *
    * @return Returns said kind.
    */
-  zorba::err::category error_category() const;
+  zorba::diagnostic::category category() const;
 
   /**
    * Gets the kind of error this QName represents.
    *
    * @return Returns said kind.
    */
-  zorba::err::kind error_kind() const;
+  zorba::diagnostic::kind kind() const;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * An %ZorbaWarningQName is-a FixedQName for Zorba warnings.
+ */
+class ZORBA_DLL_PUBLIC ZorbaWarningQName :
+  public FixedQName<ZorbaWarningQName,char const*>
+{
+  typedef FixedQName<ZorbaWarningQName,char const*> base_type;
+public:
+  static char const NAMESPACE[];
+  static char const PREFIX[];
+
+  /**
+   * Constructs a %ZorbaWarningQName.
+   *
+   * @param localname The local-name of the warning.
+   */
+  ZorbaWarningQName( char const *localname ) : base_type( localname ) { }
+
+  /**
+   * Gets the category of warning this QName represents.
+   *
+   * @return Returns said kind.
+   */
+  zorba::diagnostic::category category() const;
+
+  /**
+   * Gets the kind of warning this QName represents.
+   *
+   * @return Returns said kind.
+   */
+  zorba::diagnostic::kind kind() const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

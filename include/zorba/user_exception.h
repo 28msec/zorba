@@ -43,10 +43,10 @@ typedef std::vector<Item> error_object_type;
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param ns The error's namespace.
  * @param prefix The error's prefix.
  * @param localname The error's local-name.
@@ -56,10 +56,10 @@ typedef std::vector<Item> error_object_type;
  * @return Returns a new UserException.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_4CC_EL_EOT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      char const *ns, char const *prefix, char const *localname,
-                     char const *description, err::location const &loc,
+                     char const *description, diagnostic::location const &loc,
                      error_object_type *error_object = 0 );
 
 /**
@@ -68,10 +68,10 @@ make_user_exception( char const *throw_file,
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param error The error.
  * @param description The error description.
  * @param loc The XQuery source-code location.
@@ -79,9 +79,10 @@ make_user_exception( char const *throw_file,
  * @return Returns a new UserException.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_CC_EL_EOT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line, Error const &error,
-                     char const *description, err::location const &loc,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
+                     Error const &error, char const *description,
+                     diagnostic::location const &loc,
                      error_object_type *error_object = 0 );
 
 } // namespace internal
@@ -123,40 +124,40 @@ private:
    * @param ns The namespace of the error.
    * @param prefix The prefix of the error.
    * @param locaname The local-name of the error.
-   * @param throw_file The source-code file name whence the exception was
-   * thrown.
-   * @param throw_line The source-code line number whence the exception was
-   * thrown.
+   * @param raise_file The source-code file name whence the exception was
+   * raised.
+   * @param raise_line The source-code line number whence the exception was
+   * raised.
    * @param description The error description.
    * @param error_object The error object.
    */
   UserException( char const *ns, char const *prefix, char const *localname,
-                 char const *throw_file, line_type throw_line,
+                 char const *raise_file, line_type raise_line,
                  char const *description, error_object_type *error_object );
 
   /**
    * Constructs a %UserException.
    *
    * @param error The error.
-   * @param throw_file The source-code file name whence the exception was
-   * thrown.
-   * @param throw_line The source-code line number whence the exception was
-   * thrown.
+   * @param raise_file The source-code file name whence the exception was
+   * raised.
+   * @param raise_line The source-code line number whence the exception was
+   * raised.
    * @param description The error description.
    * @param error_object The error object.
    */
   UserException( Error const &error,
-                 char const *throw_file, line_type throw_line,
+                 char const *raise_file, line_type raise_line,
                  char const *description, error_object_type *error_object );
 
   friend UserException internal::make_user_exception(
     char const*, line_type, char const*, char const*, char const*, char const*,
-    internal::err::location const&, error_object_type*
+    internal::diagnostic::location const&, error_object_type*
   );
 
   friend UserException internal::make_user_exception(
     char const*, line_type, Error const&, char const*,
-    internal::err::location const&, error_object_type*
+    internal::diagnostic::location const&, error_object_type*
   );
 
   // for plan serialization
@@ -194,14 +195,14 @@ namespace internal {
  * This function should not be called directly.
  * Instead, the \c DEFAULT_USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line );
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line );
 
 /**
  * \internal
@@ -214,15 +215,15 @@ make_user_exception( char const *throw_file,
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param error The error code expressed as a QName.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_I_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      Item const &error );
 
 /**
@@ -236,15 +237,15 @@ make_user_exception( char const *throw_file,
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param error The error code expressed as a QName.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      Error const &error );
 
 /**
@@ -259,16 +260,16 @@ make_user_exception( char const *throw_file,
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param error The error code expressed as a QName.
  * @param description The error description.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_I_S_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      Item const &error, String const &description );
 
 /**
@@ -284,17 +285,17 @@ make_user_exception( char const *throw_file,
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param error The error code expressed as a QName.
  * @param description The error description.
  * @param error_object The error object.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_I_S_IS_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      Item const &error, String const &description,
                      ItemSequence_t const &error_object );
 
@@ -311,17 +312,17 @@ make_user_exception( char const *throw_file,
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param error The error code expressed as a QName.
  * @param description The error description.
  * @param error_object The error object.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_S_IS_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      Error const &error, String const &description,
                      ItemSequence_t const &error_object );
 
@@ -338,17 +339,17 @@ make_user_exception( char const *throw_file,
  * This function should not be called directly.
  * Instead, the \c USER_EXCEPTION macro should be used.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.           
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.           
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
  * @param error The error code expressed as a QName.
  * @param description The error description.
  * @param error_object The error object.
  */
 ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_S_EOT_X
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
+make_user_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
                      Error const &error, String const &description,
                      error_object_type *error_object = 0 );
 

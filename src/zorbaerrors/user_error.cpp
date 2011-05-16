@@ -17,42 +17,7 @@
 #include <zorba/error.h>
 #include "zorbaserialization/serialization_engine.h"
 
-#include "dict.h"
-
 namespace zorba {
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace internal {
-
-SystemErrorBase::map_type& SystemErrorBase::get_map() {
-  static map_type m;
-  return m;
-}
-
-} // namespace internal
-
-///////////////////////////////////////////////////////////////////////////////
-
-Error::~Error() {
-  // out-of-line since it's virtual
-}
-
-void Error::destroy() const {
-  delete this;
-}
-
-err::category Error::category() const {
-  return err::UNKNOWN_CATEGORY;
-}
-
-err::kind Error::kind() const {
-  return err::UNKNOWN_KIND;
-}
-
-char const* Error::message() const {
-  return err::dict::lookup( qname().localname() );
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -62,7 +27,7 @@ UserError::UserError( char const *ns, char const *prefix,
 {
 }
 
-UserError::UserError(zorba::serialization::Archiver &ar) : qname_(ar)
+UserError::UserError( serialization::Archiver &ar ) : qname_( ar )
 {
 }
 
@@ -70,16 +35,16 @@ UserError::~UserError() {
   // out-of-line since it's virtual
 }
 
-Error const* UserError::clone() const {
+Diagnostic const* UserError::clone() const {
   return new UserError( *this );
 }
 
-err::QName const& UserError::qname() const {
+diagnostic::QName const& UserError::qname() const {
   return qname_;
 }
 
-err::category UserError::category() const {
-  return err::XQUERY_USER_DEFINED;
+diagnostic::category UserError::category() const {
+  return diagnostic::XQUERY_USER_DEFINED;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@
 
 #include "functions/function.h"
 #include "store/api/item.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbautils/hashmap.h"
 
 #include "archiver.h"

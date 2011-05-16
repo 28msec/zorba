@@ -44,7 +44,7 @@
     return Error::handle_and_convert_queryexception(me->theErrorHandler, qe); \
   }                                                                     \
   catch (ZorbaException const &e) {                                     \
-    return Error::convert_xquery_error(e.error());                      \
+    return Error::convert_xquery_error(e.diagnostic());                 \
   } catch (...) {                                                       \
     return XQC_INTERNAL_ERROR;                                          \
   }                                                                     \

@@ -41,7 +41,7 @@
 
 #include "context/static_context.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 #include "util/string_util.h"
 
@@ -985,7 +985,7 @@ void operator&(Archiver &ar, zorba::store::TempSeq *obj)
   );
 }
 
-void operator&(Archiver &ar, const Error *&obj)
+void operator&(Archiver &ar, const Diagnostic *&obj)
 {
   if(ar.is_serializing_out())
   {
@@ -1000,16 +1000,16 @@ void operator&(Archiver &ar, const Error *&obj)
     }
     bool is_ref;
     assert(!ar.is_serialize_base_class());
-    Error *err = const_cast<Error*>(obj);
-    UserError *user_err = dynamic_cast<UserError*>(err);
-    XQueryError *xquery_err = dynamic_cast<XQueryError*>(err);
-    ZorbaError *zorba_err = dynamic_cast<ZorbaError*>(err);
+    Diagnostic *diagnostic = const_cast<Diagnostic*>(obj);
+    UserError *user_err = dynamic_cast<UserError*>(diagnostic);
+    XQueryErrorCode *xquery_err = dynamic_cast<XQueryErrorCode*>(diagnostic);
+    ZorbaErrorCode *zorba_err = dynamic_cast<ZorbaErrorCode*>(diagnostic);
     char err_type[20];
     sprintf(err_type, "u%dx%dz%d", 
             user_err != NULL ? 1 : 0,
             xquery_err != NULL ? 1 : 0,
             zorba_err != NULL ? 1 : 0);
-    is_ref = ar.add_compound_field("Error*", 
+    is_ref = ar.add_compound_field("Diagnostic*", 
                                    1, 
                                    !FIELD_IS_CLASS, err_type, 
                                    obj, 
@@ -1023,7 +1023,7 @@ void operator&(Archiver &ar, const Error *&obj)
       else
       {
         ar.set_is_temp_field(true);
-        const err::QName   &errqn = obj->qname();
+        const diagnostic::QName   &errqn = obj->qname();
         char*   strtemp = (char*)errqn.localname();
         ar & strtemp;
         ar.set_is_temp_field(false);
@@ -1046,7 +1046,7 @@ void operator&(Archiver &ar, const Error *&obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "Error*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    ar.check_nonclass_field(retval, type, "Diagnostic*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       assert(!ar.is_serialize_base_class());
@@ -1070,7 +1070,7 @@ void operator&(Archiver &ar, const Error *&obj)
         char*   local;
         ar & local;
         ar.set_is_temp_field(false);
-        obj = (Error*)internal::SystemErrorBase::find(local);
+        obj = (Diagnostic*)internal::SystemDiagnosticBase::find(local);
         ZORBA_ASSERT(obj);
       }
       else
@@ -1080,12 +1080,12 @@ void operator&(Archiver &ar, const Error *&obj)
       ar.register_reference(id, field_treat, obj);
       ar.read_end_current_level();
     }
-    else if((obj = (Error*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    else if((obj = (Diagnostic*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
     {
     }
     else
     {
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "Error*", referencing);
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "Diagnostic*", referencing);
     }
   }
 
@@ -1119,9 +1119,9 @@ void operator&(Archiver &ar, ZorbaException *&obj)
                                    ARCHIVE_FIELD_IS_PTR);
     if(!is_ref)
     {
-      ar & obj->error_;
-      ar & obj->throw_file_;
-      ar & obj->throw_line_;
+      ar & obj->diagnostic_;
+      ar & obj->raise_file_;
+      ar & obj->raise_line_;
       ar & obj->message_;
 
       if(xquery_ex)
@@ -1179,9 +1179,9 @@ void operator&(Archiver &ar, ZorbaException *&obj)
       else
         obj = new ZorbaException(ar);
 
-      ar & obj->error_;
-      ar & obj->throw_file_;
-      ar & obj->throw_line_;
+      ar & obj->diagnostic_;
+      ar & obj->raise_file_;
+      ar & obj->raise_line_;
       ar & obj->message_;
 
       if(xquery_ex)
@@ -1208,12 +1208,12 @@ void operator&(Archiver &ar, ZorbaException *&obj)
 
 }
 
-void operator&(Archiver &ar, zorba::internal::err::location &obj)
+void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj)
 {
   if(ar.is_serializing_out())
   {
     bool is_ref;
-    is_ref = ar.add_compound_field("internal::err::location", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    is_ref = ar.add_compound_field("internal::diagnostic::location", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
       ar & obj.file_;
@@ -1240,7 +1240,7 @@ void operator&(Archiver &ar, zorba::internal::err::location &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_nonclass_field(retval, type, "internal::err::location", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(retval, type, "internal::diagnostic::location", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.file_;
     ar & obj.line_;

@@ -99,7 +99,7 @@ test_disabled_function(Zorba* lZorba)
     return 1; // must raise a function not found exception
   } catch (ZorbaException const& e) {
     // fail if any other exception
-    if (e.error() != err::XPST0017) {
+    if (e.diagnostic() != err::XPST0017) {
       std::cerr << e << std::endl;
       return 2;
     }

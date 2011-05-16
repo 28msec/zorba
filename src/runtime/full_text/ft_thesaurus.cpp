@@ -22,7 +22,7 @@
 #include "util/less.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/dict.h"
 
 #include "ft_thesaurus.h"

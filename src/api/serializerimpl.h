@@ -19,7 +19,7 @@
 
 #include <zorba/serializer.h>
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "api/serialization/serializer.h"
 
@@ -33,7 +33,7 @@ namespace zorba {
   class SerializerImpl : public Serializer
   {
     private:
-      ErrorManager theErrorManager;
+      XQueryDiagnostics theXQueryDiagnostics;
       ErrorHandler* theErrorHandler;
       bool                own_error_handler;
       mutable serializer theInternalSerializer;

@@ -132,7 +132,7 @@ ext_in_opt(int argc, char* argv[])
   }
   catch (XQueryException& qe)
   {
-    if (qe.error() == err::XPTY0004)
+    if (qe.diagnostic() == err::XPTY0004)
     {
       // the error XPTY0004 is the correct result of the query
       lCorrectError = true;

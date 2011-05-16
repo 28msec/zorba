@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include "zorbatypes/URI.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "context/static_context.h"
 #include "api/serialization/serializer.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -122,7 +122,7 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 
   {
     store::Iterator_t lIterWrapper = new PlanIteratorWrapper(theChildren[0], aPlanState);
-    zorba::serializer lSerializer(aPlanState.theCompilerCB->theErrorManager);
+    zorba::serializer lSerializer(aPlanState.theCompilerCB->theXQueryDiagnostics);
 
     // defaults
     lSerializer.setParameter("omit-xml-declaration", "yes");

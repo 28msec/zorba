@@ -35,7 +35,7 @@
 #include "store/api/store.h"
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbamisc/ns_consts.h"
 #include "context/static_context.h"
 

@@ -22,7 +22,7 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/fatal.h"
 #include "zorbatypes/rchandle.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 
 #include "store/api/pul.h"
@@ -450,24 +450,24 @@ ulong SimpleStore::createTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader* SimpleStore::getXmlLoader(ErrorManager* aErrorManager,
+XmlLoader* SimpleStore::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
     const store::LoadProperties& loadProperties)
 {
 #ifndef ZORBA_STORE_MSDOM
 
   if ( loadProperties.getEnableDtd() )
     return new DtdXmlLoader(theItemFactory,
-                            aErrorManager,
+                            aXQueryDiagnostics,
                             store::Properties::instance()->buildDataguide());
   else
     return new FastXmlLoader(theItemFactory,
-                             aErrorManager,
+                             aXQueryDiagnostics,
                              store::Properties::instance()->buildDataguide());
 
 #else
 
   return new SimpleXmlLoader(theItemFactory,
-                            aErrorManager,
+                            aXQueryDiagnostics,
                             (store::Properties::instance())->buildDataguide());
 #endif
 }
@@ -1080,14 +1080,14 @@ store::Item_t SimpleStore::loadDocument(
     return root.getp();
   }
 
-  ErrorManager lErrorManager;
-  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager, loadProperties));
+  XQueryDiagnostics lXQueryDiagnostics;
+  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lXQueryDiagnostics, loadProperties));
 
   root = loader->loadXml(baseUri, docUri, stream);
 
-  if (lErrorManager.has_errors())
+  if (!lXQueryDiagnostics.errors().empty())
   {
-    lErrorManager.errors().front()->polymorphic_throw();
+    lXQueryDiagnostics.errors().front()->polymorphic_throw();
   }
 
   if (root != NULL && loadProperties.getStoreDocument())

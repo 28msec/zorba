@@ -36,7 +36,7 @@ namespace serialization {
  */
 class ZORBA_DLL_PUBLIC XQueryException : public ZorbaException {
 public:
-  typedef internal::err::location::column_type column_type;
+  typedef internal::diagnostic::location::column_type column_type;
 
   /**
    * Copy-constructs a %XQueryException.
@@ -133,27 +133,29 @@ private:
   /**
    * Constructs an %XQueryException.
    *
-   * @param error The error.
-   * @param throw_file The C++ source-code file name whence the exception was
-   * thrown.
-   * @param throw_line The C++ source-code line number whence the exception was
-   * thrown.
-   * @param message The error message.
+   * @param diagnostic The diagnostic.
+   * @param raise_file The C++ source-code file name whence the exception was
+   * raised.
+   * @param raise_line The C++ source-code line number whence the exception was
+   * raised.
+   * @param message The diagnostic message.
    */
-  XQueryException( Error const &error, char const *throw_file,
-                   line_type throw_line, char const *message );
+  XQueryException( Diagnostic const &diagnostic, char const *raise_file,
+                   line_type raise_line, char const *message );
 
-  internal::err::location source_loc_;
+  internal::diagnostic::location source_loc_;
   XQueryStackTrace query_trace_;
 
   friend XQueryException make_xquery_exception(
-    char const*, ZorbaException::line_type, Error const&,
-    internal::err::parameters const&, internal::err::location const&
+    char const*, ZorbaException::line_type, Diagnostic const&,
+    internal::diagnostic::parameters const&,
+    internal::diagnostic::location const&
   );
 
   friend XQueryException* new_xquery_exception(
-    char const*, ZorbaException::line_type, Error const&,
-    internal::err::parameters const&, internal::err::location const&
+    char const*, ZorbaException::line_type, Diagnostic const&,
+    internal::diagnostic::parameters const&,
+    internal::diagnostic::location const&
   );
 
   friend void set_source( ZorbaException&, char const*, line_type, column_type,

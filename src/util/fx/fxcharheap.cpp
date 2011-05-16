@@ -37,7 +37,7 @@
 
 #include <zorba/util/file.h>
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 using namespace std;
 

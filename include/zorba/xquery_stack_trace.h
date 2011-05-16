@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <zorba/err.h>
+#include <zorba/internal/qname.h>
 
 namespace zorba {
 

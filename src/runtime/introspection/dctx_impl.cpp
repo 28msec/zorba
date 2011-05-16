@@ -17,7 +17,7 @@
 #include <fstream>
 
 #include "zorbaerrors/assert.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
 
@@ -73,7 +73,7 @@ bool IsAvailableCollectionIterator::nextImpl(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() != zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST)
+    if (e.diagnostic() != zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST)
     {
       throw;
     }

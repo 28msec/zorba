@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_ERR_DICT_H
-#define ZORBA_ERR_DICT_H
+#ifndef ZORBA_DIAGNOSTIC_DICT_H
+#define ZORBA_DIAGNOSTIC_DICT_H
 
 namespace zorba {
-namespace err {
+namespace diagnostic {
 namespace dict {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ char const* lookup( StringType const &key ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace dict
-} // namespace err
+} // namespace diagnostic
 } // namespace zorba
-#endif /* ZORBA_ERR_DICT_H */
+#endif /* ZORBA_DIAGNOSTIC_DICT_H */
 /* vim:set et sw=2 ts=2: */

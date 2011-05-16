@@ -248,7 +248,7 @@ external_function_errors_1(Zorba* aZorba)
   catch (ZorbaException& ex) 
   {
     std::cerr << ex << std::endl;
-    if (!(ex.error() == err::FOER0000))
+    if (!(ex.diagnostic() == err::FOER0000))
       return false;
     return true; // type exception expected
   }

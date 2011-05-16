@@ -25,7 +25,7 @@
 #endif
 
 #include "compiler/parser/query_loc.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 namespace zorba
 {
@@ -91,8 +91,8 @@ void LoadSchemaErrorHandler::warning(const XERCES_CPP_NAMESPACE::SAXParseExcepti
                             << ", char " << e.getColumnNumber()
                             << "\n  Message: " << StrX(e.getMessage())
                             << XERCES_STD_QUALIFIER endl;
-  //ErrorManager errorManager;
-  //ZORBA_WARNING(&errorManager, XQST0059, StrX(e.getMessage()), _loc);
+  //XQueryDiagnostics xqueryDiagnostics;
+  //ZORBA_WARNING(&xqueryDiagnostics, XQST0059, StrX(e.getMessage()), _loc);
 }
 
 void LoadSchemaErrorHandler::resetErrors()

@@ -29,7 +29,7 @@
 #include "api/vectoriterator.h"
 
 #include "zorbautils/fatal.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
 

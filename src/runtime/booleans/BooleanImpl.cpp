@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/datetime.h"
@@ -508,7 +508,7 @@ bool CompareIterator::valueComparison(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() == zerr::ZSTR0041_NAN_COMPARISON)
+    if (e.diagnostic() == zerr::ZSTR0041_NAN_COMPARISON)
       return false;
     throw;
   }
@@ -676,7 +676,7 @@ bool CompareIterator::generalComparison(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() == zerr::ZSTR0041_NAN_COMPARISON)
+    if (e.diagnostic() == zerr::ZSTR0041_NAN_COMPARISON)
       return false;
     throw;
   }
@@ -966,7 +966,7 @@ long CompareIterator::compare(
   catch(ZorbaException const& e)
   {
     // For example, two QName items do not have an order relationship.
-    if (e.error() == zerr::ZSTR0040_TYPE_ERROR)
+    if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
     {
       throw XQUERY_EXCEPTION(
         err::XPTY0004,
@@ -1205,7 +1205,7 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
       }
       catch (ZorbaException const& e)
       {
-        if (e.error() == err::XPTY0004)
+        if (e.diagnostic() == err::XPTY0004)
           are_equivalent = false;
         else
           throw;

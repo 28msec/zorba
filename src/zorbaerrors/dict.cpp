@@ -28,7 +28,7 @@ using namespace std;
 using namespace zorba::locale;
 
 namespace zorba {
-namespace err {
+namespace diagnostic {
 namespace dict {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -82,6 +82,6 @@ char const* lookup( char const *key ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace dict
-} // namespace err
+} // namespace diagnostic
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

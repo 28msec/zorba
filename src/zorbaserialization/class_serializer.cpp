@@ -19,7 +19,7 @@
 #include "zorbaserialization/base64impl.h"
 #include "zorbaserialization/mem_archiver.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbautils/hashmap.h"
 
 #include "zorbatypes/floatimpl.h"

@@ -88,7 +88,7 @@ namespace zorba {
         aOut << "<errors>";
         if( aIndent ) aOut << std::endl << "  ";
         //code
-        aOut << "<error code='" << aException.error().qname() << "'>";
+        aOut << "<error code='" << aException.diagnostic().qname() << "'>";
         if( aIndent ) aOut << std::endl << "    ";
         //location
         aOut << "<location module='" << aException.source_uri();

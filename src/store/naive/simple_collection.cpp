@@ -15,7 +15,7 @@
  */
 
 #include "zorbaerrors/assert.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_index.h"
@@ -81,19 +81,19 @@ store::Item_t SimpleCollection::loadDocument(
     std::istream& stream,
     long position)
 {
-  ErrorManager lErrorManager;
+  XQueryDiagnostics lXQueryDiagnostics;
   store::LoadProperties lLoadProperties;
 
-  std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager,
+  std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lXQueryDiagnostics,
                                                            lLoadProperties));
   zstring docUri;
   zstring baseUri;
 
   store::Item_t root = loader->loadXml(baseUri, docUri, stream);
 
-  if (lErrorManager.has_errors()) 
+  if (!lXQueryDiagnostics.errors().empty()) 
   {
-    lErrorManager.errors().front()->polymorphic_throw();
+    lXQueryDiagnostics.errors().front()->polymorphic_throw();
   }
 
   if (root != NULL)

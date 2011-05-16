@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_ERR_API_H
-#define ZORBA_ERR_API_H
+#ifndef ZORBA_DIAGNOSTIC_API_H
+#define ZORBA_DIAGNOSTIC_API_H
 
 #include <cstring>
 #include <iostream>
@@ -23,7 +23,7 @@
 #include <zorba/config.h>
 
 namespace zorba {
-namespace err {
+namespace diagnostic {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -221,7 +221,7 @@ bool operator!=( StringType const &q1, QName const &q2 ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An err::category is the category of error.
+ * An diagnostic::category is the category of error.
  */
 enum category {
   UNKNOWN_CATEGORY,                     // must have integer value of 0
@@ -242,7 +242,7 @@ enum category {
 };
 
 /**
- * Emits the given err::category to the given ostream.
+ * Emits the given diagnostic::category to the given ostream.
  *
  * @param o The ostream to emit to.
  * @param c The category to emit.
@@ -252,7 +252,7 @@ ZORBA_DLL_PUBLIC
 std::ostream& operator<<( std::ostream &o, category c );
 
 /**
- * An err::kind is the kind of error.
+ * An diagnostic::kind is the kind of error.
  * See: http://www.w3.org/TR/xquery-30/#id-kinds-of-errors
  */
 enum kind {
@@ -287,7 +287,7 @@ enum kind {
 };
 
 /**
- * Emits the given err::kind to the given ostream.
+ * Emits the given diagnostic::kind to the given ostream.
  *
  * @param o The ostream to emit to.
  * @param k The kind to emit.
@@ -298,11 +298,96 @@ std::ostream& operator<<( std::ostream &o, kind k );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace err
+} // namespace diagnostic
 } // namespace zorba
 
-#include <zorba/internal/err.h>
 #include <zorba/internal/qname.h>
 
-#endif /* ZORBA_ERR_API_H */
+namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A %Diagnostic is the base class for all Zorba diagnostics (errors and
+ * warnings).
+ */
+class ZORBA_DLL_PUBLIC Diagnostic {
+public:
+  /**
+   * Gets the QName for this diagnostic.
+   *
+   * @return Returns said QName.
+   */
+  virtual diagnostic::QName const& qname() const = 0;
+
+  /**
+   * Gets the category of this diagnostic.
+   *
+   * @return Returns said category.
+   */
+  virtual diagnostic::category category() const;
+
+  /**
+   * Gets the kind of this diagnostic.
+   *
+   * @return Returns said kind.
+   */
+  virtual diagnostic::kind kind() const;
+
+  /**
+   * Gets the message of this diagnostic.
+   *
+   * @return Returns said message.
+   */
+  virtual char const* message() const;
+
+protected:
+  virtual ~Diagnostic();
+
+  virtual Diagnostic const* clone() const = 0;
+
+  /**
+   * Destroys a %Diagnostic.  This is the only way a %Diagnostic should be
+   * destroyed.
+   */
+  virtual void destroy() const;
+
+  // Only ZorbaException may call clone() and destroy().
+  friend class ZorbaException;
+};
+
+/**
+ * Compares two diagnostics for equality.
+ *
+ * @param d1 The first diagnostic.
+ * @param d2 The second diagnostic.
+ * @return Returns \c true only if the diagnostics' QNames are equal.
+ */
+inline bool operator==( Diagnostic const &d1, Diagnostic const &d2 ) {
+  return d1.qname() == d2.qname();
+}
+
+/**
+ * Compares two diagnostics for inequality.
+ *
+ * @param d1 The first diagnostic.
+ * @param d2 The second diagnostic.
+ * @return Returns \c true only if the diagnostics' QNames are not equal.
+ */
+inline bool operator!=( Diagnostic const &d1, Diagnostic const &d2 ) {
+  return !(d1 == d2);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace zorba
+
+#include <zorba/internal/diagnostic.h>
+
+#endif /* ZORBA_DIAGNOSTIC_API_H */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set et sw=2 ts=2: */

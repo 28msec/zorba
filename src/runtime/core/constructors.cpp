@@ -16,7 +16,7 @@
 
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/assert.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
 
@@ -839,7 +839,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() == err::FORG0001)
+    if (e.diagnostic() == err::FORG0001)
       throw XQUERY_EXCEPTION(err::XQDY0041, ERROR_LOC(loc));
     else
       throw;
@@ -1324,7 +1324,7 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() != err::XPTY0004)
+    if (e.diagnostic() != err::XPTY0004)
     {
       zstring name = result->getStringValue();
       if (name.find(":") != zstring::npos && name.substr(0, name.find(":")) == "xmlns")

@@ -44,7 +44,7 @@ using namespace zorba;
   catch (XQueryException const& qe) {                                   \
     return Error::handle_and_convert_queryexception(handler, qe);       \
   } catch (ZorbaException const &ze) {                                  \
-    return Error::convert_xquery_error(ze.error());                     \
+    return Error::convert_xquery_error(ze.diagnostic());                \
   } catch (...) {                                                       \
     return XQC_INTERNAL_ERROR;                                          \
   }                                                                     \

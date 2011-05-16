@@ -24,7 +24,7 @@
 #include "types/typemanager.h"
 
 #include "system/globalenv.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/pul.h"

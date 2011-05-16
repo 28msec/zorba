@@ -23,6 +23,7 @@ using namespace zorba;
 namespace zorbac {
 
 XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
+  using namespace zorba::diagnostic;
   using namespace zorba::err;
   using namespace zorba::zerr;
 
@@ -142,9 +143,9 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
 
 XQC_Error Error::handle_and_convert_queryexception( XQC_ErrorHandler *handler,
                                                     XQueryException const &xe ) {
-  XQC_Error const xqc_error = Error::convert_xquery_error( xe.error() );
+  XQC_Error const xqc_error = Error::convert_xquery_error( xe.diagnostic() );
   if ( handler ) {
-    err::QName const &qname = xe.error().qname();
+    diagnostic::QName const &qname = xe.diagnostic().qname();
     handler->error(
       handler,
       xqc_error,

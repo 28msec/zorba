@@ -25,7 +25,7 @@
 namespace zorba 
 {
 
-class ErrorManager;
+class XQueryDiagnostics;
   
 namespace types 
 {

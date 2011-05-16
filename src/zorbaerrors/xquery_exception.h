@@ -19,7 +19,7 @@
 
 #include <zorba/xquery_exception.h>
 #include "compiler/parser/query_loc.h"
-#include "err.h"
+#include "diagnostic.h"
 
 namespace zorba {
 
@@ -28,110 +28,111 @@ namespace zorba {
 /**
  * Makes an XQueryException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error parameters.
- * @param loc The error XQuery source-code location.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
+ * @param diagnostic The diagnostic.
+ * @param params The diagnostic parameters.
+ * @param loc The XQuery source-code location.
  * @return Returns a new XQueryException.
  */
 XQueryException
-make_xquery_exception( char const *throw_file,
-                       ZorbaException::line_type throw_line,
-                       Error const &error,
-                       internal::err::parameters const &params,
-                       internal::err::location const &loc =
-                        internal::err::location::empty );
+make_xquery_exception( char const *raise_file,
+                       ZorbaException::line_type raise_line,
+                       Diagnostic const &diagnostic,
+                       internal::diagnostic::parameters const &params,
+                       internal::diagnostic::location const &loc =
+                        internal::diagnostic::location::empty );
 
 /**
  * Makes an XQueryException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param loc The error XQuery source-code location.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
+ * @param diagnostic The diagnostic.
+ * @param loc The diagnostic XQuery source-code location.
  * @return Returns a new XQueryException.
  */
 inline XQueryException
-make_xquery_exception( char const *throw_file,
-                       ZorbaException::line_type throw_line,
-                       Error const &error,
-                       internal::err::location const &loc =
-                        internal::err::location::empty ) {
+make_xquery_exception( char const *raise_file,
+                       ZorbaException::line_type raise_line,
+                       Diagnostic const &diagnostic,
+                       internal::diagnostic::location const &loc =
+                        internal::diagnostic::location::empty ) {
   return make_xquery_exception(
-    throw_file, throw_line, error, internal::err::parameters::empty, loc
+    raise_file, raise_line, diagnostic,
+    internal::diagnostic::parameters::empty, loc
   );
 }
 
 /**
  * Dynamically allocates an XQueryException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param params The error parameters.
- * @param loc The error XQuery source-code location.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
+ * @param diagnostic The diagnostic.
+ * @param params The diagnostic parameters.
+ * @param loc The diagnostic XQuery source-code location.
  * @return Returns a new XQueryException.
  */
 XQueryException*
-new_xquery_exception( char const *throw_file,
-                      ZorbaException::line_type throw_line,
-                      Error const &error,
-                      internal::err::parameters const &params,
-                      internal::err::location const &loc =
-                        internal::err::location::empty );
+new_xquery_exception( char const *raise_file,
+                      ZorbaException::line_type raise_line,
+                      Diagnostic const &diagnostic,
+                      internal::diagnostic::parameters const &params,
+                      internal::diagnostic::location const &loc =
+                        internal::diagnostic::location::empty );
 
 /**
  * Dynamically allocates an XQueryException.
  *
- * @param throw_file The C++ source-code file name whence the exception was
- * thrown.
- * @param throw_line The C++ source-code line number whence the exception was
- * thrown.
- * @param error The error.
- * @param loc The error XQuery source-code location.
+ * @param raise_file The C++ source-code file name whence the exception was
+ * raised.
+ * @param raise_line The C++ source-code line number whence the exception was
+ * raised.
+ * @param diagnostic The diagnostic.
+ * @param loc The diagnostic XQuery source-code location.
  * @return Returns a new XQueryException.
  */
 inline XQueryException*
-new_xquery_exception( char const *throw_file,
-                      ZorbaException::line_type throw_line,
-                      Error const &error,
-                      internal::err::location const &loc =
-                        internal::err::location::empty ) {
+new_xquery_exception( char const *raise_file,
+                      ZorbaException::line_type raise_line,
+                      Diagnostic const &diagnostic,
+                      internal::diagnostic::location const &loc =
+                        internal::diagnostic::location::empty ) {
   return new_xquery_exception(
-    throw_file, throw_line, error, internal::err::parameters::empty, loc
+    raise_file, raise_line, diagnostic,
+    internal::diagnostic::parameters::empty, loc
   );
 }
 
 /**
- * Creates an XQueryException using the given Error variable.
+ * Creates an XQueryException using the given Diagnostic variable.
  * \hideinitializer
  */
 #define XQUERY_EXCEPTION_VAR(...) \
   ::zorba::make_xquery_exception( __FILE__, __LINE__, __VA_ARGS__ )
 
 /**
- * Creates an XQueryException using the local name of an error.
+ * Creates an XQueryException.
  * \hideinitializer
  */
 #define XQUERY_EXCEPTION(...) \
   XQUERY_EXCEPTION_VAR( ::zorba:: __VA_ARGS__ )
 
 /**
- * Creates a dynamically allocated XQueryException using the local name of an
- * error.
+ * Creates a dynamically allocated XQueryException.
  * \hideinitializer
  */
 #define NEW_XQUERY_EXCEPTION(...) \
-  MAKE_EXCEPTION_VAR( internal::new_xquery_exception, ::zorba:: __VA_ARGS__ )
+  ::zorba::new_xquery_exception( __FILE__, __LINE__, ::zorba:: __VA_ARGS__ )
 
-////////// XQuery error source location ///////////////////////////////////////
+////////// XQuery diagnostic source location //////////////////////////////////
 
 /**
  * Sets the XQuery source location of the given ZorbaException but only if it's

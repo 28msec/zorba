@@ -23,7 +23,7 @@
 #include "store/api/item.h"
 #include "store/api/collection.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 
 #include "api/staticcontextimpl.h"

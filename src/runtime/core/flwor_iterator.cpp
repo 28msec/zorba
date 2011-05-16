@@ -16,7 +16,7 @@
 
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/assert.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "context/static_context.h"
 

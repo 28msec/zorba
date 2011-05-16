@@ -28,8 +28,8 @@ namespace internal {
 char const XQueryErrQName::NAMESPACE[] = XQUERY_ERR_NS;
 char const XQueryErrQName::PREFIX[] = "err";
 
-zorba::err::category XQueryErrQName::error_category() const {
-  using namespace zorba::err;
+zorba::diagnostic::category XQueryErrQName::category() const {
+  using namespace zorba::diagnostic;
 
   char const *const name = localname();
 
@@ -45,8 +45,8 @@ zorba::err::category XQueryErrQName::error_category() const {
   return XQUERY_CORE;
 }
 
-zorba::err::kind XQueryErrQName::error_kind() const {
-  using namespace zorba::err;
+zorba::diagnostic::kind XQueryErrQName::kind() const {
+  using namespace zorba::diagnostic;
 
   char const *const name = localname();
 
@@ -67,8 +67,8 @@ zorba::err::kind XQueryErrQName::error_kind() const {
 char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
 char const ZorbaErrQName::PREFIX[] = "zerr";
 
-zorba::err::category ZorbaErrQName::error_category() const {
-  using namespace zorba::err;
+zorba::diagnostic::category ZorbaErrQName::category() const {
+  using namespace zorba::diagnostic;
 
   char const *const name = localname();
   ZORBA_ASSERT( name );
@@ -84,8 +84,32 @@ zorba::err::category ZorbaErrQName::error_category() const {
   }
 }
 
-zorba::err::kind ZorbaErrQName::error_kind() const {
-  return zorba::err::UNKNOWN_KIND;
+zorba::diagnostic::kind ZorbaErrQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+char const ZorbaWarningQName::NAMESPACE[] = ZORBA_WARN_NS;
+char const ZorbaWarningQName::PREFIX[] = "zwarn";
+
+zorba::diagnostic::category ZorbaWarningQName::category() const {
+  return zorba::diagnostic::ZORBA_XQP;
+}
+
+zorba::diagnostic::kind ZorbaWarningQName::kind() const {
+  using namespace zorba::diagnostic;
+
+  char const *const name = localname();
+
+  if ( ::strncmp( name + 2, "DY", 2 ) == 0 )
+    return XQUERY_DYNAMIC;
+  if ( ::strncmp( name + 2, "ST", 2 ) == 0 )
+    return XQUERY_STATIC;
+  if ( ::strncmp( name + 2, "TY", 2 ) == 0 )
+    return XQUERY_TYPE;
+
+  return UNKNOWN_KIND;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

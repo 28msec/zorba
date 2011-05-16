@@ -28,11 +28,14 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #define XMLNS_NS                W3C_NS "2000/xmlns/"
+
 #define XML_NS                  W3C_NS "XML/1998/namespace"
 #define XML_SCHEMA_NS           W3C_NS "2001/XMLSchema"
+
 #define XQUERY_ERR_NS           W3C_NS "2005/xqt-errors"
 #define XQUERY_LOCAL_FN_NS      W3C_NS "2005/xquery-local-functions"
 #define XQUERY_MATH_FN_NS       W3C_NS "2005/xpath-functions/math"
+
 #define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,6 +46,8 @@
 #define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 #define ZORBA_ERR_NS            ZORBA_NS
 #define ZORBA_OPTIONS_NS        "http://www.zorba-xquery.org/options"
+#define ZORBA_WARN_NS           ZORBA_NS "warnings"
+
 #define ZORBA_OPTION_ENABLE_DTD "enable-dtd"
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -27,7 +27,7 @@
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 
 namespace zorba {
@@ -634,7 +634,7 @@ void UpdPut::apply()
   }
   catch(ZorbaException const& e)
   {
-    if (e.error() == zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
+    if (e.diagnostic() == zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
     {
       theOldDocument = store->getDocument(theTargetUri->getStringValue());
 
@@ -1052,9 +1052,9 @@ void UpdCreateIndex::apply()
   }
   catch(ZorbaException const& e)
   {
-    if (e.error() == zerr::ZSTR0045_DUPLICATE_NODE_ERROR)
+    if (e.diagnostic() == zerr::ZSTR0045_DUPLICATE_NODE_ERROR)
     {
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         zerr::ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
         ERROR_PARAMS( theQName->getStringValue() )
       );

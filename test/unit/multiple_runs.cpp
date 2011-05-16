@@ -60,7 +60,7 @@ test_2()
       std::cout << lQuery << std::endl;
     } catch (ZorbaException const& e) {
       std::cerr << "an exception occured: " << e << std::endl;
-      if ( e.error().kind() != err::XQUERY_STATIC )
+      if ( e.diagnostic().kind() != diagnostic::XQUERY_STATIC )
         return false;
       std::cerr << "this is on purpose" << std::endl;
     }

@@ -16,7 +16,7 @@
 
 #include <cassert>
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/lock.h"
 #include "api/zorbaimpl.h"

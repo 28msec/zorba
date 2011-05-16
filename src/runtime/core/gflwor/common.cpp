@@ -240,7 +240,7 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
       }
       catch (ZorbaException const& e)
       {
-        if (e.error() == err::XPTY0004)
+        if (e.diagnostic() == err::XPTY0004)
           return false;
         else
           throw;

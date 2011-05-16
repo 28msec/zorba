@@ -33,7 +33,7 @@
 #include "runtime/util/flowctl_exception.h"
 
 #include "zorba/printer_error_handler.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbautils/synchronous_logger.h"
 
 #include "debugger/debugger_protocol.h"
@@ -223,7 +223,7 @@ DebuggerRuntime::runQuery()
     theLock.unlock();
 
     delete theSerializer;
-    theSerializer = new serializer(theQuery->theErrorManager);
+    theSerializer = new serializer(theQuery->theXQueryDiagnostics);
     SerializerImpl::setSerializationParameters(
       *theSerializer, theSerializerOptions);
     if (theItemHandler) {

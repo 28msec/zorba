@@ -17,7 +17,7 @@
 #include "api/functionimpl.h"
 #include "api/zorbaimpl.h"
 #include "functions/function.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 namespace zorba 
 {

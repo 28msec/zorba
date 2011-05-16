@@ -20,7 +20,7 @@
 #include <string>
 
 #include "zorbatypes/binary.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
 #include "zorbaserialization/template_serializer.h"

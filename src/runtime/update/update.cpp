@@ -719,7 +719,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() != err::XPTY0004)
+    if (e.diagnostic() != err::XPTY0004)
     {
       // the returned error codes are wrong for name casting => they must be changed
       throw XQUERY_EXCEPTION(

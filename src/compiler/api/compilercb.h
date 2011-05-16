@@ -48,9 +48,9 @@ class static_context;
   created as a copy of the query-level ccb during the execution of the eval/xqdoc
   expr.
 
-  - theErrorManager :
-  Pointer to the query's ErrorManager obj. (see src/api/xqueryimpl.h). The eval
-  CompilerCBs share the query's ErrorManager.
+  - theXQueryDiagnostics :
+  Pointer to the query's XQueryDiagnostics obj. (see src/api/xqueryimpl.h). The eval
+  CompilerCBs share the query's XQueryDiagnostics.
 
   - theSctxMap :
   A query-level (or eval-level) map that stores the sctx objs that need to be
@@ -139,7 +139,7 @@ public:
   typedef std::map<short, static_context_t> SctxMap;
 
 public:  
-  ErrorManager            * theErrorManager;
+  XQueryDiagnostics       * theXQueryDiagnostics;
 
   SctxMap                   theSctxMap;
 
@@ -167,7 +167,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  CompilerCB(ErrorManager*, long timeout = -1);
+  CompilerCB(XQueryDiagnostics*, long timeout = -1);
 
   CompilerCB(const CompilerCB& ccb);
 

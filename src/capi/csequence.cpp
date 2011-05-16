@@ -383,7 +383,7 @@ CSequence::integer_value(const XQC_Sequence* seq, int* value)
       // The store API only supports getIntValue() for xs:int and
       // derivative types. For other types, we attempt to convert
       // the string value to an int manually.
-      if (qe.error() == zerr::ZSTR0040_TYPE_ERROR) {
+      if (qe.diagnostic() == zerr::ZSTR0040_TYPE_ERROR) {
         // Note: The return value of getStringValue() is a
         // reference-counted object. The return value of c_str() is
         // a pointer to internals of this reference-counted
@@ -423,7 +423,7 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
       // The store API only supports getDoubleValue() for xs:double
       // and derivative types. For other types, we attempt to
       // convert the string value to a double manually.
-      if (qe.error() == zerr::ZSTR0040_TYPE_ERROR) {
+      if (qe.diagnostic() == zerr::ZSTR0040_TYPE_ERROR) {
         // Note: The return value of getStringValue() is a
         // reference-counted object. The return value of c_str() is
         // a pointer to internals of this reference-counted

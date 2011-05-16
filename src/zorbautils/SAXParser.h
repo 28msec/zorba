@@ -19,7 +19,7 @@
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
@@ -36,7 +36,7 @@ class ZORBA_DLL_PUBLIC SAXParser
   SAXParser(store::ItemFactory &factory, 
             const zstring& baseUri, 
             const zstring& docUri, 
-            ErrorManager* errorManager);
+            XQueryDiagnostics* xqueryDiagnostics);
 
   virtual ~SAXParser();
 
@@ -97,7 +97,7 @@ class ZORBA_DLL_PUBLIC SAXParser
   const zstring& theDocUri;
   bool theSucceeded;
   std::vector<store::Item_t> theStack;
-  ErrorManager* theErrorManager;
+  XQueryDiagnostics* theXQueryDiagnostics;
   std::ostringstream* m_stream;
 };
 

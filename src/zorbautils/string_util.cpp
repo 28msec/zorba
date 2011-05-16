@@ -20,7 +20,7 @@
 #include "util/unicode_util.h"
 #include "zorbautils/string_util.h"
 #include "zorbatypes/zstring.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 using namespace std;
 U_NAMESPACE_USE

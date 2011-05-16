@@ -27,7 +27,7 @@
 
 #include <zorbatypes/URI.h>
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/lock.h"
 
@@ -149,9 +149,9 @@ XQueryImpl::XQueryImpl()
   //      those should also go away and errors should be fired from the error manager
   //      into the error handler
   theErrorHandler = new DefaultErrorHandler();
-  theErrorManager = new ErrorManager();
+  theXQueryDiagnostics = new XQueryDiagnostics();
 
-  theCompilerCB = new CompilerCB(theErrorManager);
+  theCompilerCB = new CompilerCB(theXQueryDiagnostics);
 
   theDynamicContext = new dynamic_context();
 }
@@ -196,7 +196,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     theExecuting = false;
     theIsClosed = false;
 
-    theCompilerCB->theErrorManager = theErrorManager;
+    theCompilerCB->theXQueryDiagnostics = theXQueryDiagnostics;
   }
   
 #ifdef ZORBA_WITH_DEBUGGER
@@ -802,7 +802,7 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
     }
     catch(ZorbaException const &ex)
     {
-      if ( ex.error() != zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE )
+      if ( ex.diagnostic() != zerr::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE )
         throw;
       //else go try xml archive reader
     }
@@ -884,7 +884,7 @@ void XQueryImpl::executeSAX()
 
     theExecuting = true;
 
-    serializer lSerializer(theErrorManager);
+    serializer lSerializer(theXQueryDiagnostics);
     Zorba_SerializerOptions_t opt;
     SerializerImpl::setSerializationParameters(lSerializer, opt);
 
@@ -1115,7 +1115,7 @@ void XQueryImpl::serialize(
     PlanWrapper_t& aWrapper,
     const Zorba_SerializerOptions_t* opt)
 {
-  serializer lSerializer(theErrorManager);
+  serializer lSerializer(theXQueryDiagnostics);
 
   if (opt != NULL)
   {
@@ -1137,7 +1137,7 @@ void XQueryImpl::serialize(
     void* aHandlerData,
     const Zorba_SerializerOptions_t* opt /*= NULL*/)
 {
-  serializer lSerializer(theErrorManager);
+  serializer lSerializer(theXQueryDiagnostics);
   
   if (opt != NULL)
   {
@@ -1272,7 +1272,7 @@ void XQueryImpl::close()
       thePlanProxy = NULL;
     }
 
-    delete theErrorManager;
+    delete theXQueryDiagnostics;
 
     // see registerErrorHandler
     if (!theUserErrorHandler) {

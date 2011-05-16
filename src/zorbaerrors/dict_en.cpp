@@ -17,7 +17,7 @@
 #include "dict_impl.h"
 
 namespace zorba {
-namespace err {
+namespace diagnostic {
 namespace dict {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -400,6 +400,12 @@ extern entry const dict_en[] = {
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  { "ZWST0001", "\"$1\": variable declared but not used" },
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQP0000", "no error" },
@@ -656,10 +662,19 @@ extern entry const dict_en[] = {
   { "~ZeroLenURI", "zero-length URI (and no base URI given)" },
   { "~Zorba API error", "Zorba API error" },
   { "~Zorba data-definition error", "Zorba data-definition error" },
+  { "~Zorba dynamic error", "Zorba dynamic error" },
+  { "~Zorba dynamic warning", "Zorba dynamic warning" },
   { "~Zorba error", "Zorba error" },
   { "~Zorba serialization error", "Zorba serialization error" },
+  { "~Zorba serialization warning", "Zorba serialization warning" },
+  { "~Zorba static error", "Zorba static error" },
+  { "~Zorba static warning", "Zorba static warning" },
   { "~Zorba store error", "Zorba store error" },
+  { "~Zorba type error", "Zorba type error" },
+  { "~Zorba type warning", "Zorba type warning" },
+  { "~Zorba warning", "Zorba warning" },
   { "~dynamic error", "dynamic error" },
+  { "~dynamic warning", "dynamic warning" },
   { "~error", "error" },
   { "~format_integer_bad_picture_format", "bad $picture format: $2" },
   { "~format_integer_duplicated_optional_format_modifier", "duplicated optional format modifier '$2'" },
@@ -670,17 +685,29 @@ extern entry const dict_en[] = {
   { "~format_integer_value_1_20", "$value ($2) should be between 1 and 20 for this formatting picture" },
   { "~format_integer_value_gt_3000", "$value ($2) should be less than 3000 for Roman representation" },
   { "~full-text dynamic error", "full-text dynamic error" },
+  { "~full-text dynamic warning", "full-text dynamic warning" },
   { "~full-text static error", "full-text static error" },
+  { "~full-text static warning", "full-text static warning" },
   { "~full-text type error", "full-text type error" },
+  { "~full-text type warning", "full-text type warning" },
   { "~operating system error", "operating system error" },
   { "~scripting static error", "scripting static error" },
+  { "~scripting static warning", "scripting static warning" },
   { "~serialization error", "serialization error" },
+  { "~serialization warning", "serialization error" },
   { "~static error", "static error" },
+  { "~static warning", "static warning" },
   { "~type error", "type error" },
+  { "~type warning", "type warning" },
   { "~update dynamic error", "update dynamic error" },
+  { "~update dynamic warning", "update dynamic warning" },
   { "~update static error", "update static error" },
+  { "~update static warning", "update static warning" },
   { "~update type error", "update type error" },
+  { "~update type warning", "update type warning" },
   { "~user-defined error", "user-defined error" },
+  { "~user-defined warning", "user-defined warning" },
+  { "~warning", "warning" },
   { "~xqueryx_empty_content", "xqueryx content is empty" },
 
   // PLEASE LEAVE THE BLANK LINE ABOVE
@@ -690,6 +717,6 @@ DEF_DICT_END(en);
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace dict
-} // namespace err
+} // namespace diagnostic
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

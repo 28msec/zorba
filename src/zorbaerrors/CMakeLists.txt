@@ -15,16 +15,17 @@
 SET(ZORBAERRORS_SRCS
    dict.cpp
    dict_en.cpp
-   err.cpp
-   error.cpp
-   error_manager.cpp
+   diagnostic.cpp
    qname.cpp 
    error_list.cpp
    assert.cpp
    zorba_exception.cpp
+   xquery_diagnostics.cpp
    xquery_exception.cpp 
    xquery_stack_trace.cpp
+   user_error.cpp
    user_exception.cpp 
+   warning_list.cpp
    )
 
 IF (WIN32)

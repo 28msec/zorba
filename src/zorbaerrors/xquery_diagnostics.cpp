@@ -14,32 +14,18 @@
  * limitations under the License.
  */
 
-#pragma once
-#ifndef ZORBA_DIAGNOSTIC_DICT_IMPL_H
-#define ZORBA_DIAGNOSTIC_DICT_IMPL_H
+#include "util/stl_util.h"
+
+#include "xquery_diagnostics.h"
 
 namespace zorba {
-namespace diagnostic {
-namespace dict {
 
-///////////////////////////////////////////////////////////////////////////////
+XQueryDiagnostics::XQueryDiagnostics() {
+}
 
-/**
- * A dictionary %entry.
- */
-struct entry {
-  char const *key;
-  char const *value;
-};
+XQueryDiagnostics::~XQueryDiagnostics() {
+  ztd::delete_ptr_seq( errors_ );
+}
 
-#define DEF_DICT_END(LANG) \
-  extern ::zorba::diagnostic::dict::entry const *const dict_##LANG##_end = \
-    dict_##LANG + sizeof( dict_##LANG ) / sizeof( dict_##LANG[0] )
-
-///////////////////////////////////////////////////////////////////////////////
-
-} // namespace dict
-} // namespace diagnostic
 } // namespace zorba
-#endif /* ZORBA_DIAGNOSTIC_DICT_IMPL_H */
 /* vim:set et sw=2 ts=2: */

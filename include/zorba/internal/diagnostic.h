@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_INTERNAL_ERR_H
-#define ZORBA_INTERNAL_ERR_H
+#ifndef ZORBA_INTERNAL_DIAGNOSTIC_H
+#define ZORBA_INTERNAL_DIAGNOSTIC_H
 
 #include <string>
 #include <vector>
 
-#include <zorba/err.h>
+#include <zorba/diagnostic.h>
 
 #include "ztd.h"
 
 namespace zorba {
 
 namespace internal {
-  namespace err {
+  namespace diagnostic {
     class location;
   }
 }
 namespace serialization {
   class Archiver;
-  void operator&( serialization::Archiver&, internal::err::location& );
+  void operator&( serialization::Archiver&, internal::diagnostic::location& );
 }
 
 namespace internal {
-namespace err {
+namespace diagnostic {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -236,8 +236,8 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace err
+} // namespace diagnostic
 } // namespace internal
 } // namespace zorba
-#endif /* ZORBA_INTERNAL_ERR_H */
+#endif /* ZORBA_INTERNAL_DIAGNOSTIC_H */
 /* vim:set et sw=2 ts=2: */

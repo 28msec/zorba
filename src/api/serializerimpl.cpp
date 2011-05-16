@@ -40,7 +40,7 @@ Serializer::createSerializer(ItemSequence* aOptions)
 
 SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorHandler* aErrorHandler)
   : theErrorHandler(aErrorHandler),
-    theInternalSerializer(&theErrorManager)
+    theInternalSerializer(&theXQueryDiagnostics)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
   own_error_handler = false;
@@ -52,7 +52,7 @@ SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorH
 
 SerializerImpl::SerializerImpl(ItemSequence* aOptions, ErrorHandler* aErrorHandler)
   : theErrorHandler(aErrorHandler),
-    theInternalSerializer(&theErrorManager)
+    theInternalSerializer(&theXQueryDiagnostics)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
   own_error_handler = false;

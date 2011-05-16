@@ -107,7 +107,7 @@ main_sequential(int argc, char* argv[])
   }
   catch (XQueryException& qe) 
   {
-    if (qe.error() != err::XPTY0004)
+    if (qe.diagnostic() != err::XPTY0004)
     {
       std::cerr << qe << std::endl;
       return 3;

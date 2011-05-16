@@ -100,7 +100,7 @@ example_5(Zorba* aZorba)
     std::cout << lQuery << std::endl;
   } catch ( ZorbaException const &ze ) {
     std::cerr << ze << std::endl;
-    return ze.error().kind() == err::XQUERY_STATIC;
+    return ze.diagnostic().kind() == diagnostic::XQUERY_STATIC;
   }
 
   return false;

@@ -22,7 +22,7 @@
 
 namespace zorba {
 
-#define XQUERY_DEC_ERROR(ERR) extern ZORBA_DLL_PUBLIC XQueryError ERR
+#define XQUERY_DEC_ERROR(ERR) extern ZORBA_DLL_PUBLIC XQueryErrorCode ERR
 
 namespace err {
 
@@ -1181,7 +1181,7 @@ XQUERY_DEC_ERROR( SEPM0016 );
 } // namespace err
 
 #undef XQUERY_DEC_ERROR
-#define ZORBA_DEC_ERROR(ERR) extern ZORBA_DLL_PUBLIC ZorbaError ERR
+#define ZORBA_DEC_ERROR(ERR) extern ZORBA_DLL_PUBLIC ZorbaErrorCode ERR
 
 namespace zerr {
 

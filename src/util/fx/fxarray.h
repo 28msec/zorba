@@ -35,7 +35,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 namespace zorba {
 

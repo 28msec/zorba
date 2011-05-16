@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
-#ifndef ZORBA_ERROR_MANAGER_H
-#define ZORBA_ERROR_MANAGER_H
+#ifndef ZORBA_XQUERY_DIAGNOSTICS_H
+#define ZORBA_XQUERY_DIAGNOSTICS_H
 
 #include <memory>
 #include <vector>
@@ -27,9 +28,10 @@
 
 #include "util/error_util.h"
 
+#include "diagnostic.h"
 #include "dict.h"
-#include "err.h"
 #include "xquery_exception.h"
+#include "xquery_warning.h"
 #include "zorba_exception.h"
 
 namespace zorba {
@@ -37,21 +39,24 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An %ErrorManager is used to collect errors (and warnings) that can not be
+ * An %XQueryDiagnostics is used to collect errors and warnings that can not be
  * issued immediately and must be deferred until some later time.
  */
-class ZORBA_DLL_PUBLIC ErrorManager {
+class ZORBA_DLL_PUBLIC XQueryDiagnostics {
 public:
   typedef std::vector<ZorbaException const*> errors_type;
+  typedef std::vector<XQueryWarning const*> warnings_type;
 
-  ErrorManager();
-  ~ErrorManager();
+  XQueryDiagnostics();
+  ~XQueryDiagnostics();
+
+  ////////// Errors /////////////////////////////////////////////////////////// 
 
   /**
    * Adds an exception to the list of exceptions.
    *
-   * @param exception The exception to add.  The %ErrorManager takes ownership
-   * of the exception.
+   * @param exception The exception to add.  The %XQueryDiagnostics takes
+   * ownership of the exception.
    */
   void add_error( ZorbaException const *exception ) {
     errors_.push_back( exception );
@@ -60,8 +65,8 @@ public:
   /**
    * Adds an exception to the list of exceptions.
    *
-   * @param exception The exception to add.  The %ErrorManager takes ownership
-   * of the exception.
+   * @param exception The exception to add.  The %XQueryDiagnostics takes
+   * ownership of the exception.
    */
   void add_error( std::auto_ptr<ZorbaException> exception ) {
     add_error( exception.release() );
@@ -77,15 +82,6 @@ public:
   }
 
   /**
-   * Checks whether there are any errors.
-   *
-   * @return Returns \c true only if there is at least one error.
-   */
-  bool has_errors() const {
-    return !errors_.empty();
-  }
-
-  /**
    * Gets the list of exceptions.
    *
    * @return Returns said exceptions.
@@ -94,8 +90,30 @@ public:
     return errors_;
   }
 
+  ////////// Warnings ///////////////////////////////////////////////////////// 
+
+  /**
+   * Adds a warning to the list of warnings.
+   *
+   * @param exception The exception to add.  The %XQueryDiagnostics takes
+   * ownership of the exception.
+   */
+  void add_warning( XQueryWarning const *warning ) {
+    warnings_.push_back( warning );
+  }
+
+  /**
+   * Gets the list of warnings.
+   *
+   * @return Returns said warnings.
+   */
+  warnings_type const& warnings() const {
+    return warnings_;
+  }
+
 private:
   errors_type errors_;
+  warnings_type warnings_;
 };
 
 ////////// TEMPORARY TRANSITION MACROS: THESE WILL BE REMOVED /////////////////
@@ -126,5 +144,5 @@ private:
 
 } // namespace zorba
 
-#endif /* ZORBA_ERROR_MANAGER_H */
+#endif /* ZORBA_XQUERY_DIAGNOSTICS_H */
 /* vim:set et sw=2 ts=2: */

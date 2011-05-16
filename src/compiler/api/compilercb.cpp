@@ -103,9 +103,9 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::CompilerCB(ErrorManager* errmgr, long timeout)
+CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   :
-  theErrorManager(errmgr),
+  theXQueryDiagnostics(errmgr),
   theRootSctx(0),
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(0),
@@ -126,7 +126,7 @@ CompilerCB::CompilerCB(ErrorManager* errmgr, long timeout)
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   zorba::serialization::SerializeBaseClass(cb),
-  theErrorManager(cb.theErrorManager),
+  theXQueryDiagnostics(cb.theXQueryDiagnostics),
   theRootSctx(NULL),
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(cb.theDebuggerCommons),
@@ -147,7 +147,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   :
   ::zorba::serialization::SerializeBaseClass(),
-  theErrorManager(NULL),
+  theXQueryDiagnostics(NULL),
   theRootSctx(NULL),
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(NULL),
@@ -181,7 +181,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   if (!ar.is_serializing_out()) 
   {
     //don't serialize this
-    theErrorManager = NULL;
+    theXQueryDiagnostics = NULL;
   }
   ar & theConfig;
   ar & theTimeout;

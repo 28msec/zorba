@@ -37,7 +37,7 @@ zorba_implementation(XQC_Implementation** impl, void* store)
     (*impl) = lImpl.release()->getXQC();
     return XQC_NO_ERROR;
   } catch (ZorbaException const &e) {
-    return zorbac::Error::convert_xquery_error(e.error());
+    return zorbac::Error::convert_xquery_error(e.diagnostic());
   } catch (...) {
     return XQC_INTERNAL_ERROR;
   }

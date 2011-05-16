@@ -18,7 +18,7 @@
 
 namespace zorba {
 
-#define XQUERY_DEF_ERROR(ERR) XQueryError ERR( #ERR )
+#define XQUERY_DEF_ERROR(ERR) XQueryErrorCode ERR( #ERR )
 
 namespace err {
 
@@ -228,7 +228,7 @@ XQUERY_DEF_ERROR( SEPM0016 );
 
 namespace zerr {
 
-#define ZORBA_DEF_ERROR(QNAME,ERR) ZorbaError QNAME##_##ERR( #QNAME )
+#define ZORBA_DEF_ERROR(QNAME,ERR) ZorbaErrorCode QNAME##_##ERR( #QNAME )
 
 ////////// Zorba API Errors ///////////////////////////////////////////////////
 

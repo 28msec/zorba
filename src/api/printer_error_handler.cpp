@@ -40,7 +40,7 @@ printerErrorHandlerHelper(const ZorbaException& ex,
   o << "<errors>";
   if ( aIndent ) o << std::endl << "  ";
   //code
-  o << "<error code='" << ex.error().qname() << "'>";
+  o << "<error code='" << ex.diagnostic().qname() << "'>";
 
   XQueryException const *xex = dynamic_cast<XQueryException const*>( &ex );
   if ( xex && xex->has_source() ) {

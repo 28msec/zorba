@@ -26,9 +26,10 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-XQueryException::XQueryException( Error const &error, char const *throw_file,
-                                  line_type throw_line, char const *message ) :
-  ZorbaException( error, throw_file, throw_line, message )
+XQueryException::XQueryException( Diagnostic const &diagnostic,
+                                  char const *raise_file, line_type raise_line,
+                                  char const *message ) :
+  ZorbaException( diagnostic, raise_file, raise_line, message )
 {
 }
 
@@ -98,7 +99,7 @@ ostream& XQueryException::print( ostream &o ) const {
           o << '<' << u << '>';
       }
     } else
-      o << '(' << err::dict::lookup( ZED( NoSourceURI ) ) << ')';
+      o << '(' << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ')';
 
     if ( source_line() ) {
       o << ':' << source_line();
@@ -114,28 +115,30 @@ ostream& XQueryException::print( ostream &o ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-XQueryException make_xquery_exception( char const *throw_file,
-                                       ZorbaException::line_type throw_line,
-                                       Error const &error,
-                                       internal::err::parameters const &params,
-                                       internal::err::location const &loc ) {
-  internal::err::parameters::value_type message( error.message() );
+XQueryException
+make_xquery_exception( char const *raise_file,
+                       ZorbaException::line_type raise_line,
+                       Diagnostic const &diagnostic,
+                       internal::diagnostic::parameters const &params,
+                       internal::diagnostic::location const &loc ) {
+  internal::diagnostic::parameters::value_type message( diagnostic.message() );
   params.substitute( &message );
-  XQueryException xe( error, throw_file, throw_line, message.c_str() );
+  XQueryException xe( diagnostic, raise_file, raise_line, message.c_str() );
   if ( loc )
     xe.set_source( loc.file(), loc.line(), loc.column() );
   return xe;
 }
 
-XQueryException* new_xquery_exception( char const *throw_file,
-                                       ZorbaException::line_type throw_line,
-                                       Error const &error,
-                                       internal::err::parameters const &params,
-                                       internal::err::location const &loc ) {
-  internal::err::parameters::value_type message( error.message() );
+XQueryException*
+new_xquery_exception( char const *raise_file,
+                      ZorbaException::line_type raise_line,
+                      Diagnostic const &diagnostic,
+                      internal::diagnostic::parameters const &params,
+                      internal::diagnostic::location const &loc ) {
+  internal::diagnostic::parameters::value_type message( diagnostic.message() );
   params.substitute( &message );
   XQueryException *const xe =
-    new XQueryException( error, throw_file, throw_line, message.c_str() );
+    new XQueryException( diagnostic, raise_file, raise_line, message.c_str() );
   if ( loc )
     xe->set_source( loc.file(), loc.line(), loc.column() );
   return xe;
@@ -150,7 +153,7 @@ void set_source( ZorbaException &ze, char const *file,
       xe->set_source( file, line, col );
   } else {
     XQueryException new_xe(
-      ze.error(), ze.throw_file(), ze.throw_line(), ze.what()
+      ze.diagnostic(), ze.raise_file(), ze.raise_line(), ze.what()
     );
     new_xe.set_source( file, line, col );
     throw new_xe;

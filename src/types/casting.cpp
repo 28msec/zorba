@@ -21,7 +21,7 @@
 #include "zorbatypes/chartype.h"
 #include "zorbatypes/URI.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 
 #include "context/namespace_context.h"
@@ -363,7 +363,7 @@ T1_TO_T2(str, aURI)
   }
   catch (ZorbaException& e)
   {
-    e.set_error( err::FORG0001 );
+    e.set_diagnostic( err::FORG0001 );
     throw;
   }
 }

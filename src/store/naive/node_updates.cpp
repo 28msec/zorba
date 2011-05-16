@@ -17,7 +17,7 @@
 #include <stack>
 
 #include "system/globalenv.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
@@ -1000,7 +1000,7 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
     }
     catch (ZorbaException const& e)
     {
-      if (e.error() == err::XQDY0025)
+      if (e.diagnostic() == err::XQDY0025)
         upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
         throw;
@@ -1079,7 +1079,7 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
     }
     catch (ZorbaException const& e)
     {
-      if (e.error() == err::XQDY0025)
+      if (e.diagnostic() == err::XQDY0025)
         upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
         throw;
@@ -1457,7 +1457,7 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
     }
     catch (ZorbaException const& e)
     {
-      if (e.error() == err::XQDY0025)
+      if (e.diagnostic() == err::XQDY0025)
         upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
         throw;

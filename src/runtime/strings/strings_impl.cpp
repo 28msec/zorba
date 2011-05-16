@@ -20,7 +20,7 @@
 
 #include "zorbamisc/ns_consts.h"
 #include "zorbaerrors/assert.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "zorbatypes/numconversions.h"
 

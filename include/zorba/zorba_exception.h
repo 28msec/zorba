@@ -41,7 +41,7 @@ namespace serialization {
  */
 class ZORBA_DLL_PUBLIC ZorbaException : public std::exception {
 public:
-  typedef internal::err::location::line_type line_type;
+  typedef internal::diagnostic::location::line_type line_type;
 
   /**
    * Copy-constructs a %ZorbaException.
@@ -71,12 +71,12 @@ public:
   virtual std::auto_ptr<ZorbaException> clone() const;
 
   /**
-   * Gets the error carried by this exception.
+   * Gets the diagnostic carried by this exception.
    *
-   * @return Returns said error.
+   * @return Returns said diagnostic.
    */
-  Error const& error() const throw() {
-    return *error_;
+  Diagnostic const& diagnostic() const throw() {
+    return *diagnostic_;
   }
 
   /**
@@ -86,30 +86,30 @@ public:
   virtual void polymorphic_throw() const;
 
   /**
-   * Sets the error.
+   * Sets the diagnostic.
    *
-   * @param error The error.
+   * @param diagnostic The diagnostic.
    */
-  void set_error( Error const &error ) throw() {
-    error_ = &error;
+  void set_diagnostic( Diagnostic const &diagnostic ) throw() {
+    diagnostic_ = &diagnostic;
   }
 
   /**
-   * Gets the C++ source-code file name whence this exception was thrown.
+   * Gets the C++ source-code file name whence this exception was raised.
    *
    * @return Returns said file name.
    */
-  char const* throw_file() const throw() {
-    return throw_file_.c_str();
+  char const* raise_file() const throw() {
+    return raise_file_.c_str();
   }
 
   /**
-   * Gets the C++ source-code line number whence this exception was thrown.
+   * Gets the C++ source-code line number whence this exception was raised.
    *
    * @return Returns said line number.
    */
-  line_type throw_line() const throw() {
-    return throw_line_;
+  line_type raise_line() const throw() {
+    return raise_line_;
   }
 
   // inherited
@@ -119,15 +119,15 @@ protected:
   /**
    * Constructs a %ZorbaException.
    *
-   * @param error The error.
-   * @param throw_file The C++ source-code file name whence the exception was
-   * thrown.
-   * @param throw_line The C++ source-code line number whence the exception was
-   * thrown.
-   * @param message The error message.
+   * @param diagnostic The diagnostic.
+   * @param raise_file The C++ source-code file name whence the exception was
+   * raised.
+   * @param raise_line The C++ source-code line number whence the exception was
+   * raised.
+   * @param message The diagnostic message.
    */
-  ZorbaException( Error const &error, char const *throw_file,
-                  line_type throw_line, char const *message );
+  ZorbaException( Diagnostic const &diagnostic, char const *raise_file,
+                  line_type raise_line, char const *message );
 
   /**
    * Prints the exception to the given ostream.
@@ -140,17 +140,19 @@ protected:
   friend std::ostream& operator<<( std::ostream&, ZorbaException const& );
 
 private:
-  Error const *error_;
-  std::string throw_file_;
-  line_type throw_line_;
+  Diagnostic const *diagnostic_;
+  std::string raise_file_;
+  line_type raise_line_;
   std::string message_;
 
   friend ZorbaException make_zorba_exception(
-    char const*, line_type, Error const&, internal::err::parameters const&
+    char const*, line_type, Diagnostic const&,
+    internal::diagnostic::parameters const&
   );
 
   friend ZorbaException* new_zorba_exception(
-    char const*, line_type, Error const&, internal::err::parameters const&
+    char const*, line_type, Diagnostic const&,
+    internal::diagnostic::parameters const&
   );
 
 protected:

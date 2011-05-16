@@ -18,7 +18,7 @@
 
 #include <zorba/xquery_exception.h>
 
-#include "err.h"
+#include "diagnostic.h"
 #include "xquery_stack_trace.h"
 
 namespace zorba {
@@ -35,7 +35,8 @@ XQueryStackTrace::Entry::Entry( fn_name_type const &fn_name,
 }
 
 //for plan serialization
-XQueryStackTrace::Entry::Entry() : fn_name_(*(zorba::serialization::Archiver*)NULL)
+XQueryStackTrace::Entry::Entry() :
+  fn_name_( *(serialization::Archiver*)NULL )
 {
 }
 
@@ -67,9 +68,11 @@ void recordStackTrace( QueryLoc const &loc, QueryLoc const &call_loc,
 
     trace.push(
       XQueryStackTrace::Entry(
-        err::to_QName<XQueryStackTrace::fn_name_type>( fn_name ), fn_arity,
+        diagnostic::to_QName<XQueryStackTrace::fn_name_type>( fn_name ),
+        fn_arity,
         call_loc.getFilename().c_str(),
-        call_loc.getLineBegin(), call_loc.getColumnBegin()
+        call_loc.getLineBegin(),
+        call_loc.getColumnBegin()
       )
     );
   }

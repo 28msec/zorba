@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-#include <cassert>
-#include <cstring>
+#include <iostream>
 
-#include <zorba/err.h>
+#include <zorba/error.h>
 
 #include "util/ascii_util.h"
 #include "util/string_util.h"
@@ -28,7 +27,7 @@
 using namespace std;
 
 namespace zorba {
-namespace err {
+namespace diagnostic {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -152,12 +151,18 @@ ostream& operator<<( ostream &o, category c ) {
   return o;
 }
 
-} // namespace err
+} // namespace diagnostic
 
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace internal {
-namespace err {
+
+SystemDiagnosticBase::map_type& SystemDiagnosticBase::get_map() {
+  static map_type m;
+  return m;
+}
+
+namespace diagnostic {
 
 location const location::empty;
 parameters const parameters::empty;
@@ -172,7 +177,7 @@ parameters::value_type parameters::lookup_param( size_type i ) const {
     return value_type();
   value_type param( params_[ i - 1 ] );
   if ( !param.empty() && param[0] == ZED_PREFIX[0] )
-    param = zorba::err::dict::lookup( param );
+    param = zorba::diagnostic::dict::lookup( param );
   return param;
 }
 
@@ -248,8 +253,30 @@ void parameters::substitute( value_type *s ) const {
   } // for ( ... i ...
 }
 
-} // namespace err
+} // namespace diagnostic
 } // namespace internal
+
+///////////////////////////////////////////////////////////////////////////////
+
+Diagnostic::~Diagnostic() {
+  // out-of-line since it's virtual
+}
+
+void Diagnostic::destroy() const {
+  delete this;
+}
+
+diagnostic::category Diagnostic::category() const {
+  return diagnostic::UNKNOWN_CATEGORY;
+}
+
+diagnostic::kind Diagnostic::kind() const {
+  return diagnostic::UNKNOWN_KIND;
+}
+
+char const* Diagnostic::message() const {
+  return diagnostic::dict::lookup( qname().localname() );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

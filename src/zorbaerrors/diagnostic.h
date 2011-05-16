@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_ERR_H
-#define ZORBA_ERR_H
+#ifndef ZORBA_DIAGNOSTIC_H
+#define ZORBA_DIAGNOSTIC_H
 
-#include <zorba/err.h>
+#include <zorba/diagnostic.h>
 #include "store/api/item.h"
 #include "compiler/parser/query_loc.h"
 
 namespace zorba {
+namespace diagnostic {
 
 ///////////////////////////////////////////////////////////////////////////////
-
-namespace err {
 
 /**
  * Given a store::Item_t that represents a QName, creates an instance of
@@ -51,18 +50,18 @@ QNameType to_QName( store::Item_t const &qname ) {
  *
  * @return Returns said location.
  */
-inline internal::err::location make_location() {
-  return internal::err::location();
+inline internal::diagnostic::location make_location() {
+  return internal::diagnostic::location();
 }
 
 /**
  * This is a simple pass-rhough function so that the \c ERROR_LOC macro
- * can be passed an \c err::location.
+ * can be passed an \c diagnostic::location.
  *
  * @param loc The error location.
  */
-inline internal::err::location const&
-make_location( internal::err::location const &loc ) {
+inline internal::diagnostic::location const&
+make_location( internal::diagnostic::location const &loc ) {
   return loc;
 }
 
@@ -74,10 +73,10 @@ make_location( internal::err::location const &loc ) {
  * @param column The column number, if any, of the file where the error
  * occurred.
  */
-inline internal::err::location
-make_location( char const *file, internal::err::location::line_type line,
-               internal::err::location::column_type column = 0 ) {
-  return internal::err::location( file, line, column );
+inline internal::diagnostic::location
+make_location( char const *file, internal::diagnostic::location::line_type line,
+               internal::diagnostic::location::column_type column = 0 ) {
+  return internal::diagnostic::location( file, line, column );
 }
 
 /**
@@ -89,17 +88,18 @@ make_location( char const *file, internal::err::location::line_type line,
  * @param column The column number, if any, of the file where the error
  * occurred.
  */
-template<class StringType> inline internal::err::location
-make_location( StringType const &file, internal::err::location::line_type line,
-               internal::err::location::column_type column = 0 ) {
-  return internal::err::location( file, line, column );
+template<class StringType> inline internal::diagnostic::location
+make_location( StringType const &file,
+               internal::diagnostic::location::line_type line,
+               internal::diagnostic::location::column_type column = 0 ) {
+  return internal::diagnostic::location( file, line, column );
 }
 
 /**
  * TODO
  */
-inline internal::err::location make_location( QueryLoc const &loc ) {
-  return internal::err::location(
+inline internal::diagnostic::location make_location( QueryLoc const &loc ) {
+  return internal::diagnostic::location(
     loc.getFilename(), loc.getLineno(), loc.getColumnBegin()
   );
 }
@@ -107,8 +107,8 @@ inline internal::err::location make_location( QueryLoc const &loc ) {
 /**
  * TODO
  */
-inline internal::err::location make_location( QueryLoc const *loc ) {
-  return loc ? make_location( *loc ) : internal::err::location::empty;
+inline internal::diagnostic::location make_location( QueryLoc const *loc ) {
+  return loc ? make_location( *loc ) : internal::diagnostic::location::empty;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ inline internal::err::location make_location( QueryLoc const *loc ) {
  * \endcode
  * \hideinitializer
  */
-#define ERROR_LOC ::zorba::err::make_location
+#define ERROR_LOC ::zorba::diagnostic::make_location
 
 /**
  * Creates a set of error parameters.
@@ -131,12 +131,13 @@ inline internal::err::location make_location( QueryLoc const *loc ) {
  * \endcode
  * \hideinitializer                     
  */
-#define ERROR_PARAMS(...) (::zorba::internal::err::parameters(), __VA_ARGS__)
+#define ERROR_PARAMS(...) \
+  (::zorba::internal::diagnostic::parameters(), __VA_ARGS__)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace err
+} // namespace diagnostic
 } // namespace zorba
 
-#endif /* ZORBA_ERR_H */
+#endif /* ZORBA_DIAGNOSTIC_H */
 /* vim:set et sw=2 ts=2: */

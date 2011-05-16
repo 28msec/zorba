@@ -17,7 +17,7 @@
 #define  __STDC_LIMIT_MACROS
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "api/itemfactoryimpl.h"
 
 #include "zorbatypes/duration.h"

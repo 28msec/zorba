@@ -19,7 +19,7 @@
 #include <zorba/zorbastring.h>
 
 #include "zorbatypes/numconversions.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 
 #include "api/serialization/serializer.h"
@@ -1851,9 +1851,9 @@ const char serializer::END_OF_LINE = '\n';
 /*******************************************************************************
 
 ********************************************************************************/
-serializer::serializer(ErrorManager* aErrorManager)
+serializer::serializer(XQueryDiagnostics* aXQueryDiagnostics)
   :
-  theErrorManager(aErrorManager)
+  theXQueryDiagnostics(aXQueryDiagnostics)
 {
   reset();
 }

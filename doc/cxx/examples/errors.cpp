@@ -48,7 +48,7 @@ error_example_2(Zorba* aZorba)
 
   } catch ( ZorbaException const& e ) {
     std::cout << e << std::endl;
-    if ( e.error().kind() == err::XQUERY_STATIC )
+    if ( e.diagnostic().kind() == diagnostic::XQUERY_STATIC )
       return true;
   }
 
@@ -63,7 +63,7 @@ class MyErrorHandler  : public DefaultErrorHandler
 public:
   void error( ZorbaException const &ze ) 
   { 
-    if ( ze.error().kind() == err::XQUERY_STATIC )
+    if ( ze.diagnostic().kind() == diagnostic::XQUERY_STATIC )
       std::cerr << ze << std::endl;
     else
       throw;
@@ -94,7 +94,7 @@ error_example_4(Zorba* aZorba)
     std::cout << lQuery << std::endl;
   } catch (ZorbaException const& e) {
     std::cerr << e << std::endl; 
-    if ( e.error().kind() == err::XQUERY_DYNAMIC )
+    if ( e.diagnostic().kind() == diagnostic::XQUERY_DYNAMIC )
       return true;
   }
 

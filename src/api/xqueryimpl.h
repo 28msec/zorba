@@ -106,10 +106,9 @@ class CompilerCB;
   a second execution of the same XQuery obj cannot be started while a previous
   execution is still going on.
 
-  - theErrorManager :
-  Each query has its own ErrorManager. The ErrorManager provides static methods
-  for throwing exceptions, and can also accumulate query errors/warnings that
-  need to be processed in some deferred fashion.
+  - theXQueryDiagnostics :
+  Each query has its own XQueryDiagnostics. The XQueryDiagnostics accumulates
+  query errors/warnings that need to be processed in some deferred fashion.
 
   - theErrorHandler :
   Normally, this is an object provided by the application to handle errors in
@@ -195,7 +194,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   bool                               theIsClosed;
 
   // utility stuff
-  ErrorManager                     * theErrorManager;
+  XQueryDiagnostics                * theXQueryDiagnostics;
   ErrorHandler                     * theErrorHandler;
   bool                               theUserErrorHandler;
 

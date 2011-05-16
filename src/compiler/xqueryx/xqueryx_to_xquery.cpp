@@ -26,7 +26,7 @@
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #include "compiler/xqueryx/xqueryx_xslt.h"
 
-#include <zorbaerrors/error_manager.h>
+#include <zorbaerrors/xquery_diagnostics.h>
 
 namespace zorba {
 

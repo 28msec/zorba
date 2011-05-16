@@ -17,6 +17,7 @@
 #include <sstream>
 
 #include <zorba/zorba_exception.h>
+#include <zorba/xquery_warning.h>
 
 #include "dict.h"
 
@@ -31,11 +32,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ZorbaException::ZorbaException( Error const &error, char const *throw_file,
-                                line_type throw_line, char const *message ) :
-  error_( error.clone() ),
-  throw_file_( throw_file ),
-  throw_line_( throw_line ),
+ZorbaException::ZorbaException( Diagnostic const &diagnostic,
+                                char const *raise_file, line_type raise_line,
+                                char const *message ) :
+  diagnostic_( diagnostic.clone() ),
+  raise_file_( raise_file ),
+  raise_line_( raise_line ),
   message_( message )
 {
 #ifndef NDEBUG
@@ -46,9 +48,9 @@ ZorbaException::ZorbaException( Error const &error, char const *throw_file,
 
 ZorbaException::ZorbaException( ZorbaException const &from ) :
   std::exception( from ),
-  error_( from.error_->clone() ),
-  throw_file_( from.throw_file_ ),
-  throw_line_( from.throw_line_ ),
+  diagnostic_( from.diagnostic_->clone() ),
+  raise_file_( from.raise_file_ ),
+  raise_line_( from.raise_line_ ),
   message_( from.message_ )
 {
 }
@@ -58,21 +60,16 @@ ZorbaException::ZorbaException( serialization::Archiver &ar )
 }
 
 ZorbaException::~ZorbaException() throw() {
-  error_->destroy();
+  diagnostic_->destroy();
 }
 
 ZorbaException& ZorbaException::operator=( ZorbaException const &from ) {
   if ( &from != this ) {
-    //
-    // Doing it this way provides the strong exception guarantee.
-    //
-    Error const *const temp = from.error_->clone();
-    error_->destroy();
-    error_ = (Error*)temp;
-
-    throw_file_ = from.throw_file_;
-    throw_line_ = from.throw_line_;
-    message_ = from.message_;
+    diagnostic_->destroy();
+    diagnostic_ = from.diagnostic_->clone();
+    raise_file_ = from.raise_file_;
+    raise_line_ = from.raise_line_;
+    message_    = from.message_;
   }
   return *this;
 }
@@ -94,21 +91,22 @@ ostream& ZorbaException::print( ostream &o ) const {
   //
   ostringstream oss;
   oss << ZED_PREFIX;
-  Error const &e = error();
-  if ( err::category const c = e.category() )
-    oss << c << ' ';
-  if ( err::kind const k = e.kind() )
+  Diagnostic const &d = diagnostic();
+  oss << d.category();
+  if ( oss.tellp() )
+    oss << ' ';
+  if ( diagnostic::kind const k = d.kind() )
     oss << k << ' ';
-  oss << "error";
+  oss << (dynamic_cast<ZorbaWarningCode const*>( &d ) ? "warning" : "error");
 
-  o << err::dict::lookup( oss.str() ) << " [" << e.qname() << ']';
+  o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
 
   if ( char const *const w = what() )
     if ( *w )
       o << ": " << w;
 
 #ifndef NDEBUG
-  o << "; thrown at " << throw_file() << ':' << throw_line();
+  o << "; raised at " << raise_file() << ':' << raise_line();
 #endif
   return o;
 }
@@ -119,22 +117,26 @@ char const* ZorbaException::what() const throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ZorbaException make_zorba_exception( char const *throw_file,
-                                     ZorbaException::line_type throw_line,
-                                     Error const &error,
-                                     internal::err::parameters const &params ) {
-  internal::err::parameters::value_type message( error.message() );
+ZorbaException
+make_zorba_exception( char const *raise_file,
+                      ZorbaException::line_type raise_line,
+                      Diagnostic const &diagnostic,
+                      internal::diagnostic::parameters const &params ) {
+  internal::diagnostic::parameters::value_type message( diagnostic.message() );
   params.substitute( &message );
-  return ZorbaException( error, throw_file, throw_line, message.c_str() );
+  return ZorbaException( diagnostic, raise_file, raise_line, message.c_str() );
 }
 
-ZorbaException* new_zorba_exception( char const *throw_file,
-                                     ZorbaException::line_type throw_line,
-                                     Error const &error,
-                                     internal::err::parameters const &params ) {
-  internal::err::parameters::value_type message( error.message() );
+ZorbaException*
+new_zorba_exception( char const *raise_file,
+                     ZorbaException::line_type raise_line,
+                     Diagnostic const &diagnostic,
+                     internal::diagnostic::parameters const &params ) {
+  internal::diagnostic::parameters::value_type message( diagnostic.message() );
   params.substitute( &message );
-  return new ZorbaException( error, throw_file, throw_line, message.c_str() );
+  return new ZorbaException(
+    diagnostic, raise_file, raise_line, message.c_str()
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

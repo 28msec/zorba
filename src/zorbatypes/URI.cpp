@@ -16,7 +16,7 @@
 
 #include "representations.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/dict.h"
 #include "zorbaerrors/assert.h"
 

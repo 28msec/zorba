@@ -37,7 +37,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 
 
@@ -65,7 +65,7 @@ namespace simplestore {
 
 #define ZORBA_LOADER_CHECK_ERROR(loader) \
   do { \
-    if (loader.theErrorManager->has_errors()) \
+    if (!loader.theXQueryDiagnostics->errors().empty()) \
       return; \
   } while (0);
 
@@ -74,10 +74,10 @@ namespace simplestore {
 ********************************************************************************/
 FastXmlLoader::FastXmlLoader(
     BasicItemFactory* factory,
-    ErrorManager* errorManager,
+    XQueryDiagnostics* xqueryDiagnostics,
     bool dataguide)
   :
-  XmlLoader(factory, errorManager, dataguide),
+  XmlLoader(factory, xqueryDiagnostics, dataguide),
   theTree(NULL),
   theRootNode(NULL),
   theNodeStack(2048)
@@ -213,7 +213,7 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
 
     if (stream.bad())
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
         )
@@ -224,7 +224,7 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
   }
   catch (std::iostream::failure e)
   {
-    theErrorManager->add_error(
+    theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
         zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )
       )
@@ -232,7 +232,7 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
   }
   catch (...)
   {
-    theErrorManager->add_error(
+    theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
     );
   }
@@ -277,7 +277,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
@@ -285,7 +285,7 @@ store::Item_t FastXmlLoader::loadXml(
     }
     else if (numChars == 0)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
         )
@@ -302,7 +302,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( ParserInitFailed ) )
@@ -316,7 +316,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
 
-      if (theErrorManager->has_errors())
+      if (!theXQueryDiagnostics->errors().empty())
       {
         abortload();
         return NULL;
@@ -325,7 +325,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
@@ -349,7 +349,7 @@ store::Item_t FastXmlLoader::loadXml(
 
   // The doc may be well formed, but it may have other kinds of errors,
   // e.g., unresolved ns prefixes.
-  if (theErrorManager->has_errors())
+  if (!theXQueryDiagnostics->errors().empty())
   {
     abortload();
     return NULL;
@@ -358,7 +358,7 @@ store::Item_t FastXmlLoader::loadXml(
   {
     if (!theDocUri.empty())
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
@@ -367,7 +367,7 @@ store::Item_t FastXmlLoader::loadXml(
     }
     else
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
@@ -423,11 +423,11 @@ void FastXmlLoader::startDocument(void * ctx)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -505,11 +505,11 @@ void FastXmlLoader::endDocument(void * ctx)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -733,11 +733,11 @@ void FastXmlLoader::startElement(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -862,11 +862,11 @@ void  FastXmlLoader::endElement(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -913,11 +913,11 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -966,11 +966,11 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1016,11 +1016,11 @@ void FastXmlLoader::processingInstruction(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1061,11 +1061,11 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1087,7 +1087,7 @@ void FastXmlLoader::error(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  loader->theErrorManager->add_error(
+  loader->theXQueryDiagnostics->add_error(
     NEW_ZORBA_EXCEPTION(
       zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
     )

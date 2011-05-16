@@ -165,7 +165,7 @@ bool test_unresolved_module_uri(Zorba* aZorba)
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
     std::cout << "Caught exception: " << e.what() << std::endl;
-    if (e.error() == err::XQST0059) {
+    if (e.diagnostic() == err::XQST0059) {
       return true;
     }
   }
@@ -233,7 +233,7 @@ bool test_unresolved_schema_uri(Zorba* aZorba)
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
     std::cout << "Caught exception: " << e.what() << std::endl;
-    if (e.error() == err::XQST0059) {
+    if (e.diagnostic() == err::XQST0059) {
       return true;
     }
   }

@@ -262,7 +262,7 @@ bool DynamicContextImpl::setVariable(
       // Normally, we should be throwing an exception if the variable has not
       // been declared inside the xquery program, but this cases many failures
       // with the w3c XQTS.
-      if (e.error() == err::XPST0008)
+      if (e.diagnostic() == err::XPST0008)
       {
         return false;
       }
@@ -306,7 +306,7 @@ bool DynamicContextImpl::setVariable(
       // Normally, we should be throwing an exception if the variable has not
       // been declared inside the xquery program, but this cases many failures
       // with the w3c XQTS.
-      if (e.error() == err::XPST0008)
+      if (e.diagnostic() == err::XPST0008)
       {
         return false;
       }
@@ -355,7 +355,7 @@ bool DynamicContextImpl::setVariable(
       // Normally, we should be throwing an exception if the variable has not
       // been declared inside the xquery program, but this cases many failures
       // with the w3c XQTS.
-      if (e.error() == err::XPST0008)
+      if (e.diagnostic() == err::XPST0008)
       {
         return false;
       }

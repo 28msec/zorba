@@ -33,7 +33,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "util/xml_util.h"
 
 namespace zorba

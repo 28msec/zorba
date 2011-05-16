@@ -37,7 +37,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbaerrors/assert.h"
 
 
@@ -64,7 +64,7 @@ namespace zorba { namespace simplestore {
 
 #define ZORBA_LOADER_CHECK_ERROR(loader) \
   do { \
-    if (loader.theErrorManager->has_errors()) \
+    if (!loader.theXQueryDiagnostics->errors().empty()) \
       return; \
   } while (0);
 
@@ -73,10 +73,10 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 DtdXmlLoader::DtdXmlLoader(
     BasicItemFactory* factory,
-    ErrorManager* errorManager,
+    XQueryDiagnostics* xqueryDiagnostics,
     bool dataguide)
   :
-  XmlLoader(factory, errorManager, dataguide),
+  XmlLoader(factory, xqueryDiagnostics, dataguide),
   theTree(NULL),
   theRootNode(NULL),
   theNodeStack(2048)
@@ -213,7 +213,7 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
 
     if (stream.bad())
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( BadStreamState ) )
         )
@@ -224,7 +224,7 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
   }
   catch (std::iostream::failure const &e)
   {
-    theErrorManager->add_error(
+    theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
         zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )
       )
@@ -232,7 +232,7 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
   }
   catch (...)
   {
-    theErrorManager->add_error(
+    theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
     );
   }
@@ -285,7 +285,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       abortload();
@@ -294,7 +294,7 @@ store::Item_t DtdXmlLoader::loadXml(
     }
     else if (numChars == 0)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
         )
@@ -312,7 +312,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( ParserInitFailed ) )
@@ -338,7 +338,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       std::cout << "  xmlParseDocument: Error: Unable to create tree: " <<
           ctxt->lastError.message << std::endl;
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( ParserNoCreateTree ) )
@@ -353,7 +353,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
 
-      if (theErrorManager->has_errors())
+      if (!theXQueryDiagnostics->errors().empty())
       {
         delete[] theBuffer;
         abortload();
@@ -363,7 +363,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
       	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
       );
       delete[] theBuffer;
@@ -386,7 +386,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
   // The doc may be well formed, but it may have other kinds of errors,
   // e.g., unresolved ns prefixes.
-  if (theErrorManager->has_errors())
+  if (!theXQueryDiagnostics->errors().empty())
   {
     abortload();
     return NULL;
@@ -395,7 +395,7 @@ store::Item_t DtdXmlLoader::loadXml(
   {
     if (!theDocUri.empty())
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
@@ -404,7 +404,7 @@ store::Item_t DtdXmlLoader::loadXml(
     }
     else
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
@@ -423,7 +423,7 @@ store::Item_t DtdXmlLoader::loadXml(
     if ( ctxt->lastError.code == XML_NS_ERR_UNDEFINED_NAMESPACE ||
         ctxt->lastError.code != XML_ERR_NO_DTD )
     {
-      theErrorManager->add_error(
+      theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS( ZED( BadXMLDocument_2o ) )
@@ -439,7 +439,7 @@ store::Item_t DtdXmlLoader::loadXml(
   xmlDoc *doc = ctxt->myDoc;
   if (doc == NULL)
   {
-    theErrorManager->add_error(
+    theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
         zerr::ZSTR0021_LOADER_PARSING_ERROR,
         ERROR_PARAMS( ZED( ParserNoCreateTree ) )
@@ -586,11 +586,11 @@ void DtdXmlLoader::startDocument(void * ctx)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -668,11 +668,11 @@ void DtdXmlLoader::endDocument(void * ctx)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -960,11 +960,11 @@ void DtdXmlLoader::startElement(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1093,11 +1093,11 @@ void  DtdXmlLoader::endElement(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1144,11 +1144,11 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1197,11 +1197,11 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1247,11 +1247,11 @@ void DtdXmlLoader::processingInstruction(
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1290,11 +1290,11 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   }
   catch (ZorbaException const& e)
   {
-    loader.theErrorManager->add_error( e );
+    loader.theXQueryDiagnostics->add_error( e );
   }
   catch (...)
   {
-    loader.theErrorManager->add_error(
+    loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
@@ -1316,7 +1316,7 @@ void DtdXmlLoader::error(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  loader->theErrorManager->add_error(
+  loader->theXQueryDiagnostics->add_error(
     NEW_ZORBA_EXCEPTION(
       zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
     )

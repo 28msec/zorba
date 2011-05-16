@@ -21,7 +21,7 @@
 #include "util/stl_util.h"
 #include "util/uri_util.h"
 #ifndef ZORBA_WITH_FILE_ACCESS
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 #endif
 #include "zorbautils/locale.h"
 

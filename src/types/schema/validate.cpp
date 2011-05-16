@@ -15,7 +15,7 @@
 */
 #include "validate.h"
 
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
 
