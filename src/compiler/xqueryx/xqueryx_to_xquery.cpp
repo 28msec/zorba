@@ -78,7 +78,7 @@ void XQueryXConvertor::zorba_xslt_error_handler(void *ctx, const char *msg, ...)
   std::string  *errstr = (std::string  *)ctx;
   char    *buffer = NULL;
 
-  len = _vscprintf( msg, args ) + 1;
+  len = vsnprintf( buffer, 0, msg, args ) + 1;
     
   buffer = (char*)malloc( len * sizeof(char) );
 
