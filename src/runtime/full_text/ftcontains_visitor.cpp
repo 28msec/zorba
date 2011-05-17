@@ -22,6 +22,7 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/query_loc.h"
 #include "util/indent.h"
+#include "util/static_assert.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbatypes/numconversions.h"
@@ -51,17 +52,17 @@ namespace zorba {
 #define GET_OPTION(O) get_##O##_option()
 
 #define REPLACE_OPTION(O)                                     \
-  if ( newer->GET_OPTION(O) || !older->GET_OPTION(O) ) ; else \
-    newer->set_##O##_option( older->GET_OPTION(O) )
+  if ( newer->GET_OPTION(O) || !older.GET_OPTION(O) ) ; else  \
+    newer->set_##O##_option( older.GET_OPTION(O) )
 
-static void replace_match_options( ftmatch_options const *older,
+static void replace_match_options( ftmatch_options const &older,
                                    ftmatch_options *newer ) {
   REPLACE_OPTION( case );
   REPLACE_OPTION( diacritics );
 
   // special case
-  if ( !newer->get_extension_options() && older->get_extension_options() )
-    newer->set_extension_options( older->get_extension_options() );
+  if ( !newer->get_extension_options() && older.get_extension_options() )
+    newer->set_extension_options( older.get_extension_options() );
 
   REPLACE_OPTION( language );
   REPLACE_OPTION( stem );
@@ -82,7 +83,53 @@ inline ft_int to_ft_int( xs_integer const &i ) {
   return result;
 }
 
-////////// PUSH/POP macros ////////////////////////////////////////////////////
+////////// PUSH/POP ///////////////////////////////////////////////////////////
+
+/**
+ * See: http://www2.research.att.com/~bs/C++0xFAQ.html#nullptr
+ */
+class nullptr_t {
+public:
+  template<typename T>                  // convertible to any type
+  operator T*() const {                 // of null non-member
+    return 0;                           // pointer...
+  }
+  template<class C,class T>             // or any type of null
+  operator T C::*() const {             // member pointer...
+    return 0;
+  }
+private:
+  void operator&() const;               // whose address can't be taken
+} const ft_nullptr = {};
+
+/**
+ * An exception-safe push-and-release function for auto_ptr objects: the
+ * auto_ptr will be released only if pushing succeeds.
+ *
+ * @tparam StackValueType The stack's \c value_type.
+ * @tparam PointedToType The pointed-to type.
+ * @param s The stack to push onto.
+ * @param p A pointer to the object to push.
+ */
+template<typename StackValueType,typename PointedToType>
+inline void push( stack<StackValueType> &s, auto_ptr<PointedToType> p ) {
+  s.push( p.get() );
+  p.release();
+}
+
+/**
+ * A partial specialization for non-auto_ptr objects: it works just like the
+ * stack's ordinary \c push() member function.
+ *
+ * @tparam StackValueType The stack's \c value_type.
+ * @tparam T The type of object to push.
+ * @param s The stack to push onto.
+ * @param t The object to push.
+ */
+template<typename StackValueType,typename T>
+inline void push( stack<StackValueType> &s, T t ) {
+  s.push( t );
+}
 
 #ifndef NDEBUG
 
@@ -95,7 +142,7 @@ inline void pop_trace( char const *stack, int line ) {
   do {                                                                         \
     if ( TRACE_FULL_TEXT )                                                     \
       DOUT << indent << "(push " #STACK " @ line " << __LINE__ << ')' << endl; \
-    STACK.push( OBJ );                                                         \
+    push( STACK, OBJ );                                                        \
   } while (0)
 
 #define POP(STACK) \
@@ -103,7 +150,7 @@ inline void pop_trace( char const *stack, int line ) {
 
 #else /* NDEBUG */
 
-#define PUSH(STACK,OBJ) STACK.push( OBJ )
+#define PUSH(STACK,OBJ) push( STACK, OBJ )
 #define POP(STACK)      ztd::pop_stack( STACK )
 
 #endif /* NDEBUG */
@@ -261,7 +308,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 ft_visit_result::type V::begin_visit( ftand& ) {
   BEGIN_VISIT( ftand );
-  PUSH( matches_stack_, NULL ); // sentinel
+  PUSH( matches_stack_, ft_nullptr ); // sentinel
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftand& ) {
@@ -270,12 +317,12 @@ void V::end_visit( ftand& ) {
     auto_ptr<ft_all_matches> am_right( POP( matches_stack_ ) );
     auto_ptr<ft_all_matches> am_left( POP( matches_stack_ ) );
     if ( !am_left.get() ) {
-      PUSH( matches_stack_, am_right.release() );
+      PUSH( matches_stack_, am_right );
       break;
     }
     auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_ftand( *am_left, *am_right, *result );
-    PUSH( matches_stack_, result.release() );
+    PUSH( matches_stack_, result );
   }
   END_VISIT( ftand );
 }
@@ -284,7 +331,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
 
 ft_visit_result::type V::begin_visit( ftmild_not& ) {
   BEGIN_VISIT( ftmild_not );
-  PUSH( matches_stack_, NULL ); // sentinel
+  PUSH( matches_stack_, ft_nullptr ); // sentinel
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftmild_not &mn ) {
@@ -293,13 +340,13 @@ void V::end_visit( ftmild_not &mn ) {
     auto_ptr<ft_all_matches> am_right( POP( matches_stack_ ) );
     auto_ptr<ft_all_matches> am_left( POP( matches_stack_ ) );
     if ( !am_left.get() ) {
-      PUSH( matches_stack_, am_right.release() );
+      PUSH( matches_stack_, am_right );
       break;
     }
     try {
       auto_ptr<ft_all_matches> result( new ft_all_matches );
       apply_ftmild_not( *am_left, *am_right, *result );
-      PUSH( matches_stack_, result.release() );
+      PUSH( matches_stack_, result );
     }
     catch ( XQueryException &e ) {
       set_source( e, mn.get_loc() );
@@ -311,7 +358,7 @@ void V::end_visit( ftmild_not &mn ) {
 
 ft_visit_result::type V::begin_visit( ftor& ) {
   BEGIN_VISIT( ftor );
-  PUSH( matches_stack_, NULL ); // sentinel
+  PUSH( matches_stack_, ft_nullptr ); // sentinel
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftor& ) {
@@ -320,12 +367,12 @@ void V::end_visit( ftor& ) {
     auto_ptr<ft_all_matches> am_right( POP( matches_stack_ ) );
     auto_ptr<ft_all_matches> am_left( POP( matches_stack_ ) );
     if ( !am_left.get() ) {
-      PUSH( matches_stack_, am_right.release() );
+      PUSH( matches_stack_, am_right );
       break;
     }
     auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_ftor( *am_left, *am_right, *result );
-    PUSH( matches_stack_, result.release() );
+    PUSH( matches_stack_, result );
   }
   END_VISIT( ftor );
 }
@@ -335,11 +382,13 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
 
   ftmatch_options const *const older_options = options_stack_.empty() ?
     static_ctx_.get_match_options() : TOP( options_stack_ );
-  ftmatch_options *const newer_options =
-    new ftmatch_options( *pwo.get_match_options() );
+
+  auto_ptr<ftmatch_options> newer_options(
+    new ftmatch_options( *pwo.get_match_options() )
+  );
 
   if ( older_options )
-    replace_match_options( older_options, newer_options );
+    replace_match_options( *older_options, newer_options.get() );
   newer_options->set_missing_defaults();
   PUSH( options_stack_, newer_options );
 
@@ -410,7 +459,7 @@ void V::end_visit( ftwords &w ) {
       apply_ftwords(
         query_items, ++query_pos_, ignore_item_, w.get_mode(), options, *result
       );
-      PUSH( matches_stack_, result.release() );
+      PUSH( matches_stack_, result );
     }
   }
   catch ( XQueryException &e ) {
@@ -429,7 +478,7 @@ void V::end_visit( ftwords_times &wt ) {
       auto_ptr<ft_all_matches> const am( POP( matches_stack_ ) );
       auto_ptr<ft_all_matches> result( new ft_all_matches );
       apply_fttimes( *am, range->get_mode(), at_least, at_most, *result );
-      PUSH( matches_stack_, result.release() );
+      PUSH( matches_stack_, result );
     }
     catch ( XQueryException &e ) {
       set_source( e, wt.get_loc() );
@@ -457,7 +506,7 @@ void V::end_visit( ftdistance_filter &f ) {
   auto_ptr<ft_all_matches> const am( POP( matches_stack_ ) );
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftdistance( *am, at_least, at_most, f.get_unit(), *result );
-  PUSH( matches_stack_, result.release() );
+  PUSH( matches_stack_, result );
   END_VISIT( ftdistance_filter );
 }
 
@@ -466,7 +515,7 @@ void V::end_visit( ftorder_filter& ) {
   auto_ptr<ft_all_matches> const am( POP( matches_stack_ ) );
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftorder( *am, *result );
-  PUSH( matches_stack_, result.release() );
+  PUSH( matches_stack_, result );
   END_VISIT( ftorder_filter );
 }
 
@@ -475,7 +524,7 @@ void V::end_visit( ftscope_filter &f ) {
   auto_ptr<ft_all_matches> const am( POP( matches_stack_ ) );
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftscope( *am, f.get_scope(), f.get_unit(), *result );
-  PUSH( matches_stack_, result.release() );
+  PUSH( matches_stack_, result );
   END_VISIT( ftscope_filter );
 }
 
@@ -484,7 +533,7 @@ void V::end_visit( ftwindow_filter &f ) {
   auto_ptr<ft_all_matches> const am( POP( matches_stack_ ) );
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftwindow( *am, get_int( f.get_window_iter() ), f.get_unit(), *result );
-  PUSH( matches_stack_, result.release() );
+  PUSH( matches_stack_, result );
   END_VISIT( ftwindow_filter );
 }
 
