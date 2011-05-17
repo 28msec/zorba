@@ -298,17 +298,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                !domainExpr->isNonDiscardable())
       {
         substitute = true;
-#if 0
-				// TODO: needs an XQueryDiagnostics object to add to
-				XQueryWarning const *const w =
+				rCtx.getCompilerCB()->theXQueryDiagnostics->add_warning(
 					NEW_XQUERY_WARNING(
 						zwarn::ZWST0001_UNUSED_VARIABLE,
 						WARN_PARAMS( var->get_name()->getStringValue() ),
 						WARN_LOC( var->get_loc() )
-					);
-				std::cerr << *w << std::endl;
-				delete w;
-#endif
+					)
+				);
       }
 
       if (substitute)

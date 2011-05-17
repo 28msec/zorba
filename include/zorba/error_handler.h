@@ -34,7 +34,7 @@ class ZorbaException;
  */
 class ZORBA_DLL_PUBLIC ErrorHandler {
 public:
-  virtual ~ErrorHandler() {}
+  virtual ~ErrorHandler();
 
   /** \brief Callback function that is called for static errors 
    *         as defined in the XQuery 1.0 Specification 
