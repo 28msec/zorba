@@ -129,6 +129,11 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 
     // if have serialization parameters
     if (theChildren.size() == 2 && consumeNext(lParams, theChildren[1].getp(), aPlanState)) {
+
+      // validate the serialization parameters
+      bool lValid = theSctx->validate(lParams, lParams, StaticContextConsts::strict_validation);
+      assert(lValid);
+
       // get the children iterator
       store::Iterator_t lElemIter = lParams->getChildren();
       lElemIter->open();

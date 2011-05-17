@@ -1,8 +1,10 @@
 (: testing the omit-xml-declaration set to no :)
 
+import schema namespace ser = "http://www.w3.org/2010/xslt-xquery-serialization";
+
 let $params :=
-  <serialization-parameters xmlns="http://www.w3.org/2010/xslt-xquery-serialization">
-    <omit-xml-declaration value="no"/>
-  </serialization-parameters>
+  <ser:serialization-parameters>
+    <ser:omit-xml-declaration value="no"/>
+  </ser:serialization-parameters>
 return
   fn:serialize(<a/>, $params)
