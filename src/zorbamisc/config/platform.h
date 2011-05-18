@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_PLATFORM_H
 #define ZORBA_PLATFORM_H
 
@@ -38,5 +39,5 @@
 # include "zorbamisc/config/cygwin.h"
 #endif
 
-
-#endif
+#endif /* ZORBA_PLATFORM_H */
+/* vim:set et sw=2 ts=2: */

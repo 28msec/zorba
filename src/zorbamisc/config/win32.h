@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#ifndef ZORBA_WIN32_H
+
 #include <windows.h>
 #ifndef WINCE
-#include <sys/types.h>
+# include <sys/types.h>
 #else
-#include <types.h>
+# include <types.h>
 #endif
-//#include <io.h> // needed for _isatty in the parser
 
 #ifndef ZORBA_HAVE_STDINT_H
 #include "zorbamisc/config/stdint.h"
 #endif
 
 #include "zorbamisc/config/compatib_defs.h"
+
+#endif /* ZORBA_WIN32_H */
+/* vim:set et sw=2 ts=2: */

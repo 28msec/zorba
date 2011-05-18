@@ -17,13 +17,9 @@
 #ifndef ZORBA_DYNAMIC_BITSET_H
 #define ZORBA_DYNAMIC_BITSET_H
 
-#ifdef _MSC_VER
-#include "zorbamisc/config/stdint.h"
-#else
-#include <stdint.h>
-#endif
-
 #include <vector>
+
+#include "zorbamisc/config/stdint.h"
 #include "zorbamisc/config/platform.h"
 
 namespace zorba {

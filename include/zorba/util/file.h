@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_FILE_H
 #define ZORBA_FILE_H
 
@@ -21,13 +22,11 @@
 #endif
 
 #include <cstdio>
-
-#include <time.h>
 #include <string>
-
-#include <zorba/file.h>
+#include <time.h>
 
 #include <zorba/config.h>
+#include <zorba/file.h>
 #include <zorba/util/path.h>
 
 namespace zorba {

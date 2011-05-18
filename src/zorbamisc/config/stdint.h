@@ -30,14 +30,14 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _MSC_VER // [
-#error "Use this header only with Microsoft Visual C++ compilers!"
-#endif // _MSC_VER ]
+#include <stdint.h>
+#else
 
 #ifndef _MSC_STDINT_H_ // [
 #define _MSC_STDINT_H_
 
 // Exclude this file for Visual Studio >= 2010 (_MSC_VER == 1600 for Visual Studio 2010)
-#if _MSC_VER < 1600
+#if _MSC_VER < 1600 // [
 
 #if _MSC_VER > 1000
 #pragma once
@@ -228,3 +228,5 @@ typedef uint64_t  uintmax_t;
 #endif // _MSC_VER < 1600 ]
 
 #endif // _MSC_STDINT_H_ ]
+
+#endif // _MSC_VER ]
