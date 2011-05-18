@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+  FN_NODE_NAME_0,
   FN_NODE_NAME_1,
   FN_NILLED_1,
   FN_STRING_0,

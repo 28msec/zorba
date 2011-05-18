@@ -30,6 +30,15 @@ namespace zorba{
 
 
 
+PlanIter_t fn_node_name_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new NodeNameIterator(sctx, loc, argv);
+}
 PlanIter_t fn_node_name::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -93,6 +102,12 @@ PlanIter_t fn_root::codegen(
 
 void populate_context_accessors(static_context* sctx)
 {
+  DECL_WITH_KIND(sctx, fn_node_name_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","node-name"),
+      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION),
+      FunctionConsts::FN_NODE_NAME_0);
+
+
   DECL_WITH_KIND(sctx, fn_node_name,
       (createQName("http://www.w3.org/2005/xpath-functions","","node-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,

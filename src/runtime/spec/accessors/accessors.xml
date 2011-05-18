@@ -32,7 +32,10 @@
     <zorba:description author="Zorba Team">fn:node-name</zorba:description>
     
     <zorba:function>
-        <zorba:signature localname="node-name" prefix="fn">
+      <zorba:signature localname="node-name" prefix="fn" version="3.0">
+        <zorba:output>xs:QName?</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="node-name" prefix="fn">
             <zorba:param>node()?</zorba:param>
             <zorba:output>xs:QName?</zorba:output>
         </zorba:signature>

@@ -39,6 +39,18 @@ void populate_context_accessors(static_context* sctx);
 
 
 //fn:node-name
+class fn_node_name_3_0 : public function
+{
+public:
+  fn_node_name_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  CODEGEN_DECL();
+};
+
+//fn:node-name
 class fn_node_name : public function
 {
 public:

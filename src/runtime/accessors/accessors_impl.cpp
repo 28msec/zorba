@@ -30,6 +30,10 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 
+#include "api/dynamiccontextimpl.h"
+#include "api/unmarshaller.h"
+#include "api/xqueryimpl.h"
+
 namespace zorba {
 
 /*******************************************************************************
@@ -42,9 +46,21 @@ bool NodeNameIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(inNode, theChildren[0].getp(), planState))
+  if ((theChildren.size() == 0) || consumeNext(inNode, theChildren[0].getp(), planState))
   {
-    if( inNode->getNodeKind() == store::StoreConsts::elementNode ||
+    if(theChildren.size() == 0)
+    {
+      //get the context item
+    /*  DynamicContext  *external_dctx = planState.theQuery->getDynamicContext();//(planState.theQuery, planState.theGlobalDynCtx, getStaticContext());
+      zorba::Item external_ctx_item;
+      external_dctx->getContextItem(external_ctx_item);
+      inNode = Unmarshaller::getInternalItem(external_ctx_item);
+    */
+    }
+    if(inNode == NULL || !inNode->isNode())
+    {
+    }
+    else if( inNode->getNodeKind() == store::StoreConsts::elementNode ||
         inNode->getNodeKind() == store::StoreConsts::attributeNode)
     {
       result = inNode->getNodeName();

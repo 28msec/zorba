@@ -1,0 +1,1 @@
+fn:node-name(<a xmlns="http://zorba-example.com" attr1="val1"/>/@attr1)
