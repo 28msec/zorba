@@ -23,6 +23,10 @@
 # (To distributed this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+MESSAGE(STATUS "****************************************")
+MESSAGE(STATUS "************* Finding SWIG *************")
+MESSAGE(STATUS "****************************************")
+
 SET(SWIG_FOUND FALSE)
 
 FIND_PROGRAM(SWIG_EXECUTABLE swig)

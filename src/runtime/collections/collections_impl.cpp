@@ -1535,7 +1535,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   store::Collection_t              collection;
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
-  ulong                            collectionSize;
+  xs_ulong                         collectionSize;
   store::Item_t                    numNodesItem;
   xs_ulong                         numNodes = 1;
   std::vector<store::Item_t>       nodes;

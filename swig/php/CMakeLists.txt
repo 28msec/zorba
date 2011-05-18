@@ -12,8 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+IF(WIN32)
+INCLUDE(${PROJECT_SOURCE_DIR}/cmake_modules/Windows/FindPHP5.cmake)
+ELSE(WIN32)
 INCLUDE(${CMAKE_MODULE_PATH}/FindPHP5.cmake)
+ENDIF(WIN32)
+
 FIND_PACKAGE(PHP5)
+
+MESSAGE(STATUS "SWIG PHP....")
 
 IF( NOT PHP5_FOUND )
   MESSAGE(STATUS "SWIG PHP: PHP5 binding not generated because library and include file not installed.")
@@ -25,7 +32,7 @@ ELSE( NOT PHP5_FOUND )
   INCLUDE_DIRECTORIES(${PHP5_MAIN_INCLUDE_DIR})
   INCLUDE_DIRECTORIES(${PHP5_TSRM_INCLUDE_DIR})
   INCLUDE_DIRECTORIES(${PHP5_ZEND_INCLUDE_DIR})
-  ADD_DEFINITIONS(-DZEND_WIN32 -DPHP_WIN32 -DZEND_INCLUDE_FULL_WINDOWS_HEADERS)
+  ADD_DEFINITIONS(-DZEND_WIN32 -DPHP_WIN32 -DZEND_INCLUDE_FULL_WINDOWS_HEADERS -DZEND_DEBUG=0 -DZTS=1)
   ENDIF(WIN32)
   SWIG_ADD_MODULE(zorba_api php5 zorba_api.i)
   IF(APPLE)
@@ -33,7 +40,9 @@ ELSE( NOT PHP5_FOUND )
   ELSE(APPLE)
     SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore)
   ENDIF(APPLE)
-
+  IF(WIN32)
+    SWIG_LINK_LIBRARIES(zorba_api ${PHP5_LIBRARY})
+  ENDIF(WIN32)
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
   IF ( LINUX OR CYGWIN )

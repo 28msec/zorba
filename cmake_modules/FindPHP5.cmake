@@ -22,6 +22,9 @@
 #
 #  file is derived from FindPHP4.cmake
 #
+MESSAGE(STATUS "****************************************")
+MESSAGE(STATUS "******** FindPHP: Finding PHP5 *********")
+MESSAGE(STATUS "****************************************")
 
 SET(PHP5_FOUND "NO")
 
@@ -53,7 +56,9 @@ FIND_PROGRAM(PHP5_EXECUTABLE
   PATHS
   /usr/bin
   /usr/local/bin
+  ${PHP5_BINARY_DIR}
   )
+MESSAGE(STATUS "Executable: " ${PHP5_EXECUTABLE})
 
 MARK_AS_ADVANCED(
   PHP5_EXECUTABLE
@@ -61,6 +66,7 @@ MARK_AS_ADVANCED(
   )
 
 IF(APPLE)
+MESSAGE(STATUS "Darwin Environment Configuration...")
 # this is a hack for now
   SET(CMAKE_SHARED_MODULE_CREATE_C_FLAGS
    "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS} -Wl,-flat_namespace")
@@ -100,6 +106,7 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF (NOT WIN32 OR CYGWIN)
+MESSAGE(STATUS "*NIX Environment Configuration...")
 FIND_PROGRAM(PHP5_CONFIG_EXECUTABLE
   NAMES php5-config php-config
   PATHS
@@ -133,10 +140,10 @@ IF(PHP5_VERSION LESS 5)
 ENDIF(PHP5_VERSION LESS 5)
 
 ELSE (NOT WIN32 OR CYGWIN)
-#On Windows, php does not have php-config
-
-SET(PHP5_INCLUDES "" CACHE PATH "Path to the root source code of PHP5")
-SET(PHP5_INCLUDE_DIR ${PHP5_INCLUDES})
+MESSAGE(STATUS "Windows Environment Configuration...")
+#On Windows, set PHP5_INCLUDE_DIR with -D
+MESSAGE(STATUS "Path to source: " ${PHP5_INCLUDE_DIR})
+SET(PHP5_INCLUDES ${PHP5_INCLUDE_DIR})
 #SET(PHP5_EXTENSION_DIR "" CACHE PATH "Path to the ext subdir in binary PHP5")
 ENDIF (NOT WIN32 OR CYGWIN)
 

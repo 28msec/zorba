@@ -155,7 +155,7 @@ static inline bool isElementOrDocumentNode(const store::Item* node)
 }
 
 
-bool AxisIteratorHelper::setTargetPos(long pos)
+bool AxisIteratorHelper::setTargetPos(xs_long pos)
 {
   assert(pos == -2 || pos >= 0);
 

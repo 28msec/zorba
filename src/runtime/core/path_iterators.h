@@ -63,7 +63,7 @@ protected:
   xqtref_t                     theType;
   bool                         theNilledAllowed;
 
-  long                         theTargetPos;
+  xs_long                         theTargetPos;
  
 public:
   AxisIteratorHelper() 
@@ -96,9 +96,9 @@ public:
 
   void setNilledAllowed(bool v) { theNilledAllowed = v; }
 
-  bool setTargetPos(long pos);
+  bool setTargetPos(xs_long pos);
 
-  long getTargetPos() const { return theTargetPos; }
+  xs_long getTargetPos() const { return theTargetPos; }
 
   const match_test_t& getTestKind() const { return theTestKind; }
 
@@ -122,7 +122,7 @@ class AxisState : public PlanIteratorState
 public:
   store::Item_t  theContextNode;   
 
-  long           theCurrentPos;
+  xs_long           theCurrentPos;
 
 public:
   void init(PlanState& planState) 

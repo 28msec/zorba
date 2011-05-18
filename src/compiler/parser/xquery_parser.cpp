@@ -286,10 +286,11 @@ namespace zorba {
     YYUSE (yylocationp);
     YYUSE (yyvaluep);
     switch (yytype)
-      {
-         default:
-	  break;
-      }
+    {
+      case 0:
+      default:
+	      break;
+    }
   }
 
 

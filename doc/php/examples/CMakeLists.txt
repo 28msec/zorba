@@ -15,11 +15,20 @@
 FIND_PACKAGE(PHP5)
 
 IF(PHP5_FOUND AND ZORBA_USE_SWIG)
+
+  MESSAGE(STATUS "PHP Found and Active!")
+
   SET(phpPath ${CMAKE_BINARY_DIR}/swig/php)
+  MESSAGE(STATUS "PHP Path:" ${phpPath})
   SET(phpExtensionPath ${CMAKE_BINARY_DIR}/swig/php)
+  MESSAGE(STATUS "PHP Extension Path: " ${phpExtensionPath})
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/php.ini.in ${CMAKE_CURRENT_BINARY_DIR}/php.ini)
+  MESSAGE(STATUS "Configuration file: " ${CMAKE_CURRENT_BINARY_DIR}/php.ini)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/simple.php.in ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
+  MESSAGE(STATUS "Simple configuration file: " ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
   ADD_TEST("php" ${PHP5_EXECUTABLE} -c ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
+  MESSAGE(STATUS "Installing: " ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
+  
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/simple.php
           DESTINATION
           share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/php/examples)
