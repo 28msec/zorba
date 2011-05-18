@@ -666,8 +666,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> VersionDecl
 %type <node> VFO_Decl
 %type <node> VFO_DeclList
-// TODO: remove %type <node> BlockDecls
-%type <node> BlockVarDeclList
 %type <node> BlockVarDecl
 %type <node> WhereClause
 %type <node> CountClause
@@ -703,6 +701,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> Statements
 %type <expr> StatementsAndExpr
 %type <expr> StatementsAndOptionalExpr
+%type <expr> StatementsAndOptionalExprTop
 %type <expr> SwitchStatement
 %type <expr> TypeswitchStatement
 %type <expr> TryStatement
@@ -713,11 +712,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> FLWORStatement
 %type <expr> ReturnStatement
 %type <expr> VarDeclStatement
+%type <expr> BlockVarDeclList
 %type <expr> BlockExpr
 %type <expr> EnclosedStatementsAndOptionalExpr
 %type <expr> Expr
-%type <expr> ConcatExpr
-// TODO: %type <expr> ApplyExpr
 %type <expr> ExprSingle
 %type <expr> ExprSimple
 %type <expr> ExtensionExpr
@@ -752,9 +750,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> ValidateExpr
 %type <expr> ValueExpr
 %type <expr> VarRef
-%type <expr> VarDeclExpr
 %type <expr> ExitStatement
-%type <expr> WhileExpr
+%type <expr> WhileStatement
 %type <expr> AssignStatement
 %type <expr> FlowCtlStatement
 %type <expr> QNAME
@@ -891,7 +888,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ConcatExpr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarDeclExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileExpr FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -1051,155 +1048,178 @@ ERROR :
 
 // [1]
 ModuleWithoutBOM :
-      MainModule
-      {
-        $$ = $1;
-        driver.set_expr( $$ );
-      }
-  |   VersionDecl MainModule
-      {
-        MainModule *mm = dynamic_cast<MainModule*>($2);
-        mm->set_version_decl( static_cast<VersionDecl*>($1) );
-        $$ = $2;
-        driver.set_expr( $$ );
-      }
-  |   LibraryModule
-      {
-        $$ = $1;
-        driver.set_expr( $$ );
-      }
-  |   VersionDecl LibraryModule
-      {
-        LibraryModule *lm = dynamic_cast<LibraryModule*>($2);
-        lm->set_version_decl( static_cast<VersionDecl*>($1) );
-        $$ = $2;
-        driver.set_expr( $$ );
-      }
+    MainModule
+    {
+      $$ = $1;
+      driver.set_expr( $$ );
+    }
+  |
+    VersionDecl MainModule
+    {
+      MainModule* mm = dynamic_cast<MainModule*>($2);
+      mm->set_version_decl( static_cast<VersionDecl*>($1) );
+      $$ = $2;
+      driver.set_expr( $$ );
+    }
+  | 
+    LibraryModule
+    {
+      $$ = $1;
+      driver.set_expr( $$ );
+    }
+  | 
+    VersionDecl LibraryModule
+    {
+      LibraryModule* lm = dynamic_cast<LibraryModule*>($2);
+      lm->set_version_decl( static_cast<VersionDecl*>($1) );
+      $$ = $2;
+      driver.set_expr( $$ );
+    }
 ;
 
 
 VersionDecl :
-      XQUERY VERSION STRING_LITERAL SEMI
-      {
-        $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8" );
-      }
-  |   XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
-      {
-        $$ = new VersionDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
-      }
+    XQUERY VERSION STRING_LITERAL SEMI
+    {
+      $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8" );
+    }
+  | 
+    XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
+    {
+      $$ = new VersionDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
+    }
 ;
 
+
 MainModule :
-      SIND_DeclList SEMI QueryBody
-      {
-        Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), NULL);
-        $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($3), prolog);
-      }
-  |   VFO_DeclList SEMI QueryBody
-      {
-        Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($1));
-        $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($3), prolog);
-      }
-  |   SIND_DeclList SEMI VFO_DeclList SEMI QueryBody
-      {
-        Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), static_cast<VFO_DeclList*>($3));
-        $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($5), prolog);
-      }
-  |   QueryBody
-      {
-        $$ = new MainModule( LOC(@$), static_cast<QueryBody*>($1), NULL );
-      }
+    SIND_DeclList SEMI QueryBody
+    {
+      Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), NULL);
+
+      $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($3), prolog);
+    }
+  |
+    VFO_DeclList SEMI QueryBody
+    {
+      Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($1));
+
+      $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($3), prolog);
+    }
+  |
+    SIND_DeclList SEMI VFO_DeclList SEMI QueryBody
+    {
+      Prolog* prolog = new Prolog(LOC(@$),
+                                  static_cast<SIND_DeclList*>($1),
+                                  static_cast<VFO_DeclList*>($3));
+
+      $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($5), prolog);
+    }
+  |
+    QueryBody
+    {
+      $$ = new MainModule( LOC(@$), static_cast<QueryBody*>($1), NULL );
+    }
+
   //  ============================ Improved error messages ============================
-  |   SIND_DeclList ERROR QueryBody
-      {
-        $$ = $1; $$ = $3; // to prevent the Bison warning
-        @1.step();
-        error(@1, "syntax error, missing semicolon \";\" after statement.");
-        YYERROR;
-      }
-  |   VFO_DeclList ERROR QueryBody
-      {
-        $$ = $1; $$ = $3; // to prevent the Bison warning
-        @1.step();
-        error(@1, "syntax error, missing semicolon \";\" after declaration.");
-        YYERROR;
-      }
-   |  SIND_DeclList SEMI VFO_DeclList ERROR QueryBody
-      {
-        $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
-        @3.step();
-        error(@3, "syntax error, missing semicolon \";\" after declaration.");
-        YYERROR;
-      }
-   |  SIND_DeclList ERROR VFO_DeclList SEMI QueryBody
-      {
-        $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
-        @1.step();
-        error(@1, "syntax error, missing semicolon \";\" after statement.");
-        YYERROR;
-      }
+  | 
+    SIND_DeclList ERROR QueryBody
+    {
+      $$ = $1; $$ = $3; // to prevent the Bison warning
+      @1.step();
+      error(@1, "syntax error, missing semicolon \";\" after statement.");
+      YYERROR;
+    }
+  | 
+    VFO_DeclList ERROR QueryBody
+    {
+      $$ = $1; $$ = $3; // to prevent the Bison warning
+      @1.step();
+      error(@1, "syntax error, missing semicolon \";\" after declaration.");
+      YYERROR;
+    }
+  |
+    SIND_DeclList SEMI VFO_DeclList ERROR QueryBody
+    {
+      $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
+      @3.step();
+      error(@3, "syntax error, missing semicolon \";\" after declaration.");
+      YYERROR;
+    }
+  |
+    SIND_DeclList ERROR VFO_DeclList SEMI QueryBody
+    {
+      $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
+      @1.step();
+      error(@1, "syntax error, missing semicolon \";\" after statement.");
+      YYERROR;
+    }
 ;
 
 
 LibraryModule :
-      ModuleDecl
-      {
-        $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), NULL);
-      }
-  |   ModuleDecl SIND_DeclList SEMI
-      {
-        Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), NULL);
+    ModuleDecl
+    {
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), NULL);
+    }
+  | 
+    ModuleDecl SIND_DeclList SEMI
+    {
+      Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), NULL);
 
-        $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
-      }
-  |   ModuleDecl VFO_DeclList SEMI
-      {
-        Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($2));
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+    }
+  | 
+    ModuleDecl VFO_DeclList SEMI
+    {
+      Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($2));
 
-        $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
-      }
-  |   ModuleDecl SIND_DeclList SEMI VFO_DeclList SEMI
-      {
-        Prolog* prolog = new Prolog(LOC(@$),
-                                    static_cast<SIND_DeclList*>($2),
-                                    static_cast<VFO_DeclList*>($4));
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+    }
+  | 
+    ModuleDecl SIND_DeclList SEMI VFO_DeclList SEMI
+    {
+      Prolog* prolog = new Prolog(LOC(@$),
+                                  static_cast<SIND_DeclList*>($2),
+                                  static_cast<VFO_DeclList*>($4));
 
-        $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
-      }
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+    }
 ;
 
 
 ModuleDecl :
-      MODULE NAMESPACE NCNAME EQUALS URI_LITERAL SEMI
-      {
-        $$ = new ModuleDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
+    MODULE NAMESPACE NCNAME EQUALS URI_LITERAL SEMI
+    {
+      $$ = new ModuleDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
 
-        dynamic_cast<ModuleDecl*>($$)->setComment( SYMTAB($1) );
-      }
+      dynamic_cast<ModuleDecl*>($$)->setComment( SYMTAB($1) );
+    }
 ;
 
 
 SIND_DeclList :
-      SIND_Decl
-      {
-        SIND_DeclList *sdl = new SIND_DeclList( LOC(@$) );
-        sdl->push_back( $1 );
-        $$ = sdl;
-      }
-  |   SIND_DeclList SEMI SIND_Decl
-      {
-        ((SIND_DeclList*)$1)->push_back( $3 );
-        $$ = $1;
-      }
+    SIND_Decl
+    {
+      SIND_DeclList *sdl = new SIND_DeclList( LOC(@$) );
+      sdl->push_back( $1 );
+      $$ = sdl;
+    }
+  | 
+    SIND_DeclList SEMI SIND_Decl
+    {
+      ((SIND_DeclList*)$1)->push_back( $3 );
+      $$ = $1;
+    }
   //  ============================ Improved error messages ============================
-  |   SIND_DeclList ERROR SIND_Decl
-      {
-        // error
-        $$ = $1; $$ = $3; // to prevent the Bison warning
-        @1.step();
-        error(@1, "syntax error, missing semicolon \";\" after declaration.");
-        YYERROR;
-      }
+  | 
+    SIND_DeclList ERROR SIND_Decl
+    {
+      // error
+      $$ = $1; $$ = $3; // to prevent the Bison warning
+      @1.step();
+      error(@1, "syntax error, missing semicolon \";\" after declaration.");
+      YYERROR;
+    }
 ;
 
 
@@ -1227,42 +1247,44 @@ Setter :
 
 
 BoundarySpaceDecl :
-      DECLARE BOUNDARY_SPACE PRESERVE
-      {
-        $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::preserve_space);
-      }
-  |   DECLARE BOUNDARY_SPACE STRIP
-      {
-        $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::strip_space);
-      }
+    DECLARE BOUNDARY_SPACE PRESERVE
+    {
+      $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::preserve_space);
+    }
+  | 
+    DECLARE BOUNDARY_SPACE STRIP
+    {
+      $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::strip_space);
+    }
 ;
 
 
 DefaultCollationDecl :
-      DECLARE DEFAULT COLLATION URI_LITERAL
-      {
-        $$ = new DefaultCollationDecl( LOC(@$), SYMTAB($4) );
-      }
+    DECLARE DEFAULT COLLATION URI_LITERAL
+    {
+      $$ = new DefaultCollationDecl( LOC(@$), SYMTAB($4) );
+    }
 ;
 
 
 BaseURIDecl :
-      DECLARE BASE_URI URI_LITERAL
-      {
-        $$ = new BaseURIDecl( LOC(@$), SYMTAB($3) );
-      }
+    DECLARE BASE_URI URI_LITERAL
+    {
+      $$ = new BaseURIDecl( LOC(@$), SYMTAB($3) );
+    }
 ;
 
 
 ConstructionDecl :
-      DECLARE CONSTRUCTION PRESERVE
-      {
-        $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_preserve);
-      }
-  |   DECLARE CONSTRUCTION STRIP
-      {
-        $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_strip);
-      }
+    DECLARE CONSTRUCTION PRESERVE
+    {
+      $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_preserve);
+    }
+  | 
+    DECLARE CONSTRUCTION STRIP
+    {
+      $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_strip);
+    }
 ;
 
 
@@ -1542,16 +1564,16 @@ DecimalFormatParam :
 
 
 DecimalFormatParamName :
-        DECIMAL_SEPARATOR   { $$ = "decimal-separator"; }
-    |   DIGIT               { $$ = "digit"; }
-    |   GROUPING_SEPARATOR  { $$ = "grouping-separator"; }
-    |   INFINITY_VALUE      { $$ = "infinty"; }
-    |   MINUS_SIGN          { $$ = "minus-sign"; }
-    |   NaN                 { $$ = "NaN"; }
-    |   PATTERN_SEPARATOR   { $$ = "pattern-separator"; }
-    |   PERCENT             { $$ = "percent"; }
-    |   PER_MILLE           { $$ = "per-mille"; }
-    |   ZERO_DIGIT          { $$ = "zero-digit"; }
+      DECIMAL_SEPARATOR   { $$ = "decimal-separator"; }
+    | DIGIT               { $$ = "digit"; }
+    | GROUPING_SEPARATOR  { $$ = "grouping-separator"; }
+    | INFINITY_VALUE      { $$ = "infinty"; }
+    | MINUS_SIGN          { $$ = "minus-sign"; }
+    | NaN                 { $$ = "NaN"; }
+    | PATTERN_SEPARATOR   { $$ = "pattern-separator"; }
+    | PERCENT             { $$ = "percent"; }
+    | PER_MILLE           { $$ = "per-mille"; }
+    | ZERO_DIGIT          { $$ = "zero-digit"; }
     ;
 
 
@@ -1666,86 +1688,6 @@ VarDecl :
                        true);  // external
 
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
-    }
-;
-
-
-/*_____________________________________________________________________
- *
- * Scripting VarDeclExpr
- * [8] VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration? (":=" ExprSingle)?
- *_____________________________________________________________________*/
-
-VarDeclExpr :
-    VarNameAndType
-    {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
-
-      /*
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       NULL,    // no init expr
-                       nt->get_annotations(),
-                       true,    // global
-                       false);  // external
-      */
-
-      // TODO:
-      $$ = NULL;
-    }
-  | LOCAL VarNameAndType
-    {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
-
-      /*
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       NULL,    // no init expr
-                       nt->get_annotations(),
-                       false,    // global
-                       false);  // external
-      */
-
-      // TODO:
-      $$ = NULL;
-    }
-
-  | VarNameAndType GETS ExprSingle
-    {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
-
-      /*
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       $3,
-                       nt->get_annotations(),
-                       true,    // global
-                       false);  // not external
-
-      */
-
-      // TODO:
-      $$ = NULL;
-    }
-  | LOCAL VarNameAndType GETS ExprSingle
-    {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
-
-      /*
-      $$ = new VarDecl(LOC(@$),
-                       nt->theName,
-                       nt->theType,
-                       $4,
-                       nt->get_annotations(),
-                       false,   // local
-                       false);  // not external
-      */
-
-      // TODO:
-      $$ = NULL;
     }
 ;
 
@@ -2210,6 +2152,7 @@ IndexKeyList :
     }
 ;
 
+
 IndexKeySpec :
     PathExpr
     {
@@ -2238,6 +2181,7 @@ IndexKeySpec :
                             dynamic_cast<OrderCollationSpec*>($3));
     }
   ;
+
 
 IntegrityConstraintDecl :
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
@@ -2287,12 +2231,142 @@ IntegrityConstraintDecl :
 
 
 
-BlockExpr :
-    LBRACE StatementsAndOptionalExpr RBRACE
+QueryBody :
+    StatementsAndOptionalExprTop
+    {
+      if ($1 == NULL)
+      {
+        error(@1, "syntax error, unexpected end of file, the query should not be empty");
+        YYERROR;
+      }
+      
+      if (dynamic_cast<BlockBody*>($1) != NULL)
+      {
+        BlockBody* blk = static_cast<BlockBody*>($1);
+        blk->setTopLevel(true);
+      }
+
+      $$ = new QueryBody(LOC(@$), $1);
+    }
+;
+
+
+StatementsAndOptionalExprTop :
+    StatementsAndExpr
+    {
+      $$ = $1;
+    }
+  |
+    Statements
+    {
+      $$ = $1;
+    }
+  |
+    {
+      $$ =  NULL;
+    }
+;
+
+
+StatementsAndOptionalExpr :
+    StatementsAndExpr
+    {
+      $$ = $1;
+    }
+  |
+    Statements
+    {
+      $$ = $1;
+    }
+  |
+    {
+      $$ =  new BlockBody(LOC(@$));
+    }
+;
+
+
+StatementsAndExpr :
+    Expr
+    {
+      $$ = $1;
+    }
+  |
+    Statements Expr
+    {
+      BlockBody* blk = static_cast<BlockBody*>($1);
+
+      blk->add($2);
+
+      $$ = blk;
+    }
+;
+
+
+Statements :
+    Statement
+    {
+      BlockBody* blk = new BlockBody(LOC(@$));
+      blk->add($1);
+      $$ = blk;
+    }
+  |
+    Statements Statement
+    {
+      BlockBody* blk = static_cast<BlockBody*>($1);
+
+      blk->add($2);
+
+      $$ = blk;
+    }
+;
+
+
+Statement :
+    BlockStatement
+  | VarDeclStatement
+  | AssignStatement
+  | ApplyStatement
+  | ExitStatement
+  | WhileStatement
+  | FlowCtlStatement
+
+  | FLWORStatement
+  | IfStatement
+  | TypeswitchStatement
+  | SwitchStatement
+  | TryStatement
+;
+
+
+BlockStatement :
+    LBRACE Statements RBRACE
     {
       $$ = $2;
     }
+  |
+    LBRACE RBRACE
+    {
+      $$ = new BlockBody(LOC(@$));
+    }
 ;
+
+
+BlockExpr :
+    LBRACE StatementsAndOptionalExpr RBRACE
+    {
+      if (dynamic_cast<BlockBody*>($2) == NULL)
+      {
+        BlockBody* blk = new BlockBody(LOC(@$));
+        blk->add($2);
+        $$ = blk;
+      }
+      else
+      {
+        $$ = $2;
+      }
+    }
+;
+
 
 EnclosedStatementsAndOptionalExpr :
     LBRACE StatementsAndOptionalExpr RBRACE
@@ -2302,38 +2376,26 @@ EnclosedStatementsAndOptionalExpr :
 ;
 
 
-/*
-BlockDecls :
-    BlockDecls BlockVarDeclList SEMI
+VarDeclStatement :
+    BlockVarDeclList SEMI
     {
-      VFO_DeclList* vfo = dynamic_cast<VFO_DeclList*>($1);
-      auto_ptr<VFO_DeclList> vfo2( dynamic_cast<VFO_DeclList*>($2) );
-
-      if ( !$1 )
-        vfo = new VFO_DeclList( LOC(@$) );
-
-      vfo->push_back( *vfo2.get() );
-      $$ = vfo;
+      $$ = $1;
     }
-  |
-    {
-      $$ = NULL;
-    }
-  ;
-*/
+;
+
 
 BlockVarDeclList :
     BlockVarDeclList COMMA BlockVarDecl
     {
-      VFO_DeclList* vfo = dynamic_cast<VFO_DeclList*>($1);
-      vfo->push_back( $3 );
-      $$ = vfo;
+      VarDeclStmt* vdecl = static_cast<VarDeclStmt*>($1);
+      vdecl->add($3);
+      $$ = vdecl;
     }
   | VARIABLE BlockVarDecl
     {
-      VFO_DeclList* vfo = new VFO_DeclList( LOC(@$) );
-      vfo->push_back($2);
-      $$ = vfo;
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$));
+      vdecl->add($2);
+      $$ = vdecl;
     }
   ;
 
@@ -2390,255 +2452,116 @@ BlockVarDecl :
     }
   ;
 
+
 AssignStatement :
-        DOLLAR QNAME GETS ExprSingle SEMI
-        {
-            $$ = new AssignExpr(LOC(@$), static_cast<QName*>($2), $4);
-        }
-    ;
-
-ExitStatement :
-        EXIT RETURNING ExprSingle SEMI
-        {
-            $$ = new ExitExpr( LOC(@$), $3 );
-        }
-    ;
-
-WhileExpr :
-        WHILE LPAR Expr RPAR ExprSingle
-        {
-            BlockBody *bb = dynamic_cast<BlockBody *>($5);
-            if (bb == NULL)
-            {
-                bb = new BlockBody($5->get_location());
-                bb->add($5);
-            }
-            $$ = new WhileExpr( LOC(@$), $3, bb );
-        }
-    ;
-
-FlowCtlStatement :
-        BREAK LOOP SEMI
-        {
-            $$ = new FlowCtlStatement( LOC(@$), FlowCtlStatement::BREAK );
-        }
-    |   CONTINUE LOOP SEMI
-        {
-            $$ = new FlowCtlStatement( LOC(@$), FlowCtlStatement::CONTINUE );
-        }
-    ;
-
-BracedExpr :
-        LBRACE Expr RBRACE
-        {
-            $$ = $2;
-        }
-    ;
-
-// [30]
-QueryBody :
-        StatementsAndOptionalExpr
-        {
-          if ($1 == NULL)
-          {
-            error(@1, "syntax error, unexpected end of file, the query should not be empty");
-            YYERROR;
-          }
-
-          $$ = new QueryBody( LOC(@$), $1);
-        }
-    ;
-
-StatementsAndOptionalExpr :
-       StatementsAndExpr
-       {
-         $$ = $1;
-       }
-    |  Statements
-       {
-         $$ = $1;
-       }
-    |  /* empty */
-       {
-         $$ = NULL;
-       }
-    ;
-
-StatementsAndExpr :
-        Expr
-        {
-            $$ = $1;
-        }
-    |   Statement StatementsAndExpr
-        {
-            BlockBody* blk = dynamic_cast<BlockBody*>($1);
-            if (blk == NULL)
-            {
-              blk = new BlockBody( LOC(@$) );
-              blk->add($1);
-            }
-
-            BlockBody* blk2 = dynamic_cast<BlockBody*>($2);
-            if (blk2 == NULL)
-            {
-              blk->add($2);
-            } else
-            {
-              rchandle<VFO_DeclList> newdecls = blk2->get_decls();
-              rchandle<VFO_DeclList> olddecls = blk->get_decls();
-              if (olddecls.getp() == NULL)
-              {
-                olddecls = new VFO_DeclList( LOC(@$) );
-                blk->set_decls(olddecls);
-              }
-
-              if (newdecls.getp() != NULL)
-              {
-                for (vector<rchandle<parsenode> >::iterator it = newdecls->begin(); it != newdecls->end(); ++it)
-                {
-                  olddecls->push_back(*it);
-                }
-                blk->set_decls(olddecls);
-              }
-
-              for (unsigned int i = 0; i < blk2->size(); ++i)
-                blk->add( (*blk2)[i] );
-              delete blk2;
-            }
-            $$ = blk;
-        }
+    DOLLAR QNAME GETS ExprSingle SEMI
+    {
+      $$ = new AssignExpr(LOC(@$), static_cast<QName*>($2), $4);
+    }
 ;
 
-Statements :
-        Statement
-        {
-            $$ = $1;
-        }
-    |   Statement Statements
-        {
-            BlockBody* blk = dynamic_cast<BlockBody*>($1);
-            if (blk == NULL)
-            {
-              blk = new BlockBody( LOC(@$) );
-              blk->add($1);
-            }
-
-            BlockBody* blk2 = dynamic_cast<BlockBody*>($2);
-            if(blk2 == NULL)
-            {
-              blk->add($2);
-            }
-            else
-            {
-              rchandle<VFO_DeclList> newdecls = blk2->get_decls();
-              rchandle<VFO_DeclList> olddecls = blk->get_decls();
-              if (olddecls.getp() == NULL) {
-                olddecls = new VFO_DeclList( LOC(@$) );
-                blk->set_decls(olddecls);
-              }
-
-              if (newdecls.getp() != NULL)
-              {
-                for (vector<rchandle<parsenode> >::iterator it = newdecls->begin(); it != newdecls->end(); ++it)
-                {
-                  olddecls->push_back(*it);
-                }
-                blk->set_decls(olddecls);
-              }
-
-              for (unsigned int i = 0; i < blk2->size(); ++i)
-                blk->add( (*blk2)[i] );
-
-              delete blk2;
-            }
-            $$ = blk;
-        }
-    ;
-
-Statement :
-        ApplyStatement
-    |   BlockStatement
-    |   FlowCtlStatement
-    |   FLWORStatement
-    |   IfStatement
-    |   WhileExpr
-    |   TryStatement
-    |   TypeswitchStatement
-    |   SwitchStatement
-    |   AssignStatement
-    |   ExitStatement
-    |   VarDeclStatement
-    ;
 
 ApplyStatement :
-        ExprSimple SEMI
-        {
-          $$ = new ApplyExpr( LOC(@$), $1);
-        }
-    ;
-
-BlockStatement :
-        LBRACE Statements RBRACE
-        {
-            $$ = $2;
-        }
-    |   LBRACE RBRACE
-        {
-            $$ = new BlockBody( LOC(@$) );
-        }
-    ;
-
-FLWORStatement :
-        FLWORClauseList ReturnStatement
-        {
-          ReturnExpr *re = dynamic_cast<ReturnExpr*>($2);
-          $$ = new FLWORExpr(
-             LOC(@$),
-             dynamic_cast<FLWORClauseList*>($1),
-             re->get_return_val(),
-             re->get_location(),
-                     driver.theCompilerCB->theConfig.force_gflwor
-             );
-          delete $2;
-        }
-    ;
-
-ReturnStatement :
-        RETURN Statement
-        {
-          $$ = new ReturnExpr( LOC(@$), $2 );
-        }
-    ;
-
-IfStatement :
-        IF LPAR Expr RPAR THEN Statement ELSE Statement
-        {
-          $$ = new IfExpr(LOC (@$), $3, $6, $8);
-        }
+    ExprSimple SEMI
+    {
+      $$ = new ApplyExpr(LOC(@$), $1);
+    }
 ;
 
+
+ExitStatement :
+    EXIT RETURNING ExprSingle SEMI
+    {
+      $$ = new ExitExpr(LOC(@$), $3);
+    }
+;
+
+
+WhileStatement :
+    WHILE LPAR Expr RPAR Statement
+    {
+      BlockBody* bb = dynamic_cast<BlockBody *>($5);
+      if (bb == NULL)
+      {
+        bb = new BlockBody($5->get_location());
+        bb->add($5);
+      }
+
+      $$ = new WhileExpr(LOC(@$), $3, bb);
+    }
+;
+
+
+FlowCtlStatement :
+    BREAK LOOP SEMI
+    {
+      $$ = new FlowCtlStatement(LOC(@$), FlowCtlStatement::BREAK);
+    }
+  |
+    CONTINUE LOOP SEMI
+    {
+      $$ = new FlowCtlStatement( LOC(@$), FlowCtlStatement::CONTINUE );
+    }
+;
+
+
+FLWORStatement :
+    FLWORClauseList ReturnStatement
+    {
+      ReturnExpr *re = dynamic_cast<ReturnExpr*>($2);
+      $$ = new FLWORExpr(
+                         LOC(@$),
+                         dynamic_cast<FLWORClauseList*>($1),
+                         re->get_return_val(),
+                         re->get_location(),
+                         driver.theCompilerCB->theConfig.force_gflwor
+                         );
+      delete $2;
+    }
+;
+
+
+ReturnStatement :
+    RETURN Statement
+    {
+      $$ = new ReturnExpr( LOC(@$), $2 );
+    }
+;
+
+
+IfStatement :
+    IF LPAR Expr RPAR THEN Statement ELSE Statement
+    {
+      $$ = new IfExpr(LOC (@$), $3, $6, $8);
+    }
+;
+
+
 TryStatement :
-        TRY BlockStatement CatchListStatement
-        {
-            $$ = new TryExpr( LOC(@$), $2, $3 );
-        }
-    ;
+    TRY BlockStatement CatchListStatement
+    {
+      $$ = new TryExpr( LOC(@$), $2, $3 );
+    }
+;
+
 
 CatchListStatement :
-        CatchStatement
-        {
-            CatchListExpr *cle = new CatchListExpr( LOC(@$) );
-            cle->push_back( static_cast<CatchExpr*>($1) );
-            $$ = cle;
-        }
-  |     CatchListStatement CatchStatement
-        {
-            CatchListExpr *cle = dynamic_cast<CatchListExpr*>($1);
-            if ( cle )
-                cle->push_back( static_cast<CatchExpr*>($2) );
-            $$ = $1;
-        }
-  ;
+    CatchStatement
+    {
+      CatchListExpr *cle = new CatchListExpr( LOC(@$) );
+      cle->push_back( static_cast<CatchExpr*>($1) );
+      $$ = cle;
+    }
+  |
+    CatchListStatement CatchStatement
+    {
+      CatchListExpr *cle = dynamic_cast<CatchListExpr*>($1);
+      if ( cle )
+        cle->push_back( static_cast<CatchExpr*>($2) );
+      $$ = $1;
+    }
+;
+
 
 CatchStatement :
     CATCH NameTestList BlockStatement
@@ -2646,12 +2569,14 @@ CatchStatement :
        $$ = new CatchExpr(LOC(@$), *$2, NULL, NULL, NULL, $3);
        delete $2;
     }
-  | CATCH NameTestList LPAR DOLLAR QNAME RPAR BlockStatement
+  | 
+    CATCH NameTestList LPAR DOLLAR QNAME RPAR BlockStatement
     {
       $$ = new CatchExpr(LOC(@$),*$2, static_cast<QName*>($5), NULL, NULL, $7);
        delete $2;
     }
-  | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
+  | 
+    CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
     {
        $$ = new CatchExpr(LOC(@$),
                           *$2,
@@ -2661,7 +2586,8 @@ CatchStatement :
                           $10);
        delete $2;
     }
-  | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
+  | 
+    CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
     {
        $$ = new CatchExpr(LOC (@$),
                           *$2,
@@ -2673,87 +2599,28 @@ CatchStatement :
     }
   ;
 
-VarDeclStatement :
-        BlockVarDeclList SEMI
-        {
-          BlockBody* blk = new BlockBody( LOC(@$) );
-          VFO_DeclList *vfo = dynamic_cast<VFO_DeclList*>($1);
-          blk->set_decls(vfo);
-          $$ = blk;
-        }
+
+
+Expr :
+    ExprSingle
+    {
+      $$ = $1;
+    }
+  |
+    Expr COMMA ExprSingle
+    {
+      Expr* expr = dynamic_cast<Expr*>($1);
+      if ( !expr ) 
+      {
+        expr = new Expr( LOC(@$) );
+        expr->push_back( $1 );
+      }
+      expr->push_back( $3 );
+      $$ = expr;
+    }
 ;
 
-/*******************************************************************************
-  [38]  Expr ::= ApplyExpr | ConcatExpr
 
-  [38a] ApplyExpr ::= (ConcatExpr ";")+
-
-  [38b] ConcatExpr ::= ExprSingle ("," ExprSingle)*
-********************************************************************************/
-Expr :
-        ExprSingle
-        {
-            $$ = $1;
-        }
-    |   Expr COMMA ExprSingle
-        {
-            Expr *expr = dynamic_cast<Expr*>($1);
-            if ( !expr ) {
-                expr = new Expr( LOC(@$) );
-                expr->push_back( $1 );
-            }
-            expr->push_back( $3 );
-            $$ = expr;
-        }
-;
-
-/*
-Expr :
-        ConcatExpr
-        {
-            $$ = $1;
-        }
-    |   ConcatExpr ApplyExpr
-        {
-            auto_ptr<BlockBody> blk( dynamic_cast<BlockBody*>($2) );
-            BlockBody *blk2 = new BlockBody( LOC(@$) );
-            blk2->add( $1 );
-
-            for ( ulong i = 0; i < blk->size(); ++i )
-                blk2->add( (*blk)[i] );
-
-            $$ = blk2;
-        }
-    ;
-*/
-
-/*
-ApplyExpr :
-        ExprSimple SEMI
-        {
-            $$ = new ApplyExpr(LOC(@$), $1);
-        }
-    ;
-*/
-
-ConcatExpr :
-        ExprSingle
-        {
-            $$ = $1;
-        }
-    |   ConcatExpr COMMA ExprSingle
-        {
-            Expr *expr = dynamic_cast<Expr*>($1);
-            if ( !expr ) {
-                expr = new Expr( LOC(@$) );
-                expr->push_back( $1 );
-            }
-            expr->push_back( $3 );
-            $$ = expr;
-        }
-    ;
-
-// [32]
 ExprSingle :
         FLWORExpr
     |   SwitchExpr
@@ -2762,6 +2629,7 @@ ExprSingle :
     |   TryExpr
     |   ExprSimple
 ;
+
 
 ExprSimple :
         OrExpr
@@ -4922,77 +4790,73 @@ CommonContent :
         }
     ;
 
-// [101]
+
 DirCommentConstructor :
-        XML_COMMENT_BEGIN XML_COMMENT_LITERAL XML_COMMENT_END /* ws: explicitXQ */
-        {
-            $$ = new DirCommentConstructor( LOC(@$), SYMTAB($2) );
-        }
-    |   XML_COMMENT_BEGIN XML_COMMENT_END /* ws: explicitXQ */
-        {
-            $$ = new DirCommentConstructor( LOC(@$), "" );
-        }
-    ;
+    XML_COMMENT_BEGIN XML_COMMENT_LITERAL XML_COMMENT_END /* ws: explicitXQ */
+    {
+      $$ = new DirCommentConstructor( LOC(@$), SYMTAB($2) );
+    }
+  |
+    XML_COMMENT_BEGIN XML_COMMENT_END /* ws: explicitXQ */
+    {
+      $$ = new DirCommentConstructor( LOC(@$), "" );
+    }
+;
 
-// [102]
-// DirCommentContents
-/* lexical rule */
 
-// [103]
 DirPIConstructor :
-        PI_BEGIN NCNAME PI_END          /* ws: explicitXQ */
-        {
-            $$ = new DirPIConstructor( LOC(@$), SYMTAB($2) );
-        }
-    |   PI_BEGIN NCNAME CHAR_LITERAL_AND_PI_END /* ws: explicitXQ */
-        {
-            $$ = new DirPIConstructor( LOC(@$), SYMTAB($2), SYMTAB($3) );
-        }
-    ;
+    PI_BEGIN NCNAME PI_END          /* ws: explicitXQ */
+    {
+      $$ = new DirPIConstructor( LOC(@$), SYMTAB($2) );
+    }
+  |
+    PI_BEGIN NCNAME CHAR_LITERAL_AND_PI_END /* ws: explicitXQ */
+    {
+      $$ = new DirPIConstructor( LOC(@$), SYMTAB($2), SYMTAB($3) );
+    }
+;
 
-// [104]
-// DirPIContents
-/* lexical rule */
 
-// [105] CDataSection
 CDataSection :
-        CDATA_BEGIN CHAR_LITERAL_AND_CDATA_END /* ws: explicitXQ */
-        {
-            $$ = new CDataSection( LOC(@$),SYMTAB($2) );
-        }
-    ;
+    CDATA_BEGIN CHAR_LITERAL_AND_CDATA_END /* ws: explicitXQ */
+    {
+      $$ = new CDataSection( LOC(@$),SYMTAB($2) );
+    }
+;
 
-// [106]
-// CDataSectionContents
-/* lexical rule */
 
-// [107]
 ComputedConstructor :
-        CompDocConstructor
-        {
-            $$ = $1;
-        }
-    |   CompElemConstructor
-        {
-            $$ = $1;
-        }
-    |   CompAttrConstructor
-        {
-            $$ = $1;
-        }
-    |   CompTextConstructor
-        {
-            $$ = $1;
-        }
-    |   CompCommentConstructor
-        {
-            $$ = $1;
-        }
-    |   CompPIConstructor
-        {
-            $$ = $1;
-        }
-    ;
+    CompDocConstructor
+    {
+      $$ = $1;
+    }
+  |
+    CompElemConstructor
+    {
+      $$ = $1;
+    }
+  |
+    CompAttrConstructor
+    {
+      $$ = $1;
+    }
+  |
+    CompTextConstructor
+    {
+      $$ = $1;
+    }
+  |
+    CompCommentConstructor
+    {
+      $$ = $1;
+    }
+  |
+    CompPIConstructor
+    {
+      $$ = $1;
+    }
+;
+
 
 // [108]
 CompDocConstructor :
@@ -5487,7 +5351,7 @@ InlineFunction :
       $$ = new InlineFunction(LOC(@$),
                               &*$2->theParams,
                               &*$2->theReturnType,
-                              new EnclosedExpr( LOC(@$), $3));
+                              $3);
       delete $2;
     }
 ;
@@ -5774,6 +5638,15 @@ CatchExpr :
        delete $2;
     }
   ;
+
+
+BracedExpr :
+    LBRACE Expr RBRACE
+    {
+      $$ = $2;
+    }
+;
+
 
 NameTestList :
         NameTest

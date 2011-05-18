@@ -201,11 +201,11 @@ bool expr::is_updating_or_vacuous() const
 void expr::set_not_exiting()
 {
   theScriptingKind &= ~EXITING_EXPR;
-  adjust_sequential();
+  adjustSequential();
 }
 
 
-void expr::adjust_sequential()
+void expr::adjustSequential()
 {
   checkScriptingKind();
 

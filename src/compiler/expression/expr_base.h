@@ -206,7 +206,7 @@ public:
 
   void set_not_exiting();
 
-  void adjust_sequential();
+  void adjustSequential();
 
   void checkScriptingKind() const;
 

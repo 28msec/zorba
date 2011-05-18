@@ -1587,8 +1587,7 @@ public:
 };
 
 
-class ICCollUniqueKeyCheck
-  : public ICColl
+class ICCollUniqueKeyCheck : public ICColl
 {
 protected:
   rchandle<QName>        theNodeVarName;
@@ -1617,8 +1616,7 @@ public:
 };
 
 
-class ICCollForeachNode
-  : public ICColl
+class ICCollForeachNode : public ICColl
 {
 protected:
   rchandle<QName>        theCollVarName;
@@ -1646,8 +1644,8 @@ public:
   virtual void accept(parsenode_visitor&) const;
 };
 
-class ICForeignKey
-  : public IntegrityConstraintDecl
+
+class ICForeignKey : public IntegrityConstraintDecl
 {
 protected:
   rchandle<QName>        theFromCollName;
@@ -1691,60 +1689,202 @@ public:
 
 
 /*******************************************************************************
-  [36] EnclosedExpr ::= "{" Expr "}"
-*******************************************************************************/
-class EnclosedExpr : public exprnode
-{
-protected:
-  rchandle<exprnode> expr_h;
-
-public:
-  EnclosedExpr(
-    const QueryLoc&,
-    rchandle<exprnode>);
-
-  rchandle<exprnode> get_expr() const { return expr_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-  [37] QueryBody ::= Expr
+  QueryBody ::= 
 ********************************************************************************/
 class QueryBody : public exprnode
 {
 protected:
-  rchandle<exprnode> expr_h;
+  rchandle<exprnode> theExpr;
 
 public:
-  QueryBody(
-    const QueryLoc&,
-    rchandle<exprnode>);
+  QueryBody(const QueryLoc&, exprnode*);
 
   QueryBody();
 
-  rchandle<exprnode> get_expr() const { return expr_h; }
+  exprnode* get_expr() const { return theExpr.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-  [38]  Expr ::= ApplyExpr | ConcatExpr
 
-  [38a] ApplyExpr ::= (ConcatExpr ";")+
+********************************************************************************/
+class BlockBody : public exprnode
+{
+protected:
+  std::vector<rchandle<parsenode> > theStatements;
+  bool                              theIsTopLevel;
 
-  [38b] ConcatExpr ::= ExprSingle ("," ExprSingle)*
+public:
+  BlockBody (const QueryLoc& loc)
+    :
+    exprnode(loc),
+    theIsTopLevel(false)
+  {
+  }
 
-  There are no ApplyExpr or ConcatExpr parsenodes. Instead:
+  const parsenode* operator[](ulong k) const { return theStatements[k].getp(); }
 
-  - If the Expr is an ApplyExpr, no Expr parsenode is generated. Instead, a
-    BlockBody parsenode is generated, whose children are the ConcatExprs that
-    comprise the ApplyExpr.
+  parsenode* operator[](ulong k) { return theStatements[k].getp(); }
 
-  - If the Expr is a ConcatExpr, then an Expr parsenode is generated, whose
-    children are the ExprSingles that comparise the ConcatExpr.
+  ulong size() const { return (ulong)theStatements.size(); }
+
+  bool isTopLevel() const { return theIsTopLevel; }
+
+  void setTopLevel(bool v) { theIsTopLevel =  v; }
+
+  void add(parsenode* statement);
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class VarDeclStmt : public exprnode
+{
+protected:
+  std::vector<rchandle<parsenode> > theDecls;
+
+public:
+  VarDeclStmt(const QueryLoc& loc)
+    :
+    exprnode(loc)
+  {
+  }
+
+  void add(parsenode* decl) { theDecls.push_back(decl); }
+
+  ulong size() const { return (ulong)theDecls.size(); }
+
+  parsenode* getDecl(ulong i) const { return theDecls[i].getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class AssignExpr : public exprnode
+{
+  rchandle<QName>    theName;
+  rchandle<exprnode> theValue;
+
+public:
+  AssignExpr(const QueryLoc& loc, rchandle<QName> name, exprnode* val)
+    :
+    exprnode(loc),
+    theName(name),
+    theValue(val)
+  {
+  }
+
+  const QName* get_name() const { return theName.getp(); }
+
+  exprnode* get_value() const { return theValue.getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  ApplyExpr
+********************************************************************************/
+class ApplyExpr : public exprnode
+{
+protected:
+  rchandle<exprnode>  theExpr;
+
+public:
+  ApplyExpr(const QueryLoc& loc, exprnode* expr)
+    :
+    exprnode(loc),
+    theExpr(expr)
+  {
+  }
+
+  const exprnode* get_apply_expr() { return theExpr.getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class ExitExpr : public exprnode
+{
+  rchandle<exprnode> theValue;
+
+public:
+  ExitExpr(const QueryLoc& loc, exprnode* val)
+    :
+    exprnode(loc),
+    theValue(val)
+  {
+  }
+
+  exprnode* get_value() { return theValue.getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class WhileExpr : public exprnode 
+{
+  rchandle<exprnode> cond;
+  rchandle<BlockBody> body;
+
+public:
+  WhileExpr(const QueryLoc& loc_, rchandle<exprnode> cond_, rchandle<BlockBody> body_)
+    :
+    exprnode (loc_),
+    cond (cond_),
+    body (body_)
+  {
+  }
+
+  exprnode* get_cond() { return cond; }
+
+  BlockBody* get_body() { return body; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class FlowCtlStatement : public exprnode 
+{
+public:
+  enum action { BREAK, CONTINUE };
+
+private:
+  enum action action;
+
+public:
+  FlowCtlStatement(const QueryLoc& loc, enum action action_)
+    : 
+    exprnode(loc),
+    action(action_)
+  {
+  }
+
+  enum action get_action() const { return action; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
 ********************************************************************************/
 class Expr : public exprnode
 {
@@ -1803,103 +1943,6 @@ public:
 
 
 
-/*******************************************************************************
-
-  Block ::= "{" BlockDecls BlockBody "}"
-
-  BlockDecls ::= (BlockVarDecl ";")*
-
-  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
-
-  BlockBody ::= Expr
-
-
-  - Synactically, BlockBody appears only in Block, and Block appears in
-    BlockExpr, WhileExpr, and FunctionDecl iff the function is declared as
-    sequential:
-
-  BlockExpr ::= "block" Block
-
-  WhileExpr ::= "while" "(" ExprSingle ")" Block
-
-  FunctionDecl ::= "declare" ("deterministic" | "nondeterministic")?
-                   "sequential" "function" QName "(" ParamList? ")" ("as" SequenceType)?
-                    Bock
-
-
-  - There is no parsenode class for BlockExpr or for Block; instead, the parser
-    generates:
-
-  1. BlockBody, if BlockDecls is not empty. The "decls" data member of this
-     BlockBody stores the var declarations.
-
-  2. BlockBody, if BlockDecls is empty and Expr is an ApplyExpr.
-
-  3. Expr, if BlockDecls is empty and Expr is a ConcatExpr.
-
-  In addition to cases 1 and 2 above, a BlockBody node is also generated
-
-  4. In the case of any Expr that is an ApplyExpr.
-
-  4. In the case of a WhileExpr if the Block that appears in the WhileExpr
-     syntax did not generate a BlockBody itself (i.e., case 3 above). In this
-     case, the BlockBody has a single child, which is the Expr node generated
-     by Block.
-
-
-  - There are no parsenode classes for BlockVarDecl and BlockDecls; instead
-    the parser generates VarDecl and VFO_DeclList parsenodes.
-
-********************************************************************************/
-class BlockBody : public exprnode
-{
-protected:
-  std::vector<rchandle <exprnode> > statements;
-  rchandle<VFO_DeclList> decls;
-
-public:
-  BlockBody (const QueryLoc& loc_, rchandle<VFO_DeclList> decls_ = NULL)
-    :
-    exprnode (loc_), decls (decls_)
-  {
-  }
-
-  void add (rchandle<exprnode> statement) { statements.push_back(statement); }
-
-  const rchandle<exprnode>& operator[](int k) const { return statements[k]; }
-
-  rchandle<exprnode>& operator[](int k) { return statements[k]; }
-
-  ulong size () const { return (ulong)statements.size (); }
-
-  rchandle<VFO_DeclList> get_decls () const { return decls; }
-
-  void set_decls (rchandle<VFO_DeclList> decls_) { decls = decls_; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-/*******************************************************************************
-  ApplyExpr
-********************************************************************************/
-class ApplyExpr : public exprnode
-{
-protected:
-  rchandle<exprnode>    apply_expr_h;
-
-public:
-  ApplyExpr(const QueryLoc& loc_, rchandle<exprnode> apply_expr_)
-    :
-    exprnode(loc_), apply_expr_h(apply_expr_)
-  {
-  }
-
-  const rchandle<exprnode>& get_apply_expr() { return apply_expr_h; }
-
-  void accept(parsenode_visitor&) const;
-
-};
 
 /*******************************************************************************
   FLWORExpr ::= InitialClause FLWORClauseList? ReturnClause
@@ -4278,6 +4321,25 @@ public:
 
 
 /*******************************************************************************
+  EnclosedExpr ::= "{" Expr "}"
+*******************************************************************************/
+class EnclosedExpr : public exprnode
+{
+protected:
+  rchandle<exprnode> expr_h;
+
+public:
+  EnclosedExpr(
+    const QueryLoc&,
+    rchandle<exprnode>);
+
+  rchandle<exprnode> get_expr() const { return expr_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
   [119]  DirElemConstructor ::= "<" QName DirAttributeList
                                 ("/>" |
                                  (">" DirElemContentList? "</" QName S? ">"))
@@ -5399,96 +5461,6 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  Scripting productions                                                      //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class ExitExpr : public exprnode
-{
-  rchandle<exprnode> value_h;
-public:
-
-  ExitExpr (const QueryLoc& loc_, rchandle<exprnode> val_)
-    :
-    exprnode (loc_),
-    value_h (val_)
-  {}
-
-  rchandle<exprnode> get_value () { return value_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class AssignExpr : public exprnode
-{
-  rchandle<QName>    theName;
-  rchandle<exprnode> value_h;
-
-public:
-  AssignExpr (const QueryLoc& loc, rchandle<QName> name, rchandle<exprnode> val)
-    :
-    exprnode(loc),
-    theName(name),
-    value_h(val)
-  {
-  }
-
-  const QName* get_name() const { return theName.getp(); }
-
-  rchandle<exprnode> get_value () const { return value_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class FlowCtlStatement : public exprnode {
-public:
-  enum action { BREAK, CONTINUE };
-
-private:
-  enum action action;
-
-public:
-  FlowCtlStatement (const QueryLoc& loc_, enum action action_)
-    : exprnode (loc_), action (action_)
-  {}
-  enum action get_action () const { return action; }
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class WhileExpr : public exprnode {
-  rchandle<exprnode> cond;
-  rchandle<BlockBody> body;
-
-public:
-  WhileExpr (const QueryLoc& loc_, rchandle<exprnode> cond_, rchandle<BlockBody> body_)
-    : exprnode (loc_), cond (cond_), body (body_)
-  {}
-  rchandle<exprnode> get_cond () { return cond; }
-  rchandle<BlockBody> get_body () { return body; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
 //  Update productions                                                         //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
@@ -5779,14 +5751,14 @@ class InlineFunction: public exprnode
 private:
   rchandle<ParamList> theParamList;
   rchandle<SequenceType> theReturnType;
-  rchandle<EnclosedExpr> theEnclosedExpr;
+  rchandle<exprnode> theEnclosedExpr;
 
 public:
   InlineFunction(
       const QueryLoc& loc_,
       rchandle<ParamList> aParamList,
       rchandle<SequenceType> aReturnType,
-      rchandle<EnclosedExpr> aEnclosedExpr)
+      rchandle<exprnode> aEnclosedExpr)
     :
     exprnode(loc_),
     theParamList(aParamList),
@@ -5796,7 +5768,7 @@ public:
 
   rchandle<ParamList> getParamList() const { return theParamList; }
   rchandle<SequenceType> getReturnType() const { return theReturnType; }
-  rchandle<EnclosedExpr> getEnclosedExpr() const { return theEnclosedExpr; }
+  rchandle<exprnode> getEnclosedExpr() const { return theEnclosedExpr; }
 
   void accept(parsenode_visitor&) const;
 };

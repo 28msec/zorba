@@ -30,10 +30,11 @@ namespace StaticContextConsts
   {
     xquery_version_unknown = 0,
     xquery_version_1_0 = 100,
-    xquery_version_3_0 = 300
+    xquery_version_3_0 = 300,
+    xquery_version_4_0 = 400  // version that includes scripting 
   };
 
-  std::ostream& operator<<( std::ostream &o, xquery_version_t v );
+  std::ostream& operator<<(std::ostream& o, xquery_version_t v);
 
 
   enum xpath_compatibility_t 

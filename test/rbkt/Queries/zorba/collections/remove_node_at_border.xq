@@ -4,7 +4,7 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 
 declare %sequential function local:ddl() {
   ddl:create-collection($ns:collection_1);
-  dml:insert-nodes($ns:collection_1, (<x/>,<y/>))
+  dml:insert-nodes($ns:collection_1, (<x/>,<y/>));
 };
 
 declare %sequential function local:testa() {

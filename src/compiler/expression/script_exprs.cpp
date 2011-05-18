@@ -128,7 +128,7 @@ void block_expr::compute_scripting_kind2(
 
       if (initExpr != NULL)
       {
-        kind = theArgs[i]->get_scripting_detail();
+        kind = initExpr->get_scripting_detail();
 
         if (kind != VACUOUS_EXPR)
           vacuous = false;

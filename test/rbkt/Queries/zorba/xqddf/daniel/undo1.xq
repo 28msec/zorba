@@ -33,7 +33,8 @@ return
   {
     {
       dml:insert-nodes($xqddf-test:blue-collection, <newnode/>);
-      dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[1])
+      dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[1]);
+      ()
     }
   }
   catch * { "

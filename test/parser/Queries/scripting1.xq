@@ -6,6 +6,7 @@ import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 declare variable $nl := "
 ";
 
+
 declare %sequential function local:calc-one ($s as xs:string) as xs:boolean 
 {
   if (string-length ($s) = 0) then
@@ -16,7 +17,8 @@ declare %sequential function local:calc-one ($s as xs:string) as xs:boolean
   }
 };
 
-while (local:calc-one (zorba:read-line ()))
+
+while (local:calc-one(zorba:read-line()))
 { 
-  () 
+  ();
 }

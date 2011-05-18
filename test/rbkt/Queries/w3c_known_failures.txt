@@ -13,6 +13,7 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch09
+test/rbkt/w3c_testsuite/XQuery/Functions/NumericFunc/RoundFunc/K-RoundFunc-2
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-28
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
@@ -21,6 +22,3 @@ test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/statictyping-24
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-01
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFunctions/ST-Data001
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-context
-test/rbkt/w3c_testsuite/XQuery/Functions/NumericFunc/RoundFunc/K-RoundFunc-2
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K-Literals-30
-test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ConDocNode/K2-ConDocNode-2

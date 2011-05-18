@@ -38,8 +38,6 @@
 #include "zorbaerrors/assert.h"
 
 
-using namespace std;
-
 namespace zorba 
 {
 
@@ -118,6 +116,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   }
 
   cast_base_expr* pe;
+
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
   {
@@ -145,6 +144,10 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
     xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
 
+    // If the prime types of the arg type and the target type are equal, then
+    // for a cast expr, we just need to make sure that the cardinality of the
+    // arg is the correct one. This we can do by turning cast to a treat expr
+    // that just chacks the cardinality.
     if (node->get_expr_kind() == cast_expr_kind &&
         TypeOps::is_equal(tm, *arg_ptype, *target_ptype))
     {
@@ -153,7 +156,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
                             arg,
                             target_type,
                             err::XPTY0004,
-                            false);
+                            false); // do not check the prime types
     }
 
     if (node->get_expr_kind() == treat_expr_kind)
@@ -166,6 +169,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return node;
       }
     }
+
     return NULL;
   }
 

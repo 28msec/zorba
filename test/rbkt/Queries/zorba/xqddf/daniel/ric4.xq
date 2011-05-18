@@ -17,10 +17,12 @@ ic_ddl:activate-integrity-constraint($xqddf-test:ric1);
 for $i in fn:doc("auction.xml")//item
 return $i/name
 },
+
 {
 <newline> a
 </newline>
 },
+
 {
 for $i in fn:doc("auction.xml")//item
 return 
@@ -28,22 +30,28 @@ return
     {dml:insert-nodes($xqddf-test:blue-collection, (copy $copyi := $i modify () return $copyi));},
     {dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
 },
+
 {
 <newline> a
 </newline>
 },
+
 {
 dml:delete-nodes(dml:collection($xqddf-test:white-collection)[1]);
+
 replace value of node dml:collection($xqddf-test:blue-collection)[1]/name 
-        with "gaze wages proving english "
+        with "gaze wages proving english ";
 },
+
 {
 dml:collection($xqddf-test:white-collection)/name
 },
+
 {
 <newline> a
 </newline>
 },
+
 {
 dml:collection($xqddf-test:blue-collection)/name
 }

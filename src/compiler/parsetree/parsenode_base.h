@@ -86,6 +86,7 @@ class XQDocumentable: public parsenode
     zstring getCommentString() const { return theStringComment; }
 };
 
+
 /**
  * exprnode:  nodes with values.
  */
@@ -99,7 +100,9 @@ public:
 
 };
 
-class ZORBA_DLL_PUBLIC ParseErrorNode : public parsenode {
+
+class ZORBA_DLL_PUBLIC ParseErrorNode : public parsenode 
+{
 public:
   Error const &err;
   zstring const msg;

@@ -1407,94 +1407,132 @@ void ICForeignKey::accept( parsenode_visitor &v ) const
 
 
 /*******************************************************************************
-  [36] EnclosedExpr ::= "{" Expr "}"
+
 ********************************************************************************/
-EnclosedExpr::EnclosedExpr(
-    const QueryLoc& loc_,
-    rchandle<exprnode> _expr_h)
+QueryBody::QueryBody(const QueryLoc& loc, exprnode* expr)
   :
-  exprnode(loc_),
-  expr_h(_expr_h)
+  exprnode(loc),
+  theExpr(expr)
 {
 }
 
 
-void EnclosedExpr::accept( parsenode_visitor &v ) const
+void QueryBody::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (expr_h);
+  ACCEPT(theExpr);
   END_VISITOR();
 }
 
 
 /*******************************************************************************
-	Block ::= "{" BlockDecls BlockBody "}"
 
-  BlockDecls ::= (BlockVarDecl ";")*
-
-  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
-
-  BlockBody ::= Expr
-
-  Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
-        the parser generates VarDecl and VFO_DeclList parsenodes.
-
-  Note: There is no parsenode class for Block; instead the parser generates either
-        an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
-        data member stores the var declarations.
 ********************************************************************************/
 void BlockBody::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
-  ACCEPT(decls);
-
-  for (int i = 0; i < (int)size(); i++)
-    (*this) [i]->accept(v);
+  for (ulong i = 0; i < size(); ++i)
+    (*this)[i]->accept(v);
 
   END_VISITOR();
 }
 
+
+void BlockBody::add(parsenode* statement) 
+{
+  if (dynamic_cast<VarDeclStmt*>(statement) != NULL)
+  {
+    VarDeclStmt* vdecl = static_cast<VarDeclStmt*>(statement);
+
+    ulong numDecls = vdecl->size();
+
+    for (ulong i = 0; i < numDecls; ++i)
+    {
+      theStatements.push_back(vdecl->getDecl(i));
+    }
+
+    delete vdecl;
+  }
+  else
+  {
+    theStatements.push_back(statement); 
+  }
+}
+
+
 /*******************************************************************************
-  TODO
+
+********************************************************************************/
+void VarDeclStmt::accept(parsenode_visitor& v) const
+{
+  assert(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AssignExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theValue);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
 ********************************************************************************/
 void ApplyExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
-  ACCEPT(apply_expr_h);
+  ACCEPT(theExpr);
 
   END_VISITOR();
 }
 
+
 /*******************************************************************************
-  [37] QueryBody ::= Expr
+
 ********************************************************************************/
-QueryBody::QueryBody(
-    const QueryLoc& loc_,
-    rchandle<exprnode> _expr_h)
-  :
-  exprnode(loc_),
-  expr_h(_expr_h)
-{
-}
-
-
-void QueryBody::accept( parsenode_visitor &v ) const
+void ExitExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (expr_h);
+  ACCEPT(theValue);
   END_VISITOR();
 }
 
 
 /*******************************************************************************
-  [38] Expr ::= ExprSingle | Expr  COMMA  ExprSingle
+
 ********************************************************************************/
-Expr::Expr(const QueryLoc& loc_)
+void WhileExpr::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT (cond);
+  ACCEPT (body);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void FlowCtlStatement::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+  Expr ::= ExprSingle | Expr  COMMA  ExprSingle
+********************************************************************************/
+Expr::Expr(const QueryLoc& loc)
   :
-  exprnode(loc_)
+  exprnode(loc)
 {
 }
 
@@ -3664,6 +3702,27 @@ void ArgList::accept( parsenode_visitor &v ) const
 // [94] Constructor
 // ----------------
 
+/*******************************************************************************
+  EnclosedExpr ::= "{" Expr "}"
+********************************************************************************/
+EnclosedExpr::EnclosedExpr(
+    const QueryLoc& loc_,
+    rchandle<exprnode> _expr_h)
+  :
+  exprnode(loc_),
+  expr_h(_expr_h)
+{
+}
+
+
+void EnclosedExpr::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT (expr_h);
+  END_VISITOR();
+}
+
+
 // [95] DirectConstructor
 // ----------------------
 
@@ -5701,35 +5760,6 @@ void FTIgnoreOption::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT( expr_ );
-  END_VISITOR();
-}
-
-
-void AssignExpr::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
-  ACCEPT (value_h);
-  END_VISITOR();
-}
-
-void ExitExpr::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
-  ACCEPT (value_h);
-  END_VISITOR();
-}
-
-void WhileExpr::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
-  ACCEPT (cond);
-  ACCEPT (body);
-  END_VISITOR();
-}
-
-void FlowCtlStatement::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
   END_VISITOR();
 }
 

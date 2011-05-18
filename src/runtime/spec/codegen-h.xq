@@ -202,6 +202,13 @@ declare function local:add-methods($function) as xs:string*
                      '{ return ', $meth/@returnValue, '; }',
                       $gen:newline),'')
 
+      else if (name($meth) eq 'zorba:specializable')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool serializable() const ',
+                     '{ return true; }',
+                      $gen:newline),'')
+
       else if (name($meth) eq 'zorba:accessesDynCtx')
       then
         string-join(($gen:newline, $gen:indent,

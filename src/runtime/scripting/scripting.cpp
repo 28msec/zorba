@@ -76,7 +76,8 @@ void SequentialIterator::accept(PlanIterVisitor& v) const
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
+  for ( ; lIter != lEnd; ++lIter )
+  {
     (*lIter)->accept(v);
   }
 

@@ -1460,6 +1460,7 @@ StaticContextImpl::validateSimpleContent(
   }
 }
 
+
 /**
  * construct the query to call invoke
  * for the QName of the function and for each argument,
@@ -1476,6 +1477,7 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
     << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
     << std::endl
     << "declare variable $name as xs:QName" << " external;" << std::endl;
+
   for (size_t i = 0; i < aArity; ++i)
   {
     lOut << "declare variable $arg" << i << " external;" << std::endl;
@@ -1502,6 +1504,7 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
   lOut << ")";
   return lOut.str();
 }
+
 
 Function_t
 StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
@@ -1548,6 +1551,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
 
   return lFunc;
 }
+
 
 ItemSequence_t
 StaticContextImpl::invoke(

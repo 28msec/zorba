@@ -398,6 +398,7 @@
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:specializable/>
     </zorba:methods>
 
   </zorba:function>

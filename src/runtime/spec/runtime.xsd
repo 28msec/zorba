@@ -122,7 +122,6 @@
   <xs:complexType name="methods">
     <xs:sequence>
       <xs:element name="getReturnType" minOccurs="0"/>
-      <xs:element name="getUpdateType" type="returnValue_1" minOccurs="0"/>
       <xs:element name="accessesDynCtx" type="returnValue_2" minOccurs="0"/>
       <xs:element name="isSource" type="returnValue_2" minOccurs="0"/>
       <xs:element name="isDeterministic" type="returnValue_2" minOccurs="0"/>
@@ -132,6 +131,7 @@
       <xs:element name="propagatesDistinctNodes" type="producer" minOccurs="0"/>
       <xs:element name="propagatesSortedNodes" type="producer" minOccurs="0"/>
       <xs:element name="compute_annotation" minOccurs="0"/>
+      <xs:element name="specializable" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 

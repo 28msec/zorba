@@ -20,9 +20,9 @@ declare variable $emp-city := $auctions:PersonCity;
   insert node
     <person id="person50"><name>Some Name</name><city>Amsterdam</city></person>
   as first into
-    dml:collection($auctions:auctions)/site/people
-  ;
-  index_dml:refresh-index($emp-id)
+    dml:collection($auctions:auctions)/site/people;
+  
+  index_dml:refresh-index($emp-id);
   (: don't refresh the emp-city index manually because it's done automatically :)
 }
 ,

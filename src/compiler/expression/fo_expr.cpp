@@ -170,7 +170,7 @@ void fo_expr::compute_scripting_kind()
 
       vacuous = false;
 
-      if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+      if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
       {
         if (is_updating() && !(argKind & UPDATING_EXPR) && argKind != VACUOUS_EXPR)
         {

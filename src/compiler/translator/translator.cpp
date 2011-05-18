@@ -1989,7 +1989,7 @@ void end_visit(const VersionDecl& v, void* /*visit_state*/)
 /*******************************************************************************
   MainModule ::= Prolog Program
 ********************************************************************************/
-void* begin_visit(const MainModule & v)
+void* begin_visit(const MainModule& v)
 {
   TRACE_VISIT();
 
@@ -2012,7 +2012,7 @@ void* begin_visit(const MainModule & v)
   return no_state;
 }
 
-void end_visit(const MainModule & v, void* /*visit_state*/)
+void end_visit(const MainModule& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -2117,7 +2117,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 
 /*******************************************************************************
 
-  Prolog ::= SIND_DeclList VFO_DeclList
+  Prolog ::= SIND_DeclList? VFO_DeclList?
 
   SIND_DeclList ::= SIND_Decl Separator | SIND_DeclList SIND_Decl Separator
 
@@ -4820,39 +4820,24 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     export_sctx->bind_ic(vic, loc);
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  EnclosedExpr, QueryBody, Expr, ExprSingle, Block                           //
+//  QueryBody,                                                                 //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
-  EnclosedExpr ::= "{" Expr "}"
+  QueryBody ::= StatementsAndOptionalExpr
 
-  Although EnclosedExpr appears in several grammar rules, an EnclosedExpr
-  parsenode is created only in the case of direct and computed node constructors.
-********************************************************************************/
-void* begin_visit(const EnclosedExpr& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
+  StatementsAndOptionalExpr ::= StatementsAndExpr | Statements?
 
-void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
+  StatementsAndExpr := Statements? Expr
 
-  expr_t lContent = pop_nodestack();
+  Statements ::= Statement+
 
-  fo_expr* foExpr = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
-
-  push_nodestack(foExpr);
-}
-
-
-/*******************************************************************************
-  Program ::= Expr
+  Expr ::=  ExprSingle ("," ExprSingle)*
 ********************************************************************************/
 void* begin_visit(const QueryBody& v)
 {
@@ -4887,23 +4872,399 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  Scripting Extensions                                                      //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
-  Expr ::= ApplyExpr | ConcatExpr
 
-  ApplyExpr ::= (ConcatExpr ";")+
+  QueryBody ::= StatementsAndOptionalExpr
 
-  ConcatExpr ::= ExprSingle ("," ExprSingle)*
+  StatementsAndOptionalExpr ::= StatementsAndExpr | Statements?
 
-  There are no ApplyExpr or ConcatExpr parsenodes. Instead:
+  StatementsAndExpr := Statements? Expr
 
-  - If the Expr is an ApplyExpr, no Expr parsenode is generated. Instead, a
-    BlockBody parsenode is generated, whose children are the ConcatExprs that
-    comprise the ApplyExpr.
+  Statements ::= Statement+
 
-  - If the Expr is a ConcatExpr, then an Expr parsenode is generated, whose
-    children are the ExprSingles that comparise the ConcatExpr. In this case,
-    if Expr has either 0 or more than 1 children, it is translated as an
-    fn:concatenate expr. Otherwise, it is translated to its unique child.
+  Statement ::= BlockStatement |
+                VarDeclStatement |
+                AssignStatement |
+                ApplyStatement |
+                ExitStatement |
+                WhileExpr |
+                FlowCtlStatement |
+
+                FLWORStatement |
+                IfStatement |
+                TypeswitchStatement |
+                SwitchStatement |
+                TryStatement
+
+  Expr ::=  ExprSingle ("," ExprSingle)*
+
+  Note: In the StatementsAndOptionalExpr, StatementsAndExpr, and Statements rules,
+  if any statements are actually present, the parser generates a subtree rooted
+  at a BockBody parsenode. A single BlockBody parsenode (with no children) is
+  also generated if there are no statements and no Expr either.  
+
+********************************************************************************/
+
+
+/*******************************************************************************
+  A BlockBody parse node is generated as the result of the following grammar
+  rules:
+
+  1. StatementsAndOptionalExpr ::= StatementsAndExpr | Statements?
+     If any statements are actually present or if neither statements nor an
+     expr are present.
+
+  2. StatementsAndExpr := Statements? Expr
+     If any statements are actually present.
+
+  3. Statements ::= Statement+
+
+  4. EnclosedStatementsAndOptionalExpr ::= "{" StatementsAndOptionalExpr "}"
+
+  5. BlockStatement ::= "{" Statements "}"
+
+  6. BlockExpr ::= "{" StatementsAndOptionalExpr "}
+
+********************************************************************************/
+void* begin_visit(const BlockBody& v)
+{
+  TRACE_VISIT();
+
+  if (v.size() == 0)
+  {
+    push_nodestack(create_empty_seq(loc));
+    return NULL;
+  }
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+
+  bool topLevel = v.isTopLevel();
+  bool inEval = theCCB->theIsEval;
+  bool allowLastUpdating = false;
+
+  std::vector<expr_t> stmts;
+
+  // push a dummy block_expr in the node stack so that local var decls can
+  // assert that their parent is a block expr.
+  expr_t dummyBlock = new block_expr(theRootSctx, loc, false, stmts, NULL);
+  push_nodestack(dummyBlock);
+
+  push_scope();
+
+  ulong numScopes = theAssignedVars.size();
+
+  theAssignedVars.resize(numScopes + 1);
+
+  ulong numExprs = v.size();
+  bool declaresVars = false;
+
+  for (ulong i = 0; i < numExprs; ++i)
+  {
+    v[i]->accept(*this);
+
+    if (dynamic_cast<const VarDecl*>(v[i]) != NULL)
+    {
+      expr_t val = pop_nodestack();
+      var_expr_t ve = pop_nodestack().cast<var_expr>();
+
+      GlobalBinding b(ve, val, false);
+
+      declare_var(b, stmts);
+
+      declaresVars = true;
+    }
+    else
+    {
+      expr_t childExpr = pop_nodestack();
+
+      // If the last child is an updating expr
+      if (topLevel && i == numExprs - 1 && childExpr->is_updating())
+      {
+        if (inEval)
+        {
+          allowLastUpdating = true;
+        }
+        else
+        {
+          childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
+        }
+      }
+      
+      stmts.push_back(childExpr);
+    }
+  }
+
+  // pop the dummy block expr from the stack.
+  dummyBlock = pop_nodestack();
+  assert(dummyBlock->get_expr_kind() == block_expr_kind);
+
+  // Flatten-out a block expr if it has only one child and that child is
+  // not a var decl expr.
+  if (stmts.size() == 1 && !declaresVars)
+  {
+    push_nodestack(stmts[0]);
+
+    theAssignedVars.pop_back();
+    pop_scope();
+
+    return NULL;
+  }
+
+  // Create the block expr
+  std::vector<var_expr*>& prevAssignedVars = theAssignedVars[numScopes-1];
+  std::vector<var_expr*>& lastAssignedVars = theAssignedVars[numScopes];
+
+  expr_t blockExpr = new block_expr(theRootSctx,
+                                    loc,
+                                    allowLastUpdating,
+                                    stmts,
+                                    &lastAssignedVars);
+
+  push_nodestack(blockExpr);
+
+  prevAssignedVars.insert(prevAssignedVars.end(),
+                          lastAssignedVars.begin(),
+                          lastAssignedVars.end());
+
+  theAssignedVars.pop_back();
+  pop_scope();
+
+  return NULL;
+}
+
+
+void end_visit(const BlockBody& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
+
+  Note: the initializing ExprSingle of each var decl must be non-updating.
+
+  Note: Each individual var decl in a VarDeclStatement is parsed into a VarDecl
+  parsenode.
+ 
+  Note: The parser makes sure that if a VarDeclStatement does not appear as a
+  direct child of a BlockBody, it is wrapped by a BlockBody. Furthermore, the
+  parser will flatten-out the VarDeclStatement parsenode by placing its children
+  as direct children of the enclosing BlockBody. As a result, VarDeclStatement
+  parsenodes do not appear at all in the final AST.
+********************************************************************************/
+
+
+/*******************************************************************************
+  AssignStatement ::= "$" VarName ":=" ExprSingle ";"
+
+  Note: the ExprSingle must be non-updating.
+********************************************************************************/
+void* begin_visit(const AssignExpr& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+
+  return no_state;
+}
+
+void end_visit(const AssignExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT();
+
+  var_expr_t ve = lookup_var(v.get_name(), loc, err::XPST0008);
+
+  if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
+  {
+    RAISE_ERROR(err::XSST0007, loc,
+    ERROR_PARAMS(ve->get_name()->getStringValue()));
+  }
+
+  xqtref_t varType = ve->get_type();
+
+  expr_t valueExpr = pop_nodestack();
+
+  if (varType != NULL)
+    valueExpr = new treat_expr(theRootSctx, loc, valueExpr, varType, err::XPTY0004);
+
+  push_nodestack(new fo_expr(theRootSctx,
+                             loc,
+                             GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1),
+                             ve,
+                             valueExpr));
+
+  theAssignedVars.back().push_back(ve.getp());
+}
+
+
+/*******************************************************************************
+  ApplyStatement ::= ExprSingle ";"
+********************************************************************************/
+void* begin_visit(const ApplyExpr& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+
+  return no_state;
+}
+
+void end_visit(const ApplyExpr& v, void* visit_state)
+{
+  expr_t param = pop_nodestack();
+
+  push_nodestack(new apply_expr(theRootSctx,
+                                param->get_loc(),
+                                param,
+                                true)); // discard XDM
+
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void* begin_visit(const ExitExpr& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+
+  return no_state;
+}
+
+
+void end_visit(const ExitExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT();
+
+  expr_t childExpr = pop_nodestack();
+
+  if (childExpr->is_updating())
+  {
+    theHaveUpdatingExitExprs = true;
+
+    if (!inUDFBody() && !theCCB->theIsEval)
+    {
+      childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
+    }
+  }
+  else if (childExpr->is_sequential())
+  {
+    theHaveSequentialExitExprs = true;
+  }
+
+  if (inUDFBody())
+  {
+    function* f = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
+    assert(f->isUdf());
+    user_function* udf = static_cast<user_function*>(f);
+
+    udf->setExiting(true);
+  }
+
+  push_nodestack(new exit_expr(theRootSctx, loc, childExpr));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void* begin_visit(const WhileExpr& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+
+  return no_state;
+}
+
+
+void end_visit(const WhileExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT();
+
+  expr_t bodyExpr = pop_nodestack();
+  expr_t condExpr = pop_nodestack();
+
+  condExpr = new if_expr(theRootSctx,
+                         loc,
+                         condExpr,
+                         create_empty_seq(loc),
+                         new flowctl_expr(theRootSctx, loc, flowctl_expr::BREAK));
+
+  block_expr* seqBody = NULL;
+
+  std::vector<expr_t> stmts;
+
+  stmts.push_back(condExpr);
+  stmts.push_back(bodyExpr);
+
+  seqBody = new block_expr(bodyExpr->get_sctx(), loc, false, stmts, NULL);
+
+  push_nodestack(new while_expr(theRootSctx, loc, seqBody));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void* begin_visit(const FlowCtlStatement& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
+    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+
+  return no_state;
+}
+
+void end_visit(const FlowCtlStatement& v, void* visit_state)
+{
+  TRACE_VISIT_OUT();
+
+  enum flowctl_expr::action a;
+
+  switch (v.get_action())
+  {
+  case FlowCtlStatement::BREAK:
+    a = flowctl_expr::BREAK;
+    break;
+
+  case FlowCtlStatement::CONTINUE:
+    a = flowctl_expr::CONTINUE;
+    break;
+
+  default:
+    ZORBA_FATAL(false, "");
+  }
+
+  push_nodestack (new flowctl_expr (theRootSctx, loc, a));
+}
+
+
+
+/*******************************************************************************
+  Expr ::=  ExprSingle ("," ExprSingle)*
+
+  If there is only one ExprSingle, no Expr parsenode is generated. Otherwise, an
+  Expr parsenode is generated, whose children are the ExprSingles.
 ********************************************************************************/
 void* begin_visit(const Expr& v)
 {
@@ -4915,54 +5276,43 @@ void end_visit(const Expr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  if (v.numberOfChildren() > 1)
+  assert(v.numberOfChildren() > 1);
+
+  std::vector<expr_t> args;
+
+  for (int i = 0; i < v.numberOfChildren(); ++i)
   {
-    std::vector<expr_t> args;
-
-    for (int i = 0; i < v.numberOfChildren(); ++i)
-    {
-      expr_t e = pop_nodestack();
-      args.push_back(e);
-    }
-
-    fo_expr_t concatExpr = new fo_expr(theRootSctx,
-                                       v.get_location(),
-                                       op_concatenate,
-                                       args);
-    normalize_fo(concatExpr.getp());
-
-    push_nodestack(concatExpr.getp());
+    expr_t e = pop_nodestack();
+    args.push_back(e);
   }
+
+  fo_expr_t concatExpr = new fo_expr(theRootSctx,
+                                     v.get_location(),
+                                     op_concatenate,
+                                     args);
+  normalize_fo(concatExpr.getp());
+  
+  push_nodestack(concatExpr.getp());
 }
 
 
 /*******************************************************************************
-  ExprSingle ::=
 
-  ** XQuery 1.1 exprs
-                      FLWORExpr |
-                      QuantifiedExpr |
-                      SwitchExpr |
-                      TypeswitchExpr |
-                      IfExpr |
-                      OrExpr |
-                      TryExpr |
+  ExprSingle ::= ExprSimple |
+                 FLWORExpr  |
+                 SwitchExpr |
+                 TypeswitchExpr |
+                 IfExpr |
+                 TryCatchExpr
+    
+  ExprSimple ::= QuantifiedExpr |
+                 OrExpr |
 
-  ** scripting
-                      BlockExpr |
-                      ApplyExpr |
-                      VarDeclExpr
-                      ExitExpr |
-                      WhileExpr |
-                      AssignExpr |
-                      FlowCtlStatement |
-
-  ** updates
-                      InsertExpr |
-                      DeleteExpr |
-                      RenameExpr |
-                      ReplaceExpr |
-                      TransformExpr
+                 InsertExpr |
+                 DeleteExpr |
+                 RenameExpr |
+                 ReplaceExpr |
+                 TransformExpr
 
 ********************************************************************************/
 
@@ -5711,13 +6061,13 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 /*******************************************************************************
   GroupSpecList ::= 	GroupingSpec ("," GroupingSpec)*
 ********************************************************************************/
-void *begin_visit(const GroupSpecList& v)
+void* begin_visit(const GroupSpecList& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const GroupSpecList& v, void* /*visit_state*/)
+void end_visit(const GroupSpecList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
@@ -5978,116 +6328,12 @@ void end_visit(const CountClause& v, void* /*visit_state*/)
 }
 
 
-/*******************************************************************************
-  [65] QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Switch                                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-  A universally quantified expr is translated into a flwor expr:
-
-  fn:empty(for $v1 in expr1, ... vn in exprn
-           where not(testExpr)
-           return true)
-
-  An existentially quantified expr is translated into a flwor expr:
-
-  fn:exists(for $v1 in expr1, ... vn in exprn
-            where testExpr
-            return true)
-
-********************************************************************************/
-void* begin_visit(const QuantifiedExpr& v)
-{
-  TRACE_VISIT();
-
-  rchandle<flwor_expr> flwor(new flwor_expr(theRootSctx, loc, false));
-
-  flwor->set_return_expr(new const_expr(theRootSctx, loc, true));
-
-  push_nodestack(flwor.getp());
-
-  return no_state;
-}
-
-
-void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  rchandle<expr> testExpr = pop_nodestack();
-
-  if (v.get_qmode() == ParseConstants::quant_every)
-  {
-    rchandle<fo_expr> uw = new fo_expr(theRootSctx,
-                                       v.get_expr()->get_location(),
-                                       GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                       testExpr);
-    testExpr = uw.getp();
-  }
-  else
-  {
-    testExpr = wrap_in_bev(testExpr);
-  }
-
-  for (int i = 0; i < (int)v.get_decl_list()->size(); ++i)
-  {
-    pop_scope();
-  }
-
-  flwor_expr_t flworExpr = dynamic_cast<flwor_expr*>(pop_nodestack().getp());
-  ZORBA_ASSERT(flworExpr != NULL);
-
-  flworExpr->add_where(testExpr);
-
-  rchandle<fo_expr> quant = new fo_expr(theRootSctx,
-                                        loc,
-                                        v.get_qmode() == ParseConstants::quant_every ?
-                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1) :
-                                        GET_BUILTIN_FUNCTION(FN_EXISTS_1),
-                                        flworExpr.getp());
-  push_nodestack(quant.getp());
-}
-
-
-/*******************************************************************************
-  QVarInDeclList := QVarInDecl ("," QVarInDecl)*
-********************************************************************************/
-void* begin_visit(const QVarInDeclList& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const QVarInDeclList& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-}
-
-
-/*******************************************************************************
-  QVarInDecl := "$" VarName TypeDeclaration? "in" ExprSingle
-********************************************************************************/
-void* begin_visit(const QVarInDecl& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const QVarInDecl& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  push_scope();
-  xqtref_t type;
-  if (v.get_typedecl() != NULL)
-    type = pop_tstack();
-
-  expr_t domainExpr = pop_nodestack();
-  var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::for_var, type);
-
-  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(theNodeStack.top().getp());
-  ZORBA_ASSERT(flworExpr != NULL);
-
-  flworExpr->add_clause(wrap_in_forclause(domainExpr, varExpr, NULL));
-}
 
 
 /*******************************************************************************
@@ -6281,6 +6527,13 @@ void end_visit(const SwitchCaseOperandList& v, void* /*visit_state*/)
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  TypeSwitch                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
   TypeswitchExpr ::= "typeswitch" "(" Expr ")"
                      CaseClauseList
@@ -6467,6 +6720,13 @@ void end_visit(const CaseClause& v, void* /*visit_state*/)
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  If                                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
   IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
 ********************************************************************************/
@@ -6492,6 +6752,267 @@ void end_visit(const IfExpr& v, void* /*visit_state*/)
 
   push_nodestack(ifExpr);
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  TryCatch                                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  [169] TryCatchExpr ::= TryClause CatchClauseList
+
+  [170] TryClause ::= "try" "{" TryTargetExpr "}"
+
+  [171] TryTargetExpr ::= Expr
+********************************************************************************/
+void* begin_visit(const TryExpr& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+  {
+    throw XQUERY_EXCEPTION(err::XPST0003,
+                           ERROR_PARAMS(ZED(TryCatchExpr11)),
+                           ERROR_LOC(loc));
+  }
+
+  theTryStack.push_back(&v);
+
+  return no_state;
+}
+
+void end_visit(const TryExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT();
+
+  theTryStack.pop_back();
+}
+
+
+/*******************************************************************************
+  CatchClauseList := CatchClause+
+********************************************************************************/
+void* begin_visit(const CatchListExpr& v)
+{
+  TRACE_VISIT();
+
+  expr_t tryExpr = pop_nodestack();
+
+  trycatch_expr* tce = new trycatch_expr(theRootSctx, loc, tryExpr);
+
+  push_nodestack(tce);
+
+  return no_state;
+}
+
+void end_visit(const CatchListExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT();
+
+  trycatch_expr* tce = static_cast<trycatch_expr*>(theNodeStack.top().getp());
+
+  tce->compute_scripting_kind();
+}
+
+
+/*******************************************************************************
+  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
+
+  [173] CatchErrorList ::= NameTest ("|" NameTest)*
+
+  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
+
+  [175] CatchErrorCode ::= "$" VarName
+
+  [176] CatchErrorDesc ::= "$" VarName
+
+  [177] CatchErrorVal ::= "$" VarName
+********************************************************************************/
+void* begin_visit(const CatchExpr& v)
+{
+  TRACE_VISIT();
+
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top().getp());
+
+  catch_clause_t cc = new catch_clause();
+
+  push_scope();
+
+  if (v.getVarErrorCode())
+  {
+    var_expr_t ev = bind_var(loc,
+                             v.getVarErrorCode(),
+                             var_expr::catch_var,
+                             theRTM.QNAME_TYPE_QUESTION);
+
+    cc->set_error_code_var(ev);
+
+    if (v.getVarErrorDescr())
+    {
+      var_expr_t dv = bind_var(loc,
+                               v.getVarErrorDescr(),
+                               var_expr::catch_var,
+                               theRTM.STRING_TYPE_QUESTION);
+
+      cc->set_error_desc_var(dv);
+
+      if (v.getVarErrorVal())
+      {
+        var_expr_t vv = bind_var(loc,
+                                 v.getVarErrorVal(),
+                                 var_expr::catch_var,
+                                 theRTM.ITEM_TYPE_QUESTION);
+
+        cc->set_error_item_var(vv);
+      }
+    }
+  }
+
+  tce->add_clause(cc);
+
+  return no_state;
+}
+
+void end_visit(const CatchExpr& v, void* visit_state)
+{
+  TRACE_VISIT_OUT();
+
+  expr_t ce = pop_nodestack();
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top().getp());
+
+  tce->add_catch_expr(ce);
+
+  pop_scope();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Quantified                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  [65] QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
+
+  A universally quantified expr is translated into a flwor expr:
+
+  fn:empty(for $v1 in expr1, ... vn in exprn
+           where not(testExpr)
+           return true)
+
+  An existentially quantified expr is translated into a flwor expr:
+
+  fn:exists(for $v1 in expr1, ... vn in exprn
+            where testExpr
+            return true)
+
+********************************************************************************/
+void* begin_visit(const QuantifiedExpr& v)
+{
+  TRACE_VISIT();
+
+  rchandle<flwor_expr> flwor(new flwor_expr(theRootSctx, loc, false));
+
+  flwor->set_return_expr(new const_expr(theRootSctx, loc, true));
+
+  push_nodestack(flwor.getp());
+
+  return no_state;
+}
+
+
+void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  rchandle<expr> testExpr = pop_nodestack();
+
+  if (v.get_qmode() == ParseConstants::quant_every)
+  {
+    rchandle<fo_expr> uw = new fo_expr(theRootSctx,
+                                       v.get_expr()->get_location(),
+                                       GET_BUILTIN_FUNCTION(FN_NOT_1),
+                                       testExpr);
+    testExpr = uw.getp();
+  }
+  else
+  {
+    testExpr = wrap_in_bev(testExpr);
+  }
+
+  for (int i = 0; i < (int)v.get_decl_list()->size(); ++i)
+  {
+    pop_scope();
+  }
+
+  flwor_expr_t flworExpr = dynamic_cast<flwor_expr*>(pop_nodestack().getp());
+  ZORBA_ASSERT(flworExpr != NULL);
+
+  flworExpr->add_where(testExpr);
+
+  rchandle<fo_expr> quant = new fo_expr(theRootSctx,
+                                        loc,
+                                        v.get_qmode() == ParseConstants::quant_every ?
+                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1) :
+                                        GET_BUILTIN_FUNCTION(FN_EXISTS_1),
+                                        flworExpr.getp());
+  push_nodestack(quant.getp());
+}
+
+
+/*******************************************************************************
+  QVarInDeclList := QVarInDecl ("," QVarInDecl)*
+********************************************************************************/
+void* begin_visit(const QVarInDeclList& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const QVarInDeclList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+  QVarInDecl := "$" VarName TypeDeclaration? "in" ExprSingle
+********************************************************************************/
+void* begin_visit(const QVarInDecl& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const QVarInDecl& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  push_scope();
+  xqtref_t type;
+  if (v.get_typedecl() != NULL)
+    type = pop_tstack();
+
+  expr_t domainExpr = pop_nodestack();
+  var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::for_var, type);
+
+  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(theNodeStack.top().getp());
+  ZORBA_ASSERT(flworExpr != NULL);
+
+  flworExpr->add_clause(wrap_in_forclause(domainExpr, varExpr, NULL));
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  OrExpr                                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -7228,6 +7749,13 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
     theSctx->lookup_ns(ns, v.get_name()->get_prefix(), loc);
   }
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  PathExpr                                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -8351,6 +8879,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
   pop_scope();
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Primary                                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -9657,6 +10192,30 @@ void end_visit(const InlineFunction& v, void* aState)
 
 
 /*******************************************************************************
+  EnclosedExpr ::= "{" Expr "}"
+
+  Although EnclosedExpr appears in several grammar rules, an EnclosedExpr
+  parsenode is created only in the case of direct and computed node constructors.
+********************************************************************************/
+void* begin_visit(const EnclosedExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  expr_t lContent = pop_nodestack();
+
+  fo_expr* foExpr = new fo_expr(theRootSctx, loc, op_enclosed, lContent);
+
+  push_nodestack(foExpr);
+}
+
+
+/*******************************************************************************
   DirElemConstructor ::= "<" QName DirAttributeList?
                          ("/>" | (">" DirElemContentList? "</" QName S? ">"))
 ********************************************************************************/
@@ -10571,9 +11130,14 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 }
 
 
-/*******************************************************************************
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Sequence Type Matching                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-  Sequence Type Matching
+
+/*******************************************************************************
 
   A SequenceType parsenode has 2 children: The right child is always an
   OccurrenceIndicator node. The left child may be either an AtomicType node,
@@ -11223,141 +11787,6 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  QUery 3.0 Expressions                                                     //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-  [169] TryCatchExpr ::= TryClause CatchClauseList
-
-  [170] TryClause ::= "try" "{" TryTargetExpr "}"
-
-  [171] TryTargetExpr ::= Expr
-********************************************************************************/
-void* begin_visit(const TryExpr& v)
-{
-  TRACE_VISIT();
-
-  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-  {
-    throw XQUERY_EXCEPTION(err::XPST0003,
-                           ERROR_PARAMS(ZED(TryCatchExpr11)),
-                           ERROR_LOC(loc));
-  }
-
-  theTryStack.push_back(&v);
-
-  return no_state;
-}
-
-void end_visit(const TryExpr& v, void* visit_state)
-{
-  TRACE_VISIT_OUT();
-
-  theTryStack.pop_back();
-}
-
-
-/*******************************************************************************
-  CatchClauseList := CatchClause+
-********************************************************************************/
-void* begin_visit(const CatchListExpr& v)
-{
-  TRACE_VISIT();
-
-  expr_t tryExpr = pop_nodestack();
-
-  trycatch_expr* tce = new trycatch_expr(theRootSctx, loc, tryExpr);
-
-  push_nodestack(tce);
-
-  return no_state;
-}
-
-void end_visit(const CatchListExpr& v, void* visit_state)
-{
-  TRACE_VISIT_OUT();
-
-  trycatch_expr* tce = static_cast<trycatch_expr*>(theNodeStack.top().getp());
-
-  tce->compute_scripting_kind();
-}
-
-
-/*******************************************************************************
-  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
-
-  [173] CatchErrorList ::= NameTest ("|" NameTest)*
-
-  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
-
-  [175] CatchErrorCode ::= "$" VarName
-
-  [176] CatchErrorDesc ::= "$" VarName
-
-  [177] CatchErrorVal ::= "$" VarName
-********************************************************************************/
-void* begin_visit(const CatchExpr& v)
-{
-  TRACE_VISIT();
-
-  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top().getp());
-
-  catch_clause_t cc = new catch_clause();
-
-  push_scope();
-
-  if (v.getVarErrorCode())
-  {
-    var_expr_t ev = bind_var(loc,
-                             v.getVarErrorCode(),
-                             var_expr::catch_var,
-                             theRTM.QNAME_TYPE_QUESTION);
-
-    cc->set_error_code_var(ev);
-
-    if (v.getVarErrorDescr())
-    {
-      var_expr_t dv = bind_var(loc,
-                               v.getVarErrorDescr(),
-                               var_expr::catch_var,
-                               theRTM.STRING_TYPE_QUESTION);
-
-      cc->set_error_desc_var(dv);
-
-      if (v.getVarErrorVal())
-      {
-        var_expr_t vv = bind_var(loc,
-                                 v.getVarErrorVal(),
-                                 var_expr::catch_var,
-                                 theRTM.ITEM_TYPE_QUESTION);
-
-        cc->set_error_item_var(vv);
-      }
-    }
-  }
-
-  tce->add_clause(cc);
-
-  return no_state;
-}
-
-void end_visit(const CatchExpr& v, void* visit_state)
-{
-  TRACE_VISIT_OUT();
-
-  expr_t ce = pop_nodestack();
-  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top().getp());
-
-  tce->add_catch_expr(ce);
-
-  pop_scope();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
 //  Update Expressions                                                        //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
@@ -11528,359 +11957,6 @@ void end_visit(const VarBinding& v, void*)
   transformExpr->add_back(copyClause);
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//  Scripting expressions                                                     //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-  Program ::= Expr
-
-  Expr ::= ApplyExpr | ConcatExpr
-
-  ApplyExpr ::= (ConcatExpr ";")+
-
-  ConcatExpr ::= ExprSingle ("," ExprSingle)*
-
-  There are no ApplyExpr or ConcatExpr parsenodes. Instead:
-
-  - If the Expr is an ApplyExpr, no Expr parsenode is generated. Instead, a
-    BlockBody parsenode is generated, whose children are the ConcatExprs that
-    comprise the ApplyExpr.
-
-  - If the Expr is a ConcatExpr, then an Expr parsenode is generated, whose
-    children are the ExprSingles that comparise the ConcatExpr. In this case,
-    if Expr has either 0 or more than 1 children, it is translated as an
-    fn:concatenate expr. Otherwise, it is translated to its unique child.
-
-  Block ::= "{" BlockDecls BlockBody "}"
-
-  BlockDecls ::= (BlockVarDecl ";")*
-
-  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
-
-  BlockBody ::= Expr
-
-
-  - Synactically, BlockBody appears only in Block, and Block appears in
-    BlockExpr, WhileExpr, and FunctionDecl iff the function is declared as
-    sequential:
-
-  BlockExpr ::= "block" Block
-
-  WhileExpr ::= "while" "(" ExprSingle ")" Block
-
-  FunctionDecl ::= "declare" ("deterministic" | "nondeterministic")?
-                   "sequential" "function" QName "(" ParamList? ")" ("as" SequenceType)?
-                    Bock
-
-
-  - There is no parsenode class for BlockExpr or for Block; instead, the parser
-    generates:
-
-  1. BlockBody, if BlockDecls is not empty. The "decls" data member of this
-     BlockBody stores the var declarations.
-
-  2. BlockBody, if BlockDecls is empty and Expr is an ApplyExpr.
-
-  3. Expr, if BlockDecls is empty and Expr is a ConcatExpr.
-
-  In addition to cases 1 and 2 above, a BlockBody node is also generated
-
-  4. In the case of any Expr that is an ApplyExpr.
-
-  5. In the case of a WhileExpr if the Block that appears in the WhileExpr
-     syntax did not generate a BlockBody itself (i.e., case 3 above). In this
-     case, the BlockBody has a single child, which is the Expr node generated
-     by Block.
-
-  - There are no parsenode classes for BlockVarDecl and BlockDecls; instead
-    the parser generates VarDecl and VFO_DeclList parsenodes.
-
-********************************************************************************/
-void* begin_visit(const BlockBody& v)
-{
-  TRACE_VISIT();
-
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    throw XQUERY_EXCEPTION( err::XPST0003, ERROR_LOC( loc ) );
-
-  bool topLevel = (!inLibraryModule() && theNodeStack.empty());
-  bool inEval = theCCB->theIsEval;
-  bool allowLastUpdating = false;
-
-  std::vector<expr_t> stmts;
-
-  // push a dummy block_expr in the node stack so that local var decls can
-  // assert that their parent is a block expr.
-  expr_t dummyBlock = new block_expr(theRootSctx, loc, false, stmts, NULL);
-  push_nodestack(dummyBlock);
-
-  push_scope();
-
-  ulong numScopes = theAssignedVars.size();
-
-  theAssignedVars.resize(numScopes + 1);
-
-  rchandle<VFO_DeclList> decls = v.get_decls();
-
-  if (decls != NULL)
-  {
-    for (ulong i = 0; i < (ulong)decls->size(); ++i)
-    {
-      (*decls)[i]->accept(*this);
-
-      expr_t val = pop_nodestack();
-      var_expr_t ve = pop_nodestack().cast<var_expr>();
-
-      GlobalBinding b(ve, val, false);
-
-      declare_var(b, stmts);
-    }
-  }
-
-  ulong numExprs = (ulong)v.size();
-
-  for (ulong i = 0; i < numExprs; ++i)
-  {
-    v[i]->accept(*this);
-
-    expr_t childExpr = pop_nodestack();
-
-    if (childExpr->is_updating())
-    {
-      // Wrap every updating childExpr, except from the last one, with a
-      // XDM-discarding apply_expr.
-      if (i < numExprs - 1)
-      {
-        childExpr = new apply_expr(theRootSctx, loc, childExpr, true);
-      }
-      // Special treatment for the last childExpr
-      else if (topLevel)
-      {
-        if (inEval)
-        {
-          allowLastUpdating = true;
-        }
-        else
-        {
-          childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
-        }
-      }
-      else
-      {
-        childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
-      }
-    }
-
-    stmts.push_back(childExpr);
-  }
-
-  // pop the dummy block expr from the stack.
-  dummyBlock = pop_nodestack();
-  assert(dummyBlock->get_expr_kind() == block_expr_kind);
-
-  std::vector<var_expr*>& prevAssignedVars = theAssignedVars[numScopes-1];
-  std::vector<var_expr*>& lastAssignedVars = theAssignedVars[numScopes];
-
-  expr_t blockExpr = new block_expr(theRootSctx,
-                                    loc,
-                                    allowLastUpdating,
-                                    stmts,
-                                    &lastAssignedVars);
-
-  push_nodestack(blockExpr);
-
-  prevAssignedVars.insert(prevAssignedVars.end(),
-                          lastAssignedVars.begin(),
-                          lastAssignedVars.end());
-
-  theAssignedVars.pop_back();
-
-  pop_scope();
-
-  return NULL;
-}
-
-
-void end_visit(const BlockBody& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-void* begin_visit(const ApplyExpr& v)
-{
-  // TODO
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const ApplyExpr& v, void* visit_state)
-{
-  // TODO
-  expr_t param = pop_nodestack();
-
-  push_nodestack(new apply_expr(theRootSctx,
-                                param->get_loc(),
-                                param,
-                                true)); // discard XDM
-
-  TRACE_VISIT_OUT();
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-void* begin_visit(const AssignExpr& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const AssignExpr& v, void* visit_state)
-{
-  TRACE_VISIT_OUT();
-
-  var_expr_t ve = lookup_var(v.get_name(), loc, err::XPST0008);
-
-  if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
-  {
-    throw XQUERY_EXCEPTION(err::XSST0007,
-                           ERROR_PARAMS(ve->get_name()->getStringValue()),
-                           ERROR_LOC(loc));
-  }
-
-  xqtref_t varType = ve->get_type();
-
-  expr_t valueExpr = pop_nodestack();
-
-  if (varType != NULL)
-    valueExpr = new treat_expr(theRootSctx, loc, valueExpr, varType, err::XPTY0004);
-
-  push_nodestack(new fo_expr(theRootSctx,
-                             loc,
-                             GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1),
-                             ve,
-                             valueExpr));
-
-  theAssignedVars.back().push_back(ve.getp());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void* begin_visit(const ExitExpr& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-
-void end_visit(const ExitExpr& v, void* visit_state)
-{
-  TRACE_VISIT_OUT();
-
-  expr_t childExpr = pop_nodestack();
-
-  if (childExpr->is_updating())
-  {
-    theHaveUpdatingExitExprs = true;
-
-    if (!inUDFBody() && !theCCB->theIsEval)
-    {
-      childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
-    }
-  }
-  else if (childExpr->is_sequential())
-  {
-    theHaveSequentialExitExprs = true;
-  }
-
-  if (inUDFBody())
-  {
-    function* f = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
-    assert(f->isUdf());
-    user_function* udf = static_cast<user_function*>(f);
-
-    udf->setExiting(true);
-  }
-
-  push_nodestack(new exit_expr(theRootSctx, loc, childExpr));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void* begin_visit(const WhileExpr& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-
-void end_visit(const WhileExpr& v, void* visit_state)
-{
-  TRACE_VISIT_OUT();
-
-  expr_t bodyExpr = pop_nodestack();
-  expr_t condExpr = pop_nodestack();
-
-  condExpr = new if_expr(theRootSctx,
-                         loc,
-                         condExpr,
-                         create_empty_seq(loc),
-                         new flowctl_expr(theRootSctx, loc, flowctl_expr::BREAK));
-
-  block_expr* seqBody = NULL;
-
-  std::vector<expr_t> stmts;
-
-  stmts.push_back(condExpr);
-  stmts.push_back(bodyExpr);
-
-  seqBody = new block_expr(bodyExpr->get_sctx(), loc, false, stmts, NULL);
-
-  push_nodestack(new while_expr(theRootSctx, loc, seqBody));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void* begin_visit(const FlowCtlStatement& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const FlowCtlStatement& v, void* visit_state)
-{
-  TRACE_VISIT_OUT();
-
-  enum flowctl_expr::action a;
-  switch (v.get_action ())
-  {
-  case FlowCtlStatement::BREAK:
-    a = flowctl_expr::BREAK;
-    break;
-  case FlowCtlStatement::CONTINUE:
-    a = flowctl_expr::CONTINUE;
-    break;
-  default:
-    ZORBA_FATAL(false, "");
-  }
-  push_nodestack (new flowctl_expr (theRootSctx, loc, a));
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////

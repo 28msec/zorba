@@ -118,8 +118,7 @@ private:
 
 public:
   SERIALIZABLE_CLASS(function_item_expr)
-  function_item_expr(::zorba::serialization::Archiver &ar);
-
+  function_item_expr(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

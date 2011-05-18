@@ -10,34 +10,42 @@ ddl:create-collection($xqddf-test:white-collection);
 <newline>
 </newline>
 },
+
 {
 
 for $i in fn:doc("auction.xml")//item
 return 
     dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
 
-index_ddl:create-index($xqddf-test:index1)
+index_ddl:create-index($xqddf-test:index1);
 },
+
 {
 dml:insert-nodes($xqddf-test:white-collection, <item><location>Earth3</location></item>);
 },
+
 {
 index_dml:probe-index-point-value($xqddf-test:index1, "Earth3")[1]
 },
+
 {
-try{
+try
+{
   {
     dml:insert-nodes($xqddf-test:white-collection, <item><location>Earth</location></item>);
-    dml:insert-nodes($xqddf-test:white-collection, "")
+    dml:insert-nodes($xqddf-test:white-collection, "");
+    ()
   }
 }
 catch * { "
 cannot insert empty item in white collection"}
 },
+
 {
 <newline> a
 </newline>
 },
+
 {
-index_dml:probe-index-point-value($xqddf-test:index1, "Earth")[1]; 
+index_dml:probe-index-point-value($xqddf-test:index1, "Earth")[1];
 }

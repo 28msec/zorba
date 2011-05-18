@@ -209,6 +209,8 @@ public:
 
   bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
+  bool serializable() const { return true; }
+
   CODEGEN_DECL();
 };
 
