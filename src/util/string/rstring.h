@@ -106,8 +106,8 @@ public:
    * Copy constructs a new string from a substring of an existing string.
    *
    * @param s The string to copy from.
-   * @param pos The position of the first character to copy.
-   * @param n The number of characters to copy.
+   * @param pos The starting position within \a s.
+   * @param n The number of characters of \a s to copy.
    */
   rstring( rstring const &s, size_type pos, size_type n = npos );
 
@@ -116,8 +116,8 @@ public:
    * Copy constructs a new string from a substring of an existing string.
    *
    * @param s The string to copy from.
-   * @param pos The position of the first character to copy.
-   * @param n The number of characters to copy.
+   * @param pos The starting position within \a s.
+   * @param n The number of characters of \a s to copy.
    */
   template<class RepType2>
   rstring( rstring<RepType2> const &s, size_type pos, size_type n = npos );
@@ -127,8 +127,8 @@ public:
    * Copy constructs a new string from a substring of an existing string.
    *
    * @param s The string to copy from.
-   * @param pos The starting position of the substring.
-   * @param n The number of characters of the substring.
+   * @param pos The starting position within \a s.
+   * @param n The number of characters of \a s to copy.
    * @param a The allocator to use.
    */
   rstring( rstring const &s, size_type pos, size_type n,
@@ -139,8 +139,8 @@ public:
    * Copy constructs a new string from a substring of an existing string.
    *
    * @param s The string to copy from.
-   * @param pos The starting position of the substring.
-   * @param n The number of characters of the substring.
+   * @param pos The starting position within \a s.
+   * @param n The number of characters of \a s to copy.
    * @param a The allocator to use.
    */
   template<class RepType2>
@@ -149,7 +149,7 @@ public:
 
   // RSTRING_C_SS_X
   /**
-   * Copy constructs a new string from an existing std::string.
+   * Constructs a new string from an existing std::string.
    *
    * @param s The string to copy from.
    */
@@ -160,8 +160,8 @@ public:
    * Constructs a new string from a substring of an existing std::string.
    *
    * @param s The string to copy from.
-   * @param pos The starting position of the substring.
-   * @param n The number of characters of the substring.
+   * @param pos The starting position within \a s.
+   * @param n The number of characters of \a s to copy.
    */
   rstring( std_string const &s, size_type pos, size_type n = npos );
 
@@ -170,8 +170,8 @@ public:
    * Constructs a new string from a substring of an existing std::string.
    *
    * @param s The string to copy from.
-   * @param pos The starting position of the substring.
-   * @param n The number of characters of the substring.
+   * @param pos The starting position within \a s.
+   * @param n The number of characters of \a s to copy.
    * @param a The allocator to use.
    */
   rstring( std_string const &s, size_type pos, size_type n,
@@ -201,7 +201,7 @@ public:
    * Constructs a string from the given C string.
    *
    * @param s The C string.
-   * @param n The number of characters to copy.
+   * @param n The number of characters of \a s to copy.
    * @param a The allocator to use.
    */
   rstring( const_pointer s, size_type n,
@@ -213,7 +213,7 @@ public:
    * This constructor is an extension to the std::string API.
    *
    * @param s The null-terminated C string.
-   * @param n The number of characters to copy.
+   * @param n The number of characters of \a s to copy.
    * @param a The allocator to use.
    */
   rstring( pointer s, size_type n, allocator_type const &a = allocator_type() );
@@ -222,7 +222,7 @@ public:
   /**
    * Constructs a new string as \a n copies of \a c.
    *
-   * @param n The number of times to repeat the character.
+   * @param n The number of copies of \a c.
    * @param c The character to repeat.
    * @param a The allocator to use.
    */
@@ -233,11 +233,9 @@ public:
   /**
    * Constructs a string from a range of characters [i,j).
    *
-   * @tparam InputIterator The type of iterator to read the sequence of
-   * characters from.
-   *
-   * @param i An iterator marking the first character of the range.
-   * @param j An iterator marking one past the last character of the range.
+   * @tparam InputIterator The input iterator type.
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
    * @param a The allocator to use.
    */
   template<class InputIterator>
@@ -267,7 +265,7 @@ public:
   /**
    * Assigns another string to this string.
    *
-   * @tparam RepType2 The representation type of the other string.
+   * @tparam RepType2 The representation type of \a s.
    * @param s The string to assign from.
    * @return Returns this string.
    */
@@ -289,7 +287,7 @@ public:
   /**
    * Assigns a C string to this string.
    *
-   * @param s The C string to assign from.
+   * @param s The null-terminated C string to assign from.
    * @return Returns this string.
    */
   rstring& operator=( const_pointer s ) {
@@ -422,32 +420,96 @@ public:
   ////////// append ///////////////////////////////////////////////////////////
 
   // RSTRING_APPEND_RS_X
+  /**
+   * Appends the given string to this string.
+   *
+   * @param s The string to append.
+   * @return Returns this string.
+   */
   rstring& append( rstring const &s );
 
   // RSTRING_APPEND_TRS_X
+  /**
+   * Appends the given string to this string.
+   *
+   * @tparam RepType2 The string representation of \a s.
+   * @param s The string to append.
+   * @return Returns this string.
+   */
   template<class RepType2>
   rstring& append( rstring<RepType2> const &s );
 
   // RSTRING_APPEND_RS_2ST_X
+  /**
+   * Appends a substring of the given string to this string.
+   *
+   * @param s The string to append.
+   * @param s_pos The starting position is \a s.
+   * @param s_n The number of characters of \a s to append.
+   * @return Returns this string.
+   */
   rstring& append( rstring const &s, size_type s_pos, size_type s_n );
 
   // RSTRING_APPEND_TRS_2ST_X
+  /**
+   * Appends a substring of the given string to this string.
+   *
+   * @tparam RepType2 The string representation of \a s.
+   * @param s The string to append.
+   * @param s_pos The starting position is \a s.
+   * @param s_n The number of characters of \a s to append.
+   * @return Returns this string.
+   */
   template<class RepType2>
   rstring& append( rstring<RepType2> const &s, size_type s_pos, size_type s_n );
 
   // RSTRING_APPEND_SS_X
+  /**
+   * Appends the given string to this string.
+   *
+   * @param s The string to append.
+   * @return Returns this string.
+   */
   rstring& append( std_string const &s );
 
   // RSTRING_APPEND_SS_2ST_X
+  /**
+   * Appends a substring of the given string to this string.
+   *
+   * @param s The string to append.
+   * @param s_pos The starting position is \a s.
+   * @param s_n The number of characters of \a s to append.
+   * @return Returns this string.
+   */
   rstring& append( std_string const &s, size_type s_pos, size_type s_n );
 
   // RSTRING_APPEND_CP_X
+  /**
+   * Appends the given C string to this string.
+   *
+   * @param s The null-terminated C string to append.
+   * @return Returns this string.
+   */
   rstring& append( const_pointer s );
 
   // RSTRING_APPEND_CP_ST_X
+  /**
+   * Appends a substring of the given C string to this string.
+   *
+   * @param s The C string to append.
+   * @param s_n The number of characters of \a s to append.
+   * @return Returns this string.
+   */
   rstring& append( const_pointer s, size_type s_n );
 
   // RSTRING_APPEND_ST_VT_X
+  /**
+   * Appends \a n copies of \a c to this string.
+   *
+   * @param n The number of copies of \a c to append.
+   * @param c The character to append.
+   * @return Returns this string.
+   */
   rstring& append( size_type n, value_type c );
 
   /**
@@ -491,7 +553,7 @@ public:
   /**
    * Appends the given C string to this string.
    *
-   * @param s The string to append.
+   * @param s The null-terminated C string to append.
    * @return Returns this string.
    */
   rstring& operator+=( const_pointer s ) {
@@ -523,7 +585,7 @@ public:
   /**
    * Assigns another string to this string.
    *
-   * @tparam RepType2 The representation type of the other string.
+   * @tparam RepType2 The representation type of \a s.
    * @param s The string to assign from.
    * @return Returns this string.
    */
@@ -534,10 +596,10 @@ public:
 
   // RSTRING_ASSIGN_RS_2ST_X
   /**
-   * Assigns part of a string string to this string.
+   * Assigns a substring of a string to this string.
    *
    * @param s The string to assign from.
-   * @param pos The starting position withing \a s.
+   * @param pos The starting position within \a s.
    * @param n The number of characters to assign.
    * @return Returns this string.
    */
@@ -545,11 +607,11 @@ public:
 
   // RSTRING_ASSIGN_RS_2ST_X
   /**
-   * Assigns part of a string to this string.
+   * Assigns a substring of a string to this string.
    *
-   * @tparam RepType2 The representation type of the other string.
+   * @tparam RepType2 The representation type of \a s.
    * @param s The string to assign from.
-   * @param pos The starting position withing \a s.
+   * @param pos The starting position within \a s.
    * @param n The number of characters to assign.
    * @return Returns this string.
    */
@@ -569,10 +631,10 @@ public:
 
   // RSTRING_ASSIGN_SS_2ST_X
   /**
-   * Assigns part of a std::string to this string.
+   * Assigns a substring of a std::string to this string.
    *
    * @param s The string to assign from.
-   * @param pos The starting position withing \a s.
+   * @param pos The starting position within \a s.
    * @param n The number of characters to assign.
    * @return Returns this string.
    */
@@ -582,7 +644,7 @@ public:
   /**
    * Assigns a C to this string.
    *
-   * @param s The string to assign from.
+   * @param s The null-termianted C string to assign from.
    * @return Returns this string.
    */
   rstring& assign( const_pointer s );
@@ -599,9 +661,9 @@ public:
 
   // RSTRING_ASSIGN_CP_ST_X
   /**
-   * Assigns part of a C to this string.
+   * Assigns a substring of a C to this string.
    *
-   * @param s The string to assign from.
+   * @param s The C string to assign from.
    * @param n The number of characters to assign.
    * @return Returns this string.
    */
@@ -620,9 +682,9 @@ public:
 
   // RSTRING_ASSIGN_ST_VT_X
   /**
-   * Assigned \a n copies of a character to this string.
+   * Assigns \a n copies of a character to this string.
    *
-   * @param n The number of copies of the character.
+   * @param n The number of copies of \a c to assign.
    * @param c The character.
    * @return Returns this string.
    */
@@ -630,22 +692,21 @@ public:
 
   // RSTRING_ASSIGN_2II_X
   /**
-   * Assigns characters from a pair of input iterators.
+   * Assigns characters from a range of characters [i,j).
    *
    * @tparam InputIterator The input iterator type.
-   * @param begin The iterator marking the position of first character.
-   * @param end The iterator marking one past the position of the last
-   * character.
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
    */
   template<class InputIterator>
   rstring& assign( InputIterator begin, InputIterator end );
 
   // RSTRING_CONSTRUCT_CP_ST_X
   /**
-   * Assigns part of a C to this string.
+   * Assigns a substring of a C to this string.
    * This function is an extension to the std::string API.
    *
-   * @param s The string to assign from.
+   * @param s The C string to assign from.
    * @param n The number of characters to assign.
    * @return Returns this string.
    */
@@ -664,45 +725,167 @@ public:
   ////////// compare //////////////////////////////////////////////////////////
 
   // RSTRING_COMPARE_RS_X
+  /**
+   * Compares this string against another.
+   *
+   * @param s The string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( rstring const &s ) const;
 
   // RSTRING_COMPARE_TRS_X
+  /**
+   * Compares this string against another.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param s The string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   template<class RepType2>
   int compare( rstring<RepType2> const &s ) const;
 
   // RSTRING_COMPARE_SS_X
+  /**
+   * Compares this string against another.
+   *
+   * @param s The string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( std_string const &s ) const;
 
   // RSTRING_COMPARE_SS_X
+  /**
+   * Compares this string against a C string.
+   *
+   * @param s The null-terminated C string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( const_pointer s ) const;
 
   // RSTRING_COMPARE_2ST_RS_X
+  /**
+   * Compares a substring of this string against another.
+   *
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( size_type pos, size_type n, rstring const &s ) const;
 
   // RSTRING_COMPARE_2ST_TRS_X
+  /**
+   * Compares a substring of this string against another.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   template<class RepType2>
   int compare( size_type pos, size_type n, rstring<RepType2> const &s ) const;
 
   // RSTRING_COMPARE_2ST_SS_X
+  /**
+   * Compares a substring of this string against another.
+   *
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( size_type pos, size_type n, std_string const &s ) const;
 
   // RSTRING_COMPARE_2ST_CP_X
+  /**
+   * Compares a substring of this string against a C string.
+   *
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The null-terminated C string to compare to.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( size_type pos, size_type n, const_pointer s ) const;
 
   // RSTRING_COMPARE_2ST_RS_2ST_X
+  /**
+   * Compares a substring of this string against a substring of another.
+   *
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The string to compare to.
+   * @param s_pos The starting position within \a s.
+   * @param s_n The number of characters of \s to compare.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( size_type pos, size_type n, rstring const &s, size_type s_pos,
                size_type s_n ) const;
 
   // RSTRING_COMPARE_2ST_TRS_2ST_X
+  /**
+   * Compares a substring of this string against a substring of another.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The string to compare to.
+   * @param s_pos The starting position within \a s.
+   * @param s_n The number of characters of \s to compare.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   template<class RepType2>
   int compare( size_type pos, size_type n, rstring<RepType2> const &s,
                size_type s_pos, size_type s_n ) const;
 
   // RSTRING_COMPARE_2ST_SS_2ST_X
+  /**
+   * Compares a substring of this string against a substring of another.
+   *
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The string to compare to.
+   * @param s_pos The starting position within \a s.
+   * @param s_n The number of characters of \s to compare.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( size_type pos, size_type n, std_string const &s,
                size_type s_pos, size_type s_n ) const;
 
   // RSTRING_COMPARE_2ST_CP_ST_X
+  /**
+   * Compares a substring of this string against a C string.
+   *
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @param s The C string to compare to.
+   * @param s_n The number of characters of \s to compare.
+   * @return Returns -1 only if this string \< \a s,
+   * 0 only if this string == \a s,
+   * or +1 only if this string \> \a s.
+   */
   int compare( size_type pos, size_type n, const_pointer s,
                size_type s_n ) const;
 
@@ -728,9 +911,9 @@ public:
 
   // RSTRING_ERASE_I_X
   /**
-   * Erases the character (not byte) at the given iterator's position.
+   * Erases the character at the given iterator's position.
    *
-   * @param i An iterator marking the position of the character to erase.
+   * @param i The iterator marking the position of the character to erase.
    * @return Returns a new iterator marking the same position (i.e., what
    * becomes the next character).
    */
@@ -749,192 +932,821 @@ public:
   ////////// find /////////////////////////////////////////////////////////////
 
   // RSTRING_FIND_RS_ST_X
+  /**
+   * Searches this string for the given string starting at the given position.
+   *
+   * @param s The string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   size_type find( rstring const &s, size_type pos = 0 ) const;
 
   // RSTRING_FIND_TRS_ST_X
+  /**
+   * Searches this string for the given string starting at the given position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param s The string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   template<class RepType2>
   size_type find( rstring<RepType2> const &s, size_type pos = 0 ) const;
 
   // RSTRING_FIND_SS_ST_X
+  /**
+   * Searches this string for the given string starting at the given position.
+   *
+   * @param s The string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   size_type find( std_string const &s, size_type pos = 0 ) const;
 
   // RSTRING_FIND_CP_ST_X
+  /**
+   * Searches this string for the given string starting at the given position.
+   *
+   * @param s The null-terminated C string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   size_type find( const_pointer s, size_type pos = 0 ) const;
 
   // RSTRING_FIND_CP_2ST_X
+  /**
+   * Searches this string for the given string starting at the given position.
+   *
+   * @param s The C string to search for.
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   size_type find( const_pointer s, size_type pos, size_type n ) const;
 
   // RSTRING_FIND_VT_ST_X
+  /**
+   * Searches this string for the given character starting at the given
+   * position.
+   *
+   * @param c The character to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a c or \c npos if not found.
+   */
   size_type find( value_type c, size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_OF_RS_ST_X
+  /**
+   * Searches this string for any one of the characters in \a s starting at the
+   * given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_first_of( rstring const &s, size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_OF_TRS_ST_X
+  /**
+   * Searches this string for any one of the characters in \a s starting at the
+   * given position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   template<class RepType2>
   size_type find_first_of( rstring<RepType2> const &s,
                            size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_OF_SS_ST_X
+  /**
+   * Searches this string for any one of the characters in \a s starting at the
+   * given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_first_of( std_string const&, size_type pos = 0 ) const;
 
+  /**
+   * Searches this string for any one of the characters in \a s starting at the
+   * given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   // RSTRING_FIND_FIRST_OF_CP_ST_X
   size_type find_first_of( const_pointer s, size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_OF_CP_2ST_X
-  size_type find_first_of( const_pointer s, size_type pos, size_type n ) const;
+  /**
+   * Searches this string for any one of the first \a s_n characters in \a s
+   * starting at the given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @param s_n The number of characters of \s to consider.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
+  size_type find_first_of( const_pointer s, size_type pos,
+                           size_type s_n ) const;
 
   // RSTRING_FIND_FIRST_OF_VT_ST_X
+  /**
+   * Searches this string for the given character starting at the given
+   * position.
+   *
+   * @param c The character to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a c or \c npos if not found.
+   */
   size_type find_first_of( value_type c, size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_NOT_OF_RS_ST_X
+  /**
+   * Searches this string for any one of the characters not in \a s starting at
+   * the given position.
+   *
+   * @param s The set of characters not to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a non-matching character or \c npos if not
+   * found.
+   */
   size_type find_first_not_of( rstring const&, size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_NOT_OF_TRS_ST_X
+  /**
+   * Searches this string for any one of the characters not in \a s starting at
+   * the given position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param s The set of characters not to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a non-matching character or \c npos if not
+   * found.
+   */
   template<class RepType2>
   size_type find_first_not_of( rstring<RepType2> const &s,
                                size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_NOT_OF_SS_ST_X
+  /**
+   * Searches this string for any one of the characters not in \a s starting at
+   * the given position.
+   *
+   * @param s The set of characters not to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a non-matching character or \c npos if not
+   * found.
+   */
   size_type find_first_not_of( std_string const&, size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_NOT_OF_CP_ST_X
+  /**
+   * Searches this string for any one of the characters not in \a s starting at
+   * the given position.
+   *
+   * @param s The set of characters not to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a non-matching character or \c npos if not
+   * found.
+   */
   size_type find_first_not_of( const_pointer s, size_type pos = 0 ) const;
 
   // RSTRING_FIND_FIRST_NOT_OF_CP_2ST_X
+  /**
+   * Searches this string for any one of the characters not in \a s starting at
+   * the given position.
+   *
+   * @param s The set of characters not to search for.
+   * @param pos The starting position within this string.
+   * @param s_n The number of characters to consider.
+   * @return Returns the offset of a non-matching character or \c npos if not
+   * found.
+   */
   size_type find_first_not_of( const_pointer s, size_type pos,
-                               size_type n ) const;
+                               size_type s_n ) const;
 
   // RSTRING_FIND_FIRST_NOT_OF_VT_ST_X
+  /**
+   * Searches this string for any character except the given character starting
+   * at the given position.
+   *
+   * @param c The character not to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of any character except \a c or \c npos if not
+   * found.
+   */
   size_type find_first_not_of( value_type c, size_type pos = 0 ) const;
 
   // RSTRING_FIND_LAST_OF_RS_ST_X
+  /**
+   * Searches this string backwards for any one of the characters in \a s
+   * starting at the given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_last_of( rstring const&, size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_OF_TRS_ST_X
+  /**
+   * Searches this string backwards for any one of the characters in \a s
+   * starting at the given position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   template<class RepType2>
   size_type find_last_of( rstring<RepType2> const &s,
                           size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_OF_SS_ST_X
+  /**
+   * Searches this string backwards for any one of the characters in \a s
+   * starting at the given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_last_of( std_string const&, size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_OF_CP_ST_X
+  /**
+   * Searches this string backwards for any one of the characters in \a s
+   * starting at the given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_last_of( const_pointer s, size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_OF_CP_2ST_X
-  size_type find_last_of( const_pointer s, size_type pos, size_type n ) const;
+  /**
+   * Searches this string backwards for any one of the first \a s_n characters
+   * in \a s starting at the given position.
+   *
+   * @param s The set of characters to search for.
+   * @param pos The starting position within this string.
+   * @param s_n The number of characters of \s to consider.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
+  size_type find_last_of( const_pointer s, size_type pos, size_type s_n ) const;
 
   // RSTRING_FIND_LAST_OF_VT_ST_X
+  /**
+   * Searches this string backwards for the given character starting at the
+   * given position.
+   *
+   * @param c The character to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a c or \c npos if not found.
+   */
   size_type find_last_of( value_type c, size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_NOT_OF_RS_ST_X
+  /**
+   * Searches this string backwards for any one of the characters not in \a s
+   * starting at the given position.
+   *
+   * @param s The set of characters to not search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_last_not_of( rstring const&, size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_NOT_OF_TRS_ST_X
+  /**
+   * Searches this string backwards for any one of the characters not in \a s
+   * starting at the given position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param s The set of characters to not search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   template<class RepType2>
   size_type find_last_not_of( rstring<RepType2> const &s,
                               size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_NOT_OF_SS_ST_X
+  /**
+   * Searches this string backwards for any one of the characters not in \a s
+   * starting at the given position.
+   *
+   * @param s The set of characters to not search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_last_not_of( std_string const&, size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_NOT_OF_CP_ST_X
+  /**
+   * Searches this string backwards for any one of the characters not in \a s
+   * starting at the given position.
+   *
+   * @param s The set of characters to not search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_last_not_of( const_pointer s, size_type pos = npos ) const;
 
   // RSTRING_FIND_LAST_NOT_OF_CP_2ST_X
+  /**
+   * Searches this string backwards for any one of the first \a s_n characters
+   * not in \a s starting at the given position.
+   *
+   * @param s The set of characters to not search for.
+   * @param pos The starting position within this string.
+   * @param s_n The number of characters of \s to consider.
+   * @return Returns the offset of a matching character or \c npos if not
+   * found.
+   */
   size_type find_last_not_of( const_pointer s, size_type pos,
-                              size_type n ) const;
+                              size_type s_n ) const;
 
   // RSTRING_FIND_LAST_NOT_OF_VT_ST_X
+  /**
+   * Searches this string backwards for any character except the given
+   * character starting at the given position.
+   *
+   * @param c The character to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of any character except \a c or \c npos if not
+   * found.
+   */
   size_type find_last_not_of( value_type c, size_type pos = npos ) const;
 
   // RSTRING_RFIND_RS_ST_X
+  /**
+   * Searches this string backwards for the given string starting at the given
+   * position.
+   *
+   * @param s The string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   size_type rfind( rstring const &s, size_type pos = npos ) const;
 
   // RSTRING_RFIND_TRS_ST_X
+  /**
+   * Searches this string backwards for the given string starting at the given
+   * position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param s The string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   template<class RepType2>
   size_type rfind( rstring<RepType2> const &s, size_type pos = npos ) const;
 
   // RSTRING_RFIND_SS_ST_X
+  /**
+   * Searches this string backwards for the given string starting at the given
+   * position.
+   *
+   * @param s The string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   size_type rfind( std_string const &s, size_type pos = npos ) const;
 
   // RSTRING_RFIND_CP_ST_X
+  /**
+   * Searches this string backwards for the given string starting at the given
+   * position.
+   *
+   * @param s The null-terminated C string to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
   size_type rfind( const_pointer s, size_type pos = npos ) const;
 
   // RSTRING_RFIND_CP_2ST_X
-  size_type rfind( const_pointer s, size_type pos, size_type n ) const;
+  /**
+   * Searches this string backwards for the given string starting at the given
+   * position.
+   *
+   * @param s The C string to search for.
+   * @param pos The starting position within this string.
+   * @param n The number of characters to compare.
+   * @return Returns the offset of \a s or \c npos if not found.
+   */
+  size_type rfind( const_pointer s, size_type pos, size_type s_n ) const;
 
   // RSTRING_RFIND_VT_ST_X
+  /**
+   * Searches this string backwards for the given character starting at the
+   * given position.
+   *
+   * @param c The character to search for.
+   * @param pos The starting position within this string.
+   * @return Returns the offset of \a c or \c npos if not found.
+   */
   size_type rfind( value_type c, size_type pos = npos ) const;
 
   ////////// insert ///////////////////////////////////////////////////////////
 
   // RSTRING_INSERT_ST_RS_X
+  /**
+   * Inserts the given string into this string at the given position.
+   *
+   * @param pos The position within this string to insert at.
+   * @param s The string to insert.
+   * @return Returns this string.
+   */
   rstring& insert( size_type pos, rstring const &s );
 
-  // RSTRING_INSERT_ST_RS_2ST_X
-  rstring& insert( size_type pos, rstring const &s, size_type s_pos,
-                   size_type n );
+  // RSTRING_INSERT_ST_TRS_X
+  /**
+   * Inserts the given string into this string at the given position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param pos The position within this string to insert at.
+   * @param s The string to insert.
+   * @return Returns this string.
+   */
+  template<class RepType2>
+  rstring& insert( size_type pos, rstring<RepType2> const &s );
+
+  // RSTRING_INSERT_ST_SS_X
+  /**
+   * Inserts the given string into this string at the given position.
+   *
+   * @param pos The position within this string to insert at.
+   * @param s The string to insert.
+   * @return Returns this string.
+   */
+  rstring& insert( size_type pos, std_string const &s );
 
   // RSTRING_INSERT_ST_CP_X
+  /**
+   * Inserts the given string into this string at the given position.
+   *
+   * @param pos The position within this string to insert at.
+   * @param s The null-terminated C string to insert.
+   * @return Returns this string.
+   */
   rstring& insert( size_type pos, const_pointer s );
 
+  // RSTRING_INSERT_ST_RS_2ST_X
+  /**
+   * Inserts a substring of the given string into this string at the given
+   * position.
+   *
+   * @param pos The position within this string to insert at.
+   * @param s The null-terminated C string to insert.
+   * @param s_pos The starting position within \a s.
+   * @param s_n The numer of characters of \a s to insert.
+   * @return Returns this string.
+   */
+  rstring& insert( size_type pos, rstring const &s, size_type s_pos,
+                   size_type s_n );
+
+  // RSTRING_INSERT_ST_TRS_2ST_X
+  /**
+   * Inserts a substring of the given string into this string at the given
+   * position.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param pos The position within this string to insert at.
+   * @param s The null-terminated C string to insert.
+   * @param s_pos The starting position within \a s.
+   * @param s_n The numer of characters of \a s to insert.
+   * @return Returns this string.
+   */
+  template<class RepType2>
+  rstring& insert( size_type pos, rstring<RepType2> const &s, size_type s_pos,
+                   size_type s_n );
+
+  // RSTRING_INSERT_ST_SS_2ST_X
+  /**
+   * Inserts a substring of the given string into this string at the given
+   * position.
+   *
+   * @param pos The position within this string to insert at.
+   * @param s The null-terminated C string to insert.
+   * @param s_pos The starting position within \a s.
+   * @param s_n The numer of characters of \a s to insert.
+   * @return Returns this string.
+   */
+  rstring& insert( size_type pos, std_string const &s, size_type s_pos,
+                   size_type s_n );
+
   // RSTRING_INSERT_ST_CP_ST_X
-  rstring& insert( size_type pos, const_pointer s, size_type n );
+  /**
+   * Inserts a substring of the given string into this string at the given
+   * position.
+   *
+   * @param pos The position within this string to insert at.
+   * @param s The null-terminated C string to insert.
+   * @param s_n The numer of characters of \a s to insert.
+   * @return Returns this string.
+   */
+  rstring& insert( size_type pos, const_pointer s, size_type s_n );
 
   // RSTRING_INSERT_2ST_VT_X
+  /**
+   * Inserts \a n copies of \a c at the given position.
+   *
+   * @param pos The position within this string to insert at.
+   * @param n The number of copies of \a c to insert.
+   * @param c The character to insert.
+   * @return Returns this string.
+   */
   rstring& insert( size_type pos, size_type n, value_type c );
 
   // RSTRING_INSERT_I_VT_X
-  iterator insert( iterator pos, value_type );
+  /**
+   * Inserts the given character into this string at the given position.
+   *
+   * @param pos The iterator marking the position within this string to insert
+   * at.
+   * @param The character to insert.
+   * @return Returns an iterator positioned at the newly inserted character.
+   */
+  iterator insert( iterator pos, value_type c );
 
   // RSTRING_INSERT_I_ST_VT_X
+  /**
+   * Inserts \a n copies of \a c into this string at the given position.
+   *
+   * @param pos The iterator marking the position within this string to insert
+   * at.
+   * @param n The number of copies of \a c to insert.
+   * @param c The character to insert.
+   */
   void insert( iterator pos, size_type n, value_type c );
 
   // RSTRING_INSERT_I_2II_X
+  /**
+   * Inserts the range of characters [i,j) into this string at the given
+   * position.
+   *
+   * @tparam InputIterator The input iterator type.
+   * @param pos The iterator marking the position within this string to insert
+   * at.
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   */
   template<class InputIterator>
-  void insert( iterator pos, InputIterator begin, InputIterator end );
+  void insert( iterator pos, InputIterator i, InputIterator j );
 
   ////////// replace //////////////////////////////////////////////////////////
 
   // RSTRING_REPLACE_2ST_RS_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with the given string.
+   *
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The replacement string.
+   * @return Returns this string.
+   */
   rstring& replace( size_type pos, size_type n, rstring const &s );
 
+  // RSTRING_REPLACE_2ST_TRS_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with the given string.
+   *
+   * @tparam RepType2 The representation type of \a s.
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The replacement string.
+   * @return Returns this string.
+   */
+  template<class RepType2>
+  rstring& replace( size_type pos, size_type n, rstring<RepType2> const &s );
+
+  // RSTRING_REPLACE_2ST_SS_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with the given string.
+   *
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The replacement string.
+   * @return Returns this string.
+   */
+  rstring& replace( size_type pos, size_type n, std_string const &s );
+
+  // RSTRING_REPLACE_2ST_CP_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with the given string.
+   *
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The null-terminated replacement C string.
+   * @return Returns this string.
+   */
+  rstring& replace( size_type pos, size_type n, const_pointer s );
+
   // RSTRING_REPLACE_2ST_RS_2ST_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with a substring of the given string.
+   *
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The replacement string.
+   * @param s_pos The starting position is \a s.
+   * @param s_n The number of characters of \a s to use.
+   * @return Returns this string.
+   */
   rstring& replace( size_type pos, size_type n, rstring const &s,
                     size_type s_pos, size_type s_n );
 
-  // RSTRING_REPLACE_2ST_CP_X
-  rstring& replace( size_type pos, size_type n, const_pointer s );
+  // RSTRING_REPLACE_2ST_RS_2ST_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with a substring of the given string.
+   *
+   * @tparam RepType2 The string representation of \a s.
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The replacement string.
+   * @param s_pos The starting position is \a s.
+   * @param s_n The number of characters of \a s to use.
+   * @return Returns this string.
+   */
+  template<class RepType2>
+  rstring& replace( size_type pos, size_type n, rstring<RepType2> const &s,
+                    size_type s_pos, size_type s_n );
+
+  // RSTRING_REPLACE_2ST_SS_2ST_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with a substring of the given string.
+   *
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The replacement string.
+   * @param s_pos The starting position is \a s.
+   * @param s_n The number of characters of \a s to use.
+   * @return Returns this string.
+   */
+  rstring& replace( size_type pos, size_type n, std_string const &s,
+                    size_type s_pos, size_type s_n );
 
   // RSTRING_REPLACE_2ST_CP_ST_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with a substring of the given string.
+   *
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param s The replacement C string.
+   * @param s_n The number of characters of \a s to use.
+   * @return Returns this string.
+   */
   rstring& replace( size_type pos, size_type n, const_pointer s,
                     size_type s_n );
 
   // RSTRING_REPLACE_3ST_VT_X
+  /**
+   * Replaces \a n characters of this string starting at the given position
+   * with \a c_n copies of \a c.
+   *
+   * @param pos The position within this string to replace at.
+   * @param n The number of characters to replace.
+   * @param c_n The number of copies of \c to replace with.
+   * @param c The character to replace with.
+   * @return Returns this string.
+   */
   rstring& replace( size_type pos, size_type n, size_type c_n, value_type c );
 
   // RSTRING_REPLACE_2I_RS_X
+  /**
+   * Replaces the range of characters [i,j) of this string with the given
+   * string.
+   *
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param s The replacement string.
+   * @return Returns this string.
+   */
   rstring& replace( iterator i, iterator j, rstring const &s );
 
+  // RSTRING_REPLACE_2I_TRS_X
+  /**
+   * Replaces the range of characters [i,j) of this string with the given
+   * string.
+   *
+   * @tparam RepType2 The string representation of \a s.
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param s The replacement string.
+   * @return Returns this string.
+   */
+  template<class RepType2>
+  rstring& replace( iterator i, iterator j, rstring<RepType2> const &s );
+
+  // RSTRING_REPLACE_2I_SS_X
+  /**
+   * Replaces the range of characters [i,j) of this string with the given
+   * string.
+   *
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param s The replacement string.
+   * @return Returns this string.
+   */
+  rstring& replace( iterator i, iterator j, std_string const &s );
+
   // RSTRING_REPLACE_2I_CP_X
+  /**
+   * Replaces the range of characters [i,j) of this string with the given
+   * string.
+   *
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param s The null-terminated replacement C string.
+   * @return Returns this string.
+   */
   rstring& replace( iterator i, iterator j, const_pointer s );
 
   // RSTRING_REPLACE_2I_CP_ST_X
+  /**
+   * Replaces the range of characters [i,j) of this string with a substring of
+   * the given string.
+   *
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param s The replacement C string.
+   * @param s_n The number of characters of \a s to use.
+   * @return Returns this string.
+   */
   rstring& replace( iterator i, iterator j, const_pointer s, size_type s_n );
 
   // RSTRING_REPLACE_2I_ST_VT_X
+  /**
+   * Replaces the range of characters [i,j) of this string with \a c_n copies
+   * of \a c.
+   *
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param c_n The number of copies of \c to replace with.
+   * @param c The character to replace with.
+   * @return Returns this string.
+   */
   rstring& replace( iterator i, iterator j, size_type n, value_type c );
 
   // RSTRING_REPLACE_2I_2II_X
+  /**
+   * Replaces the range of characters [i,j) of this string with the range of
+   * characters [ii,ij).
+   *
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param ii The iterator marking the first character of the range.
+   * @param ij The iterator marking one past the last character of the range.
+   * @return Returns this string.
+   */
   template<class InputIterator>
   rstring& replace( iterator i, iterator j, InputIterator ii,
                     InputIterator ij );
   // TODO: needs implementation
 
   // RSTRING_REPLACE_2I_2CP_X
-  rstring& replace( iterator i, iterator j, const_pointer s, const_pointer t );
+  /**
+   * Replaces the range of characters [i,j) of this string with the range of
+   * characters [si,sj).
+   *
+   * @param i The iterator marking the first character of the range.
+   * @param j The iterator marking one past the last character of the range.
+   * @param si The iterator marking the first character of the range.
+   * @param sj The iterator marking one past the last character of the range.
+   * @return Returns this string.
+   */
+  rstring& replace( iterator i, iterator j, const_pointer si,
+                    const_pointer sj );
 
   ////////// iterators ////////////////////////////////////////////////////////
 
@@ -1070,7 +1882,7 @@ public:
   }
 
   /**
-   * Attemts to pre-allocated enough memory to contains the given number of
+   * Attemts to pre-allocated enough memory to contain the given number of
    * bytes.
    *
    * @param n The number of bytes.
@@ -1328,6 +2140,7 @@ private:
    * Checks whether the given pointer is out of the range of the current
    * string.
    *
+   * @param s The pointer to check.
    * @return Returns \c true only if it is.
    */
   bool disjunct( const_pointer s ) const {
@@ -1896,6 +2709,25 @@ rstring<Rep>::insert( size_type pos, rstring const &s ) {
   return insert( pos, s.data(), s.size() );
 }
 
+// RSTRING_INSERT_ST_TRS_X
+template<class Rep>
+template<class Rep2> inline rstring<Rep>&
+rstring<Rep>::insert( size_type pos, rstring<Rep2> const &s ) {
+  return insert( pos, s.data(), s.size() );
+}
+
+// RSTRING_INSERT_ST_SS_X
+template<class Rep> inline rstring<Rep>&
+rstring<Rep>::insert( size_type pos, std_string const &s ) {
+  return insert( pos, s.data(), s.size() );
+}
+
+// RSTRING_INSERT_ST_CP_X
+template<class Rep> inline rstring<Rep>&
+rstring<Rep>::insert( size_type pos, const_pointer s ) {
+  return insert( pos, s, traits_type::length( s ) );
+}
+
 // RSTRING_INSERT_ST_RS_2ST_X
 template<class Rep> inline rstring<Rep>&
 rstring<Rep>::insert( size_type pos, rstring const &s, size_type s_pos,
@@ -1905,10 +2737,25 @@ rstring<Rep>::insert( size_type pos, rstring const &s, size_type s_pos,
   );
 }
 
-// RSTRING_INSERT_ST_CP_X
+// RSTRING_INSERT_ST_TRS_2ST_X
+template<class Rep>
+template<class Rep2> inline rstring<Rep>&
+rstring<Rep>::insert( size_type pos, rstring<Rep2> const &s, size_type s_pos,
+                      size_type s_n ) {
+  return insert(
+    pos, s.data() + s.check_pos( s_pos, "insert" ), s.limit_n( s_pos, s_n )
+  );
+}
+
+// RSTRING_INSERT_ST_SS_2ST_X
 template<class Rep> inline rstring<Rep>&
-rstring<Rep>::insert( size_type pos, const_pointer s ) {
-  return insert( pos, s, traits_type::length( s ) );
+rstring<Rep>::insert( size_type pos, std_string const &s, size_type s_pos,
+                      size_type s_n ) {
+  return insert(
+    pos,
+    s.data() + check_pos( s_pos, s.size(), "insert" ),
+    limit_n( s_pos, s.size(), s_n )
+  );
 }
 
 // RSTRING_INSERT_2ST_VT_X
@@ -1945,6 +2792,25 @@ rstring<Rep>::replace( size_type pos, size_type n, rstring const &s ) {
   return replace( pos, n, s.data(), s.size() );
 }
 
+// RSTRING_REPLACE_2ST_TRS_X
+template<class Rep>
+template<class Rep2> inline rstring<Rep>&
+rstring<Rep>::replace( size_type pos, size_type n, rstring<Rep2> const &s ) {
+  return replace( pos, n, s.data(), s.size() );
+}
+
+// RSTRING_REPLACE_2ST_SS_X
+template<class Rep> inline rstring<Rep>&
+rstring<Rep>::replace( size_type pos, size_type n, std_string const &s ) {
+  return replace( pos, n, s.data(), s.size() );
+}
+
+// RSTRING_REPLACE_2ST_CP_X
+template<class Rep> inline rstring<Rep>&
+rstring<Rep>::replace( size_type pos, size_type n, const_pointer s ) {
+  return replace( pos, n, s, traits_type::length( s ) );
+}
+
 // RSTRING_REPLACE_2ST_RS_2ST_X
 template<class Rep> inline rstring<Rep>&
 rstring<Rep>::replace( size_type pos, size_type n, rstring const &s,
@@ -1954,10 +2820,25 @@ rstring<Rep>::replace( size_type pos, size_type n, rstring const &s,
   );
 }
 
-// RSTRING_REPLACE_2ST_CP_X
+// RSTRING_REPLACE_2ST_TRS_2ST_X
+template<class Rep>
+template<class Rep2> inline rstring<Rep>&
+rstring<Rep>::replace( size_type pos, size_type n, rstring<Rep2> const &s,
+                       size_type s_pos, size_type s_n ) {
+  return replace(
+    pos, n, s.data() + s.check_pos( s_pos, "replace" ), s.limit_n( s_pos, s_n )
+  );
+}
+
+// RSTRING_REPLACE_2ST_SS_2ST_X
 template<class Rep> inline rstring<Rep>&
-rstring<Rep>::replace( size_type pos, size_type n, const_pointer s ) {
-  return replace( pos, n, s, traits_type::length( s ) );
+rstring<Rep>::replace( size_type pos, size_type n, std_string const &s,
+                       size_type s_pos, size_type s_n ) {
+  return replace(
+    pos,
+    n, s.data() + check_pos( s_pos, s.size(), "replace" ),
+    limit_n( s_pos, s.size(), s_n )
+  );
 }
 
 // RSTRING_REPLACE_3ST_VT_X
@@ -1972,6 +2853,19 @@ rstring<Rep>::replace( size_type pos, size_type n, size_type c_n,
 // RSTRING_REPLACE_2I_RS_X
 template<class Rep> inline rstring<Rep>&
 rstring<Rep>::replace( iterator i, iterator j, rstring const &s ) {
+  return replace( i, j, s.data(), s.size() );
+}
+
+// RSTRING_REPLACE_2I_TRS_X
+template<class Rep>
+template<class Rep2> inline rstring<Rep>&
+rstring<Rep>::replace( iterator i, iterator j, rstring<Rep2> const &s ) {
+  return replace( i, j, s.data(), s.size() );
+}
+
+// RSTRING_REPLACE_2I_SS_X
+template<class Rep> inline rstring<Rep>&
+rstring<Rep>::replace( iterator i, iterator j, std_string const &s ) {
   return replace( i, j, s.data(), s.size() );
 }
 

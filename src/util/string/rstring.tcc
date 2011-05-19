@@ -262,9 +262,9 @@ rstring<Rep>::find( value_type c, size_type pos ) const {
 // RSTRING_FIND_FIRST_OF_CP_2ST_X
 template<class Rep> typename rstring<Rep>::size_type
 rstring<Rep>::find_first_of( const_pointer s, size_type pos,
-                             size_type n ) const {
-  for ( ; n && pos < size(); ++pos ) {
-    if ( traits_type::find( s, n, data()[ pos ] ) )
+                             size_type s_n ) const {
+  for ( ; s_n && pos < size(); ++pos ) {
+    if ( traits_type::find( s, s_n, data()[ pos ] ) )
       return pos;
   }
   return npos;
@@ -273,9 +273,9 @@ rstring<Rep>::find_first_of( const_pointer s, size_type pos,
 // RSTRING_FIND_FIRST_NOT_OF_CP_2ST_X
 template<class Rep> typename rstring<Rep>::size_type
 rstring<Rep>::find_first_not_of( const_pointer s, size_type pos,
-                                 size_type n ) const {
+                                 size_type s_n ) const {
   for ( ; pos < size(); ++pos )
-    if ( !traits_type::find( s, n, data()[ pos ] ) )
+    if ( !traits_type::find( s, s_n, data()[ pos ] ) )
       return pos;
   return npos;
 }
@@ -292,13 +292,13 @@ rstring<Rep>::find_first_not_of( value_type c, size_type pos ) const {
 // RSTRING_FIND_LAST_OF_CP_2ST_X
 template<class Rep> typename rstring<Rep>::size_type
 rstring<Rep>::find_last_of( const_pointer s, size_type pos,
-                            size_type n ) const {
+                            size_type s_n ) const {
   size_type len = size();
-  if ( len && n ) {
+  if ( len && s_n ) {
     if ( --len > pos )
       len = pos;
     do {
-      if ( traits_type::find( s, n, data()[ len ] ) )
+      if ( traits_type::find( s, s_n, data()[ len ] ) )
         return len;
     } while ( --len );
   }
@@ -308,12 +308,12 @@ rstring<Rep>::find_last_of( const_pointer s, size_type pos,
 // RSTRING_FIND_LAST_NOT_OF_CP_2ST_X
 template<class Rep> typename rstring<Rep>::size_type
 rstring<Rep>::find_last_not_of( const_pointer s, size_type pos,
-                                size_type n ) const {
+                                size_type s_n ) const {
   if ( size_type len = size() ) {
     if ( --len > pos )
       len = pos;
     do {
-      if ( !traits_type::find( s, n, data()[ len ] ) )
+      if ( !traits_type::find( s, s_n, data()[ len ] ) )
         return len;
     } while ( len-- );
   }
@@ -336,12 +336,12 @@ rstring<Rep>::find_last_not_of( value_type c, size_type pos ) const {
 
 // RSTRING_RFIND_CP_2ST_X
 template<class Rep> typename rstring<Rep>::size_type
-rstring<Rep>::rfind( const_pointer s, size_type pos, size_type n ) const {
+rstring<Rep>::rfind( const_pointer s, size_type pos, size_type s_n ) const {
   size_type const len = size();
-  if ( n <= len ) {
-    pos = std::min( len - n, pos );
+  if ( s_n <= len ) {
+    pos = std::min( len - s_n, pos );
     do {
-      if ( traits_type::compare( data() + pos, s, n ) == 0 )
+      if ( traits_type::compare( data() + pos, s, s_n ) == 0 )
         return pos;
     } while ( pos-- > 0 );
   }
@@ -363,22 +363,22 @@ rstring<Rep>::rfind( value_type c, size_type pos ) const {
 
 // RSTRING_INSERT_ST_CP_ST_X
 template<class Rep> rstring<Rep>&
-rstring<Rep>::insert( size_type pos, const_pointer s, size_type n ) {
+rstring<Rep>::insert( size_type pos, const_pointer s, size_type s_n ) {
   check_pos( pos, "insert" );
   if ( disjunct( s ) || rep().is_shared() )
-    return replace_safe( pos, 0, s, n );
+    return replace_safe( pos, 0, s, s_n );
   size_type const off = s - data();
-  mutate( pos, 0, n );
+  mutate( pos, 0, s_n );
   s = data() + off;
   pointer p = data() + pos;
-  if ( s + n <= p )
-    Rep::copy( p, s, n );
+  if ( s + s_n <= p )
+    Rep::copy( p, s, s_n );
   else if ( s >= p )
-    Rep::copy( p, s + n, n );
+    Rep::copy( p, s + s_n, s_n );
   else {
     size_type const nleft = p - s;
     Rep::copy( p, s, nleft );
-    Rep::copy( p + nleft, p + n, n - nleft );
+    Rep::copy( p + nleft, p + s_n, s_n - nleft );
   }
   return *this;
 }
