@@ -137,7 +137,7 @@ namespace zorba { namespace http_client {
       theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
     } else {
       if (aName == "Content-Disposition") {
-        int32_t lPos = 0;
+        String::size_type lPos = 0;
         bool lHasMatched;
         do {
           String lNextToken = aValue.tokenize(String(";"), String(""),
@@ -271,7 +271,7 @@ namespace zorba { namespace http_client {
   std::pair<String, String>
   HttpRequestHandler::twinSplit(const String& aStr)
   {
-    int32_t lkeyPos = 0;
+    String::size_type lkeyPos = 0;
     bool lHasValue;
     String lKey = aStr.tokenize(String("="), String(""),
                                       &lkeyPos, &lHasValue);

@@ -47,6 +47,8 @@ void String::size_check() {
   ZORBA_STATIC_ASSERT( sizeof( string_type ) <= sizeof( string_storage_type ) );
 }
 
+////////// constructors & destructor //////////////////////////////////////////
+
 String::String() {
   new( THIS_STRING ) string_type;
 }
@@ -55,12 +57,32 @@ String::String( String const &s ) {
   new( THIS_STRING ) string_type( *STRING_OF( s ) );
 }
 
-String::String( char const *s ) {
+String::String( string const &s ) {
   new( THIS_STRING ) string_type( s );
 }
 
-String::String( string const &s ) {
+String::String( const_pointer s ) {
   new( THIS_STRING ) string_type( s );
+}
+
+String::String( String const &s, size_type pos, size_type n ) {
+  new( THIS_STRING ) string_type( *STRING_OF( s ), pos, n );
+}
+
+String::String( string const &s, size_type pos, size_type n ) {
+  new( THIS_STRING ) string_type( s, pos, n );
+}
+
+String::String( const_pointer s, size_type n ) {
+  new( THIS_STRING) string_type( s, n );
+}
+
+String::String( size_type n, value_type c ) {
+  new( THIS_STRING ) string_type( n, c );
+}
+
+String::String( const_iterator i, const_iterator j ) {
+  new( THIS_STRING ) string_type( i, j );
 }
 
 String::String( zstring_ptr zp ) {
@@ -73,12 +95,25 @@ String::~String() {
   THIS_STRING->~string_type();
 }
 
-char const* String::c_str() const {
-  return THIS_STRING->c_str();
-}
+////////// assignment /////////////////////////////////////////////////////////
 
 String& String::operator=( String const &s ) {
   *THIS_STRING = *STRING_OF( s );
+  return *this;
+}
+
+String& String::operator=( string const &s ) {
+  *THIS_STRING = s;
+  return *this;
+}
+
+String& String::operator=( const_pointer s ) {
+  *THIS_STRING = s;
+  return *this;
+}
+
+String& String::operator=( value_type c ) {
+  *THIS_STRING = c;
   return *this;
 }
 
@@ -87,82 +122,595 @@ String& String::operator=( zstring_ptr zp ) {
   return *this;
 }
 
-size_t String::length() const {
+////////// properties /////////////////////////////////////////////////////////
+
+String::size_type String::capacity() const {
+  return THIS_STRING->capacity();
+}
+
+String::size_type String::length() const {
   return utf8::length( THIS_STRING->c_str() );
 }
- 
-size_t String::bytes() const {
-  return THIS_STRING->length();
+
+////////// character access ///////////////////////////////////////////////////
+
+String::reference String::at( size_type pos ) {
+  return THIS_STRING->at( pos );
 }
 
-size_t String::nr_of_chars() const {
-	return THIS_STRING->length();
+String::value_type String::at( size_type pos ) const {
+  return THIS_STRING->at( pos );
 }
 
-bool String::empty() const {
-  return THIS_STRING->empty();
+String::const_reference String::operator[]( size_type pos ) const {
+  return (*THIS_STRING)[ pos ];
 }
+
+////////// append /////////////////////////////////////////////////////////////
+
+String& String::append( String const &s ) {
+  THIS_STRING->append( *STRING_OF( s ) );
+  return *this;
+}
+
+String& String::append( string const &s ) {
+  THIS_STRING->append( s );
+  return *this;
+}
+
+String& String::append( const_pointer s ) {
+  THIS_STRING->append( s );
+  return *this;
+}
+
+String& String::append( String const &s, size_type s_pos, size_type s_n ) {
+  THIS_STRING->append( *STRING_OF( s ), s_pos, s_n );
+  return *this;
+}
+
+String& String::append( string const &s, size_type s_pos, size_type s_n ) {
+  THIS_STRING->append( s, s_pos, s_n );
+  return *this;
+}
+
+String& String::append( const_pointer s, size_type s_n ) {
+  THIS_STRING->append( s, s_n );
+  return *this;
+}
+
+String& String::append( size_type n, value_type c ) {
+  THIS_STRING->append( n, c );
+  return *this;
+}
+
+void String::push_back( value_type c ) {
+  THIS_STRING->push_back( c );
+}
+
+////////// assign /////////////////////////////////////////////////////////////
+
+String& String::assign( String const &s ) {
+  THIS_STRING->assign( *STRING_OF( s ) );
+  return *this;
+}
+
+String& String::assign( string const &s ) {
+  THIS_STRING->assign( s );
+  return *this;
+}
+
+String& String::assign( const_pointer s ) {
+  THIS_STRING->assign( s );
+  return *this;
+}
+
+String& String::assign( String const &s, size_type pos, size_type n ) {
+  THIS_STRING->assign( *STRING_OF( s ), pos, n );
+  return *this;
+}
+
+String& String::assign( string const &s, size_type pos, size_type n ) {
+  THIS_STRING->assign( s, pos, n );
+  return *this;
+}
+
+String& String::assign( const_pointer s, size_type n ) {
+  THIS_STRING->assign( s, n );
+  return *this;
+}
+
+String& String::assign( size_type n, value_type c ) {
+  THIS_STRING->assign( n, c );
+  return *this;
+}
+
+String& String::assign( const_iterator i, const_iterator j ) {
+  THIS_STRING->assign( i, j );
+  return *this;
+}
+
+////////// compare ////////////////////////////////////////////////////////////
 
 int String::compare( String const &s ) const {
   return THIS_STRING->compare( *STRING_OF( s ) );
 }
 
-bool String::equals( String const &s ) const {
-  return *THIS_STRING == *STRING_OF( s );
+int String::compare( string const &s ) const {
+  return THIS_STRING->compare( s );
 }
 
-bool String::byteEqual( char const *s, unsigned s_n ) const {
-  return ztd::equals( *THIS_STRING, s, s_n );
+int String::compare( const_pointer s ) const {
+  return THIS_STRING->compare( s );
 }
 
-bool String::operator==( String const &s ) const {
-  return *THIS_STRING == *STRING_OF( s );
+int String::compare( size_type pos, size_type n, String const &s ) const {
+  return THIS_STRING->compare( pos, n, *STRING_OF( s ) );
 }
 
-bool String::operator<( String const &s ) const {
-  return *THIS_STRING < *STRING_OF( s );
+int String::compare( size_type pos, size_type n, string const &s ) const {
+  return THIS_STRING->compare( pos, n, s );
 }
 
-bool String::operator<=( String const &s ) const {
-  return *THIS_STRING <= *STRING_OF( s );
+int String::compare( size_type pos, size_type n, const_pointer s ) const {
+  return THIS_STRING->compare( pos, n, s );
 }
 
-bool String::operator>( String const &s ) const {
-  return *THIS_STRING > *STRING_OF( s );
+int String::compare( size_type pos, size_type n, String const &s,
+                     size_type s_pos, size_type s_n ) const {
+  return THIS_STRING->compare( pos, n, *STRING_OF( s ), s_pos, s_n );
 }
 
-bool String::operator>=( String const &s ) const {
-  return *THIS_STRING >= *STRING_OF( s );
+int String::compare( size_type pos, size_type n, string const &s,
+                     size_type s_pos, size_type s_n ) const {
+  return THIS_STRING->compare( pos, n, s, s_pos, s_n );
 }
 
-char String::charAt( unsigned i ) const {
-  return THIS_STRING->at( i );
+int String::compare( size_type pos, size_type n, const_pointer s,
+                     size_type s_n ) const {
+  return THIS_STRING->compare( pos, n, s, s_n );
 }
 
-int String::indexOf( char const *pattern ) const {
-  return THIS_STRING->find( pattern );
+////////// clear/erase ////////////////////////////////////////////////////////
+
+void String::clear() {
+  THIS_STRING->clear();
 }
 
-int String::lastIndexOf( char const *pattern ) const {
-  string_type::size_type const pos = THIS_STRING->rfind( pattern );
-  return pos == string_type::npos ? -1 : pos;
+String& String::erase( size_type pos, size_type n ) {
+  THIS_STRING->erase( pos, n );
+  return *this;
 }
 
-bool String::endsWith( char const *pattern ) const {
-  return utf8::ends_with( *THIS_STRING, pattern );
+String::iterator String::erase( iterator i ) {
+  return THIS_STRING->erase( i );
 }
 
-bool String::startsWith( char const *pattern ) const {
-  return utf8::begins_with( *THIS_STRING, pattern );
+String::iterator String::erase( iterator i, iterator j ) {
+  return THIS_STRING->erase( i, j );
 }
 
-String String::substring( unsigned pos ) const {
-  return String( THIS_STRING->substr( pos ).c_str() );
+////////// find ///////////////////////////////////////////////////////////////
+
+String::size_type String::find( String const &s, size_type pos ) const {
+  return THIS_STRING->find( *STRING_OF( s ), pos );
 }
 
-String String::substring( unsigned pos, unsigned n ) const {
-  return String( THIS_STRING->substr( pos, n ).c_str() );
+String::size_type String::find( string const &s, size_type pos ) const {
+  return THIS_STRING->find( s, pos );
 }
+
+String::size_type String::find( const_pointer s, size_type pos ) const {
+  return THIS_STRING->find( s, pos );
+}
+
+String::size_type String::find( const_pointer s, size_type pos,
+                                size_type n ) const {
+  return THIS_STRING->find( s, pos, n );
+}
+
+String::size_type String::find( value_type c, size_type pos ) const {
+  return THIS_STRING->find( c, pos );
+}
+
+String::size_type String::find_first_of( String const &s,
+                                         size_type pos ) const {
+  return THIS_STRING->find_first_of( *STRING_OF( s ), pos );
+}
+
+String::size_type String::find_first_of( string const &s,
+                                         size_type pos ) const {
+  return THIS_STRING->find_first_of( s, pos );
+}
+
+String::size_type String::find_first_of( const_pointer s,
+                                         size_type pos ) const {
+  return THIS_STRING->find_first_of( s, pos );
+}
+
+String::size_type String::find_first_of( const_pointer s, size_type pos,
+                                         size_type n ) const {
+  return THIS_STRING->find_first_of( s, pos, n );
+}
+
+String::size_type String::find_first_of( value_type c, size_type pos ) const {
+  return THIS_STRING->find_first_of( c, pos );
+}
+
+String::size_type String::find_first_not_of( String const &s,
+                                             size_type pos ) const {
+  return THIS_STRING->find_first_not_of( *STRING_OF( s ), pos );
+}
+
+String::size_type String::find_first_not_of( string const &s,
+                                             size_type pos ) const {
+  return THIS_STRING->find_first_not_of( s, pos );
+}
+
+String::size_type String::find_first_not_of( const_pointer s,
+                                             size_type pos ) const {
+  return THIS_STRING->find_first_not_of( s, pos );
+}
+
+String::size_type String::find_first_not_of( const_pointer s, size_type pos,
+                                             size_type n ) const {
+  return THIS_STRING->find_first_not_of( s, pos, n );
+}
+
+String::size_type String::find_first_not_of( value_type c,
+                                             size_type pos ) const {
+  return THIS_STRING->find_first_not_of( c, pos );
+}
+
+String::size_type String::find_last_of( String const &s, size_type pos ) const {
+  return THIS_STRING->find_last_of( *STRING_OF( s ), pos );
+}
+
+String::size_type String::find_last_of( string const &s, size_type pos ) const {
+  return THIS_STRING->find_last_of( s, pos );
+}
+
+String::size_type String::find_last_of( const_pointer s, size_type pos ) const {
+  return THIS_STRING->find_last_of( s, pos );
+}
+
+String::size_type String::find_last_of( const_pointer s, size_type pos,
+                                        size_type n ) const {
+  return THIS_STRING->find_last_of( s, pos, n );
+}
+
+String::size_type String::find_last_of( value_type c, size_type pos ) const {
+  return THIS_STRING->find_last_of( c, pos );
+}
+
+String::size_type String::find_last_not_of( String const &s,
+                                            size_type pos ) const {
+  return THIS_STRING->find_last_not_of( *STRING_OF( s ), pos );
+}
+
+String::size_type String::find_last_not_of( string const &s,
+                                            size_type pos ) const {
+  return THIS_STRING->find_last_not_of( s, pos );
+}
+
+String::size_type String::find_last_not_of( const_pointer s,
+                                            size_type pos ) const {
+  return THIS_STRING->find_last_not_of( s, pos );
+}
+
+String::size_type String::find_last_not_of( const_pointer s, size_type pos,
+                                            size_type n ) const {
+  return THIS_STRING->find_last_not_of( s, pos, n );
+}
+
+String::size_type String::find_last_not_of( value_type c,
+                                            size_type pos ) const {
+  return THIS_STRING->find_last_not_of( c, pos );
+}
+
+String::size_type String::rfind( String const &s, size_type pos ) const {
+  return THIS_STRING->rfind( *STRING_OF( s ), pos );
+}
+
+String::size_type String::rfind( string const &s, size_type pos ) const {
+  return THIS_STRING->rfind( s, pos );
+}
+
+String::size_type String::rfind( const_pointer s, size_type pos ) const {
+  return THIS_STRING->rfind( s, pos );
+}
+
+String::size_type String::rfind( const_pointer s, size_type pos,
+                                 size_type n ) const {
+  return THIS_STRING->rfind( s, pos, n );
+}
+
+String::size_type String::rfind( value_type c, size_type pos ) const {
+  return THIS_STRING->rfind( c, pos );
+}
+
+////////// insert /////////////////////////////////////////////////////////////
+
+String& String::insert( size_type pos, String const &s ) {
+  THIS_STRING->insert( pos, *STRING_OF( s ) );
+  return *this;
+}
+
+String& String::insert( size_type pos, string const &s ) {
+  THIS_STRING->insert( pos, s );
+  return *this;
+}
+
+String& String::insert( size_type pos, const_pointer s ) {
+  THIS_STRING->insert( pos, s );
+  return *this;
+}
+
+String& String::insert( size_type pos, String const &s, size_type s_pos, 
+                        size_type n ) {
+  THIS_STRING->insert( pos, *STRING_OF( s ), s_pos, n );
+  return *this;
+}
+
+String& String::insert( size_type pos, string const &s, size_type s_pos, 
+                        size_type n ) {
+  THIS_STRING->insert( pos, s, s_pos, n );
+  return *this;
+}
+
+String& String::insert( size_type pos, const_pointer s, size_type n ) {
+  THIS_STRING->insert( pos, s, n );
+  return *this;
+}
+
+String& String::insert( size_type pos, size_type n, value_type c ) {
+  THIS_STRING->insert( pos, n, c );
+  return *this;
+}
+
+String::iterator String::insert( iterator pos, value_type c ) {
+  return THIS_STRING->insert( pos, c );
+}
+
+void String::insert( iterator pos, size_type n, value_type c ) {
+  THIS_STRING->insert( pos, n, c );
+}
+
+////////// replace ////////////////////////////////////////////////////////////
+
+String& String::replace( size_type pos, size_type n, String const &s ) {
+  THIS_STRING->replace( pos, n, *STRING_OF( s ) );
+  return *this;
+}
+
+String& String::replace( size_type pos, size_type n, std::string const &s ) {
+  THIS_STRING->replace( pos, n, s );
+  return *this;
+}
+
+String& String::replace( size_type pos, size_type n, const_pointer s ) {
+  THIS_STRING->replace( pos, n, s );
+  return *this;
+}
+
+String& String::replace( size_type pos, size_type n, String const &s,
+                         size_type s_pos, size_type s_n ) {
+  THIS_STRING->replace( pos, n, *STRING_OF( s ), s_pos, s_n );
+  return *this;
+}
+
+String& String::replace( size_type pos, size_type n, string const &s,
+                         size_type s_pos, size_type s_n ) {
+  THIS_STRING->replace( pos, n, s, s_pos, s_n );
+  return *this;
+}
+
+String& String::replace( size_type pos, size_type n, const_pointer s,
+                         size_type s_n ) {
+  THIS_STRING->replace( pos, n, s, s_n );
+  return *this;
+}
+
+String& String::replace( size_type pos, size_type n, size_type c_n,
+                         value_type c ) {
+  THIS_STRING->replace( pos, n, c_n, c );
+  return *this;
+}
+
+String& String::replace( iterator i, iterator j, String const &s ) {
+  THIS_STRING->replace( i, j, *STRING_OF( s ) );
+  return *this;
+}
+
+String& String::replace( iterator i, iterator j, std::string const &s ) {
+  THIS_STRING->replace( i, j, s );
+  return *this;
+}
+
+String& String::replace( iterator i, iterator j, const_pointer s ) {
+  THIS_STRING->replace( i, j, s );
+  return *this;
+}
+
+String& String::replace( iterator i, iterator j, const_pointer s,
+                         size_type s_n ) {
+  THIS_STRING->replace( i, j, s, s_n );
+  return *this;
+}
+
+String& String::replace( iterator i, iterator j, size_type n, value_type c ) {
+  THIS_STRING->replace( i, j, n, c );
+  return *this;
+}
+
+String& String::replace( iterator i, iterator j, iterator si, iterator sj ) {
+  THIS_STRING->replace( i, j, si, sj );
+  return *this;
+}
+
+////////// iterators //////////////////////////////////////////////////////////
+
+String::iterator String::begin() {
+  return THIS_STRING->begin();
+}
+
+String::const_iterator String::begin() const {
+  return THIS_STRING->begin();
+}
+
+String::iterator String::end() {
+  return THIS_STRING->end();
+}
+
+String::const_iterator String::end() const {
+  return THIS_STRING->end();
+}
+
+String::reverse_iterator String::rbegin() {
+  return THIS_STRING->rbegin();
+}
+
+String::const_reverse_iterator String::rbegin() const {
+  return THIS_STRING->rbegin();
+}
+
+String::reverse_iterator String::rend() {
+  return THIS_STRING->rend();
+}
+
+String::const_reverse_iterator String::rend() const {
+  return THIS_STRING->rend();
+}
+
+////////// miscellaneous //////////////////////////////////////////////////////
+
+String::size_type String::copy( pointer buf, size_type n,
+                                size_type pos ) const {
+  return THIS_STRING->copy( buf, n, pos );
+}
+
+String::const_pointer String::c_str() const {
+  return THIS_STRING->c_str();
+}
+
+String::const_pointer String::data() const {
+  return THIS_STRING->data();
+}
+
+void String::reserve( size_type n ) {
+  THIS_STRING->reserve( n );
+}
+
+void String::resize( size_type n, value_type c ) {
+  THIS_STRING->resize( n, c );
+}
+
+string String::str() const {
+  return THIS_STRING->str();
+}
+
+String String::substr( size_type pos, size_type n ) const {
+  string_type const s( THIS_STRING->substr( pos, n ) );
+  zstring_ptr const zp = { &s };
+  return String( zp );
+}
+
+void String::swap( String &s ) {
+  THIS_STRING->swap( *STRING_OF( s ) );
+}
+
+////////// relational operators ///////////////////////////////////////////////
+
+bool operator==( String const &s1, String const &s2 ) {
+  return *STRING_OF( s1 ) == *STRING_OF( s2 );
+}
+
+bool operator==( String const &s1, string const &s2 ) {
+  return *STRING_OF( s1 ) == s2;
+}
+
+bool operator==( String const &s1, String::const_pointer s2 ) {
+  return *STRING_OF( s1 ) == s2;
+}
+
+bool operator<( String const &s1, String const &s2 ) {
+  return *STRING_OF( s1 ) < *STRING_OF( s2 );
+}
+
+bool operator<( String const &s1, string const &s2 ) {
+  return *STRING_OF( s1 ) < s2;
+}
+
+bool operator<( String const &s1, String::const_pointer s2 ) {
+  return *STRING_OF( s1 ) < s2;
+}
+
+bool operator<( string const &s1, String const &s2 ) {
+  return s1 < *STRING_OF( s2 );
+}
+
+bool operator<( String::const_pointer s1, String const &s2 ) {
+  return s1 < *STRING_OF( s2 );
+}
+
+bool operator<=( String const &s1, String const &s2 ) {
+  return *STRING_OF( s1 ) <= *STRING_OF( s2 );
+}
+
+bool operator<=( String const &s1, string const &s2 ) {
+  return *STRING_OF( s1 ) <= s2;
+}
+
+bool operator<=( String const &s1, String::const_pointer s2 ) {
+  return *STRING_OF( s1 ) <= s2;
+}
+
+bool operator<=( string const &s1, String const &s2 ) {
+  return s1 <= *STRING_OF( s2 );
+}
+
+bool operator<=( String::const_pointer s1, String const &s2 ) {
+  return s1 <= *STRING_OF( s2 );
+}
+
+////////// concatenation //////////////////////////////////////////////////////
+
+String operator+( String const &s1, String const &s2 ) {
+  string_type const s( *STRING_OF( s1 ) + *STRING_OF( s2 ) );
+  String::zstring_ptr const zp = { &s };
+  return String( zp );
+}
+
+String operator+( String const &s1, string const &s2 ) {
+  string_type const s( *STRING_OF( s1 ) + s2 );
+  String::zstring_ptr const zp = { &s };
+  return String( zp );
+}
+
+String operator+( String const &s1, String::const_pointer s2 ) {
+  string_type const s( *STRING_OF( s1 ) + s2 );
+  String::zstring_ptr const zp = { &s };
+  return String( zp );
+}
+
+String operator+( string const &s1, String const &s2 ) {
+  string_type const s( s1 + *STRING_OF( s2 ) );
+  String::zstring_ptr const zp = { &s };
+  return String( zp );
+}
+
+String operator+( String::const_pointer s1, String const &s2 ) {
+  string_type const s( s1 + *STRING_OF( s2 ) );
+  String::zstring_ptr const zp = { &s };
+  return String( zp );
+}
+
+////////// ostream insertion //////////////////////////////////////////////////
+
+ostream& operator<<( ostream &os, String const &s ) {
+  return os << *STRING_OF( s );
+}
+
+////////// deprecated /////////////////////////////////////////////////////////
 
 String String::append( char const *s ) const {
   String result( *this );
@@ -176,19 +724,58 @@ String String::append( String const &s ) const {
   return result;
 }
 
-String& String::operator+=( String const &s ) {
-  THIS_STRING->append( *STRING_OF( s ) );
+size_t String::bytes() const {
+  return THIS_STRING->length();
+}
+
+bool String::equals( String const &s ) const {
+  return *THIS_STRING == *STRING_OF( s );
+}
+
+bool String::byteEqual( char const *s, unsigned s_n ) const {
+  return ztd::equals( *THIS_STRING, s, s_n );
+}
+
+char String::charAt( unsigned i ) const {
+  return THIS_STRING->at( i );
+}
+
+String& String::decodeFromUri() {
+  uri::decode( *THIS_STRING );
   return *this;
 }
 
-String& String::operator+=( char const *s ) {
-  THIS_STRING->append( s );
+String& String::encodeForUri() {
+  uri::encode( *THIS_STRING );
   return *this;
 }
 
-String& String::uppercase() {
-  utf8::to_upper( *THIS_STRING );
+bool String::endsWith( char const *pattern ) const {
+  return utf8::ends_with( *THIS_STRING, pattern );
+}
+
+String& String::escapeHtmlUri() {
+  utf8::to_html_uri( *THIS_STRING );
   return *this;
+}
+
+String& String::formatAsXML() {
+  xml::escape( *THIS_STRING );
+  return *this;
+}
+
+int String::indexOf( char const *pattern ) const {
+  return THIS_STRING->find( pattern );
+}
+
+String& String::iriToUri() {
+  utf8::iri_to_uri( *THIS_STRING );
+  return *this;
+}
+
+int String::lastIndexOf( char const *pattern ) const {
+  string_type::size_type const pos = THIS_STRING->rfind( pattern );
+  return pos == string_type::npos ? -1 : pos;
 }
 
 String& String::lowercase() {
@@ -198,6 +785,37 @@ String& String::lowercase() {
 
 String& String::normalizeSpace() {
   ascii::normalize_whitespace( *THIS_STRING );
+  return *this;
+}
+
+size_t String::nr_of_chars() const {
+	return THIS_STRING->length();
+}
+
+bool String::startsWith( char const *pattern ) const {
+  return utf8::begins_with( *THIS_STRING, pattern );
+}
+
+String String::tokenize( String const &pattern, String const &flags,
+                         size_type *pos, bool *got_token ) const {
+  char const *const c_pattern = STRING_OF( pattern )->c_str();
+  unicode::regex re;
+  re.compile( c_pattern, STRING_OF( flags )->c_str() );
+
+  unicode::string u_token;
+  unicode::size_type u_pos = *pos;
+  *got_token = re.next_token( *THIS_STRING, &u_pos, &u_token );
+  if ( *got_token ) {
+    string token;
+    utf8::to_string( u_token, &token );
+    *pos = u_pos;
+    return String( token );
+  }
+  return String();
+}
+
+String& String::trim() {
+  ascii::trim_whitespace( *THIS_STRING );
   return *this;
 }
 
@@ -211,55 +829,12 @@ String& String::trim(const char* aChars, int /* not used */ ) {
   return *this;
 }
 
-String& String::trim() {
-  ascii::trim_whitespace( *THIS_STRING );
+String& String::uppercase() {
+  utf8::to_upper( *THIS_STRING );
   return *this;
 }
 
-String& String::formatAsXML() {
-  xml::escape( *THIS_STRING );
-  return *this;
-}
-
-String& String::escapeHtmlUri() {
-  utf8::to_html_uri( *THIS_STRING );
-  return *this;
-}
-
-String& String::iriToUri() {
-  utf8::iri_to_uri( *THIS_STRING );
-  return *this;
-}
-
-String& String::encodeForUri() {
-  uri::encode( *THIS_STRING );
-  return *this;
-}
-
-String& String::decodeFromUri() {
-  uri::decode( *THIS_STRING );
-  return *this;
-}
-
-String String::tokenize( String const &pattern, String const &flags,
-                         int32_t *pos, bool *got_token ) const {
-  char const *const c_pattern = STRING_OF( pattern )->c_str();
-  unicode::regex re;
-  re.compile( c_pattern, STRING_OF( flags )->c_str() );
-
-  unicode::string u_token;
-  *got_token = re.next_token( *THIS_STRING, pos, &u_token );
-  if ( *got_token ) {
-    string token;
-    utf8::to_string( u_token, &token );
-    return String( token );
-  }
-  return String();
-}
-
-ostream& operator<<( ostream &os, String const &s ) {
-  return os << *STRING_OF( s );
-}
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
