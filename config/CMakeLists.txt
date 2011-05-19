@@ -19,21 +19,6 @@
 SET(ZORBA_SHARE_DIR "share/zorba-${ZORBA_VERSION}/cmake")
 
 
-# Create ZorbaConfig.cmake file for projects that wish to build against
-# this Zorba source installation
-SET(Zorba_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include"
-                       "${CMAKE_BINARY_DIR}/include"
-)
-SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src")
-SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_SOURCE_DIR}/cmake_modules")
-SET(Zorba_USE_FILE     "${CMAKE_CURRENT_SOURCE_DIR}/ZorbaUse.cmake")
-GET_TARGET_PROPERTY(Zorba_TESTDRIVER testdriver LOCATION)
-SET(Zorba_EXTERNALMODULECONFIG_FILE
-  "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in")
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
-  "${CMAKE_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
-
-
 # Create ZorbaConfig.cmake file for projects that wish to build
 # against the installed Zorba project
 SET(Zorba_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
@@ -48,6 +33,25 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
 INSTALL(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake"
   DESTINATION ${ZORBA_SHARE_DIR})
+
+# Create ZorbaConfig.cmake file for projects that wish to build
+# against this Zorba source installation.
+SET(Zorba_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include"
+                       "${CMAKE_BINARY_DIR}/include"
+)
+SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src")
+SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_SOURCE_DIR}/cmake_modules")
+SET(Zorba_USE_FILE     "${CMAKE_CURRENT_SOURCE_DIR}/ZorbaUse.cmake")
+GET_TARGET_PROPERTY(Zorba_TESTDRIVER testdriver LOCATION)
+# Note: We also set this one into the parent's scope, so that it is
+# available for modules/CMakeLists.txt.
+SET(Zorba_EXTERNALMODULECONFIG_FILE
+  "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in"
+  PARENT_SCOPE)
+SET(Zorba_EXTERNALMODULECONFIG_FILE
+  "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
+  "${CMAKE_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
 
 
 # Create ZorbaConfigVersion.cmake file for automatic version checking.

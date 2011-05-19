@@ -27,17 +27,18 @@ ADD_SUBDIRECTORY(org)
 # ready for other modules' FIND_PACKAGE() calls. We also add all
 # module build dirs to CMAKE_PREFIX_PATH for the same reason.
 SET (modules_dir "${CMAKE_SOURCE_DIR}/../zorba_modules")
-FILE (GLOB modules RELATIVE "${modules_dir}" "${modules_dir}/*")
-LIST (REVERSE modules)
-FOREACH (module ${modules})
-  SET (module_builddir "${modules_dir}/${module}/build")
+FILE (GLOB module_dirs RELATIVE "${modules_dir}" "${modules_dir}/*")
+FOREACH (module_dir ${module_dirs})
+  # The convention is that the name of an external module project is
+  # always exactly zorba_foo_module, where "foo" is the name of the
+  # directory in zorba_modules.
+  SET (module_project "zorba_${module_dir}_module")
+  SET (module_builddir "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
   FILE (MAKE_DIRECTORY "${module_builddir}")
-  # This is duplicating the code in ZorbaModule's
-  # SET_EXTERNAL_MODULE_CONFIG macro
-  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/config/ExternalModuleConfig.cmake.in"
-    "${module_builddir}/${module}Config.cmake")
-  LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
-ENDFOREACH (module)
+  CREATE_MODULE_CONFIG(${module_project} "${modules_dir}/${module_dir}"
+    "${module_builddir}")
+    LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
+ENDFOREACH (module_dir)
 
 # Each of these projects will also want to be able to
 # FIND_PACKAGE(Zorba), so add our own build dir to the CMake module
@@ -47,10 +48,10 @@ LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 # Now, iterate through all the module projects again and actually add
 # them to this Zorba project. Create a binary directory for them
 # inside our own.
-FOREACH (module ${modules})
-  ADD_SUBDIRECTORY("${modules_dir}/${module}"
-    "${CMAKE_BINARY_DIR}/zorba_modules/${module}")
-ENDFOREACH (module)
+FOREACH (module_dir ${module_dirs})
+  ADD_SUBDIRECTORY("${modules_dir}/${module_dir}"
+    "${CMAKE_BINARY_DIR}/zorba_modules/zorba_${module_dir}_module")
+ENDFOREACH (module_dir)
 
 # QQQ This install logic should be part of a more fully-feature macro
 # that is used for ALL modules (whether or not they have C++ code);

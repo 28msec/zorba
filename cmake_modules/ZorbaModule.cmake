@@ -189,9 +189,14 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
   MESSAGE(STATUS "Added ${TESTCOUNTER} tests in ${TEST_DIR}")
 ENDMACRO(ADD_TEST_DIRECTORY)
 
-# Convenience Macro for Setting up configure files for it to be
-# exported as a secondary Module Dependency
-MACRO(SET_EXTERNAL_MODULE_CONFIG)
-CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
-  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
-ENDMACRO(SET_EXTERNAL_MODULE_CONFIG)
+# Macro to install a basic CMake config file for a module. Provide a
+# source and binary directory. Result will be installed in binary
+# directory. This is a macro because it is called from two different
+# places: ZorbaUse.cmake, and Zorba's modules/CMakeLists.txt.
+MACRO(CREATE_MODULE_CONFIG name src_dir bin_dir)
+  # Set variables referenced in ExternalModuleConfig.cmake.in
+  SET(MODULE_SOURCE_DIR ${src_dir})
+  SET(MODULE_BINARY_DIR ${bin_dir})
+  CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
+    "${MODULE_BINARY_DIR}/${name}Config.cmake" @ONLY)
+ENDMACRO(CREATE_MODULE_CONFIG)

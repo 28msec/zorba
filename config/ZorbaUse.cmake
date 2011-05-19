@@ -28,7 +28,10 @@ LINK_DIRECTORIES(${Zorba_LIBRARY_DIRS})
 INCLUDE("${Zorba_CMAKE_MODULES_DIR}/ZorbaModule.cmake")
 
 IF(WIN32)
-# Load Zorba module support macros.
-INCLUDE("${Zorba_CMAKE_MODULES_DIR}/Windows/ProxyFindModule.cmake")
+  # Load Zorba module support macros.
+  INCLUDE("${Zorba_CMAKE_MODULES_DIR}/Windows/ProxyFindModule.cmake")
 ENDIF(WIN32)
 
+# Generate project's projectConfig.cmake file.
+CREATE_MODULE_CONFIG(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}"
+  "${PROJECT_BINARY_DIR}")
