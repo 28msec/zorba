@@ -68,6 +68,30 @@
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
 
+#ifdef ZORBA_HAVE_STDINT_H
+# include <stdint.h>
+#endif
+
+#ifdef ZORBA_HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+
+#ifndef ZORBA_HAVE_INT32_T
+# ifdef ZORBA_HAVE_MS_INT32
+    typedef __int32 int32_t;
+# endif
+#endif
+
+#ifndef ZORBA_HAVE_UINT32_T
+# ifdef ZORBA_HAVE_MS_UINT32
+    typedef unsigned __int32 uint32_t;
+# endif
+#endif /* ZORBA_HAVE_UINT32_T */
+
+#ifndef ZORBA_HAVE_INT64_T
+typedef __int64 int64_t;
+#endif /* ZORBA_HAVE_INT64_T */
+
 // Compiler
 #cmakedefine CLANG
 #cmakedefine MSVC
