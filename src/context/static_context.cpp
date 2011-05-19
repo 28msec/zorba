@@ -266,7 +266,7 @@ const zstring
 static_context::ZORBA_MATH_FN_NS = NS_PRE + "modules/math";
 
 const zstring
-static_context::ZORBA_BASE64_FN_NS = NS_PRE + "modules/base64";
+static_context::ZORBA_BASE64_FN_NS = NS_PRE + "modules/converters/base64";
 
 const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";

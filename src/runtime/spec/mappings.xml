@@ -16,7 +16,7 @@
                      define="ZORBA_MATH_FN_NS"
                      prefix="fn-zorba-math"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/base64"
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/base64"
                      define="ZORBA_BASE64_FN_NS"
                      prefix="fn-zorba-base64"/>
 
