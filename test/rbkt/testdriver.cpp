@@ -62,7 +62,7 @@ void loadProperties ()
 
 
 
-int analyzeError (const Specification &lSpec, const TestErrorHandler& errHandler) 
+int analyzeError (const Specification &lSpec, const TestDiagnosticHandler& errHandler) 
 {
   if (isErrorExpected(errHandler, &lSpec)) {
     printErrors(errHandler, "The following execution error occurred as expected", false);
@@ -124,7 +124,7 @@ main(int argc, char** argv)
   }
 
   zorba::XQuery_t lQuery;
-  TestErrorHandler errHandler;
+  TestDiagnosticHandler errHandler;
 
   DriverContext driverContext;
   driverContext.theEngine = engine;

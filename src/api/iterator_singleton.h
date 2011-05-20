@@ -23,7 +23,7 @@
 
 namespace zorba {
 
-class ErrorHandler;
+class DiagnosticHandler;
 
 /*******************************************************************************
   Iterator used for iterating over a single item
@@ -34,14 +34,14 @@ class API_SingletonIterator : public Iterator
   friend class Item;
 
 protected:
-  store::Item_t    theItem;
-  ErrorHandler   * theErrorHandler;
-  bool             theOwnErrorHandler;
-  bool             theIsOpen;
-  bool             theIsDone;
+  store::Item_t       theItem;
+  DiagnosticHandler * theDiagnosticHandler;
+  bool                theOwnDiagnosticHandler;
+  bool                theIsOpen;
+  bool                theIsDone;
 
 public:
-  API_SingletonIterator(const store::Item_t& item, ErrorHandler* handler);
+  API_SingletonIterator(const store::Item_t& item, DiagnosticHandler* handler);
 
   virtual ~API_SingletonIterator();
 

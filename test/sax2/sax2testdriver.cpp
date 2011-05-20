@@ -30,7 +30,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
-#include <zorba/error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/zorba_exception.h>
 
 #include <zorba/store_manager.h>
@@ -173,11 +173,11 @@ class TestContentHandler: public DefaultContentHandler
   }
 };
 
-class TestErrorHandler : public zorba::ErrorHandler {
+class TestDiagnosticHandler : public zorba::DiagnosticHandler {
   public:
-    void error(const zorba::ZorbaException& aStaticError)
+    void error(const zorba::ZorbaException& e)
     {
-      registerError(aStaticError);
+      registerError(e);
     }
 
     bool errors()
@@ -192,6 +192,11 @@ class TestErrorHandler : public zorba::ErrorHandler {
     const std::vector<zorba::String>& getErrorDescs()
     {
       return m_desc;
+    }
+
+    void warning(const zorba::XQueryWarning& w )
+    {
+      // TODO: do something with warning
     }
 
   private:
@@ -209,7 +214,7 @@ class TestErrorHandler : public zorba::ErrorHandler {
 
 // print all errors that were raised
 void
-printErrors(TestErrorHandler& errHandler)
+printErrors(TestDiagnosticHandler& errHandler)
 {
   if (!errHandler.errors()) {
     return;
@@ -346,7 +351,7 @@ main(int argc, char** argv)
 
   zorba::Zorba *engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
 
-  TestErrorHandler errHandler;
+  TestDiagnosticHandler errHandler;
   std::stringstream lResult;
   TestContentHandler contentHandler( lResult );
 

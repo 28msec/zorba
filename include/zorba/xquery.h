@@ -68,30 +68,30 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   setFileName(const String&) = 0;
   
   /** 
-   * \brief Register an ErrorHandler to which errors during compilation or
+   * \brief Register an DiagnosticHandler to which errors during compilation or
    * execution/serialization are reported.
    *
-   * If no ErrorHandler has been set via this function, the default error
+   * If no DiagnosticHandler has been set via this function, the default error
    * handling mechanism is to throw instances of the ZorbaException class.
    *
-   * @param aErrorHandler ErrorHandler to which errors are reported. The
-   *        caller retains ownership over the ErrorHandler passed as
+   * @param aDiagnosticHandler DiagnosticHandler to which errors are reported. The
+   *        caller retains ownership over the DiagnosticHandler passed as
    *        parameter.
    * @throw SystemException if the query has been closed.
    * @see close()
    */
   virtual void
-  registerErrorHandler(ErrorHandler* aErrorHandler) = 0;
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler) = 0;
   
   /** 
    * \brief Reset the error handling mechanism back to the default,
-   * i.e.\ behave as if no ErrorHandler had been set.
+   * i.e.\ behave as if no DiagnosticHandler had been set.
    *   
    *  @throw SystemException if the query has been closed already.
-   *  @see registerErrorHandler(ErrorHandler*)
+   *  @see registerDiagnosticHandler(DiagnosticHandler*)
    */
   virtual void
-  resetErrorHandler() = 0;
+  resetDiagnosticHandler() = 0;
   
   /**
    * \brief Set a timeout, after which the execution of the query will be
@@ -402,13 +402,13 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    * Although two or more threads may invoke one of the execute methods on the
    * same XQuery object, these invocations are serialized internally. For true
    * parallel excetution of a query by multiple threads, the XQuery object needs
-   * to be cloned, using this method. However, note that if an ErrorHandler has
-   * been provided by the user (see registerErrorHandler()), this ErrorHandler
+   * to be cloned, using this method. However, note that if an DiagnosticHandler has
+   * been provided by the user (see registerDiagnosticHandler()), this DiagnosticHandler
    * will also be used in the cloned query, and as a result, the user should
-   * provide a thread-safe ErrorHandler. Alternatively, a new ErrorHandler can
-   * be registered in the cloned query by using registerErrorHandler again.
-   * Or, the cloned query can be reset to use the default ErrorHandler (which 
-   * just throws exceptions) by calling resetErrorHandler.
+   * provide a thread-safe DiagnosticHandler. Alternatively, a new DiagnosticHandler can
+   * be registered in the cloned query by using registerDiagnosticHandler again.
+   * Or, the cloned query can be reset to use the default DiagnosticHandler (which 
+   * just throws exceptions) by calling resetDiagnosticHandler.
    *
    * This function also clones the StaticContext and DynamicContext of the
    * XQuery object. In the DynamicContext of the cloned query different 

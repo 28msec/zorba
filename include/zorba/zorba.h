@@ -21,9 +21,8 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/collection.h>
-#include <zorba/default_error_handler.h>
 #include <zorba/dynamic_context.h>
-#include <zorba/error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
 #include <zorba/options.h>
@@ -97,33 +96,33 @@ class ZORBA_DLL_PUBLIC Zorba
    * This methods creates an XQuery object without implicitliy assigning it
    * a query. An object returned by this method can be compiled (see compileQuery).
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If no ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If no DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created XQuery object.
    */
   virtual XQuery_t
-  createQuery(ErrorHandler* aErrorHandler = 0) = 0;
+  createQuery(DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object.
    *
    * This methods creates an XQuery object and compiles the query string
    * passed to this method.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the query string for the new XQuery object.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
-  compileQuery(const String& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
+  compileQuery(const String& aQuery, DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using a StaticContext.
    *
@@ -131,20 +130,20 @@ class ZORBA_DLL_PUBLIC Zorba
    * passed to this method. Compilation is done using the information
    * contained in the StaticContext that is passed as parameter.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the query string for the new XQuery object.
    * @param aContext the StaticContext that contains information used for compiling the query.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
   compileQuery(const String& aQuery,
                const StaticContext_t& aContext,
-               ErrorHandler* aErrorHandler = 0) = 0;
+               DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using the given CompilerHints.
    *
@@ -152,20 +151,20 @@ class ZORBA_DLL_PUBLIC Zorba
    * passed to this method. Compilation and optimization is done with respect
    * to the given CompilerHints.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the query string for the new XQuery object.
    * @param aCompilerHints the CompilerHints used to compile the query.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
   compileQuery(const String& aQuery,
                const Zorba_CompilerHints_t& aCompilerHints,
-               ErrorHandler* aErrorHandler = 0) = 0;
+               DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using the given
    * CompilerHints and StaticContext.
@@ -175,39 +174,39 @@ class ZORBA_DLL_PUBLIC Zorba
    * to the given CompilerHints. Moreover, compilation is done using the
    * information contained in the StaticContext.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the query string for the new XQuery object.
    * @param aContext the StaticContext that contains information used for compiling the query.
    * @param aCompilerHints the CompilerHints used to compile the query.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
   compileQuery(const String& aQuery,
                const StaticContext_t& aContext,
                const Zorba_CompilerHints_t& aCompilerHints,
-               ErrorHandler* aErrorHandler = 0) = 0;
+               DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object.
    *
    * This methods creates an XQuery object and compiles the query that is
    * passed to this method as an input stream.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the input stream providing the query.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
-  compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
+  compileQuery(std::istream& aQuery, DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using a StaticContext.
    *
@@ -216,20 +215,20 @@ class ZORBA_DLL_PUBLIC Zorba
    * the information contained in the StaticContext that is passed as
    * parameter.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the input stream providing the query.
    * @param aContext the StaticContext that contains information used for compiling the query.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
   compileQuery(std::istream& aQuery,
                const StaticContext_t& aContext,
-               ErrorHandler* aErrorHandler = 0) = 0;
+               DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using the given CompilerHints.
    *
@@ -237,20 +236,20 @@ class ZORBA_DLL_PUBLIC Zorba
    * passed to this method as an input stream. Compilation and optimization
    * is done with respect to the given CompilerHints.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the input stream providing the query.
    * @param aCompilerHints the CompilerHints used to compile the query.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
   compileQuery(std::istream& aQuery,
                const Zorba_CompilerHints_t& aCompilerHints,
-               ErrorHandler* aErrorHandler = 0) = 0;
+               DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using the given
    * CompilerHints and StaticContext.
@@ -260,22 +259,22 @@ class ZORBA_DLL_PUBLIC Zorba
    * is done with respect to the given CompilerHints. Moreover, compilation
    * is done using the information contained in the StaticContext.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
    * @param aQuery the input stream providing the query.
    * @param aContext the StaticContext that contains information used for compiling the query.
    * @param aCompilerHints the CompilerHints used to compile the query.
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
   compileQuery(std::istream& aQuery,
                const StaticContext_t& aContext,
                const Zorba_CompilerHints_t& aCompilerHints,
-               ErrorHandler* aErrorHandler = 0) = 0;
+               DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Creates a new StaticContext.
    *
@@ -287,17 +286,17 @@ class ZORBA_DLL_PUBLIC Zorba
    * have multiple owners. The object is deleted if nobody holds on to an StaticContext_t
    * object anymore.
    *
-   * Optionally, this method takes an ErrorHandler as parameter. In the case
-   * an ErrorHandler is passed as parameter, each error that occurs during
+   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
+   * an DiagnosticHandler is passed as parameter, each error that occurs during
    * setting or getting information out of the StaticContext, is reported to the passed
-   * ErrorHandler.
-   * If not ErrorHandler is given, exceptions are thrown for each of these errors.
+   * DiagnosticHandler.
+   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
    *
-   * @param aErrorHandler the ErrorHandler to which errors should be reported.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
    * @return StaticContext_t a new StaticContext object.
    */
   virtual StaticContext_t
-  createStaticContext(ErrorHandler* aErrorHandler = 0) = 0;
+  createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
   /** \brief Gets the singelton instance of the ItemFactory.
    *

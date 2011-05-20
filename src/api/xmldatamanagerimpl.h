@@ -29,7 +29,7 @@
 
 namespace zorba {
 
-class ErrorHandler;
+class DiagnosticHandler;
 
 namespace store {
     class Store;
@@ -44,14 +44,14 @@ private:
  protected:
   store::Store           * theStore;
 
-  ErrorHandler           * theErrorHandler;
+  DiagnosticHandler      * theDiagnosticHandler;
 
-  bool                     theUserErrorHandler;
+  bool                     theUserDiagnosticHandler;
 
   SYNC_CODE(Latch          theLatch;)
 
 public:
-  void registerErrorHandler(ErrorHandler* aErrorHandler);
+  void registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
   Item parseDocument(std::istream& aStream);
 
@@ -73,25 +73,25 @@ public:
 
   Item getDocument(const String& uri);
 
-  Item getDocument(const String& uri, ErrorHandler* aErrorHandler);
+  Item getDocument(const String& uri, DiagnosticHandler* aDiagnosticHandler);
 
   bool deleteDocument(const String& uri);
 
-  bool deleteDocument(const String& uri, ErrorHandler* aErrorHandler);
+  bool deleteDocument(const String& uri, DiagnosticHandler* aDiagnosticHandler);
 
   void  deleteAllDocuments();
 
   Collection_t createCollection(const String& uri);
 
-  Collection_t createCollection(const String& uri, ErrorHandler* aErrorHandler);
+  Collection_t createCollection(const String& uri, DiagnosticHandler* aDiagnosticHandler);
 
   Collection_t getCollection(const String& uri);
 
-  Collection_t getCollection(const String& uri, ErrorHandler* aErrorHandler);
+  Collection_t getCollection(const String& uri, DiagnosticHandler* aDiagnosticHandler);
 
   bool deleteCollection(const String& uri);
 
-  bool deleteCollection(const String& uri, ErrorHandler* aErrorHandler);
+  bool deleteCollection(const String& uri, DiagnosticHandler* aDiagnosticHandler);
 
 private:
   XmlDataManagerImpl();

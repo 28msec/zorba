@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include <zorba/zorba.h>
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/iterator.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
@@ -58,7 +58,7 @@ error_example_2(Zorba* aZorba)
 // for callback functions that are not overriden, an
 // exception will be thrown (see example 4)
 // for all the ones that we override, we call the callback function (see example 3)
-class MyErrorHandler  : public DefaultErrorHandler 
+class MyDiagnosticHandler  : public DiagnosticHandler 
 {
 public:
   void error( ZorbaException const &ze ) 
@@ -66,14 +66,19 @@ public:
     if ( ze.diagnostic().kind() == diagnostic::XQUERY_STATIC )
       std::cerr << ze << std::endl;
     else
-      throw;
+      ze.polymorphic_throw();
+  }
+
+  void warning( XQueryWarning const &xw )
+  {
+    std::cerr << xw << std::endl;
   }
 };
 
 bool
 error_example_3(Zorba* aZorba)
 {
-  MyErrorHandler lHandler;
+  MyDiagnosticHandler lHandler;
 
 	XQuery_t lQuery = aZorba->compileQuery("for $i in", &lHandler); 
 
@@ -84,13 +89,13 @@ error_example_3(Zorba* aZorba)
 bool
 error_example_4(Zorba* aZorba)
 {
-  MyErrorHandler lHandler;
+  MyDiagnosticHandler lHandler;
 
   try {
     // move this outside if constant folding is fixed
     XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
 
-    lQuery->registerErrorHandler(&lHandler);
+    lQuery->registerDiagnosticHandler(&lHandler);
     std::cout << lQuery << std::endl;
   } catch (ZorbaException const& e) {
     std::cerr << e << std::endl; 

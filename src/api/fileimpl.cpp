@@ -18,7 +18,7 @@
 
 #include <fstream>
 
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/util/file.h>
 
 #include <runtime/util/flowctl_exception.h>
@@ -68,7 +68,7 @@ void DirectoryIteratorImpl::reset()
 }
 
 FileImpl::FileImpl(std::string const& path)
-  : theErrorHandler(new DefaultErrorHandler())
+  : theDiagnosticHandler(new DiagnosticHandler())
 {
   theInternalFile = new file(path
 #ifdef WIN32
@@ -80,7 +80,7 @@ FileImpl::FileImpl(std::string const& path)
 FileImpl::~FileImpl()
 {
   delete theInternalFile;
-  delete theErrorHandler;
+  delete theDiagnosticHandler;
 }
 
 File_t

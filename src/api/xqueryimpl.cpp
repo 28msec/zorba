@@ -20,7 +20,7 @@
 #include <algorithm>
 #include "zorbatypes/representations.h"
 
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/error.h>
 #include <zorba/error_list.h>
 #include <zorba/sax2.h>
@@ -72,22 +72,22 @@ namespace zorba
 {
 
 
-#define QUERY_CATCH                                            \
-  catch (ZorbaException const& e)                              \
-  {                                                            \
-    ZorbaImpl::notifyError(theErrorHandler, e);                \
-  }                                                            \
-  catch (FlowCtlException&)                                    \
-  {                                                            \
-    ZorbaImpl::notifyError(theErrorHandler, "User interrupt"); \
-  }                                                            \
-  catch (std::exception const& e)                              \
-  {                                                            \
-    ZorbaImpl::notifyError(theErrorHandler, e.what());         \
-  }                                                            \
-  catch (...)                                                  \
-  {                                                            \
-    ZorbaImpl::notifyError(theErrorHandler);                   \
+#define QUERY_CATCH                                                 \
+  catch (ZorbaException const& e)                                   \
+  {                                                                 \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);                \
+  }                                                                 \
+  catch (FlowCtlException&)                                         \
+  {                                                                 \
+    ZorbaImpl::notifyError(theDiagnosticHandler, "User interrupt"); \
+  }                                                                 \
+  catch (std::exception const& e)                                   \
+  {                                                                 \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());         \
+  }                                                                 \
+  catch (...)                                                       \
+  {                                                                 \
+    ZorbaImpl::notifyError(theDiagnosticHandler);                   \
   }           
 
 
@@ -133,7 +133,7 @@ XQueryImpl::XQueryImpl()
   theResultIterator(NULL),
   theExecuting(false),
   theIsClosed(false),
-  theUserErrorHandler(false),
+  theUserDiagnosticHandler(false),
   theSAX2Handler(0),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0.0),
@@ -148,7 +148,7 @@ XQueryImpl::XQueryImpl()
   //      That is also the reason why we need static function in the error manager
   //      those should also go away and errors should be fired from the error manager
   //      into the error handler
-  theErrorHandler = new DefaultErrorHandler();
+  theDiagnosticHandler = new DiagnosticHandler();
   theXQueryDiagnostics = new XQueryDiagnostics();
 
   theCompilerCB = new CompilerCB(theXQueryDiagnostics);
@@ -305,7 +305,7 @@ std::string XQueryImpl::getProfileName() const
 /*******************************************************************************
   Make the given user-provided error handler the error handler of this query
 ********************************************************************************/
-void XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
+void XQueryImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -314,25 +314,25 @@ void XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
     checkNotClosed();
     checkNotExecuting();
 
-    assert(theErrorHandler);
-    if ( ! theUserErrorHandler )
+    assert(theDiagnosticHandler);
+    if ( ! theUserDiagnosticHandler )
     {
-      delete theErrorHandler;
+      delete theDiagnosticHandler;
     }
 
-    theErrorHandler = aErrorHandler;
-    theUserErrorHandler = true;
+    theDiagnosticHandler = aDiagnosticHandler;
+    theUserDiagnosticHandler = true;
   }
   QUERY_CATCH
 }
 
 
 /*******************************************************************************
-  Returns NULL if no user ErrorHandler is registered
+  Returns NULL if no user DiagnosticHandler is registered
 ********************************************************************************/
-ErrorHandler* XQueryImpl::getRegisteredErrorHandler()
+DiagnosticHandler* XQueryImpl::getRegisteredDiagnosticHandler()
 {
-  ErrorHandler* result = NULL;
+  DiagnosticHandler* result = NULL;
 
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -340,8 +340,8 @@ ErrorHandler* XQueryImpl::getRegisteredErrorHandler()
   {
     checkNotClosed();
 
-    if (theUserErrorHandler)
-      result = theErrorHandler;
+    if (theUserDiagnosticHandler)
+      result = theDiagnosticHandler;
   }
   QUERY_CATCH
   return result;
@@ -349,18 +349,18 @@ ErrorHandler* XQueryImpl::getRegisteredErrorHandler()
 
 
 /*******************************************************************************
-  Returns NULL if no user ErrorHandler is registered
+  Returns NULL if no user DiagnosticHandler is registered
 ********************************************************************************/
-ErrorHandler* XQueryImpl::getRegisteredErrorHandlerNoSync()
+DiagnosticHandler* XQueryImpl::getRegisteredDiagnosticHandlerNoSync()
 {
-  ErrorHandler* result = NULL;
+  DiagnosticHandler* result = NULL;
 
   try
   {
     checkNotClosed();
 
-    if (theUserErrorHandler)
-      result = theErrorHandler;
+    if (theUserDiagnosticHandler)
+      result = theDiagnosticHandler;
   }
   QUERY_CATCH
   return result;
@@ -370,7 +370,7 @@ ErrorHandler* XQueryImpl::getRegisteredErrorHandlerNoSync()
 /*******************************************************************************
 
 ********************************************************************************/
-void XQueryImpl::resetErrorHandler()
+void XQueryImpl::resetDiagnosticHandler()
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -379,13 +379,13 @@ void XQueryImpl::resetErrorHandler()
     checkNotClosed();
     checkNotExecuting();
 
-    assert (theErrorHandler);
+    assert (theDiagnosticHandler);
 
-    if ( ! theUserErrorHandler )
+    if ( ! theUserDiagnosticHandler )
       return;
 
-    theErrorHandler = new DefaultErrorHandler();
-    theUserErrorHandler = false;
+    theDiagnosticHandler = new DiagnosticHandler();
+    theUserDiagnosticHandler = false;
   }
   QUERY_CATCH
 }
@@ -659,8 +659,8 @@ XQuery_t XQueryImpl::clone() const
 
     clone->theFileName = theFileName;
 
-    if (theUserErrorHandler)
-      clone->registerErrorHandler(theErrorHandler);
+    if (theUserDiagnosticHandler)
+      clone->registerDiagnosticHandler(theDiagnosticHandler);
 
     clone->theStaticContext = theStaticContext->create_child_context();
     clone->theCompilerCB->theRootSctx = clone->theStaticContext;
@@ -692,7 +692,7 @@ const StaticContext* XQueryImpl::getStaticContext() const
 
     if (!theStaticContextWrapper)
       theStaticContextWrapper = new StaticContextImpl(theStaticContext.getp(),
-                                                      theErrorHandler);
+                                                      theDiagnosticHandler);
 
     return theStaticContextWrapper;
   }
@@ -760,19 +760,19 @@ bool XQueryImpl::saveExecutionPlan(
   }
   catch (ZorbaException const& e)
   {                           
-    ZorbaImpl::notifyError(theErrorHandler, e);
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
   }                           
   catch (FlowCtlException const&)   
   {
-    ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
+    ZorbaImpl::notifyError(theDiagnosticHandler, "User interrupt");
   }                           
   catch (std::exception const& e)   
   {
-    ZorbaImpl::notifyError(theErrorHandler, e.what());
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }                           
   catch (...)                 
   {
-    ZorbaImpl::notifyError(theErrorHandler);   
+    ZorbaImpl::notifyError(theDiagnosticHandler);   
   }           
 
   return false;
@@ -1274,9 +1274,9 @@ void XQueryImpl::close()
 
     delete theXQueryDiagnostics;
 
-    // see registerErrorHandler
-    if (!theUserErrorHandler) {
-      delete theErrorHandler;
+    // see registerDiagnosticHandler
+    if (!theUserDiagnosticHandler) {
+      delete theDiagnosticHandler;
     }
 
     delete theDynamicContext;

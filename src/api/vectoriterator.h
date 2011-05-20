@@ -23,7 +23,7 @@
 
 namespace zorba {
 
-class ErrorHandler;
+class DiagnosticHandler;
 
 /*******************************************************************************
   Iterator used for iterating over an internal store::Iterator_t.
@@ -36,11 +36,11 @@ class VectorIterator: public Iterator
 protected:
   std::vector<store::Item_t>           theVector;
   std::vector<store::Item_t>::iterator theIter;
-  ErrorHandler*                        theErrorHandler;
+  DiagnosticHandler*                   theDiagnosticHandler;
   bool                                 theIsOpen;     
 
 public:
-  VectorIterator(const std::vector<store::Item_t>&, ErrorHandler*);
+  VectorIterator(const std::vector<store::Item_t>&, DiagnosticHandler*);
 
   virtual ~VectorIterator();
 

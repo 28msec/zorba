@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/zorba.h>
 
 #include "context/dynamic_context.h"
@@ -58,11 +58,11 @@ namespace zorba {
 #define ZORBA_DCTX_TRY try
 
 #define ZORBA_DCTX_CATCH  catch (ZorbaException const& e) { \
-    ZorbaImpl::notifyError(theQuery->theErrorHandler, e); \
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e); \
   } catch (std::exception const& e) { \
-    ZorbaImpl::notifyError(theQuery->theErrorHandler, e.what()); \
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e.what()); \
   } catch (...) { \
-    ZorbaImpl::notifyError(theQuery->theErrorHandler); \
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler); \
   } \
 
 
@@ -218,7 +218,7 @@ bool DynamicContextImpl::getVariable(
     else if (! tempseq.isNull())
     {
       store::Iterator_t seqIter = tempseq->getIterator();
-      Iterator_t lIt(new StoreIteratorImpl(seqIter, theQuery->theErrorHandler));
+      Iterator_t lIt(new StoreIteratorImpl(seqIter, theQuery->theDiagnosticHandler));
       outIterator = lIt;
     }
 

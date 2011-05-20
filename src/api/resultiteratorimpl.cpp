@@ -36,39 +36,39 @@
 
 namespace zorba {
 
-#define RESULT_ITER_CATCH                                      \
-catch (ZorbaException const &e)                                \
-{                                                              \
-  SYNC_CODE(                                                   \
-  if (theHaveLock)                                             \
-  {                                                            \
-    GENV_STORE.getGlobalLock().unlock();                       \
-    theHaveLock = false;                                       \
-  })                                                           \
-                                                               \
-  ZorbaImpl::notifyError(theQuery->theErrorHandler, e);        \
-}                                                              \
-catch (std::exception const& e)                                \
-{                                                              \
-  SYNC_CODE(                                                   \
-  if (theHaveLock)                                             \
-  {                                                            \
-    GENV_STORE.getGlobalLock().unlock();                       \
-    theHaveLock = false;                                       \
-  })                                                           \
-                                                               \
-  ZorbaImpl::notifyError(theQuery->theErrorHandler, e.what()); \
-}                                                              \
-catch (...)                                                    \
-{                                                              \
-  SYNC_CODE(                                                   \
-  if (theHaveLock)                                             \
-  {                                                            \
-    GENV_STORE.getGlobalLock().unlock();                       \
-    theHaveLock = false;                                       \
-  })                                                           \
-                                                               \
-  ZorbaImpl::notifyError(theQuery->theErrorHandler);           \
+#define RESULT_ITER_CATCH                                           \
+catch (ZorbaException const &e)                                     \
+{                                                                   \
+  SYNC_CODE(                                                        \
+  if (theHaveLock)                                                  \
+  {                                                                 \
+    GENV_STORE.getGlobalLock().unlock();                            \
+    theHaveLock = false;                                            \
+  })                                                                \
+                                                                    \
+  ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e);        \
+}                                                                   \
+catch (std::exception const& e)                                     \
+{                                                                   \
+  SYNC_CODE(                                                        \
+  if (theHaveLock)                                                  \
+  {                                                                 \
+    GENV_STORE.getGlobalLock().unlock();                            \
+    theHaveLock = false;                                            \
+  })                                                                \
+                                                                    \
+  ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e.what()); \
+}                                                                   \
+catch (...)                                                         \
+{                                                                   \
+  SYNC_CODE(                                                        \
+  if (theHaveLock)                                                  \
+  {                                                                 \
+    GENV_STORE.getGlobalLock().unlock();                            \
+    theHaveLock = false;                                            \
+  })                                                                \
+                                                                    \
+  ZorbaImpl::notifyError(theQuery->theDiagnosticHandler);           \
 } 
 
 

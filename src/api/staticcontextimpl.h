@@ -27,7 +27,7 @@
 
 namespace zorba {
 
-  class ErrorHandler;
+  class DiagnosticHandler;
   class static_context;
 #ifndef ZORBA_NO_FULL_TEXT
   class FullTextURIResolverWrapper;
@@ -43,11 +43,11 @@ namespace zorba {
 
   theSctxMap           :
 
-  theErrorHandler      : Pointer to an error handle to handle any errors raised
+  theDiagnosticHandler : Pointer to an error handle to handle any errors raised
                          by the methods of this class.
-  theUserErrorHandler  : If true, theErrorHandler is owned by "this", and it
+  theUserDiagnosticHandler : If true, theDiagnosticHandler is owned by "this", and it
                          should be deleted when "this" is destroyed. Otherwise,
-                         theErrorHandler is not owned by "this".
+                         theDiagnosticHandler is not owned by "this".
 ********************************************************************************/
 class StaticContextImpl : public StaticContext
 {
@@ -59,8 +59,8 @@ protected:
 
   std::map<short, static_context_t>   theSctxMap;
 
-  ErrorHandler                      * theErrorHandler;
-  bool                                theUserErrorHandler;
+  DiagnosticHandler                 * theDiagnosticHandler;
+  bool                                theUserDiagnosticHandler;
 
   // remeber all the resolver wrappers that this context has created
 #ifndef ZORBA_NO_FULL_TEXT
@@ -79,9 +79,9 @@ private:
   StaticContextImpl(const StaticContextImpl&);
 
 public:
-  StaticContextImpl(ErrorHandler* = 0);
+  StaticContextImpl(DiagnosticHandler* = 0);
 
-  StaticContextImpl(static_context*, ErrorHandler*);
+  StaticContextImpl(static_context*, DiagnosticHandler*);
 
   virtual ~StaticContextImpl();
 

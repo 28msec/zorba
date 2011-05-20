@@ -14,30 +14,39 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_PRINTER_ERROR_HANDLER_API_H
-#define ZORBA_PRINTER_ERROR_HANDLER_API_H
+#ifndef ZORBA_DIAGNOSTIC_HANDLER_API_H
+#define ZORBA_DIAGNOSTIC_HANDLER_API_H
 
 #include <zorba/config.h>
-#include <zorba/error_handler.h>
+
+#include <zorba/xquery_warning.h>
 
 namespace zorba {
 
-class PrinterErrorHandler : public ErrorHandler
-{
+/**
+ * When registered with an XQuery object, a %DiagnosticHandler handles all
+ * exceptions and warnings that otherwise would have been thrown or reported.
+ */
+class ZORBA_DLL_PUBLIC DiagnosticHandler {
 public:
-  PrinterErrorHandler(std::ostream&, bool aPrintAsXml = false, bool aIndenXml = false);
+  virtual ~DiagnosticHandler();
 
-  virtual ~PrinterErrorHandler();
-
+  /**
+   * This function is called for all exceptions.
+   *
+   * @param exception The exception.
+   */
   virtual void error( ZorbaException const &exception );
 
-protected:
-  std::ostream& theOStream;
-  bool          thePrintAsXml;
-  bool          theIndent;
+  /**
+   * This function is called for all warnings.
+   *
+   * @param warning The warning.
+   */
+  virtual void warning( XQueryWarning const &warning );
 };
 
 } // namespace zorba
 
-#endif /* ZORBA_PRINTER_ERROR_HANDLER_API_H */
+#endif /* ZORBA_DIAGNOSTIC_HANDLER_API_H */
 /* vim:set et sw=2 ts=2: */

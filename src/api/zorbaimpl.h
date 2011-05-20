@@ -37,16 +37,16 @@ namespace store {
 
 #define ZORBA_TRY try {
 
-#define ZORBA_CATCH                                            \
-  } catch (ZorbaException const& e) {                          \
-    ZorbaImpl::notifyError(theErrorHandler, e);                \
-  } catch (FlowCtlException const&) {                          \
-    ZorbaImpl::notifyError(theErrorHandler, "User interrupt"); \
-  } catch (std::exception const& e) {                          \
-    ZorbaImpl::notifyError(theErrorHandler, e.what());         \
-  } catch (...) {                                              \
-    ZorbaImpl::notifyError(theErrorHandler);                   \
-  }                                                            \
+#define ZORBA_CATCH                                                 \
+  } catch (ZorbaException const& e) {                               \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);                \
+  } catch (FlowCtlException const&) {                               \
+    ZorbaImpl::notifyError(theDiagnosticHandler, "User interrupt"); \
+  } catch (std::exception const& e) {                               \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());         \
+  } catch (...) {                                                   \
+    ZorbaImpl::notifyError(theDiagnosticHandler);                   \
+  }                                                                 \
 
 /**
  *
@@ -64,12 +64,12 @@ public:
 #endif
  public:
 
-  static void notifyError(ErrorHandler*, ZorbaException const&);
+  static void notifyError(DiagnosticHandler*, ZorbaException const&);
 
   // notify zorba internal error
-  static void notifyError(ErrorHandler*, const std::string&);
+  static void notifyError(DiagnosticHandler*, const std::string&);
 
-  static void notifyError(ErrorHandler*);
+  static void notifyError(DiagnosticHandler*);
 
   static void checkItem(const store::Item_t& aItem);
 
@@ -82,49 +82,49 @@ public:
   int runUriTest() const;
   int runDebuggerProtocolTest() const;
 
-  XQuery_t createQuery(ErrorHandler* aErrorHandler = 0);
+  XQuery_t createQuery(DiagnosticHandler* aDiagnosticHandler = 0);
 
   XQuery_t compileQuery(
         const String& aQuery,
-        ErrorHandler* aErrorHandler = 0);
-
-  XQuery_t compileQuery(
-        const String& aQuery,
-        const StaticContext_t& aContext,
-        ErrorHandler* aErrorHandler = 0);
-
-  XQuery_t compileQuery(
-        const String& aQuery,
-        const Zorba_CompilerHints_t& aHints,
-        ErrorHandler* aErrorHandler = 0);
+        DiagnosticHandler* aDiagnosticHandler = 0);
 
   XQuery_t compileQuery(
         const String& aQuery,
         const StaticContext_t& aContext,
+        DiagnosticHandler* aDiagnosticHandler = 0);
+
+  XQuery_t compileQuery(
+        const String& aQuery,
         const Zorba_CompilerHints_t& aHints,
-        ErrorHandler* aErrorHandler = 0);
+        DiagnosticHandler* aDiagnosticHandler = 0);
+
+  XQuery_t compileQuery(
+        const String& aQuery,
+        const StaticContext_t& aContext,
+        const Zorba_CompilerHints_t& aHints,
+        DiagnosticHandler* aDiagnosticHandler = 0);
 
   XQuery_t compileQuery(
         std::istream& aQuery,
-        ErrorHandler* aErrorHandler = 0);
+        DiagnosticHandler* aDiagnosticHandler = 0);
 
   XQuery_t compileQuery(
         std::istream& aQuery,
         const StaticContext_t& aContext,
-        ErrorHandler* aErrorHandler = 0);
+        DiagnosticHandler* aDiagnosticHandler = 0);
 
   XQuery_t compileQuery(
         std::istream& aQuery,
         const Zorba_CompilerHints_t& aHints,
-        ErrorHandler* aErrorHandler = 0);
+        DiagnosticHandler* aDiagnosticHandler = 0);
 
   XQuery_t compileQuery(
         std::istream& aQuery,
         const StaticContext_t& aContext,
         const Zorba_CompilerHints_t& aHints,
-        ErrorHandler* aErrorHandler = 0);
+        DiagnosticHandler* aDiagnosticHandler = 0);
 
-  StaticContext_t createStaticContext(ErrorHandler* aErrorHandler = 0);
+  StaticContext_t createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
 
   ItemFactory* getItemFactory();
 

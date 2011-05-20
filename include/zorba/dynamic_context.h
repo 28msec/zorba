@@ -327,7 +327,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *         of date, time, or dateTime values.
    *
    * @return int the implicit timezone. Note that 0 is returned if an error occured
-   *         and an ErrorHandler is used.
+   *         and an DiagnosticHandler is used.
    * @throw ZorbaException if an error occured.
    */
   virtual int

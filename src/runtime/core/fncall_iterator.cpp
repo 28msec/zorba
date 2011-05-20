@@ -558,7 +558,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
       StaticContextImpl theSctxWrapper(theModuleSctx,
                                        (planState.theQuery == NULL?
                                         NULL :
-                                        planState.theQuery->getRegisteredErrorHandlerNoSync()));
+                                        planState.theQuery->getRegisteredDiagnosticHandlerNoSync()));
 
       DynamicContextImpl theDctxWrapper(NULL,
                                         planState.theGlobalDynCtx,

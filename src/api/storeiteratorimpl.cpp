@@ -41,7 +41,7 @@ catch (ZorbaException const& e)                                \
     theHaveLock = false;                                       \
   })                                                           \
                                                                \
-  ZorbaImpl::notifyError(theErrorHandler, e);                  \
+  ZorbaImpl::notifyError(theDiagnosticHandler, e);             \
 }                                                              \
 catch (std::exception const& e)                                \
 {                                                              \
@@ -52,7 +52,7 @@ catch (std::exception const& e)                                \
     theHaveLock = false;                                       \
   })                                                           \
                                                                \
-  ZorbaImpl::notifyError(theErrorHandler, e.what());           \
+  ZorbaImpl::notifyError(theDiagnosticHandler, e.what());      \
 }                                                              \
 catch (...)                                                    \
 {                                                              \
@@ -63,7 +63,7 @@ catch (...)                                                    \
     theHaveLock = false;                                       \
   })                                                           \
                                                                \
-  ZorbaImpl::notifyError(theErrorHandler);                     \
+  ZorbaImpl::notifyError(theDiagnosticHandler);                \
 } 
 
 
@@ -72,18 +72,18 @@ catch (...)                                                    \
 ********************************************************************************/
 StoreIteratorImpl::StoreIteratorImpl(
     store::Iterator_t aIter,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
   :
   theIterator(aIter),
-  theErrorHandler(aErrorHandler),
-  theOwnErrorHandler(false),
+  theDiagnosticHandler(aDiagnosticHandler),
+  theOwnDiagnosticHandler(false),
   theIsOpen(false),
   theHaveLock(false)
 {
-  if (theErrorHandler == NULL)
+  if (theDiagnosticHandler == NULL)
   {
-    theErrorHandler = new DefaultErrorHandler();
-    theOwnErrorHandler = true;
+    theDiagnosticHandler = new DiagnosticHandler();
+    theOwnDiagnosticHandler = true;
   }
 }
 
@@ -104,8 +104,8 @@ StoreIteratorImpl::~StoreIteratorImpl()
     if (theHaveLock)
       GENV_STORE.getGlobalLock().unlock();)
 
-    if (theOwnErrorHandler)
-      delete theErrorHandler;
+    if (theOwnDiagnosticHandler)
+      delete theDiagnosticHandler;
   }
   STORE_ITERATOR_CATCH
 }

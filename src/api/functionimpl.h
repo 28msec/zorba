@@ -22,22 +22,22 @@
 namespace zorba {
 
 class function;
-class ErrorHandler;
+class DiagnosticHandler;
 
 
 class FunctionImpl : public Function
 {
 protected:
-  function     * theFunction;
-  ErrorHandler * theErrorHandler;
+  function          * theFunction;
+  DiagnosticHandler * theDiagnosticHandler;
 
  public:
   virtual ~FunctionImpl() {}
 
-  FunctionImpl(function* aFunction, ErrorHandler* aErrorHandler) 
+  FunctionImpl(function* aFunction, DiagnosticHandler* aDiagnosticHandler) 
     :
     theFunction(aFunction),
-    theErrorHandler(aErrorHandler)
+    theDiagnosticHandler(aDiagnosticHandler)
   {
   }
 

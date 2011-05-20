@@ -110,17 +110,17 @@ class CompilerCB;
   Each query has its own XQueryDiagnostics. The XQueryDiagnostics accumulates
   query errors/warnings that need to be processed in some deferred fashion.
 
-  - theErrorHandler :
+  - theDiagnosticHandler :
   Normally, this is an object provided by the application to handle errors in
-  some specific way (see include/zorba/error_handler.h and src/api/zorbaimpl.cpp).
+  some specific way (see include/zorba/diagnostic_handler.h and src/api/zorbaimpl.cpp).
   If the application does not provide an error handler, a default zorba error
   handler is created for the query (the default error handler just throws a
   ZorbaException).
 
-  - theUserErrorHandler :
+  - theUserDiagnosticHandler :
   True if the error handler was provided by the application (in which case it
   is not owned by the query). Also true if this is a cloned query, in which
-  case, theErrorHandler points to the same error handler obj as the orignal
+  case, theDiagnosticHandler points to the same error handler obj as the orignal
   query. False otherwise (in which case the error handler is owned by the
   query).
 
@@ -195,8 +195,8 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
   // utility stuff
   XQueryDiagnostics                * theXQueryDiagnostics;
-  ErrorHandler                     * theErrorHandler;
-  bool                               theUserErrorHandler;
+  DiagnosticHandler                * theDiagnosticHandler;
+  bool                               theUserDiagnosticHandler;
 
   SAX2_ContentHandler              * theSAX2Handler;
 
@@ -239,13 +239,13 @@ public:
 
   std::string getProfileName() const;
 
-  void registerErrorHandler(ErrorHandler*);
+  void registerDiagnosticHandler(DiagnosticHandler*);
 
-  ErrorHandler* getRegisteredErrorHandler();
+  DiagnosticHandler* getRegisteredDiagnosticHandler();
 
-  ErrorHandler* getRegisteredErrorHandlerNoSync();
+  DiagnosticHandler* getRegisteredDiagnosticHandlerNoSync();
 
-  void resetErrorHandler();
+  void resetDiagnosticHandler();
 
   void compile(const String&);
 

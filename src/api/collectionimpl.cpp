@@ -15,7 +15,7 @@
  */
 #include "api/collectionimpl.h"
 #include <zorba/item.h>
-#include <zorba/error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <istream>
 #include "api/zorbaimpl.h"
 
@@ -38,10 +38,10 @@ namespace zorba {
 
 CollectionImpl::CollectionImpl(
     const store::Collection_t& aCollection,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
   :
   theCollection(aCollection),
-  theErrorHandler(aErrorHandler)
+  theDiagnosticHandler(aDiagnosticHandler)
 {
 }
 

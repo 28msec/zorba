@@ -17,7 +17,7 @@
 
 %{   // start Implementations
 
-class ErrorHandler : public zorba::ErrorHandler 
+class DiagnosticHandler : public zorba::DiagnosticHandler 
 {
  private:
   void error (const zorba::ZorbaException &ze) 
@@ -31,22 +31,28 @@ class ErrorHandler : public zorba::ErrorHandler
       error(ue2); 
     }
   }
+  void warning (const zorba::XQueryException &xw)
+  {
+    // TODO: do something with warning
+  }
 
  public:
-  virtual ~ErrorHandler() {}
+  virtual ~DiagnosticHandler() {}
   virtual void error(const ZorbaException &ze) {}
- }; // class ErrorHandler
+  //virtual void warning(const XQueryWarning &xw) {}
+ }; // class DiagnosticHandler
 
 
 %}  // end Implementations
 
     // Interface
 
-class ErrorHandler 
+class DiagnosticHandler 
 {
  public:
-  virtual ~ErrorHandler();
-  virtual void error(const ZorbaException &de); 
-}; // class ErrorHandler
+  virtual ~DiagnosticHandler();
+  virtual void error(const ZorbaException &ze); 
+  //virtual void warning(const XQueryWarning &xw); 
+}; // class DiagnosticHandler
 
 /* vim:set et sw=2 ts=2: */

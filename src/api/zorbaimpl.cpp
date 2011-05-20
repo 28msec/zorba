@@ -131,42 +131,42 @@ void ZorbaImpl::shutdownInternal(bool soft)
 }
 
 
-XQuery_t ZorbaImpl::createQuery(ErrorHandler* aErrorHandler)
+XQuery_t ZorbaImpl::createQuery(DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
-  if (aErrorHandler != 0)
-    lXQuery->registerErrorHandler(aErrorHandler);
+  if (aDiagnosticHandler != 0)
+    lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
   return lXQuery;
 }
 
 
 XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
 {
   Zorba_CompilerHints_t lHints;
-  return compileQuery(aQuery, lHints, aErrorHandler);
+  return compileQuery(aQuery, lHints, aDiagnosticHandler);
 }
 
 
 XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
     const StaticContext_t& aStaticContext,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
 {
   Zorba_CompilerHints_t lHints;
-  return compileQuery(aQuery, aStaticContext, lHints, aErrorHandler);
+  return compileQuery(aQuery, aStaticContext, lHints, aDiagnosticHandler);
 }
 
 
 XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
     const Zorba_CompilerHints_t& aHints,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
-  if (aErrorHandler != 0)
-    lXQuery->registerErrorHandler(aErrorHandler);
+  if (aDiagnosticHandler != 0)
+    lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
   lXQuery->compile(aQuery, aHints);
   return lXQuery;
 }
@@ -176,41 +176,41 @@ XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
     const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
-  if (aErrorHandler != 0)
-    lXQuery->registerErrorHandler(aErrorHandler);
+  if (aDiagnosticHandler != 0)
+    lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
   lXQuery->compile(aQuery, aStaticContext, aHints);
   return lXQuery;
 }
 
 
-XQuery_t ZorbaImpl::compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler)
+XQuery_t ZorbaImpl::compileQuery(std::istream& aQuery, DiagnosticHandler* aDiagnosticHandler)
 {
   Zorba_CompilerHints_t lHints;
-  return compileQuery(aQuery, lHints, aErrorHandler);
+  return compileQuery(aQuery, lHints, aDiagnosticHandler);
 }
 
 
 XQuery_t ZorbaImpl::compileQuery(
     std::istream& aQuery,
     const StaticContext_t& aStaticContext,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
 {
   Zorba_CompilerHints_t lHints;
-  return compileQuery(aQuery, aStaticContext, lHints, aErrorHandler);
+  return compileQuery(aQuery, aStaticContext, lHints, aDiagnosticHandler);
 }
 
 
 XQuery_t ZorbaImpl::compileQuery(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
-  if (aErrorHandler != 0)
-    lXQuery->registerErrorHandler(aErrorHandler);
+  if (aDiagnosticHandler != 0)
+    lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
   lXQuery->compile(aQuery, aHints);
   return lXQuery;
 }
@@ -220,11 +220,11 @@ XQuery_t ZorbaImpl::compileQuery(
     std::istream& aQuery,
     const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
-  if (aErrorHandler != 0)
-    lXQuery->registerErrorHandler(aErrorHandler);
+  if (aDiagnosticHandler != 0)
+    lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
   lXQuery->compile(aQuery, aStaticContext, aHints);
   return lXQuery;
 }
@@ -233,9 +233,9 @@ XQuery_t ZorbaImpl::compileQuery(
 /*******************************************************************************
 
 ********************************************************************************/
-StaticContext_t ZorbaImpl::createStaticContext(ErrorHandler* aErrorHandler)
+StaticContext_t ZorbaImpl::createStaticContext(DiagnosticHandler* aDiagnosticHandler)
 {
-  return StaticContext_t(new StaticContextImpl(aErrorHandler));
+  return StaticContext_t(new StaticContextImpl(aDiagnosticHandler));
 }
 
 
@@ -257,18 +257,18 @@ XmlDataManager* ZorbaImpl::getXmlDataManager()
 }
 
 
-void ZorbaImpl::notifyError( ErrorHandler *eh, ZorbaException const &ze ) {
+void ZorbaImpl::notifyError( DiagnosticHandler *eh, ZorbaException const &ze ) {
   eh->error( ze );
 }
 
-void ZorbaImpl::notifyError( ErrorHandler *eh, std::string const &aDesc ) {
+void ZorbaImpl::notifyError( DiagnosticHandler *eh, std::string const &aDesc ) {
   eh->error(
     ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(aDesc) )
   );
 }
 
 
-void ZorbaImpl::notifyError( ErrorHandler *eh ) {
+void ZorbaImpl::notifyError( DiagnosticHandler *eh ) {
   eh->error( ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR ) );
 }
 

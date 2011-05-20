@@ -40,7 +40,7 @@ namespace zorba {
   class DirectoryIterator;
   class Serializer;
 
-  class ErrorHandler;
+  class DiagnosticHandler;
   class QueryLocation;
   class StackFrame;
   typedef SmartPtr<QueryLocation> QueryLocation_t;

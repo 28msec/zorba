@@ -96,7 +96,7 @@ namespace zorba {
        *
        * @param aPrefix the prefix for which to retrieve the namespace URI.
        * @return String the URI for the given prefix or an empty String if no URI
-       *         could be found for the given prefix and an ErrorHandler has been
+       *         could be found for the given prefix and an DiagnosticHandler has been
        *         registered.
        * @throw ZorbaException if an error occured (e.g. no URI could be found for the given prefix).
        */
@@ -108,7 +108,7 @@ namespace zorba {
        *
        * @param aURI of the default element and type namespace URI.
        * @return true if the default element and type namespace URI has been set, false otherwise
-       *         if an ErrorHandler has been registered.
+       *         if an DiagnosticHandler has been registered.
        * @throw ZorbaException if an error occured.
        */
       virtual bool
@@ -127,7 +127,7 @@ namespace zorba {
        *
        * @param aURI of the default function namespace.
        * @return true if the default function namespace URI has been set, false otherwise
-       *         if an ErrorHandler has been registered.
+       *         if an DiagnosticHandler has been registered.
        * @throw ZorbaException if an error occured.
        */
       virtual bool
@@ -136,7 +136,7 @@ namespace zorba {
       /** \brief Get the default function namespace.
        *
        * @return String the URI of the default function namespace.
-       *         ErrorHandler has been registered.
+       *         DiagnosticHandler has been registered.
        * @throw ZorbaException if an error occured.
        */
       virtual String

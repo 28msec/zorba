@@ -24,7 +24,7 @@ namespace zorba {
 
   class file;
   class dir_iterator;
-  class DefaultErrorHandler;
+  class DiagnosticHandler;
 
 
 class DirectoryIteratorImpl : public DirectoryIterator
@@ -50,7 +50,7 @@ private:
 
   zorba::file*          theInternalFile;
 
-  DefaultErrorHandler*  theErrorHandler; 
+  DiagnosticHandler*    theDiagnosticHandler; 
     
 public:
 

@@ -20,7 +20,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/iterator.h>
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
 
@@ -58,18 +58,23 @@ chaining_example_1(Zorba* aZorba)
     return false;
   }
 
-	return true;
+  return true;
 }
 
-class MyChainingErrorHandler  : public DefaultErrorHandler 
+class MyChainingDiagnosticHandler  : public DiagnosticHandler 
 {
 public:
-  MyChainingErrorHandler(const std::string& aIdentifier) 
+  MyChainingDiagnosticHandler(const std::string& aIdentifier) 
     : theIdentifier(aIdentifier) {}
 
-  void error(const ZorbaException& aTypeError ) 
+  void error(const ZorbaException& e) 
   { 
-    std::cerr << "error handler: " << theIdentifier << " error " << aTypeError << std::endl;
+    std::cerr << "error handler: " << theIdentifier << " error " << e << std::endl;
+  }
+
+  void warning(const XQueryWarning& w)
+  { 
+    std::cerr << "warning handler: " << theIdentifier << " warning " << w << std::endl;
   }
 
 protected:
@@ -85,14 +90,14 @@ protected:
 bool
 chaining_example_2(Zorba* aZorba)
 {
-  MyChainingErrorHandler lErrorHandler1("handler 1");
-  MyChainingErrorHandler lErrorHandler2("handler 2");
+  MyChainingDiagnosticHandler lDiagnosticHandler1("handler 1");
+  MyChainingDiagnosticHandler lDiagnosticHandler2("handler 2");
 
-  XQuery_t lQuery1 = aZorba->compileQuery("let $i := (1 to 42) return $i * $i", &lErrorHandler1);
+  XQuery_t lQuery1 = aZorba->compileQuery("let $i := (1 to 42) return $i * $i", &lDiagnosticHandler1);
 
   Iterator_t lIterator = lQuery1->iterator();
 
-  XQuery_t lQuery2 = aZorba->compileQuery("declare variable $x external; for $i in $x return $i * $i", &lErrorHandler2);
+  XQuery_t lQuery2 = aZorba->compileQuery("declare variable $x external; for $i in $x return $i * $i", &lDiagnosticHandler2);
 
   DynamicContext* lCtx = lQuery2->getDynamicContext();
 
@@ -100,7 +105,7 @@ chaining_example_2(Zorba* aZorba)
 
   std::cout << lQuery2 << std::endl;
 
-	return true;
+  return true;
 }
 
 int 
@@ -125,3 +130,4 @@ chaining(int argc, char* argv[])
   zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

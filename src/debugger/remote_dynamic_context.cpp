@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/zorba.h>
 
 #include "debugger/remote_dynamic_context.h"

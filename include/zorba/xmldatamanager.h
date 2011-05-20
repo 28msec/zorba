@@ -100,18 +100,18 @@ namespace zorba {
           }
       };
 
-      /** \brief Register an ErrorHandler to which errors occuring during the
+      /** \brief Register an DiagnosticHandler to which errors occuring during the
        * management of documents and collections are reported.
        *
-       * If no ErrorHandler has been set using this function then subclasses of
+       * If no DiagnosticHandler has been set using this function then subclasses of
        * the ZorbaException class are thrown to report errors.
        *
-       *  @param aErrorHandler ErrorHandler to which errors are reported. The
-       *         caller retains ownership over the ErrorHandler passed as
+       *  @param aDiagnosticHandler DiagnosticHandler to which errors are reported. The
+       *         caller retains ownership over the DiagnosticHandler passed as
        *         parameter.
        */
       void
-      registerErrorHandler(ErrorHandler* aErrorHandler);
+      registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
       /** \brief Parse an XML document and return an Item.
        *

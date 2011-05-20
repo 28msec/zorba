@@ -25,7 +25,7 @@
 #include <signal.h>
 
 #include <zorba/zorba.h>
-#include <zorba/error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/zorba_exception.h>
 
 #include <zorbatypes/URI.h>
@@ -261,7 +261,7 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
 /*******************************************************************************
 
 ********************************************************************************/
-bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler, std::ostream& lOutput) 
+bool checkErrors(const Specification& lSpec, const TestDiagnosticHandler& errHandler, std::ostream& lOutput) 
 {
   if (isErrorExpected(errHandler, &lSpec)) 
   {
@@ -308,7 +308,7 @@ DWORD WINAPI thread_main(LPVOID param)
   tmp << tno;
   std::string tnoStr = tmp.str();
 
-  TestErrorHandler errHandler;
+  TestDiagnosticHandler errHandler;
 
   ulong numCanon = 0;
 
@@ -546,7 +546,7 @@ DWORD WINAPI thread_main(LPVOID param)
     // 
     query = queries->theQueryObjects[queryNo]->clone();
 
-    query->registerErrorHandler(&errHandler);
+    query->registerDiagnosticHandler(&errHandler);
 
 
     //

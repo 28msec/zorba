@@ -21,7 +21,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/item.h>
-#include <zorba/error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/user_exception.h>
 
@@ -32,7 +32,7 @@ class Specification;
 /*******************************************************************************
 
 ********************************************************************************/
-class TestErrorHandler : public zorba::ErrorHandler 
+class TestDiagnosticHandler : public zorba::DiagnosticHandler 
 {
 public:
   void error(const zorba::ZorbaException& ze)
@@ -69,6 +69,11 @@ public:
   void setErrorFile(const std::string& file)
   {
     theErrorFile = file;
+  }
+
+  void warning( const zorba::XQueryWarning &xw )
+  {
+    // TODO: should do something with the warning
   }
 
 private:
@@ -147,14 +152,14 @@ void slurp_file(
     const std::string& rbkt_bin_dir);
 
 bool isErrorExpected(
-    const TestErrorHandler& errHandler,
+    const TestDiagnosticHandler& errHandler,
     const Specification* aSpec);
 
 bool isStaticError(
     std::string strValue);
 
 void printErrors(
-    const TestErrorHandler& errHandler,
+    const TestDiagnosticHandler& errHandler,
     const char* msg,
     bool printInFile,
     std::ostream& output = std::cout);
@@ -170,4 +175,5 @@ zorba::Item createItem(
     std::string strValue);
 
 
-#endif
+#endif /* TEST_RBKT_TESTDRIVER_COMMON */
+/* vim:set et sw=2 ts=2: */

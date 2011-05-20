@@ -32,15 +32,15 @@ namespace zorba {
 #define SINGLETON_ITERATOR_CATCH                               \
 catch (ZorbaException const& e)                                \
 {                                                              \
-  ZorbaImpl::notifyError(theErrorHandler, e);                  \
+  ZorbaImpl::notifyError(theDiagnosticHandler, e);             \
 }                                                              \
 catch (std::exception const& e)                                \
 {                                                              \
-  ZorbaImpl::notifyError(theErrorHandler, e.what());           \
+  ZorbaImpl::notifyError(theDiagnosticHandler, e.what());      \
 }                                                              \
 catch (...)                                                    \
 {                                                              \
-  ZorbaImpl::notifyError(theErrorHandler);                     \
+  ZorbaImpl::notifyError(theDiagnosticHandler);                \
 } 
 
 
@@ -49,18 +49,18 @@ catch (...)                                                    \
 ********************************************************************************/
 API_SingletonIterator::API_SingletonIterator(
     const store::Item_t& aItem,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
   :
   theItem(aItem),
-  theErrorHandler(aErrorHandler),
-  theOwnErrorHandler(false),
+  theDiagnosticHandler(aDiagnosticHandler),
+  theOwnDiagnosticHandler(false),
   theIsOpen(false),
   theIsDone(false)
 {
-  if (theErrorHandler == NULL)
+  if (theDiagnosticHandler == NULL)
   {
-    theErrorHandler = new DefaultErrorHandler();
-    theOwnErrorHandler = true;
+    theDiagnosticHandler = new DiagnosticHandler();
+    theOwnDiagnosticHandler = true;
   }
 }
 
@@ -70,8 +70,8 @@ API_SingletonIterator::API_SingletonIterator(
 ********************************************************************************/
 API_SingletonIterator::~API_SingletonIterator()
 {
-  if (theOwnErrorHandler)
-    delete theErrorHandler;
+  if (theOwnDiagnosticHandler)
+    delete theDiagnosticHandler;
 }
 
 

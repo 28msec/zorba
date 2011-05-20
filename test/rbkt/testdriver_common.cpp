@@ -92,7 +92,7 @@ void slurp_file (
 /*******************************************************************************
   Check if an error that was repored was expected by the given spec object.
 ********************************************************************************/
-bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec)
+bool isErrorExpected(const TestDiagnosticHandler& errHandler, const Specification* aSpec)
 {
   static std::string star("*");
   std::vector<std::string> const& qnames = errHandler.getErrorQNames();
@@ -114,7 +114,7 @@ bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aS
 /*******************************************************************************
   Print all errors that were raised
 ********************************************************************************/
-void printErrors(const TestErrorHandler& errHandler, const char* msg, bool printInFile, std::ostream& output)
+void printErrors(const TestDiagnosticHandler& errHandler, const char* msg, bool printInFile, std::ostream& output)
 {
   if (!errHandler.errors())
   {

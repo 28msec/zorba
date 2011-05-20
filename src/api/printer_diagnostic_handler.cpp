@@ -16,26 +16,25 @@
 
 #include <iostream>
 
-#include <zorba/printer_error_handler.h>
+#include <zorba/printer_diagnostic_handler.h>
 #include <zorba/xquery_exception.h>
 
 namespace zorba {
 
-PrinterErrorHandler::PrinterErrorHandler(std::ostream& os, bool aPrintAsXml, bool aIndent)
+PrinterDiagnosticHandler::PrinterDiagnosticHandler(std::ostream& os, bool aPrintAsXml, bool aIndent)
   : theOStream(os),
     thePrintAsXml(aPrintAsXml),
     theIndent(aIndent)
 {
 }
 
-PrinterErrorHandler::~PrinterErrorHandler() {
+PrinterDiagnosticHandler::~PrinterDiagnosticHandler() {
   // out-of-line since it's virtual
 }
 
-void
-printerErrorHandlerHelper(const ZorbaException& ex,
-                          std::ostream&         o,
-                          bool                  aIndent)
+void printerDiagnosticHandlerHelper( ZorbaException const &ex,
+                                     std::ostream&         o,
+                                     bool                  aIndent)
 {
   o << "<errors>";
   if ( aIndent ) o << std::endl << "  ";
@@ -62,10 +61,10 @@ printerErrorHandlerHelper(const ZorbaException& ex,
 }
 
 void
-PrinterErrorHandler::error( const ZorbaException& ex )
+PrinterDiagnosticHandler::error( const ZorbaException& ex )
 {
   if (thePrintAsXml)
-    printerErrorHandlerHelper( ex, theOStream, theIndent );
+    printerDiagnosticHandlerHelper( ex, theOStream, theIndent );
   else
     theOStream << ex;
 }

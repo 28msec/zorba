@@ -30,7 +30,7 @@
 #include "common/common.h"
 
 #include <zorba/zorba.h>
-#include <zorba/error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/zorbastring.h>
 #include <zorba/util/file.h>

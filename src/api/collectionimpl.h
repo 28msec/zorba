@@ -28,10 +28,10 @@ class CollectionImpl : public Collection
   friend class Unmarshaller;
 
   store::Collection_t   theCollection;
-  ErrorHandler        * theErrorHandler;
+  DiagnosticHandler   * theDiagnosticHandler;
 
  public:
-  CollectionImpl(const store::Collection_t& aCollection, ErrorHandler* aErrorHandler);
+  CollectionImpl(const store::Collection_t& aCollection, DiagnosticHandler* aDiagnosticHandler);
 
   virtual ~CollectionImpl();
 

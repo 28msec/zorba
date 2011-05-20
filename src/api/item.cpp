@@ -17,7 +17,7 @@
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
 #include <zorba/zorba_exception.h>
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 
 #include "zorbautils/lock.h"
 #include "zorbaerrors/xquery_diagnostics.h"

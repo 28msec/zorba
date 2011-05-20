@@ -24,7 +24,7 @@
 
 namespace zorba {
 
-class ErrorHandler;
+class DiagnosticHandler;
 class XQueryImpl;
 
 
@@ -44,7 +44,7 @@ class XQueryImpl;
   Pointer to the internal static_context obj (which is owned by the XQuery obj).
   Access to the static context is needed to resolve names, etc.
 
-  theErrorHandler :
+  theDiagnosticHandler :
   Pointer to the error handler of the query (which is owned either by the XQuery
   obj or the application).
 

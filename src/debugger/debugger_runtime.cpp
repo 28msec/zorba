@@ -32,7 +32,7 @@
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/util/flowctl_exception.h"
 
-#include "zorba/printer_error_handler.h"
+#include "zorba/printer_diagnostic_handler.h"
 #include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbautils/synchronous_logger.h"
 
@@ -216,7 +216,7 @@ DebuggerRuntime::runQuery()
   theExecStatus = theExecStatus == QUERY_SUSPENDED ? QUERY_RESUMED : QUERY_RUNNING;
 
   // used to print error messages
-  PrinterErrorHandler lErrorHandler(theOStream);
+  PrinterDiagnosticHandler lDiagnosticHandler(theOStream);
 
   try {
     theWrapper->thePlanState->theDebuggerCommons->setRuntime(this);
@@ -238,7 +238,7 @@ DebuggerRuntime::runQuery()
     // Runtime correctly terminated by user interrupt
   } catch (ZorbaException const& e){
     // this does not rethrow but only print the error message
-    ZorbaImpl::notifyError(&lErrorHandler, e);
+    ZorbaImpl::notifyError(&lDiagnosticHandler, e);
   }
   theLock.wlock();
   theExecStatus = QUERY_TERMINATED;

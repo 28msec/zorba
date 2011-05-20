@@ -23,7 +23,7 @@
 
 namespace zorba {
 
-class ErrorHandler;
+class DiagnosticHandler;
 class XQueryImpl;
 
 /*******************************************************************************

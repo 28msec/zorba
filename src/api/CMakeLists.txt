@@ -15,13 +15,12 @@
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/api/version.cpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp)
 
 SET(API_SRCS
-		error_handler.cpp
+		diagnostic_handler.cpp
     zorba.cpp
     zorbaimpl.cpp
     xqueryimpl.cpp
     sax2impl.cpp
-    default_error_handler.cpp
-    printer_error_handler.cpp
+    printer_diagnostic_handler.cpp
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp
     resultiteratorimpl.cpp

@@ -17,7 +17,7 @@
 #include <zorba/item.h>
 #include <zorba/options.h>
 #include <zorba/singleton_item_sequence.h>
-#include <zorba/default_error_handler.h>
+#include <zorba/diagnostic_handler.h>
 
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
@@ -38,26 +38,26 @@ Serializer::createSerializer(ItemSequence* aOptions)
   return new SerializerImpl(aOptions);
 }
 
-SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorHandler* aErrorHandler)
-  : theErrorHandler(aErrorHandler),
+SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, DiagnosticHandler* aDiagnosticHandler)
+  : theDiagnosticHandler(aDiagnosticHandler),
     theInternalSerializer(&theXQueryDiagnostics)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
   own_error_handler = false;
-  if (!theErrorHandler) {
-    theErrorHandler = new DefaultErrorHandler();
+  if (!theDiagnosticHandler) {
+    theDiagnosticHandler = new DiagnosticHandler();
     own_error_handler = true;
   }
 }
 
-SerializerImpl::SerializerImpl(ItemSequence* aOptions, ErrorHandler* aErrorHandler)
-  : theErrorHandler(aErrorHandler),
+SerializerImpl::SerializerImpl(ItemSequence* aOptions, DiagnosticHandler* aDiagnosticHandler)
+  : theDiagnosticHandler(aDiagnosticHandler),
     theInternalSerializer(&theXQueryDiagnostics)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
   own_error_handler = false;
-  if (!theErrorHandler) {
-    theErrorHandler = new DefaultErrorHandler();
+  if (!theDiagnosticHandler) {
+    theDiagnosticHandler = new DiagnosticHandler();
     own_error_handler = true;
   }
 }
@@ -65,7 +65,7 @@ SerializerImpl::SerializerImpl(ItemSequence* aOptions, ErrorHandler* aErrorHandl
 SerializerImpl::~SerializerImpl() 
 {
   if(own_error_handler)
-    delete theErrorHandler;
+    delete theDiagnosticHandler;
 }
 
 
@@ -78,7 +78,7 @@ SerializerImpl::serialize(ItemSequence* aObject, std::ostream& aOs) const
     theInternalSerializer.serialize(Unmarshaller::getInternalIterator(object_iter.get()), aOs);
     object_iter->close();
   } catch (ZorbaException const &e) {
-    ZorbaImpl::notifyError(theErrorHandler, e);
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
   }
 }
 

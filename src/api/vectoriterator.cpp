@@ -32,15 +32,15 @@ namespace zorba {
 #define VECTOR_ITERATOR_CATCH                                  \
 catch (ZorbaException const& e)                                \
 {                                                              \
-  ZorbaImpl::notifyError(theErrorHandler, e);                  \
+  ZorbaImpl::notifyError(theDiagnosticHandler, e);             \
 }                                                              \
 catch (std::exception const& e)                                \
 {                                                              \
-  ZorbaImpl::notifyError(theErrorHandler, e.what());           \
+  ZorbaImpl::notifyError(theDiagnosticHandler, e.what());      \
 }                                                              \
 catch (...)                                                    \
 {                                                              \
-  ZorbaImpl::notifyError(theErrorHandler);                     \
+  ZorbaImpl::notifyError(theDiagnosticHandler);                \
 } 
 
 
@@ -49,10 +49,10 @@ catch (...)                                                    \
 ********************************************************************************/
 VectorIterator::VectorIterator(
     const std::vector<store::Item_t>& aVector,
-    ErrorHandler* aErrorHandler)
+    DiagnosticHandler* aDiagnosticHandler)
   :
   theVector(aVector),
-  theErrorHandler(aErrorHandler),
+  theDiagnosticHandler(aDiagnosticHandler),
   theIsOpen(false)
 {
 }

@@ -57,7 +57,7 @@ Item FunctionImpl::getFunctionName() const
   } 
   catch (ZorbaException const& e) 
   {
-    ZorbaImpl::notifyError(theErrorHandler, e);
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
   }
   return Item(0);
 }

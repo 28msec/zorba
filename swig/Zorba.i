@@ -16,21 +16,21 @@ public:
   XQuery compileQuery(const std::string& aStr) 
   { return XQuery(theZorba->compileQuery(aStr)); }
   
-  XQuery compileQuery(const std::string& aStr, ErrorHandler* aErrorHandler)
-  { return XQuery(theZorba->compileQuery(aStr, aErrorHandler)); }
+  XQuery compileQuery(const std::string& aStr, DiagnosticHandler* aDiagnosticHandler)
+  { return XQuery(theZorba->compileQuery(aStr, aDiagnosticHandler)); }
 
   XQuery compileQuery(const std::string& aStr, StaticContext &aStaticContext, 
-                      ErrorHandler* aErrorHandler)
+                      DiagnosticHandler* aDiagnosticHandler)
   { 
     return XQuery(theZorba->compileQuery(aStr, aStaticContext.theStaticContext,
-                                         aErrorHandler));
+                                         aDiagnosticHandler));
   }
 
   XQuery compileQuery(const std::string& aStr, CompilerHints &aCompilerHints, 
-                      ErrorHandler* aErrorHandler)
+                      DiagnosticHandler* aDiagnosticHandler)
   {
     return XQuery(theZorba->compileQuery(aStr, aCompilerHints.theCompilerHints,
-                                         aErrorHandler));
+                                         aDiagnosticHandler));
   }
 
   XmlDataManager getXmlDataManager()
@@ -51,11 +51,11 @@ class Zorba
  public:
   static Zorba getInstance(const Store&);
   XQuery compileQuery(const std::string& aStr);
-  XQuery compileQuery(const std::string& aStr, ErrorHandler* aErrorHandler);
+  XQuery compileQuery(const std::string& aStr, DiagnosticHandler* aDiagnosticHandler);
   XQuery compileQuery(const std::string& aStr, StaticContext &aStaticContext, 
-                      ErrorHandler* aErrorHandler);
+                      DiagnosticHandler* aDiagnosticHandler);
   XQuery compileQuery(const std::string& aStr, CompilerHints &aCompilerHints, 
-                      ErrorHandler* aErrorHandler);
+                      DiagnosticHandler* aDiagnosticHandler);
   XmlDataManager getXmlDataManager();
   void shutdown();
 }; // class Zorba

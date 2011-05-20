@@ -22,7 +22,7 @@
 
 namespace zorba {
 
-class ErrorHandler;
+class DiagnosticHandler;
 
 /*******************************************************************************
   Iterator used for iterating over an internal store::Iterator_t.
@@ -34,13 +34,13 @@ class StoreIteratorImpl : public Iterator
   friend class DynamicContextImpl;
 
 protected:
-  store::Iterator_t theIterator; 
-  ErrorHandler*     theErrorHandler;
-  bool              theOwnErrorHandler;
-  bool              theIsOpen;     
-  bool              theHaveLock;
+  store::Iterator_t  theIterator; 
+  DiagnosticHandler* theDiagnosticHandler;
+  bool               theOwnDiagnosticHandler;
+  bool               theIsOpen;     
+  bool               theHaveLock;
     
-  StoreIteratorImpl(store::Iterator_t, ErrorHandler*);
+  StoreIteratorImpl(store::Iterator_t, DiagnosticHandler*);
 
 public:
   virtual ~StoreIteratorImpl();

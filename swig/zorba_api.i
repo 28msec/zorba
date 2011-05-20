@@ -42,13 +42,13 @@
 #include <sstream>
 #include <iostream>
 #include <zorba/zorba_exception.h>
-#include <zorba/error_handler.h>
+#include <zorba/diagnostic_handler.h>
 #include <zorba/options.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
 
   class CompilerHints;
-  class ErrorHandler;
+  class DiagnosticHandler;
   class Item;
   class Iterator;
   class XQuery;
@@ -82,7 +82,7 @@
 %include "Store.i"
 %include "XmlDataManager.i"
 %include "Exceptions.i"
-%include "ErrorHandler.i"
+%include "DiagnosticHandler.i"
 %include "CompilerHints.i"
 %include "StaticContext.i"
 %include "Resolvers.i"

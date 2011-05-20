@@ -28,21 +28,21 @@
 namespace zorba {
 
   class Serializable;
-  class ErrorHandler;
+  class DiagnosticHandler;
 
   class SerializerImpl : public Serializer
   {
     private:
       XQueryDiagnostics theXQueryDiagnostics;
-      ErrorHandler* theErrorHandler;
+      DiagnosticHandler* theDiagnosticHandler;
       bool                own_error_handler;
       mutable serializer theInternalSerializer;
 
     public:
 
-      SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorHandler* aErrorHandler = 0);
+      SerializerImpl(const Zorba_SerializerOptions_t& aOptions, DiagnosticHandler* aDiagnosticHandler = 0);
 
-      SerializerImpl(ItemSequence* options, ErrorHandler* aErrorHandler = 0);
+      SerializerImpl(ItemSequence* options, DiagnosticHandler* aDiagnosticHandler = 0);
 
       virtual ~SerializerImpl();
 
