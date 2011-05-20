@@ -29,7 +29,6 @@ SET(API_EXAMPLES
   item_handler.cpp
   callback.cpp
   binary.cpp
-  string.cpp
   module_import_check.cpp
 )
 
