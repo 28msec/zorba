@@ -237,7 +237,7 @@ FileFunction::isValidDriveSegment(
     return false;
   }
 
-  char lDrive = aString.charAt(0);
+  char lDrive = aString[0];
   // the string is already upper case
   if (lDrive < 65 || lDrive > 90) {
     return false;
@@ -299,7 +299,6 @@ WriterFileFunction::evaluate(
   }
 
   bool lBinary = isBinary();
-  bool lAppend = isAppend();
 
   // actual write
   try {
@@ -355,4 +354,6 @@ WriterFileFunction::evaluate(
   return ItemSequence_t(new EmptySequence());
 }
 
-} /* namespace filemodule */ } /* namespace zorba */
+} // namespace filemodule
+} // namespace zorba
+/* vim:set set sw=2 ts=2: */
