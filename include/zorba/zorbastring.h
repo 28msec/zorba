@@ -1260,11 +1260,22 @@ public:
 
   ////////// DEPRECATED ///////////////////////////////////////////////////////
 
-  bool      byteEqual( char const *s, unsigned s_n ) const;
+  // replace with: operator==()
+  bool byteEqual( char const *s, unsigned s_n ) const;
+
+  // replace with: length() or size()
   size_type bytes() const;
+
+  // replace with: operator==()
+  bool equals( String const& ) const;
+
+  // replace with: substr()
+  String substring( size_type pos = 0, size_type n = npos ) const {
+    return substr( pos, n );
+  }
+
   String&   encodeForUri();
   bool      endsWith( const char* pattern ) const;
-  bool      equals( String const& ) const;
   String&   lowercase();
   String&   normalizeSpace();
   size_t    nr_of_chars() const;
@@ -1273,10 +1284,6 @@ public:
   String&   trim();
   String&   trim( String const &chars );
   String&   trim( const char* chars, int lengthOfChars );
-
-  String substring( size_type pos = 0, size_type n = npos ) const {
-    return substr( pos, n );
-  }
 
   String tokenize( String const &pattern, String const &flags,
                    size_type* startPos, bool* hasMatched ) const;

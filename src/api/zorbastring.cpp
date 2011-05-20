@@ -129,7 +129,6 @@ String::size_type String::capacity() const {
 }
 
 String::size_type String::length() const {
-  //return utf8::length( THIS_STRING->c_str() );
   return THIS_STRING->length();
 }
 
