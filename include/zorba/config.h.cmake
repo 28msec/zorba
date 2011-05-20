@@ -102,6 +102,7 @@ typedef __int64 int64_t;
 
 // C++ language features
 #cmakedefine ZORBA_CXX_NULLPTR
+#cmakedefine ZORBA_CXX_STATIC_ASSERT
 
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 

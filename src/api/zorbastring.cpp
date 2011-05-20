@@ -18,8 +18,8 @@
 
 #include "api/unmarshaller.h"
 #include "util/ascii_util.h"
+#include "util/cxx_util.h"
 #include "util/regex.h"
-#include "util/static_assert.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
@@ -44,7 +44,10 @@ typedef zstring string_type;
 #define THIS_STRING STRING_OF( *this )
 
 void String::size_check() {
-  ZORBA_STATIC_ASSERT( sizeof( string_type ) <= sizeof( string_storage_type ) );
+  static_assert(
+    sizeof( string_type ) <= sizeof( string_storage_type ),
+    "storage for zstring is too small"
+  );
 }
 
 ////////// constructors & destructor //////////////////////////////////////////

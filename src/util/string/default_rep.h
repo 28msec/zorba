@@ -19,7 +19,7 @@
 
 #include <iterator>
 
-#include "util/static_assert.h"
+#include "util/cxx_util.h"
 #include "rep_base.h"
 
 namespace zorba {
@@ -144,9 +144,10 @@ public:
    * @return Returns said %rep.
    */
   static rep* empty_rep() {
-    ZORBA_STATIC_ASSERT(
+    static_assert(
       sizeof( rep ) + sizeof( value_type )
-      <= sizeof( empty_rep_base::rep_model )
+        <= sizeof( empty_rep_base::rep_model ),
+      "storage for string representation is too small"
     );
     return reinterpret_cast<rep*>( empty_rep_base::empty_rep() );
   }

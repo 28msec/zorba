@@ -19,7 +19,10 @@
 
 #include <zorba/config.h>
 
+///////////////////////////////////////////////////////////////////////////////
+
 #ifndef ZORBA_CXX_NULLPTR
+
 /**
  * See: http://www2.research.att.com/~bs/C++0xFAQ.html#nullptr
  */
@@ -36,7 +39,25 @@ public:
 private:
   void operator&() const;               // whose address can't be taken
 } const nullptr = {};                   // and whose name is nullptr
+
 #endif /* ZORBA_CXX_NULLPTR */
+
+///////////////////////////////////////////////////////////////////////////////
+
+#ifndef ZORBA_CXX_STATIC_ASSERT
+
+template<bool> struct zorba_static_assert;  // intentionally undefined
+template<>     struct zorba_static_assert<true> { };
+template<int>  struct zorba_static_assert_type { };
+
+#define static_assert(expr,msg)                   \
+  typedef ::zorba_static_assert_type<             \
+    sizeof( ::zorba_static_assert<(expr) != 0> )  \
+  > zorba_static_assert_type_##__LINE__
+
+#endif /* ZORBA_CXX_STATIC_ASSERT */
+
+///////////////////////////////////////////////////////////////////////////////
 
 #endif /* ZORBA_CXX_UTIL_H */
 /* vim:set et sw=2 ts=2: */
