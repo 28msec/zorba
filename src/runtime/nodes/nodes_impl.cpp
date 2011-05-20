@@ -234,5 +234,94 @@ bool FnHasChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+static bool is_ancestor_of(store::Item_t parent, store::Item_t child)
+{
+  if(parent == NULL)
+    return false;
+  while(child != NULL)
+  {
+    if(parent == child)
+      return true;
+    child = child->getParent();
+  }
+  return false;
+}
+
+bool FnInnermostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t     item;
+
+  FnInnermostIteratorState *state;
+  DEFAULT_STACK_INIT(FnInnermostIteratorState, state, planState);
+
+  while(consumeNext(item, theChildren[0].getp(), planState))
+  {
+    std::list<store::Item_t>::iterator  list_it;
+    bool dont_add = false;
+    for(list_it = state->node_list.begin(); list_it != state->node_list.end();)
+    {
+      if(is_ancestor_of(item, *list_it))
+      {
+        dont_add = true;
+        break;
+      }
+      if(is_ancestor_of(*list_it, item))
+      {
+        list_it = state->node_list.erase(list_it);
+        continue;
+      }
+      list_it++;
+    }
+    if(!dont_add)
+      state->node_list.push_back(item);
+  }
+
+  for(state->list_it = state->node_list.begin(); state->list_it != state->node_list.end(); state->list_it++)
+  {
+    result = *state->list_it;
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END (state);
+}
+
+bool FnOutermostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t     item;
+
+  FnOutermostIteratorState *state;
+  DEFAULT_STACK_INIT(FnOutermostIteratorState, state, planState);
+
+  while(consumeNext(item, theChildren[0].getp(), planState))
+  {
+    std::list<store::Item_t>::iterator  list_it;
+    bool dont_add = false;
+    for(list_it = state->node_list.begin(); list_it != state->node_list.end();)
+    {
+      if(is_ancestor_of(*list_it, item))
+      {
+        dont_add = true;
+        break;
+      }
+      if(is_ancestor_of(item, *list_it))
+      {
+        list_it = state->node_list.erase(list_it);
+        continue;
+      }
+      list_it++;
+    }
+    if(!dont_add)
+      state->node_list.push_back(item);
+  }
+
+  for(state->list_it = state->node_list.begin(); state->list_it != state->node_list.end(); state->list_it++)
+  {
+    result = *state->list_it;
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END (state);
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

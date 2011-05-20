@@ -2036,6 +2036,34 @@ void PrinterVisitor::endVisit ( const FnHasChildrenIterator& ) {
 // </FnHasChildrenIterator>
 
 
+// <FnInnermostIterator>
+void PrinterVisitor::beginVisit ( const FnInnermostIterator& a) {
+  thePrinter.startBeginVisit("FnInnermostIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnInnermostIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnInnermostIterator>
+
+
+// <FnOutermostIterator>
+void PrinterVisitor::beginVisit ( const FnOutermostIterator& a) {
+  thePrinter.startBeginVisit("FnOutermostIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnOutermostIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnOutermostIterator>
+
+
 // <AbsIterator>
 void PrinterVisitor::beginVisit ( const AbsIterator& a) {
   thePrinter.startBeginVisit("AbsIterator", ++theId);

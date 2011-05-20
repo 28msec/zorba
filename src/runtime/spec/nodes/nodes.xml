@@ -170,4 +170,58 @@
 
   </zorba:iterator>
 
+<!--
+/*******************************************************************************
+* 13.4 fn:innermost
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnInnermostIterator">
+
+    <zorba:description author="Zorba Team">fn:innermost</zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="innermost" prefix="fn" version="3.0">
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+    <zorba:state>
+      <zorba:member type="std::list&lt;store::Item_t&gt;" name="node_list"
+                    brief="temporary list of nodes"/>
+      <zorba:member type="std::list&lt;store::Item_t&gt;::iterator" name="list_it"
+                    brief="iterator through result sequence"/>
+    </zorba:state>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+* 13.4 fn:outermost
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnOutermostIterator">
+
+    <zorba:description author="Zorba Team">fn:outermost</zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="outermost" prefix="fn" version="3.0">
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+    <zorba:state>
+      <zorba:member type="std::list&lt;store::Item_t&gt;" name="node_list"
+                    brief="temporary list of nodes"/>
+      <zorba:member type="std::list&lt;store::Item_t&gt;::iterator" name="list_it"
+                    brief="iterator through result sequence"/>
+    </zorba:state>
+
+  </zorba:iterator>
+
 </zorba:iterators>

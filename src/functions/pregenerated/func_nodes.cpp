@@ -100,6 +100,26 @@ PlanIter_t fn_has_children_3_0::codegen(
   return new FnHasChildrenIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_innermost_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnInnermostIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_outermost_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnOutermostIterator(sctx, loc, argv);
+}
+
 void populate_context_nodes(static_context* sctx)
 {
   DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
@@ -175,6 +195,20 @@ void populate_context_nodes(static_context* sctx)
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
       FunctionConsts::FN_HAS_CHILDREN_1);
+
+
+  DECL_WITH_KIND(sctx, fn_innermost_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","innermost"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+      FunctionConsts::FN_INNERMOST_1);
+
+
+  DECL_WITH_KIND(sctx, fn_outermost_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","outermost"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+      FunctionConsts::FN_OUTERMOST_1);
 
 }
 

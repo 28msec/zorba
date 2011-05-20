@@ -250,6 +250,102 @@ public:
 };
 
 
+/**
+ * fn:innermost
+ * Author: Zorba Team
+ */
+class FnInnermostIteratorState : public PlanIteratorState
+{
+public:
+  std::list<store::Item_t> node_list; //temporary list of nodes
+  std::list<store::Item_t>::iterator list_it; //iterator through result sequence
+
+  FnInnermostIteratorState();
+
+  ~FnInnermostIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnInnermostIterator : public NaryBaseIterator<FnInnermostIterator, FnInnermostIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnInnermostIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnInnermostIterator,
+    NaryBaseIterator<FnInnermostIterator, FnInnermostIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnInnermostIterator, FnInnermostIteratorState>*)this);
+  }
+
+  FnInnermostIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnInnermostIterator, FnInnermostIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnInnermostIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:outermost
+ * Author: Zorba Team
+ */
+class FnOutermostIteratorState : public PlanIteratorState
+{
+public:
+  std::list<store::Item_t> node_list; //temporary list of nodes
+  std::list<store::Item_t>::iterator list_it; //iterator through result sequence
+
+  FnOutermostIteratorState();
+
+  ~FnOutermostIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnOutermostIterator : public NaryBaseIterator<FnOutermostIterator, FnOutermostIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnOutermostIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnOutermostIterator,
+    NaryBaseIterator<FnOutermostIterator, FnOutermostIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnOutermostIterator, FnOutermostIteratorState>*)this);
+  }
+
+  FnOutermostIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnOutermostIterator, FnOutermostIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnOutermostIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

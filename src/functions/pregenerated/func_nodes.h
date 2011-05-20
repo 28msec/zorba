@@ -129,6 +129,32 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//fn:innermost
+class fn_innermost_3_0 : public function
+{
+public:
+  fn_innermost_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn:outermost
+class fn_outermost_3_0 : public function
+{
+public:
+  fn_outermost_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

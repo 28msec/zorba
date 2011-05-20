@@ -199,6 +199,86 @@ FnHasChildrenIterator::~FnHasChildrenIterator() {}
 // </FnHasChildrenIterator>
 
 
+// <FnInnermostIterator>
+const char* FnInnermostIterator::class_name_str = "FnInnermostIterator";
+FnInnermostIterator::class_factory<FnInnermostIterator>
+FnInnermostIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnInnermostIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnInnermostIterator::class_versions_count =
+sizeof(FnInnermostIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnInnermostIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnInnermostIterator::~FnInnermostIterator() {}
+
+FnInnermostIteratorState::FnInnermostIteratorState() {}
+
+FnInnermostIteratorState::~FnInnermostIteratorState() {}
+
+
+void FnInnermostIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void FnInnermostIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </FnInnermostIterator>
+
+
+// <FnOutermostIterator>
+const char* FnOutermostIterator::class_name_str = "FnOutermostIterator";
+FnOutermostIterator::class_factory<FnOutermostIterator>
+FnOutermostIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnOutermostIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnOutermostIterator::class_versions_count =
+sizeof(FnOutermostIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnOutermostIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnOutermostIterator::~FnOutermostIterator() {}
+
+FnOutermostIteratorState::FnOutermostIteratorState() {}
+
+FnOutermostIteratorState::~FnOutermostIteratorState() {}
+
+
+void FnOutermostIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void FnOutermostIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </FnOutermostIterator>
+
+
 
 }
 
