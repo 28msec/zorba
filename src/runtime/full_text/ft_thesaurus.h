@@ -58,7 +58,7 @@ public:
    *
    * @param mapping The mapping string specifying the thesaurus to use.
    * @param lang The language of the thesaurus.
-   * @return Returns said thesaurus or \c NULL if no thesaurus matches the
+   * @return Returns said thesaurus or \c nullptr if no thesaurus matches the
    * request.
    */
   static ptr get( zstring const &mapping, locale::iso639_1::type lang );
@@ -73,8 +73,8 @@ public:
    * traversed.
    * @param at_most The maximum number of levels within the thesaurus to be
    * traversed.
-   * @return Returns a pointer to an iterator for the results or \c NULL if the
-   * phrase was not found.
+   * @return Returns a pointer to an iterator for the results or \c nullptr if
+   * the phrase was not found.
    */
   virtual iterator_ptr lookup( zstring const &phrase,
                                zstring const &relationship, ft_int at_least,

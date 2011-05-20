@@ -21,6 +21,7 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/query_loc.h"
+#include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/static_assert.h"
 #include "util/stl_util.h"
@@ -84,23 +85,6 @@ inline ft_int to_ft_int( xs_integer const &i ) {
 }
 
 ////////// PUSH/POP ///////////////////////////////////////////////////////////
-
-/**
- * See: http://www2.research.att.com/~bs/C++0xFAQ.html#nullptr
- */
-class nullptr_t {
-public:
-  template<typename T>                  // convertible to any type
-  operator T*() const {                 // of null non-member
-    return 0;                           // pointer...
-  }
-  template<class C,class T>             // or any type of null
-  operator T C::*() const {             // member pointer...
-    return 0;
-  }
-private:
-  void operator&() const;               // whose address can't be taken
-} const ft_nullptr = {};
 
 /**
  * An exception-safe push-and-release function for auto_ptr objects: the
@@ -218,7 +202,7 @@ bool ftcontains_visitor::ftcontains() const {
 }
 
 expr_visitor* ftcontains_visitor::get_expr_visitor() {
-  return NULL;
+  return nullptr;
 }
 
 double ftcontains_visitor::get_double( PlanIter_t const &iter ) {
@@ -308,7 +292,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 ft_visit_result::type V::begin_visit( ftand& ) {
   BEGIN_VISIT( ftand );
-  PUSH( matches_stack_, ft_nullptr ); // sentinel
+  PUSH( matches_stack_, nullptr ); // sentinel
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftand& ) {
@@ -331,7 +315,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
 
 ft_visit_result::type V::begin_visit( ftmild_not& ) {
   BEGIN_VISIT( ftmild_not );
-  PUSH( matches_stack_, ft_nullptr ); // sentinel
+  PUSH( matches_stack_, nullptr ); // sentinel
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftmild_not &mn ) {
@@ -358,7 +342,7 @@ void V::end_visit( ftmild_not &mn ) {
 
 ft_visit_result::type V::begin_visit( ftor& ) {
   BEGIN_VISIT( ftor );
-  PUSH( matches_stack_, ft_nullptr ); // sentinel
+  PUSH( matches_stack_, nullptr ); // sentinel
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftor& ) {

@@ -100,6 +100,9 @@ typedef __int64 int64_t;
 #cmakedefine MSVC71
 #cmakedefine MSVC80
 
+// C++ language features
+#cmakedefine ZORBA_CXX_NULLPTR
+
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 
 #if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ < 430)

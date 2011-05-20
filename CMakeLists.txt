@@ -93,6 +93,7 @@ INCLUDE(CheckLibraryExists)
 INCLUDE(CheckVariableExists)
 INCLUDE(CheckIncludeFileCXX)
 INCLUDE(CheckTypeSize)
+INCLUDE(CheckCXXSourceCompiles)
 
 CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      ZORBA_HAVE_SYS_MOUNT_H)
 CHECK_INCLUDE_FILES ("unicode/utypes.h"             ZORBA_HAVE_UTYPES_H)
@@ -131,6 +132,7 @@ CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32)
 CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
 CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
 
+CHECK_CXX_SOURCE_COMPILES ("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
 
 ################################################################################
 # Various cmake macros

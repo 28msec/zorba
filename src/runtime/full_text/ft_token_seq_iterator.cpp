@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "util/cxx_util.h"
 #include "zorbaerrors/assert.h"
 
 #include "ft_token_seq_iterator.h"
@@ -44,7 +45,7 @@ bool FTTokenSeqIterator::hasNext() const {
 }
 
 FTToken const* FTTokenSeqIterator::next() {
-  return pos_ < tokens_.size() ? &tokens_[ pos_++ ] : NULL;
+  return pos_ < tokens_.size() ? &tokens_[ pos_++ ] : nullptr;
 }
 
 FTTokenIterator::Mark_t FTTokenSeqIterator::pos() const {

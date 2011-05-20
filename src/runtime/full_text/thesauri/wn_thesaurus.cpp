@@ -22,6 +22,7 @@
 
 #include <zorba/util/path.h>
 
+#include "util/cxx_util.h"
 #include "util/fs_util.h"
 #include "util/less.h"
 #if DEBUG_FT_THESAURUS
@@ -485,7 +486,7 @@ char const* thesaurus::find_lemma( zstring const &phrase ) const {
   range_t const range =
     ::equal_range( wn_lemmas_.begin(), wn_lemmas_.end(), c_phrase, comparator );
   if ( range.first == wn_lemmas_.end() || comparator( c_phrase, *range.first ) )
-    return NULL;
+    return nullptr;
   return *range.first;
 }
 

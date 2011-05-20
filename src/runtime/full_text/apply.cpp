@@ -23,6 +23,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
+#include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/dict.h"
@@ -290,11 +291,11 @@ static void join_includes( ft_match::includes_t const &includes,
  * @param phrase The result string.
  * @param selector The token value selector to use.
  * @return Returns a pointer to the first token returned by the iterator or \c
- * NULL if the iterator returned no tokens.
+ * nullptr if the iterator returned no tokens.
  */
 static FTToken const* to_string( FTTokenIterator &tokens, zstring *phrase,
                                  int selector ) {
-  FTToken const *t0 = NULL;
+  FTToken const *t0 = nullptr;
   FTTokenIterator::Mark_t const mark( tokens.pos() );
   for ( FTToken const *t; (t = tokens.next()); ) {
     if ( phrase->empty() )
@@ -969,7 +970,7 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
       apply_thesaurus_option( topt, query_phrase, *qt0, synonyms );
 
       ftmatch_options options_no_thesaurus( options );
-      options_no_thesaurus.set_thesaurus_option( NULL );
+      options_no_thesaurus.set_thesaurus_option( nullptr );
 
       apply_ftwords_any(
         synonyms, query_pos, ignore_item, options_no_thesaurus, matcher, result

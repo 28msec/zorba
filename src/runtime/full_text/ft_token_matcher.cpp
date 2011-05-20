@@ -17,6 +17,7 @@
 #include <cctype>
 
 #include "compiler/expression/ftnode.h"
+#include "util/cxx_util.h"
 #include "util/stl_util.h"
 
 #include "ft_stop_words_set.h"
@@ -47,7 +48,7 @@ inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
                                                 iso639_1::type lang ) {
   if ( ftstop_word_option const *const sw = options.get_stop_word_option() )
     return ft_stop_words_set::construct( *sw, lang );
-  return NULL;
+  return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
