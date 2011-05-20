@@ -21,6 +21,7 @@
 
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/expr.h"
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr_iter.h"
 

@@ -17,6 +17,7 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "functions/func_errors_and_diagnostics.h"
@@ -40,14 +41,14 @@ static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 /*******************************************************************************
   copy annotations when wrapping an expression in a new one
 ********************************************************************************/
-expr_t fix_annotations(expr_t new_expr, const expr* old_expr) 
+expr_t fix_annotations(expr* new_expr, const expr* old_expr) 
 {
   if (old_expr == NULL) 
   {
     switch (new_expr->get_expr_kind()) 
     {
     case fo_expr_kind:
-      old_expr = static_cast<fo_expr*>(new_expr.getp())->get_arg(0);
+      old_expr = static_cast<const fo_expr*>(new_expr)->get_arg(0);
       break;
     default:
       assert(false);
@@ -59,10 +60,14 @@ expr_t fix_annotations(expr_t new_expr, const expr* old_expr)
   {
     if (k == Annotations::FREE_VARS)
     {
-      const var_ptr_set& old_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
-      const var_ptr_set& new_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
+      const var_ptr_set& old_set = 
+      get_varset_annotation(old_expr, Annotations::FREE_VARS);
+
+      const var_ptr_set& new_set = 
+      get_varset_annotation(new_expr, Annotations::FREE_VARS);
+
       var_ptr_set s;
-      std::set_union(old_set.begin(), 
+      std::set_union(old_set.begin(),
                      old_set.end(),
                      new_set.begin(),
                      new_set.end(),

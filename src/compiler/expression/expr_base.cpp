@@ -560,6 +560,7 @@ bool expr::is_constant() const
 
     iter.next();
   }
+
   return true;
 }
 

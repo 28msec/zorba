@@ -18,6 +18,7 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/script_exprs.h"
+#include "compiler/expression/expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/xqddf/value_index.h"
 #include "compiler/expression/expr_iter.h"

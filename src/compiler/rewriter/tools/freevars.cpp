@@ -16,18 +16,20 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/expr.h"
 
-using namespace std;
 
 namespace zorba {
 
 var_ptr_set no_free_vars;
 
 
-const var_ptr_set &get_varset_annotation (const expr *e, Annotations::Key k) 
+const var_ptr_set& get_varset_annotation(const expr* e, Annotations::Key k) 
 {
-  assert (e != NULL);
-  AnnotationValue_t ann = e->get_annotation (k);
-  return (ann == NULL) ? no_free_vars : dynamic_cast<VarSetAnnVal *> (ann.getp())->varset;
+  assert(e != NULL);
+
+  AnnotationValue_t ann = e->get_annotation(k);
+  return (ann == NULL ?
+          no_free_vars :
+          dynamic_cast<VarSetAnnVal *>(ann.getp())->theVarset);
 }
 
 }

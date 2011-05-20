@@ -24,6 +24,7 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "types/typeops.h"

@@ -19,12 +19,11 @@
 
 #include "common/shared_types.h"
 
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_base.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
-#include "functions/signature.h"
 #include "functions/function.h"
 
 #include "store/api/item_factory.h"
@@ -34,11 +33,11 @@
 #include <algorithm>
 
 #define LOOKUP_FN( pfx, local, arity ) \
-(GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
+(GENV.getRootStaticContext().lookup_fn (pfx, local, arity))
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-#define LOC( expr ) (expr)->get_loc ()
+#define LOC(expr) (expr)->get_loc ()
 
 
 
@@ -47,7 +46,11 @@ namespace zorba
 
 int count_variable_uses(const expr* root, const var_expr* var, RewriterContext* rCtx, int limit);
 
-expr_t fix_annotations(expr_t new_expr, const expr* old_expr = NULL);
+
+/*******************************************************************************
+
+********************************************************************************/
+expr_t fix_annotations(expr* new_expr, const expr* old_expr = NULL);
 
 
 /*******************************************************************************
@@ -70,29 +73,27 @@ typedef std::set<const var_expr *> var_ptr_set;
 class VarSetAnnVal : public AnnotationValue
 {
 public:
-  var_ptr_set varset;
+  var_ptr_set theVarset;
 
+public:
   VarSetAnnVal() {}
 
-  VarSetAnnVal(var_ptr_set varset_) : varset (varset_) {}
+  VarSetAnnVal(var_ptr_set& varset) 
+  {
+    theVarset.swap(varset);
+  }
 
-  void add(const var_expr* v) { varset.insert(varset.begin(), v); }
+  void add(const var_expr* v) { theVarset.insert(theVarset.begin(), v); }
 };
 
 
-const var_ptr_set& get_varset_annotation(const expr *e, Annotations::Key k);
+const var_ptr_set& get_varset_annotation(const expr* e, Annotations::Key k);
 
 
-inline expr_t fix_if_annotations(rchandle<if_expr> ite)
-{
-  fix_annotations(&*ite, ite->get_cond_expr());
-  fix_annotations(&*ite, ite->get_then_expr());
-  fix_annotations(&*ite, ite->get_else_expr());
-  return &*ite;
-}
+/*******************************************************************************
 
-
-inline bool is_data(expr *e)
+********************************************************************************/
+inline bool is_data(expr* e)
 {
   return (e->get_expr_kind() == fo_expr_kind &&
           static_cast<fo_expr *>(e)->get_func()->getKind() == FunctionConsts::FN_DATA_1);

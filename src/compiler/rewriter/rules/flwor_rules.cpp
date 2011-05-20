@@ -19,9 +19,11 @@
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/framework/rule_driver.h"
+#include "compiler/rewriter/tools/expr_tools.h"
+
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_iter.h"
-#include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/expression/expr.h"
 
 #include "context/static_context.h"
 
@@ -48,6 +50,17 @@ static bool is_subseq_pred(RewriterContext&, const flwor_expr*, const expr*, var
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void fix_if_annotations(if_expr* ifExpr)
+{
+  fix_annotations(ifExpr, ifExpr->get_cond_expr());
+  fix_annotations(ifExpr, ifExpr->get_then_expr());
+  fix_annotations(ifExpr, ifExpr->get_else_expr());
+}
 
 
 /*******************************************************************************
@@ -144,7 +157,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "for $x in E return $x"  --> "E"
   // "let $x := E return $x"  --> "E"
   if (numClauses == 1 &&
-      myVars.varset.size() == 1 &&
+      myVars.theVarset.size() == 1 &&
       flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
     const wrapper_expr* w = static_cast<const wrapper_expr*>(flwor.get_return_expr());
@@ -156,15 +169,12 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "if E then flwor else ()", where flwor is the original flwor expr without the
   // where clause.
   expr* whereExpr;
-  if ((whereExpr = flwor.get_where()) != NULL
-      //&&
-      //flwor.get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL
-     )
+  if ((whereExpr = flwor.get_where()) != NULL)
   {
     const var_ptr_set& whereVars = get_varset_annotation(whereExpr,
                                                          Annotations::FREE_VARS);
     var_ptr_set diff;
-    set_intersection(myVars.varset.begin(), myVars.varset.end(),
+    set_intersection(myVars.theVarset.begin(), myVars.theVarset.end(),
                      whereVars.begin(), whereVars.end(),
                      std::inserter(diff, diff.begin()));
     if (diff.empty())
@@ -172,11 +182,15 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr_t oldWhere = whereExpr;
       flwor.remove_where_clause();
 
-      return fix_if_annotations(new if_expr(sctx,
-                                            loc,
-                                            oldWhere,
-                                            &flwor,
-                                            fo_expr::create_seq(sctx, loc)));
+      rchandle<if_expr> ifExpr = new if_expr(sctx,
+                                             loc,
+                                             oldWhere,
+                                             &flwor,
+                                             fo_expr::create_seq(sctx, loc));
+
+      fix_if_annotations(ifExpr);
+
+      return ifExpr;
     }
   }
 
@@ -298,13 +312,12 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                !domainExpr->isNonDiscardable())
       {
         substitute = true;
+
 				rCtx.getCompilerCB()->theXQueryDiagnostics->add_warning(
 					NEW_XQUERY_WARNING(
 						zwarn::ZWST0001_UNUSED_VARIABLE,
-						WARN_PARAMS( var->get_name()->getStringValue() ),
-						WARN_LOC( var->get_loc() )
-					)
-				);
+						WARN_PARAMS(var->get_name()->getStringValue()),
+						WARN_LOC(var->get_loc())));
       }
 
       if (substitute)
@@ -355,12 +368,16 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     if ((whereExpr = flwor.get_where()) != NULL)
     {
-      result = fix_if_annotations(new if_expr(whereExpr->get_sctx(),
-                                              LOC(whereExpr),
-                                              whereExpr,
-                                              result,
-                                              fo_expr::create_seq(whereExpr->get_sctx(),
-                                                                  LOC(whereExpr))));
+      rchandle<if_expr> ifExpr = 
+      new if_expr(whereExpr->get_sctx(),
+                  LOC(whereExpr),
+                  whereExpr,
+                  result,
+                  fo_expr::create_seq(whereExpr->get_sctx(),
+                                      LOC(whereExpr)));
+      fix_if_annotations(ifExpr);
+      
+      return ifExpr;
     }
 
     return result;

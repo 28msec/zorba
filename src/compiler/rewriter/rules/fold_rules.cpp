@@ -26,6 +26,7 @@
 
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/expression/expr.h"
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/api/compilercb.h"
@@ -401,7 +402,7 @@ RULE_REWRITE_PRE(MarkFreeVars)
 RULE_REWRITE_POST(MarkFreeVars)
 {
   VarSetAnnVal* freevars = new VarSetAnnVal;
-  AnnotationValue_t new_ann = AnnotationValue_t (freevars);
+  AnnotationValue_t new_ann = AnnotationValue_t(freevars);
 
   if (node->get_expr_kind () == var_expr_kind)
   {
@@ -415,7 +416,9 @@ RULE_REWRITE_POST(MarkFreeVars)
     {
       expr* e = *iter;
       const var_ptr_set& kfv = get_varset_annotation (e, Annotations::FREE_VARS);
-      copy (kfv.begin(), kfv.end(), inserter(freevars->varset, freevars->varset.begin()));
+      std::copy(kfv.begin(),
+                kfv.end(),
+                inserter(freevars->theVarset, freevars->theVarset.begin()));
 
       iter.next();
     }
@@ -434,21 +437,21 @@ RULE_REWRITE_POST(MarkFreeVars)
         {
           const for_clause* fc = static_cast<const for_clause *>(c);
 
-          freevars->varset.erase(fc->get_var());
+          freevars->theVarset.erase(fc->get_var());
           if (fc->get_pos_var() != NULL)
-            freevars->varset.erase(fc->get_pos_var());
+            freevars->theVarset.erase(fc->get_pos_var());
         }
         else if (c->get_kind() == flwor_clause::let_clause)
         {
           const let_clause* lc = static_cast<const let_clause *>(c);
 
-          freevars->varset.erase(lc->get_var());
+          freevars->theVarset.erase(lc->get_var());
         }
         else if (c->get_kind() == flwor_clause::window_clause)
         {
           const window_clause* wc = static_cast<const window_clause *>(c);
 
-          freevars->varset.erase(wc->get_var());
+          freevars->theVarset.erase(wc->get_var());
 
           flwor_wincond* startCond = wc->get_win_start();
           flwor_wincond* stopCond = wc->get_win_stop();
@@ -468,7 +471,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
           for (unsigned i = 0; i < numGroupVars; ++i)
           {
-            freevars->varset.erase(gvars[i].second.getp());
+            freevars->theVarset.erase(gvars[i].second.getp());
           }
 
           const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
@@ -476,14 +479,14 @@ RULE_REWRITE_POST(MarkFreeVars)
 
           for (unsigned i = 0; i < numNonGroupVars; ++i)
           {
-            freevars->varset.erase(ngvars[i].second.getp());
+            freevars->theVarset.erase(ngvars[i].second.getp());
           }
         }
         else if (c->get_kind() == flwor_clause::count_clause)
         {
           const count_clause* cc = static_cast<const count_clause *>(c);
 
-          freevars->varset.erase(cc->get_var());
+          freevars->theVarset.erase(cc->get_var());
         }
       }
     }
@@ -501,15 +504,15 @@ static void remove_wincond_vars(
   const flwor_wincond::vars& inVars = cond->get_in_vars();
   const flwor_wincond::vars& outVars = cond->get_out_vars();
 
-  freevars->varset.erase(inVars.posvar.getp());
-  freevars->varset.erase(inVars.curr.getp());
-  freevars->varset.erase(inVars.prev.getp());
-  freevars->varset.erase(inVars.next.getp());
+  freevars->theVarset.erase(inVars.posvar.getp());
+  freevars->theVarset.erase(inVars.curr.getp());
+  freevars->theVarset.erase(inVars.prev.getp());
+  freevars->theVarset.erase(inVars.next.getp());
 
-  freevars->varset.erase(outVars.posvar.getp());
-  freevars->varset.erase(outVars.curr.getp());
-  freevars->varset.erase(outVars.prev.getp());
-  freevars->varset.erase(outVars.next.getp());
+  freevars->theVarset.erase(outVars.posvar.getp());
+  freevars->theVarset.erase(outVars.curr.getp());
+  freevars->theVarset.erase(outVars.prev.getp());
+  freevars->theVarset.erase(outVars.next.getp());
 }
 
 
@@ -541,9 +544,6 @@ RULE_REWRITE_PRE(FoldConst)
       ! node->isUnfoldable() &&
       isDeterministicFunc &&
       TypeOps::type_max_cnt(tm, *rtype) <= 1)
-    // &&
-    //  (fold_expensive_ops ||
-    //   node->get_annotation (Annotations::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
   {
     vector<store::Item_t> result;
     expr_t folded = execute (rCtx.getCompilerCB(), node, result);

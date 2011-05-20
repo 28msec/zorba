@@ -21,6 +21,7 @@
 
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/expression/expr.h"
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/rules/type_rules.h"
