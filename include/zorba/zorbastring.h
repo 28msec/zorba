@@ -1312,29 +1312,29 @@ private:
 
   static void size_check();
 
-  friend bool operator==( String const&, String const& );
-  friend bool operator==( String const&, std::string const& );
-  friend bool operator==( String const&, const_pointer );
+  friend ZORBA_DLL_PUBLIC bool operator==( String const&, String const& );
+  friend ZORBA_DLL_PUBLIC bool operator==( String const&, std::string const& );
+  friend ZORBA_DLL_PUBLIC bool operator==( String const&, const_pointer );
 
-  friend bool operator<( String const&, String const& );
-  friend bool operator<( String const&, std::string const& );
-  friend bool operator<( String const&, const_pointer );
-  friend bool operator<( std::string const&, String const& );
-  friend bool operator<( const_pointer, String const& );
+  friend ZORBA_DLL_PUBLIC bool operator<( String const&, String const& );
+  friend ZORBA_DLL_PUBLIC bool operator<( String const&, std::string const& );
+  friend ZORBA_DLL_PUBLIC bool operator<( String const&, const_pointer );
+  friend ZORBA_DLL_PUBLIC bool operator<( std::string const&, String const& );
+  friend ZORBA_DLL_PUBLIC bool operator<( const_pointer, String const& );
 
-  friend bool operator<=( String const&, String const& );
-  friend bool operator<=( String const&, std::string const& );
-  friend bool operator<=( String const&, const_pointer );
-  friend bool operator<=( std::string const&, String const& );
-  friend bool operator<=( const_pointer, String const& );
+  friend ZORBA_DLL_PUBLIC bool operator<=( String const&, String const& );
+  friend ZORBA_DLL_PUBLIC bool operator<=( String const&, std::string const& );
+  friend ZORBA_DLL_PUBLIC bool operator<=( String const&, const_pointer );
+  friend ZORBA_DLL_PUBLIC bool operator<=( std::string const&, String const& );
+  friend ZORBA_DLL_PUBLIC bool operator<=( const_pointer, String const& );
 
-  friend String operator+( String const&, String const& );
-  friend String operator+( String const&, std::string const& );
-  friend String operator+( String const&, String::const_pointer );
-  friend String operator+( std::string const&, String const& );
-  friend String operator+( String::const_pointer, String const& );
+  friend ZORBA_DLL_PUBLIC String operator+( String const&, String const& );
+  friend ZORBA_DLL_PUBLIC String operator+( String const&, std::string const& );
+  friend ZORBA_DLL_PUBLIC String operator+( String const&, String::const_pointer );
+  friend ZORBA_DLL_PUBLIC String operator+( std::string const&, String const& );
+  friend ZORBA_DLL_PUBLIC String operator+( String::const_pointer, String const& );
 
-  friend std::ostream& operator<<( std::ostream&, String const& );
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<( std::ostream&, String const& );
 
   friend class Unmarshaller;
 };
