@@ -158,7 +158,7 @@ class MyCollectionURIResolver : public  CollectionURIResolver
       String lURI = aURI.getStringValue();
       if (lURI == "file:///mycollection.xml") {
         // we have only one document
-        lURI = lURI.substring(8); // strip the "file:///" prefix
+        lURI = lURI.substr(8); // strip the "file:///" prefix
         lResult->theCollection = aXmlDataManager->getCollection(lURI);
         lResult->setError(URIResolverResult::UR_NOERROR);
       } else {

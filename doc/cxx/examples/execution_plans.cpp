@@ -157,7 +157,7 @@ class MySerializableExternalModule : public ExternalModule
     virtual StatelessExternalFunction*
     getExternalFunction(const String& aLocalname)
     {
-      if (aLocalname.equals("bar1")) {
+      if (aLocalname == "bar1") {
         if (!bar1) {
           bar1 = new MySerializableExternalFunction(this);
         } 

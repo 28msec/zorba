@@ -575,7 +575,7 @@ MyExternalModule::~MyExternalModule()
 
 StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
 {
-  if (aLocalname.equals("bar1")) 
+  if (aLocalname == "bar1") 
   {
     if (!bar1) 
     {
@@ -583,7 +583,7 @@ StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& a
     } 
     return bar1;
   }
-  else if (aLocalname.equals("bar2"))
+  else if (aLocalname == "bar2")
   {
     if (!bar2) 
     {
@@ -591,7 +591,7 @@ StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& a
     } 
     return bar2;
   }
-  else if (aLocalname.equals("bar3"))
+  else if (aLocalname == "bar3")
   {
     if (!bar3) 
     {
@@ -599,7 +599,7 @@ StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& a
     } 
     return bar3;
   }
-  else if (aLocalname.equals("bar4")) 
+  else if (aLocalname == "bar4") 
   {
     if (!bar3) 
     {
@@ -667,7 +667,7 @@ public:
 
   StatelessExternalFunction* getExternalFunction(const String& aLocalname)
   {
-    if (aLocalname.equals("ext")) 
+    if (aLocalname == "ext") 
     {
       return reinterpret_cast<StatelessExternalFunction*>(theExtFunc);
     }

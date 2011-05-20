@@ -65,7 +65,7 @@ TestDocumentURIResolver::resolve(const Item& aURI,
 {
   zorba::String lUri = aURI.getStringValue();
   if (lUri.startsWith("test://")) {
-    lUri = theBaseFile + lUri.substring(7);
+    lUri = theBaseFile + lUri.substr(7);
   }
   std::auto_ptr<TestDocumentURIResolverResult> lResult
     (new TestDocumentURIResolverResult());

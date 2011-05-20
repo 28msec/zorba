@@ -42,7 +42,7 @@ namespace zorba {
         if (lFileName.startsWith("file:")) {
           lFileName = URIHelper::decodeFileURI(lFileName);
           while (lFileName.startsWith("//")) {
-            lFileName = lFileName.substring(1);
+            lFileName = lFileName.substr(1);
           }
         }
         if(aAsXml) {

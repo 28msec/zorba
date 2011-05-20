@@ -130,9 +130,9 @@ namespace zorba {
       {
         StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
         if (!lFunc) {
-          if (aLocalname.equals("http-sequential-impl")) {
+          if (aLocalname == "http-sequential-impl") {
             lFunc = new HttpSendFunction(this);
-          } else if (aLocalname.equals("http-nondeterministic-impl")) {
+          } else if (aLocalname == "http-nondeterministic-impl") {
             lFunc = new HttpReadFunction(this);
           } 
         }

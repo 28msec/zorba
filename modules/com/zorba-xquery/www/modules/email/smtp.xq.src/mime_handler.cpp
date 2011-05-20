@@ -107,7 +107,7 @@ namespace zorba
         get_text_value(lChild, lValue);
 
           String lLowerNodeName = get_nodename(lChild).lowercase();
-          if(lLowerNodeName.equals("date")) {
+          if(lLowerNodeName == "date") {
             char lDate[MAILTMPLEN]; 
             parseXmlDateTime(lValue, lDate);
             theEnvelope->date = (unsigned char *) fs_get (1+strlen (lDate));
@@ -115,7 +115,7 @@ namespace zorba
             strcpy ((char *)theEnvelope->date, lDate);
 
       
-          } else if(lLowerNodeName.equals("from"))
+          } else if(lLowerNodeName == "from")
           {
             std::string lName;
             std::string lMailbox;
@@ -126,7 +126,7 @@ namespace zorba
             theEnvelope->from->mailbox = cpystr(const_cast<char*>(lMailbox.c_str()));
             theEnvelope->from->host = cpystr(const_cast<char*>(lHost.c_str()));
           }
-          else if(lLowerNodeName.equals("sender"))
+          else if(lLowerNodeName == "sender")
           {
             std::string lName;
             std::string lMailbox;
@@ -137,7 +137,7 @@ namespace zorba
             theEnvelope->sender->mailbox = cpystr(const_cast<char*>(lMailbox.c_str()));
             theEnvelope->sender->host = cpystr(const_cast<char*>(lHost.c_str()));
           }
-          else if(lLowerNodeName.equals("replyto"))
+          else if(lLowerNodeName == "replyto")
           {
             std::string lName;
             std::string lMailbox;
@@ -148,9 +148,9 @@ namespace zorba
             theEnvelope->reply_to->mailbox = cpystr(const_cast<char*>(lMailbox.c_str()));
             theEnvelope->reply_to->host = cpystr(const_cast<char*>(lHost.c_str()));
           }
-          else if(lLowerNodeName.equals("subject")) {
+          else if(lLowerNodeName == "subject") {
             theEnvelope->subject = cpystr ((char*)lValue.c_str());
-          } else if (lLowerNodeName.equals("recipient")) { 
+          } else if (lLowerNodeName == "recipient") { 
          
             Iterator_t lRecipentChildren = lChild.getChildren(); 
             lRecipentChildren->open();
@@ -159,7 +159,7 @@ namespace zorba
             lLowerNodeName = get_nodename(lRecipentChild).lowercase();
             lRecipentChildren->close();
 
-            if(lLowerNodeName.equals("to"))
+            if(lLowerNodeName == "to")
             {
               std::string lName;
               std::string lMailbox;
@@ -176,7 +176,7 @@ namespace zorba
               (*lNext)->host = cpystr(const_cast<char*>(lHost.c_str()));
               
             }
-            else if(lLowerNodeName.equals("cc"))
+            else if(lLowerNodeName == "cc")
             {
               std::string lName;
               std::string lMailbox;
@@ -191,7 +191,7 @@ namespace zorba
               (*lNext)->mailbox = cpystr(const_cast<char*>(lMailbox.c_str()));
               (*lNext)->host = cpystr(const_cast<char*>(lHost.c_str()));
             }
-            else if(lLowerNodeName.equals("bcc"))
+            else if(lLowerNodeName == "bcc")
             {
               std::string lName;
               std::string lMailbox;
@@ -300,17 +300,17 @@ namespace zorba
        zorba::String& aEncoding)
   {
     //all encodings should start with ENC so we only check the rest of the string
-    zorba::String lUpperEncSuffix = aEncoding.uppercase().substring(3);
+    zorba::String lUpperEncSuffix = aEncoding.uppercase().substr(3);
 
-    if(lUpperEncSuffix.equals("7BIT"))
+    if(lUpperEncSuffix == "7BIT")
       aBody->encoding = ENC7BIT;
-    else if (lUpperEncSuffix.equals("8BIT"))
+    else if (lUpperEncSuffix == "8BIT")
       aBody->encoding = ENC8BIT;
-    else if (lUpperEncSuffix.equals("BINARY"))
+    else if (lUpperEncSuffix == "BINARY")
       aBody->encoding = ENCBINARY;
-    else if (lUpperEncSuffix.equals("BASE64"))
+    else if (lUpperEncSuffix == "BASE64")
       aBody->encoding = ENCBASE64;
-    else if (lUpperEncSuffix.equals("QUOTEDPRINTABLE"))
+    else if (lUpperEncSuffix == "QUOTEDPRINTABLE")
       aBody->encoding = ENCQUOTEDPRINTABLE;
     else
       aBody->encoding = ENCOTHER;
@@ -322,23 +322,23 @@ namespace zorba
        zorba::String& aValue)
   {
     bool          lRes = true;
-    int           lPos = aValue.indexOf("/");
-    zorba::String lLowerType = aValue.substring(0, lPos).lowercase();
+    int           lPos = aValue.find('/');
+    zorba::String lLowerType = aValue.substr(0, lPos).lowercase();
 
     //set the BODY content type
-    if(lLowerType.equals("text"))
+    if(lLowerType == "text")
       aBody->type = TYPETEXT;
-    else if(lLowerType.equals("multipart"))
+    else if(lLowerType == "multipart")
       aBody->type = TYPEMULTIPART;
-    else if(lLowerType.equals("message"))
+    else if(lLowerType == "message")
       aBody->type = TYPEMESSAGE;
-    else if(lLowerType.equals("application"))
+    else if(lLowerType == "application")
       aBody->type = TYPEAPPLICATION;
-    else if(lLowerType.equals("image"))
+    else if(lLowerType == "image")
       aBody->type = TYPEIMAGE;
-    else if(lLowerType.equals("audio"))
+    else if(lLowerType == "audio")
       aBody->type = TYPEAUDIO;
-    else if(lLowerType.equals("video"))
+    else if(lLowerType == "video")
       aBody->type = TYPEVIDEO;
     else
     {
@@ -349,7 +349,7 @@ namespace zorba
     {
       // the list of subtypes of each type is available at
       // http://www.iana.org/assignments/media-types/
-      zorba::String lSubtype = aValue.substring(lPos + 1,aValue.length() - lPos);
+      zorba::String lSubtype = aValue.substr(lPos + 1,aValue.length() - lPos);
       aBody->subtype = cpystr((char*) lSubtype.uppercase().c_str());
     }
 
@@ -482,32 +482,32 @@ namespace zorba
       // first we get year, month, day, hour, minute and seconds as zorba strings      
 
       int lTempIndex;
-      lTempIndex = aXmlDateTime.indexOf("-");
-      String lYearString = aXmlDateTime.substring(0, lTempIndex);
-      aXmlDateTime = aXmlDateTime.substring(lTempIndex+1);
+      lTempIndex = aXmlDateTime.find('-');
+      String lYearString = aXmlDateTime.substr(0, lTempIndex);
+      aXmlDateTime = aXmlDateTime.substr(lTempIndex+1);
   
-      lTempIndex = aXmlDateTime.indexOf("-");
+      lTempIndex = aXmlDateTime.find('-');
     
-      String lMonthString = aXmlDateTime.substring(0, lTempIndex);
-      aXmlDateTime = aXmlDateTime.substring(lTempIndex+1);
+      String lMonthString = aXmlDateTime.substr(0, lTempIndex);
+      aXmlDateTime = aXmlDateTime.substr(lTempIndex+1);
       
-      lTempIndex = aXmlDateTime.indexOf("T");
+      lTempIndex = aXmlDateTime.find('T');
 
-      String lDayString = aXmlDateTime.substring(0, lTempIndex);
-      aXmlDateTime = aXmlDateTime.substring(lTempIndex+1);
+      String lDayString = aXmlDateTime.substr(0, lTempIndex);
+      aXmlDateTime = aXmlDateTime.substr(lTempIndex+1);
             
-      lTempIndex = aXmlDateTime.indexOf(":");
+      lTempIndex = aXmlDateTime.find(':');
       
-      String lHourString = aXmlDateTime.substring(0, lTempIndex);
-      aXmlDateTime = aXmlDateTime.substring(lTempIndex+1);
+      String lHourString = aXmlDateTime.substr(0, lTempIndex);
+      aXmlDateTime = aXmlDateTime.substr(lTempIndex+1);
       
-      lTempIndex = aXmlDateTime.indexOf(":");
+      lTempIndex = aXmlDateTime.find(':');
       
-      String lMinutesString = aXmlDateTime.substring(0, lTempIndex);
-      aXmlDateTime = aXmlDateTime.substring(lTempIndex+1);
+      String lMinutesString = aXmlDateTime.substr(0, lTempIndex);
+      aXmlDateTime = aXmlDateTime.substr(lTempIndex+1);
      
       // the next two digits specify the seconds
-      String lSecondsString = aXmlDateTime.substring(0, 2);
+      String lSecondsString = aXmlDateTime.substr(0, 2);
       
 
 
@@ -517,12 +517,12 @@ namespace zorba
      
 
       // now, according to the specification of the dateTime xml type, we can have either: nothing, a Z (for UTC), -XXXX or +XXXX)
-      String lUTCString = aXmlDateTime.substring(2);
+      String lUTCString = aXmlDateTime.substr(2);
 
       if (lUTCString.startsWith("+") || lUTCString.startsWith("-")) {
-        lTempIndex = lUTCString.indexOf(":");
-        String lUTCHours = lUTCString.substring(1, lTempIndex-1);
-        String lUTCMinutes = lUTCString.substring(lTempIndex + 1);
+        lTempIndex = lUTCString.find(':');
+        String lUTCHours = lUTCString.substr(1, lTempIndex-1);
+        String lUTCMinutes = lUTCString.substr(lTempIndex + 1);
         
         std::stringstream lHoursConverter;
         lHoursConverter << lUTCHours.c_str();

@@ -712,37 +712,12 @@ ostream& operator<<( ostream &os, String const &s ) {
 
 ////////// deprecated /////////////////////////////////////////////////////////
 
-String String::append( char const *s ) const {
-  String result( *this );
-  STRING_OF( result )->append( s );
-  return result;
-}
-
-String String::append( String const &s ) const {
-  String result( *this );
-  STRING_OF( result )->append( *STRING_OF( s ) );
-  return result;
-}
-
-size_t String::bytes() const {
-  return THIS_STRING->length();
-}
-
-bool String::equals( String const &s ) const {
-  return *THIS_STRING == *STRING_OF( s );
-}
-
 bool String::byteEqual( char const *s, unsigned s_n ) const {
   return ztd::equals( *THIS_STRING, s, s_n );
 }
 
-char String::charAt( unsigned i ) const {
-  return THIS_STRING->at( i );
-}
-
-String& String::decodeFromUri() {
-  uri::decode( *THIS_STRING );
-  return *this;
+String::size_type String::bytes() const {
+  return THIS_STRING->size();
 }
 
 String& String::encodeForUri() {
@@ -754,28 +729,8 @@ bool String::endsWith( char const *pattern ) const {
   return utf8::ends_with( *THIS_STRING, pattern );
 }
 
-String& String::escapeHtmlUri() {
-  utf8::to_html_uri( *THIS_STRING );
-  return *this;
-}
-
-String& String::formatAsXML() {
-  xml::escape( *THIS_STRING );
-  return *this;
-}
-
-int String::indexOf( char const *pattern ) const {
-  return THIS_STRING->find( pattern );
-}
-
-String& String::iriToUri() {
-  utf8::iri_to_uri( *THIS_STRING );
-  return *this;
-}
-
-int String::lastIndexOf( char const *pattern ) const {
-  string_type::size_type const pos = THIS_STRING->rfind( pattern );
-  return pos == string_type::npos ? -1 : pos;
+bool String::equals( String const &s ) const {
+  return *THIS_STRING == *STRING_OF( s );
 }
 
 String& String::lowercase() {

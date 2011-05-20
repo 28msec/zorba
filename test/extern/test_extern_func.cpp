@@ -138,9 +138,9 @@ StatelessExternalFunction* TestExternalModule::getExternalFunction(const String&
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (aLocalname.equals("bar")) {
+    if (aLocalname == "bar") {
       lFunc = new BarExternalFunction(this);
-    } else if (aLocalname.equals("nondeterm")) {
+    } else if (aLocalname == "nondeterm") {
       lFunc = new NondetermExternalFunction(this);
     }
   }

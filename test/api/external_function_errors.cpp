@@ -183,7 +183,7 @@ public:
 
 StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
 {
-  if (aLocalname.equals("func1")) 
+  if (aLocalname == "func1") 
   {
     if (!theErrorFunc1) 
     {
@@ -191,7 +191,7 @@ StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& a
     } 
     return theErrorFunc1;
   }
-  else if (aLocalname.equals("func2"))
+  else if (aLocalname == "func2")
   {
     if (!theErrorFunc2) 
     {
@@ -199,7 +199,7 @@ StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& a
     } 
     return theErrorFunc2;
   }
-  else if (aLocalname.equals("func3"))
+  else if (aLocalname == "func3")
   {
     if (!theErrorFunc3) 
     {
@@ -207,7 +207,7 @@ StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& a
     } 
     return theErrorFunc3;
   }
-  else if (aLocalname.equals("func4")) 
+  else if (aLocalname == "func4") 
   {
     if (!theErrorFunc4) 
     {

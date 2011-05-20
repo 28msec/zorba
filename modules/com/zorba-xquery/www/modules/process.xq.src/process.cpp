@@ -493,7 +493,7 @@ ProcessModule::getExternalFunction(const zorba::String& aLocalname)
   zorba::StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (lFind == theFunctions.end())
   {
-    if (aLocalname.equals("exec"))
+    if (aLocalname == "exec")
     {
       lFunc = new ExecFunction(this);
     }

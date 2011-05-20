@@ -307,7 +307,7 @@ namespace zorba { namespace system {
         lRes += *i;
       }
     } else if (envS.startsWith("env.")) { 
-      if (!getEnv(envS.substring(4), lRes)) {
+      if (!getEnv(envS.substr(4), lRes)) {
         return ItemSequence_t(new EmptySequence());
       }
 #ifdef LINUX

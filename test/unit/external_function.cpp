@@ -77,7 +77,7 @@ public:
 
   StatelessExternalFunction* getExternalFunction(const String& aLocalname)
   {
-    if (aLocalname.equals("bar"))
+    if (aLocalname == "bar")
         return const_cast<MySimpleExternalFunction*>(&bar);
     else
         return const_cast<MySimpleExternalFunction2*>(&bar2);

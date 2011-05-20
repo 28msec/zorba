@@ -48,7 +48,7 @@ namespace zorba {
       StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
       if (!lFunc)
       {
-        if (aLocalname.equals("send-impl"))
+        if (aLocalname == "send-impl")
         {
           lFunc = new SendFunction(this);
         }

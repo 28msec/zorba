@@ -41,45 +41,45 @@ FileModule::getExternalFunction(const String& aLocalname)
   if (!lFunc) {
     if (1 == 0) {
 
-    } else if (aLocalname.equals("create-directory")) {
+    } else if (aLocalname == "create-directory") {
       lFunc = new CreateDirectoryFunction(this);
-    } else if (aLocalname.equals("delete-file-impl")) {
+    } else if (aLocalname == "delete-file-impl") {
       lFunc = new DeleteFileImplFunction(this);
-    } else if (aLocalname.equals("read-binary")) {
+    } else if (aLocalname == "read-binary") {
       lFunc = new ReadBinaryFunction(this);
-    } else if (aLocalname.equals("read-text")) {
+    } else if (aLocalname == "read-text") {
       lFunc = new ReadTextFunction(this);
-    } else if (aLocalname.equals("exists")) {
+    } else if (aLocalname == "exists") {
       lFunc = new ExistsFunction(this);
-    } else if (aLocalname.equals("is-directory")) {
+    } else if (aLocalname == "is-directory") {
       lFunc = new IsDirectoryFunction(this);
-    } else if (aLocalname.equals("is-file")) {
+    } else if (aLocalname == "is-file") {
       lFunc = new IsFileFunction(this);
-    } else if (aLocalname.equals("copy-file-impl")) {
+    } else if (aLocalname == "copy-file-impl") {
       lFunc = new CopyFileImplFunction(this);
-    } else if (aLocalname.equals("write-text")) {
+    } else if (aLocalname == "write-text") {
       lFunc = new WriteTextFunction(this);
-    } else if (aLocalname.equals("write-binary")) {
+    } else if (aLocalname == "write-binary") {
       lFunc = new WriteBinaryFunction(this);
-    } else if (aLocalname.equals("append-text")) {
+    } else if (aLocalname == "append-text") {
       lFunc = new AppendTextFunction(this);
-    } else if (aLocalname.equals("append-binary")) {
+    } else if (aLocalname == "append-binary") {
       lFunc = new AppendBinaryFunction(this);
-    } else if (aLocalname.equals("list")) {
+    } else if (aLocalname == "list") {
       lFunc = new ListFunction(this);
-    } else if (aLocalname.equals("last-modified")) {
+    } else if (aLocalname == "last-modified") {
       lFunc = new LastModifiedFunction(this);
-    } else if (aLocalname.equals("size")) {
+    } else if (aLocalname == "size") {
       lFunc = new SizeFunction(this);
-    } else if (aLocalname.equals("directory-separator")) {
+    } else if (aLocalname == "directory-separator") {
       lFunc = new DirectorySeparator(this);
-    } else if (aLocalname.equals("path-separator")) {
+    } else if (aLocalname == "path-separator") {
       lFunc = new PathSeparator(this);
-    } else if (aLocalname.equals("resolve-path")) {
+    } else if (aLocalname == "resolve-path") {
       lFunc = new ResolvePathFunction(this);
-    } else if (aLocalname.equals("path-to-uri")) {
+    } else if (aLocalname == "path-to-uri") {
       lFunc = new PathToUriFunction(this);
-    } else if (aLocalname.equals("path-to-native")) {
+    } else if (aLocalname == "path-to-native") {
       lFunc = new PathToNativeFunction(this);
     }
   }

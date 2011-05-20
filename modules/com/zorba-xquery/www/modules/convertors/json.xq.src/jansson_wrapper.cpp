@@ -284,8 +284,8 @@ void serialize_element(
   aElement.getNodeName(lNodeNameItem);
 
   if(((aParentType.compare("object") == 0) &&
-       !(lNodeNameItem.getStringValue().equals("pair") || lNodeNameItem.getStringValue().equals("json"))) ||
-     ((aParentType.compare("array")  == 0) && !lNodeNameItem.getStringValue().equals("item")))
+       !(lNodeNameItem.getStringValue() == "pair" || lNodeNameItem.getStringValue() == "json")) ||
+     ((aParentType.compare("array")  == 0) && lNodeNameItem.getStringValue() != "item"))
   {
     aErrorLogSs << "'Object' should have only 'pair' children and 'array' should have only 'item' children." << std::endl;
     return;
@@ -299,9 +299,9 @@ void serialize_element(
     {
       Item lNodeNameItem;
       lAttr.getNodeName(lNodeNameItem);
-      if(lNodeNameItem.getStringValue().equals("type"))
+      if(lNodeNameItem.getStringValue() == "type")
         lType = lAttr.getStringValue();
-      else if(lNodeNameItem.getStringValue().equals("name"))
+      else if(lNodeNameItem.getStringValue() == "name")
         lName = lAttr.getStringValue();
     }
   }
@@ -313,7 +313,7 @@ void serialize_element(
     return;
   }
 
-  if(lType.equals("object"))
+  if(lType == "object")
   {
     if(!lName.empty())
       aResultSs << "\"" << lName.c_str() << "\": ";
@@ -323,7 +323,7 @@ void serialize_element(
     serialize_child(aElement, aResultSs, aErrorLogSs, "object");
     aResultSs << "}";
   }
-  else if(lType.equals("array"))
+  else if(lType == "array")
   {
     if(!lName.empty())
       aResultSs << "\"" << lName.c_str() << "\": ";
@@ -333,13 +333,13 @@ void serialize_element(
     serialize_child(aElement, aResultSs, aErrorLogSs, "array");
     aResultSs << "]";
   }
-  else if(lType.equals("string"))
+  else if(lType == "string")
   {
     zorba::String lValue;
     get_text_value(aElement, lValue);
     zorba::Item lNodeNameItem;
     aElement.getNodeName(lNodeNameItem);
-    if(lNodeNameItem.getStringValue().equals("pair"))
+    if(lNodeNameItem.getStringValue() == "pair")
     {
       if(lName.empty())
       {
@@ -355,24 +355,24 @@ void serialize_element(
     }
     aResultSs << "\"" << lValue.c_str() << "\"";
   }
-  else if(lType.equals("null"))
+  else if(lType == "null")
   {
     zorba::Item lNodeNameItem;
     aElement.getNodeName(lNodeNameItem);
-    if(lNodeNameItem.getStringValue().equals("pair"))
+    if(lNodeNameItem.getStringValue() == "pair")
     {
       aResultSs << "\"" << lName.c_str() << "\": ";
     }
     aResultSs << "null";
   }
-  else if(lType.equals("number") ||
-          lType.equals("boolean"))
+  else if(lType == "number" ||
+          lType == "boolean")
   {
     zorba::String lValue;
     get_text_value(aElement, lValue);
     zorba::Item lNodeNameItem;
     aElement.getNodeName(lNodeNameItem);
-    if(lNodeNameItem.getStringValue().equals("pair"))
+    if(lNodeNameItem.getStringValue() == "pair")
     {
       aResultSs << "\"" << lName.c_str() << "\": ";
     }
@@ -432,7 +432,7 @@ void JSON_serialize(
   Item lNodeNameItem;
   aElement.getNodeName(lNodeNameItem);
 
-  if(!lNodeNameItem.isNull() && !lNodeNameItem.getStringValue().equals("json"))
+  if(!lNodeNameItem.isNull() && lNodeNameItem.getStringValue() != "json")
   {
     aErrorLogSs << "This is not a JSON element." << std::endl;
     return;
@@ -455,7 +455,7 @@ void JSON_serialize(
     {
       Item lNodeNameItem;
       lAttr.getNodeName(lNodeNameItem);
-      if(lNodeNameItem.getStringValue().equals("type"))
+      if(lNodeNameItem.getStringValue() == "type")
         lType = lAttr.getStringValue();
       else
       {
@@ -467,7 +467,7 @@ void JSON_serialize(
   lAttrIt->close();
 
 
-  if(lType.equals("object"))
+  if(lType == "object")
     aResultSs << "{";
   else
     aResultSs << "[";
@@ -476,7 +476,7 @@ void JSON_serialize(
 
   if(!aErrorLogSs.str().empty())
   {
-    if(lType.equals("object"))
+    if(lType == "object")
       aResultSs << "}";
     else
       aResultSs << "]";

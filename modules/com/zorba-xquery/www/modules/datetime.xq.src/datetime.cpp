@@ -121,11 +121,11 @@ DateTimeModule::getExternalFunction(const zorba::String& aLocalname)
 {
   zorba::StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (aLocalname.equals("current-dateTime")) {
+    if (aLocalname == "current-dateTime") {
       lFunc = new CurrentDateTimeFunction(this);
-    } else if (aLocalname.equals("current-date")) {
+    } else if (aLocalname == "current-date") {
       lFunc = new CurrentDateFunction(this);
-    } else if (aLocalname.equals("current-time")) {
+    } else if (aLocalname == "current-time") {
       lFunc = new CurrentTimeFunction(this);
     }
   }

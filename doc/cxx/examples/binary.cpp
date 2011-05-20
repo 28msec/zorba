@@ -26,7 +26,7 @@ encode_example()
   String lString("Hello Zorba");
   String lEncoded = zorba::encoding::Base64::encode(lString);
   String lExpectedResult("SGVsbG8gWm9yYmE=");
-  return lEncoded.equals(lExpectedResult); 
+  return lEncoded == lExpectedResult; 
 }
 
 bool 
@@ -34,7 +34,7 @@ decode_example()
 {
  String lEncoded("SGVsbG8gWm9yYmE=");
  String lDecoded = zorba::encoding::Base64::decode(lEncoded);
- return lDecoded.equals("Hello Zorba");
+ return lDecoded == "Hello Zorba";
 
 }
 

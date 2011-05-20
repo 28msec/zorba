@@ -87,9 +87,9 @@ namespace zorba
           aName = "";
         }  
         String lEmail = lChild.getStringValue();
-        int lIndexOfAt = lEmail.indexOf("@"); 
-        aMailbox = lEmail.substring(0, lIndexOfAt).c_str(); 
-        aHost = lEmail.substring(lIndexOfAt+1, lEmail.length()-lIndexOfAt-1).c_str();
+        int lIndexOfAt = lEmail.find('@'); 
+        aMailbox = lEmail.substr(0, lIndexOfAt).c_str(); 
+        aHost = lEmail.substr(lIndexOfAt+1, lEmail.length()-lIndexOfAt-1).c_str();
     }
   } // namespace email
 } // namespace zorba

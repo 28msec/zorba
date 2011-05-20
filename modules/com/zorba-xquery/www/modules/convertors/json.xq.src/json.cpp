@@ -51,10 +51,10 @@ JsonFunction::getOptionValue(zorba::Item& aOptionsItem, const char* aOptionName)
         {
           lAttr.getNodeName(lNodeNameItem);
           if(!lCorrectChild &&
-              lNodeNameItem.getStringValue().equals("name"))
-            lCorrectChild = lAttr.getStringValue().equals("mapping");
+              lNodeNameItem.getStringValue() == "name")
+            lCorrectChild = lAttr.getStringValue() == "mapping";
           else if(lCorrectChild &&
-                  lNodeNameItem.getStringValue().equals("value"))
+                  lNodeNameItem.getStringValue() == "value")
             return lAttr.getStringValue();
         }
       }
@@ -102,9 +102,9 @@ ParseFunction::evaluate(
 
     lJsonMapping = getOptionValue(lOptionsItem, lOptionName.c_str());
 
-    if(lJsonMapping.equals("simple-json"))
+    if(lJsonMapping == "simple-json")
       JSON_parse(lStringItem.getStringValue().c_str(), lSs, lErrorLogSs);
-    else if(lJsonMapping.equals("json-ml"))
+    else if(lJsonMapping == "json-ml")
       JSON_ML_parse(lStringItem.getStringValue().c_str(), lSs, lErrorLogSs);
     else
     {
@@ -182,9 +182,9 @@ bool SerializeFunction::StringStreamSequence::next(std::string &result_string)
 
   std::stringstream lSs, lErrorLogSs;
 
-  if(theMapping.equals("simple-json"))
+  if(theMapping == "simple-json")
     JSON_serialize(node_item, lSs, lErrorLogSs);
-  else if(theMapping.equals("json-ml"))
+  else if(theMapping == "json-ml")
     JSON_ML_serialize(node_item, lSs, lErrorLogSs);
 
   if(!lErrorLogSs.str().empty())
@@ -230,8 +230,8 @@ SerializeFunction::evaluate(
 
     lJsonMapping = getOptionValue(lOptionsItem, lOptionName.c_str());
 
-    if(!lJsonMapping.equals("simple-json") &&
-       !lJsonMapping.equals("json-ml"))
+    if(lJsonMapping != "simple-json" &&
+       lJsonMapping != "json-ml")
     {
       zorba::Item lError = theModule->getItemFactory()->createQName(theModule->getURI(), "WrongParam");
       lErrorLogSs << "Mapping type '" << lJsonMapping << "' not supported.\nPossible values are 'simple-json' or 'json-ml'.";
@@ -273,11 +273,11 @@ JsonModule::getExternalFunction(const String& aLocalname)
   {
     if (1 == 0)
     { }
-    else if (aLocalname.equals("parse-internal"))
+    else if (aLocalname == "parse-internal")
     {
       lFunc = new ParseFunction(this);
     }
-    else if (aLocalname.equals("serialize-internal"))
+    else if (aLocalname == "serialize-internal")
     {
       lFunc = new SerializeFunction(this);
     }

@@ -38,41 +38,41 @@ ImapModule::getExternalFunction(const String& aLocalname)
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
     if (1 == 0) {
-    } else if (aLocalname.equals("status-impl")) {
+    } else if (aLocalname == "status-impl") {
       lFunc = new StatusFunction(this);
-    } else if (aLocalname.equals("create-impl")) {
+    } else if (aLocalname == "create-impl") {
       lFunc = new CreateFunction(this);
-    } else if (aLocalname.equals("delete-impl")) {
+    } else if (aLocalname == "delete-impl") {
       lFunc = new DeleteFunction(this);
-    } else if (aLocalname.equals("rename-impl")) {
+    } else if (aLocalname == "rename-impl") {
       lFunc = new RenameFunction(this);
-    } else if (aLocalname.equals("list-impl")) {
+    } else if (aLocalname == "list-impl") {
       lFunc = new ListFunction(this);
-    } else if (aLocalname.equals("subscribe-impl")) {
+    } else if (aLocalname == "subscribe-impl") {
       lFunc = new SubscribeFunction(this);
-    } else if (aLocalname.equals("unsubscribe-impl")) {
+    } else if (aLocalname == "unsubscribe-impl") {
       lFunc = new UnsubscribeFunction(this);
-    } else if (aLocalname.equals("expunge-impl")) {
+    } else if (aLocalname == "expunge-impl") {
       lFunc = new ExpungeFunction(this);
-    } else if (aLocalname.equals("search-impl")) {
+    } else if (aLocalname == "search-impl") {
       lFunc = new SearchFunction(this);
-    } else if (aLocalname.equals("copy-impl")) {
+    } else if (aLocalname == "copy-impl") {
       lFunc = new CopyFunction(this);
-    } else if (aLocalname.equals("fetch-envelope-impl")) {
+    } else if (aLocalname == "fetch-envelope-impl") {
       lFunc = new FetchEnvelopeFunction(this);
-    } else if (aLocalname.equals("fetch-message-impl")) {
+    } else if (aLocalname == "fetch-message-impl") {
       lFunc = new FetchMessageFunction(this);
-    } else if (aLocalname.equals("fetch-subject-impl")) {
+    } else if (aLocalname == "fetch-subject-impl") {
       lFunc = new FetchSubjectFunction(this);
-    } else if (aLocalname.equals("fetch-from-impl")) {
+    } else if (aLocalname == "fetch-from-impl") {
       lFunc = new FetchFromFunction(this);
-    } else if (aLocalname.equals("fetch-uid-impl")) {
+    } else if (aLocalname == "fetch-uid-impl") {
       lFunc = new FetchUidFunction(this);
-    } else if (aLocalname.equals("fetch-message-sequence-number-impl")) {
+    } else if (aLocalname == "fetch-message-sequence-number-impl") {
       lFunc = new FetchMessageSequenceNumberFunction(this);
-    } else if (aLocalname.equals("fetch-flags-impl")) {
+    } else if (aLocalname == "fetch-flags-impl") {
       lFunc = new FetchFlagsFunction(this);
-    } else if (aLocalname.equals("set-flags-impl")) {
+    } else if (aLocalname == "set-flags-impl") {
       lFunc = new SetFlagsFunction(this);
     }  
   }

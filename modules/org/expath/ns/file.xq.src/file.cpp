@@ -155,7 +155,7 @@ ReadBinaryFunction::evaluate(
 
     String lContent(lStrStream.str());
     String lEncodedContent = encoding::Base64::encode(lContent);
-    lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
+    lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.data(), lEncodedContent.size());
   } catch (ZorbaException& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not read file";
@@ -316,8 +316,8 @@ CopyFileImplFunction::evaluate(
   if (lDst->isDirectory()) {
     lDstStr = lDst->getFilePath();
     String lSrcPath = lSrcFile->getFilePath();
-    int lLastSep = lSrcPath.lastIndexOf(File::getDirectorySeparator());
-    String lName = lSrcPath.substring(lLastSep);
+    int lLastSep = lSrcPath.rfind(File::getDirectorySeparator());
+    String lName = lSrcPath.substr(lLastSep);
     lDstStr = lDstStr.append(lName.c_str());
     lDst = File::createFile(lDstStr.c_str());
   }

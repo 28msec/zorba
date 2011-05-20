@@ -1260,20 +1260,11 @@ public:
 
   ////////// DEPRECATED ///////////////////////////////////////////////////////
 
-  String    append( const char* suffix ) const;
-  String    append( const String& suffix ) const;
   bool      byteEqual( char const *s, unsigned s_n ) const;
   size_type bytes() const;
-  char      charAt( unsigned aIndex ) const;
-  String&   decodeFromUri();
   String&   encodeForUri();
   bool      endsWith( const char* pattern ) const;
-  bool      equals( const String& aString ) const;
-  String&   escapeHtmlUri();
-  String&   formatAsXML();
-  int       indexOf( const char* pattern ) const;
-  String&   iriToUri();
-  int       lastIndexOf( const char* pattern ) const;
+  bool      equals( String const& ) const;
   String&   lowercase();
   String&   normalizeSpace();
   size_t    nr_of_chars() const;
@@ -1283,8 +1274,8 @@ public:
   String&   trim( String const &chars );
   String&   trim( const char* chars, int lengthOfChars );
 
-  String substring( unsigned pos, unsigned n = npos ) const {
-    return substr( pos, npos );
+  String substring( size_type pos = 0, size_type n = npos ) const {
+    return substr( pos, n );
   }
 
   String tokenize( String const &pattern, String const &flags,
@@ -1330,11 +1321,12 @@ private:
 
   friend ZORBA_DLL_PUBLIC String operator+( String const&, String const& );
   friend ZORBA_DLL_PUBLIC String operator+( String const&, std::string const& );
-  friend ZORBA_DLL_PUBLIC String operator+( String const&, String::const_pointer );
+  friend ZORBA_DLL_PUBLIC String operator+( String const&, const_pointer );
   friend ZORBA_DLL_PUBLIC String operator+( std::string const&, String const& );
-  friend ZORBA_DLL_PUBLIC String operator+( String::const_pointer, String const& );
+  friend ZORBA_DLL_PUBLIC String operator+( const_pointer, String const& );
 
-  friend ZORBA_DLL_PUBLIC std::ostream& operator<<( std::ostream&, String const& );
+  friend ZORBA_DLL_PUBLIC
+  std::ostream& operator<<( std::ostream&, String const& );
 
   friend class Unmarshaller;
 };

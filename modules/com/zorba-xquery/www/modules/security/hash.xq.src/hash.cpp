@@ -163,7 +163,7 @@ StatelessExternalFunction* HashModule::getExternalFunction(const
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (aLocalname.equals("hash-unchecked")) {
+    if (aLocalname == "hash-unchecked") {
       lFunc = new HashFunction(this);
     }
   }

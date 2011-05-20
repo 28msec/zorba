@@ -334,7 +334,7 @@ WriterFileFunction::evaluate(
         // else write the string value
         else {
           zorba::String lString = lStringItem.getStringValue();
-          lOutStream.write(lString.c_str(), lString.bytes());
+          lOutStream.write(lString.data(), lString.size());
         }
       }
       lContentSeq->close();
