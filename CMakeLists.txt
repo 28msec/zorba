@@ -445,6 +445,9 @@ ELSE (ZORBA_STORE_DIRS MATCHES "src/store/naive")
   SET(BUILDING_SIMPLESTORE "OFF")
 ENDIF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
 
+SET (ZORBA_MODULES_DIR "${CMAKE_SOURCE_DIR}/../zorba_modules"
+  CACHE PATH "Path to directory (outside of Zorba svn root) containing external modules to add to the build")
+
 ADD_SUBDIRECTORY(scripts)
 ADD_SUBDIRECTORY(cmake_modules)
 

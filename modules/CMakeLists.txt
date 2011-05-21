@@ -26,8 +26,7 @@ ADD_SUBDIRECTORY(org)
 # ADD_SUBDIRECTORY()s, so that all the config files are built and
 # ready for other modules' FIND_PACKAGE() calls. We also add all
 # module build dirs to CMAKE_PREFIX_PATH for the same reason.
-SET (modules_dir "${CMAKE_SOURCE_DIR}/../zorba_modules")
-FILE (GLOB module_dirs RELATIVE "${modules_dir}" "${modules_dir}/*")
+FILE (GLOB module_dirs RELATIVE "${ZORBA_MODULES_DIR}" "${ZORBA_MODULES_DIR}/*")
 FOREACH (module_dir ${module_dirs})
   # The convention is that the name of an external module project is
   # always exactly zorba_foo_module, where "foo" is the name of the
@@ -35,7 +34,7 @@ FOREACH (module_dir ${module_dirs})
   SET (module_project "zorba_${module_dir}_module")
   SET (module_builddir "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
   FILE (MAKE_DIRECTORY "${module_builddir}")
-  CREATE_MODULE_CONFIG(${module_project} "${modules_dir}/${module_dir}"
+  CREATE_MODULE_CONFIG(${module_project} "${ZORBA_MODULES_DIR}/${module_dir}"
     "${module_builddir}")
     LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
 ENDFOREACH (module_dir)
@@ -49,7 +48,7 @@ LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 # them to this Zorba project. Create a binary directory for them
 # inside our own.
 FOREACH (module_dir ${module_dirs})
-  ADD_SUBDIRECTORY("${modules_dir}/${module_dir}"
+  ADD_SUBDIRECTORY("${ZORBA_MODULES_DIR}/${module_dir}"
     "${CMAKE_BINARY_DIR}/zorba_modules/zorba_${module_dir}_module")
 ENDFOREACH (module_dir)
 
