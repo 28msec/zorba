@@ -594,42 +594,42 @@ public:
   int compare( const_storage_pointer s ) const;
 
   // UTF8_STRING_COMPARE_2ST_U_X
-  int compare( size_type pos1, size_type n1, utf8_string const &s ) const;
+  int compare( size_type pos, size_type n, utf8_string const &s ) const;
 
   // UTF8_STRING_COMPARE_2ST_TU_X
   template<class StringType2>
-  int compare( size_type pos1, size_type n1,
+  int compare( size_type pos, size_type n,
                utf8_string<StringType2> const &s ) const;
 
   // UTF8_STRING_COMPARE_2ST_S_X
-  int compare( size_type pos1, size_type n1, StringType const &s ) const;
+  int compare( size_type pos, size_type n, StringType const &s ) const;
 
   // UTF8_STRING_COMPARE_2ST_SS_X
-  int compare( size_type pos1, size_type n1, std_string_arg const &s ) const;
+  int compare( size_type pos, size_type n, std_string_arg const &s ) const;
 
   // UTF8_STRING_COMPARE_2ST_CSP_X
-  int compare( size_type pos1, size_type n1, const_storage_pointer s ) const;
+  int compare( size_type pos, size_type n, const_storage_pointer s ) const;
 
   // UTF8_STRING_COMPARE_2ST_U_2ST_X
-  int compare( size_type pos1, size_type n1, utf8_string const &s,
-               size_type pos2, size_type n2 ) const;
+  int compare( size_type pos, size_type n, utf8_string const &s,
+               size_type s_pos, size_type s_n ) const;
 
   // UTF8_STRING_COMPARE_2ST_TU_2ST_X
   template<class StringType2>
-  int compare( size_type pos1, size_type n1, utf8_string<StringType2> const &s,
-               size_type pos2, size_type n2 ) const;
+  int compare( size_type pos, size_type n, utf8_string<StringType2> const &s,
+               size_type s_pos, size_type s_n ) const;
 
   // UTF8_STRING_2ST_S_2ST_X
-  int compare( size_type pos1, size_type n1, StringType const &s,
-               size_type pos2, size_type n2 ) const;
+  int compare( size_type pos, size_type n, StringType const &s,
+               size_type s_pos, size_type s_n ) const;
 
   // UTF8_STRING_2ST_SS_2ST_X
-  int compare( size_type pos1, size_type n1, std_string_arg const &s,
-               size_type pos2, size_type n2 ) const;
+  int compare( size_type pos, size_type n, std_string_arg const &s,
+               size_type s_pos, size_type s_n ) const;
 
   // UTF8_STRING_2ST_CSP_2ST_X
-  int compare( size_type pos1, size_type n1, const_storage_pointer s,
-               size_type n2 ) const;
+  int compare( size_type pos, size_type n, const_storage_pointer s,
+               size_type s_n ) const;
 
   ////////// clear/erase //////////////////////////////////////////////////////
 
@@ -949,6 +949,7 @@ public:
     return *this;
   }
 
+  // Added for disambiguation.
   utf8_string& replace( iterator i, iterator j, int n, value_type c ) {
     return replace( i, i, static_cast<size_type>( n ), c );
   }
@@ -1244,7 +1245,7 @@ utf8_string<StringType>::assign( StringType const &s ) {
 template<class StringType> inline utf8_string<StringType>&
 utf8_string<StringType>::assign( utf8_string const &s, size_type pos,
                                  size_type n ) {
-  return assign( *s.s_ );
+  return assign( *s.s_, pos, n );
 }
 
 // UTF8_STRING_ASSIGN_S_2ST_X
@@ -1343,58 +1344,58 @@ utf8_string<StringType>::compare( const_storage_pointer s ) const {
 
 // UTF8_STRING_COMPARE_2ST_U_X
 template<class StringType> inline int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
+utf8_string<StringType>::compare( size_type pos, size_type n,
                                   utf8_string const &s ) const {
-  return compare( pos1, n1, *s.s_ );
+  return compare( pos, n, *s.s_ );
 }
 
 // UTF8_STRING_COMPARE_2ST_TU_X
 template<class StringType>
 template<class StringType2> inline int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
+utf8_string<StringType>::compare( size_type pos, size_type n,
                                   utf8_string<StringType2> const &s ) const {
-  return compare( pos1, n1, s.get() );
+  return compare( pos, n, s.get() );
 }
 
 // UTF8_STRING_COMPARE_2ST_S_X
 template<class StringType> inline int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
+utf8_string<StringType>::compare( size_type pos, size_type n,
                                   StringType const &s ) const {
-  char2byte const b( s_->data(), s_->size(), pos1, n1 );
+  char2byte const b( s_->data(), s_->size(), pos, n );
   return s_->compare( b.byte_pos, b.byte_n, s );
 }
 
 // UTF8_STRING_COMPARE_2ST_SS_X
 template<class StringType> inline int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
+utf8_string<StringType>::compare( size_type pos, size_type n,
                                   std_string_arg const &s ) const {
-  char2byte const b( s_->data(), s_->size(), pos1, n1 );
+  char2byte const b( s_->data(), s_->size(), pos, n );
   return s_->compare( b.byte_pos, b.byte_n, s );
 }
 
 // UTF8_STRING_COMPARE_2ST_CSP_X
 template<class StringType> inline int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
+utf8_string<StringType>::compare( size_type pos, size_type n,
                                   const_storage_pointer s ) const {
-  char2byte const b( s_->data(), s_->size(), pos1, n1 );
+  char2byte const b( s_->data(), s_->size(), pos, n );
   return s_->compare( b.byte_pos, b.byte_n, s );
 }
 
 // UTF8_STRING_COMPARE_2ST_U_2ST_X
 template<class StringType> inline int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
-                                  utf8_string const &s, size_type pos2,
-                                  size_type n2 ) const {
-  return compare( pos1, n1, *s.s_, pos2, n2 );
+utf8_string<StringType>::compare( size_type pos, size_type n,
+                                  utf8_string const &s, size_type s_pos,
+                                  size_type s_n ) const {
+  return compare( pos, n, *s.s_, s_pos, s_n );
 }
 
   // UTF8_STRING_COMPARE_2ST_TU_2ST_X
 template<class StringType>
 template<class StringType2> inline int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
+utf8_string<StringType>::compare( size_type pos, size_type n,
                                   utf8_string<StringType2> const &s,
-                                  size_type pos2, size_type n2 ) const {
-  return compare( pos1, n1, s.get(), pos2, n2 );
+                                  size_type s_pos, size_type s_n ) const {
+  return compare( pos, n, s.get(), s_pos, s_n );
 }
 
 // UTF8_STRING_FIND_U_ST_X

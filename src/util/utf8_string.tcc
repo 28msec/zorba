@@ -52,31 +52,31 @@ utf8_string<StringType>::append( size_type n, value_type c ) {
 
 // UTF8_STRING_2ST_S_2ST_X
 template<class StringType> int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
-                                  StringType const &s, size_type pos2,
-                                  size_type n2 ) const {
-  char2byte const b1( s_->data(), s_->size(), pos1, n1 );
-  char2byte const b2( s.data(), s.size(), pos2, n2 );
+utf8_string<StringType>::compare( size_type pos, size_type n,
+                                  StringType const &s, size_type s_pos,
+                                  size_type s_n ) const {
+  char2byte const b1( s_->data(), s_->size(), pos, n );
+  char2byte const b2( s.data(), s.size(), s_pos, s_n );
   return s_->compare( b1.byte_pos, b1.byte_n, s, b2.byte_pos, b2.byte_n );
 }
 
 // UTF8_STRING_2ST_SS_2ST_X
 template<class StringType> int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
-                                  std_string_arg const &s, size_type pos2,
-                                  size_type n2 ) const {
-  char2byte const b1( s_->data(), s_->size(), pos1, n1 );
-  char2byte const b2( s.data(), s.size(), pos2, n2 );
+utf8_string<StringType>::compare( size_type pos, size_type n,
+                                  std_string_arg const &s, size_type s_pos,
+                                  size_type s_n ) const {
+  char2byte const b1( s_->data(), s_->size(), pos, n );
+  char2byte const b2( s.data(), s.size(), s_pos, s_n );
   return s_->compare( b1.byte_pos, b1.byte_n, s, b2.byte_pos, b2.byte_n );
 }
 
 // UTF8_STRING_2ST_CSP_2ST_X
 template<class StringType> int
-utf8_string<StringType>::compare( size_type pos1, size_type n1,
+utf8_string<StringType>::compare( size_type pos, size_type n,
                                   const_storage_pointer s,
-                                  size_type n2 ) const {
-  char2byte const b( s_->data(), s_->size(), pos1, n1 );
-  return s_->compare( b.byte_pos, b.byte_n, s, utf8::byte_pos( s, n2 ) );
+                                  size_type s_n ) const {
+  char2byte const b( s_->data(), s_->size(), pos, n );
+  return s_->compare( b.byte_pos, b.byte_n, s, utf8::byte_pos( s, s_n ) );
 }
 
 // UTF8_STRING_FIND_S_ST_X
