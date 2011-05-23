@@ -715,14 +715,6 @@ ostream& operator<<( ostream &os, String const &s ) {
 
 ////////// deprecated /////////////////////////////////////////////////////////
 
-bool String::byteEqual( char const *s, unsigned s_n ) const {
-  return ztd::equals( *THIS_STRING, s, s_n );
-}
-
-String::size_type String::bytes() const {
-  return THIS_STRING->size();
-}
-
 String& String::encodeForUri() {
   uri::encode( *THIS_STRING );
   return *this;
@@ -730,10 +722,6 @@ String& String::encodeForUri() {
 
 bool String::endsWith( char const *pattern ) const {
   return utf8::ends_with( *THIS_STRING, pattern );
-}
-
-bool String::equals( String const &s ) const {
-  return *THIS_STRING == *STRING_OF( s );
 }
 
 String& String::lowercase() {
@@ -744,10 +732,6 @@ String& String::lowercase() {
 String& String::normalizeSpace() {
   ascii::normalize_whitespace( *THIS_STRING );
   return *this;
-}
-
-size_t String::nr_of_chars() const {
-	return THIS_STRING->length();
 }
 
 bool String::startsWith( char const *pattern ) const {
