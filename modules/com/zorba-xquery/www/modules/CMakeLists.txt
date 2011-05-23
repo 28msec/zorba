@@ -24,40 +24,6 @@ IF(CURL_FOUND)
   GENERATE_MODULE_LIBRARY(http-client "")
 ENDIF(CURL_FOUND)
 
-# JNI
-INCLUDE (${CMAKE_SOURCE_DIR}/cmake_modules/FindJNI.cmake)
-
-# Java
-FIND_PACKAGE(Java)
-
-STRING (COMPARE NOTEQUAL ${JAVA_INCLUDE_PATH} "JAVA_INCLUDE_PATH-NOTFOUND" JNI_FOUND)
-
-IF (JNI_FOUND)
-  SET(ZORBA_WITH_FOP ON CACHE BOOL "Compile Zorba with XSL-FO support" FORCE)
-  IF (ZORBA_WITH_FOP)
-    INCLUDE (CMakeJavaInformation )
-    MESSAGE(STATUS "Generating Java API")
-    EXECUTE_PROCESS ( COMMAND ${JAVA_RUNTIME} -version
-                      RESULT_VARIABLE JAVA_VERSION
-                      OUTPUT_QUIET
-                      ERROR_QUIET)
-    MESSAGE(STATUS "JNI found at    :${JAVA_INCLUDE_PATH}")
-    MESSAGE(STATUS "Java Library at :${JAVA_JVM_LIBRARY}")
-    MESSAGE(STATUS "Building Zorba with XSL-FO support.")
-
-    INCLUDE_DIRECTORIES(${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})
-    INCLUDE_DIRECTORIES(${JAVA_INCLUDE_PATH})
-    GENERATE_MODULE_LIBRARY(xsl-fo "${JAVA_JVM_LIBRARY}")
-  ELSE (JNI_FOUND)
-    IF (ZORBA_WITH_FOP)
-      MESSAGE(FATAL_ERROR "Could not find Java and/or JNI. Please install a JDK or compile Zorba with XSL-FO support by setting ZORBA_WITH_FOP to false.")
-    ENDIF (ZORBA_WITH_FOP)
-    MESSAGE ( STATUS "Not generating XSL-FO support: jni headers not found.")
-  ENDIF()
-ELSE ()
-  SET(ZORBA_WITH_FOP OFF CACHE BOOL "Compile Zorba with XSL-FO support." FORCE)
-  MESSAGE(STATUS "Building Zorba without XSL-FO support.")
-ENDIF ()
 
 GENERATE_MODULE_LIBRARY(datetime "")
 GENERATE_MODULE_LIBRARY(os "")
