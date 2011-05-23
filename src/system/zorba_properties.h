@@ -20,7 +20,7 @@
 // * SEE .txt FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-
+#pragma once
 #include <string>
 #include <sstream>
 #include <zorba/config.h>

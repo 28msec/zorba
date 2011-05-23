@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 %module zorba_api
 %include "std_string.i"
 %include "exception.i"
@@ -36,11 +37,20 @@
 
 %{  // Implementations
 
-#if defined( _MSC_VER ) && (_MSC_VER >= 1500 /* VC9 */)
-#define PHP_COMPILER_ID "VC9"
+#if defined( _MSC_VER ) 
+#if (_MSC_VER >= 1600)
+  #define PHP_COMPILER_ID "VC10"
+#elif (_MSC_VER >= 1500)
+  #define PHP_COMPILER_ID "VC9"
+#elif (_MSC_VER >= 1400)
+  #define PHP_COMPILER_ID "VC8"
+#elif (_MSC_VER >= 1300)
+  #define PHP_COMPILER_ID "VC7"
+#elif (_MSC_VER >= 1200)
+  #define PHP_COMPILER_ID "VC6"
+#endif
 #endif
 
-#include <iostream>
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <string>
@@ -78,7 +88,8 @@
   class DocumentURIResolver;
   class ModuleURIResolver;
   class SchemaURIResolver;
-  %}
+
+%}
 
 
 

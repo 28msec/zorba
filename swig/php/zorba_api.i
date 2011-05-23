@@ -26,7 +26,11 @@ ZEND_API zval * mt_zend_throw_exception(zend_class_entry *exception_ce, const ch
 zval * mt_zend_throw_exception(zend_class_entry *exception_ce, const char *message, long code TSRMLS_DC)
 {
   char *mt_message = const_cast<char *>(message);
+#ifdef WIN32
+  zval *retval = zend_throw_exception(exception_ce, mt_message, code, NULL);
+#else
   zval *retval = zend_throw_exception(exception_ce, mt_message, code);
+#endif
   return retval;
 }
 %}
