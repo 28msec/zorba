@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+#if defined( WIN32 ) 
+%begin %{
+#include <iostream>
+%}
+#endif
 
 %module zorba_api
 %include "std_string.i"
