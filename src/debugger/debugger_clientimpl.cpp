@@ -330,7 +330,7 @@ DebuggerClientImpl::clearBreakpoint(const String& aFileName, unsigned int aLineN
 
   std::vector<unsigned int> lToRemove;
   for (lIter = theBreakpoints.begin(); lIter != theBreakpoints.end(); lIter++) {
-    if (lIter->second.startsWith(lB.str().c_str())) {
+    if (ascii::begins_with( lIter->second, lB.str() )) {
       lMessage.addId(lIter->first);
       lToRemove.push_back(lIter->first);
     }

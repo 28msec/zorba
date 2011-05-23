@@ -729,11 +729,6 @@ String& String::lowercase() {
   return *this;
 }
 
-String& String::normalizeSpace() {
-  ascii::normalize_whitespace( *THIS_STRING );
-  return *this;
-}
-
 bool String::startsWith( char const *pattern ) const {
   return utf8::begins_with( *THIS_STRING, pattern );
 }

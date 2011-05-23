@@ -30,6 +30,7 @@
 #endif
 #include <util/dir.h>
 
+#include "util/uri_util.h"
 #include "zorbaimpl.h"
 
 namespace zorba {
@@ -131,13 +132,15 @@ FileImpl::getFileUri() const
     size_t lNextSlashPos = lPath.find_first_of("/");
     while (lNextSlashPos != std::string::npos) {
       String lEncodedSegment(lPath.substr(lCurrentPos, lNextSlashPos - lCurrentPos));
-      lEncodedResult << lEncodedSegment.encodeForUri() << "/";
+      uri::encode( lEncodedSegment );
+      lEncodedResult << lEncodedSegment << "/";
       lCurrentPos = lNextSlashPos + 1;
       lNextSlashPos = lPath.find_first_of("/", lNextSlashPos + 1);
     }
 
     String lEncodedSegment(lPath.substr(lCurrentPos));
-    lEncodedResult << lEncodedSegment.encodeForUri();
+    uri::encode( lEncodedSegment );
+    lEncodedResult << lEncodedSegment;
 
     lPath = lEncodedResult.str();
   ZORBA_CATCH

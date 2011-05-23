@@ -33,6 +33,7 @@ class ZORBA_DLL_PUBLIC String {
 public:
   typedef char value_type;
   typedef size_t size_type;
+  typedef std::char_traits<value_type> traits_type;
 
   typedef value_type* pointer;
   typedef value_type const* const_pointer;
@@ -1260,18 +1261,29 @@ public:
 
   ////////// DEPRECATED ///////////////////////////////////////////////////////
 
+  // Used only by "zorba" command.
   String&   encodeForUri();
+
+  // Used email, http, & image modules.
   bool      endsWith( const char* pattern ) const;
+
+  // Used only by email module.
   String&   lowercase();
-  String&   normalizeSpace();
+
+  // Used by "zorba" command and file, email, & system modules.
   bool      startsWith( const char* pattern ) const;
+
+  // Used by file, email, & http modules.
   String&   uppercase();
+
+  // Used by csv, geo, & image modules once each.
   String&   trim();
+
+  // Used only by http-client module.
   String&   trim( String const &chars );
   String&   trim( const char* chars, int lengthOfChars );
-
-  String tokenize( String const &pattern, String const &flags,
-                   size_type* startPos, bool* hasMatched ) const;
+  String    tokenize( String const &pattern, String const &flags,
+                      size_type* startPos, bool* hasMatched ) const;
 
   /////////////////////////////////////////////////////////////////////////////
 
