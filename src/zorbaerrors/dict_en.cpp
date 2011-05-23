@@ -44,7 +44,7 @@ extern entry const dict_en[] = {
   { "FODC0003", "function stability not defined" },
   { "FODC0004", "\"$1\": invalid argument to fn:collection()${: 2}" },
   { "FODC0005", "\"$1\": invalid argument to fn:doc() or fn:doc-available()" },
-  { "FODC0006", "invalid content passed to fn:parse(): $1" },
+  { "FODC0006", "invalid content passed to fn:parse-xml(): $1" },
   { "FODC0007", "\"$1\": base URI passed to fn:parse() is not a valid absolute URI" },
   { "FODF1280", "\"$1\": invalid decimal format name for fn:format-number()" },
   { "FODF1310", "\"$1\": invalid fn:format-number() picture string" },
