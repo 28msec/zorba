@@ -2391,10 +2391,18 @@ BlockVarDeclList :
       vdecl->add($3);
       $$ = vdecl;
     }
-  | VARIABLE BlockVarDecl
+  | 
+    VARIABLE BlockVarDecl
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$));
       vdecl->add($2);
+      $$ = vdecl;
+    }
+  | 
+    LOCAL VARIABLE BlockVarDecl
+    {
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$));
+      vdecl->add($3);
       $$ = vdecl;
     }
   ;
@@ -2508,14 +2516,12 @@ FlowCtlStatement :
 FLWORStatement :
     FLWORClauseList ReturnStatement
     {
-      ReturnExpr *re = dynamic_cast<ReturnExpr*>($2);
-      $$ = new FLWORExpr(
-                         LOC(@$),
+      ReturnExpr* re = dynamic_cast<ReturnExpr*>($2);
+      $$ = new FLWORExpr(LOC(@$),
                          dynamic_cast<FLWORClauseList*>($1),
                          re->get_return_val(),
                          re->get_location(),
-                         driver.theCompilerCB->theConfig.force_gflwor
-                         );
+                         driver.theCompilerCB->theConfig.force_gflwor);
       delete $2;
     }
 ;
@@ -2524,7 +2530,16 @@ FLWORStatement :
 ReturnStatement :
     RETURN Statement
     {
-      $$ = new ReturnExpr( LOC(@$), $2 );
+      exprnode* retExpr = $2;
+
+      if (dynamic_cast<VarDeclStmt*>(retExpr) != NULL)
+      {
+        BlockBody* blk = new BlockBody(LOC(@$));
+        blk->add(retExpr);
+        retExpr = blk;
+      }
+
+      $$ = new ReturnExpr(LOC(@$), retExpr);
     }
 ;
 
@@ -2532,7 +2547,24 @@ ReturnStatement :
 IfStatement :
     IF LPAR Expr RPAR THEN Statement ELSE Statement
     {
-      $$ = new IfExpr(LOC (@$), $3, $6, $8);
+      exprnode* thenExpr = $6;
+      exprnode* elseExpr = $8;
+
+      if (dynamic_cast<VarDeclStmt*>(thenExpr) != NULL)
+      {
+        BlockBody* blk = new BlockBody(LOC(@$));
+        blk->add(thenExpr);
+        thenExpr = blk;
+      }
+
+      if (dynamic_cast<VarDeclStmt*>(elseExpr) != NULL)
+      {
+        BlockBody* blk = new BlockBody(LOC(@$));
+        blk->add(elseExpr);
+        elseExpr = blk;
+      }
+
+      $$ = new IfExpr(LOC(@$), $3, thenExpr, elseExpr);
     }
 ;
 
@@ -2540,7 +2572,7 @@ IfStatement :
 TryStatement :
     TRY BlockStatement CatchListStatement
     {
-      $$ = new TryExpr( LOC(@$), $2, $3 );
+      $$ = new TryExpr(LOC(@$), $2, $3);
     }
 ;
 
@@ -2548,7 +2580,7 @@ TryStatement :
 CatchListStatement :
     CatchStatement
     {
-      CatchListExpr *cle = new CatchListExpr( LOC(@$) );
+      CatchListExpr* cle = new CatchListExpr( LOC(@$) );
       cle->push_back( static_cast<CatchExpr*>($1) );
       $$ = cle;
     }
@@ -2643,71 +2675,78 @@ ExprSimple :
     |   TransformExpr
 ;
 
-// [33]
+
 FLWORExpr :
-        FLWORClauseList ReturnExpr
-        {
-            ReturnExpr *re = dynamic_cast<ReturnExpr*>($2);
-            $$ = new FLWORExpr(
-                LOC(@$),
-                dynamic_cast<FLWORClauseList*>($1),
-                re->get_return_val(),
-                re->get_location(),
-                driver.theCompilerCB->theConfig.force_gflwor
-            );
-            delete $2;
-        }
+    FLWORClauseList ReturnExpr
+    {
+      ReturnExpr *re = dynamic_cast<ReturnExpr*>($2);
+      $$ = new FLWORExpr(LOC(@$),
+                         dynamic_cast<FLWORClauseList*>($1),
+                         re->get_return_val(),
+                         re->get_location(),
+                         driver.theCompilerCB->theConfig.force_gflwor);
+      delete $2;
+    }
 ;
+
 
 ReturnExpr :
-        RETURN ExprSingle
-        {
-            $$ = new ReturnExpr( LOC(@$), $2 );
-        }
+    RETURN ExprSingle
+    {
+      $$ = new ReturnExpr( LOC(@$), $2 );
+    }
 ;
+
 
 WindowType :
-        SLIDING WINDOW
-        {
-            $$ = parser::the_sliding;
-        }
-    |   TUMBLING WINDOW
-        {
-            $$ = parser::the_tumbling;
-        }
+    SLIDING WINDOW
+    {
+      $$ = parser::the_sliding;
+    }
+  |
+    TUMBLING WINDOW
+    {
+      $$ = parser::the_tumbling;
+    }
 ;
+
 
 FLWORWinCondType :
-        START
-        {
-            $$ = parser::the_start;
-        }
-    |   END
-        {
-            $$ = parser::the_end;
-        }
-    |   ONLY END
-        {
-            $$ = parser::the_only_end;
-        }
+    START
+    {
+      $$ = parser::the_start;
+    }
+  |
+    END
+    {
+      $$ = parser::the_end;
+    }
+  |
+    ONLY END
+  {
+    $$ = parser::the_only_end;
+  }
 ;
 
+
 FLWORWinCond :
-        FLWORWinCondType WindowVars WHEN ExprSingle
-        {
-            $$ = new FLWORWinCond(
-                LOC(@$),
-                dynamic_cast<WindowVars*>($2), $4,
-                $1 == parser::the_start, $1 == parser::the_only_end
-            );
-        }
-    |   FLWORWinCondType WHEN ExprSingle
-        {
-            $$ = new FLWORWinCond(
-                LOC(@$), NULL, $3,
-                $1 == parser::the_start, $1 == parser::the_only_end
-            );
-        }
+    FLWORWinCondType WindowVars WHEN ExprSingle
+    {
+      $$ = new FLWORWinCond(LOC(@$),
+                            dynamic_cast<WindowVars*>($2),
+                            $4,
+                            $1 == parser::the_start,
+                            $1 == parser::the_only_end);
+    }
+  |
+    FLWORWinCondType WHEN ExprSingle
+    {
+      $$ = new FLWORWinCond(LOC(@$),
+                            NULL,
+                            $3,
+                            $1 == parser::the_start,
+                            $1 == parser::the_only_end);
+    }
 ;
 
 
@@ -2742,97 +2781,144 @@ CountClause :
 ;
 
 
-// [33b]
 ForLetWinClause :
-        ForClause
-    |   LetClause
-    |   WindowClause
+    ForClause
+  | LetClause
+  | WindowClause
 ;
+
 
 FLWORClause :
-        ForLetWinClause
-    |   WhereClause
-    |   OrderByClause
-    |   GroupByClause
-    |   CountClause
+    ForLetWinClause
+  | WhereClause
+  | OrderByClause
+  | GroupByClause
+  | CountClause
 ;
+
 
 FLWORClauseList :
-        ForLetWinClause
-        {
-            FLWORClauseList *fcl = new FLWORClauseList( LOC(@$) );
-            fcl->push_back( dynamic_cast<FLWORClause*>($1) );
-            $$ = fcl;
-        }
-  |     FLWORClauseList FLWORClause
-        {
-            FLWORClauseList *fcl = dynamic_cast<FLWORClauseList*>($1);
-            fcl->push_back( dynamic_cast<FLWORClause*>($2) );
-            $$ = fcl;
-        }
+    ForLetWinClause
+    {
+      FLWORClauseList *fcl = new FLWORClauseList( LOC(@$) );
+      fcl->push_back( dynamic_cast<FLWORClause*>($1) );
+      $$ = fcl;
+    }
+  |
+    FLWORClauseList FLWORClause
+    {
+      FLWORClauseList *fcl = dynamic_cast<FLWORClauseList*>($1);
+      fcl->push_back( dynamic_cast<FLWORClause*>($2) );
+      $$ = fcl;
+    }
 ;
 
-// [34]
+
 ForClause :
-        FOR DOLLAR VarInDeclList
-        {
-            $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
-        }
+    FOR DOLLAR VarInDeclList
+    {
+      $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
+    }
 ;
 
-// [34a]
+
 VarInDeclList :
-        VarInDecl
-        {
-            VarInDeclList *vdl = new VarInDeclList( LOC(@$) );
-            vdl->push_back( dynamic_cast<VarInDecl*>($1) );
-            $$ = vdl;
-        }
-    |   VarInDeclList COMMA DOLLAR VarInDecl
-        {
-            if ( VarInDeclList *vdl = dynamic_cast<VarInDeclList*>($1) )
-                vdl->push_back( dynamic_cast<VarInDecl*>($4) );
-            $$ = $1;
-        }
+    VarInDecl
+    {
+      VarInDeclList *vdl = new VarInDeclList( LOC(@$) );
+      vdl->push_back( dynamic_cast<VarInDecl*>($1) );
+      $$ = vdl;
+    }
+  |
+    VarInDeclList COMMA DOLLAR VarInDecl
+    {
+      if ( VarInDeclList *vdl = dynamic_cast<VarInDeclList*>($1) )
+        vdl->push_back( dynamic_cast<VarInDecl*>($4) );
+      $$ = $1;
+    }
 ;
 
 
-// [34b] VarInDecl
-// ---------------
 VarInDecl :
     QNAME  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, NULL, NULL, $3, false);
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         NULL,
+                         NULL,
+                         NULL,
+                         $3,
+                         false);
     }
   | QNAME  ALLOWING  _EMPTY  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, NULL, NULL, $5, true);
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         NULL,
+                         NULL,
+                         NULL,
+                         $5,
+                         true);
     }
   | QNAME  TypeDeclaration  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2), NULL, NULL, $4, false);
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         NULL,
+                         NULL,
+                         $4,
+                         false);
     }
   | QNAME  TypeDeclaration  ALLOWING  _EMPTY  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2), NULL, NULL, $6, true);
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         NULL,
+                         NULL,
+                         $6,
+                         true);
     }
   | QNAME  PositionalVar  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, dynamic_cast<PositionalVar*>($2), NULL, $4, false);
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         NULL,
+                         dynamic_cast<PositionalVar*>($2),
+                         NULL,
+                         $4,
+                         false);
     }
   | QNAME  ALLOWING  _EMPTY  PositionalVar  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, dynamic_cast<PositionalVar*>($4), NULL, $6, true);
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         NULL,
+                         dynamic_cast<PositionalVar*>($4),
+                         NULL,
+                         $6,
+                         true);
     }
   | QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2),
-                         dynamic_cast<PositionalVar*>($3), NULL, $5, false);
+      $$ = new VarInDecl(LOC(@$), 
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<PositionalVar*>($3),
+                         NULL,
+                         $5,
+                         false);
     }
   | QNAME  TypeDeclaration  ALLOWING  _EMPTY  PositionalVar  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2),
-                         dynamic_cast<PositionalVar*>($5), NULL, $7, true);
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<PositionalVar*>($5),
+                         NULL,
+                         $7,
+                         true);
     }
 /* full-text extensions */
   | QNAME FTScoreVar _IN ExprSingle

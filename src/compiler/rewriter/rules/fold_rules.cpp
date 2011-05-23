@@ -407,15 +407,18 @@ RULE_REWRITE_POST(MarkFreeVars)
   if (node->get_expr_kind () == var_expr_kind)
   {
     var_expr_t v = dynamic_cast<var_expr *> (node);
-    freevars->add (v);
+    freevars->add(v);
   }
   else
   {
+    // Get the free vars of each child expr and add them to the free vars of the
+    // parent.
     ExprIterator iter(node);
     while (!iter.done())
     {
       expr* e = *iter;
-      const var_ptr_set& kfv = get_varset_annotation (e, Annotations::FREE_VARS);
+
+      const var_ptr_set& kfv = get_varset_annotation(e, Annotations::FREE_VARS);
       std::copy(kfv.begin(),
                 kfv.end(),
                 inserter(freevars->theVarset, freevars->theVarset.begin()));
@@ -423,8 +426,10 @@ RULE_REWRITE_POST(MarkFreeVars)
       iter.next();
     }
 
-    if (node->get_expr_kind () == flwor_expr_kind ||
-        node->get_expr_kind () == gflwor_expr_kind)
+    // For a flwor expr, remove the vars defined by the flwor expr itself from
+    // the flwor free vars .
+    if (node->get_expr_kind() == flwor_expr_kind ||
+        node->get_expr_kind() == gflwor_expr_kind)
     {
       flwor_expr* flwor = dynamic_cast<flwor_expr *> (node);
       for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
@@ -492,7 +497,8 @@ RULE_REWRITE_POST(MarkFreeVars)
     }
   }
 
-  node->put_annotation (Annotations::FREE_VARS, new_ann);
+  node->put_annotation(Annotations::FREE_VARS, new_ann);
+
   return NULL;
 }
 
