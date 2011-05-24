@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <cstdlib>
 #include <cstdio>
 #include <sstream>
 
 #ifdef WIN32
-# include <Windows.h>
+# include <windows.h>
 #else
 # include <sys/utsname.h>
 #endif
 
-#include <zorba/zorbastring.h>
-#include <zorba/singleton_item_sequence.h>
-#include <zorba/vector_item_sequence.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/item_factory.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/vector_item_sequence.h>
+#include <zorba/xquery_functions.h>
+#include <zorba/zorbastring.h>
 
 
 #ifdef LINUX
@@ -306,7 +308,7 @@ namespace zorba { namespace system {
 #endif
         lRes += *i;
       }
-    } else if (envS.startsWith("env.")) { 
+    } else if (fn::starts_with(envS,"env.")) { 
       if (!getEnv(envS.substr(4), lRes)) {
         return ItemSequence_t(new EmptySequence());
       }

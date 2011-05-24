@@ -17,6 +17,7 @@
 #include <zorba/zorba.h>
 #include <zorba/iterator.h>
 #include <zorba/user_exception.h>
+#include <zorba/xquery_functions.h>
 
 #include "email_function.h"
 
@@ -80,7 +81,7 @@ namespace zorba
         // as a name is not mandatory, we first check if this is a name node
         Item lNodeName;
         lChild.getNodeName(lNodeName);
-        if (lNodeName.getStringValue().endsWith("e")) {
+        if (fn::ends_with(lNodeName.getStringValue(),"e")) {
           aName = lChild.getStringValue().c_str();
           lChildren->next(lChild);
         } else {

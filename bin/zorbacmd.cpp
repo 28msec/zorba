@@ -32,6 +32,7 @@
 #include <zorba/file.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/xquery_exception.h>
+#include <zorba/xquery_functions.h>
 
 #include <zorba/store_manager.h>
 
@@ -812,10 +813,10 @@ _tmain(int argc, _TCHAR* argv[])
            lIter != lTokens.end(); ++lIter) 
       {
         zorba::String lTmpString(*lIter);
-        lTmp << "/" << lTmpString.encodeForUri();
+        lTmp << '/' << fn::encode_for_uri( lTmpString );
       }
 
-      lTmp << "/";
+      lTmp << '/';
 
       lStaticContext->setBaseURI(lTmp.str());
     }

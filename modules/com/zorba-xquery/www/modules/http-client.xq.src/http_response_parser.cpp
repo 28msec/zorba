@@ -26,6 +26,7 @@
 #include <zorba/error.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/external_function_data.h>
+#include <zorba/xquery_functions.h>
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"
@@ -174,8 +175,7 @@ namespace zorba { namespace http_client {
       }
       lValue = lValue.substr(0, lPosition + 1);
     }
-    String lNameS = lName.c_str();
-    lNameS.lowercase();
+    String lNameS = fn::lower_case( lName );
     if (lNameS == "content-type") {
       lParser->theCurrentContentType = lValue.substr(0, lValue.find(';'));
     } else if (lNameS == "content-id") {

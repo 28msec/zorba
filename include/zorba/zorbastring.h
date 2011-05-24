@@ -18,6 +18,7 @@
 #define ZORBA_STRING_API_H
 
 #include <iterator>
+#include <memory>
 #include <string>
 
 #include <zorba/config.h>
@@ -32,8 +33,10 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC String {
 public:
   typedef char value_type;
-  typedef size_t size_type;
   typedef std::char_traits<value_type> traits_type;
+  typedef std::allocator<value_type> allocator_type;
+  typedef allocator_type::difference_type difference_type;
+  typedef allocator_type::size_type size_type;
 
   typedef value_type* pointer;
   typedef value_type const* const_pointer;
@@ -1220,8 +1223,8 @@ public:
 
   /**
    * Resizes the string to the given number of characters.
-   * If the number < size(), the string will be truncated;
-   * if the number > size(), the string will be extended
+   * If the number \< size(), the string will be truncated;
+   * if the number \> size(), the string will be extended
    * and the new elements will be set to \a c.
    *
    * @param n The number of characters.

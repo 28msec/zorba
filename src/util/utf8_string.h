@@ -21,6 +21,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <zorba/zorbastring.h>
+
 #include "utf8_util_base.h"
 
 namespace zorba {
@@ -142,10 +144,31 @@ struct utf8_string_traits<
   typedef std_string result_type;
   struct std_string_arg { };
   typedef std_string const& str_return_type;
+  static str_return_type str( std_string const &s ) { return s; }
+};
 
-  static str_return_type str( std_string const &s ) {
-    return s;
-  }
+/**
+ * Partial specialization of %utf8_string_traits for String.
+ */
+template<>
+struct utf8_string_traits<String> {
+  typedef std::string std_string;
+  typedef String result_type;
+  typedef std_string std_string_arg;
+  typedef std_string str_return_type;
+  static str_return_type str( String const &s ) { return s.str(); }
+};
+
+/**
+ * Partial specialization of %utf8_string_traits for String const.
+ */
+template<>
+struct utf8_string_traits<String const> {
+  typedef std::string std_string;
+  typedef String result_type;
+  typedef std_string std_string_arg;
+  typedef std_string str_return_type;
+  static str_return_type str( String const &s ) { return s.str(); }
 };
 
 ////////// utf8_string ////////////////////////////////////////////////////////

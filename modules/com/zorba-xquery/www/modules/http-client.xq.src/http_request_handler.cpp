@@ -19,6 +19,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/xquery_functions.h>
 #include <zorba/base64.h>
 
 #include "http_request_handler.h"
@@ -78,9 +79,10 @@ namespace zorba { namespace http_client {
                                         bool aFollowRedirect,
                                         int aTimeout /*= -1*/ )
   {
-    aMethod.uppercase();
+    aMethod = fn::upper_case(aMethod);
     const char* lStr = aMethod.c_str();
     theMethodString = lStr;
+    String const lAuthMethod = fn::lower_case(aAuthMethod);
     if (theMethodString == "HEAD" || theMethodString == "OPTIONS") {
       curl_easy_setopt(theCurl, CURLOPT_NOBODY, 1L);
       theIsHeadRequest = true;
@@ -101,20 +103,20 @@ namespace zorba { namespace http_client {
       String lUserPw = aUsername + ":" + aPassword;
       theUserPW = lUserPw.c_str();
       curl_easy_setopt(theCurl, CURLOPT_USERPWD, theUserPW.c_str());
-      if (aAuthMethod.lowercase() == "basic") {
+      if (lAuthMethod == "basic") {
         curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-      } else if (aAuthMethod.lowercase() == "digest") {
+      } else if (lAuthMethod == "digest") {
         curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
       }
     }
     if (aUsername != "" && aSendAuthorization) {
-      if (aAuthMethod.lowercase() == "basic") {
+      if (lAuthMethod == "basic") {
         String lAuthString = aUsername + ":" + aPassword;
         String lAuth = "Authorization: Basic ";
         lAuth += encoding::Base64::encode(lAuthString);
         theAuthMethod = lAuth.c_str();
         theHeaderLists[0] = curl_slist_append(theHeaderLists[0], theAuthMethod.c_str());
-      } else if (aAuthMethod.lowercase() == "digest") {
+      } else if (lAuthMethod == "digest") {
         String lUserPw = aUsername + ":" + aPassword;
         theUserPW = lUserPw.c_str();
         curl_easy_setopt(theCurl, CURLOPT_USERPWD, theUserPW.c_str());

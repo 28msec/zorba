@@ -23,6 +23,7 @@
 #include <zorba/item_factory.h>
 #include <zorba/store_consts.h>
 #include <zorba/user_exception.h>
+#include <zorba/xquery_functions.h>
 
 #include "mime_handler.h"
 #include "email_function.h"
@@ -106,7 +107,7 @@ namespace zorba
     {
         get_text_value(lChild, lValue);
 
-          String lLowerNodeName = get_nodename(lChild).lowercase();
+          String lLowerNodeName = fn::lower_case(get_nodename(lChild));
           if(lLowerNodeName == "date") {
             char lDate[MAILTMPLEN]; 
             parseXmlDateTime(lValue, lDate);
@@ -156,7 +157,7 @@ namespace zorba
             lRecipentChildren->open();
             Item lRecipentChild;
             lRecipentChildren->next(lRecipentChild);
-            lLowerNodeName = get_nodename(lRecipentChild).lowercase();
+            lLowerNodeName = fn::lower_case( get_nodename(lRecipentChild) );
             lRecipentChildren->close();
 
             if(lLowerNodeName == "to")
@@ -232,10 +233,11 @@ namespace zorba
     {
         get_text_value(lChild, lValue);
         // content case
-        if(get_nodename(lChild).lowercase().endsWith("tent"))
+        String const lc( fn::lower_case( get_nodename(lChild) ) );
+        if(fn::ends_with(lc,"tent"))
           parse_content(theBody, lChild);
         // multipart case
-        else if(get_nodename(lChild).lowercase().endsWith("rt"))
+        else if(fn::ends_with(lc,"rt"))
           parse_multipart(theBody, lChild);
     }
     lChildrenIt->close();
@@ -300,7 +302,7 @@ namespace zorba
        zorba::String& aEncoding)
   {
     //all encodings should start with ENC so we only check the rest of the string
-    zorba::String lUpperEncSuffix = aEncoding.uppercase().substr(3);
+    zorba::String const lUpperEncSuffix = fn::upper_case( aEncoding.substr(3) );
 
     if(lUpperEncSuffix == "7BIT")
       aBody->encoding = ENC7BIT;
@@ -323,7 +325,7 @@ namespace zorba
   {
     bool          lRes = true;
     int           lPos = aValue.find('/');
-    zorba::String lLowerType = aValue.substr(0, lPos).lowercase();
+    zorba::String const lLowerType = fn::lower_case(aValue.substr(0, lPos));
 
     //set the BODY content type
     if(lLowerType == "text")
@@ -350,7 +352,7 @@ namespace zorba
       // the list of subtypes of each type is available at
       // http://www.iana.org/assignments/media-types/
       zorba::String lSubtype = aValue.substr(lPos + 1,aValue.length() - lPos);
-      aBody->subtype = cpystr((char*) lSubtype.uppercase().c_str());
+      aBody->subtype = cpystr((char*) fn::upper_case(lSubtype).c_str());
     }
 
     return lRes;
@@ -367,26 +369,26 @@ namespace zorba
     while(lAttributes->next(lAttributeItem)) {
       String lName = get_nodename(lAttributeItem); 
       lValue = lAttributeItem.getStringValue();
-      if (lName.endsWith("ype")) {
+      if (fn::ends_with(lName,"ype")) {
         // contentType ...
         set_content_type_value(aBody, lValue);
-      } else if (lName.endsWith("set")) {
+      } else if (fn::ends_with(lName,"set")) {
         // charset ...
-        aBody->parameter = create_param("charset", const_cast<char*>(lValue.uppercase().c_str()), NIL);
-      } else if (lName.endsWith("ing")) {
+        aBody->parameter = create_param("charset", const_cast<char*>(fn::upper_case(lValue).c_str()), NIL);
+      } else if (fn::ends_with(lName,"ing")) {
         // contentTranferEncoding ...
         set_encoding(aBody, lValue);  
-      } else if (lName.endsWith("ion")) {
+      } else if (fn::ends_with(lName,"ion")) {
         // contentDisposition ..
-        aBody->disposition.type = cpystr(const_cast<char*>(lValue.uppercase().c_str())); 
-      } else if (lName.endsWith("ame")) {
+        aBody->disposition.type = cpystr(const_cast<char*>(fn::upper_case(lValue).c_str())); 
+      } else if (fn::ends_with(lName,"ame")) {
         // contentDisposition-filename
         if (!aBody->disposition.parameter) {  
           aBody->disposition.parameter = create_param("filename", const_cast<char*>(lValue.c_str()), NIL);
         } else {
           aBody->disposition.parameter->next = create_param("filename", const_cast<char*>(lValue.c_str()), NIL);
         }
-      } else if (lName.endsWith("ate")) {
+      } else if (fn::ends_with(lName,"ate")) {
         // contentDisposition-modification-date
         char lDate[MAILTMPLEN];
         parseXmlDateTime(lValue, lDate);      
@@ -438,7 +440,8 @@ namespace zorba
     {
 
         // a simple content item
-        if(get_nodename(lChild).lowercase().endsWith("tent"))
+        String const lc( fn::lower_case( get_nodename(lChild) ) );
+        if(fn::ends_with(lc,"tent"))
         {
           PART* lPart;
           lPart = mail_newbody_part();
@@ -452,7 +455,7 @@ namespace zorba
         }
 
         // a multipart item ... this calls for recursion 
-        else if(get_nodename(lChild).lowercase().endsWith("ipart"))
+        else if(fn::ends_with(lc,"ipart"))
         {
           PART* lPart;
           lPart = NIL;
@@ -519,7 +522,7 @@ namespace zorba
       // now, according to the specification of the dateTime xml type, we can have either: nothing, a Z (for UTC), -XXXX or +XXXX)
       String lUTCString = aXmlDateTime.substr(2);
 
-      if (lUTCString.startsWith("+") || lUTCString.startsWith("-")) {
+      if (fn::starts_with(lUTCString,"+") || fn::starts_with(lUTCString,"-")) {
         lTempIndex = lUTCString.find(':');
         String lUTCHours = lUTCString.substr(1, lTempIndex-1);
         String lUTCMinutes = lUTCString.substr(lTempIndex + 1);
@@ -535,7 +538,7 @@ namespace zorba
         lMinutesConverter >> lTempDatePart;
         lDummyCache->zminutes = lTempDatePart;
        
-        if (lUTCString.startsWith("-")) { 
+        if (fn::starts_with(lUTCString,"-")) { 
           lDummyCache->zoccident = 1;
         }
       }      
@@ -621,5 +624,6 @@ namespace zorba
     //mail_free_body(&theBody);
   }
 
-  }//namespace email
-}//namespace zorba
+  } //namespace email
+} //namespace zorba
+/* vim:set et sw=2 ts=2: */

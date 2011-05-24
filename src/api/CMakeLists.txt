@@ -49,6 +49,7 @@ SET(API_SRCS
     uriimpl.cpp
     uri_resolver.cpp
     uri_resolver_wrappers.cpp
+		xquery_functions.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

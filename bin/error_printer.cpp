@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include <zorba/xquery_exception.h>
+#include <zorba/xquery_functions.h>
 #include <zorba/xquery_stack_trace.h>
 #include <zorba/zorbastring.h>
 
@@ -39,9 +40,9 @@ namespace zorba {
         XQueryStackTrace::fn_arity_type lArity = it->getFnArity();
         char const *const lPrefix = lName.prefix();
         String lFileName = it->getFileName();
-        if (lFileName.startsWith("file:")) {
+        if (fn::starts_with(lFileName,"file:")) {
           lFileName = URIHelper::decodeFileURI(lFileName);
-          while (lFileName.startsWith("//")) {
+          while (fn::starts_with(lFileName,"//")) {
             lFileName = lFileName.substr(1);
           }
         }

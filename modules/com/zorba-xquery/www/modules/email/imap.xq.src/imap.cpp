@@ -19,6 +19,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/vector_item_sequence.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/xquery_functions.h>
 #include <sstream>
 #include <algorithm>
 #include "imap_module.h"
@@ -717,19 +718,19 @@ SetFlagsFunction::getFlagsVector(const StatelessExternalFunction::Arguments_t& a
     lChild.getNodeName(lNameNode);
     String lName = lNameNode.getStringValue();
     /* checking for ending of name as it is not sure how the prefix looks like */
-    if (lName.endsWith("n")) {
+    if (fn::ends_with(lName,"n")) {
       // seen
       aFlags[0] = 1; 
-    } else if (lName.endsWith("ted")) {
+    } else if (fn::ends_with(lName,"ted")) {
       // deleted
       aFlags[1] = 1;
-    } else if (lName.endsWith("ged")) {
+    } else if (fn::ends_with(lName,"ged")) {
       // flagged
       aFlags[2] = 1;
-    } else if (lName.endsWith("red")) {
+    } else if (fn::ends_with(lName,"red")) {
       // answered
       aFlags[3] = 1;
-    } else if (lName.endsWith("ft")) {
+    } else if (fn::ends_with(lName,"ft")) {
       // draft
       aFlags[4] = 1;
     }

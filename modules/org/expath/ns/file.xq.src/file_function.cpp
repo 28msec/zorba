@@ -23,8 +23,10 @@
 #include <zorba/file.h>
 #include <zorba/serializer.h>
 #include <zorba/store_consts.h>
-#include <zorba/util/path.h>
 #include <zorba/user_exception.h>
+#include <zorba/util/path.h>
+#include <zorba/xquery_functions.h>
+#include <zorba/xquery_functions.h>
 #include <zorba/zorba.h>
 
 #include "file_module.h"
@@ -177,7 +179,7 @@ FileFunction::getEncodingArg(
     Iterator_t arg_iter = aArgs[aPos]->getIterator();
     arg_iter->open();
     if (arg_iter->next(lEncodingItem)) {
-      lEncoding = lEncodingItem.getStringValue().uppercase();
+      lEncoding = fn::upper_case( lEncodingItem.getStringValue() );
     }
     arg_iter->close();
   }
@@ -207,7 +209,7 @@ String
 FileFunction::pathToUriString(const String& aPath) const {
   std::stringstream lErrorMessage;
 
-  if(aPath.startsWith("file://")) {
+  if(fn::starts_with(aPath,"file://")) {
     lErrorMessage << "Please provide a path, not a URI";
     Item lQName = theModule->getItemFactory()->createQName(
         "http://www.w3.org/2005/xqt-errors",
@@ -232,8 +234,8 @@ FileFunction::isValidDriveSegment(
   aString = aString.uppercase();
   // the drive segment has one of the forms: "C:", "C%3A"
   if ((aString.length() != 2 && aString.length() != 4) ||
-      (aString.length() == 2 && !aString.endsWith(":")) ||
-      (aString.length() == 4 && !aString.endsWith("%3A"))) {
+      (aString.length() == 2 && !fn::ends_with(aString,":")) ||
+      (aString.length() == 4 && !fn::ends_with(aString,"%3A"))) {
     return false;
   }
 
