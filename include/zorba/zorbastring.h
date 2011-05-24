@@ -1264,7 +1264,7 @@ public:
   // Used only by "zorba" command.
   String&   encodeForUri();
 
-  // Used email, http, & image modules.
+  // Used by email, http, & image modules.
   bool      endsWith( const char* pattern ) const;
 
   // Used only by email module.
