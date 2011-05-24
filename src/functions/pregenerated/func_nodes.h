@@ -155,6 +155,19 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//fn:generate-id
+class fn_generate_id_3_0 : public function
+{
+public:
+  fn_generate_id_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

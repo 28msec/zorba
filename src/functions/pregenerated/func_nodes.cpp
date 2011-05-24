@@ -120,6 +120,16 @@ PlanIter_t fn_outermost_3_0::codegen(
   return new FnOutermostIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_generate_id_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnGenerateIdIterator(sctx, loc, argv);
+}
+
 void populate_context_nodes(static_context* sctx)
 {
   DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
@@ -209,6 +219,19 @@ void populate_context_nodes(static_context* sctx)
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
       FunctionConsts::FN_OUTERMOST_1);
+
+
+  DECL_WITH_KIND(sctx, fn_generate_id_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","generate-id"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_GENERATE_ID_0);
+
+
+  DECL_WITH_KIND(sctx, fn_generate_id_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","generate-id"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_GENERATE_ID_1);
 
 }
 

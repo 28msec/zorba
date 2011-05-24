@@ -311,6 +311,8 @@ namespace zorba{
 
     class FnOutermostIterator;
 
+    class FnGenerateIdIterator;
+
     class AbsIterator;
 
     class CeilingIterator;
@@ -918,6 +920,9 @@ public:
 
     virtual void beginVisit ( const FnOutermostIterator& ) = 0;
     virtual void endVisit   ( const FnOutermostIterator& ) = 0;
+
+    virtual void beginVisit ( const FnGenerateIdIterator& ) = 0;
+    virtual void endVisit   ( const FnGenerateIdIterator& ) = 0;
 
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;

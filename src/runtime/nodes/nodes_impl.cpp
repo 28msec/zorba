@@ -323,5 +323,35 @@ bool FnOutermostIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
+bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t     item;
+  bool retval;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if(theChildren.size())
+  {
+/*   if(consumeNext(item, theChildren[0].getp(), planState))
+    {
+      char  strid[50];
+      sprintf(strid, "node%Ix", item.getp());
+      zstring zstrid(strid);
+      retval = GENV_ITEMFACTORY->createString(result, zstrid);
+    }
+    else
+    {
+      zstring zstrid("");
+      retval = GENV_ITEMFACTORY->createString(result, zstrid);
+    }
+    STACK_PUSH(retval, state);
+  */
+  }
+
+
+  STACK_END (state);
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -9677,7 +9677,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                     loc,
                                     ParseConstants::val_strict,
                                     qname,
-                                    foExpr,
+                                    foExpr.getp(),
                                     theSctx->get_typemanager());
     }
     else if (fkind == FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1 ||

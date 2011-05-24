@@ -1,0 +1,1 @@
+fn:generate-id(<a/>) eq fn:generate-id(<b/>)

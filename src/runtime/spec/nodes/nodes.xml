@@ -197,7 +197,7 @@
 
   </zorba:iterator>
 
-  <!--
+<!--
 /*******************************************************************************
 * 13.4 fn:outermost
 ********************************************************************************/
@@ -221,6 +221,29 @@
       <zorba:member type="std::list&lt;store::Item_t&gt;::iterator" name="list_it"
                     brief="iterator through result sequence"/>
     </zorba:state>
+
+  </zorba:iterator>
+
+  <!--
+/*******************************************************************************
+* 13.4 fn:generate-id
+********************************************************************************/
+-->
+
+  <zorba:iterator name="FnGenerateIdIterator">
+
+    <zorba:description author="Zorba Team">fn:generate-id</zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="generate-id" prefix="fn" version="3.0">
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="generate-id" prefix="fn" version="3.0">
+        <zorba:param>node()?</zorba:param>
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
 
   </zorba:iterator>
 

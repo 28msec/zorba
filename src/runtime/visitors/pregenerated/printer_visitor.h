@@ -469,6 +469,9 @@ namespace zorba {
     void beginVisit( const FnOutermostIterator& );
     void endVisit  ( const FnOutermostIterator& );
 
+    void beginVisit( const FnGenerateIdIterator& );
+    void endVisit  ( const FnGenerateIdIterator& );
+
     void beginVisit( const AbsIterator& );
     void endVisit  ( const AbsIterator& );
 

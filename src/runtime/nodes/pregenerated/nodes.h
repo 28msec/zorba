@@ -346,6 +346,40 @@ public:
 };
 
 
+/**
+ * fn:generate-id
+ * Author: Zorba Team
+ */
+class FnGenerateIdIterator : public NaryBaseIterator<FnGenerateIdIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnGenerateIdIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnGenerateIdIterator,
+    NaryBaseIterator<FnGenerateIdIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnGenerateIdIterator, PlanIteratorState>*)this);
+  }
+
+  FnGenerateIdIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnGenerateIdIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnGenerateIdIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

@@ -279,6 +279,34 @@ void FnOutermostIteratorState::reset(PlanState& planState) {
 // </FnOutermostIterator>
 
 
+// <FnGenerateIdIterator>
+const char* FnGenerateIdIterator::class_name_str = "FnGenerateIdIterator";
+FnGenerateIdIterator::class_factory<FnGenerateIdIterator>
+FnGenerateIdIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnGenerateIdIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnGenerateIdIterator::class_versions_count =
+sizeof(FnGenerateIdIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnGenerateIdIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnGenerateIdIterator::~FnGenerateIdIterator() {}
+
+// </FnGenerateIdIterator>
+
+
 
 }
 
