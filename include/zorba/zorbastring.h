@@ -1264,21 +1264,6 @@ public:
 
   ////////// DEPRECATED ///////////////////////////////////////////////////////
 
-  // Used only by "zorba" command.
-  String&   encodeForUri();
-
-  // Used by email, http, & image modules.
-  bool      endsWith( const char* pattern ) const;
-
-  // Used only by email module.
-  String&   lowercase();
-
-  // Used by "zorba" command and file, email, & system modules.
-  bool      startsWith( const char* pattern ) const;
-
-  // Used by file, email, & http modules.
-  String&   uppercase();
-
   // Used by csv, geo, & image modules once each.
   String&   trim();
 

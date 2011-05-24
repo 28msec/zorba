@@ -715,24 +715,6 @@ ostream& operator<<( ostream &os, String const &s ) {
 
 ////////// deprecated /////////////////////////////////////////////////////////
 
-String& String::encodeForUri() {
-  uri::encode( *THIS_STRING );
-  return *this;
-}
-
-bool String::endsWith( char const *pattern ) const {
-  return utf8::ends_with( *THIS_STRING, pattern );
-}
-
-String& String::lowercase() {
-  utf8::to_lower( *THIS_STRING );
-  return *this;
-}
-
-bool String::startsWith( char const *pattern ) const {
-  return utf8::begins_with( *THIS_STRING, pattern );
-}
-
 String String::tokenize( String const &pattern, String const &flags,
                          size_type *pos, bool *got_token ) const {
   char const *const c_pattern = STRING_OF( pattern )->c_str();
@@ -763,11 +745,6 @@ String& String::trim( String const &aChars ) {
 
 String& String::trim(const char* aChars, int /* not used */ ) {
   ascii::trim( *THIS_STRING, aChars );
-  return *this;
-}
-
-String& String::uppercase() {
-  utf8::to_upper( *THIS_STRING );
   return *this;
 }
 
