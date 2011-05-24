@@ -1895,6 +1895,120 @@ expr_t wrap_in_globalvar_assign(const expr_t& program)
   }
 }
 
+/*******************************************************************************
+  Imports a given schema
+********************************************************************************/
+void* import_schema(const QueryLoc& loc, const SchemaPrefix* prefix, const zstring& targetNS, const URILiteralList* atlist)
+{
+#ifndef ZORBA_NO_XMLSCHEMA
+
+  //const SchemaPrefix* prefix = v.schema_prefix();
+  //zstring targetNS = v.get_uri();
+
+  if (! theImportedSchemas.insert(targetNS.str()).second)
+    throw XQUERY_EXCEPTION(err::XQST0058, ERROR_LOC(loc));
+
+  if (prefix != NULL)
+  {
+    if (!prefix->get_default_bit() && targetNS.empty())
+    {
+      throw XQUERY_EXCEPTION( err::XQST0057, ERROR_LOC( loc ) );
+    }
+
+    zstring pfx = prefix->get_prefix();
+
+    if (pfx == "xml" || pfx == "xmlns")
+      throw XQUERY_EXCEPTION(
+        err::XQST0070, ERROR_PARAMS( pfx, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
+      );
+
+    if (prefix->get_default_bit())
+      theSctx->set_default_elem_type_ns(targetNS, loc);
+
+    if (! pfx.empty())
+      theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
+  }
+
+  store::Item_t targetNSItem = NULL;
+  zstring tmp = targetNS;
+  ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
+  ZORBA_ASSERT(targetNSItem != NULL);
+
+  // Form up a vector of candidate URIs: any location hints, followed
+  // by the imported URI itself.
+  std::vector<zstring> lCandidates;
+  //const URILiteralList* atlist = v.get_at_list();
+  if (atlist != NULL)
+  {
+    for (ulong i = 0; i < atlist->size(); ++i)
+    {
+      // If current uri is relative, turn it to an absolute one, using the
+      // base uri from the sctx.
+      lCandidates.push_back(theSctx->resolve_relative_uri((*atlist)[i]));
+    }
+  }
+
+  zstring lNsURI = targetNSItem->getStringValue();
+  lCandidates.push_back(lNsURI);
+
+  try
+  {
+    std::auto_ptr<impl::Resource> lSchema;
+    for (std::vector<zstring>::iterator lIter = lCandidates.begin();
+         lIter != lCandidates.end();
+         ++lIter)
+    {
+      try
+      {
+        lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA);
+        if (lSchema.get() != NULL &&
+          lSchema->getKind() == impl::Resource::STREAM)
+        {
+          break;
+        }
+      }
+      catch (ZorbaException const& e)
+      {
+        if (e.diagnostic() != err::XQST0059 || *lIter != lNsURI)
+        {
+          // If this exception is a "resource not found", then we need
+          // to continue on and try the next candidate unless this was
+          // the final one. So just ignore the exception.
+        }
+        else
+        {
+          throw;
+        }
+      }
+    }
+
+    // If we got this far, we have a valid StreamResource.
+
+    // Create a Schema obj and register it in the typemanger, if the typemanager
+    // does not have a schema obj already
+    TypeManager* tm = theSctx->get_typemanager();
+    tm->initializeSchema();
+    Schema* schema_p = tm->getSchema();
+
+    // Make Xerxes load and parse the xsd file and create a Xerces
+    // representaton of it.
+    impl::StreamResource* lStream =
+      static_cast<impl::StreamResource*>(lSchema.get());
+    schema_p->registerXSD(lNsURI.c_str(), lStream, loc);
+  }
+  catch (XQueryException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  return no_state;
+
+#else
+  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(loc));
+#endif
+
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -2452,113 +2566,7 @@ void* begin_visit(const SchemaImport& v)
 {
   TRACE_VISIT();
 
-#ifndef ZORBA_NO_XMLSCHEMA
-
-  const SchemaPrefix* prefix = v.get_prefix();
-  zstring targetNS = v.get_uri();
-
-  if (! theImportedSchemas.insert(targetNS.str()).second)
-    throw XQUERY_EXCEPTION(err::XQST0058, ERROR_LOC(loc));
-
-  if (prefix != NULL)
-  {
-    if (!prefix->get_default_bit() && targetNS.empty())
-    {
-      throw XQUERY_EXCEPTION( err::XQST0057, ERROR_LOC( loc ) );
-    }
-
-    zstring pfx = prefix->get_prefix();
-
-    if (pfx == "xml" || pfx == "xmlns")
-      throw XQUERY_EXCEPTION(
-        err::XQST0070, ERROR_PARAMS( pfx, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
-      );
-
-    if (prefix->get_default_bit())
-      theSctx->set_default_elem_type_ns(targetNS, loc);
-
-    if (! pfx.empty())
-      theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
-  }
-
-  store::Item_t targetNSItem = NULL;
-  zstring tmp = targetNS;
-  ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
-  ZORBA_ASSERT(targetNSItem != NULL);
-
-  // Form up a vector of candidate URIs: any location hints, followed
-  // by the imported URI itself.
-  std::vector<zstring> lCandidates;
-  const URILiteralList* atlist = v.get_at_list();
-  if (atlist != NULL)
-  {
-    for (ulong i = 0; i < atlist->size(); ++i)
-    {
-      // If current uri is relative, turn it to an absolute one, using the
-      // base uri from the sctx.
-      lCandidates.push_back(theSctx->resolve_relative_uri((*atlist)[i]));
-    }
-  }
-
-  zstring lNsURI = targetNSItem->getStringValue();
-  lCandidates.push_back(lNsURI);
-
-  try
-  {
-    std::auto_ptr<impl::Resource> lSchema;
-    for (std::vector<zstring>::iterator lIter = lCandidates.begin();
-         lIter != lCandidates.end();
-         ++lIter) 
-    {
-      try 
-      {
-        lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA);
-        if (lSchema.get() != NULL &&
-          lSchema->getKind() == impl::Resource::STREAM) 
-        {
-          break;
-        }
-      }
-      catch (ZorbaException const& e) 
-      {
-        if (e.diagnostic() != err::XQST0059 || *lIter != lNsURI) 
-        {
-          // If this exception is a "resource not found", then we need
-          // to continue on and try the next candidate unless this was
-          // the final one. So just ignore the exception.
-        }
-        else 
-        {
-          throw;
-        }
-      }
-    }
-
-    // If we got this far, we have a valid StreamResource.
-
-    // Create a Schema obj and register it in the typemanger, if the typemanager
-    // does not have a schema obj already
-    TypeManager* tm = theSctx->get_typemanager();
-    tm->initializeSchema();
-    Schema* schema_p = tm->getSchema();
-
-    // Make Xerxes load and parse the xsd file and create a Xerces
-    // representaton of it.
-    impl::StreamResource* lStream =
-      static_cast<impl::StreamResource*>(lSchema.get());
-    schema_p->registerXSD(lNsURI.c_str(), lStream, loc);
-  }
-  catch (XQueryException& e)
-  {
-    set_source(e, loc);
-    throw;
-  }
-
-  return no_state;
-
-#else
-  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(loc));
-#endif
+  return import_schema(v.get_location(), v.get_prefix(), v.get_uri(), v.get_at_list());
 }
 
 void end_visit (const SchemaImport& v, void* /*visit_state*/)
@@ -2768,7 +2776,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         theSctx->resolve_uri(compURI, impl::Resource::MODULE);
 
         if (lResource.get() != NULL &&
-            lResource->getKind() == impl::Resource::STREAM) 
+            lResource->getKind() == impl::Resource::STREAM)
         {
           impl::StreamResource* lStreamResource =
           static_cast<impl::StreamResource*>(lResource.get());
@@ -2776,7 +2784,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
           modfile = lStreamResource->getStream();
           compURL = lStreamResource->getStreamUrl();
         }
-        else 
+        else
         {
           // QQQ what to do with wrong Resource kind?
           std::cout << "Got no Resources!" << std::endl;
@@ -4908,7 +4916,7 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
   Note: In the StatementsAndOptionalExpr, StatementsAndExpr, and Statements rules,
   if any statements are actually present, the parser generates a subtree rooted
   at a BockBody parsenode. A single BlockBody parsenode (with no children) is
-  also generated if there are no statements and no Expr either.  
+  also generated if there are no statements and no Expr either.
 
 ********************************************************************************/
 
@@ -4997,7 +5005,7 @@ void* begin_visit(const BlockBody& v)
           childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
         }
       }
-      
+
       stmts.push_back(childExpr);
     }
   }
@@ -5056,7 +5064,7 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
 
   Note: Each individual var decl in a VarDeclStatement is parsed into a VarDecl
   parsenode.
- 
+
   Note: The parser makes sure that if a VarDeclStatement does not appear as a
   direct child of a BlockBody, it is wrapped by a BlockBody. Furthermore, the
   parser will flatten-out the VarDeclStatement parsenode by placing its children
@@ -5291,7 +5299,7 @@ void end_visit(const Expr& v, void* /*visit_state*/)
                                      op_concatenate,
                                      args);
   normalize_fo(concatExpr.getp());
-  
+
   push_nodestack(concatExpr.getp());
 }
 
@@ -5304,7 +5312,7 @@ void end_visit(const Expr& v, void* /*visit_state*/)
                  TypeswitchExpr |
                  IfExpr |
                  TryCatchExpr
-    
+
   ExprSimple ::= QuantifiedExpr |
                  OrExpr |
 
@@ -9428,7 +9436,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         ERROR_PARAMS("fn:static-base-uri",
                      ZED(FnCallNotMatchSig_3o),
                      numArgs));
-      
+
       zstring baseuri = theSctx->get_base_uri();
       if (baseuri.empty())
         push_nodestack(create_empty_seq(loc));
@@ -9554,7 +9562,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                    numArgs));
     }
   }
-  
+
   numArgs = (ulong)arguments.size();  // recompute size
 
   // Check if this is a call to a type constructor function
@@ -9654,6 +9662,41 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                foExpr->get_loc(),
                                BuiltinFunctionLibrary::getFunction(fkind),
                                foExpr);
+    }
+    else if (fkind == FunctionConsts::FN_ANALYZE_STRING_2 ||
+             fkind == FunctionConsts::FN_ANALYZE_STRING_3)
+    {
+      if (theImportedSchemas.find(std::string("http://www.w3.org/2005/xpath-functions")) == theImportedSchemas.end())
+      {
+        // SchemaPrefix prefix(v.get_location(), "__xpath_functions_target_ns_" + ztd::to_string(theTempVarCounter++));
+        SchemaPrefix prefix(v.get_location(), "");
+        import_schema(v.get_location(), &prefix, zstring("http://www.w3.org/2005/xpath-functions"), NULL);
+      }
+
+      store::Item_t qname;
+      resultExpr = new validate_expr(theRootSctx,
+                                    loc,
+                                    ParseConstants::val_strict,
+                                    qname,
+                                    foExpr,
+                                    theSctx->get_typemanager());
+      /*
+      while (true)
+      {
+        int counter = 0;
+        try {
+          std::cout << ".";
+          counter++;
+          SchemaPrefix prefix(v.get_location(), "__xpath_functions_target_ns_" + ztd::to_string(theTempVarCounter++));
+          import_schema(v.get_location(), &prefix, zstring("http://www.w3.org/2005/xpath-functions"), NULL);
+          break;
+        } catch (ZorbaException const& e) {
+          if (e.diagnostic() != err::XQST0058)
+            throw;
+        }
+      }
+      */
+
     }
     else if (fkind == FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1 ||
              fkind == FunctionConsts::FN_ZORBA_EVAL_UPDATING_1 ||
@@ -9788,20 +9831,20 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                   GET_BUILTIN_FUNCTION(FN_NAMESPACE_URI_FROM_QNAME_1),
                   temp_vars[0]);
 
-      namespaceExpr = 
+      namespaceExpr =
       new fo_expr(theRootSctx,
                   loc,
                   GET_BUILTIN_FUNCTION(FN_STRING_1),
                   namespaceExpr);
 
       // Expanded QName's local name
-      expr_t localExpr = 
+      expr_t localExpr =
       new fo_expr(theRootSctx,
                   loc,
                   GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1),
                   temp_vars[0]);
-      
-      localExpr = 
+
+      localExpr =
       new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
       // qnameExpr := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
