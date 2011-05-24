@@ -12,6 +12,109 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Macro which declares a module. This sets up the installation of the
+# module, including creating the correct paths for module versioning.
+#
+# QQQ either this should subsume GENERATE_MODULE_LIBRARY entirely, or
+# else the latter should be changed to more closely match this.
+#
+# QQQ this currently doesn't support modules with multiple component
+# .xq files. (Neither does Zorba's automatic loading mechanism, so
+# this probably isn't a huge deal, but worth thinking about.)
+#
+# QQQ might it be possible / reasonable to attempt to parse the source
+# file enough to deduce the URI and version?
+MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION SOURCE_FILE)
+
+  # Mangle the module URI into Zorba's filesystem form - namely:
+  # 1. Drop the scheme: (and // if present)
+  # 2. Reverse the authority (host) on dots, then split on dots into subdirs
+  # 3. If the final component ends in /, append "index.xq"; else if it
+  #    doesn't end in .xq, append ".xq"
+  STRING (REGEX REPLACE "^[^:]+:(//)?" "" module_path ${MODULE_URI})
+  STRING (REPLACE "/" ";" module_path ${module_path})
+  LIST (GET module_path 0 authority)
+  LIST (REMOVE_AT module_path 0)
+  STRING (REPLACE "." ";" authority "${authority}")
+  LIST (REVERSE authority)
+  LIST (INSERT module_path 0 ${authority})
+  LIST (GET module_path -1 final_comp)
+  LIST (REMOVE_AT module_path -1)
+  IF (NOT final_comp)
+    SET (module_filename "index.xq")
+  ELSE (NOT final_comp)
+    SET (module_filename "${final_comp}.xq")
+  ENDIF (NOT final_comp)
+  STRING (REPLACE ";" "/" module_path "${module_path}")
+
+  # Compute a CMake-symbol-safe version of the target URI, for storing
+  # things in CMake properties and declaring CMake targets.
+  STRING (REGEX REPLACE "[/ ]" "_" uri_sym "${module_path}/${module_filename}")
+
+  # Compute the version numbers.
+  STRING (REPLACE "." ";" version "${MODULE_VERSION}")
+  LIST (LENGTH version version_len)
+  IF (NOT version_len EQUAL 2)
+    MESSAGE (FATAL_ERROR "Version ${MODULE_VERSION} not of form 'major.minor'")
+  ENDIF (NOT version_len EQUAL 2)
+  LIST (GET version 0 major_ver)
+  LIST (GET version 1 minor_ver)
+
+  # We maintain a global CMake property named after the target URI
+  # which remembers all versions of this URI which have been
+  # declared. If a *lower* version has already been declared, the
+  # output file rules will be messed up, so die.
+  GET_PROPERTY (target_versions GLOBAL PROPERTY "${uri_sym}-versions")
+  MATH (EXPR version_int "${major_ver} * 100000 + ${minor_ver}")
+  FOREACH (known_ver ${target_versions})
+    IF (known_ver LESS version_int)
+      MESSAGE (FATAL_ERROR
+        "The module ${MODULE_URI} has already been declared with a "
+        "lower version number than ${MODULE_VERSION}. "
+        "Please call DECLARE_ZORBA_MODULE() for higher versions of the same "
+        "module first.")
+    ENDIF (known_ver LESS version_int)
+  ENDFOREACH (known_ver)
+  SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-versions" ${version_int})
+
+  # Create output directories based on version number, and install
+  # CMake custom commands which will copy the module source file into
+  # each directory.
+  SET (output_files)
+  FILE (RELATIVE_PATH rel_source "${PROJECT_SOURCE_DIR}" "${SOURCE_FILE}")
+  FOREACH (version_dir "" "${major_ver}" "${major_ver}/${minor_ver}")
+    SET (output_dir
+      "${PROJECT_BINARY_DIR}/modules/${module_path}/${version_dir}")
+    FILE (MAKE_DIRECTORY "${output_dir}")
+    SET (output_file "${output_dir}/${module_filename}")
+
+    # We maintain a global CMake property named after the target URI
+    # which remembers all known output files. If the output file we
+    # just computed is already on that list, that means that a module
+    # with the same URI but a higher version number has already
+    # declared that output file, so we skip it now.
+    GET_PROPERTY (target_files GLOBAL PROPERTY "${uri_sym}-output-files")
+    LIST (FIND target_files "${output_file}" file_found)
+    IF (file_found EQUAL -1)
+      LIST (APPEND output_files "${output_file}")
+      ADD_CUSTOM_COMMAND (OUTPUT "${output_file}"
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+        "${SOURCE_FILE}" "${output_file}"
+        DEPENDS "${SOURCE_FILE}"
+        COMMENT "Copying ${rel_source} to module directories" VERBATIM)
+      SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-output-files"
+        "${output_file}")
+    ENDIF (file_found EQUAL -1)
+  ENDFOREACH (version_dir)
+
+  # Associate these custom commands with the "all" target via a custom
+  # target. (I couldn't find any neater way to do this in CMake; you
+  # can't directly add a dependency to "all".) Target needs to be
+  # named uniquely, and cannot have slashes, so...
+  ADD_CUSTOM_TARGET ("check_${uri_sym}_${MODULE_VERSION}" ALL
+    DEPENDS ${output_files})
+ENDMACRO (DECLARE_ZORBA_MODULE)
+
 # macro which should be used for generating module libraries.
 # this macro will create a shared library in the (build) directory
 # from which the macro was invoked. Also, it will generate
@@ -154,12 +257,7 @@ ENDMACRO(expected_failure)
 
 # Initialize output file when first included
 set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
-file (WRITE "${expected_failures_file}" "<ExpectedFailures>")
-
-# Call this MACRO to close out output file
-MACRO(close_expected_failures)
-  file (APPEND "${expected_failures_file}" "</ExpectedFailures>")
-ENDMACRO(close_expected_failures)
+file (WRITE "${expected_failures_file}" "")
 
 # Convenience macro for adding tests in a standard format. QQQ doc!
 MACRO(ADD_TEST_DIRECTORY TEST_DIR)

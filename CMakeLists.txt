@@ -517,6 +517,3 @@ IF(WIN32)
   FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls")
   INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls/" DESTINATION bin)
 ENDIF(WIN32)
-
-# Close expected failures listing
-close_expected_failures ()
