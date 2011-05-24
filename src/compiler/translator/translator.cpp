@@ -9668,7 +9668,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       if (theImportedSchemas.find(std::string("http://www.w3.org/2005/xpath-functions")) == theImportedSchemas.end())
       {
-        // SchemaPrefix prefix(v.get_location(), "__xpath_functions_target_ns_" + ztd::to_string(theTempVarCounter++));
         SchemaPrefix prefix(v.get_location(), "");
         import_schema(v.get_location(), &prefix, zstring("http://www.w3.org/2005/xpath-functions"), NULL);
       }
@@ -9680,23 +9679,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                     qname,
                                     foExpr,
                                     theSctx->get_typemanager());
-      /*
-      while (true)
-      {
-        int counter = 0;
-        try {
-          std::cout << ".";
-          counter++;
-          SchemaPrefix prefix(v.get_location(), "__xpath_functions_target_ns_" + ztd::to_string(theTempVarCounter++));
-          import_schema(v.get_location(), &prefix, zstring("http://www.w3.org/2005/xpath-functions"), NULL);
-          break;
-        } catch (ZorbaException const& e) {
-          if (e.diagnostic() != err::XQST0058)
-            throw;
-        }
-      }
-      */
-
     }
     else if (fkind == FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1 ||
              fkind == FunctionConsts::FN_ZORBA_EVAL_UPDATING_1 ||
