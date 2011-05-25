@@ -308,7 +308,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/scripting/exit4 666)
 
 EXPECTED_FAILURE(test/rbkt/zorba/accessors/node-name3 0000046)
 
-EXPECTED_FAILURE(test/rbkt/zorba/nodes/generate_id1 0000037)
-EXPECTED_FAILURE(test/rbkt/zorba/nodes/generate_id2 0000037)
-EXPECTED_FAILURE(test/rbkt/zorba/nodes/generate_id3 0000037)
 EXPECTED_FAILURE(test/rbkt/zorba/nodes/generate_id4 0000037)

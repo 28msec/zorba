@@ -333,22 +333,20 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if(theChildren.size())
   {
-/*   if(consumeNext(item, theChildren[0].getp(), planState))
     {
-      char  strid[50];
-      sprintf(strid, "node%Ix", item.getp());
-      zstring zstrid(strid);
-      retval = GENV_ITEMFACTORY->createString(result, zstrid);
-    }
-    else
-    {
-      zstring zstrid("");
-      retval = GENV_ITEMFACTORY->createString(result, zstrid);
+      zstring uri_string = "";
+      if(consumeNext(item, theChildren[0].getp(), planState))
+      {
+        store::Item_t   item_uri;
+        if(GENV_STORE.getReference(item_uri, item.getp()))
+        {
+          uri_string = item_uri->getStringValue();
+        }
+      }
+      retval = GENV_ITEMFACTORY->createString(result, uri_string);
     }
     STACK_PUSH(retval, state);
-  */
   }
-
 
   STACK_END (state);
 }
