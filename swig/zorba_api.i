@@ -54,10 +54,10 @@
 #endif
 #endif
 
-#include <zorba/zorba.h>
-#include <zorba/store_manager.h>
 #include <string>
 #include <sstream>
+#include <zorba/zorba.h>
+#include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/diagnostic_handler.h>
 #include <zorba/options.h>
