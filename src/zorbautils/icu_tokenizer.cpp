@@ -23,11 +23,14 @@
 #include <iostream>
 #endif
 
+#include <zorba/error_list.h>
+
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
 #include "zorbaerrors/dict.h"
 #include "zorbaerrors/xquery_exception.h"
+#include "zorbaerrors/zorba_exception.h"
 #include "zorbautils/icu_tokenizer.h"
 #include "zorbautils/locale.h"
 #include "zorbautils/mutex.h"

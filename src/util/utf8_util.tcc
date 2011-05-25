@@ -24,7 +24,6 @@
 #include <cctype>
 
 #include "util/string/string_traits.h"
-#include "zorbaerrors/xquery_diagnostics.h"
 
 namespace zorba {
 namespace utf8 {
@@ -188,7 +187,6 @@ void to_upper( InputStringType const &in, OutputStringType *out ) {
 } // namespace zorba
 
 #endif /* ZORBA_UTF8_UTIL_TCC */
-
 /*
  * Local variables:
  * mode: c++
