@@ -91,12 +91,16 @@ ostream& ZorbaException::print( ostream &o ) const {
   //
   ostringstream oss;
   oss << ZED_PREFIX;
+
+  streampos pos = oss.tellp();
   Diagnostic const &d = diagnostic();
   oss << d.category();
-  if ( oss.tellp() )
+  if ( oss.tellp() != pos )             // emit ' ' only if non-empty category
     oss << ' ';
+
   if ( diagnostic::kind const k = d.kind() )
     oss << k << ' ';
+
   oss << (dynamic_cast<ZorbaWarningCode const*>( &d ) ? "warning" : "error");
 
   o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
