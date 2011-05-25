@@ -290,26 +290,24 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
       var_expr* var = lc->get_var();
 
+      if (domainExpr->is_sequential())
+        continue;
+
       int uses = count_variable_uses(&flwor, var, &rCtx, 2);
 
-      if (uses > 1 && !domainExpr->is_sequential() && is_trivial_expr(domainExpr))
+      if (uses > 1 && is_trivial_expr(domainExpr))
       {
         subst_vars(rCtx, node, var, domainExpr);
         substitute = true;
       }
-      else if (uses == 1)
+      else if (uses == 1 &&
+               (is_trivial_expr(domainExpr) ||
+                safe_to_fold_single_use(var, TypeConstants::QUANT_ONE, flwor)))
       {
-        if (!domainExpr->is_sequential() &&
-            (is_trivial_expr(domainExpr) ||
-             safe_to_fold_single_use(var, TypeConstants::QUANT_ONE, flwor)))
-        {
-          subst_vars(rCtx, node, var, domainExpr);
-          substitute = true;
-        }
+        subst_vars(rCtx, node, var, domainExpr);
+        substitute = true;
       }
-      else if (uses == 0 &&
-               !domainExpr->is_sequential() &&
-               !domainExpr->isNonDiscardable())
+      else if (uses == 0 && !domainExpr->isNonDiscardable())
       {
         substitute = true;
 
@@ -479,19 +477,21 @@ static bool is_trivial_expr(const expr* e)
 
 
 /*******************************************************************************
-
+  For a LET var, varQuant is always QUNAT_ONE. For a FOR var, varQuant is the
+  quantifier of the type of the domain expr. It can be either QUANT_ONE or
+  QUANT_QUESTION.
 ********************************************************************************/
 static bool safe_to_fold_single_use(
-    var_expr* v,
-    TypeConstants::quantifier_t for_quant,
+    var_expr* var,
+    TypeConstants::quantifier_t varQuant,
     const flwor_expr& flwor)
 {
   bool declared = false;
   expr_t referencingExpr = NULL;
 
-  TypeManager* tm = v->get_type_manager();
+  TypeManager* tm = var->get_type_manager();
 
-  expr* domainExpr = v->get_domain_expr();
+  expr* domainExpr = var->get_domain_expr();
 
   bool hasNodeConstr = domainExpr->contains_node_construction();
 
@@ -503,19 +503,23 @@ static bool safe_to_fold_single_use(
     if (kind == flwor_clause::for_clause)
     {
       const for_clause& fc = *static_cast<const for_clause *>(&c);
-      var_expr* var = fc.get_var();
+      var_expr* varExpr = fc.get_var();
 
       if (! declared)
       {
-        declared = (v == var);
+        declared = (varExpr == var);
         continue;
       }
 
-      if (count_variable_uses(fc.get_expr(), v, NULL, 1) == 1)
+      if (count_variable_uses(fc.get_expr(), var, NULL, 1) == 1)
       {
-        if (for_quant != TypeConstants::QUANT_ONE)
+        if (varQuant != TypeConstants::QUANT_ONE)
         {
-          xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(v);
+          // We are considering folding a FOR var whose domain expr may be the
+          // empty sequence. We can fold only if doing so will cause the result
+          // of the flwor expr to be the empty sequence in the case where the
+          // domain expr will indeed be equal to the empty sequence.
+          xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(var);
 
           if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE))
           {
@@ -547,16 +551,16 @@ static bool safe_to_fold_single_use(
     else if (kind == flwor_clause::let_clause)
     {
       const forletwin_clause& flc = *static_cast<const forletwin_clause *>(&c);
-      var_expr* var = flc.get_var();
+      var_expr* varExpr = flc.get_var();
 
       if (! declared)
       {
-        declared = (v == var);
+        declared = (var == varExpr);
         continue;
       }
 
-      if (for_quant == TypeConstants::QUANT_ONE &&
-          count_variable_uses(flc.get_expr(), v, NULL, 1) == 1)
+      if (varQuant == TypeConstants::QUANT_ONE &&
+          count_variable_uses(flc.get_expr(), var, NULL, 1) == 1)
       {
         referencingExpr = flc.get_expr();
         break;
@@ -568,8 +572,8 @@ static bool safe_to_fold_single_use(
     }
     else if (kind == flwor_clause::where_clause)
     {
-      if (for_quant == TypeConstants::QUANT_ONE && 
-          count_variable_uses(c.get_expr(), v, NULL, 1) == 1)
+      if (varQuant == TypeConstants::QUANT_ONE && 
+          count_variable_uses(c.get_expr(), var, NULL, 1) == 1)
       {
         referencingExpr = c.get_expr();
         break;
@@ -577,7 +581,7 @@ static bool safe_to_fold_single_use(
     }
     else if (kind == flwor_clause::order_clause)
     {
-      if (for_quant == TypeConstants::QUANT_ONE)
+      if (varQuant == TypeConstants::QUANT_ONE)
       {
         // TODO
       }
@@ -586,12 +590,12 @@ static bool safe_to_fold_single_use(
 
   if (referencingExpr == NULL &&
       !flwor.get_return_expr()->is_sequential() &&
-      count_variable_uses(flwor.get_return_expr(), v, NULL, 1) == 1)
+      count_variable_uses(flwor.get_return_expr(), var, NULL, 1) == 1)
   {
-    if (for_quant != TypeConstants::QUANT_ONE)
+    if (varQuant != TypeConstants::QUANT_ONE)
     {
       xqtref_t type = 
-      flwor.get_return_expr()->get_return_type_with_empty_input(v);
+      flwor.get_return_expr()->get_return_type_with_empty_input(var);
 
       if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE))
         referencingExpr = flwor.get_return_expr();
@@ -606,7 +610,7 @@ static bool safe_to_fold_single_use(
     return false;
 
   ulong numRefs = 1;
-  return !var_in_try_block_or_in_loop(v,
+  return !var_in_try_block_or_in_loop(var,
                                       referencingExpr,
                                       false,
                                       hasNodeConstr, 
@@ -687,6 +691,8 @@ static bool var_in_try_block_or_in_loop(
         if (c.get_kind() == flwor_clause::for_clause &&
             TypeOps::type_max_cnt(tm, *flc.get_expr()->get_return_type()) >= 2)
         {
+          // we assume here that the var will be referenced somewhere in the
+          // remainder of the flwor expr, but this is not necessarily true ????
           return true;
         }
 
@@ -740,6 +746,7 @@ static bool var_in_try_block_or_in_loop(
     {
       return true;
     }
+
     ei.next();
   }
 

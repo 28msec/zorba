@@ -935,6 +935,9 @@ RULE_REWRITE_POST(InlineFunctions)
       {
         var_expr_t p = udfArgs[i];
         subst[p] = fo->get_arg(i);
+
+        if (fo->get_arg(i)->is_sequential())
+          return NULL;
       }
 
       try
