@@ -110,20 +110,6 @@ bool operator==( QName const &q1, char const *q2 ) {
   return false;
 }
 
-ostream& operator<<( ostream &o, kind k ) {
-  //
-  // It's OK for these to be only in English: they're looked-up in the error
-  // dictionary later.
-  //
-  switch ( k ) {
-    case UNKNOWN_KIND  : o << "unknown"; break;
-    case XQUERY_DYNAMIC: o << "dynamic"; break;
-    case XQUERY_STATIC : o << "static" ; break;
-    case XQUERY_TYPE   : o << "type"   ; break;
-  }
-  return o;
-}
-
 ostream& operator<<( ostream &o, category c ) {
   //
   // It's OK for these to be only in English: they're looked-up in the error
@@ -147,6 +133,20 @@ ostream& operator<<( ostream &o, category c ) {
     case ZORBA_XQP           : o << "Zorba"                 ; break;
 
     default                  : /* suppresses warning */       break;
+  }
+  return o;
+}
+
+ostream& operator<<( ostream &o, kind k ) {
+  //
+  // It's OK for these to be only in English: they're looked-up in the error
+  // dictionary later.
+  //
+  switch ( k ) {
+    case UNKNOWN_KIND  : o << "unknown"; break;
+    case XQUERY_DYNAMIC: o << "dynamic"; break;
+    case XQUERY_STATIC : o << "static" ; break;
+    case XQUERY_TYPE   : o << "type"   ; break;
   }
   return o;
 }
