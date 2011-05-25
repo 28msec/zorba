@@ -26,7 +26,6 @@
 #include <zorba/user_exception.h>
 #include <zorba/util/path.h>
 #include <zorba/xquery_functions.h>
-#include <zorba/xquery_functions.h>
 #include <zorba/zorba.h>
 
 #include "file_module.h"
@@ -231,7 +230,7 @@ bool
 FileFunction::isValidDriveSegment(
     String& aString)
 {
-  aString = aString.uppercase();
+  aString = fn::upper_case( aString );
   // the drive segment has one of the forms: "C:", "C%3A"
   if ((aString.length() != 2 && aString.length() != 4) ||
       (aString.length() == 2 && !fn::ends_with(aString,":")) ||
