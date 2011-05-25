@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+%begin %{
+#include <iostream>
+%}
 %{
 #include "zend_exceptions.h"
 %}
