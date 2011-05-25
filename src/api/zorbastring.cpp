@@ -733,16 +733,6 @@ String String::tokenize( String const &pattern, String const &flags,
   return String();
 }
 
-String& String::trim() {
-  ascii::trim_whitespace( *THIS_STRING );
-  return *this;
-}
-
-String& String::trim(const char* aChars ) {
-  ascii::trim( *THIS_STRING, aChars );
-  return *this;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

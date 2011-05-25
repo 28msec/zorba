@@ -1264,12 +1264,7 @@ public:
 
   ////////// DEPRECATED ///////////////////////////////////////////////////////
 
-  // Used by csv, geo, & image modules once each.
-  String&   trim();
-
   // Used only by http-client module.
-  String&   trim( const char *chars );
-  String&   trim( const char *chars, int ) { return trim( chars ); }
   String    tokenize( String const &pattern, String const &flags,
                       size_type* startPos, bool* hasMatched ) const;
 
