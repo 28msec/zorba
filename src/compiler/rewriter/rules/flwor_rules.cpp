@@ -766,15 +766,24 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (flwor == NULL || flwor->is_general())
     return NULL;
 
-  if_expr* ifReturnExpr = dynamic_cast<if_expr*>(flwor->get_return_expr());
+  if_expr* ifReturnExpr = NULL;
+  expr* elseExpr = NULL;
+
+  if (flwor->get_return_expr()->get_expr_kind() == if_expr_kind)
+  {
+    ifReturnExpr = static_cast<if_expr*>(flwor->get_return_expr());
+    elseExpr = ifReturnExpr->get_else_expr();
+  }
+
   expr* whereExpr = flwor->get_where();
 
   // "for $x in ... return if (ce) then te else ()" -->
   // "for $x in ... where ce return te"
   if (ifReturnExpr != NULL &&
       whereExpr == NULL &&
-      ifReturnExpr->is_simple() &&
-      TypeOps::is_empty(tm, *ifReturnExpr->get_else_expr()->get_return_type()))
+      (elseExpr->is_simple() || elseExpr->is_vacuous()) &&
+      !elseExpr->isNonDiscardable() &&
+      TypeOps::is_empty(tm, *elseExpr->get_return_type()))
   {
     expr_t cond = ifReturnExpr->get_cond_expr();
     expr_t then = ifReturnExpr->get_then_expr();
@@ -850,7 +859,7 @@ static bool is_subseq_pred(
       f->getKind() != FunctionConsts::OP_VALUE_EQUAL_2)
     return false;
 
-  for (ulong i = 0; i < 2; i++)
+  for (ulong i = 0; i < 2; ++i)
   {
     posVar = fo->get_arg(i)->get_var();
     posExpr = fo->get_arg(1 - i);
@@ -923,10 +932,17 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
   bool modified = false;
 
-  if (flwor->get_return_expr()->get_expr_kind() == flwor_expr_kind)
+  if (flwor->get_return_expr()->get_expr_kind() == flwor_expr_kind &&
+      !flwor->get_return_expr()->is_sequential())
   {
+    // TODO: If the return clause is sequential, we can still do the merge,
+    // but we must keep both the outer and the inner materialize clauses.
+
     flwor_expr_t returnFlwor = static_cast<flwor_expr*>(flwor->get_return_expr());
 
+    // If the outer flwor is not general, and it contains where, groupby, or
+    // orderby clauses, we cannot merge because for/let clauses cannot appear
+    // after where, groupby, or orderby clauses,
     if (!flwor->is_general())
     {
       ulong numClauses = flwor->num_clauses();
