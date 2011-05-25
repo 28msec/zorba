@@ -18,7 +18,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/typeident.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/options.h>  // for compiler hints class

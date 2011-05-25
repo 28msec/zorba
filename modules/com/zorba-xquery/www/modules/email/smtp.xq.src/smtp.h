@@ -17,7 +17,7 @@
 #ifndef ZORBA_EMAIL_SMTP_H
 #define ZORBA_EMAIL_SMTP_H
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "email_function.h"
 

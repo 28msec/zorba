@@ -22,7 +22,7 @@
 #ifndef ZORBA_NO_FULL_TEXT
 
 #include <zorba/locale.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 namespace zorba {
 

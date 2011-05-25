@@ -18,7 +18,7 @@
 #include <zorba/base64.h>
 
 #include <zorba/config.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "zorbatypes/binary.h"
 

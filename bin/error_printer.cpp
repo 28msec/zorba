@@ -20,7 +20,7 @@
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/xquery_stack_trace.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "zorba/util/uri.h"
 #include "error_printer.h"

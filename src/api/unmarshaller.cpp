@@ -16,7 +16,7 @@
 #include "api/unmarshaller.h"
 
 #include <zorba/item.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/iterator.h>
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"

@@ -17,7 +17,7 @@
 #include "testuriresolver.h"
 
 #include <zorba/zorba.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/zorba_exception.h>
 #include "util/ascii_util.h"
 #include "zorba/util/uri.h"

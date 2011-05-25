@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "api/unmarshaller.h"
 #include "util/ascii_util.h"

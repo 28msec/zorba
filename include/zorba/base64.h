@@ -19,7 +19,7 @@
 #include <string>
 
 #include <zorba/config.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 namespace zorba { namespace encoding {
 

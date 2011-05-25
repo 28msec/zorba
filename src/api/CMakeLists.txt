@@ -24,7 +24,7 @@ SET(API_SRCS
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp
     resultiteratorimpl.cpp
-    zorbastring.cpp
+    zorba_string.cpp
     itemfactoryimpl.cpp
     item.cpp
     typeidentimpl.cpp

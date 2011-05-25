@@ -32,7 +32,7 @@
 #include <zorba/zorba.h>
 #include <zorba/diagnostic_handler.h>
 #include <zorba/zorba_exception.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/util/file.h>
 #include <zorba/static_context_consts.h>
 

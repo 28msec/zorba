@@ -16,7 +16,7 @@
 
 #include <sstream>
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/xquery_diagnostics.h"

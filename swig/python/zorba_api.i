@@ -18,7 +18,7 @@
 %{
 
 #include <zorba/sax2.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include <iostream>
 

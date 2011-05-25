@@ -22,7 +22,7 @@
 #include <zorba/zorba.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
 #include <zorba/vector_item_sequence.h>

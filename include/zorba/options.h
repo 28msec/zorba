@@ -19,7 +19,7 @@
 
 #ifdef __cplusplus
 #include <vector>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #endif
 
 

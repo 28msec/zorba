@@ -30,7 +30,7 @@
 #include <zorba/version.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/xquery.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 namespace zorba {
 

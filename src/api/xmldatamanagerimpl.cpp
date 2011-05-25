@@ -17,7 +17,7 @@
 
 #include <fstream>
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/item.h>
 #include <zorba/diagnostic_handler.h>
 

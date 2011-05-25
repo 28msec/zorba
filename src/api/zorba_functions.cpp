@@ -15,7 +15,7 @@
  */
 
 #include <zorba/zorba_functions.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "util/ascii_util.h"
 

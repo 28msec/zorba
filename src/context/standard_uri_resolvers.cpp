@@ -23,7 +23,7 @@
 #include <zorba/external_module.h>
 #include <zorba/module_import_checker.h>
 #include <zorba/util/file.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "util/string_util.h"
 #include "util/uri_util.h"

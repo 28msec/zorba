@@ -22,7 +22,7 @@
 #include <sstream>
 #include <list>
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "compiler/parser/query_loc.h"
 

@@ -29,7 +29,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/vector_item_sequence.h>
 #include <zorba/xquery_functions.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 
 #ifdef LINUX

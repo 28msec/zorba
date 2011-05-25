@@ -18,7 +18,7 @@
 #include <cstdio>
 #include <sstream>
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/iterator.h>
 #include <zorba/item_factory.h>
 #include <zorba/store_consts.h>

@@ -19,7 +19,7 @@
 
 #include "api/sax2impl.h"
 #include "api/unmarshaller.h"
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/default_content_handler.h>
 
 namespace zorba

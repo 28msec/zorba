@@ -1,5 +1,5 @@
 #include <zorba/util/uri.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include <zorbatypes/URI.h>
 #include <zorbatypes/zstring.h>

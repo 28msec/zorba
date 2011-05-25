@@ -15,7 +15,7 @@
  */
 
 #include <zorba/uri_resolvers.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/collection.h>
 #include <zorba/item.h>
 

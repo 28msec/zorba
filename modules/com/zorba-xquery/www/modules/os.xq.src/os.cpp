@@ -16,7 +16,7 @@
 #include <cstdlib>
 
 #include <zorba/zorba.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/singleton_item_sequence.h>

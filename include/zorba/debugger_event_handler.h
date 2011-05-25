@@ -19,7 +19,7 @@
 #include <list>
 #include <utility>
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 
 namespace zorba{

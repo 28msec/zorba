@@ -18,7 +18,7 @@
 #define SYNCHRONOUS_LOGGER
 
 #include "zorba/config.h"
-#include "zorba/zorbastring.h"
+#include "zorba/zorba_string.h"
 #include "zorbautils/lock.h"
 
 #include <iostream>

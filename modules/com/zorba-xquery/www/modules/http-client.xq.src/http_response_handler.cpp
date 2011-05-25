@@ -17,7 +17,7 @@
 #include <zorba/xquery_exception.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "http_response_handler.h"
 

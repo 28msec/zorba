@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include <string>
 
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "utf8_util_base.h"
 

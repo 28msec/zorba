@@ -18,7 +18,7 @@
 #define ZORBA_UNMARSHALLER_H
 
 #include <zorba/api_shared_types.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "store/api/iterator.h"
 #include "common/shared_types.h"

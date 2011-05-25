@@ -15,7 +15,7 @@
  */
 
 #include <zorba/xquery_functions.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 #include "util/uri_util.h"
 #include "util/utf8_util.h"

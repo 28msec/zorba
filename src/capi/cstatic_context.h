@@ -21,7 +21,7 @@
 #include <map>
 #include <zorba/zorbac.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 #include <zorba/static_context.h>
 
 using namespace zorba;

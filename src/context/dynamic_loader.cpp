@@ -27,7 +27,7 @@
 #include "zorbaerrors/xquery_diagnostics.h"
 #include "zorbatypes/URI.h"
 #include "zorba/external_module.h"
-#include "zorba/zorbastring.h"
+#include "zorba/zorba_string.h"
 #include "context/get_current_lib_suffix.h"
 #include <fstream>
 #include "util/error_util.h"

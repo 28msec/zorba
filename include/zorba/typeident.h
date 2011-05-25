@@ -19,7 +19,7 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/identtypes.h>
-#include <zorba/zorbastring.h>
+#include <zorba/zorba_string.h>
 
 namespace zorba {
 
