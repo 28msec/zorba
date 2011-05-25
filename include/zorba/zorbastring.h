@@ -1268,8 +1268,8 @@ public:
   String&   trim();
 
   // Used only by http-client module.
-  String&   trim( String const &chars );
-  String&   trim( const char* chars, int lengthOfChars );
+  String&   trim( const char *chars );
+  String&   trim( const char *chars, int ) { return trim( chars ); }
   String    tokenize( String const &pattern, String const &flags,
                       size_type* startPos, bool* hasMatched ) const;
 

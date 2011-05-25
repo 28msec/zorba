@@ -738,12 +738,7 @@ String& String::trim() {
   return *this;
 }
 
-String& String::trim( String const &aChars ) {
-  ascii::trim( *THIS_STRING, STRING_OF( aChars )->c_str() );
-  return *this;
-}
-
-String& String::trim(const char* aChars, int /* not used */ ) {
+String& String::trim(const char* aChars ) {
   ascii::trim( *THIS_STRING, aChars );
   return *this;
 }

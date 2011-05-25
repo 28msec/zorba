@@ -20,6 +20,7 @@
 #include <zorba/serializer.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/zorba_functions.h>
 #include <zorba/base64.h>
 
 #include "http_request_handler.h"
@@ -147,11 +148,11 @@ namespace zorba { namespace http_client {
           std::pair<String, String> lKeyValue = twinSplit(lNextToken);
           if (lKeyValue.first == "name") {
             theMultipartName = lKeyValue.second;
-            theMultipartName.trim("\"\'", 1);
+            zfn::trim(theMultipartName, "\"\'");
           }
           else if (lKeyValue.first == "filename") {
             theMultiPartFileName = lKeyValue.second;
-            theMultiPartFileName.trim("\"\'", 1);
+            zfn::trim(theMultiPartFileName, "\"\'");
           }
         } while (lHasMatched);
       } else {
@@ -282,8 +283,8 @@ namespace zorba { namespace http_client {
       lValue = aStr.tokenize(String("="), String(""),
                                           &lkeyPos, &lHasValue);
     }
-    lKey.trim();
-    lValue.trim();
+    zfn::trim(lKey);
+    zfn::trim(lValue);
     return std::pair<String, String>(lKey, lValue);
   }
 }}
