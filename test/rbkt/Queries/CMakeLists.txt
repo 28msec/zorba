@@ -291,7 +291,6 @@ ENDIF(XVERMAJ EQUAL 2)
 IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
-  EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3284888)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)

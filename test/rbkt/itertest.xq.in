@@ -1,10 +1,10 @@
 import module namespace file = "http://expath.org/ns/file";
-import module namespace process = "http://www.zorba-xquery.com/modules/process";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 declare variable $testfile external;  
 declare variable $apitest-path external;
+declare variable $query-result external;
 declare variable $source-dir := "@CMAKE_SOURCE_DIR@";
 declare variable $binary-dir := "@CMAKE_BINARY_DIR@";
 
@@ -19,10 +19,8 @@ let $apitest-path-normalized := file:path-to-native($apitest-path)
 let $expected-file-normalized := file:path-to-native($expected-file)
 let $result-file-normalized := file:path-to-native($result-file)
 let $query-file-normalized := file:path-to-native($query-file)
-let $params :=
-  <output:serialization-parameters>
-    <output:method value="text"/>
-  </output:serialization-parameters>
+let $query-result-normalized := file:path-to-native($query-result)
+
 return
   if (file:exists($query-file-normalized)) 
   then
@@ -33,28 +31,19 @@ return
         '--no-tree-ids',
         $query-file-normalized
       );
-
-      (: generate iterplan with apitest :)
-      variable $query-result := process:exec($apitest-path-normalized, $query-options);
-
-      variable $query-stdout as xs:string := xs:string($query-result/stdout/text());
-
+      variable $query-stdout as xs:string := file:read-text($query-result-normalized);
       variable $expected-text as xs:string := file:read-text($expected-file-normalized);
 
       {
-        file:create-directory(file:dir-name($result-file-normalized));
-        file:write($result-file-normalized, $query-stdout, $params);
         (
           (: compare generated iterator tree with expected result :)
           if ($query-stdout eq $expected-text) then
             "Passed!"
           else
             fn:concat(
-              "Failed! Generated iterator tree is not equal to the expected Result!
-",
-              "Command to generate iterator tree: ", $apitest-path, " ", fn:string-join($query-options," "), "
-",
-              "Expected Result: ", $expected-file)
+              "Failed! Generated iterator tree is not equal to the expected Result!",
+              "Command to generate iterator tree: ", $apitest-path, " ", fn:string-join($query-options," "), "",
+              "Expected Result: ", $expected-file, $expected-text)
         )
       }
     }

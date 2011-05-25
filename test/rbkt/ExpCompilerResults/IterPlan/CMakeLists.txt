@@ -37,12 +37,28 @@ FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
 
   FOREACH (TESTFILE ${TESTFILES})
     STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
+   
+    STRING(LENGTH ${TESTFILE} testfile_length)
+    MATH(EXPR testfile_length "${testfile_length} - 5")
+    STRING( SUBSTRING ${TESTFILE} 0 ${testfile_length} test_file)
+    
+    SET(APITEST_OUT_DIR ${CMAKE_BINARY_DIR}/test/rbkt/CompilerResults/IterPlan/${test_file}.spec)
+    
+    GET_FILENAME_COMPONENT(APITEST_OUT_PATH ${APITEST_OUT_DIR} PATH)
+    
+    FILE(MAKE_DIRECTORY ${APITEST_OUT_PATH})
+    
+    execute_process(
+              COMMAND ${APITEST_PATH} --iter-plan-test --print-iterator-tree --no-tree-ids ${CMAKE_SOURCE_DIR}/test/rbkt/Queries/${test_file}.xq
+              OUTPUT_FILE ${APITEST_OUT_DIR}) 
+              
     ADD_TEST (
       "iterplans/${TESTNAME}" 
       "${ZORBA_EXE_SCRIPT}" 
       -q "${CMAKE_BINARY_DIR}/test/rbkt/itertest.xq" -f 
       -e "testfile:=${TESTFILE}" 
-      -e "apitest-path:=${APITEST_PATH}" 
+      -e "apitest-path:=${APITEST_PATH}"
+      -e "query-result:=${APITEST_OUT_DIR}" 
       -z "method=text")
     SET_TESTS_PROPERTIES("iterplans/${TESTNAME}" 
       PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
