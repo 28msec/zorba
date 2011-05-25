@@ -204,7 +204,6 @@ typedef enum
   OP_OR_N,
 
   OP_VAR_ASSIGN_1,
-  OP_VAR_IS_SET_1,
   OP_VAR_GET_1,
 
   OP_EITHER_NODES_OR_ATOMICS_1,

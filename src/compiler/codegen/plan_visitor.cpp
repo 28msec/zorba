@@ -2142,20 +2142,12 @@ bool begin_visit(fo_expr& v)
   const function* func = v.get_func();
   ZORBA_ASSERT(func != NULL);
 
-  if (func->getKind() == FunctionConsts::OP_VAR_IS_SET_1)
-  {
-    var_expr* varExpr = static_cast<var_expr*>(v.get_arg(0));
-    varExpr->set_unique_id(theNextDynamicVarId++);
-  }
-  else
-  {
-    // If the function is an enclosed expression, push it in the constructors
-    // stack to "hide" the current constructor context, if any. This way, a new
-    // constructor context can be started if a node constructor exists inside
-    // the enclosed expr.
-    if (is_enclosed_expr(&v))
-      theConstructorsStack.push(&v);
-  }
+  // If the function is an enclosed expression, push it in the constructors
+  // stack to "hide" the current constructor context, if any. This way, a new
+  // constructor context can be started if a node constructor exists inside
+  // the enclosed expr.
+  if (is_enclosed_expr(&v))
+    theConstructorsStack.push(&v);
 
 	return true;
 }
@@ -2170,9 +2162,21 @@ void end_visit(fo_expr& v)
   std::vector<PlanIter_t> argv;
 
   argv.resize(v.num_args());
-  generate (argv.rbegin(), argv.rend(), ztd::stack_to_generator(itstack));
+  generate(argv.rbegin(), argv.rend(), ztd::stack_to_generator(itstack));
   
   const QueryLoc& loc = qloc;
+
+  if (v.is_sequential())
+  {
+    ulong numArgs = v.num_args();
+    for (ulong i = 0; i < numArgs; ++i)
+    {
+      if (v.get_arg(i)->is_sequential())
+      {
+        argv[i] = new MaterializeIterator(sctx, v.get_arg(i)->get_loc(), argv[i]);
+      }
+    }
+  }
 
   if (func->validate_args(argv))
   {
