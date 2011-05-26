@@ -13,7 +13,6 @@
 # limitations under the License.
 
 ADD_SUBDIRECTORY(email)
-ADD_SUBDIRECTORY(security)
 ADD_SUBDIRECTORY(convertors)
 
 
@@ -24,4 +23,3 @@ ENDIF(CURL_FOUND)
 
 GENERATE_MODULE_LIBRARY(datetime "")
 GENERATE_MODULE_LIBRARY(os "")
-GENERATE_MODULE_LIBRARY(system "")
