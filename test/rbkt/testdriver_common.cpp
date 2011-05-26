@@ -454,7 +454,7 @@ void setModulePaths
   std::vector<zorba::String> lModulePaths;
   std::string lPath;
 #ifdef WIN32
-  char lDelim = ';';
+  char lDelim = ',';
 #else
   char lDelim = ':';
 #endif

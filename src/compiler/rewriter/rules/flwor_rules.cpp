@@ -190,7 +190,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       fix_if_annotations(ifExpr);
 
-      return ifExpr;
+      return ifExpr.getp();
     }
   }
 
@@ -375,7 +375,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                                       LOC(whereExpr)));
       fix_if_annotations(ifExpr);
       
-      return ifExpr;
+      return ifExpr.getp();
     }
 
     return result;
