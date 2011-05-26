@@ -713,26 +713,6 @@ ostream& operator<<( ostream &os, String const &s ) {
   return os << *STRING_OF( s );
 }
 
-////////// deprecated /////////////////////////////////////////////////////////
-
-String String::tokenize( String const &pattern, String const &flags,
-                         size_type *pos, bool *got_token ) const {
-  char const *const c_pattern = STRING_OF( pattern )->c_str();
-  unicode::regex re;
-  re.compile( c_pattern, STRING_OF( flags )->c_str() );
-
-  unicode::string u_token;
-  unicode::size_type u_pos = *pos;
-  *got_token = re.next_token( *THIS_STRING, &u_pos, &u_token );
-  if ( *got_token ) {
-    string token;
-    utf8::to_string( u_token, &token );
-    *pos = u_pos;
-    return String( token );
-  }
-  return String();
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

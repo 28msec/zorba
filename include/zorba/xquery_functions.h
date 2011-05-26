@@ -17,11 +17,66 @@
 #ifndef ZORBA_XQUERY_FUNCTIONS_API_H
 #define ZORBA_XQUERY_FUNCTIONS_API_H
 
+#include <memory>                       /* for auto_ptr */
+
 #include <zorba/config.h>
+#include <zorba/zorba_string.h>
 
 namespace zorba {
 
-class String;
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Provides a way for a function to return a sequence of some type \c T that
+ * can be iterated over.
+ *
+ * @tparam T The type of sequence.
+ */
+template<typename T>
+class Sequence {
+public:
+  typedef T value_type;
+
+  struct iterator {
+    virtual ~iterator() { }
+    virtual bool next( value_type *result ) = 0;
+  };
+
+  /**
+   * Constructs a new %Sequence.
+   * This constructor is intended only for function implementors.
+   *
+   * @param i The iterator that provides the elements of the sequence.
+   * Ownership of the iterator is taken.
+   */
+  Sequence( iterator *i ) : i_( i ) { } 
+
+  /**
+   * Copy constructs a %Sequence.
+   *
+   * @param s The %Sequence to copy from.  Note that it is a destructive copy
+   * in that the sequence of \a s is \i moved.
+   */
+  Sequence( Sequence const &s ) : i_( s.i_ ) { }
+
+  /**
+   * Gets the next element in the sequence.
+   *
+   * @param result A pointer to the variable to receive the next element.
+   * @return \c true only if there is a next element.
+   */
+  bool next( value_type *result ) {
+    return i_->next( result );
+  }
+
+private:
+  mutable std::auto_ptr<iterator> i_;
+
+  // forbid
+  Sequence& operator=( Sequence const& );
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 namespace fn {
 
@@ -127,6 +182,50 @@ bool starts_with( String const &arg1, char const *arg2 );
  */
 ZORBA_DLL_PUBLIC
 String encode_for_uri( String const &uri_part );
+
+////////// 7.6 String Functions that Use Pattern Matching /////////////////////
+
+/**
+ * This function breaks the \a input string into a sequence of strings,
+ * treating any substring that matches \a pattern as a separator.  The
+ * separators themselves are not returned.
+ *
+ * Performance note: if \a pattern is a simple string (not a regular expression
+ * with meta-characers), it is more efficient to use String::find().
+ *
+ * @param input The string to be split into tokens.  If \a input is the empty
+ * sequence, or if \a input is the zero-length string, the result is the empty
+ * sequence.
+ * @param pattern The regular expression.  If it matches a zero-length string,
+ * then an error is raised: [err:FORX0003].
+ * @param flags The regular expression flags, if any.
+ * @return a sequence of strings for the tokens.
+ */
+ZORBA_DLL_PUBLIC
+Sequence<String> tokenize( String const &input, char const *pattern,
+                           char const *flags = "" );
+
+/**
+ * This function breaks the \a input string into a sequence of strings,
+ * treating any substring that matches \a pattern as a separator.  The
+ * separators themselves are not returned.
+ *
+ * Performance note: if \a pattern is a simple string (not a regular expression
+ * with meta-characers), it is more efficient to use String::find().
+ *
+ * @param input The string to be split into tokens.  If \a input is the empty
+ * sequence, or if \a input is the zero-length string, the result is the empty
+ * sequence.
+ * @param pattern The regular expression.  If it matches a zero-length string,
+ * then an error is raised: [err:FORX0003].
+ * @param flags The regular expression flags, if any.
+ * @return a sequence of strings for the tokens.
+ */
+inline
+Sequence<String> tokenize( String const &input, String const &pattern,
+                           char const *flags = "" ) {
+  return tokenize( input, pattern.c_str(), flags );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

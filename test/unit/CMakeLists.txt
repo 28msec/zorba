@@ -64,6 +64,7 @@ SET(UNIT_TESTS_SRCS
   os_module.cpp
   datetime.cpp
   invoke.cpp
+  xquery_functions.cpp
 )
 
 # multithread_simple.cpp

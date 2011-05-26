@@ -1262,12 +1262,6 @@ public:
    */
   void swap( String &s );
 
-  ////////// DEPRECATED ///////////////////////////////////////////////////////
-
-  // Used only by http-client module.
-  String    tokenize( String const &pattern, String const &flags,
-                      size_type* startPos, bool* hasMatched ) const;
-
   /////////////////////////////////////////////////////////////////////////////
 
 private:

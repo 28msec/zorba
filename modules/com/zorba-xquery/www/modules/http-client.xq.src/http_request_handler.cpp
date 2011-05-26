@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 
 #include <zorba/zorba.h>
@@ -22,6 +23,7 @@
 #include <zorba/xquery_functions.h>
 #include <zorba/zorba_functions.h>
 #include <zorba/base64.h>
+#include <zorba/xquery_functions.h>
 
 #include "http_request_handler.h"
 
@@ -140,11 +142,8 @@ namespace zorba { namespace http_client {
       theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
     } else {
       if (aName == "Content-Disposition") {
-        String::size_type lPos = 0;
-        bool lHasMatched;
-        do {
-          String lNextToken = aValue.tokenize(String(";"), String(""),
-                                              &lPos, &lHasMatched);
+        Sequence<String> lTokens(fn::tokenize(aValue, ";"));
+        for (String lNextToken; lTokens.next( &lNextToken );) {
           std::pair<String, String> lKeyValue = twinSplit(lNextToken);
           if (lKeyValue.first == "name") {
             theMultipartName = lKeyValue.second;
@@ -154,7 +153,7 @@ namespace zorba { namespace http_client {
             theMultiPartFileName = lKeyValue.second;
             zfn::trim(theMultiPartFileName, "\"\'");
           }
-        } while (lHasMatched);
+        }
       } else {
         theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), (lValue).c_str());
       }
@@ -274,17 +273,19 @@ namespace zorba { namespace http_client {
   std::pair<String, String>
   HttpRequestHandler::twinSplit(const String& aStr)
   {
-    String::size_type lkeyPos = 0;
-    bool lHasValue;
-    String lKey = aStr.tokenize(String("="), String(""),
-                                      &lkeyPos, &lHasValue);
-    String lValue;
-    if (lHasValue) {
-      lValue = aStr.tokenize(String("="), String(""),
-                                          &lkeyPos, &lHasValue);
+    String lKey, lValue;
+
+    String::size_type const equals = aStr.find('=');
+    if (equals != String::npos) {
+      lKey = aStr.substr(0, equals);
+      lValue = aStr.substr(equals + 1);
+      zfn::trim(lKey);
+      zfn::trim(lValue);
     }
-    zfn::trim(lKey);
-    zfn::trim(lValue);
+
     return std::pair<String, String>(lKey, lValue);
   }
-}}
+
+} // namespace http_client
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
