@@ -15,7 +15,7 @@
  */
 
 #include "util/cxx_util.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #include "ft_token_seq_iterator.h"
 

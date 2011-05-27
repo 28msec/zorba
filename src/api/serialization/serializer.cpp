@@ -19,8 +19,8 @@
 #include <zorba/zorba_string.h>
 
 #include "zorbatypes/numconversions.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"

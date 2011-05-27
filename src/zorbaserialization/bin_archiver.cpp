@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "zorbaserialization/bin_archiver.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include <fstream>
 
 namespace zorba{

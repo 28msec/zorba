@@ -19,7 +19,7 @@
 #include <istream>
 #include "api/zorbaimpl.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbautils/lock.h"
 
 #include "api/unmarshaller.h"

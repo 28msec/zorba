@@ -16,8 +16,8 @@
 
 #include <algorithm>
 
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"

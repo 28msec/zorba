@@ -16,9 +16,9 @@
 
 #include "representations.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/dict.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
+#include "diagnostics/assert.h"
 
 #include <zorba/util/path.h>
 

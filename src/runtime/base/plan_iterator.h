@@ -21,7 +21,7 @@
 
 #include "common/shared_types.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #include "runtime/util/flowctl_exception.h"
 

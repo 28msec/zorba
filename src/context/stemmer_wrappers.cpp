@@ -20,7 +20,7 @@
 
 #include "stemmer_wrappers.h"
 #include "api/unmarshaller.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 using namespace zorba::locale;
 

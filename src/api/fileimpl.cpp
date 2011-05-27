@@ -23,7 +23,7 @@
 
 #include <runtime/util/flowctl_exception.h>
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #ifdef WIN32
 #include <util/ascii_util.h>

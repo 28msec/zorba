@@ -33,7 +33,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbautils/tokenizer.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 
 namespace zorba

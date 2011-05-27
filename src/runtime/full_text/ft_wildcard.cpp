@@ -20,8 +20,8 @@
 #include <zorba/error.h>
 
 #include "util/stl_util.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
 
 #include "ft_wildcard.h"
 

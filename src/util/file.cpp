@@ -48,8 +48,8 @@
 #include "regex.h"
 #include "uri_util.h"
 #include "utf8_util.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/xquery_exception.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/xquery_exception.h"
 
 
 using namespace std;

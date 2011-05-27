@@ -19,8 +19,8 @@
 #include "common/common.h"
 
 #include "zorbamisc/ns_consts.h"
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "zorbatypes/numconversions.h"
 

@@ -21,8 +21,8 @@
 #include "zorbatypes/chartype.h"
 #include "zorbatypes/URI.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "context/namespace_context.h"
 

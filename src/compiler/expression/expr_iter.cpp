@@ -30,7 +30,7 @@
 #include "compiler/expression/ftnode_visitor.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba

@@ -24,7 +24,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba {
 

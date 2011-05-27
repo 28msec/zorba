@@ -30,7 +30,7 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
-#include "zorbaerrors/xquery_warning.h"
+#include "diagnostics/xquery_warning.h"
 
 #include <memory>
 #include <iterator>

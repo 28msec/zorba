@@ -27,7 +27,7 @@
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 
 namespace zorba {

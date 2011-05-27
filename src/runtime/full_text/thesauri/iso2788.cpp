@@ -19,7 +19,7 @@
 
 #include "util/less.h"
 #include "iso2788.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #define eacute  "\xC3\xA9"
 #define uuml    "\xC3\xBC"

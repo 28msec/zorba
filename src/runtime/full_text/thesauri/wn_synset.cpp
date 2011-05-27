@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
 
 #include "decode_base128.h"
 #include "wn_synset.h"

@@ -41,7 +41,7 @@
 #endif
 #include <sstream>
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 using namespace std;
 

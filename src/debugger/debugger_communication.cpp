@@ -19,7 +19,7 @@
 #include "message_factory.h"
 
 #include "util/stl_util.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "zorbautils/synchronous_logger.h"
 
 #include <memory>

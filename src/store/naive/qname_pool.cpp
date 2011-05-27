@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "system/globalenv.h"
 
 #include "store/naive/string_pool.h"

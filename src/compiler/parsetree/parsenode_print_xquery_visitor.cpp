@@ -24,7 +24,7 @@
 
 #include "store/api/update_consts.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 
 #define DEFAULT_BEGIN_VISIT(type)                    \

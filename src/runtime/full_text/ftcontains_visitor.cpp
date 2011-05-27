@@ -24,7 +24,7 @@
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/numconversions.h"
 
 #ifndef NDEBUG

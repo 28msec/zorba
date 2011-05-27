@@ -33,7 +33,7 @@
 #include "runtime/util/flowctl_exception.h"
 
 #include "zorba/printer_diagnostic_handler.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbautils/synchronous_logger.h"
 
 #include "debugger/debugger_protocol.h"

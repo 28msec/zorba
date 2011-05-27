@@ -15,7 +15,7 @@
 */
 #include "validate.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
 
@@ -49,7 +49,7 @@
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "zorba/store_consts.h"
 
 using namespace std;

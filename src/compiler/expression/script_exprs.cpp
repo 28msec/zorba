@@ -22,7 +22,7 @@
 
 #include "functions/function.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba 

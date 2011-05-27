@@ -24,7 +24,7 @@
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
 #include "api/collectionimpl.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "store/api/collection.h"
 #include "store/api/item.h"

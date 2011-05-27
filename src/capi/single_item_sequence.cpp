@@ -16,7 +16,7 @@
 #include "capi/error.h"
 #include "capi/single_item_sequence.h"
 #include <zorba/item_sequence.h>
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 using namespace zorba;
 

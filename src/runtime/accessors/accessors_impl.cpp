@@ -14,8 +14,8 @@
  * limitations under the License.
  */
  
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "system/globalenv.h"
 

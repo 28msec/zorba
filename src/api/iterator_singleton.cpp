@@ -21,7 +21,7 @@
 
 #include "system/globalenv.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"

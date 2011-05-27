@@ -16,7 +16,7 @@
 #include <algorithm>
 
 #include "store/naive/simple_index_value.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 
 namespace zorba 

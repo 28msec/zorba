@@ -15,7 +15,7 @@
  */
 #include <iostream>
 #include "system/globalenv.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #include "types/typeconstants.h"
 #include "types/typeimpl.h"

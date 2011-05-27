@@ -15,7 +15,7 @@
  */
 
 #include "zorbaserialization/xml_archiver.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba{
   namespace serialization{

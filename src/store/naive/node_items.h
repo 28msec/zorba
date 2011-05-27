@@ -43,7 +43,7 @@
 
 #include "store/api/item.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/tokenizer.h"
 #include "zorbautils/hashfun.h"

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(ZORBAERRORS_SRCS
+SET(DIAGNOSTICS_SRCS
    dict.cpp
    dict_en.cpp
    diagnostic.cpp
@@ -29,5 +29,5 @@ SET(ZORBAERRORS_SRCS
    )
 
 IF (WIN32)
-  SET(ZORBAERRORS_SRCS ${ZORBAERRORS_SRCS} StackWalker.cpp)
+  SET(DIAGNOSTICS_SRCS ${DIAGNOSTICS_SRCS} StackWalker.cpp)
 ENDIF (WIN32)

@@ -21,7 +21,7 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/latch.h"
-//#include "zorbaerrors/xquery_diagnostics.h"
+//#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba {
 

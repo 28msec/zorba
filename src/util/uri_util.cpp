@@ -24,7 +24,7 @@
 #include "system/globalenv.h"
 #endif /* WIN32 */
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zstring.h"
 
 #include "curl_util.h"

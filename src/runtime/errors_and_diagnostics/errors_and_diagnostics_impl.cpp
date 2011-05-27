@@ -16,8 +16,8 @@
 
 #include <iostream>
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/user_exception.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/user_exception.h"
 
 #include "context/static_context.h"
 

@@ -26,8 +26,8 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/xquery_stack_trace.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/xquery_stack_trace.h"
 
 namespace zorba {
 

@@ -22,8 +22,8 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/fatal.h"
 #include "zorbatypes/rchandle.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "store/api/pul.h"
 

@@ -16,7 +16,7 @@
 
 #include <algorithm>
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"

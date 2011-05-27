@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #include "runtime/core/item_iterator.h"
 #include "runtime/booleans/BooleanImpl.h"

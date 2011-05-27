@@ -26,8 +26,8 @@
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
-#include "zorbaerrors/dict.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbamisc/ns_consts.h"
 #include "zorbautils/tokenizer.h"
 

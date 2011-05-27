@@ -17,8 +17,8 @@
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 
 #include "zorbautils/fatal.h"
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "compiler/expression/expr.h"
 

@@ -19,7 +19,7 @@
 
 #include <cstring>
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/collation_manager.h"
 
 #include "util/regex.h"

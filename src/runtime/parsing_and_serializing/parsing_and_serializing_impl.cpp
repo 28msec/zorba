@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include "zorbatypes/URI.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "context/static_context.h"
 #include "api/serialization/serializer.h"
 #include "runtime/api/plan_iterator_wrapper.h"

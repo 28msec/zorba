@@ -21,7 +21,7 @@
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/visitors/planiter_visitor.h"

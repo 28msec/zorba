@@ -17,7 +17,7 @@
 #include <algorithm>                    /* for lower_bound */
 
 #include "util/less.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #include "wn_types.h"
 

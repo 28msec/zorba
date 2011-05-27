@@ -19,7 +19,7 @@
 #include <iostream>
 #include <memory>
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "zorbautils/synchronous_logger.h"
 
 #include "api/unmarshaller.h"

@@ -23,7 +23,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba {
 

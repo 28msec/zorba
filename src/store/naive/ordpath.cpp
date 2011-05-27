@@ -17,8 +17,8 @@
 #include <limits>
 
 #include "zorbautils/hashfun.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "store/naive/ordpath.h"
 #include "store/naive/store_defs.h"

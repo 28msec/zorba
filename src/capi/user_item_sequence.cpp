@@ -19,9 +19,9 @@
 #include "capi/error.h"
 #include "capi/csequence.h"
 #include "capi/user_item_sequence.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include <zorba/item_sequence.h>
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 using namespace zorba;
 

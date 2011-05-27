@@ -19,8 +19,8 @@
 #include <atlconv.h>
 #include <atlbase.h>
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 #include "zorbatypes/URI.h"
 
 #include "store/api/copymode.h"

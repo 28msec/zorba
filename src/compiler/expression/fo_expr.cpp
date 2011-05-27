@@ -25,7 +25,7 @@
 #include "functions/function.h"
 #include "functions/udf.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 namespace zorba
 {

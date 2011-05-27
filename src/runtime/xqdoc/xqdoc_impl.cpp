@@ -25,7 +25,7 @@
 
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
-#include "zorbaerrors/dict.h"
+#include "diagnostics/dict.h"
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"

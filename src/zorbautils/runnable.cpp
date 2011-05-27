@@ -19,7 +19,7 @@
 #include <cassert>
 #include <errno.h>
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <unistd.h>

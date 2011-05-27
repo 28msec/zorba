@@ -18,7 +18,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 namespace zorba 
 {

@@ -24,10 +24,10 @@
 #include <zorba/pure_stateless_function.h>
 #include <zorba/nonepure_stateless_function.h>
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/user_exception.h"
-#include "zorbaerrors/xquery_exception.h"
-#include "zorbaerrors/xquery_stack_trace.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/user_exception.h"
+#include "diagnostics/xquery_exception.h"
+#include "diagnostics/xquery_stack_trace.h"
 
 #include "context/dynamic_context.h"
 

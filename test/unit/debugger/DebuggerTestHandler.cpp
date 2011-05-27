@@ -15,7 +15,7 @@
  */
 #include "DebuggerTestHandler.h"
 
-#include <zorbaerrors/assert.h>
+#include <diagnostics/assert.h>
 
 #include <iostream>
 

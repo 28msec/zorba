@@ -19,7 +19,7 @@
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>

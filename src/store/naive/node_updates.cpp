@@ -17,8 +17,8 @@
 #include <stack>
 
 #include "system/globalenv.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 

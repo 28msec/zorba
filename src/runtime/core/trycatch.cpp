@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/user_exception.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/user_exception.h"
 
 #include "runtime/core/trycatch.h"
 #include "runtime/api/plan_iterator_wrapper.h"

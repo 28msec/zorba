@@ -18,7 +18,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 
-#include "zorbaerrors/errors.h"
+#include "diagnostics/errors.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator_factory.h"

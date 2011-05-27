@@ -19,7 +19,7 @@
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_item_factory.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "zorbatypes/floatimpl.h"
 
 namespace zorba 

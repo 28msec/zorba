@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include "zorbautils/fatal.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/URI.h"
 
 // For timing

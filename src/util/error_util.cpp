@@ -23,8 +23,8 @@
 # include <windows.h>
 #endif /* WIN32 */
 
-#include "zorbaerrors/dict.h"
-#include "zorbaerrors/diagnostic.h"
+#include "diagnostics/dict.h"
+#include "diagnostics/diagnostic.h"
 
 #include "error_util.h"
 #include "stl_util.h"

@@ -23,7 +23,7 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba

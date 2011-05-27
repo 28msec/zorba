@@ -29,7 +29,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "types/typeimpl.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include <zorbatypes/numconversions.h>
 #include "system/globalenv.h"
 #include "zorbatypes/datetime.h"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "zorbautils/hashfun.h"
 #include "zorbatypes/collation_manager.h"
 

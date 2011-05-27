@@ -23,8 +23,8 @@
 #include "store/api/item.h"
 #include "store/api/collection.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 #include "api/staticcontextimpl.h"
 #include "api/unmarshaller.h"

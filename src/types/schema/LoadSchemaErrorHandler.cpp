@@ -25,7 +25,7 @@
 #endif
 
 #include "compiler/parser/query_loc.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba
 {

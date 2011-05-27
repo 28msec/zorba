@@ -37,8 +37,8 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba { namespace simplestore {

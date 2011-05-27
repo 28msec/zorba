@@ -87,8 +87,8 @@
 #include "zorbautils/string_util.h"
 #include "zorbautils/fatal.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
 
 #include "util/ascii_util.h"
 #include "util/stl_util.h"

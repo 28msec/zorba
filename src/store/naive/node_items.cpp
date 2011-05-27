@@ -19,8 +19,8 @@
 
 #include <zorba/config.h>
 
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/URI.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "zorbautils/locale.h"

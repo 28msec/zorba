@@ -20,7 +20,7 @@
 #include "store/api/item.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "compiler/parser/parse_constants.h"
 #include "zorbaserialization/serialization_engine.h"
 

@@ -41,8 +41,8 @@
 
 #include "context/static_context.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
 #include "util/string_util.h"
 
 #include <zorba/store_consts.h>

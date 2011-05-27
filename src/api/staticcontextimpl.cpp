@@ -48,7 +48,7 @@
 #include "types/casting.h"
 #include "types/typeops.h"
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "runtime/util/flowctl_exception.h"
 

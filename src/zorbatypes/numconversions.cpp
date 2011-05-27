@@ -18,7 +18,7 @@
 #include <sstream>
 #include <limits>
 #include "zorbatypes/numconversions.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 namespace zorba 
 {

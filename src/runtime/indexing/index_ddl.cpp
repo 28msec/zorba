@@ -37,7 +37,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
-#include "zorbaerrors/xquery_exception.h"
+#include "diagnostics/xquery_exception.h"
 
 namespace zorba {
 

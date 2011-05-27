@@ -16,8 +16,8 @@
 
 #include <algorithm>
 
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"

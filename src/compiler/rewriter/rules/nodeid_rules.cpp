@@ -29,7 +29,7 @@
 
 #include "functions/func_node_sort_distinct.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba 

@@ -20,7 +20,7 @@
 #include <zorba/diagnostic_handler.h>
 
 #include "zorbautils/lock.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
 

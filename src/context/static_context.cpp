@@ -54,7 +54,7 @@
 
 #include "api/unmarshaller.h"
 #include "api/uri_resolver_wrappers.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
 

@@ -16,7 +16,7 @@
 
 #include "functions/function.h"
 #include "functions/function_impl.h"
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 #include "runtime/base/plan_iterator.h"
 
 

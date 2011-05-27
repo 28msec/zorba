@@ -15,8 +15,8 @@
  */
 #include "common/shared_types.h"
 
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
 #include "system/globalenv.h"

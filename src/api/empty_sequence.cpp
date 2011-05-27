@@ -16,7 +16,7 @@
 
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/empty_sequence.h>
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 namespace zorba { 
 

@@ -30,8 +30,8 @@
 #include "util/stl_util.h"
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
 
 #include "xqftts_thesaurus.h"
 

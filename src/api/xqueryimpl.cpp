@@ -27,7 +27,7 @@
 
 #include <zorbatypes/URI.h>
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/lock.h"
 

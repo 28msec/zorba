@@ -16,8 +16,8 @@
 
 #include <fstream>
 
-#include "zorbaerrors/assert.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/assert.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"

@@ -21,7 +21,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 
-#include "zorbaerrors/errors.h"
+#include "diagnostics/errors.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/dataguide.h"

@@ -18,8 +18,8 @@
 #include <memory>
 
 #include "compiler/api/compiler_api.h"
-#include "zorbaerrors/xquery_diagnostics.h"
-#include "zorbaerrors/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
 
 #include "system/globalenv.h"
 #include "system/properties.h"

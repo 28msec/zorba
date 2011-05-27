@@ -15,7 +15,7 @@
  */
 
 
-#include  "zorbaerrors/errors.h"
+#include  "diagnostics/errors.h"
 #include  "store/naive/simple_store.h"
 #include  "store/naive/ordpath.h"
 

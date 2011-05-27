@@ -35,11 +35,11 @@
 #include "store/api/store.h"
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbamisc/ns_consts.h"
 #include "context/static_context.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 namespace zorba
 {

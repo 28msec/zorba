@@ -31,7 +31,7 @@
 
 #include "util/dynamic_bitset.h"
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 
 namespace zorba

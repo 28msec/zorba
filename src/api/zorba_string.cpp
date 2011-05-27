@@ -24,7 +24,7 @@
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zstring.h"
 
 using namespace std;

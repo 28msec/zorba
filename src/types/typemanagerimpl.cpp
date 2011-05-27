@@ -18,7 +18,7 @@
 #include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
-#include "zorbaerrors/assert.h"
+#include "diagnostics/assert.h"
 
 #include "system/globalenv.h"
 #include "zorbamisc/ns_consts.h"

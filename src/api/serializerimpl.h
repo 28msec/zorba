@@ -19,7 +19,7 @@
 
 #include <zorba/serializer.h>
 
-#include "zorbaerrors/xquery_diagnostics.h"
+#include "diagnostics/xquery_diagnostics.h"
 
 #include "api/serialization/serializer.h"
 
