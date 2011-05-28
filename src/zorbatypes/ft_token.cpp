@@ -117,12 +117,19 @@ void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para,
 
 FTToken::string_t const& FTToken::value( Stemmer const &stemmer,
                                          iso639_1::type alt_lang ) const {
-  string_t &mod_value_ref = get_mod_value( stem );
-  if ( mod_value_ref.empty() ) {
-    iso639_1::type const stem_lang = lang_ ? lang_ : alt_lang;
-    stemmer( value_impl( lower ).str(), stem_lang, &mod_value_ref );
+  string_t const &upper_value = value_impl( upper, alt_lang );
+  if ( value_ == upper_value ) {
+    //
+    // The token is all in upper-case: assume it's an acronym so don't stem it.
+    //
+    return upper_value;
   }
-  return mod_value_ref;
+  string_t &stem_value_ref = get_mod_value( stem );
+  if ( stem_value_ref.empty() ) {
+    iso639_1::type const stem_lang = lang_ ? lang_ : alt_lang;
+    stemmer( value_impl( lower ).str(), stem_lang, &stem_value_ref );
+  }
+  return stem_value_ref;
 }
 
 FTToken::string_t const& FTToken::value_impl( int selector,
