@@ -206,7 +206,7 @@ public:
   }
 
   /**
-   * TODO
+   * Gets the stemmed version of a token's value.
    *
    * @param stemmer   The stemmer to use.
    * @param alt_lang  The language to use only if the token doesn't already
