@@ -10,7 +10,7 @@ die() {
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
   echo '<xqtsurl> is the URL where the XQTS archived version can be found'
-  echo '          (default: http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_3.zip)'
+  echo '          (default: http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_4.zip)'
   exit 1
 }
 
