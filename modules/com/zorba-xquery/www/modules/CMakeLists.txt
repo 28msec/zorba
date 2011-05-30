@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ADD_SUBDIRECTORY(email)
-ADD_SUBDIRECTORY(convertors)
 
 
 IF(CURL_FOUND)
