@@ -366,8 +366,8 @@ ImapFunction::createContentNode(const ImapModule* aModule,
   createContentTypeAttributes(aModule, lItem, aContentType, aCharset, aContentTransferEncoding, aContentDisposition, aContentDispositionFilename, aContentDispositionModificationDate);
 
   if (aContentId.length() > 1) {
-    Item lContentIdName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "content-id");
-    Item lContentIdType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+    Item lContentIdName = aModule->getItemFactory()->createQName("", "content-id");
+    Item lContentIdType = aModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "string");
     Item lContentIdText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentId));
     aModule->getItemFactory()->createAttributeNode(lItem, lContentIdName, lContentIdType, lContentIdText);
   }  
@@ -446,7 +446,7 @@ ImapFunction::createContentTypeAttributes(const ImapModule* aModule,
 
   /* build the charset attribute */
   Item lCharsetName = aModule->getItemFactory()->createQName("", "charset");
-  Item lCharsetType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+  Item lCharsetType = aModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "string");
   Item lCharsetText = aModule->getItemFactory()->createTextNode(lNullItem, String(aCharset));
   aModule->getItemFactory()->createAttributeNode(aParent, lCharsetName, lCharsetType, lCharsetText);
 
@@ -466,7 +466,7 @@ ImapFunction::createContentTypeAttributes(const ImapModule* aModule,
     if (aContentDispositionFilename.length() > 1) {
     /* build the contentDispositionFilename attribute */
       Item lContentDispositionFilenameName = aModule->getItemFactory()->createQName("", "contentDisposition-filename");
-      Item lContentDispositionFilenameType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+      Item lContentDispositionFilenameType = aModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "string");
       Item lContentDispositionFilenameText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentDispositionFilename));
       aModule->getItemFactory()->createAttributeNode(aParent, lContentDispositionFilenameName, lContentDispositionFilenameType, lContentDispositionFilenameText);
     }
