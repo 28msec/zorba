@@ -3415,28 +3415,6 @@ void static_context::set_xquery_version(StaticContextConsts::xquery_version_t v)
 
 
 /***************************************************************************//**
-  Parse and set the xquery version. StaticContextConsts::xquery_version_unknown
-  is set if the persion could not be parsed.
-********************************************************************************/
-void static_context::set_xquery_version(const std::string& v)
-{
-  StaticContextConsts::xquery_version_t lVersion;
-  lVersion = StaticContextConsts::xquery_version_unknown;
-
-  if (v == "1.0")
-  {
-    lVersion = StaticContextConsts::xquery_version_1_0;
-  }
-  else if (v == "3.0")
-  {
-    lVersion = StaticContextConsts::xquery_version_3_0;
-  }
-
-  set_xquery_version(lVersion);
-}
-
-
-/***************************************************************************//**
 
 ********************************************************************************/
 StaticContextConsts::xpath_compatibility_t static_context::xpath_compatibility() const

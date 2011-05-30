@@ -83,6 +83,7 @@ public:
   IdVarMap                   * theIdVarMap;
   ExprVarsMap                * theExprVarsMap;
   std::vector<expr_t>          theFlworStack;
+  std::vector<bool>            theInReturnClause;
 
 public:
   RewriterContext(

@@ -64,6 +64,8 @@ static expr_t partial_eval_logic(fo_expr*, bool, RewriterContext&);
 
 static expr_t partial_eval_eq(RewriterContext&, fo_expr&);
 
+static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified);
+
 static bool maybe_needs_implicit_timezone(const fo_expr* fo);
 
 
@@ -619,7 +621,7 @@ static bool already_folded(expr_t e, RewriterContext& rCtx)
   count(E) = 10 --> fn:exectly-one-noraise(fn:subsequence(E, 10, 2))
 
   Replace count(E) with 1 or 0 if the return type of E has QUANT_ONE or is the
-  emtpy sequence and E is not NONDISCARDABLE_EXPR.
+  emtpy sequence, and E is not NONDISCARDABLE_EXPR.
 
   Replace EBV(E) with true if the return type of E is subtype on node()+ and E
   is not NONDISCARDABLE.
@@ -675,7 +677,7 @@ RULE_REWRITE_PRE(PartialEval)
 
   case fo_expr_kind:
   {
-    return partial_eval_fo(rCtx, dynamic_cast<fo_expr *> (node));
+    return partial_eval_fo(rCtx, dynamic_cast<fo_expr *>(node));
   }
 
   default:
@@ -711,15 +713,51 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   {
     return partial_eval_eq(rCtx, *fo);
   }
-  else if (fkind == FunctionConsts::FN_COUNT_1)
+  else if (fkind == FunctionConsts::FN_COUNT_1 ||
+           fkind == FunctionConsts::FN_EMPTY_1 ||
+           fkind == FunctionConsts::FN_EXISTS_1)
   {
-    expr_t arg = fo->get_arg(0);
+    expr* arg = fo->get_arg(0);
+
     if (!arg->isNonDiscardable())
     {
       int type_cnt = TypeOps::type_cnt(tm, *arg->get_return_type());
       if (type_cnt != -1)
-        return new const_expr(fo->get_sctx(), fo->get_loc(), Integer::parseInt(type_cnt));
+      {
+        if (fkind == FunctionConsts::FN_COUNT_1)
+        {
+          return new const_expr(fo->get_sctx(),
+                                fo->get_loc(),
+                                Integer::parseInt(type_cnt));
+        }
+        else if (fkind == FunctionConsts::FN_EMPTY_1)
+        {
+          return new const_expr(fo->get_sctx(),
+                                fo->get_loc(),
+                                (type_cnt == 0 ? true : false));
+        }
+        else
+        {
+          return new const_expr(fo->get_sctx(),
+                                fo->get_loc(),
+                                (type_cnt == 0 ? false : true));
+        }
+      }
     }
+
+    if (arg->get_expr_kind() == flwor_expr_kind)
+    {
+      bool modified = false;
+      expr_t newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
+                                                 modified);
+
+      if (newArg.getp() != arg)
+        fo->set_arg(0, newArg);
+
+      if (modified)
+        return fo;
+    }
+
     return NULL;
   }
   else if (fkind == FunctionConsts::FN_BOOLEAN_1)
@@ -901,6 +939,61 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   return NULL;
 }
 
+
+static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
+{
+  TypeManager* tm = flworExpr->get_type_manager();
+
+  expr* returnExpr = flworExpr->get_return_expr();
+
+  if (returnExpr->get_expr_kind() == const_expr_kind ||
+      (!returnExpr->isNonDiscardable() &&
+       TypeOps::type_cnt(tm, *(returnExpr->get_return_type())) == 1))
+  {
+    if (flworExpr->num_clauses() == 1)
+    {
+      modified = true;
+
+      flwor_clause* c = flworExpr->get_clause(0);
+
+      if (c->get_kind() == flwor_clause::for_clause)
+      {
+        return c->get_expr();
+      }
+      else
+      {
+        assert(c->get_kind() == flwor_clause::let_clause);
+
+        return new const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
+      }
+    }
+    else if (returnExpr->get_expr_kind() != const_expr_kind)
+    {
+      modified = true;
+
+      expr_t newRet = 
+      new const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
+
+      flworExpr->set_return_expr(newRet);
+
+      return flworExpr;
+    }
+  }
+
+  if (returnExpr->get_expr_kind() == flwor_expr_kind)
+  {
+    expr_t newRet = 
+    partial_eval_return_clause(static_cast<flwor_expr*>(returnExpr),  modified);
+
+    if (newRet.getp() != returnExpr)
+    {
+      flworExpr->set_return_expr(newRet);
+      assert(modified);
+    }
+  }
+
+  return flworExpr;
+}
 
 
 /*******************************************************************************

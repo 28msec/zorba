@@ -48,7 +48,7 @@ static bool checkVarDependency(RewriterContext&, expr*, ulong);
 
 static bool expandVars(RewriterContext&, expr*, ulong, long&);
 
-static void findFlworForVar(RewriterContext&, const var_expr*, flwor_expr*&, ulong&, ulong&);
+static bool findFlworForVar(RewriterContext&, const var_expr*, flwor_expr*&, ulong&, ulong&);
 
 
 struct PredicateInfo
@@ -71,77 +71,87 @@ struct PredicateInfo
 ********************************************************************************/
 expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
+  flwor_expr* flworExpr = NULL;
+
   if (node->get_expr_kind() == flwor_expr_kind)
   {
-    flwor_expr* flworExpr = static_cast<flwor_expr *>(node);
+    flworExpr = static_cast<flwor_expr *>(node);
 
     // Push the flwor expr into the stack
     rCtx.theFlworStack.push_back(flworExpr);
+    rCtx.theInReturnClause.push_back(false);
 
     expr* whereExpr = flworExpr->get_where();
 
-    if (whereExpr != NULL)
+    if (whereExpr == NULL)
+      goto drilldown;
+
+    PredicateInfo predInfo;
+    predInfo.theFlworExpr = flworExpr;
+    predInfo.thePredicate = whereExpr;
+
+    if (isIndexJoinPredicate(rCtx, predInfo))
     {
-      PredicateInfo predInfo;
-      predInfo.theFlworExpr = flworExpr;
-      predInfo.thePredicate = whereExpr;
-
-      if (isIndexJoinPredicate(rCtx, predInfo))
+      rewriteJoin(rCtx, predInfo, modified);
+      
+      if (modified)
       {
-        rewriteJoin(rCtx, predInfo, modified);
-        
-        if (modified)
-        {
-          predInfo.theFlworExpr->remove_where_clause();
+        predInfo.theFlworExpr->remove_where_clause();
           
-          expr_t e = rCtx.theFlworStack.back();
+        expr_t e = rCtx.theFlworStack.back();
 
-          ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
+        ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
 
-          rCtx.theFlworStack.pop_back();
-          return e;
-        }
+        rCtx.theFlworStack.pop_back();
+        rCtx.theInReturnClause.pop_back();
+        return e;
       }
-      else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+    }
+    else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+    {
+      // TODO: consider multi-key indices
+      ExprIterator iter(whereExpr);
+      while (!iter.done())
       {
-        // TODO: consider multi-key indices
-        ExprIterator iter(whereExpr);
-        while (!iter.done())
+        PredicateInfo predInfo;
+        predInfo.theFlworExpr = flworExpr;
+        predInfo.thePredicate = (*iter);
+        
+        if (isIndexJoinPredicate(rCtx, predInfo))
         {
-          PredicateInfo predInfo;
-          predInfo.theFlworExpr = flworExpr;
-          predInfo.thePredicate = (*iter);
-
-          if (isIndexJoinPredicate(rCtx, predInfo))
-          {
-            rewriteJoin(rCtx, predInfo, modified);
-
-            if (modified)
-            {
-              expr_t trueExpr = new const_expr(flworExpr->get_sctx(),
-                                               flworExpr->get_loc(),
-                                               true);
-              (*iter) = trueExpr;
-              
-              expr_t e = rCtx.theFlworStack.back();
-
-              ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
-
-              rCtx.theFlworStack.pop_back();
-              return e;
-            }
-          }
+          rewriteJoin(rCtx, predInfo, modified);
           
-          iter.next();
+          if (modified)
+          {
+            expr_t trueExpr = new const_expr(flworExpr->get_sctx(),
+                                             flworExpr->get_loc(),
+                                             true);
+            (*iter) = trueExpr;
+            
+            expr_t e = rCtx.theFlworStack.back();
+            
+            ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
+            
+            rCtx.theFlworStack.pop_back();
+            rCtx.theInReturnClause.pop_back();
+            return e;
+          }
         }
+        
+        iter.next();
       }
     }
   }
+
+ drilldown:
 
   ExprIterator iter(node);
   while (!iter.done())
   {
     expr_t currChild = *iter;
+
+    if (flworExpr != NULL && currChild.getp() == flworExpr->get_return_expr())
+      rCtx.theInReturnClause.back() = true;
 
     expr_t newChild = apply(rCtx, currChild.getp(), modified);
 
@@ -164,6 +174,7 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
     ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
 
     rCtx.theFlworStack.pop_back();
+    rCtx.theInReturnClause.pop_back();
     return e;
   }
   else
@@ -438,10 +449,9 @@ static void rewriteJoin(
   // rewrite is not possible after all,
   expr::substitution_t subst;
   expr_t domainExpr = fc->get_expr()->clone(subst);
+
   if (!expandVars(rCtx, domainExpr, predInfo.theOuterVarId, maxInnerVarId))
     return;
-
-  modified = true;
 
   //
   // Create the index name and the "create-index()" expr
@@ -483,11 +493,12 @@ static void rewriteJoin(
     ulong innerPosInStack = 0;
     ulong mostInnerVarPos = 0;
 
-    findFlworForVar(rCtx,
-                    mostInnerVar,
-                    innerFlwor,
-                    mostInnerVarPos,
-                    innerPosInStack);
+    if (!findFlworForVar(rCtx,
+                         mostInnerVar,
+                         innerFlwor,
+                         mostInnerVarPos,
+                         innerPosInStack))
+      return;
 
     ulong numClauses = innerFlwor->num_clauses();
 
@@ -561,17 +572,19 @@ static void rewriteJoin(
   }
   else
   {
-    // Find the flwor expr defining the outer var and create the index just
-    // before this flwor.
+    // All the variables referenced by the inner domain expr are defined after
+    // the outer var. In this case, Find the flwor expr defining the outer var
+    // and create the index just before this flwor.
     flwor_expr* outerFlworExpr = NULL;
     ulong outerPosInStack = 0;
     ulong dummy = 0;
 
-    findFlworForVar(rCtx,
-                    predInfo.theOuterVar,
-                    outerFlworExpr,
-                    dummy,
-                    outerPosInStack);
+    if (!findFlworForVar(rCtx,
+                         predInfo.theOuterVar,
+                         outerFlworExpr,
+                         dummy,
+                         outerPosInStack))
+      return;
 
     //  Build outer sequential expr
     std::vector<expr_t> args(2);
@@ -582,6 +595,8 @@ static void rewriteJoin(
 
     rCtx.theFlworStack[outerPosInStack] = seqExpr;
   }
+
+  modified = true;
 
   //
   // Replace the expr defining the inner var with an index probe.
@@ -696,8 +711,16 @@ static bool expandVars(
       long varid = -1;
 
       if (rCtx.theVarIdMap->find(var) != rCtx.theVarIdMap->end())
+      {
         varid = (*rCtx.theVarIdMap)[var];
-      
+      }
+      else if (var->get_kind() == var_expr::local_var)
+      {
+        // TODO: allow index domain exprs to reference local vars
+        return false;
+      }
+
+      // If it is a variable that is defined after the outer var
       if (varid > (long)outerVarId)
       {
         if (var->get_kind() == var_expr::let_var)
@@ -753,7 +776,7 @@ static bool expandVars(
 /*******************************************************************************
   Find the flwor expr defining the given var.
 ********************************************************************************/
-static void findFlworForVar(
+static bool findFlworForVar(
     RewriterContext& rCtx,
     const var_expr* var,
     flwor_expr*& flworExpr,
@@ -762,11 +785,18 @@ static void findFlworForVar(
 {
   flworExpr = NULL;
 
-  for (long i = (long)rCtx.theFlworStack.size() - 1; i >= 0; --i)
+  long numFlwors = (long)rCtx.theFlworStack.size();
+ 
+  for (long i = numFlwors - 1; i >= 0; --i)
   {
     flworExpr = dynamic_cast<flwor_expr*>(rCtx.theFlworStack[i].getp());
 
     assert(flworExpr != NULL);
+
+    if (i < numFlwors - 1 && 
+        rCtx.theInReturnClause[i] == true &&
+        flworExpr->is_sequential())
+      return false;
 
     long pos;
     if ((pos = flworExpr->defines_variable(var)) >= 0)
@@ -780,6 +810,7 @@ static void findFlworForVar(
   }
 
   assert(flworExpr != NULL);
+  return true;
 }
 
 

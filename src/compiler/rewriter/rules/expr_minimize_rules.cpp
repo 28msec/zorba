@@ -29,16 +29,17 @@
 namespace zorba 
 {
 
-static expr_t get_constant_if_typequant_one(static_context* sctx, expr* e);
+static expr_t get_constant_if_typequant_one(expr* e, bool& modified);
 
-static void replace_with_constant_if_typequant_one(static_context* sctx, expr* e);
 
 
 /*******************************************************************************
   This rule looks for exprs of the form:
 
-  count(E) or 
-  count(flwor_FE), where flwor_FE is a flwor expr whose return expr is FE.
+  FN(E) or 
+  FN(flwor_FE), 
+  where FN is one of fn:count, fn:empty, or fn:exists, and flwor_FE is a flwor
+  expr whose return expr is FE.
 
   Then, it checks whether the return type of E/FE has quantifier ONE, and if so,
   it replaces E/FE with the constant 1.
@@ -50,8 +51,6 @@ static void replace_with_constant_if_typequant_one(static_context* sctx, expr* e
 
 RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) 
 {
-  static_context* sctx = node->get_sctx();
-
   if (node->get_expr_kind() != fo_expr_kind)
     return NULL;
 
@@ -63,8 +62,9 @@ RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible)
       fkind == FunctionConsts::FN_EMPTY_1 ||
       fkind == FunctionConsts::FN_EXISTS_1) 
   {
+    bool modified = false;
     expr_t child = fo->get_arg(0);
-    expr_t nc = get_constant_if_typequant_one(sctx, child);
+    expr_t nc = get_constant_if_typequant_one(child, modified);
     if (nc != NULL) 
     {
       fo->set_arg(0, nc);
@@ -81,44 +81,32 @@ RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible)
 }
 
 
-static expr_t get_constant_if_typequant_one(static_context* sctx, expr* e)
+static expr_t get_constant_if_typequant_one(expr* e, bool& modified)
 {
   TypeManager* tm = e->get_type_manager();
 
   if (e->get_expr_kind() != const_expr_kind) 
   {
-    if (TypeOps::type_cnt(tm, *(e->get_return_type())) == 1) 
+    if (!e->isNonDiscardable() &&
+        TypeOps::type_cnt(tm, *(e->get_return_type())) == 1) 
     {
+      modified = true;
       return new const_expr(e->get_sctx(), e->get_loc(), 1);
     }
-    else
+    else if (e->get_expr_kind() == flwor_expr_kind)
     {
-      replace_with_constant_if_typequant_one(sctx, e);
+      flwor_expr* flwor = static_cast<flwor_expr *>(e);
+      expr* ret = flwor->get_return_expr();
+      expr_t newRet = get_constant_if_typequant_one(ret, modified);
+      if (newRet != NULL) 
+      {
+        modified = true;
+        flwor->set_return_expr(newRet);
+      }
     }
   }
 
   return NULL;
-}
-
-
-static void replace_with_constant_if_typequant_one(static_context* sctx, expr* e)
-{
-  switch(e->get_expr_kind())
-  {
-    case flwor_expr_kind: 
-    {
-      flwor_expr* flwor = static_cast<flwor_expr *>(e);
-      expr* ret = flwor->get_return_expr();
-      expr_t nret = get_constant_if_typequant_one(sctx, ret);
-      if (nret != NULL) 
-      {
-        flwor->set_return_expr(nret);
-      }
-      break;
-    }
-    default:
-      break;
-  }
 }
 
 

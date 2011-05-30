@@ -159,15 +159,7 @@ private:
 
 
 /*******************************************************************************
-  ApplyStatement ::= "exit" "with" ExprSimple
-
-  ExprSimple ::= QuantifiedExpr |
-                 OrExpr |          <-- this may end up being a BlockExpr
-                 InsertExpr |
-                 DeleteExpr |
-                 ReplaceExpr |
-                 RenameExpr |
-                 TransformExpr
+  ApplyStatement ::= ExprSimple ";"
 ********************************************************************************/
 class apply_expr : public expr 
 {

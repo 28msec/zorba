@@ -66,7 +66,7 @@ Iterator tree for main query:
                     </CompareIterator>
                   </WhereClause>
                   <ReturnClause>
-                    <ForVarIterator varname="$$dot"/>
+                    <SingletonIterator value="xs:boolean(true)"/>
                   </ReturnClause>
                 </flwor::FLWORIterator>
               </FnCountIterator>
@@ -112,7 +112,7 @@ Iterator tree for main query:
                     </AndIterator>
                   </WhereClause>
                   <ReturnClause>
-                    <ForVarIterator varname="$$dot"/>
+                    <SingletonIterator value="xs:boolean(true)"/>
                   </ReturnClause>
                 </flwor::FLWORIterator>
               </FnCountIterator>
@@ -148,7 +148,7 @@ Iterator tree for main query:
                     </CompareIterator>
                   </WhereClause>
                   <ReturnClause>
-                    <ForVarIterator varname="$$dot"/>
+                    <SingletonIterator value="xs:boolean(true)"/>
                   </ReturnClause>
                 </flwor::FLWORIterator>
               </FnCountIterator>

@@ -36,8 +36,6 @@ PREPOST_RULE(MarkProducerNodeProps);
 
 PREPOST_RULE(EliminateNodeOps);
 
-PREPOST_RULE(ReplaceExprWithConstantOneWhenPossible);
-
 PREPOST_RULE(SpecializeOperations);
 
 PREPOST_RULE(EliminateTypeEnforcingOperations);

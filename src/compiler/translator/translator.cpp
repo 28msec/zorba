@@ -1895,10 +1895,15 @@ expr_t wrap_in_globalvar_assign(const expr_t& program)
   }
 }
 
+
 /*******************************************************************************
   Imports a given schema
 ********************************************************************************/
-void* import_schema(const QueryLoc& loc, const SchemaPrefix* prefix, const zstring& targetNS, const URILiteralList* atlist)
+void* import_schema(
+    const QueryLoc& loc,
+    const SchemaPrefix* prefix,
+    const zstring& targetNS,
+    const URILiteralList* atlist)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -1912,15 +1917,13 @@ void* import_schema(const QueryLoc& loc, const SchemaPrefix* prefix, const zstri
   {
     if (!prefix->get_default_bit() && targetNS.empty())
     {
-      throw XQUERY_EXCEPTION( err::XQST0057, ERROR_LOC( loc ) );
+      throw XQUERY_EXCEPTION( err::XQST0057, ERROR_LOC(loc));
     }
 
     zstring pfx = prefix->get_prefix();
 
     if (pfx == "xml" || pfx == "xmlns")
-      throw XQUERY_EXCEPTION(
-        err::XQST0070, ERROR_PARAMS( pfx, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
 
     if (prefix->get_default_bit())
       theSctx->set_default_elem_type_ns(targetNS, loc);
@@ -1937,7 +1940,7 @@ void* import_schema(const QueryLoc& loc, const SchemaPrefix* prefix, const zstri
   // Form up a vector of candidate URIs: any location hints, followed
   // by the imported URI itself.
   std::vector<zstring> lCandidates;
-  //const URILiteralList* atlist = v.get_at_list();
+
   if (atlist != NULL)
   {
     for (ulong i = 0; i < atlist->size(); ++i)
@@ -1962,7 +1965,7 @@ void* import_schema(const QueryLoc& loc, const SchemaPrefix* prefix, const zstri
       {
         lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA);
         if (lSchema.get() != NULL &&
-          lSchema->getKind() == impl::Resource::STREAM)
+            lSchema->getKind() == impl::Resource::STREAM)
         {
           break;
         }
@@ -1994,6 +1997,7 @@ void* import_schema(const QueryLoc& loc, const SchemaPrefix* prefix, const zstri
     // representaton of it.
     impl::StreamResource* lStream =
       static_cast<impl::StreamResource*>(lSchema.get());
+
     schema_p->registerXSD(lNsURI.c_str(), lStream, loc);
   }
   catch (XQueryException& e)
@@ -2007,8 +2011,8 @@ void* import_schema(const QueryLoc& loc, const SchemaPrefix* prefix, const zstri
 #else
   throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(loc));
 #endif
-
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -2031,9 +2035,7 @@ void* begin_visit(const VersionDecl& v)
   TRACE_VISIT();
 
   if (!utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
-    throw XQUERY_EXCEPTION(
-      err::XQST0087, ERROR_PARAMS(v.get_encoding()), ERROR_LOC(loc)
-    );
+    RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
 
   std::string versionStr = v.get_version().str();
 
@@ -2058,14 +2060,15 @@ void* begin_visit(const VersionDecl& v)
   }
 
   if (theMaxLibModuleVersion != StaticContextConsts::xquery_version_unknown
-    &&
-    version > theMaxLibModuleVersion)
+      &&
+      version > theMaxLibModuleVersion)
   {
     zstring maxversion;
     if (theMaxLibModuleVersion == StaticContextConsts::xquery_version_3_0)
       maxversion = "3.0";
     else
       maxversion = "1.0";
+
     // TODO: the error code might need to be changed after W3C solves
     // the bug report concerning modules of version 1.0 importing v3.0 libraries.
     throw XQUERY_EXCEPTION(
@@ -2076,11 +2079,8 @@ void* begin_visit(const VersionDecl& v)
   }
 
   if (version == StaticContextConsts::xquery_version_unknown)
-    throw XQUERY_EXCEPTION(
-      err::XQST0031,
-      ERROR_PARAMS( versionStr, ZED( BadXQueryVersion ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0031, loc,
+    ERROR_PARAMS(versionStr, ZED(BadXQueryVersion)));
 
   if (version > theSctx->xquery_version())
     throw XQUERY_EXCEPTION(

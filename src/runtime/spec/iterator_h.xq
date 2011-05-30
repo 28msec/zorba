@@ -315,9 +315,9 @@ declare function local:add-constructor-param-2($iter) as xs:string?
 };
 
 
-declare function local:add-constructor-param($iter) as xs:string?
+declare function local:add-constructor-param($iter as node()) as xs:string?
 {
-  if (count($iter/zorba:constructor/zorba:parameter > 0))
+  if (count($iter/zorba:constructor/zorba:parameter) > 0)
   then
     string-join((for 
                    $param in

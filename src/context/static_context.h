@@ -915,8 +915,6 @@ public:
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);
 
-  void set_xquery_version(const std::string& v);
-
   StaticContextConsts::xpath_compatibility_t xpath_compatibility() const;
 
   void set_xpath_compatibility(StaticContextConsts::xpath_compatibility_t v);

@@ -64,7 +64,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
   SingletonRuleMajorDriver<EliminateTypeEnforcingOperations> driverTypeRules;
   SingletonRuleMajorDriver<EliminateExtraneousPathSteps> driverPathSimplify;
-  SingletonRuleMajorDriver<ReplaceExprWithConstantOneWhenPossible> driverExprSimplify;
+  //SingletonRuleMajorDriver<ReplaceExprWithConstantOneWhenPossible> driverExprSimplify;
   RuleOnceDriver<EliminateUnusedLetVars> driverEliminateVars;
   RuleOnceDriver<MarkProducerNodeProps> driverMarkProducerNodeProps;
   RuleOnceDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
@@ -107,8 +107,8 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
  repeat2:
 
-  //
-  driverExprSimplify.rewrite(rCtx);
+  // This rule has been merged into the PartialEval rule
+  //driverExprSimplify.rewrite(rCtx);
 
   //
   driverMarkFreeVars.rewrite(rCtx);
