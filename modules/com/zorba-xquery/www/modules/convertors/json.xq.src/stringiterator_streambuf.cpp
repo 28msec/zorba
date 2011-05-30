@@ -93,7 +93,7 @@ streampos StringIteratorStreamBuf::seekoff ( streamoff off, ios_base::seekdir wa
   {
     if(off > 0)
       return -1;
-    while(underflow() != EOF);
+    while(underflow() != EOF) ;
     streampos maxpos = begin_offset + (streamoff)buffer[current_buffer].length();
     targetpos = maxpos + off;
   }

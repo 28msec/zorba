@@ -26,21 +26,23 @@
 
 namespace zorba {
 class Item;
+
+namespace curl {
+  class streambuf;
+}
 namespace http_client {
   class RequestHandler;
-  class CurlStreamBuffer;
 
   class HttpResponseParser : public InformDataRead {
   private:
     RequestHandler& theHandler;
     CURL* theCurl;
-    CURLM* theMulti;
     ErrorThrower& theErrorThrower;
     std::string theCurrentContentType;
     std::vector<std::pair<std::string, std::string> > theHeaders;
     int theStatus;
     std::string theMessage;
-    CurlStreamBuffer* theStreamBuffer;
+    zorba::curl::streambuf* theStreamBuffer;
     std::string theId;
     std::string theDescription;
     bool theInsideRead;
@@ -51,7 +53,6 @@ namespace http_client {
     HttpResponseParser(
       RequestHandler& aHandler,
       CURL* aCurl,
-      CURLM* aCurlM,
       ErrorThrower& aErrorThrower,
       std::string aOverridenContentType = "",
       bool aStatusOnly = false);
@@ -67,8 +68,6 @@ namespace http_client {
     Item createTextItem(std::istream& aStream);
     Item createBase64Item(std::istream& aStream);
   public: //Handler
-    static size_t writefunction(void* ptr, size_t size, size_t nmemb,
-      void* stream);
     static size_t headerfunction( void *ptr, size_t size, size_t nmemb,
       void *stream);
   };

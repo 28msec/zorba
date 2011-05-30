@@ -155,7 +155,6 @@ namespace zorba {
       ItemFactory* aFactory, const ExternalFunctionData* aFunctionData)
     {
       CURL* lCURL = curl_easy_init();
-      CURLM* lCURLM = curl_multi_init();
       
       Item lRequest;
       Item lHref;
@@ -198,7 +197,7 @@ namespace zorba {
         lHandler->getOverrideContentType(lOverrideContentType);
       bool lStatusOnly =
           lHandler.get() == NULL ? false : (lHandler->isStatusOnly() || lHandler->isHeadRequest());
-      HttpResponseParser lRespParser(lRespHandler, lCURL, lCURLM, thrower,
+      HttpResponseParser lRespParser(lRespHandler, lCURL, thrower,
         lOverrideContentType.c_str(), lStatusOnly);
       int lRetCode = lRespParser.parse();
 

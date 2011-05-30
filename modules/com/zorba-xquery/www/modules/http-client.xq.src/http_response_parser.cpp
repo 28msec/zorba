@@ -35,32 +35,29 @@
 namespace zorba { namespace http_client {
 
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
-    CURLM* aCurlM, ErrorThrower& aErrorThrower,
+    ErrorThrower& aErrorThrower,
     std::string aOverridenContentType, bool aStatusOnly)
     : 
-  theHandler(aHandler), theCurl(aCurl), theMulti(aCurlM), theErrorThrower(aErrorThrower),
+  theHandler(aHandler), theCurl(aCurl), theErrorThrower(aErrorThrower),
     theStatus(-1), theStreamBuffer(0), theInsideRead(false),
     theOverridenContentType(aOverridenContentType),
     theStatusOnly(aStatusOnly)
   {
-    curl_multi_add_handle(theMulti, theCurl);
-    theStreamBuffer = new CurlStreamBuffer(theMulti, theCurl, aStatusOnly);
     registerHandler();
+    theStreamBuffer = new zorba::curl::streambuf(theCurl);
   }
 
   HttpResponseParser::~HttpResponseParser()
   {
     delete theStreamBuffer;
-    curl_multi_remove_handle(theMulti, theCurl);
-    curl_easy_cleanup(theCurl);
-    curl_multi_cleanup(theMulti);
   }
 
   int HttpResponseParser::parse()
   {
     theStreamBuffer->setInformer(this);
     theHandler.begin();
-    int lCode = theStreamBuffer->multi_perform();
+    int lCode = 0;
+    lCode = theStreamBuffer->multi_perform();
     if (lCode)
       return lCode;
     if (!theStatusOnly) {
@@ -210,6 +207,10 @@ namespace zorba { namespace http_client {
     }
     std::stringstream lStream(lStatus);
     lStream >> theStatus;
+    // everything that is not a valid http status is an error
+    if (theStatus < 100) {
+      theErrorThrower.raiseException("http://www.zorba-xquery.com/modules/error", "HC001", "An HTTP error occurred");
+    }
   }
 
   zorba::Item HttpResponseParser::createTextItem(std::istream& aStream)
