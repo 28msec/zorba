@@ -9036,7 +9036,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       for (; ite != end; ++ite)
       {
         if ((*ite).second == var_ns)
-          throw XQUERY_EXCEPTION(err::XQST0093, ERROR_LOC(loc));
+          RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
       }
     }
 
@@ -9600,7 +9600,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         for (; ite != end; ++ite)
         {
           if ((*ite).second == fn_ns)
-            throw XQUERY_EXCEPTION(err::XQST0093, ERROR_LOC(loc));
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
         }
       }
 
