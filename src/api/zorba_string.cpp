@@ -36,10 +36,12 @@ namespace zorba {
  */
 typedef zstring string_type;
 
-#define STRING_OF(STRING_OBJ)                                             \
-  (const_cast<string_type*>(                                              \
-    reinterpret_cast<string_type const*>( &(STRING_OBJ).string_storage_ ) \
-  ))
+#define STRING_OF(STRING_OBJ)                   \
+  const_cast<string_type*>(                     \
+    reinterpret_cast<string_type const*>(       \
+      &(STRING_OBJ).string_storage_.rep_storage \
+    )                                           \
+  )
 
 #define THIS_STRING STRING_OF( *this )
 
