@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_DIAGNOSTIC_H
 #define ZORBA_DIAGNOSTIC_H
 
 #include <zorba/diagnostic.h>
-#include "store/api/item.h"
+
 #include "compiler/parser/query_loc.h"
+#include "store/api/item.h"
 
 namespace zorba {
 namespace diagnostic {
@@ -59,6 +61,7 @@ inline internal::diagnostic::location make_location() {
  * can be passed an \c diagnostic::location.
  *
  * @param loc The error location.
+ * @return Returns \a loc.
  */
 inline internal::diagnostic::location const&
 make_location( internal::diagnostic::location const &loc ) {
@@ -72,6 +75,7 @@ make_location( internal::diagnostic::location const &loc ) {
  * @param line The line number of the file where the error occurred.
  * @param column The column number, if any, of the file where the error
  * occurred.
+ * @return Returns a new location.
  */
 inline internal::diagnostic::location
 make_location( char const *file, internal::diagnostic::location::line_type line,
@@ -87,6 +91,7 @@ make_location( char const *file, internal::diagnostic::location::line_type line,
  * @param line The line number of the file where the error occurred.
  * @param column The column number, if any, of the file where the error
  * occurred.
+ * @return Returns a new location.
  */
 template<class StringType> inline internal::diagnostic::location
 make_location( StringType const &file,
@@ -96,7 +101,10 @@ make_location( StringType const &file,
 }
 
 /**
- * TODO
+ * Makes a location.
+ *
+ * @param QueryLoc loc The QueryLoc to convert to a location.
+ * @return Returns a new location.
  */
 inline internal::diagnostic::location make_location( QueryLoc const &loc ) {
   return internal::diagnostic::location(
@@ -105,7 +113,10 @@ inline internal::diagnostic::location make_location( QueryLoc const &loc ) {
 }
 
 /**
- * TODO
+ * Makes a location.
+ *
+ * @param QueryLoc loc The pointer to the QueryLoc to convert to a location.
+ * @return Returns a new location.
  */
 inline internal::diagnostic::location make_location( QueryLoc const *loc ) {
   return loc ? make_location( *loc ) : internal::diagnostic::location::empty;
