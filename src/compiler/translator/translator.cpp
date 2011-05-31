@@ -10846,10 +10846,10 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
     while (curRef < end)
     {
       int d = xml::parse_entity(curRef, &content);
-      if (d<0) {
-        throw XQUERY_EXCEPTION(
-          err::XQST0090, ERROR_PARAMS( curRef, xml::v1_1 ), ERROR_LOC( loc )
-        );
+      if (d < 0) 
+      {
+        RAISE_ERROR(err::XQST0090, loc,
+        ERROR_PARAMS(curRef, theSctx->xquery_version()));
       }
       curRef += d;
 

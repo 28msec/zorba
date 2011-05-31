@@ -42,7 +42,6 @@
 #include "debugger_handler.h"
 #endif
 
-#include "common/common.h"
 #include "error_printer.h"
 #include "util.h"
 #include "module_path.h"
@@ -52,7 +51,7 @@
 #include <zorba/util/path.h>
 
 // Timing utilities, including wall-clock timing
-#include "util/time.h"
+#include <util/time.h>
 
 // toggle this to allow configuration via a system properties file
 // (see src/system/properties.*)
