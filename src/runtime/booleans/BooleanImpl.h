@@ -264,6 +264,7 @@ public:
 
 private:
   static void valueCasting(
+        const QueryLoc& loc,
         const TypeManager* typemgr,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
@@ -271,6 +272,7 @@ private:
         store::Item_t& castItem1);
 
   static void generalCasting(
+        const QueryLoc& loc,
         const TypeManager* typemgr,
         store::Item_t& aItem0,
         store::Item_t& aItem1,

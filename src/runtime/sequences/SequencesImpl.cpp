@@ -148,7 +148,12 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       if (TypeOps::is_subtype(tm, *lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
       {
-        GenericCast::castToAtomic(lRunningItem, lRunningItem, &*rtm.DOUBLE_TYPE_ONE, tm);
+        GenericCast::castToAtomic(lRunningItem,
+                                  lRunningItem,
+                                  &*rtm.DOUBLE_TYPE_ONE,
+                                  tm,
+                                  NULL,
+                                  loc);
         lRunningType = rtm.DOUBLE_TYPE_ONE;
       }
 
@@ -170,9 +175,9 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         // Type Promotion
         store::Item_t lItemCur;
-        if (!GenericCast::promote(lItemCur, lRunningItem, &*lMaxType, tm))
+        if (!GenericCast::promote(lItemCur, lRunningItem, &*lMaxType, tm, loc))
         {
-          if (GenericCast::promote(lItemCur, result, &*lRunningType, tm))
+          if (GenericCast::promote(lItemCur, result, &*lRunningType, tm, loc))
           {
             result.transfer(lItemCur);
             lMaxType = tm->create_value_type(result);
@@ -232,14 +237,14 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     STACK_PUSH(result != NULL, state);
   } // if non-empty seq
 
-  STACK_END (state);
+  STACK_END(state);
 
   }
   catch(ZorbaException &e)
   {
     if(e.diagnostic() == err::XPTY0004)
-			e.set_diagnostic( err::FORG0006 );
-		set_source( e, loc );
+			e.set_diagnostic(err::FORG0006);
+
 		throw;
   }
 }

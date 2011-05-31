@@ -1370,7 +1370,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (TypeOps::is_subtype(tm, *lResultType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
       lResultType = rtm.DOUBLE_TYPE_ONE;
     }
 
@@ -1390,7 +1390,13 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       if (TypeOps::is_subtype(tm, *lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
       {
-        GenericCast::castToAtomic(lRunningItem, lRunningItem, &*rtm.DOUBLE_TYPE_ONE, tm);
+        GenericCast::castToAtomic(lRunningItem,
+                                  lRunningItem,
+                                  &*rtm.DOUBLE_TYPE_ONE,
+                                  tm,
+                                  NULL,
+                                  loc);
+
         lRunningType = rtm.DOUBLE_TYPE_ONE;
       }
 
@@ -1632,7 +1638,7 @@ bool FnSumIntegerIterator::nextImpl(
     }
 
     GENV_ITEMFACTORY->createInteger(result, sum);
-    GenericCast::castToAtomic(result, result, &*lResultType, tm);
+    GenericCast::castToAtomic(result, result, &*lResultType, tm, NULL, loc);
 
     STACK_PUSH(true, state);
   }

@@ -121,7 +121,7 @@ extern entry const dict_en[] = {
   { "XPST0008", "\"$1\": undefined $2" },
   { "XPST0017", "\"$1\": $2" },
   { "XPST0051", "\"$1\": not defined as atomic type${: 2}" },
-  { "XPST0080", "\"$1\": invalid type for \"cast\" or \"castable\" exression${: 2}" },
+  { "XPST0080", "\"$1\": invalid type for \"cast\" or \"castable\" exression" },
   { "XPST0081", "\"$1\": can not expand namespace prefix to URI" },
   { "XPST0083", "\"$1\": not a string literal" },
   { "XPTY0004", "$1" },

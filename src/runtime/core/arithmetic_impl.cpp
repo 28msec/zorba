@@ -158,7 +158,7 @@ bool GenericArithIterator<Operation>::compute(
       (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE) ||
        TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE)))
   {
-    GenericCast::castToAtomic(n0, n0, &*rtm.DOUBLE_TYPE_ONE, tm);
+    GenericCast::castToAtomic(n0, n0, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
 
     if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE))
     {
@@ -184,7 +184,7 @@ bool GenericArithIterator<Operation>::compute(
   {
     if(TypeOps::is_numeric(tm, *type1))
     {
-      GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
       return Operation::template
              compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>
              (result, dctx, tm, &aLoc, n0, n1);
@@ -212,7 +212,7 @@ bool GenericArithIterator<Operation>::compute(
   {
     if(TypeOps::is_numeric(tm, *type1))
     {
-      GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
 
       return Operation::template
              compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>

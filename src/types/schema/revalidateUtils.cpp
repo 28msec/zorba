@@ -58,7 +58,7 @@ void SchemaValidatorImpl::validate(
   std::set<zorba::store::Item*>::const_iterator end = nodes.end();
   for (; it != end; it++)
   {
-    validateAfterUpdate(*it, &pul);
+    validateAfterUpdate(*it, &pul, QueryLoc::null);
   }
 #endif
 }
@@ -67,7 +67,8 @@ void SchemaValidatorImpl::validate(
 #ifndef ZORBA_NO_XMLSCHEMA
 void SchemaValidatorImpl::validateAfterUpdate(
     store::Item* item,
-    zorba::store::PUL* pul)
+    zorba::store::PUL* pul,
+    const QueryLoc& loc)
 {
   ZORBA_ASSERT(item->isNode());
 
@@ -110,7 +111,8 @@ void SchemaValidatorImpl::validateAfterUpdate(
                     typeManager,
                     schemaValidator,
                     item->getChildren(),
-                    typedValues);
+                    typedValues,
+                    loc);
     
     schemaValidator.endDoc();
     
@@ -126,7 +128,8 @@ void SchemaValidatorImpl::validateAfterUpdate(
     processElement(pul,
                    typeManager,
                    schemaValidator,
-                   item);
+                   item,
+                   loc);
 
     schemaValidator.endDoc();
 
@@ -147,7 +150,8 @@ void SchemaValidatorImpl::processElement(
     store::PUL* pul,
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
-    store::Item_t element)
+    store::Item_t element,
+    const QueryLoc& loc)
 {
   ZORBA_ASSERT(element->isNode());
   ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
@@ -205,11 +209,16 @@ void SchemaValidatorImpl::processElement(
   namespace_context nsCtx = namespace_context(theSctx, bindings);
 
   processAttributes(pul, nsCtx, typeManager, schemaValidator, element, 
-                    element->getAttributes());
+                    element->getAttributes(), loc);
 
   std::vector<store::Item_t> typedValues;
-  int noOfChildren = processChildren(pul, nsCtx, typeManager, 
-      schemaValidator, element->getChildren(), typedValues);
+  int noOfChildren = processChildren(pul,
+                                     nsCtx,
+                                     typeManager, 
+                                     schemaValidator,
+                                     element->getChildren(),
+                                     typedValues,
+                                     loc);
 
   if ( isNewType )
   {
@@ -300,7 +309,8 @@ void SchemaValidatorImpl::processAttributes(
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Item* parent,
-    store::Iterator_t attributes)
+    store::Iterator_t attributes,
+    const QueryLoc& loc)
 {
   std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
   std::list<AttributeValidationInfo*>::iterator curAtt;
@@ -335,7 +345,7 @@ void SchemaValidatorImpl::processAttributes(
 
     std::vector<store::Item_t> typedValues;
     processTextValue(pul, typeManager, nsCtx, typeQName, att->theValue, attrib, 
-                     typedValues);
+                     typedValues, loc);
 
     if ( attrib==NULL )
     {
@@ -380,7 +390,8 @@ int SchemaValidatorImpl::processChildren(
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Iterator_t children,
-    std::vector<store::Item_t>& typedValues)
+    std::vector<store::Item_t>& typedValues,
+    const QueryLoc& loc)
 {
   store::Item_t child;
 
@@ -399,7 +410,7 @@ int SchemaValidatorImpl::processChildren(
       switch ( child->getNodeKind() )
       {
       case store::StoreConsts::elementNode:
-        processElement( pul, typeManager, schemaValidator, child);
+        processElement(pul, typeManager, schemaValidator, child, loc);
         break;
 
       case store::StoreConsts::attributeNode:
@@ -428,7 +439,8 @@ int SchemaValidatorImpl::processChildren(
                          typeQName,
                          childStringValue,
                          child,
-                         typedValues );
+                         typedValues,
+                         loc);
       }
       break;
 
@@ -477,7 +489,8 @@ void SchemaValidatorImpl::processTextValue (
     store::Item_t typeQName,
     zstring& textValue,
     store::Item_t& originalChild,
-    std::vector<store::Item_t>& resultList)
+    std::vector<store::Item_t>& resultList,
+    const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_atomic_type(typeQName,
                                                         TypeConstants::QUANT_ONE);
@@ -497,7 +510,7 @@ void SchemaValidatorImpl::processTextValue (
       
       if ( udXQType.isList() || udXQType.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
         return;
       }
       else if ( udXQType.isComplex() )
@@ -507,7 +520,10 @@ void SchemaValidatorImpl::processTextValue (
 
         if ( udXQType.content_kind()==XQType::SIMPLE_CONTENT_KIND )
         {
-          typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
+          typeManager->getSchema()->parseUserSimpleTypes(textValue,
+                                                         type,
+                                                         resultList,
+                                                         loc);
           return;
         }
         else
@@ -519,8 +535,12 @@ void SchemaValidatorImpl::processTextValue (
       // else isAtomic
     }
 
-    bool isResult = GenericCast::castToAtomic(result, textValue, type.getp(),
-                                              typeManager, &nsCtx);
+    bool isResult = GenericCast::castToAtomic(result,
+                                              textValue,
+                                              type.getp(),
+                                              typeManager,
+                                              &nsCtx,
+                                              loc);
     if ( isResult )
       resultList.push_back(result);
   }
@@ -625,14 +645,14 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
 void SchemaValidatorImpl::validateSimpleContent(
     store::Item *typeQName, 
     zstring newValue, 
-    std::vector<store::Item_t> &resultList)
+    std::vector<store::Item_t>& resultList)
 {
   TypeManager* typeManager = theSctx->get_typemanager();
   Schema* schema = typeManager->getSchema();
   ZORBA_ASSERT( schema );
 
   const xqtref_t& targetType = schema->createXQTypeFromTypeName(typeManager, typeQName);
-  schema->parseUserSimpleTypes(newValue, targetType, resultList);
+  schema->parseUserSimpleTypes(newValue, targetType, resultList, QueryLoc::null);
 }
 
 #endif //ZORBA_NO_XMLSCHEMA

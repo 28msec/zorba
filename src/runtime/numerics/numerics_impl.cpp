@@ -68,7 +68,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
       type = tm->create_value_type(result);
     }
 
@@ -165,7 +165,7 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
     if ( TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
       type = tm->create_value_type(result);
     }
 
@@ -230,7 +230,7 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
     if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
       type = tm->create_value_type(result);
     }
 
@@ -305,7 +305,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
     if ( TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
       type = tm->create_value_type(result);
     }
 
@@ -384,7 +384,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
     if ( TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
       type = tm->create_value_type (result);
     }
 
@@ -795,7 +795,8 @@ static void formatNumber(
     zstring& resultString,
     store::Item_t& number,
     FormatNumberInfo& info,
-    const TypeManager* tm)
+    const TypeManager* tm,
+    const QueryLoc& loc)
 {
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -812,7 +813,7 @@ static void formatNumber(
 
   GENV_ITEMFACTORY->createDouble(zero, xs_double::zero());
 
-  GenericCast::castToAtomic(doubleItem, number, &*rtm.DOUBLE_TYPE_ONE, tm);
+  GenericCast::castToAtomic(doubleItem, number, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
 
   if (doubleItem->compare(zero) == -1)
   {
@@ -974,7 +975,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     pictureString = pictureItem->getStringValue();
     parsePicture(pictureString, info);
-    formatNumber(resultString, result, info, theSctx->get_typemanager());
+    formatNumber(resultString, result, info, theSctx->get_typemanager(), loc);
 
     STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
   } // if (!consumeNext(result, theChildren[0].getp(), planState ))

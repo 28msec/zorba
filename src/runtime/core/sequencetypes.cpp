@@ -193,31 +193,15 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (theCastType->type_kind() == XQType::USER_DEFINED_KIND)
     {
-      try
-      {
-        zstring strval;
-        lItem->getStringValue2(strval);
-
-        namespace_context tmp_ctx(theSctx);
-        valid = GenericCast::castToAtomic(result, strval, theCastType, tm, &tmp_ctx);
-      }
-      catch (XQueryException &e)
-      {
-  set_source( e, loc );
-  throw;
-      }
+      zstring strval;
+      lItem->getStringValue2(strval);
+      
+      namespace_context tmp_ctx(theSctx);
+      valid = GenericCast::castToAtomic(result, strval, theCastType, tm, &tmp_ctx, loc);
     }
     else
     {
-      try
-      {
-        valid = GenericCast::castToAtomic(result, lItem, theCastType, tm);
-      }
-      catch (XQueryException &e)
-      {
-        set_source( e, loc );
-        throw;
-      }
+      valid = GenericCast::castToAtomic(result, lItem, theCastType, tm, NULL, loc);
     }
 
     if (consumeNext(lItem, theChild.getp(), planState))
@@ -397,35 +381,27 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     // catch exceptions to add/change the error location
-    try
+    if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
     {
-      if (! GenericCast::promote(result, lItem, thePromoteType, tm))
-      {
-        xqtref_t valueType = tm->create_value_type(lItem);
+      xqtref_t valueType = tm->create_value_type(lItem);
 
-        if ( theFnQName.getp() )
-        {
-          throw XQUERY_EXCEPTION(err::XPTY0004,
-                                 ERROR_PARAMS(ZED(NoTypePromotion_234),
-                                              valueType->toSchemaString(),
-                                              thePromoteType->toSchemaString(),
-                                              theFnQName->getStringValue()),
-                                 ERROR_LOC(loc));
-        }
-        else
-        {
-          throw XQUERY_EXCEPTION(err::XPTY0004,
-                                 ERROR_PARAMS(ZED(NoTypePromotion_23),
-                                              valueType->toSchemaString(),
-                                              thePromoteType->toSchemaString()),
-                                 ERROR_LOC(loc));
-        }
+      if ( theFnQName.getp() )
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0004,
+                               ERROR_PARAMS(ZED(NoTypePromotion_234),
+                                            valueType->toSchemaString(),
+                                            thePromoteType->toSchemaString(),
+                                            theFnQName->getStringValue()),
+                               ERROR_LOC(loc));
       }
-    }
-    catch(XQueryException &e)
-    {
-      set_source( e, loc );
-      throw;
+      else
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0004,
+                               ERROR_PARAMS(ZED(NoTypePromotion_23),
+                                            valueType->toSchemaString(),
+                                            thePromoteType->toSchemaString()),
+                               ERROR_LOC(loc));
+      }
     }
 
     STACK_PUSH(true, state);
@@ -434,7 +410,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     do
     {
-      if (! GenericCast::promote(result, lItem, thePromoteType, tm))
+      if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
       {
         if ( theFnQName.getp() )
         {

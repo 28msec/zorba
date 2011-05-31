@@ -210,7 +210,8 @@ bool Validator::realValidationValue(
                     typeManager,
                     schemaValidator,
                     newDoc,
-                    sourceNode->getChildren());
+                    sourceNode->getChildren(),
+                    loc);
     
     if ( validationMode == ParseConstants::val_typename )
     {
@@ -257,7 +258,8 @@ bool Validator::realValidationValue(
                                            typeManager,
                                            schemaValidator,
                                            NULL,
-                                           sourceNode);
+                                           sourceNode,
+                                           loc);
     
     if ( validationMode == ParseConstants::val_typename )
     {
@@ -291,8 +293,9 @@ store::Item_t Validator::processElement(
     static_context* sctx,
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
-    store::Item *parent,
-    const store::Item_t& element)
+    store::Item* parent,
+    const store::Item_t& element,
+    const QueryLoc& loc)
 {
   ZORBA_ASSERT(element->isNode());
   ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
@@ -350,13 +353,15 @@ store::Item_t Validator::processElement(
                     typeManager,
                     schemaValidator,
                     (store::Item *)newElem,
-                    element->getAttributes());
+                    element->getAttributes(),
+                    loc);
 
   processChildren(sctx,
                   typeManager,
                   schemaValidator,
                   (store::Item *)newElem,
-                  element->getChildren());
+                  element->getChildren(),
+                  loc);
 
   schemaValidator.endElem(nodeName);
 
@@ -388,8 +393,9 @@ void Validator::processAttributes(
     static_context* sctx,
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
-    store::Item *parent,
-    store::Iterator_t attributes)
+    store::Item* parent,
+    store::Iterator_t attributes,
+    const QueryLoc& loc)
 {
   std::list<AttributeValidationInfo*>* attList =
     schemaValidator.getAttributeList();
@@ -430,7 +436,8 @@ void Validator::processAttributes(
                      bindings,
                      typeQName,
                      att->theValue,
-                     typedValues);
+                     typedValues,
+                     loc);
 
     store::Item_t validatedAttNode;
     if ( typedValues.size()==1 ) // hack around serialization bug
@@ -453,8 +460,9 @@ void Validator::processChildren(
     static_context* sctx,
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
-    store::Item *parent,
-    store::Iterator_t children)
+    store::Item* parent,
+    store::Iterator_t children,
+    const QueryLoc& loc)
 {
   store::Item_t child;
 
@@ -469,7 +477,7 @@ void Validator::processChildren(
       switch ( child->getNodeKind() )
       {
       case store::StoreConsts::elementNode:
-        processElement(sctx, typeManager, schemaValidator, parent, child);
+        processElement(sctx, typeManager, schemaValidator, parent, child, loc);
         break;
 
       case store::StoreConsts::attributeNode:
@@ -527,7 +535,8 @@ void Validator::processChildren(
                            nsBindings,
                            typeQName,
                            childStringValue,
-                           typedValues);
+                           typedValues,
+                           loc);
 
           if ( typedValues.size()==1 ) // hack around serialization bug
             GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent,
@@ -626,13 +635,14 @@ void Validator::processNamespaces (
 }
 
 
-void Validator::processTextValue (
+void Validator::processTextValue(
     static_context* sctx,
     TypeManager* typeManager,
     store::NsBindings& bindings,
     const store::Item_t& typeQName,
     zstring& textValue,
-    std::vector<store::Item_t>& resultList)
+    std::vector<store::Item_t>& resultList,
+    const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_type(typeQName.getp(),
                                                  TypeConstants::QUANT_ONE);
@@ -655,12 +665,12 @@ void Validator::processTextValue (
       
       if ( udt.isList() || udt.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
       }
       else if (udt.isAtomic())
       {
         bool res = typeManager->getSchema()->
-          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx);
+          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc);
 
         ZORBA_ASSERT(res);
         resultList.push_back(result);
@@ -681,7 +691,7 @@ void Validator::processTextValue (
 			baseType = udBaseType.getBaseType();
 		  }
           bool res = GenericCast::castToSimple(textValue, baseType.getp(),
-                                               resultList, typeManager);
+                                               resultList, typeManager, loc);
 
           // if this assert fails it means the validator and zorba casting code
           // don't follow the same rules
@@ -700,7 +710,7 @@ void Validator::processTextValue (
       try
       {
         bool res = GenericCast::castToAtomic(result, textValue, type.getp(),
-                                             typeManager, &nsCtx);
+                                             typeManager, &nsCtx, loc);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }

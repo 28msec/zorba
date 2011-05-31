@@ -1453,7 +1453,8 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
 bool Schema::parseUserSimpleTypes(
     zstring& textValue,
     const xqtref_t& aTargetType,
-    std::vector<store::Item_t>& resultList)
+    std::vector<store::Item_t>& resultList,
+    const QueryLoc& loc)
 {
   //cout << "parseUserSimpleTypes: '" << textValue << "' to " <<
   //  aTargetType->toString() << endl; cout.flush();
@@ -1463,8 +1464,12 @@ bool Schema::parseUserSimpleTypes(
     // must be a built in type
     store::Item_t atomicResult;
     //todo add nsCtx
-    bool res = GenericCast::instance()->castToAtomic(atomicResult, textValue,
-                                                     aTargetType, theTypeManager);
+    bool res = GenericCast::instance()->castToAtomic(atomicResult,
+                                                     textValue,
+                                                     aTargetType,
+                                                     theTypeManager,
+                                                     NULL,
+                                                     loc);
 
     if ( res == false )
     {
@@ -1494,7 +1499,7 @@ bool Schema::parseUserSimpleTypes(
   case UserDefinedXQType::ATOMIC_TYPE:
   {
     store::Item_t atomicResult;
-    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult);
+    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult, NULL, loc);
 
     if ( !hasResult )
       return false;
@@ -1510,11 +1515,11 @@ bool Schema::parseUserSimpleTypes(
   break;
 
   case UserDefinedXQType::LIST_TYPE:
-    return parseUserListTypes(textValue, aTargetType, resultList);
+    return parseUserListTypes(textValue, aTargetType, resultList, loc);
     break;
 
   case UserDefinedXQType::UNION_TYPE:
-    return parseUserUnionTypes(textValue, aTargetType, resultList);
+    return parseUserUnionTypes(textValue, aTargetType, resultList, loc);
     break;
 
   case UserDefinedXQType::COMPLEX_TYPE:
@@ -1535,7 +1540,8 @@ bool Schema::parseUserAtomicTypes(
     zstring& textValue,
     const xqtref_t& aTargetType,
     store::Item_t& result,
-    namespace_context* aNCtx)
+    namespace_context* aNCtx,
+    const QueryLoc& loc)
 {
   TRACE("parsing '" << textValue << "' to " << aTargetType->toString());
 
@@ -1655,7 +1661,8 @@ bool Schema::parseUserAtomicTypes(
   {
     throw;
   }
-  catch (const ZorbaException&) {
+  catch (const ZorbaException&) 
+  {
     throw;
   }
   catch (...)
@@ -1678,7 +1685,12 @@ bool Schema::parseUserAtomicTypes(
   // create a UserTypedAtomicItem with the built-in value
   store::Item_t baseItem;
   
-  if (GenericCast::castToAtomic(baseItem, textValue, baseType, theTypeManager, aNCtx))
+  if (GenericCast::castToAtomic(baseItem,
+                                textValue,
+                                baseType,
+                                theTypeManager,
+                                aNCtx,
+                                loc))
   {
     store::Item_t tTypeQName = udXQType->get_qname();
 
@@ -1721,7 +1733,8 @@ void splitToAtomicTextValues(
 bool Schema::parseUserListTypes(
     const zstring& textValue,
     const xqtref_t& aTargetType,
-    std::vector<store::Item_t> &resultList)
+    std::vector<store::Item_t>& resultList,
+    const QueryLoc& loc)
 {
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
@@ -1747,7 +1760,8 @@ bool Schema::parseUserListTypes(
 
     bool res = parseUserSimpleTypes(atomicTextValues[i],
                                     xqtref_t(listItemType),
-                                    resultList);
+                                    resultList,
+                                    loc);
     hasResult = hasResult && res;
   }
 
@@ -1758,7 +1772,8 @@ bool Schema::parseUserListTypes(
 bool Schema::parseUserUnionTypes(
     zstring& textValue,
     const xqtref_t& aTargetType,
-    std::vector<store::Item_t> &resultList)
+    std::vector<store::Item_t>& resultList,
+    const QueryLoc& loc)
 {
 //  cout << "parseUserUnionTypes: '" << textValue << "'" <<  " to " <<
 //    aTargetType->toString() << endl; cout.flush();
@@ -1777,7 +1792,7 @@ bool Schema::parseUserUnionTypes(
     {
       if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
       {
-        return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
+        return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList, loc);
       }
     }
     catch(ZorbaException const&)

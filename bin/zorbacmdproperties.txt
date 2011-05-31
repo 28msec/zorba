@@ -13,7 +13,7 @@
 ("default-collation", po::value<std::string>(), "Add the given collation and set the value of the default collation in the static context to the given collation.")
 ("construction-mode", po::value<std::string>(), "Set the construction mode ('strip' or 'preserve') in the static context.")
 ("ordering-mode", po::value<std::string>(), "Set the ordering mode ('ordered' or 'unordered') in the static context.")
-("multiple,m", po::value<int>()->default_value (1), "Execute the given queries multiple times.")
+("multiple,m", po::value<unsigned long>()->default_value (1), "Execute the given queries multiple times.")
 ("query,q", po::value<std::vector<std::string> >(&theQueriesOrFiles), "Query test or file URI (file://...)")
 ("as-files,f", "Treat all -q arguments as file paths instead of URIs or inline queries.")
 ("external-variable,e", po::value<std::vector<std::string> >(), "Provide the value for a variable given a file (name=file) or a value (name:=value)")

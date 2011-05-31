@@ -42,7 +42,7 @@ class EventSchemaValidator;
 class Validator
 {
  public:
-  static bool effectiveValidationValue (
+  static bool effectiveValidationValue(
         store::Item_t& result,
         const store::Item_t& sourceNode,
         const store::Item_t& typeName,
@@ -51,13 +51,14 @@ class Validator
         static_context* sctx,
         const QueryLoc& loc); 
 
-  static void processTextValue (
+  static void processTextValue(
         static_context* sctx,
         TypeManager* typeManager, 
         store::NsBindings& bindings,
         const store::Item_t& typeQName,
         zstring& textValue, 
-        std::vector<store::Item_t>& resultList);
+        std::vector<store::Item_t>& resultList,
+        const QueryLoc& loc);
   
   /**
    - haveValue : True if the element has a typed value.
@@ -96,7 +97,7 @@ class Validator
   }
 
 private:
-  static bool realValidationValue (
+  static bool realValidationValue(
         store::Item_t& result,
         const store::Item_t& sourceNode,
         const store::Item_t& typeName,
@@ -105,21 +106,23 @@ private:
         static_context* sctx,
         const QueryLoc& loc);
 
-  static void processChildren (
+  static void processChildren(
         static_context* sctx,
         TypeManager* typeManager,
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
-        store::Iterator_t children);
+        store::Iterator_t children,
+        const QueryLoc& loc);
 
-  static store::Item_t processElement (
+  static store::Item_t processElement(
         static_context* sctx,
         TypeManager* typeManager, 
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
-        const store::Item_t& element);
+        const store::Item_t& element,
+        const QueryLoc& loc);
   
-  static void validateAttributes (
+  static void validateAttributes(
         EventSchemaValidator& schemaValidator,
         store::Iterator_t attributes);
 
@@ -128,9 +131,10 @@ private:
         TypeManager* typeManager,
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
-        store::Iterator_t attributes);
+        store::Iterator_t attributes,
+        const QueryLoc& loc);
 
-  static void processNamespaces (
+  static void processNamespaces(
         EventSchemaValidator& schemaValidator,
         const store::Item_t& item);
 };

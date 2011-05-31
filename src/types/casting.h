@@ -73,7 +73,8 @@ public:
         store::Item_t& result,
         store::Item_t& aItem,
         const XQType* aTargetType,
-        const TypeManager* tm);
+        const TypeManager* tm,
+        const QueryLoc& loc);
 
   /**
    * Executes the string casting of the passed string to an item of the passed
@@ -84,7 +85,8 @@ public:
         zstring& aStr, 
         const XQType* aTargetType,
         const TypeManager* tm,
-        namespace_context* aNCtx = 0);
+        namespace_context* aNCtx,
+        const QueryLoc& loc);
   /**
    * Executes the casting of the passed item. If the passed item has the same
    * type or a subtype of the passed targetType, the passed item is directly
@@ -95,13 +97,15 @@ public:
         store::Item_t& aItem, 
         const XQType* aTargetType,
         const TypeManager* tm, 
-        namespace_context* aNCtx = 0);
+        namespace_context* aNCtx,
+        const QueryLoc& loc);
 
   static bool castToSimple(
         zstring& aStr, 
         const xqtref_t& aTargetType,
         std::vector<store::Item_t>& aResultList,
-        const TypeManager* tm);
+        const TypeManager* tm,
+        const QueryLoc& loc);
 
   static bool castToQName(
         store::Item_t& result,

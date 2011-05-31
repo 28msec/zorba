@@ -316,7 +316,7 @@ struct TimingInfo
     TOTAL_TIMER
   } TimerKind;
     
-  ulong             numExecs;
+  unsigned long numExecs;
 
   DECLARE_TIMER(Init);
   DECLARE_TIMER(Deinit);
@@ -326,7 +326,7 @@ struct TimingInfo
   DECLARE_TIMER(Unload);
   DECLARE_TIMER(Total);
 
-  TimingInfo(ulong num)
+  TimingInfo(unsigned long num)
     :
     numExecs(num),
     elapsedInitWalltime(0), 
@@ -346,15 +346,15 @@ struct TimingInfo
   {
   }
 
-  void startTimer(TimerKind kind, ulong iteration);
-  void stopTimer(TimerKind kind, ulong iteration);
+  void startTimer(TimerKind kind, unsigned long iteration);
+  void stopTimer(TimerKind kind, unsigned long iteration);
 
   std::ostream& print(std::ostream& os);
 };
 
 
 void
-TimingInfo::startTimer(TimerKind kind, ulong iteration)
+TimingInfo::startTimer(TimerKind kind, unsigned long iteration)
 {
   if (iteration == 0 && numExecs > 1)
     return;
@@ -389,7 +389,7 @@ TimingInfo::startTimer(TimerKind kind, ulong iteration)
 
 
 void
-TimingInfo::stopTimer(TimerKind kind, ulong iteration)
+TimingInfo::stopTimer(TimerKind kind, unsigned long iteration)
 {
   if (iteration == 0 && numExecs > 1)
     return;
@@ -438,7 +438,7 @@ TimingInfo::print(std::ostream& os)
 
   os << "\nNumber of executions = " << numExecs << std::endl;
 
-  ulong timeDiv = numExecs == 1 ? 1 : (numExecs - 1);
+  unsigned long timeDiv = numExecs == 1 ? 1 : (numExecs - 1);
   double cWalltime = elapsedCompWalltime / timeDiv;
   double eWalltime = elapsedExecWalltime / timeDiv;
   double lWalltime = elapsedLoadWalltime / timeDiv;
@@ -478,15 +478,20 @@ TimingInfo::print(std::ostream& os)
   return os;
 }
 
+
 void
-removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties) {
-  if (lProperties.outputFile().size() > 0) {
+removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties) 
+{
+  if (lProperties.outputFile().size() > 0) 
+  {
     File_t lFile = zorba::File::createFile(lProperties.outputFile());
-    if (lFile->exists()) {
+    if (lFile->exists()) 
+    {
       lFile->remove();
     }
   }
 }
+
 
 int
 compileAndExecute(
@@ -498,7 +503,7 @@ compileAndExecute(
     std::ostream& outputStream,
     TimingInfo& timing)
 {
-  ulong lNumExecutions = properties.multiple();
+  unsigned long lNumExecutions = properties.multiple();
   bool lIndent = properties.indent();
   bool doTiming = properties.timing();
 
@@ -522,7 +527,7 @@ compileAndExecute(
 
   zorba::XQuery_t query;
 
-  for (ulong i = 0; i < lNumExecutions; ++i) 
+  for (unsigned long i = 0; i < lNumExecutions; ++i) 
   {
     // Perform compilation and create dynamic context only once, unless timing is needed
     if (doTiming || i == 0) 

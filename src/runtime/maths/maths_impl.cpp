@@ -332,7 +332,7 @@ LdexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 
 //math:pow
 bool
-PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+PowIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t n0;
   store::Item_t n1;
@@ -361,19 +361,25 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 
         if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
         {
-          GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+          GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
           type = tm->create_value_type(result);
         }
 
         if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
         {
-          GENV_ITEMFACTORY->createDouble (result, doub1.pow(n1->getDoubleValue()));
+          GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1->getDoubleValue()));
         }
         else if (TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
         {
           store::Item_t n1_double;
-          GenericCast::castToAtomic(n1_double, n1, rtm.DOUBLE_TYPE_ONE.getp(), tm);
-          GENV_ITEMFACTORY->createDouble (result, doub1.pow(n1_double->getDoubleValue()));
+          GenericCast::castToAtomic(n1_double,
+                                    n1,
+                                    rtm.DOUBLE_TYPE_ONE.getp(),
+                                    tm,
+                                    NULL,
+                                    loc);
+
+          GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_double->getDoubleValue()));
         }
         else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
         {
@@ -392,7 +398,13 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
         else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
         {
           store::Item_t n1_double;
-          GenericCast::castToAtomic(n1_double, n1, rtm.DOUBLE_TYPE_ONE.getp(), tm);
+          GenericCast::castToAtomic(n1_double,
+                                    n1,
+                                    rtm.DOUBLE_TYPE_ONE.getp(),
+                                    tm,
+                                    NULL,
+                                    loc);
+
           GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_double->getDoubleValue()));
         }
         else

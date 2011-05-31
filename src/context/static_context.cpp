@@ -1757,8 +1757,14 @@ bool static_context::validateSimpleContent(
   store::Item_t lTypeQName(typeQName);
 
   Validator::processTextValue(
-      this, this->get_typemanager(), bindings,
-      lTypeQName, stringValue, resultList);
+      this,
+      this->get_typemanager(),
+      bindings,
+      lTypeQName,
+      stringValue,
+      resultList,
+      QueryLoc::null);
+
   return true;
 }
 

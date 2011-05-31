@@ -789,7 +789,9 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         );
       }
     }
-    try{
+
+    try
+    {
       bool is_ordinal = false;
       bool is_traditional = false;
       unsigned int picture_size = 0;

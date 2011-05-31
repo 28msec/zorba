@@ -2956,7 +2956,7 @@ void* begin_visit(const VFO_DeclList& v)
     const zstring& ns = qnameItem->getNamespace();
 
     if (ns.empty())
-      throw XQUERY_EXCEPTION(err::XQST0060, ERROR_LOC(loc));
+      RAISE_ERROR(err::XQST0060, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
     if (ns == static_context::W3C_FN_NS ||
         ns == XML_NS ||
@@ -7536,7 +7536,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
       TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
   {
-    throw XQUERY_EXCEPTION(err::XPST0080, ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
   }
 
   if (TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, loc))
@@ -7562,9 +7562,6 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       {
         if (isCast)
         {
-          // bugfix: report error location for invalid casts,
-          // e.g. xs:QName("foo:bar") where foo is not defined
-          set_source( e, loc );
           throw;
         }
         else
@@ -11475,18 +11472,10 @@ void* begin_visit(const SchemaElementTest& v)
   }
   else
   {
-    try
-    {
-      xqtref_t seqmatch = CTX_TM->create_schema_element_type(elemQNameItem,
-                                                             TypeConstants::QUANT_ONE,
-                                                             loc);
-      theTypeStack.push(seqmatch);
-    }
-    catch (XQueryException& e)
-    {
-      set_source( e, v.get_location() );
-      throw;
-    }
+    xqtref_t seqmatch = CTX_TM->create_schema_element_type(elemQNameItem,
+                                                           TypeConstants::QUANT_ONE,
+                                                           loc);
+    theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
   throw XQUERY_EXCEPTION(

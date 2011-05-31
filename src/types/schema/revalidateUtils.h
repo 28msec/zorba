@@ -60,68 +60,90 @@ public:
    * Validates entire documents. nodes is a set of root documents or elements.
    * An error is thrown in case of invalid content.
    */
-  void validate(const std::set<store::Item*>& nodes, store::PUL& pul);
+  void validate(
+      const std::set<store::Item*>& nodes,
+      store::PUL& pul);
   
   bool isPossibleSimpleContentRevalidation(store::Item *typeQName);
   
-  void validateSimpleContent(store::Item *typeQName, 
-                             zstring newValue, 
-                             std::vector<store::Item_t> &resultList);
+  void validateSimpleContent(
+      store::Item *typeQName, 
+      zstring newValue, 
+      std::vector<store::Item_t>& resultList);
   
 #else
-  void validate(const std::set<store::Item*>& nodes, store::PUL& pul) {}
+  void validate(
+      const std::set<store::Item*>& nodes,
+      store::PUL& pul) 
+  {
+  }
 
   bool isPossibleSimpleContentRevalidation()
   { 
     return false;
   }
 
-  void validateSimpleContent(const xqtref_t& targetType, 
-                             zstring newValue, 
-                             std::vector<store::Item_t> &resultList)
-  {}
+  void validateSimpleContent(
+      const xqtref_t& targetType, 
+      zstring newValue, 
+      std::vector<store::Item_t>& resultList)
+  {
+  }
 #endif //ZORBA_NO_XMLSCHEMA
   
 private:
 #ifndef ZORBA_NO_XMLSCHEMA
-  void validateAfterUpdate(store::Item* item, 
-                           zorba::store::PUL* pul);
+  void validateAfterUpdate(
+      store::Item* item, 
+      zorba::store::PUL* pul,
+      const QueryLoc& loc);
 
-  void processElement(store::PUL* pul,
-                      TypeManager* typeManager,
-                      EventSchemaValidator& schemaValidator,
-                      store::Item_t element);
+  void processElement(
+      store::PUL* pul,
+      TypeManager* typeManager,
+      EventSchemaValidator& schemaValidator,
+      store::Item_t element,
+      const QueryLoc& loc);
   
-  void validateAttributes(EventSchemaValidator& schemaValidator,
-                          store::Iterator_t attributes);
+  void validateAttributes(
+      EventSchemaValidator& schemaValidator,
+      store::Iterator_t attributes);
   
-  void processAttributes(store::PUL* pul,
-                         namespace_context& nsCtx,
-                         TypeManager* typeManager,
-                         EventSchemaValidator& schemaValidator,
-                         store::Item* parent,
-                         store::Iterator_t attributes);
+  void processAttributes(
+      store::PUL* pul,
+      namespace_context& nsCtx,
+      TypeManager* typeManager,
+      EventSchemaValidator& schemaValidator,
+      store::Item* parent,
+      store::Iterator_t attributes,
+      const QueryLoc& loc);
   
-  int processChildren(store::PUL* pul,
-                      namespace_context& nsCtx,
-                      TypeManager* typeManager,
-                      EventSchemaValidator& schemaValidator,
-                      store::Iterator_t children,
-                      std::vector<store::Item_t>& typedValues);
+  int processChildren(
+      store::PUL* pul,
+      namespace_context& nsCtx,
+      TypeManager* typeManager,
+      EventSchemaValidator& schemaValidator,
+      store::Iterator_t children,
+      std::vector<store::Item_t>& typedValues,
+      const QueryLoc& loc);
   
-  void processNamespaces(EventSchemaValidator& schemaValidator, 
-                         const store::Item *item);
+  void processNamespaces(
+      EventSchemaValidator& schemaValidator, 
+      const store::Item *item);
   
-  void processTextValue (store::PUL* pul,
-                         TypeManager* typeManager,
-                         namespace_context &nsCtx,
-                         store::Item_t typeQName,
-                         zstring& textValue,
-                         store::Item_t& originalChild,
-                         std::vector<store::Item_t>& resultList);
+  void processTextValue(
+      store::PUL* pul,
+      TypeManager* typeManager,
+      namespace_context &nsCtx,
+      store::Item_t typeQName,
+      zstring& textValue,
+      store::Item_t& originalChild,
+      std::vector<store::Item_t>& resultList,
+      const QueryLoc& loc);
 
-  store::Item_t findAttributeItem(const store::Item *parent, 
-                                  store::Item_t &attQName);
+  store::Item_t findAttributeItem(
+      const store::Item *parent, 
+      store::Item_t &attQName);
 
   bool isPossibleSimpleContentRevalImpl(xqtref_t schemaType);
 

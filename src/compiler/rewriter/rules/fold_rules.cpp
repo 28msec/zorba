@@ -876,6 +876,8 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   if (i == 2)
     return NULL;
 
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   TypeManager* tm = fo.get_sctx()->get_typemanager();
 
   store::Item* val = val_expr->get_val();
@@ -885,7 +887,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                                                  TypeConstants::QUANT_ONE,
                                                  fo.get_loc(),
                                                  err::XPTY0004),
-                          *GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+                          *rtm.INTEGER_TYPE_ONE,
                           fo.get_loc()))
   {
     xs_integer ival = val->getIntegerValue();
@@ -913,7 +915,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     {
       store::Item_t pVal;
       store::Item_t iVal = val;
-      GenericCast::promote(pVal, iVal, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, tm);
+      GenericCast::promote(pVal, iVal, &*rtm.DOUBLE_TYPE_ONE, tm, val_expr->get_loc());
       expr_t dpos = new const_expr(val_expr->get_sctx(), LOC(val_expr), pVal);
 
       std::vector<expr_t> args(3);

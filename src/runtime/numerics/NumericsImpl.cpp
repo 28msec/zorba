@@ -627,65 +627,56 @@ bool NumArithIterator<Operation>::computeAtomic(
 
   xqtref_t resultType = TypeOps::arithmetic_type(tm, *type0, *type1, isDivision);
 
-  try
+  switch (TypeOps::get_atomic_type_code(*resultType))
   {
-    switch (TypeOps::get_atomic_type_code(*resultType))
-    {
-    case TypeConstants::XS_DOUBLE:
-    {
-      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
+  case TypeConstants::XS_DOUBLE:
+  {
+    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
+    
+    res = Operation::template
+          computeSingleType<TypeConstants::XS_DOUBLE>
+          (result, dctx, tm, &aLoc, n0, n1 );
+    break;
+  }
+  case TypeConstants::XS_FLOAT:
+  {
+    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
 
-      res = Operation::template
-            computeSingleType<TypeConstants::XS_DOUBLE>
-            (result, dctx, tm, &aLoc, n0, n1 );
-      break;
-    }
-    case TypeConstants::XS_FLOAT:
-    {
-      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
+    res = Operation::template 
+          computeSingleType<TypeConstants::XS_FLOAT>
+          (result, dctx, tm, &aLoc, n0, n1);
+    break;
+  }
+  case TypeConstants::XS_DECIMAL:
+  {
+    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
 
-      res = Operation::template 
-            computeSingleType<TypeConstants::XS_FLOAT>
-            (result, dctx, tm, &aLoc, n0, n1);
-      break;
-    }
-    case TypeConstants::XS_DECIMAL:
-    {
-      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
+    res = Operation::template
+          computeSingleType<TypeConstants::XS_DECIMAL>
+          (result, dctx, tm, &aLoc,n0, n1);
+    break;
+  }
+  case TypeConstants::XS_INTEGER:
+  {
+    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
 
-      res = Operation::template
-            computeSingleType<TypeConstants::XS_DECIMAL>
-            (result, dctx, tm, &aLoc,n0, n1);
-      break;
-    }
-    case TypeConstants::XS_INTEGER:
-    {
-      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
-
-       res = Operation::template 
-            computeSingleType<TypeConstants::XS_INTEGER>
-            (result, dctx, tm, &aLoc, n0, n1 );
-      break;
-    }
-    default:
-    {
-      throw XQUERY_EXCEPTION(
+    res = Operation::template 
+          computeSingleType<TypeConstants::XS_INTEGER>
+          (result, dctx, tm, &aLoc, n0, n1 );
+    break;
+  }
+  default:
+  {
+    throw XQUERY_EXCEPTION(
         err::XPTY0004,
         ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
         ERROR_LOC( aLoc )
       );
-    }
-    }
   }
-  catch(XQueryException& e)
-  {
-    // rethrow casting errors but with location
-    set_source( e, aLoc );
-    throw;
   }
 
   return res;
@@ -841,7 +832,7 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
       type = rtm.DOUBLE_TYPE_ONE;
     }
     
