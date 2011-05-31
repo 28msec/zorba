@@ -261,9 +261,9 @@ void ZorbaImpl::notifyError( DiagnosticHandler *eh, ZorbaException const &ze ) {
   eh->error( ze );
 }
 
-void ZorbaImpl::notifyError( DiagnosticHandler *eh, std::string const &aDesc ) {
+void ZorbaImpl::notifyError( DiagnosticHandler *eh, char const *what ) {
   eh->error(
-    ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(aDesc) )
+    ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( what ) )
   );
 }
 
@@ -282,5 +282,5 @@ void ZorbaImpl::checkItem(const store::Item_t& aItem)
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

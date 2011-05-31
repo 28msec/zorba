@@ -348,7 +348,7 @@ to_string( T p ) {
  * @return Returns a string representation of the object.
  */
 inline std::string to_string( char const *s ) {
-  return s;
+  return s ? s : "<null>";
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -506,7 +506,7 @@ to_string( T p, OutputStringType *out ) {
  */
 template<class OutputStringType> inline
 void to_string( char const *s, OutputStringType *out ) {
-  *out = s;
+  *out = s ? s : "<null>";
 }
 
 ///////////////////////////////////////////////////////////////////////////////

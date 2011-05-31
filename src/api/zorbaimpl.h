@@ -67,7 +67,7 @@ public:
   static void notifyError(DiagnosticHandler*, ZorbaException const&);
 
   // notify zorba internal error
-  static void notifyError(DiagnosticHandler*, const std::string&);
+  static void notifyError(DiagnosticHandler*, char const *what);
 
   static void notifyError(DiagnosticHandler*);
 
