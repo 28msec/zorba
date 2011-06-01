@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -13,40 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+// ******************************************
+// *                                        *
+// * THIS IS A GENERATED FILE. DO NOT EDIT! *
+// * SEE .xml FILE WITH SAME NAME           *
+// *                                        *
+// ******************************************
 
-#ifndef ZORBA_DEBUGGER_PROTOCOL_H
-#define ZORBA_DEBUGGER_PROTOCOL_H
 
-#include <string>
-#include <map>
+#ifndef ZORBA_FUNCTIONS_DEBUG_ITERATOR_H
+#define ZORBA_FUNCTIONS_DEBUG_ITERATOR_H
 
-#include "debugger_common.h"
+
+#include "common/shared_types.h"
+#include "functions/function_impl.h"
 
 
 namespace zorba {
 
-typedef uint32_t      Id;
 
-class DebuggerCommand {
+void populate_context_debug_iterator(static_context* sctx);
 
-private:
-  std::string theName;
-  std::map<std::string, std::string> theArgs;
 
-public:
-  DebuggerCommand(std::string command);
 
-  bool
-  getArg(std::string arg, std::string& value);
 
-  bool
-  getArg(std::string arg, int& value);
 
-  std::string
-  getName();
+} //namespace zorba
 
-};
 
-} // namespace zorba
-
-#endif // ZORBA_DEBUGGER_PROTOCOL_H
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

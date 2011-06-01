@@ -27,15 +27,13 @@ DebuggerServerRunnable::DebuggerServerRunnable(
   const XQuery_t& aQuery,
   std::ostream&   aOutStream,
   const std::string& aHost,
-  unsigned short  aRequestPort,
-  unsigned short  aEventPort,
+  unsigned short  aPort,
   const Zorba_SerializerOptions& 
   aSerOpts)
   : theQuery(aQuery),
     theOutStream(aOutStream),
     theHost(aHost),
-    theRequestPort(aRequestPort),
-    theEventPort(aEventPort),
+    thePort(aPort),
     theSerializerOptions(aSerOpts)
 {
 }
@@ -50,9 +48,8 @@ DebuggerServerRunnable::run()
 {
   try {
     theQuery->debug(theOutStream,
-      theSerializerOptions,
-      theRequestPort,
-      theEventPort);
+      theSerializerOptions,      
+      thePort);
   } catch (zorba::XQueryException const& qe) {
     ErrorPrinter::print(qe, std::cerr, false, true);
   } catch (zorba::ZorbaException const& ze) {

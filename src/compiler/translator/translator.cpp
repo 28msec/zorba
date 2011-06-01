@@ -1622,17 +1622,15 @@ void wrap_in_debugger_expr(expr_t& aExpr)
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
-    DebugLocation_t lLocation;
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theSctx,
                                                          aExpr->get_loc(),
                                                          aExpr,
                                                          thePrologVars));
 
-    lLocation.theFileName = aExpr->get_loc().getFilename().str();
-    lLocation.theLineNumber = aExpr->get_loc().getLineno();
-    lLocation.theQueryLocation = aExpr->get_loc();
-    theCCB->theDebuggerCommons->theLocationMap.insert(
-      std::pair<DebugLocation_t, bool>(lLocation, false));
+    // add the breakable expression in the debugger commons as a possible
+    // breakpoint location
+    Breakable lBreakable(aExpr->get_loc());
+    theCCB->theDebuggerCommons->addBreakable(lBreakable);
 
     // retrieve all variables that are in the current scope
     typedef std::vector<var_expr_t> VarExprVector;
@@ -1651,7 +1649,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
         continue;
       }
 
-      var_expr_t ve = create_var(lLocation.theQueryLocation,
+      var_expr_t ve = create_var(lBreakable.getLocation(),
                                  lVarname,
                                  var_expr::eval_var,
                                  NULL).dyn_cast<var_expr>();
@@ -1659,7 +1657,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
       var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, err::XPST0008);
 
       expr_t val = new wrapper_expr(theRootSctx,
-                                    lLocation.theQueryLocation,
+                                    lBreakable.getLocation(),
                                     rchandle<expr>(lVe));
       lExpr->add_var(ve, val);
     }

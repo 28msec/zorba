@@ -136,7 +136,7 @@ initTest(
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
   aClientServer.setServer(new DebuggerServerRunnable(
-    lQuery, aResult, "127.0.0.1", lPorts.first, lPorts.second, lSerOptions));
+    lQuery, aResult, "127.0.0.1", lPorts.second, lSerOptions));
   aClientServer.getServer()->start();
   sleep(1);
 

@@ -20,6 +20,8 @@
 #include <sstream>
 #include <fstream>
 
+#include <zorba/util/uri.h>
+
 #include "store/api/store.h"
 
 #include "api/zorbaimpl.h"
@@ -29,7 +31,7 @@
 #include "context/static_context.h"
 
 #include "runtime/api/plan_wrapper.h"
-#include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/debug/debug_iterator.h"
 #include "runtime/util/flowctl_exception.h"
 
 #include "zorba/printer_diagnostic_handler.h"
@@ -37,7 +39,7 @@
 #include "zorbautils/synchronous_logger.h"
 
 #include "debugger/debugger_protocol.h"
-#include "debugger/debugger_communication.h"
+#include "debugger/debugger_communicator.h"
 #include "debugger/debugger_commons.h"
 
 #ifdef WIN32
@@ -47,83 +49,19 @@
 
 namespace zorba {
 
-class EvalCommand : public Runnable
-{
-  public:
-
-    EvalCommand(DebuggerCommons* aCommons,
-                DebuggerCommunicator* aCommunicator,
-                const zstring& aEvalString,
-                Zorba_SerializerOptions& aSerOpts,
-                Id aId)
-      : theCommons(aCommons), 
-        theCommunicator(aCommunicator),
-        theEvalString(aEvalString),
-        theSerOpts(aSerOpts),
-        theId(aId)
-    {}
-
-    virtual ~EvalCommand() {}
-
-    /**
-    * @brief runs the evaluation command in the current scope.
-    *
-    * Runs theEvalString in. This method is supposed to run in its own thread
-    * and it will send an evaluation event back to the client after finishing.
-    *
-    * @pre theCommons != NULL
-    * @pre theCommunicator != NULL
-    */
-    virtual void run()
-    {
-      // Check preconditions
-      ZORBA_ASSERT(theCommons != NULL);
-      ZORBA_ASSERT(theCommunicator != NULL);
-      std::auto_ptr<EvaluatedEvent> lEvent;
-
-      try {
-        lEvent.reset(
-          new EvaluatedEvent(
-            theId,
-            theEvalString,
-            theCommons->eval(theEvalString, theSerOpts)));
-      } catch (ZorbaException const& lError) {
-        lEvent.reset(
-          new EvaluatedEvent(
-            theId,
-            theEvalString,
-            lError.what()));
-      }
-      theCommunicator->sendEvent(lEvent.get());
-    }
-
-    virtual void finish()
-    {
-    }
-
-  private:
-
-    DebuggerCommons*          theCommons;
-    DebuggerCommunicator*     theCommunicator;
-    zstring                   theEvalString;
-    Zorba_SerializerOptions&  theSerOpts;
-    Id                        theId;
-  };
-
 DebuggerRuntime::DebuggerRuntime(
-    XQueryImpl* xqueryImpl,
-    std::ostream& oStream,
-    Zorba_SerializerOptions& serializerOptions,
-    DebuggerCommunicator* communicator,
-    itemHandler aHandler,
-    void* aCallBackData)
+  XQueryImpl* xqueryImpl,
+  std::ostream& oStream,
+  Zorba_SerializerOptions& serializerOptions,
+  DebuggerCommunicator* communicator,
+  itemHandler aHandler,
+  void* aCallBackData)
   : theQuery(xqueryImpl),
     theOStream(oStream),
     theSerializerOptions(serializerOptions),
     theCommunicator(communicator),
     theWrapper(theQuery->generateWrapper()),
     theExecStatus(QUERY_IDLE),
-    theCurrentMessage(0),
     theNotSendTerminateEvent(false),
     thePlanIsOpen(false),
     theSerializer(0),
@@ -144,11 +82,6 @@ DebuggerRuntime::run()
 {
   theWrapper->open();
   thePlanIsOpen = true;
-
-  std::auto_ptr<StartedEvent> lStarted(new StartedEvent());
-  theCommunicator->sendEvent(lStarted.get());
-  lStarted.reset(0);
-
   runQuery();
 }
 
@@ -158,11 +91,9 @@ DebuggerRuntime::finish()
   if (thePlanIsOpen) {
     theWrapper->close();
   }
-  if (!theNotSendTerminateEvent) {
-    TerminatedEvent lEvent;
-    theCommunicator->sendEvent(&lEvent);
-  }
+  terminateRuntime();
 }
+
 
 void
 DebuggerRuntime::resetRuntime()
@@ -174,33 +105,6 @@ DebuggerRuntime::resetRuntime()
   reset();
 }
 
-bool
-DebuggerRuntime::processMessage(AbstractCommandMessage* message)
-{
-  AutoLock lLock(theLock, Lock::WRITE);
-  theCurrentMessage = message;
-
-  switch (theCurrentMessage->getCommandSet())
-  {
-  case EXECUTION:
-    if (execCommands()) {
-      return true;
-    }
-    break;
-  case BREAKPOINTS:
-    breakpointCommands();
-    break;
-  case STATIC:
-    staticCommands();
-    break;
-  case DYNAMIC:
-    dynamicCommands();
-    break;
-  default:
-    throw InvalidCommandException("Internal Error: Command set not implemented");
-  }
-  return false;
-}
 
 ExecutionStatus
 DebuggerRuntime::getExecutionStatus() const
@@ -208,6 +112,7 @@ DebuggerRuntime::getExecutionStatus() const
   AutoLock lLock(theLock, Lock::READ);
   return theExecStatus;
 }
+
 
 void
 DebuggerRuntime::runQuery()
@@ -219,7 +124,9 @@ DebuggerRuntime::runQuery()
   PrinterDiagnosticHandler lDiagnosticHandler(theOStream);
 
   try {
-    theWrapper->thePlanState->theDebuggerCommons->setRuntime(this);
+    DebuggerCommons* lCommons = getDebbugerCommons();
+    lCommons->setRuntime(this);
+
     theLock.unlock();
 
     delete theSerializer;
@@ -245,100 +152,6 @@ DebuggerRuntime::runQuery()
   theLock.unlock();
 }
 
-bool
-DebuggerRuntime::execCommands()
-{
-  switch (theCurrentMessage->getCommand())
-  {
-  case RESUME:
-    resumeQuery();
-    break;
-  case TERMINATE:
-    terminateRuntime();
-    return true;
-  case DETACH:
-    detachRuntime();
-    return true;
-  case STEP:
-    step();
-    break;
-  default:
-    assert(false);
-  }
-  return false;
-}
-
-void
-DebuggerRuntime::breakpointCommands()
-{
-  switch (theCurrentMessage->getCommand())
-  {
-  case SET:
-    {
-      SetMessage* lMessage;
-#ifndef NDEBUG
-      lMessage = dynamic_cast<SetMessage*>(theCurrentMessage);
-      assert(lMessage);
-#else
-      lMessage = static_cast<SetMessage*>(theCurrentMessage);
-#endif
-      std::auto_ptr<SetReply> lReply(new SetReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
-      std::map<unsigned int, QueryLoc> lLocations = lMessage->getLocations();
-      std::map<unsigned int, QueryLoc>::iterator lIter;
-      for (lIter = lLocations.begin(); lIter != lLocations.end(); lIter++) {
-        QueryLoc lLoc = addBreakpoint(lIter->second, lIter->first);
-        lReply->addBreakpoint(lIter->first, lLoc);
-      }
-      theCurrentMessage->setReplyMessage(lReply.release());
-    }
-    break;
-  case CLEAR:
-    {
-      ZORBA_ASSERT(dynamic_cast<ClearMessage*>(theCurrentMessage));
-      ClearMessage* lMessage = static_cast<ClearMessage*>(theCurrentMessage);
-      std::vector<unsigned int> lIds = lMessage->getIds();
-      std::vector<unsigned int>::iterator lIter;
-      for (lIter = lIds.begin(); lIter != lIds.end(); ++lIter) {
-        DebuggerCommons* lCommons = 
-          theWrapper->thePlanState->theDebuggerCommons;
-        lCommons->clearBreakpoint(*lIter);
-      }
-    }
-    break;
-  }
-}
-
-void
-DebuggerRuntime::staticCommands()
-{
-  switch (theCurrentMessage->getCommand())
-  {
-  case LIST:
-    theCurrentMessage->setReplyMessage(listSource());
-    break;
-  }
-}
-
-void
-DebuggerRuntime::dynamicCommands()
-{
-  if (theExecStatus != QUERY_SUSPENDED) {
-    std::auto_ptr<ReplyMessage> lReply(
-      new ReplyMessage(theCurrentMessage->getId(), 
-      DEBUGGER_ERROR_INVALID_COMMAND));
-    theCurrentMessage->setReplyMessage(lReply.release());
-    return;
-  }
-  switch (theCurrentMessage->getCommand())
-  {
-  case VARIABLES:
-    theCurrentMessage->setReplyMessage(getAllVariables());
-    break;
-  case EVAL:
-    evalCommand();
-    break;
-  }
-}
 
 void
 DebuggerRuntime::setQueryRunning()
@@ -348,132 +161,182 @@ DebuggerRuntime::setQueryRunning()
   theExecStatus = QUERY_RUNNING;
 }
 
-QueryLoc
-DebuggerRuntime::addBreakpoint(const QueryLoc& aLocation,
-                                             unsigned int aId)
+// ****************************************************************************
+// Breakpoints
+
+unsigned int
+DebuggerRuntime::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
 {
   AutoLock lLock(theLock, Lock::WRITE);
-  DebugLocation_t lLocation;
-  lLocation.theFileName = aLocation.getFilename().c_str();
-  lLocation.theLineNumber = aLocation.getLineno();
-  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
-  if (lCommons->addBreakpoint(lLocation, aId)){
-    return lLocation.theQueryLocation;
-  }
-  return QueryLoc();
+  DebuggerCommons* lCommons = getDebbugerCommons();
+  return lCommons->addBreakpoint(aLocation, aEnabled);
+}
+
+Breakable
+DebuggerRuntime::getBreakpoint(unsigned int aId)
+{
+  AutoLock lLock(theLock, Lock::WRITE);
+  DebuggerCommons* lCommons = getDebbugerCommons();
+  return lCommons->getBreakpoint(aId);
 }
 
 void
-DebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause aCause )
+DebuggerRuntime::updateBreakpoint(
+  unsigned int aId,
+  bool aEnabled,
+  std::string aCondition,
+  unsigned int aHitValue)
+{
+  AutoLock lLock(theLock, Lock::WRITE);
+
+  DebuggerCommons* lCommons = getDebbugerCommons();
+
+  if (aCondition == "") {
+    lCommons->updateBreakpoint(aId, aEnabled);
+  } else {
+    lCommons->updateBreakpoint(aId, aEnabled, aCondition, aHitValue);
+  }
+}
+
+void
+DebuggerRuntime::removeBreakpoint(unsigned int aId)
+{
+  AutoLock lLock(theLock, Lock::WRITE);
+  DebuggerCommons* lCommons = getDebbugerCommons();
+  lCommons->removeBreakpoint(aId);
+}
+
+// ****************************************************************************
+// Stack frames
+
+unsigned int
+DebuggerRuntime::getStackDepth()
+{
+  return theWrapper->thePlanState->theStackDepth;
+}
+
+std::vector<StackFrameImpl>
+DebuggerRuntime::getStackFrames()
+{
+  std::vector<StackFrameImpl> lFrames;
+
+  DebuggerCommons* lCommons = getDebbugerCommons();
+  const DebugIterator* lIterator = lCommons->getCurrentIterator();
+  
+  const QueryLocationImpl lLocation(lIterator->loc);
+  const std::string lSignature("main module");
+
+  StackFrameImpl lFrame(lSignature, lLocation);
+
+  lFrames.push_back(lFrame);
+
+  return lFrames;
+}
+
+// ****************************************************************************
+// Other
+
+void
+DebuggerRuntime::suspendRuntime(QueryLoc aLocation, SuspensionCause aCause)
 {
   theLock.wlock();
   theExecStatus = QUERY_SUSPENDED;
-  std::auto_ptr<SuspendedEvent> lMessage(new SuspendedEvent(aLocation, aCause));
-  theCommunicator->sendEvent(lMessage.get());
-  lMessage.reset(0);
+
+  std::stringstream lResponse;
+  lResponse << "<response command=\"" << "run" << "\" transaction_id=\"" << theLastContinuationTransactionID << "\" ";
+  lResponse << "reason=\"ok\" status=\"break\" ";
+  lResponse << "/>";
+  theCommunicator->send(lResponse.str());
+
   theLock.unlock();
   suspend();
 }
 
-void
-DebuggerRuntime::resumeQuery()
-{
-  AutoLock lLock(theLock, Lock::WRITE);
-#ifndef NDEBUG
-  ResumeMessage* lMessage = dynamic_cast<ResumeMessage*>(theCurrentMessage);
-  assert(lMessage);
-#endif
-  resumeRuntime();
-}
 
 void
 DebuggerRuntime::resumeRuntime()
 {
-  theExecStatus = QUERY_RESUMED;
+  AutoLock lLock(theLock, Lock::WRITE);
+  theExecStatus = QUERY_RUNNING;
   resume();
-  ResumedEvent lEvent;
-  theCommunicator->sendEvent(&lEvent);
 }
+
 
 void
 DebuggerRuntime::terminateRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
-#ifndef NDEBUG
-  TerminateMessage* lMessage = dynamic_cast<TerminateMessage*>(theCurrentMessage);
-  assert(lMessage);
-#endif
-  theWrapper->thePlanState->theHasToQuit = true;
-  if (theExecStatus == QUERY_SUSPENDED) {
-    resume();
-  } else if (theExecStatus == QUERY_IDLE) {
-    TerminatedEvent lEvent;
-    theCommunicator->sendEvent(&lEvent);
-  }
   theExecStatus = QUERY_TERMINATED;
+
+  std::stringstream lResult;
+  lResult << "<response command=\"status\" "
+    << "status=\"stopping\" "
+    << "reason=\"ok\" "
+    << "transaction_id=\"" << theLastContinuationTransactionID << "\">"
+    << "</response>";
+  theCommunicator->send(lResult.str());
+  // TODO: something more here?
 }
 
 void
 DebuggerRuntime::detachRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
-  //theWrapper->theStateBlock->theHasToQuit = true;
-  if (theExecStatus == QUERY_SUSPENDED) {
-    resume();
-  } else if (theExecStatus == QUERY_IDLE) {
-  }
   theExecStatus = QUERY_DETACHED; 
+  // TODO: something more here?
 }
 
-ReplyMessage*
+std::string
 DebuggerRuntime::getAllVariables()
 {
-  DebuggerCommons* lCommons = 
-    theWrapper->thePlanState->theDebuggerCommons;
-  static_context* lContext = lCommons->getCurrentStaticContext();
-  std::vector<std::string> lVariables;
-  lContext->getVariables(lVariables);
-  std::auto_ptr<VariableReply> lReply(
-    new VariableReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
-  std::vector<std::string>::iterator lIter;
-  for (lIter = lVariables.begin(); lIter != lVariables.end(); lIter++) {
-    if (*lIter == "local") {
-      lReply->addLocal(*(++lIter), *(++lIter));
-    } else if (*lIter == "global") {
-      lReply->addGlobal(*(++lIter), *(++lIter));
-    }
-  }
-  return lReply.release();
+  //DebuggerCommons* lCommons = 
+  //  theWrapper->thePlanState->theDebuggerCommons;
+  //static_context* lContext = lCommons->getCurrentStaticContext();
+  //std::vector<std::string> lVariables;
+  //lContext->getVariables(lVariables);
+  //std::auto_ptr<VariableReply> lReply(
+  //  new VariableReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
+  //std::vector<std::string>::iterator lIter;
+  //for (lIter = lVariables.begin(); lIter != lVariables.end(); lIter++) {
+  //  if (*lIter == "local") {
+  //    lReply->addLocal(*(++lIter), *(++lIter));
+  //  } else if (*lIter == "global") {
+  //    lReply->addGlobal(*(++lIter), *(++lIter));
+  //  }
+  //}
+  //return lReply.release();
+  return "";
 }
 
 void
 DebuggerRuntime::step()
 {
-#ifndef NDEBUG
-  // Check preconditions
-  ZORBA_ASSERT(dynamic_cast<StepMessage*>(theCurrentMessage) != NULL);
-#endif // NDEBUG
-  StepMessage* lMessage = static_cast<StepMessage*>(theCurrentMessage);
-  StepCommand lCommand = lMessage->getStepKind();
-  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
-
-  switch (lCommand)
-  {
-  case STEP_INTO:
-    // Resume and then suspend as soon as the next iterator is reached.
-    lCommons->setBreak(true, CAUSE_STEP);
-    resumeRuntime();
-    break;
-  case STEP_OUT:
-    lCommons->makeStepOut();
-    resumeRuntime();
-    break;
-  case STEP_OVER:
-    lCommons->makeStepOver();
-    resumeRuntime();
-    break;
-  }
+//#ifndef NDEBUG
+//  // Check preconditions
+//  ZORBA_ASSERT(dynamic_cast<StepMessage*>(theCurrentMessage) != NULL);
+//#endif // NDEBUG
+//  StepMessage* lMessage = static_cast<StepMessage*>(theCurrentMessage);
+//  StepCommand lCommand = lMessage->getStepKind();
+//  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
+//
+//  switch (lCommand)
+//  {
+//  case STEP_INTO:
+//    // Resume and then suspend as soon as the next iterator is reached.
+//    lCommons->setBreak(true, CAUSE_STEP);
+//    resumeRuntime();
+//    break;
+//  case STEP_OUT:
+//    lCommons->makeStepOut();
+//    resumeRuntime();
+//    break;
+//  case STEP_OVER:
+//    lCommons->makeStepOver();
+//    resumeRuntime();
+//    break;
+//  }
 }
+
 
 void
 DebuggerRuntime::setNotSendTerminateEvent()
@@ -481,54 +344,81 @@ DebuggerRuntime::setNotSendTerminateEvent()
   theNotSendTerminateEvent = true;
 }
 
+
 void
 DebuggerRuntime::evalCommand()
 {
-  ZORBA_ASSERT(dynamic_cast<EvalMessage*>(theCurrentMessage));
-  zstring const &lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
-  // This command will care itself about garbage collection - so don't delete
-  // it in this method!
-  EvalCommand* lCommand = new EvalCommand(
-    theWrapper->thePlanState->theDebuggerCommons,
-    theCommunicator, lExpr.c_str(), theSerializerOptions,
-    theCurrentMessage->getId());
-  //lCommand->setDeleteAfterRun(true);
-  lCommand->start();
+  //ZORBA_ASSERT(dynamic_cast<EvalMessage*>(theCurrentMessage));
+  //zstring const &lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
+  //// This command will care itself about garbage collection - so don't delete
+  //// it in this method!
+  //EvalCommand* lCommand = new EvalCommand(
+  //  theWrapper->thePlanState->theDebuggerCommons,
+  //  theCommunicator, lExpr.c_str(), theSerializerOptions,
+  //  theCurrentMessage->getId());
+  ////lCommand->setDeleteAfterRun(true);
+  //lCommand->start();
 }
 
-ReplyMessage*
+
+std::string
 DebuggerRuntime::listSource()
 {
-  ZORBA_ASSERT(dynamic_cast<ListCommand*>(theCurrentMessage));
-  ListCommand* lCommand = dynamic_cast<ListCommand*>(theCurrentMessage);
-  std::string lFile;
-  lFile = theWrapper->thePlanState->theDebuggerCommons->getFilepathOfURI(
-    lCommand->getFilename());
+  //ZORBA_ASSERT(dynamic_cast<ListCommand*>(theCurrentMessage));
+  //ListCommand* lCommand = dynamic_cast<ListCommand*>(theCurrentMessage);
+  //std::string lFile;
+  //lFile = theWrapper->thePlanState->theDebuggerCommons->getFilepathOfURI(
+  //  lCommand->getFilename());
 
-  std::string lCurrLine;
-  //std::string::iterator lSIter;
-  //for (lSIter = lFile.begin(); lSIter != lFile.end(); ++lSIter) {
-  //  if (*lSIter == '\\' && *(lSIter+1) == '\\') {
-  //    lFile.erase(lSIter);
-  //    ++lSIter;
+  //std::string lCurrLine;
+  ////std::string::iterator lSIter;
+  ////for (lSIter = lFile.begin(); lSIter != lFile.end(); ++lSIter) {
+  ////  if (*lSIter == '\\' && *(lSIter+1) == '\\') {
+  ////    lFile.erase(lSIter);
+  ////    ++lSIter;
+  ////  }
+  ////}
+  //std::ifstream lStream(lFile.c_str());
+  //for (unsigned long i = 1; i < lCommand->getFirstline() && lStream.good(); ++i)
+  //{
+  //  std::getline(lStream, lCurrLine);
+  //}
+  //std::stringstream lOut;
+  //for (unsigned long i = lCommand->getFirstline();
+  //  i <= lCommand->getLastline() && lStream.good(); ++i) {
+  //  std::getline(lStream, lCurrLine);
+  //  lOut << lCurrLine;
+  //  if (lStream.good()) {
+  //    lOut << std::endl;
   //  }
   //}
-  std::ifstream lStream(lFile.c_str());
-  for (unsigned long i = 1; i < lCommand->getFirstline() && lStream.good(); ++i)
-  {
-    std::getline(lStream, lCurrLine);
-  }
-  std::stringstream lOut;
-  for (unsigned long i = lCommand->getFirstline();
-    i <= lCommand->getLastline() && lStream.good(); ++i) {
-    std::getline(lStream, lCurrLine);
-    lOut << lCurrLine;
-    if (lStream.good()) {
-      lOut << std::endl;
-    }
-  }
-  return new ListReply(
-    theCurrentMessage->getId(), DEBUGGER_NO_ERROR, lOut.str());
+  //return new ListReply(
+  //  theCurrentMessage->getId(), DEBUGGER_NO_ERROR, lOut.str());
+
+  return "";
+}
+
+
+void
+DebuggerRuntime::setTheLastContinuationTransactionID(int aTID)
+{
+  theLastContinuationTransactionID = aTID;
+}
+
+
+int
+DebuggerRuntime::getTheLastContinuationTransactionID()
+{
+  return theLastContinuationTransactionID;
+}
+
+// ****************************************************************************
+// Private functions
+
+DebuggerCommons* 
+DebuggerRuntime::getDebbugerCommons()
+{
+  return theWrapper->thePlanState->theDebuggerCommons;
 }
 
 } // namespace zorba

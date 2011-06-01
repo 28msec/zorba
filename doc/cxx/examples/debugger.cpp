@@ -123,7 +123,7 @@ class MyDebuggerEventHandler: public DefaultDebuggerEventHandler
     }
 };
 
-ZORBA_THREAD_RETURN runClient( void* )
+ZORBA_THREAD_RETURN runClient(void*)
 {
   sleep(1);
   MyDebuggerEventHandler lEventHandler;
@@ -141,16 +141,16 @@ bool debugger_example_1(Zorba *aZorba)
   XQuery_t lQuery = aZorba->createQuery();
   lQuery->setDebugMode(true);
   lQuery->compile("for $i in ( 1 to 10 ) return $i");
-  lQuery->debug(thePorts.first, thePorts.second);
+  lQuery->debug(thePorts.second);
   lQuery->close();
   return true;
 }
 
-int debugger( int argc, char *argv[] )
+int debugger(int argc, char *argv[])
 {
   thePorts = getRandomPorts();
   void* lStore = zorba::StoreManager::getStore();
-  Zorba* lZorba = Zorba::getInstance( lStore );
+  Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
   {
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -158,7 +158,7 @@ int debugger( int argc, char *argv[] )
     if ( pthread_create( &lThread, 0, runClient, 0 ) != 0 ) 
 #else
     HANDLE lThread;
-    if ( ( lThread = CreateThread(0, 0, runClient, 0, 0, 0) ) == 0 )
+    if ((lThread = CreateThread(0, 0, runClient, 0, 0, 0)) == 0)
 #endif
     {
       std::cerr << "Couldn't start the thread" << std::endl;

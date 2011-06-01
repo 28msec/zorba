@@ -147,7 +147,7 @@ namespace flwor
 }
 
 #ifdef ZORBA_WITH_DEBUGGER
-class ZorbaDebugIterator;
+class DebugIterator;
 class DebuggerSingletonIterator;
 #endif
 

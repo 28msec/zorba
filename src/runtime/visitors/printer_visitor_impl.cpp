@@ -46,7 +46,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #ifdef ZORBA_WITH_DEBUGGER
-#include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/debug/debug_iterator.h"
 #endif
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"

@@ -48,7 +48,7 @@ template <class V> class ItemPointerHashMap;
 ********************************************************************************/
 class dynamic_context
 {
-  friend class ZorbaDebugIterator;
+  friend class DebugIterator;
 
 protected:
 

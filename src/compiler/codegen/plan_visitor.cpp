@@ -84,7 +84,7 @@
 #include "runtime/update/update.h"
 #include "runtime/indexing/index_ddl.h"
 #ifdef ZORBA_WITH_DEBUGGER
-#include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/debug/debug_iterator.h"
 #endif
 #include "runtime/eval/eval.h"
 #include "runtime/function_item/function_item.h"
@@ -336,7 +336,7 @@ protected:
   CompilerCB                               * theCCB;
 
 #ifdef ZORBA_WITH_DEBUGGER
-  std::stack<ZorbaDebugIterator*>            theDebuggerStack;
+  std::stack<DebugIterator*>            theDebuggerStack;
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1910,7 +1910,7 @@ bool begin_visit(debugger_expr& v)
   // because it's used for connecting all debugger
   // iterators in the tree (see end_visit below)
   std::vector<PlanIter_t> aTmpVec;
-  theDebuggerStack.push(new ZorbaDebugIterator(sctx, qloc, aTmpVec));
+  theDebuggerStack.push(new DebugIterator(sctx, qloc, aTmpVec));
   return true;
 }
 
@@ -1939,7 +1939,7 @@ void end_visit(debugger_expr& v)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
 
   // get the debugger iterator from the debugger stack
-  std::auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
+  std::auto_ptr<DebugIterator> aDebugIterator(theDebuggerStack.top());
   theDebuggerStack.pop();
 
   // set the child of the debugger iterator

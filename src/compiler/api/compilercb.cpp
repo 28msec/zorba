@@ -201,6 +201,5 @@ static_context* CompilerCB::getStaticContext(short c)
   return lIter->second.getp();
 }
 
-
   
 } /* namespace zorba */

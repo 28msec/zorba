@@ -13,70 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_DEBUGGER_SERVER
-#define ZORBA_DEBUGGER_SERVER
+#ifndef ZORBA_DEBUGGER_SERVER_H
+#define ZORBA_DEBUGGER_SERVER_H
 
-#include "debugger/debugger_common.h"
-
+#include <string>
 #include <ostream>
+
+#include "debugger_common.h"
+#include "debugger_protocol.h"
+
 
 struct Zorba_SerializerOptions;
 typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
 
 namespace zorba {
-  class XQueryImpl;
-  class DebuggerCommunicator;
-  class DebuggerRuntime;
-  typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
-  class DebuggerServer {
-  public: // Creation and destruction
-    //************************************
-    // Method:    DebuggerServer
-    // FullName:  zorba::DebuggerServer::DebuggerServer
-    // Access:    public 
-    // Qualifier: This constructor creates a new server
-    //            Object.
-    // Parameter: XQueryImpl * aQuery is a Pointer to a valid XQuery
-    //            object which will be executed by the server.
-    // Parameter: std::ostream & anOstream is the output stream to which
-    //            to which the results of the query will be serialized.
-    // Parameter: unsigned short requestPort is the port where the server
-    //            listens for new requests from the client (like run,
-    //            break, next ...)
-    // Parameter: unsigned short eventPort is the port on which the client
-    //            gets informed, when an event occurred (like terminated,
-    //            suspended...)
-    //************************************
-    DebuggerServer(XQueryImpl* aQuery,
-                   Zorba_SerializerOptions& serializerOption,
-                   std::ostream& anOstream,
-                   itemHandler aHandler,
-                   void* aCallBackData,
-                   std::string aHost,
-                   unsigned short requestPort = 8000,
-                   unsigned short eventPort = 9000);
-    virtual ~DebuggerServer();
+class DebuggerCommunicator;
+class DebuggerRuntime;
+class XQueryImpl;
+typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
+
+class DebuggerServer {
   public:
-    //************************************
-    // Method:    run
-    // FullName:  zorba::DebuggerServer::run
-    // Access:    public 
-    // Returns:   void
-    // Qualifier: This method is called when the thread starts (as documented in
-    //            zorba::Runnable), makes a handshake and waits for
-    //            commands from the client.
-    //************************************
+    DebuggerServer(
+      XQueryImpl*               query,
+      Zorba_SerializerOptions&  serializerOptions,
+      std::ostream&             ostream,
+      itemHandler               handler,
+      void*                     callbackData,
+      const std::string&        host,
+      unsigned short            port);
+
+    virtual ~DebuggerServer();
+
+  public:
     virtual void
     run();
+
   private:
-    unsigned short                    theRequestPort;
-    unsigned short                    theEventPort;
-    DebuggerCommunicator*             theCommunicator;
-    DebuggerRuntime*                  theRuntime;
-    itemHandler*                      theHandler;
-    void*                             theCallBackData;
+
+    std::string
+    processCommand(DebuggerCommand command);
+
+    std::string
+    buildErrorResponse(
+      int transactionID,
+      std::string commandName,
+      int errorCode,
+      std::string errorMessage);
+
+    bool
+    getEnvVar(const std::string& name, std::string& value);
+
+    void
+    init();
+
+  private:
+
+    DebuggerCommunicator* theCommunicator;
+    DebuggerRuntime*      theRuntime;
+
   };
 }
 
-#endif // ZORBA_DEBUGGER_SERVER
+#endif // ZORBA_DEBUGGER_SERVER_H

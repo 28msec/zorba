@@ -22,29 +22,37 @@
 
 namespace zorba {
 
-  class QueryLocationImpl: public QueryLocation
+  class QueryLocationImpl : public QueryLocation
   {
     private:
       QueryLoc theLocation;
 
     public:
 
-      QueryLocationImpl( const QueryLoc & aLocation );
+      QueryLocationImpl(const QueryLoc & aLocation);
 
       virtual
       ~QueryLocationImpl(){}
 
-      String getFileName() const; 
+      String
+      getFileName() const; 
 
-      unsigned int getLineBegin() const;
+      unsigned int
+      getLineBegin() const;
 
-      unsigned int getLineEnd() const;
+      unsigned int
+      getLineEnd() const;
 
-      unsigned int getColumnBegin() const;
+      unsigned int
+      getColumnBegin() const;
 
-      unsigned int getColumnEnd() const;
+      unsigned int
+      getColumnEnd() const;
 
-      String toString() const;
+      String
+      toString() const;
   };
+
 }//end of namespace
+
 #endif

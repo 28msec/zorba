@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-#include "system/globalenv.h"
-
 #include "debugger_commons.h"
+
+#include "system/globalenv.h"
 
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "diagnostics/assert.h"
 
-#include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/debug/debug_iterator.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item_factory.h"
@@ -34,20 +34,83 @@
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(DebugLocation)
-END_SERIALIZABLE_CLASS_VERSIONS(DebugLocation)
+// ****************************************************************************
 
-SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
-END_SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
+SERIALIZABLE_CLASS_VERSIONS(Breakable)
+END_SERIALIZABLE_CLASS_VERSIONS(Breakable)
+
+void
+Breakable::serialize(serialization::Archiver& ar)
+{
+  ar & theLocation;
+  ar & theEnabled;
+}
+
+// ****************************************************************************
+
+SERIALIZABLE_CLASS_VERSIONS(QueryLocComparator)
+END_SERIALIZABLE_CLASS_VERSIONS(QueryLocComparator)
+
+void
+QueryLocComparator::serialize(serialization::Archiver& ar) {
+}
+
+bool
+QueryLocComparator::operator()(const QueryLoc& a, const QueryLoc& b) const
+{
+  int c;
+  if ((c = a.getFilename().compare(b.getFilename())) != 0) {
+    return c < 0;
+  }
+
+  if (a.getLineBegin() == 0 || b.getLineBegin() == 0) {
+    return false;
+  }
+
+  return a.getLineBegin() < b.getLineBegin();
+}
+
+// ****************************************************************************
 
 SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
 
+DebuggerSingletonIterator::DebuggerSingletonIterator(
+  static_context* sctx, QueryLoc loc, DebuggerCommons* lCommons) :
+NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
+theCommons(lCommons)
+{
+}
+
+void
+DebuggerSingletonIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>*)this);
+  ar & theCommons;
+}
+
+NOARY_ACCEPT(DebuggerSingletonIterator);
+
+bool
+DebuggerSingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  result = theCommons->getEvalItem();
+  STACK_PUSH ( result != NULL, state );
+  STACK_END (state);
+}
+
+
+// ****************************************************************************
+
+SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
+END_SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
+
 DebuggerCommons::DebuggerCommons(static_context* sctx)
-:
-theBreak(false),
-theCause(0),
-theExecEval(false)
+  : theBreak(false),
+    theCause(0),
+    theExecEval(false)
 {
   theRuntime = NULL;
   theCurrentStaticContext = NULL;
@@ -64,9 +127,9 @@ DebuggerCommons::~DebuggerCommons()
 void
 DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
 {
-  ar & theLocationMap;
+  ar & theBreakables;
+  ar & theBreakableIDs;
   ar & theUriFileMappingMap;
-  ar & theBreakpoints;
   if(ar.is_serializing_out())
     theRuntime = NULL;
   ar & theCurrentStaticContext;
@@ -121,52 +184,115 @@ DebuggerCommons::getCurrentStaticContext() const
   return theCurrentStaticContext;
 }
 
-bool
-DebuggerCommons::addBreakpoint(DebugLocation_t& aLocation, unsigned int aId)
+unsigned int
+DebuggerCommons::addBreakpoint(const QueryLoc& aLocation, bool aEnabled)
 {
-  bool lResult = false;
-  // First we check, if the filename is a module namespace
-  std::map<std::string, std::string>::iterator lMapIter;
-  lMapIter = theUriFileMappingMap.find(aLocation.theFileName);
-  if (lMapIter != theUriFileMappingMap.end()) {
-    aLocation.theFileName = lMapIter->second;
-  }
+  BreakableIdMap::iterator lIter = theBreakableIDs.find(aLocation);
 
-  std::map<DebugLocation_t, bool, DebugLocation>::iterator lIter;
-  lIter = theLocationMap.find(aLocation);
-  // if the location could not be found, try it again with the encoded file uri.
-  if (lIter == theLocationMap.end()) {
-    zstring filename = aLocation.theFileName;
-    zstring url;
-    URI::encode_file_URI(filename, url);
-    aLocation.theFileName = url.str();
-    lIter = theLocationMap.find(aLocation);
-    aLocation.theFileName = filename.str();
+  if (lIter == theBreakableIDs.end()) {
+    std::stringstream lSs;
+    lSs << "The breakpoint could not be set at line " << aLocation.getLineBegin()
+      << " in file: " << aLocation.getFilename();
+    throw lSs.str();
   }
-  if (lIter != theLocationMap.end()) {
-    aLocation.theQueryLocation = lIter->first.theQueryLocation;
-    lIter->second = true;
-    lResult = true;
-  }
-  // If the location could not be found, we iterate over all locations and try
-  // to find a location with a filename with a matching substring
-  for (lIter = theLocationMap.begin(); !lResult && lIter != theLocationMap.end();
-    lIter++) {
-    if (lIter->first.theFileName.find(aLocation.theFileName) !=
-      std::string::npos && aLocation.theLineNumber ==
-      lIter->first.theLineNumber) {
-        lIter->second = true;
-        aLocation.theQueryLocation = lIter->first.theQueryLocation;
-        lResult = true;
-    }
-  }
-  //otherwise, there could not be found a breakable expression
-  if (lResult) {
-    theBreakpoints.insert(
-      std::pair<unsigned int, DebugLocation_t>(aId, aLocation));
-  }
-  return lResult;
+  unsigned int lId = lIter->second;
+  theBreakables[lId].setSet(true);
+  theBreakables[lId].setEnabled(aEnabled);
+  return lId;
 }
+
+Breakable
+DebuggerCommons::getBreakpoint(unsigned int aId)
+{
+  checkBreakpoint(aId);
+  return theBreakables[aId];
+}
+
+void
+DebuggerCommons::checkBreakpoint(unsigned int aId)
+{
+  if (aId >= theBreakables.size() || !theBreakables[aId].isSet()) {
+    std::stringstream lSs;
+    lSs << "No such breakpoint: " << aId;
+    throw lSs.str();
+  }
+}
+
+void
+DebuggerCommons::updateBreakpoint(
+  unsigned int aId,
+  bool aEnabled)
+{
+  checkBreakpoint(aId);
+  theBreakables[aId].setEnabled(aEnabled);
+}
+
+void
+DebuggerCommons::updateBreakpoint(
+  unsigned int aId,
+  bool aEnabled,
+  std::string aCondition,
+  unsigned int aHitValue)
+{
+  checkBreakpoint(aId);
+  theBreakables[aId].setEnabled(aEnabled);
+  // TODO: set condition
+}
+
+void
+DebuggerCommons::removeBreakpoint(unsigned int aId)
+{
+  checkBreakpoint(aId);
+  theBreakables[aId].setSet(false);
+}
+
+//bool
+//DebuggerCommons::addBreakpoint(DebugLocation_t& aLocation, unsigned int aId)
+//{
+//  bool lResult = false;
+//
+//  // First we check, if the filename is a module namespace
+//  std::map<std::string, std::string>::iterator lMapIter;
+//  lMapIter = theUriFileMappingMap.find(aLocation.theFileName);
+//  if (lMapIter != theUriFileMappingMap.end()) {
+//    aLocation.theFileName = lMapIter->second;
+//  }
+//
+//  std::map<DebugLocation_t, bool, DebugLocation>::iterator lIter;
+//  lIter = theLocationMap.find(aLocation);
+//  // if the location could not be found, try it again with the encoded file uri.
+//  if (lIter == theLocationMap.end()) {
+//    zstring filename = aLocation.theFileName;
+//    zstring url;
+//    URI::encode_file_URI(filename, url);
+//    aLocation.theFileName = url.str();
+//    lIter = theLocationMap.find(aLocation);
+//    aLocation.theFileName = filename.str();
+//  }
+//  if (lIter != theLocationMap.end()) {
+//    aLocation.theQueryLocation = lIter->first.theQueryLocation;
+//    lIter->second = true;
+//    lResult = true;
+//  }
+//  // If the location could not be found, we iterate over all locations and try
+//  // to find a location with a filename with a matching substring
+//  for (lIter = theLocationMap.begin(); !lResult && lIter != theLocationMap.end();
+//    lIter++) {
+//    if (lIter->first.theFileName.find(aLocation.theFileName) !=
+//      std::string::npos && aLocation.theLineNumber ==
+//      lIter->first.theLineNumber) {
+//        lIter->second = true;
+//        aLocation.theQueryLocation = lIter->first.theQueryLocation;
+//        lResult = true;
+//    }
+//  }
+//  //otherwise, there could not be found a breakable expression
+//  if (lResult) {
+//    theBreakpoints.insert(
+//      std::pair<unsigned int, DebugLocation_t>(aId, aLocation));
+//  }
+//  return lResult;
+//}
 
 bool
 DebuggerCommons::hasToBreakAt(const QueryLoc& aLocation) const
@@ -174,20 +300,18 @@ DebuggerCommons::hasToBreakAt(const QueryLoc& aLocation) const
   if (theExecEval) {
     return false;
   }
-  DebugLocation_t lLocation;
-  lLocation.theFileName = aLocation.getFilename().c_str();
-  lLocation.theLineNumber = aLocation.getLineno();
-  lLocation.theQueryLocation = aLocation;
-  std::map<DebugLocation_t, bool, DebugLocation>::const_iterator lIter;
-  lIter = theLocationMap.find(lLocation);
-  if (lIter->second) {
-    return true;
+
+  BreakableIdMap::const_iterator lIter = theBreakableIDs.find(aLocation);
+  if (lIter == theBreakableIDs.end()) {
+    return false;
   }
-  return false;
+
+  Breakable lBreakable = theBreakables[lIter->second];
+  return lBreakable.isSet() && lBreakable.isEnabled();
 }
 
 bool
-DebuggerCommons::hasToBreakAt(const ZorbaDebugIterator* aIter)
+DebuggerCommons::hasToBreakAt(const DebugIterator* aIter)
 {
   //Preconditions
   ZORBA_ASSERT(aIter != NULL);
@@ -196,7 +320,7 @@ DebuggerCommons::hasToBreakAt(const ZorbaDebugIterator* aIter)
     return false;
   }
 
-  std::list</*const */ZorbaDebugIterator*>::iterator lIter;
+  std::list</*const */DebugIterator*>::iterator lIter;
   for (lIter = theBreakIterators.begin();
     lIter != theBreakIterators.end();
     lIter++) {
@@ -248,14 +372,14 @@ DebuggerCommons::setBreak(bool lBreak, SuspensionCause aCause)
 }
 
 void
-DebuggerCommons::setCurrentIterator(const ZorbaDebugIterator* aIterator)
+DebuggerCommons::setCurrentIterator(const DebugIterator* aIterator)
 {
-  theCurrentIterator = (ZorbaDebugIterator*)aIterator;
+  theCurrentIterator = (DebugIterator*)aIterator;
   //Test postconditions
   ZORBA_ASSERT(aIterator == theCurrentIterator);
 }
 
-const ZorbaDebugIterator*
+const DebugIterator*
 DebuggerCommons::getCurrentIterator() const
 {
   return theCurrentIterator;
@@ -263,7 +387,7 @@ DebuggerCommons::getCurrentIterator() const
 
 void DebuggerCommons::makeStepOut()
 {
-  /*const */ZorbaDebugIterator* lIter = (ZorbaDebugIterator*)theCurrentIterator->getParent();
+  /*const */DebugIterator* lIter = (DebugIterator*)theCurrentIterator->getParent();
   if (lIter != NULL) {
     theBreakIterators.push_back(lIter);
   }
@@ -275,7 +399,7 @@ DebuggerCommons::makeStepOver()
   //Preconditions
   ZORBA_ASSERT(theCurrentIterator != NULL);
 
-  /*const*/ ZorbaDebugIterator* lIter = (ZorbaDebugIterator*)theCurrentIterator->getOverIterator();
+  /*const*/ DebugIterator* lIter = (DebugIterator*)theCurrentIterator->getOverIterator();
   if (lIter != NULL) {
     theBreakIterators.push_back(lIter);
   }
@@ -290,7 +414,7 @@ DebuggerCommons::setPlanState(PlanState* aPlanState)
 }
 
 void
-DebuggerCommons::setDebugIteratorState(ZorbaDebugIteratorState* aState)
+DebuggerCommons::setDebugIteratorState(DebugIteratorState* aState)
 {
   theDebugIteratorState = aState;
   //Check postconditions
@@ -346,77 +470,11 @@ DebuggerCommons::getFilepathOfURI(const std::string& aUri) const
 }
 
 void
-DebuggerCommons::clearBreakpoint(unsigned int aId)
+DebuggerCommons::addBreakable(Breakable aBreakable)
 {
-  std::map<DebugLocation_t, bool, DebugLocation>::iterator lLocation;
-  std::map<unsigned int, DebugLocation_t>::iterator lBreakpoint;
-
-  lBreakpoint = theBreakpoints.find(aId);
-  if (lBreakpoint == theBreakpoints.end()) {
-    return;
-  }
- 
-  lLocation = theLocationMap.find(lBreakpoint->second);
-  if (lLocation != theLocationMap.end()) {
-    lLocation->second = false;
-  }
-}
-
-void
-DebugLocation::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theFileName;
-  ar & theLineNumber;
-  ar & theQueryLocation;
-}
-
-bool
-DebugLocation::operator()(const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2) const
-{
-  int c;
-  if ((c = aLocation1.theFileName.compare(aLocation2.theFileName)) != 0) {
-    return c < 0;
-  }
-  if (aLocation1.theLineNumber == aLocation2.theLineNumber) {
-    if (aLocation1.theQueryLocation.getLineBegin() == 0 ||
-      aLocation2.theQueryLocation.getLineBegin() == 0) {
-        return false;
-    }
-    if (aLocation1.theQueryLocation.getLineBegin() == 
-      aLocation2.theQueryLocation.getLineBegin()) {
-        return aLocation1.theQueryLocation.getLineEnd() <
-          aLocation2.theQueryLocation.getLineEnd();
-    }
-    return aLocation1.theQueryLocation.getLineBegin() <
-      aLocation2.theQueryLocation.getLineBegin();
-  }
-  return aLocation1.theLineNumber < aLocation2.theLineNumber;
-}
-
-DebuggerSingletonIterator::DebuggerSingletonIterator(
-  static_context* sctx, QueryLoc loc, DebuggerCommons* lCommons) :
-NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
-theCommons(lCommons)
-{
-}
-
-void
-DebuggerSingletonIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>*)this);
-  ar & theCommons;
-}
-
-NOARY_ACCEPT(DebuggerSingletonIterator);
-
-bool
-DebuggerSingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  result = theCommons->getEvalItem();
-  STACK_PUSH ( result != NULL, state );
-  STACK_END (state);
+  unsigned int lId = theBreakables.size();
+  theBreakables.push_back(aBreakable);
+  theBreakableIDs[aBreakable.getLocation()] = lId;
 }
 
 } // namespace zorba

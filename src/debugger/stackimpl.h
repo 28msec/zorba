@@ -21,81 +21,39 @@
 
 #include <zorba/debugger_client.h>
 
-namespace zorba{
+namespace zorba {
 
-class FrameImpl: public Frame
+class StackFrameImpl : public StackFrame
 {
   private:
-    const std::string theSignature;
-    const QueryLocation* theLocation;
+    std::string theSignature;
+    QueryLocationImpl theLocation;
 
   public:
-    FrameImpl(const std::string& aSignature, const QueryLocation* aLocation):
-      theSignature(aSignature), theLocation(aLocation){}
 
-    ~FrameImpl(){ delete theLocation; }
+    StackFrameImpl(const std::string& aSignature, const QueryLocationImpl& aLocation)
+      : theSignature(aSignature), theLocation(aLocation)
+    {}
 
-    const std::string& getSignature() const { return theSignature; }
-    const QueryLocation* getLocation() const { return theLocation; }
+    ~StackFrameImpl() {}
+
+    const std::string&
+    getSignature() const { return theSignature; }
+
+    const QueryLocation&
+    getLocation() const { return theLocation; }
+
+    StackFrameImpl& operator=(StackFrameImpl const & frame)
+    {
+      if (&frame != this) {
+        theSignature = frame.theSignature;
+        theLocation = frame.theLocation;
+      }
+      return *this;
+    }
+
 };
 
-class StackFrameImpl: public StackFrame{
-  
-  private:
-    std::stack<Frame*> theStack;
-  
-  public:
-    StackFrameImpl(){}
-
-    ~StackFrameImpl()
-    {
-      while(!theStack.empty())
-      {
-        delete theStack.top();
-        theStack.pop();
-      }
-    }
-
-    const Frame* top() const
-    {
-      if(!theStack.empty())
-      {
-        return theStack.top();
-      }
-      return 0;
-    }
-
-    StackFrame* push(const std::string aSignature, QueryLocation* aLocation)
-    {
-      theStack.push(new FrameImpl(aSignature, aLocation));
-      return this;
-    }
-
-    StackFrame* push(Frame* aFrame)
-    {
-      theStack.push(aFrame);
-      return this;
-    }
-
-    StackFrame* pop()
-    {
-      if(!theStack.empty())
-      {
-        delete theStack.top();
-        theStack.pop();
-      }
-      return this;
-    }
-
-    unsigned int size() const
-    {
-      return (unsigned int)theStack.size(); 
-    }
-
-    bool empty() const
-    {
-      return theStack.empty();
-    }
-};
 }//end of namespace
-#endif
+
+#endif // ZORBA_DEBUGGER_STACK_H

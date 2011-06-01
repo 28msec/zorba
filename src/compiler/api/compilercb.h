@@ -139,14 +139,14 @@ public:
   typedef std::map<short, static_context_t> SctxMap;
 
 public:  
-  XQueryDiagnostics       * theXQueryDiagnostics;
+  XQueryDiagnostics*        theXQueryDiagnostics;
 
   SctxMap                   theSctxMap;
 
-  static_context          * theRootSctx;
+  static_context*           theRootSctx;
 
 #ifdef ZORBA_WITH_DEBUGGER
-  DebuggerCommons         * theDebuggerCommons;
+  DebuggerCommons*          theDebuggerCommons;
 #endif
 
   bool                      theIsEval;

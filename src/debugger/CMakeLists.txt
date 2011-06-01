@@ -16,15 +16,12 @@ SET(DEBUGGER_SRCS
   query_locationimpl.cpp
   socket.cpp
   debugger_exception.cpp
-  debugger_protocol.cpp
   profiler.cpp
-  message_factory.cpp
   utils.cpp
-  debugger_communication.cpp
-  debugger_commons.cpp
-  debugger_runtime.cpp
-  debugger_client.cpp
-  debugger_clientimpl.cpp
-  debugger_event_listener.cpp
+
   debugger_server.cpp
+  debugger_communicator.cpp
+  debugger_runtime.cpp
+  debugger_protocol.cpp
+  debugger_commons.cpp
 )

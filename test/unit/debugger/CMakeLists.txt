@@ -14,26 +14,27 @@
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq COPYONLY)
 
-# create the testing file and list of tests
-CREATE_TEST_SOURCELIST(DebuggerTests
-    DebuggerTests.cpp
-    test_debugger_endianness.cpp
-    test_debugger_server.cpp
-    test_debugger_serialization.cpp
-)
-
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/bin)
- 
-SET(DEBUGGER_TEST_SRCS ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp ${CMAKE_SOURCE_DIR}/bin/debugger_server_runnable.cpp ${CMAKE_SOURCE_DIR}/bin/error_printer.cpp)
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(DebuggerTests "${DEBUGGER_TEST_SRCS}" "" "" "")
-
-SET (TestsToRun ${DebuggerTests})
-REMOVE (TestsToRun DebuggerTests.cpp)
-
-# add all the ADD_TEST for each testing
-FOREACH (test ${TestsToRun})
-	GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
-	MESSAGE(STATUS ${TName})
-  	SET (TestName "test/unit/debugger/${TName}")
-        ZORBA_ADD_TEST_ALLSTORES("${TestName}" DebuggerTests ${TName})
-ENDFOREACH(test)
+## create the testing file and list of tests
+#CREATE_TEST_SOURCELIST(DebuggerTests
+#    DebuggerTests.cpp
+#    test_debugger_endianness.cpp
+#    test_debugger_server.cpp
+#    test_debugger_serialization.cpp
+#)
+#
+#INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/bin)
+# 
+#SET(DEBUGGER_TEST_SRCS ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp ${CMAKE_SOURCE_DIR}/bin/debugger_server_runnable.cpp ${CMAKE_SOURCE_DIR}/bin/error_printer.cpp)
+#ZORBA_GENERATE_STORE_SPECIFIC_EXES(DebuggerTests "${DEBUGGER_TEST_SRCS}" "" "" "")
+#
+#SET (TestsToRun ${DebuggerTests})
+#REMOVE (TestsToRun DebuggerTests.cpp)
+#
+## add all the ADD_TEST for each testing
+#FOREACH (test ${TestsToRun})
+#	GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
+#	MESSAGE(STATUS ${TName})
+#  	SET (TestName "test/unit/debugger/${TName}")
+#        ZORBA_ADD_TEST_ALLSTORES("${TestName}" DebuggerTests ${TName})
+#ENDFOREACH(test)
+#

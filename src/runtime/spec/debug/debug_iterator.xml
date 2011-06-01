@@ -14,7 +14,7 @@
     <zorba:include form="Quoted">types/typeimpl.h</zorba:include>
   </zorba:header>
 
-  <zorba:iterator name="ZorbaDebugIterator"
+  <zorba:iterator name="DebugIterator"
                   preprocessorGuard="#ifdef ZORBA_WITH_DEBUGGER">
 
     <zorba:description author="Zorba Team">
@@ -30,11 +30,11 @@
 
     <zorba:member type="checked_vector&lt;store::Item_t&gt;" name="varnames" brief=""/>
     <zorba:member type="checked_vector&lt;xqtref_t&gt;" name="vartypes" brief=""/>
-    <zorba:member type="std::vector&lt;ZorbaDebugIterator*&gt;" name="theDebuggerChildren" brief=""/>
-    <zorba:member type="ZorbaDebugIterator*" name="theDebuggerParent" brief=""/>
+    <zorba:member type="std::vector&lt;DebugIterator*&gt;" name="theDebuggerChildren" brief=""/>
+    <zorba:member type="DebugIterator*" name="theDebuggerParent" brief=""/>
     
-    <zorba:method return="const ZorbaDebugIterator*" name="getParent" const="true"/>
-    <zorba:method return="const ZorbaDebugIterator*" name="getOverIterator" const="true"/>
+    <zorba:method return="const DebugIterator*" name="getParent" const="true"/>
+    <zorba:method return="const DebugIterator*" name="getOverIterator" const="true"/>
     <zorba:method return="QueryLoc" name="getQueryLocation" const="true"/>
 
     <zorba:method return="std::list&lt;std::pair&lt;zstring, zstring&gt; &gt;"
@@ -48,11 +48,11 @@
     </zorba:method>
 
     <zorba:method return="void" name="setParent">
-      <zorba:param type="ZorbaDebugIterator*" name="aParent"/>
+      <zorba:param type="DebugIterator*" name="aParent"/>
     </zorba:method>
 
     <zorba:method return="void" name="addChild">
-      <zorba:param type="ZorbaDebugIterator*" name="aChild"/>
+      <zorba:param type="DebugIterator*" name="aChild"/>
     </zorba:method>
 
     <zorba:method return="void" name="setChildren">

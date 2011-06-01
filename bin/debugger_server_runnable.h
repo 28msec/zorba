@@ -31,8 +31,7 @@ public:
     DebuggerServerRunnable(const XQuery_t& aQuery,
                            std::ostream&   aOutStream,
                            const std::string& aHost,
-                           unsigned short  aRequestPort,
-                           unsigned short  aEventPort,
+                           unsigned short  aPort,
                            const Zorba_SerializerOptions& aSerializerOptions);
     virtual ~DebuggerServerRunnable();
 
@@ -46,8 +45,7 @@ private:
     XQuery_t       theQuery;
     std::ostream&  theOutStream;
     const std::string& theHost;
-    unsigned short theRequestPort;
-    unsigned short theEventPort;
+    unsigned short thePort;
     Zorba_SerializerOptions theSerializerOptions;
 
 }; /* class DebuggerServerRunnable */

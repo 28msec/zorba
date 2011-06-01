@@ -301,29 +301,26 @@ public:
 
   Iterator_t iterator();
 
-  void registerSAXHandler(SAX2_ContentHandler *  aSAXHandler);
+  void registerSAXHandler(SAX2_ContentHandler* aSAXHandler);
 
-  void executeSAX(SAX2_ContentHandler *  aSAXHandler);
+  void executeSAX(SAX2_ContentHandler* aSAXHandler);
 
   void executeSAX();
 
 #ifdef ZORBA_WITH_DEBUGGER
   void debug(
-        unsigned short aCommandPort,
-        unsigned short anEventPort );
+        unsigned short aPort);
 
   void debug(
         std::ostream& aOutStream,
         Zorba_SerializerOptions& aSerOptions,
-        unsigned short aCommandPort,
-        unsigned short anEventPort);
+        unsigned short aPort);
 
   void debug(
         std::ostream& aOutStream,
         Zorba_SerializerOptions& aSerOptions,
         const std::string& aHost,
-        unsigned short aCommandPort,
-        unsigned short anEventPort);
+        unsigned short aPort);
 
   void debug(
         std::ostream& aOutStream,
@@ -331,8 +328,7 @@ public:
         void* aCallbackData,
         Zorba_SerializerOptions& aSerOptions,
         const std::string& aHost,
-        unsigned short aCommandPort = 8000,
-        unsigned short anEventPort = 9000);
+        unsigned short aPort = 9000);
 #endif
 
   void close();

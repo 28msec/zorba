@@ -106,7 +106,7 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES(LibUnitTest lib_unit_test.cpp "" "" "")
 # ADD NEW UNIT TESTS HERE
 ZORBA_ADD_TEST_ALLSTORES("test/libunit/uri" LibUnitTest uri)
 IF(ZORBA_WITH_DEBUGGER)
-  ZORBA_ADD_TEST_ALLSTORES("test/libunit/debugger_protocol" LibUnitTest debugger_protocol)
+#  ZORBA_ADD_TEST_ALLSTORES("test/libunit/debugger_protocol" LibUnitTest debugger_protocol)
 ENDIF(ZORBA_WITH_DEBUGGER)
 
 

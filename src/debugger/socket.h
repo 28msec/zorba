@@ -131,8 +131,8 @@ public:
   void connect(const std::string &foreignAddress, unsigned short foreignPort);
 
   /**
-   *   Write the given buffer to this socket.  Call connect() before
-   *   calling send()
+   *   Write the given buffer to this socket.
+   *   Call connect() before calling send().
    *   @param buffer buffer to be written
    *   @param bufferLen number of bytes from buffer to be written
    *   @exception DebuggerSocketException thrown if unable to send data
@@ -140,8 +140,8 @@ public:
   void send(const void *buffer, int bufferLen);
 
   /**
-   *   Read into the given buffer up to bufferLen bytes data from this
-   *   socket.  Call connect() before calling recv()
+   *   Read into the given buffer up to bufferLen bytes data from this socket.
+   *   Call connect() before calling recv().
    *   @param buffer buffer to receive the data
    *   @param bufferLen maximum number of bytes to read into buffer
    *   @return number of bytes read, 0 for EOF, and -1 for error

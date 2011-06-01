@@ -37,7 +37,7 @@
 #include <zorba/store_manager.h>
 
 #ifdef ZORBA_WITH_DEBUGGER
-#include <zorba/debugger_client.h>
+//#include <zorba/debugger_client.h>
 #include "debugger_server_runnable.h"
 #include "debugger_handler.h"
 #endif
@@ -887,7 +887,7 @@ _tmain(int argc, _TCHAR* argv[])
                   << std::endl;
         return 7;
       }
-
+      //Sleep(5000);
       if (!asFile) {
         std::cerr << "Cannot debug inline queries." << std::endl;
         return 8;
@@ -913,7 +913,7 @@ _tmain(int argc, _TCHAR* argv[])
         }
 
         std::auto_ptr<zorba::DebuggerServerRunnable> lServer;
-        std::auto_ptr<DebuggerClient>                lClient;
+//        std::auto_ptr<DebuggerClient>                lClient;
         std::auto_ptr<DebuggerHandler>               lHandler;
 
         if (lProperties.getRequestPort() == lProperties.getEventPort()) {
@@ -936,7 +936,6 @@ _tmain(int argc, _TCHAR* argv[])
                             lQuery,
                             *lOutputStream,                                                          
                             lHost,
-                            lProperties.getRequestPort(),
                             lProperties.getEventPort(),
                             lSerOptions));
           if (!lProperties.hasNoLogo() && !lProperties.debug()) {
@@ -951,25 +950,25 @@ _tmain(int argc, _TCHAR* argv[])
           }
           
           // Try to connect 3 times on the server thread
-          for (unsigned int i = 0; i < 3; i++) {
-            try {
-              // wait 1 second before trying to reconnect
-              sleep(1);
-              lClient.reset(DebuggerClient::createClient(
-                lHost, lProperties.getRequestPort(), lProperties.getEventPort()));
-              lHandler.reset(new DebuggerHandler(lZorbaInstance, lClient.get(), lFileName));
-              lClient->registerEventHandler( lHandler.get() );
-              break;
-            } catch( std::exception const &e ) {
-              if ( i < 2 ){ continue; }
-              std::cerr << "Could not start the debugger: {" << e.what() << "}" << std::endl;
-            }
-            return 1;
-          }
+          //for (unsigned int i = 0; i < 3; i++) {
+          //  try {
+          //    // wait 1 second before trying to reconnect
+          //    sleep(1);
+          //    lClient.reset(DebuggerClient::createClient(
+          //      lHost, lProperties.getRequestPort(), lProperties.getEventPort()));
+          //    lHandler.reset(new DebuggerHandler(lZorbaInstance, lClient.get(), lFileName));
+          //    lClient->registerEventHandler( lHandler.get() );
+          //    break;
+          //  } catch( std::exception const &e ) {
+          //    if ( i < 2 ){ continue; }
+          //    std::cerr << "Could not start the debugger: {" << e.what() << "}" << std::endl;
+          //  }
+          //  return 1;
+          //}
         }
 
         // important to destroy the client before joining the server
-        lClient.reset(0);
+//        lClient.reset(0);
         lHandler.reset(0);
 
         if (lProperties.debugServer() || lProperties.debug()) 

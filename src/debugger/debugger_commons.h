@@ -22,9 +22,12 @@
 #include "compiler/parser/query_loc.h"
 #include "runtime/core/item_iterator.h"
 
-#include "debugger/debugger_common.h"
 #include "zorbaserialization/serialization_engine.h"
 #include "zorbatypes/zstring.h"
+
+#include "debugger/debugger_common.h"
+#include "debugger/query_locationimpl.h"
+
 
 struct Zorba_SerializerOptions;
 typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
@@ -33,40 +36,84 @@ namespace zorba {
   class dynamic_context;
   class static_context;
   class DebuggerRuntime;
-  class ZorbaDebugIterator;
+  class DebugIterator;
+  class DebuggerCommons;
   class TranslatorImpl;
   class PlanState;
-  class ZorbaDebugIteratorState;
-  struct DebugLocation;
-  typedef struct DebugLocation DebugLocation_t;
-  struct DebugLocation : public zorba::serialization::SerializeBaseClass{
-    std::string theFileName;
-    unsigned long theLineNumber;
-    QueryLoc theQueryLocation;
-    public:
-    DebugLocation() {}
-    SERIALIZABLE_CLASS(DebugLocation)
-    SERIALIZABLE_CLASS_CONSTRUCTOR(DebugLocation)
-    void serialize(::zorba::serialization::Archiver& ar);
+  class DebugIteratorState;
 
-    bool operator()(const DebugLocation_t& aLocation1,
-      const DebugLocation_t& aLocation2) const;
-  };
+struct QueryLocComparator : public serialization::SerializeBaseClass {
+  public:
+    QueryLocComparator() {}
 
-  /**
-  * @brief This class is used for the eval command.
-  *
-  * This class is just a SingeltonIterator, which gives the client
-  * the possibility to reset the stored item.
-  */
-  class DebuggerSingletonIterator : 
-    public NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>
-  {
+    bool
+    operator()(const QueryLoc& a, const QueryLoc& b) const;
+
+  public:
+
+    SERIALIZABLE_CLASS(QueryLocComparator)
+    SERIALIZABLE_CLASS_CONSTRUCTOR(QueryLocComparator)
+    void serialize(serialization::Archiver& ar);
+};
+
+class Breakable : public serialization::SerializeBaseClass {
+  private:
+    QueryLoc theLocation;
+    bool theSet;
+    bool theEnabled;
+
+  public:
+    Breakable()
+      : theLocation(),
+        theSet(false),
+        theEnabled(false) {};
+
+    Breakable(QueryLoc aLocation)
+      : theLocation(aLocation),
+        theSet(false),
+        theEnabled(false) {};
+
+    QueryLoc
+    getLocation() { return theLocation; };
+
+    bool
+    isEnabled() { return theEnabled; };
+
+    void
+    setEnabled(bool state) { theEnabled = state; };
+
+    bool
+    isSet() { return theSet; };
+
+    void
+    setSet(bool state) { theSet = state; if (!state) { theEnabled = false; } };
+
+  public:
+
+    SERIALIZABLE_CLASS(Breakable)
+    SERIALIZABLE_CLASS_CONSTRUCTOR(Breakable)
+    void serialize(serialization::Archiver& ar);
+};
+
+typedef std::vector<Breakable> BreakableVector;
+typedef std::map<QueryLoc, unsigned int, struct QueryLocComparator> BreakableIdMap;
+
+
+/**
+* @brief This class is used for the eval command.
+*
+* This class is just a SingeltonIterator, which gives the client
+* the possibility to reset the stored item.
+*/
+class DebuggerSingletonIterator : 
+  public NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>
+{
   public: //Constructor and Destructor
     /**
     * @brief The default constructor only takes the static context.
     */
-    DebuggerSingletonIterator(static_context* sctx,
+    DebuggerSingletonIterator(
+      static_context* sctx,
       QueryLoc loc,
       DebuggerCommons* lCommons);
 
@@ -84,18 +131,20 @@ namespace zorba {
     SERIALIZABLE_CLASS(DebuggerSingletonIterator)
     SERIALIZABLE_CLASS_CONSTRUCTOR2T(DebuggerSingletonIterator, NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>)
     void serialize(::zorba::serialization::Archiver& ar);
-  };
+};
 
-  /**
-  * @brief A class used as common shared object between the debugger runtime
-  *  and the debug iterators.
-  *
-  * This class is by the iterators to share information, get commands from
-  * the debug runtime and deliver information to the debugger runtime.
-  *
-  */
-  class DebuggerCommons : public zorba::serialization::SerializeBaseClass{
-    friend class TranslatorImpl;
+/**
+* @brief A class used as common shared object between the debugger runtime
+*  and the debug iterators.
+*
+* This class is by the iterators to share information, get commands from
+* the debug runtime and deliver information to the debugger runtime.
+*
+*/
+class DebuggerCommons : public serialization::SerializeBaseClass{
+    
+  friend class TranslatorImpl;
+
   public: // Creation and destruction
     /**
     * @brief The default constructor.
@@ -109,16 +158,10 @@ namespace zorba {
     SERIALIZABLE_CLASS_CONSTRUCTOR(DebuggerCommons);
     void serialize( ::zorba::serialization::Archiver& ar);
 
-  public: // Commands
-    //************************************
-    // Method:    setRuntime
-    // FullName:  zorba::DebuggerCommons::setRuntime
-    // Access:    public 
-    // Returns:   void
-    // Qualifier:
-    // Parameter: DebuggerRuntime * aRuntime
-    //************************************
-    void setRuntime(DebuggerRuntime* aRuntime);
+  public:
+
+    void
+    setRuntime(DebuggerRuntime* aRuntime);
     //************************************
     // Method:    setCurrentDynamicContext
     // FullName:  zorba::DebuggerCommons::setCurrentDynamicContext
@@ -152,7 +195,7 @@ namespace zorba {
     * @param aIterator A pointer to the current iterator.
     * @post aIterator == theCurrentIterator
     */
-    void setCurrentIterator(const ZorbaDebugIterator* aIterator);
+    void setCurrentIterator(const DebugIterator* aIterator);
 
     /**
     * @brief Sets the current planstate.
@@ -172,7 +215,7 @@ namespace zorba {
     * @param aState a pointer to the current debugger state.
     * @post aState == theDebugIteratorState
     */
-    void setDebugIteratorState(ZorbaDebugIteratorState* aState);
+    void setDebugIteratorState(DebugIteratorState* aState);
 
     /**
     * @brief Sets a setpoint according to the step out rules.
@@ -198,29 +241,36 @@ namespace zorba {
     */
     std::list<std::pair<zstring, zstring> > 
       eval(const zstring& aExpr, Zorba_SerializerOptions& aSerOpts);
-  public: //Queries
-    /**
-    * Adds a breakpoint and then sets theLocation from aLocation
-    * to the QueryLoc object, where it has to break.
-    *
-    * @param aLocation The location, where the debugger has to break.
-    * @param aId The identifier of this breakpoint.
-    *
-    * @return true, if a breakable expression was found - false otherwise
-    */
-    bool addBreakpoint(DebugLocation_t& aLocation, unsigned int aId);
+
+  public:
+
+    unsigned int
+    addBreakpoint(const QueryLoc& location, bool enabled);
+
+    Breakable
+    getBreakpoint(unsigned int id);
+
+    void
+    updateBreakpoint(unsigned int id, bool enabled);
+
+    void
+    updateBreakpoint(
+      unsigned int id,
+      bool enabled,
+      std::string condition,
+      unsigned int hitValue);
+
+    void
+    removeBreakpoint(unsigned int id);
+
     /**
     * @brief Clears the breakpoint with the id aId.
     */
-    void clearBreakpoint(unsigned int aId);
-    //************************************
-    // Method:    getRuntime
-    // FullName:  zorba::DebuggerCommons::getRuntime
-    // Access:    public 
-    // Returns:   DebuggerRuntime*
-    // Qualifier:
-    //************************************
-    DebuggerRuntime* getRuntime();
+    void clearBreakpoint(unsigned int id);
+
+    DebuggerRuntime*
+    getRuntime();
+
     //************************************
     // Method:    getCurrentDynamicContext
     // FullName:  zorba::DebuggerCommons::getCurrentDynamicContext
@@ -252,7 +302,7 @@ namespace zorba {
     *
     * @brief aIter != NULL
     */
-    bool hasToBreakAt(const ZorbaDebugIterator* aIter);
+    bool hasToBreakAt(const DebugIterator* aIter);
     /**
     * @brief This returns true, if the runtime wants to suspend.
     *
@@ -277,7 +327,7 @@ namespace zorba {
     /**
     * @brief Gets the current debugger iterator.
     */
-    const ZorbaDebugIterator* getCurrentIterator() const;
+    const DebugIterator* getCurrentIterator() const;
 
     /**
     * @brief Gets the item, which is used for all eval iterators of the debug
@@ -295,25 +345,44 @@ namespace zorba {
     */
     std::string getFilepathOfURI(const std::string& aUri) const;
 
+    void
+    addBreakable(Breakable location);
+
   private:
-    std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;
-    std::map<std::string, std::string >            theUriFileMappingMap;
-    std::map<unsigned int, DebugLocation_t>        theBreakpoints;
-    DebuggerRuntime*                               theRuntime;
-    static_context*                                theCurrentStaticContext;
-    dynamic_context*                               theCurrentDynamicContext;
-    bool                                           theBreak;
-    SuspensionCause                                theCause;
-    /*const */ZorbaDebugIterator*                  theCurrentIterator;
+
+    void
+    checkBreakpoint(unsigned int id);
+
+  private:
+
+    /**
+     * @brief The vector is populated by the translator when inserting the
+     * debugger breakable expressions.
+     */
+    BreakableVector                                 theBreakables;
+    /**
+     * @brief The map is populated by the translator when inserting the
+     * debugger breakable expressions.
+     */
+    BreakableIdMap                                  theBreakableIDs;
+
+    std::map<std::string, std::string>              theUriFileMappingMap;
+    DebuggerRuntime*                                    theRuntime;
+    static_context*                                 theCurrentStaticContext;
+    dynamic_context*                                theCurrentDynamicContext;
+    bool                                            theBreak;
+    SuspensionCause                                 theCause;
+    /*const */DebugIterator*                        theCurrentIterator;
     /**
     * @brief The list of step expressions.
     */
-    std::list</*const*/ ZorbaDebugIterator*>       theBreakIterators;
-    PlanState*                                     thePlanState;
-    ZorbaDebugIteratorState*                       theDebugIteratorState;
-    store::Item_t                                  theEvalItem;
-    bool                                           theExecEval;
+    std::list</*const*/ DebugIterator*>             theBreakIterators;
+    PlanState*                                      thePlanState;
+    DebugIteratorState*                             theDebugIteratorState;
+    store::Item_t                                   theEvalItem;
+    bool                                            theExecEval;
   };
+
 }
 
 #endif // ZORBA_DEBUGGER_COMMONS_H

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+#include "query_locationimpl.h"
+
 #include <sstream>
 
 #include "api/unmarshaller.h"
-#include "debugger/query_locationimpl.h"
 
 using namespace std;
 

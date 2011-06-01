@@ -15,31 +15,36 @@
  */
 #include "debugger_server.h"
 
-#include "context/static_context.h"
+#include <sstream>
 
-#include "debugger/debugger_communication.h"
-#include "debugger/debugger_runtime.h"
 #include "api/xqueryimpl.h"
 
-#include <memory>
+#include "debugger/debugger_communicator.h"
+#include "debugger/debugger_runtime.h"
+#include "debugger/debugger_common.h"
+#include "debugger/debugger_commons.h"
+
+#include "zorbautils/synchronous_logger.h"
+
+#include "zorba/util/uri.h"
+
 
 namespace zorba {
 
-DebuggerServer::DebuggerServer(XQueryImpl* aQuery,
-                               Zorba_SerializerOptions& serializerOption,
-                               std::ostream& anOstream,
-                               itemHandler aHandler,
-                               void* aCallBackData,
-                               std::string aHost,
-                               unsigned short requestPort /*= 8000*/,
-                               unsigned short eventPort /*= 9000*/)
-  : theRequestPort(requestPort),
-    theEventPort(eventPort)
+DebuggerServer::DebuggerServer(
+  XQueryImpl*               aQuery,
+  Zorba_SerializerOptions&  aSerializerOptions,
+  std::ostream&             aOstream,
+  itemHandler               aHandler,
+  void*                     aCallbackData,
+  const std::string&        aHost,
+  unsigned short            aPort)
 {
-  theCommunicator = new DebuggerCommunicator(aHost, theRequestPort, theEventPort);
-  theRuntime = new DebuggerRuntime(aQuery, anOstream, serializerOption,
-    theCommunicator, aHandler, aCallBackData);
+  theCommunicator = new DebuggerCommunicator(aHost, aPort);
+  theRuntime = new DebuggerRuntime(aQuery, aOstream, aSerializerOptions,
+    theCommunicator, aHandler, aCallbackData);
 }
+
 
 DebuggerServer::~DebuggerServer()
 {
@@ -47,34 +52,337 @@ DebuggerServer::~DebuggerServer()
   delete theCommunicator;
 }
 
+
 void
 DebuggerServer::run()
 {
-  theCommunicator->handshake();
+  init();
 
-  // Until the query execution has ended
+  std::string lCommand;
+
   while (theRuntime->getExecutionStatus() != QUERY_TERMINATED &&
-        theRuntime->getExecutionStatus() != QUERY_DETACHED) {
-    std::auto_ptr<AbstractCommandMessage> lMessage(theCommunicator->handleTCPClient());
-    if (lMessage.get() != NULL) {
-       if (lMessage->isExecutionCommand() && lMessage->getCommand() == RUN) {
-         if (theRuntime->getExecutionStatus() == QUERY_SUSPENDED) {
-           theRuntime->setNotSendTerminateEvent();
-           theRuntime->terminate();
-           theRuntime->resetRuntime();
-         }
-         theRuntime->start();
-       } else {
-         bool lTerminate = theRuntime->processMessage(lMessage.get());
-         if (lTerminate) {
-           theCommunicator->sendReplyMessage(lMessage.get());
-           break;
-         }
-      } 
-      theCommunicator->sendReplyMessage(lMessage.get());
-    } // if (lMessage.get() != NULL)
-  } // while
+      theRuntime->getExecutionStatus() != QUERY_DETACHED) {
+    // read next command
+    theCommunicator->receive(lCommand);
+    DebuggerCommand lCmd = DebuggerCommand(lCommand);
+
+    // process the received command
+    std::string lResponse = processCommand(lCmd);
+    if (lResponse != "") {
+      theCommunicator->send(lResponse);
+    }
+  }
+
+  theRuntime->terminate();
+  theRuntime->resetRuntime();
   theRuntime->join();
-} // DebuggerServer::run
+}
+
+
+void
+DebuggerServer::init()
+{
+  std::string lIdeKey;
+  if (!getEnvVar("DBGP_IDEKEY", lIdeKey)) {
+    lIdeKey = "";
+  }
+  std::string lSession;
+  if (!getEnvVar("DBGP_SESSION", lSession)) {
+    lSession = "";
+  }
+  std::stringstream lInitMsg;
+  lInitMsg << "<init appid=\"zorba\" idekey=\"" << lIdeKey << "\" session=\"" + lSession + "\" thread=\"6666\" parent=\"zorba\" language=\"xquery\" protocol_version=\"1.0\" fileuri=\"file://D:/mm.xq\"/>";
+  theCommunicator->send(lInitMsg.str().c_str());
+}
+
+
+std::string
+DebuggerServer::processCommand(DebuggerCommand aCommand)
+{
+  std::stringstream lResponse;
+  int lTransactionID;
+  ExecutionStatus lStatus;
+
+  if (aCommand.getArg("i", lTransactionID)) {
+    lResponse << "<response command=\"" << aCommand.getName() << "\" transaction_id=\"" << lTransactionID << "\" ";
+    lStatus = theRuntime->getExecutionStatus();
+
+    std::string lCmdName = aCommand.getName();
+
+    switch (lCmdName.at(0)) {
+
+    case 'f':
+      // feature_get, feature_set
+      {
+        std::string lFeatureName;
+        if (aCommand.getArg("n", lFeatureName)) {
+          lResponse << "feature_name=\"" << lFeatureName << "\" ";
+
+          if (aCommand.getName() == "feature_get") {
+            lResponse << "supported=\"0\" ";
+          } else if (aCommand.getName() == "feature_set") {
+            lResponse << "success=\"0\" ";
+          }
+        }
+      }
+      lResponse << ">";
+      break;
+
+    case 'b':
+      // breakpoint_get, breakpoint_set, breakpoint_update, breakpoint_remove, breakpoint_list
+      if (lCmdName == "breakpoint_get" || lCmdName == "breakpoint_list") {
+        lResponse << ">"; // response start tag close
+        if (lCmdName == "breakpoint_get") {
+          int lBID;
+          if (aCommand.getArg("d", lBID)) {
+            try {
+              Breakable lBkp = theRuntime->getBreakpoint(lBID);
+              std::string lFilename = lBkp.getLocation().getFilename().str();
+              String lTmp = URIHelper::encodeFileURI(lFilename);
+#ifdef WIN32
+              //if (lTmp.substr(9, 3) == "%3A") {
+              //  lTmp.replace(9, 3, ":");
+              //}
+#endif
+              lFilename = lTmp.str();
+
+              lResponse << "<breakpoint "
+                << "id=\"" << lBID << "\" "
+                << "type=\"line\" "
+                << "state=\"" << (lBkp.isEnabled() ? "enabled" : "disabled") << "\" "
+                << "filename=\"" << lFilename << "\" "
+                << "lineno=\"" << lBkp.getLocation().getLineBegin() << "\" "
+//              << "function=\"FUNCTION\" "
+//              << "exception=\"EXCEPTION\" "
+//              << "hit_value=\"HIT_VALUE\" "
+//              << "hit_condition=\"HIT_CONDITION\" "
+//              << "hit_count=\"HIT_COUNT\" "
+                << ">"
+//              << "<expression>EXPRESSION</expression>"
+              << "</breakpoint>";
+
+            } catch (std::string& lErr) {
+              return buildErrorResponse(lTransactionID, lCmdName, 4, lErr);
+            }
+          } else {
+            // error
+          }
+        } else {
+          // breakpoint_list
+        }
+      } else {
+        if (aCommand.getName() == "breakpoint_set") {
+
+          int lLineNo;
+          aCommand.getArg("n", lLineNo);
+          std::string lFileName;
+          aCommand.getArg("f", lFileName);
+          std::string lState;
+          if (!aCommand.getArg("s", lState)) {
+            lState = "enabled";
+          }
+
+          if (lFileName.substr(0, 7) == "file://") {
+            lFileName = URIHelper::decodeFileURI(lFileName).str();
+          }
+
+          QueryLoc lLocation;
+          lLocation.setLineBegin(lLineNo);
+          lLocation.setLineEnd(lLineNo);
+          lLocation.setFilename(lFileName);
+
+          try {
+            bool lEnabled = (lState == "disabled" ? false : true);
+            unsigned int lBID = theRuntime->addBreakpoint(lLocation, lEnabled);
+            lResponse << "state=\"enabled\" id=\"" << lBID << "\" ";
+          } catch (std::string lErr) {
+            return buildErrorResponse(lTransactionID, lCmdName, 200, lErr);
+          }
+ 
+        } else if (aCommand.getName() == "breakpoint_update") {
+
+          int lBID;
+          std::string lState;
+          std::string lCondition;
+          int lHitValue;
+          bool lHasCondition = false;
+
+          // we can not change the line number of a breakpoint
+          // so we will never read the -n option
+
+          if (!aCommand.getArg("d", lBID)) {
+            // TODO: throw exception
+          }
+          if (!aCommand.getArg("s", lState)) {
+            lState = "enabled";
+          }
+          if (aCommand.getArg("h", lHitValue)) {
+            if (!aCommand.getArg("o", lCondition)) {
+              lCondition = ">=";
+            }
+          } else {
+            lHitValue = 0;
+          }
+
+          try {
+            bool lEnabled = (lState == "disabled" ? false : true);
+            theRuntime->updateBreakpoint(lBID, lEnabled, lCondition, lHitValue);
+          } catch (std::string lErr) {
+            // TODO: report error
+          }
+
+        } else if (aCommand.getName() == "breakpoint_remove") {
+          int lBID;
+          if (aCommand.getArg("d", lBID)) {
+            theRuntime->removeBreakpoint(lBID);
+          }
+        }
+
+        lResponse << ">"; // response start tag close
+      }
+    
+      break;
+       
+    case 'r':
+      // run
+      if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE) {
+        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        if (lStatus == QUERY_IDLE) {
+          theRuntime->start();
+        } else if (lStatus == QUERY_SUSPENDED) {
+          theRuntime->resumeRuntime();
+        }
+        return "";
+        //lResponse << "reason=\"ok\" status=\"running\" ";
+      }
+      lResponse << ">";
+      break;
+
+    case 's':
+      // stack_depth, stack_get, status, stop
+      if (aCommand.getName() == "stop") {
+        lResponse << "reason=\"ok\" status=\"stopped\" ";
+        lResponse << ">";
+        theRuntime->terminateRuntime();
+      } else if (aCommand.getName() == "stack_depth") {
+        lResponse << "depth=\"" << theRuntime->getStackDepth() << "\"";
+        lResponse << ">";
+      } else if (aCommand.getName() == "stack_get") {
+
+        lResponse << ">";
+        std::vector<StackFrameImpl> lFrames = theRuntime->getStackFrames();
+
+        std::vector<StackFrameImpl>::reverse_iterator lRevIter;
+        int i = 0;
+        for (lRevIter = lFrames.rbegin(); lRevIter < lFrames.rend(); ++lRevIter, ++i) {
+          String lFileName(lRevIter->getLocation().getFileName());
+          lFileName = URIHelper::encodeFileURI(lFileName);
+          unsigned int lLB = lRevIter->getLocation().getLineBegin();
+          unsigned int lLE = lRevIter->getLocation().getLineEnd();
+
+          // for the client, the column numbers are 1-based
+          unsigned int lCB = lRevIter->getLocation().getColumnBegin() - 1;
+          // moreover, the column end points to the last character to be selected
+          unsigned int lCE = lRevIter->getLocation().getColumnEnd() - 2;
+
+          lResponse << "<stack "
+            << "level=\"" << i << "\" "
+            << "type=\"" << "file" << "\" "
+            << "filename=\"" << lFileName << "\" "
+            << "lineno=\"" << lLB << "\" "
+            << "where=\"" << lRevIter->getSignature() << "\" "
+            << "cmdbegin=\"" << lLB << ":" << lCB << "\" "
+            << "cmdend=\"" << lLE << ":" << lCE << "\" "
+            << "/>";
+        }
+          lResponse << "<stack "
+            << "level=\"2\" "
+            << "type=\"file\" "
+            << "filename=\"file:///D:/mm.xq\" "
+            << "lineno=\"3\" "
+            << "/>";
+
+      } else if (aCommand.getName() == "status") {
+
+        ExecutionStatus lStatus = theRuntime->getExecutionStatus();
+        std::string lStatusStr;
+        switch (lStatus) {
+        case QUERY_IDLE:
+          lStatusStr = "starting";
+          break;
+        case QUERY_RUNNING:
+        case QUERY_RESUMED:
+          lStatusStr = "running";
+          break;
+        case QUERY_SUSPENDED:
+          lStatusStr = "break";
+          break;
+        case QUERY_TERMINATED:
+        case QUERY_DETACHED:
+          lStatusStr = "stopped";
+          break;
+        }
+
+        lResponse << "status=\"" << lStatusStr << "\" "
+          << "reason=\"ok\" "
+          << ">";
+
+      }
+
+      break;
+
+    default:
+      std::stringstream lSs;
+      lSs << "Unimplemented command: " << lCmdName;
+      return buildErrorResponse(lTransactionID, lCmdName, 4, lSs.str());
+    }
+
+    lResponse << "</response>";
+    return lResponse.str();
+  }
+
+  return "";
+}
+
+
+bool
+DebuggerServer::getEnvVar(const std::string& aName, std::string& aValue) 
+{
+  char *lValue;
+    
+#ifdef __unix__
+  lValue = getenv(aName.c_str()); 
+#elif defined WINCE
+  lValue = NULL;
+#elif defined WIN32
+  size_t len;
+  _dupenv_s(&lValue, &len, aName.c_str());
+#else
+  lValue = getenv(aName.c_str());
+#endif
+  if (lValue == 0) {
+    return false;
+  }
+
+  aValue = lValue;
+
+  return true;
+}
+
+std::string
+DebuggerServer::buildErrorResponse(
+  int aTransactionID,
+  std::string aCommandName,
+  int aErrorCode,
+  std::string aErrorMessage)
+{
+  std::stringstream lResponse;
+  lResponse << "<response command=\"" << aCommandName << "\" transaction_id=\"" << aTransactionID << "\">"
+    << "<error code=\"" << aErrorCode << "\" apperr=\"" << aErrorCode << "\">"
+    << "<message>" << aErrorMessage << "</message>"
+    << "</error></response>";
+
+  return lResponse.str();
+}
 
 } /* namespace zorba */

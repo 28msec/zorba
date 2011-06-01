@@ -463,11 +463,10 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    * server and decided to end the server. In order to call this method, the
    * query has to be compiled.
    *
-   * @param aCommandPort the port used to received commands from the client.
-   * @param anEventPort the port used to send events to the client.
+   * @param aPort the port on which the debugger client is listening on.
    */
   virtual void
-  debug(unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000) = 0;
+  debug(unsigned short aPort = 9000) = 0;
   
   /** 
    * \brief Run the query with the debugger server.
@@ -481,8 +480,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    *
    * @param aOutStream the output stream on which the result is written.
    * @param aSerOptions an optinal set of serialization options.
-   * @param aCommandPort the port used to received commands from the client.
-   * @param anEventPort the port used to send events to the client.
+   * @param aPort the port on which the debugger client is listening on.
    *
    * @throw ZorbaException if an error occurs (e.g. the query is closed or has
    *        not been compiled)
@@ -490,15 +488,13 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   virtual void
   debug(std::ostream& aOutStream,
         Zorba_SerializerOptions& aSerOptions,
-        unsigned short aCommandPort = 8000,
-        unsigned short anEventPort = 9000) = 0;
+        unsigned short aPort = 9000) = 0;
   
   virtual void
   debug(std::ostream& aOutStream,
         Zorba_SerializerOptions& aSerOptions,
         const std::string& aHost,
-        unsigned short aCommandPort = 8000,
-        unsigned short anEventPort = 9000) = 0;
+        unsigned short aPort = 9000) = 0;
   
   virtual void
   debug(std::ostream& aOutStream,
@@ -506,8 +502,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
         void* aCallbackData,
         Zorba_SerializerOptions& aSerOptions,
         const std::string& aHost,
-        unsigned short aCommandPort = 8000,
-        unsigned short anEventPort = 9000) = 0;
+        unsigned short aPort = 9000) = 0;
 #endif
 
   /**

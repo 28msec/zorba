@@ -18,7 +18,7 @@
 
 #include <map>
 #include <list>
-#include <stack>
+#include <vector>
 
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_event_handler.h>
@@ -27,43 +27,22 @@
 namespace zorba {
 
   /**
-   * Representation of the runtime frame.
+   * Representation of the runtime stack frame.
    */
-  class ZORBA_DLL_PUBLIC Frame
+  class ZORBA_DLL_PUBLIC StackFrame
   {
     public:
+
       virtual
-      ~Frame(){}
+      ~StackFrame() {}
 
       virtual const std::string&
       getSignature() const = 0;
 
-      virtual const QueryLocation*
+      virtual const QueryLocation&
       getLocation() const = 0;
   };
 
-  /**
-   * Representation of the runtime stack frame.
-   */
-  class ZORBA_DLL_PUBLIC StackFrame: public SmartObject
-  {
-    public:
-      virtual
-      ~StackFrame(){}
-
-      virtual const Frame*
-      top() const = 0;
-
-      virtual StackFrame*
-      pop() = 0;
-
-      virtual unsigned int
-      size() const = 0;
-
-      virtual bool
-      empty() const = 0;
-  };
- 
   //string serialization of the query 
   ZORBA_DLL_PUBLIC
   std::ostream& operator<< (std::ostream& os, const QueryLocation& aQuery); 
@@ -334,8 +313,8 @@ namespace zorba {
        *
        * @return the runtime stack frame.
        */
-      virtual
-      StackFrame_t getStack() const = 0;
+      virtual std::vector<StackFrame>
+      getStack() const = 0;
 
       /**
       * @brief List source code from a given uri.

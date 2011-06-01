@@ -672,12 +672,12 @@ DebuggerHandler::list(const QueryLocation& aLocation, int aLines) const
 
 bool DebuggerHandler::where() const
 {
-  StackFrame_t lStack(theClient->getStack());
-  while (!lStack->empty()) {
-    const Frame* lFrame = lStack->top();
-    zorba::cerr << lFrame->getSignature() << ' ' << lFrame->getLocation()->toString() << "\n";
-    lStack->pop();
-  }
+  //StackFrame_t lStack(theClient->getStack());
+  //while (!lStack->empty()) {
+  //  const Frame* lFrame = lStack->top();
+  //  zorba::cerr << lFrame->getSignature() << ' ' << lFrame->getLocation()->toString() << "\n";
+  //  lStack->pop();
+  //}
   return true;
 }
 

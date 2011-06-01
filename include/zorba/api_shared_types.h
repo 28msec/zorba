@@ -42,9 +42,7 @@ namespace zorba {
 
   class DiagnosticHandler;
   class QueryLocation;
-  class StackFrame;
   typedef SmartPtr<QueryLocation> QueryLocation_t;
-  typedef SmartPtr<StackFrame> StackFrame_t;
 
   // smart pointers
   typedef zorba::SmartPtr<XQuery>                     XQuery_t;

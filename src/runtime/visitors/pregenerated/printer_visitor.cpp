@@ -39,7 +39,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
-#include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/debug/debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
 #include "runtime/errors_and_diagnostics/other_diagnostics.h"
@@ -789,18 +789,18 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
 // </DefaultCollationIterator>
 
 #ifdef ZORBA_WITH_DEBUGGER
-// <ZorbaDebugIterator>
-void PrinterVisitor::beginVisit ( const ZorbaDebugIterator& a) {
-  thePrinter.startBeginVisit("ZorbaDebugIterator", ++theId);
+// <DebugIterator>
+void PrinterVisitor::beginVisit ( const DebugIterator& a) {
+  thePrinter.startBeginVisit("DebugIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaDebugIterator& ) {
+void PrinterVisitor::endVisit ( const DebugIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaDebugIterator>
+// </DebugIterator>
 
 #endif
 

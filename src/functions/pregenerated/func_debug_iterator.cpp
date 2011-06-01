@@ -22,15 +22,15 @@
 // ******************************************
 
 
-#include "runtime/debug/zorba_debug_iterator.h"
-#include "functions/func_zorba_debug_iterator.h"
+#include "runtime/debug/debug_iterator.h"
+#include "functions/func_debug_iterator.h"
 
 
 namespace zorba{
 
 
 
-void populate_context_zorba_debug_iterator(static_context* sctx)
+void populate_context_debug_iterator(static_context* sctx)
 {}
 
 

@@ -115,6 +115,10 @@ void URI::decode_file_URI(const zstring& uri, zstring& filepath)
       // should we raise an unknown host exception?
       filepath = uri;
     }
+
+#ifdef WIN32
+  ascii::replace_all(filepath, '/', '\\');
+#endif
 }
 
 
