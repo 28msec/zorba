@@ -22,6 +22,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <cassert>
 
 #ifdef WIN32
 #include <windows.h>
