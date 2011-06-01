@@ -2957,7 +2957,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
 
     if (! theModuleNamespace.empty() && ns != theModuleNamespace)
-      throw XQUERY_EXCEPTION(err::XQST0048, ERROR_LOC(loc));
+      RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
     // Process the parameter types and the return type in order to create the
     // function signature.
@@ -3483,7 +3483,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     if (! theModuleNamespace.empty() &&
         ve->get_name()->getNamespace() != theModuleNamespace)
     {
-      throw XQUERY_EXCEPTION(err::XQST0048, ERROR_LOC(loc));
+      RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
 
     // Make sure that there is no other prolog var with the same name in any of
