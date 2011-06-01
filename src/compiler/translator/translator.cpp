@@ -2045,12 +2045,8 @@ void* begin_visit(const VersionDecl& v)
   {
     version = StaticContextConsts::xquery_version_1_0;
   }
-  //1.1 is the same as 3.0
-  else if (versionStr == "1.1")
-  {
-    version = StaticContextConsts::xquery_version_3_0;
-  }
-  else if (versionStr == "3.0")
+
+  else if (versionStr == "1.1" || versionStr == "3.0") //1.1 is the same as 3.0
   {
     version = StaticContextConsts::xquery_version_3_0;
   }
@@ -2081,13 +2077,6 @@ void* begin_visit(const VersionDecl& v)
   if (version == StaticContextConsts::xquery_version_unknown)
     RAISE_ERROR(err::XQST0031, loc,
     ERROR_PARAMS(versionStr, ZED(BadXQueryVersion)));
-
-  if (version > theSctx->xquery_version())
-    throw XQUERY_EXCEPTION(
-      err::XQST0031,
-      ERROR_PARAMS( versionStr, ZED( BadXQueryVersion ) ),
-      ERROR_LOC( loc )
-    );
 
   theSctx->set_xquery_version(version);
 
@@ -10843,7 +10832,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
     while (curRef < end)
     {
       int d = xml::parse_entity(curRef, &content);
-      if (d < 0) 
+      if (d < 0)
       {
         RAISE_ERROR(err::XQST0090, loc,
         ERROR_PARAMS(curRef, theSctx->xquery_version()));

@@ -269,7 +269,7 @@ void XmlTree::copyTypesMap(const XmlTree* source)
 
   If P != NULL and append == false, C will become the "pos"-th child/attribute
   of P. In this case, the ordpath of C is computed based on the ordpaths of its
-  left and right siblings (if any). Note: If "pos" >= P->numChildren, then C 
+  left and right siblings (if any). Note: If "pos" >= P->numChildren, then C
   will be appended to P's children/attributes.
 
   If P != NULL and append == true, C will be appended to P's children/attributes,
@@ -590,7 +590,7 @@ long XmlNode::compareInSameTree(const XmlNode* n1, const XmlNode* n2) const
   if (kind1 != store::StoreConsts::textNode &&
       kind2 != store::StoreConsts::textNode)
   {
-    if (static_cast<const OrdPathNode*>(n1)->getOrdPath() < 
+    if (static_cast<const OrdPathNode*>(n1)->getOrdPath() <
         static_cast<const OrdPathNode*>(n2)->getOrdPath())
       return -1;
     else
@@ -603,13 +603,13 @@ long XmlNode::compareInSameTree(const XmlNode* n1, const XmlNode* n2) const
 
     if (p1 == NULL)
       return -1;
-    
+
     if (p2 == NULL)
       return 1;
-    
+
     const OrdPath& op1 = p1->getOrdPath();
     const OrdPath& op2 = p2->getOrdPath();
-    
+
     OrdPath::RelativePosition relPos = op1.getRelativePosition(op2);
 
     if (relPos == OrdPath::FOLLOWING)
@@ -639,13 +639,13 @@ long XmlNode::compareInSameTree(const XmlNode* n1, const XmlNode* n2) const
         if (elem == p2)
           return 1;
 
-        OrdPath::RelativePosition relPos2 = 
+        OrdPath::RelativePosition relPos2 =
         elem->getOrdPath().getRelativePosition(op2);
 
         if (relPos2 == OrdPath::DESCENDANT)
           return 1;
       }
-      
+
       assert(ite != end);
     }
     else if (relPos == OrdPath::ANCESTOR)
@@ -667,13 +667,13 @@ long XmlNode::compareInSameTree(const XmlNode* n1, const XmlNode* n2) const
         if (elem == p1)
           return -1;
 
-        OrdPath::RelativePosition relPos2 = 
+        OrdPath::RelativePosition relPos2 =
         elem->getOrdPath().getRelativePosition(op1);
 
         if (relPos2 == OrdPath::DESCENDANT)
           return -1;
       }
-      
+
       assert(ite != end);
     }
     else
@@ -918,7 +918,7 @@ void XmlNode::destroyInternal(bool removeType) throw()
 
 #ifndef EMBEDED_TYPE
   if (removeType)
-  { 
+  {
     if (kind == store::StoreConsts::elementNode)
     {
       ElementNode* elem = static_cast<ElementNode*>(this);
@@ -957,7 +957,7 @@ void XmlNode::destroyInternal(bool removeType) throw()
 
   If P != NULL and append == false, C will become the "pos"-th child/attribute
   of P. In this case, the ordpath of C is computed based on the ordpaths of its
-  left and right siblings (if any). Note: If "pos" >= P->numChildren, then C 
+  left and right siblings (if any). Note: If "pos" >= P->numChildren, then C
   will be appended to P's children/attributes.
 
   If P != NULL and append == true, C will be appended to P's children/attributes,
@@ -1176,7 +1176,7 @@ const OrdPath* InternalNode::getFirstChildOrdPathAfter(csize pos) const
       break;
   }
 
-  return (ite == end ? 
+  return (ite == end ?
           NULL :
           &static_cast<const OrdPathNode*>((*ite))->getOrdPath());
 }
@@ -1200,7 +1200,7 @@ const OrdPath* InternalNode::getFirstChildOrdPathBefore(csize pos) const
       break;
   }
 
-  return (ite == end ? 
+  return (ite == end ?
           NULL :
           &static_cast<const OrdPathNode*>((*ite))->getOrdPath());
 }
@@ -1545,7 +1545,7 @@ void DocumentNode::getStringValue2(zstring& val) const
     for (; ite != end; ++ite)
     {
       kind = (*ite)->getNodeKind();
-      
+
       if (kind != store::StoreConsts::commentNode &&
           kind != store::StoreConsts::piNode)
         (*ite)->appendStringValue(val);
@@ -1920,7 +1920,7 @@ XmlNode* ElementNode::copyInternal(
 
       const zstring& prefix = theName->getPrefix();
       zstring ns;
- 
+
       bool found = getNsContext()->findBinding(prefix, ns);
 
       // binding may be absent only if the prefix was empty and there was no
@@ -2103,7 +2103,7 @@ void ElementNode::setType(store::Item_t& type)
 store::Item* ElementNode::getType() const
 {
   return (haveType() ?
-          getTree()->getType(this) : 
+          getTree()->getType(this) :
           GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
 }
 
@@ -2154,14 +2154,14 @@ bool ElementNode::haveTypedTypedValue() const
 
 ********************************************************************************/
 bool ElementNode::isId() const
-{	
+{
   if (numChildren() == 1 &&
       getChild(0)->getNodeKind() == store::StoreConsts::textNode)
   {
 		if (reinterpret_cast<TextNode*>(getChild(0))->isIdInternal())
       return true;
 	}
-  
+
   return false;
 }
 
@@ -2263,7 +2263,7 @@ void ElementNode::getStringValue2(zstring& val) const
     for (; ite != end; ++ite)
     {
       kind = (*ite)->getNodeKind();
-      
+
       if (kind != store::StoreConsts::commentNode &&
           kind != store::StoreConsts::piNode)
         (*ite)->appendStringValue(val);
@@ -2298,7 +2298,7 @@ store::Item_t ElementNode::getNilled() const
 {
   store::Item_t val;
 
-  if (getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED])) 
+  if (getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
   {
     GET_STORE().getItemFactory()->createBoolean(val, false);
     return val;
@@ -2319,7 +2319,7 @@ store::Item_t ElementNode::getNilled() const
     }
   }
 
-  if (!nilled) 
+  if (!nilled)
   {
     GET_FACTORY().createBoolean(val, false);
     return val;
@@ -3169,7 +3169,7 @@ void AttributeNode::setType(store::Item_t& type)
 store::Item* AttributeNode::getType() const
 {
   return (haveType() ?
-          getTree()->getType(this) : 
+          getTree()->getType(this) :
           GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp());
 }
 
@@ -3178,7 +3178,7 @@ void AttributeNode::setType(store::Item_t& type)
 {
   if (haveType())
   {
-    if (type == NULL || 
+    if (type == NULL ||
         type == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
     {
       getTree()->removeType(this);
@@ -3472,7 +3472,7 @@ TextNode::TextNode(
 #ifdef TEXT_ORDPATH
   NODE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0)
-              << " ordpath = " << theOrdPath.show() 
+              << " ordpath = " << theOrdPath.show()
               << " content = " << getValue()->getStringValue());
 #else
   NODE_TRACE1("Constructed text node " << this << " parent = "
@@ -3679,11 +3679,11 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 ********************************************************************************/
 bool TextNode::isIdInternal() const
 {
-  if (isTyped() && 
-    (static_cast<AtomicItem*>(getValue()))->isAtomic() && 
+  if (isTyped() &&
+    (static_cast<AtomicItem*>(getValue()))->isAtomic() &&
     (static_cast<AtomicItem*>(getValue()))->getTypeCode() == XS_ID)
     return true;
-		
+
   return false;
 }
 
@@ -3894,7 +3894,7 @@ XmlNode* PiNode::copyInternal(
     {
       append = (parent != rootParent);
     }
- 
+
     copyNode = factory.createPiNode(tree, parent, append, pos, target, content);
   }
   catch (...)
@@ -4114,7 +4114,7 @@ inline void XmlNodeTokenizerCallback::endTokenization(
 
 void XmlNodeTokenizerCallback::operator()( char const *utf8_s, size_t utf8_len,
                                            int_t pos, int_t sent, int_t para,
-                                           void *payload ) 
+                                           void *payload )
 {
   store::Item const *const item = static_cast<store::Item*>( payload );
   FTToken t( utf8_s, utf8_len, pos, sent, para, item, get_lang() );
@@ -4131,13 +4131,13 @@ inline void XmlNodeTokenizerCallback::tokenize( char const *utf8_s,
 }
 
 
-void XmlNode::tokenize( XmlNodeTokenizerCallback& ) 
+void XmlNode::tokenize( XmlNodeTokenizerCallback& )
 {
   // do nothing
 }
 
 
-void AttributeNode::tokenize( XmlNodeTokenizerCallback &cb ) 
+void AttributeNode::tokenize( XmlNodeTokenizerCallback &cb )
 {
   zstring text;
   getStringValue2( text );
@@ -4146,7 +4146,7 @@ void AttributeNode::tokenize( XmlNodeTokenizerCallback &cb )
 
 
 FTTokenIterator_t
-AttributeNode::getDocumentTokens( iso639_1::type lang ) const 
+AttributeNode::getDocumentTokens( iso639_1::type lang ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
   while ( true ) {
@@ -4164,7 +4164,7 @@ AttributeNode::getDocumentTokens( iso639_1::type lang ) const
 }
 
 
-void InternalNode::tokenize( XmlNodeTokenizerCallback& cb ) 
+void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
 {
   Tokenizer &tokenizer = cb.tokenizer();
   tokenizer.para( tokenizer.para() + 1 );
@@ -4176,7 +4176,7 @@ void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
 }
 
 
-void ElementNode::tokenize( XmlNodeTokenizerCallback& cb ) 
+void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
 {
   //
   // See if this XML element has an xml:lang attribute: if so, switch to that
@@ -4201,7 +4201,7 @@ void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
 }
 
 
-void TextNode::tokenize( XmlNodeTokenizerCallback &cb ) 
+void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
 {
   const zstring* text;
   zstring listText;
@@ -4259,12 +4259,12 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
 
 
 FTTokenIterator_t
-XmlNode::getDocumentTokens( iso639_1::type lang ) const 
+XmlNode::getDocumentTokens( iso639_1::type lang ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
   FTTokenStore::container_type &tokens = token_store.getDocumentTokens();
 
-  if ( tokens.empty() ) 
+  if ( tokens.empty() )
   {
     std::auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
     XmlNodeTokenizerCallback cb( *tokenizer, token_store, lang );

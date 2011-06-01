@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ namespace zorba { namespace simplestore {
   This iterator is used to iterate over the children of a document or element
   node. It implements the interface of a generic iterator, but also offers the
   following additional methods:
- 
+
   - An init method that takes as input a document or element node and
     initializes the iterator so that it will start returning the children of
     this node. The method also takes an optional child parameter; if a child
@@ -39,8 +39,8 @@ namespace zorba { namespace simplestore {
     next() call will return the right sibling of that child.
   - A next method that returns pointers to the children instead of rchandles.
     These pointers should not be used beyond the lifetime of the ChildrenIterator
-    object. 
- 
+    object.
+
   theParentNode : The element or doc node whose children are being retrieved.
   theCurrentPos : The next child to be retrieved.
   theNumChildren: The number of children.
@@ -103,7 +103,7 @@ public:
 
   store::Item* next()
   {
-    if (theIte == theEnd) 
+    if (theIte == theEnd)
       return NULL;
 
     return *theIte++;
@@ -124,7 +124,7 @@ public:
   This iterator is used to iterate over the children of a document or element
   node in reverse document order. It implements the interface of a generic
   iterator, but also offers the following additional methods:
- 
+
   - An init method that takes as input a document or element node and
     initializes the iterator so that it will start returning the children of
     this node. The method also takes an optional child parameter; if a child
@@ -132,8 +132,8 @@ public:
     next() call will return the left sibling of that child.
   - A next method that returns pointers to the children instead of rchandles.
     These pointers should not be used beyond the lifetime of the ChildrenIterator
-    object. 
- 
+    object.
+
   theParentNode : The element or doc node whose children are being retrieved.
   theCurrentPos : The next child to be retrieved.
   theNumChildren: The number of children.
@@ -196,14 +196,14 @@ public:
 
   store::Item* next()
   {
-    if (theIte == theEnd) 
+    if (theIte == theEnd)
       return NULL;
 
     return *theIte++;
   }
 
 
-  void open() 
+  void open()
   {
     theIte = theStart;
   }
@@ -258,7 +258,7 @@ public:
 
   store::Item* next()
   {
-    if (theIte == theEnd) 
+    if (theIte == theEnd)
       return NULL;
 
     AttributeNode* attr = static_cast<AttributeNode*>(*theIte);
@@ -267,7 +267,7 @@ public:
     {
       ++theIte;
 
-      if (theIte == theEnd) 
+      if (theIte == theEnd)
         return NULL;
 
       attr = static_cast<AttributeNode*>(*theIte);
@@ -279,18 +279,18 @@ public:
   }
 
 
-  void open() 
+  void open()
   {
     theIte = theParentNode->attrsBegin();
   }
 
-  void reset() 
+  void reset()
   {
     if (theParentNode)
       theIte = theParentNode->attrsBegin();
   }
 
-  void close() 
+  void close()
   {
     theParentNode = NULL;
   }
@@ -316,7 +316,7 @@ protected:
   bool                theCheckOnly;
 
 public:
-  StoreNodeDistinctIterator(store::Iterator* input, bool checkOnly) 
+  StoreNodeDistinctIterator(store::Iterator* input, bool checkOnly)
     :
     theInput(input),
     theNodeSet(1024, false),
@@ -334,7 +334,7 @@ public:
 
 
 /*******************************************************************************
-  This is an extension to StoreNodeDistinctIterator which allows atomic items 
+  This is an extension to StoreNodeDistinctIterator which allows atomic items
   in the received sequences. The received sequences must contain nodes or atomic
   items, but not a mixture. In case of atomic items, the output sequences
   is equivalent to the input sequence, else, the same operations as in
@@ -355,12 +355,12 @@ public:
   {
   }
 
-  bool next(store::Item_t& result); 
+  bool next(store::Item_t& result);
 
-  void reset() 
+  void reset()
   {
     theNodeMode = theAtomicMode = false;
-    StoreNodeDistinctIterator::reset(); 
+    StoreNodeDistinctIterator::reset();
   }
 
   void close() { StoreNodeDistinctIterator::close(); }
@@ -429,8 +429,8 @@ public:
 
 
 /*******************************************************************************
-  This is an extension to StoreNodeSortIterator which allows atomic items 
-  in the received sequences. The received sequences must contain nodes are atomic
+  This is an extension to StoreNodeSortIterator which allows atomic items
+  in the received sequences. The received sequences must contain nodes or atomic
   items, but not a mixture. In case of atomic items, the output sequences
   is equivalent to the input sequence, else, the same operations as in
   StoreNodeSortIterator are applied.
@@ -452,10 +452,10 @@ public:
 
   bool next(store::Item_t& result);
 
-  void reset() 
+  void reset()
   {
     theNodeMode = theAtomicMode = false;
-    StoreNodeSortIterator::reset(); 
+    StoreNodeSortIterator::reset();
   }
 
   void close() { StoreNodeSortIterator::close(); }

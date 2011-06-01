@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@
 #include "store/naive/store_config.h"
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
 
-// Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h 
+// Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
 #include "store/naive/hashmap_nodep.h"
 #endif
@@ -51,8 +51,8 @@
 #include "zorbatypes/zstring.h"
 
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
 namespace store
 {
@@ -60,7 +60,7 @@ namespace store
 }
 
 
-namespace simplestore 
+namespace simplestore
 {
 
 class AttributeNode;
@@ -142,13 +142,13 @@ class XmlNodeTokenizerCallback;
                    "virtual" collection (with collection id equal to 0), and
                    their id is created by the SimpleStore::createId() method.
                    theId it is guaranteed to be stable during the lifetime of
-                   the tree, but may be reused after the tree is destroyed. 
+                   the tree, but may be reused after the tree is destroyed.
                    theId is used in building node URIs that are returned to
                    the application. It is not meant to be used (at least not
                    directly) to sort nodes in doc order.
   thePos         : The position of this tree within its containing collection.
                    After inserting/deleting one or more nodes in/from the middle
-               
+
   theBaseUri     : The base uri property of the tree's root node.
   theDocUri      : A user provided uri for the tree (may be NULL).
 
@@ -374,10 +374,10 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
-  void free() 
+  void free()
   {
     if (getTree() != NULL)
-      getTree()->free(); 
+      getTree()->free();
   }
 
   //
@@ -389,17 +389,17 @@ public:
     return (store::StoreConsts::NodeKind)(theFlags & NodeKindMask);
   }
 
-  const store::Collection* getCollection() const 
+  const store::Collection* getCollection() const
   {
-    return reinterpret_cast<const store::Collection*>(getTree()->getCollection()); 
+    return reinterpret_cast<const store::Collection*>(getTree()->getCollection());
   }
 
-  void getDocumentURI(zstring& uri) const 
+  void getDocumentURI(zstring& uri) const
   {
     ;
   }
 
-  store::Item* getParent() const 
+  store::Item* getParent() const
   {
     return reinterpret_cast<store::Item*>(theParent);
   }
@@ -445,7 +445,7 @@ public:
 
   bool isValidated() const { return getTree()->isValidated(); }
 
-  void markValidated() 
+  void markValidated()
   {
     assert(theParent == NULL);
     getTree()->markValidated();
@@ -463,7 +463,7 @@ public:
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll, ulong pos) 
+  void setCollection(SimpleCollection* coll, ulong pos)
   {
     getTree()->setCollection(coll, pos);
   }
@@ -639,11 +639,11 @@ protected:
   InternalNode() {}
 
 #ifdef TEXT_ORDPATH
-  InternalNode(store::StoreConsts::NodeKind nodeKind) 
+  InternalNode(store::StoreConsts::NodeKind nodeKind)
     :
     XmlNode(nodeKind),
     theNumAttrs(0)
-  { 
+  {
   }
 
   InternalNode(
@@ -660,11 +660,11 @@ protected:
 
 #else
 
-  InternalNode(store::StoreConsts::NodeKind nodeKind) 
+  InternalNode(store::StoreConsts::NodeKind nodeKind)
     :
     OrdPathNode(nodeKind),
     theNumAttrs(0)
-  { 
+  {
   }
 
   InternalNode(
@@ -683,7 +683,7 @@ protected:
 public:
   //
   // SimpleStore Methods
-  // 
+  //
 
   NodeVector& nodes() { return theNodes; }
 
@@ -787,7 +787,7 @@ public:
   // Item methods
   //
 
-  store::Item* getType() const; 
+  store::Item* getType() const;
 
   void getDocumentURI(zstring& uri) const { uri = getDocUri(); }
 
@@ -811,7 +811,7 @@ public:
 
   //
   // SimpleStore Methods
-  // 
+  //
 
   XmlNode* copyInternal(
         InternalNode* rootParent,
@@ -905,7 +905,7 @@ public:
 
   //
   // SimpleStore Methods
-  // 
+  //
 
   bool haveBaseUri() const      { return (theFlags & HaveBaseUri) != 0; }
   void setHaveBaseUri()         { theFlags |= HaveBaseUri; }
@@ -932,10 +932,10 @@ public:
   bool isRecursive() const      { return (theFlags & IsRecursive) != 0; }
   void resetRecursive()         { theFlags &= ~IsRecursive; }
 
-  void setRecursive()           
+  void setRecursive()
   {
     theFlags |= IsRecursive;
-    getTree()->setRecursive(); 
+    getTree()->setRecursive();
   }
 
   bool haveLocalBindings() const
@@ -959,7 +959,7 @@ public:
       store::Item_t& qname,
       bool           isAttr,
       bool           replacePrefix);
-  
+
   void addBindingForQName2(const store::Item* qname);
 
   void checkNamespaceConflict(const store::Item* qname, Error const &ecode) const;
@@ -1086,7 +1086,7 @@ public:
 
   //
   // SimpleStore Methods
-  // 
+  //
 
   XmlNode* copyInternal(
         InternalNode* rootParent,
@@ -1126,21 +1126,21 @@ public:
 protected:
   void setType(store::Item_t& type);
 
-  ItemVector& getValueVector() 
+  ItemVector& getValueVector()
   {
-    return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
+    return *reinterpret_cast<ItemVector*>(theTypedValue.getp());
   }
 
   const ItemVector& getValueVector() const
   {
-    return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
+    return *reinterpret_cast<ItemVector*>(theTypedValue.getp());
   }
 
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
 #endif /* ZORBA_NO_FULL_TEXT */
 };
-   
+
 
 /*******************************************************************************
 
@@ -1213,7 +1213,7 @@ public:
 
   //
   // SimpleStore Methods
-  // 
+  //
 
   XmlNode* copyInternal(
         InternalNode* rootParent,
@@ -1485,7 +1485,7 @@ inline long XmlNode::compare2(const XmlNode* other) const
  * An %XmlNodeTokenizerCallback is-a Tokenizer::Callback for tokenizing XML
  * nodes.
  */
-class XmlNodeTokenizerCallback : public Tokenizer::Callback 
+class XmlNodeTokenizerCallback : public Tokenizer::Callback
 {
 public:
   typedef FTTokenStore::container_type container_type;

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,8 +23,8 @@
 #include "store/naive/node_iterators.h"
 #include "store/naive/store_defs.h"
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
 namespace simplestore
 {
@@ -38,7 +38,7 @@ namespace simplestore
 
 bool ChildrenIteratorImpl::next(store::Item_t& result)
 {
-  if (theIte == theEnd) 
+  if (theIte == theEnd)
   {
     result = NULL;
     return false;
@@ -61,7 +61,7 @@ bool ChildrenIteratorImpl::next(store::Item_t& result)
 
 bool ChildrenReverseIteratorImpl::next(store::Item_t& result)
 {
-  if (theIte == theEnd) 
+  if (theIte == theEnd)
   {
     result = NULL;
     return false;
@@ -84,7 +84,7 @@ bool ChildrenReverseIteratorImpl::next(store::Item_t& result)
 
 bool AttributesIteratorImpl::next(store::Item_t& result)
 {
-  if (theIte == theEnd) 
+  if (theIte == theEnd)
   {
     result = NULL;
     return false;
@@ -96,7 +96,7 @@ bool AttributesIteratorImpl::next(store::Item_t& result)
   {
     ++theIte;
 
-    if (theIte == theEnd) 
+    if (theIte == theEnd)
     {
       result = NULL;
       return false;
@@ -175,7 +175,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
 {
   store::Item_t contextNode;
 
-  if (theAtomicMode) 
+  if (theAtomicMode)
   {
     if (!theInput->next(result))
       return false;
@@ -342,7 +342,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
       if (!theInput->next(result))
         break;
 
-      if (result->isAtomic())
+      if (result->isAtomic() || result->isFunction())
       {
         if (theNodeMode)
           throw XQUERY_EXCEPTION(err::XPTY0018);
@@ -389,7 +389,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
     result = NULL;
     return false;
   }
- 
+
 }
 } // namespace simplestore
 } // namespace zorba
