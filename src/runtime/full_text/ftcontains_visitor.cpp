@@ -95,7 +95,7 @@ inline ft_int to_ft_int( xs_integer const &i ) {
  * @param p A pointer to the object to push.
  */
 template<typename StackValueType,typename PointedToType>
-inline void push( stack<StackValueType> &s, auto_ptr<PointedToType> p ) {
+inline void push( std::stack<StackValueType> &s, auto_ptr<PointedToType> p ) {
   s.push( p.get() );
   p.release();
 }
@@ -110,7 +110,7 @@ inline void push( stack<StackValueType> &s, auto_ptr<PointedToType> p ) {
  * @param t The object to push.
  */
 template<typename StackValueType,typename T>
-inline void push( stack<StackValueType> &s, T t ) {
+inline void push( std::stack<StackValueType> &s, T t ) {
   s.push( t );
 }
 
