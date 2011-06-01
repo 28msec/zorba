@@ -27,15 +27,21 @@
 
 namespace zorba {
 
-  std::ostream& print_stack_trace(const XQueryException& aException,
-                                  std::ostream& aOut,
-                                  bool aAsXml)
+  std::ostream&
+  print_stack_trace(
+    const XQueryException&  aException,
+    std::ostream&           aOut,
+    bool                    aAsXml,
+    bool                    aIndent)
   {
     XQueryStackTrace const& lTrace = aException.query_trace();
-    if(!lTrace.empty()) {
+    if (!lTrace.empty()) {
       XQueryStackTrace::const_iterator it = lTrace.begin();
-      if(aAsXml) { aOut << "<stack>"; } 
-      for(; it != lTrace.end(); ++it) {
+      if (aAsXml) {
+        if (aIndent) aOut << "  ";
+        aOut << "<stack>";
+      } 
+      for (; it != lTrace.end(); ++it) {
         XQueryStackTrace::fn_name_type const& lName = it->getFnName();
         XQueryStackTrace::fn_arity_type lArity = it->getFnArity();
         char const *const lPrefix = lName.prefix();
@@ -46,62 +52,69 @@ namespace zorba {
             lFileName = lFileName.substr(1);
           }
         }
-        if(aAsXml) {
+        if (aAsXml) {
+          if (aIndent) aOut << std::endl << "      ";
           aOut << "<call ";
-          if( lPrefix && *lPrefix ) {
-            aOut << " prefix=\"" << lPrefix << "\" ";
+          if (lPrefix && *lPrefix) {
+            aOut << "prefix=\"" << lPrefix << "\" ";
           }
-          aOut << " arity=\"" << lArity << "\" ";
-          aOut << " ns=\"" << lName.ns() << "\" ";
-          aOut << " localName=\"" << lName.localname() << "\">";
-          aOut << "  <location ";
+          aOut << "arity=\"" << lArity << "\" ";
+          aOut << "ns=\"" << lName.ns() << "\" ";
+          aOut << "localName=\"" << lName.localname() << "\">";
+          if (aIndent) aOut << std::endl << "        ";
+          aOut << "<location ";
           aOut << "fileName=\"" << lFileName << "\" ";
           aOut << "line=\"" << it->getLine() << "\" ";  
           aOut << "column=\"" << it->getColumn() << "\" ";  
-          aOut << "  />";
+          aOut << "/>";
+          if (aIndent) aOut << std::endl << "      ";
           aOut << "</call>"; 
         } else {
-	  std::ostringstream oss;
-	  oss << lName;
+          std::ostringstream oss;
+          oss << lName;
           String lFName = oss.str();
           aOut << "=================================================" << std::endl;
-          aOut << lFName << "#" << lArity << " ( " << lName.ns() << " ) " << std::endl;
+          aOut << lFName << "#" << lArity << " <" << lName.ns() << "> " << std::endl;
           aOut << lFileName << " at line " << it->getLine() << " column " << it->getColumn() << std::endl;
         }
       } 
-      if(aAsXml) { aOut << "</stack>"; } 
+      if  (aAsXml) {
+        if (aIndent) aOut << std::endl << "    ";
+        aOut << "</stack>";
+      } 
     }
     return aOut;
   }
 
   std::ostream&
-  ErrorPrinter::print(const XQueryException& aException,
-                      std::ostream&         aOut,
-                      bool                  aAsXml,
-                      bool                  aIndent)
+  ErrorPrinter::print(
+    const XQueryException&  aException,
+    std::ostream&           aOut,
+    bool                    aAsXml,
+    bool                    aIndent)
   {
-      if( !aAsXml ) {
+      if (!aAsXml) {
         aOut << aException << " ";
-        if( aIndent ) { aOut << std::endl; };
-        print_stack_trace(aException, aOut, aAsXml);
-      }
-      else {
+        aOut << std::endl;
+        print_stack_trace(aException, aOut, aAsXml, aIndent);
+      } else {
         aOut << "<errors>";
-        if( aIndent ) aOut << std::endl << "  ";
+        if (aIndent) aOut << std::endl << "  ";
         //code
         aOut << "<error code='" << aException.diagnostic().qname() << "'>";
-        if( aIndent ) aOut << std::endl << "    ";
+        if (aIndent) aOut << std::endl << "    ";
         //location
         aOut << "<location module='" << aException.source_uri();
         aOut << "' line='" << aException.source_line();
         aOut << "' column='" << aException.source_column() << "'/>";
-        if( aIndent ) aOut << std::endl << "    ";
+        if (aIndent) aOut << std::endl << "    ";
         //description
         aOut << "<description>" << aException.what() << "</description>";
         if( aIndent ) aOut << std::endl << "  ";
-        print_stack_trace(aException, aOut, aAsXml);
+        print_stack_trace(aException, aOut, aAsXml, aIndent);
+        if (aIndent) aOut << std::endl << "  ";
         aOut << "</error>";
-        if( aIndent ) aOut << std::endl;
+        if (aIndent) aOut << std::endl;
         aOut << "</errors>";
       }
       return aOut;

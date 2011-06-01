@@ -20,17 +20,21 @@
 
 namespace zorba {
 
-  class XQueryException;
+class XQueryException;
 
-  class ErrorPrinter {
-      public:
-          static std::ostream&
-          print(const XQueryException& lException,
-                std::ostream&          lOut,
-                bool                   aAsXml,
-                bool                   aIndent);
+class ErrorPrinter {
 
-  }; /* class ErrorPrinter */
+  public:
+
+    static std::ostream&
+    print(
+      const XQueryException& lException,
+      std::ostream&          lOut,
+      bool                   aAsXml,
+      bool                   aIndent);
+
+}; /* class ErrorPrinter */
+
 } /* namespace zorba */
 
-#endif
+#endif //ZORBA_ERROR_PRINTER_H
