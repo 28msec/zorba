@@ -59,7 +59,7 @@ namespace zorba { namespace http_client {
     int lCode = 0;
     lCode = theStreamBuffer->multi_perform();
     if (lCode)
-      return lCode;
+      return lCode; 
     if (!theStatusOnly) {
       std::istream lStream(theStreamBuffer);
       Item lItem;

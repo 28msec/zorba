@@ -1,11 +1,11 @@
-import module namespace os = "http://www.zorba-xquery.com/modules/os";
+import module namespace sys = 'http://www.zorba-xquery.com/modules/system';
 import module namespace file = "http://expath.org/ns/file";
 
 declare function local:do($path) {
   fn:concat(file:dir-name($path),"-",file:base-name($path))
 };
 
-if (os:operating-system() eq "Windows") then
+if (sys:property($sys:os-name) eq "Windows") then
  let $path0 := "C:\a\b\abcd\\\"
  let $path1 := "c:/a/b/c////"
  let $path2 := "D:/a/b/c"

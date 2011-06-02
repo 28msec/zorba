@@ -61,7 +61,6 @@ SET(UNIT_TESTS_SRCS
   streamable_string.cpp
   string_test.cpp
   main_sequential.cpp
-  os_module.cpp
   datetime.cpp
   invoke.cpp
   xquery_functions.cpp
