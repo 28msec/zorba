@@ -36,18 +36,17 @@ namespace zorba {
  */
 typedef zstring string_type;
 
-#define STRING_OF(STRING_OBJ)                   \
-  const_cast<string_type*>(                     \
-    reinterpret_cast<string_type const*>(       \
-      &(STRING_OBJ).string_storage_.rep_storage \
-    )                                           \
+// This is not an inline function since string_storage_ is private.
+#define STRING_OF(STRING_OBJ)                                             \
+  const_cast<string_type*>(                                               \
+    reinterpret_cast<string_type const*>( &(STRING_OBJ).string_storage_ ) \
   )
 
 #define THIS_STRING STRING_OF( *this )
 
 void String::size_check() {
   static_assert(
-    sizeof( string_type ) <= sizeof( string_storage_type ),
+    sizeof( string_storage_type ) >= sizeof( string_type ),
     "storage for zstring is too small"
   );
 }

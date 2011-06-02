@@ -1265,12 +1265,19 @@ public:
   /////////////////////////////////////////////////////////////////////////////
 
 private:
-
-  // Using a struct guarantees correct struct/class alignment.
+  //
+  // We need to use a struct in order to assert that its size >= the size of
+  // the internal string class.
+  //
   struct string_storage_type {
-    void *rep_storage;
+    //
+    // We need to use a type that has the same size as a pointer but isn't a
+    // pointer so as not to break strict-aliasing rules.
+    //
+    typedef char ptrsize_t[ sizeof( void* ) ];
+    ptrsize_t rep_;
 #ifndef NDEBUG
-    void *debug_str_storage;
+    ptrsize_t debug_str_;
 #endif /* NDEBUG */
   };
 
