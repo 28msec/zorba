@@ -655,6 +655,10 @@ TranslatorImpl(
   xquery_fns_def_dot.insert ("local-name");
   xquery_fns_def_dot.insert ("name");
   xquery_fns_def_dot.insert ("string");
+  xquery_fns_def_dot.insert ("generate-id");
+  xquery_fns_def_dot.insert ("data");
+  xquery_fns_def_dot.insert ("document-uri");
+  xquery_fns_def_dot.insert ("node-name");
 
   op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
