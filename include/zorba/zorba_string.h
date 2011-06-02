@@ -1271,13 +1271,15 @@ private:
   //
   struct string_storage_type {
     //
-    // We need to use a type that has the same size as a pointer but isn't a
-    // pointer so as not to break strict-aliasing rules.
+    // We need to do this union weirdness so as not to break strict-aliasing
+    // rules.
     //
-    typedef char ptrsize_t[ sizeof( void* ) ];
-    ptrsize_t rep_;
+    union {
+      void *rep_;
+      char storage_[1];
+    };
 #ifndef NDEBUG
-    ptrsize_t debug_str_;
+    char *debug_str_;
 #endif /* NDEBUG */
   };
 
