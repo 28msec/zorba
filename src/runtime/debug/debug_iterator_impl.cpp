@@ -62,17 +62,13 @@ DebugIterator::nextImpl(
   DebugIteratorState* lState = 0;
   DEFAULT_STACK_INIT(DebugIteratorState, lState, planState);
 
+  // is there a breakpoint here?
+  checkBreak(&planState);
+
   while (consumeNext(result, theChildren[0], planState)) {
     lState->notEmptySequence = true;
-    checkBreak(&planState);
     // this iterator is the identity
     STACK_PUSH(true, lState);
-  }
-  // If the child of this iterator is an empty sequence (i.e. consumeNext
-  // returns false the first time invoked), we have to check if we have to
-  // suspend here.
-  if (!lState->notEmptySequence) {
-    checkBreak(&planState);
   }
   STACK_END(lState);
 }
