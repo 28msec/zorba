@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+#include <zorba/zorba_string.h>
+
 #include "util/ascii_util.h"
 #include "util/atomic_int.h"
 #include "util/regex.h"
@@ -782,6 +784,7 @@ int string_test( int, char*[] ) {
 
   test<zstring>();
   test<zstring_p>();
+  test<String>();
 
   test_buf_rep();
   test_ptr_rep();
@@ -792,10 +795,12 @@ int string_test( int, char*[] ) {
   test_utf8_string<string>();
   test_utf8_string<zstring>();
   test_utf8_string<zstring_p>();
+  test_utf8_string<String>();
 
   test_utf8_iterator<string>();
   test_utf8_iterator<zstring>();
   test_utf8_iterator<zstring_p>();
+  test_utf8_iterator<String>();
 
   ////////// string functions /////////////////////////////////////////////////
 
@@ -803,14 +808,19 @@ int string_test( int, char*[] ) {
   test_append_codepoints<string>( utf8_aeiou_acute );
   test_append_codepoints<zstring>( "hello" );
   test_append_codepoints<zstring>( utf8_aeiou_acute );
+  test_append_codepoints<String>( "hello" );
+  test_append_codepoints<String>( utf8_aeiou_acute );
 
   test_begins_with<zstring>();
+  test_begins_with<String>();
 
   test_clark<string>();
   test_clark<zstring>();
+  test_clark<String>();
 
   test_ends_with<string>();
   test_ends_with<zstring>();
+  test_ends_with<String>();
 
   test_getline<string>();
   test_getline<zstring>();
@@ -823,27 +833,35 @@ int string_test( int, char*[] ) {
   test_normalize_whitespace<string>();
   test_normalize_whitespace<zstring>();
   test_normalize_whitespace<zstring_p>();
+  test_normalize_whitespace<String>();
 
   test_replace_all<string>();
+  test_replace_all<String>();
 
   test_reverse<string>( "hello" );
   test_reverse<zstring>( "hello" );
   test_reverse<zstring_p>( "hello" );
+  test_reverse<String>( "hello" );
 
   test_reverse<string>( utf8_aeiou_acute );
   test_reverse<zstring>( utf8_aeiou_acute );
   test_reverse<zstring_p>( utf8_aeiou_acute );
+  test_reverse<String>( utf8_aeiou_acute );
 
   test_skip_whitespace();
 
+  test_split<string>( "a", "b" );
   test_split<zstring>( "a", "b" );
   test_split<zstring>( "", "b" );
   test_split<zstring>( "a", "" );
+  test_split<String>( "a", "" );
 
   test_to_codepoints<string>( "hello" );
   test_to_codepoints<string>( utf8_aeiou_acute );
   test_to_codepoints<zstring>( "hello" );
   test_to_codepoints<zstring>( utf8_aeiou_acute );
+  test_to_codepoints<String>( "hello" );
+  test_to_codepoints<String>( utf8_aeiou_acute );
 
   test_to_string_from_utf8<string>();
   test_to_string_from_utf8<zstring>();
@@ -856,6 +874,7 @@ int string_test( int, char*[] ) {
   test_to_upper<string>();
   test_to_upper<zstring>();
   test_to_upper<zstring_p>();
+  test_to_upper<String>();
 
   test_to_wchar_t();
 
@@ -863,13 +882,17 @@ int string_test( int, char*[] ) {
   test_trim_end();
   test_trim_whitespace<string>();
   test_trim_whitespace<zstring>();
+  test_trim_whitespace<String>();
 
   test_uri_encode<string>();
+  test_uri_encode<String>();
 
   test_validate();
   test_validate_with_size();
 
   test_xml_escape<string>();
+  test_xml_escape<String>();
+
   test_xml_parse_entity();
 
   cout << failures << " test(s) failed\n";

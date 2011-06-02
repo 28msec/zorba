@@ -716,7 +716,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_of( String const &s, size_type pos = 0 ) const;
+  size_type find_last_of( String const &s, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the characters in \a s
@@ -726,7 +726,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_of( std::string const&, size_type pos = 0 ) const;
+  size_type find_last_of( std::string const&, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the characters in \a s
@@ -736,7 +736,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_of( const_pointer s, size_type pos = 0 ) const;
+  size_type find_last_of( const_pointer s, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the first \a s_n characters
@@ -757,7 +757,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of \a c or \c npos if not found.
    */
-  size_type find_last_of( value_type c, size_type pos = 0 ) const;
+  size_type find_last_of( value_type c, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the characters not in \a s
@@ -767,7 +767,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_not_of( String const &s, size_type pos = 0 ) const;
+  size_type find_last_not_of( String const &s, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the characters not in \a s
@@ -777,7 +777,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_not_of( std::string const&, size_type pos = 0 ) const;
+  size_type find_last_not_of( std::string const&, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the characters not in \a s
@@ -787,7 +787,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_not_of( const_pointer s, size_type pos = 0 ) const;
+  size_type find_last_not_of( const_pointer s, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the first \a s_n characters
@@ -809,7 +809,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of any character except \a c or \c npos if not found.
    */
-  size_type find_last_not_of( value_type c, size_type pos = 0 ) const;
+  size_type find_last_not_of( value_type c, size_type pos = npos ) const;
 
   /**
    * Searches this backwards string for the given string starting at the given
