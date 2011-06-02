@@ -32,6 +32,8 @@
 
 #include "types/typeimpl.h"
 
+#include "zorba/util/uri.h"
+
 namespace zorba {
 
 // ****************************************************************************
@@ -295,11 +297,13 @@ DebuggerCommons::removeBreakpoint(unsigned int aId)
 //}
 
 bool
-DebuggerCommons::hasToBreakAt(const QueryLoc& aLocation) const
+DebuggerCommons::hasToBreakAt(QueryLoc aLocation)
 {
   if (theExecEval) {
     return false;
   }
+
+  adjustLocationFilePath(aLocation);
 
   BreakableIdMap::const_iterator lIter = theBreakableIDs.find(aLocation);
   if (lIter == theBreakableIDs.end()) {
@@ -470,15 +474,17 @@ DebuggerCommons::getFilepathOfURI(const std::string& aUri) const
 }
 
 void
-DebuggerCommons::addBreakable(Breakable aBreakable)
+DebuggerCommons::addBreakable(Breakable& aBreakable)
 {
+  adjustLocationFilePath(aBreakable.getLocation());
+
   unsigned int lId = theBreakables.size();
   theBreakables.push_back(aBreakable);
   theBreakableIDs[aBreakable.getLocation()] = lId;
 }
 
 void
-DebuggerCommons::pushStackFrame(QueryLoc aLocation, std::string aFunctionName)
+DebuggerCommons::pushStackFrame(QueryLoc aLocation, std::string& aFunctionName)
 {
   theStackTrace.push_back(std::pair<QueryLoc, std::string>(aLocation, aFunctionName));
 }
@@ -490,9 +496,20 @@ DebuggerCommons::popStackFrame()
 }
 
 std::vector<std::pair<QueryLoc, std::string> >
-DebuggerCommons::getStackFrames()
+DebuggerCommons::getStackFrames() const
 {
   return theStackTrace;
+}
+
+void
+DebuggerCommons::adjustLocationFilePath(QueryLoc& aLocation)
+{
+  if (aLocation.getFilename().substr(0, 7) == "file://") {
+    // adjust the file paths by removing the schema and encoding
+    zstring lOldFilename(aLocation.getFilename());
+    const String lNewFilename = URIHelper::decodeFileURI(lOldFilename.str());
+    aLocation.setFilename(lNewFilename.str());
+  }
 }
 
 } // namespace zorba

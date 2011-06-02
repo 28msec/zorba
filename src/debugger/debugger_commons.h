@@ -73,7 +73,7 @@ class Breakable : public serialization::SerializeBaseClass {
         theSet(false),
         theEnabled(false) {};
 
-    QueryLoc
+    QueryLoc&
     getLocation() { return theLocation; };
 
     bool
@@ -291,7 +291,7 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     * @brief Returns true, if a breakpoint is set to the given location -
     * false otherwise.
     */
-    bool hasToBreakAt(const QueryLoc& aLocation) const;
+    bool hasToBreakAt(QueryLoc aLocation);
     /**
     * @brief Returns true, if a breakpoint is set to the given debugger
     * iterator - false otherwise.
@@ -346,19 +346,21 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     std::string getFilepathOfURI(const std::string& aUri) const;
 
     void
-    addBreakable(Breakable location);
+    addBreakable(Breakable& location);
 
     void
-    pushStackFrame(QueryLoc location, std::string functionName);
+    pushStackFrame(QueryLoc location, std::string& functionName);
 
     void
     popStackFrame();
 
     std::vector<std::pair<QueryLoc, std::string> >
-    getStackFrames();
-
+    getStackFrames() const;
 
   private:
+
+    void
+    adjustLocationFilePath(QueryLoc& location);
 
     void
     checkBreakpoint(unsigned int id);
