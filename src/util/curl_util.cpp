@@ -32,6 +32,7 @@
 
 #include "error_util.h"
 #include "curl_util.h"
+#include "cxx_util.h"
 
 using namespace std;
 
@@ -170,10 +171,10 @@ void streambuf::close() {
     if ( curlm_ ) {
       curl_multi_remove_handle( curlm_, curl_ );
       curl_multi_cleanup( curlm_ );
-      curlm_ = 0;
+      curlm_ = nullptr;
     }
     destroy( curl_ );
-    curl_ = 0;
+    curl_ = nullptr;
   }
 }
 
@@ -249,11 +250,11 @@ size_t streambuf::curl_write_callback( void *ptr, size_t size, size_t nmemb,
 }
 
 void streambuf::init() {
-  buf_ = 0;
+  buf_ = nullptr;
   buf_capacity_ = 0;
   buf_len_ = 0;
-  curl_ = 0;
-  curlm_ = 0;
+  curl_ = nullptr;
+  curlm_ = nullptr;
   curl_running_ = 0;
 }
 
@@ -288,13 +289,13 @@ void streambuf::open( char const *uri ) {
     }
     catch ( ... ) {
       curl_multi_cleanup( curlm_ );
-      curlm_ = 0;
+      curlm_ = nullptr;
       throw;
     }
   }
   catch ( ... ) {
     destroy( curl_ );
-    curl_ = 0;
+    curl_ = nullptr;
     throw;
   }
 }

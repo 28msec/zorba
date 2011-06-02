@@ -19,6 +19,8 @@
 
 #include <zorba/locale.h>
 
+#include "util/cxx_util.h"
+
 namespace zorba {
 
 /**
@@ -53,7 +55,7 @@ public:
      */
     virtual void operator()( char const *utf8_s, size_t utf8_len,
                              int_t token_no, int_t sent_no, int_t para_no,
-                             void *payload = 0 ) = 0;
+                             void *payload = nullptr ) = 0;
   };
 
   /**
@@ -136,7 +138,7 @@ public:
    */
   virtual void tokenize( char const *utf8_s, size_t len,
                          locale::iso639_1::type lang, Callback &callback,
-                         void *payload = 0 ) = 0;
+                         void *payload = nullptr ) = 0;
 
 protected:
   Tokenizer();

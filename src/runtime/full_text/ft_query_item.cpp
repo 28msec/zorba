@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "util/cxx_util.h"
 #include "util/stl_util.h"
 #include "diagnostics/assert.h"
 
@@ -86,7 +87,7 @@ void query_item_star_iterator::pos( Mark_t const &mark ) {
 }
 
 FTToken const* query_item_star_iterator::next() {
-  FTToken const *result = 0;
+  FTToken const *result = nullptr;
   if ( qi_ != qi_star_->end() ) {
     while ( !result ) {
       if ( (result = (*qi_)->next()) ) {

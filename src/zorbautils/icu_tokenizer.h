@@ -23,6 +23,7 @@
 #include <zorba/locale.h>
 
 #include "tokenizer.h"
+#include "util/cxx_util.h"
 
 namespace zorba {
 
@@ -36,8 +37,8 @@ public:
   /**
    * Constructs an %ICU_Tokenizer.
    *
-   * @param wildcards If <code>true</code>, allows XQuery wildcard syntax
-   * characters to be part of tokens.
+   * @param wildcards If \c true, allows XQuery wildcard syntax characters to
+   * be part of tokens.
    */
   ICU_Tokenizer( bool wildcards = false );
 
@@ -50,7 +51,7 @@ private:
     RuleBasedBreakIterator *word_;
     RuleBasedBreakIterator *sent_;
 
-    ICU_Iterators() : word_( 0 ), sent_( 0 ) { }
+    ICU_Iterators() : word_( nullptr ), sent_( nullptr ) { }
 
     ~ICU_Iterators() {
       delete word_;

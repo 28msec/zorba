@@ -74,7 +74,7 @@ public:
   class const_iterator :
     public std::iterator<std::random_access_iterator_tag,value_type> {
   public:
-    const_iterator() : seg_( 0 ), i_( 0 ) {
+    const_iterator() : seg_( nullptr ), i_( 0 ) {
     }
 
     // Forward iterator requirements

@@ -368,7 +368,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
   while ( doc_tokens.hasNext() ) {
     FTTokenIterator::Mark_t mark( doc_tokens.pos() );
     FTToken const *dt;
-    store::Item const *dt_item = 0;
+    store::Item const *dt_item = nullptr;
     bool ignore = false;                // pointless init. to stifle warning
 
     if ( ignore_item ) {
@@ -393,8 +393,8 @@ static void match_tokens( FTTokenIterator &doc_tokens,
       }
     }
 
-    FTToken const *dt_start = 0, *dt_end = 0;
-    dt_item = 0;
+    FTToken const *dt_start = nullptr, *dt_end = nullptr;
+    dt_item = nullptr;
     bool matched = false;
 
     query_tokens.reset();
@@ -795,7 +795,7 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
   PUT_ARG( scope );
   PUT_ARG( unit );
 
-  ft_token_span::start_end_ptr sep = 0;
+  ft_token_span::start_end_ptr sep = nullptr;
   switch ( unit ) {
     case ft_big_unit::sentence:
       sep = &ft_token_span::sent;

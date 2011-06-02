@@ -24,6 +24,7 @@
 #include "api/unmarshaller.h"
 #include "compiler/parser/query_loc.h"
 #include "store/api/item.h"
+#include "util/cxx_util.h"
 #include "util/stl_util.h"
 
 namespace zorba {
@@ -69,7 +70,7 @@ make_user_exception( char const *raise_file,
                      ZorbaException::line_type raise_line,
                      char const *ns, char const *prefix, char const *localname,
                      char const *description,
-                     error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = nullptr ) {
   return make_user_exception(
     raise_file, raise_line, ns, prefix, localname, description,
     diagnostic::location::empty, error_object
@@ -94,7 +95,7 @@ make_user_exception( char const *raise_file,
                      ZorbaException::line_type raise_line,
                      Item const &qname, char const *description,
                      diagnostic::location const &loc,
-                     error_object_type *error_object = 0 );
+                     error_object_type *error_object = nullptr );
 
 /**
  * Makes a UserException.
@@ -114,7 +115,7 @@ make_user_exception( char const *raise_file,
                      ZorbaException::line_type raise_line,
                      store::Item_t const &qname, char const *description,
                      diagnostic::location const &loc,
-                     error_object_type *error_object = 0 );
+                     error_object_type *error_object = nullptr );
 
 /**
  * Makes a UserException.
@@ -133,7 +134,7 @@ inline UserException // MAKE_USER_EXCEPTION_CC_LT_SI_CC_EOT_X
 make_user_exception( char const *raise_file,
                      ZorbaException::line_type raise_line,
                      store::Item_t const &qname, char const *description,
-                     error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = nullptr ) {
   return make_user_exception(
     raise_file, raise_line, qname, description, diagnostic::location::empty,
     error_object

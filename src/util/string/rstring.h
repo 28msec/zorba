@@ -24,6 +24,7 @@
 #include <string>
 
 #include "rep_proxy.h"
+#include "util/cxx_util.h"
 
 namespace zorba {
 
@@ -2070,7 +2071,7 @@ public:
    * zero.
    */
   void append_safe( const_pointer s1, size_type n1,
-                    const_pointer s2 = 0, size_type n2 = 0 );
+                    const_pointer s2 = nullptr, size_type n2 = 0 );
 #if defined _MSC_VER || defined CLANG
 private:
 #endif

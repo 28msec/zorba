@@ -24,6 +24,7 @@
 #include "diagnostics/dict.h"
 
 #include "ascii_util.h"
+#include "cxx_util.h"
 #include "regex.h"
 #include "stl_util.h"
 
@@ -269,7 +270,7 @@ void regex::compile( string const &u_pattern, char const *flags,
   matcher_ = new RegexMatcher( u_pattern, icu_flags, status );
   if ( U_FAILURE( status ) ) {
     delete matcher_;
-    matcher_ = 0;
+    matcher_ = nullptr;
 
     zstring icu_error_key;
     if ( status > U_REGEX_ERROR_START && status < U_REGEX_ERROR_LIMIT ) {

@@ -18,6 +18,7 @@
 
 #include <zorba/config.h>
 
+#include "util/cxx_util.h"
 #include "util/fs_util.h"
 #include "util/less.h"
 #include "util/string_util.h"
@@ -128,7 +129,7 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
       break;
 #   endif /* ZORBA_WITH_FILE_ACCESS */
     default:
-      result = 0;
+      result = nullptr;
   }
   return ptr( result );
 }

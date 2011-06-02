@@ -17,6 +17,7 @@
 #include <zorba/config.h>
 
 #include "util/ascii_util.h"
+#include "util/cxx_util.h"
 #include "util/mmap_file.h"
 #include "util/stl_util.h"
 #include "util/uri_util.h"
@@ -99,7 +100,7 @@ ft_stop_words_set const*
 ft_stop_words_set::construct( ftstop_word_option const &option,
                               iso639_1::type lang ) {
   bool must_delete = false;
-  set_t *word_set = 0;                  // pointless init. to stifle warning
+  set_t *word_set = nullptr;            // pointless init. to stifle warning
 
   switch ( option.get_mode() ) {
     case ft_stop_words_mode::with:

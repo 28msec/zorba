@@ -20,6 +20,8 @@
 #include <cstddef>                      /* for size_t */
 #include <iterator>
 
+#include "util/cxx_util.h"
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -80,7 +82,7 @@ public:
   class const_iterator :
     public std::iterator<std::forward_iterator_tag,value_type> {
   public:
-    const_iterator() : remaining_( 0 ), cur_ptr_( 0 ) { }
+    const_iterator() : remaining_( 0 ), cur_ptr_( nullptr ) { }
 
     const_reference operator*() const {
       return value_;
@@ -122,7 +124,7 @@ public:
         decoder_( &cur_ptr_, &value_ );
         --remaining_;
       } else
-        cur_ptr_ = 0;
+        cur_ptr_ = nullptr;
     }
 
     size_type remaining_;

@@ -22,6 +22,7 @@
 
 #include <zorba/locale.h>
 
+#include "util/cxx_util.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
@@ -293,7 +294,7 @@ private:
   void free();
   string_t& get_mod_value( int selector ) const;
   void init( locale::iso639_1::type, int_t, int_t = QueryTokenMagicValue,
-             int_t = 0, store::Item const* = 0 );
+             int_t = 0, store::Item const* = nullptr );
 
   string_t const&
   value_impl( int, locale::iso639_1::type = locale::iso639_1::unknown ) const;
