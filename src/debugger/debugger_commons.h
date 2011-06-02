@@ -348,6 +348,16 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     void
     addBreakable(Breakable location);
 
+    void
+    pushStackFrame(QueryLoc location, std::string functionName);
+
+    void
+    popStackFrame();
+
+    std::vector<std::pair<QueryLoc, std::string> >
+    getStackFrames();
+
+
   private:
 
     void
@@ -365,9 +375,15 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
      * debugger breakable expressions.
      */
     BreakableIdMap                                  theBreakableIDs;
+    /**
+     * @brief The vector containing the current stack trace.
+     */
+    std::vector<std::pair<QueryLoc, std::string> >  theStackTrace;
 
     std::map<std::string, std::string>              theUriFileMappingMap;
-    DebuggerRuntime*                                    theRuntime;
+
+
+    DebuggerRuntime*                                theRuntime;
     static_context*                                 theCurrentStaticContext;
     dynamic_context*                                theCurrentDynamicContext;
     bool                                            theBreak;

@@ -477,4 +477,22 @@ DebuggerCommons::addBreakable(Breakable aBreakable)
   theBreakableIDs[aBreakable.getLocation()] = lId;
 }
 
+void
+DebuggerCommons::pushStackFrame(QueryLoc aLocation, std::string aFunctionName)
+{
+  theStackTrace.push_back(std::pair<QueryLoc, std::string>(aLocation, aFunctionName));
+}
+
+void
+DebuggerCommons::popStackFrame()
+{
+  theStackTrace.pop_back();
+}
+
+std::vector<std::pair<QueryLoc, std::string> >
+DebuggerCommons::getStackFrames()
+{
+  return theStackTrace;
+}
+
 } // namespace zorba

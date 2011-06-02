@@ -138,13 +138,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
             try {
               Breakable lBkp = theRuntime->getBreakpoint(lBID);
               std::string lFilename = lBkp.getLocation().getFilename().str();
-              String lTmp = URIHelper::encodeFileURI(lFilename);
-#ifdef WIN32
-              //if (lTmp.substr(9, 3) == "%3A") {
-              //  lTmp.replace(9, 3, ":");
-              //}
-#endif
-              lFilename = lTmp.str();
+              lFilename = URIHelper::encodeFileURI(lFilename).str();
 
               lResponse << "<breakpoint "
                 << "id=\"" << lBID << "\" "
@@ -295,12 +289,6 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
             << "cmdend=\"" << lLE << ":" << lCE << "\" "
             << "/>";
         }
-          lResponse << "<stack "
-            << "level=\"2\" "
-            << "type=\"file\" "
-            << "filename=\"file:///D:/mm.xq\" "
-            << "lineno=\"3\" "
-            << "/>";
 
       } else if (aCommand.getName() == "status") {
 

@@ -221,13 +221,25 @@ DebuggerRuntime::getStackFrames()
   std::vector<StackFrameImpl> lFrames;
 
   DebuggerCommons* lCommons = getDebbugerCommons();
+  std::vector<std::pair<QueryLoc, std::string> > lRawFrames = lCommons->getStackFrames();
+
+  QueryLoc lLocation;
+  std::string lSignature("query body");
+
+  // add the frames for each function call
+  for (std::size_t i = 0 ; i < lRawFrames.size(); i++) {
+    lLocation = lRawFrames.at(i).first;
+
+    StackFrameImpl lFrame(lSignature, lLocation);
+    lFrames.push_back(lFrame);
+
+    lSignature = lRawFrames.at(i).second;
+  }
+
+  // add the top most frame from the current iterator
   const DebugIterator* lIterator = lCommons->getCurrentIterator();
-  
-  const QueryLocationImpl lLocation(lIterator->loc);
-  const std::string lSignature("main module");
-
+  lLocation = lIterator->loc;
   StackFrameImpl lFrame(lSignature, lLocation);
-
   lFrames.push_back(lFrame);
 
   return lFrames;

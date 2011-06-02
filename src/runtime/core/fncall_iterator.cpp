@@ -47,6 +47,32 @@
 
 #include "util/string_util.h"
 
+#ifdef ZORBA_WITH_DEBUGGER
+#include "debugger/debugger_commons.h"
+
+#define DEBUGGER_COMMONS state->thePlanState->theDebuggerCommons
+#define DEBUGGER_PUSH_FRAME                                   \
+  /* if the debugger is turned on, push the current frame */  \
+  if (DEBUGGER_COMMONS) {                                     \
+    /* initialize the current stack frame name */             \
+    std::string lFrameName;                                   \
+    std::stringstream lSs;                                    \
+    lSs << theUDF->getName()->getStringValue()                \
+        << "#"                                                \
+        << theUDF->getArgVars().size();                       \
+    lFrameName = lSs.str();                                   \
+                                                              \
+    /* push the current frame on the stack */                 \
+    DEBUGGER_COMMONS->pushStackFrame(loc, lFrameName);        \
+  }
+
+#define DEBUGGER_POP_FRAME                                    \
+  /* pop the pushed frame */                                  \
+  if (DEBUGGER_COMMONS) {                                     \
+    DEBUGGER_COMMONS->popStackFrame();                        \
+  }
+#endif
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
@@ -112,7 +138,9 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
                                planState.theStackDepth + 1);
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
+#ifdef ZORBA_WITH_DEBUGGER
   thePlanState->theDebuggerCommons = planState.theDebuggerCommons;
+#endif
   thePlanState->theQuery = planState.theQuery;
 }
 
@@ -268,7 +296,6 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 }
 
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -282,8 +309,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     // Open the plan, if not done already. This cannot be done in the openImpl
     // method because in the case of recursive functions, we will get into an
     // infinite loop.
-    if (!state->thePlanOpen)
-    {
+    if (!state->thePlanOpen) {
       uint32_t planOffset = 0;
       state->thePlan->open(*state->thePlanState, planOffset);
       state->thePlanOpen = true;
@@ -318,12 +344,28 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
     }
 
+#ifdef ZORBA_WITH_DEBUGGER
+    DEBUGGER_PUSH_FRAME;
+#endif
+
     while (consumeNext(result, state->thePlan, *state->thePlanState))
     {
+#ifdef ZORBA_WITH_DEBUGGER
+      DEBUGGER_POP_FRAME;
+#endif
       STACK_PUSH(true, state);
+
+#ifdef ZORBA_WITH_DEBUGGER
+      DEBUGGER_PUSH_FRAME;
+#endif
     }
 
+#ifdef ZORBA_WITH_DEBUGGER
+    DEBUGGER_POP_FRAME;
+#endif
+
     STACK_END(state);
+
   }
   catch (ZorbaException& err)
   {
