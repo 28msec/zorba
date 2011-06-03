@@ -405,7 +405,7 @@ declare %private %sequential function xqdoc2html:create-general-menu($moduleUri 
   {
     variable $allStructures     := for $entry in $xqdoc2html:menuEntries/entry return $entry/@structure;   
     variable $dvStructures      := distinct-values($allStructures);  
-    variable $structures        := for $entry in $dvStructures order by $entry return $entry; 
+    variable $structures        := for $entry in $dvStructures order by lower-case($entry) return $entry; 
     variable $leftMenuFunction  := xqdoc2html:create-left-menu($moduleUri);
     
     xqdoc2html:create-module-table( $structures,
