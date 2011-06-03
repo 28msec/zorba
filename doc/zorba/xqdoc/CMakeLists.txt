@@ -22,7 +22,7 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
       --omit-xml-declaration
       -f
       -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq\""
-      -e "\"modulePaths:=${CMAKE_SOURCE_DIR}/modules\""
+      -e "\"modulePaths:=${CMAKE_SOURCE_DIR}/modules;${ZORBA_MODULES_DIR}/data-cleaning/src;${ZORBA_MODULES_DIR}/data-converters/src;${ZORBA_MODULES_DIR}/excel/src;${ZORBA_MODULES_DIR}/geo/src;${ZORBA_MODULES_DIR}/http-client/src;${ZORBA_MODULES_DIR}/image/src;${ZORBA_MODULES_DIR}/zorba_data-formatting_module/src;${ZORBA_MODULES_DIR}/zorba_email_module/src;${ZORBA_MODULES_DIR}/zorba_oauth_module/src;${ZORBA_MODULES_DIR}/zorba_process_module/src;${ZORBA_MODULES_DIR}/zorba_security_module/src;${ZORBA_MODULES_DIR}/zorba_system_module/src\""
       -e "\"xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}\""
       -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
       -e "\"examplePath:=${CMAKE_SOURCE_DIR}/test\""

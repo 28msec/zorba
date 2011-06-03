@@ -43,7 +43,9 @@ XQDocType XQDocAnnotation::map_type( zstring const &name ) {
   if (name == "library")
     return TYPE_LIBRARY;
   if (name == "example")
-    return TYPE_LIBRARY;
+    return TYPE_EXAMPLE;
+  if (name == "project")
+    return TYPE_PROJECT;
   return TYPE_UNKNOWN;
 }
 
@@ -127,6 +129,8 @@ XQDocComment::parseAnnotation(const zstring& aLine)
 
   if ("version" == lName) {
     theVersion = lValue;
+  } else if("project" == lName) {
+    theProject = lValue;
   } else if("return" == lName) {
     theReturn = lValue;
   } else if("deprecated" == lName) {

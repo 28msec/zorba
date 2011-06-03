@@ -51,7 +51,6 @@ string getFileName(const string& aFileName)
   }
 }
 
-
 void print_comment(store::Item_t& result, const XQDocComment* aComment)
 {
   if (aComment == 0) {
@@ -161,20 +160,37 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
     // example
     for (lIt = lExampleAnn.begin(); lIt != lExampleAnn.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
-      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "example");
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "example", true);
     }
+
   }
 }
 
 
-void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
+void printCommentFragment(store::Item_t& aParent, string aString, zstring aTag, bool isCustom = false)
 {
-  store::Item_t lQName, lElem, lText;
+  store::Item_t lQName, lTag, lElem, lText, lName;
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, aTag.c_str());
-  theFactory->createElementNode(lElem, aParent, lQName, lTypeName,
+  if(!isCustom)
+  {
+    theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, aTag.c_str());
+    theFactory->createElementNode(lElem, aParent, lQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
+  }
+  else
+  {
+    zstring lCustomStr("custom");
+    theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, lCustomStr);
+    theFactory->createElementNode(lElem, aParent, lQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
+
+    theFactory->createQName(lName, "", "", "tag");
+    theFactory->createString(lTag, aTag);
+    theFactory->createAttributeNode(
+      lName, lElem, lName, lTypeName, lTag);
+
+  }
 
   // parse the contents of the description in order
   // to be able to get proper XHTML tags
@@ -404,13 +420,15 @@ void *begin_visit(const ModuleDecl& n) {
 
 void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 {
-  store::Item_t lURIQName, lNameQName, lTypeQName;
+  store::Item_t lURIQName, lNameQName, lTypeQName, lCustomQName, lProjectQName, lProjectValue;
 
-  store::Item_t lURIElem, lNameElem, lTypeAttr, lURIText, lNameText;
+  store::Item_t lURIElem, lNameElem, lTypeAttr, lCustomElem, lURIText, lNameText, lProjectText;
 
   theFactory->createQName(lURIQName, theXQDocNS, theXQDocPrefix, "uri");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lTypeQName, "", "", "type");
+  theFactory->createQName(lCustomQName, theXQDocNS, theXQDocPrefix, "custom");
+  theFactory->createQName(lProjectQName, "", "", "tag");
 
   store::Item_t lAttrValue;
   zstring lAttrString("library");
@@ -427,6 +445,23 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 
   zstring lTargetNS = n.get_target_namespace();
   theFactory->createTextNode(lURIText, lURIElem.getp(), lTargetNS);
+
+  zstring lProject = n.getComment()->getProject();
+  if(!lProject.empty())
+  {
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(lCustomElem, theModule,
+                                lCustomQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
+
+    zstring lProjectString("project");
+    theFactory->createString(lProjectValue, lProjectString);
+
+    theFactory->createAttributeNode(
+      lProjectQName, lCustomElem, lProjectQName, lTypeName, lProjectValue);
+
+    theFactory->createTextNode(lProjectText, lCustomElem, lProject);
+  }
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(lNameElem, theModule,

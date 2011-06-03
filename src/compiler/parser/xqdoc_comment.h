@@ -37,6 +37,7 @@ namespace zorba {
     TYPE_SINCE,
     TYPE_LIBRARY,
     TYPE_EXAMPLE,
+    TYPE_PROJECT,
     TYPE_UNKNOWN
   };
 
@@ -48,8 +49,8 @@ namespace zorba {
 
       const zstring   theName;
       const zstring   theValue;
-      const XQDocType theType;   
-   
+      const XQDocType theType;
+
       XQDocAnnotation(zstring const &aName, zstring const &aValue)
         : theName(aName),
           theValue(aValue),
@@ -83,6 +84,7 @@ namespace zorba {
       zstring                     theReturn;
       bool                        theDeprecated;
       zstring                     theDeprecatedComment;
+      zstring                     theProject;
 
       bool
       startsWithColon(zstring& line);
@@ -94,7 +96,7 @@ namespace zorba {
       parseAnnotation(const zstring& aLine);
 
       XQDocComment(const zstring& aComment);
-    
+
     public:
 
       const zstring&
@@ -108,6 +110,9 @@ namespace zorba {
 
       const zstring&
       getVersion() const { return theVersion; }
+
+      const zstring&
+      getProject() const { return theProject; }
 
       bool
       hasReturn() const { return !theReturn.empty(); }

@@ -114,8 +114,9 @@
        @return ...... return
        @error ....... error
        @deprecated .. deprecated
+       @see ......... see
        @since ....... since
-       @see ......... see -->
+       @custom....... custom -->
   <xsd:complexType name="comment">
     <xsd:sequence>
       <xsd:element name="description" type="mixed-text" minOccurs="0"/>
@@ -127,7 +128,7 @@
       <xsd:element name="deprecated" type="mixed-text" minOccurs="0"/>
       <xsd:element name="see" type="mixed-text" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="since" type="mixed-text" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="custom" type="custom" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="custom" type="custom" minOccurs="0" maxOccurs="unbounded"/>      
     </xsd:sequence>
   </xsd:complexType>
 
@@ -164,6 +165,7 @@
   <xsd:complexType name="module">
     <xsd:sequence>
       <xsd:element name="uri" type="uri"/>
+      <xsd:element name="custom" type="custom" minOccurs="0" />
       <xsd:element name="name" type="name" minOccurs="0"/>
       <xsd:element name="comment" type="comment" minOccurs="0"/>
       <xsd:element name="body" type="xsd:string" minOccurs="0"/>
@@ -235,6 +237,7 @@
             <xsd:element name="signature" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="parameters" type="parameters" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="return" type="parameter" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="custom" type="custom" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:choice minOccurs="0" maxOccurs="unbounded">
               <xsd:element name="invoked" type="invoked" minOccurs="0" maxOccurs="unbounded"/>
               <xsd:element name="ref-variable" type="invoked" minOccurs="0" maxOccurs="unbounded"/>
@@ -242,6 +245,7 @@
             <xsd:element name="body" type="xsd:string" minOccurs="0"/>
           </xsd:sequence>
           <xsd:attribute name="arity" type="xsd:integer" use="optional"/>
+          <xsd:attribute name="isPrivate" type="xsd:boolean" use="optional"/>
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
