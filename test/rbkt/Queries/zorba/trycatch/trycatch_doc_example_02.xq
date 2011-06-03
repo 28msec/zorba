@@ -1,5 +1,6 @@
 (: try-catch with multiple catch clauses showing catch clause precedence :)
 
+declare namespace err="http://www.w3.org/2005/xqt-errors";
 try {
     3 + 2 > "30"
 } catch err:XQDY0004 {

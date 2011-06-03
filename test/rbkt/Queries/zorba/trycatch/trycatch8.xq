@@ -5,6 +5,7 @@
 :)
 
 
+declare namespace err="http://www.w3.org/2005/xqt-errors";
 import module namespace lib = 'http://www.example.com/lib' at "trycatch8.xqlib";
 
 try {

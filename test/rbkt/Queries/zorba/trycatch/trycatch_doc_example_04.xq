@@ -1,5 +1,6 @@
 (: Nested try-catch with the use of the error object :)
 
+declare namespace err="http://www.w3.org/2005/xqt-errors";
 try {
     for $x in (1, 2, 3, "4", 5)
     return

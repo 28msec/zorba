@@ -1,4 +1,5 @@
 (: test to check if an error is rethrown if non of the catch clauses matches :)
+declare namespace err="http://www.w3.org/2005/xqt-errors";
 let $x := 'a'
 return
 try {

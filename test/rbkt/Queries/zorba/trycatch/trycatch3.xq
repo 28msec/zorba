@@ -1,4 +1,5 @@
 (: test to check if try catch works if no error is thrown :)
+declare namespace err="http://www.w3.org/2005/xqt-errors";
 let $x := 1 to 100
 return
 try {

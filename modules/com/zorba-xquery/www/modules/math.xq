@@ -22,6 +22,11 @@
 module namespace zorba-math = "http://www.zorba-xquery.com/modules/math";
 
 (:~
+ : W3C Math namespace URI.
+:)
+declare namespace math="http://www.w3.org/2005/xpath-functions/math";
+
+(:~
  : Errors namespace URI.
 :)
 declare variable $zorba-math:errNS as xs:string := "http://www.zorba-xquery.com/modules/math";

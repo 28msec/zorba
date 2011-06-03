@@ -32,9 +32,9 @@
 #define XML_NS                  W3C_NS "XML/1998/namespace"
 #define XML_SCHEMA_NS           W3C_NS "2001/XMLSchema"
 
-#define XQUERY_ERR_NS           W3C_NS "2005/xqt-errors"
+#define XQUERY_ERR_NS           W3C_NS "2005/xqt-errors"                //not predeclared in XQuery 3.0
 #define XQUERY_LOCAL_FN_NS      W3C_NS "2005/xquery-local-functions"
-#define XQUERY_MATH_FN_NS       W3C_NS "2005/xpath-functions/math"
+#define XQUERY_MATH_FN_NS       W3C_NS "2005/xpath-functions/math"      //not predeclared in XQuery 3.0
 
 #define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
 
