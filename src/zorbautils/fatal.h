@@ -13,29 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_FATAL_H
 #define ZORBA_FATAL_H
 
-#include <iostream>
-#include <stdlib.h>
+#include <string>
 
-#ifdef WINCE
-#define abort() exit(1)
-#endif
+#include "util/string_util.h"
 
 namespace zorba {
 
-#define ZORBA_FATAL(COND, MSG)                                         \
-  do {                                                                 \
-    if ( !(COND) ) {                                                   \
-      std::cerr << "Zorba Internal Fatal Error in " << __FILE__ << ":" \
-                << __LINE__ << std::endl << MSG << std::endl;          \
-      abort();                                                         \
-    }                                                                  \
+/**
+ * Helper function for the ZORBA_FATAL() macro.  This is called only if the
+ * condition fails.  This function calls abort(3).
+ *
+ * @param condition The string representation of the condition that failed.
+ * @param file The C++ source-code file name where the condition failed.
+ * @param line The C++ source-code line number where the condition failed.
+ */
+void fatal( char const *condition, char const *file, int line,
+            char const *msg );
+
+#define ZORBA_FATAL(COND,MSG)                                 \
+  do {                                                        \
+    if ( !(COND) ) {                                          \
+      std::string const msg( BUILD_STRING( MSG ) );           \
+      zorba::fatal( #COND, __FILE__, __LINE__, msg.c_str() ); \
+      throw 0; /* never gets here but suppresses warning */   \
+    }                                                         \
   } while (0)
 
 } // namespace zorba
-
-#endif
+#endif /* ZORBA_FATAL_H */
 /* vim:set et sw=2 ts=2: */

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SET(ZORBAUTILS_SRCS
+    fatal.cpp
     properties_base.cpp
     hashset_itemh.cpp
     mutex.cpp
