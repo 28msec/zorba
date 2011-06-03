@@ -9311,7 +9311,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       RAISE_ERROR(err::XPST0017, loc,
       ERROR_PARAMS(qname->get_qname(),
-                   ZED(FnCallNotMatchSig_3o),
+                   ZED(FunctionUndeclared_3),
                    numArgs));
     }
 
@@ -9387,7 +9387,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         break;
       default:
         RAISE_ERROR(err::XPST0017, loc,
-        ERROR_PARAMS("fn:number", ZED(FnCallNotMatchSig_3o), numArgs));
+        ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), numArgs));
       }
 
       var_expr_t tv = create_temp_var(loc, var_expr::let_var);
@@ -9422,7 +9422,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (numArgs != 0)
         RAISE_ERROR(err::XPST0017, loc,
         ERROR_PARAMS("fn:static-base-uri",
-                     ZED(FnCallNotMatchSig_3o),
+                     ZED(FunctionUndeclared_3),
                      numArgs));
 
       zstring baseuri = theSctx->get_base_uri();
@@ -9494,7 +9494,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       if (numArgs < 2)
         RAISE_ERROR(err::XPST0017, loc,
-        ERROR_PARAMS("concat", ZED(FnCallNotMatchSig_3o), numArgs));
+        ERROR_PARAMS("concat", ZED(FunctionUndeclared_3), numArgs));
     }
     else if (localName == "doc")
     {
@@ -9546,7 +9546,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       RAISE_ERROR(err::XPST0017, loc,
       ERROR_PARAMS(qname->get_qname(),
-                   ZED(FnCallNotMatchSig_3o),
+                   ZED(FunctionUndeclared_3),
                    numArgs));
     }
   }
@@ -9565,7 +9565,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       RAISE_ERROR(err::XPST0017, loc,
       ERROR_PARAMS(qname->get_qname(),
-                   ZED(FnCallNotMatchSig_3o),
+                   ZED(FunctionUndeclared_3),
                    numArgs));
     }
 
@@ -9594,7 +9594,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       RAISE_ERROR(err::XPST0017, loc,
       ERROR_PARAMS(qname->get_qname(),
-                   ZED(FnCallNotMatchSig_3o),
+                   ZED(FunctionUndeclared_3),
                    numArgs));
     }
 
@@ -9751,7 +9751,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (numArgs == 0)
       {
         RAISE_ERROR(err::XPST0017, loc,
-        ERROR_PARAMS("invoke", ZED(FnCallNotMatchSig_3o)));
+        ERROR_PARAMS("invoke", ZED(FunctionUndeclared_3), numArgs));
       }
 
       // create a flwor with LETs to hold the parameters
@@ -9967,7 +9967,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   if (fn == 0)
   {
     RAISE_ERROR(err::XPST0017, loc,
-    ERROR_PARAMS(qname->get_qname(), ZED(FnCallNotMatchSig_3o), arity));
+    ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), arity));
   }
 
   // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it

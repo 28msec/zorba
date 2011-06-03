@@ -2241,7 +2241,7 @@ void end_visit(fo_expr& v)
   {
     throw XQUERY_EXCEPTION(err::XPST0017,
                            ERROR_PARAMS(func->getName()->getStringValue(),
-                                        ZED(FnCallNotMatchSig_3o),
+                                        ZED(FunctionUndeclared_3),
                                         argv.size()),
                            ERROR_LOC(loc));
   }

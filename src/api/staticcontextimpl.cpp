@@ -1526,7 +1526,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
     throw XQUERY_EXCEPTION(
       err::XPST0017,
       ERROR_PARAMS(
-        aQName.getStringValue(), ZED( FnCallNotMatchSig_3o ), aNumArgs
+        aQName.getStringValue(), ZED( FunctionUndeclared_3 ), aNumArgs
       )
     );
   }
@@ -1545,7 +1545,9 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   {
     throw XQUERY_EXCEPTION(
       err::XPST0017,
-      ERROR_PARAMS( aQName.getStringValue(), ZED( FnCallNotMatchSig_3o ) )
+      ERROR_PARAMS(
+        aQName.getStringValue(), ZED( FunctionUndeclared_3 ), aNumArgs
+      )
     );
   }
 
