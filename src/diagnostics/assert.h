@@ -39,7 +39,7 @@ void assertion_failed( char const *condition, char const *file, int line );
 #define ZORBA_ASSERT(COND)                                  \
   do {                                                      \
     if ( !(COND) ) {                                        \
-      assertion_failed( #COND, __FILE__, __LINE__ );        \
+      zorba::assertion_failed( #COND, __FILE__, __LINE__ ); \
       throw 0; /* never gets here but suppresses warning */ \
     }                                                       \
   } while (0)
