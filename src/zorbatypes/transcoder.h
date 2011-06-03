@@ -17,18 +17,17 @@
 #ifndef ZORBA_TRANSCODER_H
 #define ZORBA_TRANSCODER_H
 
+#include <cstring>
 #include <ostream>
 
 #include <zorba/config.h>
+
+#include "util/utf8_util.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
 
-struct UConverter;
-typedef struct UConverter UConverter;
-
-namespace zorba
-{
+namespace zorba {
 
 ///////////////////////////////////////////////////////////
 //                                                       //
@@ -36,65 +35,51 @@ namespace zorba
 //                                                       //
 ///////////////////////////////////////////////////////////
 
-class ZORBA_DLL_PUBLIC transcoder : public SimpleRCObject
-{
+class ZORBA_DLL_PUBLIC transcoder : public SimpleRCObject {
 protected:
-  std::ostream  & os;
-
-  bool            utf16;
+  std::ostream &os;
+  bool const utf16;
 
 #ifndef ZORBA_NO_UNICODE
-  UConverter    * conv;
-  char            buffer[10];
-  int             chars_in_buffer;
-  int             chars_expected;
-#endif
+  utf8::encoded_char_type utf8_buf_;
+  int utf8_buf_len_;
+  int utf8_char_len_;
+#endif /* ZORBA_NO_UNICODE */
 
 public:
   transcoder(std::ostream& output_stream, bool in_utf16);
 
-  ~transcoder();
-
-  transcoder& write(const char* str, std::streamsize n)
-  {
-    if (utf16)
-    {
-      return write_utf16(str, n);
-    }
+  transcoder& write( char const *s, std::streamsize n ) {
+#ifndef ZORBA_NO_UNICODE
+    if ( utf16 )
+      write_utf16( s, n );
     else
-    {
-      os.write(str, n);
-      return *this;
-    }
+#endif /* ZORBA_NO_UNICODE */
+      os.write( s, n );
+    return *this;
   }
 
-  transcoder& operator<<(const zstring& str)
-  {
-    return write(str.c_str(), (std::streamsize)str.size());
+  transcoder& operator<<( zstring const &s ) {
+    return write( s.data(), (std::streamsize)s.size() );
   }
 
-  transcoder& operator<<(const char* str)
-  {
-    return write(str, (std::streamsize)strlen(str));
+  transcoder& operator<<( char const *s ) {
+    return write( s, (std::streamsize)std::strlen( s ) );
   }
 
-  transcoder& operator<<(const char ch)
-  {
+  transcoder& operator<<( char ch ) {
+#ifndef ZORBA_NO_UNICODE
     if (utf16)
-    {
-      return write_utf16_char(ch);
-    }
+      write_utf16_char(ch);
     else
-    {
+#endif /* ZORBA_NO_UNICODE */
       os << ch;
-      return *this;
-    }
+    return *this;
   }
 
   // Support for manipulators (e.g. tr << flush)
-  transcoder& operator<<(transcoder& (*pf)(transcoder&))
-  {
-    return pf(*this);
+  transcoder& operator<<( transcoder& (*pf)(transcoder&) ) {
+    return pf( *this );
   }
 
   /**
@@ -102,28 +87,24 @@ public:
    *
    * @param ch the byte to be output
    */
-  void verbatim(const char ch)
-  {
+  void verbatim( char ch ) {
     os << ch;
   }
 
-  transcoder& flush()
-  {
+  transcoder& flush() {
     os.flush();
     return *this;
   }
 
 private:
-  transcoder& write_utf16(const char* str, std::streamsize n);
-
-  transcoder& write_utf16_char(const char ch);
+#ifndef ZORBA_NO_UNICODE
+  void write_utf16(const char* str, std::streamsize n);
+  void write_utf16_char(char ch);
+#endif /* ZORBA_NO_UNICODE */
 };
 
-
-} /* namespace zorba */
-
-#endif
-
+} // namespace zorba
+#endif /* ZORBA_TRANSCODER_H */
 /*
  * Local variables:
  * mode: c++

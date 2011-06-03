@@ -14,113 +14,68 @@
  * limitations under the License.
  */
 
-#include "zorbatypes/transcoder.h"
-#include "diagnostics/assert.h"
+#include <stdexcept>
 
-#ifndef ZORBA_NO_UNICODE
-#include "zorbatypes/libicu.h"
-#endif
+#include "diagnostics/assert.h"
+#include "util/unicode_util.h"
 #include "util/utf8_util.h"
+
+#include "transcoder.h"
 
 namespace zorba {
 
-
-transcoder::transcoder(std::ostream& output_stream, bool in_utf16)
-  :
-  os(output_stream),
-  utf16(in_utf16)
+transcoder::transcoder( std::ostream& output_stream, bool in_utf16 ) :
+  os( output_stream ),
+  utf16( in_utf16 )
 {
-  if (utf16)
-  {
 #ifndef ZORBA_NO_UNICODE
-    UErrorCode status = U_ZERO_ERROR;
-    conv = ucnv_open("utf-8", &status);
-    ZORBA_ASSERT(U_SUCCESS(status));
-    chars_in_buffer = 0;
-    chars_expected = 1;
-#else
-    ZORBA_ASSERT(false);
-#endif
+  utf8_buf_len_ = 0;
+  utf8_char_len_ = 1;
+#endif /* ZORBA_NO_UNICODE */
+}
+
+#ifndef ZORBA_NO_UNICODE
+
+void transcoder::write_utf16( char const *s, std::streamsize len ) {
+  unicode::char_type *u_s;
+  unicode::size_type u_len;
+  if ( !unicode::to_string( s, len, &u_s, &u_len ) )
+    throw std::runtime_error( "unicode::to_string() failed" );
+
+  char const *const byte = reinterpret_cast<char const*>( u_s );
+  for ( int i = 0; i < u_len * (int)sizeof( unicode::char_type ); ++i )
+    os << byte[i];
+
+  delete[] u_s;
+}
+
+void transcoder::write_utf16_char( char ch ) {
+  if ( utf8::is_start_byte( ch ) ) {
+    if ( utf8_char_len_ > 1 )
+      throw std::runtime_error( "incomplete UTF-8 character" );
+    utf8_char_len_ = utf8::char_length( ch );
+  } else if ( utf8::is_continuation_byte( ch ) ) {
+    if ( !utf8_buf_len_ )
+      throw std::runtime_error( "invalid UTF-8 byte" );
+  }
+
+  utf8_buf_[ utf8_buf_len_++ ] = ch;
+
+  if ( utf8_buf_len_ == utf8_char_len_ ) {
+    unicode::char_type u_ch;
+    if ( !unicode::to_char( utf8_buf_, &u_ch ) )
+      throw std::runtime_error( "unicode::to_char() failed" );
+
+    char const *const byte = reinterpret_cast<char const*>( &u_ch );
+    for ( int i = 0; i < (int)sizeof( unicode::char_type ); ++i )
+      os << byte[i];
+
+    utf8_buf_len_ = 0;
+    utf8_char_len_ = 1;
   }
 }
 
+#endif /* ZORBA_NO_UNICODE */
 
-transcoder::~transcoder()
-{
-#ifndef ZORBA_NO_UNICODE
-  if (utf16)
-    ucnv_close(conv);
-#endif
-}
-
-
-transcoder& transcoder::write_utf16(const char* str, std::streamsize len)
-{
-#ifndef ZORBA_NO_UNICODE
-  UChar temp;
-  UErrorCode status = U_ZERO_ERROR;
-  int target_size = ucnv_toUChars(conv, &temp, 1, str, len, &status);
-
-  status = U_ZERO_ERROR;
-  UChar* target = new UChar[target_size+1];
-  char* target2 = (char*)target;
-  target_size = ucnv_toUChars(conv, target, target_size, str, len, &status);
-
-  if (U_FAILURE(status))
-  {
-    ZORBA_ASSERT(0);
-  }
-
-  for (unsigned int i = 0; i < target_size*sizeof(UChar); i++)
-    os << target2[i];
-
-  delete[] target;
-  return *this;
-#endif
-}
-
-
-transcoder& transcoder::write_utf16_char(const char ch)
-{
-#ifndef ZORBA_NO_UNICODE
-  int done = 0;
-  buffer[chars_in_buffer++] = ch;
-
-  if (chars_expected == 1)
-  {
-    utf8::size_type const len = utf8::char_length( ch );
-    if (len > 1)
-      chars_expected = len;
-    else
-      done = 1;
-
-  }
-  else if (chars_expected == chars_in_buffer)
-    done = 1;
-
-  if (done)
-  {
-    UErrorCode status = U_ZERO_ERROR;
-    UChar target[20];
-    char* target2 = (char*)target;
-
-    int target_size = ucnv_toUChars(conv, target, 20, buffer, chars_in_buffer, &status);
-
-    if (U_FAILURE(status))
-    {
-      ZORBA_ASSERT(0);
-    }
-
-    for (unsigned int i=0; i<target_size*sizeof(UChar); i++)
-      os << target2[i];
-
-    chars_in_buffer = 0;
-    chars_expected = 1;
-  }
-
-  return *this;
-#endif
-}
-
-
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

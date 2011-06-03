@@ -181,6 +181,15 @@ bool normalize( string const &in, normalization::type n, string *out );
 ////////// string conversion //////////////////////////////////////////////////
 
 /**
+ * Converts a single UTF-8 encoded character into a single Unicode character.
+ *
+ * @param in The UTF-8 encoded character.
+ * @param out The address of the result.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+bool to_char( char const *in, char_type *out );
+
+/**
  * Converts a UTF-8 encoded string into a sequence of Unicode characters.
  *
  * @param in The UTF-8 encoded C string.
