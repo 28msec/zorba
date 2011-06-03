@@ -28,7 +28,7 @@
 #include "zorba_exception.h"
 
 #ifdef WIN32
-#include "StackWalker.h"
+# include "StackWalker.h"
 #endif /* WIN32 */
 
 using namespace std;
