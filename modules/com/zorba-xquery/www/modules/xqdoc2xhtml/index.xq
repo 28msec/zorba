@@ -1861,6 +1861,7 @@ declare %private %sequential function xqdoc2html:create-module-table-rec(
   if(empty($leveln)) then ()
   else
     for $cat in $leveln
+    order by lower-case($cat)
     return {
       variable $lCurentCat := if($curentCat eq "") then $cat else concat($curentCat,'/',$cat);
       xqdoc2html:create-module-helper($table, $cat, $lCurentCat);
