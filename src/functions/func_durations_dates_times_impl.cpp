@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
 #include "functions/func_durations_dates_times_impl.h"
 #include "functions/function_impl.h"

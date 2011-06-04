@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include <zorba/config.h>
 #include <xercesc/util/XMLString.hpp>
 #ifndef ZORBA_NO_XMLSCHEMA

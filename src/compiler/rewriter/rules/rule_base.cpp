@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 
 #include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/expression/expr_base.h"

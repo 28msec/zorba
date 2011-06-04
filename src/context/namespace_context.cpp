@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "context/namespace_context.h"
 #include "context/static_context.h"
 

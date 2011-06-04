@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/schema/schema.h"
 #include "functions/func_schema.h"
 

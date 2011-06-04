@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/maths/maths.h"
 #include "functions/func_maths.h"
 

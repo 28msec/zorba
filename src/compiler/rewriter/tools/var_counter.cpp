@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/rewriter/tools/expr_tools.h"

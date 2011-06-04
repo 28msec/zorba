@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "signature.h"
 #include "store/api/item.h"
 #include "types/typeops.h"

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
 
 #include "compiler/api/compilercb.h"

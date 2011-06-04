@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/base64/base64.h"
 #include "functions/func_base64.h"
 

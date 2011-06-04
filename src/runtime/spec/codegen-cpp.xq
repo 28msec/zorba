@@ -18,6 +18,7 @@ declare function local:includes($doc) as xs:string
   return
   string-join(
     (
+      '#include "stdafx.h"',
       concat('#include "runtime/', $dir-name, '"'),
       concat('#include "functions/func_', fn:tokenize($dir-name, "/")[last()], '"'),
       for $include in $doc//zorba:codegen/zorba:cpp/zorba:include[@form='Angle-bracket']

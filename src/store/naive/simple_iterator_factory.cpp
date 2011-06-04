@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 
 #include "store/naive/simple_iterator_factory.h"
 #include "store/naive/node_iterators.h"

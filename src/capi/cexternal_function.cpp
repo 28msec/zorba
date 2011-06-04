@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "capi/cexternal_function.h"
 #include "capi/csequence.h"
 #include "capi/user_item_sequence.h"

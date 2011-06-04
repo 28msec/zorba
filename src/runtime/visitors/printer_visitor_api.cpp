@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "runtime/visitors/printer_visitor_api.h"
 
 #include "runtime/visitors/printer_visitor.h"

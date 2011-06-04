@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "functions/func_ic_ddl.h"
 

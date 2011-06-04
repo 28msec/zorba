@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
 #include "store/api/item.h"
 #include "store/naive/simple_temp_seq.h"

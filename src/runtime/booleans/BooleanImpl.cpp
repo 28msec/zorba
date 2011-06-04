@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "zorbatypes/collation_manager.h"

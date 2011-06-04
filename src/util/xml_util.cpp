@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
 #include <cstdlib>                      /* for strtoul(3) */
 #include <cstring>

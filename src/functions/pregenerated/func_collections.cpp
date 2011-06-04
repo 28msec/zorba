@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/collections/collections.h"
 #include "functions/func_collections.h"
 

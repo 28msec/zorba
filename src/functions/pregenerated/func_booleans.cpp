@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/booleans/booleans.h"
 #include "functions/func_booleans.h"
 

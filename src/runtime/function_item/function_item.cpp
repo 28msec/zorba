@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
 #include "runtime/function_item/function_item.h"
 #include "runtime/core/fncall_iterator.h"

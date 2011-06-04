@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
 #ifndef WIN32
 # include <fcntl.h>                     /* for open(2) */

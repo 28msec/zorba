@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "functions/func_function_item_iter.h"
 

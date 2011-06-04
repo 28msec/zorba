@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+#include "stdafx.h"
 
 
 #include "runtime/introspection/dctx.h"

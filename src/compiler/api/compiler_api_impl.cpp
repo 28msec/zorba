@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "compiler/api/compiler_api_impl.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"

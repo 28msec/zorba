@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #line 2 "xquery_scanner.yy.cpp"
 
 #line 4 "xquery_scanner.yy.cpp"

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 
 #include "context/default_uri_mappers.h"
 #include "util/uri_util.h"

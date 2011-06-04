@@ -14,6 +14,7 @@
  * limitations under the License.
  */
  
+#include "stdafx.h"
 
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/api/plan_iterator_wrapper.h"

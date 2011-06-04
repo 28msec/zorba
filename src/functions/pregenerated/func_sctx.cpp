@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/introspection/sctx.h"
 #include "functions/func_sctx.h"
 

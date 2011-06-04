@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "runtime/api/plan_iterator_wrapper.h"
 
 #include "runtime/base/plan_iterator.h"

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
+
 #include <util/fs_util.h>
 #include <util/uri_util.h>
 

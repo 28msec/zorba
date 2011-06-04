@@ -165,6 +165,7 @@ declare function local:generate-accept($iter) as xs:string
 declare function local:get-include($XMLdoc, $name) as xs:string*
 {
   fn:concat(
+    '#include "stdafx.h"', $gen:newline, 
     '#include "zorbatypes/rchandle.h"', $gen:newline, 
     '#include "zorbatypes/zstring.h"', $gen:newline, 
     '#include "runtime/visitors/planiter_visitor.h"', $gen:newline, 

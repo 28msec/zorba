@@ -21,6 +21,7 @@
 #include <iostream>
 #include <vector>
 
+
 namespace zorba {
 
 /*______________________________________________________________________
@@ -39,7 +40,7 @@ namespace zorba {
 
 template<class T>
 void isort(
-	vector<T>& v,
+	std::vector<T>& v,
 	uint32_t low,
 	uint32_t high,
 	bool ascending = false)
@@ -61,7 +62,7 @@ void isort(
 
 template<class T>
 T pivot(
-	vector<T>& v,
+	std::vector<T>& v,
 	uint32_t low,
 	uint32_t high)
 {
@@ -75,7 +76,7 @@ T pivot(
 
 template<class T>
 void qsort(
-	vector<T>& v,
+	std::vector<T>& v,
 	uint32_t low,
 	uint32_t high,
 	bool ascending = false)

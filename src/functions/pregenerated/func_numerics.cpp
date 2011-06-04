@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/numerics/numerics.h"
 #include "functions/func_numerics.h"
 

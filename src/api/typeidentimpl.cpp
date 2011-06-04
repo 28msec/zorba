@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #ifndef ZORBA_TYPEIDENT_IMPL_H
 #define ZORBA_TYPEIDENT_IMPL_H
 

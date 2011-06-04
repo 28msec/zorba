@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "system/globalenv.h"
 
 #include "store/api/store.h"        // for checking if index exists

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include <algorithm>
 
 #include "compiler/rewriter/tools/udf_graph.h"

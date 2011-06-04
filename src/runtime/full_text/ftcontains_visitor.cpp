@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
 #include <cmath>                        /* for fabs(3) */
 #include <limits>
@@ -95,7 +96,7 @@ inline ft_int to_ft_int( xs_integer const &i ) {
  * @param p A pointer to the object to push.
  */
 template<typename StackValueType,typename PointedToType>
-inline void push( std::stack<StackValueType> &s, auto_ptr<PointedToType> p ) {
+inline void push( std::stack<StackValueType> &s, std::auto_ptr<PointedToType> p ) {
   s.push( p.get() );
   p.release();
 }

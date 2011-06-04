@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/random/random.h"
 #include "functions/func_random.h"
 

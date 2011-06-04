@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/strings/strings.h"
 #include "functions/func_strings.h"
 

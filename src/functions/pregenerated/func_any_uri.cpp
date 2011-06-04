@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/any_uri/any_uri.h"
 #include "functions/func_any_uri.h"
 

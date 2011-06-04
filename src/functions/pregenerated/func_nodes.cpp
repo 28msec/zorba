@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/nodes/nodes.h"
 #include "functions/func_nodes.h"
 

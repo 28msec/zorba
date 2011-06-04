@@ -73,6 +73,8 @@ declare function local:create-includes($files) as xs:string
      .xml by .h
    :)
   fn:concat(
+    '#include "stdafx.h"',
+    $gen:newline, $gen:newline,
     '#include "runtime/visitors/printer_visitor.h"',
     $gen:newline, $gen:newline,
     '// get forward declarations for all classes from planitervisitor.h',

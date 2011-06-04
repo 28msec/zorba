@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/fnput/fnput.h"
 #include "functions/func_fnput.h"
 

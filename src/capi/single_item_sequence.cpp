@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "capi/error.h"
 #include "capi/single_item_sequence.h"
 #include <zorba/item_sequence.h>

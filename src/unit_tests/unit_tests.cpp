@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
 #include <zorba/unit_tests.h>
 #include "unit_test_list.h"
@@ -45,7 +46,7 @@ namespace zorba {
     int runUnitTest(int argc, char* argv[]) {
       // Look up the function pointer for the test based on the first arg
       if (argc < 1) {
-        cerr << "No test name passed to UnitTests::runUnitTest!" << endl;
+        cerr << "No test name passed to UnitTests::runUnitTest!" << '\n';
         return 240;
       }
 
@@ -53,7 +54,7 @@ namespace zorba {
 
       map<string,libunittestfunc>::iterator iter = libunittests.find(argv[0]);
       if (iter == libunittests.end()) {
-        cerr << "No registered test matches '" << argv[0] << "'" << endl;
+        cerr << "No registered test matches '" << argv[0] << "'" << '\n';
         return 241;
       }
       return (* iter->second)(argc, argv);

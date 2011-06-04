@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
+
 #include <iostream>
 
 #include <zorba/diagnostic_handler.h>

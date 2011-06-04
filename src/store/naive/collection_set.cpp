@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
+
 #include "store/naive/collection_set.h"
 #include "store/api/iterator.h"
 #include "store/naive/name_iterator.h"

@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+#include "stdafx.h"
 
 #include "runtime/eval/eval.h"
 #include "functions/func_eval.h"

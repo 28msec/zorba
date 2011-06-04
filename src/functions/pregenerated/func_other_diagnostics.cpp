@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/errors_and_diagnostics/other_diagnostics.h"
 #include "functions/func_other_diagnostics.h"
 

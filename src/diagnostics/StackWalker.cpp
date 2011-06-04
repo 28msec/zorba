@@ -22,6 +22,8 @@
 *                       (thanks to owillebo: http://www.codeproject.com/script/profile/whos_who.asp?id=536268)
 *
 **********************************************************************/
+#include "stdafx.h"
+
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>

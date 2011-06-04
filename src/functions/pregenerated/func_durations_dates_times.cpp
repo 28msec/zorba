@@ -22,6 +22,7 @@
 // ******************************************
 
 
+#include "stdafx.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "functions/func_durations_dates_times.h"
 
