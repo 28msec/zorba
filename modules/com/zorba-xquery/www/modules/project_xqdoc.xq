@@ -71,32 +71,35 @@ declare %sequential function pxqdoc:generate-xqdoc-XML(
   
   (: create the XML folder if it does not exist already :)
   file:create-directory($xqdocXMLPath);
-                                                
-  for $filedirs in tokenize($modulesPath, ";")
-    for $file in file:list($filedirs, fn:true(), "*.xq")
-    return
-    {
-      if(fn:ends-with($file,"xxx.xq")) then
-        ();
-      else
-      {        
-        variable $filePath          := fn:concat($filedirs, file:directory-separator(), $file); 
-        variable $xqdoc             := xqd:xqdoc(file:path-to-uri($filePath));
-        variable $xqdocRelFileName  := pxqdoc:get-filename($xqdoc/xqdoc:module/xqdoc:uri);
-        variable $xqdocFileName     := fn:concat( $xqdocXMLPath,
-                                                  file:directory-separator(),
-                                                  $xqdocRelFileName, 
-                                                  ".xml");
-        file:write(trace($xqdocFileName," write XQDoc XML"), $xqdoc, $pxqdoc:serParamXml);
-        
-        dml:apply-insert-nodes(xs:QName("pxqdoc:mappings"), 
-            <module modulePath="{$filePath}" 
-                    moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
-                    examplePath="{fn:substring-before($filedirs,'src')}"
-            />);
-      }
-    }
   
+  (: make sure all the passed paths point to existing folders :)
+  variable $lPaths := tokenize($modulesPath, ";");
+  variable $lModulePaths as xs:string* := distinct-values(for $lPath in $lPaths return if (file:is-directory($lPath)) then $lPath else () );
+
+  for $filedirs in $lModulePaths
+  for $file in file:list($filedirs, fn:true(), "*.xq")
+  return
+  {
+    if(fn:ends-with($file,"xxx.xq")) then
+      ();
+    else
+    {        
+      variable $filePath          := fn:concat($filedirs, file:directory-separator(), $file); 
+      variable $xqdoc             := xqd:xqdoc(file:path-to-uri($filePath));
+      variable $xqdocRelFileName  := pxqdoc:get-filename($xqdoc/xqdoc:module/xqdoc:uri);
+      variable $xqdocFileName     := fn:concat( $xqdocXMLPath,
+                                                file:directory-separator(),
+                                                $xqdocRelFileName, 
+                                                ".xml");
+      file:write(trace($xqdocFileName," write XQDoc XML"), $xqdoc, $pxqdoc:serParamXml);
+      
+      dml:apply-insert-nodes(xs:QName("pxqdoc:mappings"), 
+          <module modulePath="{$filePath}" 
+                  moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
+                  examplePath="{fn:substring-before($filedirs,'src')}"
+          />);
+    }
+  }
 };
 
 (:~ 

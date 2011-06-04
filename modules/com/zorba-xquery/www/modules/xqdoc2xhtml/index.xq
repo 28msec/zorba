@@ -323,7 +323,11 @@ declare %private %sequential function xqdoc2html:gather-schemas(
   $modulePaths as xs:string,
   $schemasPath as xs:string) 
  {
-  for $filedirs in fn:tokenize($modulePaths, ";")
+ (: make sure all the passed paths point to existing folders :)
+  variable $lPaths := tokenize($modulePaths, ";");
+  variable $lModulePaths as xs:string* := distinct-values(for $lPath in $lPaths return if (file:is-directory($lPath)) then $lPath else () );
+ 
+  for $filedirs in $lModulePaths
   for $file in file:list($filedirs, fn:true(), "*.xsd")
   let $xsdFilePath := concat($filedirs, file:directory-separator(), $file)
   return
@@ -413,6 +417,19 @@ declare %private %sequential function xqdoc2html:create-general-menu($moduleUri 
   }
 };
 
+declare %sequential function xqdoc2html:create-collection-categories (
+$collectionName as xs:QName,
+$xqdocXmlPath as xs:string)
+{
+  ddl:create-collection($collectionName);
+  
+  (: gather all the XQDoc XML's :)
+  for $xqdocRelPath in file:list($xqdocXmlPath, fn:false(), "*.xml")
+  let $path := fn:concat($xqdocXmlPath, file:directory-separator(), $xqdocRelPath )
+  let $xqdoc := fn:parse-xml(file:read-text($path))
+  return dml:apply-insert-nodes($collectionName, $xqdoc);
+};
+
 (:~
  : This function creates the XQDoc XMLs and from them the XQDoc XHTMLs.
  :
@@ -443,13 +460,7 @@ declare %sequential function xqdoc2html:main(
     ();
     
   (: generate the XQDoc XHTML for all the modules :)
-  ddl:create-collection(xs:QName("xqdoc2html:collection"));
-  
-  (: gather all the XQDoc XML's :)
-  for $xqdocRelPath in file:list($xqdocXmlPath, fn:false(), "*.xml")
-  let $path := fn:concat($xqdocXmlPath, file:directory-separator(), $xqdocRelPath )
-  let $xqdoc := fn:parse-xml(file:read-text($path))
-  return dml:apply-insert-nodes(xs:QName("xqdoc2html:collection"), $xqdoc);
+  xqdoc2html:create-collection-categories (xs:QName("xqdoc2html:collection"), $xqdocXmlPath);
   
   trace(xs:string(1)," collect-menu-entries");
   xqdoc2html:collect-menu-entries();
