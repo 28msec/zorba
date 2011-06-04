@@ -18,6 +18,7 @@
  : Node reference functions
  :
  : @author Matthias Brantner
+ : @project XDM/node
  :
  :)
 module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";

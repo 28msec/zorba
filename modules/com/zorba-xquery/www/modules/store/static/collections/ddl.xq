@@ -26,7 +26,7 @@
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- :
+ : @project store/collections/static
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 

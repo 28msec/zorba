@@ -33,6 +33,7 @@
  :
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ : @project store/collections/dynamic
  :
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";

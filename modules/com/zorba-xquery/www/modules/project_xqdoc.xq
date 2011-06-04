@@ -18,6 +18,7 @@
  : Function library provides functions for generatring the XQDoc XML's for a project.
  :
  : @author Sorin Nasoi
+ : @project xqdoc
  :)
 
 module namespace pxqdoc  = "http://www.zorba-xquery.com/modules/project_xqdoc";

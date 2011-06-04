@@ -22,6 +22,7 @@
  :
  : @author Matthias Brantner
  : @see http://www.w3.org/TR/xpath-functions/#context
+ : @project XDM/atomic
  :
  :)
 module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";

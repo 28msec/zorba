@@ -25,6 +25,7 @@
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ : @project store/integrity-constraints/static
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";

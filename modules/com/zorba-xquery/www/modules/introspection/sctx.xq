@@ -20,6 +20,7 @@
  : @see http://www.w3.org/TR/xquery/#id-xq-static-context-components
  :
  : @author Nicolae Brinza
+ : @project introspection
  :
  :)
 

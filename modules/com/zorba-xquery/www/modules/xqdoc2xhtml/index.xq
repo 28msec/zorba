@@ -18,6 +18,7 @@
  : Function library providing transformation functions from XQDoc to XHTML.
  :
  : @author Gabriel Petrovay, Sorin Nasoi
+ : @project xqdoc/xqdoc2xhtml
  :)
 module namespace xqdoc2html  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
 

@@ -28,6 +28,7 @@
  : be statically declared in the prolog of a module.
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ : @project store/collections/dynamic
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";

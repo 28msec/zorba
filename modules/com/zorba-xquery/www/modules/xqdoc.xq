@@ -54,6 +54,7 @@
  : @see <a href="http://xqdoc.org/" target="_blank">xqDoc specification</a>
  : @see <a href="http://www.zorba-xquery.com/tutorials/xqdoc.html" target="_blank">xqDoc tutorial with Zorba</a>
  : @author Gabriel Petrovay
+ : @project xqdoc
  :
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";

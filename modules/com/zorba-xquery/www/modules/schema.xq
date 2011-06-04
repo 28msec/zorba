@@ -19,6 +19,7 @@
  : in Zorba.
  :
  : @author Matthias Brantner
+ : @project XDM/item
  :
  :)
 module namespace schema = "http://www.zorba-xquery.com/modules/schema";

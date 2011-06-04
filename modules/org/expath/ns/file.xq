@@ -18,6 +18,7 @@
  : This module implements the file API EXPath specification available at http://expath.org/spec/file
  : @author Gabriel Petrovay, Matthias Brantner, Markus Pilman
  : @see http://expath.org/spec/file
+ : @project external
  :)
 module namespace file = "http://expath.org/ns/file";
 

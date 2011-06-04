@@ -18,6 +18,7 @@
  : This module defines all errors for the xqdoc2xhtml module.
  :
  : @author Sorin Nasoi
+ : @project xqdoc/xqdoc2xhtml
  :
  :)
 module namespace err = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error";

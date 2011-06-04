@@ -19,6 +19,7 @@
  : numbers and strings.
  :
  : @author Matthias Brantner
+ : @project XDM/atomic
  :
  :)
 module namespace random = "http://www.zorba-xquery.com/modules/random";
