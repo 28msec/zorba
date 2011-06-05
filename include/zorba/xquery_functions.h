@@ -84,8 +84,7 @@ namespace fn {
 
 /**
  * Translates every character to its upper-case correspondent as defined in the
- * appropriate case mappings section in the Unicode standard The Unicode
- * Standard.
+ * appropriate case mappings section in the Unicode standard.
  * 
  * Every lower-case character that does not have an upper-case correspondent,
  * as well as every upper-case character, is included in the returned value in
@@ -99,8 +98,7 @@ String upper_case( String const &arg );
 
 /**
  * Translates every character to its lower-case correspondent as defined in the
- * appropriate case mappings section in the Unicode standard The Unicode
- * Standard.
+ * appropriate case mappings section in the Unicode standard.
  * 
  * Every upper-case character that does not have a lower-case correspondent, as
  * well as every lower-case character, is included in the returned value in its
