@@ -1,18 +1,19 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_INTEGER_H
 #define ZORBA_INTEGER_H
@@ -31,7 +32,7 @@
 #include "zorbaserialization/class_serializer.h"
 
 
-namespace zorba 
+namespace zorba
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   typedef MAPM    IMAPM;
@@ -46,7 +47,7 @@ namespace zorba
 class ZORBA_DLL_PUBLIC Integer : public ::zorba::serialization::SerializeBaseClass
 {
   friend class Decimal;
-    
+
   template <typename Type> friend class FloatImpl;
 
   friend class NumConversions;
@@ -56,13 +57,13 @@ public:
    * @return integer that represents 0
    */
   static Integer& zero();
-  
+
   /**
    * Parse string to Integer.
    * @param aStr String
    * @param aInteger Result
    * @return true if parsing succeed, else false
-   */ 
+   */
   static bool parseString(const char* aStr, Integer& aInteger);
 
   /**
@@ -76,7 +77,7 @@ public:
    * @return true if parsing succeed, else false
    */
   static bool parseStringUnsigned(const char*, Integer&);
-  
+
   /**
    * Parsing form double to Integer. Decimal places are cut of.
    */
@@ -91,7 +92,7 @@ public:
    * Parsing form Decimal to Integer. Decimal places are cut of.
    */
   static Integer parseDecimal(const Decimal&);
-  
+
   static Integer parseLong(int64_t val);
 
   static Integer parseULong(uint64_t val);
@@ -121,10 +122,10 @@ public:
 public:
   Integer() : theInteger(0) { }
 
-  Integer(const Integer& aInteger) 
+  Integer(const Integer& aInteger)
     :
-    ::zorba::serialization::SerializeBaseClass(), theInteger(aInteger.theInteger) 
-  { 
+    ::zorba::serialization::SerializeBaseClass(), theInteger(aInteger.theInteger)
+  {
   }
 
   virtual ~Integer() {}
@@ -132,51 +133,51 @@ public:
   Integer& operator=(const Integer&);
 
   Integer operator+(const Integer&) const;
-      
+
   Decimal operator+(const Decimal&) const;
 
   Integer& operator+=(const Integer&);
 
   Integer operator-(const Integer&) const;
-      
+
   Decimal operator-(const Decimal&) const;
 
   Integer& operator-=(const Integer&);
-      
+
   Integer operator*(const Integer&) const;
-      
+
   Decimal operator*(const Decimal&) const;
 
   Integer& operator*=(const Integer&);
 
   Integer operator/(const Integer&) const;
-     
+
   Decimal operator/(const Decimal&) const;
 
   Integer& operator/=(const Integer&);
-      
+
   Integer operator%(const Integer&) const;
-      
+
   Decimal operator%(const Decimal&) const;
 
   Integer& operator%=(const Integer&);
 
-  Integer operator-() const; 
-      
+  Integer operator-() const;
+
   /** prefix */
   Integer& operator++();
-      
+
   /** postfix */
   Integer operator++(int);
-      
+
   /** prefix */
   Integer& operator--();
-      
+
   /** postfix */
   Integer operator--(int);
-      
-  Integer round(Integer aPrecision) const; 
-      
+
+  Integer round(Integer aPrecision) const;
+
   Integer roundHalfToEven(Integer aPrecision) const;
 
   Integer sqrt() const;
@@ -197,50 +198,27 @@ public:
 #endif
   }
 
-  bool operator==(const Integer& aInteger) const 
-  {
-    return theInteger == aInteger.theInteger;
-  } 
-      
-  bool operator!=(const Integer& aInteger) const 
-  {
-    return theInteger != aInteger.theInteger;
-  } 
-      
-  bool operator<(const Integer& aInteger) const 
-  {
-    return theInteger < aInteger.theInteger;
-  } 
-
-  bool operator>(const Integer& aInteger) const 
-  {
-    return theInteger > aInteger.theInteger; 
-  } 
-      
-  bool operator>=(const Integer& aInteger) const 
-  {
-    return theInteger >= aInteger.theInteger; 
-  } 
-  
-  bool operator<=(const Integer& aInteger) const 
-  {
-    return theInteger <= aInteger.theInteger; 
-  } 
+  friend bool operator==( Integer const &i, Integer const &j );
+  friend bool operator!=( Integer const &i, Integer const &j );
+  friend bool operator< ( Integer const &i, Integer const &j );
+  friend bool operator<=( Integer const &i, Integer const &j );
+  friend bool operator> ( Integer const &i, Integer const &j );
+  friend bool operator>=( Integer const &i, Integer const &j );
 
   bool operator==(const Decimal&) const;
 
   bool operator!=(const Decimal&) const;
-      
+
   bool operator<(const Decimal&) const;
 
   bool operator<=(const Decimal&) const;
 
   bool operator>(const Decimal&) const;
-      
+
   bool operator>=(const Decimal&) const;
 
   bool operator<=(const Double&) const;
-      
+
   bool operator>=(const Double&) const;
 
   zstring toString() const;
@@ -253,7 +231,7 @@ public:
     return (theInteger.sign() >= 0 &&
             theInteger < MAPM::getMaxUInt64());
 #else
-    return false; 
+    return false;
 #endif
   }
 
@@ -263,7 +241,7 @@ public:
     return (theInteger < MAPM::getMaxInt64() &&
             theInteger > MAPM::getMinInt64());
 #else
-    return false; 
+    return false;
 #endif
   }
 
@@ -291,14 +269,39 @@ private:
   Integer(const IMAPM& aInteger) : theInteger(aInteger) { }
 };
 
-   
+///////////////////////////////////////////////////////////////////////////////
+
+inline bool operator==( Integer const &i, Integer const &j ) {
+  return i.theInteger == j.theInteger;
+}
+
+inline bool operator!=( Integer const &i, Integer const &j ) {
+  return i.theInteger != j.theInteger;
+}
+
+inline bool operator<( Integer const &i, Integer const &j ) {
+  return i.theInteger < j.theInteger;
+}
+
+inline bool operator<=( Integer const &i, Integer const &j ) {
+  return i.theInteger <= j.theInteger;
+}
+
+inline bool operator>( Integer const &i, Integer const &j ) {
+  return i.theInteger > j.theInteger;
+}
+
+inline bool operator>=( Integer const &i, Integer const &j ) {
+  return i.theInteger >= j.theInteger;
+}
+
 std::ostream& operator<<(std::ostream& os, const Integer&);
 
-} /* namespace zorba */
+} // namespace zorba
 #endif // ZORBA_INTEGER_H
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */
