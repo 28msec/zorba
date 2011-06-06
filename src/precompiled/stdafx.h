@@ -299,7 +299,7 @@
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/rclock.h"
 //#include "zorbatypes/regex_ascii.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/transcoder.h"
 #include "zorbatypes/URI.h"

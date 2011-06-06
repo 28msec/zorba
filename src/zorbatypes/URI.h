@@ -20,7 +20,7 @@
 #include <iostream>
 
 #include <zorba/config.h>
-#include "representations.h"
+#include "schema_types.h"
 
 namespace zorba 
 {

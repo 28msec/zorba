@@ -21,7 +21,7 @@
 #include "common/common.h"
 #include <math.h>
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 #include "zorbaserialization/class_serializer.h"
 

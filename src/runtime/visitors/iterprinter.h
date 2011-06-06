@@ -22,7 +22,7 @@
 #include <stack>
 
 #include "common/common.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 
 namespace yy 

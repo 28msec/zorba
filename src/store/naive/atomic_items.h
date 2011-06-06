@@ -29,7 +29,7 @@
 #include "store/naive/naive_ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 #include "zorbatypes/datetime.h"
 #include "zorbautils/tokenizer.h"
 

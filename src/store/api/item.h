@@ -23,7 +23,7 @@
 #include <zorba/store_consts.h>
 
 #include "zorbatypes/rclock.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 #include "store/api/shared_types.h"
 

@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include "representations.h"
+#include "schema_types.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/dict.h"

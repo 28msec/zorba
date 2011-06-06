@@ -22,7 +22,7 @@
 
 #include <zorba/error_list.h>
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 #include "common/common.h"
 
 #include <cstdlib>

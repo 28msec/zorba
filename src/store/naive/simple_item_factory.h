@@ -23,7 +23,7 @@
 #include "store/api/item_factory.h"
 //#include "store/api/tuples.h"
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 
 namespace zorba

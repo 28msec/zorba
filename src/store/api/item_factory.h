@@ -23,7 +23,7 @@
 #include <zorba/zorba_exception.h>
 
 #include "store/api/shared_types.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 
 namespace zorba {

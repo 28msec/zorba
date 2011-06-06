@@ -20,7 +20,7 @@
 #include <zorba/locale.h>
 
 #include "compiler/expression/ftnode.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 #include "ft_match.h"
 

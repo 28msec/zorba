@@ -18,7 +18,7 @@
 #define ZORBA_COMPILER_API_H
 
 #include <memory>
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 #include "common/shared_types.h"
 

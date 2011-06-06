@@ -23,7 +23,7 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 
 namespace zorba

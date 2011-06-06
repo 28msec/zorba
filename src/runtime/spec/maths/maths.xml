@@ -6,7 +6,7 @@
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
-    <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
+    <zorba:include form="Quoted">zorbatypes/schema_types.h</zorba:include>
 </zorba:header>
     
 <!--

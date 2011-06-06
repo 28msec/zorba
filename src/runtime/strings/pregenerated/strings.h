@@ -30,7 +30,7 @@
 
 #include "runtime/base/narybase.h"
 #include "zorbautils/checked_vector.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 
 namespace zorba {

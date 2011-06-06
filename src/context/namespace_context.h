@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 #include "zorbatypes/rchandle.h"
 
 #include "zorbamisc/ns_consts.h"

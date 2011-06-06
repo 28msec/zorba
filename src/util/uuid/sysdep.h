@@ -17,7 +17,7 @@
 #ifndef ZORBA_UTIL_UUID_SYSDEP_H
 #define ZORBA_UTIL_UUID_SYSDEP_H
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 #ifdef WIN32
   #include <windows.h>

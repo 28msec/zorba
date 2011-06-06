@@ -22,7 +22,7 @@
 #include <zorba/sax2.h>
 #include <zorba/options.h>
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 #include "zorbatypes/transcoder.h"
 
 #include "common/shared_types.h"

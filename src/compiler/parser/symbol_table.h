@@ -17,7 +17,7 @@
 #ifndef ZORBA_SYMBOL_TABLE_H
 #define ZORBA_SYMBOL_TABLE_H
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 #include <zorba/config.h>
 
 #include "util/fx/fxcharheap.h"

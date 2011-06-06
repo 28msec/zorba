@@ -31,7 +31,7 @@
 #include "store/api/item.h"
 
 #include "zorbatypes/rchandle.h"
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 #include "zorbatypes/zstring.h"
 
 #include "context/static_context_consts.h"

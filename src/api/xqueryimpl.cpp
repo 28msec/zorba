@@ -20,7 +20,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 #include <zorba/diagnostic_handler.h>
 #include <zorba/error.h>

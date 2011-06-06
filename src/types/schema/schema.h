@@ -30,7 +30,7 @@
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
-#include "zorbatypes/representations.h"
+#include "zorbatypes/schema_types.h"
 
 
 #define ZORBA_HASHMAP_WITH_SERIALIZATION
