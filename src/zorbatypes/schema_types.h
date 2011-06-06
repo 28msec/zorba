@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_REPRESENTATIONS_H
-#define ZORBA_REPRESENTATIONS_H
+#ifndef ZORBA_SCHEMA_TYPES_H
+#define ZORBA_SCHEMA_TYPES_H
 
 #include "rchandle.h"
 
@@ -78,5 +78,5 @@ namespace zorba {
   typedef Duration      xs_yearMonthDuration;
 
 } // namespace zorba
-#endif /* ZORBA_REPRESENTATIONS_H */
+#endif /* ZORBA_SCHEMA_TYPES_H */
 /* vim:set et sw=2 ts=2: */
