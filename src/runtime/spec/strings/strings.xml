@@ -54,9 +54,9 @@
   </zorba:function>
 
   <zorba:state generateInit="false" generateReset="false">
-    <zorba:member type="xs_uint" name="theIterator"
+    <zorba:member type="xs_unsignedInt" name="theIterator"
                   brief="the current iterator"/>
-    <zorba:member type="checked_vector&lt;xs_uint&gt;" name="theResult"
+    <zorba:member type="checked_vector&lt;xs_unsignedInt&gt;" name="theResult"
                   brief="the resulting vector"/>
   </zorba:state>
 

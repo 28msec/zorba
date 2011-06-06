@@ -80,8 +80,8 @@ public:
 class StringToCodepointsIteratorState : public PlanIteratorState
 {
 public:
-  xs_uint theIterator; //the current iterator
-  checked_vector<xs_uint> theResult; //the resulting vector
+  xs_unsignedInt theIterator; //the current iterator
+  checked_vector<xs_unsignedInt> theResult; //the resulting vector
 
   StringToCodepointsIteratorState();
 

@@ -33,7 +33,7 @@ PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 {
   store::Item_t    item;
   zstring seed;
-  xs_uint          seedInt;
+  xs_unsignedInt   seedInt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -61,7 +61,7 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    item;
   zstring seed;
-  xs_uint          seedInt;
+  xs_unsignedInt   seedInt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

@@ -69,11 +69,11 @@ typedef int16_t       xs_short;
 typedef zstring       xs_string;
 typedef DateTime      xs_time;
 typedef zstring       xs_token;
-typedef unsigned char xs_ubyte;
-typedef uint32_t      xs_uint;
 typedef Integer       xs_uinteger;
-typedef uint64_t      xs_ulong;
-typedef uint16_t      xs_ushort;
+typedef unsigned char xs_unsignedByte;
+typedef uint32_t      xs_unsignedInt;
+typedef uint64_t      xs_unsignedLong;
+typedef uint16_t      xs_unsignedShort;
 typedef Duration      xs_yearMonthDuration;
 
 ///////////////////////////////////////////////////////////////////////////////

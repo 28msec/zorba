@@ -315,22 +315,22 @@ public:
 
   /** Accessor for xs:unsignedLong
    */
-  virtual xs_ulong
+  virtual xs_unsignedLong
   getUnsignedLongValue() const;
 
   /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt
    */
-  virtual xs_uint
+  virtual xs_unsignedInt
   getUnsignedIntValue() const;
 
   /** Accessor for xs:unsignedShort
    */
-  virtual xs_ushort
+  virtual xs_unsignedShort
   getUnsignedShortValue() const;
 
   /** Accessor for xs:unsignedChar, xs:unsignedByte
    */
-  virtual xs_ubyte
+  virtual xs_unsignedByte
   getUnsignedByteValue() const;
 
 

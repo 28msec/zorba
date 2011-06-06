@@ -1385,7 +1385,7 @@ bool int_down(
   }
   case TypeConstants::XS_UNSIGNED_LONG:
   {
-    xs_ulong n;
+    xs_unsignedLong n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToULong(lString.c_str(), n))
@@ -1394,7 +1394,7 @@ bool int_down(
   }
   case TypeConstants::XS_UNSIGNED_INT:
   {
-    xs_uint n;
+    xs_unsignedInt n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToUInt(lString.c_str(), n))
@@ -1403,7 +1403,7 @@ bool int_down(
   }
   case TypeConstants::XS_UNSIGNED_SHORT:
   {
-    xs_ushort n;
+    xs_unsignedShort n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToUShort(lString.c_str(), n))
@@ -1412,7 +1412,7 @@ bool int_down(
   }
   case TypeConstants::XS_UNSIGNED_BYTE:
   {
-    xs_ubyte n;
+    xs_unsignedByte n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToUByte(lString.c_str(), n))

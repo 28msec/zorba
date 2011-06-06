@@ -357,28 +357,32 @@ bool BasicItemFactory::createByte(store::Item_t& result,  xs_byte value)
 }
 
 
-bool BasicItemFactory::createUnsignedLong(store::Item_t& result, xs_ulong value)
+bool BasicItemFactory::createUnsignedLong(store::Item_t& result,
+                                          xs_unsignedLong value)
 {
   result = new UnsignedLongItem(value);
   return true;
 }
 
 
-bool BasicItemFactory::createUnsignedInt(store::Item_t& result,  xs_uint value)
+bool BasicItemFactory::createUnsignedInt(store::Item_t& result,
+                                         xs_unsignedInt value)
 {
   result = new UnsignedIntItem(value);
   return true;
 }
 
 
-bool BasicItemFactory::createUnsignedShort(store::Item_t& result, xs_ushort value)
+bool BasicItemFactory::createUnsignedShort(store::Item_t& result,
+                                           xs_unsignedShort value)
 {
   result = new UnsignedShortItem(value);
   return true;
 }
 
 
-bool BasicItemFactory::createUnsignedByte(store::Item_t& result,  xs_ubyte value)
+bool BasicItemFactory::createUnsignedByte(store::Item_t& result,
+                                          xs_unsignedByte value)
 {
   result = new UnsignedByteItem(value);
   return true;

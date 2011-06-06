@@ -74,7 +74,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
     {
       {
         zstring lUtf8Code = item->getIntegerValue().toString();
-        xs_uint lCode;
+        xs_unsignedInt lCode;
         if (NumConversions::strToUInt(lUtf8Code.c_str(), lCode)) 
         {
           if (!xml::is_valid(lCode))
@@ -1552,7 +1552,7 @@ bool FnTokenizeIterator::nextImpl(
     );
 
 
-  while ((xs_uint)state->start_pos < state->theString.length ())
+  while ((xs_unsignedInt)state->start_pos < state->theString.length ())
   {
     try 
     {

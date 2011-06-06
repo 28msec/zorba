@@ -117,13 +117,13 @@ public:
 
   bool createByte(store::Item_t& result, xs_byte value);
 
-  bool createUnsignedLong(store::Item_t& result, xs_ulong value);
+  bool createUnsignedLong(store::Item_t& result, xs_unsignedLong value);
 
-  bool createUnsignedInt(store::Item_t& result, xs_uint value);
+  bool createUnsignedInt(store::Item_t& result, xs_unsignedInt value);
 
-  bool createUnsignedShort(store::Item_t& result, xs_ushort value);
+  bool createUnsignedShort(store::Item_t& result, xs_unsignedShort value);
 
-  bool createUnsignedByte(store::Item_t& result, xs_ubyte value);
+  bool createUnsignedByte(store::Item_t& result, xs_unsignedByte value);
 
   bool createDateTime(store::Item_t& result, const xs_date* date, const xs_time* time);
 

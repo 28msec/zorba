@@ -22,12 +22,12 @@
 namespace zorba {
 
 typedef struct {
-  xs_uint    time_low;
-  xs_ushort  time_mid;
-  xs_ushort  time_hi_and_version;
-  xs_ubyte   clock_seq_hi_and_reserved;
-  xs_ubyte   clock_seq_low;
-  xs_byte    node[6];
+  xs_unsignedInt    time_low;
+  xs_unsignedShort  time_mid;
+  xs_unsignedShort  time_hi_and_version;
+  xs_unsignedByte   clock_seq_hi_and_reserved;
+  xs_unsignedByte   clock_seq_low;
+  xs_byte           node[6];
 } uuid_t;
 
 /* uuid_create -- generate a UUID */
@@ -36,6 +36,6 @@ int uuid_create(uuid_t * uuid);
 /* uuidToString -- transform a UUID to a string */
 zstring uuidToString(uuid_t uuid);
 
-}/*namespace zorba*/
-
+} // namespace zorba
 #endif /* ZORBA_UTIL_UUID_H */
+/* vim:set et sw=2 ts=2: */

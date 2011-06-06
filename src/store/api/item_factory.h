@@ -271,25 +271,25 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
    * @param value
    */
-  virtual bool createUnsignedLong(Item_t& result, xs_ulong value) = 0;
+  virtual bool createUnsignedLong(Item_t& result, xs_unsignedLong value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
    * @param value
    */
-  virtual bool createUnsignedInt(Item_t& result, xs_uint value) = 0;
+  virtual bool createUnsignedInt(Item_t& result, xs_unsignedInt value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
    * @param value
    */
-  virtual bool createUnsignedShort(Item_t& result, xs_ushort value) = 0;
+  virtual bool createUnsignedShort(Item_t& result, xs_unsignedShort value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
    * @param value
    */
-  virtual bool createUnsignedByte(Item_t& result, xs_ubyte value) = 0;
+  virtual bool createUnsignedByte(Item_t& result, xs_unsignedByte value) = 0;
 
 
   virtual bool createDateTime(

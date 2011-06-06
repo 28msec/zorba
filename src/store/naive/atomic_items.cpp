@@ -204,7 +204,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
     doubleValue = xs_double::parseULong(item->theValue);
 
-    xs_ulong ulongValue = static_cast<xs_ulong>(doubleValue.getNumber());
+    xs_unsignedLong ulongValue = static_cast<xs_unsignedLong>(doubleValue.getNumber());
 
     lossy = (ulongValue != item->theValue);
     break;

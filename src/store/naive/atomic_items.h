@@ -170,13 +170,13 @@ public:
 
   xs_byte getByteValue() const { return theBaseItem->getByteValue(); }
 
-  xs_ulong getUnsignedLongValue() const { return theBaseItem->getUnsignedLongValue(); }
+  xs_unsignedLong getUnsignedLongValue() const { return theBaseItem->getUnsignedLongValue(); }
 
-  xs_uint getUnsignedIntValue() const { return theBaseItem->getUnsignedIntValue(); }
+  xs_unsignedInt getUnsignedIntValue() const { return theBaseItem->getUnsignedIntValue(); }
 
-  xs_ushort getUnsignedShortValue() const { return theBaseItem->getUnsignedShortValue(); }
+  xs_unsignedShort getUnsignedShortValue() const { return theBaseItem->getUnsignedShortValue(); }
 
-  xs_ubyte getUnsignedByteValue() const { return theBaseItem->getUnsignedByteValue(); }
+  xs_unsignedByte getUnsignedByteValue() const { return theBaseItem->getUnsignedByteValue(); }
 
   bool isNaN() const { return theBaseItem->isNaN(); }
 
@@ -1628,10 +1628,10 @@ class UnsignedLongItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xs_ulong theValue;
+  xs_unsignedLong theValue;
 
 protected:
-  UnsignedLongItem(xs_ulong aValue) : theValue(aValue) {}
+  UnsignedLongItem(xs_unsignedLong aValue) : theValue(aValue) {}
 
   UnsignedLongItem() {}
 
@@ -1644,7 +1644,7 @@ protected:
 
   xs_uinteger getUnsignedIntegerValue() const;
 
-  xs_ulong getUnsignedLongValue() const { return theValue; }
+  xs_unsignedLong getUnsignedLongValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_LONG; }
 
@@ -1708,10 +1708,10 @@ class UnsignedIntItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xs_uint theValue;
+  xs_unsignedInt theValue;
 
 protected:
-  UnsignedIntItem(xs_uint aValue) : theValue(aValue) {}
+  UnsignedIntItem(xs_unsignedInt aValue) : theValue(aValue) {}
 
   UnsignedIntItem() {}
 
@@ -1726,9 +1726,9 @@ public:
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xs_ulong getUnsignedLongValue() const { return static_cast<xs_ulong>(theValue); }
+  xs_unsignedLong getUnsignedLongValue() const { return static_cast<xs_unsignedLong>(theValue); }
 
-  xs_uint getUnsignedIntValue() const { return theValue; }
+  xs_unsignedInt getUnsignedIntValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_INT; }
 
@@ -1799,10 +1799,10 @@ class UnsignedShortItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xs_ushort theValue;
+  xs_unsignedShort theValue;
 
 protected:
-  UnsignedShortItem(xs_ushort aValue) : theValue(aValue) {}
+  UnsignedShortItem(xs_unsignedShort aValue) : theValue(aValue) {}
 
   UnsignedShortItem() {}
 
@@ -1815,11 +1815,11 @@ public:
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xs_ulong getUnsignedLongValue() const { return static_cast<xs_ulong>(theValue); }
+  xs_unsignedLong getUnsignedLongValue() const { return static_cast<xs_unsignedLong>(theValue); }
 
-  xs_uint getUnsignedIntValue() const { return static_cast<xs_uint>(theValue); }
+  xs_unsignedInt getUnsignedIntValue() const { return static_cast<xs_unsignedInt>(theValue); }
 
-  xs_ushort getUnsignedShortValue() const { return theValue; }
+  xs_unsignedShort getUnsignedShortValue() const { return theValue; }
 
   bool isNaN() const { return false; }
 
@@ -1892,10 +1892,10 @@ class UnsignedByteItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xs_ubyte theValue;
+  xs_unsignedByte theValue;
 
 protected:
-  UnsignedByteItem(xs_ubyte aValue) : theValue(aValue) {}
+  UnsignedByteItem(xs_unsignedByte aValue) : theValue(aValue) {}
 
   UnsignedByteItem() : theValue(0) {}
 
@@ -1908,13 +1908,13 @@ public:
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xs_ulong getUnsignedLongValue() const { return static_cast<xs_ulong>(theValue); }
+  xs_unsignedLong getUnsignedLongValue() const { return static_cast<xs_unsignedLong>(theValue); }
 
-  xs_uint getUnsignedIntValue() const { return static_cast<xs_uint>(theValue); }
+  xs_unsignedInt getUnsignedIntValue() const { return static_cast<xs_unsignedInt>(theValue); }
 
-  xs_ushort getUnsignedShortValue() const { return static_cast<xs_ushort>(theValue); }
+  xs_unsignedShort getUnsignedShortValue() const { return static_cast<xs_unsignedShort>(theValue); }
 
-  xs_ubyte getUnsignedByteValue() const { return theValue; }
+  xs_unsignedByte getUnsignedByteValue() const { return theValue; }
 
   bool isNaN() const { return false; }
 

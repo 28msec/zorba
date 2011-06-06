@@ -49,7 +49,7 @@ typedef struct {
   char nodeID[6];
 } uuid_node_t;
 
-void get_system_time(xs_ulong *uuid_time);
+void get_system_time(xs_unsignedLong *uuid_time);
 
 }/*namespace zorba*/
 

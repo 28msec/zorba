@@ -236,7 +236,7 @@ bool XercesParseUtils::parseXSUnsignedByte(
   {
     int value = xsval->fData.fValue.f_uchar;
 
-    xs_ubyte tvalue = value;
+    xs_unsignedByte tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedByte(result, tvalue);
@@ -265,7 +265,7 @@ bool XercesParseUtils::parseXSUnsignedShort(
   {
     int value = xsval->fData.fValue.f_ushort;
 
-    xs_ushort tvalue = value;
+    xs_unsignedShort tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedShort(result, tvalue);
@@ -293,7 +293,7 @@ bool XercesParseUtils::parseXSUnsignedInt(
   {
     ulong value = xsval->fData.fValue.f_uint;
 
-    xs_uint tvalue = value;
+    xs_unsignedInt tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedInt(result, tvalue);
@@ -320,7 +320,7 @@ bool XercesParseUtils::parseXSUnsignedLong(
   {
     ulong value = xsval->fData.fValue.f_ulong;
 
-    xs_ulong tvalue = value;
+    xs_unsignedLong tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedLong(result, tvalue);

@@ -532,7 +532,7 @@ xs_uinteger Item::getUnsignedIntegerValue() const
 /**
  * Accessor for xs:unsignedLong, xs:unsignedInt, xs:unsignedShort, xs:unsignedByte
  */
-xs_ulong Item::getUnsignedLongValue() const
+xs_unsignedLong Item::getUnsignedLongValue() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -547,7 +547,7 @@ xs_ulong Item::getUnsignedLongValue() const
 /**
  * Accessor for xs:unsignedInt, xs:unsignedShort, xs:unsignedByte
  */
-xs_uint Item::getUnsignedIntValue() const
+xs_unsignedInt Item::getUnsignedIntValue() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -562,7 +562,7 @@ xs_uint Item::getUnsignedIntValue() const
 /**
  * Accessor for xs:unsignedShort, xs:unsignedByte
  */
-xs_ushort Item::getUnsignedShortValue() const
+xs_unsignedShort Item::getUnsignedShortValue() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -577,7 +577,7 @@ xs_ushort Item::getUnsignedShortValue() const
 /**
  * Accessor for xs:unsignedByte
  */
-xs_ubyte Item::getUnsignedByteValue() const
+xs_unsignedByte Item::getUnsignedByteValue() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,

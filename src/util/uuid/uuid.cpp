@@ -25,18 +25,18 @@
 namespace zorba {
 
 /* various forward declarations */
-static int read_state(xs_short *clockseq, xs_ulong *timestamp,
+static int read_state(xs_short *clockseq, xs_unsignedLong *timestamp,
     uuid_node_t *node);
-static void write_state(xs_short clockseq, xs_ulong timestamp,
+static void write_state(xs_short clockseq, xs_unsignedLong timestamp,
     uuid_node_t node);
 static void format_uuid_v1(uuid_t *uuid, xs_short clockseq,
-    xs_ulong timestamp, uuid_node_t node);
-static void get_current_time(xs_ulong *timestamp);
+    xs_unsignedLong timestamp, uuid_node_t node);
+static void get_current_time(xs_unsignedLong *timestamp);
 static xs_short true_random(void);
 
 int uuid_create(uuid_t *uuid)
 {
-  xs_ulong timestamp, last_time;
+  xs_unsignedLong timestamp, last_time;
   xs_short clockseq;
   uuid_node_t node;
   memset(&node, 0, sizeof(uuid_node_t));
@@ -71,12 +71,12 @@ int uuid_create(uuid_t *uuid)
 /* format_uuid_v1 -- make a UUID from the timestamp, clockseq,
                      and node ID */
 void format_uuid_v1(uuid_t* uuid, xs_short clock_seq,
-                    xs_ulong timestamp, uuid_node_t node)
+                    xs_unsignedLong timestamp, uuid_node_t node)
 {
   //Construct a version 1 uuid with the information we've gathered plus a few constants.
-  uuid->time_low = (xs_uint)(timestamp & 0xFFFFFFFF);
-  uuid->time_mid = (xs_ushort)((timestamp >> 32) & 0xFFFF);
-  uuid->time_hi_and_version =(xs_ushort)((timestamp >> 48) & 0x0FFF);
+  uuid->time_low = (xs_unsignedInt)(timestamp & 0xFFFFFFFF);
+  uuid->time_mid = (xs_unsignedShort)((timestamp >> 32) & 0xFFFF);
+  uuid->time_hi_and_version =(xs_unsignedShort)((timestamp >> 48) & 0x0FFF);
   uuid->time_hi_and_version |= (1 << 12);
   uuid->clock_seq_low = clock_seq & 0xFF;
   uuid->clock_seq_hi_and_reserved = (clock_seq & 0x3F00) >> 8;
@@ -86,15 +86,15 @@ void format_uuid_v1(uuid_t* uuid, xs_short clock_seq,
 
 /* data type for UUID generator persistent state */
 typedef struct {
-  xs_ulong   ts;      // saved timestamp
-  uuid_node_t node;    // saved node ID
-  xs_short   cs;      // saved clock sequence
+  xs_unsignedLong ts;   // saved timestamp
+  uuid_node_t     node; // saved node ID
+  xs_short        cs;   // saved clock sequence
 } uuid_state;
 
 static uuid_state st;
 
 //read_state -- read UUID generator state from non-volatile store
-int read_state(xs_short *clockseq, xs_ulong *timestamp,
+int read_state(xs_short *clockseq, xs_unsignedLong *timestamp,
                uuid_node_t *node)
 {
   static int inited = 0;
@@ -123,11 +123,11 @@ int read_state(xs_short *clockseq, xs_ulong *timestamp,
 }
 
 // write_state -- save UUID generator state back to non-volatile storage
-void write_state(xs_short clockseq, xs_ulong timestamp,
+void write_state(xs_short clockseq, xs_unsignedLong timestamp,
                  uuid_node_t node)
 {
   volatile static bool inited = false;
-  static xs_ulong next_save;
+  static xs_unsignedLong next_save;
   FILE* fp = 0;
 
   if (!inited) {
@@ -158,12 +158,12 @@ void write_state(xs_short clockseq, xs_ulong timestamp,
 
 // get-current_time -- get time as 60-bit 100ns ticks since UUID epoch.
 // Compensate for the fact that real clock resolution is less than 100ns.
-void get_current_time(xs_ulong *timestamp)
+void get_current_time(xs_unsignedLong *timestamp)
 {
   static int inited = 0;
-  static xs_ulong time_last;
+  static xs_unsignedLong time_last;
   static xs_short uuids_this_tick;
-  xs_ulong time_now;
+  xs_unsignedLong time_now;
 
   if (!inited) {
     get_system_time(&time_now);
@@ -195,7 +195,7 @@ void get_current_time(xs_ulong *timestamp)
 static xs_short true_random(void)
 {
   static int inited = 0;
-  xs_ulong time_now;
+  xs_unsignedLong time_now;
 
   if (!inited) {
     get_system_time(&time_now);
@@ -269,3 +269,4 @@ uuid_t NameSpace_X500 = { // 6ba7b814-9dad-11d1-80b4-00c04fd430c8
 };
 */
 }
+/* vim:set et sw=2 ts=2: */

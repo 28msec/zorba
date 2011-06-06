@@ -618,22 +618,22 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "unsignedLong")
       {
-        SERIALIZE_FIELD(xs_ulong, value, getUnsignedLongValue());
+        SERIALIZE_FIELD(xs_unsignedLong, value, getUnsignedLongValue());
         FINALIZE_SERIALIZE(createUnsignedLong, (result, value));
       }
       else if(name_of_type == "unsignedInt")
       {
-        SERIALIZE_FIELD(xs_uint, value, getUnsignedIntValue());
+        SERIALIZE_FIELD(xs_unsignedInt, value, getUnsignedIntValue());
         FINALIZE_SERIALIZE(createUnsignedInt, (result, value));
       }
       else if(name_of_type == "unsignedShort")
       {
-        SERIALIZE_FIELD(xs_ushort, value, getUnsignedShortValue());
+        SERIALIZE_FIELD(xs_unsignedShort, value, getUnsignedShortValue());
         FINALIZE_SERIALIZE(createUnsignedShort, (result, value));
       }
       else if(name_of_type == "unsignedByte")
       {
-        SERIALIZE_FIELD(xs_ubyte, value, getUnsignedByteValue());
+        SERIALIZE_FIELD(xs_unsignedByte, value, getUnsignedByteValue());
         FINALIZE_SERIALIZE(createUnsignedByte, (result, value));
       }
          

@@ -49,19 +49,19 @@ public:
 
   static bool strToLong(const char* aStr, xs_long& aLong);
 
-  static bool strToULong(const char* aStr, xs_ulong& aULong);
+  static bool strToULong(const char* aStr, xs_unsignedLong& aULong);
 
   static bool strToInt(const char* aStarChar, xs_int& aInt);
 
-  static bool strToUInt(const char* aStr, xs_uint& aUInt);
+  static bool strToUInt(const char* aStr, xs_unsignedInt& aUInt);
 
   static bool strToShort(const char* aStr, xs_short& aShort);
 
-  static bool strToUShort(const char* aStr, xs_ushort& aUShort);
+  static bool strToUShort(const char* aStr, xs_unsignedShort& aUShort);
 
   static bool strToByte(const char* aStr, xs_byte& aByte);
 
-  static bool strToUByte(const char* aStr, xs_ubyte& aUByte);
+  static bool strToUByte(const char* aStr, xs_unsignedByte& aUByte);
 
 
   /*****************************************************************************
@@ -80,19 +80,19 @@ public:
 
   static zstring longToStr(xs_long aLong);
 
-  static zstring ulongToStr(xs_ulong aULong);
+  static zstring ulongToStr(xs_unsignedLong aULong);
 
   static zstring intToStr(xs_int aInt);
 
-  static zstring uintToStr(xs_uint aUInt);
+  static zstring uintToStr(xs_unsignedInt aUInt);
 
   static zstring shortToStr(xs_short aShort);
 
-  static zstring ushortToStr(xs_ushort aUShort);
+  static zstring ushortToStr(xs_unsignedShort aUShort);
 
   static zstring byteToStr(xs_byte aByte);
 
-  static zstring ubyteToStr(xs_ubyte aUByte);
+  static zstring ubyteToStr(xs_unsignedByte aUByte);
 
   static zstring sizetToStr(size_t);
 
@@ -109,17 +109,17 @@ public:
 
   static bool decimalToInteger(const xs_decimal&, xs_integer&);
 
-  static bool decimalToULong(const xs_decimal&, xs_ulong&);
+  static bool decimalToULong(const xs_decimal&, xs_unsignedLong&);
 
   static bool decimalToLong(const xs_decimal&, xs_long&);
 
-  static bool decimalToUInt(const xs_decimal&, xs_uint&);
+  static bool decimalToUInt(const xs_decimal&, xs_unsignedInt&);
 
   static bool decimalToInt(const xs_decimal&, xs_int&);
 
   static bool integerToLong(const xs_integer&, xs_long&);
 
-  static bool integerToUInt(const xs_integer&, xs_uint&);
+  static bool integerToUInt(const xs_integer&, xs_unsignedInt&);
 
   static bool integerToInt(const xs_integer&, xs_int&);
 
