@@ -33,8 +33,6 @@ class MySchemaURIMapper: public URIMapper
 
   virtual ~MySchemaURIMapper() {}
 
-  virtual URIMapper::Kind mapperKind() throw() { return URIMapper::CANDIDATE; }
-
   virtual void mapURI(const zorba::String aUri,
     Resource::EntityType aEntityType,
     std::vector<zorba::String>& oUris) throw ()

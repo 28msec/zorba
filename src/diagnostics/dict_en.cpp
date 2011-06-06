@@ -432,6 +432,7 @@ extern entry const dict_en[] = {
   { "ZXQP0031", "malformed XQueryX XML input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
   { "ZXQP0036", "BreakIterator creation failed" },
+  { "ZXQP0037", "\"$1\": loaded module version \"$2\" does not match import version specification" },
 
 #ifndef ZORBA_NO_FULL_TEXT
   { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },

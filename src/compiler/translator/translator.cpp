@@ -35,6 +35,7 @@
 
 #include "compiler/translator/prolog_graph.h"
 #include "compiler/translator/translator.h"
+#include "compiler/translator/module_version.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/codegen/plan_visitor.h"
@@ -121,7 +122,8 @@ static expr_t translate_aux(
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
-    StaticContextConsts::xquery_version_t maxLibModuleVersion = StaticContextConsts::xquery_version_unknown);
+    StaticContextConsts::xquery_version_t maxLibModuleVersion =
+      StaticContextConsts::xquery_version_unknown);
 
 #ifndef NDEBUG
 
@@ -231,7 +233,6 @@ struct NodeSortInfo
   }
 };
 
-
 /*******************************************************************************
 
   There is only one ModulesInfo instance per compilation. It is created on the
@@ -255,13 +256,17 @@ struct NodeSortInfo
                   module participating in the compilation (see method
                   wrap_in_globalvar_assigh())
 
+  globalSctx    : A single static_context which contains ALL function and
+                  variable declarations from ALL imported modules. This is
+                  used to catch conflicting definitions.
+
 ********************************************************************************/
 class ModulesInfo
 {
 public:
   CompilerCB                   * theCCB;
   hashmap<zstring, static_context_t>      mod_sctx_map;
-  hashmap<zstring, zstring>           mod_ns_map;
+  hashmap<zstring, zstring>               mod_ns_map;
   checked_vector<expr_t>         theInitExprs;
   std::auto_ptr<static_context>  globalSctx;
 
@@ -618,7 +623,8 @@ TranslatorImpl(
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
     bool isLibModule,
-    StaticContextConsts::xquery_version_t maxLibModuleVersion = StaticContextConsts::xquery_version_unknown)
+    StaticContextConsts::xquery_version_t maxLibModuleVersion =
+      StaticContextConsts::xquery_version_unknown)
   :
   theRootTranslator(rootTranslator),
   theRTM(GENV_TYPESYSTEM),
@@ -2205,7 +2211,13 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   zstring uri;
   bool found = theSctx->get_entity_retrieval_uri(uri);
   ZORBA_ASSERT(found);
-
+  // Note: in future, this will be problematic. When we consider supporting
+  // importing multiple incompatible versions of modules, mod_sctx_map is
+  // going to become a more complex multi-keyed structure, where the keys will
+  // be the namespace URI and the version of the module being imported. However,
+  // the version is defined by a "declare option", which will not have been
+  // parsed yet. So at this point, we do not have the full key to look up the
+  // appropriate static_context.
   static_context_t lTmpCtx;
   found = theModulesInfo->mod_sctx_map.get(uri, lTmpCtx);
   ZORBA_ASSERT(found);
@@ -2612,11 +2624,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  zstring targetNS = v.get_uri();
-  zstring pfx;
+  // Create a ModuleVersion based on the input namespace URI.
+  ModuleVersion const lModVer(v.get_uri());
 
-  if (!v.get_prefix().empty())
-    pfx = v.get_prefix();
+  // targetNS is the target namespace *without* any
+  // version-declaration fragment.
+  zstring const targetNS = lModVer.namespace_uri();
+  zstring const pfx = (!v.get_prefix().empty()) ? v.get_prefix() : "";
 
   if (static_context::is_reserved_module(targetNS))
   {
@@ -2640,7 +2654,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
 
   // It is a static error [err:XQST0047] if more than one module import in a
-  // Prolog specifies the same target namespace
+  // Prolog specifies the same target namespace. Note: by checking this here,
+  // we disallow importing two different versions of the same module from
+  // within a single module. It is not clear how we could support that anyway,
+  // since after import, they would both have the same namespace URI, and hence
+  // any references to that namespace would be ambiguous.
   if (! theImportedModules.insert(targetNS.str()).second)
     throw XQUERY_EXCEPTION(
       err::XQST0047, ERROR_PARAMS(targetNS), ERROR_LOC(loc)
@@ -2681,20 +2699,23 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 #endif
   }
 
-  // Create a list of absolute uris identifying the components of the
-  // module being imported. If there are no "at" clauses, try to
-  // generate the component URI from the target namespace. This is
-  // done using one or more user-provided module resolvers. If no such
-  // resolvers were provided, or if they don't know about the target
-  // namespace, the target namespace itself will be used as the (sole)
-  // component URI. If there are "at" clauses, then any relative URIs
-  // that are listed there are converted to absolute ones, using the
-  // base uri from the sctx.
+  // Create a list of absolute uris identifying the components of the module
+  // being imported. If there are no "at" clauses, try to generate the
+  // component URI from the target namespace. This is done using one or more
+  // user-provided module resolvers. If no such resolvers were provided, or if
+  // they don't know about the target namespace, the original target namespace
+  // (including version fragment, if any) itself will be used as the (sole)
+  // component URI. If there are "at" clauses, then any relative URIs that are
+  // listed there are converted to absolute ones, using the base uri from the
+  // sctx.
 
   std::vector<zstring> compURIs;
   if (atlist == NULL || atlist->size() == 0)
   {
-    theSctx->get_component_uris(targetNS, impl::Resource::MODULE, compURIs);
+    // Note the use of versioned_uri() here, so that the namespace with any
+    // version fragment will be passed through to the mappers.
+    theSctx->get_component_uris(lModVer.versioned_uri(),
+                                impl::Resource::MODULE, compURIs);
   }
   else
   {
@@ -2710,8 +2731,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
        ite != compURIs.end();
        ++ite)
   {
-    // Get the location uri for the module to import.
-    const zstring compURI = *ite;
+    // Create a ModuleVersion for the current component URI.
+    ModuleVersion const lCompModVer(*ite);
+
+    // Get the location uri for the module to import (minus version fragment,
+    // if any). This will be the key for mod_ns_map and mod_sctx_map. Note:
+    // if in future we support loading multiple versions of the same module,
+    // this key will have to change.
+    zstring const compURI = lCompModVer.namespace_uri();
 
     // If this import forms a cycle in a chain of module imports, skip it.
     // If the importing module is referencing any variable or function of
@@ -2756,16 +2783,17 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     {
       // Open the file containing the imported module. We get the ownership of
       // the input stream.
-      // TODO: we have to find a way to tell user defined resolvers when their
-      // input stream can be freed. The current solution might leed to problems
-      // on Windows. QQQ think this is fixed by new scheme
       zstring compURL;
       std::auto_ptr<std::istream> modfile;
 
       try
       {
+        // Resolve the URI. Again, note the use of versioned_uri() here,
+        // rather than using compURI directly, because we want the version
+        // fragment to be passed to the mappers.
         std::auto_ptr<impl::Resource> lResource =
-        theSctx->resolve_uri(compURI, impl::Resource::MODULE);
+        theSctx->resolve_uri(lCompModVer.versioned_uri(),
+                             impl::Resource::MODULE);
 
         if (lResource.get() != NULL &&
             lResource->getKind() == impl::Resource::STREAM)
@@ -2833,7 +2861,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // modules.
       theModulesInfo->mod_sctx_map.put(compURI, importedSctx);
 
-      // Parse the imported module
+      // Parse the imported module. fileURL is information only - it is used
+      // by the parser when creating query locations, etc.
       XQueryCompiler xqc(theCCB);
       zstring fileURL;
       if (compURL.size() != 0)
@@ -2872,6 +2901,33 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
                     modulesStack,
                     true,
                     theSctx->xquery_version());
+
+      // Determine the imported version, and verify that it satisfies the
+      // import specification (if any). QQQ this really should be done whether
+      // the module was newly-imported or already imported; it should be done
+      // below just before "Merge the exported sctx". However, currently at
+      // least, "declare option" information is not stored in the sctx that is
+      // in mod_sctx_map; therefore, when dealing with an already-imported
+      // sctx, there's no way to know what version it is. SF bug# 3312333.
+      // QQQ Also, this QName, or at least the namespace and localname, should
+      // probably be constants in some header somewhere.
+      if (lModVer.is_valid_version()) {
+        store::Item_t lMajorOpt;
+        theSctx->expand_qname(lMajorOpt,
+                              zstring("http://www.zorba-xquery.com/versioning"),
+                              zstring(""),
+                              zstring("version"),
+                              loc);
+        zstring lImportedVersion;
+        if (!moduleRootSctx->lookup_option(lMajorOpt.getp(), lImportedVersion)) {
+          lImportedVersion = "0.0";
+        }
+        ModuleVersion lImportedModVer(compURI, lImportedVersion);
+        if (!lImportedModVer.satisfies(lModVer)) {
+          RAISE_ERROR(zerr::ZXQP0037_INAPPROPRIATE_MODULE_VERSION, loc,
+                      ERROR_PARAMS(lModVer.versioned_uri(), lImportedVersion));
+        }
+      }
 
       // Register the mapping between the current location uri and the
       // target namespace.
@@ -3490,7 +3546,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     }
 
     // Make sure that there is no other prolog var with the same name in any of
-    // modules transalted so far.
+    // modules translated so far.
     bind_var(ve, theModulesInfo->globalSctx.get());
 
     // Make sure the initExpr is a simple expr.

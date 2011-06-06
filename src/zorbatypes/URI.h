@@ -152,6 +152,8 @@ public:
 
   void set_fragment(const zstring& new_fragment);
 
+  void clear_fragment();
+
 protected:
   void build_full_text() const;
 
@@ -186,6 +188,8 @@ protected:
   bool is_set(uint32_t s) const { return ((theState & s) > 0); }
 
   void unset_state(uint32_t s) const { theState &= ~s; }
+
+  void invalidate_text() const;
 };
 
 
@@ -240,6 +244,25 @@ inline const zstring& URI::get_encoded_query() const
 inline const zstring& URI::get_encoded_fragment() const
 {
   return theFragment;
+}
+
+inline void URI::set_fragment(const zstring &new_fragment)
+{
+  theFragment = new_fragment;
+  invalidate_text();
+}
+
+inline void URI::clear_fragment()
+{
+  theFragment.clear();
+  unset_state(Fragment);
+  invalidate_text();
+}
+
+inline void URI::invalidate_text() const
+{
+  theASCIIURIText.clear();
+  theURIText.clear();
 }
 
 inline std::ostream& operator<<( std::ostream &o, URI const &uri ) {

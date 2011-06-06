@@ -98,8 +98,10 @@ IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE)
 
 ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE)
 
-# The NO_CTEST variable can be set to 1 so that CMake does not search for and add most of the Zorba tests,
-# to speed up building and compiling the project.
+# The NO_CTEST variable can be set to 1 so that CMake does not search
+# for and add most of the Zorba tests, to speed up building and
+# compiling the project.
 IF (NOT NO_CTEST)
-ADD_SUBDIRECTORY(Queries)
+  ADD_SUBDIRECTORY(Queries)
+  ADD_SUBDIRECTORY(modules)
 ENDIF (NOT NO_CTEST)

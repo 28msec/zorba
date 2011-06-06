@@ -31,13 +31,8 @@ namespace impl {
  * http: (and https: and ftp:) URL resolver.
  ******/
 
-ZorbaHTTPURLResolver::~ZorbaHTTPURLResolver()
-{
-}
-
-
 Resource*
-ZorbaHTTPURLResolver::resolveURL
+HTTPURLResolver::resolveURL
 (zstring const& aUrl, Resource::EntityType aEntityType)
 {
   uri::scheme lScheme = uri::get_scheme(aUrl);
@@ -72,12 +67,8 @@ ZorbaHTTPURLResolver::resolveURL
  * file: URL resolver.
  ******/
 
-ZorbaFileURLResolver::~ZorbaFileURLResolver()
-{
-}
-
 Resource*
-ZorbaFileURLResolver::resolveURL
+FileURLResolver::resolveURL
 (zstring const& aUrl, Resource::EntityType aEntityType)
 {
   uri::scheme lScheme = uri::get_scheme(aUrl);

@@ -549,8 +549,7 @@ void URI::initialize(const URI& to_copy)
 ********************************************************************************/
 void URI::initialize(const zstring& uri, bool have_base)
 {
-  theURIText.clear();
-  theASCIIURIText.clear();
+  invalidate_text();
   thePathNotation.clear();
   theScheme.clear();
   theHost.clear();
@@ -1280,7 +1279,7 @@ void URI::resolve(const URI* base_uri)
         set_state(QueryString);
     }
 
-    theURIText.clear(); // force rebuild in get_uri_text
+    invalidate_text();
 
     return;
   }
@@ -1291,7 +1290,7 @@ void URI::resolve(const URI* base_uri)
   // scheme is inherited from the base URI's scheme component.
   if ( is_set(Scheme) ) 
   {
-    theURIText.clear(); // force rebuild in get_uri_text
+    invalidate_text();
     return;
   }
 
@@ -1330,8 +1329,7 @@ void URI::resolve(const URI* base_uri)
   }
   else
   {
-    theURIText.clear(); // force rebuild in toString
-    theASCIIURIText.clear();
+    invalidate_text();
     return;
   }
 
@@ -1340,9 +1338,8 @@ void URI::resolve(const URI* base_uri)
   // the reference is an absolute-path and we skip to step 7.
   if ( (is_set(Path)) && (thePath[0] =='/') ) 
   {
-    theURIText.clear(); // force rebuild in get_uri_text
-    theASCIIURIText.clear();
-    return;
+     invalidate_text();
+     return;
   }
 
   zstring base_path = base_uri->get_encoded_path();
@@ -1439,8 +1436,7 @@ void URI::resolve(const URI* base_uri)
   }
   
   thePath = path;
-  theURIText.clear(); // force rebuild in get_uri_text
-  theASCIIURIText.clear();
+  invalidate_text();
 }
 
 

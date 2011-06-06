@@ -77,16 +77,16 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION SOURCE_FILE)
   ENDFOREACH (known_ver)
   SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-versions" ${version_int})
 
-  # Create output directories based on version number, and install
-  # CMake custom commands which will copy the module source file into
-  # each directory.
+  # Create the output directory.
+  SET (output_dir "${PROJECT_BINARY_DIR}/modules/${module_path}")
+  FILE (MAKE_DIRECTORY "${output_dir}")
+
+  # Install CMake custom commands which will copy the module source
+  # file to each target filename in the output directory.
   SET (output_files)
   FILE (RELATIVE_PATH rel_source "${PROJECT_SOURCE_DIR}" "${SOURCE_FILE}")
-  FOREACH (version_dir "" "${major_ver}" "${major_ver}/${minor_ver}")
-    SET (output_dir
-      "${PROJECT_BINARY_DIR}/modules/${module_path}/${version_dir}")
-    FILE (MAKE_DIRECTORY "${output_dir}")
-    SET (output_file "${output_dir}/${module_filename}")
+  FOREACH (version_ext "" ".${major_ver}" ".${major_ver}.${minor_ver}")
+    SET (output_file "${output_dir}/${module_filename}${version_ext}")
 
     # We maintain a global CMake property named after the target URI
     # which remembers all known output files. If the output file we
@@ -105,7 +105,7 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION SOURCE_FILE)
       SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-output-files"
         "${output_file}")
     ENDIF (file_found EQUAL -1)
-  ENDFOREACH (version_dir)
+  ENDFOREACH (version_ext)
 
   # Associate these custom commands with the "all" target via a custom
   # target. (I couldn't find any neater way to do this in CMake; you

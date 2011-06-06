@@ -121,6 +121,7 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     || error == ZXQP0029_MODULE_IMPORT_NOT_ALLOWED
     || error == ZXQP0030_DEADLOCK
     || error == ZXQP0036_BREAKITERATOR_CREATION_FAILED
+    || error == ZXQP0037_INAPPROPRIATE_MODULE_VERSION
   )
     return XQC_INTERNAL_ERROR;
 

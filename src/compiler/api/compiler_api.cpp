@@ -295,6 +295,10 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   This is a small helper class used when the user wants to compile a library
   module. The ONLY place it is used (and should be used) is in the 
   XQueryCompiler::createMainModule method below.
+  QQQ When we have the ability to compile a library module indepedently, this
+  rather hacky class can go away. At that time, we can also eliminate the
+  "stream URL" hack in StreamResource - this is the only place in the code where
+  we use the two-arg StreamResource constructor.
 *******************************************************************************/
 class FakeLibraryModuleURLResolver : public impl::URLResolver
 {
@@ -316,6 +320,7 @@ public:
       return NULL;
     }
     assert (theStream.good());
+    // QQQ We can remove this second argument when we can compile modules individually
     return new impl::StreamResource
       (std::auto_ptr<std::istream>(new std::istream(theStream.rdbuf())),
         theLibraryModuleFilename);

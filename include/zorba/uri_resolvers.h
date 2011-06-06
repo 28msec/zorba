@@ -224,8 +224,10 @@ class ZORBA_DLL_PUBLIC URIMapper
    * supported for all uses of URIs in Zorba. It can be used for
    * example to redirect http: URIs to locally-cached file: URLs, or
    * to provide several alternative locations for a given resource.
+   *
+   * If you do not override this method, the default is "candidate".
    */
-  virtual Kind mapperKind() throw () = 0;
+  virtual Kind mapperKind() throw () { return CANDIDATE; }
 
   /**
    * @brief Constant indicating that Zorba should deny access to the

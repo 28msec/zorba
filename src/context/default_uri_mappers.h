@@ -34,15 +34,13 @@ namespace zorba {
 namespace impl {
 
 /**
- * @brief Automatic Filesystem URI Mapper.
+ * @brief URI Mapper which ensures URIs look like they point to files. Helpful
+ * for deploying modules both to filesystems and webservers; also the module
+ * versioning mapper depends on this.
  */
-class ZorbaAutoFSURIMapper : public impl::URIMapper
+class FileizeURIMapper : public impl::URIMapper
 {
 public:
-
-  virtual ~ZorbaAutoFSURIMapper();
-
-  virtual impl::URIMapper::Kind mapperKind() throw ();
 
   virtual void mapURI(zstring const& aUri,
     Resource::EntityType aEntityType,
@@ -50,6 +48,33 @@ public:
     std::vector<zstring>& oUris) throw ();
 };
 
+/**
+ * @brief URI Mapper which mangles non-file: URIs to a standardized location on
+ * the filesystem, honoring Zorba's module-path.
+ */
+class AutoFSURIMapper : public impl::URIMapper
+{
+public:
+
+  virtual void mapURI(zstring const& aUri,
+    Resource::EntityType aEntityType,
+    static_context const& aSctx,
+    std::vector<zstring>& oUris) throw ();
+};
+
+
+/**
+ * @brief Module versioning URI Mapper.
+ */
+class ModuleVersioningURIMapper : public impl::URIMapper
+{
+public:
+
+  virtual void mapURI(zstring const& aUri,
+    Resource::EntityType aEntityType,
+    static_context const& aSctx,
+    std::vector<zstring>& oUrls) throw ();
+};
 
 } /* namespace zorba::impl */
 

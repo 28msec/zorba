@@ -22,6 +22,7 @@ namespace zorba {
 
   const char* root_static_context::theBuiltInModulePaths[] = { 
     "@CMAKE_BINARY_DIR@/modules/",
+    // QQQ this should be eliminated after module-authoring work complete
     "@CMAKE_SOURCE_DIR@/modules/",
 #ifndef WIN32
     "@CMAKE_INSTALL_PREFIX@/include/modules/",

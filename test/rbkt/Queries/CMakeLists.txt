@@ -310,3 +310,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 # Failing test due to the new scripting spec. The test should be removed as it does not make sense any longer
 EXPECTED_FAILURE(test/rbkt/zorba/scripting/exit4 666)
+
+EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
+EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)

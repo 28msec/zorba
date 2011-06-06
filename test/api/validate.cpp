@@ -32,9 +32,6 @@ using namespace zorba;
 class ValidationTestSchemaURIMapper: public URIMapper
 {
 public:
-  virtual ~ValidationTestSchemaURIMapper(){}
-  
-  virtual URIMapper::Kind mapperKind() throw() { return URIMapper::CANDIDATE; }
 
   virtual void mapURI(const zorba::String aUri,
     Resource::EntityType aEntityType,

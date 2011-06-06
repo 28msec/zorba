@@ -11,7 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-SET(TRANSLATOR_SRCS
-    prolog_graph.cpp
-    translator.cpp
-    module_version.cpp)
+
+# Build and install any test modules
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 2.3
+  "${CMAKE_CURRENT_SOURCE_DIR}/ver2.xq")
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 1.4
+  "${CMAKE_CURRENT_SOURCE_DIR}/ver.xq")
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/A" 1.0
+  "${CMAKE_CURRENT_SOURCE_DIR}/module-A.xq")
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/B" 1.0
+  "${CMAKE_CURRENT_SOURCE_DIR}/module-B.xq")

@@ -77,8 +77,6 @@ public:
 
   virtual ~TestSchemaURIMapper();
 
-  virtual URIMapper::Kind mapperKind() throw() { return URIMapper::CANDIDATE; }
-
   virtual void mapURI(const String aURI, Resource::EntityType aEntityType,
     std::vector<String>& oUris) throw ();
 

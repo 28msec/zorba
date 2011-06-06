@@ -131,7 +131,7 @@ void GlobalEnvironment::init(store::Store* store)
     XQueryCompilerSubsystem::create();
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
-  m_globalEnv->m_http_resolver      = new impl::ZorbaHTTPURLResolver();
+  m_globalEnv->m_http_resolver      = new impl::HTTPURLResolver();
 
 #ifndef ZORBA_NO_FULL_TEXT
   m_globalEnv->m_stop_words_resolver = new StandardFullTextURIResolver();

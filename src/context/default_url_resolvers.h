@@ -36,11 +36,9 @@ namespace impl {
 /**
  * @brief http: URL Resolver.
  */
-class ZorbaHTTPURLResolver : public impl::URLResolver
+class HTTPURLResolver : public impl::URLResolver
 {
 public:
-
-  virtual ~ZorbaHTTPURLResolver();
 
   virtual Resource* resolveURL(zstring const& aUrl,
     Resource::EntityType aEntityType);
@@ -49,11 +47,9 @@ public:
 /**
  * @brief file: URL Resolver.
  */
-class ZorbaFileURLResolver : public impl::URLResolver
+class FileURLResolver : public impl::URLResolver
 {
 public:
-
-  virtual ~ZorbaFileURLResolver();
 
   virtual Resource* resolveURL(zstring const& aUrl,
     Resource::EntityType aEntityType);
