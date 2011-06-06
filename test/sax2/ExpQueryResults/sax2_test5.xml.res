@@ -11,11 +11,11 @@ QName: wpt
 Attribute name: lat, value: 0
 URI: 
 Local name: lat
-Type: untypedAtomic
+Type: xs:untypedAtomic
 Attribute name: lon, value: 0
 URI: 
 Local name: lon
-Type: untypedAtomic
+Type: xs:untypedAtomic
 startPrefixMapping()
 Prefix: 
 URI: http://namespace
@@ -30,11 +30,11 @@ QName: wpt
 Attribute name: lat, value: 0
 URI: 
 Local name: lat
-Type: untypedAtomic
+Type: xs:untypedAtomic
 Attribute name: lon, value: 0
 URI: 
 Local name: lon
-Type: untypedAtomic
+Type: xs:untypedAtomic
 startPrefixMapping()
 Prefix: 
 URI: http://namespace

@@ -121,8 +121,8 @@ class DebuggerRuntime : public Runnable {
     std::string
     listSource();
 
-    std::string
-    getAllVariables();
+    std::vector<std::pair<std::string, std::string> >
+    getVariables(bool locals);
 
     void evalCommand();
     void runQuery();

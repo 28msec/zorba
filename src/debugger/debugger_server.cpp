@@ -111,25 +111,8 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
     switch (lCmdName.at(0)) {
 
-    case 'f':
-      // feature_get, feature_set
-      {
-        std::string lFeatureName;
-        if (aCommand.getArg("n", lFeatureName)) {
-          lResponse << "feature_name=\"" << lFeatureName << "\" ";
-
-          if (aCommand.getName() == "feature_get") {
-            lResponse << "supported=\"0\" ";
-          } else if (aCommand.getName() == "feature_set") {
-            lResponse << "success=\"0\" ";
-          }
-        }
-      }
-      lResponse << ">";
-      break;
-
+    // breakpoint_get, breakpoint_set, breakpoint_update, breakpoint_remove, breakpoint_list
     case 'b':
-      // breakpoint_get, breakpoint_set, breakpoint_update, breakpoint_remove, breakpoint_list
       if (lCmdName == "breakpoint_get" || lCmdName == "breakpoint_list") {
         lResponse << ">"; // response start tag close
         if (lCmdName == "breakpoint_get") {
@@ -236,7 +219,85 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
       }
     
       break;
-       
+
+    // context_names, context_get
+    case 'c':
+
+      int lContextDepth;
+      if (!aCommand.getArg("d", lContextDepth)) {
+        lContextDepth = 0;
+      }
+
+      lResponse << ">";
+
+      if (aCommand.getName() == "context_names") {
+
+        lResponse << "<context name=\"Local\" id=\"0\" />";
+        lResponse << "<context name=\"Global\" id=\"1\" />";
+ 
+      } else if (aCommand.getName() == "context_get") {
+
+        int lContextID;
+        if (!aCommand.getArg("c", lContextID)) {
+          lContextID = 0;
+        }
+
+        // currently we only support contexts for the topmost stack frame
+        if (lContextDepth == 0) {
+
+          std::vector<std::pair<std::string, std::string> > lVariables =
+            theRuntime->getVariables(lContextID == 0 ? true : false);
+          std::vector<std::pair<std::string, std::string> >::iterator lIter =
+            lVariables.begin();
+
+          for (; lIter != lVariables.end(); ++lIter) {
+            std::string lFullName = lIter->first;
+            std::string lName = lFullName;
+            std::size_t lIndex = lFullName.find(" ");
+            if (lIndex != std::string::npos) {
+              lName = lFullName.substr(0, lIndex);
+            }
+
+            lResponse << "<property "
+              << "name=\"" << lName << "\" "
+              << "fullname=\"" << lFullName << "\" "
+              << "type=\"" << lIter->second << "\" "
+//            << "classname=\"name_of_object_class\" "
+              << "constant=\"1\" "
+//            << "children=\"0\" "
+//            << "size=\"9\" "
+//            << "page=\"{NUM}\" "
+//            << "pagesize=\"{NUM}\" "
+//            << "address=\"{NUM}\" "
+//            << "key=\"language_dependent_key\" "
+//            << "encoding=\"base64|none\" "
+//            << "numchildren=\"{NUM}\" "
+              << ">"
+              << "not evaluated"
+              << "</property>";
+          }
+        }
+      }
+
+      break;
+
+    // feature_get, feature_set
+    case 'f':
+      {
+        std::string lFeatureName;
+        if (aCommand.getArg("n", lFeatureName)) {
+          lResponse << "feature_name=\"" << lFeatureName << "\" ";
+
+          if (aCommand.getName() == "feature_get") {
+            lResponse << "supported=\"0\" ";
+          } else if (aCommand.getName() == "feature_set") {
+            lResponse << "success=\"0\" ";
+          }
+        }
+      }
+      lResponse << ">";
+      break;
+
     case 'r':
       // run
       if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE) {

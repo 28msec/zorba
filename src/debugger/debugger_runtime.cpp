@@ -298,26 +298,16 @@ DebuggerRuntime::detachRuntime()
   // TODO: something more here?
 }
 
-std::string
-DebuggerRuntime::getAllVariables()
+std::vector<std::pair<std::string, std::string> >
+DebuggerRuntime::getVariables(bool aLocals)
 {
-  //DebuggerCommons* lCommons = 
-  //  theWrapper->thePlanState->theDebuggerCommons;
-  //static_context* lContext = lCommons->getCurrentStaticContext();
-  //std::vector<std::string> lVariables;
-  //lContext->getVariables(lVariables);
-  //std::auto_ptr<VariableReply> lReply(
-  //  new VariableReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
-  //std::vector<std::string>::iterator lIter;
-  //for (lIter = lVariables.begin(); lIter != lVariables.end(); lIter++) {
-  //  if (*lIter == "local") {
-  //    lReply->addLocal(*(++lIter), *(++lIter));
-  //  } else if (*lIter == "global") {
-  //    lReply->addGlobal(*(++lIter), *(++lIter));
-  //  }
-  //}
-  //return lReply.release();
-  return "";
+  DebuggerCommons* lCommons = getDebbugerCommons();
+  static_context* lContext = lCommons->getCurrentStaticContext();
+
+  std::vector<std::pair<std::string, std::string> > lVariables;
+  lContext->getVariables(lVariables, aLocals);
+
+  return lVariables;
 }
 
 void

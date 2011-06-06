@@ -2088,7 +2088,9 @@ var_expr* static_context::lookup_var(
 /***************************************************************************//**
   This method is used by the debuger
 ********************************************************************************/
-void static_context::getVariables(std::vector<std::string>& aResult) const
+void static_context::getVariables(
+  std::vector<std::pair<std::string, std::string> >& aVariableList,
+  bool aLocals) const
 {
   const static_context* sctx = this;
 
@@ -2102,44 +2104,54 @@ void static_context::getVariables(std::vector<std::string>& aResult) const
       for (; ite != end; ++ite)
       {
         const var_expr* lExpr = ite.getValue();
-        var_expr::var_kind lKind = lExpr->get_kind();
 
-        if (lKind == var_expr::prolog_var)
+        // only locals or globals according to the aLocals parameter
+        if ((!aLocals && lExpr->get_kind() == var_expr::prolog_var) ||
+            aLocals && lExpr->get_kind() != var_expr::prolog_var)
         {
-          aResult.push_back("global");
-        }
-        else
-        {
-          aResult.push_back("local");
-        }
+          // read the name
+          std::stringstream lVarName;
+          bool lHasNS = ! lExpr->get_name()->getNamespace().empty();
 
-        std::string lType;
-        if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL)
-        {
-          lType = "anyType:http://www.w3.org/2001/XMLSchema";
-        }
-        else
-        {
-          store::Item_t lQname = lExpr->get_type()->get_qname();
-          lType = lQname->getLocalName().str();
-          lType += ":";
-          lType += lQname->getNamespace().str();
-        }
+          if (lHasNS)
+          {
+            lVarName << lExpr->get_name()->getPrefix().str() << ":";
+          }
+          lVarName << lExpr->get_name()->getLocalName().str();
+          if (lHasNS)
+          {
+            lVarName << " " << lExpr->get_name()->getNamespace().str();
+          }
 
-        if (lExpr->is_sequential())
-        {
-          lType += "*";
-        }
 
-        aResult.push_back(lType);
+          // read the type
+          std::stringstream lType;
+          if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL)
+          {
+            lType << "xs:anyType";
+            if (lExpr->is_sequential())
+            {
+              lType << "*";
+            }
+            lType << " http://www.w3.org/2001/XMLSchema";
+          }
+          else
+          {
+            store::Item_t lQname = lExpr->get_type()->get_qname();
+            lType << lQname->getPrefix().str()
+                  << ":"
+                  << lQname->getLocalName().str()
+                  << " "
+                  << lQname->getNamespace().str();
+          }
 
-        std::string varName = lExpr->get_name()->getLocalName().str();
-        if (! lExpr->get_name()->getNamespace().empty())
-        {
-          varName += ":";
-          varName += lExpr->get_name()->getNamespace().str();
+
+          // add a new result
+          aVariableList.push_back(
+            std::pair<std::string, std::string>(lVarName.str(), lType.str())
+          );
+
         }
-        aResult.push_back(varName);
       }
     }
 

@@ -796,11 +796,13 @@ public:
         const QueryLoc& loc,
         const Error& err) const;
 
-  void getVariables(std::vector<std::string>& aVarialeList) const;
+  void getVariables(
+    std::vector<std::pair<std::string, std::string> >& variableList,
+    bool locals) const;
 
-  void getVariables(std::vector<var_expr_t>& aVarialeList) const;
+  void getVariables(std::vector<var_expr_t>& variableList) const;
 
-  void getLocalVariables(std::vector<var_expr_t>& aVarialeList) const;
+  void getLocalVariables(std::vector<var_expr_t>& variableList) const;
 
   void set_context_item_type(xqtref_t& t);
 

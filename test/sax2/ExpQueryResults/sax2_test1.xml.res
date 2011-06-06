@@ -11,15 +11,15 @@ QName: test:Case
 Attribute name: name, value: test1
 URI: 
 Local name: name
-Type: untypedAtomic
+Type: xs:untypedAtomic
 Attribute name: emptyAttribute, value: 
 URI: 
 Local name: emptyAttribute
-Type: untypedAtomic
+Type: xs:untypedAtomic
 Attribute name: test:ns_id, value: auio
 URI: http://test.org/schema
 Local name: ns_id
-Type: untypedAtomic
+Type: xs:untypedAtomic
 Comment: 
     <foo>Bar</foo>
   
@@ -41,7 +41,7 @@ QName: foo:bar
 Attribute name: foo, value: foo
 URI: 
 Local name: foo
-Type: untypedAtomic
+Type: xs:untypedAtomic
 endPrefixMapping()
 Prefix: foo
 Comment:  This is a comment 
