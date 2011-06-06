@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
-   Software Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -39,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/Users/pjl/src/flwor/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 35 "/Users/pjl/src/flwor/zorba/trunk-3/zorba/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -71,26 +70,12 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 75 "/Users/pjl/src/flwor/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 74 "/Users/pjl/src/flwor/zorba/trunk-3/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 86 "/Users/pjl/src/flwor/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
-  class position;
-  class location;
-
-} // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 93 "/Users/pjl/src/flwor/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -111,30 +96,11 @@ namespace zorba {
 # define YYTOKEN_TABLE 0
 #endif
 
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
 
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 138 "/Users/pjl/src/flwor/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 104 "/Users/pjl/src/flwor/zorba/trunk-3/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -146,7 +112,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 150 "/Users/pjl/src/flwor/zorba/trunk/zorba/src/compiler/parser/xquery_parser.y"
+#line 150 "/Users/pjl/src/flwor/zorba/trunk-3/zorba/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -170,7 +136,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 174 "/Users/pjl/src/flwor/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 140 "/Users/pjl/src/flwor/zorba/trunk-3/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -571,6 +537,14 @@ namespace zorba {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned short int token_number_type;
     /* Tables.  */
@@ -578,7 +552,7 @@ namespace zorba {
     static const short int yypact_[];
     static const short int yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned short int yydefact_[];
@@ -609,10 +583,8 @@ namespace zorba {
     static const char* const yytname_[];
 #endif
 
-#if YYERROR_VERBOSE
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
+    static std::string yytnamerr_ (const char *n);
 
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
@@ -671,7 +643,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 675 "/Users/pjl/src/flwor/zorba/trunk/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 647 "/Users/pjl/src/flwor/zorba/trunk-3/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
