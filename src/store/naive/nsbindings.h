@@ -56,6 +56,8 @@ public:
 
   bool findBinding(const zstring& prefix, zstring& nsuri) const;
 
+  static void check_ns_binding(const zstring& prefix, const zstring& uri);
+  
   void addBinding(const zstring& prefix, const zstring& ns, bool soft = false);
 
   void updateBinding(const zstring& prefix, const zstring& ns);

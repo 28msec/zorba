@@ -10471,8 +10471,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     if (have_uri)
     {
-      if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)) ||
-          (ZSTREQ(prefix, "xmlns") && !ZSTREQ(uri, XMLNS_NS)))
+      if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
       {
         throw XQUERY_EXCEPTION(
           err::XQST0070,
@@ -10482,7 +10481,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       }
 
       if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
-          (ZSTREQ(uri, XMLNS_NS) && !ZSTREQ(prefix, "xmlns")))
+           ZSTREQ(uri, XMLNS_NS))
       {
         throw XQUERY_EXCEPTION(
           err::XQST0070, ERROR_PARAMS( uri, ZED( NoBindURI ) ), ERROR_LOC( loc )

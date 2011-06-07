@@ -17,6 +17,10 @@
 
 #include "zorbautils/fatal.h"
 #include "store/naive/nsbindings.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/dict.h"
+#include "zorbamisc/ns_consts.h"
+
 
 namespace zorba { namespace simplestore {
 
@@ -60,6 +64,13 @@ NsBindingsContext::NsBindingsContext(const store::NsBindings& bindings)
   std::cout << "Create binding context2 " << this << "; num bindings = "
             << bindings.size() << std::endl;
 #endif
+
+  //check all bindings
+  store::NsBindings::const_iterator   ns_iter;
+  for(ns_iter = theBindings.begin(); ns_iter != theBindings.end(); ns_iter++)
+  {
+    check_ns_binding(ns_iter->first, ns_iter->second);
+  }
 }
 
 
@@ -74,6 +85,39 @@ NsBindingsContext::~NsBindingsContext()
 #endif
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+/**
+ * A macro for calling equals() with a second argument of a string literal.
+ */
+#define ZSTREQ(STRING,LITERAL) \
+        ::zorba::ztd::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
+void NsBindingsContext::check_ns_binding(const zstring& prefix, const zstring& uri)
+{
+  if (ZSTREQ(prefix, "xmlns"))
+    throw XQUERY_EXCEPTION(
+      err::XQST0070,
+      ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) )
+    );
+
+  if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
+  {
+    throw XQUERY_EXCEPTION(
+      err::XQST0070,
+      ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) )
+    );
+  }
+
+  if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
+       ZSTREQ(uri, XMLNS_NS))
+  {
+    throw XQUERY_EXCEPTION(
+      err::XQST0070, ERROR_PARAMS( uri, ZED( NoBindURI ) )
+    );
+  }
+
+}
 
 /*******************************************************************************
 
@@ -129,6 +173,7 @@ void NsBindingsContext::addBinding(
     }
   }
 
+  check_ns_binding(prefix, ns);
   theBindings.push_back(std::pair<zstring, zstring>(prefix, ns));
 }
 
@@ -151,6 +196,7 @@ void NsBindingsContext::updateBinding(const zstring& prefix, const zstring& ns)
     }
   }
 
+  check_ns_binding(prefix, ns);
   theBindings.push_back(std::pair<zstring, zstring>(prefix, ns));
 }
 
