@@ -26,17 +26,38 @@ ADD_SUBDIRECTORY(org)
 # ADD_SUBDIRECTORY()s, so that all the config files are built and
 # ready for other modules' FIND_PACKAGE() calls. We also add all
 # module build dirs to CMAKE_PREFIX_PATH for the same reason.
+SET (project_regex "[Pp][Rr][Oo][Jj][Ee][Cc][Tt]")
 FILE (GLOB module_dirs RELATIVE "${ZORBA_MODULES_DIR}" "${ZORBA_MODULES_DIR}/*")
 FOREACH (module_dir ${module_dirs})
-  # The convention is that the name of an external module project is
-  # always exactly zorba_foo_module, where "foo" is the name of the
-  # directory in zorba_modules.
-  SET (module_project "zorba_${module_dir}_module")
+  # This is really kind of hacky, but I don't know a better solution without
+  # introducing some sort of inter-module dependency tracking and requiring
+  # consistent directory naming for external modules. What we do here is
+  # read the module's CMakeLists.txt (as a text file), searching for the
+  # PROJECT() declaration, so we can extract the name of the CMake project.
+  SET (module_project)
+  SET (cmakelists)
+  FILE (STRINGS "${ZORBA_MODULES_DIR}/${module_dir}/CMakeLists.txt" cmakelists
+    REGEX ${project_regex})
+  FOREACH (line ${cmakelists})
+    IF (line MATCHES "${project_regex} *\\(([^)]*)\\)")
+      SET (module_project ${CMAKE_MATCH_1})
+      MESSAGE (STATUS "**************************************")
+      MESSAGE (STATUS "Found module project ${module_project}")
+      MESSAGE (STATUS "**************************************")
+      BREAK ()
+    ENDIF (line MATCHES "${project_regex} *\\(([^)]*)\\)")
+  ENDFOREACH (line)
+
+  IF (NOT module_project)
+    MESSAGE (FATAL_ERROR "Directory ${ZORBA_MODULES_DIR}/${module_dir} "
+      "does not contain a recognizable CMake project.")
+  ENDIF (NOT module_project)
+
   SET (module_builddir "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
   FILE (MAKE_DIRECTORY "${module_builddir}")
   CREATE_MODULE_CONFIG(${module_project} "${ZORBA_MODULES_DIR}/${module_dir}"
     "${module_builddir}")
-    LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
+  LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
 ENDFOREACH (module_dir)
 
 # Each of these projects will also want to be able to
