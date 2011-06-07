@@ -173,8 +173,6 @@ namespace zorba{
 
     class TimezoneFromTimeIterator;
 
-    class TimestampIterator;
-
     class ErrorIterator;
 
     class TraceIterator;
@@ -184,6 +182,10 @@ namespace zorba{
     class PrintIterator;
 
     class FunctionTraceIterator;
+
+    class FetchContentIterator;
+
+    class FetchContentTypeIterator;
 
     class FnPutIterator;
 
@@ -714,9 +716,6 @@ public:
     virtual void beginVisit ( const TimezoneFromTimeIterator& ) = 0;
     virtual void endVisit   ( const TimezoneFromTimeIterator& ) = 0;
 
-    virtual void beginVisit ( const TimestampIterator& ) = 0;
-    virtual void endVisit   ( const TimestampIterator& ) = 0;
-
     virtual void beginVisit ( const ErrorIterator& ) = 0;
     virtual void endVisit   ( const ErrorIterator& ) = 0;
 
@@ -731,6 +730,12 @@ public:
 
     virtual void beginVisit ( const FunctionTraceIterator& ) = 0;
     virtual void endVisit   ( const FunctionTraceIterator& ) = 0;
+
+    virtual void beginVisit ( const FetchContentIterator& ) = 0;
+    virtual void endVisit   ( const FetchContentIterator& ) = 0;
+
+    virtual void beginVisit ( const FetchContentTypeIterator& ) = 0;
+    virtual void endVisit   ( const FetchContentTypeIterator& ) = 0;
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;

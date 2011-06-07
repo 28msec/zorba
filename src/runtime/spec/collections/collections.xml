@@ -126,13 +126,11 @@
     <zorba:function generateCodegen="false">
 
       <zorba:signature localname="index-of" prefix="zorba-store-collections-static-dml">
-        <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>
 
       <zorba:signature localname="index-of" prefix="zorba-store-dynamic-collections-dml">
-        <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>

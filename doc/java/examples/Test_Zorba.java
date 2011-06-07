@@ -100,6 +100,8 @@ public class Test_Zorba
     XQuery xquery = zorba.compileQuery("doc('books.xml')//book");
     System.out.println (  xquery.execute() );
 
+    dm.deleteDocument("books.xml");
+
     return true;
   }
 

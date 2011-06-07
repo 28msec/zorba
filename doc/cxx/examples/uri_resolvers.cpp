@@ -80,7 +80,7 @@ public:
       if (aURI.getStringValue() == "mydoc.xml") 
       {
         // we have only one document
-        lResult->theDocument = aXmlDataManager->getDocument(aURI.getStringValue());
+        lResult->theDocument = aXmlDataManager->getDocumentManager()->document(aURI.getStringValue());
         lResult->setError(URIResolverResult::UR_NOERROR);
       }
       else
@@ -107,7 +107,9 @@ resolver_example_1(Zorba* aZorba)
 
       XmlDataManager* lDataManager = aZorba->getXmlDataManager();
 
-      lDataManager->loadDocument("mydoc.xml", lDocStream);
+      DocumentManager* lMgr = lDataManager->getDocumentManager();
+
+      lMgr->add("mydoc.xml", lDataManager->parseXML(lDocStream));
     }
 
     StaticContext_t lContext = aZorba->createStaticContext();
@@ -116,7 +118,7 @@ resolver_example_1(Zorba* aZorba)
 
     lContext->setDocumentURIResolver(&lResolver);
 
-    XQuery_t lQuery = aZorba->compileQuery("fn:doc('mydoc.xml')", lContext); 
+    XQuery_t lQuery = aZorba->compileQuery("fn:doc('file:///mydoc.xml')", lContext); 
     std::cout << lQuery << std::endl;
   }
   catch (ZorbaException& e)
@@ -128,79 +130,6 @@ resolver_example_1(Zorba* aZorba)
 
 	return true;
 }
-
-/** Collection Resolver */
-class MyCollectionURIResolverResult : public CollectionURIResolverResult
-{
-  public:
-    virtual Collection_t
-    getCollection() const
-    {
-      return theCollection;
-    }
-
-  protected:
-    friend class MyCollectionURIResolver;
-    Collection_t theCollection;
-};
-
-class MyCollectionURIResolver : public  CollectionURIResolver
-{
-  public:
-    virtual ~MyCollectionURIResolver() {}
-
-    virtual std::auto_ptr<CollectionURIResolverResult>
-    resolve(const Item& aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager)
-    {
-      std::auto_ptr<MyCollectionURIResolverResult> lResult(new MyCollectionURIResolverResult());
-      String lURI = aURI.getStringValue();
-      if (lURI == "file:///mycollection.xml") {
-        // we have only one document
-        lURI = lURI.substr(8); // strip the "file:///" prefix
-        lResult->theCollection = aXmlDataManager->getCollection(lURI);
-        lResult->setError(URIResolverResult::UR_NOERROR);
-      } else {
-        lResult->setError(URIResolverResult::UR_FODC0002);
-        std::stringstream lErrorStream;
-        lErrorStream << "Collection could not be found " << aURI.getStringValue();
-        lResult->setErrorDescription(lErrorStream.str());
-      }
-      return std::auto_ptr<CollectionURIResolverResult>(lResult.release()); 
-    }
-};
-
-bool 
-resolver_example_2(Zorba* aZorba)
-{
-  try {
-    // load one document into the store
-    {
-      XmlDataManager* lDataManager = aZorba->getXmlDataManager();
-
-      Collection_t lCol = lDataManager->createCollection("mycollection.xml");
-
-      std::stringstream lDoc;
-      lDoc << "<mydoc><b>1</b></mydoc>";
-      lCol->addDocument(lDoc);
-    }
-
-    StaticContext_t lContext = aZorba->createStaticContext();
-
-    MyCollectionURIResolver lResolver;
-
-    lContext->setCollectionURIResolver(&lResolver);
-
-    XQuery_t lQuery = aZorba->compileQuery("fn:collection('mycollection.xml')", lContext); 
-    std::cout << lQuery << std::endl;
-  } catch (ZorbaException& e) {
-    std::cerr << e.what() << std::endl;
-    return false;
-  }
-
-  return true;
-}
-
-
 
 // Call this MyModuleURLResolver2 to avoid conflicts with
 // MyModuleURLResolver in external_functions.cpp
@@ -242,7 +171,7 @@ class URIResolverSerializationCallback : public SerializationCallback
 
 
 bool 
-resolver_example_3(Zorba* aZorba)
+resolver_example_2(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
@@ -280,7 +209,7 @@ resolver_example_3(Zorba* aZorba)
 }
 
 bool 
-resolver_example_4(Zorba* aZorba)
+resolver_example_3(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
@@ -322,11 +251,6 @@ uri_resolvers(int argc, char* argv[])
   std::cout << std::endl  << "executing uri resolver example test 3" << std::endl;
   res = resolver_example_3(lZorba);
   if (!res) return 3; 
-  std::cout << std::endl;
-
-  std::cout << std::endl  << "executing uri resolver example test 4" << std::endl;
-  res = resolver_example_4(lZorba);
-  if (!res) return 4; 
   std::cout << std::endl;
 
   lZorba->shutdown();

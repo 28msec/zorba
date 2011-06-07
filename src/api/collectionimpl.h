@@ -27,32 +27,72 @@ class CollectionImpl : public Collection
  protected:
   friend class Unmarshaller;
 
-  store::Collection_t   theCollection;
+  StaticContext_t theContext;
+  ItemFactory*    theFactory;
+  Item            theQName;
   DiagnosticHandler   * theDiagnosticHandler;
+  std::string     theNS;
+
+ protected:
+  void
+  initStaticContext();
+
+  void
+  invoke(
+      const char* aLocalName,
+      const std::vector<ItemSequence_t>& aArgs) const;
 
  public:
-  CollectionImpl(const store::Collection_t& aCollection, DiagnosticHandler* aDiagnosticHandler);
+  CollectionImpl(
+      const StaticContext_t& aSctx,
+      ItemFactory* aFactory,
+      const Item& aQName,
+      DiagnosticHandler* aDiagnosticHandler,
+      const std::string& aDMLNamespace);
 
   virtual ~CollectionImpl();
 
-  Item
+  virtual void
+  insertNodesFirst(const ItemSequence_t& aNodes);
+  
+  virtual void
+  insertNodesLast(const ItemSequence_t& aNodes);
+  
+  virtual void
+  insertNodesBefore(
+      const Item& aTarget,
+      const ItemSequence_t& aNodes);
+  
+  virtual void
+  insertNodesAfter(
+      const Item& aTarget,
+      const ItemSequence_t& aNodes);
+  
+  virtual void
+  deleteNodes(const ItemSequence_t& aNodes);
+  
+  virtual void
+  deleteNodeFirst();
+  
+  virtual void
+  deleteNodesFirst(unsigned long aNumNodes);
+  
+  virtual void
+  deleteNodeLast();
+  
+  virtual void
+  deleteNodesLast(unsigned long aNumNodes);
+  
+  virtual long long
+  indexOf(const Item& aNode);
+  
+  virtual ItemSequence_t
+  contents();
+
+  virtual const Item
   getName() const;
-
-  unsigned long
-  size() const;
-
-  bool
-  addDocument(std::istream& lInStream);
-
-  bool
-  addNode(Item& aNode);
-
-  bool
-  addNodes(const Iterator_t& aIterator);
-
-  bool
-  deleteNode(Item& aNode);
-};
+  
+}; /* class CollectionImpl */
 
 
 } /* namespace zorba */

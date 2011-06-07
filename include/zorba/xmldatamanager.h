@@ -35,7 +35,52 @@ namespace zorba {
   class ZORBA_DLL_PUBLIC XmlDataManager
   {
   public:
+    virtual DocumentManager*
+    getDocumentManager() const = 0;
 
+    /** \brief Returns a CollectionManager responsible for all collections.
+     * 
+     * The collection manager provides a set of functions for managing
+     * collections identified by a QName and their contents.
+     *
+     * Please note that the resulting manager is only responsible for
+     * dynamic collections identified by a QName, i.e. those that are
+     * not declared in the prolog of a module or identified by a URI.
+     *
+     * @return The collection manager responsible for managing
+     *   collections.
+     *
+     */
+    virtual CollectionManager*
+    getCollectionManager() const = 0;
+
+    /** \brief Returns a CollectionManager responsible for collections
+     * identified by a URI.
+     * 
+     * The collection manager provides a set of functions for managing
+     * collections identified by a URI and their contents.
+     *
+     * Please note that the resulting manager is only responsible for
+     * dynamic collections identified by a URI, i.e. those that are
+     * not declared in the prolog of a module or identified by a QName.
+     *
+     * @return The collection manager responsible for managing
+     *   collections.
+     *
+     */
+    virtual CollectionManager*
+    getW3CCollectionManager() const = 0;
+
+    /** \brief Parse an XML document and return an Item.
+     *
+     */
+    virtual Item
+    parseXML(std::istream& aStream) const = 0;
+
+    /** \brief Fetches an resource refered to by the given URI.
+     */
+    virtual Item
+    fetch(const String& aURI) const = 0;
 
       /**
        * \brief The LoadProperties class stores various properties that affect
@@ -112,152 +157,6 @@ namespace zorba {
        */
       void
       registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
-
-      /** \brief Parse an XML document and return an Item.
-       *
-       * This function parses an XML document from an input stream
-       * and returns an XDM Item.
-       * Note that this function does not store any reference to
-       * the document in the XmlDataManager.
-       *
-       * @params aStream the document given in an input stream.
-       * @return Item the document as an Item
-       * @throws ZorbaException if an error occurs.
-       *
-       */
-      virtual Item
-      parseDocument(std::istream& aStream) = 0;
-
-
-      /** \brief Load a document from an input stream.
-       *
-       * This function loads a document from an input stream. The document
-       * is identified by the given URI.
-       *
-       * @param aURI the URI of the document as String.
-       * @param aStream the document given in an input stream.
-       * @return Item the document as an Item.
-       * @throws ZorbaException if an error occurs.
-       *
-       * @deprecated Use same name method with LoadProperties argument
-       */
-      virtual Item
-      loadDocument(const String& aURI,
-                   std::istream& aStream,
-                   bool aReplaceDoc = false) = 0;
-
-      /** \brief Load a document from a file.
-       *
-       * This function loads a document from a file. The file name is used as
-       * the URI of the document.
-       *
-       * @param aLocalFile the filename of the document as String.
-       * @return Item the document as an Item.
-       * @throws ZorbaException if an error occurs.
-       *
-       * @deprecated Use same name method with LoadProperties argument
-       */
-      virtual Item
-      loadDocument(const String& aUri, bool aReplaceDoc = false) = 0;
-
-      /** \brief Load a document from an input stream.
-       *
-       * This function loads a document from an input stream. The document
-       * is identified by the given URI.
-       *
-       * @param aURI the URI of the document as String.
-       * @param aStream the document given in an input stream.
-       * @param aLoadProperties the way the document is loaded.
-       * @param aReplaceDoc to replace the doc if it already exists.
-       * @return Item the document as an Item.
-       * @throws ZorbaException if an error occurs.
-       *
-       */
-      virtual Item
-      loadDocument(const String& aURI,
-                   std::istream& aStream,
-                   const LoadProperties& aLoadProperties,
-                   bool aReplaceDoc = false) = 0;
-
-      /** \brief Load a document from a file.
-       *
-       * This function loads a document from a file. The file name is used as
-       * the URI of the document.
-       *
-       * @param aLocalFile the filename of the document as String.
-       * @param aLoadProperties the way the document is loaded.
-       * @param aReplaceDoc to replace the doc if it already exists.
-       * @return Item the document as an Item.
-       * @throws ZorbaException if an error occurs.
-       *
-       */
-      virtual Item
-      loadDocument(const String& aUri,
-                   const LoadProperties& aLoadProperties,
-                   bool aReplaceDoc = false) = 0;
-
-      /** \brief Load a document from a Uri.
-       *
-       * This function loads a document from a Uri.
-       * The Uri can be a "file://" or "http://".
-       *
-       * @param aUri the Uri of the document as String.
-       * @return Item the document as an Item.
-       * @throws ZorbaException if an error occurs.
-       *
-       */
-      virtual Item
-      loadDocumentFromUri(const String& aUri, bool aReplaceDoc = false) = 0;
-
-      /** \brief Get the document identified by the given URI.
-       *
-       * @param aURI the URI of the document to get.
-       * @return Item the document as an Item (NULL if the document was not found).
-       * @throws ZorbaException if an error occurs.
-       */
-      virtual Item
-      getDocument(const String& aURI) = 0;
-
-      /** \brief Delete the document identified by the given URI.
-       *
-       * @param aURI the URI of the document to delete.
-       * @return true if the document was found, false otherwise.
-       * @throws ZorbaException if an error occurs.
-       */
-      virtual bool
-      deleteDocument(const String& aURI) = 0;
-
-      virtual void
-      deleteAllDocuments() = 0;
-
-      /** \brief Create a collection.
-       *
-       * @param aURI the URI of the collection to create.
-       * @return Collection_t the collection that was created.
-       * @throws ZorbaException if an error occurs.
-       */
-      virtual Collection_t
-      createCollection(const String& aURI) = 0;
-
-      /** \brief Get a collection.
-       *
-       * @param aURI the URI of the collection to get.
-       * @return Collection_t the collection identified by the given URI
-                 (NULL if the collection was not found).
-       * @throws ZorbaException if an error occurs.
-       */
-      virtual Collection_t
-      getCollection(const String& aURI) = 0;
-
-
-      /** \brief Delete a collection, if the colection has been created before.
-       *
-       * @param aURI the URI of the collection to delete.
-       * @return true if the collection was found, false otherwise.
-       * @throws ZorbaException if an error occurs.
-       */
-      virtual bool
-      deleteCollection(const String& aURI) = 0;
 
     protected:
       /** \brief Destructor

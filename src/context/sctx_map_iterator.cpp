@@ -58,10 +58,14 @@ template <typename T>
 bool
 SctxMapIterator<T>::resetIterator()
 {
-  theItems = (theCurSctx->*theMapGetter)();
-  if (theItems) {
-    theIterator = theItems->begin();
-    return true;
+  while (theCurSctx) {
+    theItems = (theCurSctx->*theMapGetter)();
+    if (theItems) {
+      theIterator = theItems->begin();
+      return true;
+    } else {
+      theCurSctx = static_cast<const static_context*>(theCurSctx->get_parent());
+    }
   }
   return false;
 }
@@ -80,7 +84,7 @@ template <typename T>
 bool
 SctxMapIterator<T>::next(store::Item_t& aResult)
 {
-  while (theItems) {
+  while (theCurSctx) {
     if (theIterator == theItems->end()) {
       // end in theCurSctx reached => check parent static context
       theCurSctx = static_cast<const static_context*>(theCurSctx->get_parent());
@@ -88,13 +92,8 @@ SctxMapIterator<T>::next(store::Item_t& aResult)
         if (resetIterator()) {
           continue;
         }
-      } else {
-        // root sctx reached => that's it
-        theItems = 0;
-        break;
-      }
+      } 
     } else {
-      // more collections in theCurSctx
       aResult = (*theIterator).first;
       ++theIterator;
       return true;

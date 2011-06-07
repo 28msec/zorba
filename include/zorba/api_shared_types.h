@@ -27,6 +27,10 @@ namespace zorba {
   class StaticContext;
   class DynamicContext;
   class XmlDataManager;
+  class DocumentManager;
+  class CollectionManager;
+  class StaticCollectionManager;
+  class ItemFactory;
   class Iterator;
   class StatelessExternalFunction;
   class ExternalModule;
@@ -45,18 +49,17 @@ namespace zorba {
   typedef SmartPtr<QueryLocation> QueryLocation_t;
 
   // smart pointers
-  typedef zorba::SmartPtr<XQuery>                     XQuery_t;
-  typedef zorba::SmartPtr<StaticContext>              StaticContext_t;
-  typedef zorba::SmartPtr<Iterator>                   Iterator_t;
-  typedef zorba::SmartPtr<TypeIdentifier>             TypeIdentifier_t;
-  typedef zorba::SmartPtr<Collection>                 Collection_t;
-  typedef zorba::SmartPtr<Function>                   Function_t;
-  typedef zorba::SmartPtr<Annotation>                 Annotation_t;
-  typedef zorba::SmartPtr<File>                       File_t;
-  typedef zorba::SmartPtr<DirectoryIterator>          DirectoryIterator_t;
-  typedef zorba::SmartPtr<Serializer>                 Serializer_t;
-
-  typedef zorba::SmartPtr<ItemSequence>               ItemSequence_t;
+  typedef zorba::SmartPtr<XQuery>                  XQuery_t;
+  typedef zorba::SmartPtr<StaticContext>           StaticContext_t;
+  typedef zorba::SmartPtr<Iterator>                Iterator_t;
+  typedef zorba::SmartPtr<TypeIdentifier>          TypeIdentifier_t;
+  typedef zorba::SmartPtr<Collection>              Collection_t;
+  typedef zorba::SmartPtr<Function>                Function_t;
+  typedef zorba::SmartPtr<Annotation>              Annotation_t;
+  typedef zorba::SmartPtr<File>                    File_t;
+  typedef zorba::SmartPtr<DirectoryIterator>       DirectoryIterator_t;
+  typedef zorba::SmartPtr<Serializer>              Serializer_t;
+  typedef zorba::SmartPtr<ItemSequence>            ItemSequence_t;
 
   // data handlers
   class Item;
@@ -67,17 +70,8 @@ namespace zorba {
   class Resource;
   class URLResolver;
   class DocumentURIResolver;
-  class CollectionURIResolver;
   class FullTextURIResolver;
   class ModuleImportChecker;
-
-  struct DeclaredCollection;
-  typedef void (*CollectionCallback)(const DeclaredCollection& aCollection,
-                                     void* aCallbackData);
-
-  struct DeclaredIndex;
-  typedef void (*IndexCallback)(const DeclaredIndex& aIndex,
-                                void* aCallbackData);
 
 } /* namespace zorba */
 #endif

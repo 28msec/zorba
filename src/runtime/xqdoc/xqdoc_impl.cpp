@@ -55,6 +55,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   std::auto_ptr<impl::Resource> lResource;
   impl::StreamResource* lStream;
   std::auto_ptr<std::istream> lFile;
+  zstring lErrorMessage;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
@@ -77,7 +78,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lSctx = theSctx;
   lItem->getStringValue2(strval);
   lURI = lSctx->resolve_relative_uri(strval);
-  lResource = lSctx->resolve_uri(lURI, impl::Resource::MODULE);
+  lResource = lSctx->resolve_uri(lURI, impl::Resource::MODULE, lErrorMessage);
   lStream = static_cast<impl::StreamResource*>(lResource.get());
   // We take ownership of the stream
   lFile = lStream->getStream();

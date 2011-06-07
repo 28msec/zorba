@@ -21,8 +21,6 @@
 
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
-#include <zorba/declared_collection.h>
-#include <zorba/declared_index.h>
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -274,47 +272,43 @@ const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
 const zstring
-static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL = NS_PRE + "modules/store/dynamic/collections/ddl";
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS
+  = NS_PRE + "modules/store/dynamic/collections/ddl";
 
 const zstring
-static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML = NS_PRE + "modules/store/dynamic/collections/dml";
+static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS
+  = NS_PRE + "modules/store/dynamic/collections/dml";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS
   = NS_PRE + "modules/store/static/collections/ddl";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS
   = NS_PRE + "modules/store/static/collections/dml";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_INDEXES_DDL
+static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS
   = NS_PRE + "modules/store/static/indexes/ddl";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_INDEXES_DML
+static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS
   = NS_PRE + "modules/store/static/indexes/dml";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS
   = NS_PRE + "modules/store/static/integrity_constraints/ddl";
 
 const zstring
-static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML
+static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS
   = NS_PRE + "modules/store/static/tegrity_constraints/dml";
 
 const zstring
-static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS
+static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS
   = static_context::ZORBA_NS_PREFIX + "modules/store/dynamic/documents";
 
 const zstring
 static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
-
-const zstring
-static_context::ZORBA_TIDY_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/tidy";
-
-const zstring
-static_context::ZORBA_JSON_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/json";
 
 const zstring
 static_context::ZORBA_XQDOC_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqdoc";
@@ -324,9 +318,6 @@ static_context::ZORBA_RANDOM_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/
 
 const zstring
 static_context::ZORBA_INTROSP_SCTX_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/introspection/sctx";
-
-const zstring
-static_context::ZORBA_INTROSP_DCTX_FN_NS = NS_PRE + "modules/introspection/dctx";
 
 const zstring
 static_context::ZORBA_REFLECTION_FN_NS = NS_PRE + "modules/reflection";
@@ -340,6 +331,8 @@ static_context::ZORBA_SCRIPTING_FN_NS = NS_PRE + "zorba/scripting";
 const zstring
 static_context::ZORBA_STRING_FN_NS = NS_PRE + "modules/string";
 
+const zstring
+static_context::ZORBA_FETCH_FN_NS = NS_PRE + "modules/fetch";
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
@@ -362,26 +355,23 @@ bool static_context::is_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
-            ns == ZORBA_STORE_DYNAMIC_DOCUMENTS ||
-            ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL ||
-            ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML ||
-            ns == ZORBA_STORE_STATIC_COLLECTIONS_DDL ||
-            ns == ZORBA_STORE_STATIC_COLLECTIONS_DML ||
-            ns == ZORBA_STORE_STATIC_INDEXES_DDL ||
-            ns == ZORBA_STORE_STATIC_INDEXES_DML ||
-            ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL ||
-            ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML ||
+            ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
+            ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
+            ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS ||
+            ns == ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS ||
+            ns == ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS ||
+            ns == ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS ||
+            ns == ZORBA_STORE_STATIC_INDEXES_DML_FN_NS ||
+            ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS ||
+            ns == ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS ||
             ns == ZORBA_SCHEMA_FN_NS ||
-            ns == ZORBA_TIDY_FN_NS ||
-            ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
-            ns == ZORBA_INTROSP_DCTX_FN_NS ||
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
-            ns == ZORBA_UTIL_FN_NS ||
-            ns == ZORBA_STRING_FN_NS);
+            ns == ZORBA_STRING_FN_NS ||
+            ns == ZORBA_FETCH_FN_NS);
   }
 
   return false;
@@ -447,7 +437,6 @@ static_context::static_context()
   theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theDocResolver(0),
-  theColResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
@@ -456,12 +445,8 @@ static_context::static_context()
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theCollectionMap(NULL),
-  theCollectionCallback(0),
-  theCollectionCallbackData(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
-  theIndexCallback(0),
-  theIndexCallbackData(0),
   theICMap(NULL),
   theDocumentMap(NULL),
   theCollationMap(NULL),
@@ -494,7 +479,6 @@ static_context::static_context(static_context* parent)
   theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theDocResolver(0),
-  theColResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
@@ -503,12 +487,8 @@ static_context::static_context(static_context* parent)
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theCollectionMap(0),
-  theCollectionCallback(0),
-  theCollectionCallbackData(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
-  theIndexCallback(0),
-  theIndexCallbackData(0),
   theICMap(NULL),
   theDocumentMap(NULL),
   theCollationMap(NULL),
@@ -544,7 +524,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theDocResolver(0),
-  theColResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
@@ -553,12 +532,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theCollectionMap(0),
-  theCollectionCallback(0),
-  theCollectionCallbackData(0),
   theW3CCollectionMap(NULL),
   theIndexMap(0),
-  theIndexCallback(0),
-  theIndexCallbackData(0),
   theICMap(0),
   theDocumentMap(NULL),
   theCollationMap(NULL),
@@ -604,9 +579,6 @@ static_context::~static_context()
 
     delete theExternalModulesMap;
   }
-
-  set_document_uri_resolver(0);
-  set_collection_uri_resolver(0);
 
   if (theVariablesMap)
     delete theVariablesMap;
@@ -688,20 +660,18 @@ static_context::~static_context()
 ********************************************************************************/
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
-  bool lUserDocResolver, lUserColResolver;
+  bool lUserDocResolver;
   size_t lNumURIMappers, lNumURLResolvers;
   if (ar.is_serializing_out())
   {
     // serialize out: remember whether a doc and collection
     //                resolver was registered by the user
     lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL));
-    lUserColResolver = ((theColResolver != NULL) && (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) == NULL));
     lNumURIMappers = theURIMappers.size();
     lNumURLResolvers = theURLResolvers.size();
 
     ar.set_is_temp_field(true);
     ar & lUserDocResolver;
-    ar & lUserColResolver;
     ar & lNumURIMappers;
     ar & lNumURLResolvers;
     ar.set_is_temp_field(false);
@@ -715,14 +685,12 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
 
     ar.set_is_temp_field(true);
     ar & lUserDocResolver; // doc resolver passed by the user
-    ar & lUserColResolver; // col resolver passed by the user
     ar & lNumURIMappers;   // number of URIMappers passed by the user
     ar & lNumURLResolvers; // number of URLResolvers passed by the user
     ar.set_is_temp_field(false);
 
     // callback required but not available
-    if ((lUserDocResolver || lUserColResolver ||
-        lNumURIMappers || lNumURLResolvers) && !lCallback)
+    if ((lUserDocResolver || lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
       throw ZORBA_EXCEPTION(
         zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
@@ -742,16 +710,6 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       set_document_uri_resolver(new DocumentURIResolverWrapper(lDocResolver));
     }
 
-    if (lUserColResolver) {
-      CollectionURIResolver* lColResolver = lCallback->getCollectionURIResolver();
-      if (!lColResolver) {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-          ERROR_PARAMS( ZED( NoCollectionURIResolver ) )
-        );
-      }
-      set_collection_uri_resolver(new CollectionURIResolverWrapper(lColResolver));
-    }
     if (lNumURIMappers) {
       for (size_t i = 0; i < lNumURIMappers; ++i) {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
@@ -1364,25 +1322,15 @@ void static_context::add_url_resolver(impl::URLResolver* aResolver) throw ()
 
 std::auto_ptr<impl::Resource>
 static_context::resolve_uri
-(zstring const& aUri, impl::Resource::EntityType aEntityType) const
+(zstring const& aUri, impl::Resource::EntityType aEntityType, zstring& oErrorMessage) const
 {
   std::vector<zstring> lUris;
   apply_uri_mappers(aUri, aEntityType, impl::URIMapper::CANDIDATE, lUris);
 
   std::auto_ptr<impl::Resource> lRetval;
-  zstring lErrorMessage;
-  apply_url_resolvers(lUris, aEntityType, lRetval, lErrorMessage);
+  apply_url_resolvers(lUris, aEntityType, lRetval, oErrorMessage);
 
-  if (lRetval.get() != NULL) {
-    return lRetval;
-  }
-
-  // Never found anything - throw "Resource not found" exception.
-  // QQQ Should throw a different exception if the Resource is of an
-  // inappropriate type for EntityType. And, XQST is probaly the wrong
-  // exception - right for importing schema or modules, wrong for
-  // other things.
-  throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(aUri, lErrorMessage));
+  return std::auto_ptr<impl::Resource>(lRetval.release());
 }
 
 void
@@ -1507,32 +1455,6 @@ InternalDocumentURIResolver* static_context::get_document_uri_resolver() const
 
   return (theParent != NULL ?
           dynamic_cast<static_context*>(theParent)->get_document_uri_resolver() :
-          0);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void static_context::set_collection_uri_resolver(
-    InternalCollectionURIResolver* aColResolver)
-{
-  delete theColResolver;
-
-  theColResolver = aColResolver;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-InternalCollectionURIResolver* static_context::get_collection_uri_resolver() const
-{
-  if ( theColResolver != 0 )
-    return theColResolver;
-
-  return (theParent != NULL ?
-          dynamic_cast<static_context*>(theParent)->get_collection_uri_resolver() :
           0);
 }
 
@@ -2892,21 +2814,6 @@ void static_context::bind_collection(
   theCollectionMap->insert(qname, aCollection);
 }
 
-collection_update_property_t
-to_collection_update_property(const StaticContextConsts::declaration_property_t& p)
-{
-  collection_update_property_t lRes;
-  switch (p) {
-    case StaticContextConsts::decl_const: lRes = coll_const; break;
-    case StaticContextConsts::decl_append_only: lRes = coll_append_only; break;
-    case StaticContextConsts::decl_queue: lRes = coll_queue; break;
-    case StaticContextConsts::decl_mutable: lRes = coll_mutable; break;
-    default:
-      ZORBA_ASSERT(false);
-  }
-  return lRes;
-}
-
 
 /***************************************************************************//**
 
@@ -2932,70 +2839,6 @@ store::Iterator_t static_context::collection_names() const
   return new SctxMapIterator<StaticallyKnownCollection>(
              this,
              &static_context::collection_map);
-}
-
-
-collection_order_property_t
-to_collection_order_property(const StaticContextConsts::declaration_property_t& p)
-{
-  collection_order_property_t lRes;
-  switch (p) {
-    case StaticContextConsts::decl_ordered: lRes = coll_ordered; break;
-    case StaticContextConsts::decl_unordered: lRes = coll_unordered; break;
-    default:
-      ZORBA_ASSERT(false);
-  }
-  return lRes;
-}
-
-collection_node_modifier_t
-to_collection_node_modifier(const StaticContextConsts::node_modifier_t& p)
-{
-  collection_node_modifier_t lRes;
-  switch (p) {
-    case StaticContextConsts::read_only: lRes = coll_node_const; break;
-    case StaticContextConsts::mutable_node: lRes = coll_node_mutable; break;
-    default:
-      ZORBA_ASSERT(false);
-  }
-  return lRes;
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::call_collection_callback(const StaticallyKnownCollection_t& aColl)
-{
-  if (theCollectionCallback)
-  {
-    // wrap the collection information into an object known in the api
-    DeclaredCollection lDeclaredColl;
-    lDeclaredColl.theName = aColl->getName();
-    lDeclaredColl.theUpdateProperty = to_collection_update_property(aColl->getUpdateProperty());
-    lDeclaredColl.theOrderProperty = to_collection_order_property(aColl->getOrderProperty());
-    lDeclaredColl.theNodeModifier = to_collection_node_modifier(aColl->getNodeModifier());
-    theCollectionCallback(lDeclaredColl, theCollectionCallbackData);
-  }
-  else
-  {
-    if (theParent)
-    {
-      theParent->call_collection_callback(aColl);
-    }
-  }
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::set_collection_callback(
-    CollectionCallback aCallbackFunction,
-    void* aCallbackData)
-{
-  theCollectionCallback = aCallbackFunction;
-  theCollectionCallbackData = aCallbackData;
 }
 
 
@@ -3050,77 +2893,6 @@ IndexDecl* static_context::lookup_index(const store::Item* qname) const
 store::Iterator_t static_context::index_names() const
 {
   return new SctxMapIterator<IndexDecl>(this, &static_context::index_map);
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-index_maintenance_mode_t
-to_index_maintenance_mode(const IndexDecl::MaintenanceMode& mode)
-{
-  index_maintenance_mode_t lRes;
-  switch (mode)
-  {
-  case IndexDecl::MANUAL: lRes = index_manual; break;
-  case IndexDecl::REBUILD: lRes = index_automatic; break;
-  case IndexDecl::DOC_MAP: lRes = index_manual; break; // TODO
-  default: ZORBA_ASSERT(false);
-  }
-  return lRes;
-}
-
-/******************************************************************************
-
-********************************************************************************/
-index_container_kind_t
-to_index_container_kind(const IndexDecl::ContainerKind& kind)
-{
-  index_container_kind_t lRes;
-  switch (kind)
-  {
-    case IndexDecl::HASH: lRes = index_hash; break;
-    case IndexDecl::TREE: lRes = index_tree; break;
-    default: ZORBA_ASSERT(false);
-  }
-  return lRes;
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::set_index_callback(
-    IndexCallback aCallbackFunction,
-    void* aCallbackData)
-{
-  theIndexCallback = aCallbackFunction;
-  theIndexCallbackData = aCallbackData;
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void static_context::call_index_callback(const IndexDecl_t& index)
-{
-  if (theIndexCallback)
-  {
-    DeclaredIndex lDeclaredIndex;
-    lDeclaredIndex.theName = index->getName();
-    lDeclaredIndex.theMaintenanceMode =
-      to_index_maintenance_mode(index->getMaintenanceMode());
-    lDeclaredIndex.theContainerKind =
-      to_index_container_kind(index->getMethod());
-    theIndexCallback(lDeclaredIndex, theIndexCallbackData);
-  }
-  else
-  {
-    if (theParent)
-    {
-      static_cast<static_context*>(theParent)->call_index_callback(index);
-    }
-  }
 }
 
 

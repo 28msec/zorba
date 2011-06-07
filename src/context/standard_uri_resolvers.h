@@ -47,19 +47,6 @@ public:
 };
 
 
-/*******************************************************************************
-
-********************************************************************************/
-class StandardCollectionURIResolver : public InternalCollectionURIResolver
-{
-public:
-  virtual ~StandardCollectionURIResolver() {}
-
-  virtual store::Collection_t resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext);
-};
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 

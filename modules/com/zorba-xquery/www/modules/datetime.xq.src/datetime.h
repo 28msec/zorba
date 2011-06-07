@@ -131,6 +131,31 @@ protected:
   const DateTimeModule* theModule;
 };
 
+/******************************************************************************
+ *****************************************************************************/
+class TimestampFunction : public NonePureStatelessExternalFunction
+{
+public:
+  TimestampFunction(const DateTimeModule* aModule)
+    : theModule(aModule) {}
+
+  virtual ~TimestampFunction() {}
+
+  virtual zorba::String
+  getLocalName() const { return "timestamp"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+
+  virtual String
+  getURI() const { return theModule->getURI(); }
+
+protected:
+  const DateTimeModule* theModule;
+};
+
 } /* namespace datetimemodule */ } /* namespace zorba */
 
 #endif

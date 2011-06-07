@@ -43,6 +43,7 @@
 #include "api/serialization/serializable.h"
 #include "api/zorbaimpl.h"
 #include "api/serializerimpl.h"
+#include "api/staticcollectionmanagerimpl.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -100,7 +101,8 @@ SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
 XQueryImpl::XQueryImpl(::zorba::serialization::Archiver &ar)
-  : ::zorba::serialization::SerializeBaseClass()
+  : ::zorba::serialization::SerializeBaseClass(),
+    theCollMgr(0)
 {
 }
 
@@ -142,7 +144,8 @@ XQueryImpl::XQueryImpl()
 #ifdef ZORBA_WITH_DEBUGGER
   theIsDebugMode(false),
 #endif
-  theProfileName("xquery_profile.out")
+  theProfileName("xquery_profile.out"),
+  theCollMgr(0)
 {
   // TODO ideally, we will have to move the error handler into the error manager
   //      however, this is not possible yet because not all components of the system
@@ -199,6 +202,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     theIsClosed = false;
 
     theCompilerCB->theXQueryDiagnostics = theXQueryDiagnostics;
+
   }
   
 #ifdef ZORBA_WITH_DEBUGGER
@@ -324,6 +328,10 @@ void XQueryImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler
 
     theDiagnosticHandler = aDiagnosticHandler;
     theUserDiagnosticHandler = true;
+
+    if (theCollMgr) {
+      theCollMgr->registerDiagnosticHandler(theDiagnosticHandler);
+    }
   }
   QUERY_CATCH
 }
@@ -677,6 +685,34 @@ XQuery_t XQueryImpl::clone() const
   }
   QUERY_CATCH
   return XQuery_t();
+}
+
+/*******************************************************************************
+********************************************************************************/
+StaticCollectionManager*
+XQueryImpl::getStaticCollectionManager() const
+{
+  checkNotClosed();
+  checkCompiled();
+
+  if (!theCollMgr) {
+    std::vector<StaticCollectionManagerImpl*> lMgrs;
+
+    Zorba* lZorba = Zorba::getInstance(0);
+    ItemFactory* lFactory = lZorba->getItemFactory();
+
+    for (CompilerCB::SctxMap::iterator lIter = theCompilerCB->theSctxMap.begin();
+        lIter != theCompilerCB->theSctxMap.end(); ++lIter) {
+      lMgrs.push_back(
+          new StaticCollectionManagerImpl(
+            new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler),
+            lFactory));
+    }
+    // transfer ownership over all managers to the set
+    theCollMgr = new StaticCollectionManagerSetImpl(lMgrs);
+    theCollMgr->registerDiagnosticHandler(theDiagnosticHandler);
+  }
+  return theCollMgr;
 }
 
 
@@ -1293,6 +1329,8 @@ void XQueryImpl::close()
 #endif
       delete theCompilerCB;
     }
+
+    delete theCollMgr;
 
     theIsClosed = true;
   }

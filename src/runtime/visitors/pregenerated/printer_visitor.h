@@ -262,9 +262,6 @@ namespace zorba {
     void beginVisit( const TimezoneFromTimeIterator& );
     void endVisit  ( const TimezoneFromTimeIterator& );
 
-    void beginVisit( const TimestampIterator& );
-    void endVisit  ( const TimestampIterator& );
-
     void beginVisit( const ErrorIterator& );
     void endVisit  ( const ErrorIterator& );
 
@@ -279,6 +276,12 @@ namespace zorba {
 
     void beginVisit( const FunctionTraceIterator& );
     void endVisit  ( const FunctionTraceIterator& );
+
+    void beginVisit( const FetchContentIterator& );
+    void endVisit  ( const FetchContentIterator& );
+
+    void beginVisit( const FetchContentTypeIterator& );
+    void endVisit  ( const FetchContentTypeIterator& );
 
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );

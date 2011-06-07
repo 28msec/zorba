@@ -44,7 +44,7 @@ testMultipleDataMgrInitilizations()
   {
     std::stringstream lDoc;
     lDoc << "<foo><bar/></foo>";
-    mgr->parseDocument( lDoc );
+    mgr->parseXML( lDoc );
   }
 
   zorba->shutdown();
@@ -57,7 +57,7 @@ testMultipleDataMgrInitilizations()
   {
     std::stringstream lDoc;
     lDoc << "<foo><bar/></foo>";
-    mgr->parseDocument( lDoc );
+    mgr->parseXML( lDoc );
   }
 
   zorba->shutdown();

@@ -19,6 +19,7 @@
 #include <zorba/zorba.h>
 #include <zorba/zorba_string.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/singleton_item_sequence.h>
 #include "util/ascii_util.h"
 #include "zorba/util/uri.h"
 #include <cassert>
@@ -70,8 +71,17 @@ TestDocumentURIResolver::resolve(const Item& aURI,
   std::auto_ptr<TestDocumentURIResolverResult> lResult
     (new TestDocumentURIResolverResult());
   try {
-    lResult->theDocument =
-      aXmlDataManager->loadDocumentFromUri(lUri, replaceDoc);
+    DocumentManager* lMgr = aXmlDataManager->getDocumentManager();
+
+    if ( replaceDoc && lMgr->isAvailableDocument(lUri) ) {
+      lMgr->remove(lUri);
+    }
+
+    Item lStream = aXmlDataManager->fetch(lUri);
+    assert (lStream.isStreamable());
+    lResult->theDocument = aXmlDataManager->parseXML(lStream.getStream());
+    lMgr->add(lUri, lResult->theDocument);
+
   }
   catch (ZorbaException &e) {
     lResult->setError(URIResolverResult::UR_FODC0002);
@@ -282,25 +292,17 @@ void TestModuleURIMapper::mapURI
 /******************************************************************************
   Collection Resolver
 *******************************************************************************/
-Collection_t
-TestCollectionURIResolverResult::getCollection () const
-{
-  return theCollection;
-}
-
-
-TestCollectionURIResolver::TestCollectionURIResolver ( const char * file, const std::string& rbkt_src_dir ) 
-  :
-  map_file ( file ),
-  rbkt_src ( rbkt_src_dir )
+TestCollectionURIMapper::TestCollectionURIMapper (
+  const char * file,
+  const std::string& rbkt_src_dir )
+  : theMapFileName(file),
+    theRbktSrcFile(rbkt_src_dir)
 {
 }
 
-
-TestCollectionURIResolver::~TestCollectionURIResolver ()
+TestCollectionURIMapper::~TestCollectionURIMapper ()
 {
-}
-
+} 
 
 void
 std_string_tokenize(
@@ -322,8 +324,7 @@ std_string_tokenize(
   }
 }
 
-
-void TestCollectionURIResolver::trim(std::string& str)
+void TestCollectionURIMapper::trim(std::string& str)
 {
   std::string::size_type pos = str.find_last_not_of(' ');
   if(pos != std::string::npos) {
@@ -335,9 +336,9 @@ void TestCollectionURIResolver::trim(std::string& str)
 }
 
 
-void TestCollectionURIResolver::initialize()
+void TestCollectionURIMapper::initialize()
 {
-  std::ifstream urifile ( map_file.c_str() );
+  std::ifstream urifile ( theMapFileName.c_str() );
   if ( urifile.bad() ) return;
 
   while ( !urifile.eof() ) {
@@ -352,57 +353,54 @@ void TestCollectionURIResolver::initialize()
     std::string id ( lCollectionMapping.substr ( 0, eq ) );
     trim(id);
 
-    std::vector<std::string>& lCollections = uri_map[id];
+    std::vector<std::string>& lCollections = theMap[id];
 
-    std_string_tokenize(lCollectionMapping.substr(eq+1), ";", lCollections, rbkt_src);
+    std_string_tokenize(lCollectionMapping.substr(eq+1), ";", lCollections, theRbktSrcFile);
   }
 }
 
-
-std::auto_ptr<CollectionURIResolverResult>
-TestCollectionURIResolver::resolve(
-    const Item & aURI,
-    StaticContext* aStaticContext,
-    XmlDataManager* aXmlDataManager)
+void
+TestCollectionURIMapper::mapURI(
+    const String aURI,
+    Resource::EntityType aEntityType,
+    std::vector<String>& oUris) throw ()
 {
-  if ( uri_map.empty () ) 
+  if ( theMap.empty () ) 
   {
     initialize ();
   }
 
-  std::auto_ptr<TestCollectionURIResolverResult>
-    lResult ( new TestCollectionURIResolverResult() );
-
-  std::string request = aURI.getStringValue().c_str();
+  std::string request = aURI.c_str();
   std::string search  = request.substr(request.find_last_of('/')+1);
-  std::map<std::string, std::vector<std::string> >::iterator it = uri_map.find(search);
-  if ( it != uri_map.end() ) 
+  UriMap::iterator it = theMap.find(search);
+
+  if ( it != theMap.end() )
   {
     const std::vector<std::string>& target = it->second;
-    Collection_t lCol = aXmlDataManager->getCollection(request);
-    if (lCol.isNull())
-    {
-      lCol = aXmlDataManager->createCollection(request);
+    XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
+    ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
+    CollectionManager* lMgr = lDataManager->getW3CCollectionManager();
+
+    Item lColName = lFactory->createAnyURI(request);
+
+    if ( !lMgr->isAvailableCollection(lColName) ) {
+
+      lMgr->createCollection(lColName);
+      Collection_t lColl = lMgr->getCollection(lColName);
+
       for (std::vector<std::string>::const_iterator lIter = target.begin();
-          lIter != target.end(); ++lIter)
+           lIter != target.end(); ++lIter)
       {
         std::ifstream lIn(lIter->c_str());
         assert(lIn.good());
-  
-        lCol->addDocument(lIn);
+
+        Item lDoc = lDataManager->parseXML(lIn);
+
+        lColl->insertNodesLast(new SingletonItemSequence(lDoc));
       }
     }
-    lResult -> theCollection = lCol;
-    lResult -> setError ( URIResolverResult::UR_NOERROR );
   }
-  else
-  {
-    lResult -> setError ( URIResolverResult::UR_FODC0004 );
-    std::stringstream lErrorStream;
-    lErrorStream << "Collection not found " << aURI.getStringValue();
-    lResult->setErrorDescription(lErrorStream.str());
-  }
-  return std::auto_ptr<CollectionURIResolverResult>(lResult.release());
+  oUris.push_back(request);
 }
 
 #ifndef ZORBA_NO_FULL_TEXT

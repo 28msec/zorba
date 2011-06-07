@@ -241,16 +241,6 @@ PlanIter_t fn_timezone_from_time::codegen(
   return new TimezoneFromTimeIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_util_timestamp::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new TimestampIterator(sctx, loc, argv);
-}
-
 void populate_context_durations_dates_times(static_context* sctx)
 {
   DECL_WITH_KIND(sctx, fn_years_from_duration,
@@ -398,12 +388,6 @@ void populate_context_durations_dates_times(static_context* sctx)
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION),
       FunctionConsts::FN_TIMEZONE_FROM_TIME_1);
-
-
-  DECL_WITH_KIND(sctx, fn_zorba_util_timestamp,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","","timestamp"),
-      GENV_TYPESYSTEM.LONG_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_UTIL_TIMESTAMP_0);
 
 }
 

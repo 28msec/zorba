@@ -33,6 +33,9 @@
 #include <zorba/file.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/xquery_exception.h>
+#include <zorba/documentmanager.h>
+#include <zorba/item_sequence.h>
+#include <zorba/iterator.h>
 #include <zorba/xquery_functions.h>
 
 #include <zorba/store_manager.h>
@@ -659,7 +662,14 @@ compileAndExecute(
       XmlDataManager* store = zorbaInstance->getXmlDataManager();
 
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
-      store->deleteAllDocuments();
+      DocumentManager* lMgr = store->getDocumentManager();
+      ItemSequence_t lSeq = lMgr->availableDocuments();
+      Iterator_t lIter = lSeq->getIterator();
+      lIter->open();
+      Item lURI;
+      while (lIter->next(lURI)) {
+        lMgr->remove(lURI.getStringValue());
+      }
       timing.stopTimer(TimingInfo::UNLOAD_TIMER, i);
 
       timing.stopTimer(TimingInfo::TOTAL_TIMER, i);

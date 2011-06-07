@@ -337,6 +337,14 @@ public:
   std::istream&
   getStream();
 
+  /** \brief Returns the name of the collection this node is stored in.
+   *
+   * @return The name of the collection or 0 if the given item is not
+   *   a node or not stored in a collection.
+   */
+  Item
+  getCollectionName() const;
+
 private:
   friend class Unmarshaller;
 

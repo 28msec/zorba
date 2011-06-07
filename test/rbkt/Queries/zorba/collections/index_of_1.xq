@@ -8,7 +8,7 @@ declare %sequential function local:test()
   dml:insert-nodes-last(xs:QName("ns:test1"), <a/>);
   dml:insert-nodes-last(xs:QName("ns:test1"), <b/>);
   dml:insert-nodes-last(xs:QName("ns:test1"), <c/>);
-  exit returning dml:index-of(xs:QName("ns:test1"),dml:collection(xs:QName("ns:test1"))[2]);
+  exit returning dml:index-of(dml:collection(xs:QName("ns:test1"))[2]);
 };
 
 local:test()

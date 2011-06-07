@@ -19,6 +19,7 @@ XQTSVERSION=1_0_3
 
 while [ $# -gt 1 ]
 do
+  echo "blub $1"
   # --workdir to specify a working directory to download/unzip XQTS
   test "$1" = "--workdir" && { WORK="$2"; shift; shift; }
 
@@ -29,6 +30,7 @@ do
   # default value: http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip
   test "$1" = "--xqtsurl" && { XQTSURL="$2"; shift; shift; }
 done
+
 
 SRC="$1"
 if [ -z "$BUILD" ]; then
@@ -52,6 +54,7 @@ fi
 #Removing the previous downloaded version first would solve the problem but that would mean that each time the script is run it would download a fresh XQTS_current.zip and this is a problem with the niglies tests.
 ZIP="$WORK/XQTS_$XQTSVERSION.zip"
 
+echo "blub"
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
 

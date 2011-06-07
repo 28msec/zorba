@@ -107,41 +107,6 @@ store::Item_t DocumentURIResolverWrapper::resolve(
 }
   
 
-/*******************************************************************************
-
-********************************************************************************/
-CollectionURIResolverWrapper::CollectionURIResolverWrapper(CollectionURIResolver* aColResolver)
-  :
-  theColResolver(aColResolver)
-{
-}
-
-
-store::Collection_t CollectionURIResolverWrapper::resolve(
-    const store::Item_t& aURI,
-    static_context* aStaticContext)
-{
-  StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
-  Item               lURIItem(aURI.getp());  
-
-  // we have the ownership; it will be destroyed automatically once we leave this function
-  std::auto_ptr<CollectionURIResolverResult> lResult = 
-    theColResolver->resolve(lURIItem, &lOuterStaticContext,
-                            &XmlDataManagerSingleton::Instance());
-  
-  if (lResult->getError() == URIResolverResult::UR_NOERROR) {
-    return  Unmarshaller::getInternalCollection(lResult->getCollection());
-  } else {
-    // handle errors
-    handle_resolver_error(lResult.get());
-  }
-
-  // we either return a valid item or throw an error. hence, we should never get here
-  ZORBA_ASSERT(false);
-  return NULL;
-}
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 

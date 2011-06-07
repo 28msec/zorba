@@ -62,6 +62,24 @@ public:
     std::vector<zstring>& oUris) throw ();
 };
 
+/**
+ * @brief A URI mapper which returns a collection
+ *        ressource from the store.
+ */
+class ZorbaCollectionURIMapper : public impl::URIMapper
+{
+public:
+
+  virtual ~ZorbaCollectionURIMapper();
+
+  virtual impl::URIMapper::Kind mapperKind() throw ();
+
+  virtual void mapURI(zstring const& aUri,
+    Resource::EntityType aEntityType,
+    static_context const& aSctx,
+    std::vector<zstring>& oUris) throw ();
+};
+
 
 /**
  * @brief Module versioning URI Mapper.

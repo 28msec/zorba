@@ -380,12 +380,6 @@ namespace zorba {
       virtual TypeIdentifier_t
       getDocumentType(const String& aDocUri) const = 0;
 
-      virtual void
-      setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver) = 0;
-
-      virtual CollectionURIResolver*
-      getCollectionURIResolver() const = 0;
-
       /** \brief Set the type of a statically known collection
        */
       virtual void
@@ -499,14 +493,6 @@ namespace zorba {
       virtual String
       resolve(const String& aRelativeUri, const String& aBaseUri) const = 0;
 
-      virtual void
-      setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,
-                                      void* aCallbackData ) = 0;
-
-      virtual void
-      setDeclaredIndexCallback ( IndexCallback aCallbackFunction,
-                                 void* aCallbackData ) = 0;
-
       /**
         * @brief Add a new ModuleImportChecker to this module.
         *
@@ -571,9 +557,40 @@ namespace zorba {
           const Item& typeQName, 
           std::vector<Item>& resultList) = 0;
 
+      /** \brief Invokes the XQuery function with the given name and
+       *  the given parameters.
+       *
+       *  Note that the function to be invoked needs to be declared in this static
+       *  context. In order to declare a function in the static context, the
+       *  loadProlog method of this class can be used.
+       *
+       *  Also note that if the function to be invoked is an updating function,
+       *  its resulting pending update list is implicitly applied by this function.
+       *
+       * @param aQName the name of the function to be invoked
+       * @param aArgs a vector of ItemSequences. One entry in the vector
+       *        corresponds to one argument that is passed to the function.
+       *
+       * @return The result of the function that is invoked. If the function
+       *   to be invoked is an updating function, the resulting item sequence
+       *   is empty.
+       */
       virtual ItemSequence_t
       invoke(const Item& aQName,
              const std::vector<ItemSequence_t>& aArgs) const = 0;
+
+      /** \brief Returns a CollectionManager responsible for all collections
+       * which are statically declared in this static context.
+       *
+       * The collection manager provides a set of functions for managing
+       * collections and their contents.
+       *
+       * @return The collection manager responsible for managing
+       *   collections of this context.
+       *
+       */
+     virtual StaticCollectionManager*
+     getStaticCollectionManager() const = 0;
 
 };
 } /* namespace zorba */

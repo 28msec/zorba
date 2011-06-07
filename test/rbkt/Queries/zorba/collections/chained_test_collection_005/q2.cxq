@@ -4,4 +4,4 @@ import module namespace ns = "http://example.org/datamodule/" at "../collections
 declare variable $input-context1 external;
 
 let $cur := dml:collection(xs:QName('ns:http'))[4]
-return dml:index-of(xs:QName('ns:http'), $cur)
+return dml:index-of($cur)

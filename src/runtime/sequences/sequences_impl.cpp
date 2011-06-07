@@ -1811,6 +1811,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                                                theSctx,
                                                                false,
                                                                false);
+
         fillTime(t0, t0user, planState);
       }
       catch (ZorbaException& e)

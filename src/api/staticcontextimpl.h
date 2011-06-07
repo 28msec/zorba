@@ -28,6 +28,7 @@
 namespace zorba {
 
   class DiagnosticHandler;
+  class StaticCollectionManagerImpl;
   class static_context;
 #ifndef ZORBA_NO_FULL_TEXT
   class FullTextURIResolverWrapper;
@@ -74,6 +75,9 @@ protected:
 
   stemmer_providers_t theStemmerProviders;
 #endif
+
+  // allow for lazy creation
+  mutable StaticCollectionManagerImpl* theCollectionMgr;
 
 private:
   StaticContextImpl(const StaticContextImpl&);
@@ -189,12 +193,6 @@ public:
   getDocumentURIResolver() const;
 
   virtual void
-  setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver);
-
-  virtual CollectionURIResolver*
-  getCollectionURIResolver() const;
-
-  virtual void
   setCollectionType(const String& aCollectionUri, TypeIdentifier_t type);
 
   virtual TypeIdentifier_t
@@ -275,14 +273,6 @@ public:
   resolve(const String& aRelativeUri, const String& aBaseUri) const;
 
   virtual void
-  setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,
-                                  void* aCallbackData );
-
-  virtual void
-  setDeclaredIndexCallback ( IndexCallback aCallbackFunction,
-                             void* aCallbackData );
-
-  virtual void
   addModuleImportChecker(ModuleImportChecker* aChecker);
 
   virtual void
@@ -305,6 +295,9 @@ public:
   ItemSequence_t
   invoke(const Item& aQName,
          const std::vector<ItemSequence_t>& aArgs) const;
+
+  virtual StaticCollectionManager*
+  getStaticCollectionManager() const;
 
 protected:
   String

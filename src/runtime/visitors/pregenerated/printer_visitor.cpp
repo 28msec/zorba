@@ -45,6 +45,7 @@
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
 #include "runtime/errors_and_diagnostics/other_diagnostics.h"
+#include "runtime/fetch/fetch.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
@@ -1100,20 +1101,6 @@ void PrinterVisitor::endVisit ( const TimezoneFromTimeIterator& ) {
 // </TimezoneFromTimeIterator>
 
 
-// <TimestampIterator>
-void PrinterVisitor::beginVisit ( const TimestampIterator& a) {
-  thePrinter.startBeginVisit("TimestampIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const TimestampIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </TimestampIterator>
-
-
 // <ErrorIterator>
 void PrinterVisitor::beginVisit ( const ErrorIterator& a) {
   thePrinter.startBeginVisit("ErrorIterator", ++theId);
@@ -1182,6 +1169,34 @@ void PrinterVisitor::endVisit ( const FunctionTraceIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FunctionTraceIterator>
+
+
+// <FetchContentIterator>
+void PrinterVisitor::beginVisit ( const FetchContentIterator& a) {
+  thePrinter.startBeginVisit("FetchContentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FetchContentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FetchContentIterator>
+
+
+// <FetchContentTypeIterator>
+void PrinterVisitor::beginVisit ( const FetchContentTypeIterator& a) {
+  thePrinter.startBeginVisit("FetchContentTypeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FetchContentTypeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FetchContentTypeIterator>
 
 
 // <FnPutIterator>

@@ -17,13 +17,14 @@
 (:~
  : This module defines a set of functions to probe indexes.
  :
- : @see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/XQDDF.html" target="_blank">Zorba Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project store/indexes/static
+ :
+ : @project store/indexes
  :
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
@@ -137,4 +138,3 @@ declare %variadic function dml:probe-index-range-value($name as xs:QName,
   $rangeHaveupperBound1     as xs:boolean,
   $rangeLowerBoundIncluded1 as xs:boolean,
   $rangeupperBoundIncluded1 as xs:boolean) as node()*  external;
-

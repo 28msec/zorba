@@ -30,6 +30,9 @@
 namespace zorba {
 
 class DiagnosticHandler;
+class ItemFactory;
+class DocumentManagerImpl;
+class CollectionManagerImpl;
 
 namespace store {
     class Store;
@@ -41,7 +44,7 @@ class XmlDataManagerImpl : public XmlDataManager
 private:
   friend struct Loki::CreateUsingNew<XmlDataManagerImpl>;
 
- protected:
+protected:
   store::Store           * theStore;
 
   DiagnosticHandler      * theDiagnosticHandler;
@@ -50,48 +53,43 @@ private:
 
   SYNC_CODE(Latch          theLatch;)
 
+  StaticContext_t          theContext;
+  ItemFactory*             theFactory;
+  static std::string       theFnNamespace;
+  static std::string       theFetchNamespace;
+
+  // allow for lazy creation 
+  mutable DocumentManagerImpl*   theDocManager;
+  mutable CollectionManagerImpl* theColManager;
+  mutable CollectionManagerImpl* theW3CColManager;
+
+protected:
+  void
+  initStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
+
+  void
+  initializeItemFactory();
+
+  static void
+  destroyStream(std::istream& stream);
+
 public:
+  DocumentManager*
+  getDocumentManager() const;
+
+  CollectionManager*
+  getCollectionManager() const;
+
+  CollectionManager*
+  getW3CCollectionManager() const;
+
+  Item
+  parseXML(std::istream& aStream) const;
+
+  Item
+  fetch(const String& aURI) const;
+
   void registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
-
-  Item parseDocument(std::istream& aStream);
-
-  Item loadDocument(const String& local_file_uri, bool replaceDoc);
-
-  Item loadDocument(const String& uri, std::istream& stream, bool eplaceDoc);
-
-  Item loadDocument(
-        const String& local_file_uri,
-        const XmlDataManager::LoadProperties& aLoadProperties,
-        bool replaceDoc);
-
-  Item loadDocument(
-        const String& uri, std::istream& stream,
-        const XmlDataManager::LoadProperties& aLoadProperties,
-        bool replaceDoc);
-
-  Item loadDocumentFromUri(const String& aUri, bool replaceDoc);
-
-  Item getDocument(const String& uri);
-
-  Item getDocument(const String& uri, DiagnosticHandler* aDiagnosticHandler);
-
-  bool deleteDocument(const String& uri);
-
-  bool deleteDocument(const String& uri, DiagnosticHandler* aDiagnosticHandler);
-
-  void  deleteAllDocuments();
-
-  Collection_t createCollection(const String& uri);
-
-  Collection_t createCollection(const String& uri, DiagnosticHandler* aDiagnosticHandler);
-
-  Collection_t getCollection(const String& uri);
-
-  Collection_t getCollection(const String& uri, DiagnosticHandler* aDiagnosticHandler);
-
-  bool deleteCollection(const String& uri);
-
-  bool deleteCollection(const String& uri, DiagnosticHandler* aDiagnosticHandler);
 
 private:
   XmlDataManagerImpl();

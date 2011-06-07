@@ -26,6 +26,8 @@
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project store/indexes/static
  :
+ : @project store/indexes
+ :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
@@ -34,7 +36,9 @@ module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/indexes
  : (i.e. has been created).
  :
  : @param $name The QName of the index that is being checked.
+ :
  : @return true if the index is available and false otherwise.
+ :
  :)
 declare function ddl:is-available-index($name as xs:QName) as xs:boolean external;
 
@@ -48,55 +52,53 @@ declare function ddl:is-available-index($name as xs:QName) as xs:boolean externa
 declare function ddl:available-indexes() as xs:QName* external;
 
 (:~
- : The create-index function is an updating function that adds a
- : mapping from the expanded QName $name to a map of index entries
- : to the map of available indexes.
+ : The create-index function is an updating function which creates the
+ : index with the given expanded QName.
  :
- : @param $name The QName of the index to add to the map of available
- :        indexes.
- : @error if the expanded QName of $name is not equal
- :       (as defined by the
- :       <a href="http://www.w3.org/TR/xquery/#id-value-comparisons">eq operator</a>) 
- :       to the name of any resource in the statically known indexes.
- : @error if available indexes already provides a mapping
- :        for the expaned QName $name.
+ : @param $name The QName of the index to create.
+ :
  : @return The result of the function is an empty XDM instance and a pending
- :         update list that contains the upd:createIndex($name)
- :         update primitive.
+ :         update list which, once applied, creates the index with the given
+ :         name.
+ :
+ : @error ZDDY0021 if the expanded QName of $name is not equal  
+ :        to the name of any resource in the statically known indexes.
+ : @error ZDDY0022 if the index with the given name is already created.
  :)
 declare updating function ddl:create-index(
   $name as xs:QName)  external;
 
 (:~
- : The delete-index function is an updating function that removes a resource
- : from the map of available indexes. The QName $name is the name
- : of the resource.
+ : The delete-index function is an updating function that deletes
+ : the index with the given expanded QName.
  :
- : @param $name The QName of the index to delete from the map of available
- :        indexes.
+ : @param $name The QName of the index to delete.
+ :
+ : @return The result of the function is an empty XDM instance and a pending
+ :         update list which, once applied, deletes the index with the given name.
+ :
  : @error XDDY0009 If available indexes does not provide a mapping for
  :        the expaned QName $name.
- : @return The result of the function is an empty XDM instance and a pending
- :         update list that contains the upd:deleteIndex($name)
- :         update primitive.
+ :
  :)
 declare updating function ddl:delete-index(
   $name as xs:QName)  external;
 
 (:~
- : The function returns true if an index with the given QName has been declared.
+ : The function returns true if a index with the given
+ : QName is declared in the prolog of the static context.
  :
  : @param $name The QName of the index that is being checked.
- : @return true if the index has been declared and false otherwise.
+ :
+ : @return true if the index is declared or false otherwise.
  :)
 declare function ddl:is-declared-index(
   $name as xs:QName) as xs:boolean  external;
 
 (:~
  : The function returns a sequence of QNames representing the indexes that have
- : been previously created. The sequence will be empty if there are no indexes.
+ : been declared in the prolog of the static context.
  :
- : @return A sequence of QNames, one for each created index, or an empty
- : sequence if none exist.
+ : @return A sequence of QNames, one for each created collection, or an emtpy sequence.
  :)
 declare function ddl:declared-indexes() as xs:QName*  external;

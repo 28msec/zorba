@@ -54,6 +54,7 @@ def example5(zorba):
   dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
   xquery = zorba.compileQuery("doc('books.xml')//book")
   print xquery.execute()
+  dataManager.deleteDocument("books.xml");
   return
 
 def example6(zorba):

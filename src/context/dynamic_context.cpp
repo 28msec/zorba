@@ -210,29 +210,12 @@ void dynamic_context::reset_current_date_time()
                                    gmtm.tm_sec + timebuffer.millitm/1000.0,
                                    static_cast<short>(theTimezone/3600));
 
-#if WIN32
-  time_t t0;
-  time(&t0);
-  GENV_ITEMFACTORY->createLong(theCurrentTimeMillis, t0*1000);
-#else
-  timeval tv;
-  gettimeofday(&tv, 0);
-  long long millis = tv.tv_sec;
-  millis = millis * 1000 + tv.tv_usec/1000;
-  GENV_ITEMFACTORY->createLong(theCurrentTimeMillis, millis);
-#endif
 }
 
 
 store::Item_t dynamic_context::get_current_date_time() const
 {
   return theCurrentDateTime;
-}
-
-
-store::Item_t dynamic_context::get_current_time_millis() const
-{
-  return theCurrentTimeMillis;
 }
 
 

@@ -116,6 +116,30 @@ CurrentTimeFunction::evaluate(
 
 /******************************************************************************
  *****************************************************************************/
+zorba::ItemSequence_t
+TimestampFunction::evaluate(
+  const Arguments_t& aArgs,
+  const zorba::StaticContext* aSctx,
+  const zorba::DynamicContext* aDctx) const
+{
+  zorba::Item lMillis;
+#if WIN32
+  time_t t0;
+  time(&t0);
+  lMillis = Zorba::getInstance(0)->getItemFactory()->createLong(lMillis, t0*1000);
+#else
+  timeval tv;
+  gettimeofday(&tv, 0);
+  long long millis = tv.tv_sec;
+  millis = millis * 1000 + tv.tv_usec/1000;
+  lMillis = Zorba::getInstance(0)->getItemFactory()->createLong(millis);
+#endif
+
+  return zorba::ItemSequence_t(new zorba::SingletonItemSequence(lMillis));
+}
+
+/******************************************************************************
+ *****************************************************************************/
 zorba::StatelessExternalFunction*
 DateTimeModule::getExternalFunction(const zorba::String& aLocalname)
 {
@@ -127,6 +151,8 @@ DateTimeModule::getExternalFunction(const zorba::String& aLocalname)
       lFunc = new CurrentDateFunction(this);
     } else if (aLocalname == "current-time") {
       lFunc = new CurrentTimeFunction(this);
+    } else if (aLocalname == "timestamp") {
+      lFunc = new TimestampFunction(this);
     }
   }
   return lFunc;

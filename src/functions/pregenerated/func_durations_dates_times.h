@@ -311,21 +311,6 @@ public:
 };
 
 
-//fn-zorba-util:timestamp
-class fn_zorba_util_timestamp : public function
-{
-public:
-  fn_zorba_util_timestamp(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-
-}
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
 } //namespace zorba
 
 

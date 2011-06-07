@@ -171,6 +171,28 @@ AutoFSURIMapper::mapURI
   oUris.push_back(aUri);
 }
 
+ZorbaCollectionURIMapper::~ZorbaCollectionURIMapper()
+{
+}
+
+URIMapper::Kind
+ZorbaCollectionURIMapper::mapperKind() throw ()
+{
+  return URIMapper::CANDIDATE;
+}
+
+void
+ZorbaCollectionURIMapper::mapURI
+(zstring const& aUri, Resource::EntityType aEntityType,
+  static_context const& aSctx, std::vector<zstring>& oUris) throw()
+{
+  if (aEntityType != Resource::COLLECTION) {
+    return;
+  }
+
+  oUris.push_back(aUri);
+}
+
 } /* namespace zorba::impl */
 
 } /* namespace zorba */

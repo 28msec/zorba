@@ -28,14 +28,20 @@ public:
     : theManager(aManager.theManager) {} 
   XmlDataManager(zorba::XmlDataManager* aManager) : theManager(aManager) {}
 
+  
   void loadDocument(const std::string& aName, const std::string& aContent)
   {
     std::stringstream lStream(aContent);
-    theManager->loadDocument(aName, lStream);
+    zorba::Item lDoc = theManager->parseXML(lStream);
+    zorba::DocumentManager* lDocMgr = theManager->getDocumentManager();
+    lDocMgr->add(aName, lDoc);
   }
 
-  bool deleteDocument(const std::string& aName) 
-  { return theManager->deleteDocument(aName); }
+  void deleteDocument(const std::string& aName) 
+  {
+    zorba::DocumentManager* lDocMgr = theManager->getDocumentManager();
+    lDocMgr->remove(aName);
+  }
 };
 
 
@@ -49,5 +55,5 @@ class XmlDataManager
 {
  public:
   void loadDocument(const std::string& aName, const std::string& aContent);
-  bool deleteDocument(const std::string& aName);
+  void deleteDocument(const std::string& aName);
 }; // class XmlDataManager

@@ -102,7 +102,6 @@ protected:
   dynamic_context            * theParent;
 
   store::Item_t                theCurrentDateTime;
-  store::Item_t                theCurrentTimeMillis;
   long                         theTimezone;
 
   store::Item_t                theDefaultCollectionUri;

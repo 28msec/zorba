@@ -1966,32 +1966,21 @@ void* import_schema(
   try
   {
     std::auto_ptr<impl::Resource> lSchema;
+    zstring lErrorMessage;
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
          lIter != lCandidates.end();
          ++lIter)
     {
-      try
+      lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA, lErrorMessage);
+      if (lSchema.get() != NULL &&
+        lSchema->getKind() == impl::Resource::STREAM)
       {
-        lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA);
-        if (lSchema.get() != NULL &&
-            lSchema->getKind() == impl::Resource::STREAM)
-        {
-          break;
-        }
+        break;
       }
-      catch (ZorbaException const& e)
-      {
-        if (e.diagnostic() != err::XQST0059 || *lIter != lNsURI)
-        {
-          // If this exception is a "resource not found", then we need
-          // to continue on and try the next candidate unless this was
-          // the final one. So just ignore the exception.
-        }
-        else
-        {
-          throw;
-        }
-      }
+    }
+
+    if ( lSchema.get() == NULL ) {
+      throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(lNsURI, lErrorMessage));
     }
 
     // If we got this far, we have a valid StreamResource.
@@ -2786,39 +2775,27 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       zstring compURL;
       std::auto_ptr<std::istream> modfile;
 
-      try
-      {
-        // Resolve the URI. Again, note the use of versioned_uri() here,
-        // rather than using compURI directly, because we want the version
-        // fragment to be passed to the mappers.
-        std::auto_ptr<impl::Resource> lResource =
+      // Resolve the URI. Again, note the use of versioned_uri() here,
+      // rather than using compURI directly, because we want the version
+      // fragment to be passed to the mappers.
+      zstring lErrorMessage;
+      std::auto_ptr<impl::Resource> lResource =
         theSctx->resolve_uri(lCompModVer.versioned_uri(),
-                             impl::Resource::MODULE);
+                             impl::Resource::MODULE,
+                             lErrorMessage);
 
-        if (lResource.get() != NULL &&
-            lResource->getKind() == impl::Resource::STREAM)
-        {
-          impl::StreamResource* lStreamResource =
+      if (lResource.get() != NULL &&
+          lResource->getKind() == impl::Resource::STREAM) 
+      {
+        impl::StreamResource* lStreamResource =
           static_cast<impl::StreamResource*>(lResource.get());
 
-          modfile = lStreamResource->getStream();
-          compURL = lStreamResource->getStreamUrl();
-        }
-        else
-        {
-          // QQQ what to do with wrong Resource kind?
-          std::cout << "Got no Resources!" << std::endl;
-        }
+        modfile = lStreamResource->getStream();
+        compURL = lStreamResource->getStreamUrl();
       }
-      catch (XQueryException& e)
+      else 
       {
-        set_source(e, loc);
-        throw;
-      }
-
-      if (modfile.get() == NULL || ! *modfile)
-      {
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
+        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI, lErrorMessage));
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -3806,9 +3783,6 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                             lCollectionType);
 
   theSctx->bind_collection(lColl, v.get_location());
-  // inform the c++ api about the declaration if the
-  // user has registered a callback
-  theSctx->call_collection_callback(lColl);
 
   assert(export_sctx);
   export_sctx->bind_collection(lColl, v.get_location());
@@ -3917,8 +3891,6 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
   // If this is a library module, register the index in the exported sctx as well.
   if (export_sctx != NULL)
     export_sctx->bind_index(index, loc);
-
-  theSctx->call_index_callback(index);
 }
 
 

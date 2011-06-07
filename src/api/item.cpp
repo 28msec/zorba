@@ -34,6 +34,7 @@
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/iterator.h"
+#include "store/api/collection.h"
 
 
 namespace zorba {
@@ -437,6 +438,24 @@ Item::getStream()
   // TODO: throw exception
 }
 
+Item
+Item::getCollectionName() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    if (!m_item->isNode()) {
+      return 0;
+    }
+    const store::Collection* lColl = m_item->getCollection();
+    if (lColl) {
+      return lColl->getName();
+    } else {
+      return 0;
+    }
+  ITEM_CATCH
+  return 0;
+}
 } // namespace zorba
 
 /* vim:set et sw=2 ts=2: */

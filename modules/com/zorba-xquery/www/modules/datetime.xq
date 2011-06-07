@@ -53,3 +53,10 @@ declare %nondeterministic function datetime:current-time ( ) as xs:time external
  : @return the non-stable date value
  :)
 declare %nondeterministic function datetime:current-date ( ) as xs:date external;
+
+(:~
+ : Return the the number of milliseconds since the Epoch.
+ :
+ : @return the said number of milliseconds.
+ :)
+declare %nondeterministic function datetime:timestamp ( ) as xs:long external;

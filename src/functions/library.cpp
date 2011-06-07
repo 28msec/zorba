@@ -61,6 +61,7 @@
 #include "functions/func_eval.h"
 #include "functions/func_reflection.h"
 #include "functions/func_apply.h"
+#include "functions/func_fetch.h"
 
 #include "functions/func_function_item_iter.h"
 
@@ -129,6 +130,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_eval(sctx);
   populate_context_reflection(sctx);
   populate_context_apply(sctx);
+
+  populate_context_fetch(sctx);
 
   ar.set_loading_hardcoded_objects(false);
 }

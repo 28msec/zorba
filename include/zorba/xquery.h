@@ -505,6 +505,21 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
         unsigned short aPort = 9000) = 0;
 #endif
 
+  /** \brief Returns a CollectionManager responsible for all collections
+   * which are statically declared in the static context of this query
+   * (main module) or any transitively imported library module.
+   *
+   * The collection manager provides a set of functions for managing
+   * collections and their contents.
+   *
+   * @return The collection manager responsible for managing
+   *   collections of this query.
+   *
+   */
+  virtual StaticCollectionManager*
+  getStaticCollectionManager() const = 0;
+
+
   /**
    *
    */

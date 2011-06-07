@@ -21,11 +21,18 @@
 
 #include <zorba/zorba_string.h>
 #include <zorba/item.h>
+#include <zorba/item_sequence.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/iterator.h>
 #include <zorba/diagnostic_handler.h>
 
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
 #include "api/collectionimpl.h"
+#include "api/staticcontextimpl.h"
+#include "api/documentmanagerimpl.h"
+#include "api/collectionmanagerimpl.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "store/api/collection.h"
@@ -42,28 +49,37 @@
 namespace zorba {
 
 
-#define ZORBA_DM_TRY                                                        \
-  DiagnosticHandler* errorHandler = (aDiagnosticHandler != 0 ?              \
-                                aDiagnosticHandler : theDiagnosticHandler); \
+#define ZORBA_DM_TRY                                    \
   try
 
-#define ZORBA_DM_CATCH                                  \
-  catch (ZorbaException const& e)                       \
-  {                                                     \
-    ZorbaImpl::notifyError(errorHandler, e);            \
-  }                                                     \
-  catch (std::exception const& e)                       \
-  {                                                     \
-    ZorbaImpl::notifyError(errorHandler, e.what());     \
-  }                                                     \
-  catch (...)                                           \
-  {                                                     \
-    ZorbaImpl::notifyError(errorHandler);               \
+#define ZORBA_DM_CATCH                                         \
+  catch (ZorbaException const& e)                              \
+  {                                                            \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);           \
+  }                                                            \
+  catch (std::exception const& e)                              \
+  {                                                            \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());    \
+  }                                                            \
+  catch (...)                                                  \
+  {                                                            \
+    ZorbaImpl::notifyError(theDiagnosticHandler);              \
   }
 
+std::string XmlDataManagerImpl::theFnNamespace =
+  "http://www.w3.org/2005/xpath-functions";
+
+std::string XmlDataManagerImpl::theFetchNamespace =
+  "http://www.zorba-xquery.com/modules/fetch";
 
 XmlDataManagerImpl::XmlDataManagerImpl()
+  : theDocManager(0),
+    theColManager(0),
+    theW3CColManager(0)
 {
+  initStaticContext();
+  initializeItemFactory();
+
   theDiagnosticHandler = new DiagnosticHandler();
   theUserDiagnosticHandler = false;
 
@@ -74,272 +90,148 @@ XmlDataManagerImpl::XmlDataManagerImpl()
   ZORBA_CATCH
 }
 
+void
+XmlDataManagerImpl::initializeItemFactory()
+{
+  // assumption: Zorba is already initialized
+  // otherwise there was no chance for the user to get this data manager
+  Zorba* lZorba = Zorba::getInstance(0);
+  theFactory = lZorba->getItemFactory();
+}
+
+void
+XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
+{
+  // assumption: Zorba is already initialized
+  // otherwise there was no chance for the user to get this data manager
+  Zorba* lZorba = Zorba::getInstance(0);
+
+  theContext = lZorba->createStaticContext(aDiagnosticHandler);
+
+  Zorba_CompilerHints_t lHints;
+  std::ostringstream lProlog;
+  lProlog
+    << "import module namespace d = '" << theFetchNamespace << "';";
+  theContext->loadProlog(lProlog.str(), lHints);
+}
 
 XmlDataManagerImpl::~XmlDataManagerImpl()
 {
   if (!theUserDiagnosticHandler)
     delete theDiagnosticHandler;
+
+  delete theDocManager;
+  delete theColManager;
+  delete theW3CColManager;
 }
 
+DocumentManager*
+XmlDataManagerImpl::getDocumentManager() const
+{
+  if (!theDocManager) {
+    theDocManager = new DocumentManagerImpl(theContext, theFactory);
+    theDocManager->registerDiagnosticHandler(theDiagnosticHandler);
+  }
+  return theDocManager;
+}
+
+CollectionManager*
+XmlDataManagerImpl::getCollectionManager() const
+{
+  if (!theColManager) {
+    theColManager = new CollectionManagerImpl(theContext, theFactory);
+    theColManager->registerDiagnosticHandler(theDiagnosticHandler);
+  }
+  return theColManager;
+}
+
+CollectionManager*
+XmlDataManagerImpl::getW3CCollectionManager() const
+{
+  if (!theW3CColManager) {
+    theW3CColManager = new CollectionManagerImpl(
+        theContext,
+        theFactory,
+        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl",
+        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml"
+    );
+  }
+  return theW3CColManager;
+}
+
+void
+XmlDataManagerImpl::destroyStream(std::istream& stream)
+{
+  // it's the user's responsibility to manage the lifetime
+}
+
+Item
+XmlDataManagerImpl::parseXML(std::istream& aStream) const
+{
+  ZORBA_DM_TRY
+  {
+    Item lQName = theFactory->createQName(theFnNamespace, "parse-xml");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createStreamableString(
+            aStream, &XmlDataManagerImpl::destroyStream)));
+
+    ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+    return lRes;
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
+
+Item
+XmlDataManagerImpl::fetch(const String& aURI) const
+{
+  ZORBA_DM_TRY
+  {
+    Item lQName = theFactory->createQName(theFetchNamespace, "content");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createString(aURI)));
+
+    ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+    return lRes;
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
 
 void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
+  theContext = new StaticContextImpl(aDiagnosticHandler);
   if (!theUserDiagnosticHandler)
     delete theDiagnosticHandler;
 
   theDiagnosticHandler = aDiagnosticHandler;
   theUserDiagnosticHandler = true;
-}
 
-
-Item XmlDataManagerImpl::parseDocument(std::istream& aStream)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-  DiagnosticHandler* aDiagnosticHandler = 0;
-  ZORBA_DM_TRY
-  {
-    store::LoadProperties loadProperties;
-    loadProperties.setStoreDocument(false);
-    return &*theStore->loadDocument("", "", aStream, loadProperties);
+  if (theColManager) {
+    theColManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
-  ZORBA_DM_CATCH
-  return Item();
-}
-
-
-Item XmlDataManagerImpl::loadDocument(
-    const String& aLocalFileUri,
-    bool aReplaceDoc)
-{
-  XmlDataManager::LoadProperties loadProperties;
-  return loadDocument(aLocalFileUri, loadProperties, aReplaceDoc);
-}
-
-
-Item XmlDataManagerImpl::loadDocument(
-    const String& aUri,
-    std::istream& aStream,
-    bool aReplaceDoc)
-{
-  XmlDataManager::LoadProperties loadProperties;
-  return loadDocument(aUri, aStream, loadProperties, aReplaceDoc);
-}
-
-
-Item XmlDataManagerImpl::loadDocument(
-    const String& aLocalFileUri,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool aReplaceDoc)
-{
-  DiagnosticHandler* aDiagnosticHandler = NULL;
-
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    const zstring& fileUri = Unmarshaller::getInternalString(aLocalFileUri);
-
-    std::ifstream fileStream(fileUri.c_str());
-
-    return loadDocument(aLocalFileUri, fileStream, aLoadProperties, aReplaceDoc);
+  if (theDocManager) {
+    theDocManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
-  ZORBA_DM_CATCH
-  return Item();
-}
-
-
-Item XmlDataManagerImpl::loadDocument(
-    const String& uri,
-    std::istream& stream,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool aReplaceDoc)
-{
-  DiagnosticHandler* aDiagnosticHandler = NULL;
-
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    if ( ! stream.good() )
-			throw ZORBA_EXCEPTION( zerr::ZOSE0003_STREAM_READ_FAILURE );
-
-    const zstring& docUri = Unmarshaller::getInternalString(uri);
-
-    if (aReplaceDoc)
-      theStore->deleteDocument(docUri);
-
-    store::LoadProperties loadProps;
-    loadProps.setEnableDtd( aLoadProperties.getEnableDtd() );
-
-    return &*theStore->loadDocument(docUri, docUri, stream, loadProps);
+  if (theW3CColManager) {
+    theW3CColManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
-  ZORBA_DM_CATCH
-  return Item();
-}
-
-
-Item XmlDataManagerImpl::loadDocumentFromUri(
-    const String& aUri,
-    bool aReplaceDoc)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  DiagnosticHandler* aDiagnosticHandler = NULL;
-
-  ZORBA_DM_TRY
-  {
-    InternalDocumentURIResolver* uri_resolver;
-    uri_resolver = GENV_ROOT_STATIC_CONTEXT.get_document_uri_resolver();
-
-    zstring docUri = Unmarshaller::getInternalString(aUri);
-
-    zorba::store::ItemFactory* item_factory = GENV_ITEMFACTORY;
-    store::Item_t uriItem;
-
-    item_factory->createAnyURI(uriItem, docUri);
-
-    store::Item_t docItem;
-    docItem = uri_resolver->resolve(uriItem,
-                                    &GENV_ROOT_STATIC_CONTEXT,
-                                    true,
-                                    aReplaceDoc);
-
-    if(docItem.isNull())
-      return Item();
-
-    return Item(docItem);
-  }
-  ZORBA_DM_CATCH
-  return Item();
-}
-
-
-Item XmlDataManagerImpl::getDocument(const String& uri)
-{
-  return getDocument(uri, theDiagnosticHandler);
-}
-
-
-Item XmlDataManagerImpl::getDocument(const String& uri, DiagnosticHandler* aDiagnosticHandler)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    const zstring& docUri = Unmarshaller::getInternalString(uri);
-    return &*theStore->getDocument(docUri);
-  }
-  ZORBA_DM_CATCH
-  return Item();
-}
-
-
-bool XmlDataManagerImpl::deleteDocument(const String& uri)
-{
-  return deleteDocument(uri, theDiagnosticHandler);
-}
-
-
-bool XmlDataManagerImpl::deleteDocument(const String& uri, DiagnosticHandler* aDiagnosticHandler)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    const zstring& docUri = Unmarshaller::getInternalString(uri);
-    theStore->deleteDocument(docUri);
-    return true;
-  }
-  ZORBA_DM_CATCH
-  return false;
-}
-
-
-void XmlDataManagerImpl::deleteAllDocuments()
-{
-  DiagnosticHandler* aDiagnosticHandler = NULL;
-
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    theStore->deleteAllDocuments();
-  }
-  ZORBA_DM_CATCH
-}
-
-
-Collection_t XmlDataManagerImpl::createCollection(const String& uri)
-{
-  return createCollection(uri, theDiagnosticHandler);
-}
-
-
-Collection_t XmlDataManagerImpl::createCollection(
-    const String& uri,
-    DiagnosticHandler* aDiagnosticHandler)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    const zstring& colUri = Unmarshaller::getInternalString(uri);
-    return Collection_t(new CollectionImpl(theStore->createUriCollection(colUri),
-                                           aDiagnosticHandler));
-  }
-  ZORBA_DM_CATCH
-  return Collection_t();
-}
-
-
-Collection_t XmlDataManagerImpl::getCollection(const String& uri)
-{
-  return getCollection(uri, theDiagnosticHandler);
-}
-
-
-Collection_t XmlDataManagerImpl::getCollection(
-    const String& uri,
-    DiagnosticHandler* aDiagnosticHandler)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    const zstring& colUri = Unmarshaller::getInternalString(uri);
-    store::Collection_t lColl = theStore->getUriCollection(colUri);
-    if (lColl)
-      return Collection_t(new CollectionImpl(lColl, aDiagnosticHandler));
-    else
-      return NULL;
-  }
-  ZORBA_DM_CATCH
-  return NULL;
-}
-
-
-bool XmlDataManagerImpl::deleteCollection(const String& uri)
-{
-  return deleteCollection(uri, theDiagnosticHandler);
-}
-
-
-bool XmlDataManagerImpl::deleteCollection(
-    const String& uri,
-    DiagnosticHandler* aDiagnosticHandler)
-{
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
-
-  ZORBA_DM_TRY
-  {
-    const zstring& colUri = Unmarshaller::getInternalString(uri);
-    theStore->deleteUriCollection(colUri);
-    return true;
-  }
-  ZORBA_DM_CATCH
-  return false;
 }
 
 } // namespace zorba

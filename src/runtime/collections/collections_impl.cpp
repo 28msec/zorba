@@ -27,7 +27,7 @@
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "context/internal_uri_resolvers.h"
+#include "context/uri_resolver.h"
 #include "context/static_context_consts.h"
 
 #include "compiler/xqddf/value_ic.h"
@@ -107,7 +107,9 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Item_t lURI, resolvedURIItem;
   store::Collection_t coll;
+  std::auto_ptr<impl::Resource> lResource;
   zstring resolvedURIString;
+  zstring lErrorMessage;
 
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
@@ -118,8 +120,6 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     try 
     {
       resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
-
-      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
     catch (ZorbaException const&) 
     {
@@ -133,6 +133,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   else 
   {
     resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
+    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
 
     if( NULL == resolvedURIItem)
       throw XQUERY_EXCEPTION(
@@ -142,14 +143,14 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
       );
   }
 
-  coll =  theSctx->get_collection_uri_resolver()->
-          resolve(resolvedURIItem, theSctx);
+  lResource = theSctx->resolve_uri( resolvedURIString, impl::Resource::COLLECTION, lErrorMessage );
 
-  if (coll == 0) 
+  if ( lResource.get() == 0 ||
+       !(coll = static_cast<impl::CollectionResource*>(lResource.get())->getCollection()) ) 
   {
     throw XQUERY_EXCEPTION(
       err::FODC0004,
-      ERROR_PARAMS( resolvedURIItem->getStringValue() ),
+      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
       ERROR_LOC( loc )
     );
   }
@@ -288,7 +289,6 @@ bool ZorbaIndexOfIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t collectionName;
   store::Collection_t collection;
   store::Item_t node;
   ulong pos = 1;
@@ -297,16 +297,15 @@ bool ZorbaIndexOfIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(collectionName, theChildren[0].getp(), planState);
-
-  (void)getCollection(theSctx, collectionName, loc, theDynamicCollection, collection);
-
-  if (consumeNext(node, theChildren[1].getp(), planState))
+  if (consumeNext(node, theChildren[0].getp(), planState))
   {
-    found = collection->findNode(node, pos);
+    collection = node->getCollection();
 
-    if (!found)
+    if (!collection)
       throw XQUERY_EXCEPTION( zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC( loc ) );
+
+    found = collection->findNode(node, pos);
+    ZORBA_ASSERT(found);
 
     STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(pos+1)),
                state);

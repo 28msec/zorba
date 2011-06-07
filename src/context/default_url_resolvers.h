@@ -55,6 +55,18 @@ public:
     Resource::EntityType aEntityType);
 };
 
+/**
+ */
+class ZorbaCollectionURLResolver : public impl::URLResolver
+{
+public:
+
+  virtual ~ZorbaCollectionURLResolver();
+
+  virtual Resource* resolveURL(zstring const& aUrl,
+    Resource::EntityType aEntityType);
+};
+
 } /* namespace zorba::impl */
 
 } /* namespace zorba */

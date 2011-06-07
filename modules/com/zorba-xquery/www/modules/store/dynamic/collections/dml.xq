@@ -15,9 +15,10 @@
 :)
 
 (:~
- : This modules defines a set of functions to modify a collection or retrieve the nodes
+ : This modules provides a set of functions to modify a collection and retrieve the nodes
  : contained in a particular collection.
- : Such collections are identified by QNames and come into existence (i.e. be available)
+ :
+ : Such collections are identified by QNames and come into existence (i.e. be made available)
  : by calling one of the two create-collection functions of the 
  : <tt>http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</tt>
  : module.
@@ -26,43 +27,47 @@
  : as though it were an enclosed expression in an element constructor.
  : The result of this step is a sequence of nodes to be inserted into the collection.
  :
- : In contrast to the functions in the module 
+ : In contrast to the functions in the module
  : <tt>http://www.zorba-xquery.com/modules/store/static/collections/dml</tt>
  : the function in this module operate on collections which do not have to
  : be statically declared in the prolog.
  :
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project store/collections/dynamic
  :
+ : @project store/collections/dynamic
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 (:~
- : The insert-nodes-first function is an updating function. It returns a pending
- : update list which, when applied, inserts copies of the given nodes at the beginning
- : of the collection identified by the name parameter.
+ : The insert-nodes-first function is an updating function that inserts copies of the
+ : given nodes at the beginning of the collection.
  :
  : @param $name The name of the collection to which the nodes should be added.
  : @param $content The sequences of nodes whose copies should be added to the collection.
+ :
  : @return The result of the function is an empty XDM instance and a pending update list
- :         that contains an upd:insertNodesFirst($name, $list) update primitive.
+ :         which, once applied, inserts the nodes into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
+ :
  :)
 declare updating function dml:insert-nodes-first(
   $name as xs:QName,
   $content as node()*) external;
 
 (:~
- : The insert-nodes-last function is an updating function. It returns a pending
- : update list which, when applied, inserts copies of the given node as last nodes into
- : the collection identified by the name parameter.
+ : The insert-nodes-last function is an updating function that inserts copies of the
+ : given nodes at the end of the collection.
  :
  : @param $name The name of the collection to which the nodes should  be added.
  : @param $content The sequences of nodes whose copies should be added to the collection.
+ :
  : @return The result of the function is an empty XDM instance and a pending update list
- :         that contains an upd:insertNodesLast($name, $list) update primitive.
+ :         which, once applied, inserts the nodes into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
  :
@@ -72,9 +77,9 @@ declare updating function dml:insert-nodes-last(
   $content as node()*) external;
 
 (:~
- : The insert-nodes-before function is an updating function. It returns a pending
- : update list which, when applied, inserts copies of the given node as preceding siblings
- : of $target into the collection identified by the name parameter.
+ : The insert-nodes-before function is an updating function that inserts
+ : copies of the given nodes into a collection at the position directly preceding the
+ : given target node.
  :
  : @param $name The name of the collection to which the nodes should  be added.
  : @param $target The node in the collection before which the $content
@@ -82,40 +87,41 @@ declare updating function dml:insert-nodes-last(
  : @param $content The sequences of nodes whose copies should be added to the collection.
  :
  : @return The result of the function is an empty XDM instance and a pending update list
- :         that contains an upd:insertNodesBefore($name, $target, $list) update primitive.
+ :         which, once applied, inserts the nodes into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
  : @error XDDY0011 if the target node is not contained in the collection.
+ :
  :)
-declare updating function dml:insert-nodes-before($name as xs:QName,
-                                                    $target as node(),
-                                                    $content as node()*) external;
+declare updating function dml:insert-nodes-before(
+  $name as xs:QName,
+  $target as node(),
+  $content as node()*) external;
 
 (:~
- : The insert-nodes-after function is an updating function. It returns a pending
- : update list which, when applied, inserts copies of the given node as following siblings
- : of $target into the collection identified by the name parameter.
+ : The insert-nodes-after function is an updating function that inserts
+ : copies of the given nodes into a collection at the position directlry following the
+ : given target node.
  :
- : @param $name The name of the collection to which the nodes should
- :        be added.
+ : @param $name The name of the collection to which the nodes should be added.
  : @param $target The node in the collection after which the $content
  :        sequence should be inserted.
- : @param $content The sequences of nodes whose copies that should be added to the new
- :        collection.
+ : @param $content The sequences of nodes whose copies should be added to the collection.
  :
  : @return The result of the function is an empty XDM instance and a pending update list
- :         that contains an upd:insertNodesAfter($name, $target, $list) update primitive.
+ :         which, once applied, inserts the nodes into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
  : @error XDDY0011 if the target node is not contained in the collection.
+ :
  :)
-declare updating function dml:insert-nodes-after($name as xs:QName,
-                                                  $pos as node(),
-                                                  $content as node()*) external;
-
+declare updating function dml:insert-nodes-after(
+  $name as xs:QName,
+  $pos as node(),
+  $content as node()*) external;
 
 (:~
- : This function does the same as the insert-nodes-first function except
+ : This function does the same as the insert-nodes function except
  : it immediately applies the resulting pending updates and returns the
  : nodes that have been inserted.
  :
@@ -123,10 +129,12 @@ declare updating function dml:insert-nodes-after($name as xs:QName,
  : @param $content The sequences of nodes whose copies should be added to the collection.
  :
  : @return The result of the function is the sequence of nodes that have been
- :         inserted at the beginning of the collection.
+ :         inserted into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
+ :
  : @see dml:insert-nodes-first
+ :
  :)
 declare %sequential function dml:apply-insert-nodes-first(
   $name as xs:QName,
@@ -141,10 +149,12 @@ declare %sequential function dml:apply-insert-nodes-first(
  : @param $content The sequences of nodes whose copies should be added to the collection.
  :
  : @return The result of the function is the sequence of nodes that have been
- :         inserted at the end of the collection.
+ :         inserted into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
+ :
  : @see dml:insert-nodes-last
+ :
  :)
 declare %sequential function dml:apply-insert-nodes-last(
   $name as xs:QName,
@@ -161,10 +171,12 @@ declare %sequential function dml:apply-insert-nodes-last(
  : @param $content The sequences of nodes whose copies should be added to the collection.
  :
  : @return The result of the function is the sequence of nodes that have been
- :         inserted into the collection preceding the target node.
+ :         inserted into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
+ :
  : @see dml:insert-nodes-before
+ :
  :)
 declare %sequential function dml:apply-insert-nodes-before(
   $name as xs:QName,
@@ -182,10 +194,12 @@ declare %sequential function dml:apply-insert-nodes-before(
  : @param $content The sequences of nodes whose copies should be added to the collection.
  :
  : @return The result of the function is the sequence of nodes that have been
- :         inserted into the collection following the target node.
+ :         inserted into the collection.
  :
  : @error XDDY0003 if the collection identified by $name is not available.
+ :
  : @see dml:insert-nodes-after
+ :
  :)
 declare %sequential function dml:apply-insert-nodes-after(
   $name as xs:QName,
@@ -196,13 +210,14 @@ declare %sequential function dml:apply-insert-nodes-after(
  : The delete-nodes function is an updating function that deletes zero of more
  : nodes from a collection. 
  :
- : @param $target The nodes in the collection that should be deleted.
+ : @param $target the nodes in the collection that should be deleted.
+ :
  : @return The result of this function is an empty XDM instance and a pending update
- :         list that contains one update primitive upd:deleteNode($name, $tnode) for
- :         each node in the target sequence.
+ :         list which, once applied, deletes the nodes from their collections.
+ :
  : @error XDDY0011 if any nodes in the $target sequence is not a member of a collection
  :        or not all nodes of the $target sequence belong to the same collection.
- :        the collection identified by the $name parameter.
+ :
  :)
 declare updating function dml:delete-nodes($target as node()*) external;
 
@@ -211,11 +226,12 @@ declare updating function dml:delete-nodes($target as node()*) external;
  : first node from a collection.
  :
  : @param $name The name of the collection from which the first node should be deleted.
+ :
  : @return The result of this function is an empty XDM instance and a pending update
- :         list that contains one update primitive upd:deleteNode($name, $tnode) where 
- :         $tnode is the first node in the collection.
+ :         list which, once applied, deletes the first node from the collection.
  :
  : @error XDDY0011 if the collection doesn't contain any node.
+ :
  :)
 declare updating function dml:delete-node-first($name as xs:QName) external;
 
@@ -226,11 +242,12 @@ declare updating function dml:delete-node-first($name as xs:QName) external;
  : @param $name The name of the collection from which the first node should be deleted.
  : @param $number The number of nodes that should be removed from the beginning of
  :        the collection.
+ :
  : @return The result of this function is an empty XDM instance and a pending update
- :         list that contains one update primitive upd:deleteNode($name, $tnode) for 
- :         each of the n nodes (specified by the $number parameter) in the collection.
+ :         list which, once applied, deletes the nodes from the collection.
  :
  : @error XDDY0011 if the collection doesn't contain the given number of nodes.
+ :
  :)
 declare updating function dml:delete-nodes-first(
   $name as xs:QName,
@@ -241,63 +258,60 @@ declare updating function dml:delete-nodes-first(
  : last node from a collection.
  :
  : @param $name The name of the collection from which the first node should be deleted.
+ :
  : @return The result of this function is an empty XDM instance and a pending update
- :         list that contains one update primitive upd:deleteNode($name, $tnode) where 
- :         $tnode is the last node in the collection.
+ :         list which, once applied, deletes the last node from the collection.
  :
  : @error XDDY0009 If available collections does not provide a mapping
- :        for the expaned QName $name.
+ :        for the expanded QName $name.
  : @error XDDY0011 if the collection doesn't contain any node.
+ :
  :)
 declare updating function dml:delete-node-last($name as xs:QName) external;
 
 
 (:~
  : The delete-nodes-last function is an updating function that deletes the
- : last n nodes from a collection.
+ : last n nodes from an ordered collection.
  :
  : @param $name The name of the collection from which the first node should be deleted.
- : @param $number The number of nodes that should be removed at the end of
- :        the collection.
+ : @param $number The number of nodes to delete.
+ :
  : @return The result of this function is an empty XDM instance and a pending update
- :         list that contains one update primitive upd:deleteNode($name, $tnode) for 
- :         each of the n nodes (specified by the $number parameter) in the collection.
+ :         list which, once applied, deletes the last n nodes.
  :
  : @error XDDY0009 If available collections does not provide a mapping
- :        for the expaned QName $name.
+ :        for the expanded QName $name.
  : @error XDDY0011 if the collection doesn't contain the given number of nodes.
+ :
  :)
 declare updating function dml:delete-nodes-last(
   $name as xs:QName,
   $number as xs:unsignedLong) external;
 
 (:~
- : The index-of function return the index of the given node in the collection
- : identified by the QName $name.
+ : The index-of function return the index of the given node in the collection.
  :
- : @param $name The name of the collection.
- : @param node The node to retrieve the index from.
+ : @param $node The node to retrieve the index from.
  :
- : @return Returns the position as xs:integer of the node $node in the collection.
+ : @return Returns the position as xs:integer of the given node in the collection.
  :
- : @error XDDY0009 If available collections does not provide a mapping
- :        for the expaned QName $name.
- : @error XDDY0011 if node is not contained in the collection.
+ : @error XDDY0011 if node is not contained in any collection.
+ :
  :)
-declare function dml:index-of(
-  $name as xs:QName,
-  $node as node()) as xs:integer external;
+declare function dml:index-of($node as node()) as xs:integer external;
 
 (:~
- : The collection function returns the sequence of nodes contained
- : in the collection identified by the given name.
+ : The collection function returns the sequence of nodes of the collection
+ : identified by the given name.
  :
  : @param $name The name of the collection.
- : @return The result of this function is the sequence of nodes belonging
- :         to the entry with QName $name in the map of available collections.
+ :
+ : @return The sequence contained in the given collection.
  :
  : @error XDDY0009 If available collections does not provide a mapping
- :        for the expaned QName $name.
+ :        for the expanded QName $name.
+ :
  :)
 declare function dml:collection($name as xs:QName) as node()* external;
 
@@ -310,5 +324,6 @@ declare function dml:collection($name as xs:QName) as node()* external;
  :         to which the given node belongs to.
  :
  : @error XDDY0011 if the given node does not belong to a collection.
+ :
  :)
 declare function dml:collection-name($node as node()) as xs:QName external;

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+    
+<!--
+/*********************************************************************
+*********************************************************************/
+-->
+<zorba:iterator name="FetchContentIterator">
+
+  <zorba:description author="Matthias Brantner"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="content" prefix="fn-zorba-fetch">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
+
+  <zorba:method static="true" name="destroyStream"
+    return="void">
+    <zorba:param type="std::istream&amp;" name="aStream"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+<!--
+/*********************************************************************
+*********************************************************************/
+-->
+<zorba:iterator name="FetchContentTypeIterator">
+
+  <zorba:description author="Matthias Brantner"></zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="content-type" prefix="fn-zorba-fetch">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
+
+</zorba:iterator>
+
+</zorba:iterators>
+
+

@@ -49,7 +49,7 @@ namespace zorba {
       Iterator_t theIterator;
       XQueryImpl* theXQuery; // have ownership and destroy in destructor
 
-  }; /* class IteratorItemSequence */
+  }; /* class InvokeItemSequence */
 
 } // namespace zorba
 #endif

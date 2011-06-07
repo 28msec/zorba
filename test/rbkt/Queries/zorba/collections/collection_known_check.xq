@@ -28,7 +28,7 @@ declare %sequential function local:testb() {
 declare %sequential function local:testc() {
   try {
     {
-      dml:index-of($name, <a/>)
+      dml:index-of(<a/>)
     }
   } catch * ($error) {
     ("c",$error)

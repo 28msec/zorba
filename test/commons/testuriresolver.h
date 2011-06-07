@@ -126,62 +126,52 @@ private:
 /******************************************************************************
 
 *******************************************************************************/
-class TestCollectionURIResolver : public CollectionURIResolver
+class TestCollectionURIMapper : public URIMapper
 {
+  typedef std::map<std::string, std::vector<std::string> > UriMap;
+
 private:
-  std::string map_file;
-  std::string  rbkt_src;
-  std::map < std::string, std::vector<std::string> > uri_map;
+  std::string  theMapFileName;
+  std::string  theRbktSrcFile;
+  UriMap       theMap;
 
-public :
-  TestCollectionURIResolver ( const char * file, const std::string& rbkt_src_dir );
-
-  virtual ~TestCollectionURIResolver ();
+  virtual void
+  initialize();
 
   static void
   trim(std::string& str);
 
-  virtual std::auto_ptr< CollectionURIResolverResult >
-  resolve ( const Item &, StaticContext * aStaticContext, XmlDataManager* aXmlDataManager );
-  void initialize ();
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-class TestCollectionURIResolverResult : public CollectionURIResolverResult
-{
-protected:
-  friend class TestCollectionURIResolver;
-
-  Collection_t theCollection;
-
 public:
-  virtual Collection_t
-  getCollection ( ) const;
+  TestCollectionURIMapper(
+      const char * file,
+      const std::string& aRbktSrcFile );
+
+  virtual ~TestCollectionURIMapper();
+
+  virtual URIMapper::Kind
+  mapperKind() throw() { return URIMapper::CANDIDATE; }
+
+  virtual void
+  mapURI(
+      const String aURI,
+      Resource::EntityType aEntityType,
+      std::vector<String>& oUris) throw ();
 };
 
 
 class TestSerializationCallback : public zorba::SerializationCallback
 {
-  CollectionURIResolver *my_collection_resolver;
-  URIMapper *my_uri_mapper;
+  std::vector<URIMapper*> theUriMappers;
   public:
-    TestSerializationCallback(CollectionURIResolver* my_collection_resolver,
-                              URIMapper* my_uri_mapper)
+    TestSerializationCallback(const std::vector<URIMapper*>& my_uri_mappers)
     {
-      this->my_collection_resolver = my_collection_resolver;
-      this->my_uri_mapper = my_uri_mapper;
+      theUriMappers = my_uri_mappers;
     }
                               
     virtual ~TestSerializationCallback() {}
 
-    virtual CollectionURIResolver*
-    getCollectionURIResolver() const {return my_collection_resolver;}
-
   virtual URIMapper*
-    getURIMapper(size_t /* i */) const {return my_uri_mapper;}
+    getURIMapper(size_t  i ) const {return theUriMappers[i];}
 
 
 };

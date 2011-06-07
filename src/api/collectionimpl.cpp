@@ -16,144 +16,324 @@
 #include "stdafx.h"
 
 #include "api/collectionimpl.h"
+
+#include <vector>
 #include <zorba/item.h>
+#include <zorba/item_factory.h>
 #include <zorba/diagnostic_handler.h>
-#include <istream>
+#include <zorba/item_sequence.h>
+#include <zorba/static_context.h>
+#include <zorba/iterator.h>
+#include <zorba/singleton_item_sequence.h>
+
 #include "api/zorbaimpl.h"
-
 #include "diagnostics/xquery_diagnostics.h"
-#include "zorbautils/lock.h"
-
+#include "diagnostics/zorba_exception.h"
 #include "api/unmarshaller.h"
-
-#include "system/globalenv.h"
-
-#include "runtime/util/flowctl_exception.h"
-
-#include "store/api/collection.h"
-#include "store/api/item.h"
-#include "store/api/store.h"
-#include "store/api/copymode.h"
-
 
 namespace zorba {
 
+#define ZORBA_DM_TRY                                    \
+  try
+
+#define ZORBA_DM_CATCH                                         \
+  catch (ZorbaException const& e)                              \
+  {                                                            \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);           \
+  }                                                            \
+  catch (std::exception const& e)                              \
+  {                                                            \
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());    \
+  }                                                            \
+  catch (...)                                                  \
+  {                                                            \
+    ZorbaImpl::notifyError(theDiagnosticHandler);              \
+  }
+
+
+/*******************************************************************************
+
+********************************************************************************/
 CollectionImpl::CollectionImpl(
-    const store::Collection_t& aCollection,
-    DiagnosticHandler* aDiagnosticHandler)
-  :
-  theCollection(aCollection),
-  theDiagnosticHandler(aDiagnosticHandler)
+      const StaticContext_t& aSctx,
+      ItemFactory* aFactory,
+      const Item& aQName,
+      DiagnosticHandler* aDiagnosticHandler,
+      const std::string& aDMLNS)
+  : theContext(aSctx->createChildContext()),
+    theFactory(aFactory),
+    theQName(aQName),
+    theDiagnosticHandler(aDiagnosticHandler),
+    theNS(aDMLNS)
 {
+  initStaticContext();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CollectionImpl::~CollectionImpl()
 {
 }
 
- 
-Item
-CollectionImpl::getName() const
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::initStaticContext()
 {
-  ZORBA_TRY
-    return theCollection->getName();
-  ZORBA_CATCH
-  return Item();
+  Zorba_CompilerHints_t lHints;
+  std::ostringstream lProlog;
+  lProlog
+    << "import module namespace d = '" << theNS << "';";
+  theContext->loadProlog(lProlog.str(), lHints);
 }
 
+/*******************************************************************************
 
-unsigned long
-CollectionImpl::size() const
+********************************************************************************/
+void
+CollectionImpl::invoke(
+    const char* aLocalName,
+    const std::vector<ItemSequence_t>& aArgs) const
 {
-  return theCollection->size();
+  Item lFunc = theFactory->createQName(theNS, aLocalName);
+
+  ItemSequence_t lSeq = theContext->invoke(lFunc, aArgs);
+  Iterator_t lIter = lSeq->getIterator();
+  lIter->open();
+  Item lRes;
+  lIter->next(lRes);
 }
 
+/*******************************************************************************
 
-bool
-CollectionImpl::addDocument(std::istream& lInStream)
+********************************************************************************/
+void
+CollectionImpl::insertNodesFirst(const ItemSequence_t& aNodes)
 {
-  ZORBA_TRY
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    lArgs.push_back(aNodes);
 
-    theCollection->loadDocument(lInStream);
-    return true;
-
-  ZORBA_CATCH
-  return false;
+    invoke("insert-nodes-first", lArgs);
+  }
+  ZORBA_DM_CATCH
 }
 
+/*******************************************************************************
 
-bool
-CollectionImpl::addNode(Item& aNode)
+********************************************************************************/
+void
+CollectionImpl::insertNodesLast(const ItemSequence_t& aNodes)
 {
-  ZORBA_TRY
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    lArgs.push_back(aNodes);
 
-    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
-
-    // Get the store lock to protect the node. 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-    store::CopyMode lCopyMode;
-    store::Item* lCopy = lItem->copy(NULL, lCopyMode);
-
-    theCollection->addNode(lCopy);
-
-    return true;
-
-  ZORBA_CATCH
-  return false;
+    invoke("insert-nodes-last", lArgs);
+  }
+  ZORBA_DM_CATCH
 }
 
+/*******************************************************************************
 
-bool
-CollectionImpl::addNodes(const Iterator_t& aIterator)
+********************************************************************************/
+void
+CollectionImpl::insertNodesBefore(
+    const Item& aTarget,
+    const ItemSequence_t& aNodes)
 {
-  ZORBA_TRY
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    lArgs.push_back(new SingletonItemSequence(aTarget));
+    lArgs.push_back(aNodes);
 
-    Iterator* lIter = aIterator.get();
-    if (!lIter)
+    invoke("insert-nodes-before", lArgs);
+  }
+  ZORBA_DM_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::insertNodesAfter(
+    const Item& aTarget,
+    const ItemSequence_t& aNodes)
+{
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    lArgs.push_back(new SingletonItemSequence(aTarget));
+    lArgs.push_back(aNodes);
+    
+    invoke("insert-nodes-after", lArgs);
+  }
+  ZORBA_DM_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::deleteNodes(const ItemSequence_t& aNodes)
+{
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    lArgs.push_back(aNodes);
+    
+    invoke("delete-nodes", lArgs);
+  }
+  ZORBA_DM_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::deleteNodeFirst()
+{
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    
+    invoke("delete-node-first", lArgs);
+  }
+  ZORBA_DM_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::deleteNodesFirst(unsigned long aNumNodes)
+{
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    lArgs.push_back(new SingletonItemSequence(theFactory->createUnsignedLong(aNumNodes)));
+    
+    invoke("delete-nodes-first", lArgs);
+  }
+  ZORBA_DM_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::deleteNodeLast()
+{
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+
+    invoke("delete-node-last", lArgs);
+  }
+  ZORBA_DM_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::deleteNodesLast(unsigned long aNumNodes)
+{
+  ZORBA_DM_TRY
+  {
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
+    lArgs.push_back(new SingletonItemSequence(theFactory->createUnsignedLong(aNumNodes)));
+    
+    invoke("delete-nodes-last", lArgs);
+  }
+  ZORBA_DM_CATCH
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+long long
+CollectionImpl::indexOf(const Item& aNode)
+{
+  ZORBA_DM_TRY
+  {
+    // some consistency checking
+    // (1) given node needs to be in a collection and
+    // (2) the collection needs to be the same as the given collection
+    store::Item_t lNode = Unmarshaller::getInternalItem(aNode);
+    const store::Collection* aColl = lNode->getCollection();
+    if (!aColl) {
       throw ZORBA_EXCEPTION(
-        zerr::ZAPI0014_INVALID_ARGUMENT,
-        ERROR_PARAMS( "null", ZED( BadIterator ) )
+        zerr::ZSTR0009_COLLECTION_NOT_FOUND
       );
-
-    store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
-
-    // Get the store lock to protect the nodes. Note: the result iterator
-    // also holds the store lock in R mode.
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-    store::CopyMode lCopyMode;
-    store::Item_t node;
-    while (lRes->next(node))
-    {
-      store::Item* lCopy = node->copy(NULL, lCopyMode);
-      theCollection->addNode(lCopy, -1);
+    }
+    store::Item_t lName1 = Unmarshaller::getInternalItem(aNode.getCollectionName());
+    store::Item_t lName2 = Unmarshaller::getInternalItem(theQName);
+    if (lName1 != lName2) {
+      throw ZORBA_EXCEPTION(
+        zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
+        ERROR_PARAMS( lName1->getStringValue() )
+      );
     }
 
-    return true;
+    Item lFunc = theFactory->createQName(theNS, "index-of");
 
-  ZORBA_CATCH
-  return false;
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(aNode));
+
+    ItemSequence_t lSeq = theContext->invoke(lFunc, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+
+    return lRes.getLongValue();
+  }
+  ZORBA_DM_CATCH
+  return -1;
 }
 
+/*******************************************************************************
 
-bool
-CollectionImpl::deleteNode(Item& aNode)
+********************************************************************************/
+ItemSequence_t
+CollectionImpl::contents()
 {
-  ZORBA_TRY
+  ZORBA_DM_TRY
+  {
+    Item lFunc = theFactory->createQName(theNS, "collection");
 
-    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(theQName));
 
-    // Make sure nobody else is accessing the node to delete. 
-    // Not sure if we really need this ????? 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    return theContext->invoke(lFunc, lArgs);
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
 
-    ulong pos;
-    return theCollection->removeNode(lItem, pos);
+/*******************************************************************************
 
-  ZORBA_CATCH
-  return false;
+********************************************************************************/
+const Item
+CollectionImpl::getName() const
+{
+  return theQName;
 }
 
 

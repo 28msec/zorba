@@ -33,6 +33,7 @@
 #include "api/functionimpl.h"
 #include "api/xqueryimpl.h"
 #include "api/invoke_item_sequence.h"
+#include "api/staticcollectionmanagerimpl.h"
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
@@ -67,7 +68,8 @@ namespace zorba {
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
   theDiagnosticHandler(aDiagnosticHandler),
-  theUserDiagnosticHandler(true)
+  theUserDiagnosticHandler(true),
+  theCollectionMgr(0)
 {
   theCtx = GENV.getRootStaticContext().create_child_context();
 
@@ -88,7 +90,8 @@ StaticContextImpl::StaticContextImpl(static_context* aCtx, DiagnosticHandler* aD
   :
   theCtx(aCtx),
   theDiagnosticHandler(aDiagnosticHandler),
-  theUserDiagnosticHandler(true)
+  theUserDiagnosticHandler(true),
+  theCollectionMgr(0)
 {
   if ( ! theDiagnosticHandler )
   {
@@ -108,7 +111,8 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
-  theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler)
+  theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
+  theCollectionMgr(0)
 {
   // hierarchy of contexts
   theCtx = aStaticContext.theCtx->create_child_context();
@@ -174,6 +178,11 @@ StaticContextImpl::~StaticContextImpl()
 
   if ( ! theUserDiagnosticHandler )
     delete theDiagnosticHandler;
+
+  if ( theCollectionMgr )
+  {
+    delete theCollectionMgr;
+  }
 }
 
 
@@ -778,37 +787,6 @@ StaticContextImpl::getDocumentType(const String& aDocUri) const
 
 ********************************************************************************/
 void
-StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver)
-{
-  try
-  {
-    theCtx->set_collection_uri_resolver(new CollectionURIResolverWrapper(aCollectionUriResolver));
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-CollectionURIResolver*
-StaticContextImpl::getCollectionURIResolver() const
-{
-  CollectionURIResolverWrapper* lWrapper = dynamic_cast<CollectionURIResolverWrapper*>(theCtx->get_collection_uri_resolver());
-  if (lWrapper) { // if it's the user's resolver
-    return lWrapper->theColResolver;
-  }
-  return 0;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void
 StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
@@ -1323,24 +1301,6 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
 
 
 void
-StaticContextImpl::setDeclaredCollectionCallback(
-    CollectionCallback aCallbackFunction,
-    void* aCallbackData )
-{
-  theCtx->set_collection_callback(aCallbackFunction, aCallbackData);
-}
-
-
-void
-StaticContextImpl::setDeclaredIndexCallback(
-    IndexCallback aCallbackFunction,
-    void* aCallbackData )
-{
-  theCtx->set_index_callback(aCallbackFunction, aCallbackData);
-}
-
-
-void
 StaticContextImpl::addModuleImportChecker(ModuleImportChecker* aChecker)
 {
   theCtx->addModuleImportChecker(aChecker);
@@ -1478,7 +1438,7 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
   lOut
     << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
     << std::endl
-    << "declare variable $name as xs:QName" << " external;" << std::endl;
+    << "declare variable $xxx-func-name as xs:QName" << " external;" << std::endl;
 
   for (size_t i = 0; i < aArity; ++i)
   {
@@ -1498,7 +1458,7 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
     lOut << "simple";
 
   // args
-  lOut << "($name";
+  lOut << "($xxx-func-name";
   for (size_t i = 0; i < aArity; ++i)
   {
     lOut << ", $arg" << i;
@@ -1578,7 +1538,7 @@ StaticContextImpl::invoke(
 
     // bind qname and params
     DynamicContext* lDCtx = impl->getDynamicContext();
-    lDCtx->setVariable("name", aQName);
+    lDCtx->setVariable("xxx-func-name", aQName);
     for (size_t i = 0; i < aArgs.size(); ++i)
     {
       std::ostringstream lArgName;
@@ -1597,5 +1557,21 @@ StaticContextImpl::invoke(
     return 0;
   }
 }
+
+StaticCollectionManager*
+StaticContextImpl::getStaticCollectionManager() const
+{
+  // assumption: Zorba is already initialized
+  // otherwise there was no chance for the user to get this XQuery object
+  Zorba* lZorba = Zorba::getInstance(0);
+  ItemFactory* lFactory = lZorba->getItemFactory();
+
+  StaticContext_t lSctx = new StaticContextImpl(*this);
+  theCollectionMgr = new StaticCollectionManagerImpl(
+      lSctx, lFactory);
+  theCollectionMgr->registerDiagnosticHandler(theDiagnosticHandler);
+  return theCollectionMgr;
+}
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

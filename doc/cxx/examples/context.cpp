@@ -21,8 +21,6 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
-#include <zorba/declared_collection.h>
-#include <zorba/declared_index.h>
 #include <zorba/xquery_exception.h>
 
 
@@ -475,57 +473,6 @@ struct callback_data
   bool b;
 };
 
-void
-collection_callback(const DeclaredCollection& coll, void* data)
-{
-  std::cout << "collection callback function was called for collection "
-            << coll.theName.getStringValue() << std::endl;
-  static_cast<callback_data*>(data)->b = true;
-}
-
-void
-index_callback(const DeclaredIndex& index, void* data)
-{
-  std::cout << "index callback function was called for index "
-            << index.theName.getStringValue() << std::endl;
-  static_cast<callback_data*>(data)->b = true;
-}
-
-bool
-context_example_13(Zorba* aZorba)
-{
-  StaticContext_t lContext = aZorba->createStaticContext();
-  PrologModuleURLResolver lResolver;
-  lContext->registerURLResolver(&lResolver);
-
-  callback_data c, i;
-  c.b = false;
-  i.b = false;
-
-  lContext->setDeclaredCollectionCallback(collection_callback, (void*)&c);
-  lContext->setDeclaredIndexCallback(index_callback, (void*)&i);
-
-  try {
-    Zorba_CompilerHints_t hints;
-    std::stringstream lStr;
-    lStr << "import module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
-         << "1 + 1";
-
-    // compile the main query using the populated static context
-    XQuery_t lQuery = aZorba->compileQuery(lStr.str(), lContext);
-
-    std::stringstream lResult;
-    lQuery->execute(lResult);
-
-    return c.b && i.b;
-
-  } catch (XQueryException &e) {
-    std::cerr << e << std::endl;
-    return false;
-  }
-	return false;
-}
-
 int
 context(int argc, char* argv[])
 {
@@ -591,11 +538,6 @@ context(int argc, char* argv[])
 
   std::cout << "executing example_12" << std::endl;
   res = context_example_12(lZorba);
-  if (!res) return 1;
-  std::cout << std::endl;
-
-  std::cout << "executing example_13" << std::endl;
-  res = context_example_13(lZorba);
   if (!res) return 1;
   std::cout << std::endl;
 

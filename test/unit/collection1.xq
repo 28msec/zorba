@@ -1,12 +1,13 @@
 import module namespace mod1 = "http://www.mod1.ch/" at "file:///${CMAKE_CURRENT_BINARY_DIR}/collection1.xqlib";
 
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 declare %sequential function local:test() 
 {
-  xqddf:create-collection($mod1:coll);
-  xqddf:insert-nodes-last($mod1:coll, (<a>one</a>,<b>two</b>));
-  xqddf:collection($mod1:coll);
+  ddl:create-collection($mod1:coll);
+  dml:insert-nodes-last($mod1:coll, (<a>one</a>,<b>two</b>));
+  dml:collection($mod1:coll);
 };
 
 local:test()

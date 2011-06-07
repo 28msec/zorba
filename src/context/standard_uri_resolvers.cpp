@@ -163,7 +163,6 @@ store::Item_t StandardDocumentURIResolver::resolve(
 
 /*******************************************************************************
 
-********************************************************************************/
 store::Collection_t
 StandardCollectionURIResolver::resolve(
     const store::Item_t& aURI,
@@ -200,6 +199,7 @@ StandardCollectionURIResolver::resolve(
   lResultCol = lStore.getUriCollection(lURI.toString());
   return lResultCol;
 }
+********************************************************************************/
 
 
 #ifndef ZORBA_NO_FULL_TEXT

@@ -33,9 +33,6 @@ namespace zorba {
       virtual bool
       getTraceStream(std::ostream*&) const;
 
-      virtual CollectionURIResolver*
-      getCollectionURIResolver() const;
-
       virtual DocumentURIResolver*
       getDocumentURIResolver() const;
 

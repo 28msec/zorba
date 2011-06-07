@@ -44,6 +44,7 @@ class StaticContextImpl;
 class ResultIteratorImpl;
 class dynamic_context;
 class CompilerCB;
+class StaticCollectionManagerSetImpl;
 
 
 /*******************************************************************************
@@ -131,6 +132,11 @@ class CompilerCB;
 
   - theProfileName :
 
+  - theStaticCollectionMgr : StaticCollectionManager object for all
+      statically declared collections in this query or any transitively
+      imported module. It's created lazily upon request and destroyed
+      when this XQueryImpl object is destroyed.
+
 ********************************************************************************/
 class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseClass
 {
@@ -208,6 +214,8 @@ private:
   bool                               theIsDebugMode;
 #endif
   std::string                        theProfileName;
+
+  mutable StaticCollectionManagerSetImpl* theCollMgr;
 
 public:
   SERIALIZABLE_CLASS(XQueryImpl)
@@ -336,6 +344,9 @@ public:
   bool isClosed() const { return theIsClosed; }
 
   XQuery_t clone() const;
+
+  StaticCollectionManager*
+  getStaticCollectionManager() const;
 
 protected:
 

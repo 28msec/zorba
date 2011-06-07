@@ -231,17 +231,6 @@ public:
 
   /* ------------------------ Collection Management ---------------------------*/
 
-  /**
-   * Creates a collection in the store.
-   * 
-   * @param QName The QName of the collection to create.
-   * @return rchandle to the newly created collection or NULL if a collection
-   *         with the given uri exists already.
-   */
-  virtual Collection_t createCollection(Item_t& name, bool dyn_collection) = 0;
-
-  virtual Collection_t createUriCollection(const zstring& uri) = 0;
-
   /** Returns an XDM instance which is saved in the store 
    * (corresponds to the opening of a connection to a database)
    *
@@ -253,16 +242,6 @@ public:
   virtual Collection_t getCollection(
       const Item* name,
       bool aDynamicCollection = false) = 0;
-
-  virtual Collection_t getUriCollection(const zstring& uri) = 0;
-		
-  /** Deletes a collection.
-   *
-   * @param QName to identify the collection to delete.
-   */
-  virtual void deleteCollection(const Item* name, bool dyn_collection) = 0;
-
-  virtual void deleteUriCollection(const zstring& uri) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.

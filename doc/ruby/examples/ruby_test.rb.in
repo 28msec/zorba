@@ -65,6 +65,7 @@ def example5(zorba)
   xquery = zorba.compileQuery("doc('books.xml')//book")
   print xquery.execute()
   xquery.destroy()
+  dataManager.deleteDocument("books.xml")
 end
 
 def example6(zorba)

@@ -51,26 +51,6 @@ protected:
 };
 
 
-/*******************************************************************************
-
-********************************************************************************/
-class CollectionURIResolverWrapper : public InternalCollectionURIResolver
-{
-public:
-  CollectionURIResolverWrapper(CollectionURIResolver*);
-  
-  virtual ~CollectionURIResolverWrapper() {}
-
-  virtual store::Collection_t resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext);
-
-protected:
-  friend class StaticContextImpl;
-
-  CollectionURIResolver* theColResolver;
-};
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 

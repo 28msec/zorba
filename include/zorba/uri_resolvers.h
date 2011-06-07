@@ -423,69 +423,6 @@ class ZORBA_DLL_PUBLIC DocumentURIResolver
           bool replaceDoc = false) = 0;
 };
 
-/**
-  * @brief The result from a CollectionURIResolver.
-  *
-  * This class has to be subclassed by an implementer of CollectionURIResolver.
-  * The instance of this class serves as a container for either an error code
-  * and desciption, or the resolved collection.
-  *
-  * @sa URIResolverResult
-  */
-class ZORBA_DLL_PUBLIC CollectionURIResolverResult : public URIResolverResult
-{
- public:
-  virtual ~CollectionURIResolverResult() {}
-
-  /**
-    * @brief Returns an item to the collection.
-    *
-    * This method has to be implemented by the user and should return a
-    * collection if there was no error.
-    *
-    * @sa Collection
-    */
-  virtual Collection_t
-  getCollection() const = 0;
-};
-
-/**
-  * @brief A document uri resolver.
-  *
-  * If you want to give %Zorba hints, where to resolve collections by uri, this
-  * class can be subclassed. Before subclassing this class, one should make sure
-  * that she understands the resolving mechanisms from %Zorba, since in most
-  * cases the default behaviour should be sufficient.
-  *
-  * To set the collections uri resolver in the static context, use
-  * StaticContext::setCollectionURIResolver. There can only be one collection
-  * uri resolver in the static context.
-  */
-class ZORBA_DLL_PUBLIC CollectionURIResolver
-{
- public:
-  virtual ~CollectionURIResolver() {}
-
-  /**
-    * @brief Resolves a collection by uri.
-    *
-    * This method gets called, when %Zorba tries to resolve a collection uri.
-    * It should return either a collection or an error.
-    *
-    * @param aURI The URI to resolve.
-    * @param aStaticContext The StaticContext the query runs in.
-    * @param aXmlDataManager An instance of XmlDataManager which can be used
-    *  to load collections.
-    *
-    * @returns The CollectionURIResolverResult, which contains either the found
-    *  collection or an error code (with optional error description).
-    */
-  virtual std::auto_ptr<CollectionURIResolverResult>
-  resolve(const Item& aURI,
-          StaticContext* aStaticContext,
-          XmlDataManager* aXmlDataManager) = 0;
-};
-  
 #ifndef ZORBA_NO_FULL_TEXT
 /**
   * @brief The result of a FullTextURIResolver.

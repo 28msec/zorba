@@ -44,7 +44,6 @@ public:
 
   static store::Iterator_t getInternalIterator(Iterator* aIter);
 
-  static store::Collection_t getInternalCollection(const Collection_t& aCollection);
 };
 
 } // namespace

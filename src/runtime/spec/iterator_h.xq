@@ -238,6 +238,11 @@ declare function local:add-methods ($iter) as xs:string?
       for $method in $iter/zorba:method
       return fn:concat(
         $gen:indent,
+        if ($method/@static eq "true")
+        then
+         "static "
+        else
+          "",
         $method/@return,
         " ",
         $method/@name,

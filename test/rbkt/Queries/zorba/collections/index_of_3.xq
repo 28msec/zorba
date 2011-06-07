@@ -3,7 +3,7 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 
 declare %sequential function local:test()
 {
-  exit returning dml:index-of((),dml:collection(xs:QName("ns:test1"))[2]);
+  exit returning dml:index-of(dml:collection(xs:QName("ns:test1"))[2]);
 };
 
 local:test()

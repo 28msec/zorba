@@ -1,1 +1,1 @@
-Error: http://www.w3.org/2005/xqt-errors:XPTY0004
+Error: http://www.zorba-xquery.com/:ZDDY0003

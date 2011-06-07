@@ -15,15 +15,16 @@
 :)
 
 (:~
- : This module defines a function to check if an integrity constraint is satisfied
+ : This module defines a function to check if an integrity constraint is satisfied.
  :
- : @see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/XQDDF.html" target="_blank">Zorba Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project store/integrity-constraints/static
+ : @project store/constraint/static
+ :
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
@@ -32,6 +33,7 @@ module namespace dml = "http://www.zorba-xquery.com/modules/store/static/integri
  : specified by the expanded QName $name is valid in the database.
  :
  : @param $name The QName of the integrity constraint to check.
+ :
  : @return true if the constraints are valid in the database, false otherwise.
  :
  : @error XDDY0031 if the integrity constraint identified by $name is not declared.

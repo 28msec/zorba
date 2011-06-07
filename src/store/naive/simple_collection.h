@@ -94,9 +94,11 @@ public:
 
   store::Iterator_t getIterator();
 
+#if 0
   store::Item_t loadDocument(
         std::istream& stream,
         long position = -1);
+#endif
 
   void addNode(
         store::Item* node,

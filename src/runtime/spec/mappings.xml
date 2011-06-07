@@ -24,62 +24,54 @@
                      define="ZORBA_NODEREF_FN_NS"
                      prefix="fn-zorba-ref"/> 
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqddf"
-                     define="ZORBA_XQDDF_FN_NS"
-                     prefix="fn-zorba-xqddf"/>
-
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema"
                      define="ZORBA_SCHEMA_FN_NS"
                      prefix="fn-zorba-schema"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl"
-      define="ZORBA_STORE_STATIC_COLLECTIONS_DML"
+      define="ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS"
       prefix="zorba-store-collections-static-ddl"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/collections/dml"
-      define="ZORBA_STORE_STATIC_COLLECTIONS_DML"
+      define="ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS"
       prefix="zorba-store-collections-static-dml"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/indexes/ddl"
-      define="ZORBA_STORE_STATIC_INDEXES_DML"
+      define="ZORBA_STORE_STATIC_INDEXES_DML_FN_NS"
       prefix="zorba-store-indexes-static-ddl"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/indexes/dml"
-      define="ZORBA_STORE_STATIC_INDEXES_DML"
+      define="ZORBA_STORE_STATIC_INDEXES_DML_FN_NS"
       prefix="zorba-store-indexes-static-dml"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl"
-      define="ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML"
+      define="ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS"
       prefix="zorba-store-integrity_constraints-static-ddl"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml"
-      define="ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML"
+      define="ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS"
       prefix="zorba-store-integrity_constraints-static-dml"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl"
-      define="ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL"
+      define="ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS"
       prefix="zorba-store-dynamic-collections-ddl"/>
 
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
-      define="ZORBA_STORE_DYNAMIC_COLLECTIONS_DML"
+      define="ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS"
       prefix="zorba-store-dynamic-collections-dml"/>
     
     <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/dynamic/documents"
-      define="ZORBA_STORE_DYNAMIC_DOCUMENTS"
+      define="ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS"
       prefix="zorba-store-documents"/>
-
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/csv2xml"
-                     define="ZORBA_CSV_FN_NS"
-                     prefix="fn-zorba-csv"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
                      define="ZORBA_XQDOC_FN_NS" 
@@ -89,10 +81,6 @@
                      define="ZORBA_RANDOM_FN_NS" 
                      prefix="fn-zorba-random"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/dctx"
-                     define="ZORBA_INTROSPECT_DCTX_FN_NS"
-                     prefix="fn-zorba-introspect-dctx"/>
-
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/sctx"
                      define="ZORBA_INTROSPECT_SCTX_FN_NS" 
                      prefix="fn-zorba-introspect-sctx"/>
@@ -101,13 +89,17 @@
                      define="ZORBA_REFLECTION_FN_NS" 
                      prefix="fn-zorba-reflection"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions"
-                     define="ZORBA_UTIL_FN_NS"
-                     prefix="fn-zorba-util"/>
+     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions"
+                      define="ZORBA_UTIL_FN_NS"
+                      prefix="fn-zorba-util"/>
 
 		<zorba:namespace uri="http://www.zorba-xquery.com/modules/string"
                      define="ZORBA_STRING_FN_NS" 
                      prefix="fn-zorba-string"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/fetch"
+                     define="ZORBA_FETCH_FN_NS" 
+                     prefix="fn-zorba-fetch"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
                      define="XQUERY_OP_NS"

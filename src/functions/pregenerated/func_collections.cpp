@@ -201,18 +201,16 @@ void populate_context_collections(static_context* sctx)
 
   DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_index_of,
       (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","index-of"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_INDEX_OF_2);
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_INDEX_OF_1);
 
 
   DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_index_of,
       (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","index-of"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-      FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_INDEX_OF_2);
+      FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_INDEX_OF_1);
 
 
   DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create_collection,

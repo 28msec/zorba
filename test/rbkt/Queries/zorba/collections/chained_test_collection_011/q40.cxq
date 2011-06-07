@@ -2,4 +2,4 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 declare namespace ns = "http://example.org/datamodule/";
 
-dml:index-of(xs:QName('ns:collection_333'), <a/>)
+dml:index-of(<a/>)

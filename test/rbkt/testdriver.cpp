@@ -162,7 +162,7 @@ main(int argc, char** argv)
     std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::auto_ptr<zorba::TestSchemaURIMapper>        smapper;
     std::auto_ptr<zorba::TestModuleURIMapper>        mmapper;
-    std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
+    std::auto_ptr<zorba::TestCollectionURIMapper>    cmapper;
     std::auto_ptr<zorba::TestDocumentURIResolver>    dresolver;
     // Create the static context. If this is a w3c query, install special uri
     // resolvers in the static context.
@@ -184,11 +184,12 @@ main(int argc, char** argv)
       mmapper.reset(new zorba::TestModuleURIMapper
         (mod_map_file.c_str(), lQueryWithoutSuffix));
 
-      cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
-                                                           rbkt_src_dir));
+      cmapper.reset(new zorba::TestCollectionURIMapper(
+            col_map_file.c_str(), rbkt_src_dir));
+
       lContext->registerURIMapper( smapper.get() );
       lContext->registerURIMapper( mmapper.get() );
-      lContext->setCollectionURIResolver ( cresolver.get() );
+      lContext->registerURIMapper( cmapper.get() );
 
       // the w3c testsuite always uses xquery 1.0
       lContext->setXQueryVersion( xquery_version_1_0 );
@@ -380,8 +381,13 @@ main(int argc, char** argv)
       bool load_ret;
       if ( isW3Ctest ) 
       {
-        zorba::TestSerializationCallback   serl_callback(cresolver.get(), mmapper.get());
-        load_ret = lQuery->loadExecutionPlan(ifbinary, &serl_callback);//, NULL, cresolver.get(), resolver.get(), mresolver.get());
+        std::vector<URIMapper*> lMappers;
+        lMappers.push_back(cmapper.get());
+        lMappers.push_back(mmapper.get());
+
+        zorba::TestSerializationCallback   serl_callback(lMappers);
+
+        load_ret = lQuery->loadExecutionPlan(ifbinary, &serl_callback);
       }
       else
       {

@@ -30,6 +30,9 @@ SET(API_SRCS
     typeidentimpl.cpp
     unmarshaller.cpp
     xmldatamanagerimpl.cpp
+    documentmanagerimpl.cpp
+    collectionmanagerimpl.cpp
+    staticcollectionmanagerimpl.cpp
     collectionimpl.cpp
     options.cpp
     functionimpl.cpp
@@ -42,6 +45,7 @@ SET(API_SRCS
     vector_item_sequence.cpp
     singleton_item_sequence.cpp
     invoke_item_sequence.cpp
+    item_sequence_chainer.cpp
     empty_sequence.cpp
     fileimpl.cpp
     serializerimpl.cpp

@@ -20,7 +20,8 @@
  : to add, remove, list, or retrieve documents.
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- : @project store/documents
+ :
+ : @project store
  :)
 module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 

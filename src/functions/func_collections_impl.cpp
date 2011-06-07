@@ -34,7 +34,7 @@ PlanIter_t zorba_store_collections_static_dml_collection::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaCollectionIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -49,7 +49,7 @@ PlanIter_t zorba_store_collections_static_dml_index_of::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaIndexOfIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -64,7 +64,7 @@ PlanIter_t zorba_store_collections_static_ddl_create_collection::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaCreateCollectionIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
 }
 
 
@@ -79,7 +79,7 @@ PlanIter_t zorba_store_collections_static_ddl_delete_collection::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaDeleteCollectionIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
 }
 
 
@@ -94,7 +94,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaInsertNodesIterator(
-      sctx, loc, argv, getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      sctx, loc, argv, getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -109,7 +109,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_first::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaInsertNodesFirstIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -124,7 +124,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_last::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaInsertNodesLastIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -139,7 +139,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_before::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -154,7 +154,7 @@ PlanIter_t zorba_store_collections_static_dml_insert_nodes_after::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaInsertNodesAfterIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -169,7 +169,7 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaApplyInsertNodesIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -184,7 +184,7 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_first::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -199,7 +199,7 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_last::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaApplyInsertNodesLastIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -214,7 +214,7 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_before::codegen
   AnnotationHolder& ann) const
 {
   return new ZorbaApplyInsertNodesBeforeIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -229,7 +229,7 @@ PlanIter_t zorba_store_collections_static_dml_apply_insert_nodes_after::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -244,7 +244,7 @@ PlanIter_t zorba_store_collections_static_dml_delete_nodes::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaDeleteNodesIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -259,7 +259,7 @@ PlanIter_t zorba_store_collections_static_dml_delete_node_first::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaDeleteNodesFirstIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -274,7 +274,7 @@ PlanIter_t zorba_store_collections_static_dml_delete_node_last::codegen(
   AnnotationHolder& ann) const
 {
   return new ZorbaDeleteNodesLastIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS);
 }
 
 
@@ -289,7 +289,7 @@ PlanIter_t zorba_store_collections_static_ddl_is_available_collection::codegen(
   AnnotationHolder& ann) const
 {
   return new IsAvailableCollectionIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
 }
 
 
@@ -304,7 +304,7 @@ PlanIter_t zorba_store_collections_static_ddl_available_collections::codegen(
   AnnotationHolder& ann) const
 {
   return new AvailableCollectionsIterator(sctx, loc, argv,
-      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL);
+      getName()->getNamespace() == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS);
 }
 
 /*******************************************************************************

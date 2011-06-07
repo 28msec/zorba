@@ -368,7 +368,7 @@ namespace zorbac {
   XQC_Error
   CImplementation::parse_istream(std::istream& aStream, XQC_Sequence** seq) {
     XmlDataManager* lXdm = theZorba->getXmlDataManager();
-    Item lDoc = lXdm->parseDocument(aStream);
+    Item lDoc = lXdm->parseXML(aStream);
     if (lDoc.isNull()) {
       // XmlDataManager doesn't throw exceptions, just passes them
       // to a ErrorHandler, which we don't have.

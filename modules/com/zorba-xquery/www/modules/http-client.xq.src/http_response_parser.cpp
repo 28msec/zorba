@@ -249,7 +249,7 @@ namespace zorba { namespace http_client {
   {
     try {
       XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
-      return lDM->parseDocument(aStream);
+      return lDM->parseXML(aStream);
     } catch (...) {
       theErrorThrower.raiseException("http://www.zorba-xquery.com/modules/error", 
           "HC002", "Error parsing the entity content as XML.");

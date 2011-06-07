@@ -72,52 +72,6 @@ store::Iterator_t SimpleCollection::getIterator()
 
 
 /*******************************************************************************
-  Insert into the collection an xml document or fragment given as text via an
-  input stream. The xml text is parsed into an xml tree and the root node of 
-  this tree is inserted at a given position inside this collection, or at the
-  end of the collection if the position is < 0. Return the root node of
-  the new xml document or fragment.
-********************************************************************************/
-store::Item_t SimpleCollection::loadDocument(
-    std::istream& stream,
-    long position)
-{
-  XQueryDiagnostics lXQueryDiagnostics;
-  store::LoadProperties lLoadProperties;
-
-  std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lXQueryDiagnostics,
-                                                           lLoadProperties));
-  zstring docUri;
-  zstring baseUri;
-
-  store::Item_t root = loader->loadXml(baseUri, docUri, stream);
-
-  if (!lXQueryDiagnostics.errors().empty()) 
-  {
-    lXQueryDiagnostics.errors().front()->polymorphic_throw();
-  }
-
-  if (root != NULL)
-  {
-    SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
-
-    if(position < 0 || position >= static_cast<long>(theXmlTrees.size()))
-    {
-      theXmlTrees.push_back(root);
-      BASE_NODE(root)->setCollection(this, (ulong)theXmlTrees.size()-1);
-    }
-    else
-    {
-      theXmlTrees.insert(theXmlTrees.begin() + position, root);
-      BASE_NODE(root)->setCollection(this, position);
-    }
-  }
-
-  return root;
-}
-
-
-/*******************************************************************************
   Insert the given node to the collection. If the node is in any collection
   already or if the node has a parent, this method raises an error. Otherwise,
   the node is inserted into the given position.

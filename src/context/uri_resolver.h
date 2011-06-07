@@ -32,6 +32,7 @@
 #include <istream>
 #include <zorbatypes/zstring.h>
 #include <util/auto_vector.h>
+#include "store/api/shared_types.h"
 
 namespace zorba {
 
@@ -58,7 +59,9 @@ class Resource
     SCHEMA,
     MODULE,
     THESAURUS,
-    STOP_WORDS
+    STOP_WORDS,
+    COLLECTION,
+    SOME_CONTENT
   };
 
   /**
@@ -66,7 +69,8 @@ class Resource
    * exist (only one so far).
    */
   enum Kind {
-    STREAM
+    STREAM,
+    COLLECTION_T
   };
 
   /**
@@ -142,6 +146,24 @@ class StreamResource : public Resource
 
   std::auto_ptr<std::istream> theStream;
   zstring theStreamUrl;
+};
+
+/**
+ */
+class CollectionResource : public Resource
+{
+  public:
+  /**
+   */
+  CollectionResource(const store::Collection_t& aCollection);
+
+  /**
+   */
+  store::Collection_t
+  getCollection() throw ();
+
+  private:
+  store::Collection_t theCollection;
 };
 
 /**

@@ -322,8 +322,7 @@ DWORD WINAPI thread_main(LPVOID param)
   std::auto_ptr<zorba::TestSchemaURIMapper> smapper
     (new zorba::TestSchemaURIMapper(uri_map_file.c_str(), false));
   std::auto_ptr<zorba::TestModuleURIMapper> mmapper;
-  std::auto_ptr<zorba::TestCollectionURIResolver> cresolver
-    (new zorba::TestCollectionURIResolver(col_map_file.c_str(), rbkt_src_dir));
+  std::auto_ptr<zorba::TestCollectionURIMapper>    cmapper;
   std::auto_ptr<zorba::TestDocumentURIResolver>    dresolver;
 
   while (1)
@@ -456,10 +455,12 @@ DWORD WINAPI thread_main(LPVOID param)
       mmapper.reset
         (new zorba::TestModuleURIMapper(mod_map_file.c_str(),
           testName, false));
+      cmapper.reset(new zorba::TestCollectionURIMapper(
+            col_map_file.c_str(), rbkt_src_dir));
       sctx->registerURIMapper(smapper.get());
       sctx->registerURIMapper(mmapper.get());
+      sctx->registerURIMapper(cmapper.get());
 
-      sctx->setCollectionURIResolver(cresolver.get());
       sctx->setXQueryVersion(xquery_version_1_0);
       sctx->setTraceStream(queries->theOutput);
     }

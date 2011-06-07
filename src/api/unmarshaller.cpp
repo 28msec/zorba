@@ -111,10 +111,4 @@ store::Iterator_t Unmarshaller::getInternalIterator(Iterator* aIter)
 }
 
 
-store::Collection_t Unmarshaller::getInternalCollection(const Collection_t& aCollection)
-{
-  return static_cast<CollectionImpl*>(aCollection.get())->theCollection; 
-}
-
-
 } /* namespace zorba */

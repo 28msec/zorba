@@ -18,8 +18,8 @@
  : This modules defines a set of functions for managing persistent, ordered, and
  : updatable collections.
  :
- : Such collections are identified by QNames and come into existence (i.e. be available)
- : by calling one of the two create-collection functions and be destroyed by
+ : Such collections are identified by QNames and come into existence (i.e. be made
+ : available) by calling one of the two create-collection functions and be destroyed by
  : the delete-collection function.
  :
  : In contrast to the functions in the module 
@@ -27,75 +27,70 @@
  : the function in this module operate on collections which do not have to
  : be statically declared in the prolog of a module.
  :
+ : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/dml
+ :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ : @project store/collections/dynamic
+ :
  : @project store/collections/dynamic
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
 (:~
- : The function returns true if a collection with the given QName is available,
- : i.e. has been created using any of the two create-collection functions of
- : this module.
+ : The function returns true if a collection with the given QName is available
+ : (i.e. has been created).
  :
  : @param $name The QName of the collection that is being checked.
+ :
  : @return true if the collection is available and false otherwise.
+ :
  :)
 declare function ddl:is-available-collection($name as xs:QName) as xs:boolean external;
 
 (:~
- : The function returns a sequence of QNames representing the collections that are
- : available.
+ : The function returns a sequence of QNames of the collections that are
+ : available. The sequence will be empty if there are no collections.
  :
- : @return A sequence of QNames, one for each available collection. Any empty
- :         sequence is returned if no collections are available.
+ : @return A sequence of QNames, one for each available collection, or an emtpy sequence.
+ :
  :)
 declare function ddl:available-collections() as xs:QName* external;
 
 (:~
- : The create-collection function is an updating function that adds
- : a mapping from the expanded QName $name to an empty sequence
- : to the map of available collections.
+ : The create-collection function is an updating function which creates
+ : the collection with the given expanded QName.
  :
- : Once the resulting pending update is applied, ddl:is-available-collection
- : will return true when invoked with $name as a parameter.
+ : @param $name The QName of the collection to create.
  :
- : @param $name The QName of the collection to add to the map of available
- :        collections.
  : @return The result of the function is an empty XDM instance and a 
- :         pending update list that contains the upd:createCollection($name)
- :         primitive.
+ :         pending update list which, once applied, creates a collection
+ :         with the given name.
  :
- : @error XDDY0002 if available collections already contains a collection with the
- :        given name.
+ : @error XDDY0002 if a collection with the given expanded QName already
+ :        exists.
+ :
  :)
 declare updating function ddl:create-collection($name as xs:QName) external;
 
 (:~
- : The create-collection function is an updating function that adds
- : a mapping from the expanded QName $name to an empty sequence
- : to the map of available collections.
- : 
- : Also, the functions adds copies of the nodes given by the sequence $arg to the
- : collection.
- : 
- : Once the resulting pending update is applied, ddl:is-available-collection
- : will return true when invoked with $name as a parameter.
- : Moreover, calling the function ddl:collection will return the nodes
- : that have been added to the collection
+ : The create-collection function is an updating function which creates
+ : the collection with the given expanded QName. Moreover, it adds copies
+ : of the sequence $content to the new collection.
  :
- : @param $name The QName of the collection to add to the map of available
- :        collections.
- : @param $content The sequences of nodes whose copies should be added to the new collection.
+ : @param $name The QName of the collection to create.
+ : @param $content The sequences of nodes that should be added to the new collection.
+ :
  : @return The result of the function is an empty XDM instance and a 
- :         pending update list that contains an upd:createCollection($name)
- :         primitive and an upd:insertNodesFirst($name, $list) update primitive.
+ :         pending update list which, once applied, creates a collection
+ :         with the given name and inserts the given nodes into it.
  :
- : @error XDDY0002 if available collections already contains a collection with the
- :        given name.
+ : @error XDDY0002 if a collection with the given expanded QName already
+ :        exists.
  :
  : @see ddl:create-collection
  : @see ddl:insert-nodes-last
+ :
  :)
 declare updating function ddl:create-collection(
   $name as xs:QName,
@@ -104,19 +99,17 @@ declare updating function ddl:create-collection(
 
 (:~
  : The delete-collection function is an updating function that removes
- : the collection with the given name.
- :
- : Once the resulting pending update is applied, ddl:is-available-collection
- : will return false when invoked with $name as a parameter.
+ : the collection with the given expanded QName.
  :
  : @param $name The QName of the collection to delete.
- : @return The result of the function is an empty XDM instance and a pending
- :         update list that contains the upd:deleteCollection($name)
- :         update primitive.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0015 when applied any node contained in the collection to be deleted
- :        is still referenced by any variable.
+ : @return The result of the function is an empty XDM instance and a pending
+ :         update list which, once applied, deletes the collection with the given
+ :         name.
+ :
+ : @error XDDY0003 if the collection with the given name does not exist.
+ : @error ZDDY0015 if any of the in-scope variables references a node that
+ :        belongs to the collection with QName $name.
  :
  :)
-declare updating function ddl:delete-collection($name as xs:QName) external;
+declare updating function ddl:delete-collection($coll as xs:QName) external;

@@ -17,6 +17,8 @@
 
 #include "uri_resolver.h"
 
+#include "store/api/collection.h"
+
 namespace zorba {
 
 namespace impl {
@@ -60,6 +62,19 @@ namespace impl {
       return theStreamUrl;
     }
   }
+
+  CollectionResource::CollectionResource
+  (const store::Collection_t& aCollection)
+    : Resource(Resource::COLLECTION_T),
+      theCollection(aCollection)
+  {}
+
+  store::Collection_t
+  CollectionResource::getCollection() throw ()
+  {
+    return theCollection;
+  }
+
 
 /*************
  * URIMapper is an abstract class, but we have to define its vtbl and

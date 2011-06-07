@@ -322,12 +322,6 @@ public:
   A hash mash map mapping XQDDF collection qnames to the objs storing the info
   from the declaration of the associated collections.
 
-  theCollectionCallback :
-  -----------------------
-
-  theCollectionCallbackData :
-  ---------------------------
-
   theW3CCollectionMap :
   ---------------------
 
@@ -441,24 +435,22 @@ public:
   static const zstring ZORBA_MATH_FN_NS;
   static const zstring ZORBA_BASE64_FN_NS;
   static const zstring ZORBA_NODEREF_FN_NS;
-  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL;
-  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DML;
-  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DDL;
-  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DML;
-  static const zstring ZORBA_STORE_STATIC_INDEXES_DDL;
-  static const zstring ZORBA_STORE_STATIC_INDEXES_DML;
-  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL;
-  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML;
-  static const zstring ZORBA_STORE_DYNAMIC_DOCUMENTS;
+  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
+  static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
+  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS;
+  static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS;
+  static const zstring ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS;
+  static const zstring ZORBA_STORE_STATIC_INDEXES_DML_FN_NS;
+  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
+  static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
+  static const zstring ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
   static const zstring ZORBA_SCHEMA_FN_NS;
-  static const zstring ZORBA_TIDY_FN_NS;
-  static const zstring ZORBA_JSON_FN_NS;
   static const zstring ZORBA_XQDOC_FN_NS;
   static const zstring ZORBA_RANDOM_FN_NS;
   static const zstring ZORBA_INTROSP_SCTX_FN_NS;
-  static const zstring ZORBA_INTROSP_DCTX_FN_NS;
   static const zstring ZORBA_REFLECTION_FN_NS;
   static const zstring ZORBA_STRING_FN_NS;
+  static const zstring ZORBA_FETCH_FN_NS;
 
   //
   // Namespaces of virtual modules declaring zorba builtin functions
@@ -493,8 +485,6 @@ protected:
 
   InternalDocumentURIResolver           * theDocResolver;
 
-  InternalCollectionURIResolver         * theColResolver;
-
 #ifndef ZORBA_NO_FULL_TEXT
   std::vector<InternalFullTextURIResolver*> theStopWordsResolvers;
 
@@ -527,15 +517,11 @@ protected:
   FunctionArityMap                      * theFunctionArityMap;
 
   CollectionMap                         * theCollectionMap;
-  CollectionCallback                      theCollectionCallback;
-  void                                  * theCollectionCallbackData;
 
   W3CCollectionMap                      * theW3CCollectionMap;
   xqtref_t                                theDefaultW3CCollectionType;
 
   IndexMap                              * theIndexMap;
-  IndexCallback                           theIndexCallback;
-  void                                  * theIndexCallbackData;
 
   ICMap                                 * theICMap;
 
@@ -667,7 +653,7 @@ public:
    * Given a URI, return a Resource for that URI.
    */
   std::auto_ptr<impl::Resource> resolve_uri
-  (zstring const& aUri, impl::Resource::EntityType aEntityType) const;
+  (zstring const& aUri, impl::Resource::EntityType aEntityType, zstring& oErrorMessage) const;
 
   /**
    * Given a URI, populate a vector with a list of component URIs.  If
@@ -682,10 +668,6 @@ public:
   void set_document_uri_resolver(InternalDocumentURIResolver*);
 
   InternalDocumentURIResolver* get_document_uri_resolver() const;
-
-  void set_collection_uri_resolver(InternalCollectionURIResolver*);
-
-  InternalCollectionURIResolver* get_collection_uri_resolver() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
   void add_stop_words_uri_resolver(InternalFullTextURIResolver*);
@@ -970,18 +952,6 @@ public:
   //
   void import_module (const static_context* module, const QueryLoc& loc);
 
-  void set_collection_callback (
-      CollectionCallback aCallbackFunction,
-      void* aCallbackData);
-
-  void call_collection_callback(const StaticallyKnownCollection_t& coll);
-
-  void set_index_callback(
-      IndexCallback aCallbackFunction,
-      void* aCallbackData);
-
-  void call_index_callback(const IndexDecl_t& index);
-
 protected:
   static_context();
 
@@ -1007,7 +977,8 @@ private:
 
   void apply_url_resolvers(std::vector<zstring>& aUrls,
     impl::Resource::EntityType aEntityType,
-    std::auto_ptr<impl::Resource>& oResource, zstring& oErrorMessage) const;
+    std::auto_ptr<impl::Resource>& oResource,
+    zstring& oErrorMessage) const;
 };
 
 

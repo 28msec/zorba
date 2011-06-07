@@ -19,6 +19,11 @@
 #include "context/default_url_resolvers.h"
 #include "util/uri_util.h"
 #include "util/fs_util.h"
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
+#include "store/api/collection.h"
+#include "store/api/item.h"
+#include "system/globalenv.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -83,6 +88,31 @@ FileURLResolver::resolveURL
       (static_cast<std::auto_ptr<std::istream> >(lStream));
   }
   return NULL;
+}
+
+/******
+ * collection: URL resolver.
+ ******/
+
+ZorbaCollectionURLResolver::~ZorbaCollectionURLResolver()
+{
+}
+
+Resource*
+ZorbaCollectionURLResolver::resolveURL
+(zstring const& aUrl, Resource::EntityType aEntityType)
+{
+  if (aEntityType != impl::Resource::COLLECTION)
+    return NULL;
+
+  store::Item_t lName;
+  GENV_STORE.getItemFactory()->createQName(lName, aUrl.c_str(), "", "zorba-internal-name-for-w3c-collections");
+  store::Collection_t lColl = GENV_STORE.getCollection(lName.getp(), true);
+  if ( lColl == NULL ) {
+    return NULL;
+  } else {
+    return new CollectionResource(lColl);
+  }
 }
 
 } /* namespace zorba::impl */

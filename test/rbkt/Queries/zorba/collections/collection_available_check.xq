@@ -16,7 +16,7 @@ declare function local:testa() {
 declare function local:testb() {
   try {
     {
-      dml:index-of($ns:http, <a/>)
+      dml:index-of(<a/>)
     }
   } catch * ($error) {
     ("b",$error)

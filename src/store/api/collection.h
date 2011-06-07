@@ -56,40 +56,6 @@ public:
   virtual Iterator_t getIterator() = 0;
 
   /**
-   * Loads and inserts into the collection an xml document or fragment given
-   * as text via an input stream. 
-   *
-   * @param stream The stream providing the data to insert (e.g. from a file).
-   * @param position The position where the node will be inserted at. Positions
-   * are numbered starting from 1. If a non-positive position is given, the
-   * document will be appended at the end.
-   * @return The root node of the xml document or fragment.
-   */
-  virtual Item_t loadDocument(std::istream& stream, long position = -1) = 0;
-
-  /**
-   * Inserts a given node to the collection. The node must be the root of an
-   * xml tree (i.e., it must not have a parent).
-   *
-   * @param node The node to insert.
-   * @param position The position where the node will be inserted at. Positions
-   * are numbered starting from 1. If a non-positive position is given, the
-   * node will be appended at the end.
-   */
-  virtual void addNode(Item* node, long position = -1) = 0;
-
-  /**
-   * Removes a root node from the collection, if the node does belong to the
-   * collection.
-   *
-   * @param  node The node to be removed.
-   * @param  pos If the node belongs to the collection, pos is set to the
-   *         node's position before it is removed. 
-   * @return True if the node was in the collection, false otherwise.
-   */
-  virtual bool removeNode(Item* node, ulong& pos) = 0;
-
-  /**
    * Get the node at the given position in the collection.
    * 
    * @param  aPosition The position of the node in the collection. 

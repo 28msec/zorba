@@ -389,26 +389,4 @@
   
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-  Zorba: timestamp
-********************************************************************************/
--->
-<zorba:iterator name="TimestampIterator">
-  
-  <zorba:description author="Zorba Team">zorba:timestamp</zorba:description>
-  
-  <zorba:function>
-    <zorba:signature localname="timestamp" prefix="fn-zorba-util">
-      <zorba:output>xs:long</zorba:output>
-    </zorba:signature>
-
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-
-  </zorba:function>
-  
-</zorba:iterator>
-
 </zorba:iterators>
