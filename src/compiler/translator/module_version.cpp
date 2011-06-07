@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
+
 #include "module_version.h"
 #include <zorbatypes/URI.h>
 
