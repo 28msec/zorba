@@ -15,13 +15,16 @@
  */
 #include "stdafx.h"
 
-#include "zorbatypes/integer.h"
-#include "zorbatypes/decimal.h"
-#include "zorbatypes/floatimpl.h"
-#include "zorbatypes/numconversions.h"
+#include <stdlib.h>
+
+#include "util/ascii_util.h"
+#include "util/string_util.h"
 #include "zorbaserialization/zorba_class_serializer.h"
 
-#include <stdlib.h>
+#include "integer.h"
+#include "decimal.h"
+#include "floatimpl.h"
+#include "numconversions.h"
 
 #undef  IS_ZERO
 #undef  IS_POSITIVE
@@ -58,132 +61,59 @@ HashCharPtrObjPtrLimited<Integer>   Integer::parsed_integers;
 #endif
 
 
-bool Integer::parseString(const char* aCharStar, Integer& aInteger) 
+bool Integer::parseString(const char* s, Integer& aInteger) 
 {
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
   Integer *hashed_integer;
-  if(parsed_integers.get(aCharStar, hashed_integer))
+  if(parsed_integers.get(s, hashed_integer))
   {
     //found in hash
     aInteger.theInteger = hashed_integer->theInteger;
     return true;
   }
 #endif
-  // correctness check
-  const char* lCur = aCharStar;
-  bool lGotSign = false;
-  bool lStop = false;
-  bool lGotDigit = false;
-  bool new_aCharStar = false;
 
-  char ch = *lCur;
-
-  // Skip leading space
-  while (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
-  {
-    ++lCur;
-    aCharStar++;
-    ch = *lCur;
-  }
-
-  while (*lCur != '\0' && !lStop) 
-  {
-    ch = *lCur;
-
-    switch(ch) 
-    {
-    case '+': 
-      if (lGotSign || lGotDigit) {
-        lStop = true;
-      } else {
-        lGotSign = true;
-      }
-      break;
-
-    case '-':
-      if(lGotSign || lGotDigit) {
-        lStop = true;
-      } else {
-        lGotSign = true;
-      }
-      break;
-
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9': 
-      lGotDigit = true;
-      break;
-
-    case ' ':
-    case '\t':
-    case '\n':
-    case '\r':
-    {
-      const char* firstSpace = lCur;
-
-      // Skip trailing space
-      while(ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') 
-      {
-        ++lCur;
-        ch = *lCur;
-      }
-      
-      if (*lCur != 0)
-      {
-        lStop = true;
-      }
-      else
-      {
-        ptrdiff_t len = firstSpace - aCharStar + 1;
-        char* copy = new char[len];
-        strncpy(copy, aCharStar, len);
-        copy[len-1] = 0;
-        aCharStar = copy;
-        new_aCharStar = true;
-        lCur--;
-      }
-
-      break;
-    }
-
-    default:
-      lStop = true;
-      break;
-    }
-
-    lCur++;
-  }
-
-  if (lStop || !lGotDigit) 
-  {
-    if(new_aCharStar)
-      delete[] aCharStar;
+  if ( !*s )
     return false;
-  } 
-  else 
-  {
+  while ( ascii::is_space( *s ) )       // \s*
+    ++s;
+  char const *const first_non_ws = s;
+  if ( *s == '+' || *s == '-' )         // '+'|'-'
+    ++s;
+  while ( ascii::is_digit( *s ) )       // \d+
+    ++s;
+  char const *first_trailing_ws = nullptr;
+  while ( ascii::is_space( *s ) ) {     // \s*
+    if ( !first_trailing_ws )
+      first_trailing_ws = s;
+    ++s;
+  }
+  if ( *s )
+    return false;
+
+  char const *s_ok;
+  if ( first_trailing_ws ) {
+    ptrdiff_t const size = first_trailing_ws - first_non_ws;
+    char *const copy = std::strncpy( new char[ size ], first_non_ws, size );
+    copy[ size - 1 ] = '\0';
+    s_ok = copy;
+  } else
+    s_ok = first_non_ws; 
+
 #ifndef ZORBA_NO_BIGNUMBERS
-    aInteger.theInteger = aCharStar;
+    aInteger.theInteger = s_ok;
 #else
-    aInteger.theInteger = atoi(aCharStar);
+    aInteger.theInteger = std::strtol( s_ok, 0, 10 );
 #endif
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
-    hashed_integer = new Integer(aInteger);
-    const char  *dup_str = _strdup(aCharStar);
-    parsed_integers.insert(dup_str, hashed_integer);
+  hashed_integer = new Integer(aInteger);
+  const char  *dup_str = _strdup(s_ok);
+  parsed_integers.insert(dup_str, hashed_integer);
 #endif
-    if(new_aCharStar)
-      delete[] aCharStar;
-    return true;
-  }
+  if ( first_trailing_ws )
+    delete[] s_ok;
+  return true;
 }
 
 
@@ -636,3 +566,4 @@ std::ostream& operator<<(std::ostream& os, const Integer& aInteger)
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */
