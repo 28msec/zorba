@@ -17,6 +17,9 @@
 
 #include <sstream>
 
+#include <zorba/base64.h>
+#include <zorba/util/uri.h>
+
 #include "api/xqueryimpl.h"
 
 #include "debugger/debugger_communicator.h"
@@ -26,7 +29,6 @@
 
 #include "zorbautils/synchronous_logger.h"
 
-#include "zorba/util/uri.h"
 
 
 namespace zorba {
@@ -461,7 +463,7 @@ DebuggerServer::buildProperty(
     << "name=\"" << aName << "\" "
     << "fullname=\"" << aFullName << "\" "
     << "type=\"" << "" << aType << "" << "\" "
-    << "encoding=\"none\" "
+    << "encoding=\"base64\" "
     << "constant=\"1\" "
     << "children=\"" << (lSize > 1 ? 1 : 0) << "\" ";
   if (lSize > 1) {
@@ -472,7 +474,8 @@ DebuggerServer::buildProperty(
   if (lFetchChildren && lSize > 1) {
     buildChildProperties(aName, lResults, aStream);
   } else if (lResults.size() == 1) {
-    aStream << lResults.front().first;
+    String lValue(lResults.front().first.c_str());
+    aStream << encoding::Base64::encode(lValue);
   }
 
   aStream << "</property>";
@@ -486,6 +489,9 @@ DebuggerServer::buildChildProperties(
 {
   std::list<std::pair<zstring, zstring> >::iterator lIter = aResults.begin();
   for (int i = 1; lIter != aResults.end(); ++lIter, ++i) {
+    String lValue(lIter->first.c_str());
+    aStream << encoding::Base64::encode(lValue);
+
     aStream << "<property "
       << "name=\"" << aName << "[" << i << "]" << "\" "
       << "fullname=\"" << aName << "[" << i << "]" << "\" "
@@ -493,7 +499,7 @@ DebuggerServer::buildChildProperties(
       << "encoding=\"none\" "
       << "constant=\"1\" "
       << "children=\"0\" "
-      << ">" << lIter->first
+      << ">" << lValue
       << "</property>";
   }
 }
