@@ -2986,7 +2986,8 @@ void* begin_visit(const VFO_DeclList& v)
     if (ns == static_context::W3C_FN_NS ||
         ns == XML_NS ||
         ns == XML_SCHEMA_NS ||
-        ns == XSI_NS)
+        ns == XSI_NS ||
+        ns == XQUERY_MATH_FN_NS)
     {
       RAISE_ERROR(err::XQST0045, func_decl->get_location(),
       ERROR_PARAMS(qnameItem->getLocalName()));
