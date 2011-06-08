@@ -126,7 +126,7 @@ TimestampFunction::evaluate(
 #if WIN32
   time_t t0;
   time(&t0);
-  lMillis = Zorba::getInstance(0)->getItemFactory()->createLong(lMillis, t0*1000);
+  lMillis = Zorba::getInstance(0)->getItemFactory()->createLong(t0*1000);
 #else
   timeval tv;
   gettimeofday(&tv, 0);
