@@ -2029,7 +2029,7 @@ void static_context::getVariables(
 
         // only locals or globals according to the aLocals parameter
         if ((!aLocals && lExpr->get_kind() == var_expr::prolog_var) ||
-            aLocals && lExpr->get_kind() != var_expr::prolog_var)
+            (aLocals && lExpr->get_kind() != var_expr::prolog_var))
         {
           std::stringstream lTypeSs;
           std::stringstream lNameSs;
@@ -2080,6 +2080,9 @@ void static_context::getVariables(
               break;
             case TypeConstants::QUANT_PLUS:
               lTypeSs << "+";
+              break;
+            case TypeConstants::QUANT_ONE:
+            case TypeConstants::QUANTIFIER_LIST_SIZE:
               break;
             }
 

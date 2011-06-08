@@ -19,6 +19,8 @@
 
 #include "compiler/parser/query_loc.h"
 #include "context/namespace_context.h"
+#include "context/static_context.h"
+#include "context/uri_resolver.h"
 
 #include "zorbamisc/ns_consts.h"
 #include "diagnostics/assert.h"
@@ -36,7 +38,7 @@
 #include "store/api/item_factory.h"
 #include "util/utf8_util.h"
 #include "types/schema/xercesIncludes.h"
-#include "context/uri_resolver.h"
+#include "zorbatypes/URI.h"
 
 #ifndef ZORBA_NO_XMLSCHEMA
 # include <xercesc/util/XercesVersion.hpp>
@@ -116,8 +118,8 @@ public:
 
   virtual const XMLCh* getContentType() const
   {
-    // QQQ? No implementation yet
-    return NULL;
+    // Unless we know it, do what Xerces' implemtation does: return 0
+    return 0;
   }
 
 private:
@@ -130,25 +132,25 @@ private:
 class IstreamInputSource : public XERCES_CPP_NAMESPACE::InputSource
 {
 public:
-  IstreamInputSource(std::istream* aStream)
+  IstreamInputSource(std::auto_ptr<std::istream> aStream)
     : theStream(aStream)
   {
   }
 
   virtual XERCES_CPP_NAMESPACE::BinInputStream* makeStream() const
   {
-    return new IstreamBinInputStream(theStream);
+    return new IstreamBinInputStream(theStream.get());
   }
 
 private:
-  std::istream* theStream;
+  std::auto_ptr<std::istream> theStream;
 };
 
 /**
  * A Xerces EntityResolver that looks for a specific URL and returns
  * InputSource that reads from a particular std::istream.
  */
-class SchemaLocationEntityResolver : 
+class StaticContextEntityResolver : 
     public XERCES_CPP_NAMESPACE::EntityResolver
 {
 public:
@@ -159,23 +161,99 @@ public:
     const XMLCh* const publicId,
     const XMLCh* const systemId)
   {
-    TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemId) );
+    TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemId));
     if (XMLString::compareString(systemId, theLogicalURI) == 0)
     {
-      InputSource* lRetval = new IstreamInputSource(theStream.get());
+      TRACE("logiUri: " << StrX(theLogicalURI) << " physicalUri: " << StrX(thePhysicalURI));
+      InputSource* lRetval = new IstreamInputSource(theStream);
+      theStream.release();
+      
       lRetval->setSystemId(thePhysicalURI);
       return lRetval;
     }
+    else if (publicId==NULL && systemId==NULL)
+    {
+      TRACE("No systemId and no publicId provided.");
+      return NULL;
+    }
     else
     {
-      return NULL;
+      const XMLCh* lId;
+      bool isPublicId = false;
+      bool isSystemId = false;
+      
+      if (systemId==NULL)
+      {
+        TRACE("Resolving based on publicId: " << StrX(publicId));
+        lId = publicId;
+        isPublicId = true;
+      }
+      else   // publicId must be non-NULL since it was previously checked
+      {
+        TRACE("Resolving based on systemId: " << StrX(systemId));
+        lId = systemId;
+        isSystemId = true;
+      }
+      
+      std::auto_ptr<impl::Resource> lResource;
+      
+      zstring lStrId = StrX(lId).localForm();
+      zstring lResolved;
+      
+      URI lUri(lStrId);
+      if ( !lUri.is_absolute() )
+      {
+        // must be resolved based on the schema location thePhysicalURI
+        zstring fullBase(StrX(thePhysicalURI).localForm());
+        zstring::size_type i = fullBase.find_last_of("/");
+        zstring base = fullBase.substr(0, i == zstring::npos ? fullBase.length() : i+1);
+        URI resolvedURI( base, lUri.toString(), true);
+        lResolved = resolvedURI.toString();
+        TRACE("i: " << i << " base: " << base << " lUri: " << lUri << " lRes: " << lResolved);
+      }
+      else
+        lResolved = lStrId;
+      
+      try
+      {
+        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved);
+        zstring lErrorMessage;
+        lResource = theSctx->resolve_uri(lResolved, impl::Resource::SCHEMA, lErrorMessage);
+        
+        if (lResource.get() != NULL &&
+            lResource->getKind() == impl::Resource::STREAM)
+        {
+          impl::StreamResource* lStream =
+            static_cast<impl::StreamResource*>(lResource.get());
+            
+          std::auto_ptr<std::istream> lIStream = lStream->getStream();
+          InputSource* lRetval = new IstreamInputSource(lIStream);
+          
+          if (isSystemId)
+            lRetval->setSystemId(thePhysicalURI);
+          
+          if (isPublicId)
+            lRetval->setPublicId(thePhysicalURI);
+            
+          return lRetval;
+        }
+        else
+          return NULL;          
+      }
+      catch (ZorbaException const& e)
+      {
+        TRACE("!!! ZorbaException: " << e );
+        //don't throw let Xerces resolve it
+        return NULL;
+      }
     }
   }
 
-  SchemaLocationEntityResolver(
+  StaticContextEntityResolver(
     const XMLCh* const aLogicalURI,
+    static_context * aSctx,
     impl::StreamResource* aStreamResource)
-    : theLogicalURI(aLogicalURI)
+    : theLogicalURI(aLogicalURI), theSctx(aSctx)
   {
     // Take memory ownership of the istream here
     theStream = aStreamResource->getStream();
@@ -184,13 +262,14 @@ public:
       (aStreamResource->getStreamUrl().c_str());
   }
 
-  ~SchemaLocationEntityResolver()
+  ~StaticContextEntityResolver()
   {
     XERCES_CPP_NAMESPACE::XMLString::release(&thePhysicalURI);
   }
 
 private:
   const XMLCh * theLogicalURI;
+  static_context * theSctx;
   std::auto_ptr<std::istream> theStream;
   XMLCh * thePhysicalURI;
 };
@@ -292,12 +371,13 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
   Registers an imported schema into the curent grammar
 *******************************************************************************/
 void Schema::registerXSD(const char* xsdURL,
+  static_context * aSctx,
   impl::StreamResource* stream,
   const QueryLoc& loc)
 {
   std::auto_ptr<SAX2XMLReader> parser;
 
-  TRACE("url=" << xsdURL << " loc=" << location);
+  TRACE("url=" << xsdURL << " loc=" << loc);
 
   try
   {
@@ -334,7 +414,7 @@ void Schema::registerXSD(const char* xsdURL,
     parser->setErrorHandler(&handler);
 
     XMLChArray xerces_xsdURL(xsdURL);
-    SchemaLocationEntityResolver lEntityResolver(xerces_xsdURL.get(), stream);
+    StaticContextEntityResolver lEntityResolver(xerces_xsdURL.get(), aSctx, stream);
     parser->setEntityResolver(&lEntityResolver);
 
     //this works but using loadProlog
@@ -1302,9 +1382,12 @@ void Schema::checkForAnonymousTypesInParticle(const TypeManager* typeManager,
     if (!xsParticle)
         return;
 
-    TRACE(" particle: " << StrX(xsParticle->getName()) << "@" <<
-        StrX(xsParticle->getNamespace()));
-
+    if ( xsParticle->getName() )
+    {
+        TRACE(" particle: " << StrX(xsParticle->getName()) << " @" <<
+            StrX(xsParticle->getNamespace()));
+    }
+    
     XSParticle::TERM_TYPE termType = xsParticle->getTermType();
     if (termType == XSParticle::TERM_ELEMENT)
     {

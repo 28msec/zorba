@@ -1996,7 +1996,7 @@ void* import_schema(
     impl::StreamResource* lStream =
       static_cast<impl::StreamResource*>(lSchema.get());
 
-    schema_p->registerXSD(lNsURI.c_str(), lStream, loc);
+    schema_p->registerXSD(lNsURI.c_str(), theSctx, lStream, loc);
   }
   catch (XQueryException& e)
   {

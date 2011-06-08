@@ -652,6 +652,7 @@ public:
 
   /**
    * Given a URI, return a Resource for that URI.
+   * aEntityType the expected kind of entity expected at this aUri
    */
   std::auto_ptr<impl::Resource> resolve_uri
   (zstring const& aUri, impl::Resource::EntityType aEntityType, zstring& oErrorMessage) const;

@@ -102,6 +102,7 @@ public:
 
   void registerXSD(
         const char* xsdURL,
+        static_context * aSctx,
         impl::StreamResource* aStreamResource,
         const QueryLoc& loc);
 
