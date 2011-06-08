@@ -21,7 +21,8 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/user_exception.h>
+#include <zorba/function.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/vector_item_sequence.h>
 #include <zorba/uri_resolvers.h>
@@ -64,7 +65,7 @@ public:
   
   String getURI() const { return "urn:foo"; }
 
-  StatelessExternalFunction* getExternalFunction(const String& aLocalname);
+  ExternalFunction* getExternalFunction(const String& aLocalname);
 };
 
 
@@ -102,7 +103,7 @@ bool func_example_0(Zorba* aZorba)
   The concatenation is done eagerly, i.e. the result is fully materialized before
   any of its items are returned.
 ********************************************************************************/
-class MySimpleExternalFunction : public NonePureStatelessExternalFunction
+class MySimpleExternalFunction : public ContextualExternalFunction
 {
 protected:
   const ExternalModule* theModule;
@@ -119,7 +120,7 @@ public:
   String getLocalName() const { return "bar1"; }
 
   ItemSequence_t evaluate(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         const StaticContext* sctx,
         const DynamicContext* dctx) const 
   {
@@ -234,7 +235,7 @@ bool func_example_1(Zorba* aZorba)
   The function implements a concatenation of two sequences passed as arguments.
   The concatenation is done lazily, i.e. the result is computed on the fly.
 ********************************************************************************/
-class MyLazySimpleExternalFunction : public PureStatelessExternalFunction
+class MyLazySimpleExternalFunction : public NonContextualExternalFunction
 {
 protected:
   const ExternalModule* theModule;
@@ -314,7 +315,7 @@ private:
     Arguments_t theArgs;
 
   public:
-    LazyConcatItemSequence(const StatelessExternalFunction::Arguments_t& args)
+    LazyConcatItemSequence(const ExternalFunction::Arguments_t& args)
       : 
       theArgs(args)
     {
@@ -376,7 +377,7 @@ bool func_example_2_2(Zorba* aZorba)
   The function takes a single argument and checks if that argument is the empty
   sequence. If so, it raises an error. Otherwise, it returns back the argument.
 ********************************************************************************/
-class MyErrorReportingExternalFunction : public PureStatelessExternalFunction
+class MyErrorReportingExternalFunction : public NonContextualExternalFunction
 {
 protected:
   const ExternalModule* theModule;
@@ -392,7 +393,7 @@ public:
 
   String getLocalName() const { return "bar3"; }
 
-  ItemSequence_t evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
     // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
     return ItemSequence_t(new LazyErrorReportingItemSequence(args));
@@ -445,10 +446,10 @@ private:
       }
     };
   private:
-    StatelessExternalFunction::Arguments_t  theArgs;
+    ExternalFunction::Arguments_t  theArgs;
 
   public:
-    LazyErrorReportingItemSequence(const StatelessExternalFunction::Arguments_t& args)
+    LazyErrorReportingItemSequence(const ExternalFunction::Arguments_t& args)
       :
       theArgs(args)
     {
@@ -491,7 +492,7 @@ bool func_example_3_1(Zorba* aZorba)
 /***************************************************************************//**
 
 ********************************************************************************/
-class MyParametrizedExternalFunction : public NonePureStatelessExternalFunction
+class MyParametrizedExternalFunction : public ContextualExternalFunction
 {
 protected:
   const ExternalModule* theModule;
@@ -508,7 +509,7 @@ public:
   String getLocalName() const { return "bar4"; }
 
   ItemSequence_t evaluate(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         const StaticContext* sctx,
         const DynamicContext* dctx) const 
   {
@@ -573,7 +574,7 @@ MyExternalModule::~MyExternalModule()
 }
 
 
-StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
+ExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
 {
   if (aLocalname == "bar1") 
   {
@@ -665,18 +666,18 @@ public:
     theExtFunc = f;
   }
 
-  StatelessExternalFunction* getExternalFunction(const String& aLocalname)
+  ExternalFunction* getExternalFunction(const String& aLocalname)
   {
     if (aLocalname == "ext") 
     {
-      return reinterpret_cast<StatelessExternalFunction*>(theExtFunc);
+      return reinterpret_cast<ExternalFunction*>(theExtFunc);
     }
     return NULL;
   }
 };
 
 
-class MyModuleExternalFunction : public PureStatelessExternalFunction
+class MyModuleExternalFunction : public NonContextualExternalFunction
 {
 protected:
   MyModuleExternal    * theModule;
@@ -704,7 +705,7 @@ public:
     return "ext";
   }
 
-  ItemSequence_t evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
     // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
     return ItemSequence_t(new VectorItemSequence(theItems));

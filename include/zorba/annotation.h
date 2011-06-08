@@ -22,40 +22,47 @@
 
 namespace zorba {
 
-  class ZORBA_DLL_PUBLIC Annotation : public SmartObject
-  {
-    public:
-      /** \brief Destructor
-       */
-      virtual ~Annotation() {}
+class ZORBA_DLL_PUBLIC Annotation : public SmartObject
+{
+ public:
+  /** \brief Destructor
+   */
+  virtual ~Annotation() {}
+  
+  /**
+   *  Returns the QName of the annotation
+   */
+  virtual Item
+  getQName() const = 0;
 
-      /**
-       *  Returns the QName of the annotation
-       */
-      virtual Item
-      getQName() const = 0;
-
-      /**
-       *  Returns the number of literals that are associated with the annotation,
-       *  e.g. for the annotation:
-       *
-       *      %annotation(Literal1, Literal2, ..., LiteralN)
-       *
-       *  the function will return N.
-       */
-      virtual unsigned int
-      getLiteralsCount() const = 0;
-
-      /**
-       *  Returns the requested literal. E.g. for the annotation
-       *
-       *      %annotation(Literal1, Literal2, ..., LiteralN)
-       *
-       *  the function will return the i-th literal.
-       */
-      virtual Item
-      getLiteral(unsigned int i) const = 0;
-  };
+  /**
+   *  Returns the number of literals that are associated with the annotation,
+   *  e.g. for the annotation:
+   *
+   *      %annotation(Literal1, Literal2, ..., LiteralN)
+   *
+   *  the function will return N.
+   */
+  virtual unsigned int
+  getLiteralsCount() const = 0;
+  
+  /**
+   *  Returns the requested literal. E.g. for the annotation
+   *
+   *      %annotation(Literal1, Literal2, ..., LiteralN)
+   *
+   *  the function will return the i-th literal.
+   */
+  virtual Item
+  getLiteral(unsigned int i) const = 0;
+};
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

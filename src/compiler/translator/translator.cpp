@@ -264,11 +264,11 @@ struct NodeSortInfo
 class ModulesInfo
 {
 public:
-  CompilerCB                   * theCCB;
-  hashmap<zstring, static_context_t>      mod_sctx_map;
+  CompilerCB                        * theCCB;
+  hashmap<zstring, static_context_t>  mod_sctx_map;
   hashmap<zstring, zstring>               mod_ns_map;
-  checked_vector<expr_t>         theInitExprs;
-  std::auto_ptr<static_context>  globalSctx;
+  checked_vector<expr_t>              theInitExprs;
+  std::auto_ptr<static_context>       globalSctx;
 
 public:
   ModulesInfo(CompilerCB* topCompilerCB)
@@ -3091,7 +3091,7 @@ void* begin_visit(const VFO_DeclList& v)
 
       // 2. if no built-in function is there, we check the static context
       // to see if the user has registered an external function
-      StatelessExternalFunction* ef = 0;
+      ExternalFunction* ef = 0;
       try
       {
         ef = theSctx->lookup_external_function(qnameItem->getNamespace(),
@@ -3121,11 +3121,8 @@ void* begin_visit(const VFO_DeclList& v)
       {
         if (ef->getLocalName().compare(qnameItem->getLocalName().str()) != 0)
         {
-          throw XQUERY_EXCEPTION(
-            zerr::ZXQP0009_FUNCTION_LOCALNAME_MISMATCH,
-            ERROR_PARAMS( qnameItem->getLocalName(), ef->getLocalName() ),
-            ERROR_LOC( loc )
-          );
+          RAISE_ERROR(zerr::ZXQP0009_FUNCTION_LOCALNAME_MISMATCH, loc,
+          ERROR_PARAMS(qnameItem->getLocalName(), ef->getLocalName()));
         }
       }
 
@@ -3218,7 +3215,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   // TODO: remove this error
   if (v.is_updating() && v.get_return_type() != 0)
-    throw XQUERY_EXCEPTION(err::XUST0028, ERROR_PARAMS(fname), ERROR_LOC(loc));
+    RAISE_ERROR(err::XUST0028, loc, ERROR_PARAMS(fname));
 
   if (v.get_return_type() != NULL)
     pop_tstack();
@@ -3247,32 +3244,28 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     {
       if (body->is_updating() || theHaveUpdatingExitExprs)
       {
-        throw XQUERY_EXCEPTION(err::XSST0002, ERROR_PARAMS(fname), ERROR_LOC(loc));
+        RAISE_ERROR(err::XSST0002, loc, ERROR_PARAMS(fname));
       }
     }
     else if (v.is_updating())
     {
       if (body->is_sequential() || theHaveSequentialExitExprs)
       {
-        throw XQUERY_EXCEPTION(err::XSST0003, ERROR_PARAMS(fname), ERROR_LOC(loc));
+        RAISE_ERROR(err::XSST0003, loc, ERROR_PARAMS(fname));
       }
 
       if (!body->is_updating_or_vacuous())
       {
-        throw XQUERY_EXCEPTION(err::XUST0002,
-                               ERROR_PARAMS(ZED(XUST0002_UDF_2), fname),
-                               ERROR_LOC(loc));
+        RAISE_ERROR(err::XUST0002, loc, ERROR_PARAMS(ZED(XUST0002_UDF_2), fname));
       }
     }
     else if (body->is_sequential() || theHaveSequentialExitExprs)
     {
-      throw XQUERY_EXCEPTION(err::XSST0004, ERROR_PARAMS(fname), ERROR_LOC(loc));
+      RAISE_ERROR(err::XSST0004, loc, ERROR_PARAMS(fname));
     }
     else if (body->is_updating() || theHaveUpdatingExitExprs)
     {
-      throw XQUERY_EXCEPTION(err::XUST0001,
-                             ERROR_PARAMS(ZED(XUST0001_UDF_2), fname),
-                             ERROR_LOC(loc));
+      RAISE_ERROR(err::XUST0001, loc, ERROR_PARAMS(ZED(XUST0001_UDF_2), fname));
     }
 
     // If function has any params, they have been wraped in a flwor expr. Set the
@@ -3674,7 +3667,7 @@ void* begin_visit(const OptionDecl& v)
   expand_no_default_qname(qnameItem, v.get_qname(), loc);
 
   if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
-    throw XQUERY_EXCEPTION(err::XPST0081, ERROR_PARAMS(""), ERROR_LOC(loc));
+    RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
   theSctx->bind_option(qnameItem, value);
 
@@ -7588,9 +7581,10 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
         else
         {
           if (e.diagnostic() == err::FORG0001)
-            throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+            throw;// XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
           else
-            throw XQUERY_EXCEPTION(err::XPST0081, ERROR_LOC(loc));
+            RAISE_ERROR(err::XPST0081, loc,
+            ERROR_PARAMS(castLiteral->getStringValue()));
         }
       }
 

@@ -217,7 +217,7 @@ void endVisitWindowVariable();
     void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& a);
 
   DECLARE_VISITOR (UDFunctionCallIterator)
-  DECLARE_VISITOR (StatelessExtFunctionCallIterator)
+  DECLARE_VISITOR (ExtFunctionCallIterator)
   DECLARE_VISITOR (FnBooleanIterator)
   DECLARE_VISITOR (OrIterator)
   DECLARE_VISITOR (AndIterator)

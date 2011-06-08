@@ -18,14 +18,14 @@
 #define ZORBAC_CEXTERNAL_FUNCTION_H
 
 #include <zorba/zorba.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/zorbac.h>
 
 using namespace zorba;
 
 namespace zorbac {
 
-  class CExternalFunction : public PureStatelessExternalFunction {
+  class CExternalFunction : public NonContextualExternalFunction {
     public:
       CExternalFunction(const char* uri, const char* localname,
         external_function_init init_fn, external_function_next next_fn,
@@ -41,7 +41,7 @@ namespace zorbac {
       getLocalName() const;
 
       ItemSequence_t
-      evaluate(const StatelessExternalFunction::Arguments_t& args) const;
+      evaluate(const ExternalFunction::Arguments_t& args) const;
 
     private:
 

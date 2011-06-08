@@ -2629,7 +2629,7 @@ void static_context::bind_external_module(
   Find and return the implementation of an external function, given its namespace
   URI and local name.
 ********************************************************************************/
-StatelessExternalFunction* static_context::lookup_external_function(
+ExternalFunction* static_context::lookup_external_function(
     const zstring& aURI,
     const zstring& aLocalName)
 {

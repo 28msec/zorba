@@ -43,7 +43,7 @@ CreateDirectoryFunction::CreateDirectoryFunction(const FileModule* aModule)
 
 ItemSequence_t
 CreateDirectoryFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -84,7 +84,7 @@ DeleteFileImplFunction::DeleteFileImplFunction(const FileModule* aModule)
 
 ItemSequence_t
 DeleteFileImplFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -125,7 +125,7 @@ ReadBinaryFunction::ReadBinaryFunction(const FileModule* aModule)
 
 ItemSequence_t
 ReadBinaryFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -182,7 +182,7 @@ ReadTextFunction::ReadTextFunction(const FileModule* aModule)
 
 ItemSequence_t
 ReadTextFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -221,7 +221,7 @@ ExistsFunction::ExistsFunction(const FileModule* aModule)
 
 ItemSequence_t
 ExistsFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -246,7 +246,7 @@ IsDirectoryFunction::IsDirectoryFunction(const FileModule* aModule)
 
 ItemSequence_t
 IsDirectoryFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -270,7 +270,7 @@ IsFileFunction::IsFileFunction(const FileModule* aModule)
 
 ItemSequence_t
 IsFileFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -294,7 +294,7 @@ CopyFileImplFunction::CopyFileImplFunction(const FileModule* aModule)
 
 ItemSequence_t
 CopyFileImplFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -373,7 +373,7 @@ ListFunction::ListFunction(const FileModule* aModule)
 
 ItemSequence_t
 ListFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -461,7 +461,7 @@ LastModifiedFunction::LastModifiedFunction(const FileModule* aModule)
 
 ItemSequence_t
 LastModifiedFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -517,7 +517,7 @@ SizeFunction::SizeFunction(const FileModule* aModule)
 
 ItemSequence_t
 SizeFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -558,7 +558,7 @@ PathSeparator::PathSeparator(const FileModule* aModule)
 
 ItemSequence_t
 PathSeparator::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -574,7 +574,7 @@ DirectorySeparator::DirectorySeparator(const FileModule* aModule)
 
 ItemSequence_t
 DirectorySeparator::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -590,7 +590,7 @@ ResolvePathFunction::ResolvePathFunction(const FileModule* aModule)
 
 ItemSequence_t
 ResolvePathFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
@@ -608,7 +608,7 @@ PathToNativeFunction::PathToNativeFunction(const FileModule* aModule)
 }
 
 ItemSequence_t
-PathToNativeFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+PathToNativeFunction::evaluate(const ExternalFunction::Arguments_t& args,
                                 const StaticContext* aSctxCtx,
                                 const DynamicContext* aDynCtx) const
 {
@@ -630,9 +630,9 @@ PathToUriFunction::PathToUriFunction(const FileModule* aModule)
 
 ItemSequence_t
 PathToUriFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
+  const ExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                 aSctxCtx,
+  const DynamicContext*                aDynCtx) const
 {
   String lPathStr = getFilePathString(aArgs, 0);
   String lResult = pathToUriString(lPathStr);

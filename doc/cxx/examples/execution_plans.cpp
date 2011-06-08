@@ -21,7 +21,7 @@
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
 #include <zorba/iterator.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
@@ -52,7 +52,7 @@ execution_plan_example_1(Zorba* aZorba)
 	return true;
 }
 
-class MySerializableExternalFunction : public PureStatelessExternalFunction
+class MySerializableExternalFunction : public NonContextualExternalFunction
 {
   protected:
     const ExternalModule* theModule;
@@ -68,7 +68,7 @@ class MySerializableExternalFunction : public PureStatelessExternalFunction
     getLocalName() const { return "bar1"; }
 
     virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args) const
+    evaluate(const ExternalFunction::Arguments_t& args) const
     {
         iv_t vec;
         for(int i = 0; i < 2; ++i) {
@@ -154,7 +154,7 @@ class MySerializableExternalModule : public ExternalModule
     virtual String
     getURI() const { return "urn:foo"; }
 
-    virtual StatelessExternalFunction*
+    virtual ExternalFunction*
     getExternalFunction(const String& aLocalname)
     {
       if (aLocalname == "bar1") {

@@ -22,8 +22,7 @@
 #include <zorba/item.h>
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
-#include <zorba/pure_stateless_function.h>
-#include <zorba/nonepure_stateless_function.h>
+#include <zorba/function.h>
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/user_exception.h"
@@ -79,8 +78,8 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
+SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
 
 
 
@@ -445,12 +444,12 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState()
+ExtFunctionCallIteratorState::ExtFunctionCallIteratorState()
 {
 }
 
 
-StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
+ExtFunctionCallIteratorState::~ExtFunctionCallIteratorState()
 {
   theResultIter = NULL;
 
@@ -463,7 +462,7 @@ StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 }
 
 
-void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
+void ExtFunctionCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theResultIter = NULL;
@@ -474,17 +473,17 @@ void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
+ExtFunctionCallIterator::ExtFunctionCallIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
-    const StatelessExternalFunction* function,
+    const ExternalFunction* function,
     bool isUpdating,
     const zstring& ns,
     static_context* moduleSctx)
   :
-  NaryBaseIterator<StatelessExtFunctionCallIterator,
-                   StatelessExtFunctionCallIteratorState>(sctx, loc, args),
+  NaryBaseIterator<ExtFunctionCallIterator,
+                   ExtFunctionCallIteratorState>(sctx, loc, args),
   theFunction(function),
   theIsUpdating(isUpdating),
   theNamespace(ns),
@@ -493,18 +492,18 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
 }
 
 
-StatelessExtFunctionCallIterator::~StatelessExtFunctionCallIterator()
+ExtFunctionCallIterator::~ExtFunctionCallIterator()
 {
 }
 
 
-void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
+void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 {
   ar.dont_allow_delay_for_plan_sctx = true;
   serialize_baseclass(ar,
                       static_cast<NaryBaseIterator<
-                                  StatelessExtFunctionCallIterator,
-                                  StatelessExtFunctionCallIteratorState>*>(this));
+                                  ExtFunctionCallIterator,
+                                  ExtFunctionCallIteratorState>*>(this));
   ar.dont_allow_delay_for_plan_sctx = false;
   if (ar.is_serializing_out())
   {
@@ -551,14 +550,14 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 }
 
 
-void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
+void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  NaryBaseIterator<StatelessExtFunctionCallIterator,
-                   StatelessExtFunctionCallIteratorState>::openImpl(planState, offset);
+  NaryBaseIterator<ExtFunctionCallIterator,
+                   ExtFunctionCallIteratorState>::openImpl(planState, offset);
 
-  StatelessExtFunctionCallIteratorState* state =
-  StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState,
-                                                                   theStateOffset);
+  ExtFunctionCallIteratorState* state =
+  StateTraitsImpl<ExtFunctionCallIteratorState>::getState(planState,
+                                                          theStateOffset);
   ulong n = (ulong)theChildren.size();
   state->m_extArgs.resize(n);
   for(ulong i = 0; i < n; ++i)
@@ -568,22 +567,22 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
 }
 
 
-bool StatelessExtFunctionCallIterator::nextImpl(
+bool ExtFunctionCallIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   Item lOutsideItem;
-  const PureStatelessExternalFunction* lPureFct = 0;
-  const NonePureStatelessExternalFunction* lNonePureFct = 0;
+  const NonContextualExternalFunction* lPureFct = 0;
+  const ContextualExternalFunction* lNonePureFct = 0;
 
-  StatelessExtFunctionCallIteratorState* state;
-  DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
+  ExtFunctionCallIteratorState* state;
+  DEFAULT_STACK_INIT(ExtFunctionCallIteratorState, state, planState);
 
   try
   {
     if (!theFunction->isContextual())
     {
-      lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(theFunction);
+      lPureFct = dynamic_cast<const NonContextualExternalFunction*>(theFunction);
       ZORBA_ASSERT(lPureFct);
 
       state->theResult = lPureFct->evaluate(state->m_extArgs);
@@ -592,7 +591,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
     }
     else
     {
-      lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(theFunction);
+      lNonePureFct = dynamic_cast<const ContextualExternalFunction*>(theFunction);
       ZORBA_ASSERT(lNonePureFct);
 
       // The planState.theQuery maybe null, e.g. in the case of constant-folding
@@ -662,7 +661,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
 }
 
 
-NARY_ACCEPT(StatelessExtFunctionCallIterator);
+NARY_ACCEPT(ExtFunctionCallIterator);
 
 
 } // namespace zorba

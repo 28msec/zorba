@@ -17,6 +17,8 @@
 
 #include "api/functionimpl.h"
 #include "api/zorbaimpl.h"
+#include "api/unmarshaller.h"
+
 #include "functions/function.h"
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -43,13 +45,7 @@ bool FunctionImpl::isSequential() const
   return theFunction->isSequential();
 }
 
-bool FunctionImpl::requiresDynamicContext() const
-{
-  return theFunction->accessesDynCtx();
-}
-
-
-Item FunctionImpl::getFunctionName() const
+Item FunctionImpl::getQName() const
 {
   try 
   {
@@ -64,6 +60,34 @@ Item FunctionImpl::getFunctionName() const
 }
 
 
+String FunctionImpl::getURI() const
+{
+  try 
+  {
+    return Unmarshaller::newString(theFunction->getName()->getNamespace());
+  } 
+  catch (ZorbaException const& e) 
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  return String();
+}
+
+
+String FunctionImpl::getLocalName() const
+{
+  try 
+  {
+    return Unmarshaller::newString(theFunction->getName()->getLocalName());
+  } 
+  catch (ZorbaException const& e) 
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  return String();
+}
+
+
 size_t
 FunctionImpl::getArity() const
 {
@@ -75,5 +99,24 @@ FunctionImpl::isVariadic() const
 {
   return theFunction->isVariadic();
 }
+
+
+bool FunctionImpl::isExternal() const
+{
+  return static_cast<function*>(theFunction)->isExternal();
+}
+
+
+bool FunctionImpl::isXQuery() const
+{
+  return static_cast<function*>(theFunction)->isUdf();
+}
+
+
+bool FunctionImpl::isBuiltin() const
+{
+  return static_cast<function*>(theFunction)->isBuiltin();
+}
+
 
 } /* namespace zorba */

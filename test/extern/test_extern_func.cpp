@@ -9,7 +9,7 @@
 #include <zorba/zorba.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/vector_item_sequence.h>
 #include <zorba/uri_resolvers.h>
@@ -39,7 +39,7 @@ protected:
 
 protected:
   static ItemFactory* theFactory;
-  typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
+  typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
   FuncMap_t theFunctions;
 
 public:
@@ -54,7 +54,7 @@ public:
 
   String getURI() const { return "urn:extern"; }
 
-  StatelessExternalFunction* getExternalFunction(const String& aLocalname);
+  ExternalFunction* getExternalFunction(const String& aLocalname);
 
   static ItemFactory* getItemFactory()
   {
@@ -70,7 +70,7 @@ ItemFactory* TestExternalModule::theFactory = NULL;
 /*******************************************************************************
   External function bar()
 ********************************************************************************/
-class BarExternalFunction : public NonePureStatelessExternalFunction
+class BarExternalFunction : public ContextualExternalFunction
 {
 protected:
   const TestExternalModule* theModule;
@@ -87,7 +87,7 @@ public:
   String getLocalName() const { return "bar"; }
 
   ItemSequence_t evaluate(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         const StaticContext* sctx,
         const DynamicContext* dctx) const
   {
@@ -99,7 +99,7 @@ public:
 /*******************************************************************************
   External function nondeterm()
 ********************************************************************************/
-class NondetermExternalFunction : public NonePureStatelessExternalFunction
+class NondetermExternalFunction : public ContextualExternalFunction
 {
 protected:
   static int counter;
@@ -118,7 +118,7 @@ public:
 
   String getLocalName() const { return "nondeterm"; }
 
-  ItemSequence_t evaluate(const StatelessExternalFunction::Arguments_t& args,
+  ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args,
                           const StaticContext* sctx,
                           const DynamicContext* dctx) const
   {
@@ -134,9 +134,9 @@ int NondetermExternalFunction::counter = 0;
 /*******************************************************************************
   TestExternalModule::getExternalFunction
 ********************************************************************************/
-StatelessExternalFunction* TestExternalModule::getExternalFunction(const String& aLocalname)
+ExternalFunction* TestExternalModule::getExternalFunction(const String& aLocalname)
 {
-  StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
+  ExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
     if (aLocalname == "bar") {
       lFunc = new BarExternalFunction(this);

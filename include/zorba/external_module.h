@@ -17,9 +17,13 @@
 #define ZORBA_EXTERNAL_MODULE_H
 
 #include <zorba/config.h>
-#include <zorba/external_function_data.h>
+#include <zorba/zorba_string.h>
+
 
 namespace zorba {
+
+
+class ExternalFunction;
 
 
 /***************************************************************************//**
@@ -36,7 +40,7 @@ namespace zorba {
   be registered in the static context in order for the functions to be accessible
   by a query (see StaticContext::registerModule method). 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC ExternalModule : public ExternalFunctionData
+class ZORBA_DLL_PUBLIC ExternalModule 
 {
  public:
   virtual ~ExternalModule() {}
@@ -50,7 +54,7 @@ class ZORBA_DLL_PUBLIC ExternalModule : public ExternalFunctionData
   /**
    * @return the implementation of the function with the given name.
    */
-  virtual StatelessExternalFunction*
+  virtual ExternalFunction*
   getExternalFunction(const String& aLocalname) = 0;
 
   /**
@@ -71,3 +75,9 @@ class ZORBA_DLL_PUBLIC ExternalModule : public ExternalFunctionData
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

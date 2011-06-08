@@ -87,7 +87,7 @@ FileFunction::getURI() const
 
 String
 FileFunction::getOneStringArg(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   unsigned int aPos) const
 {
   Item lItem;
@@ -120,7 +120,7 @@ FileFunction::getOneStringArg(
 
 bool
 FileFunction::getOneBooleanArg(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   unsigned int aPos) const
 {
   bool lResult = false;
@@ -139,7 +139,7 @@ FileFunction::getOneBooleanArg(
 
 String
 FileFunction::getFilePathString(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   unsigned int aPos) const
 {
   String lFileArg = getOneStringArg(aArgs, aPos);
@@ -168,7 +168,7 @@ FileFunction::pathToFullOSPath(const String& aPath) const {
 
 String
 FileFunction::getEncodingArg(
-  const StatelessExternalFunction::Arguments_t& aArgs,
+  const ExternalFunction::Arguments_t& aArgs,
   unsigned int aPos) const
 {
   // the default file encoding
@@ -287,9 +287,9 @@ WriterFileFunction::~WriterFileFunction()
 
 ItemSequence_t
 WriterFileFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
+  const ExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                 aSctxCtx,
+  const DynamicContext*                aDynCtx) const
 {
   String lFileStr = getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());

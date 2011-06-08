@@ -31,6 +31,7 @@
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "api/functionimpl.h"
+#include "api/annotationimpl.h"
 #include "api/xqueryimpl.h"
 #include "api/invoke_item_sequence.h"
 #include "api/staticcollectionmanagerimpl.h"
@@ -1063,7 +1064,7 @@ void StaticContextImpl::findFunctions(
 void
 StaticContextImpl::disableFunction(const Function_t& aFunction)
 {
-  disableFunction(aFunction->getFunctionName(), aFunction->getArity());
+  disableFunction(aFunction->getQName(), aFunction->getArity());
 }
 
 
@@ -1073,10 +1074,15 @@ StaticContextImpl::disableFunction(const Item& aQName, int arity)
   theCtx->unbind_fn(Unmarshaller::getInternalItem(aQName), arity);
 }
 
+
 void
-StaticContextImpl::getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const
+StaticContextImpl::getFunctionAnnotations(
+    const Item& aQName, 
+    int arity,
+    std::vector<Annotation_t>& aAnnotations) const
 {
   aAnnotations.clear();
+
   const function* f = theCtx->lookup_fn(Unmarshaller::getInternalItem(aQName), arity);
   if (f == NULL)
     return;
@@ -1087,7 +1093,7 @@ StaticContextImpl::getFunctionAnnotations(const Item& aQName, int arity, std::ve
 
   try
   {
-    for (unsigned int i=0; i<ann_list->size(); i++)
+    for (unsigned int i = 0; i < ann_list->size(); i++)
       aAnnotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
   }
   catch (ZorbaException const& e)
@@ -1095,6 +1101,7 @@ StaticContextImpl::getFunctionAnnotations(const Item& aQName, int arity, std::ve
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
   }
 }
+
 
 void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)

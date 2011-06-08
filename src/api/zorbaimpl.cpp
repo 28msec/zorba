@@ -19,7 +19,7 @@
 
 #include <istream>
 #include <zorba/error_list.h>
-#include <zorba/stateless_function.h>
+//#include <zorba/function.h>
 #include <zorba/store_manager.h>
 #include <zorba/query_location.h>
 

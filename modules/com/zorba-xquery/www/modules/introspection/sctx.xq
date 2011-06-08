@@ -164,6 +164,15 @@ declare function sctx:function-names() as xs:QName* external;
 declare function sctx:function-arguments-count($function as xs:QName) as xs:int* external;
 
 (:~
+ : Retrieves the list of annotations declared for the given function.
+ :
+ : @param $name the name of the function
+ : @param $arity the number of arguments the function takes
+ : @return the list of annotations
+ :)
+declare function sctx:function-annotations($name as xs:QName, $arity as xs:integer) as xs:QName* external;
+
+(:~
  : The function returns true or false depending on whether rules for
  : compatibility with XPath 1.0 are in effect. XQuery set the value
  : of this component to false.
@@ -280,12 +289,4 @@ declare function sctx:copy-namespaces-mode() as xs:string+ external;
  :)
 declare function sctx:option($name as xs:QName) as xs:string? external;
 
-(:~
- : Retrieves the list of annotations declared for the given function.
- :
- : @param $name the name of the function
- : @param $arity the number of arguments the function takes
- : @return the list of annotations
- :)
-declare function sctx:function-annotations($name as xs:QName, $arity as xs:integer) as xs:QName* external;
 

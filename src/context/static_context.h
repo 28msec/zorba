@@ -24,6 +24,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/function.h>
 
 #ifdef WIN32
 #include "store/api/item.h"
@@ -812,7 +813,7 @@ public:
         ExternalModule* aModule,
         bool aDynamicallyLoaded = false);
 
-  StatelessExternalFunction* lookup_external_function(
+  ExternalFunction* lookup_external_function(
         const zstring& prefix,
         const zstring& local);
 

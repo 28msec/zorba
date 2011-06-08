@@ -23,7 +23,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/xquery_exception.h>
@@ -33,7 +33,7 @@ using namespace zorba;
 
 bool lCalled = false;
 
-class MySimpleExternalFunction : public NonePureStatelessExternalFunction
+class MySimpleExternalFunction : public ContextualExternalFunction
 {
 public:
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
@@ -41,7 +41,7 @@ public:
   String getLocalName() const { return "bar"; }
 
   ItemSequence_t evaluate(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         const StaticContext* sctx,
         const DynamicContext* dctx) const 
   {
@@ -50,7 +50,7 @@ public:
   }
 };
 
-class MySimpleExternalFunction2 : public NonePureStatelessExternalFunction
+class MySimpleExternalFunction2 : public ContextualExternalFunction
 {
 public:
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
@@ -58,7 +58,7 @@ public:
   String getLocalName() const { return "bar2"; }
 
   ItemSequence_t evaluate(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         const StaticContext* sctx,
         const DynamicContext* dctx) const 
   {
@@ -75,7 +75,7 @@ protected:
 public:
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
 
-  StatelessExternalFunction* getExternalFunction(const String& aLocalname)
+  ExternalFunction* getExternalFunction(const String& aLocalname)
   {
     if (aLocalname == "bar")
         return const_cast<MySimpleExternalFunction*>(&bar);

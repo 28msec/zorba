@@ -35,7 +35,7 @@ namespace zorba {
       getLocalName() const { return "create-directory"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -51,7 +51,7 @@ namespace zorba {
       getLocalName() const { return "delete-file-impl"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -67,7 +67,7 @@ namespace zorba {
       getLocalName() const { return "copy-file-impl"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -83,7 +83,7 @@ namespace zorba {
       getLocalName() const { return "exists"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -99,7 +99,7 @@ namespace zorba {
       getLocalName() const { return "list"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
     private:
@@ -139,7 +139,7 @@ namespace zorba {
       getLocalName() const { return "is-directory"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -155,7 +155,7 @@ namespace zorba {
       getLocalName() const { return "is-file"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -171,7 +171,7 @@ namespace zorba {
       getLocalName() const { return "last-modified"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
 
@@ -192,7 +192,7 @@ namespace zorba {
       getLocalName() const { return "size"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
 
@@ -213,7 +213,7 @@ namespace zorba {
       getLocalName() const { return "path-separator"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -229,7 +229,7 @@ namespace zorba {
       getLocalName() const { return "directory-separator"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -245,7 +245,7 @@ namespace zorba {
       getLocalName() const { return "resolve-path"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -261,7 +261,7 @@ namespace zorba {
       getLocalName() const { return "path-to-uri"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -277,7 +277,7 @@ namespace zorba {
       getLocalName() const { return "path-to-native"; }
 
       virtual ItemSequence_t
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aStctxCtx,
                const DynamicContext* aDznCtx) const;
   };
@@ -293,7 +293,7 @@ namespace zorba {
       getLocalName() const { return "read-binary"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };
@@ -309,7 +309,7 @@ namespace zorba {
       getLocalName() const { return "read-text"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
   };

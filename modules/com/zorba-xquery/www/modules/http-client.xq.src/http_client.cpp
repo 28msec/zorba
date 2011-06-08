@@ -18,7 +18,7 @@
 #include <zorba/zorba.h>
 #include <zorba/serializer.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/user_exception.h>
 
@@ -57,7 +57,7 @@ namespace zorba {
 		}
 #endif //WIN32
 
-    class HttpSendFunction : public NonePureStatelessExternalFunction {
+    class HttpSendFunction : public ContextualExternalFunction {
     protected:
       const ExternalModule*     theModule;
       ItemFactory*              theFactory;
@@ -77,7 +77,7 @@ namespace zorba {
       getLocalName() const { return "http-sequential-impl"; }
       
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aStaticContext, const DynamicContext* aDynamicContext)
       const;
     };
@@ -106,7 +106,7 @@ namespace zorba {
         }
       };
       
-      typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
+      typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
       
       FuncMap_t theFunctions;
       
@@ -125,10 +125,10 @@ namespace zorba {
       virtual String
       getURI() const { return "http://www.zorba-xquery.com/modules/http-client"; }
       
-      virtual StatelessExternalFunction*
+      virtual ExternalFunction*
       getExternalFunction(const String& aLocalname)
       {
-        StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
+        ExternalFunction*& lFunc = theFunctions[aLocalname];
         if (!lFunc) {
           if (aLocalname == "http-sequential-impl") {
             lFunc = new HttpSendFunction(this);
@@ -150,9 +150,11 @@ namespace zorba {
     };
 
     ItemSequence_t
-    general_evaluate(const StatelessExternalFunction::Arguments_t& args,
-      const StaticContext* aStaticContext, const DynamicContext* aDynamicContext,
-      ItemFactory* aFactory, const ExternalFunctionData* aFunctionData)
+    general_evaluate(
+        const ExternalFunction::Arguments_t& args,
+        const StaticContext* aStaticContext,
+        const DynamicContext* aDynamicContext,
+        ItemFactory* aFactory)
     {
       CURL* lCURL = curl_easy_init();
       
@@ -175,7 +177,7 @@ namespace zorba {
       std::auto_ptr<RequestParser> lParser;
       struct curl_slist* lHeaderList = 0;
 
-      ErrorThrower thrower(aFunctionData, aFactory, &lHeaderList);
+      ErrorThrower thrower(aFactory, &lHeaderList);
 
       if (lReqSet) {
         lHandler.reset(new HttpRequestHandler(lCURL, args[2]));
@@ -213,10 +215,10 @@ namespace zorba {
     }
 
     ItemSequence_t 
-    HttpSendFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+    HttpSendFunction::evaluate(const ExternalFunction::Arguments_t& args,
       const StaticContext* aStaticContext, const DynamicContext* aDynamicContext) const 
     {
-      return general_evaluate(args, aStaticContext, aDynamicContext, theFactory, this);
+      return general_evaluate(args, aStaticContext, aDynamicContext, theFactory);
     }
 
     HttpClientModule::~HttpClientModule()

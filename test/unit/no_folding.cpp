@@ -23,7 +23,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/xquery_exception.h>
@@ -38,7 +38,7 @@ namespace zorba { namespace nofolding {
 bool lCalledBlockFolding = false;
 
   
-class FoldingFunction : public NonePureStatelessExternalFunction
+class FoldingFunction : public ContextualExternalFunction
 {
 public:
   String getURI() const { return "http://www.zorba-xquery.com/mod2"; }
@@ -46,7 +46,7 @@ public:
   String getLocalName() const { return "bar"; }
   
   ItemSequence_t evaluate(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         const StaticContext* sctx,
         const DynamicContext* dctx) const 
   {
@@ -64,7 +64,7 @@ protected:
 public:
   String getURI() const { return "http://www.zorba-xquery.com/mod2"; }
   
-  StatelessExternalFunction* getExternalFunction(const String& aLocalname)
+  ExternalFunction* getExternalFunction(const String& aLocalname)
   {
     return const_cast<FoldingFunction*>(&lFunc);
   }

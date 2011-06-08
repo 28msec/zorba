@@ -41,21 +41,29 @@ protected:
   {
   }
 
-  virtual bool isUpdating() const;
+  bool isSequential() const;
 
-  virtual bool isPrivate() const;
+  bool isUpdating() const;
 
-  virtual bool isDeterministic() const;
+  bool isPrivate() const;
 
-  virtual bool isSequential() const;
+  bool isDeterministic() const;
 
-  virtual bool requiresDynamicContext() const;
+  Item getQName() const;
 
-  virtual Item getFunctionName() const;
+  String getURI() const;
 
-  virtual size_t getArity() const;
+  String getLocalName() const;
+
+  size_t getArity() const;
 
   bool isVariadic() const;
+
+  bool isExternal() const;
+
+  bool isXQuery() const;
+
+  bool isBuiltin() const;
 };
 
 } /* namespace zorba */

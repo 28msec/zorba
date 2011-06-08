@@ -35,7 +35,7 @@ external_function::external_function(
     short scriptingType,
     bool deterministic,
     bool isPrivate,
-    StatelessExternalFunction* impl) 
+    ExternalFunction* impl) 
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
@@ -109,13 +109,13 @@ PlanIter_t external_function::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  return new StatelessExtFunctionCallIterator(sctx,
-                                              loc,
-                                              argv,
-                                              theImpl,
-                                              isUpdating(),
-                                              theNamespace,
-                                              theModuleSctx);
+  return new ExtFunctionCallIterator(sctx,
+                                     loc,
+                                     argv,
+                                     theImpl,
+                                     isUpdating(),
+                                     theNamespace,
+                                     theModuleSctx);
 }
 
 

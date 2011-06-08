@@ -18,7 +18,7 @@
 #define ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H
 
 #include <vector>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 
 #include "common/shared_types.h"
 
@@ -39,11 +39,11 @@ namespace zorba
 class external_function : public function 
 {
 protected:
-  QueryLoc                    theLoc;
-  static_context            * theModuleSctx;
-  zstring                     theNamespace;
-  short                       theScriptingKind;
-  StatelessExternalFunction * theImpl;
+  QueryLoc           theLoc;
+  static_context   * theModuleSctx;
+  zstring            theNamespace;
+  short              theScriptingKind;
+  ExternalFunction * theImpl;
 
 public:
   SERIALIZABLE_CLASS(external_function)
@@ -59,7 +59,7 @@ public:
         short scriptingType,
         bool deterministic,
         bool isPrivate,
-        StatelessExternalFunction* impl);
+        ExternalFunction* impl);
 
   ~external_function() { }
 

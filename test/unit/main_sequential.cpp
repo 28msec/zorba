@@ -22,7 +22,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/vector_item_sequence.h>
@@ -35,7 +35,7 @@ using namespace zorba;
 
 namespace zorba { namespace main_sequential {
   
-class FoldingFunction : public NonePureStatelessExternalFunction
+class FoldingFunction : public ContextualExternalFunction
 {
 public:
   String getURI() const { return "http://nonamespace.com"; }
@@ -43,7 +43,7 @@ public:
   String getLocalName() const { return "bar"; }
   
   ItemSequence_t evaluate(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         const StaticContext* sctx,
         const DynamicContext* dctx) const 
   {
@@ -64,7 +64,7 @@ protected:
 public:
   String getURI() const { return "http://nonamespace.com"; }
   
-  StatelessExternalFunction* getExternalFunction(const String& aLocalname)
+  ExternalFunction* getExternalFunction(const String& aLocalname)
   {
     return const_cast<FoldingFunction*>(&lFunc);
   }

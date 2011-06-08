@@ -18,13 +18,13 @@
 #define ZORBA_RUNTIME_FNCALL_ITERATOR
 
 #include <zorba/api_shared_types.h>
+#include <zorba/function.h>
 
 #include "common/shared_types.h"
 
 // TODO remove the next three includes
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
-#include <zorba/stateless_function.h>
 
 #include "runtime/base/narybase.h"
 
@@ -130,52 +130,50 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class StatelessExtFunctionCallIteratorState : public PlanIteratorState 
+class ExtFunctionCallIteratorState : public PlanIteratorState 
 {
  public:
   std::vector<ItemSequence*> m_extArgs;
   ItemSequence_t             theResult;
   Iterator_t                 theResultIter;
 
-  StatelessExtFunctionCallIteratorState();
+  ExtFunctionCallIteratorState();
 
-  ~StatelessExtFunctionCallIteratorState();
+  ~ExtFunctionCallIteratorState();
 
   void reset(PlanState&);
 };
 
 
-class StatelessExtFunctionCallIterator : 
-                   public NaryBaseIterator<StatelessExtFunctionCallIterator,
-                                           StatelessExtFunctionCallIteratorState>
+class ExtFunctionCallIterator : public NaryBaseIterator<ExtFunctionCallIterator,
+                                                        ExtFunctionCallIteratorState>
 {
 protected:
-  const StatelessExternalFunction * theFunction;
-  bool                              theIsUpdating;
-  zstring                           theNamespace;
-  static_context                  * theModuleSctx;
+  const ExternalFunction * theFunction;
+  bool                     theIsUpdating;
+  zstring                  theNamespace;
+  static_context         * theModuleSctx;
 
 public:
-  SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator);
+  SERIALIZABLE_CLASS(ExtFunctionCallIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  StatelessExtFunctionCallIterator, 
-  NaryBaseIterator<StatelessExtFunctionCallIterator,
-                   StatelessExtFunctionCallIteratorState>);
+  ExtFunctionCallIterator, 
+  NaryBaseIterator<ExtFunctionCallIterator, ExtFunctionCallIteratorState>);
 
   void serialize(serialization::Archiver& ar);
 
 public:
-  StatelessExtFunctionCallIterator(
+  ExtFunctionCallIterator(
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
-        const StatelessExternalFunction* function,
+        const ExternalFunction* function,
         bool isUpdating,
         const zstring& ns,
         static_context* moduleSctx);
 
-  virtual ~StatelessExtFunctionCallIterator();
+  virtual ~ExtFunctionCallIterator();
 
   virtual bool isUpdating() const { return theIsUpdating; }
 

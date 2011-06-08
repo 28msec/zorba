@@ -53,8 +53,9 @@ class DynamicContextImpl : public DynamicContext
 {
   friend class Unmarshaller; // needs to get the context out of this class
   friend class XQueryImpl;
-  friend class StatelessExtFunctionCallIterator;  // StatelessExtFunctionCallIterator needs to
-                                                  // create a wrapper to a dynamic_context to pass it to the external function
+  friend class ExtFunctionCallIterator;  // ExtFunctionCallIterator needs to
+                                         // create a wrapper to a dynamic_context
+                                         // to pass it to the external function
 
 
 protected:
@@ -67,7 +68,7 @@ protected:
 protected:
   DynamicContextImpl(const XQueryImpl* aQuery);
 
-  // Used by StatelessExtFunctionCallIterator to create a temporary wrapper
+  // Used by ExtFunctionCallIterator to create a temporary wrapper
   DynamicContextImpl(
       const XQueryImpl* aQuery,
       dynamic_context* aDctx,

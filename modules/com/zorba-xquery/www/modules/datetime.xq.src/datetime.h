@@ -19,7 +19,7 @@
 #include <map>
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 
 namespace zorba { namespace datetimemodule {
 
@@ -37,7 +37,7 @@ protected:
     }
   };
   
-  typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
+  typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
 
   FuncMap_t theFunctions;
 
@@ -45,7 +45,7 @@ public:
   virtual zorba::String
   getURI() const { return "http://www.zorba-xquery.com/modules/datetime"; }
 
-  virtual zorba::StatelessExternalFunction*
+  virtual zorba::ExternalFunction*
   getExternalFunction(const zorba::String& aLocalname);
 
   virtual void
@@ -58,7 +58,7 @@ public:
 
 /******************************************************************************
  *****************************************************************************/
-class CurrentDateTimeFunction : public NonePureStatelessExternalFunction
+class CurrentDateTimeFunction : public ContextualExternalFunction
 {
 public:
   CurrentDateTimeFunction(const DateTimeModule* aModule)
@@ -83,7 +83,7 @@ protected:
 
 /******************************************************************************
  *****************************************************************************/
-class CurrentDateFunction : public NonePureStatelessExternalFunction
+class CurrentDateFunction : public ContextualExternalFunction
 {
 public:
   CurrentDateFunction(const DateTimeModule* aModule)
@@ -108,7 +108,7 @@ protected:
 
 /******************************************************************************
  *****************************************************************************/
-class CurrentTimeFunction : public NonePureStatelessExternalFunction
+class CurrentTimeFunction : public ContextualExternalFunction
 {
 public:
   CurrentTimeFunction(const DateTimeModule* aModule)
@@ -133,7 +133,7 @@ protected:
 
 /******************************************************************************
  *****************************************************************************/
-class TimestampFunction : public NonePureStatelessExternalFunction
+class TimestampFunction : public ContextualExternalFunction
 {
 public:
   TimestampFunction(const DateTimeModule* aModule)

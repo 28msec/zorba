@@ -1204,7 +1204,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
 #undef TYPED_VAL_CMP
 
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
-  PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)
+  PRINTER_VISITOR_DEFINITION (ExtFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
   PRINTER_VISITOR_DEFINITION (OrIterator)
   PRINTER_VISITOR_DEFINITION (AndIterator)

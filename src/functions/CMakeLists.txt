@@ -59,14 +59,11 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
 ENDFOREACH(SPEC_FILE)
 
 LIST(APPEND FUNCTIONS_SRCS
-    # provides the functions return_type,
-    # computeAnnotation, and specialize
     function.cpp
     udf.cpp
     external_function.cpp
     library.cpp
     signature.cpp
-    annotation.cpp
     func_accessors_impl.cpp
     func_arithmetic.cpp
     func_booleans_impl.cpp

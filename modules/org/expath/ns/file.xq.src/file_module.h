@@ -42,7 +42,7 @@ protected:
     }
   };
   
-  typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
+  typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
 
   FuncMap_t theFunctions;
   
@@ -52,7 +52,7 @@ public:
   virtual String
   getURI() const { return theNamespace; }
   
-  virtual StatelessExternalFunction*
+  virtual ExternalFunction*
   getExternalFunction(const String& aLocalname);
 
   virtual void

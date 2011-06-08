@@ -18,7 +18,7 @@
 #define ZORBA_FILEMODULE_FILEFUNCTION_H
 
 #include <zorba/error.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/item.h>
 #include <zorba/iterator.h>
 #include <zorba/options.h>
@@ -29,7 +29,7 @@ namespace zorba { namespace filemodule {
 
   class FileModule;
 
-  class FileFunction : public NonePureStatelessExternalFunction
+  class FileFunction : public ContextualExternalFunction
   {
     private:
 
@@ -50,22 +50,22 @@ namespace zorba { namespace filemodule {
 
       String
       getOneStringArg(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         unsigned int pos) const;
 
       bool
       getOneBooleanArg(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         unsigned int pos) const;
 
       String
       getFilePathString(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         unsigned int pos) const;
 
       String
       getEncodingArg(
-        const StatelessExternalFunction::Arguments_t& args,
+        const ExternalFunction::Arguments_t& args,
         unsigned int pos) const;
 
       String
@@ -170,7 +170,7 @@ namespace zorba { namespace filemodule {
       ~WriterFileFunction();
 
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      evaluate(const ExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
 

@@ -23,7 +23,7 @@
 
 #include "functions/function_consts.h"
 #include "functions/signature.h"
-#include "functions/annotation.h"
+#include "api/annotationimpl.h"
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"

@@ -35,7 +35,7 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (UDFunctionCallIterator);
 
-  PLAN_ITER_VISITOR (StatelessExtFunctionCallIterator);
+  PLAN_ITER_VISITOR (ExtFunctionCallIterator);
 
   PLAN_ITER_VISITOR (CommentIterator);
 

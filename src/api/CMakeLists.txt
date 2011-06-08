@@ -55,6 +55,7 @@ SET(API_SRCS
     uri_resolver_wrappers.cpp
 		xquery_functions.cpp
 		zorba_functions.cpp
+    annotationimpl.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

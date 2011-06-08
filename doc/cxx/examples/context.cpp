@@ -290,7 +290,9 @@ context_example_9(Zorba* aZorba)
 
     lDynContext->setCurrentDateTime(lDateTimeItem);
     std::cout << lQuery << std::endl;
-  } catch (ZorbaException &e) {
+  } 
+  catch (ZorbaException& e) 
+  {
     std::cerr << e << std::endl;
     return false;
   }
@@ -306,7 +308,8 @@ context_example_10(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
-  try {
+  try 
+  {
     Item lQName = aZorba->getItemFactory()->createQName("http://www.w3.org/2005/xpath-functions", "doc");
 
     std::vector<Function_t> lFunctions;
@@ -317,8 +320,8 @@ context_example_10(Zorba* aZorba)
     for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();
          lIter != lFunctions.end(); ++lIter)
     {
-      std::cout << "Function Name " << (*lIter)->getFunctionName().getStringValue() << std::endl;
-      std::cout << "  requires dynamic context " << (*lIter)->requiresDynamicContext() << std::endl;
+      std::cout << "Function Name " << (*lIter)->getQName().getStringValue() << std::endl;
+      //std::cout << "  requires dynamic context " << (*lIter)->requiresDynamicContext() << std::endl;
       std::cout << "  is updating " << (*lIter)->isUpdating() << std::endl;
       std::cout << "  arity " << (*lIter)->getArity() << std::endl;
 

@@ -116,6 +116,7 @@ CurrentTimeFunction::evaluate(
 
 /******************************************************************************
  *****************************************************************************/
+
 zorba::ItemSequence_t
 TimestampFunction::evaluate(
   const Arguments_t& aArgs,
@@ -140,10 +141,10 @@ TimestampFunction::evaluate(
 
 /******************************************************************************
  *****************************************************************************/
-zorba::StatelessExternalFunction*
+zorba::ExternalFunction*
 DateTimeModule::getExternalFunction(const zorba::String& aLocalname)
 {
-  zorba::StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
+  zorba::ExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
     if (aLocalname == "current-dateTime") {
       lFunc = new CurrentDateTimeFunction(this);

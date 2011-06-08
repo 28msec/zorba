@@ -20,8 +20,9 @@
 #include <cassert>
 
 #include <zorba/zorba.h>
+#include <zorba/user_exception.h>
 #include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/function.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/zorba_exception.h>
@@ -61,14 +62,14 @@ public:
   
   String getURI() const { return "urn:foo"; }
 
-  StatelessExternalFunction* getExternalFunction(const String& aLocalname);
+  ExternalFunction* getExternalFunction(const String& aLocalname);
 
   ItemFactory*
   getItemFactory() { return theItemFactory; }
 };
 
 
-class MyErrorReportingFunction1 : public PureStatelessExternalFunction
+class MyErrorReportingFunction1 : public NonContextualExternalFunction
 {
 protected:
   MyExternalModule* theModule;
@@ -84,7 +85,7 @@ public:
   String getLocalName() const { return "func1"; }
 
   ItemSequence_t
-  evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  evaluate(const ExternalFunction::Arguments_t& args) const
   {
     // test raising an error with noqname (i.e. will be defaulted to FOER0000)
     throw DEFAULT_USER_EXCEPTION();
@@ -93,7 +94,7 @@ public:
 
 };
 
-class MyErrorReportingFunction2 : public PureStatelessExternalFunction
+class MyErrorReportingFunction2 : public NonContextualExternalFunction
 {
 protected:
   MyExternalModule* theModule;
@@ -109,7 +110,7 @@ public:
   String getLocalName() const { return "func2"; }
 
   ItemSequence_t
-  evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  evaluate(const ExternalFunction::Arguments_t& args) const
   {
     String lNamespace = "http://www.zorba-xquery.com/";
     String lLocalname = "myerror";
@@ -121,7 +122,7 @@ public:
 
 };
 
-class MyErrorReportingFunction3 : public PureStatelessExternalFunction
+class MyErrorReportingFunction3 : public NonContextualExternalFunction
 {
 protected:
   MyExternalModule* theModule;
@@ -137,7 +138,7 @@ public:
   String getLocalName() const { return "func3"; }
 
   ItemSequence_t
-  evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  evaluate(const ExternalFunction::Arguments_t& args) const
   {
     // test raising an error with an empty qname (i.e. will be defaulted to FOER0000)
     // and a description
@@ -148,7 +149,7 @@ public:
 
 };
 
-class MyErrorReportingFunction4 : public PureStatelessExternalFunction
+class MyErrorReportingFunction4 : public NonContextualExternalFunction
 {
 protected:
   MyExternalModule* theModule;
@@ -164,7 +165,7 @@ public:
   String getLocalName() const { return "func4"; }
 
   ItemSequence_t
-  evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  evaluate(const ExternalFunction::Arguments_t& args) const
   {
     // test raising an error with a given qname, a description, and an error object
     String lNamespace = "http://www.zorba-xquery.com/";
@@ -181,7 +182,7 @@ public:
 
 };
 
-StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
+ExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
 {
   if (aLocalname == "func1") 
   {

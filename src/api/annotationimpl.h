@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_FUNCTIONS_ANNOTATION_H
-#define ZORBA_FUNCTIONS_ANNOTATION_H
+#ifndef ZORBA_API_ANNOTATION_IMPL
+#define ZORBA_API_ANNOTATION_IMPL
 
 #include <vector>
+#include <zorba/annotation.h>
 
 #include "common/shared_types.h"
-#include "compiler/semantic_annotations/annotation_holder.h"
 #include "compiler/parsetree/parsenodes.h"
-#include "zorba/annotation.h"
 
 namespace zorba
 {
@@ -31,8 +30,9 @@ class AnnotationLiteral;
 class AnnotationInternal;
 class AnnotationList;
 
-
+typedef rchandle<AnnotationInternal> AnnotationInternal_t;
 typedef rchandle<AnnotationList> AnnotationList_t;
+typedef rchandle<AnnotationLiteral> AnnotationLiteral_t;
 
 
 /*******************************************************************************
@@ -43,20 +43,55 @@ typedef rchandle<AnnotationList> AnnotationList_t;
 class AnnotationImpl : public Annotation
 {
 protected:
-  store::Item_t                               theQName;
-  std::vector<rchandle<AnnotationLiteral> >   theLiteralList;
+  
+  AnnotationInternal_t  theAnnotation;
 
 public:
-  AnnotationImpl(const AnnotationInternal* annotation);
+  AnnotationImpl(AnnotationInternal* ann) 
+    : 
+    theAnnotation(ann)
+  {
+  }
 
-  virtual Item getQName() const;
+  ~AnnotationImpl() {};
 
-  virtual unsigned int getLiteralsCount() const;
+  Item getQName() const;
 
-  virtual Item getLiteral(unsigned int i) const;
+  unsigned int getLiteralsCount() const; 
 
-  virtual ~AnnotationImpl() {};
+  Item getLiteral(unsigned int i) const;
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class AnnotationInternal : public SimpleRCObject
+{
+  friend class AnnotationList;
+
+protected:
+  store::Item_t                      theQName;
+  std::vector<AnnotationLiteral_t>   theLiteralList;
+
+protected:
+  AnnotationInternal(const AnnotationParsenode* annotation); 
+
+public:
+  SERIALIZABLE_CLASS(AnnotationInternal);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationInternal, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  virtual ~AnnotationInternal() { };
+
+  const store::Item* getQName() const;
+
+  unsigned int getNumLiterals() const;
+
+  const AnnotationLiteral* getLiteral(unsigned int index) const;
+};
+
 
 
 /*******************************************************************************
@@ -64,12 +99,13 @@ public:
 ********************************************************************************/
 class AnnotationLiteral : public SimpleRCObject
 {
-friend class AnnotationInternal;
-friend class AnnotationImpl;
+  friend class AnnotationInternal;
+  friend class AnnotationImpl;
 
 protected:
   store::Item_t  theLiteral;
 
+protected:
   AnnotationLiteral(const AnnotationLiteral* literal);
 
   AnnotationLiteral(const StringLiteral* stringLiteral);
@@ -82,38 +118,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  store::Item_t getLiteral() const;
-
   virtual ~AnnotationLiteral() {};
-};
 
-
-/*******************************************************************************
-
-********************************************************************************/
-class AnnotationInternal : public SimpleRCObject
-{
-friend class AnnotationList;
-
-protected:
-  store::Item_t                               theQName;
-  std::vector<rchandle<AnnotationLiteral> >   theLiteralList;
-
-  AnnotationInternal(const AnnotationParsenode* annotation); // used by AnnotationList
-
-public:
-  SERIALIZABLE_CLASS(AnnotationInternal);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationInternal, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  const store::Item* getQName() const;
-
-  unsigned int getLiteralsCount() const;
-
-  const AnnotationLiteral* getLiteral(unsigned int index) const;
-
-  virtual ~AnnotationInternal() { };
+  store::Item_t getLiteralItem() const;
 };
 
 
@@ -123,7 +130,7 @@ public:
 class AnnotationList : public SimpleRCObject
 {
 protected:
-  std::vector<rchandle<AnnotationInternal> > theAnnotationList;
+  std::vector<AnnotationInternal_t> theAnnotationList;
 
 public:
   SERIALIZABLE_CLASS(AnnotationList);
@@ -132,13 +139,14 @@ public:
 
 public:
   AnnotationList() {};
+
+	virtual ~AnnotationList() {}
+
   AnnotationList(const AnnotationListParsenode* annotations);
 
   ulong size() const { return (ulong)theAnnotationList.size(); }
 
-  const AnnotationInternal* getAnnotation(unsigned int index) const;
-
-	virtual ~AnnotationList() {}
+  AnnotationInternal* getAnnotation(unsigned int index) const;
 };
 
 

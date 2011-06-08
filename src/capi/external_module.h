@@ -24,29 +24,32 @@
 
 namespace zorbac {
 
-  class CExternalFunction;
+class CExternalFunction;
 
-  class ExternalModuleWrapper : public zorba::ExternalModule {
-    public:
-      ExternalModuleWrapper(const char* uri);
 
-      virtual ~ExternalModuleWrapper();
+class ExternalModuleWrapper : public zorba::ExternalModule 
+{
+  typedef std::map<std::string, zorba::ExternalFunction*> FunctionMap_t;
 
-      virtual zorba::String
-      getURI() const;
+public:
+  ExternalModuleWrapper(const char* uri);
 
-      virtual zorba::StatelessExternalFunction*
-      getExternalFunction(const zorba::String& aLocalname);
+  virtual ~ExternalModuleWrapper();
 
-      virtual XQC_Error
-      registerFunction(CExternalFunction*);
+  virtual zorba::String
+  getURI() const;
 
-    protected:
-      zorba::String                                   theURI;
-      typedef std::map<std::string,
-                       zorba::StatelessExternalFunction*> FunctionMap_t;
-      mutable FunctionMap_t  theFunctionMap;
-  };
+  virtual zorba::ExternalFunction*
+  getExternalFunction(const zorba::String& aLocalname);
+
+  virtual XQC_Error
+  registerFunction(CExternalFunction*);
+
+protected:
+  zorba::String          theURI;
+  mutable FunctionMap_t  theFunctionMap;
+};
+
 
 } /* namespace zorbac */
 #endif

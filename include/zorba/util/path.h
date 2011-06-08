@@ -20,7 +20,6 @@
 #include <string>
 #include <iostream>
 #include <zorba/config.h>
-#include <zorba/external_function_data.h>
 
 namespace zorba {
 
