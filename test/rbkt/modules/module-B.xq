@@ -10,3 +10,7 @@ declare option ver:version "1.0";
 declare function modB:hello() as xs:string {
   vm:hello()
 };
+
+declare function modB:value() as xs:string {
+  $vm:value
+};

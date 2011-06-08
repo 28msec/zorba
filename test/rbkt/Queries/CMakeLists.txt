@@ -313,3 +313,5 @@ EXPECTED_FAILURE(test/rbkt/zorba/scripting/exit4 666)
 
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
+EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
+
