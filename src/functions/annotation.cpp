@@ -121,7 +121,10 @@ void AnnotationLiteral::serialize(::zorba::serialization::Archiver& ar)
 
 
 /*******************************************************************************
-
+ XQuery 3.0: implementation-defined annotations must not be in  
+ any of the following namespaces: http://www.w3.org/XML/1998/namespace, http://www.w3.org/2001/XMLSchema, 
+ http://www.w3.org/2001/XMLSchema-instance.
+ 
 ********************************************************************************/
 AnnotationInternal::AnnotationInternal(const AnnotationParsenode* annotation)
 {
