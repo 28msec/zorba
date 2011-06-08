@@ -255,7 +255,7 @@ DebuggerRuntime::suspendRuntime(QueryLoc aLocation, SuspensionCause aCause)
   theExecStatus = QUERY_SUSPENDED;
 
   std::stringstream lResponse;
-  lResponse << "<response command=\"" << "run" << "\" transaction_id=\"" << theLastContinuationTransactionID << "\" ";
+  lResponse << "<response command=\"" << "" << "\" transaction_id=\"" << theLastContinuationTransactionID << "\" ";
   lResponse << "reason=\"ok\" status=\"break\" ";
   lResponse << "/>";
   theCommunicator->send(lResponse.str());
@@ -290,6 +290,7 @@ DebuggerRuntime::terminateRuntime()
   // TODO: something more here?
 }
 
+
 void
 DebuggerRuntime::detachRuntime()
 {
@@ -297,6 +298,7 @@ DebuggerRuntime::detachRuntime()
   theExecStatus = QUERY_DETACHED; 
   // TODO: something more here?
 }
+
 
 std::vector<std::pair<std::string, std::string> >
 DebuggerRuntime::getVariables(bool aLocals)
@@ -310,33 +312,28 @@ DebuggerRuntime::getVariables(bool aLocals)
   return lVariables;
 }
 
+
 void
-DebuggerRuntime::step()
+DebuggerRuntime::step(StepCommand aStepType)
 {
-//#ifndef NDEBUG
-//  // Check preconditions
-//  ZORBA_ASSERT(dynamic_cast<StepMessage*>(theCurrentMessage) != NULL);
-//#endif // NDEBUG
-//  StepMessage* lMessage = static_cast<StepMessage*>(theCurrentMessage);
-//  StepCommand lCommand = lMessage->getStepKind();
-//  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
-//
-//  switch (lCommand)
-//  {
-//  case STEP_INTO:
-//    // Resume and then suspend as soon as the next iterator is reached.
-//    lCommons->setBreak(true, CAUSE_STEP);
-//    resumeRuntime();
-//    break;
-//  case STEP_OUT:
-//    lCommons->makeStepOut();
-//    resumeRuntime();
-//    break;
-//  case STEP_OVER:
-//    lCommons->makeStepOver();
-//    resumeRuntime();
-//    break;
-//  }
+  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
+
+  switch (aStepType)
+  {
+  case STEP_INTO:
+    // Resume and then suspend as soon as the next iterator is reached.
+    lCommons->setBreak(true, CAUSE_STEP);
+    resumeRuntime();
+    break;
+  case STEP_OUT:
+    lCommons->makeStepOut();
+    resumeRuntime();
+    break;
+  case STEP_OVER:
+    lCommons->makeStepOver();
+    resumeRuntime();
+    break;
+  }
 }
 
 

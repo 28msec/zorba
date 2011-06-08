@@ -60,16 +60,51 @@ QueryLocComparator::serialize(serialization::Archiver& ar) {
 bool
 QueryLocComparator::operator()(const QueryLoc& a, const QueryLoc& b) const
 {
+  // check the file names
+  // smaller has priority
   int c;
   if ((c = a.getFilename().compare(b.getFilename())) != 0) {
     return c < 0;
   }
 
-  if (a.getLineBegin() == 0 || b.getLineBegin() == 0) {
+  int ai, bi;
+
+  // check line numbers
+  // smaller has priority
+  ai = a.getLineBegin(); 
+  bi = b.getLineBegin(); 
+  if (ai != bi) {
+    return ai < bi;
+  }
+
+  // check column begin numbers
+  // smaller has priority
+  ai = a.getColumnBegin(); 
+  bi = b.getColumnBegin(); 
+  if (ai == 0 || bi == 0) {
+    return false;
+  }
+  if (ai != bi) {
+    return ai < bi;
+  }
+
+  // check line end numbers
+  // larger has priority
+  ai = a.getLineEnd(); 
+  bi = b.getLineEnd(); 
+  if (ai != bi) {
+    return ai > bi;
+  }
+
+  // check column end numbers
+  // larger has priority
+  ai = a.getColumnEnd(); 
+  bi = b.getColumnEnd(); 
+  if (ai == 0 || bi == 0) {
     return false;
   }
 
-  return a.getLineBegin() < b.getLineBegin();
+  return a.getColumnEnd() > b.getColumnEnd();
 }
 
 // ****************************************************************************

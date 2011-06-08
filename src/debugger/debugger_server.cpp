@@ -336,16 +336,20 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
       lResponse << ">";
       break;
 
-      // stack_depth, stack_get, status, stop
+    // stack_depth, stack_get, status, stop, step_into, step_over, step_out
     case 's':
 
       if (aCommand.getName() == "stop") {
+
         lResponse << "reason=\"ok\" status=\"stopped\" ";
         lResponse << ">";
         theRuntime->terminateRuntime();
+
       } else if (aCommand.getName() == "stack_depth") {
+
         lResponse << "depth=\"" << theRuntime->getStackDepth() << "\"";
         lResponse << ">";
+
       } else if (aCommand.getName() == "stack_get") {
 
         lResponse << ">";
@@ -400,6 +404,18 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           << "reason=\"ok\" "
           << ">";
 
+      } else if (aCommand.getName() == "step_into") {
+        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->step(STEP_INTO);
+        return "";
+      } else if (aCommand.getName() == "step_over") {
+        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->step(STEP_OVER);
+        return "";
+      } else if (aCommand.getName() == "step_out") {
+        theRuntime->setTheLastContinuationTransactionID(lTransactionID);
+        theRuntime->step(STEP_OUT);
+        return "";
       }
 
       break;
