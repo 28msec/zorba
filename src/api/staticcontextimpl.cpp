@@ -1472,10 +1472,10 @@ Function_t
 StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
 {
   Item lType = aQName.getType();
-  if (lType.getStringValue() != "QName")
+  if (lType.getStringValue() != "xs:QName")
   {
     throw XQUERY_EXCEPTION(
-      err::XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), "QName" )
+      err::XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), "xs:QName" )
     );
   }
 

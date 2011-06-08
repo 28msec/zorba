@@ -2031,46 +2031,66 @@ void static_context::getVariables(
         if ((!aLocals && lExpr->get_kind() == var_expr::prolog_var) ||
             aLocals && lExpr->get_kind() != var_expr::prolog_var)
         {
+          std::stringstream lTypeSs;
+          std::stringstream lNameSs;
+
+
           // read the name
-          std::stringstream lVarName;
-          bool lHasNS = ! lExpr->get_name()->getNamespace().empty();
+          store::Item* lNameItem = lExpr->get_name();
+          zstring lLocalName = lNameItem->getLocalName();
+
+          if (lLocalName == "$$dot") {
+            aVariableList.push_back(std::pair<std::string, std::string>(".", "item()*"));
+            continue;
+          }
+
+          bool lHasNS = ! lNameItem->getNamespace().empty();
 
           if (lHasNS)
           {
-            lVarName << lExpr->get_name()->getPrefix().str() << ":";
+            lNameSs << lNameItem->getPrefix().str() << ":";
           }
-          lVarName << lExpr->get_name()->getLocalName().str();
+          lNameSs << lNameItem->getLocalName().str();
           if (lHasNS)
           {
-            lVarName << " " << lExpr->get_name()->getNamespace().str();
+            lNameSs << "\\" << lNameItem->getNamespace().str();
           }
 
 
           // read the type
-          std::stringstream lType;
-          if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL)
+          xqtref_t lType = lExpr->get_type();
+
+          if (lType == NULL || lType->get_qname() == NULL)
           {
-            lType << "xs:anyType";
-            if (lExpr->is_sequential())
-            {
-              lType << "*";
-            }
-            lType << " http://www.w3.org/2001/XMLSchema";
+            lTypeSs << "item()*";
           }
           else
           {
+            TypeConstants::quantifier_t lQuantifier = lType->get_quantifier();
             store::Item_t lQname = lExpr->get_type()->get_qname();
-            lType << lQname->getPrefix().str()
+            lTypeSs << lQname->getPrefix().str()
                   << ":"
-                  << lQname->getLocalName().str()
-                  << " "
-                  << lQname->getNamespace().str();
+                  << lQname->getLocalName().str();
+            switch (lQuantifier) {
+            case TypeConstants::QUANT_QUESTION:
+              lTypeSs << "?";
+              break;
+            case TypeConstants::QUANT_STAR:
+              lTypeSs << "*";
+              break;
+            case TypeConstants::QUANT_PLUS:
+              lTypeSs << "+";
+              break;
+            }
+
+            // TODO: support namespaces
+            //lTypeSs << " " << lQname->getNamespace().str();
           }
 
 
           // add a new result
           aVariableList.push_back(
-            std::pair<std::string, std::string>(lVarName.str(), lType.str())
+            std::pair<std::string, std::string>(lNameSs.str(), lTypeSs.str())
           );
 
         }

@@ -18,6 +18,9 @@
 
 #include <string>
 #include <ostream>
+#include <list>
+
+#include "zorbatypes/zstring.h"
 
 #include "debugger_common.h"
 #include "debugger_protocol.h"
@@ -61,6 +64,22 @@ class DebuggerServer {
       std::string commandName,
       int errorCode,
       std::string errorMessage);
+
+    std::string
+    getVariableName(std::string& aFullName);
+
+    void
+    buildProperty(
+      std::string& fullName,
+      std::string& name,
+      std::string& type,
+      std::ostream& stream);
+
+    void
+    buildChildProperties(
+      std::string& name,
+      std::list<std::pair<zstring, zstring> >& children,
+      std::ostream& stream);
 
     bool
     getEnvVar(const std::string& name, std::string& value);

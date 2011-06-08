@@ -347,19 +347,15 @@ DebuggerRuntime::setNotSendTerminateEvent()
 }
 
 
-void
-DebuggerRuntime::evalCommand()
+std::list<std::pair<zstring, zstring> >
+DebuggerRuntime::eval(zstring& aExpr)
 {
-  //ZORBA_ASSERT(dynamic_cast<EvalMessage*>(theCurrentMessage));
-  //zstring const &lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
-  //// This command will care itself about garbage collection - so don't delete
-  //// it in this method!
-  //EvalCommand* lCommand = new EvalCommand(
-  //  theWrapper->thePlanState->theDebuggerCommons,
-  //  theCommunicator, lExpr.c_str(), theSerializerOptions,
-  //  theCurrentMessage->getId());
-  ////lCommand->setDeleteAfterRun(true);
-  //lCommand->start();
+  Zorba_omit_xml_declaration_t lOldOpt = theSerializerOptions.omit_xml_declaration;
+  theSerializerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+  DebuggerCommons* lCommons = getDebbugerCommons();
+  std::list<std::pair<zstring, zstring> > lResults = lCommons->eval(aExpr, theSerializerOptions);
+  theSerializerOptions.omit_xml_declaration = lOldOpt;
+  return lResults;
 }
 
 

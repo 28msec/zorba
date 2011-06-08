@@ -1,1 +1,1 @@
-integer
+xs:integer

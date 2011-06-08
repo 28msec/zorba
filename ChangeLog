@@ -19,6 +19,9 @@ version 2.0
   * removed the serialize module (http://www.zorba-xquery.com/modules/serialize) since this
     functionality is now covered by the built-in function fn:serialize
   * updated the file module to the new http://expath.org/ file module specification. The new module is now in the http://expath.org/ns/file namespace
+  * the XML Schema atomic types are now serialized including the "xs" prefix (used in sax2 serialization,
+ debuger, etc.)
+  * zorba uses now DBGP as the debugger protocol
 
 version 1.4
   * added a datetime library module with nondeterministic functions

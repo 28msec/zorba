@@ -169,7 +169,13 @@ DebugIterator::eval(
     seq_iter->close();
 
     // build the result pair and append it to the list
-    zstring lTypeStr(lRes->getType()->getStringValue().str());
+    store::Item* lTypeItem = lRes->getType();
+    zstring lTypeStr(lTypeItem->getStringValue());
+    // TODO: support namespaces
+    //zstring lTypeNS = lTypeItem->getNamespace();
+    //if (!lTypeNS.empty()) {
+    //  lTypeStr = lTypeStr.append(" " + lTypeNS);
+    //}    
     std::pair<zstring, zstring> lPair(lResStream.str(), lTypeStr);
     lResult.push_back(lPair);
   }

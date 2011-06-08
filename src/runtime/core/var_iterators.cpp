@@ -548,7 +548,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         ERROR_LOC( loc )
       );
     }
-  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+  } // if (theTargetPos > 0)
 
   else
   {

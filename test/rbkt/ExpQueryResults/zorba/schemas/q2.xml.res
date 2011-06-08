@@ -1,1 +1,1 @@
-moneyType true decimal
+moneyType true xs:decimal

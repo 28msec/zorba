@@ -425,7 +425,7 @@ DebuggerCommons::setDebugIteratorState(DebugIteratorState* aState)
   ZORBA_ASSERT(theDebugIteratorState == aState);
 }
 
-std::list<std::pair<zstring, zstring> > 
+std::list<std::pair<zstring, zstring> >
 DebuggerCommons::eval(const zstring& aExpr, Zorba_SerializerOptions& aSerOpts)
 {
   theExecEval = true;

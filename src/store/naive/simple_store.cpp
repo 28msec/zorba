@@ -184,66 +184,66 @@ void SimpleStore::initTypeNames()
 
   theSchemaTypeNames.resize(XS_LAST);
 
-  f->createQName(theSchemaTypeNames[XS_UNTYPED],        ns, "", "untyped");
-  f->createQName(theSchemaTypeNames[XS_ANY],            ns, "", "anyType");
+  f->createQName(theSchemaTypeNames[XS_UNTYPED],        ns, "xs", "untyped");
+  f->createQName(theSchemaTypeNames[XS_ANY],            ns, "xs", "anyType");
 
-  f->createQName(theSchemaTypeNames[XS_ANY_SIMPLE],     ns, "", "anySimpleType");
+  f->createQName(theSchemaTypeNames[XS_ANY_SIMPLE],     ns, "xs", "anySimpleType");
 
-  f->createQName(theSchemaTypeNames[XS_ANY_ATOMIC],     ns, "", "anyAtomicType");
+  f->createQName(theSchemaTypeNames[XS_ANY_ATOMIC],     ns, "xs", "anyAtomicType");
 
-  f->createQName(theSchemaTypeNames[XS_UNTYPED_ATOMIC], ns, "", "untypedAtomic");
+  f->createQName(theSchemaTypeNames[XS_UNTYPED_ATOMIC], ns, "xs", "untypedAtomic");
 
-  f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "", "anyURI");
+  f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "xs", "anyURI");
 
-  f->createQName(theSchemaTypeNames[XS_QNAME],          ns, "", "QName");
+  f->createQName(theSchemaTypeNames[XS_QNAME],          ns, "xs", "QName");
 
-  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "", "NOTATION");
+  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "xs", "NOTATION");
 
-  f->createQName(theSchemaTypeNames[XS_STRING],         ns, "", "string");
-  f->createQName(theSchemaTypeNames[XS_NORMALIZED_STRING], ns, "", "normalizedString");
-  f->createQName(theSchemaTypeNames[XS_TOKEN],          ns, "", "token");
-  f->createQName(theSchemaTypeNames[XS_NMTOKEN],        ns, "", "NMTOKEN");
-  f->createQName(theSchemaTypeNames[XS_LANGUAGE],       ns, "", "language");
-  f->createQName(theSchemaTypeNames[XS_NAME],           ns, "", "Name");
-  f->createQName(theSchemaTypeNames[XS_NCNAME],         ns, "", "NCName");
-  f->createQName(theSchemaTypeNames[XS_ID],             ns, "", "ID");
-  f->createQName(theSchemaTypeNames[XS_IDREF],          ns, "", "IDREF");
-  f->createQName(theSchemaTypeNames[XS_ENTITY],         ns, "", "ENTITY");
+  f->createQName(theSchemaTypeNames[XS_STRING],         ns, "xs", "string");
+  f->createQName(theSchemaTypeNames[XS_NORMALIZED_STRING], ns, "xs", "normalizedString");
+  f->createQName(theSchemaTypeNames[XS_TOKEN],          ns, "xs", "token");
+  f->createQName(theSchemaTypeNames[XS_NMTOKEN],        ns, "xs", "NMTOKEN");
+  f->createQName(theSchemaTypeNames[XS_LANGUAGE],       ns, "xs", "language");
+  f->createQName(theSchemaTypeNames[XS_NAME],           ns, "xs", "Name");
+  f->createQName(theSchemaTypeNames[XS_NCNAME],         ns, "xs", "NCName");
+  f->createQName(theSchemaTypeNames[XS_ID],             ns, "xs", "ID");
+  f->createQName(theSchemaTypeNames[XS_IDREF],          ns, "xs", "IDREF");
+  f->createQName(theSchemaTypeNames[XS_ENTITY],         ns, "xs", "ENTITY");
 
-  f->createQName(theSchemaTypeNames[XS_DATETIME],       ns, "", "dateTime");
-  f->createQName(theSchemaTypeNames[XS_DATE],           ns, "", "date");
-  f->createQName(theSchemaTypeNames[XS_TIME],           ns, "", "time");
-  f->createQName(theSchemaTypeNames[XS_GYEAR_MONTH],    ns, "", "gYearMonth");
-  f->createQName(theSchemaTypeNames[XS_GYEAR],          ns, "", "gYear");
-  f->createQName(theSchemaTypeNames[XS_GMONTH_DAY],     ns, "", "gMonthDay");
-  f->createQName(theSchemaTypeNames[XS_GDAY],           ns, "", "gDay");
-  f->createQName(theSchemaTypeNames[XS_GMONTH],         ns, "", "gMonth");
+  f->createQName(theSchemaTypeNames[XS_DATETIME],       ns, "xs", "dateTime");
+  f->createQName(theSchemaTypeNames[XS_DATE],           ns, "xs", "date");
+  f->createQName(theSchemaTypeNames[XS_TIME],           ns, "xs", "time");
+  f->createQName(theSchemaTypeNames[XS_GYEAR_MONTH],    ns, "xs", "gYearMonth");
+  f->createQName(theSchemaTypeNames[XS_GYEAR],          ns, "xs", "gYear");
+  f->createQName(theSchemaTypeNames[XS_GMONTH_DAY],     ns, "xs", "gMonthDay");
+  f->createQName(theSchemaTypeNames[XS_GDAY],           ns, "xs", "gDay");
+  f->createQName(theSchemaTypeNames[XS_GMONTH],         ns, "xs", "gMonth");
 
-  f->createQName(theSchemaTypeNames[XS_DURATION],       ns, "", "duration");
-  f->createQName(theSchemaTypeNames[XS_DT_DURATION],    ns, "", "dayTimeDuration");
-  f->createQName(theSchemaTypeNames[XS_YM_DURATION],    ns, "", "yearMonthDuration");
+  f->createQName(theSchemaTypeNames[XS_DURATION],       ns, "xs", "duration");
+  f->createQName(theSchemaTypeNames[XS_DT_DURATION],    ns, "xs", "dayTimeDuration");
+  f->createQName(theSchemaTypeNames[XS_YM_DURATION],    ns, "xs", "yearMonthDuration");
 
-  f->createQName(theSchemaTypeNames[XS_FLOAT],          ns, "", "float");
-  f->createQName(theSchemaTypeNames[XS_DOUBLE],         ns, "", "double");
-  f->createQName(theSchemaTypeNames[XS_DECIMAL],        ns, "", "decimal");
-  f->createQName(theSchemaTypeNames[XS_INTEGER],        ns, "", "integer");
-  f->createQName(theSchemaTypeNames[XS_NON_POSITIVE_INTEGER], ns, "", "nonPositiveInteger");
-  f->createQName(theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER], ns, "", "nonNegativeInteger");
-  f->createQName(theSchemaTypeNames[XS_NEGATIVE_INTEGER], ns, "", "negativeInteger");
-  f->createQName(theSchemaTypeNames[XS_POSITIVE_INTEGER], ns, "", "positiveInteger");
+  f->createQName(theSchemaTypeNames[XS_FLOAT],          ns, "xs", "float");
+  f->createQName(theSchemaTypeNames[XS_DOUBLE],         ns, "xs", "double");
+  f->createQName(theSchemaTypeNames[XS_DECIMAL],        ns, "xs", "decimal");
+  f->createQName(theSchemaTypeNames[XS_INTEGER],        ns, "xs", "integer");
+  f->createQName(theSchemaTypeNames[XS_NON_POSITIVE_INTEGER], ns, "xs", "nonPositiveInteger");
+  f->createQName(theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER], ns, "xs", "nonNegativeInteger");
+  f->createQName(theSchemaTypeNames[XS_NEGATIVE_INTEGER], ns, "xs", "negativeInteger");
+  f->createQName(theSchemaTypeNames[XS_POSITIVE_INTEGER], ns, "xs", "positiveInteger");
 
-  f->createQName(theSchemaTypeNames[XS_LONG],           ns, "", "long");
-  f->createQName(theSchemaTypeNames[XS_INT],            ns, "", "int");
-  f->createQName(theSchemaTypeNames[XS_SHORT],          ns, "", "short");
-  f->createQName(theSchemaTypeNames[XS_BYTE],           ns, "", "byte");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_LONG],  ns, "", "unsignedLong");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_INT],   ns, "", "unsignedInt");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_SHORT], ns, "", "unsignedShort");
-  f->createQName(theSchemaTypeNames[XS_UNSIGNED_BYTE],  ns, "", "unsignedByte");
+  f->createQName(theSchemaTypeNames[XS_LONG],           ns, "xs", "long");
+  f->createQName(theSchemaTypeNames[XS_INT],            ns, "xs", "int");
+  f->createQName(theSchemaTypeNames[XS_SHORT],          ns, "xs", "short");
+  f->createQName(theSchemaTypeNames[XS_BYTE],           ns, "xs", "byte");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_LONG],  ns, "xs", "unsignedLong");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_INT],   ns, "xs", "unsignedInt");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_SHORT], ns, "xs", "unsignedShort");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_BYTE],  ns, "xs", "unsignedByte");
 
-  f->createQName(theSchemaTypeNames[XS_BASE64BINARY],   ns, "", "base64Binary");
-  f->createQName(theSchemaTypeNames[XS_HEXBINARY],      ns, "", "hexBinary");
-  f->createQName(theSchemaTypeNames[XS_BOOLEAN],        ns, "", "boolean");
+  f->createQName(theSchemaTypeNames[XS_BASE64BINARY],   ns, "xs", "base64Binary");
+  f->createQName(theSchemaTypeNames[XS_HEXBINARY],      ns, "xs", "hexBinary");
+  f->createQName(theSchemaTypeNames[XS_BOOLEAN],        ns, "xs", "boolean");
 
   f->createQName(theSchemaTypeNames[ZXSE_ERROR], ZXSE_URI, "zxse", "error");
   f->createQName(theSchemaTypeNames[ZXSE_TUPLE], ZXSE_URI, "zxse", "tuple");

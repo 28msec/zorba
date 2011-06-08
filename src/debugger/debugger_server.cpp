@@ -252,29 +252,8 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
           for (; lIter != lVariables.end(); ++lIter) {
             std::string lFullName = lIter->first;
-            std::string lName = lFullName;
-            std::size_t lIndex = lFullName.find(" ");
-            if (lIndex != std::string::npos) {
-              lName = lFullName.substr(0, lIndex);
-            }
-
-            lResponse << "<property "
-              << "name=\"" << lName << "\" "
-              << "fullname=\"" << lFullName << "\" "
-              << "type=\"" << lIter->second << "\" "
-//            << "classname=\"name_of_object_class\" "
-              << "constant=\"1\" "
-//            << "children=\"0\" "
-//            << "size=\"9\" "
-//            << "page=\"{NUM}\" "
-//            << "pagesize=\"{NUM}\" "
-//            << "address=\"{NUM}\" "
-//            << "key=\"language_dependent_key\" "
-//            << "encoding=\"base64|none\" "
-//            << "numchildren=\"{NUM}\" "
-              << ">"
-              << "not evaluated"
-              << "</property>";
+            std::string lName = getVariableName(lFullName);
+            buildProperty(lFullName, lName, lIter->second, lResponse);
           }
         }
       }
@@ -298,8 +277,50 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
       lResponse << ">";
       break;
 
+    // property_get, property_set, property_value
+    case 'p':
+
+      {
+        lResponse << ">";
+
+        int lDepth;
+        if (!aCommand.getArg("d", lDepth)) {
+          lDepth = 0;
+        }
+        std::string lFullName;
+        if (!aCommand.getArg("n", lFullName)) {
+          std::stringstream lSs;
+          lSs << "Invalid options: " << "missing -n option for a property command";
+          return buildErrorResponse(lTransactionID, lCmdName, 3, lSs.str());
+        }
+
+        if (aCommand.getName() == "property_get") {
+          // currently ignoring -p (page) option
+
+          std::string lName = getVariableName(lFullName);
+          // the type is not needed anymore here
+          std::string lDummyType("");
+          buildProperty(lFullName, lName, lDummyType, lResponse);
+        
+        } else if (aCommand.getName() == "property_set") {
+
+          std::stringstream lSs;
+          lSs << "Unimplemented command: " << lCmdName;
+          return buildErrorResponse(lTransactionID, lCmdName, 4, lSs.str());
+
+        } else if (aCommand.getName() == "property_value") {
+
+          std::stringstream lSs;
+          lSs << "Unimplemented command: " << lCmdName;
+          return buildErrorResponse(lTransactionID, lCmdName, 4, lSs.str());
+
+        }
+      }
+      break;
+
+    // run
     case 'r':
-      // run
+
       if (lStatus == QUERY_SUSPENDED || lStatus == QUERY_IDLE) {
         theRuntime->setTheLastContinuationTransactionID(lTransactionID);
         if (lStatus == QUERY_IDLE) {
@@ -308,13 +329,14 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           theRuntime->resumeRuntime();
         }
         return "";
-        //lResponse << "reason=\"ok\" status=\"running\" ";
       }
+
       lResponse << ">";
       break;
 
-    case 's':
       // stack_depth, stack_get, status, stop
+    case 's':
+
       if (aCommand.getName() == "stop") {
         lResponse << "reason=\"ok\" status=\"stopped\" ";
         lResponse << ">";
@@ -393,6 +415,88 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
   return "";
 }
 
+std::string
+DebuggerServer::getVariableName(std::string& aFullName) {
+
+  std::string lName(aFullName);
+  std::size_t lIndex = aFullName.find("\\");
+
+  if (lIndex != std::string::npos) {
+    lName = aFullName.substr(0, lIndex);
+  }
+  return lName;
+}
+
+void
+DebuggerServer::buildProperty(
+  std::string& aFullName,
+  std::string& aName,
+  std::string& aType,
+  std::ostream& aStream)
+{
+  bool lFetchChildren = aType == "";
+  std::list<std::pair<zstring, zstring> > lResults;
+
+  // TODO: currently we don't evaluate the context item because of an exception
+  // thrown in the dynamic context that messes up the plan wrapper in the eval
+  // iterator and subsequent evals will fails
+  if (aName != ".") {
+    zstring lVar;
+    lVar.append("$");
+    lVar.append(aName);
+    lResults = theRuntime->eval(lVar);
+  }
+
+  std::size_t lSize = lResults.size();
+
+/* not using the following property attributes */
+//  << "classname=\"name_of_object_class\" "
+//  << "size=\"9\" "
+//  << "page=\"{NUM}\" "
+//  << "pagesize=\"{NUM}\" "
+//  << "address=\"{NUM}\" "
+//  << "key=\"language_dependent_key\" "
+
+  aStream << "<property "
+    << "name=\"" << aName << "\" "
+    << "fullname=\"" << aFullName << "\" "
+    << "type=\"" << "" << aType << "" << "\" "
+    << "encoding=\"none\" "
+    << "constant=\"1\" "
+    << "children=\"" << (lSize > 1 ? 1 : 0) << "\" ";
+  if (lSize > 1) {
+    aStream << "numchildren=\"" << lSize << "\" ";
+  }
+  aStream << ">";
+
+  if (lFetchChildren && lSize > 1) {
+    buildChildProperties(aName, lResults, aStream);
+  } else if (lResults.size() == 1) {
+    aStream << lResults.front().first;
+  }
+
+  aStream << "</property>";
+}
+
+void
+DebuggerServer::buildChildProperties(
+  std::string& aName,
+  std::list<std::pair<zstring, zstring> >& aResults,
+  std::ostream& aStream)
+{
+  std::list<std::pair<zstring, zstring> >::iterator lIter = aResults.begin();
+  for (int i = 1; lIter != aResults.end(); ++lIter, ++i) {
+    aStream << "<property "
+      << "name=\"" << aName << "[" << i << "]" << "\" "
+      << "fullname=\"" << aName << "[" << i << "]" << "\" "
+      << "type=\"" << lIter->second << "\" "
+      << "encoding=\"none\" "
+      << "constant=\"1\" "
+      << "children=\"0\" "
+      << ">" << lIter->first
+      << "</property>";
+  }
+}
 
 bool
 DebuggerServer::getEnvVar(const std::string& aName, std::string& aValue) 

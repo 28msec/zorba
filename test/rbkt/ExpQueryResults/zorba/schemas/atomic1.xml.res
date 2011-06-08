@@ -1,1 +1,1 @@
-true decimal
+true xs:decimal
