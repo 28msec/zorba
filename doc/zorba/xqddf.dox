@@ -1848,15 +1848,14 @@ search condition, which is either a single key item/tuple, or a "range" of key
 items/tuples. Probing can be done via the xqddf functions 
 xqddf:probe-index-point-value, xqddf:probe-index-point-general, 
 xqddf:probe-index-range-value, or xqddf:probe-index-range-general.
-Each of these functions accepts a variable number of arguments. The first 
-argument is always a QName identifying an index. The rest of the arguments
-specify the search condition. For all functions, the index must exist in both
-the statically known indexes and the available indexes of the invoking module;
-otherwise error XDDY0021 or XDDY0023 is raised, respectively. All of the
-functions return their result sorted in document order and without duplicate
-nodes. (For general probes, duplicate node elimination is performed as part 
-of the function implementation; for value probes, duplicate nodes cannot 
-appear in the result, so no duplicate elimination is needed.)
+For each of these functions, the first argument is a QName identifying an
+index. The rest of the arguments specify the search condition. For all functions,
+the index must exist in both the statically known indexes and the available 
+indexes of the invoking module; otherwise error XDDY0021 or XDDY0023 is raised, 
+respectively. All of the functions return their result sorted in document order 
+and without duplicate nodes. (For general probes, duplicate node elimination 
+is performed as part of the function implementation; for value probes, duplicate
+nodes cannot appear in the result, so no duplicate elimination is needed.)
 
 <a name="probe_index_point_value" id="probe_index_point_value"></a>
 \code
@@ -1886,10 +1885,10 @@ operand of the comparison operator is a sequence of more than one items or if
 one operand has type xs:untypedAtomic and the other operand has a type other 
 than xs:string or xs:anyUri, or subtype of these. If no error is raised, 
 execution of the function proceeds as follows: If the type of the search key 
-item is xs:untypedAtomic, the item is cast to a string item. Then, the function
-looks for index entries whose key is equal to the search key according to the 
-rules of the eq operator. For example, if the search key is an item with type 
-xs:int and value 10, and the index contains two entries with key 10 as 
+item is xs:untypedAtomic, the item is first cast to a string item. Then, the
+function looks for index entries whose key is equal to the search key according
+to the rules of the eq operator. For example, if the search key is an item with
+type xs:int and value 10, and the index contains two entries with key 10 as 
 xs:decimal and as xs:double, both of these entries will match the search key. 
 The final result is the union of the node sets stored in each matching entry.
 

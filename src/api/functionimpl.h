@@ -49,6 +49,8 @@ protected:
 
   bool isDeterministic() const;
 
+  void getAnnotations(std::vector<Annotation_t>& annotations) const;
+
   Item getQName() const;
 
   String getURI() const;

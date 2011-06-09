@@ -28,7 +28,7 @@ namespace simplestore
 {
 
 /**************************************************************************//**
-  Class ValueSet represents a value set as a vector of item handles.
+
 *******************************************************************************/
 class GeneralIndexValue
 {
@@ -226,10 +226,10 @@ protected:
   theResultSetsEnd : The "end" iterator of theResultSets. This is used for 
                      point probes only. 
 
-  theMapBegins     :  A vector that stores an itarator pointing to the 1st 
+  theMapBegins     :  A vector that stores an iterator pointing to the 1st 
                       qualifying entry in each tree that has at least one
                       qualifying entry. This is used for range probes only.
-  theMapEnds       :  A vector that stores an itarator pointing to the last 
+  theMapEnds       :  A vector that stores an iterator pointing to the last 
                       qualifying entry in each tree that has at least one
                       qualifying entry. This is used for range probes only.
   theMapIte        :

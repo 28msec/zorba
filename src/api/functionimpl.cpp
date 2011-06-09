@@ -30,33 +30,56 @@ bool FunctionImpl::isUpdating() const
   return theFunction->isUpdating();
 }
 
+
 bool FunctionImpl::isPrivate() const
 {
   return theFunction->isPrivate();
 }
+
 
 bool FunctionImpl::isDeterministic() const
 {
   return theFunction->isDeterministic();
 }
 
+
 bool FunctionImpl::isSequential() const
 {
   return theFunction->isSequential();
 }
 
+
+void FunctionImpl::getAnnotations(std::vector<Annotation_t>& annotations) const
+{
+  annotations.clear();
+
+  const AnnotationList* ann_list = theFunction->getAnnotationList();
+  if (ann_list == NULL)
+    return;
+
+  try
+  {
+    for (unsigned int i = 0; i < ann_list->size(); ++i)
+      annotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+}
+
+
 Item FunctionImpl::getQName() const
 {
   try 
   {
-    Item lFunctionName(theFunction->getName());
-    return lFunctionName;
+    return theFunction->getName();
   } 
   catch (ZorbaException const& e) 
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
   }
-  return Item(0);
+  return Item();
 }
 
 
@@ -88,14 +111,13 @@ String FunctionImpl::getLocalName() const
 }
 
 
-size_t
-FunctionImpl::getArity() const
+size_t FunctionImpl::getArity() const
 {
   return theFunction->getArity();
 }
 
-bool
-FunctionImpl::isVariadic() const
+
+bool FunctionImpl::isVariadic() const
 {
   return theFunction->isVariadic();
 }

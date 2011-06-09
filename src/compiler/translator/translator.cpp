@@ -3107,15 +3107,11 @@ void* begin_visit(const VFO_DeclList& v)
       // via the StaticContextImpl::registerExternalModule() user api.
       if (ef == NULL)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZXQP0008_FUNCTION_IMPL_NOT_FOUND,
-          ERROR_PARAMS(
-            BUILD_STRING(
-              '{', qnameItem->getNamespace(), '}', qnameItem->getLocalName()
-            )
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZXQP0008_FUNCTION_IMPL_NOT_FOUND, loc,
+        ERROR_PARAMS(BUILD_STRING('{', 
+                                  qnameItem->getNamespace(),
+                                  '}',
+                                  qnameItem->getLocalName())));
       }
       else
       {

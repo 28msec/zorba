@@ -73,6 +73,12 @@ class ZORBA_DLL_PUBLIC Function : public SmartObject
   isDeterministic() const = 0;
 
   /**
+   *
+   */
+  virtual void
+  getAnnotations(std::vector<Annotation_t>& annotations) const = 0;
+
+  /**
    * @return The expanded QName of the function
    */
   virtual Item
