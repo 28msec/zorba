@@ -241,8 +241,8 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   open (SPEC, ">>$specfile");
   open (SPECX, ">>$xqueryxspecfile");
 
-  print SPEC "Args:";
-  print SPECX "Args:";
+  print SPEC "Args:\n";
+  print SPECX "Args:\n";
 
   # enable Dtd loader for tests using Dtd
   if ( $name=~/^fn-id-dtd-/ ||
@@ -250,15 +250,15 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
        $name=~/^functx-functx-id-from-element-1/
      )
   {
-    print SPEC  " --enable-dtd ";
-    print SPECX " --enable-dtd ";
+    print SPEC  "--enable-dtd \n";
+    print SPECX "--enable-dtd \n";
   }
 
   if ( $inlist ne "noinlist" ) {
     foreach (@inbnd) {
       my ($var, $srcid) = split /=/;
-      print SPEC " -x $var=$test_src_path/" . $sources {$srcid};
-      print SPECX " -x $var=$test_src_path/" . $sources {$srcid};
+      print SPEC "-x \n$var=$test_src_path/\n" . $sources {$srcid};
+      print SPECX "-x \n$var=$test_src_path/\n" . $sources {$srcid};
       # Rather ugly query post-processing; see bug 2788838
       if (grep $_ eq "XPST0005", @errs) {
         change_doc("$dstqpath/$name.xq", $var);
@@ -269,17 +269,17 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   if ( $urilist ne "nourilist" ) {
     foreach (@uribnd) {
       my ($var, $srcid) = split /=/;
-      print SPEC " -x $var:=" . $srcid;
-      print SPECX " -x $var:=" . $srcid;
+      print SPEC "-x \n$var:=" . $srcid ."\n";
+      print SPECX "-x \n$var:=" . $srcid ."\n";
     }
   }
 
   if ( $ctx ne "nocontext" ) {
-    print SPEC " -x .=$test_src_path/" . $sources {$ctx};
-    print SPECX " -x .=$test_src_path/" . $sources {$ctx};
+    print SPEC "-x \n.=$test_src_path/" . $sources {$ctx} ."\n";
+    print SPECX "-x \n.=$test_src_path/" . $sources {$ctx} ."\n";
   }
-  print SPEC "\n";
-  print SPECX "\n";
+  #print SPEC "\n";
+  #print SPECX "\n";
   close (SPEC);
   close (SPECX);
 }

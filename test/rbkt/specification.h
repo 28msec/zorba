@@ -287,6 +287,15 @@ public:
     str.erase(notwhite+1); 
   }
 
+bool isKeyword(std::string& str) {
+  bool c = ((str.find("Args:")!=std::string::npos) || (str.find("Options:")!=std::string::npos) || 
+            (str.find("Serialization:")!=std::string::npos) || (str.find("Result:")!=std::string::npos) || 
+            (str.find("InputQuery:")!=std::string::npos) || (str.find("Comparison:")!=std::string::npos) || 
+            (str.find("DefaultCollection:")!=std::string::npos) || (str.find("Error:")!=std::string::npos) || 
+            (str.find("Date:")!=std::string::npos) || (str.find("Timezone:")!=std::string::npos));
+  return c;
+}
+
   bool parseFile(std::string str, std::string rbkt_src_dir,
     std::string rbkt_binary_dir)
   {
@@ -321,30 +330,36 @@ public:
       {
         if( *lIter == "Args:" )
         {
-          for(++lIter; lIter!=tokens.end(); ++lIter)
+          for(++it; (it!=lines.end()) &&  !isKeyword(*it); ++it)
           {
-            std::string lArg = *lIter;
+            zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);
+            zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
+            trim(*it);
+            std::string lArg = *it;
             if ( (lArg == "-x") ||
               (lArg == "--stop-words") || (lArg == "--thesaurus") )
             {
               // Argument binding and stop-words/thesaurus URI binding are
               // very similar, so use the same code path for most of it.
-              ++lIter;
-              if(lIter->find(":=") == std::string::npos) {
+              it++;
+              zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);
+              zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
+              trim(*it);
+              if(it->find(":=") == std::string::npos) {
                 setInline(true);
               }
-              else if(lIter->find('=') == std::string::npos) {
+              else if(it->find('=') == std::string::npos) {
                 return false;
               }
               else {
                 setInline(false);
               }
               if( theInline ) {
-                setVarName(lIter->begin(), lIter->begin()+lIter->find('='));
+                setVarName(it->begin(), it->begin()+it->find('='));
               } else {
-                setVarName(lIter->begin(), lIter->begin()+lIter->find(":="));
+                setVarName(it->begin(), it->begin()+it->find(":="));
               }
-              setVarValue(lIter->begin()+lIter->find("=")+1, lIter->end());
+              setVarValue(it->begin()+it->find("=")+1, it->end());
               if (lArg == "-x") {
                 addVariable();
               }
@@ -370,6 +385,7 @@ public:
               return false;
             }
           }
+          it--;
           break;
         }
         else if ( *lIter == "Options:" )

@@ -156,7 +156,7 @@
 #include "diagnostics/xquery_stack_trace.h"
 #include "diagnostics/xquery_warning.h"
 #include "diagnostics/zorba_exception.h"
-#include "functions/annotation.h"
+//#include "functions/annotation.h"
 #include "functions/external_function.h"
 #include "functions/function.h"
 #include "functions/function_consts.h"
