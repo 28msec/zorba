@@ -423,6 +423,8 @@ if(ar.is_serializing_out() && !ar.is_serialize_base_class())    \
 
   void operator&(Archiver &ar, char &obj);
 
+  void operator&(Archiver &ar, signed char &obj);
+
   void operator&(Archiver &ar, unsigned char &obj);
 
   void operator&(Archiver &ar, float &obj);
