@@ -6,7 +6,6 @@ let $result := fn:analyze-string(
 "abab
 babba", "(b)a", "m")
 return 
- if(zorba-schema:is-validated($result)) then
-   $result
- else
-   validate{$result}
+ ($result, "
+ ",
+ zorba-schema:is-validated($result))

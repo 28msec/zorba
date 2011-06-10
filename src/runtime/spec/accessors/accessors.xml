@@ -108,6 +108,9 @@
   
   <zorba:function>
 
+    <zorba:signature localname="data" prefix="fn" version="3.0">
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
     <zorba:signature localname="data" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
@@ -161,6 +164,9 @@
     <zorba:description author="Zorba Team">fn:document-uri</zorba:description>
     
     <zorba:function>
+        <zorba:signature localname="document-uri" prefix="fn" version="3.0">
+            <zorba:output>xs:anyURI?</zorba:output>
+        </zorba:signature>
         <zorba:signature localname="document-uri" prefix="fn">
             <zorba:param>node()?</zorba:param>
             <zorba:output>xs:anyURI?</zorba:output>

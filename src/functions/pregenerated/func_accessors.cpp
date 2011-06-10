@@ -61,6 +61,15 @@ PlanIter_t fn_nilled::codegen(
 }
 
 
+PlanIter_t fn_data_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnDataIterator(sctx, loc, argv);
+}
 PlanIter_t fn_data::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -81,6 +90,15 @@ PlanIter_t fn_base_uri::codegen(
   return new BaseUriIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_document_uri_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new DocumentUriIterator(sctx, loc, argv);
+}
 PlanIter_t fn_document_uri::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -136,6 +154,12 @@ void populate_context_accessors(static_context* sctx)
       FunctionConsts::FN_STRING_1);
 
 
+  DECL_WITH_KIND(sctx, fn_data_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","data"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR),
+      FunctionConsts::FN_DATA_0);
+
+
   DECL_WITH_KIND(sctx, fn_data,
       (createQName("http://www.w3.org/2005/xpath-functions","","data"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
@@ -154,6 +178,12 @@ void populate_context_accessors(static_context* sctx)
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
       FunctionConsts::FN_BASE_URI_1);
+
+
+  DECL_WITH_KIND(sctx, fn_document_uri_3_0,
+      (createQName("http://www.w3.org/2005/xpath-functions","","document-uri"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
+      FunctionConsts::FN_DOCUMENT_URI_0);
 
 
   DECL_WITH_KIND(sctx, fn_document_uri,

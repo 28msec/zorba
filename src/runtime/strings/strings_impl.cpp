@@ -1832,6 +1832,18 @@ bool FnAnalyzeStringIterator::nextImpl(
     rx.compile(lib_pattern, flags.c_str());
     int   nr_pattern_groups = rx.get_pattern_group_count();
 
+    //see if regex can match empty strings
+    bool   reachedEnd = false;
+    unicode::size_type   utf8len;
+    rx.set_string("", 0, &utf8len);
+    if(rx.find_next_match(&reachedEnd))
+    {
+      throw XQUERY_EXCEPTION(
+        err::FORX0003, ERROR_PARAMS( lib_pattern )
+      );
+
+    }
+
     store::Item_t null_parent;
     store::Item_t result_element_name;
     store::Item_t untyped_type_name;
@@ -1844,11 +1856,10 @@ bool FnAnalyzeStringIterator::nextImpl(
     GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);
 
     int nr_retry = 0;
-    bool   reachedEnd = false;
+    reachedEnd = false;
     do
     {
       const char *instr;
-      unicode::size_type   utf8len;
       if(!is_input_stream)
       {
         rx.set_string(input.c_str(), input.size(), &utf8len);
