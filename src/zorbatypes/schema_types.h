@@ -35,7 +35,7 @@ namespace zorba {
 typedef zstring       xs_anyURI;
 typedef Base64        xs_base64Binary;
 typedef bool          xs_boolean;
-typedef char          xs_byte;
+typedef signed char   xs_byte;
 typedef DateTime      xs_date;
 typedef DateTime      xs_dateTime;
 typedef Duration      xs_dayTimeDuration;
