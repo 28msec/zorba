@@ -3644,7 +3644,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
          lIter != v.get_literals()->end();
          ++lIter)
     {
-      rchandle<const_expr> lLiteral = pop_nodestack();
+      rchandle<const_expr> lLiteral = dynamic_cast<const_expr*>(pop_nodestack().getp());
       lLiterals.insert(lLiterals.begin(), lLiteral);
     }
   }

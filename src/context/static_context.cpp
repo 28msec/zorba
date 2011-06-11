@@ -869,6 +869,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunctionArityMap;
   ar.set_serialize_only_for_eval(false);
 
+  ar & theAnnotationMap;
+
   ar & theCollectionMap;
 
   ar & theW3CCollectionMap;
