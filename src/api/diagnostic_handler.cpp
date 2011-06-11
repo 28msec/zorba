@@ -45,4 +45,3 @@ void DiagnosticHandler::warning( XQueryWarning const &w ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

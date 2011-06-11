@@ -1170,7 +1170,7 @@ class debugger_expr: public eval_expr
 
 private:
   std::list<GlobalBinding> theGlobals;
-  bool                     theForExpr;
+  bool theIsVarDeclaration;
 
 public:
   SERIALIZABLE_CLASS(debugger_expr)
@@ -1179,34 +1179,34 @@ public:
 
 public:
   debugger_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_t aChild,
-        std::list<GlobalBinding> aGlobals)
-    :
-    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
-    theGlobals(aGlobals)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t aChild,
+    std::list<GlobalBinding> aGlobals,
+    bool aIsVarDeclaration)
+    : eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
+      theGlobals(aGlobals),
+      theIsVarDeclaration(aIsVarDeclaration)
   {
   }
 
   debugger_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_t aChild,
-        checked_vector<var_expr_t> aScopedVariables,
-        std::list<GlobalBinding> aGlobals,
-        bool aForExpr = false)
-    :
-    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
-    theGlobals( aGlobals ),
-    theForExpr(aForExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t aChild,
+    checked_vector<var_expr_t> aScopedVariables,
+    std::list<GlobalBinding> aGlobals,
+    bool aIsVarDeclaration)
+    : eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
+      theGlobals(aGlobals),
+      theIsVarDeclaration(aIsVarDeclaration)
   {
     store_local_variables(aScopedVariables);
   }
 
   std::list<GlobalBinding> getGlobals() const { return theGlobals; }
 
-  bool isForExpr() const { return theForExpr; }
+  bool isVarDeclaration() const { return theIsVarDeclaration; }
 
   void accept(expr_visitor&);
 
@@ -1227,4 +1227,3 @@ private:
  * mode: c++
  * End:
  */
-/* vim:set ts=2 sw=2: */

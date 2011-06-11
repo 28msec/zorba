@@ -1486,7 +1486,6 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (eval_expr*)this);
   ar & theGlobals;
-  ar & theForExpr;
 }
 #endif
 

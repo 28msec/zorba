@@ -337,7 +337,7 @@ protected:
   CompilerCB                               * theCCB;
 
 #ifdef ZORBA_WITH_DEBUGGER
-  std::stack<DebugIterator*>            theDebuggerStack;
+  std::stack<DebugIterator*>                 theDebuggerStack;
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1911,7 +1911,9 @@ bool begin_visit(debugger_expr& v)
   // because it's used for connecting all debugger
   // iterators in the tree (see end_visit below)
   std::vector<PlanIter_t> aTmpVec;
-  theDebuggerStack.push(new DebugIterator(sctx, qloc, aTmpVec));
+  DebugIterator* lIterator = new DebugIterator(sctx, qloc, aTmpVec);
+  lIterator->setVarDeclaration(v.isVarDeclaration());
+  theDebuggerStack.push(lIterator);
   return true;
 }
 
@@ -1940,7 +1942,7 @@ void end_visit(debugger_expr& v)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
 
   // get the debugger iterator from the debugger stack
-  std::auto_ptr<DebugIterator> aDebugIterator(theDebuggerStack.top());
+  std::auto_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
   theDebuggerStack.pop();
 
   // set the child of the debugger iterator
@@ -1958,17 +1960,18 @@ void end_visit(debugger_expr& v)
                                   v.get_inner_scripting_kind(),
                                   localBindings));
 
-  aDebugIterator->setChildren(&argv);
+  lDebugIterator->setChildren(&argv);
 
-  aDebugIterator->setVariables(varnames, vartypes);
+  lDebugIterator->setVariables(varnames, vartypes);
 
   // link all debugger iterators in the tree
   if (!theDebuggerStack.empty()) 
   {
-    theDebuggerStack.top()->addChild(aDebugIterator.get());
-    aDebugIterator->setParent(theDebuggerStack.top());
+    theDebuggerStack.top()->addChild(lDebugIterator.get());
+    lDebugIterator->setParent(theDebuggerStack.top());
   }
-  push_itstack(aDebugIterator.release());
+
+  push_itstack(lDebugIterator.release());
 }
 #endif
 

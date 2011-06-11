@@ -70,6 +70,7 @@ protected:
   checked_vector<xqtref_t> vartypes; //
   std::vector<DebugIterator*> theDebuggerChildren; //
   DebugIterator* theDebuggerParent; //
+  bool theIsVarDeclaration; //
 public:
   SERIALIZABLE_CLASS(DebugIterator);
 
@@ -85,6 +86,7 @@ public:
     ar & vartypes;
     ar & theDebuggerChildren;
     ar & theDebuggerParent;
+    ar & theIsVarDeclaration;
   }
 
   DebugIterator(
@@ -96,13 +98,19 @@ public:
     varnames(),
     vartypes(),
     theDebuggerChildren(),
-    theDebuggerParent()
+    theDebuggerParent(),
+    theIsVarDeclaration()
   {}
 
   virtual ~DebugIterator();
 
+  bool isVarDeclaration() const { return theIsVarDeclaration; }
+
+  void setVarDeclaration(bool aValue) { theIsVarDeclaration= aValue; }
+
 public:
-  const DebugIterator* getParent() const;
+  const DebugIterator* getDebuggerParent() const;
+  std::vector<DebugIterator*> getDebuggerChildren() const;
   const DebugIterator* getOverIterator() const;
   QueryLoc getQueryLocation() const;
   std::list<std::pair<zstring, zstring> > eval(PlanState* aState, Zorba_SerializerOptions* aSerOptions) const;

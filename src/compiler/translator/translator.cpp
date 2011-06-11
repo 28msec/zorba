@@ -1632,6 +1632,15 @@ rchandle<flwor_expr> wrap_expr_in_flwor(
   return flworExpr;
 }
 
+QueryLoc
+expandQueryLoc(const QueryLoc aLocationFrom, const QueryLoc& aLocationTo)
+{
+  QueryLoc lExpandedLocation(aLocationFrom);
+  lExpandedLocation.setColumnEnd(aLocationTo.getColumnEnd());
+  lExpandedLocation.setLineEnd(aLocationTo.getLineEnd());
+  return lExpandedLocation;
+}
+
 /*******************************************************************************
   In this expression branch, we create the debugger expressions.
   Furthermore, we create an entry for all expressions in the map
@@ -1639,20 +1648,27 @@ rchandle<flwor_expr> wrap_expr_in_flwor(
   to set breakpoints of expressions which are not translated at the
   beginning (e.g. inside functions).
 ********************************************************************************/
-void wrap_in_debugger_expr(expr_t& aExpr)
+void wrap_in_debugger_expr(
+  expr_t& aExpr,
+  const QueryLoc& aLoc,
+  bool aAddBreakable = true,
+  bool aIsVarDeclaration = false)
 {
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theSctx,
-                                                         aExpr->get_loc(),
+                                                         aLoc,
                                                          aExpr,
-                                                         thePrologVars));
+                                                         thePrologVars,
+                                                         aIsVarDeclaration));
 
     // add the breakable expression in the debugger commons as a possible
     // breakpoint location
-    Breakable lBreakable(aExpr->get_loc());
-    theCCB->theDebuggerCommons->addBreakable(lBreakable);
+    Breakable lBreakable(aLoc);
+    if (aAddBreakable) {
+      theCCB->theDebuggerCommons->addBreakable(lBreakable);
+    }
 
     // retrieve all variables that are in the current scope
     typedef std::vector<var_expr_t> VarExprVector;
@@ -1688,6 +1704,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
   }
 #endif
 }
+
 
 /*******************************************************************************
   Collect the var_exprs for all variables that (a) are defined by some clause
@@ -2131,6 +2148,11 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
   expr_t program = pop_nodestack();
 
   assert(theCCB->theIsEval || !program->is_updating());
+
+  // the main module debug iterator has no location otherwise
+  // this would take precedence over a child debug iterator
+  // starting in the same line
+  wrap_in_debugger_expr(program, program->get_loc(), false);
 
   program = wrap_in_globalvar_assign(program);
 
@@ -3263,6 +3285,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     body = pop_nodestack();
 
+    wrap_in_debugger_expr(body, v.get_name()->get_location());
+
     ZORBA_ASSERT(udf != NULL);
     assert(body != NULL);
     assert(! (body->get_scripting_detail() & BREAKING_EXPR));
@@ -3566,6 +3590,16 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
+    
+#ifdef ZORBA_WITH_DEBUGGER
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
+      QueryLoc lExpandedLocation = expandQueryLoc(
+        v.get_name()->get_location(),
+        initExpr->get_loc());
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+    }
+#endif
+
     // The ve and its associated intExpr will be put into var_decl_expr that
     // will creaated by the wrap_in_globalvar_assign() method when it is called
     // at the end of the translation of each module.
@@ -3577,6 +3611,16 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     // will be created by the translation of the parent block expr, immediately
     // after returning from this method.
     push_nodestack(ve.getp());
+
+#ifdef ZORBA_WITH_DEBUGGER
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
+      QueryLoc lExpandedLocation = expandQueryLoc(
+        v.get_name()->get_location(),
+        initExpr->get_loc());
+      wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
+    }
+#endif
+
     push_nodestack(initExpr);
   }
   theAnnotations = NULL;
@@ -5469,7 +5513,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   expr_t retExpr = pop_nodestack();
 
-  wrap_in_debugger_expr(retExpr);
+  wrap_in_debugger_expr(retExpr, retExpr->get_loc());
 
   flwor->set_return_expr(retExpr);
 
@@ -5629,7 +5673,10 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
-  wrap_in_debugger_expr(domainExpr);
+  QueryLoc lExpandedLocation = expandQueryLoc(
+    v.get_name()->get_location(),
+    domainExpr->get_loc());
+  wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
   push_scope();
 
@@ -5735,7 +5782,10 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     // it's important to insert the debugger before the scope is pushed.
     // Otherwise, the variable in question would already be in scope for
     // the debugger but no value would be bound
-    wrap_in_debugger_expr(domainExpr);
+    QueryLoc lExpandedLocation = expandQueryLoc(
+      v.get_name()->get_location(),
+      domainExpr->get_loc());
+    wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
     push_scope();
 
@@ -6376,7 +6426,7 @@ void end_visit(const WhereClause& v, void* /*visit_state*/)
 
   whereExpr = wrap_in_bev(whereExpr);
 
-  wrap_in_debugger_expr(whereExpr);
+  wrap_in_debugger_expr(whereExpr, whereExpr->get_loc());
 
   where_clause* clause = new where_clause(theRootSctx,
                                           v.get_location(),
@@ -6831,9 +6881,9 @@ void end_visit(const IfExpr& v, void* /*visit_state*/)
   expr_t t_h = pop_nodestack();
   expr_t c_h = pop_nodestack();
 
-  wrap_in_debugger_expr(e_h);
-  wrap_in_debugger_expr(t_h);
-  wrap_in_debugger_expr(c_h);
+  wrap_in_debugger_expr(e_h, e_h->get_loc());
+  wrap_in_debugger_expr(t_h, t_h->get_loc());
+  wrap_in_debugger_expr(c_h, c_h->get_loc());
 
   if_expr* ifExpr = new if_expr(theRootSctx, loc, c_h, t_h, e_h);
 

@@ -32,8 +32,11 @@
     <zorba:member type="checked_vector&lt;xqtref_t&gt;" name="vartypes" brief=""/>
     <zorba:member type="std::vector&lt;DebugIterator*&gt;" name="theDebuggerChildren" brief=""/>
     <zorba:member type="DebugIterator*" name="theDebuggerParent" brief=""/>
-    
-    <zorba:method return="const DebugIterator*" name="getParent" const="true"/>
+    <zorba:member type="bool" name="theIsVarDeclaration" brief=""
+      getterName="isVarDeclaration" setterName="setVarDeclaration"/>
+
+    <zorba:method return="const DebugIterator*" name="getDebuggerParent" const="true"/>
+    <zorba:method return="std::vector&lt;DebugIterator*&gt;" name="getDebuggerChildren" const="true"/>
     <zorba:method return="const DebugIterator*" name="getOverIterator" const="true"/>
     <zorba:method return="QueryLoc" name="getQueryLocation" const="true"/>
 

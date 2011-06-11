@@ -287,11 +287,20 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     // Qualifier: const
     //************************************
     static_context* getCurrentStaticContext() const;
+
+    bool
+    canBreak();
+
+    bool
+    mustBreak(SuspensionCause& aCause);
+
     /**
     * @brief Returns true, if a breakpoint is set to the given location -
     * false otherwise.
     */
-    bool hasToBreakAt(QueryLoc aLocation);
+    bool
+    hasToBreakAt(QueryLoc aLocation);
+
     /**
     * @brief Returns true, if a breakpoint is set to the given debugger
     * iterator - false otherwise.
@@ -302,27 +311,8 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     *
     * @brief aIter != NULL
     */
-    bool hasToBreakAt(const DebugIterator* aIter);
-    /**
-    * @brief This returns true, if the runtime wants to suspend.
-    *
-    * If the debugger runtime wants to suspend, it sets theBreak to true,
-    * which should be checked by every debug iterator on every iteration
-    * step. If the variable is set to true, the iterator should suspend
-    * the runtime immediately.
-    *
-    * There can be several reasons for the runtime for setting theBreak
-    * to true. It could be a step in command from the user (where this
-    * mechanism is used for convenience) or an interrupt from the user.
-    *
-    * @retval aCause sets aCause to the cause, why the debugger runtime
-    *  has to suspend.
-    * @return true, if the runtime wants the debugger to suspend.
-    * @pre *aCause == 0
-    * @post *aCause == theCause
-    * @post Result == theBreak
-    */
-    bool hasToBreak(SuspensionCause* aCause) const;
+    bool
+    hasToBreakAt(const DebugIterator* aIter);
 
     /**
     * @brief Gets the current debugger iterator.
@@ -388,17 +378,16 @@ class DebuggerCommons : public serialization::SerializeBaseClass{
     DebuggerRuntime*                                theRuntime;
     static_context*                                 theCurrentStaticContext;
     dynamic_context*                                theCurrentDynamicContext;
+
     bool                                            theBreak;
     SuspensionCause                                 theCause;
-    /*const */DebugIterator*                        theCurrentIterator;
-    /**
-    * @brief The list of step expressions.
-    */
-    std::list</*const*/ DebugIterator*>             theBreakIterators;
+    std::vector<DebugIterator*>                     theIteratorStack;
+    std::size_t                                     theBreakCondition;
     PlanState*                                      thePlanState;
     DebugIteratorState*                             theDebugIteratorState;
     store::Item_t                                   theEvalItem;
     bool                                            theExecEval;
+    bool                                            theStepping;
   };
 
 }

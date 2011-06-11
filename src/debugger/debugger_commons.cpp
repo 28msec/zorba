@@ -113,9 +113,9 @@ SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
 
 DebuggerSingletonIterator::DebuggerSingletonIterator(
-  static_context* sctx, QueryLoc loc, DebuggerCommons* lCommons) :
-NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
-theCommons(lCommons)
+  static_context* sctx, QueryLoc loc, DebuggerCommons* lCommons)
+  : NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
+    theCommons(lCommons)
 {
 }
 
@@ -147,12 +147,13 @@ END_SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
 DebuggerCommons::DebuggerCommons(static_context* sctx)
   : theBreak(false),
     theCause(0),
-    theExecEval(false)
+    theExecEval(false),
+    theStepping(false),
+    theBreakCondition(0)
 {
   theRuntime = NULL;
   theCurrentStaticContext = NULL;
   theCurrentDynamicContext = NULL;
-  theCurrentIterator = NULL;
   thePlanState = NULL;
   theDebugIteratorState = NULL;
 }
@@ -166,22 +167,27 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theBreakables;
   ar & theBreakableIDs;
+  ar & theStackTrace;
   ar & theUriFileMappingMap;
+
   if(ar.is_serializing_out())
     theRuntime = NULL;
   ar & theCurrentStaticContext;
   if(ar.is_serializing_out())
     theCurrentDynamicContext = NULL;
+
   ar & theBreak;
   ar & theCause;
-  ar & theCurrentIterator;
-  ar & theBreakIterators;
+  ar & theIteratorStack;
+  ar & theBreakCondition;
+
   if(ar.is_serializing_out())
     thePlanState = NULL;
   if(ar.is_serializing_out())
     theDebugIteratorState = NULL;
   ar & theEvalItem;
   ar & theExecEval;
+  ar & theStepping;
 }
 
 
@@ -283,61 +289,53 @@ DebuggerCommons::removeBreakpoint(unsigned int aId)
   theBreakables[aId].setSet(false);
 }
 
-//bool
-//DebuggerCommons::addBreakpoint(DebugLocation_t& aLocation, unsigned int aId)
-//{
-//  bool lResult = false;
-//
-//  // First we check, if the filename is a module namespace
-//  std::map<std::string, std::string>::iterator lMapIter;
-//  lMapIter = theUriFileMappingMap.find(aLocation.theFileName);
-//  if (lMapIter != theUriFileMappingMap.end()) {
-//    aLocation.theFileName = lMapIter->second;
-//  }
-//
-//  std::map<DebugLocation_t, bool, DebugLocation>::iterator lIter;
-//  lIter = theLocationMap.find(aLocation);
-//  // if the location could not be found, try it again with the encoded file uri.
-//  if (lIter == theLocationMap.end()) {
-//    zstring filename = aLocation.theFileName;
-//    zstring url;
-//    URI::encode_file_URI(filename, url);
-//    aLocation.theFileName = url.str();
-//    lIter = theLocationMap.find(aLocation);
-//    aLocation.theFileName = filename.str();
-//  }
-//  if (lIter != theLocationMap.end()) {
-//    aLocation.theQueryLocation = lIter->first.theQueryLocation;
-//    lIter->second = true;
-//    lResult = true;
-//  }
-//  // If the location could not be found, we iterate over all locations and try
-//  // to find a location with a filename with a matching substring
-//  for (lIter = theLocationMap.begin(); !lResult && lIter != theLocationMap.end();
-//    lIter++) {
-//    if (lIter->first.theFileName.find(aLocation.theFileName) !=
-//      std::string::npos && aLocation.theLineNumber ==
-//      lIter->first.theLineNumber) {
-//        lIter->second = true;
-//        aLocation.theQueryLocation = lIter->first.theQueryLocation;
-//        lResult = true;
-//    }
-//  }
-//  //otherwise, there could not be found a breakable expression
-//  if (lResult) {
-//    theBreakpoints.insert(
-//      std::pair<unsigned int, DebugLocation_t>(aId, aLocation));
-//  }
-//  return lResult;
-//}
+bool
+DebuggerCommons::canBreak()
+{
+  return !theExecEval;
+}
+
+bool
+DebuggerCommons::mustBreak(SuspensionCause& aCause)
+{
+  if (theBreak) {
+    aCause = CAUSE_STEP;
+    return true;
+  } else if (theStepping) {
+    std::size_t lSize = theIteratorStack.size();
+
+    // either we meet the step condition
+    if (lSize <= theBreakCondition) {
+      // reset the break conditions
+      theBreakCondition = 0;
+      theStepping = false;
+      return true;
+    }
+    // or we have stepped over from a function declaration breakpoint
+    // we have for sure at least the following stack of debug iterators:
+    // MainModule DI -> FunctionCall DI -> FunctionDecl DI -> current DI
+    if (lSize > 3 && lSize == theBreakCondition + 1 && theIteratorStack.at(lSize - 2)->getDebuggerParent() == NULL) {
+      // reset the break conditions
+      theBreakCondition = 0;
+      theStepping = false;
+      return true;
+    }
+    // or we have stepped over and we reached another variable declaration
+    // TODO: still to check and stop only at declarations on the same level
+    if (lSize <= theBreakCondition && theIteratorStack.back()->isVarDeclaration()) {
+      // reset the break conditions
+      theBreakCondition = 0;
+      theStepping = false;
+      return true;
+    }
+  }
+
+  return false;
+}
 
 bool
 DebuggerCommons::hasToBreakAt(QueryLoc aLocation)
 {
-  if (theExecEval) {
-    return false;
-  }
-
   adjustLocationFilePath(aLocation);
 
   BreakableIdMap::const_iterator lIter = theBreakableIDs.find(aLocation);
@@ -352,46 +350,7 @@ DebuggerCommons::hasToBreakAt(QueryLoc aLocation)
 bool
 DebuggerCommons::hasToBreakAt(const DebugIterator* aIter)
 {
-  //Preconditions
-  ZORBA_ASSERT(aIter != NULL);
-
-  if (theExecEval) {
-    return false;
-  }
-
-  std::list</*const */DebugIterator*>::iterator lIter;
-  for (lIter = theBreakIterators.begin();
-    lIter != theBreakIterators.end();
-    lIter++) {
-      if (*lIter == aIter) {
-        theBreakIterators.erase(lIter);
-        return true;
-      }
-  }
   return false;
-}
-
-bool
-DebuggerCommons::hasToBreak(SuspensionCause* aCause) const
-{
-  //This is not a precondition, because the client does not hava another
-  //way to check it, then calling this function. But if theCause is 0, this
-  // is clearly a bug.
-  ZORBA_ASSERT(theBreak ? theCause != 0 : true);
-
-  // Check preconditions
-  ZORBA_ASSERT(*aCause == 0);
-
-  if (theExecEval) {
-    return false;
-  }
-
-  *aCause = theCause;
-
-  // Check postconditions
-  ZORBA_ASSERT(theCause == *aCause);
-
-  return theBreak;
 }
 
 void
@@ -413,34 +372,70 @@ DebuggerCommons::setBreak(bool lBreak, SuspensionCause aCause)
 void
 DebuggerCommons::setCurrentIterator(const DebugIterator* aIterator)
 {
-  theCurrentIterator = (DebugIterator*)aIterator;
-  //Test postconditions
-  ZORBA_ASSERT(aIterator == theCurrentIterator);
+  // don't modify the iterator stack during expression evaluation
+  if (theExecEval) {
+    return;
+  }
+
+  const DebugIterator* lParent = aIterator->getDebuggerParent();
+
+  // when the stack is empty (main module debug iterator) or
+  // when the parent is NULL but not a variable declaration (function declaration iterator) or
+  // when the parent is the last in the stack
+  if (theIteratorStack.empty() ||
+      lParent == NULL && !aIterator->isVarDeclaration() ||
+      theIteratorStack.back() == lParent) {
+    theIteratorStack.push_back((DebugIterator*)aIterator);
+    return;
+  }
+
+  // avoid multiple calls to this function
+  // recursive functions always insert at least 2 iterators
+  if (theIteratorStack.back() == aIterator) {
+    return;
+  }
+
+  // now we remove the iterators from the stack until we find the parent
+  theIteratorStack.pop_back();
+  while (!theIteratorStack.empty()) {
+    if (theIteratorStack.back() == aIterator->getDebuggerParent()) {
+      theIteratorStack.push_back((DebugIterator*)aIterator);
+      return;
+    }
+    theIteratorStack.pop_back();
+  }
+
+  // noe the stack is empty, so push this iterator in the stack
+  theIteratorStack.push_back((DebugIterator*)aIterator);
 }
 
 const DebugIterator*
 DebuggerCommons::getCurrentIterator() const
 {
-  return theCurrentIterator;
-}
-
-void DebuggerCommons::makeStepOut()
-{
-  /*const */DebugIterator* lIter = (DebugIterator*)theCurrentIterator->getParent();
-  if (lIter != NULL) {
-    theBreakIterators.push_back(lIter);
+  if (theIteratorStack.empty()) {
+    return NULL;
   }
+  return theIteratorStack.back();
 }
 
 void
 DebuggerCommons::makeStepOver()
 {
-  //Preconditions
-  ZORBA_ASSERT(theCurrentIterator != NULL);
+  theStepping = true;
+  if (!theIteratorStack.empty()) {
+    theBreakCondition = theIteratorStack.size();
+  } else {
+    theBreakCondition = 0;
+  }
+}
 
-  /*const*/ DebugIterator* lIter = (DebugIterator*)theCurrentIterator->getOverIterator();
-  if (lIter != NULL) {
-    theBreakIterators.push_back(lIter);
+void DebuggerCommons::makeStepOut()
+{
+  theStepping = true;
+  if (!theIteratorStack.empty()) {
+    theBreakCondition = theIteratorStack.size() - 1;
+  } else {
+    theBreakCondition = 0;
   }
 }
 
@@ -468,7 +463,7 @@ DebuggerCommons::eval(const zstring& aExpr, Zorba_SerializerOptions& aSerOpts)
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
                                                                   lStore);
   std::list<std::pair<zstring, zstring> > lRes =
-    theCurrentIterator->eval(thePlanState, &aSerOpts);
+    theIteratorStack.back()->eval(thePlanState, &aSerOpts);
 
   theExecEval = false;
   return lRes;

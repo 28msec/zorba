@@ -64,6 +64,8 @@ DebugIterator::nextImpl(
   DebugIteratorState* lState = 0;
   DEFAULT_STACK_INIT(DebugIteratorState, lState, planState);
 
+  planState.theDebuggerCommons->setCurrentIterator(this);
+
   // is there a breakpoint here?
   checkBreak(&planState);
 
@@ -72,6 +74,7 @@ DebugIterator::nextImpl(
     // this iterator is the identity
     STACK_PUSH(true, lState);
   }
+
   STACK_END(lState);
 }
 
@@ -102,7 +105,7 @@ DebugIterator::setParent( DebugIterator* parent )
   theDebuggerParent = parent;
   
   //Postconditions
-  ZORBA_ASSERT(getParent() == parent);
+  ZORBA_ASSERT(getDebuggerParent() == parent);
 }
 
 
@@ -114,11 +117,17 @@ DebugIterator::getQueryLocation() const
   
 
 const DebugIterator*
-DebugIterator::getParent() const
+DebugIterator::getDebuggerParent() const
 {
   return theDebuggerParent;
 }
 
+
+std::vector<DebugIterator*>
+DebugIterator::getDebuggerChildren() const
+{
+  return theDebuggerChildren;
+}
 
 const DebugIterator*
 DebugIterator::getOverIterator() const
@@ -156,28 +165,33 @@ DebugIterator::eval(
   store::Item_t lRes;
   serializer ser(NULL);
   SerializerImpl::setSerializationParameters(ser, *aSerOptions);
-  while (consumeNext(lRes, theChildren[1], *aPlanState)) {
-    std::stringstream lResStream;
+  try {
+    while (consumeNext(lRes, theChildren[1], *aPlanState)) {
+      std::stringstream lResStream;
 
-    // Build a singleton item sequence and wrap it in an internal Serializable.
-    // The new serializer interface only accepts Serializable objects.
-    const Item lItem(lRes);
-    SingletonItemSequence lSequence(lItem);
-    Iterator_t  seq_iter = lSequence.getIterator();
-    seq_iter->open();
-    ser.serialize(Unmarshaller::getInternalIterator(seq_iter.get()), lResStream);
-    seq_iter->close();
+      // Build a singleton item sequence and wrap it in an internal Serializable.
+      // The new serializer interface only accepts Serializable objects.
+      const Item lItem(lRes);
+      SingletonItemSequence lSequence(lItem);
+      Iterator_t  seq_iter = lSequence.getIterator();
+      seq_iter->open();
+      ser.serialize(Unmarshaller::getInternalIterator(seq_iter.get()), lResStream);
+      seq_iter->close();
 
-    // build the result pair and append it to the list
-    store::Item* lTypeItem = lRes->getType();
-    zstring lTypeStr(lTypeItem->getStringValue());
-    // TODO: support namespaces
-    //zstring lTypeNS = lTypeItem->getNamespace();
-    //if (!lTypeNS.empty()) {
-    //  lTypeStr = lTypeStr.append(" " + lTypeNS);
-    //}    
-    std::pair<zstring, zstring> lPair(lResStream.str(), lTypeStr);
-    lResult.push_back(lPair);
+      // build the result pair and append it to the list
+      store::Item* lTypeItem = lRes->getType();
+      zstring lTypeStr(lTypeItem->getStringValue());
+      // TODO: support namespaces
+      //zstring lTypeNS = lTypeItem->getNamespace();
+      //if (!lTypeNS.empty()) {
+      //  lTypeStr = lTypeStr.append(" " + lTypeNS);
+      //}    
+      std::pair<zstring, zstring> lPair(lResStream.str(), lTypeStr);
+      lResult.push_back(lPair);
+    }
+  } catch (...) {
+    // catching anything in this sandbox
+    // TODO: must report an error in the result
   }
   return lResult;
 }
@@ -188,18 +202,18 @@ DebugIterator::checkBreak(PlanState* planState) const
 {
   DebuggerCommons* lCommons = planState->theDebuggerCommons;
   SuspensionCause lCause = 0;
-
+  
   // check whether we have to suspend 
   // (determined by location, iterator, or some other cause)
-  if (lCommons->hasToBreakAt(loc) || lCommons->hasToBreakAt(this) ||
-      lCommons->hasToBreak(&lCause)) 
+  if (lCommons->canBreak() && (lCommons->mustBreak(lCause) ||
+      lCommons->hasToBreakAt(loc) || lCommons->hasToBreakAt(this)))
   {
     try
     {
       lCause = lCause == 0 ? CAUSE_BREAKPOINT : lCause;
       
       // tell everybody that we are the iterator who suspended
-      lCommons->setCurrentIterator(this);
+      //lCommons->setCurrentIterator(this);
       lCommons->setCurrentStaticContext(getStaticContext());
       lCommons->setCurrentDynamicContext(planState->theLocalDynCtx);
       lCommons->setBreak(false);
