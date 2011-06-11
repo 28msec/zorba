@@ -21,6 +21,8 @@
 
 #include "functions/function.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "annotations/annotations.h"
+#include "api/annotationimpl.h"
 
 namespace zorba 
 {

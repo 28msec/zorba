@@ -31,6 +31,8 @@
 #include "common/common.h"
 #include "zorbamisc/ns_consts.h"
 
+#include "store/api/item_factory.h"
+
 namespace zorba 
 {
 

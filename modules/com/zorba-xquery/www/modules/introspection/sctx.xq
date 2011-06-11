@@ -288,5 +288,3 @@ declare function sctx:copy-namespaces-mode() as xs:string+ external;
  :         or the empty sequence otherwise.
  :)
 declare function sctx:option($name as xs:QName) as xs:string? external;
-
-

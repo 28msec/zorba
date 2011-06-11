@@ -722,10 +722,9 @@ VarDecl::VarDecl(
   VarDeclWithInit(loc, varname, type_decl, init_expr),
   theIsExternal(external),
   theIsGlobal(global),
-  theIsPrivate(false),
-  theIsMutable(false),
   theAnnotations(annotations)
 {
+#if 0
   if (annotations != NULL)
   {
     annotations->validate();
@@ -739,15 +738,16 @@ VarDecl::VarDecl(
         theIsMutable = true;
     }
   }
+#endif
 }
 
 
 void VarDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
+  ACCEPT(theAnnotations);
   ACCEPT(theType);
   ACCEPT(theInitExpr);
-  ACCEPT(theAnnotations);
   END_VISITOR();
 }
 
@@ -770,10 +770,7 @@ FunctionDecl::FunctionDecl(
   theReturnType(retType),
   theBody(body),
   theIsExternal(external),
-  theUpdating(updating),
-  theSequential(false),
-  theDeterministic(true),
-  thePrivate(false)
+  theUpdating(updating)
 {
 }
 
@@ -784,7 +781,6 @@ void FunctionDecl::accept(parsenode_visitor& v) const
   ACCEPT(theParams);
   ACCEPT(theReturnType);
   ACCEPT(theBody);
-  ACCEPT(theAnnotations);
   END_VISITOR();
 }
 
@@ -798,72 +794,7 @@ ulong FunctionDecl::get_param_count() const
 void FunctionDecl::set_annotations(AnnotationListParsenode* annotations)
 {
   theAnnotations = annotations;
-
-  if (annotations)
-  {
-    annotations->validate();
-
-    parse_annotations();
-  }
 }
-
-
-void FunctionDecl::parse_annotations()
-{
-  for (unsigned int i = 0; i < theAnnotations->size(); i++)
-  {
-    if ((*theAnnotations)[i]->get_qname()->get_qname() == "nondeterministic")
-      theDeterministic = false;
-
-    else if ((*theAnnotations)[i]->get_qname()->get_qname() == "private")
-      thePrivate = true;
-
-    else if ((*theAnnotations)[i]->get_qname()->get_qname() == "sequential")
-    {
-      if (theUpdating)
-      {
-        throw XQUERY_EXCEPTION(err::XSST0001,
-                               ERROR_PARAMS(theName->get_qname()),
-                               ERROR_LOC(loc));
-      }
-
-      theSequential = true;
-    }
-    else if ((*theAnnotations)[i]->get_qname()->get_qname() == "updating")
-    {
-      if (theSequential)
-      {
-        throw XQUERY_EXCEPTION(err::XSST0001,
-                               ERROR_PARAMS(theName->get_qname()),
-                               ERROR_LOC(loc));
-      }
-
-      theUpdating = true;
-    }
-  }
-}
-
-
-bool FunctionDecl::has_annotation(const char* annotation) const
-{
-  if (theAnnotations == NULL)
-    return false;
-
-  for (unsigned int i = 0; i < theAnnotations->size(); i++)
-  {
-    if ((*theAnnotations)[i]->get_qname()->get_qname() == annotation)
-      return true;
-  }
-
-  return false;
-}
-
-
-bool FunctionDecl::is_variadic() const
-{
-  return has_annotation("variadic");
-}
-
 
 /*******************************************************************************
   [34] ParamList ::= Param ("," Param)*
@@ -924,96 +855,15 @@ AnnotationListParsenode::AnnotationListParsenode(
   push_back(annotation);
 }
 
-#if 0
-bool AnnotationListParsenode::has_deterministic() const
+void AnnotationListParsenode::push_back(AnnotationParsenode* annotation_h)
 {
-  for (unsigned int i = 0; i < annotations_hv.size(); i++)
-    if (annotations_hv[i]->get_qname()->get_localname() == "deterministic")
-      return true;
-
-  return false;
+  theAnnotations.push_back(annotation_h);
 }
-
-
-bool AnnotationListParsenode::has_nondeterministic() const
-{
-  for (unsigned int i = 0; i<annotations_hv.size(); i++)
-    if (annotations_hv[i]->get_qname()->get_localname() == "nondeterministic")
-      return true;
-
-  return false;
-}
-#endif
-
-bool AnnotationListParsenode::has_annotation(const char* annotation) const
-{
-  for (unsigned int i = 0; i < theAnnotations.size(); i++)
-  {
-    if (theAnnotations[i]->get_qname()->get_localname() == annotation)
-      return true;
-  }
-
-  return false;
-}
-
-
-void AnnotationListParsenode::validate() const
-{
-  bool have_public_or_private = false;
-  bool have_determ_or_nondeterm = false;
-  bool have_assignable = false;
-  bool have_sequential = false;
-  bool have_updating = false;
-
-  for (unsigned int i = 0; i < size(); ++i)
-  {
-    if (theAnnotations[i]->get_qname()->get_localname() == "public" ||
-        theAnnotations[i]->get_qname()->get_localname() == "private")
-    {
-      if (have_public_or_private)
-        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
-
-      have_public_or_private = true;
-    }
-    else if (theAnnotations[i]->get_qname()->get_localname() == "deterministic" ||
-             theAnnotations[i]->get_qname()->get_localname() == "nondeterministic")
-    {
-      if (have_determ_or_nondeterm)
-        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
-
-      have_determ_or_nondeterm = true;
-    }
-    else if (theAnnotations[i]->get_qname()->get_localname() == "assignable" ||
-             theAnnotations[i]->get_qname()->get_localname() == "nonassignable")
-    {
-      if (have_assignable)
-        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
-
-      have_assignable = true;
-    }
-    else if (theAnnotations[i]->get_qname()->get_localname() == "sequential" ||
-             theAnnotations[i]->get_qname()->get_localname() == "nonsequential")
-    {
-      if (have_sequential)
-        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
-
-      have_sequential = true;
-    }
-    else if (theAnnotations[i]->get_qname()->get_localname() == "updating" ||
-             theAnnotations[i]->get_qname()->get_localname() == "nonupdating")
-    {
-      if (have_updating)
-        throw XQUERY_EXCEPTION(err::XQST0106, ERROR_LOC(loc));
-
-      have_updating = true;
-    }
-  }
-}
-
 
 void AnnotationListParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
+  ACCEPT_SEQ(std::vector<rchandle<AnnotationParsenode> >, theAnnotations);
   END_VISITOR();
 }
 
@@ -1035,6 +885,7 @@ AnnotationParsenode::AnnotationParsenode(
 void AnnotationParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
+  ACCEPT(literal_list_h);
   END_VISITOR();
 }
 
@@ -1051,6 +902,7 @@ AnnotationLiteralListParsenode::AnnotationLiteralListParsenode(
 void AnnotationLiteralListParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
+  ACCEPT_SEQ(std::vector<rchandle<exprnode> >, literals_hv);
   END_VISITOR();
 }
 

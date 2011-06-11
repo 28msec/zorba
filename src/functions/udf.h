@@ -95,10 +95,9 @@ public:
   user_function(
         const QueryLoc& loc,
         const signature& sig,
-        expr_t expr_body, 
-        short kind,
-        bool deterministic,
-        bool isPrivate);
+        expr_t expr_body,
+        short kind
+    );
 
   virtual ~user_function();
 

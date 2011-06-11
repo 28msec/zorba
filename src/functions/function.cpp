@@ -94,6 +94,32 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
   return n == VARIADIC_SIG_SIZE || argv.size() == n;
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void
+function::setAnnotations(AnnotationList* annotations)
+{
+  theAnnotationList = annotations;
+
+  if (!theAnnotationList)
+    return;
+
+  static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
+
+  setDeterministic(theAnnotationList->contains(
+        lCtx.lookup_ann("deterministic")));
+  setPrivate(theAnnotationList->contains(
+        lCtx.lookup_ann("private")));
+
+  if (theAnnotationList->contains(lCtx.lookup_ann("sequential")) &&
+      theAnnotationList->contains(lCtx.lookup_ann("updating")))
+  {
+    throw XQUERY_EXCEPTION(err::XSST0001,
+                           ERROR_PARAMS(getName()->getStringValue()));
+  }
+}
+
 
 /*******************************************************************************
   Check whether this function is a map with respect to the given input

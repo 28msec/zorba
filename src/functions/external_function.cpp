@@ -33,8 +33,6 @@ external_function::external_function(
     const zstring& ns,
     const signature& sig,
     short scriptingType,
-    bool deterministic,
-    bool isPrivate,
     ExternalFunction* impl) 
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
@@ -45,8 +43,6 @@ external_function::external_function(
   theImpl(impl)
 {
   resetFlag(FunctionConsts::isBuiltin);
-  setDeterministic(deterministic);
-  setPrivate(isPrivate);
 }
 
 

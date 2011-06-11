@@ -23,7 +23,7 @@
 
 #include "functions/function_consts.h"
 #include "functions/signature.h"
-#include "api/annotationimpl.h"
+#include "annotations/annotations.h"
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
@@ -152,7 +152,7 @@ public:
 
   bool isSequential() const { return (getScriptingKind() & SEQUENTIAL_EXPR) != 0; }
 
-  void setAnnotations(AnnotationList* annotations) { theAnnotationList = annotations; }
+  void setAnnotations(AnnotationList* annotations);
 
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 

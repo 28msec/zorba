@@ -401,14 +401,46 @@ void* begin_visit(const FunctionDecl& n)
   if (n.is_updating())
     os << "updating ";
 
-  if (n.is_sequential())
-    os << "%sequential ";
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  if (lAnns) {
 
-  if (!n.is_deterministic())
-    os << "%nondeterministic ";
+    for (size_t i = 0; i < lAnns->size(); ++i)
+    {
+      AnnotationParsenode* lAnn = (*lAnns)[i];
 
-  if (n.is_private())
-    os << "%private ";
+      AnnotationLiteralListParsenode* lLits = lAnn->get_literals().getp();
+
+      std::ostringstream lAttrValue;
+      if (lLits)
+      {
+        for (size_t j = 0; j < lLits->size(); ++j)
+        {
+          if (j > 0)
+            lAttrValue << " ";
+
+          exprnode* lLit = (*lLits)[j].getp();
+          Literal* l = static_cast<Literal*>(lLit);
+          if (l->get_type() == Literal::STRING_LITERAL)
+          {
+            StringLiteral* s = l->get_string_literal().getp();
+            lAttrValue << s->get_strval();
+          }
+          else
+          {
+            NumericLiteral* n = l->get_numeric_literal().getp();
+            lAttrValue << n->toString();
+          }
+        }
+      }
+
+      os << "%" << lAnn->get_qname()->get_localname();
+      if (!lAttrValue.str().empty())
+      {
+        os << "(" << lAttrValue.str() << ")";
+      }
+      os << " ";
+    }
+  }
 
   os << "function ";
 

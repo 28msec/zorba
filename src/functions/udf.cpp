@@ -45,9 +45,7 @@ user_function::user_function(
     const QueryLoc& loc,
     const signature& sig,
     expr_t expr_body,
-    short scriptingKind,
-    bool deterministic,
-    bool isPrivate)
+    short scriptingKind)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
@@ -59,8 +57,8 @@ user_function::user_function(
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
-  setDeterministic(deterministic);
-  setPrivate(isPrivate);
+  setDeterministic(true);
+  setPrivate(false);
 }
 
 

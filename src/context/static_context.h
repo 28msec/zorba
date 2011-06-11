@@ -318,6 +318,13 @@ public:
   different arities. One of these versions is stored in the theFunctionMap,
   and the rest are regisreded in theFunctionArityMap.
 
+  theAnnotations:
+  --------------
+  string -> store::Item_t map that contains a list of built-in annotations
+  Those annotations are used in the translator to check if a function or
+  variable declares any of these annotations.
+
+
   theCollectionMap :
   ------------------
   A hash mash map mapping XQDDF collection qnames to the objs storing the info
@@ -397,6 +404,8 @@ class static_context : public SimpleRCObject
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
+  typedef std::map<std::string, store::Item_t> AnnotationMap;
+
 
 public:
 
@@ -466,6 +475,10 @@ public:
   static const zstring XQUERY_OP_NS;
   static const zstring ZORBA_OP_NS;
 
+  //
+  // Namespace for Zorba specific built-in annotations
+  static const zstring ZORBA_ANNOTATION_NS;
+
 
 protected:
   static_context                        * theParent;
@@ -516,6 +529,8 @@ protected:
 
   FunctionMap                           * theFunctionMap;
   FunctionArityMap                      * theFunctionArityMap;
+
+  AnnotationMap                         * theAnnotationMap;
 
   CollectionMap                         * theCollectionMap;
 
@@ -817,6 +832,14 @@ public:
   ExternalFunction* lookup_external_function(
         const zstring& prefix,
         const zstring& local);
+
+
+  //
+  // Annotation
+  //
+  void add_ann(const std::string& aName, const store::Item_t& aQName);
+
+  store::Item_t lookup_ann(const std::string& aName) const;
 
 
   //

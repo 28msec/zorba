@@ -343,6 +343,11 @@ static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
 const zstring
 static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
 
+/***************************************************************************//**
+                                                                               Zorba's Annotation namespace
+********************************************************************************/
+const zstring
+static_context::ZORBA_ANNOTATION_NS = NS_PRE + "annotations";
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
@@ -444,6 +449,7 @@ static_context::static_context()
   theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
+  theAnnotationMap(NULL),
   theCollectionMap(NULL),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -486,6 +492,7 @@ static_context::static_context(static_context* parent)
   theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
+  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
@@ -531,6 +538,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
+  theAnnotationMap(NULL),
   theCollectionMap(0),
   theW3CCollectionMap(NULL),
   theIndexMap(0),
@@ -582,6 +590,9 @@ static_context::~static_context()
 
   if (theVariablesMap)
     delete theVariablesMap;
+
+  if (theAnnotationMap)
+    delete theAnnotationMap;
 
   if (theFunctionMap)
     delete theFunctionMap;
@@ -2678,6 +2689,32 @@ ExternalFunction* static_context::lookup_external_function(
   return lModule->getExternalFunction(aLocalName.str());
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Annotations                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+void
+static_context::add_ann(
+    const std::string& aName,
+    const store::Item_t& aQName)
+{
+  if (!theAnnotationMap) {
+    theAnnotationMap = new AnnotationMap();
+  }
+  (*theAnnotationMap)[aName] = aQName;
+}
+
+store::Item_t
+static_context::lookup_ann(const std::string& aName) const
+{
+  std::map<std::string, store::Item_t>::const_iterator lIter;
+  if (!theAnnotationMap ||
+      (lIter = theAnnotationMap->find(aName)) == theAnnotationMap->end()) {
+    return theParent?theParent->lookup_ann(aName):NULL;
+  }
+  return lIter->second;
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

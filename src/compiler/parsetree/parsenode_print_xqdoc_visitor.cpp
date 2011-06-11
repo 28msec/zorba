@@ -481,14 +481,15 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
   store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName;
   store::Item_t lFuncElem, lNameElem, lSigElem, lFuncText, lNameText, lSigText;
-  store::Item_t lArityAttr, lArityValue, lPrivateValue;
+  store::Item_t lArityAttr, lArityValue;
+  store::Item_t lAnnotationsElem, lAnnotationElem;
+  store::Item_t lAnnotationsQName, lAnnotationQName;
 
   theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
   theFactory->createQName(lArityQName, "", "", "arity");
-  if(n.is_private())
-    theFactory->createQName(lPrivateQName, "", "", "isPrivate");
+  theFactory->createQName(lAnnotationsQName, theXQDocNS, theXQDocPrefix, "annotations");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -509,20 +510,94 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   zstring lAttrString(lAttr.str().c_str());
   theFactory->createString(lArityValue, lAttrString);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createAttributeNode(
       lArityQName, lFuncElem, lArityQName, lTypeName, lArityValue);
 
-  if(n.is_private())
-  {
-    zstring lPrivateString("true");
-    theFactory->createString(lPrivateValue, lPrivateString);
-    theFactory->createAttributeNode(
-      lPrivateQName, lFuncElem, lPrivateQName, lTypeName, lPrivateValue);
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  if (lAnns) {
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(
+        lAnnotationsElem, lFuncElem, lAnnotationsQName, lTypeName,
+        true, false, theNSBindings, theBaseURI);
+
+    for (size_t i = 0; i < lAnns->size(); ++i)
+    {
+      AnnotationParsenode* lAnn = (*lAnns)[i];
+
+      theFactory->createQName(lAnnotationQName, theXQDocNS, theXQDocPrefix, "annotation");
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createElementNode(
+          lAnnotationElem, lAnnotationsElem, lAnnotationQName,
+          lTypeName, true, false, theNSBindings, theBaseURI);
+
+      store::Item_t lAnnAttr;
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+
+      AnnotationLiteralListParsenode* lLits = lAnn->get_literals().getp();
+
+      std::ostringstream lAttrValue;
+      if (lLits)
+      {
+        for (size_t j = 0; j < lLits->size(); ++j)
+        {
+          if (j > 0)
+            lAttrValue << " ";
+
+          exprnode* lLit = (*lLits)[j].getp();
+          Literal* l = static_cast<Literal*>(lLit);
+          if (l->get_type() == Literal::STRING_LITERAL)
+          {
+            StringLiteral* s = l->get_string_literal().getp();
+            lAttrValue << s->get_strval();
+          }
+          else
+          {
+            NumericLiteral* n = l->get_numeric_literal().getp();
+            lAttrValue << n->toString();
+          }
+        }
+      }
+      zstring lTmp = lAttrValue.str().c_str();
+      store::Item_t lAttrValueItem;
+      theFactory->createString(lAttrValueItem, lTmp);
+
+      store::Item_t lAttrNamespaceItem, lAttrLocalnameItem;
+
+      lTmp = lAnn->get_qname()->get_namespace();
+      theFactory->createString(lAttrNamespaceItem, lTmp);
+
+      lTmp = lAnn->get_qname()->get_localname();
+      theFactory->createString(lAttrLocalnameItem, lTmp);
+
+      store::Item_t lNamespaceQName;
+      theFactory->createQName(lNamespaceQName, "", "", "namespace");
+      store::Item_t lLocalnameQName;
+      theFactory->createQName(lLocalnameQName, "", "", "localname");
+      store::Item_t lValueQName;
+      theFactory->createQName(lValueQName, "", "", "value");
+     
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lNamespaceQName, lAnnotationElem, lNamespaceQName,
+        lTypeName, lAttrNamespaceItem);
+
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lLocalnameQName, lAnnotationElem, lLocalnameQName,
+        lTypeName, lAttrLocalnameItem);
+
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lValueQName, lAnnotationElem, lValueQName,
+        lTypeName, lAttrValueItem);
+    }
   }
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(lSigElem, lFuncElem, lSigQName, lTypeName,
-                                true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(
+      lSigElem, lFuncElem, lSigQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
 
   zstring lNameString = n.get_name()->get_localname();
   theFactory->createTextNode(lNameText, lNameElem, lNameString);

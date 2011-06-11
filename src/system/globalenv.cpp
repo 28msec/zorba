@@ -36,6 +36,7 @@
 #include "context/standard_uri_resolvers.h"
 #include "context/default_url_resolvers.h"
 #include "functions/library.h"
+#include "annotations/annotations.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 
@@ -82,6 +83,7 @@ void GlobalEnvironment::init(store::Store* store)
   RCHelper::addReference (m_globalEnv->m_rootStaticContext);
 
   BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
+  AnnotationList::createBuiltIn(m_globalEnv->m_rootStaticContext);
 
 #ifdef ZORBA_WITH_REST
 #  ifdef ZORBA_WITH_SSL

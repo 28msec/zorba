@@ -994,8 +994,6 @@ class VarDecl : public VarDeclWithInit
 protected:
   bool theIsExternal;
   bool theIsGlobal;
-  bool theIsPrivate;
-  bool theIsMutable;
 
   rchandle<AnnotationListParsenode> theAnnotations;
 
@@ -1014,10 +1012,6 @@ public:
   bool is_global() const { return theIsGlobal; }
 
   void set_global(bool global) { theIsGlobal = global; }
-
-  bool is_private() const { return theIsPrivate; }
-
-  bool is_mutable() const { return theIsMutable; }
 
   AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
@@ -1081,15 +1075,8 @@ protected:
   bool                   theIsExternal;
 
   bool                   theUpdating;
-  bool                   theSequential;
-  bool                   theDeterministic;
-  bool                   thePrivate;
 
   rchandle<AnnotationListParsenode> theAnnotations;
-
-  void parse_annotations();
-
-  bool has_annotation(const char* annotation) const;
 
 public:
   FunctionDecl(
@@ -1107,8 +1094,6 @@ public:
 
   ulong get_param_count() const;
 
-  bool is_variadic() const;
-
   rchandle<SequenceType> get_return_type() const { return theReturnType; }
 
   rchandle<exprnode> get_body() const { return theBody; }
@@ -1117,13 +1102,10 @@ public:
 
   bool is_updating() const { return theUpdating; }
 
-  bool is_sequential() const { return theSequential; }
-
-  bool is_deterministic() const { return theDeterministic; }
-
-  bool is_private() const { return thePrivate; }
-
-  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
+  AnnotationListParsenode* get_annotations() const
+  {
+    return theAnnotations.getp();
+  }
 
   void set_annotations(AnnotationListParsenode* annotations);
 
@@ -1206,12 +1188,12 @@ protected:
   std::vector<rchandle<AnnotationParsenode> > theAnnotations;
 
 public:
-  AnnotationListParsenode(const QueryLoc& loc, AnnotationParsenode* annotation);
+  AnnotationListParsenode(
+      const QueryLoc& loc,
+      AnnotationParsenode* annotation
+  );
 
-  void push_back(rchandle<AnnotationParsenode> annotation_h)
-  {
-    theAnnotations.push_back(annotation_h);
-  }
+  void push_back(AnnotationParsenode* annotation_h);
 
   rchandle<AnnotationParsenode> operator[](int i) const
   {
@@ -1232,14 +1214,6 @@ public:
   {
     return theAnnotations.size();
   }
-
-  //bool has_deterministic() const;
-
-  //bool has_nondeterministic() const;
-
-  bool has_annotation(const char* annotation) const;
-
-  void validate() const;
 
   void accept(parsenode_visitor&) const;
 };
@@ -1279,15 +1253,33 @@ protected:
 public:
   AnnotationLiteralListParsenode(const QueryLoc& loc_, exprnode* literal);
 
-  void push_back(rchandle<exprnode> literal_h) { literals_hv.push_back(literal_h); }
+  void
+  push_back(rchandle<exprnode> literal_h)
+  {
+    literals_hv.push_back(literal_h);
+  }
 
-  rchandle<exprnode> operator[](int i) const { return literals_hv[i]; }
+  rchandle<exprnode> operator[](int i) const
+  {
+    return literals_hv[i];
+  }
 
-  std::vector<rchandle<exprnode> >::const_iterator begin() const { return literals_hv.begin(); }
+  std::vector<rchandle<exprnode> >::const_iterator
+  begin() const
+  {
+    return literals_hv.begin();
+  }
 
-  std::vector<rchandle<exprnode> >::const_iterator end() const { return literals_hv.end(); }
+  std::vector<rchandle<exprnode> >::const_iterator
+  end() const
+  {
+    return literals_hv.end();
+  }
 
-  std::vector<rchandle<exprnode> >::size_type size() const { return literals_hv.size(); }
+  std::vector<rchandle<exprnode> >::size_type size() const
+  {
+    return literals_hv.size();
+  }
 
   void accept(parsenode_visitor&) const;
 };

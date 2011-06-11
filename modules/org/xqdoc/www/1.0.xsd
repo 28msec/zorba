@@ -140,6 +140,18 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:complexType name="annotation">
+     <xsd:attribute name="namespace" type="xsd:string" use="optional"/>
+     <xsd:attribute name="localname" type="xsd:string" use="optional"/>
+     <xsd:attribute name="value" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="annotations">
+    <xsd:sequence>
+      <xsd:element name="annotation" type="annotation" minOccurs="1" maxOccurs="unbounded"/>      
+    </xsd:sequence>
+  </xsd:complexType>
+
   <!-- Complex type used for defining information about the package
       version (and date) used to generate the internal xqdoc XML.
      Date should be the date when the XML xqdoc file is genearted.
@@ -234,6 +246,7 @@
           <xsd:sequence>
             <xsd:element name="comment" type="comment" minOccurs="0"/>
             <xsd:element name="name" type="name"/>
+            <xsd:element name="annotations" type="annotations" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="signature" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="parameters" type="parameters" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="return" type="parameter" minOccurs="0" maxOccurs="1"/>
@@ -245,7 +258,6 @@
             <xsd:element name="body" type="xsd:string" minOccurs="0"/>
           </xsd:sequence>
           <xsd:attribute name="arity" type="xsd:integer" use="optional"/>
-          <xsd:attribute name="isPrivate" type="xsd:boolean" use="optional"/>
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>

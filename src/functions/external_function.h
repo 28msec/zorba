@@ -57,8 +57,6 @@ public:
         const zstring& ns,
         const signature& sig,
         short scriptingType,
-        bool deterministic,
-        bool isPrivate,
         ExternalFunction* impl);
 
   ~external_function() { }

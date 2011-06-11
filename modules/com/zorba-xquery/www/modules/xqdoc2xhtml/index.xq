@@ -155,8 +155,7 @@ declare %private %sequential function xqdoc2html:collect-functions(
           $arity := $function/@arity,
           $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
       (: use only the functions not marked as %private:)
-      where (not(exists($function/@isPrivate)) or 
-             (exists($function/@isPrivate) and $function/@isPrivate ne "true"))
+      where xqdoc2html:function-is-not-private($function)
       order by $name, $arity
       return
         <function moduleUri="{$xqdoc/xqdoc:module/xqdoc:uri/text()}"
@@ -1125,8 +1124,7 @@ declare function xqdoc2html:body(
 {
   (: use only the functions not marked as %private :)
   let $functions := for $function in $xqdoc/xqdoc:functions/xqdoc:function 
-                    where (fn:not(exists($function/@isPrivate)) or
-                           (exists($function/@isPrivate) and $function/@isPrivate ne "true"))
+                    where xqdoc2html:function-is-not-private($function)
                     return $function
   return
   (<h1>{xqdoc2html:module-uri($xqdoc)}</h1>,
@@ -1649,8 +1647,7 @@ declare function xqdoc2html:annotations-example($comment, $xqdocXhtmlPath) {
 
 declare %private function xqdoc2html:function-is-not-private($function)
 {
-  (not(exists($function/@isPrivate)) or 
-  (exists($function/@isPrivate) and $function/@isPrivate ne "true"))
+  not(exists($function//xqdoc:annotation[@localname = 'private']))
 };
 
 (:~

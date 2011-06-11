@@ -61,9 +61,6 @@ test_annotations_1(Zorba* aZorba)
   if (annotations[0]->getQName().getStringValue() != "public")
     return false;
 
-  if (annotations[0]->getLiteral(0).getStringValue() != "true")
-    return false;
-
 	return true;
 }
 

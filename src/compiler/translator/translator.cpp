@@ -68,6 +68,8 @@
 #include "functions/udf.h"
 #include "functions/external_function.h"
 
+#include "annotations/annotations.h"
+
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
@@ -479,6 +481,13 @@ public:
   theNodeSortStack :
   ------------------
 
+  theAnnotations :
+  ----------------
+
+  Annotations belonging to the "current" variable or function declaration.
+  After the variable or function has been translated, this member is set
+  to null again.
+
   theIndexDecl :
   --------------
 
@@ -585,6 +594,8 @@ protected:
   std::vector<const parsenode*>          theTryStack;
 
   std::stack<NodeSortInfo>               theNodeSortStack;
+
+  rchandle<AnnotationList>               theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -2952,10 +2963,12 @@ void* begin_visit(const VFO_DeclList& v)
   // Function declaration translation must be done in two passes because of
   // mutually recursive functions and also because the defining expr of a declared
   // var may reference a function that is declared after the var. So, here's the
-  // 1st pass; it translates the type declarations for the params and return value
-  // and then creates the udf object and binds it in the sctx. The second pass
-  // happens when accept() is called on each individual FunctionDecl node in
-  // the list.
+  // 1st pass; it translates
+  //  (1) the annotations of variable and function declarations
+  //  (2) the type declarations for the params and return value of functions
+  //  (3) and then creates the udf object and binds it in the sctx.
+  // 2nd pass;  happens when accept() is called on each
+  //  individual FunctionDecl node in the list.
 
   for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
        it != v.end();
@@ -2966,6 +2979,11 @@ void* begin_visit(const VFO_DeclList& v)
     // skip variable and option declarations.
     if (func_decl == NULL)
       continue;
+
+    AnnotationListParsenode* lAnns = func_decl->get_annotations();
+    if (lAnns) {
+      lAnns->accept(*this);
+    }
 
     const QueryLoc& loc = func_decl->get_location();
 
@@ -3048,14 +3066,40 @@ void* begin_visit(const VFO_DeclList& v)
     }
 
     // Create the function signature.
-    signature sig(qnameItem, paramTypes, returnType, func_decl->is_variadic());
+    //
+    bool lIsVariadic = theAnnotations?
+      theAnnotations->contains(theSctx->lookup_ann("variadic")):
+      false;
+
+    signature sig(qnameItem, paramTypes, returnType, lIsVariadic); 
+
+    // special case
+    // function declares both updating keyword and updating annotation
+    if (theAnnotations &&
+        func_decl->is_updating() &&
+        theAnnotations->contains(theSctx->lookup_ann("updating"))) {
+        throw XQUERY_EXCEPTION(
+            err::XQST0106,
+            ERROR_PARAMS("updating"),
+            ERROR_LOC(loc));
+    } else if (func_decl->is_updating()) {
+      // translate updating keyword into an annotation
+      std::vector<rchandle<const_expr> > lLiterals;
+      if (!theAnnotations) {
+        theAnnotations = new AnnotationList();
+      }
+      theAnnotations->push_back(theSctx->lookup_ann("updating"), lLiterals);
+    }
 
     // Get the scripting kind of the function
     expr_script_kind_t scriptKind = SIMPLE_EXPR;
-    if (func_decl->is_updating())
-      scriptKind = UPDATING_EXPR;
-    else if (func_decl->is_sequential())
-      scriptKind = SEQUENTIAL_EXPR;
+    if (theAnnotations)
+    {
+      if (theAnnotations->contains(theSctx->lookup_ann("updating")))
+        scriptKind = UPDATING_EXPR;
+      else if (theAnnotations->contains(theSctx->lookup_ann("sequential")))
+        scriptKind = SEQUENTIAL_EXPR;
+    }
 
     // create the function object
     function_t f;
@@ -3079,10 +3123,8 @@ void* begin_visit(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-        // set the function annotations to the values found in the func_decl
-        f->setDeterministic(func_decl->is_deterministic());
-        f->setPrivate(func_decl->is_private());
-        f->setAnnotations(new AnnotationList(func_decl->get_annotations()));
+        f->setAnnotations(theAnnotations);
+        theAnnotations = NULL; // important to reset
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
@@ -3129,23 +3171,15 @@ void* begin_visit(const VFO_DeclList& v)
                                 qnameItem->getNamespace(),
                                 sig,
                                 scriptKind,
-                                func_decl->is_deterministic(),
-                                func_decl->is_private(),
                                 ef);
-
-      f->setAnnotations(new AnnotationList(func_decl->get_annotations()));
     }
     else // Process UDF (non-external) function declaration
     {
-      f = new user_function(loc,
-                            sig,
-                            NULL, // no body for now
-                            scriptKind,
-                            func_decl->is_deterministic(),
-                            func_decl->is_private());
-
-      f->setAnnotations(new AnnotationList(func_decl->get_annotations()));
+      f = new user_function(loc, sig, NULL, scriptKind); // no body for now
     }
+
+    f->setAnnotations(theAnnotations);
+    theAnnotations = NULL; // important to reset
 
     // Create bindings between (function qname item, arity) and function obj
     // in the current sctx of this module and, if this is a lib module, in its
@@ -3209,20 +3243,23 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   const zstring& fname = v.get_name()->get_qname();
 
+  ulong numParams = v.get_param_count();
+
+  function* lFunc = lookup_fn(v.get_name(), numParams, loc);
+
   // TODO: remove this error
-  if (v.is_updating() && v.get_return_type() != 0)
+  if (lFunc && lFunc->isUpdating() && v.get_return_type() != 0)
     RAISE_ERROR(err::XUST0028, loc, ERROR_PARAMS(fname));
 
   if (v.get_return_type() != NULL)
     pop_tstack();
 
-  ulong numParams = v.get_param_count();
   expr_t body;
   user_function* udf = NULL;
 
   if (!v.is_external())
   {
-    udf = dynamic_cast<user_function *>(lookup_fn(v.get_name(), numParams, loc));
+    udf = dynamic_cast<user_function *>(lFunc);
 
     body = pop_nodestack();
 
@@ -3236,14 +3273,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     // Check for scripting category inconsistency between the udf declaration
     // and its body.
-    if (v.is_sequential())
+    if (udf->isSequential())
     {
       if (body->is_updating() || theHaveUpdatingExitExprs)
       {
         RAISE_ERROR(err::XSST0002, loc, ERROR_PARAMS(fname));
       }
     }
-    else if (v.is_updating())
+    else if (udf->isUpdating())
     {
       if (body->is_sequential() || theHaveSequentialExitExprs)
       {
@@ -3453,9 +3490,6 @@ void* begin_visit(const VarDecl& v)
   {
     ve = create_var(loc, qnameItem, var_expr::prolog_var);
 
-    if (v.is_private())
-      ve->set_private(true);
-
     if (v.is_extern())
       ve->set_external(true);
 
@@ -3472,9 +3506,6 @@ void* begin_visit(const VarDecl& v)
     ve = create_var(loc, qnameItem, var_expr::local_var);
   }
 
-  if (v.is_mutable())
-    ve->set_mutable(true);
-
   push_nodestack(ve.getp());
   return no_state;
 }
@@ -3490,6 +3521,17 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   expr_t initExpr = (v.get_initexpr() == NULL ? expr_t(NULL) : pop_nodestack());
 
   var_expr_t ve = dynamic_cast<var_expr*>(pop_nodestack().getp());
+
+  if (theAnnotations)
+  {
+    if (v.is_global())
+    {
+      if (theAnnotations->contains(theSctx->lookup_ann("private")))
+        ve->set_private(true);
+    }
+    if (theAnnotations->contains(theSctx->lookup_ann("assignable")))
+      ve->set_mutable(true);
+  }
 
   xqtref_t type;
   if (v.get_typedecl() != NULL)
@@ -3537,6 +3579,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     push_nodestack(ve.getp());
     push_nodestack(initExpr);
   }
+  theAnnotations = NULL;
+
 }
 
 
@@ -3550,7 +3594,18 @@ void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
 
-  v.validate();
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
+  {
+    throw XQUERY_EXCEPTION(
+      err::XPST0003,
+      ERROR_PARAMS(
+        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
+      ),
+      ERROR_LOC( loc )
+    );
+  }
+
+  theAnnotations = new AnnotationList();
 
   return no_state;
 }
@@ -3559,6 +3614,8 @@ void* begin_visit(const AnnotationListParsenode& v)
 void end_visit(const AnnotationListParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
+
+  theAnnotations->checkConflictingDeclarations(loc);
 }
 
 
@@ -3566,21 +3623,33 @@ void* begin_visit(const AnnotationParsenode& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_PARAMS(
-        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
-      ),
-      ERROR_LOC( loc )
-    );
-
   return no_state;
 }
 
 void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
+
+  store::Item_t lExpandedQName;
+  expand_function_qname(
+    lExpandedQName,
+    v.get_qname().getp(),
+    loc
+  );
+
+  std::vector<rchandle<const_expr> > lLiterals;
+  if (v.get_literals())
+  {
+    for (std::vector<rchandle<exprnode> >::const_iterator lIter = v.get_literals()->begin();
+         lIter != v.get_literals()->end();
+         ++lIter)
+    {
+      rchandle<const_expr> lLiteral = pop_nodestack();
+      lLiterals.insert(lLiterals.begin(), lLiteral);
+    }
+  }
+  theAnnotations->push_back(lExpandedQName, lLiterals);
+       
 }
 
 
@@ -10010,9 +10079,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     user_function* udf = new user_function(loc,
                                            fn->getSignature(),
                                            body,
-                                           fn->getScriptingKind(),
-                                           fn->isDeterministic(),
-                                           false); // not private
+                                           fn->getScriptingKind());
     udf->setArgVars(udfArgs);
 
     fn = udf;
@@ -10154,8 +10221,6 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
-  bool deterministic = !body->is_nondeterministic();
-
   if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
     RewriterContext rCtx(theCCB,
@@ -10193,9 +10258,7 @@ void end_visit(const InlineFunction& v, void* aState)
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        body->get_scripting_detail(),
-                                        deterministic,
-                                        false));  // not private
+                                        body->get_scripting_detail()));
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
