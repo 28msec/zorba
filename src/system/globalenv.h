@@ -20,9 +20,6 @@
 #include <memory>
 #include <zorba/config.h>
 #include "common/common.h"
-#ifndef ZORBA_NO_BIGNUMBERS
-#include "zorbatypes/m_apm.h"
-#endif
 #include "common/shared_types.h"
 
 namespace zorba {
