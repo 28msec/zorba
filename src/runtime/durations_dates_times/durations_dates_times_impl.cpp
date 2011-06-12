@@ -62,7 +62,7 @@ bool YearsFromDurationIterator::nextImpl(
     lYears = itemArg->getDurationValue().getYears();
 
     STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
-                                               Integer::parseInt(lYears)), 
+                                               Integer(lYears)), 
                state);
   }
   STACK_END (state);
@@ -89,7 +89,7 @@ bool MonthsFromDurationIterator::nextImpl(
   {
     GENV_ITEMFACTORY->
     createInteger(result,
-                  Integer::parseInt(itemArg->getDurationValue().getMonths()));
+                  Integer(itemArg->getDurationValue().getMonths()));
 
     STACK_PUSH(true, state);
   }
@@ -117,7 +117,7 @@ bool DaysFromDurationIterator::nextImpl(
   {
     GENV_ITEMFACTORY->
     createInteger(result,
-                  Integer::parseInt(itemArg->getDurationValue().getDays()));
+                  Integer(itemArg->getDurationValue().getDays()));
 
     STACK_PUSH(true, state);
   }
@@ -145,7 +145,7 @@ bool HoursFromDurationIterator::nextImpl(
   {
     GENV_ITEMFACTORY->
     createInteger(result,
-                  Integer::parseInt(itemArg->getDurationValue().getHours()));
+                  Integer(itemArg->getDurationValue().getHours()));
 
     STACK_PUSH(true, state);
   }
@@ -173,7 +173,7 @@ bool MinutesFromDurationIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDurationValue().getMinutes())),
+      Integer(itemArg->getDurationValue().getMinutes())),
       state 
     );
   }
@@ -228,7 +228,7 @@ bool YearFromDatetimeIterator::nextImpl(
     STACK_PUSH(
         GENV_ITEMFACTORY->createInteger(
           result,
-          Integer::parseInt(itemArg->getDateTimeValue().getYear())), state );
+          Integer(itemArg->getDateTimeValue().getYear())), state );
   }
   STACK_END (state);
 }
@@ -254,7 +254,7 @@ bool MonthFromDatetimeIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue().getMonth())), 
+      Integer(itemArg->getDateTimeValue().getMonth())), 
       state 
     );
   }
@@ -282,7 +282,7 @@ bool DayFromDatetimeIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue().getDay())), 
+      Integer(itemArg->getDateTimeValue().getDay())), 
       state 
     );
   }
@@ -310,7 +310,7 @@ bool HoursFromDatetimeIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue().getHours())), 
+      Integer(itemArg->getDateTimeValue().getHours())), 
       state 
     );
   }
@@ -338,7 +338,7 @@ bool MinutesFromDatetimeIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateTimeValue().getMinutes())), 
+      Integer(itemArg->getDateTimeValue().getMinutes())), 
       state 
     );
   }
@@ -418,7 +418,7 @@ bool YearFromDateIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateValue().getYear())), 
+      Integer(itemArg->getDateValue().getYear())), 
       state 
     );
   }
@@ -446,7 +446,7 @@ bool MonthFromDateIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateValue().getMonth())), 
+      Integer(itemArg->getDateValue().getMonth())), 
       state 
     );
   }
@@ -474,7 +474,7 @@ bool DayFromDateIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getDateValue().getDay())), 
+      Integer(itemArg->getDateValue().getDay())), 
       state 
     );
   }
@@ -528,7 +528,7 @@ bool HoursFromTimeIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getTimeValue().getHours())), 
+      Integer(itemArg->getTimeValue().getHours())), 
       state 
     );
   }
@@ -556,7 +556,7 @@ bool MinutesFromTimeIterator::nextImpl(
   {
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
-      Integer::parseInt(itemArg->getTimeValue().getMinutes())), 
+      Integer(itemArg->getTimeValue().getMinutes())), 
       state 
     );
   }

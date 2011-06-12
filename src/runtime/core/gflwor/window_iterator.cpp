@@ -189,7 +189,7 @@ void WindowVars::bindIntern(
   if (!thePosVars.empty())
   {
     store::Item_t lPosItem;
-    GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(aPosition));
+    GENV_ITEMFACTORY->createInteger(lPosItem, Integer(aPosition));
     bindVariables(lPosItem, thePosVars, aPlanState);
   }
 }
@@ -246,7 +246,7 @@ void WindowVars::bindExtern(
 
   if (!thePosOuterVars.empty())
   {
-    GENV_ITEMFACTORY->createInteger ( lItem, Integer::parseInt ( aPosition ) );
+    GENV_ITEMFACTORY->createInteger ( lItem, Integer( aPosition ) );
     bindVariables ( lItem, thePosOuterVars, aPlanState );
   }
 }

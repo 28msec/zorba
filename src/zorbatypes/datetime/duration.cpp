@@ -586,7 +586,11 @@ long Duration::getMinutes() const
 
 xs_decimal Duration::getSeconds() const
 {
-  return Decimal::parseInt(is_negative? -1 : 1) * (Decimal::parseInt(data[SECONDS_DATA]) + Decimal::parseInt(data[FRACSECONDS_DATA]) / Decimal::parseInt(FRAC_SECONDS_UPPER_LIMIT));
+  return  xs_decimal(is_negative? -1 : 1)
+        * (xs_decimal(data[SECONDS_DATA])
+          + xs_decimal(data[FRACSECONDS_DATA])
+          / xs_decimal(FRAC_SECONDS_UPPER_LIMIT)
+          );
 }
 
 
@@ -746,7 +750,7 @@ Duration* Duration::operator*(const Double& value) const
     return NULL;
   }
 
-  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+  Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
 
   result = getTotalSeconds() * value;
 
@@ -776,7 +780,7 @@ Duration* Duration::operator/(const Double& value) const
     return NULL;
   }
 
-  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+  Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
 
   result = getTotalSeconds() / value;
   result = result.round(significants);
@@ -793,12 +797,7 @@ Duration* Duration::operator/(const Double& value) const
 
 Decimal Duration::operator/(const Duration& d) const
 {
-  Decimal op1, op2;
-
-  Decimal::parseDouble(getTotalSeconds(), op1);
-  Decimal::parseDouble(d.getTotalSeconds(), op2);
-
-  return op1 / op2;
+  return Decimal( getTotalSeconds() ) / Decimal( d.getTotalSeconds() );
 }
 
 
@@ -1007,3 +1006,4 @@ uint32_t Duration::hash() const
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

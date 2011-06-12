@@ -193,7 +193,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (found)
     {
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
-                                                 Integer::parseInt(state->theCurrentPos)),
+                                                 Integer(state->theCurrentPos)),
                  state);
     }
   }
@@ -322,12 +322,12 @@ FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
  }
 
  state->thePosition = lPositionItem->getIntegerValue();
- if (state->thePosition < xs_integer::parseInt(1))
-   state->thePosition = xs_integer::parseInt(1);
+ if (state->thePosition < xs_integer::one())
+   state->thePosition = xs_integer::one();
 
  while (consumeNext(result, theChildren[0].getp(), planState))
  {
-    if ( state->theCurrentPos == state->thePosition-xs_integer::parseInt(1) ) // position found => insert sequence
+    if ( state->theCurrentPos == state->thePosition-xs_integer::one() ) // position found => insert sequence
     {
       state->theTargetItem = result;
       while ( consumeNext(result, theChildren[2].getp(), planState))
@@ -1187,8 +1187,7 @@ bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     ++lCount;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseULong(lCount)),
-             state);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(lCount)), state);
 
   STACK_END(state);
 }
@@ -1335,7 +1334,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (lCount > 0)
   {
-    GENV_ITEMFACTORY->createInteger(countItem, Integer::parseInt (lCount));
+    GENV_ITEMFACTORY->createInteger(countItem, Integer(lCount));
     GenericArithIterator<DivideOperation>::compute(result,
                                                    planState.theLocalDynCtx,
                                                    tm,
@@ -1449,9 +1448,9 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
-                                                 Integer::parseInt((int32_t)0)),
-                 state);
+      STACK_PUSH(
+				GENV_ITEMFACTORY->createInteger( result, Integer::zero() ), state
+			);
     }
   }
 
@@ -1499,7 +1498,7 @@ bool FnSumDoubleIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1547,7 +1546,7 @@ bool FnSumFloatIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1595,7 +1594,7 @@ bool FnSumDecimalIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1653,7 +1652,7 @@ bool FnSumIntegerIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
     STACK_PUSH(true, state);
   }
 

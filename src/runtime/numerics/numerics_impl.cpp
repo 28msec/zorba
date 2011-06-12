@@ -281,7 +281,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t res;
   xqtref_t type;
   store::Item_t precision;
-  Integer precision_integer = Integer::parseInt((int32_t)0);
+  Integer precision_integer(0);
 
   const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -322,7 +322,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //item type is subtype of INTEGER 
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     { 
-      if(precision_integer < zorba::Integer::zero())
+      if(precision_integer < Integer::zero())
         GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().round(precision_integer));
     }
 
@@ -360,7 +360,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t itemPrec;
   store::Item_t res;
   xqtref_t type;
-  Integer precision = Integer::parseInt((int32_t)0);
+  Integer precision(0);
 
   const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -838,7 +838,7 @@ static void formatNumber(
   else if (sub_picture.str.find(info.per_mille) != zstring::npos)
     adjusted = adjusted * Double::parseInt(1000);
 
-  adjusted = adjusted.roundHalfToEven(Integer::parseInt(sub_picture.fractional_part.maximum_size));
+  adjusted = adjusted.roundHalfToEven(Integer(sub_picture.fractional_part.maximum_size));
 
   zstring converted = adjusted.toString(true);
   

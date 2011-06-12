@@ -626,21 +626,24 @@ T1_TO_T2(flt, dbl)
 
 T1_TO_T2(flt, dec)
 {
-  xs_decimal n;
-  if (xs_decimal::parseFloat(aItem->getFloatValue(), n))
+  try {
+    xs_decimal const n( aItem->getFloatValue() );
     return aFactory->createDecimal(result, n);
-
-  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  }
+  catch ( std::invalid_argument const& ) {
+    throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  }
 }
 
 
 T1_TO_T2(flt, int)
 {
-  xs_integer n;
-  if (xs_integer::parseFloat(aItem->getFloatValue(), n))
-    return aFactory->createInteger(result, n);
-
-  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  try {
+    return aFactory->createInteger(result, xs_integer(aItem->getFloatValue()));
+  }
+  catch ( std::invalid_argument const& ) {
+    throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  }
 }
 
 
@@ -674,21 +677,24 @@ T1_TO_T2(dbl, flt)
 
 T1_TO_T2(dbl, dec)
 {
-  xs_decimal n;
-  if (xs_decimal::parseDouble(aItem->getDoubleValue(), n))
+  try {
+    xs_decimal const n( aItem->getDoubleValue() );
     return aFactory->createDecimal(result, n);
-
-  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  }
+  catch ( std::invalid_argument const& ) {
+    throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  }
 }
 
 
 T1_TO_T2(dbl, int)
 {
-  xs_integer n;
-  if (xs_integer::parseDouble(aItem->getDoubleValue(), n))
-    return aFactory->createInteger(result, n);
-
-  throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  try {
+    return aFactory->createInteger(result, xs_integer(aItem->getDoubleValue()));
+  }
+  catch ( std::invalid_argument const& ) {
+    throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
+  }
 }
 
 
@@ -730,7 +736,7 @@ T1_TO_T2(dec, dbl)
 T1_TO_T2(dec, int)
 {
   return aFactory->createInteger(result,
-                                 xs_integer::parseDecimal(aItem->getDecimalValue()));
+                                 xs_integer(aItem->getDecimalValue()));
 }
 
 
@@ -772,7 +778,7 @@ T1_TO_T2(int, dbl)
 T1_TO_T2(int, dec)
 {
   return aFactory->createDecimal(result,
-                                 xs_decimal::parseInteger(aItem->getIntegerValue()));
+                                 xs_decimal(aItem->getIntegerValue()));
 }
 
 
@@ -1124,7 +1130,7 @@ T1_TO_T2(bool, dbl)
 T1_TO_T2(bool, dec)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createDecimal(result, xs_decimal::parseInt(1));
+    return aFactory->createDecimal(result, xs_decimal::one());
   else
     return aFactory->createDecimal(result, xs_decimal::zero());
 }
@@ -1133,7 +1139,7 @@ T1_TO_T2(bool, dec)
 T1_TO_T2(bool, int)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createInteger(result, xs_integer::parseInt(1));
+    return aFactory->createInteger(result, xs_integer::one());
   else
     return aFactory->createInteger(result, xs_integer::zero());
 }

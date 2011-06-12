@@ -1212,7 +1212,7 @@ bool FLWORIterator::bindVariable(
     if (!flc.thePosVarRefs.empty())
     {
       store::Item_t posItem;
-      GENV_ITEMFACTORY->createInteger(posItem, Integer::parseInt(bindingState));
+      GENV_ITEMFACTORY->createInteger(posItem, Integer(bindingState));
 
       std::vector<PlanIter_t>::const_iterator viter = flc.thePosVarRefs.begin();
       std::vector<PlanIter_t>::const_iterator end = flc.thePosVarRefs.end();

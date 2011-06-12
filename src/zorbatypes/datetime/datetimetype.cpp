@@ -974,7 +974,10 @@ int DateTime::getMinutes() const
 
 xs_decimal DateTime::getSeconds() const
 {
-  return Decimal::parseInt(data[SECONDS_DATA]) + (Decimal::parseInt(data[FRACSECONDS_DATA]) / Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT));
+  return  xs_decimal(data[SECONDS_DATA])
+        + (xs_decimal(data[FRACSECONDS_DATA])
+          / Integer(FRAC_SECONDS_UPPER_LIMIT)
+          );
 }
 
 
@@ -1151,7 +1154,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
   
   if (data[YEAR_DATA] > 0 && d.isNegative() && years <= 0)
     years--;
-  if (data[YEAR_DATA] < 0 && (!d.isNegative()) && years >= 0)
+  if (data[YEAR_DATA] < 0 && !d.isNegative() && years >= 0)
     years++;
 
   new_dt = new DateTime();
@@ -1280,7 +1283,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     // validate timezone value (-14 .. +14 H)
     if (d->getYears() != 0 || d->getMonths() != 0 ||
         d->getDays() != 0 ||
-        d->getSeconds() != Integer::parseInt(0) ||
+        d->getSeconds() != Integer::zero() ||
         d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
         d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
       throw InvalidTimezoneException();
@@ -1486,3 +1489,4 @@ int DateTime::getWeekInMonth() const
 }
 
 } // namespace xqp
+/* vim:set et sw=2 ts=2: */

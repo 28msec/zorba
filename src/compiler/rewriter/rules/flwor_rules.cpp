@@ -242,9 +242,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       if (pvar != NULL)
       {
-        MODIFY(subst_vars(rCtx, node, pvar, new const_expr(sctx,
-                                                           loc,
-                                                           xs_integer::parseInt(1))));
+        MODIFY(
+					subst_vars(
+						rCtx, node, pvar, new const_expr( sctx, loc, xs_integer::one() )
+					)
+				);
       }
 
       int uses = count_variable_uses(&flwor, var, &rCtx, 2);
@@ -879,7 +881,7 @@ static bool is_subseq_pred(
                                                  err::XPTY0004);
 
         if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE) &&
-            val->getIntegerValue() >= xs_integer::parseInt(1))
+            val->getIntegerValue() >= xs_integer::one())
         {
           return true;
         }

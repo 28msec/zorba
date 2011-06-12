@@ -90,7 +90,7 @@ FunctionArityIterator::nextImpl(
 
   lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
 
-  lInt = Integer::parseUInt(lFunctionItem->getArity());
+  lInt = Integer(lFunctionItem->getArity());
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(r, lInt), state);
 

@@ -74,19 +74,41 @@ bool NumConversions::strToFloat(const char* aStr, xs_float& aFloat)
 
 bool NumConversions::strToDecimal(const char* aStr, xs_decimal& aDecimal)
 {
-  return Decimal::parseString(aStr, aDecimal);
+  try {
+    aDecimal = aStr;
+    return true;
+  }
+  catch ( std::invalid_argument const& ) {
+    return false;
+  }
 }
 
 
 bool NumConversions::strToInteger(const char* aStr, xs_integer& aInteger) 
 {
-  return Integer::parseString(aStr, aInteger);
+  try {
+    aInteger = aStr;
+    return true;
+  }
+  catch ( std::invalid_argument const& ) {
+    return false;
+  }
 }
 
 
 bool NumConversions::strToUInteger(const char* aStr, xs_uinteger& aUInteger)
 {
-  return Integer::parseStringUnsigned(aStr, aUInteger);
+  try {
+    xs_integer const temp( aStr );
+    if ( temp.sign() >= 0 ) {
+      aUInteger = temp;
+      return true;
+    }
+  }
+  catch ( std::invalid_argument const& ) {
+    // ignore
+  }
+  return false;
 }
 
 
@@ -355,7 +377,7 @@ bool NumConversions::floatToInt(const xs_float& aFloat, xs_int& aInt)
 bool NumConversions::decimalToInteger(const xs_decimal& aDecimal, xs_integer& aInteger)
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aDecimal.isInteger())
+  if (aDecimal.is_integer())
   {
     zstring lStr = aDecimal.toString();
     return NumConversions::strToInteger(lStr.c_str(), aInteger);
@@ -373,7 +395,7 @@ bool NumConversions::decimalToInteger(const xs_decimal& aDecimal, xs_integer& aI
 bool NumConversions::decimalToULong(const xs_decimal& aDecimal, xs_unsignedLong& aULong)
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aDecimal.isULong())
+  if (aDecimal.is_xs_ulong())
   {
     zstring lStr = aDecimal.toString();
     return NumConversions::strToULong(lStr.c_str(), aULong);
@@ -391,7 +413,7 @@ bool NumConversions::decimalToULong(const xs_decimal& aDecimal, xs_unsignedLong&
 bool NumConversions::decimalToLong(const xs_decimal& aDecimal, xs_long& aLong)
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aDecimal.isLong())
+  if (aDecimal.is_xs_long())
   {
     zstring lStr = aDecimal.toString();
     return NumConversions::strToLong(lStr.c_str(), aLong);
@@ -409,7 +431,7 @@ bool NumConversions::decimalToLong(const xs_decimal& aDecimal, xs_long& aLong)
 bool NumConversions::decimalToUInt(const xs_decimal& aDecimal, xs_unsignedInt& aUInt)
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aDecimal.isUInt())
+  if (aDecimal.is_xs_uint())
   {
     zstring lStr = aDecimal.toString();
     return NumConversions::strToUInt(lStr.c_str(), aUInt);
@@ -427,7 +449,7 @@ bool NumConversions::decimalToUInt(const xs_decimal& aDecimal, xs_unsignedInt& a
 bool NumConversions::decimalToInt(const xs_decimal& aDecimal, xs_int& aInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aDecimal.isInt())
+  if (aDecimal.is_xs_int())
   {
     zstring lStr = aDecimal.toString();
     return NumConversions::strToInt(lStr.c_str(), aInt);
@@ -445,7 +467,7 @@ bool NumConversions::decimalToInt(const xs_decimal& aDecimal, xs_int& aInt)
 bool NumConversions::integerToLong(const xs_integer& aInteger, xs_long& aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aInteger.isLong())
+  if (aInteger.is_xs_long())
   {
     zstring lStr = aInteger.toString();
     return NumConversions::strToLong(lStr.c_str(), aLong);
@@ -455,7 +477,7 @@ bool NumConversions::integerToLong(const xs_integer& aInteger, xs_long& aLong)
     return false;
   }
 #else
-  aLong = (xs_unsignedInt)aInteger.theInteger;
+  aLong = (xs_unsignedInt)aInteger.value_;
   return true;
 #endif
 }
@@ -464,7 +486,7 @@ bool NumConversions::integerToLong(const xs_integer& aInteger, xs_long& aLong)
 bool NumConversions::integerToUInt(const xs_integer& aInteger, xs_unsignedInt& aUInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aInteger.isUInt())
+  if (aInteger.is_xs_uint())
   {
     zstring lStr = aInteger.toString();
     return NumConversions::strToUInt(lStr.c_str(), aUInt);
@@ -474,7 +496,7 @@ bool NumConversions::integerToUInt(const xs_integer& aInteger, xs_unsignedInt& a
     return false;
   }
 #else
-  aUInt = (xs_unsignedInt)aInteger.theInteger;
+  aUInt = (xs_unsignedInt)aInteger.value_;
   return true;
 #endif
 }
@@ -483,7 +505,7 @@ bool NumConversions::integerToUInt(const xs_integer& aInteger, xs_unsignedInt& a
 bool NumConversions::integerToInt(const xs_integer& aInteger, xs_int& aInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  if (aInteger.isInt())
+  if (aInteger.is_xs_int())
   {
     zstring lStr = aInteger.toString();
     return NumConversions::strToInt(lStr.c_str(), aInt);
@@ -493,7 +515,7 @@ bool NumConversions::integerToInt(const xs_integer& aInteger, xs_int& aInt)
     return false;
   }
 #else
-  aInt = (xs_int)aInteger.theInteger;
+  aInt = (xs_int)aInteger.value_;
   return true;
 #endif
 }
@@ -515,4 +537,5 @@ bool NumConversions::longToDouble(const xs_long& aLong, xs_double& aDouble)
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

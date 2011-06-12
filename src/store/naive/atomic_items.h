@@ -1156,40 +1156,17 @@ public:
 
   virtual store::Item* getType() const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
-  {
-    return theValue.hash();
-  }
+  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
-  {
-    try
-    {
-      return theValue == other->getIntegerValue();
-    }
-    catch (ZorbaException const&)
-    {
-      return getDecimalValue() == other->getDecimalValue();
-    }
-  }
+        const XQPCollator* aCollation = 0) const;
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
-  {
-    try
-    {
-      return theValue.compare(other->getIntegerValue());
-    }
-    catch (ZorbaException const&)
-    {
-      return getDecimalValue().compare(other->getDecimalValue());
-    }
-  }
+        const XQPCollator* aCollation = 0) const;
 
   store::Item_t getEBV( ) const;
 

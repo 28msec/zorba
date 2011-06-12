@@ -89,7 +89,7 @@ bool XercesParseUtils::parseXSInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xs_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createInteger(result, tvalue);
@@ -118,7 +118,7 @@ bool XercesParseUtils::parseXSPositiveInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xs_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createPositiveInteger(result, tvalue);
@@ -148,7 +148,7 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xs_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createNonPositiveInteger(result, tvalue);
@@ -178,7 +178,7 @@ bool XercesParseUtils::parseXSNegativeInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xs_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue (value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createNegativeInteger(result, tvalue);
@@ -207,7 +207,7 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xs_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createNonNegativeInteger(result, tvalue);
@@ -533,10 +533,7 @@ bool XercesParseUtils::parseXSDecimal(
   if ( status==XSValue::st_Init )
   {
     double value = xsval->fData.fValue.f_decimal.f_dvalue;
-
-    xs_decimal tvalue;
-    Decimal::parseNativeDouble(value, tvalue);
-
+    xs_decimal const tvalue(value);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createDecimal(result, tvalue);
   }

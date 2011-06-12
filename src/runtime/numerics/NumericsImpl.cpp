@@ -300,7 +300,7 @@ bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMA
 {
   xs_decimal ld0 = i0->getDecimalValue();
   xs_decimal ld1 = i1->getDecimalValue();
-  if ( ld1 == Integer::parseInt(0) )
+  if ( ld1 == Integer::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -317,9 +317,9 @@ bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGE
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xs_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
-  xs_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
-  if ( ll1 == Integer::parseInt(0) )
+  xs_decimal const ll0(i0->getIntegerValue());
+  xs_decimal const ll1(i1->getIntegerValue());
+  if ( ll1 == Integer::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -362,13 +362,10 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
 
   if (i0->isPosOrNegInf()) {
     // idiv with +-INF divisor has 0 as result
-    return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    return GENV_ITEMFACTORY->createInteger(result, Integer::zero());
   }
 
-  xs_integer lInteger;
-  bool lBool = Integer::parseDouble( d0 / d1, lInteger);
-  ZORBA_ASSERT(lBool);
-
+  xs_integer const lInteger( d0 / d1 );
   return GENV_ITEMFACTORY->createInteger (result,  lInteger );
 }
 
@@ -404,13 +401,10 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
   if (i0->isPosOrNegInf()) 
   {
     // idiv with +-INF divisor has 0 as result
-    return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    return GENV_ITEMFACTORY->createInteger(result, Integer::zero());
   }
 
-  xs_integer lInteger;
-  bool lBool = Integer::parseFloat( f0 / f1, lInteger);
-  ZORBA_ASSERT(lBool);
-
+  xs_integer const lInteger( f0 / f1 );
   return GENV_ITEMFACTORY->createInteger(result, lInteger);
 }
 
@@ -427,11 +421,11 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS
   xs_decimal ld0 = i0->getDecimalValue();
   xs_decimal ld1 = i1->getDecimalValue();
 
-  if ( ld1 == Decimal::parseInt(0) )
+  if ( ld1.sign() == 0 )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
-  return GENV_ITEMFACTORY->createInteger(result, Integer::parseDecimal(ld0 / ld1));
+  return GENV_ITEMFACTORY->createInteger(result, Integer(ld0 / ld1));
 }
 
 
@@ -447,7 +441,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS
   xs_integer ll0 = i0->getIntegerValue();
   xs_integer ll1 = i1->getIntegerValue();
 
-  if ( ll1 == Integer::parseInt(0) )
+  if ( ll1 == Integer::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -498,7 +492,7 @@ bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>
   xs_decimal ld0 = i0->getDecimalValue();
   xs_decimal ld1 = i1->getDecimalValue();
 
-  if ( ld1 == Decimal::parseInt(0) )
+  if ( ld1.sign() == 0 )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -518,7 +512,7 @@ bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>
   xs_integer ll0 = i0->getIntegerValue();
   xs_integer ll1 = i1->getIntegerValue();
 
-  if ( ll1 == Integer::parseInt(0) )
+  if ( ll1 == Integer::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }

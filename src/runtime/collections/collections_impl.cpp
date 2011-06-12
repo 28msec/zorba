@@ -306,8 +306,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(pos+1)),
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(pos+1)),
                state);
   }
 

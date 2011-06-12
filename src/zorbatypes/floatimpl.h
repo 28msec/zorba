@@ -1,34 +1,38 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
-#ifndef ZORBA_ZORBATYPES_FLOATIMPL_H
-#define ZORBA_ZORBATYPES_FLOATIMPL_H
+#ifndef ZORBA_FLOATIMPL_H
+#define ZORBA_FLOATIMPL_H
+
+#include <math.h>
 
 #include <zorba/config.h>
-#include "common/common.h"
-#include <math.h>
-#include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/schema_types.h"
 
+#include "common/common.h"
 #include "zorbaserialization/class_serializer.h"
 
-namespace zorba 
-{
+#include "schema_types.h"
+#include "zorbatypes_decl.h"
 
-class FloatCommons 
+namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
+
+class FloatCommons
 {
  public:
   static const zstring& get_INF_POS_STR();
@@ -36,66 +40,56 @@ class FloatCommons
   static const zstring& get_NOT_A_NUM_STR();
 
   static Double parseFloat(const Float&);
-   
+
   static Float parseDouble(const Double&);
 };
 
 
 // exported for testing only
-template <typename FloatType>
-class ZORBA_DLL_PUBLIC FloatImpl : public ::zorba::serialization::SerializeBaseClass
-{
-  friend class Integer;
-  friend class Decimal;
-  friend class FloatCommons;
-  template <typename Type>
-    friend class FloatImplTraits;
-  friend class NumConversions;
-
-private:
-  FloatType         theFloating;
-  unsigned short    precision;
-
+template<typename FloatType>
+class ZORBA_DLL_PUBLIC FloatImpl : public serialization::SerializeBaseClass {
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 public:
   static  HashCharPtrObjPtrLimited<FloatImpl>  parsed_floats;
 #endif
 
 public:
+  typedef FloatType value_type;
+
   /**
    * @return float or double that represents 0
    */
-  static FloatImpl<FloatType>& zero();
+  static FloatImpl<FloatType> const& zero();
 
   /**
    * @return float or double that represents -0
    */
-  static FloatImpl<FloatType>& zero_neg();
+  static FloatImpl<FloatType> const& neg_zero();
 
   /**
    * @return float or double that represents +1
    */
-  static FloatImpl<FloatType>& one();
+  static FloatImpl<FloatType> const& one();
 
   /**
    * @return float or double that represents -1
    */
-  static FloatImpl<FloatType>& one_neg();
+  static FloatImpl<FloatType> const& neg_one();
 
   /**
    * @return float or double that represents NaN
    */
-  static FloatImpl<FloatType>& nan();
+  static FloatImpl<FloatType> const& nan();
 
   /**
    * @return float or double that represents +INF
    */
-  static FloatImpl<FloatType>& inf_pos();
+  static FloatImpl<FloatType> const& inf_pos();
 
   /**
    * @return float or double that represents -INF
    */
-  static FloatImpl<FloatType>& inf_neg();
+  static FloatImpl<FloatType> const& inf_neg();
 
   static int max_precision();
 
@@ -151,7 +145,7 @@ public:
 public:
   FloatImpl() : theFloating(0) { precision = max_precision(); }
 
-  FloatImpl(FloatType aFloating) 
+  FloatImpl(FloatType aFloating)
     :
     theFloating(aFloating)
   {
@@ -168,14 +162,14 @@ public:
 
   virtual ~FloatImpl() {}
 
-  FloatImpl<FloatType>& operator=(const FloatImpl& aFloatImpl) 
+  FloatImpl<FloatType>& operator=(const FloatImpl& aFloatImpl)
   {
     theFloating = aFloatImpl.theFloating;
     precision = aFloatImpl.precision;
     return *this;
   }
 
-  FloatType getNumber() const { return theFloating; }
+  value_type getNumber() const { return theFloating; }
 
   bool isNaN() const;
 
@@ -258,9 +252,9 @@ public:
 
   FloatImpl<FloatType> operator-() const;
 
-  FloatImpl<FloatType> floor() const; 
+  FloatImpl<FloatType> floor() const;
 
-  FloatImpl<FloatType> ceil() const; 
+  FloatImpl<FloatType> ceil() const;
 
   FloatImpl<FloatType> round() const;
 
@@ -315,64 +309,43 @@ public:
   void modf(FloatImpl<FloatType>& out_fraction, FloatImpl<FloatType>& out_integer) const;
 
   zstring toIntegerString() const;
-  
+
   zstring toString(bool no_scientific_mode = false) const;
+
+private:
+  value_type     theFloating;
+  unsigned short precision;
+
+  friend class Integer;
+  friend class Decimal;
+  friend class FloatCommons;
+  template<typename T> friend class FloatImplTraits;
+  friend class NumConversions;
 };
 
+///////////////////////////////////////////////////////////////////////////////
 
-std::ostream&
-operator<<(std::ostream& os, const Double& aFloatImpl); 
-  
-  
-std::ostream&
-operator<<(std::ostream& os, const Float& aFloatImpl);
-  
-  
-Double
-operator+(const Double&, const Float&);
-  
-  
-Double
-operator+(const Float&, const Double&);
-  
-  
-Double
-operator-(const Double&, const Float&);
-  
-  
-Double
-operator-(const Float&, const Double&);
-  
-  
-Double
-operator*(const Double&, const Float&);
-  
-  
-Double
-operator*(const Float&, const Double&);
-  
-  
-Double
-operator/(const Double&, const Float&);
-  
-  
-Double
-operator/(const Float&, const Double&);
-  
-  
-Double
-operator%(const Double&, const Float&);
-  
-  
-Double
-operator%(const Float&, const Double&);
-  
-} /* namespace zorba */
+std::ostream& operator<<(std::ostream& os, const Double& aFloatImpl);
+std::ostream& operator<<(std::ostream& os, const Float& aFloatImpl);
 
-#endif // ZORBA_DOUBLE_H
+Double operator+(const Double&, const Float&);
+Double operator+(const Float&, const Double&);
+Double operator-(const Double&, const Float&);
+Double operator-(const Float&, const Double&);
+Double operator*(const Double&, const Float&);
+Double operator*(const Float&, const Double&);
+Double operator/(const Double&, const Float&);
+Double operator/(const Float&, const Double&);
+Double operator%(const Double&, const Float&);
+Double operator%(const Float&, const Double&);
 
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace zorba
+#endif // ZORBA_FLOATIMPL_H
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

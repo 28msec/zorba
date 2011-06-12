@@ -313,7 +313,7 @@ LdexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
       {
         xs_integer integ = n1->getIntegerValue();
         xs_double  doub = n0->getDoubleValue();
-        xs_integer integ_2 = Integer::parseInt(2);
+        xs_integer integ_2(2);
         xs_double doub_pow = integ_2.pow(integ);
 
         GENV_ITEMFACTORY->createDouble(result, doub * doub_pow);

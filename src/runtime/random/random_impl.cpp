@@ -50,7 +50,7 @@ PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     std::srand((unsigned int)(time(NULL)));
   }
 
-  GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
+  GENV_ITEMFACTORY->createInteger(result, Integer(std::rand()));
   STACK_PUSH (true, state);
 
   STACK_END (state);
@@ -78,7 +78,7 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     std::srand((unsigned int)(time(NULL)));
   }
 
-  GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(std::rand()));
+  GENV_ITEMFACTORY->createInteger(result, Integer(std::rand()));
   STACK_PUSH (true, state);
 
   STACK_END (state);

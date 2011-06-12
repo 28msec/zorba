@@ -54,9 +54,7 @@ namespace zorba
 
 xs_integer FormatIntegerIterator::StringToXsInteger(const char *str)
 {
-  xs_integer  retint;
-  xs_integer::parseString(str, retint);
-  return retint;
+  return xs_integer(str);
 }
 
 void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_picture, 
@@ -162,11 +160,10 @@ void FormatIntegerIterator::checkOptionalModifier(utf8_string<zstring> &utf8_pic
 void FormatIntegerIterator::formatIntegerAZ(xs_integer valueInteger, char c0, zstring &resultString)
 {
   static const unsigned int letter_range = 'Z' - 'A' + 1;
-  static xs_integer integer_digit = xs_integer::parseInt(letter_range);
-  static xs_integer one = xs_integer::parseInt(1);
+  static xs_integer integer_digit(letter_range);
   xs_integer  upper_int = valueInteger/integer_digit;
   if(upper_int > xs_integer::zero())
-    formatIntegerAZ(upper_int - one, c0, resultString);
+    formatIntegerAZ(upper_int - xs_integer::one(), c0, resultString);
   xs_integer  mod_integer = valueInteger % integer_digit;
   xs_int      mod_int;
   NumConversions::integerToInt(mod_integer, mod_int);
@@ -175,36 +172,37 @@ void FormatIntegerIterator::formatIntegerAZ(xs_integer valueInteger, char c0, zs
 
 void FormatIntegerIterator::formatIntegerRoman(xs_integer valueInteger, zstring &resultString)
 {
-  static xs_integer integer_1000 = xs_integer::parseInt(1000);
-  static xs_integer integer_900 = xs_integer::parseInt(900);
-  static xs_integer integer_800 = xs_integer::parseInt(800);
-  static xs_integer integer_700 = xs_integer::parseInt(700);
-  static xs_integer integer_600 = xs_integer::parseInt(600);
-  static xs_integer integer_500 = xs_integer::parseInt(500);
-  static xs_integer integer_400 = xs_integer::parseInt(400);
-  static xs_integer integer_300 = xs_integer::parseInt(300);
-  static xs_integer integer_200 = xs_integer::parseInt(200);
-  static xs_integer integer_100 = xs_integer::parseInt(100);
-  static xs_integer integer_90 = xs_integer::parseInt(90);
-  static xs_integer integer_80 = xs_integer::parseInt(80);
-  static xs_integer integer_70 = xs_integer::parseInt(70);
-  static xs_integer integer_60 = xs_integer::parseInt(60);
-  static xs_integer integer_50 = xs_integer::parseInt(50);
-  static xs_integer integer_40 = xs_integer::parseInt(40);
-  static xs_integer integer_30 = xs_integer::parseInt(30);
-  static xs_integer integer_20 = xs_integer::parseInt(20);
-  static xs_integer integer_10 = xs_integer::parseInt(10);
-  static xs_integer integer_9 = xs_integer::parseInt(9);
-  static xs_integer integer_8 = xs_integer::parseInt(8);
-  static xs_integer integer_7 = xs_integer::parseInt(7);
-  static xs_integer integer_6 = xs_integer::parseInt(6);
-  static xs_integer integer_5 = xs_integer::parseInt(5);
-  static xs_integer integer_4 = xs_integer::parseInt(4);
-  static xs_integer integer_3 = xs_integer::parseInt(3);
-  static xs_integer integer_2 = xs_integer::parseInt(2);
-  static xs_integer integer_1 = xs_integer::parseInt(1);
+  static xs_integer integer_3000(3000);
+  static xs_integer integer_1000(1000);
+  static xs_integer integer_900(900);
+  static xs_integer integer_800(800);
+  static xs_integer integer_700(700);
+  static xs_integer integer_600(600);
+  static xs_integer integer_500(500);
+  static xs_integer integer_400(400);
+  static xs_integer integer_300(300);
+  static xs_integer integer_200(200);
+  static xs_integer integer_100(100);
+  static xs_integer integer_90(90);
+  static xs_integer integer_80(80);
+  static xs_integer integer_70(70);
+  static xs_integer integer_60(60);
+  static xs_integer integer_50(50);
+  static xs_integer integer_40(40);
+  static xs_integer integer_30(30);
+  static xs_integer integer_20(20);
+  static xs_integer integer_10(10);
+  static xs_integer integer_9(9);
+  static xs_integer integer_8(8);
+  static xs_integer integer_7(7);
+  static xs_integer integer_6(6);
+  static xs_integer integer_5(5);
+  static xs_integer integer_4(4);
+  static xs_integer integer_3(3);
+  static xs_integer integer_2(2);
+  static xs_integer integer_1(1);
 
-  if (valueInteger > xs_integer::parseInt(3000))
+  if (valueInteger > integer_3000)
   {
     throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_value_gt_3000), valueInteger));
   }
@@ -382,40 +380,40 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   //10^12
   static xs_integer integer_trillion =       StringToXsInteger("1000000000000");
   //10^9
-  static xs_integer integer_billion =        xs_integer::parseInt(1000000000);
+  static xs_integer integer_billion(1000000000);
   //10^6
-  static xs_integer integer_million =        xs_integer::parseInt(1000000);
+  static xs_integer integer_million(1000000);
   //10^3
-  static xs_integer integer_thousand =       xs_integer::parseInt(1000);
+  static xs_integer integer_thousand(1000);
   //10^2
-  static xs_integer integer_hundred  =       xs_integer::parseInt(100);
-  static xs_integer integer_90 = xs_integer::parseInt(90);
-  static xs_integer integer_80 = xs_integer::parseInt(80);
-  static xs_integer integer_70 = xs_integer::parseInt(70);
-  static xs_integer integer_60 = xs_integer::parseInt(60);
-  static xs_integer integer_50 = xs_integer::parseInt(50);
-  static xs_integer integer_40 = xs_integer::parseInt(40);
-  static xs_integer integer_30 = xs_integer::parseInt(30);
-  static xs_integer integer_20 = xs_integer::parseInt(20);
-  static xs_integer integer_19 = xs_integer::parseInt(19);
-  static xs_integer integer_18 = xs_integer::parseInt(18);
-  static xs_integer integer_17 = xs_integer::parseInt(17);
-  static xs_integer integer_16 = xs_integer::parseInt(16);
-  static xs_integer integer_15 = xs_integer::parseInt(15);
-  static xs_integer integer_14 = xs_integer::parseInt(14);
-  static xs_integer integer_13 = xs_integer::parseInt(13);
-  static xs_integer integer_12 = xs_integer::parseInt(12);
-  static xs_integer integer_11 = xs_integer::parseInt(11);
-  static xs_integer integer_10 = xs_integer::parseInt(10);
-  static xs_integer integer_9 = xs_integer::parseInt(9);
-  static xs_integer integer_8 = xs_integer::parseInt(8);
-  static xs_integer integer_7 = xs_integer::parseInt(7);
-  static xs_integer integer_6 = xs_integer::parseInt(6);
-  static xs_integer integer_5 = xs_integer::parseInt(5);
-  static xs_integer integer_4 = xs_integer::parseInt(4);
-  static xs_integer integer_3 = xs_integer::parseInt(3);
-  static xs_integer integer_2 = xs_integer::parseInt(2);
-  static xs_integer integer_1 = xs_integer::parseInt(1);
+  static xs_integer integer_hundred(100);
+  static xs_integer integer_90(90);
+  static xs_integer integer_80(80);
+  static xs_integer integer_70(70);
+  static xs_integer integer_60(60);
+  static xs_integer integer_50(50);
+  static xs_integer integer_40(40);
+  static xs_integer integer_30(30);
+  static xs_integer integer_20(20);
+  static xs_integer integer_19(19);
+  static xs_integer integer_18(18);
+  static xs_integer integer_17(17);
+  static xs_integer integer_16(16);
+  static xs_integer integer_15(15);
+  static xs_integer integer_14(14);
+  static xs_integer integer_13(13);
+  static xs_integer integer_12(12);
+  static xs_integer integer_11(11);
+  static xs_integer integer_10(10);
+  static xs_integer integer_9(9);
+  static xs_integer integer_8(8);
+  static xs_integer integer_7(7);
+  static xs_integer integer_6(6);
+  static xs_integer integer_5(5);
+  static xs_integer integer_4(4);
+  static xs_integer integer_3(3);
+  static xs_integer integer_2(2);
+  static xs_integer integer_1(1);
 
   xs_integer  value_mod;
 
@@ -425,7 +423,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   formatIntegerEnglish(valueInteger/integer_##big_number_name, false, resultString);     \
     resultString += " " #big_number_name;                                                \
     value_mod = valueInteger % integer_##big_number_name;                                  \
-    if(value_mod > xs_integer::zero())                                                    \
+    if(value_mod > xs_integer::zero())                                    \
     {                                                                                     \
       resultString += " ";                                                                \
       formatIntegerEnglish(value_mod, is_ordinal, resultString);                          \
@@ -438,7 +436,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   else if (valueInteger >= integer_##decim)                                     \
   {                                                                             \
   value_mod = valueInteger % integer_##decim;                                   \
-    if(value_mod > xs_integer::zero())                                          \
+    if(value_mod > xs_integer::zero())                          \
     {                                                                           \
       resultString += decim_cardinal;                                           \
       resultString += "-";                                                      \
@@ -812,7 +810,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         {
           if(is_neg)
             resultString += '-';
-          formatIntegerAZ(valueInteger-xs_integer::parseInt(1), c0, resultString);
+          formatIntegerAZ(valueInteger-xs_integer::one(), c0, resultString);
         }
       }
       else if((c0 == 'i') || (c0 == 'I'))

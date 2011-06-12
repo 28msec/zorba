@@ -126,7 +126,7 @@ bool ForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
       {
         store::Item_t lPosItem;
         GENV_ITEMFACTORY->createInteger(lPosItem,
-                                        Integer::parseInt(lState->incReturnPosition()));
+                                        Integer(lState->incReturnPosition()));
         bindVariables(lPosItem, thePosVarRefs, aPlanState);
       }
       STACK_PUSH(true, lState);

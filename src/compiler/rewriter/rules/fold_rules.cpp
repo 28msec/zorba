@@ -729,7 +729,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
         {
           return new const_expr(fo->get_sctx(),
                                 fo->get_loc(),
-                                Integer::parseInt(type_cnt));
+                                Integer(type_cnt));
         }
         else if (fkind == FunctionConsts::FN_EMPTY_1)
         {
@@ -892,20 +892,19 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                           fo.get_loc()))
   {
     xs_integer ival = val->getIntegerValue();
-    xs_integer zero = xs_integer::parseInt(0);
 
-    if (ival < zero)
+    if (ival < xs_integer::zero())
     {
       if (!count_expr->isNonDiscardable())
         return new const_expr(val_expr->get_sctx(), LOC(val_expr), false);
     }
-    else if (ival == zero)
+    else if (ival == xs_integer::zero())
     {
       return fix_annotations(new fo_expr(fo.get_sctx(), fo.get_loc(),
                                          GET_BUILTIN_FUNCTION(FN_EMPTY_1),
                                          count_expr->get_arg(0)));
     }
-    else if (ival == xs_integer::parseInt(1))
+    else if (ival == xs_integer::one())
     {
       return fix_annotations(new fo_expr(fo.get_sctx(),
                                          fo.get_loc(),

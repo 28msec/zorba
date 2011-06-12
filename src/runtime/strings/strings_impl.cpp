@@ -141,7 +141,7 @@ bool StringToCodepointsIterator::nextImpl(
       {
         GENV_ITEMFACTORY->createInteger( 
           result,
-          Integer::parseInt(state->theResult[state->theIterator]) 
+          Integer(state->theResult[state->theIterator]) 
         );
 
         STACK_PUSH(true, state );
@@ -213,7 +213,7 @@ bool CompareStrIterator::nextImpl(
       
       res = (res < 0 ? -1 : (res > 0 ? 1 : 0));
 
-      GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(res));
+      GENV_ITEMFACTORY->createInteger(result, Integer(res));
 
       STACK_PUSH(true, state);
     }
@@ -554,14 +554,16 @@ bool StringLengthIterator::nextImpl(
   {
     item->getStringValue2(strval);
 
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-                            result,
-                            Integer::parseSizeT(utf8_string<zstring>(strval).length())),
-               state);
+    STACK_PUSH(
+      GENV_ITEMFACTORY->createInteger(
+        result, Integer( utf8::length( strval ) )
+      ),
+      state
+    );
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(0)),
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::zero()),
                state);
   }
   STACK_END(state);

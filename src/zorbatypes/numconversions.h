@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_NUM_CONVERSIONS_H
 #define ZORBA_NUM_CONVERSIONS_H
@@ -130,12 +131,11 @@ private:
 };
 
 
-} /* namespace zorba */
-
+} // namespace zorba
 #endif
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

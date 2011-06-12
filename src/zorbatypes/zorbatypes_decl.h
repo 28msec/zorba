@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_ZORBATYPES_DECL_H
 #define ZORBA_ZORBATYPES_DECL_H
@@ -20,24 +21,25 @@
 namespace zorba 
 {
   /* numerics */
-  template <class Object> class FloatImpl;
+  class Decimal;
   class Integer;
+  template<typename T> class FloatImpl;
   typedef FloatImpl<double> Double;
   typedef FloatImpl<float>  Float;
 
   /* datetime */
   class DateTime;
-  class Decimal;
   class Duration;
   class TimeZone;
 
   /* string */
   class XQPCollator;
 };
-#endif
 
+#endif /* ZORBA_ZORBATYPES_DECL_H */
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=2 ts=2: */

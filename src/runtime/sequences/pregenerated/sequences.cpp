@@ -236,15 +236,15 @@ FnInsertBeforeIteratorState::~FnInsertBeforeIteratorState() {}
 
 void FnInsertBeforeIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xs_integer::parseInt(0);
-  thePosition = xs_integer::parseInt(0);
+  theCurrentPos = xs_integer::zero();
+  thePosition = xs_integer::zero();
   theTargetItem = NULL;
 }
 
 void FnInsertBeforeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xs_integer::parseInt(0);
-  thePosition = xs_integer::parseInt(0);
+  theCurrentPos = xs_integer::zero();
+  thePosition = xs_integer::zero();
   theTargetItem = NULL;
 }
 // </FnInsertBeforeIterator>
@@ -282,15 +282,15 @@ FnRemoveIteratorState::~FnRemoveIteratorState() {}
 
 void FnRemoveIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xs_integer::parseInt(0);
-  thePosition = xs_integer::parseInt(0);
+  theCurrentPos = xs_integer::zero();
+  thePosition = xs_integer::zero();
   theCollator = 0;
 }
 
 void FnRemoveIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xs_integer::parseInt(0);
-  thePosition = xs_integer::parseInt(0);
+  theCurrentPos = xs_integer::zero();
+  thePosition = xs_integer::zero();
   theCollator = 0;
 }
 // </FnRemoveIterator>
@@ -854,16 +854,16 @@ OpToIteratorState::~OpToIteratorState() {}
 
 void OpToIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurInt = xs_integer::parseInt(0);
-  theFirstVal = xs_integer::parseInt(0);
-  theLastVal = xs_integer::parseInt(0);
+  theCurInt = xs_integer::zero();
+  theFirstVal = xs_integer::zero();
+  theLastVal = xs_integer::zero();
 }
 
 void OpToIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurInt = xs_integer::parseInt(0);
-  theFirstVal = xs_integer::parseInt(0);
-  theLastVal = xs_integer::parseInt(0);
+  theCurInt = xs_integer::zero();
+  theFirstVal = xs_integer::zero();
+  theLastVal = xs_integer::zero();
 }
 // </OpToIterator>
 

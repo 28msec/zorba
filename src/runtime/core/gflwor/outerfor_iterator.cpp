@@ -118,7 +118,7 @@ bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
       {
         if (theHasPosVars)
         {
-          GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(lState->incReturnPosition()));
+          GENV_ITEMFACTORY->createInteger(lPosItem, Integer(lState->incReturnPosition()));
           bindVariables(lPosItem, thePosVarRefs, aPlanState);
         }
         bindVariables(lItem, theOuterForVars, aPlanState);
@@ -130,7 +130,7 @@ bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
     {
       if (theHasPosVars)
       {
-        GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(0));
+        GENV_ITEMFACTORY->createInteger(lPosItem, Integer(0));
         bindVariables(lPosItem, thePosVarRefs, aPlanState);
       }
       bindVariables(lItem, theOuterForVars, aPlanState);

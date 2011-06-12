@@ -230,9 +230,7 @@ Item ItemFactoryImpl::createBoolean(bool aValue)
 Item ItemFactoryImpl::createDecimalFromLong (unsigned long aValue)
 {
   store::Item_t lItem;
-
-  // no error possible
-  Decimal lDecimal = Decimal::parseULongLong(aValue);
+  Decimal const lDecimal(aValue);
   theItemFactory->createDecimal(lItem, lDecimal);
   return &*lItem;
 }
@@ -241,13 +239,13 @@ Item ItemFactoryImpl::createDecimalFromLong (unsigned long aValue)
 Item ItemFactoryImpl::createDecimalFromDouble (double aValue)
 {
   store::Item_t lItem;
-  Decimal lDecimal;
-  if (Decimal::parseNativeDouble(aValue, lDecimal)) 
-  {
+  try {
+    Decimal const lDecimal(aValue);
     theItemFactory->createDecimal(lItem, lDecimal);
-    return &*lItem;
   }
-
+  catch ( std::invalid_argument const& ) {
+    // ignore
+  }
   return &*lItem;
 }
 
@@ -256,13 +254,13 @@ Item ItemFactoryImpl::createDecimal (const String& aValue)
 {
   store::Item_t lItem;
   zstring lString = Unmarshaller::getInternalString(aValue);
-  Decimal lDecimal;
-  if (Decimal::parseString(lString.c_str(), lDecimal)) 
-  {
+  try {
+    Decimal const lDecimal(lString.c_str());
     theItemFactory->createDecimal(lItem, lDecimal);
-    return &*lItem;
   }
-
+  catch ( std::invalid_argument const& ) {
+    // ignore
+  }
   return &*lItem;
 }
 
@@ -271,7 +269,7 @@ Item
 ItemFactoryImpl::createInteger(long long aInteger)
 {
   store::Item_t lItem;
-  Integer lInteger = Integer::parseLong(aInteger);
+  Integer const lInteger(aInteger);
   theItemFactory->createInteger(lItem, lInteger);
   return &*lItem;
 }
@@ -282,11 +280,12 @@ ItemFactoryImpl::createInteger(const String& aInteger)
 {
   zstring const &lString = Unmarshaller::getInternalString( aInteger );
   store::Item_t lItem;
-  Integer lInteger;
-  if (Integer::parseString(lString.c_str(), lInteger))
-  {
+  try {
+    Integer const lInteger( lString.c_str() );
     theItemFactory->createInteger(lItem, lInteger);
-    return &*lItem;
+  }
+  catch ( std::invalid_argument const& ) {
+    // ignore
   }
   return &*lItem;
 }
@@ -444,8 +443,7 @@ Item ItemFactoryImpl::createNegativeInteger ( long long aValue )
 {
   store::Item_t lItem;
   if (aValue < 0) {
-    Integer lInteger;
-    lInteger = Integer::parseLong(aValue);
+    Integer const lInteger(aValue);
     theItemFactory->createNegativeInteger(lItem, lInteger);
   }
   return &*lItem;
@@ -455,8 +453,7 @@ Item ItemFactoryImpl::createNegativeInteger ( long long aValue )
 Item ItemFactoryImpl::createNonNegativeInteger ( unsigned long long aValue )
 {
   store::Item_t lItem;
-  Integer lInteger;
-  lInteger = Integer::parseULong(aValue);
+  Integer lInteger(aValue);
   theItemFactory->createNonNegativeInteger(lItem, lInteger);
   return &*lItem;
 }
@@ -466,8 +463,7 @@ Item ItemFactoryImpl::createNonPositiveInteger ( long long aValue )
 {
   store::Item_t lItem;
   if (aValue < 0) {
-    Integer lInteger;
-    lInteger = Integer::parseLong(aValue);
+    Integer const lInteger(aValue);
     theItemFactory->createNonPositiveInteger(lItem, lInteger);
   }
   return &*lItem;
@@ -477,9 +473,7 @@ Item ItemFactoryImpl::createNonPositiveInteger ( long long aValue )
 Item ItemFactoryImpl::createPositiveInteger ( unsigned long long aValue )
 {
   store::Item_t lItem;
-  Integer lInteger;
-  lInteger = Integer::parseULong(aValue);
-
+  Integer lInteger(aValue);
   theItemFactory->createPositiveInteger(lItem, lInteger);
   return &*lItem;
 }

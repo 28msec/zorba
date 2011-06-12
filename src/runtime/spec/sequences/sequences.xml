@@ -273,10 +273,10 @@
 
   <zorba:state>
     <zorba:member type="xs_integer" name="theCurrentPos"
-                  defaultValue="xs_integer::parseInt(0)" brief="the current position in the sequence"/>
+                  defaultValue="xs_integer::zero()" brief="the current position in the sequence"/>
 
     <zorba:member type="xs_integer" name="thePosition"
-                  defaultValue="xs_integer::parseInt(0)" brief=""/>
+                  defaultValue="xs_integer::zero()" brief=""/>
 
     <zorba:member type="store::Item_t" name="theTargetItem"
                   defaultValue="NULL" brief=""/>
@@ -317,10 +317,10 @@
 
   <zorba:state>
     <zorba:member type="xs_integer" name="theCurrentPos"
-                  defaultValue="xs_integer::parseInt(0)" brief="the current position in the sequence"/>
+                  defaultValue="xs_integer::zero()" brief="the current position in the sequence"/>
   
     <zorba:member type="xs_integer" name="thePosition"
-                  defaultValue="xs_integer::parseInt(0)" brief="the position to delete"/>
+                  defaultValue="xs_integer::zero()" brief="the position to delete"/>
   
     <zorba:member type="XQPCollator*" name="theCollator"
                   defaultValue="0" brief="the collator"/>
@@ -932,12 +932,12 @@
 
   <zorba:state>
     <zorba:member type="xs_integer" name="theCurInt"
-                  defaultValue="xs_integer::parseInt(0)" brief="the current integer"/>
+                  defaultValue="xs_integer::zero()" brief="the current integer"/>
 
      <zorba:member type="xs_integer" name="theFirstVal"
-                   defaultValue="xs_integer::parseInt(0)" brief="first integer"/>
+                   defaultValue="xs_integer::zero()" brief="first integer"/>
 
-     <zorba:member type="xs_integer" name="theLastVal" defaultValue="xs_integer::parseInt(0)"
+     <zorba:member type="xs_integer" name="theLastVal" defaultValue="xs_integer::zero()"
                    brief="last integer"/>
   </zorba:state>
 

@@ -22,7 +22,6 @@
 #include "decimal.h"
 #include "floatimpl.h"
 #include "integer.h"
-#include "rchandle.h"
 #include "zstring.h"
 
 namespace zorba {
@@ -32,49 +31,49 @@ namespace zorba {
 //
 // Mapping of basic XML schema types to C++ language types.
 //
-typedef zstring       xs_anyURI;
-typedef Base64        xs_base64Binary;
-typedef bool          xs_boolean;
-typedef signed char   xs_byte;
-typedef DateTime      xs_date;
-typedef DateTime      xs_dateTime;
-typedef Duration      xs_dayTimeDuration;
-typedef Decimal       xs_decimal;
-typedef Double        xs_double;
-typedef Duration      xs_duration;
-typedef zstring       xs_ENTITIES;
-typedef zstring       xs_ENTITY;
-typedef Float         xs_float;
-typedef DateTime      xs_gDay;
-typedef DateTime      xs_gMonth;
-typedef DateTime      xs_gMonthDay;
-typedef DateTime      xs_gYear;
-typedef DateTime      xs_gYearMonth;
-typedef Base16        xs_hexBinary;
-typedef zstring       xs_ID;
-typedef zstring       xs_IDREF;
-typedef zstring       xs_IDREFS;
-typedef int32_t       xs_int;
-typedef Integer       xs_integer;
-typedef zstring       xs_language;
-typedef int64_t       xs_long;
-typedef zstring       xs_Name;
-typedef zstring       xs_NCName;
-typedef zstring       xs_NMTOKEN;
-typedef zstring       xs_NMTOKENS;
-typedef zstring       xs_normalizedString;
-typedef zstring       xs_NOTATION;
-typedef zstring       xs_QName;
-typedef int16_t       xs_short;
-typedef zstring       xs_string;
-typedef DateTime      xs_time;
-typedef zstring       xs_token;
-typedef Integer       xs_uinteger;
-typedef unsigned char xs_unsignedByte;
-typedef uint32_t      xs_unsignedInt;
-typedef uint64_t      xs_unsignedLong;
-typedef uint16_t      xs_unsignedShort;
-typedef Duration      xs_yearMonthDuration;
+typedef zstring     xs_anyURI;
+typedef Base64      xs_base64Binary;
+typedef bool        xs_boolean;
+typedef signed char xs_byte;
+typedef DateTime    xs_date;
+typedef DateTime    xs_dateTime;
+typedef Duration    xs_dayTimeDuration;
+typedef Decimal     xs_decimal;
+typedef Double      xs_double;
+typedef Duration    xs_duration;
+typedef zstring     xs_ENTITIES;
+typedef zstring     xs_ENTITY;
+typedef Float       xs_float;
+typedef DateTime    xs_gDay;
+typedef DateTime    xs_gMonth;
+typedef DateTime    xs_gMonthDay;
+typedef DateTime    xs_gYear;
+typedef DateTime    xs_gYearMonth;
+typedef Base16      xs_hexBinary;
+typedef zstring     xs_ID;
+typedef zstring     xs_IDREF;
+typedef zstring     xs_IDREFS;
+typedef int32_t     xs_int;
+typedef Integer     xs_integer;
+typedef zstring     xs_language;
+typedef int64_t     xs_long;
+typedef zstring     xs_Name;
+typedef zstring     xs_NCName;
+typedef zstring     xs_NMTOKEN;
+typedef zstring     xs_NMTOKENS;
+typedef zstring     xs_normalizedString;
+typedef zstring     xs_NOTATION;
+typedef zstring     xs_QName;
+typedef int16_t     xs_short;
+typedef zstring     xs_string;
+typedef DateTime    xs_time;
+typedef zstring     xs_token;
+typedef Integer     xs_uinteger;
+typedef uint8_t     xs_unsignedByte;
+typedef uint32_t    xs_unsignedInt;
+typedef uint64_t    xs_unsignedLong;
+typedef uint16_t    xs_unsignedShort;
+typedef Duration    xs_yearMonthDuration;
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -953,7 +953,7 @@ long CompareIterator::compare(
       if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
           TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
       {
-        return aItem0->getIntegerValue().compare(aItem1->getIntegerValue());
+        return aItem0->getIntegerValue().compare( aItem1->getIntegerValue() );
       }
       else
       {
