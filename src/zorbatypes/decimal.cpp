@@ -81,8 +81,8 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   char const *s_ok;
   if ( first_trailing_ws ) {
     ptrdiff_t const size = first_trailing_ws - first_non_ws;
-    char *const copy = std::strncpy( new char[ size ], first_non_ws, size );
-    copy[ size - 1 ] = '\0';
+    char *const copy = std::strncpy( new char[ size + 1 ], first_non_ws, size );
+    copy[ size ] = '\0';
     s_ok = copy;
   } else
     s_ok = first_non_ws;
