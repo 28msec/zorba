@@ -29,6 +29,7 @@
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 (:~
  : The probe function retrieves the domain nodes associated with a particular
@@ -53,7 +54,7 @@ module namespace dml = "http://www.zorba-xquery.com/modules/store/static/indexes
  : @error If available indexes does not provide a mapping for
  :        the expanded QName $name.
  :)
-declare %variadic function dml:probe-index-point-value(
+declare %ann:variadic function dml:probe-index-point-value(
   $name as xs:QName, 
   $key1 as xs:anyAtomicType*) as node()*  external; 
 
@@ -131,7 +132,7 @@ declare %variadic function dml:probe-index-point-value(
  : @error If available indexes does not provide a mapping for
  :        the expanded QName $name.
  :)
-declare %variadic function dml:probe-index-range-value($name as xs:QName, 
+declare %ann:variadic function dml:probe-index-range-value($name as xs:QName, 
   $rangeLowerBound1         as xs:anyAtomicType?,
   $rangeUpperBound1         as xs:anyAtomicType?,
   $rangeHaveLowerBound1     as xs:boolean,
