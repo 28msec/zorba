@@ -122,8 +122,6 @@ xqtref_t fn_data_3_0::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  RootTypeManager& RTM = GENV_TYPESYSTEM;
-
   return tm->create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC,
                                         TypeConstants::QUANT_STAR);
 }

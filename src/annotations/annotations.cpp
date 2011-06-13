@@ -295,8 +295,12 @@ void AnnotationList::createBuiltIn(static_context* aCtx)
   aCtx->add_ann("nonassignable", lTmp);
 
   GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "", "variadic");
+      lTmp, "http://www.zorba-xquery.com/annotations", "", "variadic");
   aCtx->add_ann("variadic", lTmp);
+
+  GENV_ITEMFACTORY->createQName(
+      lTmp, "http://www.zorba-xquery.com/annotations", "", "streamable");
+  aCtx->add_ann("streamable", lTmp);
 }
 
 } /* namespace zorba */

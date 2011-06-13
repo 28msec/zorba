@@ -475,11 +475,6 @@ public:
   static const zstring XQUERY_OP_NS;
   static const zstring ZORBA_OP_NS;
 
-  //
-  // Namespace for Zorba specific built-in annotations
-  static const zstring ZORBA_ANNOTATION_NS;
-
-
 protected:
   static_context                        * theParent;
 

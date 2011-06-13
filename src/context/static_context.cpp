@@ -343,11 +343,6 @@ static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
 const zstring
 static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
 
-/***************************************************************************//**
-                                                                               Zorba's Annotation namespace
-********************************************************************************/
-const zstring
-static_context::ZORBA_ANNOTATION_NS = NS_PRE + "annotations";
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
@@ -591,9 +586,6 @@ static_context::~static_context()
   if (theVariablesMap)
     delete theVariablesMap;
 
-  if (theAnnotationMap)
-    delete theAnnotationMap;
-
   if (theFunctionMap)
     delete theFunctionMap;
 
@@ -607,6 +599,11 @@ static_context::~static_context()
     }
 
     delete theFunctionArityMap;
+  }
+
+  if (theAnnotationMap)
+  {
+    delete theAnnotationMap;
   }
 
   if (theW3CCollectionMap)

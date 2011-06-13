@@ -24,6 +24,7 @@
 
 module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 
 (:~
@@ -49,7 +50,7 @@ module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function. 
  :)
-declare %non-deterministic %variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
+declare %non-deterministic %ann:variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
 
 (:~
  : invoke-updating()
@@ -57,7 +58,7 @@ declare %non-deterministic %variadic function reflection:invoke-simple($name as 
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function.
  :)
-declare %variadic updating function reflection:invoke-updating($name as xs:QName) external;
+declare %ann:variadic updating function reflection:invoke-updating($name as xs:QName) external;
 
 (:~
  : invoke-sequential()
@@ -65,7 +66,7 @@ declare %variadic updating function reflection:invoke-updating($name as xs:QName
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function.
  :)
-declare %variadic %sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
+declare %ann:variadic %sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
 
 
 (:~

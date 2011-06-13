@@ -18,6 +18,8 @@
  :)
 module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $fetch:ErrRetrievingResource as xs:QName :=
   fn:QName("http://www.zorba-xquery.com/modules/fetch",
            "fetch:ErrRetrievingResource");
@@ -35,7 +37,7 @@ declare variable $fetch:ResourceDoesNotExist as xs:QName :=
  : @error fetch:ResourceDoesNotExist if no resource could be found at
  :        the given location.
  :)
-declare function fetch:content($uri as xs:string) as xs:string external;
+declare %ann:streamable function fetch:content($uri as xs:string) as xs:string external;
 
 (:~
  : Tries to figure out the media type of the resource refered to by the
