@@ -103,7 +103,6 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     Find four or five consecutive 9 or 0 after decimal point and eliminate them.
 */
 void Decimal::reduce( char *s ) {
-#if 0
   char *dot = strrchr( s, '.' );
   if ( !dot )
     return; // not a floating point number
@@ -119,7 +118,7 @@ void Decimal::reduce( char *s ) {
 
   char *digits = e - 1;
   int pos = (int)(digits - dot);
-  while ( pos > 8 ) { //(*digits != '.')
+  while ( pos > 8 ) {
     if ( *digits == '9' ) {
       if ( digits[-1] == '9' && digits[-2] == '9' && digits[-3] == '9' ) {
         if ( ascii::is_digit( digits[1] ) && digits[1] >= '5' )
@@ -129,7 +128,7 @@ void Decimal::reduce( char *s ) {
         else
           goto next_digit;
 
-        //now add 1 to remaining digits
+        // now add 1 to remaining digits
         char *last_digit = digits;
         while ( digits >= s ) {
           if ( digits[0] == '.' ) {
@@ -152,28 +151,27 @@ void Decimal::reduce( char *s ) {
           last_digit += 2;
         }
         if ( digits < s || !ascii::is_digit( digits[0] ) ) {
-          memmove( s+1, s, last_digit - s );
+          memmove( s + 1, s, last_digit - s );
           ++last_digit;
           if ( ascii::is_digit( s[0] ) )
             s[0] = '1';
           else
             s[1] = '1';
-          if ( has_e ) {
-            //increment the Exponent
+          if ( has_e ) {                // increment the exponent
             ++dot;
             dot[0] = dot[-1];
             dot[-1] = '.';
-            sprintf( e+1, "%d", atoi( e+1 ) + 1 );
+            sprintf( e + 1, "%d", atoi( e + 1 ) + 1 );
             --last_digit;
           }
         }
-        memmove( last_digit, e, strlen( e ) );
-        last_digit[ strlen( e ) ] = 0;
+        int const e_len = strlen( e );
+        memmove( last_digit, e, e_len );
+        last_digit[ e_len ] = 0;
         break;
       }
     } else if ( *digits == '0' ) {
-      if ( digits[-1] == '0' && digits[-2] == '0' && digits[-3] == '0')
-      {
+      if ( digits[-1] == '0' && digits[-2] == '0' && digits[-3] == '0' ) {
         if ( ascii::is_digit( digits[1] ) && digits[1] < '5' )
           digits -= 4;
         else if ( digits[-4] == '0' )
@@ -188,8 +186,9 @@ void Decimal::reduce( char *s ) {
           digits[1] = '0';
           digits += 2;
         }
-        memmove( digits, e, strlen( e ) );
-        digits[ strlen( e ) ] = 0;
+        int const e_len = strlen( e );
+        memmove( digits, e, e_len );
+        digits[ e_len ] = '\0';
         break;
       }
     }
@@ -197,115 +196,6 @@ next_digit:
     --digits;
     --pos;
   }
-#else
-  char *strDot = strrchr(s, '.');
-  if(!strDot)
-    return;//not a floating point number
-  char *lE = strrchr(s, 'E');
-  int len = (int)strlen(s);
-  bool has_E = false;
-  if(!lE)
-    lE = strrchr(s, 'e');
-  if(!lE)
-    lE = s + len;
-  else
-    has_E = true;
-  char *digit_ptr = lE-1;
-  int pos = (int)(digit_ptr - strDot);
-  while(pos > 8) //(*digit_ptr != '.')
-  {
-    if(*digit_ptr == '9')
-    {
-      if((digit_ptr[-1] == '9') && (digit_ptr[-2] == '9') && (digit_ptr[-3] == '9'))
-      {
-        if(isdigit(digit_ptr[1]) && (digit_ptr[1] >= '5'))
-          digit_ptr -= 4;
-        else if(digit_ptr[-4] == '9')
-          digit_ptr -= 5;
-        else
-          goto nextDigit;
-        //now add 1 to remaining digits
-        char *last_digit = digit_ptr;
-        while(digit_ptr >= s)
-        {
-          if(digit_ptr[0] == '.')
-          {//skip
-          }
-          else if(digit_ptr[0] == '9')
-          {
-            digit_ptr[0] = '0';
-            if(last_digit == digit_ptr)
-              last_digit--;
-          }
-          else
-          {
-            if(isdigit(digit_ptr[0]))
-              digit_ptr[0]++;
-            break;
-          }
-          digit_ptr--;
-        }
-        if(last_digit[0] != '.')
-          last_digit++;
-        else if(has_E)
-        {
-          last_digit[1] = '0';
-          last_digit += 2;
-        }
-        if((digit_ptr < s) || !isdigit(digit_ptr[0]))
-        {
-          memmove(s+1, s, (last_digit-s));
-          last_digit++;
-          if(isdigit(s[0]))
-            s[0] = '1';
-          else
-            s[1] = '1';
-          if(has_E)
-          {
-            //increment the Exponent
-            strDot++;
-            strDot[0] = strDot[-1];
-            strDot[-1] = '.';
-            int expon = atoi(lE+1);
-            expon++;
-            sprintf(lE+1, "%d", expon);
-            last_digit--;
-          }
-        }
-        memmove(last_digit, lE, strlen(lE));
-        last_digit[strlen(lE)] = 0;
-        break;
-      }
-    }
-    else if(*digit_ptr == '0')
-    {
-      if((digit_ptr[-1] == '0') && (digit_ptr[-2] == '0') && (digit_ptr[-3] == '0'))
-      {
-        if(isdigit(digit_ptr[1]) && (digit_ptr[1] < '5'))
-          digit_ptr -= 4;
-        else if(digit_ptr[-4] == '0')
-          digit_ptr -= 5;
-        else
-          goto nextDigit;
-        while(*digit_ptr == '0')
-          digit_ptr--;
-        if(*digit_ptr != '.')
-          digit_ptr++;
-        else if(has_E)
-        {
-          digit_ptr[1] = '0';
-          digit_ptr += 2;
-        }
-        memmove(digit_ptr, lE, strlen(lE));
-        digit_ptr[strlen(lE)] = 0;
-        break;
-      }
-    }
-nextDigit:
-    digit_ptr--;
-    pos--;
-  }
-#endif
 }
 
 void Decimal::serialize( serialization::Archiver &ar ) {
