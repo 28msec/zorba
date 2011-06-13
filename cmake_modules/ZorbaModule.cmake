@@ -223,6 +223,14 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   ENDIF (WIN32)
 ENDMACRO(GENERATE_MODULE_LIBRARY)
 
+# Initialize output file when first included
+set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
+GET_PROPERTY (is_init GLOBAL PROPERTY expected_failures_initialized)
+IF (NOT is_init)
+  file (WRITE "${expected_failures_file}" "")
+  SET_PROPERTY (GLOBAL PROPERTY expected_failures_initialized 1)
+ENDIF (NOT is_init)
+
 # The expected_failure() function is used to mark a test which is currently
 # failing, but is being worked on.
 #
@@ -255,9 +263,8 @@ MACRO(expected_failure testname bugid)
 
 ENDMACRO(expected_failure)
 
-# Initialize output file when first included
-set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
-file (WRITE "${expected_failures_file}" "")
+
+
 
 # Convenience macro for adding tests in a standard format. QQQ doc!
 MACRO(ADD_TEST_DIRECTORY TEST_DIR)
