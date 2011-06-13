@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_parse_xml::codegen(
+PlanIter_t fn_parse_xml_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -53,16 +53,16 @@ PlanIter_t fn_serialize::codegen(
 
 void populate_context_parsing_and_serializing(static_context* sctx)
 {
-  DECL_WITH_KIND(sctx, fn_parse_xml,
+  DECL_WITH_KIND(sctx, fn_parse_xml_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
       FunctionConsts::FN_PARSE_XML_1);
 
 
-  DECL_WITH_KIND(sctx, fn_parse_xml,
+  DECL_WITH_KIND(sctx, fn_parse_xml_3_0,
       (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
       FunctionConsts::FN_PARSE_XML_2);

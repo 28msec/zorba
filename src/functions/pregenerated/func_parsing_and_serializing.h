@@ -39,12 +39,12 @@ void populate_context_parsing_and_serializing(static_context* sctx);
 
 
 //fn:parse-xml
-class fn_parse_xml : public function
+class fn_parse_xml_3_0 : public function
 {
 public:
-  fn_parse_xml(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_parse_xml_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   bool accessesDynCtx() const { return true; }

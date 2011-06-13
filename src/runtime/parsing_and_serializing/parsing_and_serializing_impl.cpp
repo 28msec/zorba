@@ -51,60 +51,62 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext (result, theChildren [0].getp (), planState);
+  if(consumeNext (result, theChildren [0].getp (), planState))
+  {
 
-  if (result->isStreamable()) {
-    // The "iss" auto_ptr can NOT be used since it will delete the stream that,
-    // in this case, is a data member inside another object and not dynamically
-    // allocated.
-    //
-    // We can't replace "iss" with "is" since we still need the auto_ptr for
-    // the case when the result is not streamable.
-    is = &result->getStream();
-  } else {
-    result->getStringValue2(docString);
-    iss.reset (new std::istringstream(docString.c_str()));
-    is = iss.get();
-  }
+    if (result->isStreamable()) {
+      // The "iss" auto_ptr can NOT be used since it will delete the stream that,
+      // in this case, is a data member inside another object and not dynamically
+      // allocated.
+      //
+      // We can't replace "iss" with "is" since we still need the auto_ptr for
+      // the case when the result is not streamable.
+      is = &result->getStream();
+    } else {
+      result->getStringValue2(docString);
+      iss.reset (new std::istringstream(docString.c_str()));
+      is = iss.get();
+    }
 
-  // optional base URI argument
-  if (theChildren.size() == 2) {
-    consumeNext(result, theChildren[1].getp(), planState);
-    ZORBA_ASSERT(result);
+    // optional base URI argument
+    if (theChildren.size() == 2) {
+      consumeNext(result, theChildren[1].getp(), planState);
+      ZORBA_ASSERT(result);
+
+      try {
+        lValidatedBaseUri = URI(result->getStringValue());
+      } catch (ZorbaException const& /* e */) {
+        throw XQUERY_EXCEPTION(
+          err::FODC0007,
+          ERROR_PARAMS( result->getStringValue() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      if (!lValidatedBaseUri.is_absolute()) {
+        throw XQUERY_EXCEPTION(
+          err::FODC0007,
+          ERROR_PARAMS( lValidatedBaseUri.toString() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      result->getStringValue2(baseUri);
+    } else {
+      baseUri = theSctx->get_base_uri();
+    }
 
     try {
-      lValidatedBaseUri = URI(result->getStringValue());
-    } catch (ZorbaException const& /* e */) {
+      store::LoadProperties loadProps;
+      loadProps.setStoreDocument(false);
+      result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
+    } catch (ZorbaException const& e) {
       throw XQUERY_EXCEPTION(
-        err::FODC0007,
-        ERROR_PARAMS( result->getStringValue() ),
-        ERROR_LOC( loc )
+        err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc )
       );
     }
-
-    if (!lValidatedBaseUri.is_absolute()) {
-      throw XQUERY_EXCEPTION(
-        err::FODC0007,
-        ERROR_PARAMS( lValidatedBaseUri.toString() ),
-        ERROR_LOC( loc )
-      );
-    }
-
-    result->getStringValue2(baseUri);
-  } else {
-    baseUri = theSctx->get_base_uri();
+    STACK_PUSH(true, state);
   }
-
-  try {
-    store::LoadProperties loadProps;
-    loadProps.setStoreDocument(false);
-    result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
-  } catch (ZorbaException const& e) {
-    throw XQUERY_EXCEPTION(
-      err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc )
-    );
-  }
-  STACK_PUSH(true, state);
   STACK_END (state);
 }
 
