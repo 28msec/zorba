@@ -55,7 +55,7 @@
 #include <zorba/util/path.h>
 
 // Timing utilities, including wall-clock timing
-#include <util/time.h>
+#include <zorba/util/time.h>
 
 // toggle this to allow configuration via a system properties file
 // (see src/system/properties.*)

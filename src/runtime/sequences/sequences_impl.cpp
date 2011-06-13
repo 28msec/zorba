@@ -25,7 +25,7 @@
 #include "zorbatypes/URI.h"
 
 // For timing
-#include "util/time.h"
+#include "zorba/util/time.h"
 
 #include "util/fs_util.h"
 #include "util/uri_util.h"
