@@ -117,8 +117,7 @@ void Decimal::reduce( char *s ) {
     has_e = true;
 
   char *digits = e - 1;
-  int pos = (int)(digits - dot);
-  while ( pos > 8 ) {
+  for ( int pos = (int)(digits - dot); pos > 8; --pos, --digits ) {
     if ( *digits == '9' ) {
       if ( digits[-1] == '9' && digits[-2] == '9' && digits[-3] == '9' ) {
         if ( ascii::is_digit( digits[1] ) && digits[1] >= '5' )
@@ -126,7 +125,7 @@ void Decimal::reduce( char *s ) {
         else if ( digits[-4] == '9' )
           digits -= 5;
         else
-          goto next_digit;
+          continue;
 
         // now add 1 to remaining digits
         char *last_digit = digits;
@@ -177,7 +176,7 @@ void Decimal::reduce( char *s ) {
         else if ( digits[-4] == '0' )
           digits -= 5;
         else
-          goto next_digit;
+          continue;
         while ( *digits == '0' )
           --digits;
         if ( *digits != '.' )
@@ -192,9 +191,6 @@ void Decimal::reduce( char *s ) {
         break;
       }
     }
-next_digit:
-    --digits;
-    --pos;
   }
 }
 
