@@ -222,7 +222,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
     state->init(planState);
   }
 
-  if (planState.theStackDepth + 1 > 256)
+  if (planState.theStackDepth + 1 > 1024)
     throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
                            ERROR_PARAMS(ZED(StackOverflow)),
                            ERROR_LOC(loc));
