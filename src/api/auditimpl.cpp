@@ -1,3 +1,19 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "stdafx.h"
 
 #include "api/auditimpl.h"
 
@@ -16,7 +32,7 @@ namespace audit {
 
 const char* XQUERY_COMPILATION_PATH[] = { "xquery", "compilation" };
 
-const PropertyGroupImpl EMPTY             (0, NULL);
+const PropertyGroupImpl EMPTY_OBJECT      (0, NULL);
 const PropertyGroupImpl XQUERY_COMPILATION(2, XQUERY_COMPILATION_PATH);
 
 PropertyGroupImpl::PropertyGroupImpl(const size_t pathLength, const char** path)
@@ -63,7 +79,7 @@ PropertyImpl::PropertyImpl(const PropertyGroup& g, const char n[], long i, Type 
 }
 
 PropertyImpl::PropertyImpl(const String& n)
-  : m_group(EMPTY), m_id(-1), m_type(Property::STRING) {
+  : m_group(EMPTY_OBJECT), m_id(-1), m_type(Property::STRING) {
   m_name = new char[n.size() + 1];
   strcpy(m_name, n.c_str());
 }
@@ -215,7 +231,7 @@ std::ostream& ConfigurationImpl::write(std::ostream& os) const {
 //************************************************************************
 
 const PropertyGroup& RecordImpl::group() const {
-  return m_parameters.size() > 0 ?  m_parameters.at(0).property().group() : EMPTY;
+  return m_parameters.size() > 0 ?  m_parameters.at(0).property().group() : EMPTY_OBJECT;
 }
 
 size_t RecordImpl::size() const {
@@ -227,12 +243,12 @@ const Observation& RecordImpl::at(size_t i) const {
 }
 
 void RecordImpl::add(const Property& prop, long long val) {
-  assert(&(group()) == &EMPTY || &(group()) == &(prop.group()));
+  assert(&(group()) == &EMPTY_OBJECT || &(group()) == &(prop.group()));
   m_parameters.push_back(ObservationImpl(prop, val));
 }
 
 void RecordImpl::add(const Property& prop, const String& val) {
-  assert(&(group()) == &EMPTY || &(group()) == &(prop.group()));
+  assert(&(group()) == &EMPTY_OBJECT || &(group()) == &(prop.group()));
   const size_t pos = m_event->m_strings.size();
   m_event->m_strings.push_back(val);
   m_parameters.push_back(ObservationImpl(prop, pos, &m_event->m_strings));

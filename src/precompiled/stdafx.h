@@ -16,6 +16,42 @@
  
 #if defined STDAFX
 #include <iostream>
+#include <stdexcept>
+#include <cassert>
+#include <cstring>
+#include <memory>
+
+#include <sstream>
+#include <xfwrap>
+#include <xfwrap1>
+#include <istream>
+#include <cstdio>
+#include <xxshared>
+#include <crtdefs.h>
+#include <map>
+#include <set>
+//#include <poppack.h>
+//#include <xxtype_traits>
+//#include <xxcallwrap>
+
+#include <xxcallpmf>
+//#include <xxbind0>
+//#include <xxbind1>
+//#include <xxresult>
+#include <zorba/audit.h>
+#include "api/auditimpl.h"
+#include <zorba/audit.h>
+
+//#include "unicode/unistr.h"
+#include "runtime/sequences/sequences.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "xercesc/util/xercesdefs.hpp"
+#include "runtime/collections/collections.h"
+#include "unicode/utypes.h"
+#include "zorba/config.h"
+#include "store/api/store.h"
+#include "zorba/zorba.h"
+#include "zorba/api_shared_types.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/api/compilercb.h"
@@ -145,7 +181,7 @@
 #include "context/stemmer_wrappers.h"
 #include "context/uri_resolver.h"
 #include "context/uri_resolver_wrapper.h"
-#include "diagnostics/assert.h"
+//#include "diagnostics/assert.h"
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/dict_impl.h"
@@ -254,7 +290,7 @@
 #include "util/error_util.h"
 #include "util/fs_util.h"
 #include "util/hashmap.h"
-#include "util/hashmap32.h"
+//#include "util/hashmap32.h"
 #include "util/less.h"
 #include "util/mmap_file.h"
 #include "util/nonatomic_int.h"
@@ -275,7 +311,7 @@
 #include "util/utf8_util_base.h"
 #include "util/void_int.h"
 #include "util/xml_util.h"
-#include "zorbaserialization/archiver.h"
+//#include "zorbaserialization/archiver.h"
 #include "zorbaserialization/base64impl.h"
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
@@ -329,8 +365,8 @@
 //#include "zorbautils/synchronous_logger.h"
 #include "zorbautils/tokenizer.h"
 #include "unit_tests/unit_test_list.h"
-#include "../include/zorba/diagnostic_handler.h"
-#include "../include/zorba/xquery_warning.h"
+#include "zorba/diagnostic_handler.h"
+#include "zorba/xquery_warning.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #endif
 /* vim:set et sw=2 ts=2: */
