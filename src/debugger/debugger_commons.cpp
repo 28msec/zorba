@@ -147,8 +147,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
 DebuggerCommons::DebuggerCommons(static_context* sctx)
   : theBreak(false),
     theCause(0),
-    theExecEval(false),
     theBreakCondition(0),
+    theExecEval(false),
     theStepping(false)
     
 {
