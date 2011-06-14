@@ -42,4 +42,3 @@ struct entry {
 } // namespace diagnostic
 } // namespace zorba
 #endif /* ZORBA_DIAGNOSTIC_DICT_IMPL_H */
-/* vim:set et sw=2 ts=2: */

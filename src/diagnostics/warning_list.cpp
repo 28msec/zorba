@@ -30,4 +30,3 @@ ZORBA_DEF_WARNING( ZWST0001,UNUSED_VARIABLE );
 
 } // namespace zwarn
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

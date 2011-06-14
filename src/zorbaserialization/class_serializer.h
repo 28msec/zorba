@@ -516,4 +516,3 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

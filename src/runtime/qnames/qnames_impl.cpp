@@ -375,4 +375,3 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 }
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

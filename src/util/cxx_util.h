@@ -60,4 +60,3 @@ template<int>  struct zorba_static_assert_type { };
 ///////////////////////////////////////////////////////////////////////////////
 
 #endif /* ZORBA_CXX_UTIL_H */
-/* vim:set et sw=2 ts=2: */

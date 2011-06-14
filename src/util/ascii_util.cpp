@@ -79,5 +79,3 @@ size_type trim_end( char const *s, size_type s_len, char const *chars ) {
 
 } // namespace ascii
 } // namespace zorba
-
-/* vim:set et sw=2 ts=2: */

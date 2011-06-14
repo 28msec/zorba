@@ -722,4 +722,3 @@ AppendBinaryFunction::isBinary() const {
 extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::filemodule::FileModule();
 }
-/* vim:set et sw=2 ts=2: */

@@ -127,4 +127,3 @@ void populateContext_Hoisting(static_context* sctx)
 
 
 }
-/* vim:set ts=2 sw=2: */

@@ -76,4 +76,3 @@ public:
 } // namespace zorba
 #endif  /* ZORBA_NO_FULL_TEXT */
 #endif  /* ZORBA_STEMMER_H */
-/* vim:set et sw=2 ts=2: */

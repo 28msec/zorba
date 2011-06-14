@@ -165,4 +165,3 @@ void set_source( ZorbaException &ze, char const *file,
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

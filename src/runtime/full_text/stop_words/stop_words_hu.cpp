@@ -41,7 +41,7 @@ extern char const *const stop_words_hu[] = {
   "amelyet",
   "amelynek",
   "ami",
-  "amíg",
+  "am?g",
   "amikor",
   "amit",
   "amolyan",
@@ -105,7 +105,7 @@ extern char const *const stop_words_hu[] = {
   "hogy",
   "hogyan",
   "igen",
-  "így",
+  "?gy",
   "ill.",
   "illetve",
   "ilyen",
@@ -121,7 +121,7 @@ extern char const *const stop_words_hu[] = {
   "keress" uuml "nk",
   "kereszt" uuml "l",
   "ki",
-  "kív" uuml "l",
+  "k?v" uuml "l",
   "k" ouml "z" ouml "tt",
   "k" ouml "z" uuml "l",
   "legal" aacute "bb",
@@ -146,7 +146,7 @@ extern char const *const stop_words_hu[] = {
   "mert",
   "mi",
   "mi" eacute "rt",
-  "míg",
+  "m?g",
   "mikor",
   "milyen",
   "minden",
@@ -225,4 +225,3 @@ extern char const *const stop_words_hu[] = {
 };
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

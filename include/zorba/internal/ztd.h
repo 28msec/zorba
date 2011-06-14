@@ -357,4 +357,3 @@ inline std::string to_string( char const *s ) {
 } // namespace internal
 } // namespace zorba
 #endif /* ZORBA_INTERNAL_ZTD_H */
-/* vim:set et sw=2 ts=2: */

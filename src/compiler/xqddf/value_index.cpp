@@ -702,4 +702,3 @@ std::string IndexDecl::toString()
 
 
 } // namespace zorba
-/* vim:set ts=2 sw=2: */

@@ -288,4 +288,3 @@ namespace zorba { namespace http_client {
 
 } // namespace http_client
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

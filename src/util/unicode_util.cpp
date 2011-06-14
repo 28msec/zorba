@@ -2226,7 +2226,7 @@ bool to_char( char const *in, char_type *out ) {
   u_strFromUTF8WithSub(
     out, 1, NULL, in, utf8::char_length( *in ), SubChar, NULL, &status
   );
-  return U_SUCCESS( status );
+  return U_SUCCESS( status ) == TRUE;
 }
 
 bool to_string( char const *in, size_type in_len, char_type **out,
@@ -2274,5 +2274,3 @@ bool to_string( wchar_t const *in, size_type in_len, string *out ) {
 
 } // namespace unicode
 } // namespace zorba
-
-/* vim:set et sw=2 ts=2: */

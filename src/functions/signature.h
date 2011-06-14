@@ -161,7 +161,6 @@ public:
 } /* namespace zorba */
 #endif  /* ZORBA_SIGNATURE_H */
 
-/* vim:set ts=2 sw=2: */
 
 /*
  * Local variables:

@@ -118,9 +118,6 @@ IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
   SET(ZORBA_WORDNET_FOUND 1)
 ENDIF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
 
-# TODO : this has to be removed after the converters modules are taken outside Zorba
-INCLUDE (${CMAKE_SOURCE_DIR}/cmake_modules/FindJansson.cmake)
-
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
   # the test name.
@@ -147,13 +144,6 @@ FOREACH(TESTFILE ${TESTFILES})
     ENDIF(HTTP_CLIENT)
   ENDIF(NOT CURL_FOUND)
   
-  IF(NOT Jansson_FOUND)
-    STRING(REGEX MATCH "jansson" JANSSON "${TESTNAME}")
-    IF(JANSSON)
-      SET(SKIP_TEST 1)
-    ENDIF(JANSSON)
-  ENDIF(NOT Jansson_FOUND)
-
   IF(NOT ZORBA_WITH_FILE_ACCESS)
     #these tests require the file module
     STRING(REGEX MATCH "file/" NEEDS_FILE "${TESTNAME}")

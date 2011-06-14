@@ -29,4 +29,3 @@ store::Item* TupleItem::getType() const
 }
 
 }
-/* vim:set ts=2 sw=2: */

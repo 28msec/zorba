@@ -40,7 +40,6 @@ protected:
 }
 
 #endif /* ZORBA_REWRITER_H */
-/* vim:set ts=2 sw=2: */
 
 /*
  * Local variables:

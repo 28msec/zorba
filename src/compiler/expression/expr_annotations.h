@@ -51,4 +51,3 @@ class SourceFinder {
 }
 
 #endif /* ZORBA_EXPR_ANNOTATIONS_H */
-/* vim:set ts=2 sw=2: */

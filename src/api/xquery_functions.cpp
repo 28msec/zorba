@@ -105,4 +105,3 @@ Sequence<String> tokenize( String const &input, char const *pattern,
 
 } // namespace fn
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

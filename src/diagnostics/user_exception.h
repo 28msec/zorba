@@ -147,4 +147,3 @@ make_user_exception( char const *raise_file,
 
 } // namespace zorba
 #endif /* ZORBA_USER_EXCEPTION_H */
-/* vim:set et sw=2 ts=2: */

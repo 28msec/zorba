@@ -96,5 +96,3 @@ int count_variable_uses(
 
 
 }
-
-/* vim:set ts=2 sw=2: */

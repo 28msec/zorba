@@ -138,4 +138,3 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

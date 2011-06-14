@@ -396,4 +396,3 @@ std::auto_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
 }
 
 }
-/* vim:set ts=2 sw=2: */

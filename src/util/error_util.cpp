@@ -119,4 +119,3 @@ string get_err_string( char const *function, code_type code ) {
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

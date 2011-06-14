@@ -3443,4 +3443,3 @@ void ParseNodePrintDOTVisitor::end_visit(const FTWordsValue&, void*)
 
 
 } // end namespace
-/* vim:set et sw=2 ts=2: */

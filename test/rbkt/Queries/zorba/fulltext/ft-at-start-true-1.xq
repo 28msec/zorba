@@ -10,5 +10,3 @@ let $x :=
   </p>
 return $x contains text "It was the best"
 at start
-
-(: vim:set syntax=xquery et sw=2 ts=2: :)

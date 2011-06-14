@@ -151,4 +151,3 @@ inline internal::diagnostic::location make_location( QueryLoc const *loc ) {
 } // namespace zorba
 
 #endif /* ZORBA_DIAGNOSTIC_H */
-/* vim:set et sw=2 ts=2: */

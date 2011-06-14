@@ -68,5 +68,3 @@ ADD_SRC_SUBFOLDER(API_SRCS serialization API_SERIALIZATION_SRCS)
 SET(API_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp
   )
-
-# vim:set sw=2 ts=2:

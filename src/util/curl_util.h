@@ -165,4 +165,3 @@ public:
 } // namespace zorba
 #endif /* ZORBA_WITH_REST */
 #endif /* ZORBA_CURL_UTIL_H */
-/* vim:set et sw=2 ts=2: */

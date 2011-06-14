@@ -542,4 +542,3 @@ iso639_1::type get_host_lang() {
 
 } // namespace locale
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

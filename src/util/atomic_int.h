@@ -297,4 +297,3 @@ private:
 } // namespace zorba
 
 #endif /* ATOMIC_INT_H */
-/* vim:set et sw=2 ts=2: */

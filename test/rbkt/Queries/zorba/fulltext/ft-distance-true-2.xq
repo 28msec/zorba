@@ -10,5 +10,3 @@ let $x :=
   </p>
 return $x contains text "best" ftand "epoch"
 distance at least 1 sentences
-
-(: vim:set syntax=xquery et sw=2 ts=2: :)

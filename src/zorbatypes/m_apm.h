@@ -727,4 +727,3 @@ inline MAPM lcm(const MAPM &u,const MAPM &v)
  * mode: c++
  * End:
  */
- /* vim:set et sw=2 ts=2: */

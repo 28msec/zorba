@@ -10,5 +10,3 @@ let $x :=
   </p>
 return $x contains text "going the other way"
 at end
-
-(: vim:set syntax=xquery et sw=2 ts=2: :)

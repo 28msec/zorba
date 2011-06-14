@@ -304,4 +304,3 @@ stack_generator<T> stack_to_generator(std::stack<T> &stk) {
 } // namespace ztd
 } // namespace zorba
 #endif  /* ZORBA_STL_UTIL_H */
-/* vim:set et sw=2 ts=2: */

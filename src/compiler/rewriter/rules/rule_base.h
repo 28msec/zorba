@@ -128,7 +128,6 @@ class name : public PrePostRewriteRule                              \
 }
 
 #endif /* ZORBA_REWRITE_RULE_H */
-/* vim:set ts=2 sw=2: */
 
 /*
  * Local variables:

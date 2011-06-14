@@ -671,4 +671,3 @@ ostream& operator<<(ostream& os, const Base16& aBase16)
 
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

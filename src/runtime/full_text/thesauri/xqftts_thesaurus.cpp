@@ -354,4 +354,3 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
 
 } // namespace xqftts
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

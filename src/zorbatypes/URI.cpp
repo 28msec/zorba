@@ -1713,4 +1713,3 @@ void URI::build_ascii_full_text() const
 }
 
 };
-/* vim:set et sw=2 ts=2: */

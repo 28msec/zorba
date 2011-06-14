@@ -176,4 +176,3 @@ zorba::Item createItem(
 
 
 #endif /* TEST_RBKT_TESTDRIVER_COMMON */
-/* vim:set et sw=2 ts=2: */

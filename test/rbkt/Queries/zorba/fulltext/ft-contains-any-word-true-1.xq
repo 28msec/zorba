@@ -9,5 +9,3 @@ let $x :=
     We were all going directly to Heaven, we were all going the other way.
   </p>
 return $x contains text { "best", "times" } any word
-
-(: vim:set syntax=xquery et sw=2 ts=2: :)

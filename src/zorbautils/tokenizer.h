@@ -150,4 +150,3 @@ protected:
 
 } // namespace zorba
 #endif  /* ZORBA_TOKENIZER_H */
-/* vim:set et sw=2 ts=2: */

@@ -263,4 +263,3 @@ bool RootIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 } // namespace zorba
-/* vim:set ts=2 sw=2: */

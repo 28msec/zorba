@@ -184,4 +184,3 @@ void fxarray<T>::expand(bool init)
 
 }  /* namespace zorba */
 #endif  /* ZORBA_FXARRAY_H */
-/* vim:set et sw=2 ts=2: */

@@ -103,7 +103,6 @@ inline bool is_data(expr* e)
 }
 
 #endif /* ZORBA_EXPR_TOOLS_H */
-/* vim:set ts=2 sw=2: */
 /*
  * Local variables:
  * mode: c++

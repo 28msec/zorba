@@ -371,4 +371,3 @@ inline std::ostream& operator<<( std::ostream &o, DateTime const &dt ) {
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

@@ -328,4 +328,3 @@ void type::accept(expr_visitor& v)          \
  * mode: c++
  * End:
  */
-/* vim:set ts=2 sw=2: */

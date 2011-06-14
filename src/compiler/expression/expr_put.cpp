@@ -877,4 +877,3 @@ ostream& while_expr::put(ostream& os) const
 
 
 }  // namespace zorba
-/* vim:set et sw=2 ts=2: */

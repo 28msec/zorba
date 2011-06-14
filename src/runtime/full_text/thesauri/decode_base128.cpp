@@ -27,4 +27,3 @@ unsigned decode_base128( char const **p ) {
 }
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

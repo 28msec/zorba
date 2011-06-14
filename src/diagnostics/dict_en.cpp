@@ -721,4 +721,3 @@ DEF_DICT_END(en);
 } // namespace dict
 } // namespace diagnostic
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

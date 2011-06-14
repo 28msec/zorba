@@ -97,5 +97,3 @@ int stemmer_provider( int argc, char *argv[] ) {
   StoreManager::shutdownStore( zstore );
   return result;
 }
-
-/* vim:set et sw=2 ts=2: */

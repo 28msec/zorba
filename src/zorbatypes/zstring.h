@@ -37,4 +37,3 @@ typedef rstring< buf_rep > zstring_b;
 } // namespace zorba
 
 #endif /* ZSTRING_H */
-/* vim:set et sw=2 ts=2: */

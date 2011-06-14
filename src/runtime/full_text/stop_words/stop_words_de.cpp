@@ -259,4 +259,3 @@ extern char const *const stop_words_de[] = {
 };
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

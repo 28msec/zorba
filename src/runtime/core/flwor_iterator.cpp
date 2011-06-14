@@ -1869,4 +1869,3 @@ void FLWORIterator::accept(PlanIterVisitor& v) const
 
 } // namespace flwor
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

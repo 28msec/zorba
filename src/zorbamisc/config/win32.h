@@ -30,4 +30,3 @@
 #include "zorbamisc/config/compatib_defs.h"
 
 #endif /* ZORBA_WIN32_H */
-/* vim:set et sw=2 ts=2: */

@@ -51,4 +51,3 @@ diagnostic::category UserError::category() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

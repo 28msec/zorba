@@ -1025,5 +1025,3 @@ _tmain(int argc, _TCHAR* argv[])
   }
   return 0;
 }
-
-/* vim:set ts=2 sw=2: */

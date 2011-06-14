@@ -147,5 +147,3 @@ ft_wildcard::ft_wildcard( zstring const &ws_pat ) {
 }
 
 } // namespace zorba
-
-/* vim:set et sw=2 ts=2: */

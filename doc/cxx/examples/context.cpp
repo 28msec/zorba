@@ -213,7 +213,7 @@ context_example_6(Zorba* aZorba)
     return false;
 
   /* Use the German collation as the third argument to the fn:compare() XQuery function */
-  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/zorba/collations/PRIMARY/de/DE')",
+  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://www.zorba-xquery.com/zorba/collations/PRIMARY/de/DE')",
           lStaticContext);
 
   try {
@@ -239,7 +239,7 @@ context_example_7(Zorba* aZorba)
   try {
     lStaticContext->addCollation("http://www.zorba-xquery.com/collations/PRIMARY");
 
-    XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/collations/PRIMARY')",
+    XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://www.zorba-xquery.com/collations/PRIMARY')",
         lStaticContext);
 
     std::cout << lQuery << std::endl;
@@ -548,5 +548,3 @@ context(int argc, char* argv[])
   zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
-
-/* vim:set et sw=2 ts=2: */

@@ -68,4 +68,3 @@ StemmerProviderWrapper::get_stemmer( iso639_1::type lang ) const {
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

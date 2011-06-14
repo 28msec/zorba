@@ -1128,4 +1128,3 @@ const char* TypeOps::decode_quantifier(TypeConstants::quantifier_t quant)
 }
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

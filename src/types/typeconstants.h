@@ -93,4 +93,3 @@ class TypeConstants
 }
 
 #endif /* ZORBA_TYPECONSTANTS_H */
-/* vim:set ts=2 sw=2: */

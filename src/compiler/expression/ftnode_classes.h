@@ -69,4 +69,3 @@ class ftwords_times;
 
 } // namespace zorba
 #endif /* ZORBA_FTNODE_CLASSES_H */
-/* vim:set et sw=2 ts=2: */

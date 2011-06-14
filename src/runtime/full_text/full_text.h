@@ -67,4 +67,3 @@ private:
 
 }
 #endif  /* ZORBA_FULL_TEXT_FTCONTAINS_ITERATOR_H */
-/* vim:set et sw=2 ts=2: */

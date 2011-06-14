@@ -10,5 +10,3 @@ let $x :=
   </p>
 return $x contains text "best" ftand "worst"
 window 7 words
-
-(: vim:set syntax=xquery et sw=2 ts=2: :)

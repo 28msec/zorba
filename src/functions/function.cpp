@@ -214,5 +214,3 @@ BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, ulong input) const
 
 
 }
-
-/* vim:set ts=2 sw=2: */

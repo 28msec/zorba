@@ -28,7 +28,6 @@ void populateContext_Hoisting(static_context* sctx);
 }
 
 #endif
-/* vim:set ts=2 sw=2: */
 
 /*
  * Local variables:

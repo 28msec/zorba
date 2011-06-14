@@ -37,4 +37,3 @@ NARY_ITER(UnhoistIterator);
 }
 
 #endif /* ZORBA_RUNTIME_INTERNAL_OPERATORS_H */
-/* vim:set ts=2 sw=2: */

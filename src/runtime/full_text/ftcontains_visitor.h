@@ -133,4 +133,3 @@ private:
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FTCONTAINS_VISITOR_H */
-/* vim:set et sw=2 ts=2: */

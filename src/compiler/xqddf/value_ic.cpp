@@ -180,4 +180,3 @@ void ICCheckerImpl::actualCheck(const store::Item* collName,
 } 
 
 } // namespace zorba
-/* vim:set ts=2 sw=2: */

@@ -1027,4 +1027,3 @@ void print_parsetree_xml (ostream &os, const parsenode *p) {
 }
 
 } // end namespace
-/* vim:set et sw=2 ts=2: */

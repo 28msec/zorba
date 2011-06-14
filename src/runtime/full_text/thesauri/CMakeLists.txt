@@ -22,5 +22,3 @@ SET(THESAURUS_SRCS
     xqftts_relationship.cpp
     xqftts_thesaurus.cpp
     )
-
-# vim:set et sw=4 ts=4:

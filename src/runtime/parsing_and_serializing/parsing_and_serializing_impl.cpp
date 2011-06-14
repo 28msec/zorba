@@ -216,5 +216,3 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 //  STACK_PUSH(true, state);
 //  STACK_END (state);
 //}
-
-/* vim:set et sw=2 ts=2: */

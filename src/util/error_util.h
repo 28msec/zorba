@@ -179,4 +179,3 @@ inline std::string get_err_string( code_type code = get_err_code() ) {
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

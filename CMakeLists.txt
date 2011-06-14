@@ -352,29 +352,6 @@ ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 LIST(APPEND requiredlibs ${requiredlibs-store})
 
 
-#
-# Debugger
-#
-
-#
-# Jansson
-#
-MESSAGE(STATUS "Looking for Jansson")
-FIND_PACKAGE(Jansson)
-
-IF (Jansson_FOUND)
-  MESSAGE(STATUS "Found Jansson library -- " ${Jansson_LIBRARY})
-  INCLUDE_DIRECTORIES(${Jansson_INCLUDE_DIRS})
-  SET(requiredlibs ${requiredlibs} ${Jansson_LIBRARY})
-  SET(ZORBA_WITH_JSON ON)
-  SET(ZORBA_WITH_DEBUGGER ON)
-ELSE(Jansson_FOUND)
-  MESSAGE(STATUS "The Jansson library was not found. All JSON extensions and the debugger will be disabled.")
-  SET(ZORBA_WITH_JSON OFF)
-  SET(ZORBA_WITH_DEBUGGER OFF)
-ENDIF(Jansson_FOUND)
-
-
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
 ENDIF(WIN32)

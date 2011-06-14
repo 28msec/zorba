@@ -2391,4 +2391,3 @@ bool GenericCast::promote(
 
 /* end class GenericCast */
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

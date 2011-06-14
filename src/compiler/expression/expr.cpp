@@ -1550,4 +1550,3 @@ expr_t function_trace_expr::clone(substitution_t& s) const
 
 
 } /* namespace zorba */
-/* vim:set ts=2 sw=2: */

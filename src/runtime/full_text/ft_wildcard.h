@@ -80,4 +80,3 @@ inline bool operator!=( zstring const &s, ft_wildcard const &m ) {
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FT_WILDCARD_H */
-/* vim:set et sw=2 ts=2: */

@@ -66,5 +66,3 @@ ELSE(ZORBA_STORE_MSDOM)
 ENDIF(ZORBA_STORE_MSDOM)
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/store/naive/store_config.h.cmake ${CMAKE_BINARY_DIR}/src/store/naive/store_config.h)
-
-# vim:set et sw=2 ts=2:

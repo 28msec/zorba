@@ -28,7 +28,6 @@ void populate_context_reflection(static_context* sctx);
 }
 
 #endif
-/* vim:set ts=2 sw=2: */
 
 /*
  * Local variables:

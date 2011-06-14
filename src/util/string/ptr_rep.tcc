@@ -183,4 +183,3 @@ reserve( size_type cap, allocator_type const &a ) {
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

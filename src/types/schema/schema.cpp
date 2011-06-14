@@ -240,9 +240,13 @@ public:
         else
           return NULL;          
       }
-      catch (ZorbaException const& e)
-      {
+// avoiding the warning that e is not used
+#ifdef DO_TRACE
+      catch (ZorbaException const& e) {
         TRACE("!!! ZorbaException: " << e );
+#else
+      catch (ZorbaException const& ) {
+#endif
         //don't throw let Xerces resolve it
         return NULL;
       }
@@ -2086,4 +2090,3 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
 }
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

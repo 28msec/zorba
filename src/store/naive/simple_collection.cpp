@@ -534,4 +534,3 @@ void SimpleCollection::CollectionIter::close()
 
 } // namespace simplestore
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

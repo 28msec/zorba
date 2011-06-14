@@ -804,4 +804,3 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len)//like char p[20]
 
 } // namespace serialization
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

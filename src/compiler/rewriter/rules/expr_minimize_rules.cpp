@@ -114,4 +114,3 @@ static expr_t get_constant_if_typequant_one(expr* e, bool& modified)
 
 
 }
-/* vim:set ts=2 sw=2: */

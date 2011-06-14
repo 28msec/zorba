@@ -162,4 +162,3 @@ std::ostream& operator <<(std::ostream& s, const DynamicBitset& set);
 }
 
 #endif /* ZORBA_DYNAMIC_BITSET_H */
-/* vim:set ts=2 sw=2: */

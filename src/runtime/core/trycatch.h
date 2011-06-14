@@ -123,4 +123,3 @@ protected:
 } /* namespace zorba */
 
 #endif /* ZORBA_TRYCATCH_H */
-/* vim:set ts=2 sw=2: */

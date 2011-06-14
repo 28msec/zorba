@@ -513,4 +513,3 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
 
 } // namespace wordnet
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

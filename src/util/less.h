@@ -60,4 +60,3 @@ template<> struct less<char const*> :
 } // namespace std
 
 #endif  /* pjl_less_H */
-/* vim:set et sw=2 ts=2: */

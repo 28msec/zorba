@@ -161,4 +161,3 @@ XQC_Error Error::handle_and_convert_queryexception( XQC_ErrorHandler *handler,
 }
 
 } // namespace zorbac
-/* vim:set et sw=2 ts=2: */

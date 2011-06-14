@@ -1119,4 +1119,3 @@ bool Archiver::check_allowed_delays(archive_field *parent_field)
 
 } // namsspace serialization
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

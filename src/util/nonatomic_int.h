@@ -79,4 +79,3 @@ private:
 } // namespace zorba
 
 #endif /* NONATOMIC_INT_H */
-/* vim:set et sw=2 ts=2: */

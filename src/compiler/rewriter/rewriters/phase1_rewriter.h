@@ -32,7 +32,6 @@ public:
 }
 
 #endif /* ZORBA_PHASE1_REWRITER_H */
-/* vim:set ts=2 sw=2: */
 
 
 /*
@@ -40,4 +39,3 @@ public:
  * mode: c++
  * End:
  */
-

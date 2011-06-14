@@ -193,4 +193,3 @@ public:
  * mode: c++
  * End:
  */
-/* vim:set ts=2 sw=2: */

@@ -86,4 +86,3 @@ new_zorba_exception( char const *raise_file,
 
 } // namespace zorba
 #endif /* ZORBA_ZORBA_EXCEPTION_H */
-/* vim:set et sw=2 ts=2: */

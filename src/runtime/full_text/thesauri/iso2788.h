@@ -171,4 +171,3 @@ namespace iso2788 {
 } // namespace iso2788
 } // namespace zorba
 #endif  /* ZORBA_ISO_2788_H */
-/* vim:set et sw=2 ts=2: */

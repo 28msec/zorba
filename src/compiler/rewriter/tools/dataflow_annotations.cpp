@@ -780,4 +780,3 @@ void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
 }
 
 }
-/* vim:set ts=2 sw=2: */

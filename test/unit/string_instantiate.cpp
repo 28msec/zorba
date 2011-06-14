@@ -292,7 +292,7 @@ static void instantiate_utf8_string() {
   typename ustring::storage_type b = 0;
   typename ustring::value_type c = 0;
   typename ustring::storage_pointer cs = 0;
-  typename ustring::const_storage_pointer csc;
+  typename ustring::const_storage_pointer csc = 0;
   typename ustring::iterator i;
   typename ustring::std_string ss;
 
@@ -570,5 +570,3 @@ int string_instantiate( int, char*[] ) {
 
   return 0;
 }
-
-/* vim:set et sw=2 ts=2: */

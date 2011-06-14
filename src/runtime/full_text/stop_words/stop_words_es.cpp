@@ -298,7 +298,7 @@ extern char const *const stop_words_es[] = {
   "todo",
   "todos",
   "tu",
-  "tú",
+  "t?",
   "tus",
   "tuve",
   "tuviera",
@@ -338,4 +338,3 @@ extern char const *const stop_words_es[] = {
 };
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

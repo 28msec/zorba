@@ -105,5 +105,3 @@ ENDIF (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
 # this script should be used before commiting if one modified the parser/scanner
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake ${CMAKE_BINARY_DIR}/copyparser.sh)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake -->${CMAKE_BINARY_DIR}/copyparser.sh")
-
-# vim:set et sw=2 ts=2:

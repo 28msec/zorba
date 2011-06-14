@@ -184,7 +184,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
           std::string lState;
           std::string lCondition;
           int lHitValue;
-          bool lHasCondition = false;
+//          bool lHasCondition = false;
 
           // we can not change the line number of a breakpoint
           // so we will never read the -n option

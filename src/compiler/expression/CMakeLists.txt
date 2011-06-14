@@ -32,5 +32,3 @@ IF (NOT ZORBA_NO_FULL_TEXT)
     ftnode.cpp
     ftnode_visitor.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
-
-# vim:set et sw=2 ts=2:

@@ -54,4 +54,3 @@ void AnnotationHolder::remove_annotation(Annotations::Key key)
 }
 
 }
-/* vim:set ts=2 sw=2: */

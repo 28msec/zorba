@@ -66,7 +66,6 @@ public:
 } /* namespace zorba */
 #endif
 
-/* vim:set ts=2 sw=2: */
 /*
  * Local variables:
  * mode: c++

@@ -79,4 +79,3 @@ void transcoder::write_utf16_char( char ch ) {
 #endif /* ZORBA_NO_UNICODE */
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

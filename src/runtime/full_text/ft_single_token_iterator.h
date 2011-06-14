@@ -58,4 +58,3 @@ private:
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_SINGLE_TOKEN_ITERATOR_H */
-/* vim:set et sw=2 ts=2: */

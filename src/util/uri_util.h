@@ -271,4 +271,3 @@ typedef curl::istream istream;
 #include "uri_util.tcc"
 
 #endif /* ZORBA_URI_UTIL_H */
-/* vim:set et sw=2 ts=2: */

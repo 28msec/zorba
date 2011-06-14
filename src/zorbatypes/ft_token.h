@@ -315,4 +315,3 @@ std::ostream& operator<<( std::ostream &o, FTToken const &t );
 
 } // namespace zorba
 #endif  /* ZORBA_FT_TOKEN_H */
-/* vim:set et sw=2 ts=2: */

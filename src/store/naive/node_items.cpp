@@ -4282,4 +4282,3 @@ XmlNode::getDocumentTokens( iso639_1::type lang ) const
 
 } // namespace store
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

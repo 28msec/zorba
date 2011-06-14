@@ -343,4 +343,3 @@ void TryCatchIterator::accept(PlanIterVisitor &v) const {
 }
 
 } /* namespace zorba */
-/* vim:set ts=2 sw=2: */

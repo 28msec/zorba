@@ -1,6 +1,4 @@
-let $x := <msg>San José</msg>
-return $x contains text "José"
+let $x := <msg>San Jos??</msg>
+return $x contains text "Jos??"
 using diacritics sensitive
 using diacritics sensitive
-
-(: vim:set encoding=utf-8 syntax=xquery et sw=2 ts=2: :)

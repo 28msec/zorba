@@ -77,7 +77,6 @@ public:
 } /* namespace zorba */
 #endif  /* ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H */
 
-/* vim:set ts=2 sw=2: */
 
 /*
  * Local variables:

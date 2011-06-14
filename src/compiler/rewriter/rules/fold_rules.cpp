@@ -1070,4 +1070,3 @@ RULE_REWRITE_POST(InlineFunctions)
 }
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

@@ -187,7 +187,6 @@ BINARY_ITER_STATE(name, PlanIteratorState)
 
 #endif /* ZORBA_BINARYBASE_H */
 
-/* vim:set ts=2 sw=2: */
 
 
 /*

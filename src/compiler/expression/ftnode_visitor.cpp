@@ -96,4 +96,3 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option );
 #undef V
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

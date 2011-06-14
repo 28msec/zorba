@@ -117,4 +117,3 @@ public:
 
 } /* namespace zorba */
 #endif /* ZORBA_EXPR_VISITOR_H */
-/* vim:set et sw=2 ts=2: */

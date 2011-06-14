@@ -1424,4 +1424,3 @@ ZORBA_DLL_PUBLIC std::ostream& operator<<( std::ostream &o, String const &s );
 } // namespace zorba
 
 #endif /* ZORBA_STRING_API_H */
-/* vim:set et sw=2 ts=2: */

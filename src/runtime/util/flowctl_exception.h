@@ -59,7 +59,6 @@ public:
 } // namespace zorba
 
 #endif /* FLOWCTL_EXCEPTION */
-/* vim:set et sw=2 ts=2: */
 
 /*
  * Local variables:

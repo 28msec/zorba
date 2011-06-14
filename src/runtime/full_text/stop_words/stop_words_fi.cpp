@@ -258,4 +258,3 @@ extern char const *const stop_words_fi[] = {
 };
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

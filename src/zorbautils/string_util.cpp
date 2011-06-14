@@ -118,4 +118,3 @@ bool match_whole( char const *in, char const *pattern, char const *flags ) {
 
 } // namespace utf8
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

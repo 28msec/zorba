@@ -86,5 +86,3 @@ bool NodeNameTest::matches(const zstring& lname, const zstring& ns) const
 }
 
 }
-
-/* vim:set ts=2 sw=2: */

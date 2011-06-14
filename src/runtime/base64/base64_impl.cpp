@@ -77,4 +77,3 @@ bool Base64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

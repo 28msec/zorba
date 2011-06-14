@@ -21,13 +21,9 @@ SET(SRCS
   error_printer.cpp
   util.cpp
   module_path.cpp
+  debugger_handler.cpp
+  debugger_server_runnable.cpp
 )
-IF(ZORBA_WITH_JSON)
-  LIST(APPEND SRCS
-    debugger_handler.cpp
-    debugger_server_runnable.cpp
-  )
-ENDIF(ZORBA_WITH_JSON)
 
 INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake")
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("zorbacmd" "${SRCS}" "" "zorba" "bin")

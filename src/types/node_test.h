@@ -58,7 +58,6 @@ public:
 }
 
 #endif /* ZORBA_TEST_TYPES_H */
-/* vim:set ts=2 sw=2: */
 
 /*
  * Local variables:

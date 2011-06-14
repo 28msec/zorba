@@ -111,4 +111,3 @@ public:
 
 } // namespace zorba
 #endif /* ZORBA_SMARTPTR_API_H */
-/* vim:set et sw=2 ts=2: */

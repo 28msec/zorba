@@ -192,4 +192,3 @@ void to_upper( InputStringType const &in, OutputStringType *out ) {
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

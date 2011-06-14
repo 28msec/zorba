@@ -725,4 +725,3 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 
 } // namespace zorba
-/* vim:set ts=2 sw=2: */

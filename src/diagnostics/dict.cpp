@@ -84,4 +84,3 @@ char const* lookup( char const *key ) {
 } // namespace dict
 } // namespace diagnostic
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

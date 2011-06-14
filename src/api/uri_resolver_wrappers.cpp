@@ -55,9 +55,11 @@ namespace zorba
         return impl::URIMapper::COMPONENT;
       case URIMapper::CANDIDATE:
         return impl::URIMapper::CANDIDATE;
-      default:
-        assert(false);
     }
+
+    assert(false);
+    // dummy return
+    return impl::URIMapper::COMPONENT;
   }
 
 

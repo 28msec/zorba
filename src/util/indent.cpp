@@ -45,5 +45,3 @@ int get_ostream_indent_index() {
 }
 
 } // namespace zorba
-
-/* vim:set et sw=2 ts=2: */

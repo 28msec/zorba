@@ -181,4 +181,3 @@ scheme get_scheme( char const *uri, char const **ppcolon ) {
 
 } // namespace uri
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

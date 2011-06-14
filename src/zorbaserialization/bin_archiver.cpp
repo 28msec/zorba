@@ -778,4 +778,3 @@ void BinArchiver::read_end_current_level_impl()
 
 } // namespace serialization
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

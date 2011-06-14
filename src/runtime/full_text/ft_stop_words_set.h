@@ -83,4 +83,3 @@ private:
 
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_FT_STOP_WORD_SET_H */
-/* vim:set et sw=2 ts=2: */

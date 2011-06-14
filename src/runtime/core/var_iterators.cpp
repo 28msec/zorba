@@ -961,4 +961,3 @@ void LetVarIterator::accept(PlanIterVisitor& v) const
 
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

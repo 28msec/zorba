@@ -148,8 +148,9 @@ DebuggerCommons::DebuggerCommons(static_context* sctx)
   : theBreak(false),
     theCause(0),
     theExecEval(false),
-    theStepping(false),
-    theBreakCondition(0)
+    theBreakCondition(0),
+    theStepping(false)
+    
 {
   theRuntime = NULL;
   theCurrentStaticContext = NULL;
@@ -383,7 +384,7 @@ DebuggerCommons::setCurrentIterator(const DebugIterator* aIterator)
   // when the parent is NULL but not a variable declaration (function declaration iterator) or
   // when the parent is the last in the stack
   if (theIteratorStack.empty() ||
-      lParent == NULL && !aIterator->isVarDeclaration() ||
+      (lParent == NULL && !aIterator->isVarDeclaration()) ||
       theIteratorStack.back() == lParent) {
     theIteratorStack.push_back((DebugIterator*)aIterator);
     return;

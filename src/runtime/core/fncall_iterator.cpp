@@ -665,5 +665,3 @@ NARY_ACCEPT(ExtFunctionCallIterator);
 
 
 } // namespace zorba
-
-/* vim:set ts=2 sw=2: */

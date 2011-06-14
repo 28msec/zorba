@@ -256,4 +256,3 @@ int parse_entity( InputStringType const &ref, OutputStringType *out ) {
  * mode: c++
  * End:
  */
-/* vim:set et sw=2 ts=2: */

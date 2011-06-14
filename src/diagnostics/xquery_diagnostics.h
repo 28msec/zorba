@@ -145,4 +145,3 @@ private:
 } // namespace zorba
 
 #endif /* ZORBA_XQUERY_DIAGNOSTICS_H */
-/* vim:set et sw=2 ts=2: */

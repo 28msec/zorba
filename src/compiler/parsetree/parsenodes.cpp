@@ -5690,5 +5690,3 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 
 
 } // namespace zorba
-
-/* vim:set et sw=2 ts=2: */
