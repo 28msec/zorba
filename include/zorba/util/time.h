@@ -64,13 +64,13 @@ namespace zorba
 
     typedef struct timespec cputime;
 
-    static double get_cputime_elapsed (const cputime& t0, const cputime& t1)
+    inline double get_cputime_elapsed (const cputime& t0, const cputime& t1)
     {
       return ((t1.tv_sec - t0.tv_sec) * 1000.0) +
         ((t1.tv_nsec - t0.tv_nsec) / 1000000.0);
     }
 
-    static void get_current_cputime (cputime& t)
+    inline void get_current_cputime (cputime& t)
     {
       clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
     }
@@ -82,13 +82,13 @@ namespace zorba
 
     typedef struct timeval cputime;
 
-    static double get_cputime_elapsed (const cputime& t0, const cputime& t1) 
+    inline double get_cputime_elapsed (const cputime& t0, const cputime& t1) 
     {
       return ((t1.tv_sec - t0.tv_sec) * 1000.0) +
         ((t1.tv_usec - t0.tv_usec) / 1000.0);
     }
 
-    static void get_current_cputime (cputime& t) 
+    inline void get_current_cputime (cputime& t) 
     {
       struct rusage ru;
       getrusage (RUSAGE_SELF, &ru);
@@ -101,12 +101,12 @@ namespace zorba
 
     typedef clock_t cputime;
 
-    static double get_cputime_elapsed (const cputime& t0, const cputime& t1) 
+    inline double get_cputime_elapsed (const cputime& t0, const cputime& t1) 
     {
       return (double) (t1 - t0) / (CLOCKS_PER_SEC / 1000);
     }
 
-    static void get_current_cputime (cputime& t)
+    inline void get_current_cputime (cputime& t)
     {
       t = clock ();
     }
@@ -126,13 +126,13 @@ namespace zorba
 
     typedef struct timespec walltime;
 
-    static double get_walltime_elapsed (const walltime& t0, const walltime& t1)
+    inline double get_walltime_elapsed (const walltime& t0, const walltime& t1)
     {
       return ((t1.tv_sec - t0.tv_sec) * 1000.0) +
         ((t1.tv_nsec - t0.tv_nsec) / 1000000.0);
     }
 
-    static void get_current_walltime (walltime& t)
+    inline void get_current_walltime (walltime& t)
     {
 #ifdef _POSIX_MONOTONIC_CLOCK
       clock_gettime(CLOCK_MONOTONIC, &t);
@@ -141,7 +141,7 @@ namespace zorba
 #endif
     }
 
-    static long get_walltime_in_millis(const walltime& t)
+    inline long get_walltime_in_millis(const walltime& t)
     {
       return t.tv_sec * 1000 + t.tv_nsec / 1000000;
     }
@@ -161,12 +161,12 @@ namespace zorba
     typedef struct _timeb walltime;
 #endif
 
-    static double get_walltime_elapsed (const walltime& t0, const walltime& t1) 
+    inline double get_walltime_elapsed (const walltime& t0, const walltime& t1) 
     {
       return ((t1.time - t0.time) * 1000.0) + (t1.millitm - t0.millitm);
     }
 
-    static void get_current_walltime (walltime& t) 
+    inline void get_current_walltime (walltime& t) 
     {
 #ifdef WINCE
       ftime(&t);
@@ -175,7 +175,7 @@ namespace zorba
 #endif
     }
 	
-    static long get_walltime_in_millis(const walltime& t)
+    inline long get_walltime_in_millis(const walltime& t)
     {
       return t.time * 1000 + t.millitm;
     }
@@ -187,18 +187,18 @@ namespace zorba
 
     typedef struct timeval walltime;
 
-    static double get_walltime_elapsed (const walltime& t0, const walltime& t1) 
+    inline double get_walltime_elapsed (const walltime& t0, const walltime& t1) 
     {
       return ((t1.tv_sec - t0.tv_sec) * 1000.0) +
         ((t1.tv_usec - t0.tv_usec) / 1000.0);
     }
 
-    static void get_current_walltime (walltime& t)
+    inline void get_current_walltime (walltime& t)
     {
       gettimeofday(&t, NULL);
     }
 	
-    static long get_walltime_in_millis(const walltime& t)
+    inline long get_walltime_in_millis(const walltime& t)
     {
       return t.tv_sec * 1000 + t.tv_usec / 1000;
     }
