@@ -75,3 +75,4 @@ ostream& operator<<( ostream &o, ft_all_matches const &am ) {
 } // namespace zorba
 
 #endif /* NDEBUG */
+/* vim:set et sw=2 ts=2: */

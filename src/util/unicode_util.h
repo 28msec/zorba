@@ -271,3 +271,4 @@ inline bool to_string( StringType const &in, string *out ) {
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

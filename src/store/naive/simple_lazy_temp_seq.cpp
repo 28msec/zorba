@@ -240,3 +240,4 @@ void SimpleLazyTempSeqIter::close()
 
   } // namespace store
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

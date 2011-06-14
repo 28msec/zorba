@@ -1056,3 +1056,4 @@ void print_parsetree_xqdoc(
 }
 
 } // end namespace
+/* vim:set et sw=2 ts=2: */

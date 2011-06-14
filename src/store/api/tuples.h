@@ -293,3 +293,4 @@ inline void TupleField::reset()
 }
 
 #endif /* ZORBA_STORE_TUPLES_H */
+/* vim:set et sw=2 ts=2: */

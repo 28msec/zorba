@@ -93,3 +93,4 @@ take( rep_proxy< buf_rep<ResultRep> > &that, allocator_type const &this_alloc,
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

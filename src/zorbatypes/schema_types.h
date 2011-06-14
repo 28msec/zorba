@@ -81,3 +81,4 @@ typedef Duration  xs_yearMonthDuration;
 
 } // namespace zorba
 #endif /* ZORBA_SCHEMA_TYPES_H */
+/* vim:set et sw=2 ts=2: */

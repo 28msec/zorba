@@ -231,3 +231,4 @@ Sequence<String> tokenize( String const &input, String const &pattern,
 } // namespace zorba
 
 #endif /* ZORBA_XQUERY_FUNCTIONS_API_H */
+/* vim:set et sw=2 ts=2: */

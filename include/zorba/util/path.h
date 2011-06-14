@@ -102,3 +102,4 @@ inline std::ostream &operator<< (std::ostream &os, const filesystem_path &p) {
 * mode: c++
 * End:
 */
+/* vim:set et sw=2 ts=2: */

@@ -28,3 +28,4 @@
 #endif
 
 #endif //__COMMON_H__
+/* vim:set et sw=2 ts=2: */

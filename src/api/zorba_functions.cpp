@@ -39,3 +39,4 @@ void trim( String &s, char const *chars ) {
 
 } // namespace zfn
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

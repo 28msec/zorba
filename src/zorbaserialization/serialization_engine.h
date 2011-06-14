@@ -21,3 +21,4 @@
 #include "zorbaserialization/zorba_class_serializer.h"
 
 #endif
+/* vim:set et sw=2 ts=2: */

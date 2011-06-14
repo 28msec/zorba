@@ -4469,3 +4469,4 @@ XercSchemaValidator::checkMapAndSum(SchemaGrammar* const currentGrammar,
 
 } // namespace zorba
 
+/* vim:set et sw=2 ts=2: */

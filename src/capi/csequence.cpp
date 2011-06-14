@@ -498,3 +498,4 @@ CSequence::free(XQC_Sequence* seq)
 }
   
 } /* namespace zorbac */
+/* vim:set et sw=2 ts=2: */

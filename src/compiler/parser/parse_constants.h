@@ -227,3 +227,4 @@ class ParseConstants
 
 } /* namespace zorba */
 #endif /* ZORBA_PARSE_CONSTANTS_H */
+/* vim:set et sw=2 ts=2: */

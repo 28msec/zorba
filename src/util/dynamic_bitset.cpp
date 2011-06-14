@@ -37,3 +37,4 @@ std::ostream& operator <<(std::ostream& s, const DynamicBitset& set)
 
 
 }
+/* vim:set et sw=2 ts=2: */

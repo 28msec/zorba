@@ -37,3 +37,4 @@ int main(int argc, char* argv[])
 		cout << "(unsigned)h64(" << line << ") = " << key3 << endl;
 	}
 }
+/* vim:set et sw=2 ts=2: */

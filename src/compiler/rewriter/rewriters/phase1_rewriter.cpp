@@ -30,3 +30,4 @@ Phase1Rewriter::~Phase1Rewriter() throw ()
 }
 
 }
+/* vim:set et sw=2 ts=2: */

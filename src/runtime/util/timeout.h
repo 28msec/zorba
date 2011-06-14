@@ -54,3 +54,4 @@ public:
 } //namespace zorba
 
 #endif //TIMEOUT_H
+/* vim:set et sw=2 ts=2: */

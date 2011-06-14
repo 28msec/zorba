@@ -1170,3 +1170,4 @@ void StackWalker::OnOutput(LPCSTR buffer)
 	OutputDebugStringA(buffer);
 }
 
+/* vim:set et sw=2 ts=2: */

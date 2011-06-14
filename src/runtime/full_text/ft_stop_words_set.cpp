@@ -192,3 +192,4 @@ ft_stop_words_set::get_default_word_set_for( iso639_1::type lang ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

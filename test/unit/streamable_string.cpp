@@ -85,3 +85,4 @@ streamable_string(int argc, char* argv[])
   zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

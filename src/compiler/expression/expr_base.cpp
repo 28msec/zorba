@@ -1104,3 +1104,4 @@ xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

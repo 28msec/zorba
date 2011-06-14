@@ -40,3 +40,4 @@ void populateContext_Comparison(static_context* sctx);
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

@@ -77,3 +77,4 @@ private:
 }
 
 #endif // DEBUGGER_TEST_CLIENT_H
+/* vim:set et sw=2 ts=2: */

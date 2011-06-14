@@ -467,3 +467,4 @@ void OrderByIterator::bindOrderBy(
   
 } //Namespace flwor
 } //Namespace zorba
+/* vim:set et sw=2 ts=2: */

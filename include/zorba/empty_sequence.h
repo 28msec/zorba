@@ -83,3 +83,4 @@ namespace zorba {
 } // namespace zorba
 
 #endif /* ZORBA_EMPTY_SEQUENCE_API_H */
+/* vim:set et sw=2 ts=2: */

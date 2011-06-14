@@ -95,3 +95,4 @@ indent( std::basic_ostream<charT,Traits> &os )
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

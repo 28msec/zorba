@@ -77,3 +77,4 @@ int                 sb_stemmer_length(struct sb_stemmer * stemmer);
 }
 #endif
 
+/* vim:set et sw=2 ts=2: */

@@ -81,3 +81,4 @@ private:
 } // namespace zorba
 
 #endif /* VOID_INT_H */
+/* vim:set et sw=2 ts=2: */

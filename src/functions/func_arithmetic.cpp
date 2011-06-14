@@ -325,3 +325,4 @@ void populateContext_Arithmetics(static_context* sctx)
 
 
 }
+/* vim:set et sw=2 ts=2: */

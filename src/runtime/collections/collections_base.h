@@ -176,3 +176,4 @@ public:
 
 } // namespace zorba
 #endif /* ZORBA_RUNTIME_COLLECTIONS_COLLECTIONS_BASE_H */
+/* vim:set et sw=2 ts=2: */

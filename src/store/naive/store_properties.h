@@ -97,3 +97,4 @@ public:
 } }   // namespaces
 
 #endif // ZORBA_STORE_STOREPROPERTIES
+/* vim:set et sw=2 ts=2: */

@@ -80,3 +80,4 @@
 #endif //ZORBA_NO_XMLSCHEMA
 
 #endif /*ZORBA_XERCESINCLUDES_H_*/
+/* vim:set et sw=2 ts=2: */

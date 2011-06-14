@@ -33,3 +33,4 @@ expr_t translate (const parsenode &, CompilerCB* aCompilerCB);
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

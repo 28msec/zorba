@@ -40,3 +40,4 @@ db_segment::db_segment( mmap_file const &file, id_t id ) :
 
 } // namespace wordnet
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

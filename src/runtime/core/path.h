@@ -373,3 +373,4 @@ public:
 
 
 #endif  /* ZORBA_PATH_ITERATORS_H */
+/* vim:set et sw=2 ts=2: */

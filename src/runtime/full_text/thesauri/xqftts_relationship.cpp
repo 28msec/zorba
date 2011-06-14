@@ -79,3 +79,4 @@ bool operator<( relationship const &a, relationship const &b ) {
 
 } // namespace xqftts
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

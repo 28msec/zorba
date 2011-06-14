@@ -408,3 +408,4 @@ void PrintSchema::processTypeDefinition(std::string pre, bool excludeBuiltIn,
 } // namespace xqp
 
 #endif //#ifndef ZORBA_NO_XMLSCHEMA
+/* vim:set et sw=2 ts=2: */

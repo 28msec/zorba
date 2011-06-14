@@ -182,3 +182,4 @@ CommentNode* NodeFactory::createCommentNode(
 } /* namespace simplestore */
 
 } /* namespace store */
+/* vim:set et sw=2 ts=2: */

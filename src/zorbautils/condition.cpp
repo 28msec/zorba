@@ -200,3 +200,4 @@ Condition::~Condition() {}
 #endif // ZORBA_HAVE_PTHREAD_H
 
 }
+/* vim:set et sw=2 ts=2: */

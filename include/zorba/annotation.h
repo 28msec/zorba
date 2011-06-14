@@ -66,3 +66,4 @@ class ZORBA_DLL_PUBLIC Annotation : public SmartObject
  * End:
  */
 
+/* vim:set et sw=2 ts=2: */

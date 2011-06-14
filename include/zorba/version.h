@@ -67,3 +67,4 @@ namespace zorba {
 
 } /* end namespace zorba */
 #endif
+/* vim:set et sw=2 ts=2: */

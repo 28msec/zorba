@@ -1033,3 +1033,4 @@ bool CRegexAscii_wildchar::match(const char *source, int *matched_len)
 
   }//end namespace regex_ascii
 }//end namespace zorba
+/* vim:set et sw=2 ts=2: */

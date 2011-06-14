@@ -43,3 +43,4 @@ void fatal( char const *condition, char const *file, int line,
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

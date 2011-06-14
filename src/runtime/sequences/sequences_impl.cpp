@@ -1866,4 +1866,4 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 } // namespace zorba
-/* vim:se sw=2 ts=2: */
+/* vim:set et sw=2 ts=2: */

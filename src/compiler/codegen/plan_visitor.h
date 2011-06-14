@@ -37,3 +37,4 @@ PlanIter_t codegen(
 
 } /* namespace zorba */
 #endif /* ZORBA_PLAN_VISITOR_H */
+/* vim:set et sw=2 ts=2: */

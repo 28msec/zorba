@@ -63,3 +63,4 @@ RULE_REWRITE_POST(EliminateExtraneousPathSteps)
 }
 
 }
+/* vim:set et sw=2 ts=2: */

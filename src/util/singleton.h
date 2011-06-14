@@ -892,3 +892,4 @@ namespace Loki                                                          \
 
 #endif // end file guardian
 
+/* vim:set et sw=2 ts=2: */

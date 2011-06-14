@@ -66,3 +66,4 @@ Stemmer const* StemmerProvider::get_stemmer( iso639_1::type lang ) const {
 
 } // namespace core
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

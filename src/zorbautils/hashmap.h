@@ -1011,3 +1011,4 @@ const double HASHMAP<T, V, C>::DEFAULT_LOAD_FACTOR = 0.6;
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

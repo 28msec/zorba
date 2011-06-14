@@ -514,3 +514,4 @@ void to_string( char const *s, OutputStringType *out ) {
 } // namespace ztd
 } // namespace zorba
 #endif  /* ZORBA_STRING_UTIL_H */
+/* vim:set et sw=2 ts=2: */

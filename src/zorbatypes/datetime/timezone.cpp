@@ -209,3 +209,4 @@ uint32_t TimeZone::hash(int implicit_timezone_seconds) const
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

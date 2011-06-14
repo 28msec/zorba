@@ -1925,3 +1925,4 @@ FunctionIndex print_parsetree_xquery(ostream& os, const parsenode* p)
   return v.print(p)->getFunctionIndex();
 }
 }//end of namespace
+/* vim:set et sw=2 ts=2: */

@@ -181,3 +181,4 @@ class FlowCtlIterator;
 virtual void beginVisit ( const class& ) = 0;  \
 virtual void endVisit ( const class& ) = 0
 
+/* vim:set et sw=2 ts=2: */

@@ -283,3 +283,4 @@ expr_t fo_expr::clone(substitution_t& subst) const
 
 }
 
+/* vim:set et sw=2 ts=2: */

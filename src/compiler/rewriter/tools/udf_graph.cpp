@@ -341,3 +341,4 @@ void UDFGraph::display(std::ostream& o, UDFNode* node)
 
 
 }
+/* vim:set et sw=2 ts=2: */

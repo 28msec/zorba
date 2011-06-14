@@ -87,3 +87,4 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 }
+/* vim:set et sw=2 ts=2: */

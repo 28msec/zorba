@@ -70,3 +70,4 @@ namespace zorba
   class function_trace_expr;
   class wrapper_expr;
 }
+/* vim:set et sw=2 ts=2: */

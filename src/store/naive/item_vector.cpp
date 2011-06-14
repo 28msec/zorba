@@ -111,3 +111,4 @@ zstring ItemVector::show() const
 
 } // namespace store
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

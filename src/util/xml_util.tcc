@@ -57,3 +57,4 @@ back_xml_insert_iterator<StringType>::operator=( value_type c ) {
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

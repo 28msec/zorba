@@ -189,3 +189,4 @@ ZORBA_DLL_PUBLIC int get_last_day(int year, int month);
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

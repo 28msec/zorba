@@ -89,3 +89,4 @@ inline bool get_wildcards_from( ftmatch_options const *options ) {
 
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_UTIL_H */
+/* vim:set et sw=2 ts=2: */

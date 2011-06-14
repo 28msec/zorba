@@ -470,3 +470,4 @@ inline std::ostream& operator<<( std::ostream &os, Decimal const &d ) {
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

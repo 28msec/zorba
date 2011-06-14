@@ -149,3 +149,4 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
 } /* namespace zorba */
 
 #endif /* ZORBA_TYPES_TYPEIDENT_H */
+/* vim:set et sw=2 ts=2: */

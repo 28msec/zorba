@@ -248,3 +248,4 @@ void zorba::SAXParser::createTextNodeFromBuffer()
   delete m_stream;
   m_stream = new std::ostringstream();
 }
+/* vim:set et sw=2 ts=2: */

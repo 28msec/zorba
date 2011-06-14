@@ -833,3 +833,4 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

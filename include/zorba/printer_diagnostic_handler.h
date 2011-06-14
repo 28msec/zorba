@@ -40,3 +40,4 @@ protected:
 } // namespace zorba
 
 #endif /* ZORBA_PRINTER_ERROR_HANDLER_API_H */
+/* vim:set et sw=2 ts=2: */

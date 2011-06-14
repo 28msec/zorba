@@ -736,3 +736,4 @@ inline uint32_t HASHMAP<K,V>::h(const char *key1, const K& key2) const
 
 } /* namespace zorba  */
 #endif  /* ZORBA_HASHMAP_H */
+/* vim:set et sw=2 ts=2: */

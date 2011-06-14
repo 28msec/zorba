@@ -535,3 +535,4 @@ RootTypeManager::~RootTypeManager()
   delete ANY_FUNCTION_TYPE_STAR.getp();
   ANY_FUNCTION_TYPE_STAR.setNull();
 }
+/* vim:set et sw=2 ts=2: */

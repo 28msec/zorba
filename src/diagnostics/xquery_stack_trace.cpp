@@ -88,3 +88,4 @@ void recordStackTrace( QueryLoc const &loc, QueryLoc const &call_loc,
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

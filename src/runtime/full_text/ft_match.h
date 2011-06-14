@@ -128,3 +128,4 @@ std::ostream& operator<<( std::ostream&, ft_all_matches const& );
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FT_MATCH_H */
+/* vim:set et sw=2 ts=2: */

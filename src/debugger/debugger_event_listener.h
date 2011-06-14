@@ -52,3 +52,4 @@ class DebuggerEventListener : public Runnable {
 }
 
 #endif // DEBUGGER_EVENT_LISTENER_H
+/* vim:set et sw=2 ts=2: */

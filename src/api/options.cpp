@@ -151,3 +151,4 @@ void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, c
 
   serializerOptions->SetSerializerOption(parameter, value);
 }
+/* vim:set et sw=2 ts=2: */

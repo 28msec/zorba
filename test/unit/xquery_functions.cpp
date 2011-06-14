@@ -60,3 +60,4 @@ int xquery_functions( int, char*[] ) {
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;
 }
+/* vim:set et sw=2 ts=2: */

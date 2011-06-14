@@ -659,3 +659,4 @@ void SchemaValidatorImpl::validateSimpleContent(
 #endif //ZORBA_NO_XMLSCHEMA
 
 }// namespace zorba
+/* vim:set et sw=2 ts=2: */

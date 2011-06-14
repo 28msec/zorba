@@ -24,3 +24,4 @@ extern const char xqueryx_update_xslt[51384];
 }
 
 #endif
+/* vim:set et sw=2 ts=2: */

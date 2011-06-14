@@ -567,3 +567,4 @@ std::vector<zstring>* dynamic_context::get_all_keymap_keys() const
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

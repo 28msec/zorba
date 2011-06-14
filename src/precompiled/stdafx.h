@@ -333,3 +333,4 @@
 #include "../include/zorba/xquery_warning.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #endif
+/* vim:set et sw=2 ts=2: */

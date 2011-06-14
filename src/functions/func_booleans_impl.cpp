@@ -899,3 +899,4 @@ void populate_context_booleans_impl(static_context* sctx)
 
 
 }
+/* vim:set et sw=2 ts=2: */

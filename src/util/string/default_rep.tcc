@@ -143,3 +143,4 @@ construct( InputIterator begin, InputIterator end, allocator_type const &a,
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

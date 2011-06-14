@@ -1286,3 +1286,4 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

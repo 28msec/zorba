@@ -89,3 +89,4 @@ public:
 };
 } // namespace zorba
 #endif /*ZORBA_XERCESPATHUTILS_H_*/
+/* vim:set et sw=2 ts=2: */

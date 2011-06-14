@@ -503,3 +503,4 @@ utf8_string<StringType>::replace( size_type pos, size_type n, size_type c_n,
 } // namespace zorba
 
 #endif /* ZORBA_UTF8_STRING_TCC */
+/* vim:set et sw=2 ts=2: */

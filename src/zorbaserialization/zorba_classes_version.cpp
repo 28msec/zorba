@@ -22,4 +22,4 @@ namespace zorba{
 
 const unsigned long g_zorba_classes_version = 20;
 
-}}
+}}/* vim:set et sw=2 ts=2: */

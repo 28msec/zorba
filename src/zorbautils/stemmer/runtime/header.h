@@ -71,3 +71,4 @@ extern void debug(struct SN_env * z, int number, int line_count);
 // BEGIN ZORBA PATCH
 #endif /* STEMMER_HEADER_H */
 // END ZORBA PATCH
+/* vim:set et sw=2 ts=2: */

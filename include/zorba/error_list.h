@@ -1404,3 +1404,4 @@ ZORBA_DEC_ERROR( ZSTR0055_STREAMABLE_STRING_CONSUMED );
 } // namespace zerr
 } // namespace zorba
 #endif /* ZORBA_ERROR_LIST_API_H */
+/* vim:set et sw=2 ts=2: */

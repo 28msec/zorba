@@ -668,3 +668,4 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(UnaryBaseIterator, UnaryBaseIterator<, >
 
 
 }
+/* vim:set et sw=2 ts=2: */

@@ -15,3 +15,4 @@
  */
 #define CONSUME( result, n ) \
   this->consumeNext(result, this->theChildren[n].getp(), planState)
+/* vim:set et sw=2 ts=2: */

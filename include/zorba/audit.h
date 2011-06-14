@@ -130,3 +130,4 @@ inline std::ostream& operator<<(std::ostream& os, const zorba::audit::Event& e) 
 }
 
 #endif
+/* vim:set et sw=2 ts=2: */

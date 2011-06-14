@@ -137,3 +137,4 @@ void* query_stress_test_1(void *param)
 //   return str_result;
 // }
 #endif
+/* vim:set et sw=2 ts=2: */

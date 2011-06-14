@@ -40,3 +40,4 @@ zorba::SynchronousLogger::operator<<(const zorba::String input)
 	m_stream.flush();
 	return *this;
 }
+/* vim:set et sw=2 ts=2: */

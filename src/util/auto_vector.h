@@ -263,3 +263,4 @@ void auto_vector<T>::insert (size_t idx, std::auto_ptr<T> p)
 
 #endif
 
+/* vim:set et sw=2 ts=2: */

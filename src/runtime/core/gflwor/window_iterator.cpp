@@ -979,3 +979,4 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 
   } //Namespace flwor
 }//Namespace zorba
+/* vim:set et sw=2 ts=2: */

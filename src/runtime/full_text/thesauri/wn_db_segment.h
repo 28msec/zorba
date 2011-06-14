@@ -219,3 +219,4 @@ private:
 } // namespace zorba
 
 #endif  /* ZORBA_FULL_TEXT_WORDNET_DB_SEGMENT_H */
+/* vim:set et sw=2 ts=2: */

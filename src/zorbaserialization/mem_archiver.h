@@ -64,3 +64,4 @@ extern rchandle<RCClassSerializer>  g_rc_class_serializer;
 
 }}
 #endif
+/* vim:set et sw=2 ts=2: */

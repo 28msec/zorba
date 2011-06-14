@@ -388,3 +388,4 @@ public:
 }   // namespaces
 
 #endif // ZORBA_ZORBAPROPERTIES
+/* vim:set et sw=2 ts=2: */

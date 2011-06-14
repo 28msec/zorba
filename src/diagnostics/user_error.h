@@ -63,3 +63,4 @@ inline UserError make_user_error( NamespaceStringType const &ns,
 } // namespace zorba
 
 #endif /* ZORBA_ERROR_H */
+/* vim:set et sw=2 ts=2: */

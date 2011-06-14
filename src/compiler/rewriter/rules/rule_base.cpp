@@ -70,3 +70,4 @@ expr_t PrePostRewriteRule::apply(RewriterContext& rCtx, expr* curExpr, bool& mod
 
 }
 
+/* vim:set et sw=2 ts=2: */

@@ -140,3 +140,4 @@ private:
 } // namespace zorba
 
 #endif // ZORBA_MODULE_VERSION_H
+/* vim:set et sw=2 ts=2: */

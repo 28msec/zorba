@@ -533,3 +533,4 @@ std::ostream& operator<<( std::ostream &os, Integer const& );
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

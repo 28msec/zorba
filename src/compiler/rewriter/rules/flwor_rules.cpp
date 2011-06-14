@@ -1096,3 +1096,4 @@ RULE_REWRITE_POST(MergeFLWOR)
 
 
 }
+/* vim:set et sw=2 ts=2: */

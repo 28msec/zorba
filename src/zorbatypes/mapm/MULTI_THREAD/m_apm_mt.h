@@ -590,3 +590,4 @@ inline MAPMMT lcm(const MAPMMT &u,const MAPMMT &v)
 #endif
 #endif
 
+/* vim:set et sw=2 ts=2: */

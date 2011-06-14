@@ -3310,3 +3310,4 @@ PlanIter_t codegen(
 std::vector<PlanIter_t> plan_visitor::no_var_iters;
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

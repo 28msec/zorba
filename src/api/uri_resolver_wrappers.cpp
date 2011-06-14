@@ -93,3 +93,4 @@ namespace zorba
     return NULL;
   }
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

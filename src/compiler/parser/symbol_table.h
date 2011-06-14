@@ -64,3 +64,4 @@ public:			// table interface
 }	/* namespace zorba */
 #endif	/* ZORBA_SYMBOL_TABLE */
 
+/* vim:set et sw=2 ts=2: */

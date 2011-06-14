@@ -58,3 +58,4 @@ private:
 } // namespace core
 } // namespace zorba
 #endif  /* ZORBA_SNOWBALL_STEMMER_H */
+/* vim:set et sw=2 ts=2: */

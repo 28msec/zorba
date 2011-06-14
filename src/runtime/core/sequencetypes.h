@@ -283,3 +283,4 @@ NARY_ITER_STATE(EitherNodesOrAtomicsIterator, EitherNodesOrAtomicsIteratorState)
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

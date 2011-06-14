@@ -73,3 +73,4 @@ void StaticallyKnownCollection::serialize(::zorba::serialization::Archiver& ar)
   
   
 }
+/* vim:set et sw=2 ts=2: */

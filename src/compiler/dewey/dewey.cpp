@@ -46,3 +46,4 @@ Classification_t classify(const parsenode& aNode)
   return lVisitor.getClassification();
 }
 }//end of namespace
+/* vim:set et sw=2 ts=2: */

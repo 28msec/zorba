@@ -223,3 +223,4 @@ bool replace_all( InputStringType const &in, PatternStringType const &pattern,
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

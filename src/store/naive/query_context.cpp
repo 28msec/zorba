@@ -57,3 +57,4 @@ void QueryContextContainer::removeContext(ulong queryId)
 
 }
 }
+/* vim:set et sw=2 ts=2: */

@@ -122,3 +122,4 @@ DebuggerTestClient::clearBreakpoint(std::string& aFile, unsigned int aLine)
 }
 
 }
+/* vim:set et sw=2 ts=2: */

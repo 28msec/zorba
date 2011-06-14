@@ -159,3 +159,4 @@ namespace zorba {
 #undef DEF_OSTREAM_INSERT_OPERATOR
 
 #endif /* ZORBA_FT_TYPES_H */
+/* vim:set et sw=2 ts=2: */

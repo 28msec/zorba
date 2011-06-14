@@ -81,3 +81,4 @@ class ZORBA_DLL_PUBLIC ExternalModule
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

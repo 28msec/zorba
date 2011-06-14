@@ -29,3 +29,4 @@ namespace zorba {
   FunctionIndex print_parsetree_xquery(std::ostream&, const parsenode*);
 }//namespace
 #endif
+/* vim:set et sw=2 ts=2: */

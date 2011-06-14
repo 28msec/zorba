@@ -36,3 +36,4 @@ public:
 } //namespace zorba
 
 #endif // URI_H
+/* vim:set et sw=2 ts=2: */

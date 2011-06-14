@@ -167,3 +167,4 @@ class DebuggerRuntime : public Runnable {
 }
 
 #endif // ZORBA_DEBUGGER_RUNTIME_H
+/* vim:set et sw=2 ts=2: */

@@ -79,3 +79,4 @@ std::string toString(declaration_property_t prop)
 
 } // namespace StaticContextConsts
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

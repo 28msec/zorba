@@ -40,3 +40,4 @@ NOARY_ITER(TupleSourceIterator);
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

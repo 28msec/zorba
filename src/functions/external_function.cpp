@@ -116,3 +116,4 @@ PlanIter_t external_function::codegen(
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

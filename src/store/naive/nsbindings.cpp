@@ -223,3 +223,4 @@ void NsBindingsContext::removeBinding(const zstring& prefix, const zstring& ns)
 } // namespace store
 } // namespace zorba
 
+/* vim:set et sw=2 ts=2: */

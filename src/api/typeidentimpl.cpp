@@ -204,3 +204,4 @@ TypeIdentifier_t TypeIdentifier::createEmptyType()
 }
 
 #endif
+/* vim:set et sw=2 ts=2: */

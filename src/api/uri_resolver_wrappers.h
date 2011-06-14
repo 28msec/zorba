@@ -76,3 +76,4 @@ class URLResolverWrapper : public zorba::impl::URLResolver
 } /* namespace zorba */
 
 #endif /* ZORBA_URI_RESOLVER_WRAPPERS_H */
+/* vim:set et sw=2 ts=2: */

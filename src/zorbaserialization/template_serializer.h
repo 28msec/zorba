@@ -974,3 +974,4 @@ void read_optional_field(Archiver &ar, T &obj)
 } // namespace zorba
 
 #endif /* TEMPLATE_SERIALIZATION_OPERATORS */
+/* vim:set et sw=2 ts=2: */

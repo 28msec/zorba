@@ -451,3 +451,4 @@ int Latch::writeunlock()
 #endif
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

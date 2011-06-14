@@ -62,3 +62,4 @@ namespace zorba {
   } /* namespace UnitTests */
 } /* namespace zorba */
 
+/* vim:set et sw=2 ts=2: */

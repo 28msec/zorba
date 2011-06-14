@@ -558,3 +558,4 @@ RULE_REWRITE_POST(EliminateNodeOps)
 
 
 }
+/* vim:set et sw=2 ts=2: */

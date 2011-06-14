@@ -49,3 +49,4 @@ public:
 } // namespace zorba
 
 #endif /* ZORBA_DIAGNOSTIC_HANDLER_API_H */
+/* vim:set et sw=2 ts=2: */

@@ -510,3 +510,4 @@ inline bool evalToBool(const PlanIter_t& checkIter, PlanState& planState)
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

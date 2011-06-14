@@ -194,3 +194,4 @@ inline void set_source( ZorbaException &ze, QueryLoc const &loc,
 
 } // namespace zorba
 #endif /* ZORBA_XQUERY_EXCEPTION_H */
+/* vim:set et sw=2 ts=2: */

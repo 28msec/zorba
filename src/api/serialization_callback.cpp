@@ -34,3 +34,4 @@ namespace zorba {
   URLResolver*
   SerializationCallback::getURLResolver(size_t i) const { return 0; }
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

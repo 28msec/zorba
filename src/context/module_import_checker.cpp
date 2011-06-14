@@ -20,3 +20,4 @@
 namespace zorba {
 ModuleImportChecker::~ModuleImportChecker() {}
 }
+/* vim:set et sw=2 ts=2: */

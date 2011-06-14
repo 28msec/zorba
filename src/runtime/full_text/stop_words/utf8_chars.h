@@ -44,3 +44,4 @@
 #define uuml    "\xC3\xBC"
 
 #endif /* ZORBA_FULL_TEXT_UTF8_CHARS_H */
+/* vim:set et sw=2 ts=2: */

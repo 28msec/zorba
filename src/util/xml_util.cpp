@@ -102,3 +102,4 @@ int parse_entity( char const *s, unicode::code_point *c ) {
 
 } // namespace xml
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

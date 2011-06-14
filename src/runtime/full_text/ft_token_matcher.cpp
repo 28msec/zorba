@@ -134,3 +134,4 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

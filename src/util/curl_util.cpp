@@ -320,3 +320,4 @@ streambuf::int_type streambuf::underflow() {
 } // namespace curl
 } // namespace zorba
 #endif /* ZORBA_WITH_REST */
+/* vim:set et sw=2 ts=2: */

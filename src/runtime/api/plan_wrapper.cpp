@@ -188,3 +188,4 @@ void PlanWrapper::checkDepth(const QueryLoc& loc)
 
 
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

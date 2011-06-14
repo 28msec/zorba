@@ -95,3 +95,4 @@ rchandle<var_expr> RewriterContext::createTempVar(
 }
 
 }
+/* vim:set et sw=2 ts=2: */

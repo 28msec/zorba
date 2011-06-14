@@ -179,3 +179,4 @@ string PropertiesBase::load_env(const string& env_pfx, const char** options)
  
  
 }
+/* vim:set et sw=2 ts=2: */

@@ -577,3 +577,4 @@ FrexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

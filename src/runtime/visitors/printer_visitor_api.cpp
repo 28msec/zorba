@@ -31,3 +31,4 @@ void print_iter_plan(IterPrinter& aPrinter, PlanIterator* aIter)
 
 } /* namespace zorba */
 
+/* vim:set et sw=2 ts=2: */

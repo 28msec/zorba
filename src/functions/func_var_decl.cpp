@@ -156,3 +156,4 @@ void populateContext_VarDecl(static_context* sctx)
 
 
 }
+/* vim:set et sw=2 ts=2: */

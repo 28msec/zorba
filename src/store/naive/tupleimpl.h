@@ -85,3 +85,4 @@ public:
 }
 
 #endif /* ZORBA_STORE_TUPLEIMPL_H */
+/* vim:set et sw=2 ts=2: */

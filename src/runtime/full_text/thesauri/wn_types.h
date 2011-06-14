@@ -293,3 +293,4 @@ namespace pointer {
 } // namespace zorba
 
 #endif /* ZORBA_FULL_TEXT_WORDNET_TYPES_H */
+/* vim:set et sw=2 ts=2: */

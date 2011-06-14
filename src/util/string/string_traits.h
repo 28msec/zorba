@@ -53,3 +53,4 @@ struct string_traits< std::basic_string<CharType,TraitsType,Allocator> > {
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

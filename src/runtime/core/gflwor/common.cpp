@@ -259,3 +259,4 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
 
 }
 }
+/* vim:set et sw=2 ts=2: */

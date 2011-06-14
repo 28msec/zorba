@@ -269,3 +269,4 @@ uuid_t NameSpace_X500 = { // 6ba7b814-9dad-11d1-80b4-00c04fd430c8
 };
 */
 }
+/* vim:set et sw=2 ts=2: */

@@ -2069,3 +2069,4 @@ struct utf8_stringify< utf8_string<StringType> const > {
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

@@ -289,3 +289,4 @@ checkTag:
 }//end namespace zorba
 
 #endif//ZORBA_XQUERYX
+/* vim:set et sw=2 ts=2: */

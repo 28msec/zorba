@@ -143,3 +143,4 @@ public:
 
 
 #endif /* ZORBA_EXPR_CONSTS_H */
+/* vim:set et sw=2 ts=2: */

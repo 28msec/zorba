@@ -231,3 +231,4 @@ UserException make_user_exception( char const *raise_file,
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

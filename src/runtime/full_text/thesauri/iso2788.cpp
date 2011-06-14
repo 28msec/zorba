@@ -230,3 +230,4 @@ char const *const string_of[] = {
 
 } // namespace iso2788
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

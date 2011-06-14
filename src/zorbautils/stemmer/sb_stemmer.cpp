@@ -84,3 +84,4 @@ void SnowballStemmer::stem( zstring const &word, zstring *result ) const {
 
 } // namespace core
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

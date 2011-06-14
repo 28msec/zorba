@@ -279,3 +279,4 @@ int call_stack (int argc, char* argv[])
     return 1;
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

@@ -399,3 +399,4 @@ extern  void	M_apm_round_fixpt(M_APM, int, M_APM);
 
 #endif
 
+/* vim:set et sw=2 ts=2: */

@@ -142,3 +142,4 @@ bool ForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
   
 } //Namespace flwor
 }//Namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -44,3 +44,4 @@ zorba_implementation(XQC_Implementation** impl, void* store)
   }
 }
 
+/* vim:set et sw=2 ts=2: */

@@ -53,3 +53,4 @@ void zorba::DefaultDebuggerEventHandler::evaluated(zorba::String &anExpr,
                                                    zorba::String &anError)
 {
 }
+/* vim:set et sw=2 ts=2: */

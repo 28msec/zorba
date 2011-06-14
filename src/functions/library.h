@@ -61,3 +61,4 @@ BuiltinFunctionLibrary::getFunction(FunctionConsts::func_code)
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

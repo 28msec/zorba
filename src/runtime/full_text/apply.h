@@ -54,3 +54,4 @@ void apply_ftwindow( ft_all_matches const&, ft_int window_size, ft_unit::type,
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_APPLY_H */
+/* vim:set et sw=2 ts=2: */

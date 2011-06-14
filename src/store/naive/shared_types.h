@@ -54,3 +54,4 @@ typedef rchandle<store::IndexEntryCreator> IndexEntryCreator_t;
 
 }
 #endif /* ZORBA_SIMPLE_STORE_SHARED_TYPES_H */
+/* vim:set et sw=2 ts=2: */

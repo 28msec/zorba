@@ -511,3 +511,4 @@ static bool containsUpdates(const expr* e)
 
 
 }
+/* vim:set et sw=2 ts=2: */

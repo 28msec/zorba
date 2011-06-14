@@ -49,3 +49,4 @@ RULE_REWRITE_POST(PlanPrinter)
 }
 
 }
+/* vim:set et sw=2 ts=2: */

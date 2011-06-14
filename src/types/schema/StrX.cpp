@@ -21,3 +21,4 @@
 #include "types/schema/StrX.h"
 
 #endif // ZORBA_NO_XMLSCHEMA
+/* vim:set et sw=2 ts=2: */

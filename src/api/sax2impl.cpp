@@ -223,3 +223,4 @@ const String SAX2AttributesImpl::getValue(const String & qName) const
   return "";
 }
 }//end namespace zorba
+/* vim:set et sw=2 ts=2: */

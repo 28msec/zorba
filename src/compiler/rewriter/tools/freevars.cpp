@@ -35,3 +35,4 @@ const var_ptr_set& get_varset_annotation(const expr* e, Annotations::Key k)
 }
 
 }
+/* vim:set et sw=2 ts=2: */

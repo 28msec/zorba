@@ -2274,3 +2274,4 @@ bool to_string( wchar_t const *in, size_type in_len, string *out ) {
 
 } // namespace unicode
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

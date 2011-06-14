@@ -408,3 +408,4 @@ std::ostream& operator<< (std::ostream& os, XQuery* aQuery);
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

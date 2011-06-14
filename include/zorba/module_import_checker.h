@@ -67,3 +67,4 @@ public:
 };
 }
 #endif //__MODULE_IMPORT_CHECKER_H__
+/* vim:set et sw=2 ts=2: */

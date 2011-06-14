@@ -76,3 +76,4 @@ void MemArchiver::read_end_current_level_impl()
 }
 
 }}
+/* vim:set et sw=2 ts=2: */

@@ -67,3 +67,4 @@ datetime(int argc, char* argv[])
   return 1;
 }
 
+/* vim:set et sw=2 ts=2: */

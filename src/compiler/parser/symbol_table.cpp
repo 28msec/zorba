@@ -209,3 +209,4 @@ std::string symbol_table::get(off_t id)
 
 
 }	/* namespace zorba */
+/* vim:set et sw=2 ts=2: */

@@ -295,3 +295,4 @@ void ZorbaImpl::checkItem(const store::Item_t& aItem)
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -32,3 +32,4 @@ ZORBA_DLL_PUBLIC void shutdown_store(void*);
 #endif
 
 
+/* vim:set et sw=2 ts=2: */

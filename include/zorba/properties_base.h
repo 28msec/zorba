@@ -109,3 +109,4 @@ template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val(
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

@@ -57,3 +57,4 @@ zorba::Item  MSDOM2SimpleStore::importMSDOM(IXMLDOMNode* domNode,
 
 }
 }
+/* vim:set et sw=2 ts=2: */

@@ -138,3 +138,4 @@ inline std::ostream& operator<<( std::ostream &o, relationship const &r ) {
 } // namespace zorba
 
 #endif  /* ZORBA_FULL_TEXT_XQFTTS_RELATIONSHIP_H */
+/* vim:set et sw=2 ts=2: */

@@ -331,3 +331,4 @@ BoolAnnotationValue zorba_store_collections_static_dml_delete_nodes::ignoresDupl
 
 }
 
+/* vim:set et sw=2 ts=2: */

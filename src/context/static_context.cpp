@@ -3841,3 +3841,4 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

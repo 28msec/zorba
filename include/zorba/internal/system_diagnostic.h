@@ -97,3 +97,4 @@ private:
 } // namespace internal
 } // namespace zorba
 #endif /* ZORBA_INTERNAL_SYSTEM_DIAGNOSTIC_H */
+/* vim:set et sw=2 ts=2: */

@@ -60,3 +60,4 @@ std::ostream& operator<<(std::ostream& os, const ItemVector& key)
 
 }
 }
+/* vim:set et sw=2 ts=2: */

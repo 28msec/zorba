@@ -65,3 +65,4 @@ bool SingletonItemSequence::InternalIterator::next(Item& aItem)
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

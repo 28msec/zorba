@@ -57,3 +57,4 @@ uint32_t MAPM::hash() const
   return static_cast<uint32_t>(doublev);
 }
 
+/* vim:set et sw=2 ts=2: */

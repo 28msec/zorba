@@ -188,3 +188,4 @@ expr_t function_item_expr::clone(substitution_t& s) const
 
 
 }//end of namespace
+/* vim:set et sw=2 ts=2: */

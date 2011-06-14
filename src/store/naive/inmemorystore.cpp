@@ -46,3 +46,4 @@ SimpleStore* StoreManagerImpl::theStore = NULL;
 }
 
 }
+/* vim:set et sw=2 ts=2: */

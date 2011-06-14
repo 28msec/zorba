@@ -177,3 +177,4 @@ inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
 
 } // namespace zorba
 #endif /* ZORBA_ZORBA_EXCEPTION_API_H */
+/* vim:set et sw=2 ts=2: */

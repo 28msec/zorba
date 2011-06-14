@@ -147,3 +147,4 @@ root_static_context::~root_static_context()
 }
 
 }
+/* vim:set et sw=2 ts=2: */

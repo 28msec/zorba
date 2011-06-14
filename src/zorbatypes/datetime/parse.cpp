@@ -128,3 +128,4 @@ int leap_years_count(int year)
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -303,3 +303,4 @@ private:
 } // namespace zorba
 #endif /* ZORBA_WITH_FILE_ACCESS */
 #endif /* ZORBA_MMAP_FILE_H */
+/* vim:set et sw=2 ts=2: */

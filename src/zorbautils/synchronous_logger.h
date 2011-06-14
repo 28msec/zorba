@@ -47,3 +47,4 @@ static SynchronousLogger cout(std::cout);
 
 #endif // SYNCHRONOUS_LOGGER
 
+/* vim:set et sw=2 ts=2: */

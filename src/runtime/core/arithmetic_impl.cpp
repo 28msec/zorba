@@ -737,3 +737,4 @@ template class GenericArithIterator<IntegerDivideOperation>;
 template class GenericArithIterator<ModOperation>;
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

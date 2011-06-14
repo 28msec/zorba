@@ -176,3 +176,4 @@ void populate_context_accessors_impl(static_context* sctx)
 
 
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

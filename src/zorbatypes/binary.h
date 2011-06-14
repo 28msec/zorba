@@ -178,3 +178,4 @@ std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

@@ -44,3 +44,4 @@ const SuspensionCause CAUSE_STEP               = 0x03;
 const SuspensionCause CAUSE_ERROR              = 0x04;
 
 #endif //ZORBA_DEBUGGER_COMMON_H
+/* vim:set et sw=2 ts=2: */

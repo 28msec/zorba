@@ -67,3 +67,4 @@ bool SingleItemSequence::InternalIterator::next(Item& aItem)
 }
 
 } /* namespace zorbac */
+/* vim:set et sw=2 ts=2: */

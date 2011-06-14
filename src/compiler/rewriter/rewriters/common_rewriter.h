@@ -30,3 +30,4 @@ m_childRewriters.push_back(rewriter_ptr_t(new RuleOnceDriver<rule>))
 m_rules.push_back (rule_ptr_t (new rule))
 
 #endif /* ZORBA_COMMON_REWRITER */
+/* vim:set et sw=2 ts=2: */

@@ -106,3 +106,4 @@ UNARY_ACCEPT(CountIterator);
 
 } //Namespace flwor
 }//Namespace zorba
+/* vim:set et sw=2 ts=2: */

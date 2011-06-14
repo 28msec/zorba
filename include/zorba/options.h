@@ -245,3 +245,4 @@ ZORBA_DLL_PUBLIC void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* ser
 
 #endif
 
+/* vim:set et sw=2 ts=2: */

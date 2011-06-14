@@ -219,3 +219,4 @@ namespace zorbac {
     ZIS_CATCH;
   }
 } /* namespace zorbac */
+/* vim:set et sw=2 ts=2: */

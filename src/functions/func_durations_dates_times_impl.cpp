@@ -869,3 +869,4 @@ DECL(sctx, fn_format_time_2,
 
 } // namespace zorba
 
+/* vim:set et sw=2 ts=2: */

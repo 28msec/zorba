@@ -105,3 +105,4 @@ void LoadSchemaErrorHandler::resetErrors()
 } // namspace xqp
 
 #endif //#ifndef ZORBA_NO_XMLSCHEMA
+/* vim:set et sw=2 ts=2: */

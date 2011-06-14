@@ -119,3 +119,4 @@ void qsort(
 }	/* namespace zorba */
 #endif	/* ZORBA_SORTER_H */
 
+/* vim:set et sw=2 ts=2: */

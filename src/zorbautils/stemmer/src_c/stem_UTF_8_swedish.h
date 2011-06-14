@@ -14,3 +14,4 @@ extern int swedish_UTF_8_stem(struct SN_env * z);
 }
 #endif
 
+/* vim:set et sw=2 ts=2: */

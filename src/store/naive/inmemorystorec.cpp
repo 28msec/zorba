@@ -31,3 +31,4 @@ shutdown_store(void* aStore)
 {
   static_cast<zorba::simplestore::SimpleStore*>(aStore)->shutdown();
 }
+/* vim:set et sw=2 ts=2: */

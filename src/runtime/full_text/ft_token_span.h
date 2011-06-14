@@ -84,3 +84,4 @@ inline std::ostream& operator<<( std::ostream &o, ft_token_span const &ts ) {
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FT_TOKEN_SPAN_H */
+/* vim:set et sw=2 ts=2: */

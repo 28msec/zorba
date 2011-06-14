@@ -146,3 +146,4 @@ bool test_binary_message( Byte *  aMsg, const unsigned int aLength, const ErrorC
     }
 }
 
+/* vim:set et sw=2 ts=2: */

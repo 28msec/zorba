@@ -60,3 +60,4 @@ inline bool operator==(const AnnotationValue_t& v1, const AnnotationValue_t& v2)
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

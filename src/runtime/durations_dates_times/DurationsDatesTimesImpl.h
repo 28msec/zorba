@@ -98,3 +98,4 @@ BINARY_ITER(FnAdjustToTimeZoneIterator_2);
  * End:
  */
 
+/* vim:set et sw=2 ts=2: */

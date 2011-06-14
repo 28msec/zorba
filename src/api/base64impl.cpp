@@ -58,3 +58,4 @@ String Base64::decode(std::istream& aStream)
 
 } /* end namespace encoding */
 } /* end namespace zorba */
+/* vim:set et sw=2 ts=2: */

@@ -61,3 +61,4 @@ private:
 }
 
 #endif //DEBUGGER_TEST_HANDLER_H
+/* vim:set et sw=2 ts=2: */

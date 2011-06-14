@@ -412,3 +412,4 @@ ZORBA_DEF_ERROR( ZXQD0002,DOCUMENT_NOT_VALID );
 
 } // namespace zerr
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

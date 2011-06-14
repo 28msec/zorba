@@ -66022,3 +66022,4 @@ bool is_UnicodeNo(code_point cp)
 }//end ns unicode
 }//end ns zorba
 
+/* vim:set et sw=2 ts=2: */

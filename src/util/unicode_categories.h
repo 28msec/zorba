@@ -64,3 +64,4 @@ bool check_codepoint_category(code_point cp, UnicodeCategoriesEnum categ);
 }
 
 #endif
+/* vim:set et sw=2 ts=2: */

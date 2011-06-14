@@ -538,3 +538,4 @@ bool NumConversions::longToDouble(const xs_long& aLong, xs_double& aDouble)
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

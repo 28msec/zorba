@@ -83,3 +83,4 @@ typedef enum { index_automatic, index_manual } index_maintenance_mode_t;
 typedef enum { index_hash, index_tree } index_container_kind_t;
 
 #endif
+/* vim:set et sw=2 ts=2: */

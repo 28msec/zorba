@@ -55,3 +55,4 @@ NOARY_ACCEPT(TupleSourceIterator);
 
 } //Namespace flwor
 }//Namespace zorba
+/* vim:set et sw=2 ts=2: */

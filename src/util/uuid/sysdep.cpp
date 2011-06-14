@@ -56,3 +56,4 @@ void get_system_time(xs_unsignedLong *uuid_time)
 
 #endif
 }/*namespace zorba*/
+/* vim:set et sw=2 ts=2: */

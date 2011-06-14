@@ -129,3 +129,4 @@ void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
 
 } /* namespace zorba */
 
+/* vim:set et sw=2 ts=2: */

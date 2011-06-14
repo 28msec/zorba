@@ -1058,3 +1058,4 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   return xqtref_t(0);
 }
+/* vim:set et sw=2 ts=2: */

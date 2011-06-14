@@ -148,3 +148,4 @@ static inline store::Item_t createQName(
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

@@ -312,3 +312,4 @@ zorba::Runnable::reset()
   theFinishCalled = false;
   theStatus = IDLE;
 }
+/* vim:set et sw=2 ts=2: */

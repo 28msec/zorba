@@ -390,3 +390,4 @@ inline bool operator!=( Diagnostic const &d1, Diagnostic const &d2 ) {
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

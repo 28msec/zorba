@@ -170,3 +170,4 @@ UNARY_ACCEPT(NodeSortIterator);
 
 
 }
+/* vim:set et sw=2 ts=2: */

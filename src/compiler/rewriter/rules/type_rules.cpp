@@ -580,3 +580,4 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind)
 
 
 }
+/* vim:set et sw=2 ts=2: */

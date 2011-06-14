@@ -149,3 +149,4 @@ void namespace_context::getAllBindings(store::NsBindings& bindings) const
 
 
 }
+/* vim:set et sw=2 ts=2: */

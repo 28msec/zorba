@@ -1385,3 +1385,4 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<TypeConstants::XS_
   PRINTER_VISITOR_DEFINITION(LoopIterator);
   PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
 }
+/* vim:set et sw=2 ts=2: */

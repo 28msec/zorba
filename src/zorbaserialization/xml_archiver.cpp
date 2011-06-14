@@ -846,3 +846,4 @@ void XmlArchiver::skip_comment_tag()
 }
 
 }}
+/* vim:set et sw=2 ts=2: */

@@ -140,3 +140,4 @@ typedef rchandle<union_expr> union_expr_t;
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

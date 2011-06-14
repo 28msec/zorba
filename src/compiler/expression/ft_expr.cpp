@@ -74,3 +74,4 @@ void ftcontains_expr::serialize( serialization::Archiver &ar )
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -230,3 +230,4 @@ typedef uint64_t  uintmax_t;
 #endif // _MSC_STDINT_H_ ]
 
 #endif // _MSC_VER ]
+/* vim:set et sw=2 ts=2: */

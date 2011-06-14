@@ -28,3 +28,4 @@ char empty_rep_base::empty_rep_storage_[ sizeof( rep_model ) ];
 
 } // namespace rstring_classes
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

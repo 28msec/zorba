@@ -100,3 +100,4 @@ make_triple(_T1 _x, _T2 _y, _T3 _z)
 } /* namespace zorba */
 #endif /* ZORBA_TRIPLE_H */
 
+/* vim:set et sw=2 ts=2: */

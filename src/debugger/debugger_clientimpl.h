@@ -147,3 +147,4 @@ namespace zorba {
 }//end of namespace
 
 #endif // ZORBA_DEBUGGER_CLIENT_IMPL_H
+/* vim:set et sw=2 ts=2: */

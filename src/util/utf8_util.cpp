@@ -250,3 +250,4 @@ storage_type const* validate( storage_type const *s, size_type s_size ) {
 
 } // namespace utf8
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

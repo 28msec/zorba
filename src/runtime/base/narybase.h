@@ -226,3 +226,4 @@ NARY_ITER_STATE(name, PlanIteratorState)
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

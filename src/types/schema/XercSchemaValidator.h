@@ -549,3 +549,4 @@ inline const XMLCh* XercSchemaValidator::getNormalizedValue() const
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

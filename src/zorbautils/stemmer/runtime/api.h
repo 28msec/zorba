@@ -31,3 +31,4 @@ extern int SN_set_current(struct SN_env * z, int size, const symbol * s);
 // BEGIN ZORBA PATCH
 #endif /* STEMMER_API_H */
 // END ZORBA PATCH
+/* vim:set et sw=2 ts=2: */

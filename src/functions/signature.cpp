@@ -259,3 +259,4 @@ bool signature::equals(const TypeManager* tm, const signature& s) const
 
 } /* namespace zorba */
 
+/* vim:set et sw=2 ts=2: */

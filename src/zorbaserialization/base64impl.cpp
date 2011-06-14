@@ -173,3 +173,4 @@ Base64Impl::Decode(const unsigned char *datain, size_t datalen,
 }
 
 }}
+/* vim:set et sw=2 ts=2: */
