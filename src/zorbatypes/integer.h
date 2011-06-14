@@ -50,7 +50,7 @@ public:
   Integer( int n = 0 );
   Integer( long n );
   Integer( long long n );
-  Integer( unsigned char n );
+  Integer( unsigned char c );
   Integer( unsigned short n );
   Integer( unsigned int n );
   Integer( unsigned long n );
@@ -93,7 +93,7 @@ public:
   Integer& operator=( int n );
   Integer& operator=( long n );
   Integer& operator=( long long n );
-  Integer& operator=( unsigned char n );
+  Integer& operator=( unsigned char c );
   Integer& operator=( unsigned short n );
   Integer& operator=( unsigned int n );
   Integer& operator=( unsigned long n );
@@ -164,33 +164,18 @@ public:
 
   ////////// math functions ///////////////////////////////////////////////////
 
-#ifndef ZORBA_NO_BIGNUMBERS
   Double pow( Integer const &power ) const;
   Integer round( Integer const &precision ) const;
   Integer roundHalfToEven( Integer const &precision ) const;
-#else
-  Double pow( Integer p ) const;
-  Integer round( Integer precision ) const;
-  Integer roundHalfToEven( Integer precision ) const;
-#endif /* ZORBA_NO_BIGNUMBERS */
 
   ////////// miscellaneous ////////////////////////////////////////////////////
 
-  uint32_t hash() const;
-
-  int sign() const;
-
-  zstring toString() const;
-
-#ifndef ZORBA_NO_BIGNUMBERS
   int compare( Integer const &i ) const;
+  uint32_t hash() const;
+  int sign() const;
+  zstring toString() const;
   static Integer const& one();
   static Integer const& zero();
-#else
-  int compare( Integer i ) const;
-  static Integer one();
-  static Integer zero();
-#endif /* ZORBA_NO_BIGNUMBERS */
 
   /////////////////////////////////////////////////////////////////////////////
 
@@ -201,20 +186,14 @@ public:
 private:
 #ifndef ZORBA_NO_BIGNUMBERS
   typedef MAPM value_type;
-  typedef value_type const& value_reference;
-  typedef MAPM double_type;
-  typedef double_type const& double_reference;
 #else
   typedef long long value_type;
-  typedef value_type value_reference;
-  typedef double double_type;
-  typedef double_type double_reference;
 #endif /* ZORBA_NO_BIGNUMBERS */
 
   value_type value_;
 
 #ifndef ZORBA_NO_BIGNUMBERS
-  Integer( value_reference v ) : value_( v ) { }
+  Integer( value_type const &v ) : value_( v ) { }
 #endif /* ZORBA_NO_BIGNUMBERS */
 
   bool is_xs_int() const;
@@ -245,10 +224,6 @@ private:
   friend class Decimal;
   template<typename T> friend class FloatImpl;
   friend class NumConversions;
-
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  static HashCharPtrObjPtrLimited<Integer> parsed_integers;
-#endif
 };
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -282,10 +257,10 @@ inline Integer::Integer( unsigned short n ) : value_( static_cast<long>( n ) ) {
 inline Integer::Integer( unsigned int n ) : value_( static_cast<long>( n ) ) {
 }
 
-inline Integer::Integer( unsigned long n ) : value_( static_cast<long>( n ) ) {
+#ifdef ZORBA_NO_BIGNUMBERS
+inline Integer::Integer( unsigned long n ) : value_( n ) {
 }
 
-#ifdef ZORBA_NO_BIGNUMBERS
 inline Integer::Integer( unsigned long long n ) : value_( n ) {
 }
 #endif /* ZORBA_NO_BIGNUMBERS */
@@ -515,7 +490,7 @@ inline int Integer::sign() const {
 
 #else
 
-inline int Integer::compare( Integer i ) const {
+inline int Integer::compare( Integer const &i ) const {
   return value_ - i.value_;
 }
 
@@ -541,16 +516,8 @@ inline bool Integer::is_xs_ulong() const {
   return value_ >= 0;
 }
 
-inline Integer Integer::one() {
-  return Integer(1);
-}
-
 inline int Integer::sign() const {
   return value_ < 0 ? -1 : value_ > 0 ? 1 : 0;
-}
-
-inline Integer Integer::zero() {
-  return Integer(0);
 }
 
 #endif /* ZORBA_NO_BIGNUMBERS */

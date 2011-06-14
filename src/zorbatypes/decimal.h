@@ -37,13 +37,13 @@ public:
 
   ////////// constructors /////////////////////////////////////////////////////
 
-  Decimal( char n );
-  Decimal( signed char n );
+  Decimal( char c );
+  Decimal( signed char c );
   Decimal( short n );
   Decimal( int n = 0 );
   Decimal( long n );
   Decimal( long long n );
-  Decimal( unsigned char n );
+  Decimal( unsigned char c );
   Decimal( unsigned short n );
   Decimal( unsigned int n );
   Decimal( unsigned long n );
@@ -80,8 +80,8 @@ public:
 
   ////////// assignment operators /////////////////////////////////////////////
 
-  Decimal& operator=( char n );
-  Decimal& operator=( signed char n );
+  Decimal& operator=( char c );
+  Decimal& operator=( signed char c );
   Decimal& operator=( short n );
   Decimal& operator=( int n );
   Decimal& operator=( long n );
@@ -205,6 +205,8 @@ private:
     parse_decimal  = 0x02 | parse_negative
   };
 
+  void parse( char const *s, int parse_options = parse_decimal );
+
   static void parse( char const *s, value_type *result,
                      int parse_options = parse_decimal );
 
@@ -250,7 +252,7 @@ inline Decimal::Decimal( unsigned int n ) : value_( static_cast<long>( n ) ) {
 }
 
 inline Decimal::Decimal( char const *s ) {
-  parse( s, &value_ );
+  parse( s );
 }
 
 inline Decimal::Decimal( Decimal const &d ) :
@@ -311,7 +313,7 @@ inline Decimal& Decimal::operator=( double n ) {
 }
 
 inline Decimal& Decimal::operator=( char const *s ) {
-  parse( s, &value_ );
+  parse( s );
   return *this;
 }
 

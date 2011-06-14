@@ -35,22 +35,26 @@ END_SERIALIZABLE_CLASS_VERSIONS(Decimal)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void Decimal::parse( char const *s, int parse_options ) {
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
-HashCharPtrObjPtrLimited<Decimal> Decimal::parsed_decimals;
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-
-void Decimal::parse( char const *s, value_type *result, int parse_options ) {
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  Decimal *hashed_decimal;
-  if ( parsed_decimals.get( s, hashed_decimal ) ) {
-    //found in hash
-    *value_ = hashed_decimal->value_;
+  static HashCharPtrObjPtrLimited<Decimal> cache;
+  Decimal *cached_decimal;
+  if ( cache.get( s, cached_decimal ) ) {
+    *result = cached_decimal->value_;
     return;
   }
 #endif /* ZORBA_NUMERIC_OPTIMIZATION */
 
+  parse( s, &value_, parse_options );
+
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+  cached_decimal = new Decimal( *this );
+  char const *const s_dup = _strdup( s );
+  parsed_integers.insert( s_dup, cached_decimal );
+#endif /* ZORBA_NUMERIC_OPTIMIZATION */
+}
+
+void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
     throw std::invalid_argument( "empty string" );
 
@@ -61,7 +65,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     ++s;
   while ( ascii::is_digit( *s ) )
     ++s;
-  if ( parse_options & parse_decimal ) {
+  if ( parse_options == parse_decimal ) {
     if ( *s == '.' )
       ++s;
     while ( ascii::is_digit( *s ) )
@@ -78,24 +82,14 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
       BUILD_STRING( '"', *s, "\": invalid character" )
     );
 
-  char const *s_ok;
   if ( first_trailing_ws ) {
     ptrdiff_t const size = first_trailing_ws - first_non_ws;
     char *const copy = std::strncpy( new char[ size + 1 ], first_non_ws, size );
     copy[ size ] = '\0';
-    s_ok = copy;
+    *result = copy;
+    delete[] copy;
   } else
-    s_ok = first_non_ws;
-
-  *result = s_ok;
-
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  hashed_decimal = new Decimal( aInteger );
-  const char *const dup_str = _strdup( s_ok );
-  parsed_integers.insert( dup_str, hashed_integer );
-#endif /* ZORBA_NUMERIC_OPTIMIZATION */
-  if ( first_trailing_ws )
-    delete[] s_ok;
+    *result = first_non_ws;
 }
 
 /*
@@ -104,8 +98,8 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
 */
 void Decimal::reduce( char *s ) {
   char *dot = strrchr( s, '.' );
-  if ( !dot )
-    return; // not a floating point number
+  if ( !dot )                           // not a floating point number
+    return;
 
   bool has_e = false;
   char *e = strrchr( s, 'E' );

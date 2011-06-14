@@ -35,56 +35,23 @@ END_SERIALIZABLE_CLASS_VERSIONS(Integer)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-HashCharPtrObjPtrLimited<Integer> Integer::parsed_integers;
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-
 void Integer::parse( char const *s, bool allow_negative ) {
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
-  Integer *hashed_integer;
-  if( parsed_integers.get( s, hashed_integer ) ) {
-    value_ = hashed_integer->value_;
+  static HashCharPtrObjPtrLimited<Integer> cache;
+  Integer *cached_integer;
+  if( cache.get( s, cached_integer ) ) {
+    value_ = cached_integer->value_;
     return;
   }
 #endif /* ZORBA_NUMERIC_OPTIMIZATION */
 
-  if ( !*s )
-    throw std::invalid_argument( "empty string" );
-
 #ifndef ZORBA_NO_BIGNUMBERS
-  while ( ascii::is_space( *s ) )
-    ++s;
-  char const *const first_non_ws = s;
-  if ( *s == '+' || (allow_negative && *s == '-') )
-    ++s;
-  while ( ascii::is_digit( *s ) )
-    ++s;
-  char const *first_trailing_ws = nullptr;
-  while ( ascii::is_space( *s ) ) {
-    if ( !first_trailing_ws )
-      first_trailing_ws = s;
-    ++s;
-  }
-  if ( *s )
-    throw std::invalid_argument(
-      BUILD_STRING( '"', *s, "\": invalid character" )
-    );
-
-  char const *s_ok;
-  if ( first_trailing_ws ) {
-    ptrdiff_t const size = first_trailing_ws - first_non_ws;
-    char *const copy = std::strncpy( new char[ size + 1 ], first_non_ws, size );
-    copy[ size ] = '\0';
-    s_ok = copy;
-  } else
-    s_ok = first_non_ws;
-
-  value_ = s_ok;
+  Decimal::parse(
+    s, &value_, allow_negative ? Decimal::parse_negative : Decimal::parse_none
+  );
 #else
   char *end;
-  value_ = std::strtol( s, &end, 10 );
+  value_ = std::strtoll( s, &end, 10 );
   if ( *end )
     throw std::invalid_argument(
       BUILD_STRING( '"', *end, "\": invalid character" )
@@ -92,15 +59,10 @@ void Integer::parse( char const *s, bool allow_negative ) {
 #endif /* ZORBA_NO_BIGNUMBERS */
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
-  hashed_integer = new Integer( aInteger );
+  cached_integer = new Integer( *this );
   const char *const dup_str = _strdup( s_ok );
-  parsed_integers.insert( dup_str, hashed_integer );
+  cache.insert( dup_str, cached_integer );
 #endif /* ZORBA_NUMERIC_OPTIMIZATION */
-
-#ifndef ZORBA_NO_BIGNUMBERS
-  if ( first_trailing_ws )
-    delete[] s_ok;
-#endif /* ZORBA_NO_BIGNUMBERS */
 }
 
 void Integer::serialize( serialization::Archiver &ar ) {
@@ -112,6 +74,11 @@ void Integer::serialize( serialization::Archiver &ar ) {
 #ifndef ZORBA_NO_BIGNUMBERS
 Integer::Integer( long long n ) {
   zstring const temp( NumConversions::longToStr( n ) );
+  value_ = temp.c_str();
+}
+
+Integer::Integer( unsigned long n ) {
+  zstring const temp( NumConversions::ulongToStr( n ) );
   value_ = temp.c_str();
 }
 
@@ -228,40 +195,26 @@ bool operator>=( Integer const &i, Decimal const &d ) {
 
 ////////// math functions /////////////////////////////////////////////////////
 
-#ifndef ZORBA_NO_BIGNUMBERS
-
 Double Integer::pow( Integer const &power ) const {
-  double_type const result( value_.pow( power.value_, 15 ) );
+#ifndef ZORBA_NO_BIGNUMBERS
+  value_type const result( value_.pow( power.value_, 15 ) );
   char buf[300];
   result.toFixPtString( buf, 15 );
   xs_double double_result;
   xs_double::parseString( buf, double_result );
   return double_result;
+#else
+  return Double( ::pow( value_, power.value_ ) );
+#endif /* ZORBA_NO_BIGNUMBERS */
 }
 
 Integer Integer::round( Integer const &precision ) const {
-  return Integer( Decimal::round( value_, precision.value_ ) );
+  return Integer( Decimal::round( itod(), precision.itod() ) );
 }
 
 Integer Integer::roundHalfToEven( Integer const &precision ) const {
-  return Integer( Decimal::roundHalfToEven( value_, precision.value_ ) );
+  return Integer( Decimal::roundHalfToEven( itod(), precision.itod() ) );
 }
-
-#else
-
-Double Integer::pow( Integer power ) const {
-  return Double( ::pow( value_, power.value_ ) );
-}
-
-Integer Integer::round( Integer precision ) const {
-  return Integer( Decimal::round( value_.itod() ), precision.itod() );
-}
-
-Integer Integer::roundHalfToEven( Integer precision ) const {
-  return Integer( Decimal::roundHalfToEven( value_.itod(), precision.itod() ) );
-}
-
-#endif /* ZORBA_NO_BIGNUMBERS */
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
@@ -270,7 +223,7 @@ Integer::value_type Integer::ftoi( MAPM const &d ) {
   MAPM const temp( d.sign() >= 0 ? d.floor() : d.ceil() );
   char *const buf = new char[ temp.exponent() + 3 ];
   temp.toIntegerString( buf );
-  value_type const result( strtoll( buf, 0, 10 ) );
+  value_type const result( std::strtoll( buf, nullptr, 10 ) );
   delete[] buf;
   return result;
 }
@@ -288,6 +241,11 @@ uint32_t Integer::hash() const {
 }
 #endif /* ZORBA_NO_BIGNUMBERS */
 
+Integer const& Integer::one() {
+  static Integer const i(1);
+  return i;
+}
+
 zstring Integer::toString() const {
 #ifndef ZORBA_NO_BIGNUMBERS
   char *const buf = new char[ value_.exponent() + 3 ];
@@ -302,17 +260,10 @@ zstring Integer::toString() const {
 #endif /* ZORBA_NO_BIGNUMBERS */
 }
 
-#ifndef ZORBA_NO_BIGNUMBERS
-Integer const& Integer::one() {
-  static Integer const i(1);
-  return i;
-}
-
 Integer const& Integer::zero() {
   static Integer const i(0);
   return i;
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
 
 std::ostream& operator<<( std::ostream &os, Integer const &i ) {
   return os << i.toString();
