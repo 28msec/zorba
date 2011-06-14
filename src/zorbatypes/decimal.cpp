@@ -195,24 +195,21 @@ void Decimal::reduce( char *s ) {
 }
 
 void Decimal::serialize( serialization::Archiver &ar ) {
-  ar & value_;
+  //ar & value_;
 }
 
 ////////// constructors ///////////////////////////////////////////////////////
 
 Decimal::Decimal( long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  value_ = NumConversions::longToStr( n ).c_str();
 }
 
 Decimal::Decimal( unsigned long n ) {
-  zstring const temp( NumConversions::ulongToStr( n ) );
-  value_ = temp.c_str();
+  value_ = NumConversions::ulongToStr( n ).c_str();
 }
 
 Decimal::Decimal( unsigned long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  value_ = NumConversions::longToStr( n ).c_str();
 }
 
 Decimal::Decimal( float f ) {
@@ -243,8 +240,7 @@ Decimal::Decimal( Float const &f ) {
   value_ = f.theFloating;
 }
 
-Decimal::Decimal( Integer const &i ) {
-  value_ = i.value_;
+Decimal::Decimal( Integer const &i ) : value_( i.itod() ) {
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
@@ -262,7 +258,7 @@ Decimal& Decimal::operator=( unsigned long long n ) {
 }
 
 Decimal& Decimal::operator=( Integer const &i ) {
-  value_ = i.value_;
+  value_ = i.itod();
   return *this;
 }
 
@@ -283,49 +279,49 @@ Decimal& Decimal::operator=( Float const &f ) {
 ////////// arithmetic operators ///////////////////////////////////////////////
 
 Decimal operator+( Decimal const &d, Integer const &i ) {
-  return d.value_ + i.value_;
+  return d.value_ + i.itod();
 }
 
 Decimal operator-( Decimal const &d, Integer const &i ) {
-  return d.value_ - i.value_;
+  return d.value_ - i.itod();
 }
 
 Decimal operator*( Decimal const &d, Integer const &i ) {
-  return d.value_ * i.value_;
+  return d.value_ * i.itod();
 }
 
 Decimal operator/( Decimal const &d, Integer const &i ) {
-  return d.value_ / i.value_;
+  return d.value_ / i.itod();
 }
 
 Decimal operator%( Decimal const &d, Integer const &i ) {
-  return d.value_ % i.value_;
+  return d.value_ % i.itod();
 }
 
 ////////// relational operators ///////////////////////////////////////////////
 
 bool operator==( Decimal const &d, Integer const &i ) {
-  return d.value_ == i.value_;
+  return d.value_ == i.itod();
 }
 
 bool operator!=( Decimal const &d, Integer const &i ) {
-  return d.value_ != i.value_;
+  return d.value_ != i.itod();
 }
 
 bool operator<( Decimal const &d, Integer const &i ) {
-  return d.value_ < i.value_;
+  return d.value_ < i.itod();
 }
 
 bool operator<=( Decimal const &d, Integer const &i ) {
-  return d.value_ <= i.value_;
+  return d.value_ <= i.itod();
 }
 
 bool operator>( Decimal const &d, Integer const &i ) {
-  return d.value_ > i.value_;
+  return d.value_ > i.itod();
 }
 
 bool operator>=( Decimal const &d, Integer const &i ) {
-  return d.value_ >= i.value_;
+  return d.value_ >= i.itod();
 }
 
 ////////// math functions /////////////////////////////////////////////////////
@@ -334,8 +330,8 @@ Decimal Decimal::round() const {
   return round( Integer::zero() );
 }
 
-Decimal Decimal::round( Integer precision ) const {
-  return round( value_, precision.value_ );
+Decimal Decimal::round( Integer const &precision ) const {
+  return round( value_, precision.itod() );
 }
 
 Decimal::value_type Decimal::round( value_type const &v,
@@ -348,8 +344,8 @@ Decimal::value_type Decimal::round( value_type const &v,
   return result;
 }
 
-Decimal Decimal::roundHalfToEven( Integer precision ) const {
-  return roundHalfToEven( value_, precision.value_ );
+Decimal Decimal::roundHalfToEven( Integer const &precision ) const {
+  return roundHalfToEven( value_, precision.itod() );
 }
 
 Decimal::value_type Decimal::roundHalfToEven( value_type const &v,

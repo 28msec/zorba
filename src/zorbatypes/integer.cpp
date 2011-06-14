@@ -96,8 +96,11 @@ void Integer::parse( char const *s, bool allow_negative ) {
   const char *const dup_str = _strdup( s_ok );
   parsed_integers.insert( dup_str, hashed_integer );
 #endif /* ZORBA_NUMERIC_OPTIMIZATION */
+
+#ifndef ZORBA_NO_BIGNUMBERS
   if ( first_trailing_ws )
     delete[] s_ok;
+#endif /* ZORBA_NO_BIGNUMBERS */
 }
 
 void Integer::serialize( serialization::Archiver &ar ) {
@@ -178,49 +181,49 @@ Integer& Integer::operator=( Float const &f ) {
 ////////// arithmetic operators ///////////////////////////////////////////////
 
 Decimal operator+( Integer const &i, Decimal const &d ) {
-  return Decimal( i.value_ + d.value_ );
+  return i.itod() + d.value_;
 }
 
 Decimal operator-( Integer const &i, Decimal const &d ) {
-  return Decimal( i.value_ - d.value_ );
+  return i.itod() - d.value_;
 }
 
 Decimal operator*( Integer const &i, Decimal const &d ) {
-  return Decimal( i.value_ * d.value_ );
+  return i.itod() * d.value_;
 }
 
 Decimal operator/( Integer const &i, Decimal const &d ) {
-  return Decimal( (Integer::double_type)i.value_ / d.value_ );
+  return i.itod() / d.value_;
 }
 
 Decimal operator%( Integer const &i, Decimal const &d ) {
-  return Decimal( i.value_ % (Integer::value_type)d.value_ );
+  return i.itod() % d.value_;
 }
 
 ////////// relational operators ///////////////////////////////////////////////
 
 bool operator==( Integer const &i, Decimal const &d ) {
-  return i.value_ == d.value_;
+  return d.is_integer() && i.itod() == d.value_;
 }
 
 bool operator!=( Integer const &i, Decimal const &d ) {
-  return i.value_ != d.value_;
+  return i.itod() != d.value_;
 }
 
 bool operator<( Integer const &i, Decimal const &d ) {
-  return i.value_ < d.value_;
+  return i.itod() < d.value_;
 }
 
 bool operator<=( Integer const &i, Decimal const &d ) {
-  return i.value_ <= d.value_;
+  return i.itod() <= d.value_;
 }
 
 bool operator>( Integer const &i, Decimal const &d ) {
-  return i.value_ > d.value_;
+  return i.itod() > d.value_;
 }
 
 bool operator>=( Integer const &i, Decimal const &d ) {
-  return i.value_ >= d.value_;
+  return i.itod() >= d.value_;
 }
 
 ////////// math functions /////////////////////////////////////////////////////
@@ -247,20 +250,37 @@ Integer Integer::roundHalfToEven( Integer const &precision ) const {
 #else
 
 Double Integer::pow( Integer power ) const {
-  return Double( std::pow( value_, power.value_ ) );
+  return Double( ::pow( value_, power.value_ ) );
 }
 
 Integer Integer::round( Integer precision ) const {
-  return Integer( Decimal::round( value_, precision.value_ ) );
+  return Integer( Decimal::round( value_.itod() ), precision.itod() );
 }
 
 Integer Integer::roundHalfToEven( Integer precision ) const {
-  return Integer( Decimal::roundHalfToEven( value_, precision.value_ ) );
+  return Integer( Decimal::roundHalfToEven( value_.itod(), precision.itod() ) );
 }
 
 #endif /* ZORBA_NO_BIGNUMBERS */
 
 ////////// miscellaneous //////////////////////////////////////////////////////
+
+#ifdef ZORBA_NO_BIGNUMBERS
+Integer::value_type Integer::ftoi( MAPM const &d ) {
+  MAPM const temp( d.sign() >= 0 ? d.floor() : d.ceil() );
+  char *const buf = new char[ temp.exponent() + 3 ];
+  temp.toIntegerString( buf );
+  value_type const result( strtoll( buf, 0, 10 ) );
+  delete[] buf;
+  return result;
+}
+
+MAPM Integer::itod() const {
+  if ( is_xs_long() )
+    return static_cast<long>( value_ );
+  return NumConversions::longToStr( value_ ).c_str();
+}
+#endif /* ZORBA_NO_BIGNUMBERS */
 
 #ifndef ZORBA_NO_BIGNUMBERS
 uint32_t Integer::hash() const {
@@ -270,14 +290,14 @@ uint32_t Integer::hash() const {
 
 zstring Integer::toString() const {
 #ifndef ZORBA_NO_BIGNUMBERS
-  char *buf = new char[ value_.exponent() + 3 ];
+  char *const buf = new char[ value_.exponent() + 3 ];
   value_.toIntegerString( buf );
   zstring const s( buf );
   delete[] buf;
   return s;
 #else
   char buf[ 128 ];
-  sprintf( buf, "%d", value_ );
+  sprintf( buf, "%lld", value_ );
   return buf;
 #endif /* ZORBA_NO_BIGNUMBERS */
 }

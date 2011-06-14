@@ -569,8 +569,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const
   FloatImpl lFloatImpl;
   if (isFinite() && !isZero())
   {
-#ifndef ZORBA_NO_BIGNUMBERS
-    MAPM mapmval = Decimal::round(theFloating, aPrecision.value_);
+    MAPM mapmval = Decimal::round(theFloating, aPrecision.itod());
     if(IS_NEGATIVE(theFloating) && IS_ZERO(mapmval))
       lFloatImpl = neg_zero();
     else
@@ -579,9 +578,6 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const
       mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
       parseString(strval, lFloatImpl);
     }
-#else
-    lFloatImpl.theFloating = Decimal::round(theFloating, aPrecision.value_);
-#endif
   }
   else
   {
@@ -596,8 +592,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) c
   FloatImpl lFloatImpl;
   if (isFinite() && !isZero())
   {
-#ifndef ZORBA_NO_BIGNUMBERS
-    MAPM mapmval = Decimal::roundHalfToEven(theFloating, aPrecision.value_);
+    MAPM mapmval = Decimal::roundHalfToEven(theFloating, aPrecision.itod());
     if(IS_NEGATIVE(theFloating) && IS_ZERO(mapmval))
       lFloatImpl = neg_zero();
     else
@@ -606,9 +601,6 @@ FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) c
       mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
       parseString(strval, lFloatImpl);
     }
-#else
-    lFloatImpl.theFloating = Decimal::roundHalfToEven(theFloating, aPrecision.value_);
-#endif
   }
   else
   {

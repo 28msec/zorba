@@ -18,6 +18,7 @@
 #ifndef ZORBA_INTEGER_H
 #define ZORBA_INTEGER_H
 
+#include <cmath>
 #include <limits>
 
 #include <zorba/config.h>
@@ -43,8 +44,8 @@ public:
 
   ////////// constructors /////////////////////////////////////////////////////
 
-  Integer( char n );
-  Integer( signed char n );
+  Integer( char c );
+  Integer( signed char c );
   Integer( short n );
   Integer( int n = 0 );
   Integer( long n );
@@ -56,8 +57,8 @@ public:
   Integer( unsigned long long n );
   Integer( float n );
   Integer( double n );
-  Integer( Decimal const &n );
-  Integer( Integer const &n );
+  Integer( Decimal const &d );
+  Integer( Integer const &i );
 
   /**
    * Constructs an %Integer from a C string.
@@ -71,23 +72,23 @@ public:
   /**
    * Constructs an %Integer from a Double.
    *
-   * @param n The Double.
-   * @throw std::invalid_argument if \a n is not finite.
+   * @param d The Double.
+   * @throw std::invalid_argument if \a d is not finite.
    */
-  Integer( Double const &n );
+  Integer( Double const &d );
 
   /**
    * Constructs an %Integer from a Float.
    *
-   * @param n The Float.
-   * @throw std::invalid_argument if \a n is not finite.
+   * @param f The Float.
+   * @throw std::invalid_argument if \a f is not finite.
    */
-  Integer( Float const &n );
+  Integer( Float const &f );
 
   ////////// assignment operators /////////////////////////////////////////////
 
-  Integer& operator=( char n );
-  Integer& operator=( signed char n );
+  Integer& operator=( char c );
+  Integer& operator=( signed char c );
   Integer& operator=( short n );
   Integer& operator=( int n );
   Integer& operator=( long n );
@@ -102,7 +103,7 @@ public:
   Integer& operator=( char const *s );
   Integer& operator=( Decimal const &d );
   Integer& operator=( Double const &d );
-  Integer& operator=( Float const &d );
+  Integer& operator=( Float const &f );
   Integer& operator=( Integer const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
@@ -209,22 +210,35 @@ private:
   typedef double double_type;
   typedef double_type double_reference;
 #endif /* ZORBA_NO_BIGNUMBERS */
+
   value_type value_;
 
-  Integer( value_reference n ) : value_( n ) { }
+#ifndef ZORBA_NO_BIGNUMBERS
+  Integer( value_reference v ) : value_( v ) { }
+#endif /* ZORBA_NO_BIGNUMBERS */
 
   bool is_xs_int() const;
   bool is_xs_long() const;
   bool is_xs_uint() const;
   bool is_xs_ulong() const;
 
-  static value_type ftoi( double_reference d ) {
-#ifndef ZORBA_NO_BIGNUMBERS
-    return d.sign() >= 0 ? d.floor() : d.ceil();
-#else
-    return d;
-#endif /* ZORBA_NO_BIGNUMBERS */
+  static value_type ftoi( double d ) {
+    return d >= 0 ? floor( d ) : ceil( d );
   }
+
+#ifndef ZORBA_NO_BIGNUMBERS
+  static value_type ftoi( MAPM const &d ) {
+    return d.sign() >= 0 ? d.floor() : d.ceil();
+  }
+
+  MAPM const& itod() const {
+    return value_;
+  }
+#else
+  static value_type ftoi( MAPM const &d );
+
+  MAPM itod() const;
+#endif /* ZORBA_NO_BIGNUMBERS */
 
   void parse( char const *s, bool allow_negative = true );
 
@@ -239,10 +253,10 @@ private:
 
 ////////// constructors ///////////////////////////////////////////////////////
 
-inline Integer::Integer( char n ) : value_( static_cast<long>( n ) ) {
+inline Integer::Integer( char c ) : value_( static_cast<long>( c ) ) {
 }
 
-inline Integer::Integer( signed char n ) : value_( static_cast<long>( n ) ) {
+inline Integer::Integer( signed char c ) : value_( static_cast<long>( c ) ) {
 }
 
 inline Integer::Integer( short n ) : value_( static_cast<long>( n ) ) {
@@ -259,7 +273,7 @@ inline Integer::Integer( long long n ) : value_( n ) {
 }
 #endif /* ZORBA_NO_BIGNUMBERS */
 
-inline Integer::Integer( unsigned char n ) : value_( static_cast<long>( n ) ) {
+inline Integer::Integer( unsigned char c ) : value_( static_cast<long>( c ) ) {
 }
 
 inline Integer::Integer( unsigned short n ) : value_( static_cast<long>( n ) ) {
@@ -286,20 +300,20 @@ inline Integer::Integer( char const *s ) {
   parse( s );
 }
 
-inline Integer::Integer( Integer const &n ) :
-  serialization::SerializeBaseClass(), value_( n.value_ )
+inline Integer::Integer( Integer const &i ) :
+  serialization::SerializeBaseClass(), value_( i.value_ )
 {
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-inline Integer& Integer::operator=( char n ) {
-  value_ = static_cast<long>( n );
+inline Integer& Integer::operator=( char c ) {
+  value_ = static_cast<long>( c );
   return *this;
 }
 
-inline Integer& Integer::operator=( signed char n ) {
-  value_ = static_cast<long>( n );
+inline Integer& Integer::operator=( signed char c ) {
+  value_ = static_cast<long>( c );
   return *this;
 }
 
@@ -319,14 +333,14 @@ inline Integer& Integer::operator=( long n ) {
 }
 
 #ifdef ZORBA_NO_BIGNUMBERS
-inline Integer& operator=( long long n ) {
+inline Integer& Integer::operator=( long long n ) {
   value_ = n;
   return *this;
 }
 #endif /* ZORBA_NO_BIGNUMBERS */
 
-inline Integer& Integer::operator=( unsigned char n ) {
-  value_ = static_cast<long>( n );
+inline Integer& Integer::operator=( unsigned char c ) {
+  value_ = static_cast<long>( c );
   return *this;
 }
 
@@ -519,11 +533,11 @@ inline bool Integer::is_xs_long() const {
           value_ <= std::numeric_limits<int64_t>::max();
 }
 
-inline bool is_xs_uint() const {
+inline bool Integer::is_xs_uint() const {
   return value_ >= 0 && value_ <= std::numeric_limits<uint32_t>::max();
 }
 
-inline bool is_xs_ulong() const {
+inline bool Integer::is_xs_ulong() const {
   return value_ >= 0;
 }
 

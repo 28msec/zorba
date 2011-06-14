@@ -86,7 +86,7 @@ public:
   Decimal& operator=( int n );
   Decimal& operator=( long n );
   Decimal& operator=( long long n );
-  Decimal& operator=( unsigned char n );
+  Decimal& operator=( unsigned char c );
   Decimal& operator=( unsigned short n );
   Decimal& operator=( unsigned int n );
   Decimal& operator=( unsigned long n );
@@ -94,10 +94,10 @@ public:
   Decimal& operator=( float n );
   Decimal& operator=( double n );
   Decimal& operator=( char const *s );
-  Decimal& operator=( Decimal const& );
-  Decimal& operator=( Double const& );
-  Decimal& operator=( Float const& );
-  Decimal& operator=( Integer const& );
+  Decimal& operator=( Decimal const &d );
+  Decimal& operator=( Double const &d );
+  Decimal& operator=( Float const &f );
+  Decimal& operator=( Integer const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -163,8 +163,8 @@ public:
   Decimal ceil() const;
   Decimal floor() const;
   Decimal round() const;
-  Decimal round( Integer precision ) const;
-  Decimal roundHalfToEven( Integer precision ) const;
+  Decimal round( Integer const &precision ) const;
+  Decimal roundHalfToEven( Integer const &precision ) const;
   Decimal sqrt() const;
 
   ////////// miscellaneous ////////////////////////////////////////////////////
@@ -225,10 +225,10 @@ private:
 
 ////////// constructors ///////////////////////////////////////////////////////
 
-inline Decimal::Decimal( char n ) : value_( static_cast<long>( n ) ) {
+inline Decimal::Decimal( char c ) : value_( static_cast<long>( c ) ) {
 }
 
-inline Decimal::Decimal( signed char n ) : value_( static_cast<long>( n ) ) {
+inline Decimal::Decimal( signed char c ) : value_( static_cast<long>( c ) ) {
 }
 
 inline Decimal::Decimal( short n ) : value_( static_cast<long>( n ) ) {
@@ -240,7 +240,7 @@ inline Decimal::Decimal( int n ) : value_( static_cast<long>( n ) ) {
 inline Decimal::Decimal( long n ) : value_( n ) {
 }
 
-inline Decimal::Decimal( unsigned char n ) : value_( static_cast<long>( n ) ) {
+inline Decimal::Decimal( unsigned char c ) : value_( static_cast<long>( c ) ) {
 }
 
 inline Decimal::Decimal( unsigned short n ) : value_( static_cast<long>( n ) ) {
@@ -260,13 +260,13 @@ inline Decimal::Decimal( Decimal const &d ) :
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-inline Decimal& Decimal::operator=( char n ) {
-  value_ = static_cast<long>( n );
+inline Decimal& Decimal::operator=( char c ) {
+  value_ = static_cast<long>( c );
   return *this;
 }
 
-inline Decimal& Decimal::operator=( signed char n ) {
-  value_ = static_cast<long>( n );
+inline Decimal& Decimal::operator=( signed char c ) {
+  value_ = static_cast<long>( c );
   return *this;
 }
 
@@ -285,8 +285,8 @@ inline Decimal& Decimal::operator=( long n ) {
   return *this;
 }
 
-inline Decimal& Decimal::operator=( unsigned char n ) {
-  value_ = static_cast<long>( n );
+inline Decimal& Decimal::operator=( unsigned char c ) {
+  value_ = static_cast<long>( c );
   return *this;
 }
 
