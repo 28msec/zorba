@@ -26,6 +26,7 @@
 #include <zorba/error.h>
 #include <zorba/error_list.h>
 #include <zorba/sax2.h>
+#include <zorba/audit_scoped.h>
 
 #include <zorbatypes/URI.h>
 
@@ -43,6 +44,7 @@
 #include "api/serialization/serializable.h"
 #include "api/zorbaimpl.h"
 #include "api/serializerimpl.h"
+#include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
 
 #include "context/static_context.h"
@@ -574,10 +576,22 @@ void XQueryImpl::doCompile(
   // in the main module.
   ulong nextDynamicVarId = 2;
 
-  // let's compile
-  PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
+  {
+    audit::Event* ae = theStaticContext->get_audit_event();
+    zorba::audit::ScopedRecord sar(ae);
 
-  thePlanProxy = new PlanProxy(planRoot);
+    String s(theFileName.c_str());
+    zorba::audit::ScopedAuditor<String> filenameAudit(
+        sar, zorba::audit::XQUERY_COMPILATION_FILENAME, s);
+    zorba::time::Timer lTimer;
+    zorba::audit::ScopedTimeAuditor durationAudit(
+        sar, zorba::audit::XQUERY_COMPILATION_DURATION, lTimer);
+
+    // let's compile
+    PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
+
+    thePlanProxy = new PlanProxy(planRoot);
+  }
 }
 
 

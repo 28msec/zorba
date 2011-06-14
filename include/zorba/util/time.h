@@ -141,6 +141,11 @@ namespace zorba
 #endif
     }
 
+    static long get_walltime_in_millis(const walltime& t)
+    {
+      return t.tv_sec * 1000 + t.tv_nsec / 1000000;
+    }
+
 #elif defined(WIN32)
 
     // TODO: Should maybe use QueryPerformanceCounter() or
@@ -169,10 +174,16 @@ namespace zorba
       _ftime_s(&t);
 #endif
     }
+	
+    static long get_walltime_in_millis(const walltime& t)
+    {
+      return t.time * 1000 + t.millitm;
+    }
 
 #else /* not Windows, and no clock_gettime() */
 
 #include <time.h>
+#include <sys/time.h>
 
     typedef struct timeval walltime;
 
@@ -185,6 +196,11 @@ namespace zorba
     static void get_current_walltime (walltime& t)
     {
       gettimeofday(&t, NULL);
+    }
+	
+    static long get_walltime_in_millis(const walltime& t)
+    {
+      return t.tv_sec * 1000 + t.tv_usec / 1000;
     }
 
 #endif /* ZORBA_HAVE_CLOCKGETTIME_FUNCTION */

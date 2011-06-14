@@ -592,6 +592,22 @@ namespace zorba {
      virtual StaticCollectionManager*
      getStaticCollectionManager() const = 0;
 
+      /**
+        * @brief sets the audit event that will be populated during execution
+        *
+        * @param anEvent the audit event
+        */
+      virtual void
+      setAuditEvent(audit::Event* anEvent) = 0;
+
+      /**
+        * @brief gets the audit event that is populated during execution
+        *
+        * @return the audit event
+        */
+      virtual audit::Event*
+      getAuditEvent() = 0;
+
 };
 } /* namespace zorba */
 #endif

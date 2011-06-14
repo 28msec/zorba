@@ -56,6 +56,7 @@ SET(UNIT_TESTS_SRCS
   uri_file_decoding_test.cpp
   ext_in_opt.cpp
   collection.cpp
+  test_audit.cpp
   string_instantiate.cpp
   stemmer_provider.cpp
   streamable_string.cpp

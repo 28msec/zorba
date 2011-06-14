@@ -314,6 +314,13 @@ class ZORBA_DLL_PUBLIC Zorba
   virtual XmlDataManager*
   getXmlDataManager() = 0;
 
+  /** \brief Gets the singleton instance of Zorba's audit provider object.
+   *
+   * @return audit::Provider the singelton instance of Zorba's audit provider.
+   */
+  virtual audit::Provider*
+  getAuditProvider() = 0;
+
 }; /* class Zorba */
 
 

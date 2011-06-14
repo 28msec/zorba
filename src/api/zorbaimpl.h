@@ -130,6 +130,8 @@ public:
 
   XmlDataManager* getXmlDataManager();
 
+  audit::Provider* getAuditProvider();
+
 protected:
   ZorbaImpl();
 

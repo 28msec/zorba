@@ -299,6 +299,12 @@ public:
   virtual StaticCollectionManager*
   getStaticCollectionManager() const;
 
+  virtual void
+  setAuditEvent(audit::Event* anEvent);
+
+  virtual audit::Event*
+  getAuditEvent();
+
 protected:
   String
   createInvokeQuery(const Function_t&, size_t aArity) const;

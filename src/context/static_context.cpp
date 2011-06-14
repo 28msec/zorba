@@ -53,6 +53,8 @@
 #include "zorbatypes/URI.h"
 
 #include "api/unmarshaller.h"
+#include "api/auditimpl.h"
+
 #include "api/uri_resolver_wrappers.h"
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -453,6 +455,7 @@ static_context::static_context()
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+  theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -496,6 +499,7 @@ static_context::static_context(static_context* parent)
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+  theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -542,6 +546,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+  theAuditEvent(&zorba::audit::NOP_EVENT_IMPL),
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -3226,6 +3231,40 @@ bool static_context::lookup_option(
   }
 
   return false;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Auditing                                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_audit_event(audit::Event* ae)
+{
+  theAuditEvent = ae;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+audit::Event* static_context::get_audit_event()
+{
+  const static_context* sctx = this;
+  audit::Event* res = sctx->theAuditEvent;
+  while (res == &zorba::audit::NOP_EVENT_IMPL && sctx != NULL)
+  {
+    sctx = sctx->theParent;
+    if (sctx != NULL) {
+      res = sctx->theAuditEvent;
+    }
+  }
+  return res;
 }
 
 

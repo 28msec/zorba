@@ -73,5 +73,10 @@ namespace zorba {
   class FullTextURIResolver;
   class ModuleImportChecker;
 
+  namespace audit {
+    class Provider;
+    class Event;
+  }
+
 } /* namespace zorba */
 #endif

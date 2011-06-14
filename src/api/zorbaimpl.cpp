@@ -29,6 +29,7 @@
 #include "api/unmarshaller.h"
 #include "api/xmldatamanagerimpl.h"
 #include "api/vectoriterator.h"
+#include "api/auditimpl.h"
 
 #include "zorbautils/fatal.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -256,6 +257,15 @@ ItemFactory* ZorbaImpl::getItemFactory()
 XmlDataManager* ZorbaImpl::getXmlDataManager()
 {
   return &XmlDataManagerSingleton::Instance();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+audit::Provider* ZorbaImpl::getAuditProvider()
+{
+  return &audit::PROVIDER_IMPL;
 }
 
 

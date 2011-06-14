@@ -1580,5 +1580,17 @@ StaticContextImpl::getStaticCollectionManager() const
   return theCollectionMgr;
 }
 
+void
+StaticContextImpl::setAuditEvent(audit::Event* anEvent)
+{
+  theCtx->set_audit_event(anEvent);
+}
+
+audit::Event*
+StaticContextImpl::getAuditEvent()
+{
+  return theCtx->get_audit_event();
+}
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

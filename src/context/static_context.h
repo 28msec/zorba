@@ -543,6 +543,8 @@ protected:
 
   OptionMap                             * theOptionMap;
 
+  audit::Event                          * theAuditEvent;
+
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options                       * theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -910,6 +912,14 @@ public:
   void bind_option(const store::Item* qname, const zstring& option);
 
   bool lookup_option(const store::Item* qname, zstring& option) const;
+
+
+  //
+  // Auditing
+  //
+  void set_audit_event(audit::Event* ae);
+
+  audit::Event* get_audit_event();
 
 
   //
