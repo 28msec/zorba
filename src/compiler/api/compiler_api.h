@@ -21,6 +21,7 @@
 #include "zorbatypes/schema_types.h"
 
 #include "common/shared_types.h"
+#include <zorba/api_shared_types.h>
 
 namespace zorba {
 
@@ -63,7 +64,8 @@ public:
       const parsenode_t& ast,
       bool applyPUL,
       expr_t& rootExpr,
-      ulong& nextDynamicVarId);
+      ulong& nextDynamicVarId,
+      audit::ScopedRecord& aAuditRecord);
 
 protected:
   expr_t normalize(parsenode_t ast);

@@ -38,7 +38,16 @@ test_audit(int argc, char* argv[])
                                                           "xquery/compilation/filename");
   assert(lIsStatic);
   lIsStatic = zorba::audit::Configuration::enableProperty(config, property_names,
-                                                          "xquery/compilation/duration");
+                                                          "xquery/compilation/parse-duration");
+  assert(lIsStatic);
+  lIsStatic = zorba::audit::Configuration::enableProperty(config, property_names,
+                                                          "xquery/compilation/translation-duration");
+  assert(lIsStatic);
+  lIsStatic = zorba::audit::Configuration::enableProperty(config, property_names,
+                                                          "xquery/compilation/optimization-duration");
+  assert(lIsStatic);
+  lIsStatic = zorba::audit::Configuration::enableProperty(config, property_names,
+                                                          "xquery/compilation/codegeneration-duration");
   assert(lIsStatic);
 
   zorba::audit::Event* event = lAuditProvider->createEvent(config);
@@ -50,19 +59,19 @@ test_audit(int argc, char* argv[])
 
   Zorba_CompilerHints lHints;
   query->setFileName("test_audit");
-  query->compile("1+1", lStaticContext, lHints);
+  query->compile("import module namespace e = 'http://www.zorba-xquery.com/modules/reflection'; e:eval-simple('1+1')",  lStaticContext, lHints);
   Zorba_SerializerOptions lSerOptions;
   query->execute(std::cout, &lSerOptions);
 
-  if (event->size() != 1) { //one record
+  if (event->size() != 2) {
     return 1;
   } else {
+    // one record for the eval query and one for the main query
     const zorba::audit::Record* lRecord = event->at(0);
-    if (lRecord->size() != 2) {
-      return 2;
-    } else {
-      std::cerr << *event << std::endl;
-    }
+    assert(lRecord->size() == 5);
+    lRecord = event->at(1);
+    assert(lRecord->size() == 5);
+    std::cerr << *event << std::endl;
   }
 
 

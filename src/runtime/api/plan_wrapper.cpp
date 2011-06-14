@@ -23,6 +23,7 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/util/timeout.h"
+#include "system/properties.h"
 
 
 namespace zorba {
@@ -59,7 +60,8 @@ PlanWrapper::PlanWrapper(
   thePlanState = new PlanState(aDynamicContext,
                                aDynamicContext,
                                lStateSize,
-                               aStackDepth);
+                               aStackDepth,
+                               Properties::instance()->maxUdfCallDepth());
 
   // set the compiler cb in the state
   thePlanState->theCompilerCB = aCompilerCB;

@@ -135,7 +135,8 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
   thePlanState = new PlanState(planState.theGlobalDynCtx,
                                localDCtx,
                                thePlanStateSize,
-                               planState.theStackDepth + 1);
+                               planState.theStackDepth + 1,
+                               planState.theMaxStackDepth);
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -222,7 +223,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
     state->init(planState);
   }
 
-  if (planState.theStackDepth + 1 > 1024)
+  if (planState.theStackDepth + 1 > planState.theMaxStackDepth)
     throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
                            ERROR_PARAMS(ZED(StackOverflow)),
                            ERROR_LOC(loc));

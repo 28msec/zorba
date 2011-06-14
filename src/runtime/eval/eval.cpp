@@ -36,6 +36,8 @@
 
 #include "types/typeimpl.h"
 
+#include "api/auditimpl.h"
+
 
 namespace zorba {
 
@@ -345,32 +347,28 @@ PlanIter_t EvalIterator::compile(
            << "-" << loc.getLineBegin()
            << "-" << loc.getColumnBegin();
 
-  parsenode_t ast = compiler.parse(os, evalname.str());
+  audit::Event* ae = ccb->theRootSctx->get_audit_event();
+  zorba::audit::ScopedRecord sar(ae);
+
+  std::string lName = evalname.str();
+  zorba::audit::ScopedAuditor<std::string> filenameAudit(
+      sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lName);
+
+  parsenode_t ast;
+  {
+    zorba::time::Timer lTimer;
+    zorba::audit::ScopedTimeAuditor durationAudit(
+        sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+    ast = compiler.parse(os, lName);
+  }
 
   rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
   if (mm == NULL)
     throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
   expr_t rootExpr;
-  PlanIter_t rootIter = compiler.compile(ast, false, rootExpr, maxOuterVarId);
+  PlanIter_t rootIter = compiler.compile(ast, false, rootExpr, maxOuterVarId, sar);
 
-#if 0
-  if (theScriptingKind == SIMPLE_EXPR)
-  {
-    if (!rootExpr->is_simple())
-      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
-  }
-  else if (theScriptingKind == UPDATE_EXPR)
-  {
-    if (!rootExpr->is_updating())
-      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
-  }
-  else if (theScriptingKind == SEQUENTIAL_EXPR)
-  {
-    if (!rootExpr->is_sequential())
-      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
-  }
-#endif
   return rootIter;
 }
 

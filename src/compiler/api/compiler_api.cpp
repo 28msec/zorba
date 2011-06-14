@@ -61,6 +61,9 @@
 #include "util/xml_util.h"
 #include "zorbatypes/URI.h"
 
+#include "api/auditimpl.h"
+#include <zorba/util/timer.h>
+
 
 namespace zorba
 {
@@ -199,6 +202,17 @@ PlanIter_t XQueryCompiler::compile(
     const zstring& aFileName,
     ulong& nextDynamicVarId)
 {
+  audit::Event* ae = theCompilerCB->theRootSctx->get_audit_event();
+  zorba::audit::ScopedRecord sar(ae);
+
+  const char* lFileName = aFileName.c_str();
+  zorba::audit::ScopedAuditor<const char*> filenameAudit(
+      sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
+
+  zorba::time::Timer lTimer;
+  zorba::audit::ScopedTimeAuditor durationAudit(
+      sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
+
   parsenode_t lAST = parse(aXQuery, aFileName);
 
   if (theCompilerCB->theConfig.lib_module &&
@@ -207,7 +221,7 @@ PlanIter_t XQueryCompiler::compile(
 
   expr_t rootExpr;
 
-  return compile(lAST, true, rootExpr, nextDynamicVarId);
+  return compile(lAST, true, rootExpr, nextDynamicVarId, sar);
 }
 
 
@@ -218,19 +232,33 @@ PlanIter_t XQueryCompiler::compile(
     const parsenode_t& ast,
     bool applyPUL,
     expr_t& rootExpr,
-    ulong& nextDynamicVarId)
+    ulong& nextDynamicVarId,
+    audit::ScopedRecord& aAuditRecord)
 {
-  rootExpr = normalize(ast); // also does the translation
-  rootExpr = optimize(rootExpr);
+  {
+    zorba::time::Timer lTimer;
+    zorba::audit::ScopedTimeAuditor durationAudit(
+        aAuditRecord, zorba::audit::XQUERY_COMPILATION_TRANSLATION_DURATION, lTimer);
+    rootExpr = normalize(ast); // also does the translation
+  }
+  {
+    zorba::time::Timer lTimer;
+    zorba::audit::ScopedTimeAuditor durationAudit(
+        aAuditRecord, zorba::audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION, lTimer);
+    rootExpr = optimize(rootExpr);
+  }
 
 #if 0
   rootExpr = rootExpr->clone();
 #endif
 
-  PlanIter_t plan = codegen("main query",
-                            rootExpr,
-                            theCompilerCB,
-                            nextDynamicVarId);
+  PlanIter_t plan;
+  {
+    zorba::time::Timer lTimer;
+    zorba::audit::ScopedTimeAuditor durationAudit(
+        aAuditRecord, zorba::audit::XQUERY_COMPILATION_CODEGENERATION_DURATION, lTimer);
+    plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
+  }
 
   return plan;
 }

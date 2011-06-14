@@ -19,8 +19,10 @@
 #define ZORBA_API_AUDIT_IMPL_H
 
 #include <zorba/audit.h>
+#include <zorba/audit_scoped.h>
 #include <map>
 #include <set>
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 namespace audit {
@@ -73,7 +75,10 @@ namespace audit {
   };
 
   extern const PropertyImpl XQUERY_COMPILATION_FILENAME;
-  extern const PropertyImpl XQUERY_COMPILATION_DURATION;
+  extern const PropertyImpl XQUERY_COMPILATION_PARSE_DURATION;
+  extern const PropertyImpl XQUERY_COMPILATION_TRANSLATION_DURATION;
+  extern const PropertyImpl XQUERY_COMPILATION_OPTIMIZATION_DURATION;
+  extern const PropertyImpl XQUERY_COMPILATION_CODEGENERATION_DURATION;
 
   class ObservationImpl : public Observation {
   public:
@@ -203,6 +208,7 @@ namespace audit {
   };
 
   extern ProviderImpl PROVIDER_IMPL;
+
 }
 }
 

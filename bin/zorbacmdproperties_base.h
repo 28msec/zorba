@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* vim:set et sw=2 ts=2: */
 
 // ******************************************
 // *                                        *
@@ -51,7 +52,7 @@ protected:
   std::string theDefaultCollation;
   std::string theConstructionMode;
   std::string theOrderingMode;
-  int theMultiple;
+  unsigned long theMultiple;
   std::vector<std::string> theQueriesOrFiles;
   bool theAsFiles;
   std::vector<std::string> theExternalVariable;
@@ -114,7 +115,7 @@ public:
   const std::string &defaultCollation () const { return theDefaultCollation; }
   const std::string &constructionMode () const { return theConstructionMode; }
   const std::string &orderingMode () const { return theOrderingMode; }
-  const int &multiple () const { return theMultiple; }
+  const unsigned long &multiple () const { return theMultiple; }
   const std::vector<std::string> &query () const { return theQueriesOrFiles; }
   const bool &asFiles () const { return theAsFiles; }
   const std::vector<std::string> &externalVariable () const { return theExternalVariable; }

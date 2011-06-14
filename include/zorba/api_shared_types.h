@@ -76,6 +76,7 @@ namespace zorba {
   namespace audit {
     class Provider;
     class Event;
+    class ScopedRecord;
   }
 
 } /* namespace zorba */

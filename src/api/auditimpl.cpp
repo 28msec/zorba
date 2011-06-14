@@ -59,12 +59,23 @@ Property::~Property() {
 //************************************************************************
 
 const PropertyImpl INVALID("");
-const PropertyImpl XQUERY_COMPILATION_FILENAME(XQUERY_COMPILATION, "filename", 0, Property::STRING);
-const PropertyImpl XQUERY_COMPILATION_DURATION(XQUERY_COMPILATION, "duration", 1, Property::INT);
+const PropertyImpl XQUERY_COMPILATION_FILENAME(
+    XQUERY_COMPILATION, "filename", 0, Property::STRING);
+const PropertyImpl XQUERY_COMPILATION_PARSE_DURATION(
+    XQUERY_COMPILATION, "parse-duration", 1, Property::INT);
+const PropertyImpl XQUERY_COMPILATION_TRANSLATION_DURATION(
+    XQUERY_COMPILATION, "translation-duration", 2, Property::INT);
+const PropertyImpl XQUERY_COMPILATION_OPTIMIZATION_DURATION(
+    XQUERY_COMPILATION, "optimization-duration", 3, Property::INT);
+const PropertyImpl XQUERY_COMPILATION_CODEGENERATION_DURATION(
+    XQUERY_COMPILATION, "codegeneration-duration", 4, Property::INT);
 
 const PropertyImpl* PROPERTIES[] = {
   &XQUERY_COMPILATION_FILENAME,
-  &XQUERY_COMPILATION_DURATION,
+  &XQUERY_COMPILATION_PARSE_DURATION,
+  &XQUERY_COMPILATION_TRANSLATION_DURATION,
+  &XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+  &XQUERY_COMPILATION_CODEGENERATION_DURATION
 };
 
 PropertyImpl::PropertyImpl(const PropertyGroup& g, const char n[], long i, Type t)

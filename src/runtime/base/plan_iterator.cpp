@@ -52,10 +52,12 @@ PlanState::PlanState(
     dynamic_context* globalDctx,
     dynamic_context* localDctx,
     uint32_t blockSize,
-    uint32_t aStackDepth)
+    uint32_t aStackDepth,
+    uint32_t aMaxStackDepth)
   :
   theBlockSize(blockSize),
   theStackDepth(aStackDepth),
+  theMaxStackDepth(aMaxStackDepth),
   theCompilerCB(0),
   theQuery(0),
   theGlobalDynCtx(globalDctx),

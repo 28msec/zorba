@@ -107,6 +107,26 @@ namespace audit {
     }
   };
 
+  template<> struct AuditorTraits<std::string> {
+    typedef std::string value_type;
+    typedef std::string audit_type;
+    static inline void start(value_type& value) {
+    }
+    static inline audit_type end(value_type& value) {
+      return value;
+    }
+  };
+
+  template<> struct AuditorTraits<const char*> {
+    typedef const char* value_type;
+    typedef const char* audit_type;
+    static inline void start(value_type& value) {
+    }
+    static inline audit_type end(value_type& value) {
+      return value;
+    }
+  };
+
   template<> struct AuditorTraits< std::pair<std::streampos, std::istream*> > {
     typedef std::pair<std::streampos, std::istream*> value_type;
     typedef long long      audit_type;

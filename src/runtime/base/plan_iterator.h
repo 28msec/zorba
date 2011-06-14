@@ -123,6 +123,8 @@ public:
   uint32_t                  theBlockSize;
 
   uint32_t                  theStackDepth;
+
+  uint32_t                  theMaxStackDepth;
   
   // TODO this guy should become const because nothing can change anymore during
   // runtime. We need to make all accessor in the control block and static context
@@ -146,7 +148,8 @@ public:
       dynamic_context* globalDctx,
       dynamic_context* localDctx,
       uint32_t blockSize,
-      uint32_t aStackDepth = 0);
+      uint32_t aStackDepth = 0,
+      uint32_t aMaxStackDepth = 1024);
 
   ~PlanState();
 

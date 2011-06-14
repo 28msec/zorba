@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* vim:set et sw=2 ts=2: */
 
 // ******************************************
 // *                                        *
@@ -97,4 +98,3 @@ public:
 } }   // namespaces
 
 #endif // ZORBA_STORE_STOREPROPERTIES
-/* vim:set et sw=2 ts=2: */

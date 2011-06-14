@@ -576,22 +576,9 @@ void XQueryImpl::doCompile(
   // in the main module.
   ulong nextDynamicVarId = 2;
 
-  {
-    audit::Event* ae = theStaticContext->get_audit_event();
-    zorba::audit::ScopedRecord sar(ae);
+  PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
 
-    String s(theFileName.c_str());
-    zorba::audit::ScopedAuditor<String> filenameAudit(
-        sar, zorba::audit::XQUERY_COMPILATION_FILENAME, s);
-    zorba::time::Timer lTimer;
-    zorba::audit::ScopedTimeAuditor durationAudit(
-        sar, zorba::audit::XQUERY_COMPILATION_DURATION, lTimer);
-
-    // let's compile
-    PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
-
-    thePlanProxy = new PlanProxy(planRoot);
-  }
+  thePlanProxy = new PlanProxy(planRoot);
 }
 
 
