@@ -25,14 +25,6 @@
 #               (default "yes")
 
 
-# We'll need Subversion.
-find_program(SVN_EXECUTABLE svn
-  DOC "subversion command line client")
-if(NOT SVN_EXECUTABLE)
-  message (FATAL_ERROR "Subversion is required; not found")
-endif(NOT SVN_EXECUTABLE)
-set (svn "${SVN_EXECUTABLE}")
-
 # SVN path for submissions
 set (svn_path "http://zorbatest.lambda.nu:8080/svn/zorbatest/remotequeue")
 
@@ -57,10 +49,47 @@ if (NOT IS_DIRECTORY "${CMAKE_ZORBA_BUILD_DIR}")
   message (FATAL_ERROR "Build directory ${builddir} does not exist! Specify with -DZORBA_BUILD_DIR='build dir'")
 endif (NOT IS_DIRECTORY "${CMAKE_ZORBA_BUILD_DIR}")
 
-# Package up local changes
+# Load utilities lib and find all required executables
 include ("${cwd}/SvnPackage.cmake")
-svn_package ("${srcdir}" "${CMAKE_ZORBA_BUILD_DIR}/remotequeue"
-             "${changelist}" changefile)
+find_prereqs ()
+
+# Create a working directory named after the current time, to ensure
+# first-come, first-serve and prevent collisions
+execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+  --query "fn:adjust-dateTime-to-timezone(fn:current-dateTime(), xs:dayTimeDuration(\"PT0H\"))"
+  OUTPUT_VARIABLE datetime)
+string (REPLACE ":" "-" datetime "${datetime}")
+
+# Package up local changes for Zorba
+set (workdir "${CMAKE_ZORBA_BUILD_DIR}/remotequeue/changes-${datetime}")
+svn_package ("${srcdir}" "${workdir}" "${changelist}" "${workdir}/zorba.tgz")
+
+# Extract ZORBA_MODULE_DIR. This seems like a kludgy approach, but
+# unfortunately load_cache() can't be called in CMake scripts.
+set (cache_regex "^ZORBA_MODULES_DIR:PATH=(.*)$")
+file (STRINGS "${CMAKE_ZORBA_BUILD_DIR}/CMakeCache.txt" modules_dir_entry
+  REGEX "${cache_regex}" LIMIT_COUNT 1)
+if (modules_dir_entry MATCHES "${cache_regex}")
+  set (modules_dir "${CMAKE_MATCH_1}")
+endif (modules_dir_entry MATCHES "${cache_regex}")
+
+# Package up local changes for all modules.
+if (IS_DIRECTORY "${modules_dir}")
+  set (mod_count 1)
+  file (GLOB module_dirs "${modules_dir}/*")
+  foreach (module_dir ${module_dirs})
+    message (STATUS "Module ${mod_count}: ${module_dir}")
+    svn_package ("${module_dir}" "${workdir}" "${changelist}"
+      "${workdir}/module-${mod_count}.tgz")
+    math (EXPR mod_count "${mod_count} + 1")
+  endforeach (module_dir)
+endif (IS_DIRECTORY "${modules_dir}")
+
+# Wrap up all packaged changes into single submission file.
+set (changefile "${workdir}.tgz")
+execute_process (COMMAND "${CMAKE_COMMAND}" -E tar czf "${changefile}" "."
+  WORKING_DIRECTORY "${workdir}")
+file (REMOVE_RECURSE "${workdir}")
 
 # Testing option: Don't submit job at all if "packageonly" is set
 if (packageonly)

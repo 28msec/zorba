@@ -19,8 +19,7 @@
 
 MACRO (find_prereqs)
   # Definitely need svn here.
-  FIND_PROGRAM(SVN_EXECUTABLE svn
-  DOC "subversion command line client")
+  FIND_PROGRAM(SVN_EXECUTABLE svn DOC "subversion command line client")
   IF(NOT SVN_EXECUTABLE)
     message (FATAL_ERROR "Subversion is required; not found")
   ENDIF(NOT SVN_EXECUTABLE)
@@ -72,14 +71,17 @@ ENDMACRO (get_files_with_status)
 
 # Args:
 #   srcdir: root of local SVN working copy with changes to package
-#   outdir: directory to place resulting changes.tgz (will also hold temp files)
+#   tmpdir: directory to hold temp files
 #   changelist: svn changelist to package (may be "" to package all changes)
-#   resultfile: Variable to store resulting filename in
-macro (svn_package srcdir outdir changelist resultfile)
+#   resultfile: Full path to changes.tgz file to create
+#
+# Note that this function will NOT create any output file if there are no
+# svn changes in the given srcdir.
+macro (svn_package srcdir tmpdir changelist resultfile)
   find_prereqs ()
 
   # Start by making our working directory
-  set (chgdir "${outdir}/changes")
+  set (chgdir "${tmpdir}/changes")
   file (MAKE_DIRECTORY "${chgdir}")
 
   # Write out the "svn info" and "svn status" information
@@ -91,53 +93,57 @@ macro (svn_package srcdir outdir changelist resultfile)
   # Also save the named of the changelist for the remote queue to use
   file (WRITE "${chgdir}/changelist" "${changelist}")
 
-  # Pick out path names for added and modified files in the specified
-  # changelist, or from the default changelist (<target> element) if
-  # no changelist specified
-  get_files_with_status (copyfiles "${chgdir}/svn-status.xml" "${changelist}"
-                         added modified)
+  # Check to see whether there are any changes to package
+  get_files_with_status (chgfiles "${chgdir}/svn-status.xml" "${changelist}"
+    added modified deleted)
+  if (chgfiles)
+    # Pick out path names for added and modified files in the
+    # specified changelist, or from the default changelist (<target>
+    # element) if no changelist specified
+    get_files_with_status (copyfiles "${chgdir}/svn-status.xml" "${changelist}"
+      added modified)
 
-  # Copy each modified or added file to a corresponding place in the
-  # directory hierarchy of the changes directory. Skip directories.
-  file (MAKE_DIRECTORY "${chgdir}/files")
-  foreach (filepath ${copyfiles})
-    if (NOT IS_DIRECTORY "${filepath}")
-      message ("Copying ${filepath}..")
-      file (TO_CMAKE_PATH "${filepath}" filepath)
-      file (RELATIVE_PATH relpath "${srcdir}" "${filepath}")
-      get_filename_component (reldir "${relpath}" PATH)
-      file (MAKE_DIRECTORY "${chgdir}/files/${reldir}")
-      execute_process (COMMAND "${CMAKE_COMMAND}" -E copy
-                       "${filepath}" "${chgdir}/files/${reldir}")
-    endif (NOT IS_DIRECTORY "${filepath}")
-  endforeach (filepath)
+    # Copy each modified or added file to a corresponding place in the
+    # directory hierarchy of the changes directory. Skip directories.
+    file (MAKE_DIRECTORY "${chgdir}/files")
+    foreach (filepath ${copyfiles})
+      if (NOT IS_DIRECTORY "${filepath}")
+        message ("Copying ${filepath}..")
+        file (TO_CMAKE_PATH "${filepath}" filepath)
+        file (RELATIVE_PATH relpath "${srcdir}" "${filepath}")
+        get_filename_component (reldir "${relpath}" PATH)
+        file (MAKE_DIRECTORY "${chgdir}/files/${reldir}")
+        execute_process (COMMAND "${CMAKE_COMMAND}" -E copy
+          "${filepath}" "${chgdir}/files/${reldir}")
+      endif (NOT IS_DIRECTORY "${filepath}")
+    endforeach (filepath)
 
-  # Package up for delivery to remote queue - name the archive after
-  # the current time to ensure first-come, first-serve and prevent
-  # collisions
-  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
-                   --query "fn:adjust-dateTime-to-timezone(fn:current-dateTime(), xs:dayTimeDuration(\"PT0H\"))"
-                   OUTPUT_VARIABLE datetime)
-  string (REPLACE ":" "-" datetime "${datetime}")
-  set (changefile "changes-${datetime}.tgz")
-  execute_process (COMMAND "${CMAKE_COMMAND}" -E tar czf
-                   "${outdir}/${changefile}" "changes"
-                   WORKING_DIRECTORY "${outdir}")
-  set (${resultfile} "${changefile}")
+    # Package up changes/ directory
+    execute_process (COMMAND "${CMAKE_COMMAND}" -E tar czf
+      "${resultfile}" "changes"
+      WORKING_DIRECTORY "${tmpdir}")
+  endif (chgfiles)
   file (REMOVE_RECURSE "${chgdir}")
 endmacro (svn_package)
 
 
 # Args:
 #   changefile - a changes.tgz file from package_svn
-#   svndir - directory to check out SVN into and apply changes
+#   outdir - directory to check out SVN into and apply changes - see below
 #   tmpdir - directory to temporarily unpack changefile into
-#   svnlogfile - file to output SVN checkout messages into
-#   changeslogfile - file to output change-application log messages into
-#   result_var - if the variable named by "result" is non-zero or contains a
-#     message after svn_unpackage() returns, an error was encountered
-function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
-    result_var)
+#   logfile - file to append log messages into
+#   result_var - if the variable named by "result_var" is non-zero or contains
+#     a message after svn_unpackage() returns, an error was encountered
+#   resultdir_var - the variable named by "resultdir_var" will be set to
+#     the path the package was unpackaged into
+#
+# Regarding "outdir": svn_unpackage() will place the results into a
+# subdir of outdir. If there is already a subdir of outdir that is an
+# svn checkout of the same URL, it will unpackage into that
+# directory. Otherwise, it will create a new subdir with the basename
+# of "changefile" minus the .tgz extension.
+function (svn_unpackage changefile outdir tmpdir logfile result_var
+    resultdir_var)
   find_prereqs ()
 
   # Unpack changes.tgz into working dir
@@ -157,23 +163,60 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
     execute_process (COMMAND dos2unix -k "${textfile}")
   endforeach (textfile)
 
-  # Checkout/update svn from specified URL and rev
-  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
-                   --query "data(info/entry/url)"
-                   --context-item "${chgdir}/svn-info.xml"
-                   OUTPUT_VARIABLE svnroot)
+  # Determine SVN URL and revision
   execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "data(info/entry/@revision)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE svnrev)
+  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+                   --query "data(info/entry/url)"
+                   --context-item "${chgdir}/svn-info.xml"
+                   OUTPUT_VARIABLE svnroot)
+  # Special hack: Sourceforge has two URLs for everything, one http: and
+  # one https:. The remote queue checks out via http:, so we have to
+  # tweak the unpackaged URL here if it's https:.
+  if ("${svnroot}" MATCHES "^https:.*sourceforge.net")
+    string (REPLACE "https:" "http:" svnroot "${svnroot}")
+  endif ("${svnroot}" MATCHES "^https:.*sourceforge.net")
+  file (APPEND "${logfile}" "Checking out/updating from ${svnroot}...\n")
+
+  # Look through outdir for a subdir matching svnroot.
+  set (svndir)
+  file (GLOB subdirs "${outdir}/*")
+  foreach (subdir ${subdirs})
+    execute_process (COMMAND "${svn}" info --xml "${subdir}"
+      OUTPUT_FILE "${tmpdir}/tmpinfo.xml" ERROR_VARIABLE ignored
+      RESULT_VARIABLE result)
+    if (NOT result)
+      execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+        --query "data(info/entry/url)"
+        --context-item "${tmpdir}/tmpinfo.xml"
+        OUTPUT_VARIABLE subdir_svnroot)
+      file (REMOVE "${tmpdir}/tmpinfo.xml")
+      if (subdir_svnroot STREQUAL svnroot)
+        set (svndir "${subdir}")
+        break ()
+      endif (subdir_svnroot STREQUAL svnroot)
+    endif (NOT result)
+  endforeach (subdir)
+  if (NOT svndir)
+    # No matching URL found; use basename of input file
+    get_filename_component (basename "${changesfile}" NAME_WE)
+    set (svndir "${outdir}/${basename}")
+  endif (NOT svndir)
+  file (APPEND "${logfile}" "..outputting to ${svndir}\n")
+  set (${resultdir_var} "${svndir}" PARENT_SCOPE)
+
   execute_process (COMMAND "${svn}" checkout
                    -r "${svnrev}" "${svnroot}" "${svndir}"
-                   OUTPUT_FILE "${svnlogfile}" ERROR_FILE "${svnlogfile}")
+                   OUTPUT_VARIABLE svnlog ERROR_VARIABLE svnlog)
+  file (APPEND "${logfile}" ${svnlog})
 
   # Copy modified/added files on top of svn directory
-  file (WRITE "${changeslogfile}" "Copying added/modified files...\n")
+  file (APPEND "${logfile}" "Copying added/modified files...\n")
   execute_process (COMMAND "${CMAKE_COMMAND}" -E copy_directory
                    "${chgdir}/files" "${svndir}")
+  file (APPEND "${logfile}" "Done copying.\n")
 
   # Modified files are already all set. Process svn-status.xml to
   # delete any files which were deleted on client's svn, as named in
@@ -201,7 +244,7 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
     file (RELATIVE_PATH relpath "${clientroot}" "${filepath}")
     execute_process (COMMAND "${svn}" delete "${svndir}/${relpath}"
       OUTPUT_VARIABLE output ERROR_VARIABLE output RESULT_VARIABLE result)
-    file (APPEND "${changeslogfile}" "${output}")
+    file (APPEND "${logfile}" "${output}")
     if (result)
       set (${result_var} ${result} PARENT_SCOPE)
       return ()
@@ -218,7 +261,7 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
   foreach (filepath ${addfiles})
     execute_process (COMMAND "${svn}" add "${filepath}"
       OUTPUT_VARIABLE output ERROR_VARIABLE output RESULT_VARIABLE result)
-    file (APPEND "${changeslogfile}" "${output}")
+    file (APPEND "${logfile}" "${output}")
     if (result)
       set (${result_var} ${result} PARENT_SCOPE)
       return ()
