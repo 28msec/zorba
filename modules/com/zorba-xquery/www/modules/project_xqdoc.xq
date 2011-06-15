@@ -76,6 +76,8 @@ declare %sequential function pxqdoc:generate-xqdoc-XML(
   (: make sure all the passed paths point to existing folders :)
   variable $lPaths := tokenize($modulesPath, ";");
   variable $lModulePaths as xs:string* := distinct-values(for $lPath in $lPaths return if (file:is-directory($lPath)) then $lPath else () );
+  variable $test_queries as xs:string := fn:concat(file:directory-separator(), "Queries", file:directory-separator());
+  variable $src_dir as xs:string := fn:concat("/", "src");
 
   for $filedirs in $lModulePaths
   for $file in file:list($filedirs, fn:true(), "*.xq")
@@ -97,7 +99,7 @@ declare %sequential function pxqdoc:generate-xqdoc-XML(
       dml:apply-insert-nodes(xs:QName("pxqdoc:mappings"), 
           <module modulePath="{$filePath}" 
                   moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
-                  examplePath="{fn:substring-before($filedirs,'src')}"
+                  examplePath="{fn:substring-before($filePath,$src_dir)}"
           />);
     }
   }

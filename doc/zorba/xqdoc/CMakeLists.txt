@@ -16,16 +16,17 @@ IF(NOT ZORBA_WITH_FILE_ACCESS)
   MESSAGE(WARNING "Can not build XQDoc documentation because 'File' module is not present")
 ELSE(NOT ZORBA_WITH_FILE_ACCESS)
 
+  SET(MODULES_PATHS ${CMAKE_SOURCE_DIR}/modules ${ZORBA_EXTERNAL_MODULES_SRCS})
   # Add the xqdoc command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(xqdoc
     ${ZORBA_EXE_SCRIPT}
       --omit-xml-declaration
       -f
       -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq\""
-      -e "\"modulePaths:=${CMAKE_SOURCE_DIR}/modules\""
+      -e "\"modulePaths:=${MODULES_PATHS}\""
       -e "\"xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}\""
       -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
-      -e "\"examplePath:=${CMAKE_SOURCE_DIR}/test\""
+      -e "\"examplePath:=${CMAKE_SOURCE_DIR}\""
       -e "\"zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}\""
       --module-path "\"${CMAKE_CURRENT_SOURCE_DIR}/src\""
       COMMENT "Building XQDoc documentation for the modules..."
@@ -37,10 +38,10 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
       --omit-xml-declaration
       -f
       -q "${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq"
-      -e "modulePaths:=${CMAKE_SOURCE_DIR}/modules"
+      -e "modulePaths:=${MODULES_PATHS}"
       -e "xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}"
       -e "xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}"
-      -e "examplePath:=${CMAKE_SOURCE_DIR}/test"
+      -e "examplePath:=${CMAKE_SOURCE_DIR}"
       -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
       --module-path "${CMAKE_CURRENT_SOURCE_DIR}/src")
   

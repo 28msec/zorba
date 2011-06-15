@@ -58,7 +58,9 @@ FOREACH (module_dir ${module_dirs})
   CREATE_MODULE_CONFIG(${module_project} "${ZORBA_MODULES_DIR}/${module_dir}"
     "${module_builddir}")
   LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
+  SET(ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} ${ZORBA_MODULES_DIR}/${module_dir}/src)
 ENDFOREACH (module_dir)
+SET(ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} PARENT_SCOPE)
 
 # Each of these projects will also want to be able to
 # FIND_PACKAGE(Zorba), so add our own build dir to the CMake module

@@ -22,5 +22,6 @@ fn:concat($xhtmlRequisitesPath, "/templates/main.html");
 x2h:main( $modulePaths,
           $xqdocBuildPath,
           $indexHtmlPath,
+          $examplePath,
           $zorbaVersion,
           $xhtmlRequisitesPath);

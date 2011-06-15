@@ -437,6 +437,8 @@ $xqdocXmlPath as xs:string)
  : @param $modulePath where to search for .xq modules recursively.
  : @param $xqdocBuildPath where to output the XQDoc XMLs and XHTMLs.
  : @param $indexHtmlPath where to load the template for the index.html.
+ : @param $zorbaPath path to zorba dir, usefull to compute absolute path of examples 
+ :        from internal modules
  : @param $zorbaVersion Zorba version.
  : @return Empty sequence.
  :)
@@ -444,6 +446,7 @@ declare %sequential function xqdoc2html:main(
   $modulePath     as xs:string , 
   $xqdocBuildPath as xs:string,
   $indexHtmlPath  as xs:string,
+  $zorbaPath      as xs:string,
   $zorbaVersion   as xs:string,
   $xhtmlRequisitesPath as xs:string)  
 {
@@ -468,7 +471,7 @@ declare %sequential function xqdoc2html:main(
   (: test if it's better to create the node once and copy it after raplacing the value we need :)
   (:variable $generalLeftMenu := xqdoc2html:create-general-menu(); :)
                                           
-  xqdoc2html:generate-xqdoc-xhtml((:$generalLeftMenu, :) $xhtmlRequisitesPath, $xqdocXhtmlPath); 
+  xqdoc2html:generate-xqdoc-xhtml((:$generalLeftMenu, :) $xhtmlRequisitesPath, $xqdocXhtmlPath, $zorbaPath); 
 
   variable $generalLeftMenu := xqdoc2html:create-general-menu($xqdoc2html:functionIndexPageName);
   variable $functionIndex := 
@@ -527,12 +530,15 @@ declare %private function xqdoc2html:get-examples-path(
  :
  : @param $xhtmlRequisitesPath location of the XHTML prerequisites.
  : @param $xqdocXhtmlPath where to generate the XQDoc XHTML documents.
+ : @param $zorbaPath path to zorba source dir
  : @return A string sequence with a status message for each processed module.
  :)
 declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
   (:$generalLeftMenu, :)
   $xhtmlRequisitesPath  as xs:string,
-  $xqdocXhtmlPath       as xs:string) as xs:string*
+  $xqdocXhtmlPath       as xs:string,
+  $zorbaPath            as xs:string
+  ) as xs:string*
 {  
   variable $modulePath  := fn:concat($xqdocXhtmlPath, file:directory-separator(), $xqdoc2html:moduleFolderName); 
   variable $extFuncPath := fn:concat($xqdocXhtmlPath, file:directory-separator(), $xqdoc2html:xqFolderName);
@@ -568,7 +574,10 @@ declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
     else
     {      
       (: replace the inlined examples with actual XQuery code :)
-      variable $examplesPath := xqdoc2html:get-examples-path(fn:trace(fn:data($moduleUri),"module URI"));
+      variable $examplesPath := xqdoc2html:get-examples-path(fn:data($moduleUri));
+      if($examplesPath eq "") then
+        $examplesPath := $zorbaPath;
+      else ();
       variable $xqdoc2 := xqdoc2html:configure-xml($docNode/xqdoc:xqdoc, $examplesPath, $xqdocXhtmlPath);
       
       (: copy the examples listed in the .xq file into the xhtml/examples folder :)
@@ -654,11 +663,12 @@ declare %sequential function xqdoc2html:copy-examples(
     else ();
     for $example in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:comment/xqdoc:custom[@tag="example"]
     let $exampleText := xqdoc2html:get-example-filename($example/text())
-    let $exampleDestination := fn:concat($examplesFolderDestination, file:directory-separator(), $exampleText)
+    let $exampleDestination := fn:concat($examplesFolderDestination, "/", $exampleText)
     return 
     {
-      variable $exampleSource := fn:concat($examplePath,file:directory-separator(),fn:replace($example/text(),"/",file:directory-separator()));
-      if(not(file:is-file($exampleSource))) then ()
+      variable $exampleSource := fn:concat($examplePath, "/", $example/text());
+      if(not(file:is-file($exampleSource))) then
+        fn:error($err:UE009, fn:concat("Copy example from <", $exampleSource,"> to <", $exampleDestination, "> failed."))
       else
       try {         
         xqdoc2html:copy-example($exampleSource, $exampleDestination, $examplePath)
