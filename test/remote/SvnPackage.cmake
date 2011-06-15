@@ -28,11 +28,7 @@ MACRO (find_prereqs)
 
   # create path to execute zorba
   IF (WIN32)
-    IF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
-      SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
-    ELSE(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
-      SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/zorba.exe")
-    ENDIF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
+    SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
   ELSE (WIN32)
     SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/bin/zorba")
   ENDIF (WIN32)

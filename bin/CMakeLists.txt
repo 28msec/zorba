@@ -34,9 +34,6 @@ IF(UNIX)
   ADD_DEPENDENCIES(zorbacmd_man zorbacmd)
 ENDIF(UNIX)
 
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaAddTest.cmake)
-
-
 # test the basic features of the command line tool
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba1 zorbacmd --omit-xml-declaration -q "1+1")
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba1 PASS_REGULAR_EXPRESSION "2")
