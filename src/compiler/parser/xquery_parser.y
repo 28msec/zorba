@@ -209,6 +209,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> QNAME_SVAL                    "'QName'"
 %token <sval> EQNAME_SVAL                   "'EQName'"
 %token <sval> ANNOTATION_QNAME_SVAL         "'%QName'"
+%token <sval> ANNOTATION_EQNAME_SVAL        "'%EQName'"
 
 %token <sval> QUOTE_ATTR_CONTENT            "'quote attribute content'"
 %token <sval> STRING_LITERAL                "'STRING'"
@@ -1748,6 +1749,18 @@ Annotation :
     {
       $$ = new AnnotationParsenode(LOC(@$),
                                    new QName(LOC(@$), SYMTAB($1)),
+                                   static_cast<AnnotationLiteralListParsenode*>($3));
+    }
+  |
+    ANNOTATION_EQNAME_SVAL
+    {
+      $$ = new AnnotationParsenode(LOC(@$), new QName(LOC(@$), SYMTAB($1), true), NULL);
+    }
+  |
+    ANNOTATION_EQNAME_SVAL LPAR AnnotationLiteralList RPAR
+    {
+      $$ = new AnnotationParsenode(LOC(@$),
+                                   new QName(LOC(@$), SYMTAB($1), true),
                                    static_cast<AnnotationLiteralListParsenode*>($3));
     }
 ;

@@ -284,7 +284,9 @@ QName       ({NCName}":")?{NCName}
    |
    |  Annotation QName definition
    |______________________________________________________________________*/
-AnnotationQName "%"({NCName}":")?{NCName}
+AnnotationQName  "%"({NCName}":")?{NCName}
+
+AnnotationEQName "%"{StringLiteral}":"{NCName}
 
   /*_____________________________________________________________________
    |
@@ -706,6 +708,8 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 {QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 
 {AnnotationQName}             { TRY_SVAL_TOKEN(ANNOTATION_QNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
+
+{AnnotationEQName}            { TRY_SVAL_TOKEN(ANNOTATION_EQNAME_SVAL, put_qname(yytext, yyleng), yytext); /* skip the % sign */ }
 
 "*:"{NCName}                  { TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext); }
 
