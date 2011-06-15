@@ -29,7 +29,7 @@
 %error-verbose
 
 // Expect shift/reduce conflicts
-// %expect 434
+%expect 63
 
 
 %code requires {
@@ -1061,13 +1061,13 @@ ModuleWithoutBOM :
       $$ = $2;
       driver.set_expr( $$ );
     }
-  | 
+  |
     LibraryModule
     {
       $$ = $1;
       driver.set_expr( $$ );
     }
-  | 
+  |
     VersionDecl LibraryModule
     {
       LibraryModule* lm = dynamic_cast<LibraryModule*>($2);
@@ -1083,7 +1083,7 @@ VersionDecl :
     {
       $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8" );
     }
-  | 
+  |
     XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
     {
       $$ = new VersionDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
@@ -1121,7 +1121,7 @@ MainModule :
     }
 
   //  ============================ Improved error messages ============================
-  | 
+  |
     SIND_DeclList ERROR QueryBody
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
@@ -1129,7 +1129,7 @@ MainModule :
       error(@1, "syntax error, missing semicolon \";\" after statement.");
       YYERROR;
     }
-  | 
+  |
     VFO_DeclList ERROR QueryBody
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
@@ -1161,21 +1161,21 @@ LibraryModule :
     {
       $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), NULL);
     }
-  | 
+  |
     ModuleDecl SIND_DeclList SEMI
     {
       Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), NULL);
 
       $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
     }
-  | 
+  |
     ModuleDecl VFO_DeclList SEMI
     {
       Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($2));
 
       $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
     }
-  | 
+  |
     ModuleDecl SIND_DeclList SEMI VFO_DeclList SEMI
     {
       Prolog* prolog = new Prolog(LOC(@$),
@@ -1204,14 +1204,14 @@ SIND_DeclList :
       sdl->push_back( $1 );
       $$ = sdl;
     }
-  | 
+  |
     SIND_DeclList SEMI SIND_Decl
     {
       ((SIND_DeclList*)$1)->push_back( $3 );
       $$ = $1;
     }
   //  ============================ Improved error messages ============================
-  | 
+  |
     SIND_DeclList ERROR SIND_Decl
     {
       // error
@@ -1251,7 +1251,7 @@ BoundarySpaceDecl :
     {
       $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::preserve_space);
     }
-  | 
+  |
     DECLARE BOUNDARY_SPACE STRIP
     {
       $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::strip_space);
@@ -1280,7 +1280,7 @@ ConstructionDecl :
     {
       $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_preserve);
     }
-  | 
+  |
     DECLARE CONSTRUCTION STRIP
     {
       $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_strip);
@@ -2239,7 +2239,7 @@ QueryBody :
         error(@1, "syntax error, unexpected end of file, the query should not be empty");
         YYERROR;
       }
-      
+
       if (dynamic_cast<BlockBody*>($1) != NULL)
       {
         BlockBody* blk = static_cast<BlockBody*>($1);
@@ -2391,18 +2391,32 @@ BlockVarDeclList :
       vdecl->add($3);
       $$ = vdecl;
     }
-  | 
+  |
     VARIABLE BlockVarDecl
     {
-      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$));
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), NULL);
       vdecl->add($2);
       $$ = vdecl;
     }
-  | 
+  |
     LOCAL VARIABLE BlockVarDecl
     {
-      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$));
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), NULL);
       vdecl->add($3);
+      $$ = vdecl;
+    }
+  |
+    AnnotationList VARIABLE BlockVarDecl
+    {
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), static_cast<AnnotationListParsenode*>($1));
+      vdecl->add($3);
+      $$ = vdecl;
+    }
+  |
+    LOCAL AnnotationList VARIABLE BlockVarDecl
+    {
+      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), static_cast<AnnotationListParsenode*>($2));
+      vdecl->add($4);
       $$ = vdecl;
     }
   ;
@@ -2601,13 +2615,13 @@ CatchStatement :
        $$ = new CatchExpr(LOC(@$), *$2, NULL, NULL, NULL, $3);
        delete $2;
     }
-  | 
+  |
     CATCH NameTestList LPAR DOLLAR QNAME RPAR BlockStatement
     {
       $$ = new CatchExpr(LOC(@$),*$2, static_cast<QName*>($5), NULL, NULL, $7);
        delete $2;
     }
-  | 
+  |
     CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
     {
        $$ = new CatchExpr(LOC(@$),
@@ -2618,7 +2632,7 @@ CatchStatement :
                           $10);
        delete $2;
     }
-  | 
+  |
     CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
     {
        $$ = new CatchExpr(LOC (@$),
@@ -2642,7 +2656,7 @@ Expr :
     Expr COMMA ExprSingle
     {
       Expr* expr = dynamic_cast<Expr*>($1);
-      if ( !expr ) 
+      if ( !expr )
       {
         expr = new Expr( LOC(@$) );
         expr->push_back( $1 );
@@ -2902,7 +2916,7 @@ VarInDecl :
     }
   | QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), 
+      $$ = new VarInDecl(LOC(@$),
                          static_cast<QName*>($1),
                          dynamic_cast<SequenceType *>($2),
                          dynamic_cast<PositionalVar*>($3),

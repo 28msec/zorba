@@ -57,17 +57,17 @@ bool ZorbaImpl::ctrl_c_signaled = false;
 
 BOOL WINAPI CtrlCHandlerRoutine(__in  DWORD dwCtrlType)
 {
-switch( dwCtrlType ) 
-  { 
-    case CTRL_LOGOFF_EVENT: 
+switch( dwCtrlType )
+  {
+    case CTRL_LOGOFF_EVENT:
       break;
-    case CTRL_C_EVENT: 
-    case CTRL_CLOSE_EVENT: 
-    case CTRL_BREAK_EVENT: 
-    case CTRL_SHUTDOWN_EVENT: 
-    default: 
+    case CTRL_C_EVENT:
+    case CTRL_CLOSE_EVENT:
+    case CTRL_BREAK_EVENT:
+    case CTRL_SHUTDOWN_EVENT:
+    default:
       ZorbaImpl::ctrl_c_signaled = true;
-  } 
+  }
   return FALSE;
 }
 #endif
@@ -108,7 +108,7 @@ void ZorbaImpl::init(store::Store* store)
 
 /*******************************************************************************
   Implements Zorba::shutdown in the API.
- 
+
   The function is either called explicitly by the user or implicitly at
   destruction of the singleton instance. The "soft" param differentiates
   between these 2 cases: if "true", then it's a user-requested shutdown,
@@ -279,11 +279,14 @@ void ZorbaImpl::notifyError( DiagnosticHandler *eh, char const *what ) {
   );
 }
 
-
 void ZorbaImpl::notifyError( DiagnosticHandler *eh ) {
   eh->error( ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR ) );
 }
 
+void ZorbaImpl::notifyWarning(DiagnosticHandler* dh, XQueryWarning const& xqw)
+{
+  dh->warning(xqw);
+}
 
 void ZorbaImpl::checkItem(const store::Item_t& aItem)
 {

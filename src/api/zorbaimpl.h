@@ -71,6 +71,8 @@ public:
 
   static void notifyError(DiagnosticHandler*);
 
+  static void notifyWarning(DiagnosticHandler*, XQueryWarning const&);
+
   static void checkItem(const store::Item_t& aItem);
 
  public:

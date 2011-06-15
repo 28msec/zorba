@@ -182,7 +182,7 @@ extern entry const dict_en[] = {
   { "XQST0090", "\"$1\": invalid character reference in XML $2" },
   { "XQST0093", "\"$1\": module must not depend on itself" },
   { "XQST0098", "properties representing characters used in picture string do not have distinct values" },
-  { "XQST0106", "\"$1\": multiple function annotations with a conflicting or the same name" },
+  { "XQST0106", "multiple annotations with the same or conflicting names" },
   { "XQST0111", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
   { "XQTY0030", "validate argument must be exactly one document or element node" },

@@ -1077,7 +1077,7 @@ StaticContextImpl::disableFunction(const Item& aQName, int arity)
 
 void
 StaticContextImpl::getFunctionAnnotations(
-    const Item& aQName, 
+    const Item& aQName,
     int arity,
     std::vector<Annotation_t>& aAnnotations) const
 {
@@ -1229,14 +1229,14 @@ void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
 
 void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 {
-  try 
+  try
   {
     std::vector<zstring> lModulePaths;
 
     theCtx->get_module_paths(lModulePaths);
 
     for (std::vector<zstring>::const_iterator lIter = lModulePaths.begin();
-         lIter != lModulePaths.end(); ++lIter) 
+         lIter != lModulePaths.end(); ++lIter)
     {
       aModulePaths.push_back(lIter->c_str());
     }
@@ -1251,7 +1251,7 @@ void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 void
 StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) const
 {
-  try 
+  try
   {
     std::vector<zstring> lFullModulePaths;
 
@@ -1263,7 +1263,7 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
       aFullModulePaths.push_back(lIter->c_str());
     }
   }
-  catch (ZorbaException const& e) 
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
   }
@@ -1274,12 +1274,12 @@ String
 StaticContextImpl::resolve(const String& aRelativeUri) const
 {
   zstring lResolved;
-  try 
+  try
   {
     const zstring& lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
     lResolved = theCtx->resolve_relative_uri(lRelativeUri, true);
   }
-  catch (ZorbaException const& e) 
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
     return "";
@@ -1292,7 +1292,7 @@ String
 StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) const
 {
   zstring lResolved;
-  try 
+  try
   {
     const zstring& lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
     const zstring& lBaseUri = Unmarshaller::getInternalString(aBaseUri);
@@ -1327,25 +1327,25 @@ StaticContextImpl::validate(
     Item& validatedResult,
     validation_mode_t validationMode)
 {
-  try 
+  try
   {
     StaticContextConsts::validation_mode_t valMode;
-    
+
     switch( validationMode)
     {
       case validate_lax:
         valMode = StaticContextConsts::lax_validation;
-        break;        
+        break;
       case validate_skip:
         valMode = StaticContextConsts::skip_validation;
-        break;        
+        break;
       case validate_strict:
       default:
         valMode = StaticContextConsts::strict_validation;
-        break;        
+        break;
     }
-    
-    return theCtx->validate(Unmarshaller::getInternalItem(rootElement), 
+
+    return theCtx->validate(Unmarshaller::getInternalItem(rootElement),
                             Unmarshaller::getInternalItem(validatedResult),
                             valMode);
   }
@@ -1357,36 +1357,36 @@ StaticContextImpl::validate(
 }
 
 
-bool 
+bool
 StaticContextImpl::validate(
     const Item& rootElement,
-    Item& validatedResult, 
+    Item& validatedResult,
     const String& targetNamespace,
     validation_mode_t validationMode)
 {
-  try 
+  try
   {
     StaticContextConsts::validation_mode_t valMode;
-    
+
     switch( validationMode)
     {
       case validate_lax:
         valMode = StaticContextConsts::lax_validation;
-        break;        
+        break;
       case validate_skip:
         valMode = StaticContextConsts::skip_validation;
-        break;        
+        break;
       case validate_strict:
       default:
         valMode = StaticContextConsts::strict_validation;
-        break;        
+        break;
     }
-    
+
     zstring lTns = Unmarshaller::getInternalString(targetNamespace);
-    return theCtx->validate(Unmarshaller::getInternalItem(rootElement), 
+    return theCtx->validate(Unmarshaller::getInternalItem(rootElement),
                             Unmarshaller::getInternalItem(validatedResult),
                             lTns,
-                            valMode);  
+                            valMode);
   }
   catch (ZorbaException const& e)
   {
@@ -1396,30 +1396,30 @@ StaticContextImpl::validate(
 }
 
 
-bool 
+bool
 StaticContextImpl::validateSimpleContent(
     const String& stringValue,
-    const Item& typeQName, 
+    const Item& typeQName,
     std::vector<Item>& resultList)
 {
   try {
     bool res;
     std::vector<store::Item_t> tmpResList;
     zstring lTextValue = Unmarshaller::getInternalString(stringValue);
-    
+
     res = theCtx->validateSimpleContent(lTextValue,
                                         Unmarshaller::getInternalItem(typeQName),
                                         tmpResList);
-    
+
     if (!res)
       return false;
-      
+
     for(std::vector<Item>::size_type i = 0; i < tmpResList.size(); ++i)
     {
       store::Item_t item = tmpResList[i];
       resultList.push_back(Item(item));
     }
-    
+
     return true;
   }
   catch (ZorbaException const& e)
@@ -1451,17 +1451,17 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
   {
     lOut << "declare variable $arg" << i << " external;" << std::endl;
   }
- 
+
   // body
 
   // call updating, sequential, or simple invoke function
   lOut << "ref:invoke-";
-    
+
   if (aFunc->isUpdating())
     lOut << "updating";
   else if (aFunc->isSequential())
     lOut << "sequential";
-  else 
+  else
     lOut << "simple";
 
   // args
@@ -1591,6 +1591,51 @@ StaticContextImpl::getAuditEvent()
 {
   return theCtx->get_audit_event();
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+void StaticContextImpl::disableWarning(const Item& qname)
+{
+  store::Item* lQName = Unmarshaller::getInternalItem(qname);
+  theCtx->disableWarning(lQName);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void StaticContextImpl::disableAllWarnings()
+{
+  theCtx->disableAllWarnings();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void StaticContextImpl::setWarningAsError(const Item& qname)
+{
+  store::Item* lQName = Unmarshaller::getInternalItem(qname);
+  theCtx->setWarningAsError(lQName);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticContextImpl::isWarningDisabled(const Item& qname)
+{
+  store::Item* lQName = Unmarshaller::getInternalItem(qname);
+  return theCtx->isWarningDisabled(lQName->getNamespace().c_str(), lQName->getLocalName().c_str());
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticContextImpl::isWarningAnError(const Item& qname)
+{
+  store::Item* lQName = Unmarshaller::getInternalItem(qname);
+  return theCtx->isWarningAnError(lQName->getNamespace().c_str(), lQName->getLocalName().c_str());
+}
+
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

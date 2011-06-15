@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -84,7 +84,7 @@ populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
     const ZorbaCMDProperties& aProperties)
 {
-  try 
+  try
   {
     // add the following module path to the static context (in this order)
     // 1. command-line properties
@@ -100,18 +100,18 @@ populateStaticContext(
     if (aProperties.boundarySpace().size() != 0 )
       aStaticContext->setBoundarySpacePolicy(
                          (aProperties.boundarySpace().compare("preserve") == 0
-                          ? preserve_space 
+                          ? preserve_space
                           : strip_space));
 
     if (aProperties.constructionMode().size() != 0)
       aStaticContext->setConstructionMode( aProperties.boundarySpace().compare("preserve") == 0
-                                           ? preserve_cons 
+                                           ? preserve_cons
                                            : strip_cons );
 
     if (aProperties.orderingMode().size() != 0 )
     {
       aStaticContext->setOrderingMode( aProperties.boundarySpace().compare("ordered") == 0
-                                       ? ordered 
+                                       ? ordered
                                        : unordered );
     }
 
@@ -180,7 +180,7 @@ populateDynamicContext(
 {
   if ( aProperties.contextItem().size() != 0 ) {
     std::ifstream* lInStream = new std::ifstream(aProperties.contextItem().c_str());
-    aDynamicContext->setContextItemAsDocument(aProperties.contextItem(), 
+    aDynamicContext->setContextItemAsDocument(aProperties.contextItem(),
       std::auto_ptr<std::istream>(lInStream));
   }
 
@@ -192,13 +192,13 @@ populateDynamicContext(
   {
     try
     {
-      if ((*lIter).inline_file) 
+      if ((*lIter).inline_file)
       {
         std::ifstream* lInStream = new std::ifstream((*lIter).var_value.c_str());
-        aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value, 
+        aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value,
           std::auto_ptr<std::istream>(lInStream));
       }
-      else 
+      else
       {
         zorba::Item lItem = zorba->getItemFactory()->createString((*lIter).var_value);
         aDynamicContext->setVariable((*lIter).var_name, lItem);
@@ -224,18 +224,18 @@ createSerializerOptions(
 {
   if ( aProperties.indent() )
     lSerOptions.indent = ZORBA_INDENT_YES;
-  
+
   if ( aProperties.omitXmlDeclaration() )
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-  
+
   if ( aProperties.byteOrderMark() )
     lSerOptions.byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
-  
+
   if ( aProperties.serializeHtml() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
   else if ( aProperties.serializeText() )
     lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
-  
+
   return true;
 }
 
@@ -244,7 +244,7 @@ createSerializerOptions(
 /// or if not requested, infers -f for file:// queries.
 /// Returns an URI or the empty string.
 std::string
-parseFileURI (bool asPath, const std::string &str) 
+parseFileURI (bool asPath, const std::string &str)
 {
   if (asPath)
     return str;
@@ -296,7 +296,7 @@ parseFileURI (bool asPath, const std::string &str)
 #define START_TIMER(kind)                             \
   zorbatm::get_current_walltime(start##kind##Walltime);   \
   zorbatm::get_current_cputime(start##kind##Cputime);
-  
+
 #define STOP_TIMER(kind)                                                \
   zorbatm::get_current_walltime(stop##kind##Walltime);                      \
   elapsed##kind##Walltime += zorbatm::get_walltime_elapsed(start##kind##Walltime, \
@@ -319,7 +319,7 @@ struct TimingInfo
     UNLOAD_TIMER,
     TOTAL_TIMER
   } TimerKind;
-    
+
   unsigned long numExecs;
 
   DECLARE_TIMER(Init);
@@ -333,18 +333,18 @@ struct TimingInfo
   TimingInfo(unsigned long num)
     :
     numExecs(num),
-    elapsedInitWalltime(0), 
-    elapsedInitCputime(0), 
-    elapsedDeinitWalltime(0), 
-    elapsedDeinitCputime(0), 
-    elapsedCompWalltime(0), 
-    elapsedCompCputime(0), 
-    elapsedExecWalltime(0), 
-    elapsedExecCputime(0), 
-    elapsedLoadWalltime(0), 
-    elapsedLoadCputime(0), 
-    elapsedUnloadWalltime(0), 
-    elapsedUnloadCputime(0), 
+    elapsedInitWalltime(0),
+    elapsedInitCputime(0),
+    elapsedDeinitWalltime(0),
+    elapsedDeinitCputime(0),
+    elapsedCompWalltime(0),
+    elapsedCompCputime(0),
+    elapsedExecWalltime(0),
+    elapsedExecCputime(0),
+    elapsedLoadWalltime(0),
+    elapsedLoadCputime(0),
+    elapsedUnloadWalltime(0),
+    elapsedUnloadCputime(0),
     elapsedTotalWalltime(0),
     elapsedTotalCputime(0)
   {
@@ -400,32 +400,32 @@ TimingInfo::stopTimer(TimerKind kind, unsigned long iteration)
 
   switch (kind)
   {
-  case INIT_TIMER: 
+  case INIT_TIMER:
   {
     STOP_TIMER(Init);
     break;
   }
-  case DEINIT_TIMER: 
+  case DEINIT_TIMER:
   {
     STOP_TIMER(Deinit);
     break;
   }
-  case TOTAL_TIMER: 
+  case TOTAL_TIMER:
   {
     STOP_TIMER(Total);
     break;
   }
-  case COMP_TIMER: 
+  case COMP_TIMER:
   {
     STOP_TIMER(Comp);
     break;
   }
-  case EXEC_TIMER: 
+  case EXEC_TIMER:
   {
     STOP_TIMER(Exec);
     break;
   }
-  case UNLOAD_TIMER: 
+  case UNLOAD_TIMER:
   {
     STOP_TIMER(Unload);
     break;
@@ -437,7 +437,7 @@ TimingInfo::stopTimer(TimerKind kind, unsigned long iteration)
 std::ostream&
 TimingInfo::print(std::ostream& os)
 {
-  os.precision(3); 
+  os.precision(3);
   os.setf(std::ios::fixed);
 
   os << "\nNumber of executions = " << numExecs << std::endl;
@@ -448,13 +448,13 @@ TimingInfo::print(std::ostream& os)
   double lWalltime = elapsedLoadWalltime / timeDiv;
   double uWalltime = elapsedUnloadWalltime / timeDiv;
   double tWalltime = elapsedTotalWalltime / timeDiv;
-  
+
   double cCputime = elapsedCompCputime / timeDiv;
   double eCputime = elapsedExecCputime / timeDiv;
   double lCputime = elapsedLoadCputime / timeDiv;
   double uCputime = elapsedUnloadCputime / timeDiv;
   double tCputime = elapsedTotalCputime / timeDiv;
-  
+
   os << "Engine Startup Time     : " << elapsedInitWalltime
      << " (user: " << elapsedInitCputime << ")"
      << " milliseconds" << std::endl;
@@ -462,11 +462,11 @@ TimingInfo::print(std::ostream& os)
   os << "Average Compilation Time: " << cWalltime
      << " (user: " << cCputime << ")"
      << " milliseconds" << std::endl;
-  
+
   os << "Average Execution Time  : " << eWalltime - lWalltime
      << " (user: " << eCputime - lCputime  << ")"
      << " milliseconds" << std::endl;
-    
+
   os << "Average Loading Time    : " << lWalltime
      << " (user: " << lCputime << ")"
      << " milliseconds" << std::endl;
@@ -484,12 +484,12 @@ TimingInfo::print(std::ostream& os)
 
 
 void
-removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties) 
+removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
 {
-  if (lProperties.outputFile().size() > 0) 
+  if (lProperties.outputFile().size() > 0)
   {
     File_t lFile = zorba::File::createFile(lProperties.outputFile());
-    if (lFile->exists()) 
+    if (lFile->exists())
     {
       lFile->remove();
     }
@@ -521,7 +521,7 @@ compileAndExecute(
   }
 
   // default is false
-  if (properties.libModule()) 
+  if (properties.libModule())
   {
     lHints.lib_module = true;
   }
@@ -530,18 +530,19 @@ compileAndExecute(
   createSerializerOptions(lSerOptions, properties);
 
   zorba::XQuery_t query;
+  DiagnosticHandler diagnosticHandler;
 
-  for (unsigned long i = 0; i < lNumExecutions; ++i) 
+  for (unsigned long i = 0; i < lNumExecutions; ++i)
   {
     // Perform compilation and create dynamic context only once, unless timing is needed
-    if (doTiming || i == 0) 
+    if (doTiming || i == 0)
     {
       // go back to the beginning of the stream
       qfile.clear();
       qfile.seekg(0);
       assert (qfile.tellg() >= 0);
 
-      if (doTiming) 
+      if (doTiming)
       {
         // start the total timer
         timing.startTimer(TimingInfo::TOTAL_TIMER, i);
@@ -550,35 +551,38 @@ compileAndExecute(
       //
       // Compile the query
       //
-      try 
+      try
       {
-        if (doTiming) 
+        if (doTiming)
         {
           // start the compilation timer
           timing.startTimer(TimingInfo::COMP_TIMER, i);
         }
 
         query = zorbaInstance->createQuery();
+        query->registerDiagnosticHandler(&diagnosticHandler);
         query->setFileName(qfilepath);
 
         query->compile(qfile, staticContext, lHints);
 
-        if (doTiming) 
+        if (doTiming)
         {
           // stop the compilation timer
           timing.stopTimer(TimingInfo::COMP_TIMER, i);
         }
       }
-      catch (zorba::XQueryException const& qe) 
+      catch (zorba::XQueryException const& qe)
       {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
         return 11;
       }
-      catch (zorba::ZorbaException const& ze) 
+      catch (zorba::ZorbaException const& ze)
       {
         std::cerr << ze << std::endl;
         return 12;
       }
+
+      // if (diagnosticHandler.
 
       //
       // Create and populate the dynamic context
@@ -602,17 +606,17 @@ compileAndExecute(
         std::cerr << ze << std::endl;
         return 23;
       }
-    } // if (doTiming || i == 0) 
+    } // if (doTiming || i == 0)
 
     // libModule assumes compileOnly even if compileOnly is false
-    if ( ! properties.compileOnly() && ! properties.libModule() ) 
+    if ( ! properties.compileOnly() && ! properties.libModule() )
     {
       //
       // Run the query
       //
-      try 
+      try
       {
-        if (doTiming) 
+        if (doTiming)
         {
           // start the execution timer
           timing.startTimer(TimingInfo::EXEC_TIMER, i);
@@ -700,7 +704,7 @@ _tmain(int argc, _TCHAR* argv[])
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
-  if (!lProperties.loadProperties(argc, argv)) 
+  if (!lProperties.loadProperties(argc, argv))
   {
     return 1;
   }
@@ -718,10 +722,10 @@ _tmain(int argc, _TCHAR* argv[])
 
   // write to file or standard out
   std::auto_ptr<std::ostream> lFileStream(lProperties.outputFile().size() > 0 ?
-                                           new std::ofstream(lProperties.outputFile().c_str()) 
+                                           new std::ofstream(lProperties.outputFile().c_str())
                                           : 0 );
   std::ostream* lOutputStream = lFileStream.get();
-  if ( lOutputStream == 0 ) 
+  if ( lOutputStream == 0 )
   {
     lOutputStream = &std::cout;
   }
@@ -732,7 +736,7 @@ _tmain(int argc, _TCHAR* argv[])
     return 2;
   }
 
-  if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd()) 
+  if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd())
   {
     std::cerr << "no queries submitted." << std::endl;
     lProperties.printHelp(std::cout);
@@ -767,8 +771,8 @@ _tmain(int argc, _TCHAR* argv[])
     zorba::filesystem_path path (fname);
     bool asFile = ! fname.empty ();
     std::auto_ptr<std::istream> qfile;
-    
-    if (asFile) 
+
+    if (asFile)
     {
       path.resolve_relative ();
       qfile.reset (new std::ifstream (path.c_str ()));
@@ -777,8 +781,8 @@ _tmain(int argc, _TCHAR* argv[])
     {
       qfile.reset (new std::istringstream(fURI));
     }
-    
-    if ( asFile && (!qfile->good() || qfile->eof()) ) 
+
+    if ( asFile && (!qfile->good() || qfile->eof()) )
     {
       std::cerr << "file {" << fname << "} not found or not readable." << std::endl;
       lProperties.printHelp(std::cout);
@@ -808,13 +812,13 @@ _tmain(int argc, _TCHAR* argv[])
     // Create the static context and populate it with info taken from the properties
     //
     zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
-    if (! populateStaticContext(lStaticContext, lProperties) ) 
+    if (! populateStaticContext(lStaticContext, lProperties) )
     {
       lProperties.printHelp(std::cout);
       return 3;
     }
 
-    if (!asFile && lProperties.baseUri().size() == 0 ) 
+    if (!asFile && lProperties.baseUri().size() == 0 )
     {
       // No user set base URI. Set the cwd to be used as base-uri in order
       // to make the doc function doc("mydoc.xml") work
@@ -825,7 +829,7 @@ _tmain(int argc, _TCHAR* argv[])
 
       lTmp << "file:///";
       for (std::vector<std::string>::const_iterator lIter = lTokens.begin();
-           lIter != lTokens.end(); ++lIter) 
+           lIter != lTokens.end(); ++lIter)
       {
         zorba::String lTmpString(*lIter);
         lTmp << '/' << fn::encode_for_uri( lTmpString );
@@ -868,7 +872,7 @@ _tmain(int argc, _TCHAR* argv[])
           ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
-      } 
+      }
 
       int status = compileAndExecute(lZorbaInstance,
                                      lProperties,
@@ -906,7 +910,7 @@ _tmain(int argc, _TCHAR* argv[])
 
       std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
       std::string lFileName(path.get_path());
-      
+
       zorba::XQuery_t lQuery;
 
       try {
@@ -932,20 +936,20 @@ _tmain(int argc, _TCHAR* argv[])
                     << std::endl;
           return 10;
         }
-        
+
         std::string lHost = lProperties.debugServerHost();
         if (lHost == "") {
           lHost = "127.0.0.1";
         }
 
         if (lProperties.debugServer() || lProperties.debug()) {
-          Zorba_SerializerOptions lSerOptions = 
+          Zorba_SerializerOptions lSerOptions =
               Zorba_SerializerOptions::SerializerOptionsFromStringParams(
               lProperties.getSerializerParameters());
           createSerializerOptions(lSerOptions, lProperties);
           lServer.reset(new zorba::DebuggerServerRunnable(
                             lQuery,
-                            *lOutputStream,                                                          
+                            *lOutputStream,
                             lHost,
                             lProperties.getEventPort(),
                             lSerOptions));
@@ -954,12 +958,12 @@ _tmain(int argc, _TCHAR* argv[])
           }
           lServer->start();
         }
-                
+
         if (lProperties.debug()) {
           if (!lProperties.hasNoLogo() ) {
             std::cout << "Zorba XQuery Debugger\n" << copyright_str << std::endl;
           }
-          
+
           // Try to connect 3 times on the server thread
           //for (unsigned int i = 0; i < 3; i++) {
           //  try {
@@ -982,7 +986,7 @@ _tmain(int argc, _TCHAR* argv[])
 //        lClient.reset(0);
         lHandler.reset(0);
 
-        if (lProperties.debugServer() || lProperties.debug()) 
+        if (lProperties.debugServer() || lProperties.debug())
         {
           lServer->join();
           lServer.reset(0);
@@ -994,12 +998,12 @@ _tmain(int argc, _TCHAR* argv[])
         ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
         return 5;
       }
-      catch (zorba::ZorbaException const& ze) 
+      catch (zorba::ZorbaException const& ze)
       {
         std::cerr << ze << std::endl;
         return 6;
       }
-    } // else if (debug) 
+    } // else if (debug)
 #endif
 
   } // for each query

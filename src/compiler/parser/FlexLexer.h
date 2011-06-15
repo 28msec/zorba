@@ -43,7 +43,6 @@
 //	#define yyFlexLexer zzFlexLexer
 //	#include <FlexLexer.h>
 //	...
-#pragma once
 
 #ifndef __FLEX_LEXER_H
 // Never included before - need to define base class.
@@ -205,4 +204,3 @@ protected:
 
 #endif // yyFlexLexer || ! yyFlexLexerOnce
 
-/* vim:set et sw=2 ts=2: */

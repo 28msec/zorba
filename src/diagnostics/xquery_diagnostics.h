@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ public:
   XQueryDiagnostics();
   ~XQueryDiagnostics();
 
-  ////////// Errors /////////////////////////////////////////////////////////// 
+  ////////// Errors ///////////////////////////////////////////////////////////
 
   /**
    * Adds an exception to the list of exceptions.
@@ -90,7 +90,7 @@ public:
     return errors_;
   }
 
-  ////////// Warnings ///////////////////////////////////////////////////////// 
+  ////////// Warnings /////////////////////////////////////////////////////////
 
   /**
    * Adds a warning to the list of warnings.
@@ -109,6 +109,15 @@ public:
    */
   warnings_type const& warnings() const {
     return warnings_;
+  }
+
+  /**
+   * Clears the list of warnings. This method is called after the warnings have been
+   * notified to the diagnostics handler so that they are not reported multiple times.
+   *
+   */
+  void clear_warnings() {
+    warnings_.clear();
   }
 
 private:

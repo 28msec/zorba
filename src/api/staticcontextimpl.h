@@ -281,15 +281,15 @@ public:
   virtual bool
   validate(const Item& rootElement, Item& validatedResult,
            validation_mode_t validationMode = validate_strict);
-  
-  virtual bool 
-  validate(const Item& rootElement, Item& validatedResult, 
+
+  virtual bool
+  validate(const Item& rootElement, Item& validatedResult,
            const String& targetNamespace,
            validation_mode_t validationMode = validate_strict);
-  
-  virtual bool 
+
+  virtual bool
   validateSimpleContent(const String& stringValue,
-          const Item& typeQName, 
+          const Item& typeQName,
           std::vector<Item>& resultList);
 
   ItemSequence_t
@@ -304,6 +304,20 @@ public:
 
   virtual audit::Event*
   getAuditEvent();
+
+  //
+  // Warnings
+  //
+  virtual void disableWarning(const Item& qname);
+
+  virtual void disableAllWarnings();
+
+  virtual void setWarningAsError(const Item& qname);
+
+  virtual bool isWarningDisabled(const Item& qname);
+
+  virtual bool isWarningAnError(const Item& qname);
+
 
 protected:
   String

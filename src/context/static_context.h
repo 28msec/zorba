@@ -571,6 +571,12 @@ protected:
 
   std::vector<ModuleImportChecker*>          theModuleImportCheckers;
 
+  std::vector<store::Item_t>                 theDisabledWarnings;
+
+  bool                                       theAllWarningsDisabled;
+
+  std::vector<store::Item_t>                 theWarningsAreErrors;
+
 public:
   static bool is_builtin_module(const zstring& ns);
 
@@ -723,19 +729,19 @@ public:
   // Validating Items
   //
   bool validate(
-        store::Item* rootElement, 
+        store::Item* rootElement,
         store::Item* validatedResult,
         StaticContextConsts::validation_mode_t validationMode = StaticContextConsts::strict_validation);
 
   bool validate(
         store::Item* rootElement,
-        store::Item* validatedResult, 
+        store::Item* validatedResult,
         const zstring& targetNamespace,
         StaticContextConsts::validation_mode_t validationMode = StaticContextConsts::strict_validation);
 
   bool validateSimpleContent(
-        zstring& textValue, 
-        store::Item* typeQName, 
+        zstring& textValue,
+        store::Item* typeQName,
         std::vector<store::Item_t>& resultList);
 
   //
@@ -981,6 +987,20 @@ public:
   // Merge in the static context of a module
   //
   void import_module (const static_context* module, const QueryLoc& loc);
+
+  //
+  // Warnings
+  //
+  void disableWarning(store::Item_t qname);
+
+  void disableAllWarnings();
+
+  void setWarningAsError(store::Item_t qname);
+
+  bool isWarningDisabled(const char* ns, const char* localname);
+
+  bool isWarningAnError(const char* ns, const char* localname);
+
 
 protected:
   static_context();

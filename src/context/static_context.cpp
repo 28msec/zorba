@@ -468,7 +468,8 @@ static_context::static_context()
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL)
+  theDecimalFormats(NULL),
+  theAllWarningsDisabled(false)
 {
 }
 
@@ -512,7 +513,8 @@ static_context::static_context(static_context* parent)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL)
+  theDecimalFormats(NULL),
+  theAllWarningsDisabled(false)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
@@ -559,7 +561,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL)
+  theDecimalFormats(NULL),
+  theAllWarningsDisabled(false)
 {
 }
 
@@ -903,6 +906,12 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(StaticContextConsts::validation_mode_t, theValidationMode);
 
   ar & theDecimalFormats;
+
+  ar & theDisabledWarnings;
+
+  ar & theAllWarningsDisabled;
+
+  ar & theWarningsAreErrors;
 }
 
 
@@ -2043,7 +2052,8 @@ void static_context::getVariables(
         const var_expr* lExpr = ite.getValue();
 
         // only locals or globals according to the aLocals parameter
-        if ((!aLocals && lExpr->get_kind() == var_expr::prolog_var) ||
+        if ((!aLocals && lExpr->get_kind() == var_expr::prolog_var)
+              ||
             (aLocals && lExpr->get_kind() != var_expr::prolog_var))
         {
           std::stringstream lTypeSs;
@@ -3102,7 +3112,7 @@ XQPCollator* static_context::get_collator(
     sctx = sctx->theParent;
   }
 
-  throw XQUERY_EXCEPTION(err::FOCH0002, 
+  throw XQUERY_EXCEPTION(err::FOCH0002,
                          ERROR_PARAMS(uri, ZED(NotInStaticCtx)),
                          ERROR_LOC(loc));
 }
@@ -3611,6 +3621,71 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
   }
 
   return (theParent == NULL ? NULL : theParent->get_decimal_format(qname));
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Warnings                                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::disableWarning(store::Item_t qname)
+{
+  for (unsigned int i=0; i<theDisabledWarnings.size(); i++)
+    if (qname->equals(theDisabledWarnings[i]))
+      return;
+
+  theDisabledWarnings.push_back(qname);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::disableAllWarnings()
+{
+  theAllWarningsDisabled = true;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::setWarningAsError(store::Item_t qname)
+{
+  for (unsigned int i=0; i<theWarningsAreErrors.size(); i++)
+    if (theWarningsAreErrors[i] )
+      return;
+
+  theWarningsAreErrors.push_back(qname);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool static_context::isWarningDisabled(const char* ns, const char* localname)
+{
+  if (theAllWarningsDisabled)
+    return true;
+
+  for (unsigned int i=0; i<theDisabledWarnings.size(); i++)
+    if (theDisabledWarnings[i]->getNamespace() == ns && theDisabledWarnings[i]->getLocalName() == localname)
+      return true;
+
+  return (theParent == NULL ? false : theParent->isWarningDisabled(ns, localname));
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool static_context::isWarningAnError(const char* ns, const char* localname)
+{
+  for (unsigned int i=0; i<theWarningsAreErrors.size(); i++)
+    if (theWarningsAreErrors[i]->getNamespace() == ns && theWarningsAreErrors[i]->getLocalName() == localname)
+      return true;
+
+  return (theParent == NULL ? false : theParent->isWarningAnError(ns, localname));
 }
 
 

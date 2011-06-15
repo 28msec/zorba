@@ -724,21 +724,6 @@ VarDecl::VarDecl(
   theIsGlobal(global),
   theAnnotations(annotations)
 {
-#if 0
-  if (annotations != NULL)
-  {
-    annotations->validate();
-
-    for (ulong i = 0; i < annotations->size(); ++i)
-    {
-      if ((*annotations)[i]->get_qname()->get_qname() == "private")
-        theIsPrivate = true;
-
-      else if ((*annotations)[i]->get_qname()->get_qname() == "assignable")
-        theIsMutable = true;
-    }
-  }
-#endif
 }
 
 
@@ -1292,7 +1277,7 @@ void BlockBody::accept(parsenode_visitor& v) const
 }
 
 
-void BlockBody::add(parsenode* statement) 
+void BlockBody::add(parsenode* statement)
 {
   if (dynamic_cast<VarDeclStmt*>(statement) != NULL)
   {
@@ -1309,7 +1294,7 @@ void BlockBody::add(parsenode* statement)
   }
   else
   {
-    theStatements.push_back(statement); 
+    theStatements.push_back(statement);
   }
 }
 
@@ -1317,6 +1302,24 @@ void BlockBody::add(parsenode* statement)
 /*******************************************************************************
 
 ********************************************************************************/
+VarDeclStmt::VarDeclStmt(const QueryLoc& loc, AnnotationListParsenode* annotations)
+  :
+  exprnode(loc),
+  theAnnotations(annotations)
+{
+}
+
+void VarDeclStmt::add(parsenode* decl)
+{
+  VarDecl* varDecl = dynamic_cast<VarDecl*>(decl);
+  if (varDecl != NULL)
+  {
+    varDecl->set_annotations(theAnnotations);
+  }
+
+  theDecls.push_back(decl);
+}
+
 void VarDeclStmt::accept(parsenode_visitor& v) const
 {
   assert(false);

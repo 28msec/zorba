@@ -1013,6 +1013,8 @@ public:
 
   void set_global(bool global) { theIsGlobal = global; }
 
+  void set_annotations(rchandle<AnnotationListParsenode> annotations) { theAnnotations = annotations; }
+
   AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
   void accept(parsenode_visitor&) const;
@@ -1681,7 +1683,7 @@ public:
 
 
 /*******************************************************************************
-  QueryBody ::= 
+  QueryBody ::=
 ********************************************************************************/
 class QueryBody : public exprnode
 {
@@ -1739,15 +1741,12 @@ class VarDeclStmt : public exprnode
 {
 protected:
   std::vector<rchandle<parsenode> > theDecls;
+  rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
-  VarDeclStmt(const QueryLoc& loc)
-    :
-    exprnode(loc)
-  {
-  }
+  VarDeclStmt(const QueryLoc& loc, AnnotationListParsenode* annotations);
 
-  void add(parsenode* decl) { theDecls.push_back(decl); }
+  void add(parsenode* decl);
 
   ulong size() const { return (ulong)theDecls.size(); }
 
@@ -1828,7 +1827,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class WhileExpr : public exprnode 
+class WhileExpr : public exprnode
 {
   rchandle<exprnode> cond;
   rchandle<BlockBody> body;
@@ -1853,7 +1852,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class FlowCtlStatement : public exprnode 
+class FlowCtlStatement : public exprnode
 {
 public:
   enum action { BREAK, CONTINUE };
@@ -1863,7 +1862,7 @@ private:
 
 public:
   FlowCtlStatement(const QueryLoc& loc, enum action action_)
-    : 
+    :
     exprnode(loc),
     action(action_)
   {

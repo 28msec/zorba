@@ -2819,7 +2819,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
                              lErrorMessage);
 
       if (lResource.get() != NULL &&
-          lResource->getKind() == impl::Resource::STREAM) 
+          lResource->getKind() == impl::Resource::STREAM)
       {
         impl::StreamResource* lStreamResource =
           static_cast<impl::StreamResource*>(lResource.get());
@@ -2827,7 +2827,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         modfile = lStreamResource->getStream();
         compURL = lStreamResource->getStreamUrl();
       }
-      else 
+      else
       {
         RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI, lErrorMessage));
       }
@@ -3094,7 +3094,7 @@ void* begin_visit(const VFO_DeclList& v)
       theAnnotations->contains(theSctx->lookup_ann("variadic")):
       false;
 
-    signature sig(qnameItem, paramTypes, returnType, lIsVariadic); 
+    signature sig(qnameItem, paramTypes, returnType, lIsVariadic);
 
     // special case
     // function declares both updating keyword and updating annotation
@@ -3173,7 +3173,7 @@ void* begin_visit(const VFO_DeclList& v)
       if (ef == NULL)
       {
         RAISE_ERROR(zerr::ZXQP0008_FUNCTION_IMPL_NOT_FOUND, loc,
-        ERROR_PARAMS(BUILD_STRING('{', 
+        ERROR_PARAMS(BUILD_STRING('{',
                                   qnameItem->getNamespace(),
                                   '}',
                                   qnameItem->getLocalName())));
@@ -3554,8 +3554,12 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
       if (theAnnotations->contains(theSctx->lookup_ann("private")))
         ve->set_private(true);
     }
+
     if (theAnnotations->contains(theSctx->lookup_ann("assignable")))
       ve->set_mutable(true);
+
+    if (theAnnotations->contains(theSctx->lookup_ann("nonassignable")))
+      ve->set_mutable(false);
   }
 
   xqtref_t type;
@@ -3591,7 +3595,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-    
+
 #ifdef ZORBA_WITH_DEBUGGER
     if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
       QueryLoc lExpandedLocation = expandQueryLoc(
@@ -3694,7 +3698,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     }
   }
   theAnnotations->push_back(lExpandedQName, lLiterals);
-       
+
 }
 
 
@@ -3780,6 +3784,20 @@ void* begin_visit(const OptionDecl& v)
     RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
   theSctx->bind_option(qnameItem, value);
+
+  // process warning options
+  if (qnameItem->getNamespace() == ZORBA_WARN_NS)
+  {
+    if (value == "error")
+      theSctx->setWarningAsError(qnameItem);
+    else if (value == "disable")
+    {
+      if (qnameItem->getLocalName() == "all")
+        theSctx->disableAllWarnings();
+      else
+        theSctx->disableWarning(qnameItem);
+    }
+  }
 
   return no_state;
 }
@@ -5218,10 +5236,14 @@ void end_visit(const AssignExpr& v, void* visit_state)
 
   var_expr_t ve = lookup_var(v.get_name(), loc, err::XPST0008);
 
-  if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
+  if ((ve->get_kind() != var_expr::local_var
+        &&
+        ve->get_kind() != var_expr::prolog_var)
+      ||
+      !ve->is_mutable())
   {
     RAISE_ERROR(err::XSST0007, loc,
-    ERROR_PARAMS(ve->get_name()->getStringValue()));
+      ERROR_PARAMS(ve->get_name()->getStringValue()));
   }
 
   xqtref_t varType = ve->get_type();
@@ -9688,7 +9710,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     arguments.push_back(DOT_REF);
     f = lookup_fn(qname, 1, loc);
   }
-  
+
   //  Check if it is a zorba builtin function, and if so,
   // make sure that the module it belongs to has been imported.
   if (f != NULL &&

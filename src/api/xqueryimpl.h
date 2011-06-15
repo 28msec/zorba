@@ -79,7 +79,7 @@ class StaticCollectionManagerSetImpl;
   An rchandle to a PlanProxy obj that provides thread-safe access to the root
   iterator of the plan iterator tree. A PlanProxy obj is needed for thread
   safety, because the plan is shared among cloned queries, but the PlanIterator
-  class does not do thread-safe ref counting. All clones share the same 
+  class does not do thread-safe ref counting. All clones share the same
   PlanProxy obj, which is a sunchronized RCObject. This way, no ref count
   ops are performed on the plan root, except when the plan proxy itself is
   destroyed, which can be done by a single therad only.
@@ -267,7 +267,7 @@ public:
         const Zorba_CompilerHints_t& aHints);
 
   void compile(
-        std::istream&, 
+        std::istream&,
         const Zorba_CompilerHints_t& aHints);
 
   void compile(
@@ -392,6 +392,8 @@ protected:
 #ifdef ZORBA_WITH_DEBUGGER
   void checkIsDebugMode() const;
 #endif
+
+  void notifyAllWarnings() const;
 };
 
 

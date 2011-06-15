@@ -85,7 +85,7 @@ var_expr::var_expr(
   theCopyClause(NULL),
   theIsExternal(false),
   theIsPrivate(false),
-  theIsMutable(false)
+  theIsMutable(true)
 {
   compute_scripting_kind();
 

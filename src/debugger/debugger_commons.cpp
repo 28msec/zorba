@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,16 +72,16 @@ QueryLocComparator::operator()(const QueryLoc& a, const QueryLoc& b) const
 
   // check line numbers
   // smaller has priority
-  ai = a.getLineBegin(); 
-  bi = b.getLineBegin(); 
+  ai = a.getLineBegin();
+  bi = b.getLineBegin();
   if (ai != bi) {
     return ai < bi;
   }
 
   // check column begin numbers
   // smaller has priority
-  ai = a.getColumnBegin(); 
-  bi = b.getColumnBegin(); 
+  ai = a.getColumnBegin();
+  bi = b.getColumnBegin();
   if (ai == 0 || bi == 0) {
     return false;
   }
@@ -91,16 +91,16 @@ QueryLocComparator::operator()(const QueryLoc& a, const QueryLoc& b) const
 
   // check line end numbers
   // larger has priority
-  ai = a.getLineEnd(); 
-  bi = b.getLineEnd(); 
+  ai = a.getLineEnd();
+  bi = b.getLineEnd();
   if (ai != bi) {
     return ai > bi;
   }
 
   // check column end numbers
   // larger has priority
-  ai = a.getColumnEnd(); 
-  bi = b.getColumnEnd(); 
+  ai = a.getColumnEnd();
+  bi = b.getColumnEnd();
   if (ai == 0 || bi == 0) {
     return false;
   }
@@ -492,11 +492,11 @@ DebuggerCommons::getFilepathOfURI(const std::string& aUri) const
   std::map<std::string, std::string>::const_iterator lIter;
   lIter = theUriFileMappingMap.find(aUri);
   zstring lString;
-  if (lIter == theUriFileMappingMap.end()) 
+  if (lIter == theUriFileMappingMap.end())
   {
     lString = aUri;
   }
-  else 
+  else
   {
     lString = lIter->second;
   }

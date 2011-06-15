@@ -93,7 +93,9 @@ namespace zorba
   catch (...)                                                       \
   {                                                                 \
     ZorbaImpl::notifyError(theDiagnosticHandler);                   \
-  }           
+  }                                                                 \
+                                                                    \
+  notifyAllWarnings();
 
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
@@ -206,7 +208,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     theCompilerCB->theXQueryDiagnostics = theXQueryDiagnostics;
 
   }
-  
+
 #ifdef ZORBA_WITH_DEBUGGER
   ar & theIsDebugMode;
 #endif
@@ -504,7 +506,7 @@ void XQueryImpl::compile(
 
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the load-prolog query
-    theCompilerCB->theSctxMap = 
+    theCompilerCB->theSctxMap =
     static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
     doCompile(aQuery, aHints);
@@ -798,21 +800,21 @@ bool XQueryImpl::saveExecutionPlan(
     return true;
   }
   catch (ZorbaException const& e)
-  {                           
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }                           
-  catch (FlowCtlException const&)   
+  }
+  catch (FlowCtlException const&)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, "User interrupt");
-  }                           
-  catch (std::exception const& e)   
+  }
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
-  }                           
-  catch (...)                 
+  }
+  catch (...)
   {
-    ZorbaImpl::notifyError(theDiagnosticHandler);   
-  }           
+    ZorbaImpl::notifyError(theDiagnosticHandler);
+  }
 
   return false;
 }
@@ -830,7 +832,7 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
     checkNotClosed();
     checkNotCompiled();
 
-    try 
+    try
     {
       // try the binary format first
       zorba::serialization::BinArchiver   bin_ar(&is);
@@ -859,7 +861,7 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
 
 
 /*******************************************************************************
-  Note: this method is allowed to be called while the query is executing. 
+  Note: this method is allowed to be called while the query is executing.
   This is required to invoke external function that need access to the dynamic
   context.
 ********************************************************************************/
@@ -952,7 +954,7 @@ void XQueryImpl::executeSAX()
       theExecuting = false;
       throw;
     }
-    
+
     lPlan->close();
     theExecuting = false;
 
@@ -1177,7 +1179,7 @@ void XQueryImpl::serialize(
     const Zorba_SerializerOptions_t* opt /*= NULL*/)
 {
   serializer lSerializer(theXQueryDiagnostics);
-  
+
   if (opt != NULL)
   {
     const Zorba_SerializerOptions_t lOptions = *opt;
@@ -1296,7 +1298,7 @@ void XQueryImpl::close()
     if (theIsClosed) {
       return;
     }
- 
+
     if (theResultIterator != NULL) {
       theResultIterator->closeInternal();
       theResultIterator = NULL;
@@ -1309,10 +1311,12 @@ void XQueryImpl::close()
     }
 
     delete theXQueryDiagnostics;
+    theXQueryDiagnostics = NULL;
 
     // see registerDiagnosticHandler
     if (!theUserDiagnosticHandler) {
       delete theDiagnosticHandler;
+      theDiagnosticHandler = NULL;
     }
 
     delete theDynamicContext;
@@ -1418,6 +1422,30 @@ void XQueryImpl::printPlan(std::ostream& aStream, bool aDotFormat) const
   QUERY_CATCH
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::notifyAllWarnings() const
+{
+  if (theDiagnosticHandler == NULL || theXQueryDiagnostics == NULL)
+    return;
+
+  XQueryDiagnostics::warnings_type warnings = theXQueryDiagnostics->warnings();
+  for (unsigned int i = 0; i<warnings.size(); i++)
+  {
+    if (theStaticContext->isWarningAnError(warnings[i]->diagnostic().qname().ns(), warnings[i]->diagnostic().qname().localname()))
+    {
+      ZorbaImpl::notifyError(theDiagnosticHandler, *warnings[i]);
+    }
+    else if ( ! theStaticContext->isWarningDisabled(warnings[i]->diagnostic().qname().ns(), warnings[i]->diagnostic().qname().localname()))
+    {
+      ZorbaImpl::notifyWarning(theDiagnosticHandler, *warnings[i]);
+    }
+  }
+
+  // Warnings should be notified only once
+  theXQueryDiagnostics->clear_warnings();
+}
 
 /*******************************************************************************
 
