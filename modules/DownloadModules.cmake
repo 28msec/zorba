@@ -77,8 +77,13 @@ foreach (modline ${modlines})
     # Download
     if (_getmod)
       message ("Downloading module '${_modname}'...")
-      execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
-        WORKING_DIRECTORY "${outdir}")
+      # QQQ Ridiculous and slow hack, but Sourceforge has been incredibly
+      # unreliable lately so this is the best choice I've got to make
+      # the remote queue semi-stable
+      foreach (s 1 2)
+        execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
+          WORKING_DIRECTORY "${outdir}")
+      endforeach (s 1 2)
     endif (_getmod)
   endif (modline)
 endforeach (modline)
