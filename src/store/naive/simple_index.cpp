@@ -205,6 +205,9 @@ store::IndexCondition_t IndexImpl::createCondition(store::IndexCondition::Kind k
   case store::IndexCondition::BOX_VALUE:
     return new IndexBoxValueCondition(this);
 
+  case store::IndexCondition::BOX_GENERAL:
+    return new IndexBoxGeneralCondition(this);
+
   default:
     ZORBA_ASSERT(false);
   }
@@ -247,6 +250,30 @@ void IndexPointCondition::pushRange(
     bool haveUpper,
     bool lowerIncl,
     bool upperIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexPointCondition::pushLowerBound(
+    std::vector<store::Item_t>& bound,
+    bool haveBound,
+    bool boundIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexPointCondition::pushUpperBound(
+    std::vector<store::Item_t>& bound,
+    bool haveBound,
+    bool boundIncl)
 {
   ZORBA_ASSERT(false);
 }
@@ -309,7 +336,23 @@ store::Item_t IndexBoxCondition::thePosInf(new DecimalItem);
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexBoxCondition::clear()
+void IndexBoxCondition::pushItem(store::Item_t& item)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  IndexBoxValueCondition                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexBoxValueCondition::clear()
 {
   theLowerBounds.clear();
   theUpperBounds.clear();
@@ -320,16 +363,7 @@ void IndexBoxCondition::clear()
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexBoxCondition::pushItem(store::Item_t& item)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexBoxCondition::pushRange(
+void IndexBoxValueCondition::pushRange(
     store::Item_t& lower,
     store::Item_t& upper,
     bool haveLower,
@@ -351,10 +385,28 @@ void IndexBoxCondition::pushRange(
 }
 
 
+void IndexBoxValueCondition::pushLowerBound(
+    std::vector<store::Item_t>& bound,
+    bool haveBound,
+    bool boundIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+void IndexBoxValueCondition::pushUpperBound(
+    std::vector<store::Item_t>& bound,
+    bool haveBound,
+    bool boundIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-bool IndexBoxCondition::test(const store::IndexKey& key) const
+bool IndexBoxValueCondition::test(const store::IndexKey& key) const
 {
   ulong numCols = theLowerBounds.size();
 
@@ -390,18 +442,7 @@ bool IndexBoxCondition::test(const store::IndexKey& key) const
 /*******************************************************************************
 
 ********************************************************************************/
-std::string IndexBoxCondition::toString() const
-{
-  std::ostringstream str;
-  str << *this;
-  return str.str();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond)
+std::ostream& operator<<(std::ostream& os, const IndexBoxValueCondition& cond)
 {
   ulong numCols = cond.theLowerBounds.size();
 
@@ -441,6 +482,100 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond)
 
   return os;
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string IndexBoxValueCondition::toString() const
+{
+  std::ostringstream str;
+  str << *this;
+  return str.str();
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  IndexBoxGeneralCondition                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexBoxGeneralCondition::clear()
+{
+  theLowerBounds.clear();
+  theUpperBounds.clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexBoxGeneralCondition::pushRange(
+    store::Item_t& lower,
+    store::Item_t& upper,
+    bool haveLower,
+    bool haveUpper,
+    bool lowerIncl,
+    bool upperIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+void IndexBoxGeneralCondition::pushLowerBound(
+    std::vector<store::Item_t>& bound,
+    bool haveBound,
+    bool boundIncl)
+{
+}
+
+
+void IndexBoxGeneralCondition::pushUpperBound(
+    std::vector<store::Item_t>& bound,
+    bool haveBound,
+    bool boundIncl)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool IndexBoxGeneralCondition::test(const store::IndexKey& key) const
+{
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::ostream& operator<<(std::ostream& os, const IndexBoxGeneralCondition& cond)
+{
+  os << "{ ";
+
+  os << "}";
+
+  return os;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string IndexBoxGeneralCondition::toString() const
+{
+  std::ostringstream str;
+  str << *this;
+  return str.str();
+}
+
 
 
 }

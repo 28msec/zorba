@@ -165,10 +165,11 @@ public:
 
 
 /*******************************************************************************
-  fn-zorba-ddl:probe-index-point-value($indexName as xs:QName, 
-                                       $key1 as xs:anyAtomicItem,
-                                       ....
-                                       $keyN as xs:anyAtomicItem) as node()*
+  fn-zorba-ddl:probe-index-point-value(
+      $indexName as xs:QName, 
+      $key1 as xs:anyAtomicItem?,
+      ....
+      $keyN as xs:anyAtomicItem?) as node()*
 
   Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
   function.
@@ -194,7 +195,12 @@ public:
 
 
 /*******************************************************************************
-  fn-zorba-ddl:probe-index-point-general($indexName as xs:QName, ....)
+  fn-zorba-ddl:probe-index-point-general(
+      $indexName as xs:QName,
+      $keys      as xs:anyAtomicItem*) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
+  function.
 ********************************************************************************/
 class fn_zorba_ddl_probe_index_point_general : public function
 {
@@ -212,7 +218,11 @@ public:
 
 
 /*******************************************************************************
-  fn-zorba-ddl:probe-index-range-value($indexName as xs:QName, ....)
+  fn-zorba-ddl:probe-index-range-value(
+      $indexName as xs:QName, ....) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
+  function.
 ********************************************************************************/
 class fn_zorba_ddl_probe_index_range_value : public function
 {
@@ -235,7 +245,17 @@ public:
 
 
 /*******************************************************************************
-  fn-zorba-ddl:probe-index-range-general($indexName as xs:QName, ....)
+  fn-zorba-ddl:probe-index-range-general(
+      $indexName           as xs:QName, 
+      $lowerBoundKeys      as xs:anyAtomicType*,
+      $upperBoundKeys      as xs:anyAtomicType*,
+      $haveLowerBound      as xs:boolean,
+      $haveUpperBound      as xs:boolean,
+      $lowerBoundIncluded  as xs:boolean,
+      $upperBoundIncluded  as xs:boolean) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
+  function.
 ********************************************************************************/
 class fn_zorba_ddl_probe_index_range_general : public function
 {

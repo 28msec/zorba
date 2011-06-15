@@ -19,7 +19,7 @@
 
 #include "store/naive/simple_index_value.h"
 #include "diagnostics/xquery_diagnostics.h"
-
+#include "diagnostics/util_macros.h"
 
 namespace zorba 
 { 
@@ -101,10 +101,8 @@ bool ValueHashIndex::insert(
 {
   if (key->size() != getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
-      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
+    ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
   ValueIndexValue* valueSet = NULL;
@@ -113,10 +111,8 @@ bool ValueHashIndex::insert(
   {
     if (isUnique())
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
-        ERROR_PARAMS( theQname->getStringValue() )
-      );
+      RAISE_ERROR_NO_LOC(zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      ERROR_PARAMS(theQname->getStringValue()));
     }
 
     valueSet->resize(valueSet->size() + 1);
@@ -199,12 +195,8 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 {
   if (cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-      ERROR_PARAMS(
-        cond->getKindString(), theIndex->getName()->getStringValue()
-      )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ERROR_PARAMS(cond->getKindString(), theIndex->getName()->getStringValue()));
   }
 
   theCondition = reinterpret_cast<IndexPointValueCondition*>(cond.getp());
@@ -213,10 +205,8 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 
   if (key->size() != theIndex->getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-      ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+    ERROR_PARAMS(key->toString(), theIndex->getName()->getStringValue()));
   }
 
   theIndex->theMap.get(key, theResultSet);

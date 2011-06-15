@@ -1169,11 +1169,8 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
     {
       if (e.diagnostic() == err::XPDY0002)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM,
-          ERROR_PARAMS( theIndexDecl->getName()->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
+        ERROR_PARAMS(theIndexDecl->getName()->getStringValue()));
       }
       throw;
     }
@@ -1294,11 +1291,9 @@ void normalize_fo(fo_expr* foExpr)
 
     if (qname != NULL)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-        ERROR_PARAMS( qname->getStringValue() ),
-        ERROR_LOC( foExpr->get_loc() )
-      );
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, 
+                  foExpr->get_loc(),
+                  ERROR_PARAMS(qname->getStringValue()));
     }
     else
     {
@@ -1320,7 +1315,7 @@ void normalize_fo(fo_expr* foExpr)
       if (i == 0)
         paramType = sign[i];
       else
-        paramType = theRTM.ANY_ATOMIC_TYPE_ONE;
+        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
     else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
     {
@@ -1335,7 +1330,7 @@ void normalize_fo(fo_expr* foExpr)
              func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N ||
              func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N)
     {
-      if (i==0)
+      if (i == 0)
         paramType = sign[i];
       else
         paramType = NULL; // Nothing to check as the target function is not known
@@ -3945,11 +3940,7 @@ void end_visit(const NodeModifier& v, void* /*visit_state*/)
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr (TypeDeclaration)? (OrderCollationSpec)?
-
-  AtomicType := QName
-
-  IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
+  IndexKeySpec := PathExpr (TypeDeclaration)? ("collation" UriLiteral)?
 
   Translation of an index declaration involves the creation and setting-up of
   a IndexDecl obj (see compiler/indexing/value_index.h) and the creation in
@@ -3964,11 +3955,8 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (!inLibraryModule())
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0023_INDEX_DECL_IN_MAIN_MODULE,
-      ERROR_PARAMS( qname->get_qname() ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZDST0023_INDEX_DECL_IN_MAIN_MODULE, loc,
+    ERROR_PARAMS(qname->get_qname()));
   }
 
   // Expand the index qname (error is raised if qname resolution fails).
@@ -3977,11 +3965,8 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (qnameItem->getNamespace() != theModuleNamespace)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0036_INDEX_DECL_IN_FOREIGN_MODULE,
-      ERROR_PARAMS( qname->get_qname() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0036_INDEX_DECL_IN_FOREIGN_MODULE, loc,
+    ERROR_PARAMS(qname->get_qname()))
   }
 
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
@@ -4031,11 +4016,8 @@ void* begin_visit(const IndexKeyList& v)
 
   if (!domainExpr->is_simple())
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0033_INDEX_NON_SIMPLE_EXPR,
-      ERROR_PARAMS( index->getName()->getStringValue() ),
-      ERROR_LOC( domainExpr->get_loc() )
-    );
+    RAISE_ERROR(zerr::ZDST0033_INDEX_NON_SIMPLE_EXPR, domainExpr->get_loc(),
+    ERROR_PARAMS(index->getName()->getStringValue()))
   }
 
   domainExpr = wrap_in_type_match(domainExpr,
@@ -4087,7 +4069,7 @@ void* begin_visit(const IndexKeyList& v)
     theCCB->theConfig.translate_cb(domainExpr.getp(), msg);
 
   // Optimize the domain expr. We do this even if the optimizer is off.
-  //if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
+  // if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
     RewriterContext rCtx(theCCB, domainExpr, NULL, msg, false);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
@@ -4129,15 +4111,14 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     const IndexKeySpec* keySpec = v.getKeySpec(i);
     const OrderCollationSpec* collationSpec = keySpec->getCollationSpec();
 
+    const QueryLoc& kloc = keySpec->get_location();
+
     expr_t keyExpr = pop_nodestack();
 
     if (!keyExpr->is_simple())
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDST0033_INDEX_NON_SIMPLE_EXPR,
-        ERROR_PARAMS( index->getName()->getStringValue() ),
-        ERROR_LOC( keyExpr->get_loc() )
-      );
+      RAISE_ERROR(zerr::ZDST0033_INDEX_NON_SIMPLE_EXPR, keyExpr->get_loc(),
+      ERROR_PARAMS(index->getName()->getStringValue()));
     }
 
     keyExpr = wrap_in_atomization(keyExpr);
@@ -4149,11 +4130,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       if (!index->isGeneral())
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDST0027_INDEX_BAD_KEY_TYPE,
-          ERROR_PARAMS( index->getName()->getStringValue() ),
-          ERROR_LOC( keySpec->get_location() )
-        );
+        RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ERROR_PARAMS(index->getName()->getStringValue()));
       }
     }
     else
@@ -4162,37 +4140,26 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       ptype = TypeOps::prime_type(tm, *type);
       TypeConstants::quantifier_t quant = type->get_quantifier();
 
-      const QueryLoc& kloc = keySpec->get_location();
-
       if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, kloc))
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDST0027_INDEX_BAD_KEY_TYPE,
-          ERROR_PARAMS( index->getName()->getStringValue() ),
-          ERROR_LOC( kloc )
-        );
+        RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
       if (!index->isGeneral() &&
           (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
            TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE)))
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDST0027_INDEX_BAD_KEY_TYPE,
-          ERROR_PARAMS( index->getName()->getStringValue() ),
-          ERROR_LOC( kloc )
-        );
+        RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
       if (!index->isGeneral() &&
           quant != TypeConstants::QUANT_ONE &&
           quant != TypeConstants::QUANT_QUESTION)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDST0027_INDEX_BAD_KEY_TYPE,
-          ERROR_PARAMS( index->getName()->getStringValue() ),
-          ERROR_LOC( kloc )
-        );
+        RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
@@ -4207,11 +4174,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
            TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE, kloc) ||
            TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE, kloc)))
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDST0027_INDEX_BAD_KEY_TYPE,
-          ERROR_PARAMS( index->getName()->getStringValue() ),
-          ERROR_LOC( keySpec->get_location() )
-        );
+        RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
       keyExpr = wrap_in_type_match(keyExpr, type, zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR);
@@ -4236,11 +4200,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       collationUri = collationSpec->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
-        throw XQUERY_EXCEPTION(
-          err::XQST0076,
-          ERROR_PARAMS( collationUri ),
-          ERROR_LOC( keySpec->get_location() )
-        );
+        RAISE_ERROR(err::XQST0076, kloc,
+        ERROR_PARAMS(collationUri));
     }
     else if (ptype != NULL &&
              TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))
@@ -4281,9 +4242,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
 
 /***************************************************************************//**
-  IndexKeySpec ::= ExprSingle TypeDeclaration?
-                              ("empty" ("greatest" | "least"))?
-                              ("collation" UriLiteral)?
+  IndexKeySpec ::= PathExpr TypeDeclaration? ("collation" UriLiteral)?
 ********************************************************************************/
 void* begin_visit(const IndexKeySpec& v)
 {

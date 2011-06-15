@@ -27,7 +27,6 @@ namespace simplestore {
 //#define TEXT_ORDPATH
 
 
-
 #define GET_STORE() \
   (*zorba::simplestore::StoreManagerImpl::getStoreInternal())
 

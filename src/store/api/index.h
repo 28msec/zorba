@@ -213,6 +213,7 @@ public:
   virtual void pushItem(Item_t& item) = 0;
 
   /**
+   * This method applies to BOX_VALUE conditions only.
    * The box associated with this condition is built one range at a time using
    * the pushRange() method.
    *
@@ -236,6 +237,38 @@ public:
         bool haveUpper,
         bool lowerIncl,
         bool upperIncl) = 0;
+
+  /**
+   * This method applies to BOX_GENERAL conditions only.
+   *
+   * @param bound A vector of items constituting lower bounds for the key 
+   *        values. May be NULL, which indicates either the empty sequence 
+   *        or -INFINITY. The haveBound parameter is used to distinguish 
+   *        between these two cases.
+   * @param haveBound False if the lower bound is -INFINITY. True otherwise.
+   * @param boundIncl True if the boundary search keys are included in the 
+   *        search. False otherwise.
+   */
+  virtual void pushLowerBound(
+        std::vector<Item_t>& bound,
+        bool haveBound,
+        bool boundIncl) = 0;
+
+  /**
+   * This method applies to BOX_GENERAL conditions only.
+   *
+   * @param bound A vector of items constituting lower bounds for the key 
+   *        values. May be NULL, which indicates either the empty sequence 
+   *        or +INFINITY. The haveBound parameter is used to distinguish 
+   *        between these two cases.
+   * @param haveBound False if the upper bound is +INFINITY. True otherwise.
+   * @param boundIncl True if the boundary search keys are included in the 
+   *        search. False otherwise.
+   */
+  virtual void pushUpperBound(
+        std::vector<Item_t>& bound,
+        bool haveBound,
+        bool boundIncl) = 0;
 
   /**
    *  Check if a given index key satisfies this condition.

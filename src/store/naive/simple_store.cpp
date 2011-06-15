@@ -26,6 +26,7 @@
 #include "zorbatypes/rchandle.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "store/api/pul.h"
 
@@ -549,10 +550,8 @@ void SimpleStore::populateValueIndex(
           domainItem->getCollection() == NULL &&
           !index->isTemporary())
       {
-        throw ZORBA_EXCEPTION(
-          zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
-          ERROR_PARAMS( index->getName()->getStringValue() )
-        );
+        RAISE_ERROR_NO_LOC(zerr::ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+        ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
       if (key == NULL)
@@ -561,10 +560,13 @@ void SimpleStore::populateValueIndex(
       for (ulong i = 0; i < aNumColumns; ++i)
       {
         if (!aSourceIter->next((*key)[i]))
-          throw ZORBA_EXCEPTION(
-            zerr::ZXQP0003_INTERNAL_ERROR,
-            ERROR_PARAMS( ZED( IncompleteKeyInIndexBuild ) )
-          );
+        {
+          // The source iter is a ValueIndexEntryBuilderIterator, whose next()
+          // method is guaranteed to return true exactly once. The result from
+          // this single successful next() may be a NULL item.
+          RAISE_ERROR_NO_LOC(zerr::ZXQP0003_INTERNAL_ERROR,
+          ERROR_PARAMS(ZED(IncompleteKeyInIndexBuild)));
+        }
       }
 
       index->insert(key, domainItem);
@@ -1472,6 +1474,9 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       if (rootNode->getTreeId() == treeId)
         break;
     }
+
+    if (it == end)
+      rootNode = NULL;
   }
   else
   {

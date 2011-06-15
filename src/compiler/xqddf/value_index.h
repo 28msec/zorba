@@ -63,11 +63,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
-
-  AtomicType := QName
-
-  IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
+  IndexKeySpec := PathExpr TypeDeclaration? ("collation" UriLiteral)?
 
 
   Constraints:

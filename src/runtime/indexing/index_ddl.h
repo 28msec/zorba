@@ -511,19 +511,27 @@ public:
 
 
 /*******************************************************************************
-   probe-index-range-general($indexName                as xs:QName,
-                             $range1LowerBound         as anyAtomic?,
-                             $range1UpperBound         as anyAtomic?,
-                             $range1HaveLowerBound     as boolean,
-                             $range1HaveupperBound     as boolean,
-                             $range1LowerBoundIncluded as boolean,
-                             $range1upperBoundIncluded as boolean,
-                            ) as node()*
+  fn-zorba-ddl:probe-index-range-general(
+      $indexName           as xs:QName, 
+      $lowerBoundKeys      as xs:anyAtomicType*,
+      $upperBoundKeys      as xs:anyAtomicType*,
+      $haveLowerBound      as xs:boolean,
+      $haveUpperBound      as xs:boolean,
+      $lowerBoundIncluded  as xs:boolean,
+      $upperBoundIncluded  as xs:boolean) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
+  function.
 ********************************************************************************/
+class ProbeIndexRangeGeneralIteratorState : public ProbeIndexRangeValueIteratorState
+{
+};
+
+
 class ProbeIndexRangeGeneralIterator 
   : 
   public NaryBaseIterator<ProbeIndexRangeGeneralIterator, 
-                          ProbeIndexRangeValueIteratorState>
+                          ProbeIndexRangeGeneralIteratorState>
 {
 protected:
   bool theCheckKeyType;
@@ -532,7 +540,7 @@ public:
   SERIALIZABLE_CLASS(ProbeIndexRangeGeneralIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexRangeGeneralIterator,
-  NaryBaseIterator<ProbeIndexRangeGeneralIterator, ProbeIndexRangeValueIteratorState>);
+  NaryBaseIterator<ProbeIndexRangeGeneralIterator, ProbeIndexRangeGeneralIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 

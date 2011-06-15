@@ -357,8 +357,8 @@ properties, the collection's static type, and whether the collection nodes can
 be modified or not. Syntactically, collection declarations are placed inside
 module prologs. The Prolog syntax is extended accordingly, as shown above. An
 additional constraint (not expressible syntactically) is that only library
-modules may contain collection declarations [<a href="#ERRXDST0003"
-title="err:XDST0003">err:XDST0003</a>]. This is because library modules can be
+modules may contain collection declarations [<a href="#ERRZDST0003"
+title="err:ZDST0003">err:ZDST0003</a>]. This is because library modules can be
 shared among queries, whereas if a collection was declared inside a main module,
 then every other query that would like to use this collection would have to
 redeclared it in its main module. Worse, allowing collection declarations in
@@ -377,11 +377,11 @@ same QName. The effect of a collection declaration is to add an entry to the
 statically known collections of the module containing the declaration. If the
 expanded QName of the collection is equal (as defined by the eq operator) to the
 expanded QName of another collection in the statically known collections of the
-same module, a static error is raised [<a href="#ERRXDST0001"
-title="err:XDST0001">err:XDST0001</a>]. Like variables and functions, the
+same module, a static error is raised [<a href="#ERRZDST0001"
+title="err:ZDST0001">err:ZDST0001</a>]. Like variables and functions, the
 statically known collections of a module that is imported by another module are
 copied into the statically known collections of the importing module. It is a
-static error [<a href="#ERRXDST0002" title="err:XDST0002">err:XDST0002</a>] if
+static error [<a href="#ERRZDST0002" title="err:ZDST0002">err:ZDST0002</a>] if
 the expanded QName of a collection declared in an imported module is equal (as
 defined by the eq operator) to the expanded QName of a collection declared in
 the importing module or in another imported module (even if the declarations are
@@ -393,7 +393,7 @@ possible values 'const', 'mutable', 'append-only', or 'queue') and
 The syntax allows the values for these properties to be listed in any order or
 not be specified at all. If not specified, the default values for update and
 ordering mode are 'mutable' and 'unordered', respectively. It is a static error
-[<a href="#ERRXDST0004" title="err:XDST0004">err:XDST0004</a>] if a collection
+[<a href="#ERRZDST0004" title="err:ZDST0004">err:ZDST0004</a>] if a collection
 declaration contains more than one value for the same property. An
 <strong>ordered collection</strong> is a collection into which the ordering of
 documents is assumed to be meaningful for the application, and as a result,
@@ -407,13 +407,13 @@ An <strong>append-only collection</strong> does not allow any deletions at all
 and restricts insertions to take place at the "end" only, i.e., all new
 documents must be inserted after all existing ones. This implies a user-visible
 document ordering, and as a result, an append-only collection must also be
-declared as ordered [<a href="#ERRXDST0005"
-title="err:XDST0005">err:XDST0005</a>]. A <strong>queue collection</strong>
+declared as ordered [<a href="#ERRZDST0005"
+title="err:ZDST0005">err:ZDST0005</a>]. A <strong>queue collection</strong>
 forbids both insertions and deletions in/from the "middle"; only documents at
 the front of the collection may be deleted, and new documents can be inserted
 only at the collection's end. Like append-only, queue collections must be
-declared as ordered [<a href="#ERRXDST0005"
-title="err:XDST0005">err:XDST0005</a>].
+declared as ordered [<a href="#ERRZDST0005"
+title="err:ZDST0005">err:ZDST0005</a>].
 
 In addition to the two properties described above, a collection declaration also
 specifies the <strong>collection static type</strong>, i.e., the static type for
@@ -428,7 +428,7 @@ The final component of a collection declaration is the <strong>document update
 mode</strong>. Possible values for this property are 'read-only' or 'mutable',
 with 'mutable' being the default value if none is specified. If the document
 update mode for a collection is 'read-only', then an error is raised [<a
-href="#ERRXDDY0010" title="err:XDDY0010">err:XDDY0010</a>] every time a node of
+href="#ERRZDDY0010" title="err:ZDDY0010">err:ZDDY0010</a>] every time a node of
 the collection appears as the target node of an updating expression; otherwise,
 no such error is raised.
 
@@ -472,11 +472,11 @@ The function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName identifies a collection that is available
-already, an error is raised [<a href="#ERRXDDY0002"
-title="err:XDDY0002">err:XDDY0002</a>].</li>
+already, an error is raised [<a href="#ERRZDDY0002"
+title="err:ZDDY0002">err:ZDDY0002</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
 upd:createCollection($collectionName).</li>
@@ -502,11 +502,11 @@ The function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName identifies a collection that is available
-already, an error is raised [<a href="#ERRXDDY0002"
-title="err:XDDY0002">err:XDDY0002</a>].</li>
+already, an error is raised [<a href="#ERRZDDY0002"
+title="err:ZDDY0002">err:ZDDY0002</a>].</li>
   <li>The expression that is given as the second argument to the function call
 is evaluated. The result of the evaluation is called the source sequence. If the
 source sequence contains an item that is not a node, or a node whose actual type
@@ -545,11 +545,11 @@ The function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>The result of the function is a sequence consisting of the root nodes in
 the collection. If the collection is declared as ordered, the ordering of the
 nodes in the result will reflect the order into which nodes were inserted in the
@@ -576,15 +576,15 @@ The function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>The expression that appears as the second argument in the function call is
 evaluated. The result of this evaluation must be a single node. If this node is
-not a root node of the collection, an error is raised [<a href="#ERRXDDY0011"
-title="err:XDDY0011">err:XDDY0011</a>].</li>
+not a root node of the collection, an error is raised [<a href="#ERRZDDY0011"
+title="err:ZDDY0011">err:ZDDY0011</a>].</li>
   <li>The result of this function is the position as xs:integer of the given
 node within the specified collection.</li>
   </ul>
@@ -614,15 +614,15 @@ The insert-nodes function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>If the update mode of the collection is const, append-only, or queue, an
-error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
-[<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a
-href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
+error is raised [<a href="#ERRZDDY0004" title="err:ZDDY0004">err:ZDDY0004</a>],
+[<a href="#ERRZDDY0005" title="err:ZDDY0005">err:ZDDY0005</a>], or [<a
+href="#ERRZDDY0006" title="err:ZDDY0006">err:ZDDY0006</a>], respectively.</li>
   <li>The expression that is given as the second argument to the function call
 is evaluated. The result of the evaluation is called the source sequence. If the
 source sequence contains an item that is not a node, or a node whose actual type
@@ -667,17 +667,17 @@ The insert-nodes-first function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>If the update mode of the collection is const, append-only, or queue, an
-error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
-[<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a
-href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
-  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012"
-title="err:XDDY0012">err:XDDY0012</a>].</li>
+error is raised [<a href="#ERRZDDY0004" title="err:ZDDY0004">err:ZDDY0004</a>],
+[<a href="#ERRZDDY0005" title="err:ZDDY0005">err:ZDDY0005</a>], or [<a
+href="#ERRZDDY0006" title="err:ZDDY0006">err:ZDDY0006</a>], respectively.</li>
+  <li>If the collection is unordered, an error is raised [<a href="#ERRZDDY0012"
+title="err:ZDDY0012">err:ZDDY0012</a>].</li>
   <li>The expression that is given as the second argument to the function call
 is evaluated. The result of the evaluation is called the source sequence. If the
 source sequence contains an item that is not a node, or a node whose actual type
@@ -718,7 +718,7 @@ insert-nodes-first function except:
 
   <ul>
   <li>If the collection is append-only or queue, the insertion is allowed (i.e.,
-the errors XDDY0005 or XDDY0006 are not raised).</li>
+the errors ZDDY0005 or ZDDY0006 are not raised).</li>
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
 upd:insertLastIntoCollection($collectionName, $nodes).</li>
@@ -746,21 +746,21 @@ The insert-nodes-before function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>If the update mode of the collection is const, append-only, or queue, an
-error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
-[<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a
-href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
-  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012"
-title="err:XDDY0012">err:XDDY0012</a>].</li>
+error is raised [<a href="#ERRZDDY0004" title="err:ZDDY0004">err:ZDDY0004</a>],
+[<a href="#ERRZDDY0005" title="err:ZDDY0005">err:ZDDY0005</a>], or [<a
+href="#ERRZDDY0006" title="err:ZDDY0006">err:ZDDY0006</a>], respectively.</li>
+  <li>If the collection is unordered, an error is raised [<a href="#ERRZDDY0012"
+title="err:ZDDY0012">err:ZDDY0012</a>].</li>
   <li>The expression that appears as the second argument to the function call is
 evaluated. The expression must return a single node, called the target node. If
 the target node is not a root node that belongs to the collection, an error is
-raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
+raised [<a href="#ERRZDDY0011" title="err:ZDDY0011">err:ZDDY0011</a>].</li>
   <li>The expression that is given as the third argument to the function call is
 evaluated. The result of the evaluation is called the source sequence. If the
 source sequence contains an item that is not a node, or a node whose actual type
@@ -828,20 +828,20 @@ The delete-nodes function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>If the update mode of the collection is const, append-only, or queue, an
-error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
-[<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a
-href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
+error is raised [<a href="#ERRZDDY0004" title="err:ZDDY0004">err:ZDDY0004</a>],
+[<a href="#ERRZDDY0007" title="err:ZDDY0007">err:ZDDY0007</a>], or [<a
+href="#ERRZDDY009" title="err:ZDDY009">err:ZDDY009</a>], respectively.</li>
   <li>The expression that appears as the second argument to the function call is
 evaluated. The result of this evaluation is called the deletion sequence. If
 there is any node in the deletion sequence that is not a root node belonging to
-the collection, an error is raised [<a href="#ERRXDDY0011"
-title="err:XDDY0011">err:XDDY0011</a>]. Let $nodes be the deletion
+the collection, an error is raised [<a href="#ERRZDDY0011"
+title="err:ZDDY0011">err:ZDDY0011</a>]. Let $nodes be the deletion
 sequence.</li>
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
@@ -869,19 +869,19 @@ The delete-nodes-first function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>If the update mode of the collection is const, or append-only, an error is
-raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>] or [<a
-href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>] respectively.</li>
+raised [<a href="#ERRZDDY0004" title="err:ZDDY0004">err:ZDDY0004</a>] or [<a
+href="#ERRZDDY0007" title="err:ZDDY0007">err:ZDDY0007</a>] respectively.</li>
   <li>The expression that appears as the second argument to the function call is
 evaluated, producing a single positive integer. Let $number be that
 integer.</li>
   <li>If the collection has fewer than $number nodes, an error is raised [<a
-href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
+href="#ERRZDDY0011" title="err:ZDDY0011">err:ZDDY0011</a>].</li>
   <li>Let $nodes be the sequence consisting of the first $number root nodes in
 the collection.</li>
   <li>The result of the function is an empty XDM instance and a pending update
@@ -906,20 +906,20 @@ The delete-nodes-last function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>If the update mode of the collection is const, append-only, or queue, an
-error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
-[<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a
-href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
+error is raised [<a href="#ERRZDDY0004" title="err:ZDDY0004">err:ZDDY0004</a>],
+[<a href="#ERRZDDY0007" title="err:ZDDY0007">err:ZDDY0007</a>], or [<a
+href="#ERRZDDY009" title="err:ZDDY009">err:ZDDY009</a>], respectively.</li>
   <li>The expression that appears as the second argument to the function call is
 evaluated, producing a single positive integer. Let $number be that
 integer.</li>
   <li>If the collection has fewer than $number nodes, an error is raised [<a
-href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
+href="#ERRZDDY0011" title="err:ZDDY0011">err:ZDDY0011</a>].</li>
   <li>Let $nodes be the sequence consisting of the last $number root nodes in
 the collection.</li>
   <li>The result of the function is an empty XDM instance and a pending update
@@ -952,11 +952,11 @@ The delete-collection function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify a collection among the
 statically known collections in the static context of the invoking module, an
-error is raised [<a href="#ERRXDDY0001"
-title="err:XDDY0001">err:XDDY0001</a>].</li>
+error is raised [<a href="#ERRZDDY0001"
+title="err:ZDDY0001">err:ZDDY0001</a>].</li>
   <li>If the given expanded QName does not identify a collection among the
 available collections in the dynamic context of the invoking module, an error is
-raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+raised [<a href="#ERRZDDY0003" title="err:ZDDY0003">err:ZDDY0003</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
 upd:deleteCollection($collectionName).</li>
@@ -966,13 +966,13 @@ The update primitive is applied as follows:
 
   <ul>
   <li>If there is any available index whose domain expression or any of its key
-expressions reference the collection, an error is raised [<a href="#ERRXDDY0013"
-title="err:XDDY0013">err:XDDY0013</a>].</li>
+expressions reference the collection, an error is raised [<a href="#ERRZDDY0013"
+title="err:ZDDY0013">err:ZDDY0013</a>].</li>
   <li>If there is any active integrity constraint on the collection, an error is
-raised [<a href="#ERRXDDY0014" title="err:XDDY0014">err:XDDY0014</a>].</li>
+raised [<a href="#ERRZDDY0014" title="err:ZDDY0014">err:ZDDY0014</a>].</li>
   <li>If there is any in-scope variable that references any node in the
-collection, an error is raised [<a href="#ERRXDDY0015"
-title="err:XDDY0015">err:XDDY0015</a>].</li>
+collection, an error is raised [<a href="#ERRZDDY0015"
+title="err:ZDDY0015">err:ZDDY0015</a>].</li>
   <li>The document container for the collection is found via the collections
 table.</li>
   <li>All documents in the container are destroyed.</li>
@@ -1438,11 +1438,11 @@ index is determined by the value of the usage property, which is explained below
 Index declarations (for both value and general indexes) must be placed inside 
 module prologs. The Prolog syntax is extended accordingly, as shown above. 
 An additional constraint (not expressible syntactically) is that only library 
-modules may contain index declarations  [<a href="#ERRXDST0023">err:XDST0023</a>]. 
+modules may contain index declarations  [<a href="#ERRZDST0023">err:ZDST0023</a>]. 
 The reasons for this rule are the same as those for collections (see \ref 
 collection_declaration). Furthermore, the qname of an index must have the same
 namespace URI as the target namespace URI of the declaring library module
-[<a href="#ERRXDST0036">err:XDST0036</a>].
+[<a href="#ERRZDST0036">err:ZDST0036</a>].
 
 To accommodate index declarations, XQDDF extends the static context with a 
 component called the <strong>statically known indexes</strong>. This is a 
@@ -1451,11 +1451,11 @@ representation of the information contained in an index declaration with the
 same QName. Each index declaration adds an entry to the statically known indexes
 of the module containing the declaration. If the expanded QName of the index is
 equal to the expanded QName of another index in the statically known indexes 
-of the same module, a static error is raised [<a href="#ERRXDST0021">err:XDST0021</a>]. 
+of the same module, a static error is raised [<a href="#ERRZDST0021">err:ZDST0021</a>]. 
 Like the statically known collections, the statically known indexes of 
 a module that is imported by another module are copied into the statically 
-known indexes of the importing module. It is a static error [<a href="#ERRXDST0022">
-err:XDST0022</a>] if the expanded QName of an index declared in an imported module
+known indexes of the importing module. It is a static error [<a href="#ERRZDST0022">
+err:ZDST0022</a>] if the expanded QName of an index declared in an imported module
 is equal to the expanded QName of an index declared in the importing module 
 or in another imported module (even if the declarations are consistent).
 
@@ -1467,7 +1467,7 @@ or 'automatically maintained'). The syntax allows the values for these propertie
 to be listed in any order or not be specified at all. If not specified, the 
 default values for uniqueness, usage, and maintenance mode are 'non unique', 
 'value equality', and 'automatically maintained', respectively. It is a 
-static error [<a href="#ERRXDST0024">err:XDST0024</a>] if more than one value 
+static error [<a href="#ERRZDST0024">err:ZDST0024</a>] if more than one value 
 is listed in an index declaration for any of these properties.
 
 The uniqueness property determines the kind of relationship between keys and
@@ -1512,25 +1512,25 @@ restrictions are imposed on the domain expression and each of the
 key expressions:
 
   <ul>
-  <li>They must be deterministic expressions [<a href="#ERRXDST0028">
-      err:XDST0028</a>].</li>
+  <li>They must be deterministic expressions [<a href="#ERRZDST0028">
+      err:ZDST0028</a>].</li>
 
   <li>They must be simple expressions (i.e., not updating or sequential)
-      [<a href="#ERRXDST0033">err:XDST0033</a>].</li>
+      [<a href="#ERRZDST0033">err:ZDST0033</a>].</li>
 
   <li>They must not invoke any input functions other than <a href="#xqddf_collection">
-      xqddf:collection</a> [<a href="#ERRXDST0029">err:XDST0029</a>]. Moreover,
+      xqddf:collection</a> [<a href="#ERRZDST0029">err:ZDST0029</a>]. Moreover,
       the argument to each <a href="#xqddf_collection">xqddf:collection</a> 
       call must be a constant expression returning a QName
-      value [<a href="#ERRXDST0030">err:XDST0030</a>]. (A
+      value [<a href="#ERRZDST0030">err:ZDST0030</a>]. (A
       constant expression is an expression that doesn't access the dynamic
       context).</li>
 
   <li>They must not reference and variables other than the ones defined inside
-      the expressions themselves [<a href="#ERRXDST0031">err:XDST0031</a>].</li>
+      the expressions themselves [<a href="#ERRZDST0031">err:ZDST0031</a>].</li>
 
   <li>If the index is declared as "automatically maintained", an error is raised
-      [<a href="#ERRXDST0034">err:XDST0034</a>] if the domain and/or the key 
+      [<a href="#ERRZDST0034">err:ZDST0034</a>] if the domain and/or the key 
       expressions are too complex for Zorba to perform index maintenance in an 
       efficient manner (see \ref index_maintenance for details)</li>
   </ul>
@@ -1540,35 +1540,35 @@ semantic restrictions:
 
   <ul>
   <li>Its context item, context position, and context size are considered
-      undefined, and as a result they must not be referenced [<a href="#ERRXDST0032">
-      err:XDST0032</a>].</li>
+      undefined, and as a result they must not be referenced [<a href="#ERRZDST0032">
+      err:ZDST0032</a>].</li>
 
   <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010">
       err:XDTY0010</a>].</li>
 
   <li>Each node in the domain sequence must belong to a collection that appears
       in the available collections of the module that contains the index declaration
-      [<a href="#ERRXDDY0020">err:XDDY0020</a>].</li>
+      [<a href="#ERRZDDY0020">err:ZDDY0020</a>].</li>
 
   <li>For general indexes only, the domain expression should not return any
-      duplicate nodes [<a href="#ERRXDDY0028">err:XDDY0028</a>]</li>
+      duplicate nodes [<a href="#ERRZDDY0028">err:ZDDY0028</a>]</li>
   </ul>
 
 With each key expression, an index declaration associates a key type and a key
 collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is 
 called a <strong>keyspec</strong>. For general indexes, the number of keyspecs 
-must be exectly one [<a href="#ERRXDST0035">err:XDST0035</a>]. The IndexKeyTypeDecl 
+must be exectly one [<a href="#ERRZDST0035">err:ZDST0035</a>]. The IndexKeyTypeDecl 
 is optional for general indexes (in which case it is assumed to be xs:anyAtomicItem*), 
-but is required for value indexes [<a href="#ERRXDST0027">err:XDST0027</a>].  
+but is required for value indexes [<a href="#ERRZDST0027">err:ZDST0027</a>].  
 The IndexKeyTypeDecl provides a sequence type that the atomized result of 
 the associated key expression (for each domain node) must match with according 
 to the rules of sequence type matching. For value indexes, the atomic type 
 specified in IndexKeyTypeDecl must not be xs:anyAtomicType or xs:untypedAtomic 
-[<a href="#ERRXDST0027">err:XDST0027</a>]. Furthermore, for value indexes, 
+[<a href="#ERRZDST0027">err:ZDST0027</a>]. Furthermore, for value indexes, 
 the occurrence indicator must be either absent or equal to '?' 
-[<a href="#ERRXDST0027">err:XDST0027</a>]. Finally, if the index is a value 
+[<a href="#ERRZDST0027">err:ZDST0027</a>]. Finally, if the index is a value 
 range or general range index, an ordering must exist among the values in the 
-type domain [<a href="#ERRXDST0027">err:XDST0027</a>] (this rules excludes
+type domain [<a href="#ERRZDST0027">err:ZDST0027</a>] (this rules excludes
 the following atomic types and their subtypes: QName, NOTATION, 
 hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). 
 
@@ -1621,10 +1621,10 @@ The create-index function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify an index among the
 statically known indexes in the static context of the invoking module, an error
-is raised [<a href="#ERRXDDY0021">err:XDDY0021</a>].</li>
+is raised [<a href="#ERRZDDY0021">err:ZDDY0021</a>].</li>
 
   <li>If the given expanded QName identifies an index that is available
-already, an error is raised [<a href="#ERRXDDY0022">err:XDDY0022</a>].</li>
+already, an error is raised [<a href="#ERRZDDY0022">err:ZDDY0022</a>].</li>
 
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
@@ -1644,10 +1644,10 @@ The domain expression is evaluated first. If the result of the domain expression
 contains an item that is not a node, an error is raised [<a href="#ERRXDTY0010">
 err:XDTY0010</a>]. If the result of the domain expression contains any duplicate
 nodes, then for value indexes, the duplicate nodes are removed, but for general 
-indexes, an error is raised [<a href="#ERRXDDY0028">err:XDDY0028</a>]. The result
+indexes, an error is raised [<a href="#ERRZDDY0028">err:ZDDY0028</a>]. The result
 of the domain expression after duplicate elimination is called the <strong>domain
 sequence</strong>. If the domain sequence contains a node that does not belong to 
-a collection, an error is raised [<a href="#ERRXDDY0020">err:XDDY0020</a>] (the 
+a collection, an error is raised [<a href="#ERRZDDY0020">err:ZDDY0020</a>] (the 
 purpose of this rule is to prevent nodes constructed by node construction 
 expression to appear as domain nodes).</li>
 
@@ -1698,10 +1698,10 @@ If the index is a value index:
   </li>
 
   <li>
-  If the index is declared as unique, the relationship between between key
+  If the index is declared as unique, the relationship between key
   tuples and domain nodes is one-to-one. In this case, if the index already
   contains an entry whose key tuple is equal to K<sub>i</sub>, an error is 
-  raised [<a href="#ERRXDDY0024">err:XDDY0024</a>]. Otherwise, the entry 
+  raised [<a href="#ERRZDDY0024">err:ZDDY0024</a>]. Otherwise, the entry 
   [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container (to be very
   precise, the entry contains a "pointer" to the node, not the node itself).
   </li>
@@ -1770,7 +1770,7 @@ If the index is a general index:
   items and domain nodes is one-to-one. In this case, if the index already
   contains an entry whose key item has the same type as K<sub>ij</sub> and
   its value is equal to K<sub>ij</sub>, an error is raised 
-  [<a href="#ERRXDDY0024">err:XDDY0024</a>]. Otherwise, the entry 
+  [<a href="#ERRZDDY0024">err:ZDDY0024</a>]. Otherwise, the entry 
   [K<sub>ij</sub>, D<sub>i</sub>] is inserted in the index container.
   <li>
 
@@ -1819,10 +1819,10 @@ The delete-index function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify an index among the
 statically known indexes in the static context of the invoking module, an error
-is raised [<a href="#ERRXDDY0021">err:XDDY0021</a>].</li>
+is raised [<a href="#ERRZDDY0021">err:ZDDY0021</a>].</li>
   <li>If the given expanded QName does not identify an index among the available
 indexes in the dynamic context of the invoking module, an error is raised [<a
-href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
+href="#ERRZDDY0023" title="err:ZDDY0023">err:ZDDY0023</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
 upd:deleteIndex($indexName).</li>
@@ -1848,10 +1848,11 @@ search condition, which is either a single key item/tuple, or a "range" of key
 items/tuples. Probing can be done via the xqddf functions 
 xqddf:probe-index-point-value, xqddf:probe-index-point-general, 
 xqddf:probe-index-range-value, or xqddf:probe-index-range-general.
-For each of these functions, the first argument is a QName identifying an
-index. The rest of the arguments specify the search condition. For all functions,
-the index must exist in both the statically known indexes and the available 
-indexes of the invoking module; otherwise error XDDY0021 or XDDY0023 is raised, 
+For each of these functions, the first argument is a QName identifying an index.
+The rest of the arguments specify the search condition. For all functions, the
+index must exist in both the statically known indexes and the available indexes
+of the invoking module; otherwise error <a href="#ERRZDDY0021">err:ZDDY0021</a>
+or <a href="#ERRZDDY0023">err:ZDDY0023</a> is raised, 
 respectively. All of the functions return their result sorted in document order 
 and without duplicate nodes. (For general probes, duplicate node elimination 
 is performed as part of the function implementation; for value probes, duplicate
@@ -1860,69 +1861,73 @@ nodes cannot appear in the result, so no duplicate elimination is needed.)
 <a name="probe_index_point_value" id="probe_index_point_value"></a>
 \code
   xqddf:probe-index-point-value($indexUri as xs:QName,
-                                $key1     as xs:anyAtomicType,
+                                $key1     as xs:anyAtomicType?,
                                 ...,
-                                $keyM     as xs:anyAtomicType) as node()*
+                                $keyM     as xs:anyAtomicType?) as node()*
 \endcode
 
 For the probe-index-point-value function, the search condition is specified as a
-number of atomic items comprising a search key tuple. This number must be equal 
-to the number of IndexKeySpecs found in the index declaration [<a href="#ERRXDDY0025">
-err:XDDY0025</a>]. (Remember that for general indexes, there can be only one 
-IndexKeySpec, and as a result, for general indexes, the probe-index-point-value 
-function takes only one search key item as input). Furthermore, the type of 
-each search key item must match the atomic type specified in the corresponding 
-IndexKeyTypeDecl; otherwise, a type error is raised [err:XPTY0004].
+number of <strong>search key items</strong> comprising a <strong>search key 
+tuple</strong>. A search key item is either an atomic item or the empty sequence.
+The number of search key items must be equal to the number of IndexKeySpecs found 
+in the index declaration [<a href="#ERRZDDY0025"> err:ZDDY0025</a>]. (Remember 
+that for general indexes, there can be only one IndexKeySpec, and as a result, 
+for general indexes, the probe-index-point-value function takes only one search 
+key item as input). Furthermore, the type of each search key item must match 
+the sequence type specified in the corresponding IndexKeyTypeDecl; otherwise, 
+a type error is raised [err:XPTY0004].
 
-For value indexes, if the index contains an entry with the given key tuple, 
-the associated domain nodes are returned. Otherwise, the empty sequence is 
-returned.
+The result of this function is either an error or the set of domain nodes that 
+statisfy the following xquery condition:
 
-For general indexes, if the multi-key or untyped flag of the index is true, a
-type error is raised [err:XPTY0004]. This is because value probes are supposed 
-to optimize value comparison predicates, which raise [err:XPTY0004] if any 
-operand of the comparison operator is a sequence of more than one items or if 
-one operand has type xs:untypedAtomic and the other operand has a type other 
-than xs:string or xs:anyUri, or subtype of these. If no error is raised, 
-execution of the function proceeds as follows: If the type of the search key 
-item is xs:untypedAtomic, the item is first cast to a string item. Then, the
-function looks for index entries whose key is equal to the search key according
-to the rules of the eq operator. For example, if the search key is an item with
-type xs:int and value 10, and the index contains two entries with key 10 as 
-xs:decimal and as xs:double, both of these entries will match the search key. 
-The final result is the union of the node sets stored in each matching entry.
+\code
+$key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
+\endcode
+
+where keyExpr<sub>i</sub> is the expression specified in the i-th keyspec 
+of the index.
+
+In addition to the error conditions described already, the function may raise
+a type error [err:XPTY0004] if the index is general and (a) the multi-key flag
+of the index is true, or (b) the untyped flag of the index is true and the type of
+the search key item is something other than xs:untypedAtomic, xs:string, or 
+xs:anyURI (or subtype of these).
+
 
 <a name="probe_index_point_general" id="probe_index_point_general"></a>
 \code
-  xqddf:probe-index-point-genral($indexUri as xs:QName,
-                                 $keys     as xs:anyAtomicType*) as node()*
+  xqddf:probe-index-point-general($indexUri as xs:QName,
+                                  $keys     as xs:anyAtomicType*) as node()*
 \endcode
 
-This method is supported by general indexes only [<a href="#ERRXDDY0029">
-err:XDDY0029</a>]. The search condition is specified as a sequence of
-atomic search items. The search sequence must match the sequence type 
-specified by the IndexKeyTypeDecl of the index; otherwise, a type error 
-is raised [err:XPTY0004]. If the type of any item in the search sequence 
-is xs:untypedAtomic, the item is removed from the search sequence and is
-cast to every other primitive builtin type for which an order relationship
-exists. For each such successful cast, the result item is added back to the
-search sequence. Then, for each item in the search sequence, the function 
-looks for index entries whose key is equal to the search key according to the 
-rules of the eq operator. The final result is the union of the node sets 
-stored in each matching entry.
+This method is supported by general indexes only [<a href="#ERRZDDY0029">
+err:ZDDY0029</a>]. The search condition is specified as a sequence of
+atomic search key items. If the search sequence is non-empty, the type of each 
+atomic item in it must match the atomic type specified by the IndexKeyTypeDecl
+of the index; otherwise, a type error is raised [err:XPTY0004]. 
+
+The result of this function is either an error or the set of domain nodes that 
+statisfy the following xquery condition:
+
+\code
+$keys = $node/keyExpr
+\endcode
+
+where keyExpr is the expression specified in the keyspec of the index.
+
 
 <a name="probe_index_range_value" id="probe_index_range_value"></a>
 \code
   probe-index-range-value($indexUri                 as xs:QName,
-                          $rangeLowerBound1         as xs:anyAtomic?,
-                          $rangeUpperBound1         as xs:anyAtomic?,
+                          $rangeLowerBound1         as xs:anyAtomicType?,
+                          $rangeUpperBound1         as xs:anyAtomicType?,
                           $rangeHaveLowerBound1     as xs:boolean,
                           $rangeHaveupperBound1     as xs:boolean,
                           $rangeLowerBoundIncluded1 as xs:boolean,
                           $rangeupperBoundIncluded1 as xs:boolean,
                           ....,
-                          $rangeLowerBoundM         as xs:anyAtomic?,
-                          $rangeUpperBoundM         as xs:anyAtomic?,
+                          $rangeLowerBoundM         as xs:anyAtomicType?,
+                          $rangeUpperBoundM         as xs:anyAtomicType?,
                           $rangeHaveLowerBoundM     as xs:boolean,
                           $rangeHaveupperBoundM     as xs:boolean,
                           $rangeLowerBoundIncludedM as xs:boolean,
@@ -1930,7 +1935,7 @@ stored in each matching entry.
 \endcode
 
 The probe-index-range-vaalue function can be invoked on range indices only 
-(value or general) [<a href="#ERRXDDY0026">err:XDDY0026</a>]. To describe the
+(value or general) [<a href="#ERRZDDY0026">err:ZDDY0026</a>]. To describe the
 semantics of this function, we start by defining the i<sup>th</sup> <strong>key
 column</strong> of an index as the set of key items produced by evaluating the
 i<sup>th</sup> keyspec of the index for every domain node. Then, the search
@@ -1939,7 +1944,7 @@ condition of a range probe can be defined as a number of
 values of a key column. The first rangespec applies to the first key column, the
 second rangespec to the second key column, etc. The number of rangespecs must be
 less or equal to the number of keyspecs found in the declaration of the given
-index [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. Each
+index [<a href="#ERRZDDY0025" title="err:ZDDY0025">err:ZDDY0025</a>]. Each
 rangespec consists of 6 values:
   <ul>
   <li>rangeLowerBound : The lower bound in a range of key values.</li>
@@ -1983,6 +1988,44 @@ false. The index-probe-range function finds all key tuples in the index that
 satisfy the given search condition, creates the union of the domain nodes
 associated with each such key tuple, puts the resulting sequence of nodes in
 document order, and finally returns this sequence to its caller.
+
+
+<a name="probe_index_range_general" id="probe_index_range_general"></a>
+\code
+  probe-index-range-general($indexUri            as xs:QName,
+                            $lowerBoundKeys      as xs:anyAtomicType*,
+                            $upperBoundKeys      as xs:anyAtomicType*,
+                            $haveLowerBound      as xs:boolean,
+                            $haveUpperBound      as xs:boolean,
+                            $lowerBoundIncluded  as xs:boolean,
+                            $upperBoundIncluded  as xs:boolean) as node()*
+\endcode
+
+This method is supported by general range indexes only [<a href="#ERRZDDY0030">
+err:ZDDY0030</a>]. The search condition is specified as two sequences of atomic
+search key items and four boolean values. If any of the search sequences is
+non-empty, the type of each atomic item in it must match the atomic type specified 
+by the IndexKeyTypeDecl of the index; otherwise, a type error is raised 
+[err:XPTY0004]. 
+
+The result of this function is either an error or the set of domain nodes for 
+which the following xquery expression returns true:
+
+\code
+if ($haveLowerBound and $haveUpperBound) then
+  $lowerBoundKeys lop $node/keyExpr and $node/keyExpr uop $upperBoundKeys
+else if ($haveLowerBound) then
+  $lowerBoundKeys lop $node/keyExpr
+else if ($haveUpperBound) then
+  $node/keyExpr uop $upperBoundKeys
+else
+  fn:true()
+\endcode
+
+where keyExpr is the expression specified in the keySpec of the index,
+lop is either the <= or the < operator depending on whether $lowerBoundsIncluded
+is true or false, and uop is either the <= or the < operator depending on whether
+$upperBoundsIncluded is true or false.
 
 
 \subsection index_maintenance 2.6 Index maintenance
@@ -2034,11 +2077,10 @@ The refresh-index function is evaluated as follows:
   <li>If the given expanded QName does not identify an index among the
 statically
       known indexes in the static context of the invoking module, an error is 
-      raised [<a href="#ERRXDDY0021"
-title="err:XDDY0021">err:XDDY0021</a>].</li>
+      raised [<a href="#ERRZDDY0021">err:ZDDY0021</a>].</li>
   <li>If the given expanded QName does not identify an index among the available
       indexes in the dynamic context of the invoking module, an error is raised
-      [<a href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
+      [<a href="#ERRZDDY0023">err:ZDDY0023</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update
       list that consists of a single update primitive:
 upd:refreshIndex($indexName).</li>
@@ -2228,12 +2270,12 @@ by the upd:mergeUpdates routine. XQDDF adds the following error conditions to
 this list:
 
 <ul>
-<li>An error is raised [<a href="#ERRXDDY0016"
-title="err:XDDY0016">err:XDDY0016</a>]
+<li>An error is raised [<a href="#ERRZDDY0016"
+title="err:ZDDY0016">err:ZDDY0016</a>]
     if two or more upd:createCollection primitives having the same QName as
 argument appear in the merged list.</li>
-<li>An error is raised [<a href="#ERRXDDY0027"
-title="err:XDDY0027">err:XDDY0027</a>]
+<li>An error is raised [<a href="#ERRZDDY0027"
+title="err:ZDDY0027">err:ZDDY0027</a>]
     if two or more upd:createIndex primitives having the same QName as argument
 appear in the merged list.</li>
 </ul>
@@ -2247,89 +2289,89 @@ appear in the merged list.</li>
 <p>XQuery Data Definition Facility - Static Errors:</p>
 
 <strong>
-  <a name="ERRXDST0001" id="ERRXDST0001"></a>err:XDST0001, A collection with
+  <a name="ERRZDST0001" id="ERRZDST0001"></a>err:ZDST0001, A collection with
 name is already declared in the same module.
 
-  <a name="ERRXDST0002" id="ERRXDST0002"></a>err:XDST0002, A collection with
+  <a name="ERRZDST0002" id="ERRZDST0002"></a>err:ZDST0002, A collection with
 name that is imported from module is already declared in the importing module.
 
-  <a name="ERRXDST0003" id="ERRXDST0003"></a>err:XDST0003, A collection
+  <a name="ERRZDST0003" id="ERRZDST0003"></a>err:ZDST0003, A collection
 declaration cannot appear in a main module.
 
-  <a name="ERRXDST0004" id="ERRXDST0004"></a>err:XDST0004, The declaration for
+  <a name="ERRZDST0004" id="ERRZDST0004"></a>err:ZDST0004, The declaration for
 collection specifies multiple values for the same property.
 
-  <a name="ERRXDST0005" id="ERRXDST0005"></a>err:XDST0005, The declaration for
+  <a name="ERRZDST0005" id="ERRZDST0005"></a>err:ZDST0005, The declaration for
 collection specifies conflicting property values.
 
-  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaration for
+  <a name="ERRZDST0006" id="ERRZDST0006"></a>err:ZDST0006, The declaration for
 collection contains an invalid property value.
 
-  <a name="ERRXDST0021" id="ERRXDST0021"></a>err:XDST0021, An index with name is
+  <a name="ERRZDST0021" id="ERRZDST0021"></a>err:ZDST0021, An index with name is
 already declared in the same module.
 
-  <a name="ERRXDST0022" id="ERRXDST0022"></a>err:XDST0022, An index with name
+  <a name="ERRZDST0022" id="ERRZDST0022"></a>err:ZDST0022, An index with name
 that is imported from module /s is already declared in the importing module.
 
-  <a name="ERRXDST0023" id="ERRXDST0023"></a>err:XDST0023, An index declaration
+  <a name="ERRZDST0023" id="ERRZDST0023"></a>err:ZDST0023, An index declaration
 cannot appear in a main module.
 
-  <a name="ERRXDST0024" id="ERRXDST0024"></a>err:XDST0024, The declaration for
+  <a name="ERRZDST0024" id="ERRZDST0024"></a>err:ZDST0024, The declaration for
 index specifies multiple values for the same property.
 
-  <a name="ERRXDST0025" id="ERRXDST0025"></a>err:XDST0025, The declaration for
+  <a name="ERRZDST0025" id="ERRZDST0025"></a>err:ZDST0025, The declaration for
 index specifies conflicting property values.
 
-  <a name="ERRXDST0026" id="ERRXDST0026"></a>err:XDST0026, The declaration for
+  <a name="ERRZDST0026" id="ERRZDST0026"></a>err:ZDST0026, The declaration for
 index contains an invalid property value.
 
-  <a name="ERRXDST0027" id="ERRXDST0027"></a>err:XDST0027, The index has an
+  <a name="ERRZDST0027" id="ERRZDST0027"></a>err:ZDST0027, The index has an
 invalid key type declaration.
 
-  <a name="ERRXDST0028" id="ERRXDST0028"></a>err:XDST0028, The index has a non
+  <a name="ERRZDST0028" id="ERRZDST0028"></a>err:ZDST0028, The index has a non
 deterministic definition.
 
-  <a name="ERRXDST0029" id="ERRXDST0029"></a>err:XDST0029, The index references
+  <a name="ERRZDST0029" id="ERRZDST0029"></a>err:ZDST0029, The index references
 a data source that is not a XQDDF collection.
 
-  <a name="ERRXDST0030" id="ERRXDST0030"></a>err:XDST0030, The index references
+  <a name="ERRZDST0030" id="ERRZDST0030"></a>err:ZDST0030, The index references
 a collection with a non-const QName.
 
-  <a name="ERRXDST0031" id="ERRXDST0031"></a>err:XDST0031, The index has free
+  <a name="ERRZDST0031" id="ERRZDST0031"></a>err:ZDST0031, The index has free
 variables in its definition.
 
-  <a name="ERRXDST0032" id="ERRXDST0032"></a>err:XDST0032, The domain expression
+  <a name="ERRZDST0032" id="ERRZDST0032"></a>err:ZDST0032, The domain expression
 of index references the context item.
 
-  <a name="ERRXDST0033" id="ERRXDST0033"></a>err:XDST0033, The declaration of
+  <a name="ERRZDST0033" id="ERRZDST0033"></a>err:ZDST0033, The declaration of
 index contains a non-simple expression.
 
-  <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be
+  <a name="ERRZDST0034" id="ERRZDST0034"></a>err:ZDST0034, Index cannot be
 automatically maintained.
 
-  <a name="ERRXDST0036" id="ERRXDST0036"></a>err:XDST0036, Index qname does not
+  <a name="ERRZDST0036" id="ERRZDST0036"></a>err:ZDST0036, Index qname does not
 have the same namespace URI as the target namespace of the declaring module.
 
-  <a name="ERRXDST0041" id="ERRXDST0041"></a>err:XDST0041, An integrity
+  <a name="ERRZDST0041" id="ERRZDST0041"></a>err:ZDST0041, An integrity
 constraint with URI is declared already.
 
-  <a name="ERRXDST0042" id="ERRXDST0042"></a>err:XDST0042, An integrity
+  <a name="ERRZDST0042" id="ERRZDST0042"></a>err:ZDST0042, An integrity
 constraint key has multiple values.
 
-  <a name="ERRXDST0043" id="ERRXDST0043"></a>err:XDST0043, An integrity
+  <a name="ERRZDST0043" id="ERRZDST0043"></a>err:ZDST0043, An integrity
 constraint key has a non-atomic value.
 
-  <a name="ERRXDST0045" id="ERRXDST0045"></a>err:XDST0045, The integrity
+  <a name="ERRZDST0045" id="ERRZDST0045"></a>err:ZDST0045, The integrity
 constraint cannot be declared in a main module.
 
-  <a name="ERRXDST0046" id="ERRXDST0046"></a>err:XDST0046, The integrity
+  <a name="ERRZDST0046" id="ERRZDST0046"></a>err:ZDST0046, The integrity
 constraint with URI has free variables in its definition.
 
-  <a name="ERRXDST0047" id="ERRXDST0047"></a>err:XDST0047, The integrity
+  <a name="ERRZDST0047" id="ERRZDST0047"></a>err:ZDST0047, The integrity
 constraint with URI references a data source that is not a collection among the
 statically known collections.
 
-  <a name="ERRXDST0048" id="ERRXDST0048"></a>err:XDST0048,The integrity
+  <a name="ERRZDST0048" id="ERRZDST0048"></a>err:ZDST0048,The integrity
 constraint with URI has a non deterministic definition.
 </strong>
 
@@ -2349,84 +2391,87 @@ key expression of index does not match its declared type.
 <p>XQuery Data Definition Facility - Dynamic Errors:</p>
 
 <strong>
-  <a name="ERRXDDY0001" id="ERRXDDY0001"></a>err:XDDY0001, Collection is not
+  <a name="ERRZDDY0001" id="ERRZDDY0001"></a>err:ZDDY0001, Collection is not
 declared in the static context.
 
-  <a name="ERRXDDY0002" id="ERRXDDY0002"></a>err:XDDY0002, Collection exists
+  <a name="ERRZDDY0002" id="ERRZDDY0002"></a>err:ZDDY0002, Collection exists
 already.
 
-  <a name="ERRXDDY0003" id="ERRXDDY0003"></a>err:XDDY0003, Collection does not
+  <a name="ERRZDDY0003" id="ERRZDDY0003"></a>err:ZDDY0003, Collection does not
 exist.
 
-  <a name="ERRXDDY0004" id="ERRXDDY0004"></a>err:XDDY0004, Cannot update const
+  <a name="ERRZDDY0004" id="ERRZDDY0004"></a>err:ZDDY0004, Cannot update const
 collection.
 
-  <a name="ERRXDDY0005" id="ERRXDDY0005"></a>err:XDDY0005, Illegal insert in
+  <a name="ERRZDDY0005" id="ERRZDDY0005"></a>err:ZDDY0005, Illegal insert in
 append-only collection.
 
-  <a name="ERRXDDY0006" id="ERRXDDY0006"></a>err:XDDY0006, Illegal insert in
+  <a name="ERRZDDY0006" id="ERRZDDY0006"></a>err:ZDDY0006, Illegal insert in
 queue collection.
 
-  <a name="ERRXDDY0007" id="ERRXDDY0007"></a>err:XDDY0007, Illegal delete from
+  <a name="ERRZDDY0007" id="ERRZDDY0007"></a>err:ZDDY0007, Illegal delete from
 append-only collection.
 
-  <a name="ERRXDDY0008" id="ERRXDDY0008"></a>err:XDDY0008, Illegal delete from
+  <a name="ERRZDDY0008" id="ERRZDDY0008"></a>err:ZDDY0008, Illegal delete from
 queue collection.
 
-  <a name="ERRXDDY0009" id="ERRXDDY0009"></a>err:XDDY0009, Not all the nodes to
+  <a name="ERRZDDY0009" id="ERRZDDY0009"></a>err:ZDDY0009, Not all the nodes to
 delete are at the beginning of queue collection.
 
-  <a name="ERRXDDY0010" id="ERRXDDY0010"></a>err:XDDY0010, Illegal update of
+  <a name="ERRZDDY0010" id="ERRZDDY0010"></a>err:ZDDY0010, Illegal update of
 node in collection, whose nodes are read-only.
 
-  <a name="ERRXDDY0011" id="ERRXDDY0011"></a>err:XDDY0011, Node is not contained
+  <a name="ERRZDDY0011" id="ERRZDDY0011"></a>err:ZDDY0011, Node is not contained
 in collection.
 
-  <a name="ERRXDDY0012" id="ERRXDDY0012"></a>err:XDDY0012, Illegal insert in
+  <a name="ERRZDDY0012" id="ERRZDDY0012"></a>err:ZDDY0012, Illegal insert in
 unordered collection.
 
-  <a name="ERRXDDY0013" id="ERRXDDY0013"></a>err:XDDY0013, Cannot delete
+  <a name="ERRZDDY0013" id="ERRZDDY0013"></a>err:ZDDY0013, Cannot delete
 collection because there are indexes that reference it.
 
-  <a name="ERRXDDY0014" id="ERRXDDY0014"></a>err:XDDY0014, Cannot delete
+  <a name="ERRZDDY0014" id="ERRZDDY0014"></a>err:ZDDY0014, Cannot delete
 collection because there are integrity constraints that reference it.
 
-  <a name="ERRXDDY0015" id="ERRXDDY0015"></a>err:XDDY0015, Cannot delete
+  <a name="ERRZDDY0015" id="ERRZDDY0015"></a>err:ZDDY0015, Cannot delete
 collection because there are references on its nodes.
 
-<a name="ERRXDDY0016" id="ERRXDDY0016"></a>err:XDDY0016, Cannot invoke the
+<a name="ERRZDDY0016" id="ERRZDDY0016"></a>err:ZDDY0016, Cannot invoke the
 create-collection function multiple times with the same QName in the same
 snapshot.
 
-  <a name="ERRXDDY0020" id="ERRXDDY0020"></a>err:XDDY0020, The domain expression
+  <a name="ERRZDDY0020" id="ERRZDDY0020"></a>err:ZDDY0020, The domain expression
 of index produces nodes that are not in collection.
 
-  <a name="ERRXDDY0021" id="ERRXDDY0021"></a>err:XDDY0021, Index is not declared
+  <a name="ERRZDDY0021" id="ERRZDDY0021"></a>err:ZDDY0021, Index is not declared
 in the static context.
 
-  <a name="ERRXDDY0022" id="ERRXDDY0022"></a>err:XDDY0022, Index exists already.
+  <a name="ERRZDDY0022" id="ERRZDDY0022"></a>err:ZDDY0022, Index exists already.
 
-  <a name="ERRXDDY0023" id="ERRXDDY0023"></a>err:XDDY0023, Index does not exist.
+  <a name="ERRZDDY0023" id="ERRZDDY0023"></a>err:ZDDY0023, Index does not exist.
 
-  <a name="ERRXDDY0024" id="ERRXDDY0024"></a>err:XDDY0024, The uniqueness
+  <a name="ERRZDDY0024" id="ERRZDDY0024"></a>err:ZDDY0024, The uniqueness
 property of index is violated.
 
-  <a name="ERRXDDY0025" id="ERRXDDY0025"></a>err:XDDY0025, Invalid number of
+  <a name="ERRZDDY0025" id="ERRZDDY0025"></a>err:ZDDY0025, Invalid number of
 arguments in probe of index.
 
-  <a name="ERRXDDY0026" id="ERRXDDY0026"></a>err:XDDY0026, Index does not
+  <a name="ERRZDDY0026" id="ERRZDDY0026"></a>err:ZDDY0026, Index does not
 support range probes.
 
-<a name="ERRXDDY0027" id="ERRXDDY0027"></a>err:XDDY0027, Cannot invoke the
+<a name="ERRZDDY0027" id="ERRZDDY0027"></a>err:ZDDY0027, Cannot invoke the
 create-index function multiple times with the same QName in the same snapshot.
 
-  <a name="ERRXDDY0031" id="ERRXDDY0031"></a>err:XDDY0031, An integrity
+<a name="ERRZDDY0030" id="ERRZDDY0030"></a>err:ZDDY0030, Index does not
+support general range probes.
+
+  <a name="ERRZDDY0031" id="ERRZDDY0031"></a>err:ZDDY0031, An integrity
 constraint with URI is not declared.
 
-  <a name="ERRXDDY0032" id="ERRXDDY0032"></a>err:XDDY0032, An integrity
+  <a name="ERRZDDY0032" id="ERRZDDY0032"></a>err:ZDDY0032, An integrity
 constraint with URI is not declared.
 
-  <a name="ERRXDDY0033" id="ERRXDDY0033"></a>err:XDDY0033, Conditions for
+  <a name="ERRZDDY0033" id="ERRZDDY0033"></a>err:ZDDY0033, Conditions for
 integrity constraint were not met on collection.
 </strong>
 

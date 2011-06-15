@@ -148,7 +148,7 @@ public:
   {
   }
 
-  const store::IndexKey&  getKey() const { return theKey; }
+  const store::IndexKey& getKey() const { return theKey; }
 
   void clear();
 
@@ -161,6 +161,16 @@ public:
         bool haveUpper,
         bool lowerIncl,
         bool upperIncl);
+
+  void pushLowerBound(
+      std::vector<store::Item_t>& bound,
+      bool haveBound,
+      bool boundIncl);
+
+  void pushUpperBound(
+      std::vector<store::Item_t>& bound,
+      bool haveBound,
+      bool boundIncl);
 
   bool test(const store::IndexKey& key) const;
 
@@ -207,8 +217,6 @@ class IndexBoxCondition : public store::IndexCondition
   friend class ValueTreeIndex;
   friend class ProbeValueTreeIndexIterator;
 
-  friend std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond);
-
 public:
   static store::Item_t  theNegInf;
   static store::Item_t  thePosInf;
@@ -225,32 +233,12 @@ protected:
   rchandle<IndexImpl>      theIndex;
   store::IndexKey          theLowerBounds;
   store::IndexKey          theUpperBounds;
-  std::vector<RangeFlags>  theRangeFlags;
 
 public:
   IndexBoxCondition(IndexImpl* idx) : theIndex(idx) { }
 
-  void clear();
-
-  ulong numRanges() const { return theLowerBounds.size(); }
-
-  bool test(const store::IndexKey& key) const;
-
   void pushItem(store::Item_t& item);
-
-  void pushRange(
-        store::Item_t& lower,
-        store::Item_t& upper,
-        bool haveLower,
-        bool haveUpper,
-        bool lowerIncl,
-        bool upperIncl);
-
-  std::string toString() const;
 };
-
-
-std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond);
 
 
 /*******************************************************************************
@@ -259,7 +247,12 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond);
 class IndexBoxValueCondition : public IndexBoxCondition
 {
   friend class ValueTreeIndex;
-  friend class ProbeTreeValueIndexIterator;
+  friend class ProbeValueTreeIndexIterator;
+
+  friend std::ostream& operator<<(std::ostream& os, const IndexBoxValueCondition& c);
+
+protected:
+  std::vector<RangeFlags>  theRangeFlags;
 
 public:
   IndexBoxValueCondition(IndexImpl* idx) : IndexBoxCondition(idx) { }
@@ -267,7 +260,36 @@ public:
   store::IndexCondition::Kind getKind() const { return BOX_VALUE; }
 
   std::string getKindString() const { return "BOX_VALUE"; }
+
+  ulong numRanges() const { return theLowerBounds.size(); }
+
+  void clear();
+
+  void pushRange(
+      store::Item_t& lower,
+      store::Item_t& upper,
+      bool haveLower,
+      bool haveUpper,
+      bool lowerIncl,
+      bool upperIncl);
+
+  void pushLowerBound(
+      std::vector<store::Item_t>& bound,
+      bool haveBound,
+      bool boundIncl);
+
+  void pushUpperBound(
+      std::vector<store::Item_t>& bound,
+      bool haveBound,
+      bool boundIncl);
+
+  bool test(const store::IndexKey& key) const;
+
+  std::string toString() const;
 };
+
+
+std::ostream& operator<<(std::ostream& os, const IndexBoxValueCondition& cond);
 
 
 /*******************************************************************************
@@ -275,14 +297,48 @@ public:
 ********************************************************************************/
 class IndexBoxGeneralCondition : public IndexBoxCondition
 {
+  friend class GeneralTreeIndex;
+  friend class ProbeGeneralTreeIndexIterator;
+
+  friend std::ostream& operator<<(std::ostream& os, const IndexBoxGeneralCondition& c);
+
+protected:
+  RangeFlags  theRangeFlags;
+
 public:
   IndexBoxGeneralCondition(IndexImpl* idx) : IndexBoxCondition(idx) { }
 
   store::IndexCondition::Kind getKind() const { return BOX_GENERAL; }
 
   std::string getKindString() const { return "BOX_GENERAL"; }
+
+  void clear();
+
+  void pushRange(
+      store::Item_t& lower,
+      store::Item_t& upper,
+      bool haveLower,
+      bool haveUpper,
+      bool lowerIncl,
+      bool upperIncl);
+
+  void pushLowerBound(
+      std::vector<store::Item_t>& bound,
+      bool haveBound,
+      bool boundIncl);
+
+  void pushUpperBound(
+      std::vector<store::Item_t>& bound,
+      bool haveBound,
+      bool boundIncl);
+
+  bool test(const store::IndexKey& key) const;
+
+  std::string toString() const;
 };
  
+
+std::ostream& operator<<(std::ostream& os, const IndexBoxGeneralCondition& cond);
 
 
 

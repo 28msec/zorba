@@ -39,6 +39,7 @@
 #include "context/dynamic_context.h"
 
 #include "diagnostics/xquery_exception.h"
+#include "diagnostics/util_macros.h"
 
 namespace zorba {
 
@@ -58,16 +59,11 @@ static void checkKeyType(
   if (indexKeyType != NULL &&
       !TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS(
-        ZED( SearchKeyTypeMismatch_234 ),
-        *searchKeyType,
-        indexDecl->getName()->getStringValue(),
-        *indexKeyType
-      ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
+                 *searchKeyType,
+                 indexDecl->getName()->getStringValue(),
+                 *indexKeyType));
   }
   else if (indexKeyType == NULL)
   {
@@ -78,15 +74,10 @@ static void checkKeyType(
          (TypeOps::is_subtype(tm, *searchKeyType, *rtm.NOTATION_TYPE_ONE) ||
           TypeOps::is_subtype(tm, *searchKeyType, *rtm.HEXBINARY_TYPE_ONE))))
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( SearchKeyTypeNoProbeIndex_23 ),
-          *searchKeyType,
-          indexDecl->getName()->getStringValue()
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(SearchKeyTypeNoProbeIndex_23),
+                   *searchKeyType,
+                   indexDecl->getName()->getStringValue()));
     }
   }
 }
@@ -654,7 +645,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       }
       
       state->theIterator = GENV_STORE.getIteratorFactory()->
-        createIndexProbeIterator(state->theIndex);
+      createIndexProbeIterator(state->theIndex);
     }
 
     cond = state->theIndex->createCondition(store::IndexCondition::POINT_VALUE);
@@ -663,7 +654,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
     {
       if (!consumeNext(keyItem, theChildren[i], planState)) 
       {
-        // We may reach here in the case of internally-generated hashjoins
+        // Return the empty seq if any of the search key items is the empty seq.
         break;
       }
 
@@ -725,6 +716,13 @@ void ProbeIndexPointValueIterator::accept(PlanIterVisitor& v) const
 
 /*******************************************************************************
   ProbeIndexPointGeneralIterator
+
+  fn-zorba-ddl:probe-index-point-general(
+      $indexName as xs:QName,
+      $keys      as xs:anyAtomicItem*) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
+  function.
 ********************************************************************************/
 ProbeIndexPointGeneralIteratorState::ProbeIndexPointGeneralIteratorState()
 {
@@ -785,30 +783,21 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0021_INDEX_NOT_DECLARED,
-          ERROR_PARAMS( qnameItem->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+        ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
       if (!state->theIndexDecl->isGeneral())
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED,
-          ERROR_PARAMS( qnameItem->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0029_INDEX_POINT_GENERAL_PROBE_NOT_ALLOWED, loc,
+        ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1 ||
           numChildren != 2)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-          ERROR_PARAMS( qnameItem->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -817,11 +806,8 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
 
       if (state->theIndex == NULL)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-          ERROR_PARAMS( qnameItem->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+        ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
       state->theIterator = GENV_STORE.getIteratorFactory()->
@@ -968,38 +954,26 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0021_INDEX_NOT_DECLARED,
-        ERROR_PARAMS( qname->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
     }
 
     if (indexDecl->getMethod() != IndexDecl::TREE)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED,
-        ERROR_PARAMS( qname->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(zerr::ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
     }
 
     if ((numChildren-1) % 6 != 0)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-        ERROR_PARAMS( qname->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qname->getStringValue()));
     }
 
     if (indexDecl->getKeyExpressions().size() * 6 > numChildren-1)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-        ERROR_PARAMS( qname->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qname->getStringValue()));
     }
 
     state->theIndex = (indexDecl->isTemp() ?
@@ -1008,11 +982,8 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     if (state->theIndex == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-        ERROR_PARAMS( qname->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+      ERROR_PARAMS(qname->getStringValue()));
     }
 
     state->theIterator = GENV_STORE.getIteratorFactory()->
@@ -1098,15 +1069,13 @@ void ProbeIndexRangeValueIterator::accept(PlanIterVisitor& v) const
 /*******************************************************************************
   ProbeIndexRangeGeneralIterator
 ********************************************************************************/
-
-
 ProbeIndexRangeGeneralIterator::ProbeIndexRangeGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
   : 
   NaryBaseIterator<ProbeIndexRangeGeneralIterator,
-                   ProbeIndexRangeValueIteratorState>(sctx, loc, children),
+                   ProbeIndexRangeGeneralIteratorState>(sctx, loc, children),
   theCheckKeyType(true)
 {
 }
@@ -1121,7 +1090,7 @@ void ProbeIndexRangeGeneralIterator::serialize(::zorba::serialization::Archiver&
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<ProbeIndexRangeGeneralIterator,
-                    ProbeIndexRangeValueIteratorState>*)this);
+                    ProbeIndexRangeGeneralIteratorState>*)this);
 
   ar & theCheckKeyType;
 }
@@ -1129,9 +1098,114 @@ void ProbeIndexRangeGeneralIterator::serialize(::zorba::serialization::Archiver&
 
 bool ProbeIndexRangeGeneralIterator::nextImpl(
     store::Item_t& result, 
-    PlanState& aPlanState) const
+    PlanState& planState) const
 {
-  return false;
+  store::Item_t qname;
+  IndexDecl_t indexDecl;
+  store::IndexCondition_t cond;
+  bool status;
+
+  ProbeIndexRangeGeneralIteratorState* state;
+  DEFAULT_STACK_INIT(ProbeIndexRangeGeneralIteratorState, state, planState);
+
+  status = consumeNext(qname, theChildren[0], planState);
+  ZORBA_ASSERT(status);
+
+  if (state->theQname == NULL || !state->theQname->equals(qname)) 
+  {
+    state->theQname = qname;
+
+    if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    if (indexDecl->getMethod() != IndexDecl::TREE)
+    {
+      RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    if (!indexDecl->isGeneral())
+    {
+      RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    state->theIndex = (indexDecl->isTemp() ?
+                       planState.theLocalDynCtx->getIndex(qname) :
+                       GENV_STORE.getIndex(state->theQname));
+
+    if (state->theIndex == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+                         createIndexProbeIterator(state->theIndex);
+  }
+
+  cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+
+  {
+    store::Item_t itemHaveLower;
+    store::Item_t itemHaveUpper;
+    store::Item_t itemInclLower;
+    store::Item_t itemInclUpper;
+    std::vector<store::Item_t> lowerBounds;
+    std::vector<store::Item_t> upperBounds;
+    store::Item_t searchKey;
+    store::Item_t minmaxSearchKey;
+
+    // Get the values of $haveLowerBound, $haveUpperBound, $lowerBoundIncluded,
+    // and $upperBoundIncluded params
+    if (!consumeNext(itemHaveLower, theChildren[3], planState))
+      ZORBA_ASSERT(false);
+
+    if (!consumeNext(itemHaveUpper, theChildren[4], planState))
+     ZORBA_ASSERT(false);
+
+    if (!consumeNext(itemInclLower, theChildren[5], planState))
+     ZORBA_ASSERT(false);
+ 
+    if (!consumeNext(itemInclUpper, theChildren[6], planState))
+     ZORBA_ASSERT(false);
+
+    bool haveLower = itemHaveLower->getBooleanValue();
+    bool haveUpper = itemHaveUpper->getBooleanValue();
+    bool inclLower = itemInclLower->getBooleanValue();
+    bool inclUpper = itemInclUpper->getBooleanValue();
+
+    // Compute the lower-bound search keys
+    while (consumeNext(searchKey, theChildren[1], planState))
+    {
+      lowerBounds.push_back(NULL);
+      lowerBounds[lowerBounds.size()-1].transfer(searchKey);
+    }
+
+    // Compute the upper-bound search keys
+    while (consumeNext(searchKey, theChildren[2], planState))
+    {
+      upperBounds.push_back(NULL);
+      upperBounds[upperBounds.size()-1].transfer(searchKey);
+    }
+
+    // Fill-in the search condition
+    cond->pushLowerBound(lowerBounds, haveLower, inclLower);
+    cond->pushUpperBound(upperBounds, haveUpper, inclUpper);
+  }
+
+  state->theIterator->init(cond);
+  state->theIterator->open();
+
+  while(state->theIterator->next(result)) 
+  {
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END(state);
 }
 
 

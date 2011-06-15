@@ -21,6 +21,8 @@
 #include "store/naive/simple_item_factory.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
+
 #include "zorbatypes/floatimpl.h"
 
 namespace zorba 
@@ -522,12 +524,8 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
   if (theProbeKind != store::IndexCondition::POINT_VALUE &&
       theProbeKind != store::IndexCondition::POINT_GENERAL)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-      ERROR_PARAMS(
-        cond->getKindString(), theIndex->getName()->getStringValue()
-      )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ERROR_PARAMS(cond->getKindString(), theIndex->getName()->getStringValue()));
   }
 
   theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
@@ -536,32 +534,44 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
 
   if (key->size() != theIndex->getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-      ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+    ERROR_PARAMS(key->toString(), theIndex->getName()->getStringValue()));
   }
 
   if (theProbeKind == store::IndexCondition::POINT_VALUE)
   {
     if (theIndex->theMultiKeyFlag)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( NoMultiKeyNodeValues_2 ), theIndex->getName()->getStringValue()
-        )
-      );
+      RAISE_ERROR_NO_LOC(err::XPTY0004,
+      ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2), theIndex->getName()->getStringValue()));
     }
 
     if (theIndex->theUntypedFlag)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( NoUntypedKeyNodeValue_2 ), theIndex->getName()->getStringValue()
-        )
-      );
+      AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+
+      if (keyItem->getBaseItem() != NULL)
+        keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+      
+      SchemaTypeCode keyType = keyItem->getTypeCode();
+
+      if (keyType != XS_UNTYPED_ATOMIC &&
+          keyType != XS_ANY_URI &&
+          keyType != XS_STRING &&
+          keyType != XS_NORMALIZED_STRING &&
+          keyType != XS_TOKEN &&
+          keyType != XS_NMTOKEN &&
+          keyType != XS_LANGUAGE &&
+          keyType != XS_NAME &&
+          keyType != XS_NCNAME &&
+          keyType != XS_ID &&
+          keyType != XS_IDREF &&
+          keyType != XS_ENTITY)
+      {
+        RAISE_ERROR_NO_LOC(err::XPTY0004,
+        ERROR_PARAMS(ZED(NoUntypedKeyNodeValue_2),
+                     theIndex->getName()->getStringValue()));
+      }
     }
   }
   
