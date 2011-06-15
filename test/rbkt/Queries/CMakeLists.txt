@@ -39,13 +39,6 @@ LIST(REMOVE_ITEM TESTFILES
 # Crashes on Windows: 3284881, 3071699 (fix 3284881 before 3071699)
   zorba/HigherOrder/hof-101.xq
 )
-IF(WIN32)
-  LIST(REMOVE_ITEM TESTFILES
-  # Crashes on Windows: 3292817
-    zorba/eval/eval8.xq
-    zorba/eval/eval_mod1.xq
-  )
-ENDIF(WIN32)
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
 # of this dir
