@@ -90,6 +90,7 @@ set (changefile "${workdir}.tgz")
 execute_process (COMMAND "${CMAKE_COMMAND}" -E tar czf "${changefile}" "."
   WORKING_DIRECTORY "${workdir}")
 file (REMOVE_RECURSE "${workdir}")
+get_filename_component (changefile "${changefile}" NAME)
 
 # Testing option: Don't submit job at all if "packageonly" is set
 if (packageonly)
