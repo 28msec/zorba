@@ -271,6 +271,17 @@ bool fileEquals(
     return false;
   }
 
+  // Consume a leading byte-order-mark
+  char bom[3];
+  refStream.read(bom, 3);
+  if (bom[0] != static_cast<char>(0xEF) ||
+    bom[1] != static_cast<char>(0xBB) ||
+    bom[2] != static_cast<char>(0xBF))
+  {
+    // Wasn't a BOM; 'unread' it
+    refStream.seekg(-3, std::ios_base::cur);
+  }
+
   aLine = 1;
   aCol = 0;
   while (! refStream.eof() )
