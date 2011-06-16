@@ -48,11 +48,6 @@ class FloatCommons
 // exported for testing only
 template<typename FloatType>
 class ZORBA_DLL_PUBLIC FloatImpl : public serialization::SerializeBaseClass {
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-public:
-  static  HashCharPtrObjPtrLimited<FloatImpl>  parsed_floats;
-#endif
-
 public:
   typedef FloatType value_type;
 

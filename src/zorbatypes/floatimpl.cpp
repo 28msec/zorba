@@ -80,12 +80,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<float>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<double>, 2)
 
 
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-template<>  HashCharPtrObjPtrLimited<FloatImpl<float>>   FloatImpl<float>::parsed_floats;
-template<>  HashCharPtrObjPtrLimited<FloatImpl<double>>  FloatImpl<double>::parsed_floats;
-#endif
-
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //  FloatCommons                                                              //
@@ -204,16 +198,6 @@ int FloatImpl<double>::max_precision()
 template <typename FloatType>
 bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatImpl)
 {
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  FloatImpl *hashed_float;
-  if(parsed_floats.get(aCharStar, hashed_float))
-  {
-    //found in hash
-    aFloatImpl = *hashed_float;
-    return true;
-  }
-#endif
-
   const char* lCur = aCharStar;
 
   bool lGotBase = false;
@@ -375,12 +359,6 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
 
   if (signif_digits < max_precision())
     aFloatImpl.precision = signif_digits;
-
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  hashed_float = new FloatImpl<FloatType>(aFloatImpl);
-  const char* dup_str = _strdup(aCharStar);
-  parsed_floats.insert(dup_str, hashed_float);
-#endif
 
   return true;
 }

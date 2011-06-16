@@ -36,15 +36,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(Integer)
 ///////////////////////////////////////////////////////////////////////////////
 
 void Integer::parse( char const *s, bool allow_negative ) {
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  static HashCharPtrObjPtrLimited<Integer> cache;
-  Integer *cached_integer;
-  if( cache.get( s, cached_integer ) ) {
-    value_ = cached_integer->value_;
-    return;
-  }
-#endif /* ZORBA_NUMERIC_OPTIMIZATION */
-
 #ifndef ZORBA_NO_BIGNUMBERS
   Decimal::parse(
     s, &value_, allow_negative ? Decimal::parse_negative : Decimal::parse_none
@@ -57,12 +48,6 @@ void Integer::parse( char const *s, bool allow_negative ) {
       BUILD_STRING( '"', *end, "\": invalid character" )
     );
 #endif /* ZORBA_NO_BIGNUMBERS */
-
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  cached_integer = new Integer( *this );
-  const char *const dup_str = _strdup( s_ok );
-  cache.insert( dup_str, cached_integer );
-#endif /* ZORBA_NUMERIC_OPTIMIZATION */
 }
 
 void Integer::serialize( serialization::Archiver &ar ) {

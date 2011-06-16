@@ -205,8 +205,6 @@ private:
     parse_decimal  = 0x02 | parse_negative
   };
 
-  void parse( char const *s, int parse_options = parse_decimal );
-
   static void parse( char const *s, value_type *result,
                      int parse_options = parse_decimal );
 
@@ -252,7 +250,7 @@ inline Decimal::Decimal( unsigned int n ) : value_( static_cast<long>( n ) ) {
 }
 
 inline Decimal::Decimal( char const *s ) {
-  parse( s );
+  parse( s, &value_ );
 }
 
 inline Decimal::Decimal( Decimal const &d ) :
@@ -313,7 +311,7 @@ inline Decimal& Decimal::operator=( double n ) {
 }
 
 inline Decimal& Decimal::operator=( char const *s ) {
-  parse( s );
+  parse( s, &value_ );
   return *this;
 }
 

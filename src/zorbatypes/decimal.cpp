@@ -35,25 +35,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(Decimal)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Decimal::parse( char const *s, int parse_options ) {
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  static HashCharPtrObjPtrLimited<Decimal> cache;
-  Decimal *cached_decimal;
-  if ( cache.get( s, cached_decimal ) ) {
-    *result = cached_decimal->value_;
-    return;
-  }
-#endif /* ZORBA_NUMERIC_OPTIMIZATION */
-
-  parse( s, &value_, parse_options );
-
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-  cached_decimal = new Decimal( *this );
-  char const *const s_dup = _strdup( s );
-  parsed_integers.insert( s_dup, cached_decimal );
-#endif /* ZORBA_NUMERIC_OPTIMIZATION */
-}
-
 void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
     throw std::invalid_argument( "empty string" );

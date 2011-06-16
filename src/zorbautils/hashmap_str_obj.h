@@ -20,7 +20,7 @@
 #include "zorbautils/hashmap.h"
 #include "zorbautils/hashfun.h"
 
-namespace zorba{
+namespace zorba {
 
 class CompareCharPtr
 {
@@ -36,68 +36,13 @@ public:
 };
 
 
-template<class class_name>
-class HashCharPtrObjPtr : public HashMap<const char *, class_name*, CompareCharPtr>
-{
-public:
-  HashCharPtrObjPtr()
-    :
-    HashMap<const char *, class_name*, CompareCharPtr>(1024, true)
-  {
-  }
-
-  virtual ~HashCharPtrObjPtr() { freeAll(); }
-
-  void freeAll()
-  {
-    //free all allocated FloatImpls
-    typename HashMap<const char *, class_name*, CompareCharPtr>::iterator  it;
-    for(it = HashMap<const char *, class_name*, CompareCharPtr>::begin();
-        it != HashMap<const char *, class_name*, CompareCharPtr>::end();
-        ++it)
-    {
-      free((void*)(*it).first);
-      delete (*it).second;
-    }
-  }
-};
-
-
-template<class class_name>
-class HashCharPtrObjPtrLimited : public HashCharPtrObjPtr<class_name>
-{
-  //int nr_missed;
-public:
-  HashCharPtrObjPtrLimited() : HashCharPtrObjPtr<class_name>() {/*nr_missed=0;*/}
-
-  bool get(const char * item, class_name*& value)
-  {
-    if (HashMap<const char *, class_name*, CompareCharPtr>::get(item, value))
-    {
-      //nr_missed = 0;
-      return true;
-    }
-
-    //nr_missed++;
-    if( (this->theNumEntries >= 20*1024))// && (nr_missed > 50))
-    {
-      // restart hashing
-      HashCharPtrObjPtr<class_name>::freeAll();
-      HashMap<const char *, class_name*, CompareCharPtr>::clear();
-    }
-    return false;
-  }
-
-};
-
-
-template<class class_name>
-class HashCharPtrObj : public HashMap<const char *, class_name, CompareCharPtr>
+template<typename T>
+class HashCharPtrObj : public HashMap<const char *, T, CompareCharPtr>
 {
 public:
   HashCharPtrObj() 
     :
-    HashMap<const char *, class_name, CompareCharPtr>(1024, true)
+    HashMap<const char *, T, CompareCharPtr>(1024, true)
   {
   }
 
@@ -105,9 +50,9 @@ public:
 
   void freeAll()
   {
-    typename HashMap<const char *, class_name, CompareCharPtr>::iterator  it;
-    for(it = HashMap<const char *, class_name, CompareCharPtr>::begin();
-        it != HashMap<const char *, class_name, CompareCharPtr>::end();
+    typename HashMap<const char *, T, CompareCharPtr>::iterator  it;
+    for(it = HashMap<const char *, T, CompareCharPtr>::begin();
+        it != HashMap<const char *, T, CompareCharPtr>::end();
         ++it)
     {
       free((void*)(*it).first);
@@ -116,10 +61,9 @@ public:
 };
 
 
-}
+} // namespace zorba
 
 #endif
-
 /*
  * Local variables:
  * mode: c++
