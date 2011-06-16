@@ -25,13 +25,28 @@
 
 namespace zorba {
 
-DebuggerCommand::DebuggerCommand(std::string aCommand)
+DebuggerCommand::DebuggerCommand(std::string& aCommand)
+  : theData()
 {
-  int lNameEnd = aCommand.find(" ");
+  std::size_t lNameEnd = aCommand.find(" ");
   theName = aCommand.substr(0, lNameEnd);
-  int lDataBegin = aCommand.find("--", lNameEnd);
+  std::size_t lDataBegin = aCommand.find("--", lNameEnd);
   std::string lArgs = aCommand.substr(lNameEnd + 1, lDataBegin);
 
+  if (lDataBegin != std::string::npos) {
+    lDataBegin += 2;
+    while (lDataBegin < aCommand.size()) {
+      switch (aCommand.at(lDataBegin)) {
+      case ' ':
+      case '\t':
+        ++lDataBegin;
+        continue;
+      default:
+        theData = aCommand.substr(lDataBegin);
+        lDataBegin = aCommand.size();
+      }
+    }
+  }
 
   bool lFollowsArg = true;
   bool lInArgName = false;
@@ -47,7 +62,7 @@ DebuggerCommand::DebuggerCommand(std::string aCommand)
       switch (c) {
       case ' ':
       case '\t':
-        // if whitesace while reading arg name, stop and add argument
+        // if whitespace while reading arg name, stop and add argument
         if (lInArgName) {
           lFollowsArg = false;
           lInArgName = false;
@@ -129,11 +144,6 @@ DebuggerCommand::getArg(std::string aArg, int& aValue) {
     lSs >> aValue;
     return true;
   }
-}
-
-std::string
-DebuggerCommand::getName() {
-  return theName;
 }
 
 } // namespace zorba

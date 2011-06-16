@@ -266,6 +266,29 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
       break;
 
+    // eval
+    case 'e':
+      {
+        lResponse << "success=\"1\">";
+
+        try {
+
+          String lEncodedData(aCommand.getData());
+          String lDecodedData = encoding::Base64::decode(lEncodedData);
+
+          zstring lVar(lDecodedData.c_str());
+          std::list<std::pair<zstring, zstring> > lResults = theRuntime->eval(lVar);
+
+          std::string lName = "";
+          buildChildProperties(lName, lResults, lResponse);
+
+        } catch (...) {
+          return buildErrorResponse(lTransactionID, lCmdName, 206, "Error while evaluating expression.");
+        }
+      }
+
+      break;
+
     // feature_get, feature_set
     case 'f':
       {
@@ -466,7 +489,11 @@ DebuggerServer::buildProperty(
     zstring lVar;
     lVar.append("$");
     lVar.append(aName);
-    lResults = theRuntime->eval(lVar);
+    try {
+      lResults = theRuntime->eval(lVar);
+    } catch (...) {
+      // TODO: a better reporting
+    }
   }
 
   std::size_t lSize = lResults.size();
@@ -510,16 +537,19 @@ DebuggerServer::buildChildProperties(
   std::list<std::pair<zstring, zstring> >::iterator lIter = aResults.begin();
   for (int i = 1; lIter != aResults.end(); ++lIter, ++i) {
     String lValue(lIter->first.c_str());
-    aStream << encoding::Base64::encode(lValue);
+    std::stringstream lNameSs;
+    if (aName != "") {
+      lNameSs << aName << "[" << i << "]";
+    }
 
     aStream << "<property "
-      << "name=\"" << aName << "[" << i << "]" << "\" "
-      << "fullname=\"" << aName << "[" << i << "]" << "\" "
+      << "name=\"" << lNameSs.str() << "\" "
+      << "fullname=\"" << lNameSs.str() << "\" "
       << "type=\"" << lIter->second << "\" "
-      << "encoding=\"none\" "
+      << "encoding=\"base64\" "
       << "constant=\"1\" "
       << "children=\"0\" "
-      << ">" << lValue
+      << ">" << encoding::Base64::encode(lValue)
       << "</property>";
   }
 }

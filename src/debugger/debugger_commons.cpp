@@ -464,10 +464,15 @@ DebuggerCommons::eval(const zstring& aExpr, Zorba_SerializerOptions& aSerOpts)
   zstring lStore = aExpr;
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
                                                                   lStore);
-  std::list<std::pair<zstring, zstring> > lRes =
-    theIteratorStack.back()->eval(thePlanState, &aSerOpts);
+  std::list<std::pair<zstring, zstring> > lRes;
+  try {
+    lRes = theIteratorStack.back()->eval(thePlanState, &aSerOpts);
+    theExecEval = false;
+  } catch (...) {
+    theExecEval = false;
+    throw;
+  }
 
-  theExecEval = false;
   return lRes;
 }
 

@@ -165,34 +165,31 @@ DebugIterator::eval(
   store::Item_t lRes;
   serializer ser(NULL);
   SerializerImpl::setSerializationParameters(ser, *aSerOptions);
-  try {
-    while (consumeNext(lRes, theChildren[1], *aPlanState)) {
-      std::stringstream lResStream;
 
-      // Build a singleton item sequence and wrap it in an internal Serializable.
-      // The new serializer interface only accepts Serializable objects.
-      const Item lItem(lRes);
-      SingletonItemSequence lSequence(lItem);
-      Iterator_t  seq_iter = lSequence.getIterator();
-      seq_iter->open();
-      ser.serialize(Unmarshaller::getInternalIterator(seq_iter.get()), lResStream);
-      seq_iter->close();
+  while (consumeNext(lRes, theChildren[1], *aPlanState)) {
+    std::stringstream lResStream;
 
-      // build the result pair and append it to the list
-      store::Item* lTypeItem = lRes->getType();
-      zstring lTypeStr(lTypeItem->getStringValue());
-      // TODO: support namespaces
-      //zstring lTypeNS = lTypeItem->getNamespace();
-      //if (!lTypeNS.empty()) {
-      //  lTypeStr = lTypeStr.append(" " + lTypeNS);
-      //}    
-      std::pair<zstring, zstring> lPair(lResStream.str(), lTypeStr);
-      lResult.push_back(lPair);
-    }
-  } catch (...) {
-    // catching anything in this sandbox
-    // TODO: must report an error in the result
+    // Build a singleton item sequence and wrap it in an internal Serializable.
+    // The new serializer interface only accepts Serializable objects.
+    const Item lItem(lRes);
+    SingletonItemSequence lSequence(lItem);
+    Iterator_t  seq_iter = lSequence.getIterator();
+    seq_iter->open();
+    ser.serialize(Unmarshaller::getInternalIterator(seq_iter.get()), lResStream);
+    seq_iter->close();
+
+    // build the result pair and append it to the list
+    store::Item* lTypeItem = lRes->getType();
+    zstring lTypeStr(lTypeItem->getStringValue());
+    // TODO: support namespaces
+    //zstring lTypeNS = lTypeItem->getNamespace();
+    //if (!lTypeNS.empty()) {
+    //  lTypeStr = lTypeStr.append(" " + lTypeNS);
+    //}    
+    std::pair<zstring, zstring> lPair(lResStream.str(), lTypeStr);
+    lResult.push_back(lPair);
   }
+
   return lResult;
 }
 

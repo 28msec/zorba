@@ -20,30 +20,36 @@
 #include <string>
 #include <map>
 
+#include "zorba/zorba_string.h"
+
 #include "debugger_common.h"
 
 
 namespace zorba {
 
-typedef uint32_t      Id;
+typedef uint32_t Id;
 
 class DebuggerCommand {
 
-private:
-  std::string theName;
-  std::map<std::string, std::string> theArgs;
+  private:
+    std::string theName;
+    std::map<std::string, std::string> theArgs;
+    std::string theData;
 
-public:
-  DebuggerCommand(std::string command);
+  public:
+    DebuggerCommand(std::string& command);
 
-  bool
-  getArg(std::string arg, std::string& value);
+    bool
+    getArg(std::string arg, std::string& value);
 
-  bool
-  getArg(std::string arg, int& value);
+    bool
+    getArg(std::string arg, int& value);
 
-  std::string
-  getName();
+    std::string&
+    getName() { return theName; }
+
+    std::string&
+    getData() { return theData; }
 
 };
 
