@@ -3727,7 +3727,7 @@ bool TextNode::isAncestor(const store::Item_t& aOther) const
   }
   else
   {
-    return getParent()->isAncestor(aOther);
+    return lParent->isAncestor(aOther);
   }
 }
 
