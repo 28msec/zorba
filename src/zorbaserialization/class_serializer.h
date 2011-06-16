@@ -17,6 +17,10 @@
 #ifndef ZORBA_BINARY_PLAN_ITERATOR_SERIALIZATION
 #define ZORBA_BINARY_PLAN_ITERATOR_SERIALIZATION
 
+#include <time.h>
+
+#include "zorbamisc/config/platform.h"
+
 #include <string>
 #include <list>
 #include <vector>
@@ -24,9 +28,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <string.h>
-#include <time.h>
 
-#include "zorbamisc/config/platform.h"
 
 
 namespace zorba
