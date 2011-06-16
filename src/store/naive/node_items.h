@@ -335,9 +335,6 @@ public:
   };
 
 protected:
-#ifdef TEXT_ORDPATH
-  OrdPath           theOrdPath;
-#endif
   InternalNode    * theParent;
   uint32_t          theFlags;
 
@@ -351,19 +348,11 @@ protected:
     theFlags = (uint32_t)k;
   }
 
-#ifdef TEXT_ORDPATH
-  XmlNode(
-      XmlTree* tree,
-      InternalNode* parent,
-      bool append,
-      csize pos,
-      store::StoreConsts::NodeKind nodeKind);
-#else
+
   XmlNode(
       XmlTree* tree,
       InternalNode* parent,
       store::StoreConsts::NodeKind nodeKind);
-#endif
 
 public:
 #ifndef NDEBUG
@@ -470,23 +459,11 @@ public:
 
   ulong getCollectionId() const { return getTree()->getCollectionId(); }
 
-#ifdef TEXT_ORDPATH
-  const OrdPath& getOrdPath() const { return theOrdPath; }
-
-  OrdPath& getOrdPath() { return theOrdPath; }
-
-  void setOrdPath(
-        InternalNode* parent,
-        bool append,
-        csize pos,
-        store::StoreConsts::NodeKind nodeKind);
-#endif
-
   void setId(XmlTree* tree, const OrdPathStack* op);
 
   void setParent(InternalNode* p) { theParent = p; }
 
-  GuideNode* getDataGuide() const   { return getTree()->getDataGuide(); }
+  GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
 
   const zstring& getBaseUri() const { return getTree()->getBaseUri(); }
 
@@ -518,9 +495,9 @@ public:
   void setFlags(uint32_t flags) { theFlags = flags; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t
-  getDocumentTokens(locale::iso639_1::type = locale::iso639_1::unknown) const;
-#endif /* ZORBA_NO_FULL_TEXT */
+  FTTokenIterator_t getDocumentTokens(
+      locale::iso639_1::type = locale::iso639_1::unknown) const;
+#endif
 
 protected:
   virtual void getBaseURIInternal(zstring& uri, bool& local) const;
@@ -537,7 +514,7 @@ protected:
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
+#endif
 
 private:
   void setTree(const XmlTree* t);
@@ -550,7 +527,6 @@ private:
 };
 
 
-#ifndef TEXT_ORDPATH
 /******************************************************************************
 
 *******************************************************************************/
@@ -631,17 +607,12 @@ public:
   leastCommonAncestor(const store::Item_t&) const;
 
 };
-#endif // TEXT_ORDPATH
 
 
 /*******************************************************************************
   Base class for element and document nodes
 ********************************************************************************/
-#ifdef TEXT_ORDPATH
-class InternalNode : public XmlNode
-#else
 class InternalNode : public OrdPathNode
-#endif
 {
   friend class XmlNode;
   friend class OrdPathNode;
@@ -669,28 +640,6 @@ protected:
 
   InternalNode() {}
 
-#ifdef TEXT_ORDPATH
-  InternalNode(store::StoreConsts::NodeKind nodeKind)
-    :
-    XmlNode(nodeKind),
-    theNumAttrs(0)
-  {
-  }
-
-  InternalNode(
-      XmlTree* tree,
-      InternalNode* parent,
-      bool append,
-      csize pos,
-      store::StoreConsts::NodeKind nodeKind)
-    :
-    XmlNode(tree, parent, append, pos, nodeKind),
-    theNumAttrs(0)
-  {
-  }
-
-#else
-
   InternalNode(store::StoreConsts::NodeKind nodeKind)
     :
     OrdPathNode(nodeKind),
@@ -709,7 +658,6 @@ protected:
     theNumAttrs(0)
   {
   }
-#endif
 
 public:
   //
@@ -786,11 +734,9 @@ protected:
 
   csize removeAttr(XmlNode* attr);
 
-#ifndef TEXT_ORDPATH
   const OrdPath* getFirstChildOrdPathAfter(csize pos) const;
 
   const OrdPath* getFirstChildOrdPathBefore(csize pos) const;
-#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
@@ -1053,11 +999,7 @@ private:
 /*******************************************************************************
 
 ********************************************************************************/
-#ifdef TEXT_ORDPATH
-class AttributeNode : public XmlNode
-#else
 class AttributeNode : public OrdPathNode
-#endif
 {
   friend class XmlNode;
   friend class ElementNode;
@@ -1179,14 +1121,18 @@ protected:
 
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
+#endif
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef TEXT_ORDPATH
+class TextNode : public OrdPathNode
+#else
 class TextNode : public XmlNode
+#endif
 {
   friend class XmlNode;
   friend class InternalNode;
@@ -1283,6 +1229,7 @@ public:
 
   void restoreValue(UpdReplaceTextValue& upd);
 
+#ifndef TEXT_ORDPATH
   virtual bool
   isAncestor(const store::Item_t&) const;
 
@@ -1312,7 +1259,7 @@ public:
 
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
-
+#endif
   
 protected:
   const zstring& getText() const { return theContent.getText(); }
@@ -1336,11 +1283,7 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-#ifdef TEXT_ORDPATH
-class PiNode : public XmlNode
-#else
 class PiNode : public OrdPathNode
-#endif
 {
   friend class XmlNode;
   friend class FastXmlLoader;
@@ -1405,11 +1348,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-#ifdef TEXT_ORDPATH
-class CommentNode : public XmlNode
-#else
 class CommentNode : public OrdPathNode
-#endif
 {
   friend class XmlNode;
   friend class FastXmlLoader;
@@ -1487,7 +1426,10 @@ inline long XmlNode::compare2(const XmlNode* other) const
       if (tree1 < tree2)
         return -1;
 
-      if (tree1 == tree2 && this->getOrdPath() < other->getOrdPath())
+      const OrdPathNode* ordThis = static_cast<const OrdPathNode*>(this);
+      const OrdPathNode* ordOther = static_cast<const OrdPathNode*>(other);
+
+      if (tree1 == tree2 && ordThis->getOrdPath() < ordOther->getOrdPath())
         return -1;
     }
     else
@@ -1498,7 +1440,10 @@ inline long XmlNode::compare2(const XmlNode* other) const
       if (pos1 < pos2)
         return -1;
 
-      if (pos1 == pos2 && this->getOrdPath() < other->getOrdPath())
+      const OrdPathNode* ordThis = static_cast<const OrdPathNode*>(this);
+      const OrdPathNode* ordOther = static_cast<const OrdPathNode*>(other);
+
+      if (pos1 == pos2 && ordThis->getOrdPath() < ordOther->getOrdPath())
         return -1;
     }
   }
@@ -1573,19 +1518,20 @@ public:
                    int_t pos, int_t sent, int_t para, void* );
 
   begin_type beginTokenization() const;
+
   void endTokenization( XmlNode const*, begin_type );
 
   void push_element( ElementNode *element ) { element_stack_.push( element ); }
+
   void pop_element() { element_stack_.pop(); }
 
   void push_lang( locale::iso639_1::type lang ) { lang_stack_.push( lang ); }
+
   void pop_lang() { lang_stack_.pop(); }
 
   void tokenize( char const *utf8_s, size_t len );
 
-  Tokenizer& tokenizer() const {
-    return tokenizer_;
-  }
+  Tokenizer& tokenizer() const { return tokenizer_; }
 
 private:
   typedef std::stack<locale::iso639_1::type> lang_stack_t;
@@ -1607,6 +1553,7 @@ private:
   lang_stack_t lang_stack_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
+
 
 } // namespace store
 } // namespace zorba

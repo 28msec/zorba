@@ -180,6 +180,7 @@ void XmlNode::attach(InternalNode* parent, csize pos)
   case store::StoreConsts::textNode:
   {
 #ifdef TEXT_ORDPATH
+    static_cast<TextNode*>(this)->
     setOrdPath(parent, false, pos, getNodeKind());
 #endif
 
@@ -297,8 +298,8 @@ void XmlNode::attach(InternalNode* parent, csize pos)
           child2->theOrdPath.appendComp(2 * (numAttrs + i) + 1);
         }
 #else
-        child->theOrdPath = elem->theOrdPath;
-        child->theOrdPath.appendComp(2 * (numAttrs + i) + 1);
+        static_cast<OrdPathNode*>(child)->theOrdPath = elem->theOrdPath;
+        static_cast<OrdPathNode*>(child)->theOrdPath.appendComp(2 * (numAttrs + i) + 1);
 #endif
 
         nodes.push(child);

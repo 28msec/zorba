@@ -891,7 +891,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     zstring content(charp, len);
 
-    XmlNode* textNode = GET_STORE().getNodeFactory().createTextNode(content);
+    TextNode* textNode = GET_STORE().getNodeFactory().createTextNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(textNode);
@@ -944,7 +944,7 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     zstring content(charp, len);
 
-    XmlNode* cdataNode = GET_STORE().getNodeFactory().createTextNode(content);
+    TextNode* cdataNode = GET_STORE().getNodeFactory().createTextNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(cdataNode);
