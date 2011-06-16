@@ -14,10 +14,10 @@
 
 # Build and install any test modules
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 2.3
-  "${CMAKE_CURRENT_SOURCE_DIR}/ver2.xq")
+  "ver2")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 1.4
-  "${CMAKE_CURRENT_SOURCE_DIR}/ver.xq")
+  "ver")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/A" 1.0
-  "${CMAKE_CURRENT_SOURCE_DIR}/module-A.xq")
+  "module-A")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/B" 1.0
-  "${CMAKE_CURRENT_SOURCE_DIR}/module-B.xq")
+  "module-B")

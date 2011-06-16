@@ -24,8 +24,23 @@
 #
 # QQQ might it be possible / reasonable to attempt to parse the source
 # file enough to deduce the URI and version?
-MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION SOURCE_FILE)
-
+MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
+ 
+  SET(SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq")
+  
+  # only for smtp library set -Wno-write-strings in order to remove
+  # the warning "deprecated conversion from string constant to char*".
+  # we need to set it to both GNUCC and GNUCXX because of linkage.c
+  # and c-client.h. QQQ this is a crappy solution - move it somehow to
+  # the smtp module itself
+  IF(${MODULE_NAME} STREQUAL "smtp")
+    IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+      FOREACH(SMTP_SRC ${SRC_FILES})
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/smtp.xq.src/${SMTP_SRC} PROPERTIES COMPILE_FLAGS "-Wno-write-strings")
+      ENDFOREACH(SMTP_SRC)
+    ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  ENDIF(${MODULE_NAME} STREQUAL "smtp")
+  
   # Mangle the module URI into Zorba's filesystem form - namely:
   # 1. Drop the scheme: (and // if present)
   # 2. Reverse the authority (host) on dots, then split on dots into subdirs
@@ -46,7 +61,9 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION SOURCE_FILE)
     SET (module_filename "${final_comp}.xq")
   ENDIF (NOT final_comp)
   STRING (REPLACE ";" "/" module_path "${module_path}")
-
+ 
+  STRING(REPLACE "/" "_" ZORBA_MODULE_PREFIX "${module_path}")
+  
   # Compute a CMake-symbol-safe version of the target URI, for storing
   # things in CMake properties and declaring CMake targets.
   STRING (REGEX REPLACE "[/ ]" "_" uri_sym "${module_path}/${module_filename}")
@@ -81,10 +98,12 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION SOURCE_FILE)
   SET (output_dir "${PROJECT_BINARY_DIR}/modules/${module_path}")
   FILE (MAKE_DIRECTORY "${output_dir}")
 
+
   # Install CMake custom commands which will copy the module source
   # file to each target filename in the output directory.
   SET (output_files)
   FILE (RELATIVE_PATH rel_source "${PROJECT_SOURCE_DIR}" "${SOURCE_FILE}")
+  
   FOREACH (version_ext "" ".${major_ver}" ".${major_ver}.${minor_ver}")
     SET (output_file "${output_dir}/${module_filename}${version_ext}")
 
@@ -113,6 +132,107 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION SOURCE_FILE)
   # named uniquely, and cannot have slashes, so...
   ADD_CUSTOM_TARGET ("check_${uri_sym}_${MODULE_VERSION}" ALL
     DEPENDS ${output_files})
+    
+
+  IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/")
+    # all the cpp files found in the ${MODULE_NAME}.xq.src
+    # directory are added to the sources list
+    FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/*.cpp")
+    
+    MESSAGE(STATUS "Add library " ${MODULE_NAME})
+    FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+      SET(SUFFIX)
+      # simplestore executable doesn't need an extension
+      IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+        SET(SUFFIX "_${ZORBA_STORE_NAME}")
+      ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+  
+      IF(WIN32)
+        #configure_file doesn't replace variable with parameters they have to be defined
+        #along the macro
+        SET(MODULE_VERSION ${MODULE_VERSION})
+        SET(MODULE_NAME ${MODULE_NAME})
+        #set the rc file for the windows dll version
+        CONFIGURE_FILE("${Zorba_CMAKE_MODULES_DIR}/Windows/WindowsDLLVersion.rc.in"
+                        "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc"
+                        @ONLY)                        
+        SET(SRC_FILES ${SRC_FILES} "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc")
+      ENDIF(WIN32)
+  
+      SET(MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}${SUFFIX}")
+      ADD_LIBRARY(${MODULE_LIB_NAME} SHARED ${SRC_FILES})
+      SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES 
+        OUTPUT_NAME "${MODULE_NAME}${SUFFIX}")
+      TARGET_LINK_LIBRARIES(${MODULE_LIB_NAME}
+        zorba_${ZORBA_STORE_NAME} ${LINK_LIBRARIES})
+  
+      # the shared libraries are considered RUNTIME on WIN32 platforms
+      # and LIBRARY on UNIX-based platforms
+      IF (WIN32)
+        SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES
+          RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+        # in VS, the dll's are generated in the $(ConfigurationName)
+        # directory, so we have to copy these dll's one level up in the
+        # ${CMAKE_CURRENT_BINARY_DIR} the commands below use VS macro
+        # expansions $(...)
+        IF (MSVC_IDE)
+          # if we change something in the project generating this target, make
+          # sure we don't have a zombie DLL hanging around from an older build
+          #left in for ctest need to change testing macro to be able to remove this
+          ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
+            if exist "\"$(ProjectDir)\\$(TargetFileName)\"" del "\"$(ProjectDir)\\$(TargetFileName)\"")
+          ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
+            copy "\"$(TargetPath)\"" "\"$(ProjectDir)\"")
+          #Copy file to the corresponding module path inside the build  
+          ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
+            if exist "\"${output_dir}\\$(TargetFileName)\"" del "\"${output_dir}\\$(TargetFileName)\"")
+          ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
+            copy "\"$(TargetPath)\"" "\"${output_dir}\"")
+          #Copy a versioned file to the corresponding module path inside the build
+          ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
+            if exist "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"" del "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"")  
+          ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
+            copy "\"${output_dir}\\$(TargetFileName)\""  "\"${output_dir}\\${MODULE_NAME}.${MODULE_VERSION}.dll\"")                   
+        ENDIF (MSVC_IDE)
+      ELSE (WIN32)
+        SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES
+          LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+      ENDIF (WIN32)
+      
+      SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES
+        VERSION ${MODULE_VERSION}
+        CLEAN_DIRECT_OUTPUT 0)
+        
+    ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})   
+   
+  ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/")
+  
+  FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}
+        DESTINATION "${output_dir}/.."
+        FILES_MATCHING
+        PATTERN "*.xsd"
+        PATTERN "*.svn" EXCLUDE
+        PATTERN "*.xq.src" EXCLUDE)
+
+
+   STRING(REPLACE "/" "_" ZORBA_OUTPUT_INSTALLED "${output_dir}_installed")
+   GET_PROPERTY (is_installed GLOBAL PROPERTY ${ZORBA_OUTPUT_INSTALLED})
+   IF(NOT is_installed)
+    INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/modules
+        DESTINATION "include/zorba/"
+        FILES_MATCHING
+        PATTERN "*.vc*" EXCLUDE
+        PATTERN "*.cmake" EXCLUDE
+        PATTERN "CMakeFiles" EXCLUDE
+        PATTERN "*.dir" EXCLUDE
+        PATTERN "Debug" EXCLUDE
+        PATTERN "Release" EXCLUDE
+        PATTERN "*")
+    SET_PROPERTY(GLOBAL PROPERTY ${ZORBA_OUTPUT_INSTALLED} 1)
+   ENDIF(NOT is_installed)
+
+    
 ENDMACRO (DECLARE_ZORBA_MODULE)
 
 # macro which should be used for generating module libraries.
@@ -166,6 +286,7 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   ENDIF(NOT ZORBA_MODULE_RELPATH)
   STRING(REPLACE "/" "_" ZORBA_MODULE_PREFIX ${ZORBA_MODULE_RELPATH})
 
+
   MESSAGE(STATUS "Add library " ${MODULE_NAME})
   FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
     SET(SUFFIX)
@@ -212,6 +333,7 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   # (simplestore libs only).  the include/zorba/modules directory
   # needs to belong to the set of Zorba Module Paths. QQQ installing
   # shared libraries to the *include* directory?!
+
   IF (WIN32)
     INSTALL(TARGETS "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}"
             RUNTIME
@@ -220,7 +342,8 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
     INSTALL(TARGETS "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}"
             LIBRARY
             DESTINATION "include/zorba/modules/${ZORBA_MODULE_RELPATH}")
-  ENDIF (WIN32)
+  ENDIF (WIN32)                     
+  
 ENDMACRO(GENERATE_MODULE_LIBRARY)
 
 # Initialize output file when first included

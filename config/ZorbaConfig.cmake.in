@@ -24,6 +24,10 @@
 #  Zorba_EXTERNALMODULECONFIG_FILE - file which modules should use to
 #    export their module paths for dependent modules
 
+# Pass through some variables from main Zorba CMake configuration.
+SET(ZORBA_STORE_NAMES "@ZORBA_STORE_NAMES@")
+SET(ZORBA_VERSION "@ZORBA_VERSION@")
+
 # Tell the user project where to find our headers, libraries, and
 # CMake modules
 SET(Zorba_INCLUDE_DIRS "@Zorba_INCLUDE_DIRS@")
@@ -31,9 +35,6 @@ SET(Zorba_LIBRARY_DIRS "@Zorba_LIBRARY_DIRS@")
 SET(Zorba_CMAKE_MODULES_DIR "@Zorba_CMAKE_MODULES_DIR@")
 SET(Zorba_TESTDRIVER "@Zorba_TESTDRIVER@")
 
-# Pass through some variables from main Zorba CMake configuration.
-SET(ZORBA_STORE_NAMES "@ZORBA_STORE_NAMES@")
-SET(ZORBA_VERSION "@ZORBA_VERSION@")
 
 # Tell the user project where to find the "USE" file.
 # This file uses the above settings to configure the user project.
