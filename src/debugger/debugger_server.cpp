@@ -249,11 +249,13 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         // currently we only support contexts for the topmost stack frame
         if (lContextDepth == 0) {
 
+          // get the variables either local or global depenging on the context ID
           std::vector<std::pair<std::string, std::string> > lVariables =
             theRuntime->getVariables(lContextID == 0 ? true : false);
           std::vector<std::pair<std::string, std::string> >::iterator lIter =
             lVariables.begin();
 
+          // and build the corresponding property element for each variable
           for (; lIter != lVariables.end(); ++lIter) {
             std::string lFullName = lIter->first;
             std::string lName = getVariableName(lFullName);

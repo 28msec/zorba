@@ -32,6 +32,7 @@
 #include "api/serializerimpl.h"
 
 #include "context/static_context.h"
+#include "compiler/expression/var_expr.h"
 
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/debug/debug_iterator.h"
@@ -309,10 +310,87 @@ DebuggerRuntime::getVariables(bool aLocals)
   DebuggerCommons* lCommons = getDebbugerCommons();
   static_context* lContext = lCommons->getCurrentStaticContext();
 
-  std::vector<std::pair<std::string, std::string> > lVariables;
-  lContext->getVariables(lVariables, aLocals);
+  // get all visible variables and filter below
+  std::vector<var_expr_t> lVars;
+  lContext->getVariables(lVars, false);
 
-  return lVariables;
+  std::vector<std::pair<std::string, std::string> > lVarList;
+  std::vector<var_expr_t>::iterator lIte = lVars.begin();
+  std::vector<var_expr_t>::iterator lEnd = lVars.end();
+
+  for (; lIte != lEnd; ++lIte) {
+    // non-global to locals and globals to globals
+    if ((aLocals && (*lIte)->get_kind() == var_expr::prolog_var) ||
+        (!aLocals && (*lIte)->get_kind() != var_expr::prolog_var)) {
+      continue;
+    }
+
+    std::stringstream lTypeSs;
+    std::stringstream lNameSs;
+
+
+    // read the name ****************************
+    store::Item* lNameItem = (*lIte)->get_name();
+    zstring lLocalName = lNameItem->getLocalName();
+
+    // correct the name of the context item
+    if (!aLocals && lLocalName == "$$dot") {
+      lVarList.push_back(std::pair<std::string, std::string>(".", "item()*"));
+      continue;
+    }
+
+    bool lHasNS = ! lNameItem->getNamespace().empty();
+
+    // if there is a namespace, append the local name as well
+    if (lHasNS) {
+      lNameSs << lNameItem->getPrefix().str() << ":";
+    }
+    lNameSs << lNameItem->getLocalName().str();
+
+    // if there is a namespace, append the namespace URI
+    if (lHasNS) {
+      lNameSs << "\\" << lNameItem->getNamespace().str();
+    }
+
+
+    // read the type ****************************
+    xqtref_t lType = (*lIte)->get_type();
+
+    if (lType == NULL || lType->get_qname() == NULL) {
+      lTypeSs << "item()*";
+    } else {
+      TypeConstants::quantifier_t lQuantifier = lType->get_quantifier();
+      store::Item_t lQname = (*lIte)->get_type()->get_qname();
+      lTypeSs << lQname->getPrefix().str()
+            << ":"
+            << lQname->getLocalName().str();
+      switch (lQuantifier) {
+      case TypeConstants::QUANT_QUESTION:
+        lTypeSs << "?";
+        break;
+      case TypeConstants::QUANT_STAR:
+        lTypeSs << "*";
+        break;
+      case TypeConstants::QUANT_PLUS:
+        lTypeSs << "+";
+        break;
+      case TypeConstants::QUANT_ONE:
+      case TypeConstants::QUANTIFIER_LIST_SIZE:
+        break;
+      }
+
+      // TODO: support namespaces
+      //lTypeSs << " " << lQname->getNamespace().str();
+    }
+
+
+    // add a new result
+    lVarList.push_back(
+      std::pair<std::string, std::string>(lNameSs.str(), lTypeSs.str())
+    );
+  }
+
+  return lVarList;
 }
 
 

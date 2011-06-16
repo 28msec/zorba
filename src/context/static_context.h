@@ -45,6 +45,7 @@
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
 
+
 namespace zorba
 {
 
@@ -405,7 +406,6 @@ class static_context : public SimpleRCObject
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
   typedef std::map<std::string, store::Item_t> AnnotationMap;
-
 
 public:
 
@@ -799,12 +799,8 @@ public:
         const Error& err) const;
 
   void getVariables(
-    std::vector<std::pair<std::string, std::string> >& variableList,
-    bool locals) const;
-
-  void getVariables(std::vector<var_expr_t>& variableList) const;
-
-  void getLocalVariables(std::vector<var_expr_t>& variableList) const;
+    std::vector<var_expr_t>& variableList,
+    bool localsOnly = false) const;
 
   void set_context_item_type(xqtref_t& t);
 

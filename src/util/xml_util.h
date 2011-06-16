@@ -245,7 +245,7 @@ int parse_entity( InputStringType const &ref, OutputStringType *out ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace unicode
+} // namespace xml
 } // namespace zorba
 
 #include "xml_util.tcc"

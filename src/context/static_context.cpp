@@ -2032,108 +2032,11 @@ var_expr* static_context::lookup_var(
 
 
 /***************************************************************************//**
-  This method is used by the debuger
+  This method is used by introspection and debugger
 ********************************************************************************/
 void static_context::getVariables(
-  std::vector<std::pair<std::string, std::string> >& aVariableList,
-  bool aLocals) const
-{
-  const static_context* sctx = this;
-
-  while (sctx != NULL)
-  {
-    if (sctx->theVariablesMap != NULL)
-    {
-      VariableMap::iterator ite = sctx->theVariablesMap->begin();
-      VariableMap::iterator end = sctx->theVariablesMap->end();
-
-      for (; ite != end; ++ite)
-      {
-        const var_expr* lExpr = ite.getValue();
-
-        // only locals or globals according to the aLocals parameter
-        if ((!aLocals && lExpr->get_kind() == var_expr::prolog_var)
-              ||
-            (aLocals && lExpr->get_kind() != var_expr::prolog_var))
-        {
-          std::stringstream lTypeSs;
-          std::stringstream lNameSs;
-
-
-          // read the name
-          store::Item* lNameItem = lExpr->get_name();
-          zstring lLocalName = lNameItem->getLocalName();
-
-          if (lLocalName == "$$dot") {
-            aVariableList.push_back(std::pair<std::string, std::string>(".", "item()*"));
-            continue;
-          }
-
-          bool lHasNS = ! lNameItem->getNamespace().empty();
-
-          if (lHasNS)
-          {
-            lNameSs << lNameItem->getPrefix().str() << ":";
-          }
-          lNameSs << lNameItem->getLocalName().str();
-          if (lHasNS)
-          {
-            lNameSs << "\\" << lNameItem->getNamespace().str();
-          }
-
-
-          // read the type
-          xqtref_t lType = lExpr->get_type();
-
-          if (lType == NULL || lType->get_qname() == NULL)
-          {
-            lTypeSs << "item()*";
-          }
-          else
-          {
-            TypeConstants::quantifier_t lQuantifier = lType->get_quantifier();
-            store::Item_t lQname = lExpr->get_type()->get_qname();
-            lTypeSs << lQname->getPrefix().str()
-                  << ":"
-                  << lQname->getLocalName().str();
-            switch (lQuantifier) {
-            case TypeConstants::QUANT_QUESTION:
-              lTypeSs << "?";
-              break;
-            case TypeConstants::QUANT_STAR:
-              lTypeSs << "*";
-              break;
-            case TypeConstants::QUANT_PLUS:
-              lTypeSs << "+";
-              break;
-            case TypeConstants::QUANT_ONE:
-            case TypeConstants::QUANTIFIER_LIST_SIZE:
-              break;
-            }
-
-            // TODO: support namespaces
-            //lTypeSs << " " << lQname->getNamespace().str();
-          }
-
-
-          // add a new result
-          aVariableList.push_back(
-            std::pair<std::string, std::string>(lNameSs.str(), lTypeSs.str())
-          );
-
-        }
-      }
-    }
-
-    sctx = sctx->theParent;
-  }
-}
-
-
-/***************************************************************************//**
-  This method is used by introspection.
-********************************************************************************/
-void static_context::getVariables(std::vector<var_expr_t>& vars) const
+  std::vector<var_expr_t>& vars,
+  bool aLocalsOnly) const
 {
   const static_context* sctx = this;
 
@@ -2159,34 +2062,12 @@ void static_context::getVariables(std::vector<var_expr_t>& vars) const
       }
     }
 
-    sctx = sctx->theParent;
-  }
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::getLocalVariables(std::vector<var_expr_t>& vars) const
-{
-  if (theVariablesMap != NULL)
-  {
-    VariableMap::iterator ite = theVariablesMap->begin();
-    VariableMap::iterator end = theVariablesMap->end();
-
-    for (; ite != end; ++ite)
+    if (aLocalsOnly)
     {
-      ulong numVars = (ulong)vars.size();
-      ulong i = 0;
-      for (; i < numVars; ++i)
-      {
-        if (vars[i]->get_name()->equals((*ite).first))
-          break;
-      }
-
-      if (i == numVars)
-        vars.push_back((*ite).second);
+      break;
     }
+
+    sctx = sctx->theParent;
   }
 }
 
