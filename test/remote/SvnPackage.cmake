@@ -80,14 +80,17 @@ ENDMACRO (get_files_with_status)
 macro (svn_package srcdir tmpdir changelist resultfile)
   find_prereqs ()
 
+  # Canonicalize srcdir
+  get_filename_component (abssrcdir "${srcdir}" ABSOLUTE)
+
   # Start by making our working directory
   set (chgdir "${tmpdir}/changes")
   file (MAKE_DIRECTORY "${chgdir}")
 
   # Write out the "svn info" and "svn status" information
-  execute_process (COMMAND "${svn}" --xml info "${srcdir}"
+  execute_process (COMMAND "${svn}" --xml info "${abssrcdir}"
                    OUTPUT_FILE "${chgdir}/svn-info.xml")
-  execute_process (COMMAND "${svn}" --xml status "${srcdir}"
+  execute_process (COMMAND "${svn}" --xml status "${abssrcdir}"
                    OUTPUT_FILE "${chgdir}/svn-status.xml")
 
   # Also save the named of the changelist for the remote queue to use
@@ -108,11 +111,11 @@ macro (svn_package srcdir tmpdir changelist resultfile)
     file (MAKE_DIRECTORY "${chgdir}/files")
     foreach (filepath ${copyfiles})
       if (NOT IS_DIRECTORY "${filepath}")
-        message ("Copying ${filepath}..")
         file (TO_CMAKE_PATH "${filepath}" filepath)
-        file (RELATIVE_PATH relpath "${srcdir}" "${filepath}")
+        file (RELATIVE_PATH relpath "${abssrcdir}" "${filepath}")
         get_filename_component (reldir "${relpath}" PATH)
         file (MAKE_DIRECTORY "${chgdir}/files/${reldir}")
+        message ("Copying ${filepath} to ${chgdir}/files/${reldir}..")
         execute_process (COMMAND "${CMAKE_COMMAND}" -E copy
           "${filepath}" "${chgdir}/files/${reldir}")
       endif (NOT IS_DIRECTORY "${filepath}")
