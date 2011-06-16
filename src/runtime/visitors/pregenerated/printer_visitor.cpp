@@ -2095,6 +2095,146 @@ void PrinterVisitor::endVisit ( const FnGenerateIdIterator& ) {
 // </FnGenerateIdIterator>
 
 
+// <IsAncestorIterator>
+void PrinterVisitor::beginVisit ( const IsAncestorIterator& a) {
+  thePrinter.startBeginVisit("IsAncestorIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAncestorIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAncestorIterator>
+
+
+// <IsDescendantIterator>
+void PrinterVisitor::beginVisit ( const IsDescendantIterator& a) {
+  thePrinter.startBeginVisit("IsDescendantIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsDescendantIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsDescendantIterator>
+
+
+// <IsParentIterator>
+void PrinterVisitor::beginVisit ( const IsParentIterator& a) {
+  thePrinter.startBeginVisit("IsParentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsParentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsParentIterator>
+
+
+// <IsChildIterator>
+void PrinterVisitor::beginVisit ( const IsChildIterator& a) {
+  thePrinter.startBeginVisit("IsChildIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsChildIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsChildIterator>
+
+
+// <IsFollowingIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsFollowingIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsFollowingIterator>
+
+
+// <IsPrecedingIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsPrecedingIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsPrecedingIterator>
+
+
+// <IsFollowingSiblingIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingSiblingIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingSiblingIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsFollowingSiblingIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsFollowingSiblingIterator>
+
+
+// <IsPrecedingSiblingIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingSiblingIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingSiblingIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsPrecedingSiblingIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsPrecedingSiblingIterator>
+
+
+// <LevelIterator>
+void PrinterVisitor::beginVisit ( const LevelIterator& a) {
+  thePrinter.startBeginVisit("LevelIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const LevelIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </LevelIterator>
+
+
+// <LeastCommonAncestor>
+void PrinterVisitor::beginVisit ( const LeastCommonAncestor& a) {
+  thePrinter.startBeginVisit("LeastCommonAncestor", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const LeastCommonAncestor& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </LeastCommonAncestor>
+
+
 // <AbsIterator>
 void PrinterVisitor::beginVisit ( const AbsIterator& a) {
   thePrinter.startBeginVisit("AbsIterator", ++theId);

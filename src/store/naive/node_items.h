@@ -599,6 +599,37 @@ public:
         bool append,
         csize pos,
         store::StoreConsts::NodeKind nodeKind);
+
+  virtual bool
+  isAncestor(const store::Item_t&) const;
+
+  virtual bool
+  isFollowingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isFollowing(const store::Item_t&) const;
+
+  virtual bool
+  isDescendant(const store::Item_t&) const;
+
+  virtual bool
+  isPrecedingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isPreceding(const store::Item_t&) const;
+
+  virtual bool
+  isChild(const store::Item_t&) const;
+
+  virtual bool
+  isParent(const store::Item_t&) const;
+
+  virtual store::Item_t
+  getLevel() const;
+
+  virtual store::Item_t
+  leastCommonAncestor(const store::Item_t&) const;
+
 };
 #endif // TEXT_ORDPATH
 
@@ -1118,6 +1149,16 @@ public:
 
   void restoreName(UpdRenameAttr& upd);
 
+  // override here returning false because following-sibling axes is empty
+  // for attribute nodes
+  virtual bool
+  isFollowingSibling(const store::Item_t&) const { return false; }
+
+  // override here returning false because preceding-sibling axes is empty
+  // for attribute nodes
+  virtual bool
+  isPrecedingSibling(const store::Item_t&) const { return false; }
+
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t
   getDocumentTokens( locale::iso639_1::type = locale::iso639_1::unknown ) const;
@@ -1242,6 +1283,37 @@ public:
 
   void restoreValue(UpdReplaceTextValue& upd);
 
+  virtual bool
+  isAncestor(const store::Item_t&) const;
+
+  virtual bool
+  isFollowingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isFollowing(const store::Item_t&) const;
+
+  virtual bool
+  isDescendant(const store::Item_t&) const;
+
+  virtual bool
+  isPrecedingSibling(const store::Item_t&) const;
+
+  virtual bool
+  isPreceding(const store::Item_t&) const;
+
+  virtual bool
+  isChild(const store::Item_t&) const;
+
+  virtual bool
+  isParent(const store::Item_t&) const;
+
+  virtual store::Item_t
+  getLevel() const;
+
+  virtual store::Item_t
+  leastCommonAncestor(const store::Item_t&) const;
+
+  
 protected:
   const zstring& getText() const { return theContent.getText(); }
 

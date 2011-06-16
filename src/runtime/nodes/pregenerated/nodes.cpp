@@ -308,6 +308,286 @@ FnGenerateIdIterator::~FnGenerateIdIterator() {}
 // </FnGenerateIdIterator>
 
 
+// <IsAncestorIterator>
+const char* IsAncestorIterator::class_name_str = "IsAncestorIterator";
+IsAncestorIterator::class_factory<IsAncestorIterator>
+IsAncestorIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsAncestorIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsAncestorIterator::class_versions_count =
+sizeof(IsAncestorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsAncestorIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAncestorIterator::~IsAncestorIterator() {}
+
+// </IsAncestorIterator>
+
+
+// <IsDescendantIterator>
+const char* IsDescendantIterator::class_name_str = "IsDescendantIterator";
+IsDescendantIterator::class_factory<IsDescendantIterator>
+IsDescendantIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsDescendantIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsDescendantIterator::class_versions_count =
+sizeof(IsDescendantIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsDescendantIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsDescendantIterator::~IsDescendantIterator() {}
+
+// </IsDescendantIterator>
+
+
+// <IsParentIterator>
+const char* IsParentIterator::class_name_str = "IsParentIterator";
+IsParentIterator::class_factory<IsParentIterator>
+IsParentIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsParentIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsParentIterator::class_versions_count =
+sizeof(IsParentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsParentIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsParentIterator::~IsParentIterator() {}
+
+// </IsParentIterator>
+
+
+// <IsChildIterator>
+const char* IsChildIterator::class_name_str = "IsChildIterator";
+IsChildIterator::class_factory<IsChildIterator>
+IsChildIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsChildIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsChildIterator::class_versions_count =
+sizeof(IsChildIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsChildIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsChildIterator::~IsChildIterator() {}
+
+// </IsChildIterator>
+
+
+// <IsFollowingIterator>
+const char* IsFollowingIterator::class_name_str = "IsFollowingIterator";
+IsFollowingIterator::class_factory<IsFollowingIterator>
+IsFollowingIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsFollowingIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsFollowingIterator::class_versions_count =
+sizeof(IsFollowingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsFollowingIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsFollowingIterator::~IsFollowingIterator() {}
+
+// </IsFollowingIterator>
+
+
+// <IsPrecedingIterator>
+const char* IsPrecedingIterator::class_name_str = "IsPrecedingIterator";
+IsPrecedingIterator::class_factory<IsPrecedingIterator>
+IsPrecedingIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsPrecedingIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsPrecedingIterator::class_versions_count =
+sizeof(IsPrecedingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsPrecedingIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsPrecedingIterator::~IsPrecedingIterator() {}
+
+// </IsPrecedingIterator>
+
+
+// <IsFollowingSiblingIterator>
+const char* IsFollowingSiblingIterator::class_name_str = "IsFollowingSiblingIterator";
+IsFollowingSiblingIterator::class_factory<IsFollowingSiblingIterator>
+IsFollowingSiblingIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsFollowingSiblingIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsFollowingSiblingIterator::class_versions_count =
+sizeof(IsFollowingSiblingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsFollowingSiblingIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsFollowingSiblingIterator::~IsFollowingSiblingIterator() {}
+
+// </IsFollowingSiblingIterator>
+
+
+// <IsPrecedingSiblingIterator>
+const char* IsPrecedingSiblingIterator::class_name_str = "IsPrecedingSiblingIterator";
+IsPrecedingSiblingIterator::class_factory<IsPrecedingSiblingIterator>
+IsPrecedingSiblingIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsPrecedingSiblingIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsPrecedingSiblingIterator::class_versions_count =
+sizeof(IsPrecedingSiblingIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsPrecedingSiblingIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsPrecedingSiblingIterator::~IsPrecedingSiblingIterator() {}
+
+// </IsPrecedingSiblingIterator>
+
+
+// <LevelIterator>
+const char* LevelIterator::class_name_str = "LevelIterator";
+LevelIterator::class_factory<LevelIterator>
+LevelIterator::g_class_factory;
+
+const serialization::ClassVersion 
+LevelIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int LevelIterator::class_versions_count =
+sizeof(LevelIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void LevelIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+LevelIterator::~LevelIterator() {}
+
+// </LevelIterator>
+
+
+// <LeastCommonAncestor>
+const char* LeastCommonAncestor::class_name_str = "LeastCommonAncestor";
+LeastCommonAncestor::class_factory<LeastCommonAncestor>
+LeastCommonAncestor::g_class_factory;
+
+const serialization::ClassVersion 
+LeastCommonAncestor::class_versions[] ={{ 1, 0x000905, false}};
+
+const int LeastCommonAncestor::class_versions_count =
+sizeof(LeastCommonAncestor::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void LeastCommonAncestor::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+LeastCommonAncestor::~LeastCommonAncestor() {}
+
+// </LeastCommonAncestor>
+
+
 
 }
 

@@ -315,6 +315,26 @@ namespace zorba{
 
     class FnGenerateIdIterator;
 
+    class IsAncestorIterator;
+
+    class IsDescendantIterator;
+
+    class IsParentIterator;
+
+    class IsChildIterator;
+
+    class IsFollowingIterator;
+
+    class IsPrecedingIterator;
+
+    class IsFollowingSiblingIterator;
+
+    class IsPrecedingSiblingIterator;
+
+    class LevelIterator;
+
+    class LeastCommonAncestor;
+
     class AbsIterator;
 
     class CeilingIterator;
@@ -928,6 +948,36 @@ public:
 
     virtual void beginVisit ( const FnGenerateIdIterator& ) = 0;
     virtual void endVisit   ( const FnGenerateIdIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAncestorIterator& ) = 0;
+    virtual void endVisit   ( const IsAncestorIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDescendantIterator& ) = 0;
+    virtual void endVisit   ( const IsDescendantIterator& ) = 0;
+
+    virtual void beginVisit ( const IsParentIterator& ) = 0;
+    virtual void endVisit   ( const IsParentIterator& ) = 0;
+
+    virtual void beginVisit ( const IsChildIterator& ) = 0;
+    virtual void endVisit   ( const IsChildIterator& ) = 0;
+
+    virtual void beginVisit ( const IsFollowingIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingIterator& ) = 0;
+
+    virtual void beginVisit ( const IsPrecedingIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingIterator& ) = 0;
+
+    virtual void beginVisit ( const IsFollowingSiblingIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingSiblingIterator& ) = 0;
+
+    virtual void beginVisit ( const IsPrecedingSiblingIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingSiblingIterator& ) = 0;
+
+    virtual void beginVisit ( const LevelIterator& ) = 0;
+    virtual void endVisit   ( const LevelIterator& ) = 0;
+
+    virtual void beginVisit ( const LeastCommonAncestor& ) = 0;
+    virtual void endVisit   ( const LeastCommonAncestor& ) = 0;
 
     virtual void beginVisit ( const AbsIterator& ) = 0;
     virtual void endVisit   ( const AbsIterator& ) = 0;

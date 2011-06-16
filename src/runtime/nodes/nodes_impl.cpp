@@ -352,5 +352,221 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+/*******************************************************************************
+********************************************************************************/
+bool
+IsFollowingSiblingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialFollowingSibling;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialFollowingSibling, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialFollowingSibling->isFollowingSibling(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsFollowingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialFollowing;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialFollowing, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialFollowing->isFollowing(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsChildIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialChild;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialChild, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialChild->isChild(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+LevelIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lArg;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lArg, theChildren[0].getp(), planState);
+
+  result = lArg->getLevel();
+
+  STACK_PUSH(true, state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+LeastCommonAncestor::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lArg1, lArg2;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lArg1, theChildren[0].getp(), planState);
+  consumeNext(lArg2, theChildren[1].getp(), planState);
+
+  result = lArg1->leastCommonAncestor(lArg2);
+
+  STACK_PUSH(result != NULL, state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsParentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialParent;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialParent, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialParent->isParent(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsDescendantIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialDescendant;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialDescendant, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialDescendant->isDescendant(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsPrecedingSiblingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialPrecedingSibling;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialPrecedingSibling, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialPrecedingSibling->isPrecedingSibling(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsPrecedingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialPreceding;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialPreceding, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialPreceding->isPreceding(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsAncestorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lPotentialAncestor;
+  store::Item_t lItem;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lPotentialAncestor, theChildren[0].getp(), planState);
+  consumeNext(lItem, theChildren[1].getp(), planState);
+
+  STACK_PUSH(
+      GENV_ITEMFACTORY->createBoolean(result,
+        lPotentialAncestor->isAncestor(lItem)
+      ), state);
+
+  STACK_END (state);
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

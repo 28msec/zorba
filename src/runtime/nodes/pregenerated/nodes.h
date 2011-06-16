@@ -380,6 +380,346 @@ public:
 };
 
 
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsAncestorIterator : public NaryBaseIterator<IsAncestorIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsAncestorIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAncestorIterator,
+    NaryBaseIterator<IsAncestorIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsAncestorIterator, PlanIteratorState>*)this);
+  }
+
+  IsAncestorIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsAncestorIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsAncestorIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsDescendantIterator : public NaryBaseIterator<IsDescendantIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsDescendantIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDescendantIterator,
+    NaryBaseIterator<IsDescendantIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsDescendantIterator, PlanIteratorState>*)this);
+  }
+
+  IsDescendantIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsDescendantIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsDescendantIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsParentIterator : public NaryBaseIterator<IsParentIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsParentIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsParentIterator,
+    NaryBaseIterator<IsParentIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsParentIterator, PlanIteratorState>*)this);
+  }
+
+  IsParentIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsParentIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsParentIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsChildIterator : public NaryBaseIterator<IsChildIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsChildIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsChildIterator,
+    NaryBaseIterator<IsChildIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsChildIterator, PlanIteratorState>*)this);
+  }
+
+  IsChildIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsChildIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsChildIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsFollowingIterator : public NaryBaseIterator<IsFollowingIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsFollowingIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsFollowingIterator,
+    NaryBaseIterator<IsFollowingIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsFollowingIterator, PlanIteratorState>*)this);
+  }
+
+  IsFollowingIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsFollowingIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsFollowingIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsPrecedingIterator : public NaryBaseIterator<IsPrecedingIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsPrecedingIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsPrecedingIterator,
+    NaryBaseIterator<IsPrecedingIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsPrecedingIterator, PlanIteratorState>*)this);
+  }
+
+  IsPrecedingIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsPrecedingIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsPrecedingIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsFollowingSiblingIterator : public NaryBaseIterator<IsFollowingSiblingIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsFollowingSiblingIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsFollowingSiblingIterator,
+    NaryBaseIterator<IsFollowingSiblingIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsFollowingSiblingIterator, PlanIteratorState>*)this);
+  }
+
+  IsFollowingSiblingIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsFollowingSiblingIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsFollowingSiblingIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class IsPrecedingSiblingIterator : public NaryBaseIterator<IsPrecedingSiblingIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsPrecedingSiblingIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsPrecedingSiblingIterator,
+    NaryBaseIterator<IsPrecedingSiblingIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsPrecedingSiblingIterator, PlanIteratorState>*)this);
+  }
+
+  IsPrecedingSiblingIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsPrecedingSiblingIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsPrecedingSiblingIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class LevelIterator : public NaryBaseIterator<LevelIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(LevelIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LevelIterator,
+    NaryBaseIterator<LevelIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<LevelIterator, PlanIteratorState>*)this);
+  }
+
+  LevelIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<LevelIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~LevelIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Zorba Team
+ */
+class LeastCommonAncestor : public NaryBaseIterator<LeastCommonAncestor, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(LeastCommonAncestor);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LeastCommonAncestor,
+    NaryBaseIterator<LeastCommonAncestor, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<LeastCommonAncestor, PlanIteratorState>*)this);
+  }
+
+  LeastCommonAncestor(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<LeastCommonAncestor, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~LeastCommonAncestor();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

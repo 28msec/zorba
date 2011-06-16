@@ -475,6 +475,36 @@ namespace zorba {
     void beginVisit( const FnGenerateIdIterator& );
     void endVisit  ( const FnGenerateIdIterator& );
 
+    void beginVisit( const IsAncestorIterator& );
+    void endVisit  ( const IsAncestorIterator& );
+
+    void beginVisit( const IsDescendantIterator& );
+    void endVisit  ( const IsDescendantIterator& );
+
+    void beginVisit( const IsParentIterator& );
+    void endVisit  ( const IsParentIterator& );
+
+    void beginVisit( const IsChildIterator& );
+    void endVisit  ( const IsChildIterator& );
+
+    void beginVisit( const IsFollowingIterator& );
+    void endVisit  ( const IsFollowingIterator& );
+
+    void beginVisit( const IsPrecedingIterator& );
+    void endVisit  ( const IsPrecedingIterator& );
+
+    void beginVisit( const IsFollowingSiblingIterator& );
+    void endVisit  ( const IsFollowingSiblingIterator& );
+
+    void beginVisit( const IsPrecedingSiblingIterator& );
+    void endVisit  ( const IsPrecedingSiblingIterator& );
+
+    void beginVisit( const LevelIterator& );
+    void endVisit  ( const LevelIterator& );
+
+    void beginVisit( const LeastCommonAncestor& );
+    void endVisit  ( const LeastCommonAncestor& );
+
     void beginVisit( const AbsIterator& );
     void endVisit  ( const AbsIterator& );
 

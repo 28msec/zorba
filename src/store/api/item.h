@@ -636,6 +636,68 @@ public:
    */
   virtual void finalizeNode();
 
+  /* - Methods for computing relationship and properties of a node - */
+
+  /**
+   *
+   */
+  virtual bool
+  isAncestor(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isFollowingSibling(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isFollowing(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isDescendant(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isPrecedingSibling(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isPreceding(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isChild(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
+  isParent(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual store::Item_t
+  getLevel() const;
+
+  /**
+   *
+   */
+  virtual store::Item_t
+  leastCommonAncestor(const store::Item_t&) const;
+
   /* -------------------- Methods for tuples --------------------- */
 #if 0
   virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;

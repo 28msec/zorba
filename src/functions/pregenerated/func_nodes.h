@@ -168,6 +168,136 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//fn-zorba-node:ancestor-of
+class fn_zorba_node_ancestor_of : public function
+{
+public:
+  fn_zorba_node_ancestor_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:descendant-of
+class fn_zorba_node_descendant_of : public function
+{
+public:
+  fn_zorba_node_descendant_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:parent-of
+class fn_zorba_node_parent_of : public function
+{
+public:
+  fn_zorba_node_parent_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:child-of
+class fn_zorba_node_child_of : public function
+{
+public:
+  fn_zorba_node_child_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:following-of
+class fn_zorba_node_following_of : public function
+{
+public:
+  fn_zorba_node_following_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:preceding-of
+class fn_zorba_node_preceding_of : public function
+{
+public:
+  fn_zorba_node_preceding_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:following-sibling-of
+class fn_zorba_node_following_sibling_of : public function
+{
+public:
+  fn_zorba_node_following_sibling_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:preceding-sibling-of
+class fn_zorba_node_preceding_sibling_of : public function
+{
+public:
+  fn_zorba_node_preceding_sibling_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:level
+class fn_zorba_node_level : public function
+{
+public:
+  fn_zorba_node_level(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:least-common-ancestor
+class fn_zorba_node_least_common_ancestor : public function
+{
+public:
+  fn_zorba_node_least_common_ancestor(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -1147,6 +1147,178 @@ void OrdPathNode::setOrdPath(
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isAncestor(const store::Item_t& aOther) const
+{
+  const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
+  const OrdPathNode* lOtherNode = static_cast<const OrdPathNode*>(aOther.getp());
+  const OrdPath& lOtherOrdPath = lOtherNode->getOrdPath();
+  const OrdPath& lThisOrdPath = lThisNode->getOrdPath();
+
+  return 
+    (
+      lThisNode->getTree() == lOtherNode->getTree() &&
+      (lThisOrdPath.getRelativePosition(lOtherOrdPath) == OrdPath::ANCESTOR)
+    );
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isFollowingSibling(const store::Item_t& aOther) const
+{ 
+  return isFollowing(aOther) && getParent() == aOther->getParent();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isFollowing(const store::Item_t& aOther) const
+{ 
+  const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
+  const OrdPathNode* lOtherNode = static_cast<const OrdPathNode*>(aOther.getp());
+  const OrdPath& lOtherOrdPath = lOtherNode->getOrdPath();
+  const OrdPath& lThisOrdPath = lThisNode->getOrdPath();
+
+  return 
+    (
+      lThisNode->getTree() == lOtherNode->getTree() &&
+      (lThisOrdPath.getRelativePosition(lOtherOrdPath) == OrdPath::FOLLOWING)
+    );
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isDescendant(const store::Item_t& aOther) const
+{ 
+  const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
+  const OrdPathNode* lOtherNode = static_cast<const OrdPathNode*>(aOther.getp());
+  const OrdPath& lOtherOrdPath = lOtherNode->getOrdPath();
+  const OrdPath& lThisOrdPath = lThisNode->getOrdPath();
+
+  return 
+    (
+      lThisNode->getTree() == lOtherNode->getTree() &&
+      (lThisOrdPath.getRelativePosition(lOtherOrdPath) == OrdPath::DESCENDANT)
+    );
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isPrecedingSibling(const store::Item_t& aOther) const
+{ 
+  return isPreceding(aOther) && getParent() == aOther->getParent();
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isPreceding(const store::Item_t& aOther) const
+{ 
+  const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
+  const OrdPathNode* lOtherNode = static_cast<const OrdPathNode*>(aOther.getp());
+  const OrdPath& lOtherOrdPath = lOtherNode->getOrdPath();
+  const OrdPath& lThisOrdPath = lThisNode->getOrdPath();
+
+  return 
+    (
+      lThisNode->getTree() == lOtherNode->getTree() &&
+      (lThisOrdPath.getRelativePosition(lOtherOrdPath) == OrdPath::PRECEDING)
+    );
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isChild(const store::Item_t& aOther) const
+{ 
+  return aOther->getParent() == this;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+OrdPathNode::isParent(const store::Item_t& aOther) const
+{ 
+  return this->getParent() == aOther;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t
+OrdPathNode::getLevel() const
+{ 
+  ulong lNumLevels = 1;
+  store::Item_t lCurrent = this->getParent();
+  while (lCurrent)
+  {
+    ++lNumLevels;
+    lCurrent = lCurrent->getParent();
+  }
+  store::Item_t lRes;
+  GET_STORE().getItemFactory()->createInteger(lRes, lNumLevels);
+  return lRes;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t
+OrdPathNode::leastCommonAncestor(const store::Item_t& aOther) const
+{
+  const OrdPathNode* lThisNode = static_cast<const OrdPathNode*>(this);
+  const OrdPathNode* lOtherNode = static_cast<const OrdPathNode*>(aOther.getp());
+
+  if (lThisNode->getTree() != lOtherNode->getTree())
+  {
+    return NULL;
+  } 
+
+  if (this == aOther.getp() || isDescendant(aOther))
+  {
+    return const_cast<OrdPathNode*>(this);
+  }
+
+  if (isAncestor(aOther))
+  {
+    return aOther;
+  }
+
+  const Item* lThisCurr = lThisNode->getParent();
+  const Item* lOtherCurr = lOtherNode->getParent();
+
+  while (lThisCurr != lOtherCurr)
+  {
+    if (!lThisCurr)
+    {
+      return const_cast<OrdPathNode*>(lThisNode);
+    }
+
+    if (!lOtherCurr)
+    {
+      return const_cast<OrdPathNode*>(lOtherNode);
+    }
+
+    lThisCurr = lThisCurr->getParent();
+    lOtherCurr = lOtherCurr->getParent();
+  }
+  return const_cast<Item*>(lThisCurr);
+}
+
+
 #endif // ! TEXT_ORDPATH
 
 
@@ -1379,7 +1551,6 @@ void InternalNode::finalizeNode()
     theNodes.swap(tmp);
   }
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -3790,6 +3961,174 @@ zstring TextNode::show() const
 #else
   return "<text>" + getStringValue() + "</text>";
 #endif
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isAncestor(const store::Item_t& aOther) const
+{
+  return getParent()->isAncestor(aOther);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isFollowingSibling(const store::Item_t& aOther) const
+{
+  const store::Item_t lParent = getParent();
+  store::Iterator_t lChildren = lParent->getChildren();
+  lChildren->open();
+
+  // search for this node in the list of children of the parent
+  store::Item_t lCurr;
+  while (lChildren->next(lCurr))
+  {
+    if (lCurr == this) // found this node in the list of children
+    {
+      // if there are following siblings of this text node,
+      // ask them the question
+      if (lChildren->next(lCurr))
+      { 
+        if (lCurr == aOther)
+        {
+          return true;
+        }
+        else
+        {
+          return lCurr->isFollowingSibling(aOther);
+        }
+      }
+    }
+  }
+  return false;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isFollowing(const store::Item_t& aOther) const
+{
+  return getParent()->isFollowing(aOther);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isDescendant(const store::Item_t&) const
+{
+  // text nodes can't have descendants
+  return false;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isPrecedingSibling(const store::Item_t& aOther) const
+{
+  const store::Item_t lParent = getParent();
+  store::Iterator_t lChildren = lParent->getChildren();
+  lChildren->open();
+
+  // search for this node in the list of children of the parent
+  // and remember the according first preceding one
+  store::Item_t lCurr;
+  lChildren->next(lCurr); // there must be at least this one.
+
+  store::Item_t lPrev = lCurr;
+
+  if (lPrev == this)
+  {
+    return false; // no preceding siblings at all
+  }
+
+  if (lPrev == aOther)
+  {
+    return true; // immediate preceding-sibling
+  }
+
+  while (lChildren->next(lCurr))
+  {
+    if (lCurr == this) // found this node in the list of children
+    {
+      if (lPrev == aOther)
+      {
+        return true;
+      }
+      else
+      {
+        return lPrev->isPrecedingSibling(aOther);
+      }
+    }
+    else
+    {
+      lPrev = lCurr; // remember preceding sibling
+    }
+  }
+  return false;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isPreceding(const store::Item_t& aOther) const
+{
+  return getParent()->isPreceding(aOther);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isChild(const store::Item_t&) const
+{
+  // text nodes can't have children
+  return false;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+TextNode::isParent(const store::Item_t& aOther) const
+{
+  return getParent() == aOther;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t
+TextNode::getLevel() const
+{
+  xs_integer lParentLevel = getParent()->getLevel()->getIntegerValue();
+
+  store::Item_t lRes;
+  GET_STORE().getItemFactory()->createInteger(lRes, ++lParentLevel);
+
+  return lRes;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t
+TextNode::leastCommonAncestor(const store::Item_t& aOther) const
+{
+  store::Item_t lParent = getParent();
+
+  if (aOther == lParent)
+  {
+    return lParent;
+  }
+
+  return lParent->leastCommonAncestor(aOther);
 }
 
 

@@ -131,6 +131,106 @@ PlanIter_t fn_generate_id_3_0::codegen(
   return new FnGenerateIdIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_node_ancestor_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsAncestorIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_descendant_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsDescendantIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_parent_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsParentIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_child_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsChildIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_following_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsFollowingIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_preceding_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsPrecedingIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_following_sibling_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsFollowingSiblingIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_preceding_sibling_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsPrecedingSiblingIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_level::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new LevelIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_least_common_ancestor::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new LeastCommonAncestor(sctx, loc, argv);
+}
+
 void populate_context_nodes(static_context* sctx)
 {
   DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
@@ -233,6 +333,85 @@ void populate_context_nodes(static_context* sctx)
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE),
       FunctionConsts::FN_GENERATE_ID_1);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_ancestor_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","ancestor-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_ANCESTOR_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_descendant_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","descendant-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_DESCENDANT_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_parent_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","parent-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_PARENT_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_child_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","child-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_CHILD_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_following_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","following-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_FOLLOWING_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_preceding_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","preceding-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_PRECEDING_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_following_sibling_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","following-sibling-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_FOLLOWING_SIBLING_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_preceding_sibling_of,
+      (createQName("http://www.zorba-xquery.com/modules/node","","preceding-sibling-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_PRECEDING_SIBLING_OF_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_level,
+      (createQName("http://www.zorba-xquery.com/modules/node","","level"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_NODE_LEVEL_1);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_node_least_common_ancestor,
+      (createQName("http://www.zorba-xquery.com/modules/node","","least-common-ancestor"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
+      FunctionConsts::FN_ZORBA_NODE_LEAST_COMMON_ANCESTOR_2);
 
 }
 
