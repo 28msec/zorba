@@ -11,6 +11,7 @@ return
   (
     node:ancestor-of($x/a, $x),
     node:ancestor-of($x/a/b/@attr1, $x),
+    node:ancestor-of($x/a/b/text(), $x/a/b),
     node:descendant-of($x/a, $x/a/b/@attr1),
     node:following-sibling-of($x/a/b, $x/a/b/@attr1),
     node:following-sibling-of($x/a/b/@attr1, $x/a/b/@attr2), (: following-sibling axes is empty for attribute nodes :)

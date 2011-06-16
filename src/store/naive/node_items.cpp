@@ -3720,7 +3720,15 @@ zstring TextNode::show() const
 ********************************************************************************/
 bool TextNode::isAncestor(const store::Item_t& aOther) const
 {
-  return getParent()->isAncestor(aOther);
+  store::Item_t lParent = getParent();
+  if (lParent == aOther)
+  {
+    return true;
+  }
+  else
+  {
+    return getParent()->isAncestor(aOther);
+  }
 }
 
 
