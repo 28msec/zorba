@@ -33,7 +33,7 @@
 #include <zorba/file.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/xquery_exception.h>
-#include <zorba/documentmanager.h>
+#include <zorba/document_manager.h>
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 #include <zorba/xquery_functions.h>

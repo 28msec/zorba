@@ -29,8 +29,8 @@
 #include <zorba/static_context.h>
 #include <zorba/version.h>
 #include <zorba/xmldatamanager.h>
-#include <zorba/documentmanager.h>
-#include <zorba/collectionmanager.h>
+#include <zorba/document_manager.h>
+#include <zorba/collection_manager.h>
 #include <zorba/xquery.h>
 #include <zorba/zorba_string.h>
 

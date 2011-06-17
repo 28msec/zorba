@@ -18,7 +18,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/collectionmanager.h>
+#include <zorba/collection_manager.h>
 
 namespace zorba {
 

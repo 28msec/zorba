@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 
-#include <zorba/staticcollectionmanager.h>
+#include <zorba/static_collection_manager.h>
 
 namespace zorba {
 

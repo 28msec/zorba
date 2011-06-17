@@ -16,7 +16,7 @@
 #ifndef ZORBA_DOCUMENTMANAGER_IMPL_H
 #define ZORBA_DOCUMENTMANAGER_IMPL_H
 
-#include <zorba/documentmanager.h>
+#include <zorba/document_manager.h>
 #include <string>
 
 namespace zorba {

@@ -16,7 +16,7 @@
 #ifndef ZORBA_COLLECTIONMANAGER_IMPL_H
 #define ZORBA_COLLECTIONMANAGER_IMPL_H
 
-#include <zorba/collectionmanager.h>
+#include <zorba/collection_manager.h>
 #include <string>
 
 namespace zorba {
