@@ -148,7 +148,6 @@ declare %private %sequential function file:copy-directory-impl(
     fn:error(xs:QName("file:FOFL0002"), fn:concat("The specified destination path already exists: ", $destination))
   else if (fn:not(file:exists($destination))) then
     let $dirname := file:dir-name($destination)
-    let $basename := file:base-name($destination)
     return
       if (fn:not(file:exists($dirname))) then
         fn:error(xs:QName("file:FOFL0003"), fn:concat("The destination directory does not exist: ", $dirname))
