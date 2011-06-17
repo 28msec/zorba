@@ -46,9 +46,8 @@
 
   <zorba:function>
 
-    <zorba:signature localname="concatenate" prefix="op">
+    <zorba:signature variadic="true" localname="concatenate" prefix="op">
       <zorba:param>item()*</zorba:param>
-      <zorba:param>true</zorba:param> <!-- variadic function -->
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 

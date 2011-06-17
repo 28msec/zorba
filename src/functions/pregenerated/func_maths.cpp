@@ -293,189 +293,319 @@ PlanIter_t fn_zorba_math_frexp::codegen(
 
 void populate_context_maths(static_context* sctx)
 {
-  DECL_WITH_KIND(sctx, math_sqrt,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","sqrt"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_SQRT_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_sqrt,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","sqrt"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_SQRT_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_exp,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","exp"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_EXP_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_exp,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","exp"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_EXP_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_exp10,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","exp10"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_EXP10_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_exp10,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","exp10"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_EXP10_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_log,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","log"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_LOG_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_log,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","log"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_LOG_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_log10,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","log10"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_LOG10_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_log10,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","log10"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_LOG10_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_sin,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","sin"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_SIN_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_sin,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","sin"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_SIN_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_cos,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","cos"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_COS_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_cos,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","cos"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_COS_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_tan,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","tan"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_TAN_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_tan,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","tan"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_TAN_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_asin,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","asin"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_ASIN_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_asin,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","asin"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_ASIN_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_acos,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","acos"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_ACOS_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_acos,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","acos"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_ACOS_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_atan,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","atan"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_ATAN_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_atan,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","atan"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_ATAN_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_atan2,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","atan2"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::MATH_ATAN2_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_atan2,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","atan2"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::MATH_ATAN2_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_cosh,
-      (createQName("http://www.zorba-xquery.com/modules/math","","cosh"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_COSH_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_cosh,
+        (createQName("http://www.zorba-xquery.com/modules/math","","cosh"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_COSH_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_acosh,
-      (createQName("http://www.zorba-xquery.com/modules/math","","acosh"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_ACOSH_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_acosh,
+        (createQName("http://www.zorba-xquery.com/modules/math","","acosh"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_ACOSH_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_fmod,
-      (createQName("http://www.zorba-xquery.com/modules/math","","fmod"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_FMOD_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_fmod,
+        (createQName("http://www.zorba-xquery.com/modules/math","","fmod"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_FMOD_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_ldexp,
-      (createQName("http://www.zorba-xquery.com/modules/math","","ldexp"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_LDEXP_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_ldexp,
+        (createQName("http://www.zorba-xquery.com/modules/math","","ldexp"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_LDEXP_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_pow,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","pow"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
-      FunctionConsts::MATH_POW_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_pow,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","pow"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION),
+        FunctionConsts::MATH_POW_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_sinh,
-      (createQName("http://www.zorba-xquery.com/modules/math","","sinh"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_SINH_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_sinh,
+        (createQName("http://www.zorba-xquery.com/modules/math","","sinh"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_SINH_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_asinh,
-      (createQName("http://www.zorba-xquery.com/modules/math","","asinh"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_ASINH_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_asinh,
+        (createQName("http://www.zorba-xquery.com/modules/math","","asinh"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_ASINH_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_tanh,
-      (createQName("http://www.zorba-xquery.com/modules/math","","tanh"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_TANH_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_tanh,
+        (createQName("http://www.zorba-xquery.com/modules/math","","tanh"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_TANH_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_atanh,
-      (createQName("http://www.zorba-xquery.com/modules/math","","atanh"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_ATANH_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_atanh,
+        (createQName("http://www.zorba-xquery.com/modules/math","","atanh"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_ATANH_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, math_pi,
-      (createQName("http://www.w3.org/2005/xpath-functions/math","","pi"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-      FunctionConsts::MATH_PI_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, math_pi,
+        (createQName("http://www.w3.org/2005/xpath-functions/math","","pi"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+        FunctionConsts::MATH_PI_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_is_inf,
-      (createQName("http://www.zorba-xquery.com/modules/math","","is_inf"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_IS_INF_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_is_inf,
+        (createQName("http://www.zorba-xquery.com/modules/math","","is_inf"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_IS_INF_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_is_nan,
-      (createQName("http://www.zorba-xquery.com/modules/math","","is_nan"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-      FunctionConsts::FN_ZORBA_MATH_IS_NAN_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_is_nan,
+        (createQName("http://www.zorba-xquery.com/modules/math","","is_nan"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_MATH_IS_NAN_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_modf,
-      (createQName("http://www.zorba-xquery.com/modules/math","","modf"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS),
-      FunctionConsts::FN_ZORBA_MATH_MODF_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_modf,
+        (createQName("http://www.zorba-xquery.com/modules/math","","modf"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS),
+        FunctionConsts::FN_ZORBA_MATH_MODF_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_zorba_math_frexp,
-      (createQName("http://www.zorba-xquery.com/modules/math","","frexp"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS),
-      FunctionConsts::FN_ZORBA_MATH_FREXP_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_math_frexp,
+        (createQName("http://www.zorba-xquery.com/modules/math","","frexp"), 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS),
+        FunctionConsts::FN_ZORBA_MATH_FREXP_1);
+
+  }
 
 }
 

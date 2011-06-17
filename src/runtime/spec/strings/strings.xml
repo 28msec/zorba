@@ -131,9 +131,8 @@
   </zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="concat" prefix="fn">
+    <zorba:signature variadic="true" localname="concat" prefix="fn">
       <zorba:param>xs:anyAtomicType?</zorba:param>
-      <zorba:param>true</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
 
@@ -681,7 +680,7 @@
   <zorba:function>
     <zorba:signature localname="materialize" prefix="fn-zorba-string">
       <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
     </zorba:signature>
   </zorba:function>
 
@@ -701,7 +700,7 @@
   <zorba:function>
     <zorba:signature localname="is-streamable" prefix="fn-zorba-string">
       <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:boolean</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
 

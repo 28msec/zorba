@@ -251,28 +251,79 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
   then
     ()
   else
-    string-join(for $sig in $function//zorba:signature
-                return 
-                  string-join(($gen:newline,
-                               if (exists($iter/@preprocessorGuard))
-                               then
-                                 concat($gen:newline, $iter/@preprocessorGuard)
-                               else 
-                                 "",
-                               $gen:indent,
-                               'DECL_WITH_KIND(sctx, ', concat(local:function-name($function),local:createSuffix($sig)), ',',
-                               $gen:newline, gen:indent(3),
-                               '(createQName("',
-                               local:get-zorba-ns($sig/@prefix, $mapping), 
-                               '","","', $sig/@localname, '")',
-                               for $param in $sig/zorba:param
-                               return local:create-zorba-type($param, $mapping),
-                               local:create-zorba-type($sig/zorba:output, $mapping),
-                               '),', $gen:newline, gen:indent(3), 
-                               'FunctionConsts::', gen:function-kind($sig) ,');',
-                               $gen:newline, $gen:newline),
-                              ''),
-                '')
+    string-join(
+      for $sig in $function//zorba:signature
+      let $is-variadic := exists($sig[@variadic = "true"])
+      return 
+        string-join(
+          ($gen:newline,
+           if (exists($iter/@preprocessorGuard))
+           then
+             concat($gen:newline, $iter/@preprocessorGuard)
+           else 
+             "",
+           $gen:indent,
+           '{', $gen:newline, $gen:indent, $gen:indent,
+
+           if ($is-variadic)
+           then
+             concat (
+              'std::vector&lt;xqtref_t> lParamTypes;',
+              $gen:newline, gen:indent(2),
+              string-join(
+                for $param in $sig/zorba:param
+                return
+                  concat('lParamTypes.push_back(', local:create-zorba-type($param, $mapping), ');'),
+                concat($gen:newline, gen:indent(2))
+              )
+            )
+           else
+             ""
+           ,
+           $gen:newline, $gen:newline, gen:indent(2),
+
+           'DECL_WITH_KIND(sctx, ',
+             concat(
+              local:function-name($function),
+
+              local:createSuffix($sig)), ',',
+              $gen:newline, gen:indent(4),
+
+              '(createQName("',
+                local:get-zorba-ns($sig/@prefix, $mapping),
+                '","","', $sig/@localname,
+              '"), ',
+              $gen:newline, gen:indent(4),
+
+              if ($is-variadic)
+              then
+                concat (
+                  'lParamTypes, ',
+                  local:create-zorba-type($sig/zorba:output, $mapping),
+                  ', true'
+                )
+              else
+                string-join ((
+                  for $param at $i in $sig/zorba:param
+                  return
+                    concat(
+                      local:create-zorba-type($param, $mapping),
+                      if ($i <= count($sig/zorba:param))
+                      then
+                        ', '
+                      else
+                        '',
+                      $gen:newline, gen:indent(4)
+                    ),
+                  local:create-zorba-type($sig/zorba:output, $mapping)
+                ), ''),
+              '),', $gen:newline, gen:indent(4), 
+              'FunctionConsts::', gen:function-kind($sig) ,');',
+              $gen:newline, $gen:newline, $gen:indent,
+            '}', $gen:newline, $gen:newline
+            ),
+        ''),
+      '')
 };
 
 
@@ -290,14 +341,13 @@ declare function local:get-zorba-ns($prefix as xs:string, $mapping) as xs:string
 
 declare function local:create-zorba-type($param, $mapping) as xs:string?
 {
-  if($param = 'true') then
-    string-join((',', $gen:newline, gen:indent(3), $param),'')
+  if($param = 'true') then 'true'
 
   else if ($param eq 'empty-sequence()') then
-    string-join((',', $gen:newline, gen:indent(3), 'GENV_TYPESYSTEM.EMPTY_TYPE'), '')
+    'GENV_TYPESYSTEM.EMPTY_TYPE'
     
   else if ($param eq 'none') then
-    string-join((',', $gen:newline, gen:indent(3), 'GENV_TYPESYSTEM.NONE_TYPE'), '')
+    'GENV_TYPESYSTEM.NONE_TYPE'
 
   else if($param) then
     let $suffix := if(ends-with($param,'?')) then 'TYPE_QUESTION' 
@@ -307,18 +357,9 @@ declare function local:create-zorba-type($param, $mapping) as xs:string?
     
     let $prefix as xs:string := string($mapping/zorba:types//zorba:type[starts-with($param, text())][1]/@zorbaType)
     
-    return string-join((',',
-                        $gen:newline,
-                        gen:indent(3),
-                        string-join (('GENV_TYPESYSTEM.',
-                                      $prefix,
-                                      '_',
-                                      $suffix),
-                                     '')),
-                        '')
-
+    return string-join (('GENV_TYPESYSTEM.', $prefix, '_', $suffix), '')
   else
-    ()
+    ""
 };
 
 

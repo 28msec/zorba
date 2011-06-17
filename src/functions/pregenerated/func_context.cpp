@@ -113,52 +113,92 @@ PlanIter_t fn_static_base_uri::codegen(
 
 void populate_context_context(static_context* sctx)
 {
-  DECL_WITH_KIND(sctx, fn_current_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","","current-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
-      FunctionConsts::FN_CURRENT_DATETIME_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_current_dateTime,
+        (createQName("http://www.w3.org/2005/xpath-functions","","current-dateTime"), 
+        GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
+        FunctionConsts::FN_CURRENT_DATETIME_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_current_date,
-      (createQName("http://www.w3.org/2005/xpath-functions","","current-date"),
-      GENV_TYPESYSTEM.DATE_TYPE_ONE),
-      FunctionConsts::FN_CURRENT_DATE_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_current_date,
+        (createQName("http://www.w3.org/2005/xpath-functions","","current-date"), 
+        GENV_TYPESYSTEM.DATE_TYPE_ONE),
+        FunctionConsts::FN_CURRENT_DATE_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_current_time,
-      (createQName("http://www.w3.org/2005/xpath-functions","","current-time"),
-      GENV_TYPESYSTEM.TIME_TYPE_ONE),
-      FunctionConsts::FN_CURRENT_TIME_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_current_time,
+        (createQName("http://www.w3.org/2005/xpath-functions","","current-time"), 
+        GENV_TYPESYSTEM.TIME_TYPE_ONE),
+        FunctionConsts::FN_CURRENT_TIME_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_implicit_timezone,
-      (createQName("http://www.w3.org/2005/xpath-functions","","implicit-timezone"),
-      GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE),
-      FunctionConsts::FN_IMPLICIT_TIMEZONE_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_implicit_timezone,
+        (createQName("http://www.w3.org/2005/xpath-functions","","implicit-timezone"), 
+        GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE),
+        FunctionConsts::FN_IMPLICIT_TIMEZONE_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_default_collation,
-      (createQName("http://www.w3.org/2005/xpath-functions","","default-collation"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE),
-      FunctionConsts::FN_DEFAULT_COLLATION_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_default_collation,
+        (createQName("http://www.w3.org/2005/xpath-functions","","default-collation"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::FN_DEFAULT_COLLATION_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_position,
-      (createQName("http://www.w3.org/2005/xpath-functions","","position"),
-      GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-      FunctionConsts::FN_POSITION_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_position,
+        (createQName("http://www.w3.org/2005/xpath-functions","","position"), 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
+        FunctionConsts::FN_POSITION_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_last,
-      (createQName("http://www.w3.org/2005/xpath-functions","","last"),
-      GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-      FunctionConsts::FN_LAST_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_last,
+        (createQName("http://www.w3.org/2005/xpath-functions","","last"), 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
+        FunctionConsts::FN_LAST_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_static_base_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","","static-base-uri"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
-      FunctionConsts::FN_STATIC_BASE_URI_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_static_base_uri,
+        (createQName("http://www.w3.org/2005/xpath-functions","","static-base-uri"), 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
+        FunctionConsts::FN_STATIC_BASE_URI_0);
+
+  }
 
 }
 

@@ -63,25 +63,40 @@ PlanIter_t zorba_store_integrity_constraints_static_dml_check_integrity_constrai
 
 void populate_context_ic_ddl(static_context* sctx)
 {
-  DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_activate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","activate-integrity-constraint"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE),
-      FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_ACTIVATE_INTEGRITY_CONSTRAINT_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_activate_integrity_constraint,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","activate-integrity-constraint"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_ACTIVATE_INTEGRITY_CONSTRAINT_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_deactivate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","deactivate-integrity-constraint"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE),
-      FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_DEACTIVATE_INTEGRITY_CONSTRAINT_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_deactivate_integrity_constraint,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","deactivate-integrity-constraint"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_DEACTIVATE_INTEGRITY_CONSTRAINT_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_dml_check_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml","","check-integrity-constraint"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-      FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DML_CHECK_INTEGRITY_CONSTRAINT_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_dml_check_integrity_constraint,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml","","check-integrity-constraint"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DML_CHECK_INTEGRITY_CONSTRAINT_1);
+
+  }
 
 }
 

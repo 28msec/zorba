@@ -113,64 +113,104 @@ PlanIter_t fn_in_scope_prefixes::codegen(
 
 void populate_context_qnames(static_context* sctx)
 {
-  DECL_WITH_KIND(sctx, fn_resolve_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","","resolve-QName"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ELEMENT_TYPE_ONE,
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION),
-      FunctionConsts::FN_RESOLVE_QNAME_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_resolve_QName,
+        (createQName("http://www.w3.org/2005/xpath-functions","","resolve-QName"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION),
+        FunctionConsts::FN_RESOLVE_QNAME_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","","QName"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE),
-      FunctionConsts::FN_QNAME_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_QName,
+        (createQName("http://www.w3.org/2005/xpath-functions","","QName"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE),
+        FunctionConsts::FN_QNAME_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, op_QName_equal,
-      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","QName-equal"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-      FunctionConsts::OP_QNAME_EQUAL_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, op_QName_equal,
+        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","QName-equal"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::OP_QNAME_EQUAL_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_prefix_from_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","","prefix-from-QName"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION),
-      FunctionConsts::FN_PREFIX_FROM_QNAME_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_prefix_from_QName,
+        (createQName("http://www.w3.org/2005/xpath-functions","","prefix-from-QName"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION),
+        FunctionConsts::FN_PREFIX_FROM_QNAME_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_local_name_from_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","","local-name-from-QName"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION),
-      FunctionConsts::FN_LOCAL_NAME_FROM_QNAME_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_local_name_from_QName,
+        (createQName("http://www.w3.org/2005/xpath-functions","","local-name-from-QName"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION),
+        FunctionConsts::FN_LOCAL_NAME_FROM_QNAME_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_namespace_uri_from_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-from-QName"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
-      FunctionConsts::FN_NAMESPACE_URI_FROM_QNAME_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_namespace_uri_from_QName,
+        (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-from-QName"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
+        FunctionConsts::FN_NAMESPACE_URI_FROM_QNAME_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_namespace_uri_for_prefix,
-      (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-for-prefix"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ELEMENT_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
-      FunctionConsts::FN_NAMESPACE_URI_FOR_PREFIX_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_namespace_uri_for_prefix,
+        (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-for-prefix"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
+        FunctionConsts::FN_NAMESPACE_URI_FOR_PREFIX_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_in_scope_prefixes,
-      (createQName("http://www.w3.org/2005/xpath-functions","","in-scope-prefixes"),
-      GENV_TYPESYSTEM.ELEMENT_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_STAR),
-      FunctionConsts::FN_IN_SCOPE_PREFIXES_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_in_scope_prefixes,
+        (createQName("http://www.w3.org/2005/xpath-functions","","in-scope-prefixes"), 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_IN_SCOPE_PREFIXES_1);
+
+  }
 
 }
 

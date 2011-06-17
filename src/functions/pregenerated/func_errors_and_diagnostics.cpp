@@ -44,42 +44,67 @@ PlanIter_t fn_error::codegen(
 
 void populate_context_errors_and_diagnostics(static_context* sctx)
 {
-  DECL_WITH_KIND(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
-      GENV_TYPESYSTEM.NONE_TYPE),
-      FunctionConsts::FN_ERROR_0);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_error,
+        (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
+        GENV_TYPESYSTEM.NONE_TYPE),
+        FunctionConsts::FN_ERROR_0);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.NONE_TYPE),
-      FunctionConsts::FN_ERROR_1);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_error,
+        (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.NONE_TYPE),
+        FunctionConsts::FN_ERROR_1);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.NONE_TYPE),
-      FunctionConsts::FN_ERROR_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_error,
+        (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.NONE_TYPE),
+        FunctionConsts::FN_ERROR_2);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.NONE_TYPE),
-      FunctionConsts::FN_ERROR_3);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_error,
+        (createQName("http://www.w3.org/2005/xpath-functions","","error"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.NONE_TYPE),
+        FunctionConsts::FN_ERROR_3);
+
+  }
 
 
-  DECL_WITH_KIND(sctx, fn_trace,
-      (createQName("http://www.w3.org/2005/xpath-functions","","trace"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-      FunctionConsts::FN_TRACE_2);
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_trace,
+        (createQName("http://www.w3.org/2005/xpath-functions","","trace"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::FN_TRACE_2);
+
+  }
 
 }
 

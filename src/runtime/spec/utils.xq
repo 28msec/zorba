@@ -62,13 +62,8 @@ declare function zi:add-guard-open($name as xs:string) as xs:string
 
 declare function zi:arity($sig) as xs:string
 {
-  let $numParams := count($sig/zorba:param)
-  let $variadic := if ($numParams eq 2 and $sig/zorba:param[2]/text() eq "true")
-                   then fn:true()
-                   else fn:false()
-  return
-  if ($variadic) then "N"
-  else xs:string($numParams)
+  if ($sig[@variadic = "true"]) then "N"
+  else xs:string(count($sig/zorba:param))
 };
 
 declare function zi:function-kind($sig) as xs:string
