@@ -207,13 +207,14 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
     ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})   
    
   ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/")
-  
-  FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}
-        DESTINATION "${output_dir}/.."
-        FILES_MATCHING
-        PATTERN "*.xsd"
-        PATTERN "*.svn" EXCLUDE
-        PATTERN "*.xq.src" EXCLUDE)
+
+#  QQQ FILE(COPY ...) only exists in Cmake 2.8 :(
+#  FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}
+#        DESTINATION "${output_dir}/.."
+#        FILES_MATCHING
+#        PATTERN "*.xsd"
+#        PATTERN "*.svn" EXCLUDE
+#        PATTERN "*.xq.src" EXCLUDE)
 
 
    STRING(REPLACE "/" "_" ZORBA_OUTPUT_INSTALLED "${output_dir}_installed")
