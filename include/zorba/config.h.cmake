@@ -131,18 +131,18 @@ typedef __int64 int64_t;
 ////////// Zorba //////////////////////////////////////////////////////////////
 
 // Zorba features
-#cmakedefine ZORBA_NO_BIGNUMBERS
 #cmakedefine ZORBA_NO_FULL_TEXT
 #cmakedefine ZORBA_NO_UNICODE
 #cmakedefine ZORBA_NO_XMLSCHEMA
 #cmakedefine ZORBA_NUMERIC_OPTIMIZATION
 #cmakedefine ZORBA_VERIFY_PEER_SSL_CERTIFICATE
+#cmakedefine ZORBA_WITH_BIG_INTEGER
+#cmakedefine ZORBA_WITH_DEBUGGER
 #cmakedefine ZORBA_WITH_FILE_ACCESS
 #cmakedefine ZORBA_WITH_FOP
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 #cmakedefine ZORBA_WITH_REST
 #cmakedefine ZORBA_WITH_SSL
-#cmakedefine ZORBA_WITH_DEBUGGER
 
 // Zorba parser configuration
 #cmakedefine ZORBA_DEBUG_PARSER 

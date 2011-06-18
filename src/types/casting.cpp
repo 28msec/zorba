@@ -156,21 +156,28 @@ T1_TO_T2(str, dbl)
 
 T1_TO_T2(str, dec)
 {
-  xs_decimal n;
-  if (NumConversions::strToDecimal(strval.c_str(), n))
+  try {
+    xs_decimal const n(strval.c_str());
     return aFactory->createDecimal(result, n);
-
-  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::exception const& ) {
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
 }
 
 
 T1_TO_T2(str, int)
 {
-  xs_integer n;
-  if (NumConversions::strToInteger(strval.c_str(), n))
+  try {
+    xs_integer const n(strval.c_str());
     return aFactory->createInteger(result, n);
-
-  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::invalid_argument const& ) {
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::range_error const& ) {
+    throw TYPE_EXCEPTION( err::FOAR0002, aErrorInfo );
+  }
 }
 
 
@@ -630,7 +637,7 @@ T1_TO_T2(flt, dec)
     xs_decimal const n( aItem->getFloatValue() );
     return aFactory->createDecimal(result, n);
   }
-  catch ( std::invalid_argument const& ) {
+  catch ( std::exception const& ) {
     throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
   }
 }
@@ -641,7 +648,7 @@ T1_TO_T2(flt, int)
   try {
     return aFactory->createInteger(result, xs_integer(aItem->getFloatValue()));
   }
-  catch ( std::invalid_argument const& ) {
+  catch ( std::exception const& ) {
     throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
   }
 }
@@ -681,7 +688,7 @@ T1_TO_T2(dbl, dec)
     xs_decimal const n( aItem->getDoubleValue() );
     return aFactory->createDecimal(result, n);
   }
-  catch ( std::invalid_argument const& ) {
+  catch ( std::exception const& ) {
     throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
   }
 }
@@ -692,7 +699,7 @@ T1_TO_T2(dbl, int)
   try {
     return aFactory->createInteger(result, xs_integer(aItem->getDoubleValue()));
   }
-  catch ( std::invalid_argument const& ) {
+  catch ( std::exception const& ) {
     throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
   }
 }

@@ -258,7 +258,7 @@ Item ItemFactoryImpl::createDecimal (const String& aValue)
     Decimal const lDecimal(lString.c_str());
     theItemFactory->createDecimal(lItem, lDecimal);
   }
-  catch ( std::invalid_argument const& ) {
+  catch ( std::exception const& ) {
     // ignore
   }
   return &*lItem;
@@ -284,7 +284,7 @@ ItemFactoryImpl::createInteger(const String& aInteger)
     Integer const lInteger( lString.c_str() );
     theItemFactory->createInteger(lItem, lInteger);
   }
-  catch ( std::invalid_argument const& ) {
+  catch ( std::exception const& ) {
     // ignore
   }
   return &*lItem;

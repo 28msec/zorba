@@ -152,7 +152,7 @@ void operator&(Archiver &ar, XQPCollator*& obj)
   }
 }
 
-#ifndef ZORBA_NO_BIGNUMBERS
+
 void operator&(Archiver &ar, MAPM &obj)
 {
   if(ar.is_serializing_out())
@@ -203,7 +203,6 @@ void operator&(Archiver &ar, MAPM &obj)
     ar.register_reference(id, field_treat, &obj);
   }
 }
-#endif
 
 
 void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &items)

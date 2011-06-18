@@ -17,6 +17,8 @@
 
 #include <vector>
 
+#include <zorba/config.h>
+
 #include "common/shared_types.h"
 
 #include "diagnostics/assert.h"
@@ -342,6 +344,7 @@ void FormatIntegerIterator::formatIntegerRoman(xs_integer valueInteger, zstring 
 void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool is_ordinal, zstring &resultString)
 {
   //10^303
+#ifdef ZORBA_WITH_BIG_INTEGER
   static xs_integer integer_centillion =     StringToXsInteger("1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
   //10^63
   static xs_integer integer_vigintillion =   StringToXsInteger("1000000000000000000000000000000000000000000000000000000000000000");
@@ -373,6 +376,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   static xs_integer integer_septillion =     StringToXsInteger("1000000000000000000000000");
   //10^21
   static xs_integer integer_sextillion =     StringToXsInteger("1000000000000000000000");
+#endif /* ZORBA_WITH_BIG_INTEGER */
   //10^18
   static xs_integer integer_quintillion =    StringToXsInteger("1000000000000000000");
   //10^15
@@ -449,6 +453,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   }
 
   if(0);
+#ifdef ZORBA_WITH_BIG_INTEGER
   IF_GE(centillion)
   IF_GE(vigintillion)
   IF_GE(novemdecillion)
@@ -465,6 +470,7 @@ void FormatIntegerIterator::formatIntegerEnglish(xs_integer valueInteger, bool i
   IF_GE(octillion)
   IF_GE(septillion)
   IF_GE(sextillion)
+#endif /* ZORBA_WITH_BIG_INTEGER */
   IF_GE(quintillion)
   IF_GE(quadrillion)
   IF_GE(trillion)

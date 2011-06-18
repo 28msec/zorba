@@ -40,9 +40,7 @@ namespace zorba{
   namespace serialization{
 //void operator&(Archiver &ar, XQType *&obj);
 void operator&(Archiver &ar, const XQType *&obj);
-#ifndef ZORBA_NO_BIGNUMBERS
 void operator&(Archiver &ar, MAPM &obj);
-#endif
 
 void operator&(Archiver &ar, XQPCollator *&obj);
 void operator&(Archiver &ar, store::Item* &obj);

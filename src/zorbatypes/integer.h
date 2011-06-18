@@ -24,9 +24,9 @@
 #include <zorba/config.h>
 #include "common/common.h"
 
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
 # include "zorbatypes/m_apm.h"
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 #include "zorbaserialization/archiver.h"
 #include "zorbaserialization/class_serializer.h"
@@ -66,6 +66,9 @@ public:
    * @param s The null-terminated C string to parse.  Leading and trailing
    * whitespace is ignored.
    * @throw std::invalid_argument if \a s does not contain a valid integer.
+   * @throw std::range_error if \a s contains an integer that either underflows
+   * or overflows the smallest or largest representable integer (only when not
+   * compiled with ZORBA_WITH_BIG_INTEGER).
    */
   Integer( char const *s );
 
@@ -184,17 +187,17 @@ public:
   void serialize( serialization::Archiver& );
 
 private:
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
   typedef MAPM value_type;
 #else
   typedef long long value_type;
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
   value_type value_;
 
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
   Integer( value_type const &v ) : value_( v ) { }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
   bool is_xs_int() const;
   bool is_xs_long() const;
@@ -205,21 +208,25 @@ private:
     return d >= 0 ? floor( d ) : ceil( d );
   }
 
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
   static value_type ftoi( MAPM const &d ) {
     return d.sign() >= 0 ? d.floor() : d.ceil();
   }
 
   MAPM const& itod() const {
-    return value_;
+    return value_;                      // intentional no-op
   }
 #else
+  static value_type ftoi( value_type v ) {
+    return v;                           // intentional no-op
+  }
+
   static value_type ftoi( MAPM const &d );
 
   MAPM itod() const;
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
-  void parse( char const *s, bool allow_negative = true );
+  void parse( char const *s );
 
   friend class Decimal;
   template<typename T> friend class FloatImpl;
@@ -243,10 +250,10 @@ inline Integer::Integer( int n ) : value_( static_cast<long>( n ) ) {
 inline Integer::Integer( long n ) : value_( n ) {
 }
 
-#ifdef ZORBA_NO_BIGNUMBERS
+#ifndef ZORBA_WITH_BIG_INTEGER
 inline Integer::Integer( long long n ) : value_( n ) {
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 inline Integer::Integer( unsigned char c ) : value_( static_cast<long>( c ) ) {
 }
@@ -257,13 +264,13 @@ inline Integer::Integer( unsigned short n ) : value_( static_cast<long>( n ) ) {
 inline Integer::Integer( unsigned int n ) : value_( static_cast<long>( n ) ) {
 }
 
-#ifdef ZORBA_NO_BIGNUMBERS
+#ifndef ZORBA_WITH_BIG_INTEGER
 inline Integer::Integer( unsigned long n ) : value_( n ) {
 }
 
 inline Integer::Integer( unsigned long long n ) : value_( n ) {
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 inline Integer::Integer( float n ) : value_( (double)n ) {
 }
@@ -307,12 +314,12 @@ inline Integer& Integer::operator=( long n ) {
   return *this;
 }
 
-#ifdef ZORBA_NO_BIGNUMBERS
+#ifndef ZORBA_WITH_BIG_INTEGER
 inline Integer& Integer::operator=( long long n ) {
   value_ = n;
   return *this;
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 inline Integer& Integer::operator=( unsigned char c ) {
   value_ = static_cast<long>( c );
@@ -329,7 +336,7 @@ inline Integer& Integer::operator=( unsigned int n ) {
   return *this;
 }
 
-#ifdef ZORBA_NO_BIGNUMBERS
+#ifndef ZORBA_WITH_BIG_INTEGER
 inline Integer& Integer::operator=( unsigned long n ) {
   value_ = static_cast<long>( n );
   return *this;
@@ -339,7 +346,7 @@ inline Integer& Integer::operator=( unsigned long long n ) {
   value_ = n;
   return *this;
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 inline Integer& Integer::operator=( float n ) {
   value_ = static_cast<long>( n );
@@ -462,7 +469,7 @@ inline bool operator>=( Integer const &i, Integer const &j ) {
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
 
 inline int Integer::compare( Integer const &i ) const {
   return value_.compare( i.value_ );
@@ -491,7 +498,12 @@ inline int Integer::sign() const {
 #else
 
 inline int Integer::compare( Integer const &i ) const {
-  return value_ - i.value_;
+  //
+  // Note that we can't return the difference directly since it will be
+  // truncated if it's ether > max(int) or < min(int) yielding a wrong result.
+  //
+  value_type const temp = value_ - i.value_;
+  return temp < 0 ? -1 : temp > 0 ? 1 : 0;
 }
 
 inline uint32_t Integer::hash() const {
@@ -520,7 +532,7 @@ inline int Integer::sign() const {
   return value_ < 0 ? -1 : value_ > 0 ? 1 : 0;
 }
 
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 std::ostream& operator<<( std::ostream &os, Integer const& );
 

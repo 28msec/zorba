@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 
+#include <cerrno>
 #include <cstdlib>
 
 #include "util/ascii_util.h"
@@ -35,19 +36,24 @@ END_SERIALIZABLE_CLASS_VERSIONS(Integer)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Integer::parse( char const *s, bool allow_negative ) {
-#ifndef ZORBA_NO_BIGNUMBERS
-  Decimal::parse(
-    s, &value_, allow_negative ? Decimal::parse_negative : Decimal::parse_none
-  );
+void Integer::parse( char const *s ) {
+#ifdef ZORBA_WITH_BIG_INTEGER
+  Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
   char *end;
   value_ = std::strtoll( s, &end, 10 );
-  if ( *end )
-    throw std::invalid_argument(
-      BUILD_STRING( '"', *end, "\": invalid character" )
+  if ( errno == ERANGE )
+    throw std::range_error(
+      BUILD_STRING( '"', s, "\": number too big/small" )
     );
-#endif /* ZORBA_NO_BIGNUMBERS */
+  if ( end == s )
+    throw std::invalid_argument( BUILD_STRING( '"', s, "\": no digits" ) );
+  for ( ; *end; ++end )                 // remaining characters, if any, ...
+    if ( !ascii::is_space( *end ) )     // ... may only be whitespace
+      throw std::invalid_argument(
+        BUILD_STRING( '"', *end, "\": invalid character" )
+      );
+#endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
 void Integer::serialize( serialization::Archiver &ar ) {
@@ -56,7 +62,7 @@ void Integer::serialize( serialization::Archiver &ar ) {
 
 ////////// constructors ///////////////////////////////////////////////////////
 
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
 Integer::Integer( long long n ) {
   zstring const temp( NumConversions::longToStr( n ) );
   value_ = temp.c_str();
@@ -71,7 +77,7 @@ Integer::Integer( unsigned long long n ) {
   zstring const temp( NumConversions::longToStr( n ) );
   value_ = temp.c_str();
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 Integer::Integer( Decimal const &d ) {
   value_ = ftoi( d.value_ );
@@ -91,7 +97,7 @@ Integer::Integer( Float const &f ) {
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
 Integer& Integer::operator=( long long n ) {
   zstring const temp( NumConversions::longToStr( n ) );
   value_ = temp.c_str();
@@ -109,7 +115,7 @@ Integer& Integer::operator=( unsigned long long n ) {
   value_ = temp.c_str();
   return *this;
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 Integer& Integer::operator=( Decimal const &d ) {
   value_ = ftoi( d.value_ );
@@ -181,7 +187,7 @@ bool operator>=( Integer const &i, Decimal const &d ) {
 ////////// math functions /////////////////////////////////////////////////////
 
 Double Integer::pow( Integer const &power ) const {
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
   value_type const result( value_.pow( power.value_, 15 ) );
   char buf[300];
   result.toFixPtString( buf, 15 );
@@ -190,7 +196,7 @@ Double Integer::pow( Integer const &power ) const {
   return double_result;
 #else
   return Double( ::pow( value_, power.value_ ) );
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
 Integer Integer::round( Integer const &precision ) const {
@@ -203,7 +209,7 @@ Integer Integer::roundHalfToEven( Integer const &precision ) const {
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
-#ifdef ZORBA_NO_BIGNUMBERS
+#ifndef ZORBA_WITH_BIG_INTEGER
 Integer::value_type Integer::ftoi( MAPM const &d ) {
   MAPM const temp( d.sign() >= 0 ? d.floor() : d.ceil() );
   char *const buf = new char[ temp.exponent() + 3 ];
@@ -218,13 +224,13 @@ MAPM Integer::itod() const {
     return static_cast<long>( value_ );
   return NumConversions::longToStr( value_ ).c_str();
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
 uint32_t Integer::hash() const {
   return Decimal::hash( value_ );
 }
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 Integer const& Integer::one() {
   static Integer const i(1);
@@ -232,7 +238,7 @@ Integer const& Integer::one() {
 }
 
 zstring Integer::toString() const {
-#ifndef ZORBA_NO_BIGNUMBERS
+#ifdef ZORBA_WITH_BIG_INTEGER
   char *const buf = new char[ value_.exponent() + 3 ];
   value_.toIntegerString( buf );
   zstring const s( buf );
@@ -242,7 +248,7 @@ zstring Integer::toString() const {
   char buf[ 128 ];
   sprintf( buf, "%lld", value_ );
   return buf;
-#endif /* ZORBA_NO_BIGNUMBERS */
+#endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
 Integer const& Integer::zero() {

@@ -177,9 +177,7 @@ off_t symbol_table::put_commentcontent(char const* yytext, uint32_t yyleng)
 
 xs_decimal* symbol_table::decimalval(char const* text, uint32_t length)
 {
-  xs_decimal lDecimal;
-  NumConversions::strToDecimal(text, lDecimal);
-  return new xs_decimal(lDecimal);
+  return new xs_decimal(text);
 }
 
 xs_double* symbol_table::doubleval(char const* text, uint32_t length)
@@ -191,9 +189,13 @@ xs_double* symbol_table::doubleval(char const* text, uint32_t length)
 
 xs_integer* symbol_table::integerval(char const* text, uint32_t length)
 {
-  xs_integer lInteger;
-  NumConversions::strToInteger(text, lInteger);
-  return new xs_integer(lInteger);
+  try {
+    return new xs_integer(text);
+  }
+  catch ( std::range_error const& ) {
+    // TODO: needs query location
+    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( text ) );
+  }
 }
 
 std::string symbol_table::get(off_t id)

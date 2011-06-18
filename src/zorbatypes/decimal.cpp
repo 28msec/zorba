@@ -42,11 +42,11 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   while ( ascii::is_space( *s ) )
     ++s;
   char const *const first_non_ws = s;
-  if ( *s == '+' || ((parse_options & parse_negative) && *s == '-') )
+  if ( *s == '+' || *s == '-' )
     ++s;
   while ( ascii::is_digit( *s ) )
     ++s;
-  if ( parse_options == parse_decimal ) {
+  if ( parse_options & parse_decimal ) {
     if ( *s == '.' )
       ++s;
     while ( ascii::is_digit( *s ) )
@@ -73,10 +73,10 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     *result = first_non_ws;
 }
 
-/*
-    Remove trailing .99999 or .000001.
-    Find four or five consecutive 9 or 0 after decimal point and eliminate them.
-*/
+/**
+ * Remove trailing .99999 or .000001.
+ * Find four or five consecutive 9 or 0 after decimal point and eliminate them.
+ */
 void Decimal::reduce( char *s ) {
   char *dot = strrchr( s, '.' );
   if ( !dot )                           // not a floating point number
@@ -191,7 +191,7 @@ Decimal::Decimal( float f ) {
   if ( f != f ||
        f ==  std::numeric_limits<float>::infinity() ||
        f == -std::numeric_limits<float>::infinity() )
-    throw std::invalid_argument( "float value = infinite" );
+    throw std::invalid_argument( "float value = infinity" );
   value_ = f;
 }
 
@@ -199,19 +199,19 @@ Decimal::Decimal( double d ) {
   if ( d != d ||
        d ==  std::numeric_limits<double>::infinity() ||
        d == -std::numeric_limits<double>::infinity() )
-    throw std::invalid_argument( "double value = infinite" );
+    throw std::invalid_argument( "double value = infinity" );
   value_ = d;
 }
 
 Decimal::Decimal( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "double value = infinite" );
+    throw std::invalid_argument( "double value = infinity" );
   value_ = d.theFloating;
 }
 
 Decimal::Decimal( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "float value = infinite" );
+    throw std::invalid_argument( "float value = infinity" );
   value_ = f.theFloating;
 }
 
@@ -327,8 +327,7 @@ Decimal::value_type Decimal::roundHalfToEven( value_type const &v,
                                               value_type const &precision ) {
   value_type const exp( value_type(10).pow( precision ) );
   value_type result( v * exp );
-  bool aHalfVal;
-  aHalfVal = (result - MAPM::get0_5()) == result.floor();
+  bool const aHalfVal = (result - MAPM::get0_5()) == result.floor();
   result += MAPM::get0_5();
   result = result.floor();
   if ( aHalfVal && result.is_odd() )
@@ -399,8 +398,7 @@ zstring Decimal::toString( value_type const &value, int precision ) {
     while ( *last == '0' && last > buf )
       *last-- = '\0';
 
-    // remove '.' if there are no digits after it
-    if ( *last == '.' )
+    if ( *last == '.' )                 // remove '.' if no digits after it
       *last = '\0';
   }
 

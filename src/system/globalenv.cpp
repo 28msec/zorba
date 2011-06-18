@@ -21,11 +21,11 @@
 # include <unicode/uclean.h>
 # include <unicode/utypes.h>
 # include <unicode/udata.h>
-#endif//#ifndef ZORBA_NO_UNICODE
+#endif /* ZORBA_NO_UNICODE */
 
-#ifndef ZORBA_NO_BIGNUMBERS
-#include "zorbatypes/m_apm.h"
-#endif
+#ifdef ZORBA_WITH_BIG_INTEGER
+# include "zorbatypes/m_apm.h"
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 #include "zorbautils/fatal.h"
 
@@ -196,12 +196,10 @@ void GlobalEnvironment::destroy()
 
 void GlobalEnvironment::destroyStatics()
 {
-#ifndef ZORBA_NO_BIGNUMBERS
   // release resources aquired by the mapm library
   // this will force zorba users to reinit mapm
   // if they shutdown zorba but want to use mapm beyond
   m_apm_free_all_mem();
-#endif
 }
 
 

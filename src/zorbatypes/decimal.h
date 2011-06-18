@@ -200,9 +200,8 @@ private:
   bool is_xs_ulong() const;
 
   enum parse_options {
-    parse_none,
-    parse_negative = 0x01,
-    parse_decimal  = 0x02 | parse_negative
+    parse_integer,
+    parse_decimal
   };
 
   static void parse( char const *s, value_type *result,

@@ -927,10 +927,8 @@ zstring FloatImpl<FloatType>::toString(bool no_scientific_format) const
 #if 1
     // This is the "spec" implementation, i.e., it is an exact application of
     // the spec in  http://www.w3.org/TR/xpath-functions/#casting
-    MAPM  decimal_mapm = theFloating;
-#ifndef ZORBA_NO_BIGNUMBERS
+    MAPM decimal_mapm = theFloating;
     decimal_mapm = decimal_mapm.round(precision);
-#endif
     return Decimal::toString(decimal_mapm, max_precision());
 #else
     std::stringstream stream;
