@@ -68,7 +68,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch09
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/AnalyzeString/analyzeString-018
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/AnalyzeString/analyzeString-002
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/AnalyzeString/analyzeString-008
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/AnalyzeString/analyzeString-017
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-004

@@ -902,7 +902,7 @@ _tmain(int argc, _TCHAR* argv[])
                   << std::endl;
         return 7;
       }
-      //Sleep(5000);
+
       if (!asFile) {
         std::cerr << "Cannot debug inline queries." << std::endl;
         return 8;

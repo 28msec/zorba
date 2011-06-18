@@ -1940,9 +1940,6 @@ void* import_schema(
 {
 #ifndef ZORBA_NO_XMLSCHEMA
 
-  //const SchemaPrefix* prefix = v.schema_prefix();
-  //zstring targetNS = v.get_uri();
-
   if (! theImportedSchemas.insert(targetNS.str()).second)
     throw XQUERY_EXCEPTION(err::XQST0058, ERROR_LOC(loc));
 
@@ -2033,6 +2030,82 @@ void* import_schema(
 #else
   throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(loc));
 #endif
+}
+
+
+/*******************************************************************************
+  Imports a given schema allocating it as prefix the last step in the URI path
+  suffixed with "_"'s if such a prefix is already bound.
+********************************************************************************/
+void*
+import_schema_auto_prefix(
+  const QueryLoc& aLoc,
+  const zstring& aTargetNs,
+  const URILiteralList* atlist)
+{
+#ifndef ZORBA_NO_XMLSCHEMA
+
+  if (theImportedSchemas.find(aTargetNs.str()) == theImportedSchemas.end())
+  {
+    // take as prefix the last segment of the URI
+    std::size_t lLastSlash = aTargetNs.find_last_of("/");
+    zstring lPrefixStr;
+    if (lLastSlash + 1 < aTargetNs.size())
+    {
+      lPrefixStr = aTargetNs.substr(lLastSlash + 1);
+    }
+    // do not allow a "default" namespace binding
+    if (lPrefixStr == "")
+    {
+      lPrefixStr = "_";
+    }
+
+    // search for name clashes with already existing prefixes
+    store::NsBindings lNsBindings;
+    theSctx->get_namespace_bindings(lNsBindings);
+    store::NsBindings::iterator lIter = lNsBindings.begin();
+    store::NsBindings::iterator lEnd = lNsBindings.end();
+    for (; lIter != lEnd; lIter++)
+    {
+      // TODO: can be done more efficient by not starting from the beginning,
+      // but since the chances are small that more than 1 restart is needed,
+      // it probably compensates to the performance degradation by allocating
+      // another vector
+      if (lIter->first == lPrefixStr) {
+        lPrefixStr += "_";
+        lIter = lNsBindings.begin();
+      }      
+    }    
+
+    // now import the schema
+    SchemaPrefix lPrefix(aLoc, lPrefixStr);
+    import_schema(aLoc, &lPrefix, aTargetNs, atlist);
+  }
+
+  return no_state;
+
+#else
+  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(loc));
+#endif
+}
+
+/******************************************************************************
+  Wraps an expression in a validate expression. If the schema URI is a
+  non-empty string, the corresponding schema is imported. If the location is
+  QueryLoc::null, the wrapped expression's location will be used.
+*******************************************************************************/
+expr_t
+wrap_in_validate_expr_strict(
+  expr* aExpr,
+  std::string aSchemaURI)
+{
+  QueryLoc lLoc = aExpr->get_loc();
+  import_schema_auto_prefix(lLoc, zstring(aSchemaURI.c_str()), NULL);
+
+  store::Item_t qname;
+  return new validate_expr(
+    theRootSctx, lLoc, ParseConstants::val_strict,
+    qname, aExpr, theSctx->get_typemanager());
 }
 
 
@@ -2588,7 +2661,7 @@ void* begin_visit(const SchemaImport& v)
 {
   TRACE_VISIT();
 
-  return import_schema(v.get_location(), v.get_prefix(), v.get_uri(), v.get_at_list());
+  return import_schema(loc, v.get_prefix(), v.get_uri(), v.get_at_list());
 }
 
 void end_visit (const SchemaImport& v, void* /*visit_state*/)
@@ -3425,7 +3498,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   ZORBA_ASSERT(flwor != NULL);
 
   store::Item_t qnameItem;
-  expand_no_default_qname(qnameItem, v.get_name(), v.get_location());
+  expand_no_default_qname(qnameItem, v.get_name(), loc);
 
   var_expr_t arg_var = create_var(loc, qnameItem, var_expr::arg_var);
   var_expr_t subst_var = bind_var(loc, qnameItem, var_expr::let_var);
@@ -3833,7 +3906,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDST0003_COLLECTION_DECL_IN_MAIN_MODULE,
-      ERROR_LOC( v.get_location() )
+      ERROR_LOC( loc )
     );
   }
 
@@ -3899,10 +3972,10 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                             lNodeType,
                                             lCollectionType);
 
-  theSctx->bind_collection(lColl, v.get_location());
+  theSctx->bind_collection(lColl, loc);
 
   assert(export_sctx);
-  export_sctx->bind_collection(lColl, v.get_location());
+  export_sctx->bind_collection(lColl, loc);
 
   // Create an IC to check that the cardinality of the collection matches its
   // declared type.
@@ -4287,7 +4360,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     throw XQUERY_EXCEPTION(
       zerr::ZDST0044_IC_DECL_IN_MAIN_MODULE,
       ERROR_PARAMS( v.getName()->get_qname() ),
-      ERROR_LOC( v.get_location() )
+      ERROR_LOC( loc )
     );
   }
 
@@ -5400,7 +5473,7 @@ void end_visit(const Expr& v, void* /*visit_state*/)
   }
 
   fo_expr_t concatExpr = new fo_expr(theRootSctx,
-                                     v.get_location(),
+                                     loc,
                                      op_concatenate,
                                      args);
   normalize_fo(concatExpr.getp());
@@ -5682,7 +5755,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   }
 
   for_clause* fc = new for_clause(theRootSctx,
-                                  v.get_location(),
+                                  loc,
                                   varExpr,
                                   domainExpr,
                                   posVarExpr,
@@ -5774,7 +5847,7 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
     var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::let_var, type);
 
     let_clause* clause = new let_clause(theRootSctx,
-                                        v.get_location(),
+                                        loc,
                                         varExpr,
                                         domainExpr);
 
@@ -6145,7 +6218,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     wrapper_expr_t input_wrapper;
     input_wrapper = new wrapper_expr(theRootSctx,
-                                     v.get_location(),
+                                     loc,
                                      static_cast<expr*>(input_var.getp()));
 
     grouping_rebind.push_back(std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
@@ -6161,7 +6234,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     wrapper_expr_t input_wrapper;
     input_wrapper = new wrapper_expr(theRootSctx,
-                                     v.get_location(),
+                                     loc,
                                      static_cast<expr*>(input_var.getp()));
 
     nongrouping_rebind.push_back(std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
@@ -6169,7 +6242,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   }
 
   group_clause* clause = new group_clause(theRootSctx,
-                                          v.get_location(),
+                                          loc,
                                           grouping_rebind,
                                           nongrouping_rebind,
                                           collations);
@@ -6295,7 +6368,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
   }
 
   orderby_clause* clause = new orderby_clause(theRootSctx,
-                                              v.get_location(),
+                                              loc,
                                               v.get_stable_bit(),
                                               modifiers,
                                               orderExprs);
@@ -6411,7 +6484,7 @@ void end_visit(const WhereClause& v, void* /*visit_state*/)
   wrap_in_debugger_expr(whereExpr, whereExpr->get_loc());
 
   where_clause* clause = new where_clause(theRootSctx,
-                                          v.get_location(),
+                                          loc,
                                           whereExpr);
 
   theFlworClausesStack.push_back(clause);
@@ -6440,7 +6513,7 @@ void end_visit(const CountClause& v, void* /*visit_state*/)
   var_expr_t varExpr = bind_var(loc, v.get_varname(), var_expr::count_var, NULL);
 
   count_clause* clause = new count_clause(theRootSctx,
-                                          v.get_location(),
+                                          loc,
                                           varExpr);
 
   theFlworClausesStack.push_back(clause);
@@ -9198,7 +9271,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
     }
   }
 
-  push_nodestack(new wrapper_expr(theRootSctx, v.get_location(), rchandle<expr>(ve)));
+  push_nodestack(new wrapper_expr(theRootSctx, loc, rchandle<expr>(ve)));
 }
 
 
@@ -9765,248 +9838,267 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
 
     // Some further normalization is required for certain builtin functions
-    FunctionConsts::FunctionKind fkind = f->getKind();
-
-    if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
-        fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
+    FunctionConsts::FunctionKind lKind = f->getKind();
+    switch (lKind)
     {
-      FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
-
-      resultExpr = new fo_expr(theRootSctx,
-                               foExpr->get_loc(),
-                               BuiltinFunctionLibrary::getFunction(fkind),
-                               foExpr);
-    }
-    else if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N ||
-             fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N)
-    {
-      FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
-
-      resultExpr = new fo_expr(theRootSctx,
-                               foExpr->get_loc(),
-                               BuiltinFunctionLibrary::getFunction(fkind),
-                               foExpr);
-    }
-    else if (fkind == FunctionConsts::FN_ANALYZE_STRING_2 ||
-             fkind == FunctionConsts::FN_ANALYZE_STRING_3)
-    {
-      if (theImportedSchemas.find(std::string("http://www.w3.org/2005/xpath-functions")) == theImportedSchemas.end())
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N:
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
       {
-        SchemaPrefix prefix(v.get_location(), "");
-        import_schema(v.get_location(), &prefix, zstring("http://www.w3.org/2005/xpath-functions"), NULL);
+        FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
+
+        resultExpr = new fo_expr(theRootSctx,
+                                 foExpr->get_loc(),
+                                 BuiltinFunctionLibrary::getFunction(fkind),
+                                 foExpr);
+        break;
       }
-
-      store::Item_t qname;
-      resultExpr = new validate_expr(theRootSctx,
-                                    loc,
-                                    ParseConstants::val_strict,
-                                    qname,
-                                    foExpr.getp(),
-                                    theSctx->get_typemanager());
-    }
-    else if (fkind == FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1 ||
-             fkind == FunctionConsts::FN_ZORBA_EVAL_UPDATING_1 ||
-             fkind == FunctionConsts::FN_ZORBA_EVAL_SEQUENTIAL_1)
-    {
-      expr_script_kind_t scriptingKind;
-
-      if (fkind == FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1)
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N:
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N:
       {
-        scriptingKind = SIMPLE_EXPR;
+        FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
+
+        resultExpr = new fo_expr(theRootSctx,
+                                 foExpr->get_loc(),
+                                 BuiltinFunctionLibrary::getFunction(fkind),
+                                 foExpr);
+
+        break;
       }
-      else if (fkind == FunctionConsts::FN_ZORBA_EVAL_UPDATING_1)
+      case FunctionConsts::FN_ANALYZE_STRING_2:
+      case FunctionConsts::FN_ANALYZE_STRING_3:
       {
-        scriptingKind = UPDATING_EXPR;
+        resultExpr = wrap_in_validate_expr_strict(
+          foExpr.getp(),
+          "http://www.w3.org/2005/xpath-functions");
+
+        break;
       }
-      else
+      case FunctionConsts::FN_SERIALIZE_2:
       {
-        scriptingKind = SEQUENTIAL_EXPR;
+        import_schema_auto_prefix(
+          loc,
+          "http://www.w3.org/2010/xslt-xquery-serialization",
+          NULL);
+
+        break;
       }
-
-      rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
-                                                   loc,
-                                                   foExpr->get_arg(0),
-                                                   scriptingKind,
-                                                   theNSCtx);
-      resultExpr = evalExpr;
-
-      std::vector<var_expr_t> inscopeVars;
-      theSctx->getVariables(inscopeVars);
-      ulong numVars = inscopeVars.size();
-
-      for (ulong i = 0; i < numVars; ++i)
+      case FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1:
+      case FunctionConsts::FN_ZORBA_EVAL_UPDATING_1:
+      case FunctionConsts::FN_ZORBA_EVAL_SEQUENTIAL_1:
       {
-        if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
-          continue;
+        expr_script_kind_t scriptingKind;
 
-        var_expr_t evalVar = create_var(loc,
-                                        inscopeVars[i]->get_name(),
-                                        var_expr::eval_var,
-                                        inscopeVars[i]->get_return_type());
-
-        // At this point, the domain expr of an eval var is always another var.
-        // However, that other var may be later inlined, so in general, the domain
-        // expr of an eval var may be any expr.
-        expr_t valueExpr = inscopeVars[i].getp();
-
-        evalExpr->add_var(evalVar, valueExpr);
-      }
-    }
-    else if (fkind == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N ||
-             fkind == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N ||
-             fkind == FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N)
-    {
-      /*
-         invoke(qnameExpr, arg1Expr, ...., argNExpr)
-
-         is rewritten internally as:
-
-         let $temp_invoke_var1   := data(qnameExpr) treat as xs:QName
-         let $temp_invoke_var2   := arg1Expr
-         ...
-         let $temp_invoke_varN+1 := argNExpr
-         let $query := concat("\"",
-                              string(namespace-uri-from-QName(temp_invoke_var1)),
-                              "\":",
-                              string(local-name-from-QName(temp_invoke_var1)),
-                              "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
-         return eval { $query }
-      */
-
-      expr_script_kind_t scriptingKind;
-      zstring query_params;
-      std::vector<var_expr_t> temp_vars;
-
-      if (fkind == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N)
-        scriptingKind = SIMPLE_EXPR;
-      else if (fkind == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N)
-        scriptingKind = UPDATING_EXPR;
-      else
-        scriptingKind = SEQUENTIAL_EXPR;
-
-      if (numArgs == 0)
-      {
-        RAISE_ERROR(err::XPST0017, loc,
-        ERROR_PARAMS("invoke", ZED(FunctionUndeclared_3), numArgs));
-      }
-
-      // create a flwor with LETs to hold the parameters
-      flwor_expr_t flworExpr = new flwor_expr(theRootSctx, loc, false);
-
-      // wrap function's QName
-      expr_t qnameExpr = wrap_in_atomization(arguments[0]);
-      qnameExpr        = wrap_in_type_promotion(arguments[0], theRTM.QNAME_TYPE_ONE);
-
-      for (unsigned int i = 0; i<numArgs ; i++)
-      {
-        let_clause_t lc;
-        store::Item_t qnameItem;
-
-        // cannot use create_temp_var() as the variables created there are not accessible
-        // use a special name but check for name clashes
-        do
+        if (lKind == FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1)
         {
-          std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
-          GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
+          scriptingKind = SIMPLE_EXPR;
         }
-        while (lookup_var(qnameItem.getp(), loc, zerr::ZXQP0000_NO_ERROR) != NULL);
-
-        var_expr_t var = create_var(loc, qnameItem, var_expr::let_var);
-        temp_vars.push_back(var);
-
-        if (i == 0)
-          lc = wrap_in_letclause(qnameExpr, var);
+        else if (lKind == FunctionConsts::FN_ZORBA_EVAL_UPDATING_1)
+        {
+          scriptingKind = UPDATING_EXPR;
+        }
         else
-          lc = wrap_in_letclause(arguments[i], var);
+        {
+          scriptingKind = SEQUENTIAL_EXPR;
+        }
 
-        flworExpr->add_clause(lc);
+        rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+                                                     loc,
+                                                     foExpr->get_arg(0),
+                                                     scriptingKind,
+                                                     theNSCtx);
+        resultExpr = evalExpr;
 
-        // add the parameters to the eval's query string
-        if (i>1)
-          query_params += ",";
-        if (i>0)
-          query_params += "$" + var->get_name()->getStringValue();
+        std::vector<var_expr_t> inscopeVars;
+        theSctx->getVariables(inscopeVars);
+        ulong numVars = inscopeVars.size();
+
+        for (ulong i = 0; i < numVars; ++i)
+        {
+          if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
+            continue;
+
+          var_expr_t evalVar = create_var(loc,
+                                          inscopeVars[i]->get_name(),
+                                          var_expr::eval_var,
+                                          inscopeVars[i]->get_return_type());
+
+          // At this point, the domain expr of an eval var is always another var.
+          // However, that other var may be later inlined, so in general, the domain
+          // expr of an eval var may be any expr.
+          expr_t valueExpr = inscopeVars[i].getp();
+
+          evalExpr->add_var(evalVar, valueExpr);
+        }
+
+        break;
       }
-
-      query_params = "(" + query_params + ")";
-
-      // Expanded QName's namespace URI
-      expr_t namespaceExpr =
-      new fo_expr(theRootSctx,
-                  loc,
-                  GET_BUILTIN_FUNCTION(FN_NAMESPACE_URI_FROM_QNAME_1),
-                  temp_vars[0]);
-
-      namespaceExpr =
-      new fo_expr(theRootSctx,
-                  loc,
-                  GET_BUILTIN_FUNCTION(FN_STRING_1),
-                  namespaceExpr);
-
-      // Expanded QName's local name
-      expr_t localExpr =
-      new fo_expr(theRootSctx,
-                  loc,
-                  GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1),
-                  temp_vars[0]);
-
-      localExpr =
-      new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
-
-      // qnameExpr := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
-      std::vector<expr_t> concat_args;
-      concat_args.push_back(new const_expr(theRootSctx, loc, "\""));
-      concat_args.push_back(namespaceExpr);
-      concat_args.push_back(new const_expr(theRootSctx, loc, "\":"));
-      concat_args.push_back(localExpr);
-      concat_args.push_back(new const_expr(theRootSctx, loc, query_params));
-
-      qnameExpr = new fo_expr(theRootSctx,
-                              loc,
-                              GET_BUILTIN_FUNCTION(FN_CONCAT_N),
-                              concat_args);
-
-      rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
-                                                   loc,
-                                                   qnameExpr,
-                                                   scriptingKind,
-                                                   theNSCtx);
-
-      flworExpr->set_return_expr(evalExpr.getp());
-      resultExpr = flworExpr;
-
-      std::vector<var_expr_t> inscopeVars;
-      theSctx->getVariables(inscopeVars);
-      ulong numVars = inscopeVars.size();
-
-      for (ulong i = 0; i < numVars; ++i)
+      case FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N:
       {
-        if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
-          continue;
+        /*
+           invoke(qnameExpr, arg1Expr, ...., argNExpr)
 
-        var_expr_t evalVar = create_var(loc,
-                                        inscopeVars[i]->get_name(),
-                                        var_expr::eval_var,
-                                        inscopeVars[i]->get_return_type());
+           is rewritten internally as:
 
-        // At this point, the domain expr of an eval var is always another var.
-        // However, that other var may be later inlined, so in general, the domain
-        // expr of an eval var may be any expr.
-        expr_t valueExpr = inscopeVars[i].getp();
-        evalExpr->add_var(evalVar, valueExpr);
+           let $temp_invoke_var1   := data(qnameExpr) treat as xs:QName
+           let $temp_invoke_var2   := arg1Expr
+           ...
+           let $temp_invoke_varN+1 := argNExpr
+           let $query := concat("\"",
+                                string(namespace-uri-from-QName(temp_invoke_var1)),
+                                "\":",
+                                string(local-name-from-QName(temp_invoke_var1)),
+                                "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
+           return eval { $query }
+        */
+
+        expr_script_kind_t scriptingKind;
+        zstring query_params;
+        std::vector<var_expr_t> temp_vars;
+
+        if (lKind == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N)
+        {
+          scriptingKind = SIMPLE_EXPR;
+        }
+        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N)
+        {
+          scriptingKind = UPDATING_EXPR;
+        }
+        else
+        {
+          scriptingKind = SEQUENTIAL_EXPR;
+        }
+
+        if (numArgs == 0)
+        {
+          RAISE_ERROR(err::XPST0017, loc,
+          ERROR_PARAMS("invoke", ZED(FunctionUndeclared_3), numArgs));
+        }
+
+        // create a flwor with LETs to hold the parameters
+        flwor_expr_t flworExpr = new flwor_expr(theRootSctx, loc, false);
+
+        // wrap function's QName
+        expr_t qnameExpr = wrap_in_atomization(arguments[0]);
+        qnameExpr        = wrap_in_type_promotion(arguments[0], theRTM.QNAME_TYPE_ONE);
+
+        for (unsigned int i = 0; i<numArgs ; i++)
+        {
+          let_clause_t lc;
+          store::Item_t qnameItem;
+
+          // cannot use create_temp_var() as the variables created there are not accessible
+          // use a special name but check for name clashes
+          do
+          {
+            std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
+            GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
+          }
+          while (lookup_var(qnameItem.getp(), loc, zerr::ZXQP0000_NO_ERROR) != NULL);
+
+          var_expr_t var = create_var(loc, qnameItem, var_expr::let_var);
+          temp_vars.push_back(var);
+
+          if (i == 0)
+            lc = wrap_in_letclause(qnameExpr, var);
+          else
+            lc = wrap_in_letclause(arguments[i], var);
+
+          flworExpr->add_clause(lc);
+
+          // add the parameters to the eval's query string
+          if (i>1)
+            query_params += ",";
+          if (i>0)
+            query_params += "$" + var->get_name()->getStringValue();
+        }
+
+        query_params = "(" + query_params + ")";
+
+        // Expanded QName's namespace URI
+        expr_t namespaceExpr =
+        new fo_expr(theRootSctx,
+                    loc,
+                    GET_BUILTIN_FUNCTION(FN_NAMESPACE_URI_FROM_QNAME_1),
+                    temp_vars[0]);
+
+        namespaceExpr =
+        new fo_expr(theRootSctx,
+                    loc,
+                    GET_BUILTIN_FUNCTION(FN_STRING_1),
+                    namespaceExpr);
+
+        // Expanded QName's local name
+        expr_t localExpr =
+        new fo_expr(theRootSctx,
+                    loc,
+                    GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1),
+                    temp_vars[0]);
+
+        localExpr =
+        new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
+
+        // qnameExpr := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var2,$temp_invoke_var3,...)")
+        std::vector<expr_t> concat_args;
+        concat_args.push_back(new const_expr(theRootSctx, loc, "\""));
+        concat_args.push_back(namespaceExpr);
+        concat_args.push_back(new const_expr(theRootSctx, loc, "\":"));
+        concat_args.push_back(localExpr);
+        concat_args.push_back(new const_expr(theRootSctx, loc, query_params));
+
+        qnameExpr = new fo_expr(theRootSctx,
+                                loc,
+                                GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                                concat_args);
+
+        rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+                                                     loc,
+                                                     qnameExpr,
+                                                     scriptingKind,
+                                                     theNSCtx);
+
+        flworExpr->set_return_expr(evalExpr.getp());
+        resultExpr = flworExpr;
+
+        std::vector<var_expr_t> inscopeVars;
+        theSctx->getVariables(inscopeVars);
+        ulong numVars = inscopeVars.size();
+
+        for (ulong i = 0; i < numVars; ++i)
+        {
+          if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
+            continue;
+
+          var_expr_t evalVar = create_var(loc,
+                                          inscopeVars[i]->get_name(),
+                                          var_expr::eval_var,
+                                          inscopeVars[i]->get_return_type());
+
+          // At this point, the domain expr of an eval var is always another var.
+          // However, that other var may be later inlined, so in general, the domain
+          // expr of an eval var may be any expr.
+          expr_t valueExpr = inscopeVars[i].getp();
+          evalExpr->add_var(evalVar, valueExpr);
+        }
+
+        for (ulong i=0; i<temp_vars.size(); i++)
+        {
+          var_expr_t evalVar = create_var(loc,
+                                          temp_vars[i]->get_name(),
+                                          var_expr::eval_var,
+                                          temp_vars[i]->get_return_type());
+
+          expr_t valueExpr = temp_vars[i].getp();
+          evalExpr->add_var(evalVar, valueExpr);
+        }
+
+        break;
       }
 
-      for (ulong i=0; i<temp_vars.size(); i++)
-      {
-        var_expr_t evalVar = create_var(loc,
-                                        temp_vars[i]->get_name(),
-                                        var_expr::eval_var,
-                                        temp_vars[i]->get_return_type());
+      default: {}
 
-        expr_t valueExpr = temp_vars[i].getp();
-        evalExpr->add_var(evalVar, valueExpr);
-      }
-    }
+    } // switch
 
     push_nodestack(resultExpr.getp());
   }
@@ -10474,7 +10566,7 @@ void* begin_visit(const DirAttributeList& v)
     }
 
     fo_expr* expr_list = new fo_expr(theRootSctx,
-                                     v.get_location(),
+                                     loc,
                                      op_concatenate,
                                      args);
 
@@ -10675,7 +10767,7 @@ void end_visit(const DirElemContentList& v, void* /*visit_state*/)
   else
   {
     fo_expr_t expr_list = new fo_expr(theRootSctx,
-                                      v.get_location(),
+                                      loc,
                                       op_concatenate,
                                       args);
 
@@ -11601,7 +11693,7 @@ void* begin_visit(const SchemaElementTest& v)
   throw XQUERY_EXCEPTION(
     zerr::ZXQP0005_NOT_ENABLED,
     ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( v.get_location() )
+    ERROR_LOC( loc )
   );
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
@@ -11719,7 +11811,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   throw XQUERY_EXCEPTION(
     zerr::ZXQP0005_NOT_ENABLED,
     ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( v.get_location() )
+    ERROR_LOC( loc )
   );
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
