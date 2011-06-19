@@ -911,29 +911,6 @@ inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
 ////////// Miscellaneous //////////////////////////////////////////////////////
 
 /**
- * Converts a \c long to a C string.
- *
- * @param n The \c long to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-ZORBA_DLL_PUBLIC
-char* ltoa( long n, char *buf );
-
-/**
- * Converts an \c int to a C string.
- *
- * @param n The \c int to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( int n, char *buf ) {
-  return ltoa( n, buf );
-}
-
-/**
  * Reverses the characters in a string.
  *
  * @tparam InputStringType The input string type.

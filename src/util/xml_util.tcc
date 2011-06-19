@@ -18,10 +18,10 @@
 #define ZORBA_XML_UTIL_TCC
 
 #ifndef ZORBA_XML_UTIL_H
-#error "This file is not meant to be included directly."
+# error "This file is not meant to be included directly."
 #endif /* ZORBA_XML_UTIL_H */
 
-#include "ascii_util.h"
+#include "string_util.h"
 
 namespace zorba {
 namespace xml {
@@ -36,7 +36,7 @@ back_xml_insert_iterator<StringType>::operator=( value_type c ) {
     case '\'':
     case '<':
     case '>':
-      ascii::itoa( c, buf_ + 2 /* skip over "&#" */ );
+      ztd::itoa( c, buf_ + 2 /* skip over "&#" */ );
       buf_[4] = ';'; // because it gets overwritten with null by itoa()
       this->container->append( buf_, 5 );
       break;

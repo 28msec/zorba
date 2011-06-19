@@ -21,6 +21,7 @@ SET(UTIL_SRCS
   fs_util.cpp
   indent.cpp
   regex.cpp
+  string_util.cpp
   unicode_util.cpp
   unicode_categories.cpp
   uri_util.cpp

@@ -401,10 +401,57 @@ using internal::ztd::has_toString;
 using internal::ztd::to_string;
 
 /**
+ * Converts a <code>long long</code> to a C string.
+ *
+ * @param n The <code>long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+ZORBA_DLL_PUBLIC
+char* lltoa( long long n, char *buf );
+
+/**
+ * Converts an <code>unsigned long long</code> to a C string.
+ *
+ * @param n The <code>unsigned long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+ZORBA_DLL_PUBLIC
+char* lltoa( unsigned long long n, char *buf );
+
+/**
+ * Converts an \c int to a C string.
+ *
+ * @param n The \c int to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( int n, char *buf ) {
+  return lltoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned int</code> to a C string.
+ *
+ * @param n The <code>unsigned int</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned n, char *buf ) {
+  return lltoa( static_cast<unsigned long long>( n ), buf );
+}
+
+/**
  * Converts an object to its string representation.
  *
  * @tparam T The object type that:
  *  - is not a pointer
+ *  - is not integral
  *  - has an <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
  * @tparam OutputStringType The output string type.
  * @param t The object.
@@ -412,12 +459,28 @@ using internal::ztd::to_string;
  */
 template<typename T,class OutputStringType> inline
 typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
+                && !ZORBA_TR1_NS::is_integral<T>::value
                 && has_insertion_operator<T>::value,
                    void>::type
 to_string( T const &t, OutputStringType *out ) {
   std::ostringstream o;
   o << t;
   *out = o.str();
+}
+
+/**
+ * Specialization of \c to_string() for C++ integral types.
+ *
+ * @tparam T The class type that is integral.
+ * @tparam OutputStringType The output string type.
+ * @param t The object.
+ * @param out The output string.
+ */
+template<typename T,class OutputStringType> inline
+typename enable_if<ZORBA_TR1_NS::is_integral<T>::value,void>::type
+to_string( T t, OutputStringType *out ) {
+  char buf[ 48 ];
+  *out = lltoa( t, buf );
 }
 
 /**
