@@ -277,7 +277,7 @@ IF(WIN32)
   MESSAGE(STATUS "Looking for Iconv")
   FIND_PACKAGE(Iconv REQUIRED)
 
-  IF (Iconv_FOUND)
+  IF(Iconv_FOUND)
     MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARY})
     INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
     SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
@@ -306,6 +306,25 @@ ENDIF(ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
 #
 MESSAGE(STATUS "Looking for Xerces-C")
 FIND_PACKAGE(XercesC)
+
+#
+# SWIG
+#
+IF(ZORBA_USE_SWIG)
+  FIND_PACKAGE(SWIG)
+  IF (SWIG_FOUND)
+    # this will be used both in swig and doc sub-directories
+
+    #
+    # PHP5
+    #
+    FIND_PACKAGE(PHP5)
+  ELSE (SWIG_FOUND)
+    MESSAGE(FATAL_ERROR "SWIG was requested but not found. Remove ZORBA_USE_SWIG in the cache or set it to OFF.")
+  ENDIF (SWIG_FOUND)
+ELSE(ZORBA_USE_SWIG)
+  MESSAGE(STATUS "SWIG is disabled => no language bindings are generated.")  
+ENDIF(ZORBA_USE_SWIG)
 
 
 LIST(APPEND requiredlibs ${requiredlibs-store})

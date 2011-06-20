@@ -87,7 +87,7 @@ SET(ZORBA_WITH_FILE_ACCESS ON CACHE BOOL "compile zorba and allow loading docume
 MESSAGE(STATUS "ZORBA_WITH_FILE_ACCESS [ON/OFF]:      " ${ZORBA_WITH_FILE_ACCESS})
 
 SET(ZORBA_WITH_DEBUGGER ON CACHE BOOL "compile zorba with debugger support")
-MESSAGE(STATUS "ZORBA_WITH_DEBUGGER [ON/OFF]:      " ${ZORBA_WITH_DEBUGGER})
+MESSAGE(STATUS "ZORBA_WITH_DEBUGGER [ON/OFF]:         " ${ZORBA_WITH_DEBUGGER})
 
 SET(ZORBA_TEST_TIMEOUT_VALUE 60 CACHE INTEGER "default test timeout value")
 MESSAGE(STATUS "ZORBA_TEST_TIMEOUT_VALUE:             " ${ZORBA_TEST_TIMEOUT_VALUE})
@@ -182,7 +182,12 @@ MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA:                   " ${ZORBA_NO_XMLSCHEMA})
 SET(ZORBA_WITH_BIG_INTEGER ON CACHE BOOL "enable arbitrary precision integers")
 MESSAGE(STATUS "ZORBA_WITH_BIG_INTEGER:               " ${ZORBA_WITH_BIG_INTEGER})
 
-SET(ZORBA_USE_SWIG ON CACHE BOOL "use Swig to generate api for Python, Php and Ruby")
+IF (SWIG_FOUND)
+  SET (use_swig ON)
+ELSE (SWIG_FOUND)
+  SET (no_swig OFF)
+ENDIF (SWIG_FOUND)
+SET(ZORBA_USE_SWIG ${no_swig} CACHE BOOL "use Swig to generate api for Python, Php and Ruby")
 MESSAGE(STATUS "ZORBA_USE_SWIG:                       " ${ZORBA_USE_SWIG})
 
 SET(ZORBA_XQUERYX OFF CACHE BOOL "Activate capability to compile XQueryX code (on/off)")

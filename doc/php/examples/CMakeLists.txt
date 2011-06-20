@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FIND_PACKAGE(PHP5)
-
-IF(PHP5_FOUND AND ZORBA_USE_SWIG)
+IF(PHP5_FOUND)
 
   MESSAGE(STATUS "PHP Found and Active!")
 
@@ -32,4 +30,4 @@ IF(PHP5_FOUND AND ZORBA_USE_SWIG)
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/simple.php
           DESTINATION
           share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/php/examples)
-ENDIF(PHP5_FOUND AND ZORBA_USE_SWIG)
+ENDIF(PHP5_FOUND)

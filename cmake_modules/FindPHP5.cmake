@@ -22,9 +22,6 @@
 #
 #  file is derived from FindPHP4.cmake
 #
-MESSAGE(STATUS "****************************************")
-MESSAGE(STATUS "******** FindPHP: Finding PHP5 *********")
-MESSAGE(STATUS "****************************************")
 
 SET(PHP5_FOUND "NO")
 

@@ -12,12 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF(WIN32)
-INCLUDE(${PROJECT_SOURCE_DIR}/cmake_modules/Windows/FindPHP5.cmake)
-ELSE(WIN32)
-INCLUDE(${CMAKE_MODULE_PATH}/FindPHP5.cmake)
-ENDIF(WIN32)
-
 FIND_PACKAGE(PHP5)
 
 MESSAGE(STATUS "SWIG PHP....")

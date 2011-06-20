@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FIND_PACKAGE(SWIG)
-IF (SWIG_FOUND)
+IF (ZORBA_USE_SWIG)
   IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     SET ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing" )
     SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing" )
@@ -33,9 +32,7 @@ IF (SWIG_FOUND)
   ENDIF (APPLE AND CMAKE_MINOR_VERSION GREATER 6)
 
   ADD_SUBDIRECTORY(python)
-#  IF(NOT WIN32 OR CYGWIN)
   ADD_SUBDIRECTORY(php)
-#  ENDIF(NOT WIN32 OR CYGWIN)
   ADD_SUBDIRECTORY(java)
 
   IF(NOT WIN32 OR CYGWIN)
@@ -49,7 +46,4 @@ IF (SWIG_FOUND)
     ENDIF ( APPLE AND UNIVERSAL )
   ENDIF(NOT WIN32 OR CYGWIN)
 
-ELSE(SWIG_FOUND)
-  MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
-  SET(ZORBA_USE_SWIG 0)
-ENDIF (SWIG_FOUND)
+ENDIF (ZORBA_USE_SWIG)
