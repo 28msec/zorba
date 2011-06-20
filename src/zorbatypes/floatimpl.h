@@ -138,12 +138,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  FloatImpl() : theFloating(0) { precision = max_precision(); }
+  FloatImpl( int n = 0 ) : theFloating(n) { precision = max_precision(); }
 
-  FloatImpl(FloatType aFloating)
-    :
-    theFloating(aFloating)
-  {
+  FloatImpl(float aFloating) : theFloating(aFloating) {
+    precision = max_precision();
+  }
+
+  FloatImpl(double aFloating) : theFloating(aFloating) {
     precision = max_precision();
   }
 
@@ -154,8 +155,6 @@ public:
     precision(aFloatImpl.precision)
   {
   }
-
-  virtual ~FloatImpl() {}
 
   FloatImpl<FloatType>& operator=(const FloatImpl& aFloatImpl)
   {

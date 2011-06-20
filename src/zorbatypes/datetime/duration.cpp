@@ -920,13 +920,15 @@ zstring Duration::toString() const
   {
     if (data[YEAR_DATA] != 0)
     {
-      result += NumConversions::intToStr(data[YEAR_DATA]);
+      ztd::itoa_buf_type buf;
+      result += ztd::itoa(data[YEAR_DATA], buf);
       result.append("Y", 1);
     }
 
     if (data[MONTH_DATA] != 0)
     {
-      result += NumConversions::intToStr(data[MONTH_DATA]);
+      ztd::itoa_buf_type buf;
+      result += ztd::itoa(data[MONTH_DATA], buf);
       result.append("M", 1);
     }
   }
@@ -935,7 +937,8 @@ zstring Duration::toString() const
   {
     if (data[DAY_DATA] != 0)
     {
-      result += NumConversions::intToStr(data[DAY_DATA]);
+      ztd::itoa_buf_type buf;
+      result += ztd::itoa(data[DAY_DATA], buf);
       result.append("D", 1);
     }
 
@@ -950,19 +953,22 @@ zstring Duration::toString() const
 
     if (data[HOUR_DATA] != 0)
     {
-      result += NumConversions::intToStr(data[HOUR_DATA]);
+      ztd::itoa_buf_type buf;
+      result += ztd::itoa(data[HOUR_DATA], buf);
       result.append("H", 1);
     }
 
     if (data[MINUTE_DATA] != 0)
     {
-      result += NumConversions::intToStr(data[MINUTE_DATA]);
+      ztd::itoa_buf_type buf;
+      result += ztd::itoa(data[MINUTE_DATA], buf);
       result.append("M", 1);
     }
 
     if (data[SECONDS_DATA] != 0 || data[FRACSECONDS_DATA] != 0)
     {
-      result += NumConversions::intToStr(data[SECONDS_DATA]);
+      ztd::itoa_buf_type buf;
+      result += ztd::itoa(data[SECONDS_DATA], buf);
 
       if ( data[FRACSECONDS_DATA] != 0 )
       {

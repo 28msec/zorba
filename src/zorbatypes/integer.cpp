@@ -64,18 +64,18 @@ void Integer::serialize( serialization::Archiver &ar ) {
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 Integer::Integer( long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
 }
 
 Integer::Integer( unsigned long n ) {
-  zstring const temp( NumConversions::ulongToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
 }
 
 Integer::Integer( unsigned long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -99,20 +99,20 @@ Integer::Integer( Float const &f ) {
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 Integer& Integer::operator=( long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
   return *this;
 }
 
 Integer& Integer::operator=( unsigned long n ) {
-  zstring const temp( NumConversions::ulongToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
   return *this;
 }
 
 Integer& Integer::operator=( unsigned long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
   return *this;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
@@ -222,7 +222,8 @@ Integer::value_type Integer::ftoi( MAPM const &d ) {
 MAPM Integer::itod() const {
   if ( is_xs_long() )
     return static_cast<long>( value_ );
-  return NumConversions::longToStr( value_ ).c_str();
+  ztd::itoa_buf_type buf;
+  return ztd::itoa( n, buf );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -245,9 +246,8 @@ zstring Integer::toString() const {
   delete[] buf;
   return s;
 #else
-  char buf[ 128 ];
-  sprintf( buf, "%lld", value_ );
-  return buf;
+  itoa_buf_type buf;
+  return ztd::itoa( value_, buf );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 

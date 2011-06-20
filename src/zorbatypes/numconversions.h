@@ -38,14 +38,6 @@ public:
     String to Numeric Conversions
   ******************************************************************************/
 
-  static bool strToDouble(const char* aStr, xs_double& aDouble);
-
-  static bool strToFloat(const char* aStr, xs_float& aFloat);
-
-  static bool strToDecimal(const char* aStr, xs_decimal& aDecimal);
-
-  static bool strToInteger(const char* aCharStar, xs_integer& aInteger);
-
   static bool strToUInteger(const char* aStr, xs_uinteger& aUInteger);
 
   static bool strToLong(const char* aStr, xs_long& aLong);
@@ -63,39 +55,6 @@ public:
   static bool strToByte(const char* aStr, xs_byte& aByte);
 
   static bool strToUByte(const char* aStr, xs_unsignedByte& aUByte);
-
-
-  /*****************************************************************************
-    Numeric to String Conversions
-  ******************************************************************************/
-
-  static zstring doubleToStr(xs_double aDouble);
-
-  static zstring floatToStr(xs_float aFloat);
-
-  static zstring decimalToStr(xs_decimal aDecimal);
-
-  static zstring integerToStr(xs_integer aInteger);
-
-  static zstring uintegerToStr(xs_uinteger aUInteger);
-
-  static zstring longToStr(xs_long aLong);
-
-  static zstring ulongToStr(xs_unsignedLong aULong);
-
-  static zstring intToStr(xs_int aInt);
-
-  static zstring uintToStr(xs_unsignedInt aUInt);
-
-  static zstring shortToStr(xs_short aShort);
-
-  static zstring ushortToStr(xs_unsignedShort aUShort);
-
-  static zstring byteToStr(xs_byte aByte);
-
-  static zstring ubyteToStr(xs_unsignedByte aUByte);
-
-  static zstring sizetToStr(size_t);
 
 
   /*****************************************************************************
@@ -123,8 +82,6 @@ public:
   static bool integerToUInt(const xs_integer&, xs_unsignedInt&);
 
   static bool integerToInt(const xs_integer&, xs_int&);
-
-  static bool longToDouble(const xs_long& aLong, xs_double& aDouble);
 
 private:
   static bool isNegative(const char*& chp, bool& isNegZero);

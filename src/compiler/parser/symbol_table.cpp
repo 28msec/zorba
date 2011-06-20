@@ -183,7 +183,7 @@ xs_decimal* symbol_table::decimalval(char const* text, uint32_t length)
 xs_double* symbol_table::doubleval(char const* text, uint32_t length)
 {
   xs_double lDouble;
-  NumConversions::strToDouble(text, lDouble);
+  xs_double::parseString(text, lDouble);
   return new xs_double(lDouble);
 }
 

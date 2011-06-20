@@ -23,6 +23,7 @@
 #include "zorbatypes/numconversions.h"
 
 #include "util/ascii_util.h"
+#include "util/string_util.h"
 
 namespace zorba
 {
@@ -91,8 +92,9 @@ ZORBA_DLL_PUBLIC inline int parse_frac(
 
 ZORBA_DLL_PUBLIC inline std::string to_string(int value, unsigned int min_digits = 0)
 {
-  std::string zeros = "";
-  const std::string& temp = NumConversions::longToStr(value).str();
+  std::string zeros;
+  std::string temp;
+  ztd::to_string(value, &temp);
 
   for (unsigned int i=(unsigned int)temp.size(); i<min_digits; i++)
     zeros += '0';

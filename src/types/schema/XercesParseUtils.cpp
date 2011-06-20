@@ -470,11 +470,10 @@ bool XercesParseUtils::parseXSFloat(
     //textValue = textValue.trim(" \n\r\t",4);
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
-    store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_float n;
-    if (NumConversions::strToFloat(textValue2.c_str(), n))
+    if (xs_float::parseString(textValue2.c_str(), n))
     {
-      return factory->createFloat(result, n);
+      return GENV_ITEMFACTORY->createFloat(result, n);
     }
   }
 
@@ -508,7 +507,7 @@ bool XercesParseUtils::parseXSDouble(
     utf8::normalize_whitespace(textValue, &textValue2);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_double n;
-    if (NumConversions::strToDouble(textValue2.c_str(), n))
+    if (xs_double::parseString(textValue2.c_str(), n))
     {
       return factory->createDouble(result, n);
     }

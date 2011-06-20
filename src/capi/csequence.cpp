@@ -433,13 +433,15 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
         // lStringValue reference alive until we are done with the
         // const char*, or else the const char* will point to
         // de-allocated memory.
-        String lStringValue = me->theItem.getStringValue();
-        const char* strvalue = lStringValue.c_str();
-        xs_double doublevalue;
-        if ( ! NumConversions::strToDouble(strvalue, doublevalue)) {
+        try {
+          String const lStringValue = me->theItem.getStringValue();
+          xs_double doublevalue;
+          xs_double::parseString( lStringValue.c_str(), doublevalue );
+          (*value) = static_cast<double> (doublevalue.getNumber());
+        }
+        catch ( std::exception const& ) {
           return XQC_TYPE_ERROR;
         }
-        (*value) = static_cast<double> (doublevalue.getNumber());
       }
       else {
         throw;

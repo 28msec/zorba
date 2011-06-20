@@ -176,15 +176,18 @@ void Decimal::serialize( serialization::Archiver &ar ) {
 ////////// constructors ///////////////////////////////////////////////////////
 
 Decimal::Decimal( long long n ) {
-  value_ = NumConversions::longToStr( n ).c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
 }
 
 Decimal::Decimal( unsigned long n ) {
-  value_ = NumConversions::ulongToStr( n ).c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
 }
 
 Decimal::Decimal( unsigned long long n ) {
-  value_ = NumConversions::longToStr( n ).c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
 }
 
 Decimal::Decimal( float f ) {
@@ -221,14 +224,14 @@ Decimal::Decimal( Integer const &i ) : value_( i.itod() ) {
 ////////// assignment operators ///////////////////////////////////////////////
 
 Decimal& Decimal::operator=( long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
   return *this;
 }
 
 Decimal& Decimal::operator=( unsigned long long n ) {
-  zstring const temp( NumConversions::longToStr( n ) );
-  value_ = temp.c_str();
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
   return *this;
 }
 

@@ -15,47 +15,24 @@
  */
 #include "stdafx.h"
 
+#include <cstdio>
+
 #include "string_util.h"
+
+using namespace std;
 
 namespace zorba {
 namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char* lltoa( long long n, char *buf ) {
-  //
-  // See: Brian W. Kernighan, Dennis M. Ritchie. "The C Programming Language,
-  // 2nd ed."  Addison-Wesley, Reading, MA, 1988. pp. 63-64.
-  //
-  bool const is_neg = n < 0;
-  if ( is_neg ) n = -n;
-  char *s = buf;
-  do {                                  // generate digits in reverse
-    *s++ = static_cast<char>( n % 10 + '0' );
-  } while ( n /= 10 );
-  if ( is_neg ) *s++ = '-';
-  *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {   // now reverse the string
-    char const temp = *--s; *s = *t; *t = temp;
-  }
+char* itoa( long long n, char *buf ) {
+  sprintf( buf, "%lld", n );
   return buf;
 }
 
-char* lltoa( unsigned long long n, char *buf ) {
-  //
-  // See: Brian W. Kernighan, Dennis M. Ritchie. "The C Programming Language,
-  // 2nd ed."  Addison-Wesley, Reading, MA, 1988. pp. 63-64.
-  //
-  char *s = buf;
-  do {                                  // generate digits in reverse
-    *s++ = static_cast<char>( n % 10 + '0' );
-  } while ( n /= 10 );
-  *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {   // now reverse the string
-    char const temp = *--s; *s = *t; *t = temp;
-  }
+char* itoa( unsigned long long n, char *buf ) {
+  sprintf( buf, "%llu", n );
   return buf;
 }
 

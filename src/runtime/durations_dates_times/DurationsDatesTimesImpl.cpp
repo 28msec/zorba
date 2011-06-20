@@ -20,6 +20,7 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime/parse.h"
 #include "util/ascii_util.h"
+#include "util/string_util.h"
 
 #include "system/globalenv.h"
 
@@ -207,13 +208,13 @@ static void format_number(zstring& str, long number, Modifier& modifier)
 
   if (modifier.presentation_modifier.size() > 0 && modifier.presentation_modifier[0] == '0')
   {
-    temp.append(NumConversions::longToStr(number).c_str());
+    ztd::to_string(number, &temp);
     while (temp.size() < modifier.presentation_modifier.size())
       temp = "0" + temp;
   }
   else // "1" or fallback
   {
-    temp.append(NumConversions::longToStr(number).c_str());
+    ztd::to_string(number, &temp);
   }
 
   if (modifier.second_modifier == "o")

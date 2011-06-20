@@ -370,27 +370,22 @@ bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
   xs_double doubleValue;
-  if (NumConversions::strToDouble(theValue.c_str(), doubleValue))
+  if (xs_double::parseString(theValue.c_str(), doubleValue))
   {
     return GET_FACTORY().createDouble(result, doubleValue);
   }
-  else
-  {
-    result = NULL;
-    return false;
-  }
+  result = NULL;
+  return false;
 }
 
 
 bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 {
-  xs_decimal decValue;
-  if (NumConversions::strToDecimal(theValue.c_str(), decValue))
-  {
+  try {
+    xs_decimal const decValue(theValue.c_str());
     return GET_FACTORY().createDecimal(result, decValue);
   }
-  else
-  {
+  catch ( std::exception const& ) {
     result = NULL;
     return false;
   }
@@ -399,13 +394,11 @@ bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToInteger(store::Item_t& result) const
 {
-  xs_integer intValue;
-  if (NumConversions::strToInteger(theValue.c_str(), intValue))
-  {
+  try {
+    xs_integer const intValue(theValue.c_str());
     return GET_FACTORY().createInteger(result, intValue);
   }
-  else
-  {
+  catch ( std::exception const& ) {
     result = NULL;
     return false;
   }
@@ -1411,19 +1404,19 @@ store::Item_t DoubleItem::getEBV() const
 
 zstring DoubleItem::getStringValue() const
 {
-  return NumConversions::doubleToStr(theValue);
+  return theValue.toString();
 }
 
 
 void DoubleItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::doubleToStr(theValue);
+  val = theValue.toString();
 }
 
 
 void DoubleItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::doubleToStr(theValue);
+  buf += theValue.toString();
 }
 
 
@@ -1479,19 +1472,19 @@ store::Item_t FloatItem::getEBV() const
 
 zstring FloatItem::getStringValue() const
 {
-  return NumConversions::floatToStr(theValue);
+  return theValue.toString();
 }
 
 
 void FloatItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::floatToStr(theValue);
+  val = theValue.toString();
 }
 
 
 void FloatItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::floatToStr(theValue);
+  buf += theValue.toString();
 }
 
 
@@ -1542,19 +1535,19 @@ store::Item_t DecimalItem::getEBV() const
 
 zstring DecimalItem::getStringValue() const
 {
-  return NumConversions::decimalToStr(theValue);
+  return theValue.toString();
 }
 
 
 void DecimalItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::decimalToStr(theValue);
+  val = theValue.toString();
 }
 
 
 void DecimalItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::decimalToStr(theValue);
+  buf += theValue.toString();
 }
 
 
@@ -1636,13 +1629,13 @@ store::Item_t IntegerItem::getEBV() const
 
 zstring IntegerItem::getStringValue() const
 {
-  return NumConversions::integerToStr(theValue);
+  return theValue.toString();
 }
 
 
 void IntegerItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::integerToStr(theValue);
+  val = theValue.toString();
 }
 
 uint32_t IntegerItem::hash(long, const XQPCollator*) const
@@ -1652,7 +1645,7 @@ uint32_t IntegerItem::hash(long, const XQPCollator*) const
 
 void IntegerItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::integerToStr(theValue);
+  buf += theValue.toString();
 }
 
 
@@ -1768,19 +1761,23 @@ store::Item_t LongItem::getEBV() const
 
 zstring LongItem::getStringValue() const
 {
-  return NumConversions::longToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void LongItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::longToStr(theValue);
+  ztd::to_string(theValue,&val);
 }
 
 
 void LongItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::longToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
@@ -1824,19 +1821,23 @@ store::Item_t IntItem::getEBV() const
 
 zstring IntItem::getStringValue() const
 {
-  return NumConversions::intToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void IntItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::intToStr(theValue);
+  ztd::to_string(theValue, &val);
 }
 
 
 void IntItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::intToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
@@ -1881,19 +1882,23 @@ store::Item_t ShortItem::getEBV() const
 
 zstring ShortItem::getStringValue() const
 {
-  return NumConversions::shortToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void ShortItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::shortToStr(theValue);
+  ztd::to_string(theValue, &val);
 }
 
 
 void ShortItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::shortToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
@@ -1938,19 +1943,23 @@ store::Item_t ByteItem::getEBV() const
 
 zstring ByteItem::getStringValue() const
 {
-  return NumConversions::byteToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void ByteItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::byteToStr(theValue);
+  ztd::to_string(theValue, &val);
 }
 
 
 void ByteItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::byteToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
@@ -2001,19 +2010,23 @@ store::Item_t UnsignedLongItem::getEBV() const
 
 zstring UnsignedLongItem::getStringValue() const
 {
-  return NumConversions::ulongToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void UnsignedLongItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::ulongToStr(theValue);
+  ztd::to_string(theValue, &val);
 }
 
 
 void UnsignedLongItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::ulongToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
@@ -2064,19 +2077,23 @@ store::Item_t UnsignedIntItem::getEBV() const
 
 zstring UnsignedIntItem::getStringValue() const
 {
-  return NumConversions::uintToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void UnsignedIntItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::uintToStr(theValue);
+  ztd::to_string(theValue, &val);
 }
 
 
 void UnsignedIntItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::uintToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
@@ -2127,19 +2144,23 @@ store::Item_t UnsignedShortItem::getEBV() const
 
 zstring UnsignedShortItem::getStringValue() const
 {
-  return NumConversions::ushortToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void UnsignedShortItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::ushortToStr(theValue);
+  ztd::to_string(theValue, &val);
 }
 
 
 void UnsignedShortItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::ushortToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
@@ -2190,19 +2211,23 @@ store::Item_t UnsignedByteItem::getEBV() const
 
 zstring UnsignedByteItem::getStringValue() const
 {
-  return NumConversions::ubyteToStr(theValue);
+  zstring result;
+  ztd::to_string(theValue, &result);
+  return result;
 }
 
 
 void UnsignedByteItem::getStringValue2(zstring& val) const
 {
-  val = NumConversions::ubyteToStr(theValue);
+  ztd::to_string(theValue, &val);
 }
 
 
 void UnsignedByteItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::ubyteToStr(theValue);
+  zstring temp;
+  ztd::to_string(theValue, &temp);
+  buf += temp;
 }
 
 
