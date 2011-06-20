@@ -223,7 +223,7 @@ MAPM Integer::itod() const {
   if ( is_xs_long() )
     return static_cast<long>( value_ );
   ztd::itoa_buf_type buf;
-  return ztd::itoa( n, buf );
+  return ztd::itoa( value_, buf );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -246,7 +246,7 @@ zstring Integer::toString() const {
   delete[] buf;
   return s;
 #else
-  itoa_buf_type buf;
+  ztd::itoa_buf_type buf;
   return ztd::itoa( value_, buf );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
