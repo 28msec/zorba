@@ -30,6 +30,8 @@
 
 #include "file_module.h"
 
+#include <cassert>
+
 #include <stdlib.h>
 #include <stdio.h>
 #ifdef WIN32
@@ -86,63 +88,19 @@ FileFunction::getURI() const
 }
 
 String
-FileFunction::getOneStringArg(
-  const ExternalFunction::Arguments_t& aArgs,
-  unsigned int aPos) const
-{
-  Item lItem;
-  Iterator_t args_iter = aArgs[aPos]->getIterator();
-  args_iter->open();
-  if (!args_iter->next(lItem)) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "An empty-sequence is not allowed as " 
-                  << aPos << ". parameter.";
-    Item lQName = theModule->getItemFactory()->createQName(
-        "http://www.w3.org/2005/xqt-errors",
-        "err",
-        "XPTY0004");
-    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
-  }
-  zorba::String lTmpString = lItem.getStringValue();
-  if (args_iter->next(lItem)) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "A sequence of more then one item is not allowed as "
-                  << aPos << ". parameter.";
-    Item lQName = theModule->getItemFactory()->createQName(
-        "http://www.w3.org/2005/xqt-errors",
-        "err",
-        "XPTY0004");
-    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
-  }
-  args_iter->close();
-  return lTmpString;
-}
-
-bool
-FileFunction::getOneBooleanArg(
-  const ExternalFunction::Arguments_t& aArgs,
-  unsigned int aPos) const
-{
-  bool lResult = false;
-
-  Item lCreateItem;
-  Iterator_t arg1_iter = aArgs[aPos]->getIterator();
-  arg1_iter->open();
-  if (arg1_iter->next(lCreateItem)) {
-    lResult = lCreateItem.getBooleanValue();
-  }
-  arg1_iter->close();
-
-  return lResult;
-}
-
-
-String
 FileFunction::getFilePathString(
   const ExternalFunction::Arguments_t& aArgs,
   unsigned int aPos) const
 {
-  String lFileArg = getOneStringArg(aArgs, aPos);
+  String lFileArg;
+
+  Item lItem;
+  Iterator_t args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  if (args_iter->next(lItem)) {
+    lFileArg = lItem.getStringValue();
+  }
+  args_iter->close();
 
   return (filesystem_path::normalize_path
     (lFileArg.c_str(), getCurrentPath().c_str()));
@@ -185,12 +143,7 @@ FileFunction::getEncodingArg(
 
   if (!(lEncoding == "UTF-8" || lEncoding == "UTF8")) {
     // the rest are not supported encodings
-    std::stringstream lErrorMessage;
-    lErrorMessage << "Unsupported encoding: " << lEncoding;
-    Item lQName = theModule->getItemFactory()->createQName(
-        "http://www.zorba-xquery.com/errors",
-        "ZXQP003_INTERNAL_ERROR");
-    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
+    raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
   }
 
   return lEncoding;
@@ -261,11 +214,8 @@ StreamableFileFunction::~StreamableFileFunction()
 bool
 StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
 {
-  if (!theIsOpen) {
-    Item lQName = FileModule::getItemFactory()->createQName(FileModule::theNamespace,
-        "ZXQP003_INTERNAL_ERROR");
-    throw USER_EXCEPTION(lQName, "StreamableItemSequence Iterator consumed without open" );
-  }
+  assert(theIsOpen);
+
   if (theHasNext) {
     aResult = theItemSequence->theItem;
     theHasNext = false;

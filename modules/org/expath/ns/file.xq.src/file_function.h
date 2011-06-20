@@ -48,16 +48,10 @@ namespace zorba { namespace filemodule {
           const std::string& message,
           const std::string& path) const;
 
-      String
-      getOneStringArg(
-        const ExternalFunction::Arguments_t& args,
-        unsigned int pos) const;
-
-      bool
-      getOneBooleanArg(
-        const ExternalFunction::Arguments_t& args,
-        unsigned int pos) const;
-
+      /*
+       * Gets the argument on position pos as a normalised file system path.
+       * pos must point to a file function argument. No checks are made.
+       */
       String
       getFilePathString(
         const ExternalFunction::Arguments_t& args,
@@ -142,7 +136,7 @@ namespace zorba { namespace filemodule {
             next(Item& aResult);
         };
 
-        Item          theItem;
+        Item           theItem;
         std::ifstream* theStream;
 
         StreamableItemSequence() 
