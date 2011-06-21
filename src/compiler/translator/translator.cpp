@@ -690,7 +690,7 @@ TranslatorImpl(
     QueryLoc loc;
     theDotVarName = new QName(loc, static_context::DOT_VAR_NAME);
     theDotPosVarName = new QName(loc, static_context::DOT_POS_VAR_NAME);
-    theLastIdxVarName = new QName(loc, "$$last-idx");
+    theLastIdxVarName = new QName(loc, static_context::DOT_SIZE_VAR_NAME);
 
     theRootTranslator = this;
   }

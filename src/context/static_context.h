@@ -430,6 +430,7 @@ public:
 public:
   static const zstring DOT_VAR_NAME;
   static const zstring DOT_POS_VAR_NAME;
+  static const zstring DOT_SIZE_VAR_NAME;
 
   static const zstring W3C_NS_PREFIX;
   static const zstring ZORBA_NS_PREFIX;
@@ -807,6 +808,14 @@ public:
   void set_context_item_type(xqtref_t& t);
 
   const XQType* get_context_item_type() const;
+
+  // convert
+  //  $$dot => context item
+  //  $$pos => context position
+  //  $$last-idx => context size
+  // or return the string-value of the argument
+  static zstring
+  var_name(const store::Item*);
 
 
   //

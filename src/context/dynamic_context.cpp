@@ -376,18 +376,20 @@ void dynamic_context::get_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
+    zstring lVarName = static_context::var_name(varname.getp());
     throw XQUERY_EXCEPTION(
       err::XPDY0002,
-      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
+      ERROR_PARAMS( lVarName, ZED( VariabledUndeclared ) ),
       ERROR_LOC( loc )
     );
   }
 
   if (theVarValues[varid].theState == VarValue::declared)
   {
+    zstring lVarName = static_context::var_name(varname.getp());
     throw XQUERY_EXCEPTION(
       err::XPDY0002,
-      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledHasNoValue ) ),
+      ERROR_PARAMS( lVarName, ZED( VariabledHasNoValue ) ),
       ERROR_LOC( loc )
     );
   }

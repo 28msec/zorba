@@ -141,10 +141,6 @@
 #define CODEGEN_TRACE_OUT(msg) CODEGEN_TRACE(msg)
 #endif
 
-#define DOT_VAR "$$dot"
-#define DOT_POS_VAR "$$pos"
-#define LAST_IDX_VAR "$$last-idx"
-
 
 namespace zorba
 {

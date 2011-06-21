@@ -256,6 +256,9 @@ const zstring
 static_context::DOT_POS_VAR_NAME = "$$pos";
 
 const zstring
+static_context::DOT_SIZE_VAR_NAME = "$$last-idx";
+
+const zstring
 static_context::W3C_NS_PREFIX = "http://www.w3.org/";
 
 const zstring
@@ -2039,9 +2042,12 @@ var_expr* static_context::lookup_var(
   }
 
   if (error != zerr::ZXQP0000_NO_ERROR)
+  {
+    zstring lVarName = var_name(qname);
     throw XQUERY_EXCEPTION_VAR(
-      error, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
+      error, ERROR_PARAMS( lVarName ), ERROR_LOC( loc )
     );
+  }
 
   return NULL;
 }
@@ -2094,6 +2100,26 @@ void static_context::getVariables(
 void static_context::set_context_item_type(xqtref_t& t)
 {
   theCtxItemType = t;
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+zstring
+static_context::var_name(const store::Item* aVarName)
+{
+  zstring lVarName = aVarName->getStringValue();
+  if (lVarName == static_context::DOT_POS_VAR_NAME)
+  {
+    lVarName = "context position";
+  } else if (lVarName == static_context::DOT_SIZE_VAR_NAME)
+  {
+    lVarName = "context size";
+  } else if (lVarName == static_context::DOT_VAR_NAME)
+  {
+    lVarName = "context item";
+  }
+  return lVarName;
 }
 
 
