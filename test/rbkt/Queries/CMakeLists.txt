@@ -144,13 +144,15 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
+
   IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
-    SET (FOUND_XQTS 1)
     IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
       # If this is an XQTS test and we want to use testdriver_mt instead,
       # don't add the traditional testdriver version, but remember that
       # we found some
       SET (SKIP_TEST 1)
+    ELSE (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+      SET (FOUND_XQTS 1)
     ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
   ENDIF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
   IF (ZORBA_NO_FULL_TEXT)
@@ -298,3 +300,16 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
+IF(NOT ZORBA_WITH_BIG_INTEGER)
+  # These tests fail due to integer overflow.
+  EXPECTED_FAILURE(test/rbkt/zorba/math/format_integer/format_integer_En5 3323954)
+  EXPECTED_FAILURE(test/rbkt/zorba/numerics/longinteger 3323954)
+  IF(FOUND_XQTS)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
+  ENDIF(FOUND_XQTS)
+ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
+
+# vim:set et sw=2 ts=2:
