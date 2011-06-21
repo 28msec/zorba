@@ -47,6 +47,24 @@ declare variable $pxqdoc:mappings as xs:QName := xs:QName("pxqdoc:mappings");
 declare collection pxqdoc:mappings as node()*;
 
 (:~
+ : Delete the intermediary xml dir
+ :
+ : @param $xqdocPath where to generate the XQDoc XML documents.
+ : @return empty sequence.
+ :)
+declare %sequential function pxqdoc:delete-XML-dir(
+  $xqdocPath as xs:string)
+{
+  variable $xqdocXMLPath  := fn:concat( $xqdocPath,
+                                        file:directory-separator(),
+                                        "xml");
+  (: clear the XML folder :)
+  if(file:exists($xqdocXMLPath)) then
+    file:delete(fn:trace($xqdocXMLPath, " delete XML folder :"));
+  else ();
+};
+
+(:~
  : This function generates the XQDoc XML for all the modules found in $modulesPath 
  : and writes the resulting XML documents in $xqdocXmlPath. 
  : The hierarchy is not preserved.
@@ -59,24 +77,19 @@ declare %sequential function pxqdoc:generate-xqdoc-XML(
   $modulesPath as xs:string,
   $xqdocPath as xs:string) as element()*
 {
-  ddl:create-collection(xs:QName("pxqdoc:mappings"));
+ (: ddl:create-collection(xs:QName("pxqdoc:mappings")); :)
 
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
                                         file:directory-separator(),
                                         "xml");
   
-  (: clear the XML folder :)
-  if(file:exists($xqdocXMLPath)) then
-    file:delete(fn:trace($xqdocXMLPath, " delete XML folder :"));
-  else ();
-  
+ 
   (: create the XML folder if it does not exist already :)
   file:create-directory($xqdocXMLPath);
   
   (: make sure all the passed paths point to existing folders :)
   variable $lPaths := tokenize($modulesPath, ";");
   variable $lModulePaths as xs:string* := distinct-values(for $lPath in $lPaths return if (file:is-directory($lPath)) then $lPath else () );
-  variable $test_queries as xs:string := fn:concat(file:directory-separator(), "Queries", file:directory-separator());
   variable $src_dir as xs:string := fn:concat("/", "src");
 
   for $filedirs in $lModulePaths
@@ -94,13 +107,19 @@ declare %sequential function pxqdoc:generate-xqdoc-XML(
                                                 file:directory-separator(),
                                                 $xqdocRelFileName, 
                                                 ".xml");
-      file:write(trace($xqdocFileName," write XQDoc XML"), $xqdoc, $pxqdoc:serParamXml);
+      file:write(trace($xqdocFileName," write XQDoc XML"), 
+            <module modulePath="{$filePath}" 
+                  moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
+                  examplePath="{fn:substring-before($filePath,$src_dir)}">
+               {$xqdoc}
+            </module>, 
+            $pxqdoc:serParamXml);
       
-      dml:apply-insert-nodes(xs:QName("pxqdoc:mappings"), 
+    (:  dml:apply-insert-nodes(xs:QName("pxqdoc:mappings"), 
           <module modulePath="{$filePath}" 
                   moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
                   examplePath="{fn:substring-before($filePath,$src_dir)}"
-          />);
+          />); :)
     }
   }
 };

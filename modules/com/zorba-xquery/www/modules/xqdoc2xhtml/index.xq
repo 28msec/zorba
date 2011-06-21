@@ -504,22 +504,24 @@ declare %sequential function xqdoc2html:main(
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));                           
   ddl:delete-collection(xs:QName("xqdoc2html:collection"));
   
-  dml:delete-nodes(dml:collection(xs:QName("pxqdoc:mappings")));                           
-  ddl:delete-collection(xs:QName("pxqdoc:mappings"));
+ (: dml:delete-nodes(dml:collection(xs:QName("pxqdoc:mappings")));                           
+  ddl:delete-collection(xs:QName("pxqdoc:mappings")); :)
 };
 
 declare %private function xqdoc2html:get-module-path(
-  $moduleURI as xs:string
+  $moduleXML as node()
 ) as xs:string
 {
-  dml:collection(xs:QName("pxqdoc:mappings"))[@moduleURI=$moduleURI]/@modulePath
+  (: dml:collection(xs:QName("pxqdoc:mappings"))[@moduleURI=$moduleURI]/@modulePath :)
+  $moduleXML/module/@modulePath
 };
 
 declare %private function xqdoc2html:get-examples-path(
-  $moduleURI as xs:string
-) as xs:string
+  $moduleXML as node()
+  ) as xs:string
 {
-  dml:collection(xs:QName("pxqdoc:mappings"))[@moduleURI=$moduleURI]/@examplePath
+  (: dml:collection(xs:QName("pxqdoc:mappings"))[@moduleURI=$moduleURI]/@examplePath :)
+  $moduleXML/module/@examplePath
 };
 
 (:~
@@ -548,7 +550,7 @@ declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
   file:create-directory($examplesFolderDestination);
   
   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-  let $moduleDoc := $docNode/xqdoc:xqdoc/xqdoc:module
+  let $moduleDoc := $docNode/module/xqdoc:xqdoc/xqdoc:module
   let $moduleName := $moduleDoc/xqdoc:name
   let $moduleUri := data($moduleDoc/xqdoc:uri)
   let $getFilename := xqdoc2html:get-filename($moduleUri)
@@ -574,21 +576,21 @@ declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
     else
     {      
       (: replace the inlined examples with actual XQuery code :)
-      variable $examplesPath := xqdoc2html:get-examples-path(fn:data($moduleUri));
+      variable $examplesPath := xqdoc2html:get-examples-path($docNode);
       if($examplesPath eq "") then
         $examplesPath := $zorbaPath;
       else ();
-      variable $xqdoc2 := xqdoc2html:configure-xml($docNode/xqdoc:xqdoc, $examplesPath, $xqdocXhtmlPath);
+      variable $xqdoc2 := xqdoc2html:configure-xml($docNode/module/xqdoc:xqdoc, $examplesPath, $xqdocXhtmlPath);
       
       (: copy the examples listed in the .xq file into the xhtml/examples folder :)
       xqdoc2html:copy-examples($xqdoc2, $examplesFolderDestination, $examplesPath);
       
       (: copy the .xq module to the xhtml/modules folder :)
-      variable $modulefilePath := xqdoc2html:get-module-path($moduleUri);
+      variable $modulefilePath := xqdoc2html:get-module-path($docNode);
       variable $destination := fn:concat($modulePath, file:directory-separator(), pxqdoc:get-filename($moduleUri),".xq");
       file:copy($modulefilePath, $destination);
       
-      (: copy the implementatio of the external functions :)
+      (: copy the implementation of the external functions :)
       xqdoc2html:copy-xqsrc-folders(fn:concat($modulefilePath,".src"), 
                                     $extFuncPath,
                                     $moduleUri);
@@ -1671,7 +1673,7 @@ declare function xqdoc2html:generate-function-index()
   let $alphabet := ("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
   let $letters := distinct-values(
                   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-                  for $function in $docNode/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
+                  for $function in $docNode/module/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
                     let $functionName := $function/xqdoc:name/text()
                     where xqdoc2html:function-is-not-private($function)
                   return upper-case(substring($functionName,1,1)))
@@ -1697,8 +1699,8 @@ declare function xqdoc2html:generate-function-index()
         <table class="funclist">
           {
             for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-            for $function in $docNode/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
-            let $module := $docNode/xqdoc:xqdoc/xqdoc:module,
+            for $function in $docNode/module/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
+            let $module := $docNode/module/xqdoc:xqdoc/xqdoc:module,
                 $moduleUri := $module/xqdoc:uri/text(),
                 $file := fn:concat(pxqdoc:get-filename($moduleUri),'.html'),
                 $functionName := $function/xqdoc:name/text(),
@@ -1789,12 +1791,12 @@ declare %private %sequential function xqdoc2html:collect-entry (
 declare %private %sequential function xqdoc2html:collect-menu-entries()
 {
   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-      let $module := $docNode/xqdoc:xqdoc/xqdoc:module,
+      let $module := $docNode/module/xqdoc:xqdoc/xqdoc:module,
           $lModuleProject := $module/xqdoc:custom[@tag="project"]/text(),
           $lModuleUri     := $module/xqdoc:uri/text(),
           $lModuleName    := substring-before($module/xqdoc:name/text(),".xq"),  
           $lXHTMLFileName := pxqdoc:get-filename($lModuleUri),
-          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/xqdoc:xqdoc)),
+          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/module/xqdoc:xqdoc)),
           $lTmp := substring-after($lModuleUri,'http://'),
           $lTmpTok := tokenize($lTmp,'/'),
           $lTmp2 := if(ends-with($lTmp,'/')) then substring($lTmp,1,string-length($lTmp)-1) else string-join(xqdoc2html:value-except($lTmpTok,$lTmpTok[last()]),'/'),
@@ -1942,9 +1944,9 @@ declare %private %sequential function xqdoc2html:create-specialized-left-menu(
 {  
   {
     for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-      let $module := $docNode/xqdoc:xqdoc/xqdoc:module,
+      let $module := $docNode/module/xqdoc:xqdoc/xqdoc:module,
           $lModuleUri     := $module/xqdoc:uri/text(),
-          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/xqdoc:xqdoc))
+          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/module/xqdoc:xqdoc))
     where $lModuleUri = $moduleUri
             
     for $node in $generalLeftMenu//li
