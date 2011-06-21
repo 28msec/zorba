@@ -2045,7 +2045,9 @@ var_expr* static_context::lookup_var(
   {
     zstring lVarName = var_name(qname);
     throw XQUERY_EXCEPTION_VAR(
-      error, ERROR_PARAMS( lVarName ), ERROR_LOC( loc )
+      error,
+      ERROR_PARAMS( lVarName, ZED( VariabledUndeclared ) ),
+      ERROR_LOC( loc )
     );
   }
 
