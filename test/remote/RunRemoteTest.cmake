@@ -78,10 +78,12 @@ if (IS_DIRECTORY "${modules_dir}")
   set (mod_count 1)
   file (GLOB module_dirs "${modules_dir}/*")
   foreach (module_dir ${module_dirs})
-    message (STATUS "Module ${mod_count}: ${module_dir}")
-    svn_package ("${module_dir}" "${workdir}" "${changelist}"
-      "${workdir}/module-${mod_count}.tgz")
-    math (EXPR mod_count "${mod_count} + 1")
+    if (IS_DIRECTORY "${module_dir}")
+      message (STATUS "Module ${mod_count}: ${module_dir}")
+      svn_package ("${module_dir}" "${workdir}" "${changelist}"
+        "${workdir}/module-${mod_count}.tgz")
+      math (EXPR mod_count "${mod_count} + 1")
+    endif (IS_DIRECTORY "${module_dir}")
   endforeach (module_dir)
 endif (IS_DIRECTORY "${modules_dir}")
 
