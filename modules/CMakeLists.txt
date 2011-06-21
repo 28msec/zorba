@@ -27,7 +27,16 @@ ADD_SUBDIRECTORY(org)
 # ready for other modules' FIND_PACKAGE() calls. We also add all
 # module build dirs to CMAKE_PREFIX_PATH for the same reason.
 SET (project_regex "[Pp][Rr][Oo][Jj][Ee][Cc][Tt]")
-FILE (GLOB module_dirs RELATIVE "${ZORBA_MODULES_DIR}" "${ZORBA_MODULES_DIR}/*")
+FILE (GLOB modules_dir_items RELATIVE "${ZORBA_MODULES_DIR}" "${ZORBA_MODULES_DIR}/*")
+
+# Filter out non-directories
+SET (module_dirs)
+FOREACH (module_dir ${modules_dir_items})
+  IF (IS_DIRECTORY "${ZORBA_MODULES_DIR}/${module_dir}")
+    LIST(APPEND module_dirs "${module_dir}")
+  ENDIF (IS_DIRECTORY "${ZORBA_MODULES_DIR}/${module_dir}")
+ENDFOREACH (module_dir)
+
 FOREACH (module_dir ${module_dirs})
   # This is really kind of hacky, but I don't know a better solution without
   # introducing some sort of inter-module dependency tracking and requiring
@@ -41,9 +50,19 @@ FOREACH (module_dir ${module_dirs})
   FOREACH (line ${cmakelists})
     IF (line MATCHES "${project_regex} *\\(([^)]*)\\)")
       SET (module_project ${CMAKE_MATCH_1})
-      MESSAGE (STATUS "**************************************")
-      MESSAGE (STATUS "Found module project ${module_project}")
-      MESSAGE (STATUS "**************************************")
+
+      # Print the found module name
+      SET (status "Found module project ${module_project}")
+      STRING (LENGTH "${status}" statuslen)
+      SET (border "")
+      FOREACH (i RANGE 1 ${statuslen})
+        # The '+' is as in "zorba addition"
+        SET (border "${border}+")
+      ENDFOREACH (i)
+      MESSAGE (STATUS "${border}")
+      MESSAGE (STATUS "${status}")
+      MESSAGE (STATUS "${border}")
+
       BREAK ()
     ENDIF (line MATCHES "${project_regex} *\\(([^)]*)\\)")
   ENDFOREACH (line)
@@ -55,17 +74,17 @@ FOREACH (module_dir ${module_dirs})
 
   SET (module_builddir "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
   FILE (MAKE_DIRECTORY "${module_builddir}")
-  CREATE_MODULE_CONFIG(${module_project} "${ZORBA_MODULES_DIR}/${module_dir}"
+  CREATE_MODULE_CONFIG (${module_project} "${ZORBA_MODULES_DIR}/${module_dir}"
     "${module_builddir}")
-  LIST(APPEND CMAKE_PREFIX_PATH "${module_builddir}")
-  SET(ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} ${ZORBA_MODULES_DIR}/${module_dir}/src)
+  LIST (APPEND CMAKE_PREFIX_PATH "${module_builddir}")
+  SET (ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} ${ZORBA_MODULES_DIR}/${module_dir}/src)
 ENDFOREACH (module_dir)
-SET(ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} PARENT_SCOPE)
+SET (ZORBA_EXTERNAL_MODULES_SRCS ${ZORBA_EXTERNAL_MODULES_SRCS} PARENT_SCOPE)
 
 # Each of these projects will also want to be able to
 # FIND_PACKAGE(Zorba), so add our own build dir to the CMake module
 # path
-LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
+LIST (APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 
 # Now, iterate through all the module projects again and actually add
 # them to this Zorba project. Create a binary directory for them
