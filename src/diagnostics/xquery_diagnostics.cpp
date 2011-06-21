@@ -26,6 +26,12 @@ XQueryDiagnostics::XQueryDiagnostics() {
 
 XQueryDiagnostics::~XQueryDiagnostics() {
   ztd::delete_ptr_seq( errors_ );
+  clear_warnings();
+}
+
+void XQueryDiagnostics::clear_warnings() {
+  ztd::delete_ptr_seq( warnings_ );
+  warnings_.clear();
 }
 
 } // namespace zorba

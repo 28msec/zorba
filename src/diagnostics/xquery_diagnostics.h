@@ -112,13 +112,11 @@ public:
   }
 
   /**
-   * Clears the list of warnings. This method is called after the warnings have been
-   * notified to the diagnostics handler so that they are not reported multiple times.
-   *
+   * Clears the list of warnings. This function should be called after the
+   * warnings have been given to the diagnostics handler so that they are not
+   * reported multiple times.
    */
-  void clear_warnings() {
-    warnings_.clear();
-  }
+  void clear_warnings();
 
 private:
   errors_type errors_;
