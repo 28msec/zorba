@@ -127,7 +127,35 @@ static bool hoist_expressions(
 {
   bool status = false;
 
-  if (e->get_expr_kind() == flwor_expr_kind)
+  if (e->get_expr_kind() == block_expr_kind || e->is_sequential())
+  {
+    // Note : local vars must also be indexed if they are allowed to be set
+    // inside the for/let clauses of a flwor expr.
+
+    ExprIterator iter(e);
+
+    while (!iter.done())
+    {
+      // TODO: if no updating child exprs have been encountered so far, subexprs
+      // of the current child expr may be hoisted outside the sequential expr as
+      // long as they don't reference any local vars.
+      expr_t ce = *iter;
+
+      struct flwor_holder root;
+      bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
+
+      if (nestedModified && root.flwor != NULL)
+      {
+        root.flwor->set_return_expr(ce);
+        (*iter) = root.flwor;
+      }
+
+      status = nestedModified || status;
+
+      iter.next();
+    }
+  }
+  else if (e->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -200,34 +228,6 @@ static bool hoist_expressions(
     else
     {
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
-    }
-  }
-  else if (e->get_expr_kind() == block_expr_kind)
-  {
-    // Note : local vars must also be indexed if they are allowed to be set
-    // inside the for/let clauses of a flwor expr.
-
-    ExprIterator iter(e);
-
-    while(!iter.done())
-    {
-      // TODO: if no updating child exprs have been encountered so far, subexprs
-      // of the current child expr may be hoisted outside the sequential expr as
-      // long as they don't reference any local vars.
-      expr_t ce = *iter;
-
-      struct flwor_holder root;
-      bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
-
-      if (nestedModified && root.flwor != NULL)
-      {
-        root.flwor->set_return_expr(ce);
-        (*iter) = root.flwor;
-      }
-
-      status = nestedModified || status;
-
-      iter.next();
     }
   }
   else if (e->is_updating() ||
