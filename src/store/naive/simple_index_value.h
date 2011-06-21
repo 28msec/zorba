@@ -61,48 +61,47 @@ class ValueHashIndex : public ValueIndex
                   ValueIndexValue*,
                   IndexCompareFunction> IndexMap;
 
-private:
-  IndexCompareFunction   theCompFunction;
-  IndexMap               theMap;
-
 protected:
-  ValueHashIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec);
-
-  ~ValueHashIndex();
-
-  void clear();
-
-  bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
-
-  virtual ulong size() const;
 
   class KeyIterator : public Index::KeyIterator
   {
   protected:
-    IndexMap::iterator theIterator;
-    const IndexMap&    theMap;
+    IndexMap::iterator   theIterator;
+    const IndexMap     & theMap;
 
   public:
     KeyIterator(const IndexMap& aMap);
 
-    virtual void open();
+    ~KeyIterator();
 
-    virtual bool next(store::IndexKey&);
-
-    virtual void close();
-
-    virtual ~KeyIterator();
+    void open();
+    bool next(store::IndexKey&);
+    void close();
   };
 
   typedef rchandle<KeyIterator> KeyIterator_t;
 
-  virtual Index::KeyIterator_t keys() const;
+private:
+  IndexCompareFunction   theCompFunction;
+  IndexMap               theMap;
 
 public:
-  bool remove(const store::IndexKey* key, store::Item_t& item);
+  void clear();
+
+  ulong size() const;
+
+  Index::KeyIterator_t keys() const;
+
+  bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
+
   bool remove(const store::IndexKey* key, store::Item_t& item, bool all);
+
+protected:
+  ValueHashIndex(
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec);
+
+  ~ValueHashIndex();
 };
 
 
@@ -152,25 +151,17 @@ class ValueTreeIndex : public ValueIndex
                    ValueIndexValue*,
                    IndexCompareFunction> IndexMap;
 
-public:
-
-  virtual ulong size() const;
-
   class KeyIterator : public Index::KeyIterator
   {
   public:
-    virtual void open();
+    ~KeyIterator();
 
-    virtual bool next(store::IndexKey&);
-
-    virtual void close();
-
-    virtual ~KeyIterator();
+    void open();
+    bool next(store::IndexKey&);
+    void close();
   };
 
   typedef rchandle<KeyIterator> KeyIterator_t;
-
-  virtual Index::KeyIterator_t keys() const;
 
 private:
   IndexCompareFunction   theCompFunction;
@@ -180,9 +171,13 @@ private:
 public:
   void clear();
 
+  ulong size() const;
+
+  Index::KeyIterator_t keys() const;
+
   bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item);
+  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
 
 protected:
   ValueTreeIndex(

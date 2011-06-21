@@ -118,6 +118,25 @@ Probing the typed AuctionDates sorted general index
 
 <exception>err:XPTY0004 : "xs:string": search key type for index "auctions:AuctionDates" does not match expected type "xs:date"</exception>
 
+<open_auction id="open_auction0"/><open_auction id="open_auction1"/><open_auction id="open_auction3"/><open_auction id="open_auction4"/><open_auction id="open_auction9"/><open_auction id="open_auction10"/><open_auction id="open_auction11"/>
+
+<open_auction id="open_auction1"/><open_auction id="open_auction4"/><open_auction id="open_auction9"/>
+
+<open_auction id="open_auction1"/><open_auction id="open_auction9"/>
+
+Empty Probe
+ 
+
+Empty Probe
+ 
+
+Empty Probe
+ 
+
+Full Probe
+
+<open_auction id="open_auction0"></open_auction><open_auction id="open_auction1"></open_auction><open_auction id="open_auction2"></open_auction><open_auction id="open_auction3"></open_auction><open_auction id="open_auction4"></open_auction><open_auction id="open_auction5"></open_auction><open_auction id="open_auction6"></open_auction><open_auction id="open_auction7"></open_auction><open_auction id="open_auction8"></open_auction><open_auction id="open_auction9"></open_auction><open_auction id="open_auction10"></open_auction><open_auction id="open_auction11"></open_auction>
+
 -------------------------------------------------------
 Probing the untyped AuctionDates2 sorted general index
 -------------------------------------------------------

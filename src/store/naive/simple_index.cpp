@@ -22,6 +22,7 @@
 #include "store/api/item.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_index.h"
+#include "store/naive/simple_index_general.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_store.h"
 
@@ -48,7 +49,7 @@ uint32_t IndexCompareFunction::hash(const store::IndexKey* key) const
 {
   uint32_t hval = FNV_32_INIT;
 
-  for (ulong i = 0; i < theNumColumns; i++)
+  for (ulong i = 0; i < theNumColumns; ++i)
   {
     if ((*key)[i] == NULL)
       continue;
@@ -259,7 +260,7 @@ void IndexPointCondition::pushRange(
 
 ********************************************************************************/
 void IndexPointCondition::pushLowerBound(
-    std::vector<store::Item_t>& bound,
+    store::Item_t& bound,
     bool haveBound,
     bool boundIncl)
 {
@@ -271,7 +272,7 @@ void IndexPointCondition::pushLowerBound(
 
 ********************************************************************************/
 void IndexPointCondition::pushUpperBound(
-    std::vector<store::Item_t>& bound,
+    store::Item_t& bound,
     bool haveBound,
     bool boundIncl)
 {
@@ -386,7 +387,7 @@ void IndexBoxValueCondition::pushRange(
 
 
 void IndexBoxValueCondition::pushLowerBound(
-    std::vector<store::Item_t>& bound,
+    store::Item_t& bound,
     bool haveBound,
     bool boundIncl)
 {
@@ -395,7 +396,7 @@ void IndexBoxValueCondition::pushLowerBound(
 
 
 void IndexBoxValueCondition::pushUpperBound(
-    std::vector<store::Item_t>& bound,
+    store::Item_t& bound,
     bool haveBound,
     bool boundIncl)
 {
@@ -506,10 +507,23 @@ std::string IndexBoxValueCondition::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
+IndexBoxGeneralCondition::IndexBoxGeneralCondition(IndexImpl* idx) 
+  :
+  IndexBoxCondition(idx)
+{
+  theRangeFlags.theHaveLowerBound = false;
+  theRangeFlags.theHaveUpperBound = false;
+  theRangeFlags.theLowerBoundIncl = true;
+  theRangeFlags.theUpperBoundIncl = true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void IndexBoxGeneralCondition::clear()
 {
-  theLowerBounds.clear();
-  theUpperBounds.clear();
+  theBound = NULL;
 }
 
 
@@ -529,18 +543,42 @@ void IndexBoxGeneralCondition::pushRange(
 
 
 void IndexBoxGeneralCondition::pushLowerBound(
-    std::vector<store::Item_t>& bound,
+    store::Item_t& bound,
     bool haveBound,
     bool boundIncl)
 {
+  theRangeFlags.theHaveLowerBound = haveBound;
+  theRangeFlags.theLowerBoundIncl = boundIncl;
+
+  if (!haveBound)
+  {
+    assert(bound == NULL);
+    return;
+  }
+
+  assert(bound != NULL);
+
+  theBound.transfer_back(bound);
 }
 
 
 void IndexBoxGeneralCondition::pushUpperBound(
-    std::vector<store::Item_t>& bound,
+    store::Item_t& bound,
     bool haveBound,
     bool boundIncl)
 {
+  theRangeFlags.theHaveUpperBound = haveBound;
+  theRangeFlags.theUpperBoundIncl = boundIncl;
+
+  if (!haveBound)
+  {
+    assert(bound == NULL);
+    return;
+  }
+
+  assert(bound != NULL);
+
+  theBound.transfer_back(bound);
 }
 
 

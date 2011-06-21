@@ -861,7 +861,8 @@ void ProbeIndexPointGeneralIterator::accept(PlanIterVisitor& v) const
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
+  for (; lIter != lEnd; ++lIter)
+  {
     (*lIter)->accept(v);
   }
 
@@ -1069,6 +1070,14 @@ void ProbeIndexRangeValueIterator::accept(PlanIterVisitor& v) const
 /*******************************************************************************
   ProbeIndexRangeGeneralIterator
 ********************************************************************************/
+ProbeIndexRangeGeneralIteratorState::ProbeIndexRangeGeneralIteratorState()
+  :
+  theTimezone(0),
+  theCollator(NULL)
+{
+}
+
+
 ProbeIndexRangeGeneralIterator::ProbeIndexRangeGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -1103,7 +1112,17 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
   store::Item_t qname;
   IndexDecl_t indexDecl;
   store::IndexCondition_t cond;
+  bool haveLower;
+  bool haveUpper;
+  bool inclLower;
+  bool inclUpper;
+  xqtref_t keyType;
+  store::Item_t searchItem;
+  store::Item_t minmaxItem;
+  ulong childIdx;
   bool status;
+
+  TypeManager* tm = theSctx->get_typemanager();
 
   ProbeIndexRangeGeneralIteratorState* state;
   DEFAULT_STACK_INIT(ProbeIndexRangeGeneralIteratorState, state, planState);
@@ -1145,19 +1164,27 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
 
     state->theIterator = GENV_STORE.getIteratorFactory()->
                          createIndexProbeIterator(state->theIndex);
-  }
 
-  cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+    state->theTimezone = state->theIndex->getSpecification().getTimezone();
+    state->theCollator = state->theIndex->getCollator(0);
+
+    xqtref_t keyType = indexDecl->getKeyTypes()[0];
+
+    assert(keyType->get_quantifier() == TypeConstants::QUANT_ONE);
+
+    if (keyType != NULL && 
+        !TypeOps::is_subtype(tm, *keyType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&
+        !TypeOps::is_equal(tm, *keyType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
+    {
+      state->theKeyType = keyType;
+    }
+  }
 
   {
     store::Item_t itemHaveLower;
     store::Item_t itemHaveUpper;
     store::Item_t itemInclLower;
     store::Item_t itemInclUpper;
-    std::vector<store::Item_t> lowerBounds;
-    std::vector<store::Item_t> upperBounds;
-    store::Item_t searchKey;
-    store::Item_t minmaxSearchKey;
 
     // Get the values of $haveLowerBound, $haveUpperBound, $lowerBoundIncluded,
     // and $upperBoundIncluded params
@@ -1173,38 +1200,111 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
     if (!consumeNext(itemInclUpper, theChildren[6], planState))
      ZORBA_ASSERT(false);
 
-    bool haveLower = itemHaveLower->getBooleanValue();
-    bool haveUpper = itemHaveUpper->getBooleanValue();
-    bool inclLower = itemInclLower->getBooleanValue();
-    bool inclUpper = itemInclUpper->getBooleanValue();
-
-    // Compute the lower-bound search keys
-    while (consumeNext(searchKey, theChildren[1], planState))
-    {
-      lowerBounds.push_back(NULL);
-      lowerBounds[lowerBounds.size()-1].transfer(searchKey);
-    }
-
-    // Compute the upper-bound search keys
-    while (consumeNext(searchKey, theChildren[2], planState))
-    {
-      upperBounds.push_back(NULL);
-      upperBounds[upperBounds.size()-1].transfer(searchKey);
-    }
-
-    // Fill-in the search condition
-    cond->pushLowerBound(lowerBounds, haveLower, inclLower);
-    cond->pushUpperBound(upperBounds, haveUpper, inclUpper);
+    haveLower = itemHaveLower->getBooleanValue();
+    haveUpper = itemHaveUpper->getBooleanValue();
+    inclLower = itemInclLower->getBooleanValue();
+    inclUpper = itemInclUpper->getBooleanValue();
   }
 
-  state->theIterator->init(cond);
-  state->theIterator->open();
-
-  while(state->theIterator->next(result)) 
+  if (haveLower && haveUpper)
   {
-    STACK_PUSH(true, state);
+  }
+  else if (haveLower || haveUpper)
+  {
+    childIdx = (haveLower ? 1 : 2);
+
+    if (!consumeNext(searchItem, theChildren[childIdx], planState))
+      goto done;
+
+    cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+
+    minmaxItem.transfer(searchItem);
+
+    if (state->theKeyType != NULL)
+    {
+      while (consumeNext(searchItem, theChildren[childIdx], planState))
+      {
+        long comp = minmaxItem->compare(searchItem,
+                                        state->theTimezone,
+                                        state->theCollator);
+        if ((haveLower && comp > 0) || (haveUpper && comp < 0))
+          minmaxItem.transfer(searchItem);
+      }
+
+      if (haveLower)
+        cond->pushLowerBound(minmaxItem, haveLower, inclLower);
+      else
+        cond->pushUpperBound(minmaxItem, haveUpper, inclUpper);
+
+      state->theIterator->init(cond);
+      state->theIterator->open();
+
+      while(state->theIterator->next(result)) 
+      {
+        STACK_PUSH(true, state);
+      }
+    }
+    else
+    {
+      while (consumeNext(searchItem, theChildren[childIdx], planState))
+      {
+        xqtref_t minmaxItemType = tm->create_value_type(minmaxItem, loc);
+        xqtref_t searchItemType = tm->create_value_type(searchItem, loc);
+
+        if (TypeOps::is_subtype(tm, *searchItemType, *minmaxItemType))
+        {
+          if (minmaxItem->compare(searchItem, state->theTimezone, state->theCollator) > 0)
+            minmaxItem.transfer(searchItem);
+        }
+        else
+        {
+          state->theSearchItems.push_back(NULL);
+          state->theSearchItems.back().transfer(minmaxItem);
+        }
+      }
+
+      if (minmaxItem != NULL)
+      {
+        state->theSearchItems.push_back(NULL);
+        state->theSearchItems.back().transfer(minmaxItem);
+      }
+
+      state->theSearchItemsIte = state->theSearchItems.begin();
+      state->theSearchItemsEnd = state->theSearchItems.end();
+
+      for (;
+           state->theSearchItemsIte != state->theSearchItemsEnd;
+           ++state->theSearchItemsIte)
+      {
+        if (haveLower)
+          cond->pushLowerBound(*state->theSearchItemsIte, haveLower, inclLower);
+        else
+          cond->pushUpperBound(*state->theSearchItemsIte, haveUpper, inclUpper);
+
+        state->theIterator->init(cond);
+        state->theIterator->open();
+
+        while(state->theIterator->next(result)) 
+        {
+          STACK_PUSH(true, state);
+        }
+      }
+    }
+  }
+  else
+  {
+    cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+
+    state->theIterator->init(cond);
+    state->theIterator->open();
+
+    while(state->theIterator->next(result)) 
+    {
+      STACK_PUSH(true, state);
+    }
   }
 
+ done:
   STACK_END(state);
 }
 

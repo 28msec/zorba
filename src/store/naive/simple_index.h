@@ -90,6 +90,10 @@ public:
 public:
   virtual ~IndexImpl();
 
+  //
+  // Store api methods
+  //
+
   store::Item* getName() const { return theQname.getp(); }
 
   const store::IndexSpecification& getSpecification() const { return theSpec; }
@@ -98,9 +102,19 @@ public:
 
   long getTimezone() const { return theSpec.theTimezone; }
 
-  const std::vector<XQPCollator*>& getCollators() const { return theCollators; }
-
   const XQPCollator* getCollator(ulong i) const { return theCollators[i]; }
+
+  store::IndexCondition_t createCondition(store::IndexCondition::Kind k);
+
+  virtual ulong size() const = 0;
+
+  virtual KeyIterator_t keys() const = 0;
+
+  //
+  // Simplestore methods
+  //
+
+  const std::vector<XQPCollator*>& getCollators() const { return theCollators; }
  
   bool isUnique() const { return theSpec.theIsUnique; }
 
@@ -112,8 +126,6 @@ public:
 
   bool isGeneral() const { return theSpec.theIsGeneral; }
 
-  store::IndexCondition_t createCondition(store::IndexCondition::Kind k);
-
   virtual bool insert(
         store::IndexKey*& key,
         store::Item_t& item,
@@ -121,7 +133,8 @@ public:
 
   virtual bool remove(
         const store::IndexKey* key,
-        store::Item_t& item) = 0;
+        store::Item_t& item,
+        bool all = false) = 0;
 };
 
 
@@ -163,12 +176,12 @@ public:
         bool upperIncl);
 
   void pushLowerBound(
-      std::vector<store::Item_t>& bound,
+      store::Item_t& bound,
       bool haveBound,
       bool boundIncl);
 
   void pushUpperBound(
-      std::vector<store::Item_t>& bound,
+      store::Item_t& bound,
       bool haveBound,
       bool boundIncl);
 
@@ -231,8 +244,6 @@ protected:
   };
 
   rchandle<IndexImpl>      theIndex;
-  store::IndexKey          theLowerBounds;
-  store::IndexKey          theUpperBounds;
 
 public:
   IndexBoxCondition(IndexImpl* idx) : theIndex(idx) { }
@@ -253,6 +264,8 @@ class IndexBoxValueCondition : public IndexBoxCondition
 
 protected:
   std::vector<RangeFlags>  theRangeFlags;
+  store::IndexKey          theLowerBounds;
+  store::IndexKey          theUpperBounds;
 
 public:
   IndexBoxValueCondition(IndexImpl* idx) : IndexBoxCondition(idx) { }
@@ -274,12 +287,12 @@ public:
       bool upperIncl);
 
   void pushLowerBound(
-      std::vector<store::Item_t>& bound,
+      store::Item_t& bound,
       bool haveBound,
       bool boundIncl);
 
   void pushUpperBound(
-      std::vector<store::Item_t>& bound,
+      store::Item_t& bound,
       bool haveBound,
       bool boundIncl);
 
@@ -303,10 +316,11 @@ class IndexBoxGeneralCondition : public IndexBoxCondition
   friend std::ostream& operator<<(std::ostream& os, const IndexBoxGeneralCondition& c);
 
 protected:
-  RangeFlags  theRangeFlags;
+  RangeFlags      theRangeFlags;
+  store::IndexKey theBound;
 
 public:
-  IndexBoxGeneralCondition(IndexImpl* idx) : IndexBoxCondition(idx) { }
+  IndexBoxGeneralCondition(IndexImpl* idx);
 
   store::IndexCondition::Kind getKind() const { return BOX_GENERAL; }
 
@@ -323,12 +337,12 @@ public:
       bool upperIncl);
 
   void pushLowerBound(
-      std::vector<store::Item_t>& bound,
+      store::Item_t& bound,
       bool haveBound,
       bool boundIncl);
 
   void pushUpperBound(
-      std::vector<store::Item_t>& bound,
+      store::Item_t& bound,
       bool haveBound,
       bool boundIncl);
 

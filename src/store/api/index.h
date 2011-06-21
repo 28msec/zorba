@@ -107,10 +107,9 @@ public:
     theCollations.resize(numColumns);
   }
 
-  ulong getNumColumns() const 
-  {
-    return theNumKeyColumns;
-  }
+  ulong getNumColumns() const { return theNumKeyColumns; }
+
+  long getTimezone() const { return theTimezone; }
 };
 
 
@@ -241,42 +240,34 @@ public:
   /**
    * This method applies to BOX_GENERAL conditions only.
    *
-   * @param bound A vector of items constituting lower bounds for the key 
-   *        values. May be NULL, which indicates either the empty sequence 
-   *        or -INFINITY. The haveBound parameter is used to distinguish 
+   * @param bound An item that constitutes lower bounds for the key values
+   *        May be NULL, which indicates either the empty sequence or
+   *        -INFINITY. The haveBound parameter is used to distinguish 
    *        between these two cases.
    * @param haveBound False if the lower bound is -INFINITY. True otherwise.
-   * @param boundIncl True if the boundary search keys are included in the 
+   * @param boundIncl True if the boundary search key is included in the 
    *        search. False otherwise.
    */
   virtual void pushLowerBound(
-        std::vector<Item_t>& bound,
+        Item_t& bound,
         bool haveBound,
         bool boundIncl) = 0;
 
   /**
    * This method applies to BOX_GENERAL conditions only.
    *
-   * @param bound A vector of items constituting lower bounds for the key 
-   *        values. May be NULL, which indicates either the empty sequence 
-   *        or +INFINITY. The haveBound parameter is used to distinguish 
+   * @param bound An item that constitutes a lower bounds for the key values 
+   *        May be NULL, which indicates either the empty sequence or 
+   *        +INFINITY. The haveBound parameter is used to distinguish 
    *        between these two cases.
    * @param haveBound False if the upper bound is +INFINITY. True otherwise.
-   * @param boundIncl True if the boundary search keys are included in the 
+   * @param boundIncl True if the boundary search key is included in the 
    *        search. False otherwise.
    */
   virtual void pushUpperBound(
-        std::vector<Item_t>& bound,
+        Item_t& bound,
         bool haveBound,
         bool boundIncl) = 0;
-
-  /**
-   *  Check if a given index key satisfies this condition.
-   *
-   *  @param key The index key to test the condition on.
-   *  @return True is key satisfies the condition; false otherwise.
-   */
-  virtual bool test(const IndexKey& key) const = 0;
 
   /**
    *  Serialize this condition.
@@ -346,6 +337,22 @@ protected:
   SYNC_CODE(mutable RCLock theRCLock;)
 
 public:
+  class KeyIterator : virtual public SimpleRCObject
+  {
+  public:
+    virtual void open() = 0;
+
+    virtual bool next(IndexKey&) = 0;
+
+    virtual void close() = 0;
+
+    virtual ~KeyIterator() {}
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
+
+public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   long* getSharedRefCounter() const { return NULL; }
@@ -370,6 +377,11 @@ public:
   virtual ulong getNumColumns() const = 0;
 
   /**
+   * Return the timezone that is used when comparing date-time related items
+   */
+  virtual long getTimezone() const = 0;
+
+  /**
    *  Return pointer to the collator used by this index when comparing items at
    *  its i-th column (return NULL if no collator is used for the i-th column).
    */
@@ -384,20 +396,6 @@ public:
    * Returns the number of entries in the index
    */
   virtual ulong size() const = 0;
-
-  class KeyIterator : virtual public SimpleRCObject
-  {
-  public:
-    virtual void open() = 0;
-
-    virtual bool next(IndexKey&) = 0;
-
-    virtual void close() = 0;
-
-    virtual ~KeyIterator() {}
-  };
-
-  typedef rchandle<KeyIterator> KeyIterator_t;
 
   /**
    * Returns all keys stored in this index

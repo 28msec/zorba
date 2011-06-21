@@ -40,8 +40,8 @@ void GeneralIndexValue::addNode(store::Item_t& node, bool multikey, bool untyped
   size_t numNodes = theNodes.size();
   theNodes.resize(numNodes + 1);
   theNodes[numNodes].theNode.transfer(node);
-  theNodes[numNodes].theMultiKey = multikey;
-  theNodes[numNodes].theUntyped = untyped;
+  //theNodes[numNodes].theMultiKey = multikey;
+  //theNodes[numNodes].theUntyped = untyped;
 }
 
 
@@ -65,6 +65,33 @@ GeneralIndex::GeneralIndex(
 //  Hash Map General Index                                                     //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+
+
+/******************************************************************************
+
+*******************************************************************************/
+GeneralHashIndex::KeyIterator::~KeyIterator()
+{
+}
+
+
+void GeneralHashIndex::KeyIterator::open()
+{
+  assert(false);
+}
+
+
+bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
+{
+  assert(false);
+  return false;
+}
+
+
+void GeneralHashIndex::KeyIterator::close()
+{
+  assert(false);
+}
 
 
 /******************************************************************************
@@ -118,6 +145,26 @@ GeneralHashIndex::~GeneralHashIndex()
 
     delete theMaps[i];
   }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+ulong GeneralHashIndex::size() const
+{
+  assert(false);
+  return 0;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Index::KeyIterator_t GeneralHashIndex::keys() const
+{
+  assert(false);
+  return 0;
 }
 
 
@@ -476,41 +523,13 @@ bool GeneralHashIndex::insertInMap(
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralHashIndex::remove(const store::IndexKey* key, store::Item_t& item)
+bool GeneralHashIndex::remove(
+    const store::IndexKey* key,
+    store::Item_t& item,
+    bool all)
 {
+  assert(false);
   return false;
-}
-
-ulong
-GeneralHashIndex::size() const
-{
-  return 0;
-}
-
-void
-GeneralHashIndex::KeyIterator::open()
-{
-}
-
-bool
-GeneralHashIndex::KeyIterator::next(store::IndexKey&)
-{
-  return false;
-}
-
-void
-GeneralHashIndex::KeyIterator::close()
-{
-};
-
-GeneralHashIndex::KeyIterator::~KeyIterator()
-{
-};
-
-store::Index::KeyIterator_t
-GeneralHashIndex::keys() const
-{
-  return 0;
 }
 
 
@@ -1396,39 +1415,35 @@ bool GeneralTreeIndex::insertInMap(
 *******************************************************************************/
 bool GeneralTreeIndex::remove(
     const store::IndexKey* key,
-    store::Item_t& item)
+    store::Item_t& item,
+    bool all)
 {
   return true;
 }
 
-ulong
-GeneralTreeIndex::size() const
+ulong GeneralTreeIndex::size() const
 {
   return 0;
 }
 
-void
-GeneralTreeIndex::KeyIterator::open()
+void GeneralTreeIndex::KeyIterator::open()
 {
 }
 
-bool
-GeneralTreeIndex::KeyIterator::next(store::IndexKey&)
+bool GeneralTreeIndex::KeyIterator::next(store::IndexKey&)
 {
   return false;
 }
 
-void
-GeneralTreeIndex::KeyIterator::close()
+void GeneralTreeIndex::KeyIterator::close()
 {
-};
+}
 
 GeneralTreeIndex::KeyIterator::~KeyIterator()
 {
-};
+}
 
-store::Index::KeyIterator_t
-GeneralTreeIndex::keys() const
+store::Index::KeyIterator_t GeneralTreeIndex::keys() const
 {
   return 0;
 }
@@ -1469,9 +1484,13 @@ void ProbeGeneralTreeIndexIterator::init(const store::IndexCondition_t& cond)
   {
     initPoint(cond);
   }
+  else if (cond->getKind() == store::IndexCondition::BOX_VALUE)
+  {
+    initValueBox(cond);
+  }
   else
   {
-    initBox(cond);
+    initGeneralBox(cond);
   }
 }
 
@@ -1505,39 +1524,52 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
   if (key->size() != theIndex->getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-      ERROR_PARAMS( key->toString(), theIndex->getName()->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+    ERROR_PARAMS(key->toString(), theIndex->getName()->getStringValue()));
   }
 
   if (theProbeKind == store::IndexCondition::POINT_VALUE)
   {
     if (theIndex->theMultiKeyFlag)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( NoMultiKeyNodeValues_2 ), theIndex->getName()->getStringValue()
-        )
-      );
+      RAISE_ERROR_NO_LOC(err::XPTY0004,
+      ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2),
+                   theIndex->getName()->getStringValue()));
     }
 
     if (theIndex->theUntypedFlag)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( NoUntypedKeyNodeValue_2 ), theIndex->getName()->getStringValue()
-        )
-      );
+      AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+
+      if (keyItem->getBaseItem() != NULL)
+        keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+      
+      SchemaTypeCode keyType = keyItem->getTypeCode();
+
+      if (keyType != XS_UNTYPED_ATOMIC &&
+          keyType != XS_ANY_URI &&
+          keyType != XS_STRING &&
+          keyType != XS_NORMALIZED_STRING &&
+          keyType != XS_TOKEN &&
+          keyType != XS_NMTOKEN &&
+          keyType != XS_LANGUAGE &&
+          keyType != XS_NAME &&
+          keyType != XS_NCNAME &&
+          keyType != XS_ID &&
+          keyType != XS_IDREF &&
+          keyType != XS_ENTITY)
+      {
+        RAISE_ERROR_NO_LOC(err::XPTY0004,
+        ERROR_PARAMS(ZED(NoUntypedKeyNodeValue_2),
+                     theIndex->getName()->getStringValue()));
+      }
     }
   }
 
   theResultSets.resize(1);
   theResultSets[0] = NULL;
 
-  GeneralTreeIndex::IndexMap::const_iterator ite;
+  EntryIterator ite;
 
   if (theIndex->isTyped())
   {
@@ -1800,7 +1832,8 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 /******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralTreeIndexIterator::initBox(const store::IndexCondition_t& cond)
+void ProbeGeneralTreeIndexIterator::initValueBox(
+    const store::IndexCondition_t& cond)
 {
 #if 0
   theBoxCondition = reinterpret_cast<IndexBoxCondition*>(cond.getp());
@@ -1836,21 +1869,90 @@ void ProbeGeneralTreeIndexIterator::initBox(const store::IndexCondition_t& cond)
 
 
 /******************************************************************************
+  
+********************************************************************************/
+void ProbeGeneralTreeIndexIterator::initGeneralBox(
+    const store::IndexCondition_t& cond)
+{
+  theBoxGeneralCondition = reinterpret_cast<IndexBoxGeneralCondition*>(cond.getp());
+
+  store::IndexKey* key = &theBoxGeneralCondition->theBound;
+
+  bool haveLower = theBoxGeneralCondition->theRangeFlags.theHaveLowerBound;
+  bool haveUpper = theBoxGeneralCondition->theRangeFlags.theHaveUpperBound;
+  bool lowerIncl = theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl;
+  bool upperIncl = theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl;
+
+  if (theIndex->isTyped())
+  {
+    // Note: the runtime (or compiler) makes sure that the search key is a
+    // subtype of the index key type.
+
+    if (haveLower)
+    {
+      theMapEnds.push_back(theIndex->theSingleMap->end());
+
+      if (lowerIncl)
+        theMapBegins.push_back(theIndex->theSingleMap->lower_bound(key));
+      else
+        theMapBegins.push_back(theIndex->theSingleMap->upper_bound(key));
+    }
+    else if (haveUpper)
+    {
+      theMapBegins.push_back(theIndex->theSingleMap->begin());
+
+      if (upperIncl)
+        theMapEnds.push_back(theIndex->theSingleMap->upper_bound(key));
+      else
+        theMapEnds.push_back(theIndex->theSingleMap->lower_bound(key));
+    }
+    else
+    {
+      theMapBegins.push_back(theIndex->theSingleMap->begin());
+      theMapEnds.push_back(theIndex->theSingleMap->end());
+    }
+  }
+  else
+  {
+  }
+}
+
+
+/******************************************************************************
 
 ********************************************************************************/
 void ProbeGeneralTreeIndexIterator::open()
 {
-  theResultSetsEnd = theResultSets.end();
-  theResultSetsIte = theResultSets.begin();
-
-  for (; theResultSetsIte != theResultSetsEnd; ++theResultSetsIte)
+  if (theProbeKind == store::IndexCondition::POINT_VALUE ||
+      theProbeKind == store::IndexCondition::POINT_GENERAL)
   {
-    if (*theResultSetsIte != NULL)
-    {
-      theIte = (*theResultSetsIte)->begin();
-      theEnd = (*theResultSetsIte)->end();
+    theResultSetsEnd = theResultSets.end();
+    theResultSetsIte = theResultSets.begin();
 
-      break;
+    for (; theResultSetsIte != theResultSetsEnd; ++theResultSetsIte)
+    {
+      if (*theResultSetsIte != NULL)
+      {
+        theIte = (*theResultSetsIte)->begin();
+        theEnd = (*theResultSetsIte)->end();
+        
+        break;
+      }
+    }
+  }
+  else
+  {
+    assert(!theMapBegins.empty());
+    assert(!theMapEnds.empty());
+
+    theCurrentMap = 0;
+    theMapIte = theMapBegins[theCurrentMap];
+
+    if (theMapIte != theMapEnds[theCurrentMap])
+    {
+      GeneralIndexValue* resultSet = theMapIte->second;
+      theIte = resultSet->begin();
+      theEnd = resultSet->end();
     }
   }
 }
@@ -1878,47 +1980,63 @@ void ProbeGeneralTreeIndexIterator::close()
 ********************************************************************************/
 bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
 {
-  while (theResultSetsIte != theResultSetsEnd)
+  if (theProbeKind == store::IndexCondition::POINT_VALUE ||
+      theProbeKind == store::IndexCondition::POINT_GENERAL)
   {
-    while (theIte != theEnd)
+    while (theResultSetsIte != theResultSetsEnd)
     {
-      result = (*theIte).theNode;
-
-      if (theProbeKind == store::IndexCondition::POINT_VALUE)
+      while (theIte != theEnd)
       {
-        if ((*theIte).theMultiKey)
-        {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS(
-              ZED( NoMultiKeyNodeValues_2 ),
-              theIndex->getName()->getStringValue()
-            )
-          );
-        }
-
-        if ((*theIte).theUntyped)
-        {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS(
-              ZED( NoUntypedKeyNodeValue_2 ),
-              theIndex->getName()->getStringValue()
-            )
-          );
-        }
+        result = (*theIte).theNode;
+        
+        ++theIte;
+        return true;
       }
 
-      ++theIte;
-      return true;
+      ++theResultSetsIte;
+
+      if (theResultSetsIte != theResultSetsEnd && *theResultSetsIte != NULL)
+      {
+        theIte = (*theResultSetsIte)->begin();
+        theEnd = (*theResultSetsIte)->end();
+      }
     }
-
-    ++theResultSetsIte;
-
-    if (theResultSetsIte != theResultSetsEnd && *theResultSetsIte != NULL)
+  }
+  else
+  {
+    while (theCurrentMap < theMapBegins.size())
     {
-      theIte = (*theResultSetsIte)->begin();
-      theEnd = (*theResultSetsIte)->end();
+      while (theMapIte != theMapEnds[theCurrentMap])
+      {
+        while (theIte != theEnd)
+        {
+          result = (*theIte).theNode;
+          
+          ++theIte;
+          return true;
+        }
+
+        ++theMapIte;
+        if (theMapIte == theMapEnds[theCurrentMap])
+          break;
+
+        GeneralIndexValue* resultSet = theMapIte->second;
+        theIte = resultSet->begin();
+        theEnd = resultSet->end();
+      }
+
+      ++theCurrentMap;
+      if (theCurrentMap == theMapBegins.size())
+        break;
+
+      theMapIte = theMapBegins[theCurrentMap];
+
+      if (theMapIte != theMapEnds[theCurrentMap])
+      {
+        GeneralIndexValue* resultSet = theMapIte->second;
+        theIte = resultSet->begin();
+        theEnd = resultSet->end();
+      }
     }
   }
 

@@ -120,6 +120,108 @@ catch * ($code, $desc)
 
 "
 
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates,
+                                               (), 
+                                               (xs:date("1998-12-11"),
+                                                xs:date("1998-01-13")),
+                                               fn:false(),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
+                                               (xs:date("2001-11-11"),
+                                                xs:date("2001-12-13")),
+                                               (),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:true(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
+                                               (xs:date("2001-11-11"),
+                                                xs:date("2001-12-13")),
+                                               (),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:false(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
+Empty Probe
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
+                                               (xs:date("2011-11-11"),
+                                                xs:date("2011-12-13")),
+                                               (),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:true(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
+Empty Probe
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates,
+                                               (), 
+                                               (xs:date("1011-11-11"),
+                                                xs:date("1011-12-13")),
+                                               fn:false(),
+                                               fn:true(),
+                                               fn:true(),
+                                               fn:false())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
+Empty Probe
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
+                                               (),
+                                               (),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:true(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+
+"
+
+Full Probe
+
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
+                                               (),
+                                               (),
+                                               fn:false(),
+                                               fn:false(),
+                                               fn:true(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
 -------------------------------------------------------
 Probing the untyped AuctionDates2 sorted general index
 -------------------------------------------------------

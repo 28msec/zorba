@@ -47,6 +47,59 @@ ValueIndex::ValueIndex(
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+
+********************************************************************************/
+ValueHashIndex::KeyIterator::KeyIterator(const IndexMap& aMap)
+  :
+  theMap(aMap)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ValueHashIndex::KeyIterator::~KeyIterator()
+{
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ValueHashIndex::KeyIterator::open()
+{
+  theIterator = theMap.begin();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ValueHashIndex::KeyIterator::next(store::IndexKey& aKey)
+{
+  if (theIterator != theMap.end())
+  {
+    const store::IndexKey* lKey = (*theIterator).first;
+    aKey = *lKey;
+
+    ++theIterator;
+    return true;
+  }
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ValueHashIndex::KeyIterator::close()
+{
+  theIterator = theMap.end();
+};
+
+
 /******************************************************************************
 
 ********************************************************************************/
@@ -80,12 +133,30 @@ ValueHashIndex::~ValueHashIndex()
 }
 
 
-/*******************************************************************************a
+/*******************************************************************************
 
 ********************************************************************************/
 void ValueHashIndex::clear()
 {
   theMap.clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ulong ValueHashIndex::size() const
+{
+  return theMap.object_count();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Index::KeyIterator_t ValueHashIndex::keys() const
+{
+  return new KeyIterator(theMap);
 }
 
 
@@ -134,30 +205,25 @@ bool ValueHashIndex::insert(
   return false;
 } 
 
-bool
-ValueHashIndex::remove( const store::IndexKey* key, store::Item_t& value )
-{
-  return remove(key, value, false);
-}
 
 /******************************************************************************
-  Remove the given item from the value set of the given key. If the value set
+  Remove either (a) the given key and all of its associated values, or (b) only
+  the given value from the value set of the given key. In (b) if the value set
   of the key becomes empty, then the key itself is removed from the index.
-  Retrun false if the item is not in the value set of the key, or if the key 
-  itself is not in the index; true otherwise.
+
+  If (a), return false if the key is not in the index; otherwise return true.
+  If (b), return false if the value is not in the value set of the key, or if
+  the key itself is not in the index; true otherwise.
 ********************************************************************************/
-bool
-ValueHashIndex::remove(
+bool ValueHashIndex::remove(
     const store::IndexKey* key,
     store::Item_t& value,
     bool all)
 {
   if (key->size() != getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
-      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
+    ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
   IndexMap::iterator pos = theMap.get(key);
@@ -173,77 +239,31 @@ ValueHashIndex::remove(
 
     if (all)
     {
-        theMap.remove(pos);
-        delete keyp;
-        delete valueSet;
-    }
-    else
-    {
-      if (valIte != valueSet->end())
-        valueSet->theItems.erase(valIte);
+      theMap.remove(pos);
+      delete keyp;
+      delete valueSet;
 
+      return true;
+    }
+
+    if (valIte != valueSet->end())
+    {
+      valueSet->theItems.erase(valIte);
+        
       if (valueSet->empty())
       {
         theMap.remove(pos);
         delete keyp;
         delete valueSet;
       }
-    }
 
-    return true;
+      return true;
+    }
   }
 
   return false;
 } 
 
-
-ulong
-ValueHashIndex::size() const
-{
-  return theMap.object_count();
-}
-
-ValueHashIndex::KeyIterator::KeyIterator(const IndexMap& aMap)
-  : theMap(aMap)
-{
-}
-
-void
-ValueHashIndex::KeyIterator::open()
-{
-  theIterator = theMap.begin();
-}
-
-
-bool
-ValueHashIndex::KeyIterator::next(store::IndexKey& aKey)
-{
-  if (theIterator != theMap.end())
-  {
-    const store::IndexKey* lKey = (*theIterator).first;
-    aKey = *lKey;
-
-    ++theIterator;
-    return true;
-  }
-  return false;
-}
-
-void
-ValueHashIndex::KeyIterator::close()
-{
-  theIterator = theMap.end();
-};
-
-ValueHashIndex::KeyIterator::~KeyIterator()
-{
-};
-
-store::Index::KeyIterator_t
-ValueHashIndex::keys() const
-{
-  return new KeyIterator(theMap);
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -340,6 +360,33 @@ bool ProbeValueHashIndexIterator::next(store::Item_t& result)
 /******************************************************************************
 
 ********************************************************************************/
+ValueTreeIndex::KeyIterator::~KeyIterator()
+{
+};
+
+
+void ValueTreeIndex::KeyIterator::open()
+{
+  assert(false);
+}
+
+
+bool ValueTreeIndex::KeyIterator::next(store::IndexKey&)
+{
+  assert(false);
+  return false;
+}
+
+
+void ValueTreeIndex::KeyIterator::close()
+{
+  assert(false);
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
 ValueTreeIndex::ValueTreeIndex(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
@@ -379,6 +426,26 @@ void ValueTreeIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
+ulong ValueTreeIndex::size() const
+{
+  assert(false);
+  return 0;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+store::Index::KeyIterator_t ValueTreeIndex::keys() const
+{
+  assert(false);
+  return 0;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
 bool ValueTreeIndex::insert(
     store::IndexKey*& key, 
     store::Item_t& value,
@@ -386,10 +453,8 @@ bool ValueTreeIndex::insert(
 {
   if (key->size() != getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
-      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
+    ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -415,10 +480,8 @@ bool ValueTreeIndex::insert(
   {
     if (isUnique())
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
-        ERROR_PARAMS( theQname->getStringValue() )
-      );
+      RAISE_ERROR_NO_LOC(zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      ERROR_PARAMS(theQname->getStringValue()));
     }
 
     pos->second->transfer_back(value);
@@ -438,14 +501,15 @@ bool ValueTreeIndex::insert(
 /******************************************************************************
 
 ********************************************************************************/
-bool ValueTreeIndex::remove(const store::IndexKey* key, store::Item_t& value)
+bool ValueTreeIndex::remove(
+    const store::IndexKey* key,
+    store::Item_t& value,
+    bool all)
 {
   if (key->size() != getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
-      ERROR_PARAMS( key->toString(), theQname->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
+    ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -462,52 +526,23 @@ bool ValueTreeIndex::remove(const store::IndexKey* key, store::Item_t& value)
                                                    value);
 
     if (valIte != valueSet->end())
+    {
       valueSet->theItems.erase(valIte);
 
-    if (valueSet->empty())
-    {
-      theMap.erase(pos);
-      delete keyp;
-      delete valueSet;
-    }
+      if (valueSet->empty())
+      {
+        theMap.erase(pos);
+        delete keyp;
+        delete valueSet;
+      }
 
-    return true;
+      return true;
+    }
   }
 
   return false;
 }
 
-ulong
-ValueTreeIndex::size() const
-{
-  return 0;
-}
-
-void
-ValueTreeIndex::KeyIterator::open()
-{
-}
-
-bool
-ValueTreeIndex::KeyIterator::next(store::IndexKey&)
-{
-  return false;
-}
-
-void
-ValueTreeIndex::KeyIterator::close()
-{
-};
-
-ValueTreeIndex::KeyIterator::~KeyIterator()
-{
-};
-
-store::Index::KeyIterator_t
-ValueTreeIndex::keys() const
-{
-  return 0;
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -524,12 +559,8 @@ void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-      ERROR_PARAMS(
-        cond->getKindString(), theIndex->getName()->getStringValue()
-      )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ERROR_PARAMS(cond->getKindString(), theIndex->getName()->getStringValue()));
   }
 
   if (cond->getKind() == store::IndexCondition::POINT_VALUE)
@@ -556,10 +587,8 @@ void ProbeValueTreeIndexIterator::initExact()
 
   if (key.size() != theIndex->getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-      ERROR_PARAMS( key.toString(), theIndex->getName()->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
+    ERROR_PARAMS(key.toString(), theIndex->getName()->getStringValue()));
   }
 
   theMapBegin = theIndex->theMap.find(&key);
@@ -592,12 +621,8 @@ void ProbeValueTreeIndexIterator::initBox()
 
   if (numRanges > theIndex->getNumColumns())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0006_INDEX_INVALID_BOX_PROBE,
-      ERROR_PARAMS(
-        theIndex->getName()->getStringValue(), ZED( BoxCondTooManyColumns )
-      )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0006_INDEX_INVALID_BOX_PROBE,
+    ERROR_PARAMS(theIndex->getName()->getStringValue(), ZED(BoxCondTooManyColumns)));
   }
 
   theDoExtraFiltering = (numRanges > 1);
@@ -623,11 +648,19 @@ void ProbeValueTreeIndexIterator::initBox()
     theMapBegin = theIndex->theMap.begin();
     haveLowerBound = false;
   }
+  else if (!flags[0].theLowerBoundIncl)
+  {
+    lowIncl = false;
+  }
 
   if (!flags[0].theHaveUpperBound)
   {
     theMapEnd = theIndex->theMap.end();
     haveUpperBound = false;
+  }
+  else if (!flags[0].theUpperBoundIncl)
+  {
+    highIncl = false;
   }
 
   //
@@ -647,28 +680,14 @@ void ProbeValueTreeIndexIterator::initBox()
 
     if (haveLowerBound)
     {
-      if (flags[i].theHaveLowerBound)
-      {
-        if (!flags[i].theLowerBoundIncl)
-          lowIncl = false;
-      }
-      else
-      {
+      if (!flags[i].theHaveLowerBound)
         lowerBounds[i] = IndexBoxCondition::theNegInf;
-      }
     }
 
     if (haveUpperBound)
     {
-      if (flags[i].theHaveUpperBound)
-      {
-        if (!flags[i].theUpperBoundIncl)
-          highIncl = false;
-      }
-      else
-      {
+      if (!flags[i].theHaveUpperBound)
         upperBounds[i] = IndexBoxCondition::thePosInf;
-      }
     }
 
     if (flags[i].theHaveLowerBound && flags[i].theHaveUpperBound)

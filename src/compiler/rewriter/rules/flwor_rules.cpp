@@ -313,12 +313,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       else if (uses == 0 && !domainExpr->isNonDiscardable())
       {
         substitute = true;
-
+#if 0
 				rCtx.getCompilerCB()->theXQueryDiagnostics->add_warning(
 					NEW_XQUERY_WARNING(
 						zwarn::ZWST0001_UNUSED_VARIABLE,
 						WARN_PARAMS(var->get_name()->getStringValue()),
 						WARN_LOC(var->get_loc())));
+#endif
       }
 
       if (substitute)

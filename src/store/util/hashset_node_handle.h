@@ -55,6 +55,8 @@ public:
   //iterator begin() { return theSet.begin(); }
   //iterator end() { return theSet.end(); }
 
+  void clear() { theSet.clear(); }
+
   bool empty() const { return theSet.empty(); }
 
   bool find(const Item_t& key) { return theSet.find(key); }
@@ -62,8 +64,6 @@ public:
   bool insert(Item_t& key) { return theSet.insert(key); }
 
   bool remove(const Item_t& key) { return theSet.remove(key); }
-
-  void clear() { theSet.clear(); }
 };
 
 } // namespace store

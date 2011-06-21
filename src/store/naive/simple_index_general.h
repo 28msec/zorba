@@ -36,8 +36,6 @@ public:
   struct NodeInfo
   {
     store::Item_t theNode;
-    bool          theMultiKey;
-    bool          theUntyped;
   };
 
   typedef std::vector<NodeInfo>::const_iterator const_iterator;
@@ -90,9 +88,30 @@ class GeneralHashIndex : public GeneralIndex
                   GeneralIndexValue*,
                   IndexCompareFunction> IndexMap;
 
+  class KeyIterator : public Index::KeyIterator
+  {
+  public:
+    ~KeyIterator();
+
+    void open();
+    bool next(store::IndexKey&);
+    void close();
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
 private:
   IndexMap  * theMaps[XS_LAST];
   IndexMap  * theSingleMap;
+
+public:
+  ulong size() const;
+
+  Index::KeyIterator_t keys() const;
+
+  bool insert(store::IndexKey*& key, store::Item_t& node, bool multikey);
+
+  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
 
 protected:
   GeneralHashIndex(
@@ -103,41 +122,12 @@ protected:
 
   bool isTyped() const { return (theSingleMap != NULL); }
 
-  bool insert(
-      store::IndexKey*& key,
-      store::Item_t& node,
-      bool multikey);
-
   bool insertInMap(
       store::IndexKey*& key,
       store::Item_t& node,
       IndexMap*& targetMap,
       bool multikey,
       bool untyped);
-
-  bool remove(
-      const store::IndexKey* key,
-      store::Item_t& item);
-
-public:
-  virtual ulong size() const;
-
-  class KeyIterator : public Index::KeyIterator
-  {
-  public:
-    virtual void open();
-
-    virtual bool next(store::IndexKey&);
-
-    virtual void close();
-
-    virtual ~KeyIterator();
-  };
-
-  typedef rchandle<KeyIterator> KeyIterator_t;
-
-  virtual Index::KeyIterator_t keys() const;
-
 };
 
 
@@ -198,10 +188,31 @@ class GeneralTreeIndex : public GeneralIndex
                    GeneralIndexValue*,
                    IndexCompareFunction> IndexMap;
 
+  class KeyIterator : public Index::KeyIterator
+  {
+  public:
+    ~KeyIterator();
+
+    void open();
+    bool next(store::IndexKey&);
+    void close();
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
 private:
   IndexMap       * theMaps[XS_LAST];
   IndexMap       * theSingleMap;
   SYNC_CODE(Mutex  theMapMutex;)
+
+public:
+  ulong size() const;
+
+  Index::KeyIterator_t keys() const;
+
+  bool insert(store::IndexKey*& key, store::Item_t& node, bool multikey);
+
+  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
 
 protected:
   GeneralTreeIndex(
@@ -212,40 +223,12 @@ protected:
 
   bool isTyped() const { return (theSingleMap != NULL); }
 
-  bool insert(
-      store::IndexKey*& key,
-      store::Item_t& node,
-      bool multikey);
-  
   bool insertInMap(
       store::IndexKey*& key,
       store::Item_t& node,
       IndexMap*& targetMap,
       bool multikey,
       bool untyped);
-
-  bool remove(
-      const store::IndexKey* key,
-      store::Item_t& item);
-
-public:
-  virtual ulong size() const;
-
-  class KeyIterator : public Index::KeyIterator
-  {
-  public:
-    virtual void open();
-
-    virtual bool next(store::IndexKey&);
-
-    virtual void close();
-
-    virtual ~KeyIterator();
-  };
-
-  typedef rchandle<KeyIterator> KeyIterator_t;
-
-  virtual Index::KeyIterator_t keys() const;
 };
 
 
@@ -288,9 +271,9 @@ class ProbeGeneralTreeIndexIterator : public store::IndexProbeIterator
 protected:
   rchandle<GeneralTreeIndex>                  theIndex;
 
-  rchandle<IndexPointCondition>               thePointCondition;
-  rchandle<IndexBoxCondition>                 theBoxCondition;
   store::IndexCondition::Kind                 theProbeKind;
+  rchandle<IndexPointCondition>               thePointCondition;
+  rchandle<IndexBoxGeneralCondition>          theBoxGeneralCondition;
 
   ResultSets                                  theResultSets;
   ResultSets::const_iterator                  theResultSetsIte;
@@ -298,10 +281,9 @@ protected:
 
   EntryIterators                              theMapBegins;
   EntryIterators                              theMapEnds;
-  GeneralTreeIndex::IndexMap::const_iterator  theMapIte;
 
-  GeneralIndexValue                         * theResultSet;
-
+  ulong                                       theCurrentMap;
+  EntryIterator                               theMapIte;
 
   GeneralIndexValue::const_iterator           theIte;
   GeneralIndexValue::const_iterator           theEnd;
@@ -322,7 +304,9 @@ public:
 protected:
   void initPoint(const store::IndexCondition_t& cond);
 
-  void initBox(const store::IndexCondition_t& cond);
+  void initValueBox(const store::IndexCondition_t& cond);
+
+  void initGeneralBox(const store::IndexCondition_t& cond);
 };
 
 

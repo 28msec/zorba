@@ -19,6 +19,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/numconversions.h"
@@ -28,9 +29,6 @@
 #include "zorbautils/icu_tokenizer.h"
 
 #include "store/api/item.h"
-#include "store/naive/node_items.h"
-
-#include "store/naive/atomic_items.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/collection.h"
@@ -39,6 +37,8 @@
 #include "store/naive/simple_item_factory.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/item_iterator.h"
+#include "store/naive/node_items.h"
+#include "store/naive/atomic_items.h"
 
 #include "util/ascii_util.h"
 #include "util/string_util.h"
@@ -143,10 +143,8 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   default:
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-      ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
   }
   }
 

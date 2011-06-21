@@ -525,6 +525,17 @@ public:
 ********************************************************************************/
 class ProbeIndexRangeGeneralIteratorState : public ProbeIndexRangeValueIteratorState
 {
+public:
+  long                       theTimezone;
+  const XQPCollator        * theCollator;
+  xqtref_t                   theKeyType;
+
+  std::vector<store::Item_t>           theSearchItems;
+  std::vector<store::Item_t>::iterator theSearchItemsIte;
+  std::vector<store::Item_t>::iterator theSearchItemsEnd;
+
+public:
+  ProbeIndexRangeGeneralIteratorState();
 };
 
 
