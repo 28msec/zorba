@@ -29,6 +29,16 @@
 #include "floatimpl.h"
 #include "numconversions.h"
 
+#ifdef WIN32
+namespace std {
+  inline long long strtoll( char const *s, char **end, int base ) {
+    return ::_strtoi64( s, end, base );
+  }
+}
+#endif /* WIN32 */
+
+using namespace std;
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(Integer)
@@ -195,7 +205,10 @@ Double Integer::pow( Integer const &power ) const {
   xs_double::parseString( buf, double_result );
   return double_result;
 #else
-  return Double( ::pow( value_, power.value_ ) );
+  return Double(
+    // The casts are needed for disambiguation with MSVC++.
+    ::pow( static_cast<double>( value_ ), static_cast<double>( power.value_ ) )
+  );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 

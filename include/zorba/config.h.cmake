@@ -60,6 +60,7 @@
 #cmakedefine ZORBA_HAVE_STRCPY_S_FUNCTION
 #cmakedefine ZORBA_HAVE_STRICMP_FUNCTION
 #cmakedefine ZORBA_HAVE_STRTOF_FUNCTION
+#cmakedefine ZORBA_HAVE_STRTOLL_FUNCTION
 
 // Platform types
 #cmakedefine ZORBA_HAVE_INT32_T
