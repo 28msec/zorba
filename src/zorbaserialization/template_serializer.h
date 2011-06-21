@@ -183,7 +183,7 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
 {
   if(ar.is_serializing_out())
   {
-    if((obj == NULL))
+    if(obj == NULL)
     {
       ar.add_compound_field("NULL", 
                             1 ,//class_version
@@ -374,7 +374,7 @@ void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
 {
   if(ar.is_serializing_out())
   {
-    if((obj == NULL))
+    if(obj == NULL)
     {
       ar.add_compound_field("NULL", 
                             1 ,//class_version
@@ -454,7 +454,7 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
 {
   if(ar.is_serializing_out())
   {
-    if((obj == NULL))
+    if(obj == NULL)
     {
       ar.add_compound_field("NULL", 
                             1 ,//class_version
@@ -713,7 +713,7 @@ void operator&(Archiver &ar, T *&obj)
 {
   if(ar.is_serializing_out())
   {
-    if((obj == NULL))
+    if(obj == NULL)
     {
       ar.add_compound_field("NULL", 
                             1 ,//class_version

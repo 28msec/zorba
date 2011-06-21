@@ -111,7 +111,7 @@ protected:
         this->theSctx, collName, this->loc, theDynamicCollection, collection);
 
     if (beforeOrAfter) {
-      if(!consumeNext(targetNode, this->theChildren[this->theChildren.size()-2].getp(), planState)) 
+      if(!this->consumeNext(targetNode, this->theChildren[this->theChildren.size()-2].getp(), planState)) 
       {
         ZORBA_ASSERT(false);
       }
