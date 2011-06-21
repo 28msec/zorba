@@ -15,8 +15,6 @@
  */
 #include "stdafx.h"
 
-#include <cstdio>
-
 #include "string_util.h"
 
 using namespace std;
@@ -27,12 +25,40 @@ namespace ztd {
 ///////////////////////////////////////////////////////////////////////////////
 
 char* itoa( long long n, char *buf ) {
-  sprintf( buf, "%lld", n );
+  //
+  // This implementation is much faster than using sprintf(3).
+  //
+  char *s = buf;
+  long long n_prev;
+  do { 
+    n_prev = n;
+    n /= 10; 
+    *s++ = "9876543210123456789" [ 9 + n_prev - n * 10 ];
+  } while ( n );
+
+  if ( n_prev < 0 ) *s++ = '-';
+  *s = '\0';
+
+  for ( char *t = buf; t < s; ++t ) {
+    char const c = *--s; *s = *t; *t = c;
+  }
   return buf;
 }
 
 char* itoa( unsigned long long n, char *buf ) {
-  sprintf( buf, "%llu", n );
+  char *s = buf;
+  unsigned long long n_prev;
+  do { 
+    n_prev = n;
+    n /= 10; 
+    *s++ = "0123456789" [ n_prev - n * 10 ];
+  } while ( n );
+
+  *s = '\0';
+
+  for ( char *t = buf; t < s; ++t ) {
+    char const c = *--s; *s = *t; *t = c;
+  }
   return buf;
 }
 
