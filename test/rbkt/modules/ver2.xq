@@ -1,7 +1,7 @@
 module namespace vm = "http://www.zorba-xquery.com/modules/ver";
 
-declare namespace ver = "http://www.zorba-xquery.com/versioning";
-declare option ver:version "2.3";
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.3";
 
 declare variable $vm:value as xs:string := "version 2";
 

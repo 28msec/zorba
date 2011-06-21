@@ -4,8 +4,8 @@ module namespace modA = "http://www.zorba-xquery.com/modules/A";
 
 import module namespace vm = "http://www.zorba-xquery.com/modules/ver#1.0";
 
-declare namespace ver = "http://www.zorba-xquery.com/versioning";
-declare option ver:version "1.0";
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "1.0";
 
 declare function modA:hello() as xs:string {
   vm:hello()

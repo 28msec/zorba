@@ -130,6 +130,12 @@ typedef __int64 int64_t;
 
 ////////// Zorba //////////////////////////////////////////////////////////////
 
+// Version
+#define ZORBA_VERSION "${ZORBA_VERSION}"
+#define ZORBA_MAJOR_NUMBER ${ZORBA_MAJOR_NUMBER}
+#define ZORBA_MINOR_NUMBER ${ZORBA_MINOR_NUMBER}
+#define ZORBA_PATCH_NUMBER ${ZORBA_PATCH_NUMBER}
+
 // Zorba features
 #cmakedefine ZORBA_NO_FULL_TEXT
 #cmakedefine ZORBA_NO_UNICODE

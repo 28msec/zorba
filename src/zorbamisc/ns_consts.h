@@ -45,10 +45,14 @@
 #define ZORBA_COLLATION_NS_BASE ZORBA_NS "zorba/collations/"
 #define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 #define ZORBA_ERR_NS            ZORBA_NS
-#define ZORBA_OPTIONS_NS        "http://www.zorba-xquery.org/options"
+#define ZORBA_OPTIONS_NS        "http://www.zorba-xquery.com/options"
 #define ZORBA_WARN_NS           ZORBA_NS "warnings"
+#define ZORBA_VERSIONING_NS     ZORBA_OPTIONS_NS "/versioning"
 
+// TODO these probably should not be in "ns_consts"
 #define ZORBA_OPTION_ENABLE_DTD "enable-dtd"
+#define ZORBA_OPTION_MODULE_VERSION "module-version"
+#define ZORBA_OPTION_ZORBA_VERSION "zorba-version"
 
 ///////////////////////////////////////////////////////////////////////////////
 

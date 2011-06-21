@@ -17,6 +17,10 @@ DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 2.3
   "ver2")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 1.4
   "ver")
+
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/bad-ver" 1.4
+  "bad-ver")
+
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/A" 1.0
   "module-A")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/B" 1.0

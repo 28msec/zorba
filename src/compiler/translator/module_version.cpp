@@ -48,6 +48,7 @@ ModuleVersion::ModuleVersion(zstring const& aUri)
   : theMinMajor(0),
     theMaxMajor(1000000),
     theMinMinor(0),
+    theMinPatch(0),
     theIsExact(false),
     theValidVersion(false),
     theNamespaceURI(aUri),
@@ -71,6 +72,7 @@ ModuleVersion::ModuleVersion(zstring const& aUri, zstring const& aVersionDef)
   : theMinMajor(0),
     theMaxMajor(1000000),
     theMinMinor(0),
+    theMinPatch(0),
     theIsExact(false),
     theValidVersion(false),
     theNamespaceURI(aUri),
@@ -88,18 +90,31 @@ ModuleVersion::initValues(zstring const& aVersionDef)
 {
   // Parse fragment for legal version specification. If any illegal
   // characters found, no versioning to be attempted.
-  int lMajor, lMinor, lMajorB = -1;
+  int lMajor, lMinor, lPatch = 0, lMajorB = -1;
   bool lExact = false;
   size_t lPos = 0;
   size_t lLen = aVersionDef.length();
   if (!getInteger(aVersionDef, lPos, lMajor)) {
     return false;
   }
-  if (lPos >= lLen || aVersionDef[lPos++] != '.') {
+  if (lPos >= lLen) {
+    return false;
+  }
+  if (aVersionDef[lPos++] != '.') {
     return false;
   }
   if (!getInteger(aVersionDef, lPos, lMinor)) {
     return false;
+  }
+  if (lPos < lLen && aVersionDef[lPos] == '.') {
+    // There's (potentially) a patch version specified as well
+    lPos ++;
+    if (lPos >= lLen) {
+      return false;
+    }
+    if (!getInteger(aVersionDef, lPos, lPatch)) {
+      return false;
+    }
   }
   if (lPos < lLen) {
     // Found legal major.minor, but there's more to parse - could be "!"
@@ -132,6 +147,7 @@ ModuleVersion::initValues(zstring const& aVersionDef)
   // Ok, we successfully parsed a version definition; set all our variables.
   theMinMajor = lMajor;
   theMinMinor = lMinor;
+  theMinPatch = lPatch;
   theMaxMajor = lMajorB == -1 ? lMajor : lMajorB;
   theIsExact = lExact;
   theValidVersion = true;
@@ -146,12 +162,16 @@ ModuleVersion::satisfies(const ModuleVersion &aOther) const
     return false;
   }
 
-  // 4. If the given ModuleVersion is "exact", then this ModuleVersion must have
-  // exactly the same min_major, max_major, and min_minor.
+  // 4. If the given ModuleVersion is "exact", then this ModuleVersion must
+  // have exactly the same min_major, max_major, and min_minor. If the given
+  // ModuleVersion has a non-zero min_patch, then this ModuleVersion must also
+  // have exactly the same min_patch.
   if (aOther.is_exact()) {
+    int const lOtherMinPatch = aOther.min_patch();
     return (theMinMajor == aOther.min_major() &&
             theMaxMajor == aOther.max_major() &&
-            theMinMinor == aOther.min_minor());
+            theMinMinor == aOther.min_minor() &&
+            (lOtherMinPatch == 0 || theMinPatch == lOtherMinPatch));
   }
 
   // 2. The minimum major version of this ModuleVersion must be in the range

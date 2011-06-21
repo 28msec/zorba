@@ -71,18 +71,25 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
   # Compute the version numbers.
   STRING (REPLACE "." ";" version "${MODULE_VERSION}")
   LIST (LENGTH version version_len)
-  IF (NOT version_len EQUAL 2)
-    MESSAGE (FATAL_ERROR "Version ${MODULE_VERSION} not of form 'major.minor'")
-  ENDIF (NOT version_len EQUAL 2)
+  IF (NOT (version_len EQUAL 2) OR (version_len EQUAL 3))
+    MESSAGE (FATAL_ERROR
+      "Version ${MODULE_VERSION} not of form 'major.minor[.patch]'")
+  ENDIF (NOT (version_len EQUAL 2) OR (version_len EQUAL 3))
   LIST (GET version 0 major_ver)
   LIST (GET version 1 minor_ver)
+  IF (version_len EQUAL 3)
+    LIST (GET version 2 patch_ver)
+  ELSE (version_len EQUAL 3)
+    SET (patch_ver 0)
+  ENDIF (version_len EQUAL 3)
 
   # We maintain a global CMake property named after the target URI
   # which remembers all versions of this URI which have been
   # declared. If a *lower* version has already been declared, the
   # output file rules will be messed up, so die.
   GET_PROPERTY (target_versions GLOBAL PROPERTY "${uri_sym}-versions")
-  MATH (EXPR version_int "${major_ver} * 100000 + ${minor_ver}")
+  MATH (EXPR version_int
+    "${major_ver} * 100000000 + ${minor_ver} * 100000 + ${patch_ver}")
   FOREACH (known_ver ${target_versions})
     IF (known_ver LESS version_int)
       MESSAGE (FATAL_ERROR
@@ -104,7 +111,8 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
   SET (output_files)
   FILE (RELATIVE_PATH rel_source "${PROJECT_SOURCE_DIR}" "${SOURCE_FILE}")
   
-  FOREACH (version_ext "" ".${major_ver}" ".${major_ver}.${minor_ver}")
+  FOREACH (version_ext "" ".${major_ver}" ".${major_ver}.${minor_ver}"
+      ".${major_ver}.${minor_ver}.${patch_ver}")
     SET (output_file "${output_dir}/${module_filename}${version_ext}")
 
     # We maintain a global CMake property named after the target URI

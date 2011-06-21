@@ -2988,20 +2988,22 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // least, "declare option" information is not stored in the sctx that is
       // in mod_sctx_map; therefore, when dealing with an already-imported
       // sctx, there's no way to know what version it is. SF bug# 3312333.
-      // QQQ Also, this QName, or at least the namespace and localname, should
-      // probably be constants in some header somewhere.
       if (lModVer.is_valid_version()) {
         store::Item_t lMajorOpt;
         theSctx->expand_qname(lMajorOpt,
-                              zstring("http://www.zorba-xquery.com/versioning"),
+                              zstring(ZORBA_VERSIONING_NS),
                               zstring(""),
-                              zstring("version"),
+                              zstring(ZORBA_OPTION_MODULE_VERSION),
                               loc);
         zstring lImportedVersion;
         if (!moduleRootSctx->lookup_option(lMajorOpt.getp(), lImportedVersion)) {
           lImportedVersion = "0.0";
         }
         ModuleVersion lImportedModVer(compURI, lImportedVersion);
+        if (! lImportedModVer.is_valid_version()) {
+          RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
+                      ERROR_PARAMS(lImportedVersion));
+        }
         if (!lImportedModVer.satisfies(lModVer)) {
           RAISE_ERROR(zerr::ZXQP0037_INAPPROPRIATE_MODULE_VERSION, loc,
                       ERROR_PARAMS(lModVer.versioned_uri(), lImportedVersion));
@@ -3853,8 +3855,30 @@ void* begin_visit(const OptionDecl& v)
 
   theSctx->bind_option(qnameItem, value);
 
+  // TODO probably we should have some kind of option-callback mechanism,
+  // rather than processing all built-in Zorba options here
+
+  // process zorba-version option
+  if (qnameItem->getNamespace() == ZORBA_VERSIONING_NS &&
+      qnameItem->getLocalName() == ZORBA_OPTION_ZORBA_VERSION)
+  {
+    // Re-use "ModuleVersion" class since it does 98% of the work for us;
+    // just use a fake URI
+    ModuleVersion lOptVersion(ZORBA_VERSIONING_NS "/corezorba", value);
+    if (! lOptVersion.is_valid_version()) {
+      RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
+                  ERROR_PARAMS(value));
+    }
+    ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS "/corezorba",
+                                ZORBA_VERSION);
+    if ( ! lZorbaVersion.satisfies(lOptVersion)) {
+      RAISE_ERROR(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION, loc,
+                  ERROR_PARAMS(value, ZORBA_VERSION));
+    }
+  }
+
   // process warning options
-  if (qnameItem->getNamespace() == ZORBA_WARN_NS)
+  else if (qnameItem->getNamespace() == ZORBA_WARN_NS)
   {
     if (value == "error")
       theSctx->setWarningAsError(qnameItem);

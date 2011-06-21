@@ -434,6 +434,8 @@ extern entry const dict_en[] = {
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
   { "ZXQP0036", "BreakIterator creation failed" },
   { "ZXQP0037", "\"$1\": loaded module version \"$2\" does not match import version specification" },
+  { "ZXQP0038", "Query requires Zorba version \"$1\"; you are running Zorba \"$2\"" },
+  { "ZXQP0039", "\"$1\": invalid version specification" },
 
 #ifndef ZORBA_NO_FULL_TEXT
   { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
