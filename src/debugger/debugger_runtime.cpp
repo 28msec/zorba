@@ -285,7 +285,7 @@ DebuggerRuntime::terminateRuntime()
   theExecStatus = QUERY_TERMINATED;
 
   std::stringstream lResult;
-  lResult << "<response command=\"status\" "
+  lResult << "<response command=\"stop\" "
     << "status=\"stopping\" "
     << "reason=\"ok\" "
     << "transaction_id=\"" << theLastContinuationTransactionID << "\">"
