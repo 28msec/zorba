@@ -70,9 +70,9 @@ extern entry const dict_en[] = {
   { "FORX0003", "\"$1\": regular expression matches zero-length string" },
   { "FORX0004", "\"$1\": invalid replacement string${: 2}" },
   { "FOTY0012", "\"$1\": element node of type $2 does not have a typed value" },
-  { "FOTY0013", "argument to fn:data() is function item" },
-  { "FOTY0014", "argument to fn:string() is a function item" },
-  { "FOTY0015", "argument to fn:deep-equal() contains a function item" },
+  { "FOTY0013", "\"$1\": argument to fn:data() is function item" },
+  { "FOTY0014", "\"$1\": argument to fn:string() is a function item" },
+  { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
 

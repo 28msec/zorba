@@ -106,7 +106,10 @@ bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   {
     if (inVal->isFunction()) 
     {
-			throw XQUERY_EXCEPTION( err::FOTY0014, ERROR_LOC( loc ) );
+			throw XQUERY_EXCEPTION(
+          err::FOTY0014,
+          ERROR_PARAMS( inVal->getFunctionName()->getStringValue() ),
+          ERROR_LOC( loc ) );
     }
     state->hasOutput = true;
     inVal->getStringValue2(strval);
@@ -142,7 +145,11 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (result->isFunction())
     {
-			throw XQUERY_EXCEPTION( err::FOTY0013, ERROR_LOC( loc ) );
+			throw XQUERY_EXCEPTION(
+          err::FOTY0013,
+          ERROR_PARAMS( result->getFunctionName()->getStringValue() ),
+          ERROR_LOC( loc )
+        );
     }
     if (result->isAtomic())
     {

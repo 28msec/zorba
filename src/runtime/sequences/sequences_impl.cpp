@@ -1043,7 +1043,14 @@ bool FnDeepEqualIterator::nextImpl(
 
     if (arg1->isFunction() || arg2->isFunction()) 
     {
-			throw XQUERY_EXCEPTION( err::FOTY0015, ERROR_LOC( loc ) );
+			throw XQUERY_EXCEPTION(
+          err::FOTY0015,
+          ERROR_PARAMS ( (arg1->isFunction()
+                            ? arg1
+                            : arg2
+                         )->getFunctionName()->getStringValue() ),
+          ERROR_LOC( loc )
+        );
     }
 
     equal = equal && DeepEqual(loc,
