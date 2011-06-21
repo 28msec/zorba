@@ -102,6 +102,7 @@ SimpleStore::SimpleStore()
   theUriCollections(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 {
 }
@@ -272,6 +273,7 @@ void SimpleStore::shutdown(bool soft)
   {
     theIndices.clear();
     theICs.clear();
+    theHashMaps.clear();
 
     if (theCollections != NULL)
     {
@@ -900,6 +902,20 @@ store::IC* SimpleStore::getIC(const store::Item* icQName)
 /*******************************************************************************
 
 ********************************************************************************/
+store::Index*
+SimpleStore::getMap(const store::Item* aQName) const
+{
+  store::Item* lQName = const_cast<store::Item*>(aQName);
+  store::Index_t lIndex;
+  const_cast<IndexSet*>(&theHashMaps)->get(lQName, lIndex);
+
+  return lIndex.getp();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Collection_t SimpleStore::createUriCollection(const zstring& uri)
 {
   if (uri.empty())
@@ -1221,6 +1237,72 @@ void SimpleStore::deleteAllDocuments()
   theDocuments.clear();
 }
 
+/*******************************************************************************
+********************************************************************************/
+store::Index_t
+SimpleStore::createHashMap(
+    const store::Item_t& aQName,
+    const store::IndexSpecification& aSpec)
+{
+  store::Index_t lIndex;
+
+  if (theHashMaps.get(aQName.getp(), lIndex))
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0001_INDEX_ALREADY_EXISTS,
+      ERROR_PARAMS( aQName->getStringValue() )
+    );
+  }
+
+  lIndex = new ValueHashIndex(aQName, aSpec);
+
+  addHashMap(lIndex);
+
+  return lIndex;
+}
+
+/*******************************************************************************
+********************************************************************************/
+store::Index_t
+SimpleStore::destroyHashMap(const store::Item_t& aQName)
+{
+  store::Index_t lIndex;
+  if (!theHashMaps.get(aQName.getp(), lIndex))
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( aQName->getStringValue() )
+    );
+  }
+  theHashMaps.remove(aQName.getp());
+  return lIndex;
+}
+
+/*******************************************************************************
+********************************************************************************/
+store::Index_t
+SimpleStore::getHashMap(const store::Item_t& aQName) const
+{
+  store::Index_t lIndex;
+  if (const_cast<IndexSet*>(&theHashMaps)->get(aQName.getp(), lIndex))
+  {
+    return lIndex;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+/*******************************************************************************
+********************************************************************************/
+void
+SimpleStore::addHashMap(const store::Index_t& aIndex)
+{
+  store::Item* lName = aIndex->getName();
+  store::Index_t lIndex = aIndex;
+  theHashMaps.insert(lName, lIndex);
+}
 
 /*******************************************************************************
   Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if

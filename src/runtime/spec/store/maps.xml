@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+    
+<zorba:source>
+    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+    <zorba:include  form="Quoted">store/api/index.h</zorba:include>
+</zorba:source>
+
+<zorba:header>
+    <zorba:include  form="Quoted">store/api/index.h</zorba:include>
+</zorba:header>
+  
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapCreateIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature
+        variadic="true"
+        localname="create"
+        prefix="zorba-store-data-structure-hash-map">
+        <zorba:param>xs:QName</zorba:param> <!-- name of the hashmap -->
+        <zorba:param>xs:QName</zorba:param> <!-- list of key types -->
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapDestroyIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="destroy" prefix="zorba-store-data-structure-hash-map">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapGetIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature variadic="true" localname="get" prefix="zorba-store-data-structure-hash-map">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:anyAtomicType?</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+    <zorba:state>
+      <zorba:member type="store::IndexProbeIterator_t" name="theIter"/>
+      <zorba:member type="store::IndexCondition_t" name="theCond"/>
+    </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapInsertIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature variadic="true" localname="insert" prefix="zorba-store-data-structure-hash-map">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>item()*</zorba:param> <!-- value -->
+        <zorba:param>xs:anyAtomicType?</zorba:param> <!-- list of keys -->
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapRemoveIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature
+        variadic="true"
+        localname="remove"
+        prefix="zorba-store-data-structure-hash-map">
+
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:anyAtomicType?</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapKeysIterator">
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="keys" prefix="zorba-store-data-structure-hash-map">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+    <zorba:state>
+      <zorba:member type="store::Index::KeyIterator_t" name="theIter"/>
+    </zorba:state>
+
+    <zorba:member type="store::NsBindings" name="theNSBindings" brief=""/>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="MapSizeIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="size" prefix="zorba-store-data-structure-hash-map">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:integer</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+</zorba:iterators>

@@ -59,6 +59,7 @@
 #include "runtime/schema/schema.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
+#include "runtime/store/maps.h"
 #include "runtime/strings/strings.h"
 #include "runtime/xqdoc/xqdoc.h"
 
@@ -3060,6 +3061,104 @@ void PrinterVisitor::endVisit ( const IsAvailableDocumentIterator& ) {
   thePrinter.endEndVisit();
 }
 // </IsAvailableDocumentIterator>
+
+
+// <MapCreateIterator>
+void PrinterVisitor::beginVisit ( const MapCreateIterator& a) {
+  thePrinter.startBeginVisit("MapCreateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapCreateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapCreateIterator>
+
+
+// <MapDestroyIterator>
+void PrinterVisitor::beginVisit ( const MapDestroyIterator& a) {
+  thePrinter.startBeginVisit("MapDestroyIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapDestroyIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapDestroyIterator>
+
+
+// <MapGetIterator>
+void PrinterVisitor::beginVisit ( const MapGetIterator& a) {
+  thePrinter.startBeginVisit("MapGetIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapGetIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapGetIterator>
+
+
+// <MapInsertIterator>
+void PrinterVisitor::beginVisit ( const MapInsertIterator& a) {
+  thePrinter.startBeginVisit("MapInsertIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapInsertIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapInsertIterator>
+
+
+// <MapRemoveIterator>
+void PrinterVisitor::beginVisit ( const MapRemoveIterator& a) {
+  thePrinter.startBeginVisit("MapRemoveIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapRemoveIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapRemoveIterator>
+
+
+// <MapKeysIterator>
+void PrinterVisitor::beginVisit ( const MapKeysIterator& a) {
+  thePrinter.startBeginVisit("MapKeysIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapKeysIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapKeysIterator>
+
+
+// <MapSizeIterator>
+void PrinterVisitor::beginVisit ( const MapSizeIterator& a) {
+  thePrinter.startBeginVisit("MapSizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MapSizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MapSizeIterator>
 
 
 // <CodepointsToStringIterator>

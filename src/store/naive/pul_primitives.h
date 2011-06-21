@@ -1367,6 +1367,131 @@ public:
   void undo();
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdHashMap : public UpdatePrimitive
+{
+protected:
+  store::Item_t theQName;
+
+  UpdHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdCreateHashMap : public UpdHashMap
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+
+  UpdCreateHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKeyTypes,
+        const std::vector<zstring>& aCollations,
+        long aTimezone);
+
+  const std::vector<store::Item_t> theKeyTypes;
+  const std::vector<zstring>       theCollations;
+  long                             theTimezone;
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_CREATE_HASHMAP;
+  }
+
+  void apply();
+  void undo();
+};
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdDestroyHashMap : public UpdHashMap
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+
+  UpdDestroyHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName);
+
+  store::Index_t theMap; //required for undo
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_DESTROY_HASHMAP;
+  }
+
+  void apply();
+  void undo();
+};
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdInsertIntoHashMap : public UpdHashMap
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+
+  UpdInsertIntoHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey,
+        const store::Iterator_t& aValue);
+
+  const std::vector<store::Item_t> theKey;
+  const store::Iterator_t          theValue;
+
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_INSERT_INTO_HASHMAP;
+  }
+
+  void apply();
+  void undo();
+};
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdRemoveFromHashMap : public UpdHashMap
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+
+  UpdRemoveFromHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey);
+
+  const std::vector<store::Item_t> theKey;
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_REMOVE_FROM_HASHMAP;
+  }
+
+  void apply();
+  void undo();
+};
+
 } /* namespace simplestore */
 } /* namespace zorba */
 #endif

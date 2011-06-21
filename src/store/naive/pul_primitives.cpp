@@ -24,6 +24,8 @@
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/node_factory.h"
+#include "store/naive/simple_index.h"
+#include "store/naive/simple_index_value.h"
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
@@ -1382,6 +1384,200 @@ void UpdDeleteDocument::undo()
     store->addNode(theUri->getStringValue(), theDoc);
     theIsApplied = false;
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdHashMap::UpdHashMap(
+    PULImpl* pul,
+    const store::Item_t& aQName)
+  :
+  UpdatePrimitive(pul),
+  theQName(aQName)
+{
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdCreateHashMap::UpdCreateHashMap(
+    PULImpl* pul,
+    const store::Item_t& aQName,
+    const std::vector<store::Item_t>& aKeyTypes,
+    const std::vector<zstring>& aCollations,
+    long aTimezone)
+  :
+  UpdHashMap(pul, aQName),
+  theKeyTypes(aKeyTypes),
+  theCollations(aCollations),
+  theTimezone(aTimezone)
+{
+}
+
+
+void UpdCreateHashMap::apply()
+{
+  store::IndexSpecification lSpec;
+  lSpec.theNumKeyColumns = theKeyTypes.size();
+  lSpec.theKeyTypes = theKeyTypes;
+
+  std::vector<std::string> lCollations;
+  lCollations.reserve(theCollations.size());
+  for (std::vector<zstring>::const_iterator lIter = theCollations.begin();
+       lIter != theCollations.end(); ++lIter)
+  { 
+    lCollations.push_back(lIter->c_str());
+  }
+
+  lSpec.theCollations = lCollations;
+  lSpec.theTimezone = theTimezone;
+
+
+  GET_STORE().createHashMap(theQName, lSpec);
+  theIsApplied = true;
+}
+
+
+void UpdCreateHashMap::undo()
+{
+  if (theIsApplied)
+  {
+    GET_STORE().destroyHashMap(theQName);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdDestroyHashMap::UpdDestroyHashMap(
+    PULImpl* pul,
+    const store::Item_t& aQName)
+  :
+  UpdHashMap(pul, aQName)
+{
+}
+
+
+void UpdDestroyHashMap::apply()
+{
+  theMap = GET_STORE().destroyHashMap(theQName);
+  theIsApplied = true;
+}
+
+
+void UpdDestroyHashMap::undo()
+{
+  if (theIsApplied)
+  {
+    GET_STORE().addHashMap(theMap);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdInsertIntoHashMap::UpdInsertIntoHashMap(
+    PULImpl* pul,
+    const store::Item_t& aQName,
+    const std::vector<store::Item_t>& aKey,
+    const store::Iterator_t& aValue)
+  :
+  UpdHashMap(pul, aQName),
+  theKey(aKey),
+  theValue(aValue)
+{
+}
+
+
+void UpdInsertIntoHashMap::apply()
+{
+  store::Index_t lMap = GET_STORE().getHashMap(theQName);
+
+  if (!lMap)
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( theQName->getStringValue() )
+    );
+  }
+
+  simplestore::IndexImpl* lImpl =
+    static_cast<simplestore::IndexImpl*>(lMap.getp());
+
+  theValue->open();
+  store::Item_t lValue;
+
+  store::IndexKey lKeyPtr;
+  while (theValue->next(lValue))
+  {
+    std::auto_ptr<store::IndexKey> lKey(new store::IndexKey());
+    for (std::vector<store::Item_t>::const_iterator lIter = theKey.begin();
+         lIter != theKey.end();
+         ++lIter)
+    {
+      lKey->push_back(*lIter);
+    }
+
+    store::IndexKey* lKeyPtr = lKey.get();
+    lImpl->insert(lKeyPtr, lValue, lKey->size() > 1);
+    lKey.release();
+  }
+}
+
+
+void UpdInsertIntoHashMap::undo()
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdRemoveFromHashMap::UpdRemoveFromHashMap(
+    PULImpl* pul,
+    const store::Item_t& aQName,
+    const std::vector<store::Item_t>& aKey)
+  :
+  UpdHashMap(pul, aQName),
+  theKey(aKey)
+{
+}
+
+
+void UpdRemoveFromHashMap::apply()
+{
+  store::Index_t lMap = GET_STORE().getHashMap(theQName);
+
+  if (!lMap)
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+      ERROR_PARAMS( theQName->getStringValue() )
+    );
+  }
+
+  simplestore::ValueHashIndex* lImpl =
+    static_cast<simplestore::ValueHashIndex*>(lMap.getp());
+
+  store::IndexKey lKey;
+  for (std::vector<store::Item_t>::const_iterator lIter = theKey.begin();
+       lIter != theKey.end();
+       ++lIter)
+  {
+    lKey.push_back(*lIter);
+  }
+
+  store::Item_t lValue;
+  lImpl->remove(&lKey, lValue, true);
+}
+
+
+void UpdRemoveFromHashMap::undo()
+{
 }
 
 } // namespace simplestore

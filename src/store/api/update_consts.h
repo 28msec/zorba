@@ -93,7 +93,13 @@ public:
 
     // doc primitives
     UP_CREATE_DOCUMENT,
-    UP_DELETE_DOCUMENT
+    UP_DELETE_DOCUMENT,
+
+    // hashmap primitives
+    UP_CREATE_HASHMAP,
+    UP_DESTROY_HASHMAP,
+    UP_INSERT_INTO_HASHMAP,
+    UP_REMOVE_FROM_HASHMAP
   };
 
   static bool isRename(UpdPrimKind k)
@@ -194,6 +200,14 @@ static std::string toString(UpdPrimKind k)
     return "create document";
   case UP_DELETE_DOCUMENT:
     return "delete document";
+  case UP_CREATE_HASHMAP:
+    return "create hashmap";
+  case UP_DESTROY_HASHMAP:
+    return "destroy hashmap";
+  case UP_INSERT_INTO_HASHMAP:
+    return "inserto_into_hashmap";
+  case UP_REMOVE_FROM_HASHMAP:
+    return "remove_from_hashmap";
   default:
     return "<unknown UpdPrimKind>";
   }

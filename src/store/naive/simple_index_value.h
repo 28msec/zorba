@@ -76,7 +76,33 @@ protected:
 
   bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
 
+  virtual ulong size() const;
+
+  class KeyIterator : public Index::KeyIterator
+  {
+  protected:
+    IndexMap::iterator theIterator;
+    const IndexMap&    theMap;
+
+  public:
+    KeyIterator(const IndexMap& aMap);
+
+    virtual void open();
+
+    virtual bool next(store::IndexKey&);
+
+    virtual void close();
+
+    virtual ~KeyIterator();
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
+  virtual Index::KeyIterator_t keys() const;
+
+public:
   bool remove(const store::IndexKey* key, store::Item_t& item);
+  bool remove(const store::IndexKey* key, store::Item_t& item, bool all);
 };
 
 
@@ -125,6 +151,26 @@ class ValueTreeIndex : public ValueIndex
   typedef std::map<const store::IndexKey*,
                    ValueIndexValue*,
                    IndexCompareFunction> IndexMap;
+
+public:
+
+  virtual ulong size() const;
+
+  class KeyIterator : public Index::KeyIterator
+  {
+  public:
+    virtual void open();
+
+    virtual bool next(store::IndexKey&);
+
+    virtual void close();
+
+    virtual ~KeyIterator();
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
+  virtual Index::KeyIterator_t keys() const;
 
 private:
   IndexCompareFunction   theCompFunction;

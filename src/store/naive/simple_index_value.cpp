@@ -134,7 +134,11 @@ bool ValueHashIndex::insert(
   return false;
 } 
 
-
+bool
+ValueHashIndex::remove( const store::IndexKey* key, store::Item_t& value )
+{
+  return remove(key, value, false);
+}
 
 /******************************************************************************
   Remove the given item from the value set of the given key. If the value set
@@ -142,7 +146,11 @@ bool ValueHashIndex::insert(
   Retrun false if the item is not in the value set of the key, or if the key 
   itself is not in the index; true otherwise.
 ********************************************************************************/
-bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
+bool
+ValueHashIndex::remove(
+    const store::IndexKey* key,
+    store::Item_t& value,
+    bool all)
 {
   if (key->size() != getNumColumns())
   {
@@ -163,14 +171,23 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
                                                  valueSet->end(),
                                                  value);
 
-    if (valIte != valueSet->end())
-      valueSet->theItems.erase(valIte);
-
-    if (valueSet->empty())
+    if (all)
     {
-      theMap.remove(pos);
-      delete keyp;
-      delete valueSet;
+        theMap.remove(pos);
+        delete keyp;
+        delete valueSet;
+    }
+    else
+    {
+      if (valIte != valueSet->end())
+        valueSet->theItems.erase(valIte);
+
+      if (valueSet->empty())
+      {
+        theMap.remove(pos);
+        delete keyp;
+        delete valueSet;
+      }
     }
 
     return true;
@@ -179,6 +196,54 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
   return false;
 } 
 
+
+ulong
+ValueHashIndex::size() const
+{
+  return theMap.object_count();
+}
+
+ValueHashIndex::KeyIterator::KeyIterator(const IndexMap& aMap)
+  : theMap(aMap)
+{
+}
+
+void
+ValueHashIndex::KeyIterator::open()
+{
+  theIterator = theMap.begin();
+}
+
+
+bool
+ValueHashIndex::KeyIterator::next(store::IndexKey& aKey)
+{
+  if (theIterator != theMap.end())
+  {
+    const store::IndexKey* lKey = (*theIterator).first;
+    aKey = *lKey;
+
+    ++theIterator;
+    return true;
+  }
+  return false;
+}
+
+void
+ValueHashIndex::KeyIterator::close()
+{
+  theIterator = theMap.end();
+};
+
+ValueHashIndex::KeyIterator::~KeyIterator()
+{
+};
+
+store::Index::KeyIterator_t
+ValueHashIndex::keys() const
+{
+  return new KeyIterator(theMap);
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -412,6 +477,37 @@ bool ValueTreeIndex::remove(const store::IndexKey* key, store::Item_t& value)
   return false;
 }
 
+ulong
+ValueTreeIndex::size() const
+{
+  return 0;
+}
+
+void
+ValueTreeIndex::KeyIterator::open()
+{
+}
+
+bool
+ValueTreeIndex::KeyIterator::next(store::IndexKey&)
+{
+  return false;
+}
+
+void
+ValueTreeIndex::KeyIterator::close()
+{
+};
+
+ValueTreeIndex::KeyIterator::~KeyIterator()
+{
+};
+
+store::Index::KeyIterator_t
+ValueTreeIndex::keys() const
+{
+  return 0;
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

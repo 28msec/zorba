@@ -155,6 +155,11 @@ PULImpl::~PULImpl()
   cleanList(theCreateDocumentList);
   cleanList(theDeleteDocumentList);
 
+  cleanList(theCreateHashMapList);
+  cleanList(theDestroyHashMapList);
+  cleanList(theInsertIntoHashMapList);
+  cleanList(theRemoveFromHashMapList);
+
 }
 
 
@@ -930,6 +935,47 @@ void PULImpl::addDeleteDocument(
 
 
 /*******************************************************************************
+  HashMap PULs
+********************************************************************************/
+void PULImpl::addCreateHashMap(
+      const store::Item_t& aQName,
+      const std::vector<store::Item_t>& aKeyTypes,
+      const std::vector<zstring>& aCollations,
+      long  aTimezone)
+{
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateHashMap(
+      this, aQName, aKeyTypes, aCollations, aTimezone);
+  theCreateHashMapList.push_back(upd);
+}
+
+void PULImpl::addDestroyHashMap(
+      const store::Item_t& aQName)
+{
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDestroyHashMap(
+      this, aQName);
+  theDestroyHashMapList.push_back(upd);
+}
+
+void PULImpl::addInsertIntoHashMap(
+      const store::Item_t& aQName,
+      const std::vector<store::Item_t>& aKey,
+      const store::Iterator_t& aValue)
+{
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdInsertIntoHashMap(
+      this, aQName, aKey, aValue);
+  theInsertIntoHashMapList.push_back(upd);
+}
+
+void PULImpl::addRemoveFromHashMap(
+      const store::Item_t& aQName,
+      const std::vector<store::Item_t>& aKey)
+{
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdRemoveFromHashMap(
+      this, aQName, aKey);
+  theRemoveFromHashMapList.push_back(upd);
+}
+
+/*******************************************************************************
   Merge PULs
 ********************************************************************************/
 void PULImpl::mergeUpdates(store::Item* other)
@@ -1074,6 +1120,27 @@ void PULImpl::mergeUpdates(store::Item* other)
   mergeUpdateList(NULL,
                   theDeleteDocumentList,
                   otherp->theDeleteDocumentList,
+                  UP_LIST_NONE);
+
+  // merge hashmap primitives
+  mergeUpdateList(NULL,
+                  theCreateHashMapList,
+                  otherp->theCreateHashMapList,
+                  UP_LIST_NONE);
+
+  mergeUpdateList(NULL,
+                  theDestroyHashMapList,
+                  otherp->theDestroyHashMapList,
+                  UP_LIST_NONE);
+
+  mergeUpdateList(NULL,
+                  theInsertIntoHashMapList,
+                  otherp->theInsertIntoHashMapList,
+                  UP_LIST_NONE);
+
+  mergeUpdateList(NULL,
+                  theRemoveFromHashMapList,
+                  otherp->theRemoveFromHashMapList,
                   UP_LIST_NONE);
 
   // merge validation primitives
@@ -1471,6 +1538,12 @@ void PULImpl::applyUpdates(bool inheritNSBindings)
     // Apply document primitives
     applyList(theCreateDocumentList);
     applyList(theDeleteDocumentList);
+
+    // Apply hashmap primitives
+    applyList(theCreateHashMapList);
+    applyList(theDestroyHashMapList);
+    applyList(theInsertIntoHashMapList);
+    applyList(theRemoveFromHashMapList);
 
     // check integrity constraints for involved collections
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)

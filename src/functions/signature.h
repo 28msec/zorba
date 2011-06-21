@@ -141,14 +141,27 @@ public:
     return isVariadic() ? VARIADIC_SIG_SIZE : (uint32_t)(theTypes.size() - 1);
   }
 
+  size_t definedParamCount() const
+  {
+    return (uint32_t)(theTypes.size() - 1);
+  }
+
   xqtref_t const& operator[](int i) const
   {
-    return theTypes[theIsVariadic ? 1 : (i + 1)];
+    return theTypes[theIsVariadic
+                      ? i >= (int)theTypes.size() - 1
+                        ? theTypes.size() - 1
+                        : i + 1
+                      : i + 1];
   }
 
   xqtref_t& operator[](int i)
   {
-    return theTypes[theIsVariadic ? 1 : (i + 1)];
+    return theTypes[theIsVariadic
+                      ? i >= (int)theTypes.size() - 1
+                        ? theTypes.size() - 1
+                        : i + 1
+                      : i + 1];
   }
 
   const xqtref_t& returnType() const { return theTypes[0]; }

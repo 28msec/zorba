@@ -118,6 +118,26 @@ protected:
   bool remove(
       const store::IndexKey* key,
       store::Item_t& item);
+
+public:
+  virtual ulong size() const;
+
+  class KeyIterator : public Index::KeyIterator
+  {
+  public:
+    virtual void open();
+
+    virtual bool next(store::IndexKey&);
+
+    virtual void close();
+
+    virtual ~KeyIterator();
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
+  virtual Index::KeyIterator_t keys() const;
+
 };
 
 
@@ -207,6 +227,25 @@ protected:
   bool remove(
       const store::IndexKey* key,
       store::Item_t& item);
+
+public:
+  virtual ulong size() const;
+
+  class KeyIterator : public Index::KeyIterator
+  {
+  public:
+    virtual void open();
+
+    virtual bool next(store::IndexKey&);
+
+    virtual void close();
+
+    virtual ~KeyIterator();
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
+  virtual Index::KeyIterator_t keys() const;
 };
 
 

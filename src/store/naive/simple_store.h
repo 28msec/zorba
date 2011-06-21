@@ -140,6 +140,7 @@ protected:
   UriCollectionSet              theUriCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;
+  IndexSet                      theHashMaps;
 
   SYNC_CODE(Lock                theGlobalLock;)
 
@@ -244,6 +245,14 @@ public:
 
   store::IC* getIC(const store::Item* icQName);
 
+  /*****************************************************************************
+  
+  *****************************************************************************/
+  virtual store::Index* getMap(const store::Item* aQName) const;
+
+  /*****************************************************************************
+  
+  *****************************************************************************/
   store::Item_t loadDocument(
         const zstring& baseUri,
         const zstring& docUri,
@@ -268,6 +277,9 @@ public:
         std::istream* stream,
         const store::LoadProperties& loadProperties);
 
+  /*****************************************************************************
+  
+  *****************************************************************************/
   void addNode(const zstring& uri, const store::Item_t& node);
 
   store::Iterator_t getDocumentNames() const;
@@ -278,6 +290,22 @@ public:
 
   void deleteAllDocuments();
 
+  /*****************************************************************************
+  
+  *****************************************************************************/
+  store::Index_t createHashMap(
+      const store::Item_t& aQName,
+      const store::IndexSpecification& aSpec);
+
+  store::Index_t destroyHashMap(const store::Item_t& aQName);
+
+  store::Index_t getHashMap(const store::Item_t& aQName) const;
+
+  void addHashMap(const store::Index_t& aMap);
+
+  /*****************************************************************************
+  
+  *****************************************************************************/
   short compareNodes(store::Item* node1, store::Item* node2) const;
 
   store::Iterator_t sortNodes(

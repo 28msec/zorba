@@ -454,6 +454,20 @@ namespace zorba{
 
     class IsAvailableDocumentIterator;
 
+    class MapCreateIterator;
+
+    class MapDestroyIterator;
+
+    class MapGetIterator;
+
+    class MapInsertIterator;
+
+    class MapRemoveIterator;
+
+    class MapKeysIterator;
+
+    class MapSizeIterator;
+
     class CodepointsToStringIterator;
 
     class StringToCodepointsIterator;
@@ -1156,6 +1170,27 @@ public:
 
     virtual void beginVisit ( const IsAvailableDocumentIterator& ) = 0;
     virtual void endVisit   ( const IsAvailableDocumentIterator& ) = 0;
+
+    virtual void beginVisit ( const MapCreateIterator& ) = 0;
+    virtual void endVisit   ( const MapCreateIterator& ) = 0;
+
+    virtual void beginVisit ( const MapDestroyIterator& ) = 0;
+    virtual void endVisit   ( const MapDestroyIterator& ) = 0;
+
+    virtual void beginVisit ( const MapGetIterator& ) = 0;
+    virtual void endVisit   ( const MapGetIterator& ) = 0;
+
+    virtual void beginVisit ( const MapInsertIterator& ) = 0;
+    virtual void endVisit   ( const MapInsertIterator& ) = 0;
+
+    virtual void beginVisit ( const MapRemoveIterator& ) = 0;
+    virtual void endVisit   ( const MapRemoveIterator& ) = 0;
+
+    virtual void beginVisit ( const MapKeysIterator& ) = 0;
+    virtual void endVisit   ( const MapKeysIterator& ) = 0;
+
+    virtual void beginVisit ( const MapSizeIterator& ) = 0;
+    virtual void endVisit   ( const MapSizeIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;

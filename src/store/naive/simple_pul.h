@@ -253,6 +253,14 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateDocumentList;
   std::vector<UpdatePrimitive*>      theDeleteDocumentList;
 
+  // Hashmap primitives
+  // ddl
+  std::vector<UpdatePrimitive*>      theCreateHashMapList;
+  std::vector<UpdatePrimitive*>      theDestroyHashMapList;
+  // dml
+  std::vector<UpdatePrimitive*>      theInsertIntoHashMapList;
+  std::vector<UpdatePrimitive*>      theRemoveFromHashMapList;
+
   // Revalidation
   store::SchemaValidator           * theValidator;
 
@@ -415,6 +423,26 @@ public:
 
   virtual void addDeleteDocument(
         const store::Item_t& uri);
+
+  // hash map primitives
+
+  virtual void addCreateHashMap(
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKeyTypes,
+        const std::vector<zstring>& aCollations,
+        long  aTimezone);
+
+  virtual void addDestroyHashMap(
+        const store::Item_t& aQName);
+
+  virtual void addInsertIntoHashMap(
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey,
+        const store::Iterator_t& aValue);
+
+  virtual void addRemoveFromHashMap(
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey);
 
   // merge
   void mergeUpdates(store::Item* other);

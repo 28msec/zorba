@@ -481,6 +481,38 @@ bool GeneralHashIndex::remove(const store::IndexKey* key, store::Item_t& item)
   return false;
 }
 
+ulong
+GeneralHashIndex::size() const
+{
+  return 0;
+}
+
+void
+GeneralHashIndex::KeyIterator::open()
+{
+}
+
+bool
+GeneralHashIndex::KeyIterator::next(store::IndexKey&)
+{
+  return false;
+}
+
+void
+GeneralHashIndex::KeyIterator::close()
+{
+};
+
+GeneralHashIndex::KeyIterator::~KeyIterator()
+{
+};
+
+store::Index::KeyIterator_t
+GeneralHashIndex::keys() const
+{
+  return 0;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -1369,6 +1401,37 @@ bool GeneralTreeIndex::remove(
   return true;
 }
 
+ulong
+GeneralTreeIndex::size() const
+{
+  return 0;
+}
+
+void
+GeneralTreeIndex::KeyIterator::open()
+{
+}
+
+bool
+GeneralTreeIndex::KeyIterator::next(store::IndexKey&)
+{
+  return false;
+}
+
+void
+GeneralTreeIndex::KeyIterator::close()
+{
+};
+
+GeneralTreeIndex::KeyIterator::~KeyIterator()
+{
+};
+
+store::Index::KeyIterator_t
+GeneralTreeIndex::keys() const
+{
+  return 0;
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

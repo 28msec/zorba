@@ -321,6 +321,9 @@ public:
    * Returns integrity constraint  for this name, NULL if not active.
    */
   virtual IC* getIC(const Item* icQName)  = 0;
+
+  /* ------------------------ Map Management ---------------------------*/
+  virtual Index* getMap(const Item* aQName) const = 0;
 };
 
 } // namespace store

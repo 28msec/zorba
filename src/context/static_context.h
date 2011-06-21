@@ -454,6 +454,7 @@ public:
   static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
   static const zstring ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
   static const zstring ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
+  static const zstring ZORBA_STORE_DYNAMIC_HASH_MAP_FN_NS;
   static const zstring ZORBA_SCHEMA_FN_NS;
   static const zstring ZORBA_XQDOC_FN_NS;
   static const zstring ZORBA_RANDOM_FN_NS;

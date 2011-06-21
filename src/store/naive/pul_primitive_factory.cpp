@@ -424,5 +424,52 @@ PULPrimitiveFactory::createUpdPut(
      return new UpdDeleteDocument(pul, uri);
    }
 
+  /***************************************************************************
+   ***************************************************************************/
+  UpdCreateHashMap*
+  PULPrimitiveFactory::createUpdCreateHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKeyTypes,
+        const std::vector<zstring>& aCollations,
+        long aTimezone)
+  {
+    return new UpdCreateHashMap(
+        pul, aQName, aKeyTypes, aCollations, aTimezone);;
+  }
+
+  /***************************************************************************
+   ***************************************************************************/
+  UpdDestroyHashMap*
+  PULPrimitiveFactory::createUpdDestroyHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName)
+  {
+    return new UpdDestroyHashMap(pul, aQName);
+  }
+
+  /***************************************************************************
+   ***************************************************************************/
+  UpdInsertIntoHashMap*
+  PULPrimitiveFactory::createUpdInsertIntoHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey,
+        const store::Iterator_t& aValue)
+  {
+    return new UpdInsertIntoHashMap(pul, aQName, aKey, aValue);
+  }
+
+  /***************************************************************************
+   ***************************************************************************/
+  UpdRemoveFromHashMap*
+  PULPrimitiveFactory::createUpdRemoveFromHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey)
+  {
+    return new UpdRemoveFromHashMap(pul, aQName, aKey);
+  }
+
 } /* namespace simplestore */ } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

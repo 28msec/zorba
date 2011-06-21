@@ -73,6 +73,11 @@
       define="ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS"
       prefix="zorba-store-documents"/>
 
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/data-structures/hash-map"
+      define="ZORBA_STORE_DYNAMIC_HASH_MAP_FN_NS"
+      prefix="zorba-store-data-structure-hash-map"/>
+
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
                      define="ZORBA_XQDOC_FN_NS" 
                      prefix="fn-zorba-xqdoc"/>

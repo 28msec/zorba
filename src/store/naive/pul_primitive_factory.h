@@ -57,6 +57,10 @@ namespace zorba { namespace simplestore {
   class UpdDeActivateIC;
   class UpdCreateDocument;
   class UpdDeleteDocument;
+  class UpdCreateHashMap;
+  class UpdDestroyHashMap;
+  class UpdInsertIntoHashMap;
+  class UpdRemoveFromHashMap;
 
 class PULPrimitiveFactory 
 {
@@ -332,6 +336,40 @@ class PULPrimitiveFactory
   createUpdDeleteDocument(
         PULImpl* pul,
         const store::Item_t& uri);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdCreateHashMap*
+  createUpdCreateHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKeyTypes,
+        const std::vector<zstring>& aCollations,
+        long aTimezone);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdDestroyHashMap*
+  createUpdDestroyHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertIntoHashMap*
+  createUpdInsertIntoHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey,
+        const store::Iterator_t& aValue);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdRemoveFromHashMap*
+  createUpdRemoveFromHashMap(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const std::vector<store::Item_t>& aKey);
 
 }; /* class PULPrimitiveFactory */
     

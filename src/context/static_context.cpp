@@ -310,6 +310,10 @@ static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS
   = static_context::ZORBA_NS_PREFIX + "modules/store/dynamic/documents";
 
 const zstring
+static_context::ZORBA_STORE_DYNAMIC_HASH_MAP_FN_NS
+  = static_context::ZORBA_NS_PREFIX + "modules/store/data-structures/hash-map";
+
+const zstring
 static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
 
 const zstring
@@ -361,6 +365,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
+            ns == ZORBA_STORE_DYNAMIC_HASH_MAP_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS ||
             ns == ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS ||

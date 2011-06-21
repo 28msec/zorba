@@ -58,6 +58,7 @@
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
 #include "functions/func_documents.h"
+#include "functions/func_maps.h"
 #include "functions/func_eval.h"
 #include "functions/func_reflection.h"
 #include "functions/func_apply.h"
@@ -119,6 +120,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_xqdoc(sctx);
   populate_context_function_item_iter(sctx);
   populate_context_documents(sctx);
+  populate_context_maps(sctx);
 
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);

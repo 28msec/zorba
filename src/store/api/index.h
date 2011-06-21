@@ -379,6 +379,30 @@ public:
    * Create an index condition (see class IndexCondition below)
    */
   virtual IndexCondition_t createCondition(IndexCondition::Kind k) = 0;
+
+  /**
+   * Returns the number of entries in the index
+   */
+  virtual ulong size() const = 0;
+
+  class KeyIterator : virtual public SimpleRCObject
+  {
+  public:
+    virtual void open() = 0;
+
+    virtual bool next(IndexKey&) = 0;
+
+    virtual void close() = 0;
+
+    virtual ~KeyIterator() {}
+  };
+
+  typedef rchandle<KeyIterator> KeyIterator_t;
+
+  /**
+   * Returns all keys stored in this index
+   */
+  virtual KeyIterator_t keys() const = 0;
 };
 
 

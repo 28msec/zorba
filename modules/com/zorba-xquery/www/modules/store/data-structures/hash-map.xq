@@ -1,0 +1,189 @@
+(:
+ : Copyright 2006-2009 The FLWOR Foundation.
+ :
+ : Licensed under the Apache License, Version 2.0 (the "License");
+ : you may not use this file except in compliance with the License.
+ : You may obtain a copy of the License at
+ :
+ : http://www.apache.org/licenses/LICENSE-2.0
+ :
+ : Unless required by applicable law or agreed to in writing, software
+ : distributed under the License is distributed on an "AS IS" BASIS,
+ : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ : See the License for the specific language governing permissions and
+ : limitations under the License.
+:)
+
+(:~
+ : This module defines a set of functions for working with
+ : hash-maps. A hash-map is identified by a QName and can
+ : be created using the map:create function and destroyed
+ : using the map:destroy function, respectively. However, its
+ : actual lifetime depends on the particular store implementation.
+ :
+ : The key of a particular entry in the hash-map can consist
+ : out of a set of atomic values (called attributes).
+ : The actual type of each attribute can be determined when the
+ : map is created. The value can be an arbitrary sequence
+ : of items.
+ :)
+module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/hash-map";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+(:~
+ : Create a map with a given name and a set of types for
+ : each key attribute. Note that the function is variadic
+ : and might take an arbitrary amount of types for the key
+ : attributes. Also note that the function is sequential
+ : and immediately creates the hash-map in the store.
+ :
+ : @param $name the name of the hash-map
+ : @param $key-type an arbitrary number of types, one
+ :        for each key attribute.
+ :
+ : @return the function is sequential and immediately creates
+ :         the corresponding hash-map but returns the empty-sequence.
+ :
+ : @error err:XPTY0004 if any of the attribute types is not a subtype of
+ :        xs:anyAtomicType.
+ : @error zerr:ZSTR0001 if a hash-map with the given name already exists.
+ :)
+declare %ann:variadic %sequential function map:create(
+  $name as xs:QName,
+  $key-type as xs:QName) as empty-sequence() external;
+
+(:~
+ : Destroys the hash-map with the given name.
+ : 
+ : @param $name the name of the hash-map to destroy
+ :
+ : @return the function is sequential and immediately destroys
+ :         the hash-map but returns the empty-sequence.
+ :
+ : @error zerr:ZDDY0023 if a hash-map with the given name does not exist.
+ :)
+declare %sequential function map:destroy(
+  $name as xs:QName) as empty-sequence() external;
+
+(:~
+ : Inserts a new entry into the hash-map with the given
+ : name. Note that the function is variadic
+ : and might take an arbitrary amount of key attributes.
+ : If an entry with the given key already exists in the
+ : hash-map, the value sequences of the existing entry and the
+ : sequence passed using $value argument are concatenated.
+ : 
+ : @param $name the name of the hash-map
+ : @param $value the value of the entry to insert
+ : @param $key an arbitrary number of key attributes.
+ :
+ : @return the function is sequential and immediately inserts
+ :         the entry into the hash-map but returns the
+ :         empty-sequence.
+ :
+ : @error zerr:ZDDY0023 if a hash-map with the given name does not exist.
+ : @error zerr:ZDDY0025 if the given number of key attributes does not match
+ :        the number of key attributes specified when creating
+ :        the hash-map (see the map:create function).
+ : @error err:XPTY0004 if any of the given key attributes is
+ :        not a subtype of the corresponding key attribute
+ :        specified when creating the hash-map.
+ :
+ : @see map:create
+ :
+ :)
+declare %ann:variadic %sequential function map:insert(
+  $name as xs:QName,
+  $value as item()*,
+  $key as xs:anyAtomicType?) as empty-sequence() external;
+
+(:~
+ : Returns the value of the entry with the given key
+ : from the hash-map.
+ :
+ : @param $name the name of the hash-map
+ : @param an arbitrary number of search key attributes.
+ :
+ : @return the value of the entry in the hash-map identified
+ :         by the given key. The empty-sequence will be returned
+ :         if no entry with the given key is contained in the hash-map.
+ :
+ : @error zerr:ZDDY0023 if a hash-map with the given name does not exist.
+ : @error zerr:ZDDY0025 if the given number of key attributes does not match
+ :        the number of key attributes specified when creating
+ :        the hash-map (see the map:create function).
+ : @error err:XPTY0004 if any of the given key attributes is
+ :        not a subtype of the corresponding key attribute
+ :        specified when creating the hash-map.
+ :
+ : @see map:create
+ :)
+declare %ann:variadic function map:get(
+  $name as xs:QName,
+  $key as xs:anyAtomicType?) as item()* external;
+
+(:~
+ : Removes an entry identified by the given key from the hash-map.
+ :
+ : @param $name the name of the hash-map
+ : @param an arbitrary number of search key attributes.
+ :
+ : @return the function is sequential and immediately removes
+ :         the entry into the hash-map but returns the
+ :         empty-sequence.
+ :
+ : @error zerr:ZDDY0023 if a hash-map with the given name does not exist.
+ : @error zerr:ZDDY0025 if the given number of key attributes does not match
+ :        the number of key attributes specified when creating
+ :        the hash-map (see the map:create function).
+ : @error err:XPTY0004 if any of the given key attributes is
+ :        not a subtype of the corresponding key attribute
+ :        specified when creating the hash-map.
+ :
+ : @see map:create
+ :
+ :)
+declare %ann:variadic %sequential function map:remove(
+  $name as xs:QName,
+  $key as xs:anyAtomicType?) as empty-sequence() external;
+
+(:~
+ : Returns the keys of all entries of a hash-map. The keys
+ : are returned as sequence of nodes of the form:
+ :
+ : <tt>
+ ; &lt;key xmlns="http://www.zorba-xquery.com/modules/store/data-structures/hash-map">
+ ;   &lt;attribute value="key1_value"/>
+ ;   &lt;attribute value="key2_value"/>
+ ;   &lt;attribute value="key3_value"/>
+ ; &lt;/key>
+ : </tt>
+ :
+ : The following condition always holds:
+ : <tt>map:size($name) eq fn:count(map:keys($name))</tt>
+ :
+ : @param $name the name of the hash-map
+ :
+ : @return all keys in the hash-map.
+ :
+ : @error zerr:ZDDY0023 if a hash-map with the given name does not exist.
+ : 
+ :)
+declare function map:keys(
+  $name as xs:QName) as node()* external;
+
+(:~
+ : The number of entries in a hash-map.
+ :
+ : The following condition always holds:
+ : <tt>map:size($name) eq fn:count(map:keys($name))</tt>
+ : 
+ : @param $name the name of the hash-map
+ :
+ : @return the number of entries in the hash-map.
+ :
+ : @error zerr:ZDDY0023 if a hash-map with the given name does not exist.
+ :)
+declare function map:size(
+  $name as xs:QName) as xs:integer external;

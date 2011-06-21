@@ -173,6 +173,8 @@ public:
         bool isLast,
         bool dyn_collection = false) = 0;
 
+  // functions to add primitives for indexes
+
   virtual void addCreateIndex(
         const Item_t& qname,
         const IndexSpecification& spec,
@@ -184,6 +186,8 @@ public:
   virtual void addRefreshIndex(
         const Item_t& qname,
         Iterator* sourceIter) = 0;
+
+  // functions to add primitives for integrity constraints
 
   virtual void addActivateIC(
         const Item_t& qname,
@@ -197,7 +201,7 @@ public:
   virtual void addDeActivateIC(
         const Item_t& qname) = 0;
 
-  // functions to add primitives for updating document functions
+  // functions to add primitives for documents 
 
   virtual void addCreateDocument(
         const Item_t& uri,
@@ -205,6 +209,26 @@ public:
 
   virtual void addDeleteDocument(
         const Item_t& uri) = 0;
+
+  // functions to add primitives for hash maps
+
+  virtual void addCreateHashMap(
+        const Item_t& aQName,
+        const std::vector<Item_t>& aKeyTypes,
+        const std::vector<zstring>& aCollations,
+        long  aTimezone) = 0;
+
+  virtual void addDestroyHashMap(
+        const Item_t& aQName) = 0;
+
+  virtual void addInsertIntoHashMap(
+        const Item_t& aQName,
+        const std::vector<Item_t>& aKey,
+        const Iterator_t& aValue) = 0;
+
+  virtual void addRemoveFromHashMap(
+        const Item_t& aQName,
+        const std::vector<Item_t>& aKey) = 0;
 
   virtual void mergeUpdates(Item* other) = 0;
 

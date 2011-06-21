@@ -684,6 +684,27 @@ namespace zorba {
     void beginVisit( const IsAvailableDocumentIterator& );
     void endVisit  ( const IsAvailableDocumentIterator& );
 
+    void beginVisit( const MapCreateIterator& );
+    void endVisit  ( const MapCreateIterator& );
+
+    void beginVisit( const MapDestroyIterator& );
+    void endVisit  ( const MapDestroyIterator& );
+
+    void beginVisit( const MapGetIterator& );
+    void endVisit  ( const MapGetIterator& );
+
+    void beginVisit( const MapInsertIterator& );
+    void endVisit  ( const MapInsertIterator& );
+
+    void beginVisit( const MapRemoveIterator& );
+    void endVisit  ( const MapRemoveIterator& );
+
+    void beginVisit( const MapKeysIterator& );
+    void endVisit  ( const MapKeysIterator& );
+
+    void beginVisit( const MapSizeIterator& );
+    void endVisit  ( const MapSizeIterator& );
+
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );
 
