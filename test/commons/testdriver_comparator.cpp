@@ -360,29 +360,6 @@ bool fileEquals(
 
 
 /*******************************************************************************
-  Print parts of a file starting at aStartPos with the length of aLen
-********************************************************************************/
-void
-printPart(std::ostream& os, const std::string &aInFile, int aStartPos, int aLen)
-{
-  char* buffer = new char [aLen];
-  try {
-    std::ifstream lIn(aInFile.c_str());
-    lIn.seekg(aStartPos);
-
-    std::streamsize lCharsRead = lIn.readsome (buffer, aLen);
-    os.write (buffer, lCharsRead);
-    os.flush();
-    delete[] buffer;
-  } catch (...)
-  {
-    delete[] buffer;
-  }
-  return;
-}
-
-
-/*******************************************************************************
 
 ********************************************************************************/
 void

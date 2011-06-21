@@ -35,38 +35,9 @@
 
 #include <zorba/store_manager.h>
 
+#include "testdriver_comparator.h"
+
 using namespace zorba;
-
-void
-printFile(std::ostream& os, std::string aInFile)
-{
-  std::ifstream lInFileStream(aInFile.c_str());
-  assert(lInFileStream);
-
-  os << lInFileStream.rdbuf() << std::endl;
-}
-
-// print parts of a file
-// starting at aStartPos with the length of aLen
-void
-printPart(std::ostream& os, std::string aInFile, 
-          int aStartPos, int aLen)
-{
-  char* buffer = new char [aLen];
-  try {
-    std::ifstream lIn(aInFile.c_str());
-    lIn.seekg(aStartPos);
-
-    std::streamsize lCharsRead = lIn.readsome (buffer, aLen);
-    os.write (buffer, lCharsRead);
-    os.flush();
-    delete[] buffer;
-  } catch (...)
-  {
-    delete[] buffer;
-  }
-  return;
-}
 
 Zorba_CompilerHints
 getCompilerHints()
@@ -386,9 +357,12 @@ main(int argc, char** argv)
   std::cout << "=== end of result ===" << std::endl;
   std::cout.flush();
 
-  // last, we have to diff the result
-  int lLine, lCol, lPos; // where do the files differ
-  bool lRes = isEqual(lRefFile, lResultFile, lLine, lCol, lPos);
+  int lLine, lCol; // where do the files differ
+  std::string lRefLine, lResultLine;
+  bool lRes = zorba::fileEquals(lRefFile.c_str(),
+                                lResultFile.c_str(),
+                                lLine, lCol,
+                                lRefLine, lResultLine);
   if ( !lRes )  // results differ
   {
     std::cerr << std::endl << "Result does not match expected result:" << std::endl;
@@ -396,12 +370,8 @@ main(int argc, char** argv)
     std::cerr << "=== end of expected result ===" << std::endl;
 
     std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
-    std::cerr << "Actual: <";
-    printPart(std::cerr, lResultFile.get_path(), lPos, 15);
-    std::cerr << ">" << std::endl;
-    std::cerr << "Expected: <";
-    printPart(std::cerr, lRefFile.get_path(), lPos, 15);
-    std::cerr << ">" << std::endl;
+    std::cerr << "Actual: <" << lResultLine << ">" << std::endl;
+    std::cerr << "Expected: <" << lRefLine << ">" << std::endl;
 
     return 8;
   }

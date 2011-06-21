@@ -22,8 +22,14 @@ CONFIGURE_FILE(sax2testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/sax2testdri
 
 # Compile and build the testdriver executable
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
 
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(sax2testdriver "sax2testdriver.cpp" "" "" "")
+SET (SAX2_TESTDRIVER_SRCS
+  sax2testdriver.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+  )
+
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(sax2testdriver "${SAX2_TESTDRIVER_SRCS}" "" "" "")
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
