@@ -92,14 +92,6 @@ MESSAGE(STATUS "ZORBA_WITH_DEBUGGER [ON/OFF]:         " ${ZORBA_WITH_DEBUGGER})
 SET(ZORBA_TEST_TIMEOUT_VALUE 60 CACHE INTEGER "default test timeout value")
 MESSAGE(STATUS "ZORBA_TEST_TIMEOUT_VALUE:             " ${ZORBA_TEST_TIMEOUT_VALUE})
 
-# make 10.4 the default sysroot on apple, i.e. always build for 10.4 minimum
-IF (APPLE)
-  SET(CMAKE_OSX_SYSROOT CACHE STRING "/Developer/SDKs/MacOSX10.4u.sdk")
-  SET(CMAKE_SHARED_LINKER_FLAGS "-Wl-syslibroot,${CMAKE_OSX_SYSROOT} -mmacosx-version-min=10.4 ${CMAKE_SHARED_LINKER_FLAGS}")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/local/include -mmacosx-version-min=10.4")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/usr/local/include -mmacosx-version-min=10.4")
-ENDIF (APPLE)
-
 IF(CURL_FOUND)
   SET(ZORBA_WITH_REST ON CACHE BOOL "Compile Zorba with REST support")
   SET(ZORBA_WITH_SSL ON CACHE BOOL "Compile zorba to be able to do https calls")
