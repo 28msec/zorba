@@ -28,12 +28,34 @@ UserError::UserError( char const *ns, char const *prefix,
 {
 }
 
+UserError::UserError( UserError const &from ) :
+  Diagnostic( from ),
+  qname_( from.qname_ )
+{
+  // This copy constructor isn't necessary: the compiler-generated default copy
+  // constructor would work just fine.  It is defined explicitly, however, so
+  // as to future-proof the code and keep ABI compatibility.
+}
+
 UserError::UserError( serialization::Archiver &ar ) : qname_( ar )
 {
 }
 
 UserError::~UserError() {
   // out-of-line since it's virtual
+}
+
+UserError& UserError::operator=( UserError const &from ) {
+  //
+  // This assignment operator isn't necessary: the compiler-generated default
+  // assignment operator would work just fine.  It is defined explicitly,
+  // however, so as to future-proof the code and keep ABI compatibility.
+  //
+  if ( &from != this ) {
+    Diagnostic::operator=( from );
+    qname_ = from.qname_;
+  }
+  return *this;
 }
 
 Diagnostic const* UserError::clone() const {

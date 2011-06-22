@@ -33,7 +33,7 @@ UserException::UserException( char const *ns, char const *prefix,
                               line_type raise_line, char const *description,
                               error_object_type *error_object ) :
   XQueryException(
-    *(new UserError( ns, prefix, localname )), raise_file, raise_line,
+    UserError( ns, prefix, localname ), raise_file, raise_line,
     description
   )
 {

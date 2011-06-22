@@ -66,6 +66,7 @@ ZorbaException::~ZorbaException() throw() {
 
 ZorbaException& ZorbaException::operator=( ZorbaException const &from ) {
   if ( &from != this ) {
+    std::exception::operator=( from );
     diagnostic_->destroy();
     diagnostic_ = from.diagnostic_->clone();
     raise_file_ = from.raise_file_;

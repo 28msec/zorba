@@ -50,9 +50,24 @@ typedef internal::SystemDiagnostic<internal::ZorbaErrQName> ZorbaErrorCode;
 class ZORBA_DLL_PUBLIC UserError : public Diagnostic {
 public:
   /**
-   * Destroys a %UserError.
+   * Copy-constructs a %UserError.
+   *
+   * @param from The %UserError to copy from.
+   */
+  UserError( UserError const &from );
+
+  /**
+   * Destroys this %UserError.
    */
   ~UserError();
+
+  /**
+   * Assigns this %UserError from another.
+   *
+   * @param from The %UserError to assign from.
+   * @return Returns \c *this.
+   */
+  UserError& operator=( UserError const &from );
 
   // inherited
   diagnostic::QName const& qname() const;
