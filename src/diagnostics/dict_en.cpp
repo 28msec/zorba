@@ -131,7 +131,7 @@ extern entry const dict_en[] = {
   { "XPTY0020", "axis step context item is not a node" },
   { "XQDY0025", "\"$1\": duplicate attribute name" },
   { "XQDY0026", "computed processing instrucion must not contain \"?>\"" },
-  { "XQDY0027", "\"$1\": unexpected validity property" },
+  { "XQDY0027", "\"$1\": unexpected validity property${: 2}" },
   { "XQDY0041", "can not cast to xs:NCName" },
   { "XQDY0044", "\"$1\": invalid attibute node-name" },
   { "XQDY0061", "invalid validate expression operand${: 1}" },
