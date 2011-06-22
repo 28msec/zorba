@@ -1100,6 +1100,7 @@ void HashSemiJoinIteratorState::init(PlanState& planState)
 void HashSemiJoinIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+  theRightInput->clear();
 }
 
 
