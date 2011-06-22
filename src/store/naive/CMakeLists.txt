@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(ZORBA_STORE_MSDOM OFF CACHE BOOL "select the MS DOM store")
-SET(ZORBA_MSDOM_IN_NATIVE_STORE_CACHING ON CACHE BOOL "select if all info in msdom should be cached into native store node items style")
-
 #
 # Source Files
 #
@@ -56,13 +53,3 @@ IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND ZORBA_STORE_IMPL_SRCS
     ft_token_store.cpp naive_ft_token_iterator.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
-
-IF(ZORBA_STORE_MSDOM)
-  LIST(APPEND ZORBA_STORE_IMPL_SRCS   msdom_addon/msdom_node_items.cpp)
-  LIST(APPEND ZORBA_STORE_IMPL_SRCS   msdom_addon/import_msdom.cpp)
-  LIST(APPEND ZORBA_STORE_IMPL_SRCS   msdom_addon/import_impl.cpp)
-ELSE(ZORBA_STORE_MSDOM)
-# LIST(APPEND ZORBA_STORE_IMPL_SRCS   node_items.cpp)
-ENDIF(ZORBA_STORE_MSDOM)
-
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/store/naive/store_config.h.cmake ${CMAKE_BINARY_DIR}/src/store/naive/store_config.h)

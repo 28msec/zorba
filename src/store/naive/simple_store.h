@@ -16,7 +16,6 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store/naive/store_config.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/store_defs.h"
 
@@ -338,15 +337,6 @@ public:
         bool lazy);
 
   store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
-
-#ifdef ZORBA_STORE_MSDOM
-  IXMLDOMNode* exportItemAsMSDOM(store::Item_t it);
-
-  store::Item_t importMSDOM(
-        IXMLDOMNode* domNode,
-        const zstring& docUri,
-        const zstring& baseUri);
-#endif
 
 protected:
   SimpleStore();

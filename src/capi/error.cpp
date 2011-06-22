@@ -116,7 +116,6 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     || error == ZXQP0020_INVALID_URI
     || error == ZXQP0021_USER_ERROR
     || error == ZXQP0025_ITEM_CREATION_FAILED
-    || error == ZXQP0027_MS_DOM_ERROR
     || error == ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED
     || error == ZXQP0029_MODULE_IMPORT_NOT_ALLOWED
     || error == ZXQP0030_DEADLOCK

@@ -139,8 +139,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/%{name}/%{name}/util/*.h
 %dir %{_includedir}/%{name}/simplestore
 %{_includedir}/%{name}/simplestore/*.h
-%dir %{_includedir}/%{name}/simplestore/msdom
-%{_includedir}/%{name}/simplestore/msdom/*.h
 %dir %{_datadir}/doc/%{name}-%{version}/python
 %dir %{_datadir}/doc/%{name}-%{version}/python/examples
 %{_datadir}/doc/%{name}-%{version}/python/examples/*.py

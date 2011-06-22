@@ -122,18 +122,18 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
         SET(SUFFIX "_${ZORBA_STORE_NAME}")
       ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
   
-      IF(WIN32)
-        # configure_file doesn't replace variable with parameters; they
-        # have to be defined in the macro
-        SET(MODULE_VERSION ${MODULE_VERSION})
-        SET(MODULE_NAME ${MODULE_NAME})
-        # set the rc file for the windows dll version
-        CONFIGURE_FILE("${Zorba_CMAKE_MODULES_DIR}/Windows/WindowsDLLVersion.rc.in"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc"
-                        @ONLY)                        
-        LIST(APPEND SRC_FILES 
-          "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc")
-      ENDIF(WIN32)
+#      IF(WIN32)
+#        # configure_file doesn't replace variable with parameters; they
+#        # have to be defined in the macro
+#        SET(MODULE_VERSION ${MODULE_VERSION})
+#        SET(MODULE_NAME ${MODULE_NAME})
+#        # set the rc file for the windows dll version
+#        CONFIGURE_FILE("${Zorba_CMAKE_MODULES_DIR}/Windows/WindowsDLLVersion.rc.in"
+#                        "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc"
+#                        @ONLY)                        
+#        LIST(APPEND SRC_FILES 
+#          "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc")
+#      ENDIF(WIN32)
 
       # Shared libraries are considered RUNTIME targets on Win32
       # platforms and LIBRARY targets elsewhere
@@ -578,7 +578,8 @@ MACRO (ADD_XQDOC_TARGETS)
   MESSAGE(STATUS "ADD_XQDOC_TARGETS for project ${PROJECT_NAME}")
 
   # Add the xqdoc command for which a working zorba cmd is required.
-  SET(ZORBA_EXE_SCRIPT  ${Zorba_DIR}/bin/zorba CACHE PATH "Path to installed zorba.exe")
+  GET_TARGET_PROPERTY(ZORBA_EXE_LOCATION "zorba" LOCATION)
+  SET(ZORBA_EXE_SCRIPT ${ZORBA_EXE_LOCATION} CACHE PATH "Path to installed zorba.exe")
  
   FILE(GLOB_RECURSE LOCAL_MODULES  ${PROJECT_SOURCE_DIR}/src/*.xq)
   SET(ZORBA_XQDOC_MAIN_EXTMODULES_XML_XQ  ${Zorba_DIR}/xqdoc/generator/xqdoc-main-extmodules-xml.xq CACHE PATH "The xqdoc xml generator for external modules")

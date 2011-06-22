@@ -56,10 +56,6 @@
 #include "store/naive/document_name_iterator.h"
 #include "store/naive/pul_primitive_factory.h"
 
-#ifdef ZORBA_STORE_MSDOM
-#include "store/naive/msdom_addon/import_msdom.h"
-#include <time.h>
-#endif
 
 namespace zorba
 {
@@ -164,10 +160,6 @@ void SimpleStore::init()
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
     theCollections = createCollectionSet();
-
-#ifdef ZORBA_STORE_MSDOM
-    CoInitialize(NULL);
-#endif
 
     StoreManagerImpl::theStore = this;
   }
@@ -341,10 +333,6 @@ void SimpleStore::shutdown(bool soft)
     // beyond the lifecycle of zorba
     xmlCleanupParser();
 
-#ifdef ZORBA_STORE_MSDOM
-    CoUninitialize();
-#endif
-
     StoreManagerImpl::theStore = NULL;
   }
 }
@@ -458,8 +446,6 @@ ulong SimpleStore::createTreeId()
 XmlLoader* SimpleStore::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
     const store::LoadProperties& loadProperties)
 {
-#ifndef ZORBA_STORE_MSDOM
-
   if ( loadProperties.getEnableDtd() )
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
@@ -468,13 +454,6 @@ XmlLoader* SimpleStore::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
                              store::Properties::instance()->buildDataguide());
-
-#else
-
-  return new SimpleXmlLoader(theItemFactory,
-                            aXQueryDiagnostics,
-                            (store::Properties::instance())->buildDataguide());
-#endif
 }
 
 
@@ -1809,49 +1788,6 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
   return tempSeq;
 }
 
-
-#ifdef ZORBA_STORE_MSDOM
-/*******************************************************************************
-  Export the Microsoft DOM tree representation of a Node Item.
-  Exporting MS DOM tree is valid only for the MS DOM store.
-  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature
-  on Windows machines.
-  For atomic items it returns NULL.
-********************************************************************************/
-IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
-{
-  if(it == NULL)
-    return NULL;
-  XmlNode* xml_node = dynamic_cast<XmlNode*>(it.getp());
-  if(xml_node)
-    return xml_node->GetDOMNode();
-  else
-    return NULL;
-}
-
-/*******************************************************************************
-  Import a Microsoft DOM tree into the store as a xml document.
-  This function is equivalent with loadDocument,  only that it loads the xml from
-  an existing MS DOM tree. The existing MS DOM is kept unchanged at import time.
-  Further updates on the document are reflected into the original MS DOM tree.
-  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature
-  on Windows machines.
-*******************************************************************************/
-store::Item_t  SimpleStore::importMSDOM(
-    IXMLDOMNode* domNode,
-    const zstring& docUri,
-    const zstring& baseUri)
-{
-  ImportMSDOM   importer(theItemFactory);
-
-  XmlNode_t root_node = importer.importMSDOM(domNode, docUri, baseUri);
-
-  theDocuments.insert(docUri, root_node);
-
-  return root_node.getp();
-}
-
-#endif
 
 } // namespace store
 } // namespace zorba

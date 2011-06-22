@@ -28,7 +28,6 @@
 #include "store/naive/text_node_content.h"
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
-#include "store/naive/store_config.h"
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h

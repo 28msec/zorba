@@ -426,7 +426,6 @@ extern entry const dict_en[] = {
   { "ZXQP0021", "user error" },
   { "ZXQP0024", "XML does not match schema${: \"1\"}${ 2}" },
   { "ZXQP0025", "item creation failed" },
-  { "ZXQP0027", "MS DOM engine error${: 1}" },
   { "ZXQP0028", "\"$1\": target namespace not provided by module from $2" },
   { "ZXQP0029", "\"$1\": module import not allowed" },
   { "ZXQP0030", "deadlock" },
