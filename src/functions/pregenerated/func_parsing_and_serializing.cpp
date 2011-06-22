@@ -96,7 +96,7 @@ void populate_context_parsing_and_serializing(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_serialize,
         (createQName("http://www.w3.org/2005/xpath-functions","","serialize"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_STAR, 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_SERIALIZE_2);
 

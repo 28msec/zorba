@@ -1673,7 +1673,7 @@ bool static_context::validate(
     return false;
 
   if ( rootElement->isValidated() )
-    return false;
+    return true;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 

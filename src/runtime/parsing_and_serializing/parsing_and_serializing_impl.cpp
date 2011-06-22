@@ -171,12 +171,8 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
       }
 
 #ifndef ZORBA_NO_XMLSCHEMA          
-      // validate the serialization parameters
-      if (!lParams->isValidated())
-      {
-        // this will throw an error if te validation fails
-        theSctx->validate(lParams, lParams, StaticContextConsts::strict_validation);
-      }
+      // this will throw an error if te validation fails
+      theSctx->validate(lParams, lParams, StaticContextConsts::strict_validation);
 #endif
 
       // get the children iterator

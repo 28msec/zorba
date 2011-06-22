@@ -61,7 +61,7 @@
 
       <zorba:signature localname="serialize" prefix="fn">
         <zorba:param>item()*</zorba:param>
-        <zorba:param>element()*</zorba:param>
+        <zorba:param>element()?</zorba:param>
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
 
