@@ -1847,47 +1847,75 @@ void GroupByClause::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
-GroupSpecList::GroupSpecList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
 
-void GroupSpecList::accept( parsenode_visitor &v ) const
+GroupSpecList::GroupSpecList(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
+
+
+void GroupSpecList::push_back(rchandle<GroupSpec> spec) 
+{
+  vector<rchandle<GroupSpec> >::const_iterator ite = theSpecs.begin();
+  vector<rchandle<GroupSpec> >::const_iterator end = theSpecs.end();
+
+  for (; ite != end; ++ite)
+  {
+    const GroupSpec* currSpec = (*ite).getp();
+
+    if (*currSpec->get_var_name() == *spec->get_var_name())
+      break;
+  }
+
+  if (ite == end)
+    theSpecs.push_back(spec); 
+}
+
+
+void GroupSpecList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<GroupSpec> >::const_iterator it = spec_hv.begin();
-  for (; it!=spec_hv.end(); ++it) {
-    const GroupSpec *e_p = &**it;
+
+  vector<rchandle<GroupSpec> >::const_iterator it = theSpecs.begin();
+  for (; it != theSpecs.end(); ++it) 
+  {
+    const GroupSpec* e_p = &**it;
     ACCEPT_CHK (e_p);
   }
+
   END_VISITOR();
 }
+
 
 GroupSpec::GroupSpec(
   const QueryLoc& loc_,
   rchandle<QName> _var_name_h,
   rchandle<GroupCollationSpec> _group_coll_spec_h)
-:
+  :
   parsenode(loc_),
   var_name_h(_var_name_h),
   group_coll_spec_h(_group_coll_spec_h)
-{}
+{
+}
 
-void GroupSpec::accept( parsenode_visitor &v ) const
+
+void GroupSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   ACCEPT (group_coll_spec_h);
   END_VISITOR();
 }
 
-GroupCollationSpec::GroupCollationSpec (
+GroupCollationSpec::GroupCollationSpec(
   const QueryLoc& loc_,
   const zstring& _uri)
-:
+  :
   parsenode(loc_),
   uri(_uri)
-{}
+{
+}
+
 
 void GroupCollationSpec::accept( parsenode_visitor &v ) const
 {

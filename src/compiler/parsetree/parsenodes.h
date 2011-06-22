@@ -2297,16 +2297,16 @@ public:
 class GroupSpecList : public parsenode
 {
 protected:
-  std::vector<rchandle<GroupSpec> > spec_hv;
+  std::vector<rchandle<GroupSpec> > theSpecs;
 
 public:
-  GroupSpecList(const QueryLoc&);
+  GroupSpecList(const QueryLoc& loc);
 
-  void push_back(rchandle<GroupSpec> spec_h) { spec_hv.push_back(spec_h); }
+  void push_back(rchandle<GroupSpec> spec);
 
-  GroupSpec* operator[](int i) const { return spec_hv[i].getp(); }
+  GroupSpec* operator[](int i) const { return theSpecs[i].getp(); }
 
-  size_t size () const { return spec_hv.size (); }
+  size_t size() const { return theSpecs.size(); }
 
   void accept(parsenode_visitor&) const;
 };

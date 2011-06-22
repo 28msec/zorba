@@ -2162,16 +2162,15 @@ void* begin_visit(const VersionDecl& v)
 
     // TODO: the error code might need to be changed after W3C solves
     // the bug report concerning modules of version 1.0 importing v3.0 libraries.
-    throw XQUERY_EXCEPTION(
-      err::XQST0031,
-      ERROR_PARAMS( versionStr, ZED( LibModVersionMismatch_3 ), maxversion ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0031, loc,
+    ERROR_PARAMS(versionStr, ZED(LibModVersionMismatch_3 ), maxversion));
   }
 
   if (version == StaticContextConsts::xquery_version_unknown)
+  {
     RAISE_ERROR(err::XQST0031, loc,
     ERROR_PARAMS(versionStr, ZED(BadXQueryVersion)));
+  }
 
   theSctx->set_xquery_version(version);
 
@@ -6279,7 +6278,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const GroupSpecList& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
@@ -6313,7 +6312,7 @@ void* begin_visit(const GroupSpec& v)
 
 void end_visit(const GroupSpec& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
