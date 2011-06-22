@@ -39,7 +39,7 @@ public:
   typedef internal::diagnostic::location::column_type column_type;
 
   /**
-   * Copy-constructs a %XQueryException.
+   * Copy-constructs an %XQueryException.
    *
    * @param from The %XQueryException to copy from.
    */
