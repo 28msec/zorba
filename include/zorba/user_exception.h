@@ -98,9 +98,24 @@ public:
   typedef internal::error_object_type error_object_type;
 
   /**
+   * Copy-constructs a %UserException.
+   *
+   * @param from The %UserException to copy from.
+   */
+  UserException( UserException const &from );
+
+  /**
    * Destroys this %UserException.
    */
   ~UserException() throw();
+
+  /**
+   * Assigns this %UserException from another.
+   *
+   * @param from The %UserException to assign from.
+   * @return Returns \c *this.
+   */
+  UserException& operator=( UserException const &from );
 
   /**
    * Gets the error object associated with this exception.

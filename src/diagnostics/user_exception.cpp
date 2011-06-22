@@ -50,6 +50,15 @@ UserException::UserException( Error const &error, char const *raise_file,
     error_object->swap( error_object_ );
 }
 
+UserException::UserException( UserException const &from ) :
+  XQueryException( from ),
+  error_object_( from.error_object_ )
+{
+  // This copy constructor isn't necessary: the compiler-generated default copy
+  // constructor would work just fine.  It is defined explicitly, however, so
+  // as to future-proof the code and keep ABI compatibility.
+}
+
 UserException::UserException( serialization::Archiver &ar ) :
   XQueryException( ar )
 {
@@ -57,6 +66,19 @@ UserException::UserException( serialization::Archiver &ar ) :
 
 UserException::~UserException() throw() {
   // out-of-line since it's virtual
+}
+
+UserException& UserException::operator=( UserException const &from ) {
+  //
+  // This assignment operator isn't necessary: the compiler-generated default
+  // assignment operator would work just fine.  It is defined explicitly,
+  // however, so as to future-proof the code and keep ABI compatibility.
+  //
+  if ( &from != this ) {
+    XQueryException::operator=( from );
+    error_object_ = from.error_object_;
+  }
+  return *this;
 }
 
 auto_ptr<ZorbaException> UserException::clone() const {
