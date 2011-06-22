@@ -1,4 +1,4 @@
-import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/hash-map";
+import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
 
 let $name := fn:QName("http://www.zorba-xquery.com/map", "first")

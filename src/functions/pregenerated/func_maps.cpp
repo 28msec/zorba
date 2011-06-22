@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t zorba_store_data_structure_hash_map_create::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_create::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -41,7 +41,7 @@ PlanIter_t zorba_store_data_structure_hash_map_create::codegen(
   return new MapCreateIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_data_structure_hash_map_destroy::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_destroy::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -51,7 +51,7 @@ PlanIter_t zorba_store_data_structure_hash_map_destroy::codegen(
   return new MapDestroyIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_data_structure_hash_map_get::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_get::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -61,7 +61,7 @@ PlanIter_t zorba_store_data_structure_hash_map_get::codegen(
   return new MapGetIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_data_structure_hash_map_insert::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_insert::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -71,7 +71,7 @@ PlanIter_t zorba_store_data_structure_hash_map_insert::codegen(
   return new MapInsertIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_data_structure_hash_map_remove::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_remove::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -81,7 +81,7 @@ PlanIter_t zorba_store_data_structure_hash_map_remove::codegen(
   return new MapRemoveIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_data_structure_hash_map_keys::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_keys::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -91,7 +91,7 @@ PlanIter_t zorba_store_data_structure_hash_map_keys::codegen(
   return new MapKeysIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_data_structure_hash_map_size::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_size::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -108,10 +108,10 @@ void populate_context_maps(static_context* sctx)
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_hash_map_create,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/hash-map","","create"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_create,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","create"), 
         lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_HASH_MAP_CREATE_N);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_CREATE_N);
 
   }
 
@@ -119,11 +119,11 @@ void populate_context_maps(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_hash_map_destroy,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/hash-map","","destroy"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_destroy,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","destroy"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_HASH_MAP_DESTROY_1);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_DESTROY_1);
 
   }
 
@@ -133,10 +133,10 @@ void populate_context_maps(static_context* sctx)
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
     lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_hash_map_get,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/hash-map","","get"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_get,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","get"), 
         lParamTypes, GENV_TYPESYSTEM.ITEM_TYPE_STAR, true),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_HASH_MAP_GET_N);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_GET_N);
 
   }
 
@@ -147,10 +147,10 @@ void populate_context_maps(static_context* sctx)
     lParamTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
     lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_hash_map_insert,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/hash-map","","insert"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_insert,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","insert"), 
         lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_HASH_MAP_INSERT_N);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_INSERT_N);
 
   }
 
@@ -160,10 +160,10 @@ void populate_context_maps(static_context* sctx)
     lParamTypes.push_back(GENV_TYPESYSTEM.QNAME_TYPE_ONE);
     lParamTypes.push_back(GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_hash_map_remove,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/hash-map","","remove"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_remove,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","remove"), 
         lParamTypes, GENV_TYPESYSTEM.EMPTY_TYPE, true),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_HASH_MAP_REMOVE_N);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_REMOVE_N);
 
   }
 
@@ -171,11 +171,11 @@ void populate_context_maps(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_hash_map_keys,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/hash-map","","keys"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_keys,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","keys"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_HASH_MAP_KEYS_1);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_KEYS_1);
 
   }
 
@@ -183,11 +183,11 @@ void populate_context_maps(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_hash_map_size,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/hash-map","","size"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_size,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","size"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_HASH_MAP_SIZE_1);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_SIZE_1);
 
   }
 

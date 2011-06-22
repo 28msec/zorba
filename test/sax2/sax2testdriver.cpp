@@ -369,7 +369,7 @@ main(int argc, char** argv)
     printFile(std::cerr, lRefFile.get_path());
     std::cerr << "=== end of expected result ===" << std::endl;
 
-    std::cerr << "See line " << lLine << ", col " << lCol << " of expected result. " << std::endl;
+    std::cerr << "See line " << lLine << ", col " << lCol+1 << " of expected result. " << std::endl;
     std::cerr << "Actual: <" << lResultLine << ">" << std::endl;
     std::cerr << "Expected: <" << lRefLine << ">" << std::endl;
 

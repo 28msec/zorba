@@ -35,7 +35,7 @@
       <zorba:signature
         variadic="true"
         localname="create"
-        prefix="zorba-store-data-structure-hash-map">
+        prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param> <!-- name of the hashmap -->
         <zorba:param>xs:QName</zorba:param> <!-- list of key types -->
         <zorba:output>empty-sequence()</zorba:output>
@@ -61,7 +61,7 @@
 
     <zorba:function> 
 
-      <zorba:signature localname="destroy" prefix="zorba-store-data-structure-hash-map">
+      <zorba:signature localname="destroy" prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -86,7 +86,7 @@
 
     <zorba:function> 
 
-      <zorba:signature variadic="true" localname="get" prefix="zorba-store-data-structure-hash-map">
+      <zorba:signature variadic="true" localname="get" prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:anyAtomicType?</zorba:param>
         <zorba:output>item()*</zorba:output>
@@ -116,7 +116,7 @@
 
     <zorba:function> 
 
-      <zorba:signature variadic="true" localname="insert" prefix="zorba-store-data-structure-hash-map">
+      <zorba:signature variadic="true" localname="insert" prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>item()*</zorba:param> <!-- value -->
         <zorba:param>xs:anyAtomicType?</zorba:param> <!-- list of keys -->
@@ -146,7 +146,7 @@
       <zorba:signature
         variadic="true"
         localname="remove"
-        prefix="zorba-store-data-structure-hash-map">
+        prefix="zorba-store-data-structure-unordered-map">
 
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:anyAtomicType?</zorba:param>
@@ -173,7 +173,7 @@
 
     <zorba:function> 
 
-      <zorba:signature localname="keys" prefix="zorba-store-data-structure-hash-map">
+      <zorba:signature localname="keys" prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
@@ -203,7 +203,7 @@
 
     <zorba:function> 
 
-      <zorba:signature localname="size" prefix="zorba-store-data-structure-hash-map">
+      <zorba:signature localname="size" prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>

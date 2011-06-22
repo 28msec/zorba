@@ -38,11 +38,11 @@ void populate_context_maps(static_context* sctx);
 
 
 
-//zorba-store-data-structure-hash-map:create
-class zorba_store_data_structure_hash_map_create : public function
+//zorba-store-data-structure-unordered-map:create
+class zorba_store_data_structure_unordered_map_create : public function
 {
 public:
-  zorba_store_data_structure_hash_map_create(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_data_structure_unordered_map_create(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -55,11 +55,11 @@ public:
 };
 
 
-//zorba-store-data-structure-hash-map:destroy
-class zorba_store_data_structure_hash_map_destroy : public function
+//zorba-store-data-structure-unordered-map:destroy
+class zorba_store_data_structure_unordered_map_destroy : public function
 {
 public:
-  zorba_store_data_structure_hash_map_destroy(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_data_structure_unordered_map_destroy(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -72,11 +72,11 @@ public:
 };
 
 
-//zorba-store-data-structure-hash-map:get
-class zorba_store_data_structure_hash_map_get : public function
+//zorba-store-data-structure-unordered-map:get
+class zorba_store_data_structure_unordered_map_get : public function
 {
 public:
-  zorba_store_data_structure_hash_map_get(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_data_structure_unordered_map_get(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -87,28 +87,11 @@ public:
 };
 
 
-//zorba-store-data-structure-hash-map:insert
-class zorba_store_data_structure_hash_map_insert : public function
+//zorba-store-data-structure-unordered-map:insert
+class zorba_store_data_structure_unordered_map_insert : public function
 {
 public:
-  zorba_store_data_structure_hash_map_insert(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-
-}
-
-  short getScriptingKind() const { return SEQUENTIAL_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-store-data-structure-hash-map:remove
-class zorba_store_data_structure_hash_map_remove : public function
-{
-public:
-  zorba_store_data_structure_hash_map_remove(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_data_structure_unordered_map_insert(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -121,11 +104,28 @@ public:
 };
 
 
-//zorba-store-data-structure-hash-map:keys
-class zorba_store_data_structure_hash_map_keys : public function
+//zorba-store-data-structure-unordered-map:remove
+class zorba_store_data_structure_unordered_map_remove : public function
 {
 public:
-  zorba_store_data_structure_hash_map_keys(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_data_structure_unordered_map_remove(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  short getScriptingKind() const { return SEQUENTIAL_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-data-structure-unordered-map:keys
+class zorba_store_data_structure_unordered_map_keys : public function
+{
+public:
+  zorba_store_data_structure_unordered_map_keys(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -136,11 +136,11 @@ public:
 };
 
 
-//zorba-store-data-structure-hash-map:size
-class zorba_store_data_structure_hash_map_size : public function
+//zorba-store-data-structure-unordered-map:size
+class zorba_store_data_structure_unordered_map_size : public function
 {
 public:
-  zorba_store_data_structure_hash_map_size(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_data_structure_unordered_map_size(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

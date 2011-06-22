@@ -408,11 +408,11 @@ MapKeysIterator::nextImpl(
   store::IndexKey  lKey;
   store::Item_t    lTypeName;
   zstring          lBaseURI =
-    static_context::ZORBA_STORE_DYNAMIC_HASH_MAP_FN_NS;
+    static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
 
   store::Item_t lKeyNodeName;
   GENV_ITEMFACTORY->createQName(lKeyNodeName,
-      static_context::ZORBA_STORE_DYNAMIC_HASH_MAP_FN_NS,
+      static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
       "", "key");
 
   MapKeysIteratorState* state;
@@ -457,7 +457,7 @@ MapKeysIterator::nextImpl(
       store::Item_t lNameAttr, lValueAttr, lValueAttrName;
 
       GENV_ITEMFACTORY->createQName(lAttrNodeName,
-          static_context::ZORBA_STORE_DYNAMIC_HASH_MAP_FN_NS,
+          static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
           "", "attribute");
 
       GENV_ITEMFACTORY->createQName(lValueAttrName,
