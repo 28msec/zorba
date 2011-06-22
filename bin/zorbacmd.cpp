@@ -827,7 +827,7 @@ _tmain(int argc, _TCHAR* argv[])
       std::vector<std::string> lTokens;
       Util::tokenize(p.c_str(), PATH_SEP, lTokens);
 
-      lTmp << "file:///";
+      lTmp << "file://";
       for (std::vector<std::string>::const_iterator lIter = lTokens.begin();
            lIter != lTokens.end(); ++lIter)
       {
