@@ -211,4 +211,3 @@ namespace zorba {
     theCurrent = theCurrent->getParent();
   }
 }//end of namespace
-/* vim:set et sw=2 ts=2: */

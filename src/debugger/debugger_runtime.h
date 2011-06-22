@@ -56,7 +56,7 @@ class DebuggerRuntime : public Runnable {
 
     virtual ~DebuggerRuntime();
 
-  public: // Runnabme interface
+  public: // Runnable interface
 
     void
     run();
@@ -167,4 +167,3 @@ class DebuggerRuntime : public Runnable {
 }
 
 #endif // ZORBA_DEBUGGER_RUNTIME_H
-/* vim:set et sw=2 ts=2: */

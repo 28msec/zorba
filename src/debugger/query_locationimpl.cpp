@@ -69,5 +69,3 @@ ostream& operator<< (ostream& aOstr, const QueryLocation* aQueryLoc){
   return aOstr;
 }
 }//end of namespace
-
-/* vim:set et sw=2 ts=2: */

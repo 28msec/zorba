@@ -17,12 +17,50 @@
 #define ZORBA_DEBUGGER_COMMUNICATOR_H
 
 #include <string>
+#include <iostream>
+#include <queue>
+
+#include "zorbautils/runnable.h"
+#include "zorbautils/lock.h"
+#include "zorbautils/mutex.h"
+#include "zorbautils/condition.h"
 
 namespace zorba {
 
 class TCPSocket;
+class socket_streambuf;
 
 class DebuggerCommunicator {
+
+  class ResponseQueue : public Runnable {
+
+    public:
+      ResponseQueue(std::ostream* aStream);
+
+      virtual ~ResponseQueue();
+
+    public: // Runnable interface
+
+      void
+      run();
+
+      void
+      finish();
+
+    public:
+      void
+      enqueue(const std::string& message);
+
+	  private:
+
+      std::queue<std::string> theQueue;
+      std::ostream*           theStream;
+
+      Lock                    theLock;
+      Mutex                   theMutex;
+      Condition               theCondition;
+  };
+
 
   public:
     DebuggerCommunicator(
@@ -38,11 +76,14 @@ class DebuggerCommunicator {
 		
 	private:
 
-    TCPSocket* theSocket;
+    TCPSocket*        theSocket;
+    socket_streambuf* theSocketInStream;
+    socket_streambuf* theSocketOutStream;
+    std::istream*     theCommunicatorInStream;
+    std::ostream*     theCommunicatorOutStream;
+    ResponseQueue*    theResponseQueue;
 };
 
 }//end of namespace
 
 #endif // ZORBA_DEBUGGER_COMMUNICATOR_H
-
-/* vim:set et sw=2 ts=2: */

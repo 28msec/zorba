@@ -32,7 +32,6 @@
 #include "zorbautils/synchronous_logger.h"
 
 
-
 namespace zorba {
 
 DebuggerServer::DebuggerServer(
@@ -96,7 +95,7 @@ DebuggerServer::init()
   }
   std::stringstream lInitMsg;
   lInitMsg << "<init appid=\"zorba\" idekey=\"" << lIdeKey << "\" session=\"" + lSession + "\" thread=\"6666\" parent=\"zorba\" language=\"xquery\" protocol_version=\"1.0\" fileuri=\"file://D:/mm.xq\"/>";
-  theCommunicator->send(lInitMsg.str().c_str());
+  theCommunicator->send(lInitMsg.str());
 }
 
 
@@ -597,4 +596,3 @@ DebuggerServer::buildErrorResponse(
 }
 
 } /* namespace zorba */
-/* vim:set et sw=2 ts=2: */

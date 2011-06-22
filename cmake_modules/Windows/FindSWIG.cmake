@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2010 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(DEBUGGER_SRCS
-  query_locationimpl.cpp
-  socket.cpp
-  socket_streambuf.cpp
-  debugger_exception.cpp
-  profiler.cpp
+# - Find SWIG on Windows
+#
+# TODO: correct description missing
 
-  debugger_server.cpp
-  debugger_communicator.cpp
-  debugger_runtime.cpp
-  debugger_protocol.cpp
-  debugger_commons.cpp
-)
+FIND_PACKAGE_WIN32(SWIG swig)
