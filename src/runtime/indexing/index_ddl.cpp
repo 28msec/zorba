@@ -1112,10 +1112,10 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
   store::Item_t qname;
   IndexDecl_t indexDecl;
   store::IndexCondition_t cond;
-  bool haveLower;
-  bool haveUpper;
-  bool inclLower;
-  bool inclUpper;
+  bool haveLower = false;
+  bool haveUpper = false;
+  bool inclLower = false;
+  bool inclUpper = false;
   xqtref_t keyType;
   store::Item_t searchItem;
   store::Item_t minmaxItem;
