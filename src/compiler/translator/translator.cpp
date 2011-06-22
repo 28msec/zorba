@@ -912,14 +912,17 @@ void push_scope()
   theSctx = theSctx->create_child_context();
 
 #ifdef ZORBA_WITH_DEBUGGER
-  if (theCCB->theDebuggerCommons != NULL) {
+  if (theCCB->theDebuggerCommons != NULL) 
+  {
     // in debug mode, we remember all static contexts
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
     theCurrSctxId = (short)theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
-  } else {
+  }
+  else 
+  {
 #endif
     // in non-debug mode, we need to make sure that the scoped
     // contexts are kept around for the compilation of this module.
@@ -950,9 +953,9 @@ void pop_scope()
   else
   {
 #endif
-    // pop one scope, howerver the static context is kept around in the theSctxList
     static_context* parent = (static_context *) theSctx->get_parent();
     theSctx = parent;
+    theSctxList.pop_back();
 #ifdef ZORBA_WITH_DEBUGGER
   }
 #endif
