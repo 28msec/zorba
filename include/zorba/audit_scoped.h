@@ -145,7 +145,7 @@ namespace audit {
       value.start();
     }
     static inline audit_type end(value_type& value) {
-      return value.elapsed();
+      return static_cast<audit_type>(value.elapsed());
     }
   };
 
