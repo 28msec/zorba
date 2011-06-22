@@ -90,11 +90,12 @@ ModuleVersioningURIMapper::mapURI
     return;
   }
 
-  // Ensure that the namespace URI ends in ".xq".
+  // Ensure that the namespace URI ends in ".xq", and then strip it.
   zstring const lBaseUri = lModVer.namespace_uri();
   if ( ! ascii::ends_with(lBaseUri, ".xq")) {
     return;
   }
+  zstring const lRootUri = lBaseUri.substr(0, lBaseUri.size() -3);
 
   // Ok, we've successfully parsed a version-request fragment. Form up a set of
   // new URIs based on the original minus the fragment.
@@ -102,12 +103,13 @@ ModuleVersioningURIMapper::mapURI
   // Iterate through all requested major versions.
   for (int lMaj = lModVer.max_major(); lMaj >= lModVer.min_major(); lMaj--) {
     std::stringstream lFormat;
-    lFormat << lBaseUri << "." << lMaj;
+    lFormat << lRootUri << "_" << lMaj;
     if (lModVer.is_exact()) {
       // Note that lExact can only be set if there was NO range specified, so
       // it's OK to check here even though we're looping.
       lFormat << "." << lModVer.min_minor();
     }
+    lFormat << ".xq";
     oUris.push_back(zstring(lFormat.str()));
   }
 

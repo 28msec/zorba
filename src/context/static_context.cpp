@@ -2606,7 +2606,7 @@ ExternalFunction* static_context::lookup_external_function(
   ExternalModule* lModule = 0;
 
   // If the module is not yet in the static context we try to get it from the
-  // URI resolver
+  // dynamic loader
   if (!found)
   {
     lModule = DynamicLoader::getExternalModule(aURI, *this);

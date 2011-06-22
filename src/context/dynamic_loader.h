@@ -39,8 +39,6 @@ private:
   static DynamicLoader& getInstance();
 
   ExternalModule* loadModule(const zstring& aFile) const;
-  static zstring computeLibraryName(const URI& aURI, bool aUseDebugDir = false);
-
 
 #ifdef WIN32
   typedef std::set<HMODULE> LibrarySet_t;

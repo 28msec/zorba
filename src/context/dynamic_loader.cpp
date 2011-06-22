@@ -15,8 +15,11 @@
  */
 #include "stdafx.h"
 
-#include "context/dynamic_loader.h"
-#include "context/static_context.h"
+#include "dynamic_loader.h"
+#include "static_context.h"
+#include <zorbamisc/ns_consts.h>
+#include <system/globalenv.h>
+#include <store/api/item_factory.h>
 
 #ifdef UNIX
 #  include <dlfcn.h>
@@ -26,15 +29,92 @@
 #  include <strsafe.h>
 #endif
 
-#include "diagnostics/xquery_diagnostics.h"
-#include "zorbatypes/URI.h"
-#include "zorba/external_module.h"
-#include "zorba/zorba_string.h"
-#include "context/get_current_lib_suffix.h"
+#include <diagnostics/xquery_diagnostics.h>
+#include <zorbatypes/URI.h>
+#include <zorba/external_module.h>
+#include <zorba/zorba_string.h>
+#include <context/get_current_lib_suffix.h>
 #include <fstream>
-#include "util/error_util.h"
+#include <util/error_util.h>
 
 namespace zorba {
+
+static std::string computeVersionInfix(zstring const& aImportedVersion)
+{
+  if (aImportedVersion == "") {
+    return "";
+  }
+  std::ostringstream lInfix;
+  lInfix << "_" << aImportedVersion;
+  return lInfix.str();
+}
+
+static zstring computeLibraryName
+(const URI& aURI, zstring const& aImportedVersion, bool aUseDebugDir = false)
+{
+  zstring lPathNotation = aURI.toPathNotation();
+
+  // get the module file name
+  size_t lIndexOfLastSlash = lPathNotation.find_last_of("/");
+
+  zstring lFileName;
+  zstring lBranchPath;
+
+  // if the URI ends in '/'
+  if (lIndexOfLastSlash == lPathNotation.size())
+  {
+    lBranchPath = lPathNotation;
+  }
+  else
+  {
+    // if '/' is not found
+    if (lIndexOfLastSlash == std::string::npos)
+    {
+      lFileName = lPathNotation;
+    }
+    else
+    {
+      lFileName = lPathNotation.substr(lIndexOfLastSlash + 1);
+      lBranchPath = lPathNotation.substr(0, lIndexOfLastSlash + 1);
+    }
+
+    // remove .xq from the end of the file if present
+    // bugfix: find_last_of didn't do the right thing
+    size_t lIndexOfXQ = lFileName.find(".xq");
+    if (lIndexOfXQ != std::string::npos && lIndexOfXQ == lFileName.size() - 3)
+    {
+      lFileName.erase(lIndexOfXQ);
+    }
+  }
+
+  // create the name of the file
+  // win32: module.dll
+  // apple: libmodule.dylib
+  // other unix: libmodule.so
+  // If version number is not blank, insert it into the path before the extension
+  std::ostringstream lLibraryName;
+  lLibraryName << lBranchPath;
+#ifdef WIN32
+  if (aUseDebugDir) {
+    lLibraryName << "Debug\\";
+  }
+  lLibraryName << lFileName << get_current_lib_suffix()
+               << computeVersionInfix(aImportedVersion) << ".dll";
+#else
+  if (aUseDebugDir) {
+    lLibraryName << "Debug/";
+  }
+#ifdef APPLE
+  lLibraryName << "lib" << lFileName << get_current_lib_suffix()
+               << computeVersionInfix(aImportedVersion) << ".dylib";
+#else
+  lLibraryName << "lib" << lFileName << get_current_lib_suffix()
+               << computeVersionInfix(aImportedVersion) << ".so";
+#endif
+#endif
+
+  return lLibraryName.str();
+}
 
 ExternalModule*
 DynamicLoader::loadModule(const zstring& aFile) const
@@ -129,8 +209,19 @@ DynamicLoader::getExternalModule
   {
     URI lURI(aNsURI);
 
-    zstring lLibraryName = computeLibraryName(lURI);
-    zstring lLibraryNameDebug = computeLibraryName(lURI, true);
+    // Lookup version of the module
+    store::Item_t lMajorOpt;
+    GENV.getItemFactory()->createQName
+        (lMajorOpt,
+         zstring(ZORBA_VERSIONING_NS),
+         zstring(""),
+         zstring(ZORBA_OPTION_MODULE_VERSION));
+    zstring lImportedVersion;
+    if (!aSctx.lookup_option(lMajorOpt.getp(), lImportedVersion)) {
+      lImportedVersion = "";
+    }
+    zstring lLibraryName = computeLibraryName(lURI, lImportedVersion);
+    zstring lLibraryNameDebug = computeLibraryName(lURI, lImportedVersion, true);
 
     // check all module path in the according order
     // the higher in the hirarchy the static context is
@@ -146,7 +237,7 @@ DynamicLoader::getExternalModule
 
       std::auto_ptr<std::istream> modfile
         (new std::ifstream(potentialModuleFile.c_str()));
-      
+
       if (!modfile->good()) {
         modfile.reset(new std::ifstream(potentialModuleFileDebug.c_str()));
         potentialModuleFile = potentialModuleFileDebug;
@@ -172,70 +263,6 @@ DynamicLoader::getExternalModule
   }
 
   return NULL;
-}
-
-zstring
-DynamicLoader::computeLibraryName
-(const URI& aURI, bool aUseDebugDir /* = false */)
-{
-  zstring lPathNotation = aURI.toPathNotation();
-
-  // get the module file name
-  size_t lIndexOfLastSlash = lPathNotation.find_last_of("/");
-
-  zstring lFileName;
-  zstring lBranchPath;
-
-  // is the URI ends in '/'
-  if (lIndexOfLastSlash == lPathNotation.size())
-  {
-    lBranchPath = lPathNotation;
-  }
-  else
-  {
-    // is '/' is not found
-    if (lIndexOfLastSlash == std::string::npos)
-    {
-      lFileName = lPathNotation;
-    }
-    else
-    {
-      lFileName = lPathNotation.substr(lIndexOfLastSlash + 1);
-      lBranchPath = lPathNotation.substr(0, lIndexOfLastSlash + 1);
-    }
-
-    // remove .xq from the end of the file if present
-    // bugfix: find_last_of didn't do the right thing
-    size_t lIndexOfXQ = lFileName.find(".xq");
-    if (lIndexOfXQ != std::string::npos && lIndexOfXQ == lFileName.size() - 3)
-    {
-      lFileName.erase(lIndexOfXQ );
-    }
-  }
-
-  // create the name of the file
-  // win32: module.dll
-  // apple: libmodule.dylib
-  // other unix: libmodule.so
-  std::ostringstream lLibraryName;
-  lLibraryName << lBranchPath;
-#ifdef WIN32
-  if (aUseDebugDir) {
-    lLibraryName << "Debug\\";
-  }
-  lLibraryName << lFileName << get_current_lib_suffix() << ".dll";
-#else
-  if (aUseDebugDir) {
-    lLibraryName << "Debug/";
-  }
-#ifdef APPLE
-  lLibraryName << "lib" << lFileName << get_current_lib_suffix() << ".dylib";
-#else
-  lLibraryName << "lib" << lFileName << get_current_lib_suffix() << ".so";
-#endif
-#endif
-
-  return lLibraryName.str();
 }
 
 } // namespace zorba

@@ -3052,6 +3052,26 @@ void* begin_visit(const VFO_DeclList& v)
 
   TypeManager* tm = CTX_TM;
 
+  // We need to bind all options before doing this first pass of function
+  // declarations, so that the module version is available when we try to
+  // load external function libraries.
+  for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
+       it != v.end();
+       ++it)
+  {
+    const OptionDecl* opt_decl = it->dyn_cast<OptionDecl> ().getp ();
+    if (opt_decl != NULL) {
+      store::Item_t qnameItem;
+      zstring value = opt_decl->get_val().str();
+
+      expand_no_default_qname(qnameItem, opt_decl->get_qname(), loc);
+
+      if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
+        RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+      theSctx->bind_option(qnameItem, value);
+    }
+  }
+
   // Function declaration translation must be done in two passes because of
   // mutually recursive functions and also because the defining expr of a declared
   // var may reference a function that is declared after the var. So, here's the
@@ -3844,18 +3864,15 @@ void* begin_visit(const OptionDecl& v)
 {
   TRACE_VISIT();
 
+  // Actual binding of options was already done at VFO_DeclList time; here we
+  // take actions based on certain specific options.
+
+  // TODO probably we should have some kind of option-callback mechanism,
+  // rather than processing all built-in Zorba options here
   store::Item_t qnameItem;
   zstring value = v.get_val().str();
 
   expand_no_default_qname(qnameItem, v.get_qname(), loc);
-
-  if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
-    RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
-
-  theSctx->bind_option(qnameItem, value);
-
-  // TODO probably we should have some kind of option-callback mechanism,
-  // rather than processing all built-in Zorba options here
 
   // process zorba-version option
   if (qnameItem->getNamespace() == ZORBA_VERSIONING_NS &&

@@ -25,3 +25,6 @@ DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/A" 1.0
   "module-A")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/B" 1.0
   "module-B")
+
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 2.0 "ext2")
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 1.0 "ext")
