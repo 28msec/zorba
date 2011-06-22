@@ -61,7 +61,7 @@ bool DecimalFormat::validate(const QueryLoc& loc) const
           isPictureStringProperty(theParams[j].first)
           &&
           theParams[i].second == theParams[j].second)
-        throw XQUERY_EXCEPTION(err::XQST0098, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(err::XQST0098, ERROR_PARAMS(theParams[i].first, theParams[j].first), ERROR_LOC(loc));
     }
 
   return true;

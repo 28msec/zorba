@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,9 +33,6 @@
 #include "types/typeops.h"
 
 #include "context/static_context.h"
-
-// TODO: remove, debugging purposes only
-#include "context/dynamic_context.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -76,7 +73,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
     {
-      if (result->getDoubleValue().isPos() || result->getDoubleValue().isPosZero()) 
+      if (result->getDoubleValue().isPos() || result->getDoubleValue().isPosZero())
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.DOUBLE_TYPE_ONE))
           GENV_ITEMFACTORY->createDouble (result, result->getDoubleValue());
@@ -88,7 +85,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
     {
-      if ( result->getFloatValue().isPos() || result->getFloatValue().isPosZero()) 
+      if ( result->getFloatValue().isPos() || result->getFloatValue().isPosZero())
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.FLOAT_TYPE_ONE))
           GENV_ITEMFACTORY->createFloat (result, result->getFloatValue());
@@ -100,7 +97,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     {
-      if (result->getIntegerValue() >= xs_decimal::zero()) 
+      if (result->getIntegerValue() >= xs_decimal::zero())
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.INTEGER_TYPE_ONE))
           GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue());
@@ -112,7 +109,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
     {
-      if ( result->getDecimalValue() >= xs_decimal::zero()) 
+      if ( result->getDecimalValue() >= xs_decimal::zero())
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.DECIMAL_TYPE_ONE))
           GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue());
@@ -179,7 +176,7 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().ceil());
 
-    //item type is subtype of INTEGER 
+    //item type is subtype of INTEGER
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     { /* do nothing */ }
 
@@ -244,7 +241,7 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else if (TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().floor());
 
-    //item type is subtype of INTEGER 
+    //item type is subtype of INTEGER
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     { /* do nothing */ }
 
@@ -291,7 +288,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
-    if (theChildren.size() == 2) 
+    if (theChildren.size() == 2)
     {
       consumeNext(precision, theChildren[1].getp(), planState);
       assert(precision->isAtomic());
@@ -319,9 +316,9 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().round(precision_integer));
 
-    //item type is subtype of INTEGER 
+    //item type is subtype of INTEGER
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
-    { 
+    {
       if(precision_integer < Integer::zero())
         GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().round(precision_integer));
     }
@@ -370,7 +367,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   if (consumeNext(result, theChildren [0].getp(), planState ))
   {
-    if (theChildren.size() == 2) 
+    if (theChildren.size() == 2)
     {
       consumeNext(itemPrec, theChildren[1].getp(), planState);
       assert(itemPrec->isAtomic());
@@ -398,7 +395,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().roundHalfToEven(precision));
 
-    //item type is subtype of INTEGER 
+    //item type is subtype of INTEGER
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     { /* do nothing */ }
     //item type is subtype of DECIMAL
@@ -480,7 +477,7 @@ public:
     PartInfo fractional_part;
     SubPictureInfo() { }
   } pos_subpicture, neg_subpicture;
-  
+
   FormatNumberInfo() :
     decimal_separator( "." ),
     grouping_separator( "," ),
@@ -493,7 +490,7 @@ public:
     minus( "-" )
   {
     utf8_string<zstring> u_per_mille( per_mille );
-    u_per_mille = 0x2030;    
+    u_per_mille = 0x2030;
   }
 
   void readFormat(const DecimalFormat_t& df_t)
@@ -572,7 +569,7 @@ static void parsePart(
   int zero_signs = 0;
   int start = fractional? 0 : (int)str.size()-1;
   int end = fractional? (int)str.size() : -1;
-  int delta = fractional? 1 : -1;  
+  int delta = fractional? 1 : -1;
   int first_digit_sign = -1;
   int last_zero_sign = -1;
   while (start != end)
@@ -614,7 +611,7 @@ static void parsePart(
         break;
       }
   }
- 
+
   part.minimum_size = zero_signs;
   if (!fractional &&
       zero_signs == 0 &&
@@ -656,7 +653,7 @@ static void parseSubpicture(
   for (int i = 0; i < chars; i++)
   {
     zstring::value_type ch = temp[i];
-    if (info.decimal_separator[0] == ch || info.grouping_separator[0] == ch || info.zero_digit[0] == ch 
+    if (info.decimal_separator[0] == ch || info.grouping_separator[0] == ch || info.zero_digit[0] == ch
       || info.digit_sign[0] == ch || info.pattern_separator[0] == ch || i == chars-1)
     {
       sub_picture.prefix = temp.substr(0, i);
@@ -669,7 +666,7 @@ static void parseSubpicture(
   for (int i=chars-1; i >= 0; i--)
   {
     zstring::value_type ch = temp[i];
-    if (info.decimal_separator[0] == ch || info.grouping_separator[0] == ch || info.zero_digit[0] == ch 
+    if (info.decimal_separator[0] == ch || info.grouping_separator[0] == ch || info.zero_digit[0] == ch
       || info.digit_sign[0] == ch || info.pattern_separator[0] == ch || i == 0)
     {
       sub_picture.suffix = temp.substr(i+1, chars-i-1);
@@ -689,7 +686,7 @@ static void parsePicture(zstring& picture, FormatNumberInfo& info)
     info.pos_subpicture.str = picture.substr(0, pos);
     info.neg_subpicture.str = picture.substr(pos+1, picture.size() - pos);
   }
-  else 
+  else
     info.pos_subpicture.str = picture;
 
   parseSubpicture(info.pos_subpicture, info);
@@ -709,7 +706,7 @@ static bool isAllowedType(store::Item* type_qname)
 {
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  if (type_qname->equals(rtm.XS_FLOAT_QNAME)     
+  if (type_qname->equals(rtm.XS_FLOAT_QNAME)
     || type_qname->equals(rtm.XS_DOUBLE_QNAME)
     || type_qname->equals(rtm.XS_DECIMAL_QNAME)
     || type_qname->equals(rtm.XS_INTEGER_QNAME)
@@ -762,8 +759,8 @@ static void formatGroupings(
     if (((grouping_index < part.grouping_pos.size()
         &&
         len-i-1 == part.grouping_pos[grouping_index])
-      || 
-      (part.N != -1 
+      ||
+      (part.N != -1
         &&
         len-1-i != 0
         &&
@@ -841,7 +838,7 @@ static void formatNumber(
   adjusted = adjusted.roundHalfToEven(Integer(sub_picture.fractional_part.maximum_size));
 
   zstring converted = adjusted.toString(true);
-  
+
   // process min sizes
   zstring integer_part;
   zstring fractional_part;
@@ -859,7 +856,7 @@ static void formatNumber(
   // Add zeros
   zstring temp = createZeros((int)(sub_picture.integer_part.minimum_size - integer_part.size()));
   temp.append(integer_part);
-  integer_part = temp;  
+  integer_part = temp;
   fractional_part.append(createZeros((int)(sub_picture.fractional_part.minimum_size - fractional_part.size())));
 
   // groupings
@@ -912,8 +909,9 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     info.loc = loc;
     if (!isAllowedType(result->getType()))
-      // TODO: needs type in error message
-      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_LOC(info.loc));
+    {
+      throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS("the first paramter to the format-number() function is of type \"" + result->getType()->getStringValue() + "\", which is not allowed"), ERROR_LOC(info.loc));
+    }
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);
 
@@ -921,32 +919,32 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(NULL);
     }
-    else 
+    else
     {
       do // use a do/while to avoid a horde of nested if/then/elses
       {
         // The formatName is a string, which must be interpreted as a QName -> must resolve the namespace, if any
         consumeNext(formatName, theChildren[2].getp(), planState);
-        zstring tmp = formatName->getStringValue();
+        zstring tmpFormatName = formatName->getStringValue();
         formatName = NULL;
-        if (tmp.find(':') ==  zstring::npos)
+        if (tmpFormatName.find(':') ==  zstring::npos)
         {
-          GENV_ITEMFACTORY->createQName(formatName, "", "", tmp);
+          GENV_ITEMFACTORY->createQName(formatName, "", "", tmpFormatName);
           break;
         }
 
         zstring ns;
-        zstring prefix = tmp.substr(0, tmp.find(':'));
+        zstring prefix = tmpFormatName.substr(0, tmpFormatName.find(':'));
         if (theSctx->lookup_ns(ns, prefix, loc, zerr::ZXQP0000_NO_ERROR))
         {
-          GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmp.substr(tmp.find(':')+1));
+          GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmpFormatName.substr(tmpFormatName.find(':')+1));
           break;
         }
 
-        // The prefix is not in the known namespaces, the only posibility left is to be invoked from an EnclosedIterator
-        if (planState.theNodeConstuctionPath.empty()) {
-          // SF bug #3284853: add ERROR_PARAMS() below with decimal format name
-          throw XQUERY_EXCEPTION(err::FODF1280, ERROR_LOC(loc));
+        // The prefix is not in the known namespaces, the only posibility left is for the function to be invoked from an EnclosedIterator
+        if (planState.theNodeConstuctionPath.empty())
+        {
+          throw XQUERY_EXCEPTION(err::FODF1280, ERROR_PARAMS(tmpFormatName), ERROR_LOC(loc));
         }
 
         store::NsBindings bindings;
@@ -954,7 +952,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         for (unsigned int i=0; i<bindings.size(); i++)
           if (prefix == bindings[i].first)
           {
-            GENV_ITEMFACTORY->createQName(formatName, bindings[i].second, prefix, tmp.substr(tmp.find(':')+1));
+            GENV_ITEMFACTORY->createQName(formatName, bindings[i].second, prefix, tmpFormatName.substr(tmpFormatName.find(':')+1));
             break;
           }
 
@@ -972,7 +970,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         );
 
     } // if (theChildren.size() < 3)
-  
+
     info.readFormat(df_t);
 
     pictureString = pictureItem->getStringValue();
