@@ -596,9 +596,11 @@ MACRO (ADD_XQDOC_TARGETS)
       COMMENT "Building XQDoc XML documentation for ${PROJECT_NAME} module..."
   )
   #SET_TARGET_PROPERTIES(xqdoc-xml-${PROJECT_NAME} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
-  ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} zorba_simplestore)
-  ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} xqdoc-xml)
-  ADD_DEPENDENCIES(xqdoc xqdoc-xml-${PROJECT_NAME})
+  IF(TARGET xqdoc-xml)
+    ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} zorba_simplestore)
+    ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} xqdoc-xml)
+    ADD_DEPENDENCIES(xqdoc xqdoc-xml-${PROJECT_NAME})
+  ENDIF(TARGET xqdoc-xml)
 
   SET(ZORBA_XHTML_REQUISITES_PATH ${Zorba_DIR}/xqdoc/requisites CACHE PATH "Dir where to the html requisites are stored")
   ADD_CUSTOM_TARGET(xqdoc-${PROJECT_NAME}
@@ -613,8 +615,8 @@ MACRO (ADD_XQDOC_TARGETS)
       -e "\"zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}\""
       COMMENT "Building XQDoc documentation for the ${PROJECT_NAME} module ..."
   )
-  ADD_DEPENDENCIES(xqdoc-${PROJECT_NAME} xqdoc-xml-${PROJECT_NAME} zorba_simplestore)
-  SET_TARGET_PROPERTIES(xqdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+  ADD_DEPENDENCIES(xqdoc-${PROJECT_NAME} xqdoc-xml-${PROJECT_NAME})
+  SET_TARGET_PROPERTIES(xqdoc-${PROJECT_NAME} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 
 ENDMACRO(ADD_XQDOC_TARGETS)
 
