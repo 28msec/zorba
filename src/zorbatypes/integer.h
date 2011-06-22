@@ -205,7 +205,7 @@ private:
   bool is_xs_ulong() const;
 
   static value_type ftoi( double d ) {
-    return d >= 0 ? floor( d ) : ceil( d );
+    return value_type( d >= 0 ? floor( d ) : ceil( d ) );
   }
 
 #ifdef ZORBA_WITH_BIG_INTEGER
@@ -265,17 +265,33 @@ inline Integer::Integer( unsigned int n ) : value_( static_cast<long>( n ) ) {
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-inline Integer::Integer( unsigned long n ) : value_( n ) {
+inline Integer::Integer( unsigned long n ) :
+  value_( static_cast<value_type>( n ) )
+{
 }
 
-inline Integer::Integer( unsigned long long n ) : value_( n ) {
+inline Integer::Integer( unsigned long long n ) :
+  value_( static_cast<value_type>( n ) )
+{
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-inline Integer::Integer( float n ) : value_( (double)n ) {
+inline Integer::Integer( float n ) :
+#ifdef ZORBA_WITH_BIG_INTEGER
+  value_( static_cast<double>( n ) )
+#else
+  value_( static_cast<value_type>( n ) )
+#endif /* ZORBA_WITH_BIG_INTEGER */
+{
 }
 
-inline Integer::Integer( double n ) : value_( n ) {
+inline Integer::Integer( double n ) :
+#ifdef ZORBA_WITH_BIG_INTEGER
+  value_( n )
+#else
+  value_( static_cast<value_type>( n ) )
+#endif /* ZORBA_WITH_BIG_INTEGER */
+{
 }
 
 inline Integer::Integer( char const *s ) {
