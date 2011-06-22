@@ -100,7 +100,7 @@ void ForIterator::accept(PlanIterVisitor& v) const
   v.beginVisitFlworForVariable(theVarName->getStringValue(),
                                theVarRefs,
                                thePosVarRefs);
-  v.endVisitFlworLetVariable();
+  v.endVisitFlworForVariable();
 
   theChild0->accept(v); 
   theChild1->accept(v); 
