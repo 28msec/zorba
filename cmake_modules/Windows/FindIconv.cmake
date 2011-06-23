@@ -27,4 +27,9 @@
 #
 # See the FindIconv.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32(Iconv iconv)
+FIND_PACKAGE_WIN32 (Iconv iconv)
+
+# Find the needed DLL's
+IF (ICONV_FOUND)
+  FIND_PACKAGE_DLLS_WIN32 (iconv.dll)
+ENDIF (ICONV_FOUND)

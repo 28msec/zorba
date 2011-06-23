@@ -29,4 +29,9 @@
 #
 # See the FindICU.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32(ICU icu)
+FIND_PACKAGE_WIN32 (ICU icu)
+
+# Find the needed DLL's
+IF (ICU_FOUND)
+  FIND_PACKAGE_DLLS_WIN32 ("icudt44.dll;icuin44.dll;icuuc44.dll")
+ENDIF (ICU_FOUND)

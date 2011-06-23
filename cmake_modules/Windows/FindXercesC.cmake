@@ -28,3 +28,8 @@
 # See the FindXercesC.cmake module shipped with Zorba for more information.
 
 FIND_PACKAGE_WIN32(XercesC xerces)
+
+# Find the needed DLL's
+IF (XERCESC_FOUND)
+  FIND_PACKAGE_DLLS_WIN32 (xerces-c_3_1.dll)
+ENDIF (XERCESC_FOUND)

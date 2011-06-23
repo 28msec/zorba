@@ -185,6 +185,13 @@ ELSE(_clock_gettime_in_rt)
   CHECK_FUNCTION_EXISTS(clock_gettime   ZORBA_HAVE_CLOCKGETTIME_FUNCTION)
 ENDIF(_clock_gettime_in_rt)
 
+IF (WIN32)
+  # The following required libraries need to gather the DLL's and the paths to them:
+  # LibXml2, cURL, Iconv, ICU, XercesC
+  SET(ZORBA_REQUIRED_DLLS)
+  SET(ZORBA_REQUIRED_DLL_PATHS)
+ENDIF (WIN32)
+
 #
 # TcMalloc support
 #
@@ -280,13 +287,13 @@ IF(WIN32)
   MESSAGE(STATUS "Looking for Iconv")
   FIND_PACKAGE(Iconv REQUIRED)
 
-  IF(Iconv_FOUND)
+  IF(ICONV_FOUND)
     MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARY})
     INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
     SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
-  ELSE(Iconv_FOUND)
+  ELSE(ICONV_FOUND)
     MESSAGE(STATUS "The Iconv library was not found.")
-  ENDIF(Iconv_FOUND)
+  ENDIF(ICONV_FOUND)
 ENDIF(WIN32)
 
 #

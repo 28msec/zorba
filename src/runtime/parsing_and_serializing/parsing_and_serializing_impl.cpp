@@ -255,39 +255,3 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 }
 
 } /* namespace zorba */
-
-
-///*******************************************************************************
-//  Zorba-defined parse function
-//********************************************************************************/
-//bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-//{
-//  store::Store& lStore = GENV.getStore();
-//  zstring docString;
-//  zstring baseUri = theSctx->get_base_uri();
-//  zstring docUri;
-//  std::auto_ptr<std::istringstream> iss;
-//
-//  PlanIteratorState* state;
-//  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-//
-//  consumeNext(result, theChildren[0].getp(), planState);
-//
-//  result->getStringValue2(docString);
-//  iss.reset(new std::istringstream(docString.c_str()));
-//
-//  try 
-//  {
-//    store::LoadProperties loadProps;
-//    loadProps.setStoreDocument(false);
-//    result = lStore.loadDocument(baseUri, docUri, *iss, loadProps);
-//  }
-//  catch (error::ZorbaError& e)
-//  {
-//    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-//  }
-//
-//  STACK_PUSH(true, state);
-//  STACK_END (state);
-//}
-/* vim:set et sw=2 ts=2: */

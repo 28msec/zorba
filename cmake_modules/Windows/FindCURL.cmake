@@ -28,3 +28,8 @@
 # See the FindCURL.cmake module shipped with CMake for more information.
 
 FIND_PACKAGE_WIN32(CURL curl)
+
+# Find the needed DLL's
+IF (CURL_FOUND)
+  FIND_PACKAGE_DLLS_WIN32 ("curllib.dll;libeay32.dll;openldap.dll;ssleay32.dll")
+ENDIF (CURL_FOUND)
