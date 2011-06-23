@@ -26,6 +26,10 @@
  : The actual type of each attribute can be determined when the
  : map is created. The value can be an arbitrary sequence
  : of items.
+ :
+ : @author Matthias Brantner
+ :
+ : @project store/data structures
  :)
 module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
