@@ -29,40 +29,41 @@
 #
 # See the FindICU.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32 (ICU icu)
+FIND_PACKAGE_WIN32 (ICU ICU_FOUND icu)
 
-
-#Find ICU version
-FIND_FILE (
-  ICU_INFO_EXE
-  icuinfo.exe
-  PATHS "${CMAKE_PREFIX_PATH}"
-  PATH_SUFFIXES "bin"
-  NO_DEFAULT_PATH
-)
-
-EXECUTE_PROCESS (COMMAND "${ICU_INFO_EXE}" OUTPUT_VARIABLE INFO)
-STRING (REGEX REPLACE "\n" ";" LINES ${INFO})
-FOREACH (LINE ${LINES})
-  IF (LINE MATCHES "Runtime-Version: ")
-    STRING (REPLACE "Runtime-Version: " "" VERSION ${LINE})
-  ENDIF (LINE MATCHES "Runtime-Version: ")
-ENDFOREACH (LINE)
-
-STRING (REPLACE "." ";" PARTS ${VERSION})
-
-LIST (GET PARTS 0 MAJOR_VERSION)
-LIST (GET PARTS 1 MINOR_VERSION)
-SET (DLL_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
-
-SET (DLL_NAMES
-  "icudt${DLL_VERSION}.dll"
-  "icuin${DLL_VERSION}.dll"
-  "icuuc${DLL_VERSION}.dll"
-)
-
-
-# Find the needed DLL's
 IF (ICU_FOUND)
-  FIND_PACKAGE_DLLS_WIN32 ("${DLL_NAMES}")
+
+  # find ICU version
+  FIND_FILE (
+    ICU_INFO_EXE
+    icuinfo.exe
+    PATHS "${FOUND_LOCATION}"
+    # add more suffixes if necessary
+    PATH_SUFFIXES "bin" "bin/Release"
+    NO_DEFAULT_PATH
+  )
+
+  EXECUTE_PROCESS (COMMAND "${ICU_INFO_EXE}" OUTPUT_VARIABLE INFO)
+  STRING (REGEX REPLACE "\n" ";" LINES ${INFO})
+  FOREACH (LINE ${LINES})
+    IF (LINE MATCHES "Runtime-Version: ")
+      STRING (REPLACE "Runtime-Version: " "" VERSION ${LINE})
+    ENDIF (LINE MATCHES "Runtime-Version: ")
+  ENDFOREACH (LINE)
+
+  STRING (REPLACE "." ";" PARTS ${VERSION})
+
+  LIST (GET PARTS 0 MAJOR_VERSION)
+  LIST (GET PARTS 1 MINOR_VERSION)
+  SET (DLL_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
+
+  SET (DLL_NAMES
+    "icudt${DLL_VERSION}.dll"
+    "icuin${DLL_VERSION}.dll"
+    "icuuc${DLL_VERSION}.dll"
+  )
+
+  # find the needed DLL's
+  FIND_PACKAGE_DLLS_WIN32 (${FOUND_LOCATION} "${DLL_NAMES}")
+
 ENDIF (ICU_FOUND)

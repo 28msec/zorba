@@ -16,8 +16,24 @@ IF (NOT WIN32)
   MESSAGE (FATAL_ERROR "This module is intended only for Windows platforms.")
 ENDIF (NOT WIN32)
 
+
+MACRO (GET_STARS VAR_NAME)
+  SET (${VAR_NAME} "****************************************")
+ENDMACRO (GET_STARS)
+
+
+MACRO (PRINT_FIND_END_TITLE MODULE_NAME LOCATION_VAR)
+  IF (${LOCATION_VAR})
+    MESSAGE (STATUS "************* DONE (found) *************")
+    MESSAGE (STATUS "Using ${MODULE_NAME} from: ${${LOCATION_VAR}}")
+  ELSE (${LOCATION_VAR})
+    MESSAGE (STATUS "*********** DONE (not found) ***********")
+  ENDIF (${LOCATION_VAR})
+ENDMACRO (PRINT_FIND_END_TITLE MODULE_NAME)
+
+
 MACRO (PRINT_FIND_TITLE MODULE_NAME)
-  SET (STARS "****************************************")
+  GET_STARS ("STARS")
   STRING (LENGTH "${STARS}" STARSLEN)
   STRING (LENGTH "Zorba Find${MODULE_NAME}" TITLELEN)
   MATH (EXPR LEN "(${STARSLEN} - ${TITLELEN} - 2) / 2")
@@ -28,19 +44,34 @@ MACRO (PRINT_FIND_TITLE MODULE_NAME)
     SET (POSTSTARS "${PRESTARS}*")
   ENDIF (NOT(TOTALLEN EQUAL STARSLEN))
 
-  MESSAGE (STATUS ${STARS})
+  MESSAGE (STATUS "${STARS}")
   MESSAGE (STATUS "${PRESTARS} Zorba Find${MODULE_NAME} ${POSTSTARS}")
-  MESSAGE (STATUS ${STARS})
+  MESSAGE (STATUS "${STARS}")
 ENDMACRO (PRINT_FIND_TITLE MODULE_NAME)
 
 
-MACRO (FIND_PACKAGE_WIN32 MODULE_NAME SEARCH_NAMES)
+# This macro will try to find a third party library on Windows.
+# Parameters:
+#  MODULE_NAME  - the XXX in the FindXXX.cmake that is used for search
+#    e.g.: "ICU" when trying to find ICU with FindICU.cmake
+#  FOUND_VAR    - the variable the FindXXX.cmake module sets if the library is found
+#    e.g.: "XERCESC_FOUND" when trying to find XercesC
+#  SEARCH_NAMES - a list of possible directory name fragments that this library can have
+#    e.g.: "icu;i_c_u;uci"
+#
+# Once done this will define:
+#  FOUND_LOCATION - The directory where the library was found
+#
+MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
 
   IF (NOT WIN32)
     MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
 
   PRINT_FIND_TITLE (${MODULE_NAME})
+  
+  # reset the output variable where the target library is found
+  SET (FOUND_LOCATION)
 
   # if not already provided add the program files directory
   SET (SEARCH_PATHS ${ZORBA_THIRD_PARTY_REQUIREMENTS})
@@ -60,12 +91,14 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME SEARCH_NAMES)
   # search the SEARCH_PATHS for folders containing one of the names in SEARCH_NAMES
   FILE (GLOB MATCHED_DIRS ${PATH_REGEX})
 
-  # the list of found directories will be added to the paths CMAKE_PREFIX_PATH and
+  # the list to gather all the prefix paths to be searched
+  SET (LIST_CMAKE_PREFIX_PATH)
+
+  # the list of found directories will be added to the paths LIST_CMAKE_PREFIX_PATH and
   # thus will be used by the real Find${MODULE_NAME}.cmake module
-  SET (CMAKE_PREFIX_PATH)
   FOREACH (DIR ${MATCHED_DIRS})
     MESSAGE (STATUS "${MODULE_NAME} will be searched for in: [ZORBA_THIRD_PARTY_REQUIREMENTS] ${DIR}")
-    SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${DIR})
+    SET (LIST_CMAKE_PREFIX_PATH ${LIST_CMAKE_PREFIX_PATH} ${DIR})
   ENDFOREACH (DIR)
 
   # add all the paths from the PATH environment variable that contain one of the names in SEARCH_NAMES
@@ -79,23 +112,23 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME SEARCH_NAMES)
       IF ("${LC_PATH}" MATCHES ".*${LC_NAME}.*")
         IF (EXISTS "${PATH}/include")
           MESSAGE (STATUS "${MODULE_NAME} will be searched for in: [PATH environment variable] ${PATH}")
-          SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${PATH})
+          SET (LIST_CMAKE_PREFIX_PATH ${LIST_CMAKE_PREFIX_PATH} ${PATH})
         ELSEIF (EXISTS "${PATH}/../include")
           MESSAGE (STATUS "${MODULE_NAME} will be searched for in: [PATH environment variable] ${PATH}/..")
-          SET (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${PATH}/..)
+          SET (LIST_CMAKE_PREFIX_PATH ${LIST_CMAKE_PREFIX_PATH} ${PATH}/..)
         ENDIF (EXISTS "${PATH}/include")
       ENDIF ("${LC_PATH}" MATCHES ".*${LC_NAME}.*")
     ENDFOREACH (NAME)
   ENDFOREACH (PATH)
 
   # print some help
-  IF (NOT CMAKE_PREFIX_PATH)
+  IF (NOT LIST_CMAKE_PREFIX_PATH)
     MESSAGE (STATUS "No candidate ${MODULE_NAME} directory was found in the paths: ${SEARCH_PATHS};%PATH%")
     MESSAGE (STATUS "You might wanna check:")
     MESSAGE (STATUS "  1. Did you set ZORBA_THIRD_PARTY_REQUIREMENTS properly?")
     MESSAGE (STATUS "  2. Is your ${MODULE_NAME} directory matching one of the search names: ${SEARCH_NAMES} ?")
     MESSAGE (STATUS "  3. Is ${MODULE_NAME} or its \"bin\" directory in the PATH environment variable?")
-  ENDIF (NOT CMAKE_PREFIX_PATH)
+  ENDIF (NOT LIST_CMAKE_PREFIX_PATH)
 
   # remove the Windows module path (both from Zorba or the external modules)
   # to avoid an infinite recursion
@@ -105,16 +138,34 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME SEARCH_NAMES)
     ENDIF ("${PATH}" MATCHES ".*/cmake_modules/Windows")
   ENDFOREACH (PATH)
 
-  # call the real Find${MODULE_NAME}.cmake module
-  FIND_PACKAGE (${MODULE_NAME})
+  # before we start searching, we save the old CMAKE_PREFIX_PATH
+  SET (OLD_CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH})
+  
+  # now try to find the module for each path in LIST_CMAKE_PREFIX_PATH
+  FOREACH(PATH ${LIST_CMAKE_PREFIX_PATH})
+    # set the CMAKE_PREFIX_PATH to the probed path
+    SET (CMAKE_PREFIX_PATH ${PATH})
+
+    # call the real Find${MODULE_NAME}.cmake module
+    FIND_PACKAGE (${MODULE_NAME})
+    
+    IF (${FOUND_VAR})
+      SET (FOUND_LOCATION ${CMAKE_PREFIX_PATH})
+      BREAK ()
+    ENDIF (${FOUND_VAR})
+  ENDFOREACH(PATH)
+
+  PRINT_FIND_END_TITLE (${MODULE_NAME} FOUND_LOCATION)
 
   # restore the module path
   SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows ${CMAKE_MODULE_PATH})
+  # restore the prefix path
+  SET (CMAKE_PREFIX_PATH ${OLD_CMAKE_PREFIX_PATH})
 
 ENDMACRO (FIND_PACKAGE_WIN32)
 
 
-MACRO(FIND_PACKAGE_DLLS_WIN32 DLL_NAMES)
+MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
 
   IF (NOT WIN32)
     MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
@@ -125,8 +176,8 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 DLL_NAMES)
     FIND_FILE (
       ${NAME}
       "${NAME}"
-      PATHS "${CMAKE_PREFIX_PATH}"
-      PATH_SUFFIXES "bin"
+      PATHS "${LIBRARY_LOCATION}"
+      PATH_SUFFIXES "bin" "bin/Release" 
       NO_DEFAULT_PATH
     )
     SET(FOUND_DLL "${${NAME}}")
@@ -138,7 +189,7 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 DLL_NAMES)
       FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
       LIST (APPEND ZORBA_REQUIRED_DLL_PATHS "${NATIVE_PATH}")
     ELSE (FOUND_DLL AND EXISTS ${FOUND_DLL})
-      MESSAGE (WARNING "${NAME} was not found in: ${CMAKE_PREFIX_PATH}. Zorba will not run unless you have it in the path.")
+      MESSAGE (WARNING "${NAME} was not found in: ${LIBRARY_LOCATION}. Zorba will not run unless you have it in the path.")
     ENDIF (FOUND_DLL AND EXISTS ${FOUND_DLL})
     
   ENDFOREACH (NAME)

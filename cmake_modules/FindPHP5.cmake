@@ -17,6 +17,7 @@
 # and libraries are. It also determines what the name of the library is. This
 # code sets the following variables:
 #
+#  PHP5_FOUND              = system has PHP5
 #  PHP5_INCLUDE_PATH       = path to where php.h can be found
 #  PHP5_EXECUTABLE         = full path to the php5 binary
 #

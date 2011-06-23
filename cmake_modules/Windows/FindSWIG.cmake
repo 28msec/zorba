@@ -16,4 +16,4 @@
 #
 # TODO: correct description missing
 
-FIND_PACKAGE_WIN32(SWIG swig)
+FIND_PACKAGE_WIN32(SWIG SWIG_FOUND swig)

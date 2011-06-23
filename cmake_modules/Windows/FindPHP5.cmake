@@ -16,4 +16,4 @@
 #
 # TODO: correct description missing
 
-FIND_PACKAGE_WIN32(PHP5 php)
+FIND_PACKAGE_WIN32(PHP5 PHP5_FOUND php)

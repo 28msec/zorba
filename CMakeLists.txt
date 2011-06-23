@@ -234,6 +234,7 @@ IF(LIBXML2_FOUND)
 ELSE(LIBXML2_FOUND)
   MESSAGE(FATAL_ERROR "The libxml2 library and headers are required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
+MESSAGE(STATUS "")
 
 #
 #  LibXslt
@@ -250,6 +251,7 @@ IF(ZORBA_XQUERYX)
   ELSE(LIBXSLT_FOUND)
     MESSAGE(FATAL_ERROR "The libxslt library is required in order to build zorba with xqueryx capabilities.")
   ENDIF(LIBXSLT_FOUND)
+  MESSAGE(STATUS "")
 ENDIF(ZORBA_XQUERYX)
 
 #
@@ -278,6 +280,7 @@ ELSE(ZORBA_SUPPRESS_CURL)
   ELSE(CURL_FOUND)
     MESSAGE(STATUS "The cURL library was not found.")
   ENDIF(CURL_FOUND)
+  MESSAGE(STATUS "")
 ENDIF(ZORBA_SUPPRESS_CURL)
 
 #
@@ -294,6 +297,7 @@ IF(WIN32)
   ELSE(ICONV_FOUND)
     MESSAGE(STATUS "The Iconv library was not found.")
   ENDIF(ICONV_FOUND)
+  MESSAGE(STATUS "")
 ENDIF(WIN32)
 
 #
@@ -310,12 +314,14 @@ IF(ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
 ELSE(ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
   MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
 ENDIF(ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)       
+MESSAGE(STATUS "")
 
 #
 # Xerces-C part 1 - finding in default locations
 #
 MESSAGE(STATUS "Looking for Xerces-C")
 FIND_PACKAGE(XercesC)
+MESSAGE(STATUS "")
 
 #
 # SWIG
@@ -335,6 +341,7 @@ IF(ZORBA_USE_SWIG)
 ELSE(ZORBA_USE_SWIG)
   MESSAGE(STATUS "SWIG is disabled => no language bindings are generated.")  
 ENDIF(ZORBA_USE_SWIG)
+MESSAGE(STATUS "")
 
 
 LIST(APPEND requiredlibs ${requiredlibs-store})
