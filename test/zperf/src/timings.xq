@@ -2,6 +2,9 @@ module namespace tims = 'http://www.example.com/timings';
 
 import module namespace functx = "http://www.functx.com/"; 
 
+declare namespace pdash = "http://www.28msec.com/pdash";
+
+
 declare function tims:getFirstNumber ($string as xs:string, $firstDelimiter as xs:string, $secondDelimiter as xs:string) as xs:float
 {
   let $tempString := tims:substring-after-last($string, $firstDelimiter)
@@ -39,30 +42,41 @@ declare function tims:substring-after-last($arg as xs:string?, $delim as xs:stri
 
 
 declare function tims:parseTimings ($string as xs:string) 
-  as xs:float+
 {
-    let $numberOfExecutions     := tims:getFirstNumberEx (fn:trace($string,"input"), 'Number of executions', 'Engine')
+    (: let $numberOfExecutions     := tims:getFirstNumberEx (fn:trace($string,"input"), 'Number of executions', 'Engine') :)
 
     let $engineStartupTime      := tims:getFirstNumber ($string, 'Engine Startup Time',     'Average Compilation Time')
-    let $engineStartupTimeUser  := tims:getSecondNumber($string, 'Engine Startup Time',     'Average Compilation Time')
+    (: let $engineStartupTimeUser  := tims:getSecondNumber($string, 'Engine Startup Time',     'Average Compilation Time') :)
     let $avgCompilationTime     := tims:getFirstNumber ($string, 'Average Compilation Time','Average Execution Time')
-    let $avgCompilationTimeUser := tims:getSecondNumber($string, 'Average Compilation Time','Average Execution Time')
+    (: let $avgCompilationTimeUser := tims:getSecondNumber($string, 'Average Compilation Time','Average Execution Time') :)
     let $avgExecutionTime       := tims:getFirstNumber ($string, 'Average Execution Time',  'Average Loading Time')
-    let $avgExecutionTimeUser   := tims:getSecondNumber($string, 'Average Execution Time',  'Average Loading Time')
+    (: let $avgExecutionTimeUser   := tims:getSecondNumber($string, 'Average Execution Time',  'Average Loading Time') :)
     let $avgLoadingTime         := tims:getFirstNumber ($string, 'Average Loading Time',    'Average Unloading Time')
-    let $avgLoadingTimeUser     := tims:getSecondNumber($string, 'Average Loading Time',    'Average Unloading Time')
+    (: let $avgLoadingTimeUser     := tims:getSecondNumber($string, 'Average Loading Time',    'Average Unloading Time') :)
     let $avgUnloadingTime       := tims:getFirstNumber ($string, 'Average Unloading Time',  'Average Total Time')
-    let $avgUnloadingTimeUser   := tims:getSecondNumber($string, 'Average Unloading Time',  'Average Total Time')
+    (: let $avgUnloadingTimeUser   := tims:getSecondNumber($string, 'Average Unloading Time',  'Average Total Time') :)
     let $avgTotalTime           := tims:getFirstNumber ($string, 'Average Total Time',      'Engine Shutdown Time')
-    let $avgTotalTimeUser       := tims:getSecondNumber($string, 'Average Total Time',      'Engine Shutdown Time')
+    (: let $avgTotalTimeUser       := tims:getSecondNumber($string, 'Average Total Time',      'Engine Shutdown Time') :)
     let $engineShutdownTime     := tims:getFirstNumber ($string, 'Engine Shutdown Time',    'milliseconds')
-    let $engineShutdownTimeUser := tims:getSecondNumber($string, 'Engine Shutdown Time',    'milliseconds')
+    (: let $engineShutdownTimeUser := tims:getSecondNumber($string, 'Engine Shutdown Time',    'milliseconds') 
     
     return ($numberOfExecutions, 
             $engineStartupTime, $engineStartupTimeUser, $avgCompilationTime, $avgCompilationTimeUser,
             $avgExecutionTime, $avgExecutionTimeUser, $avgLoadingTime, $avgLoadingTimeUser, 
             $avgUnloadingTime, $avgUnloadingTimeUser, $avgTotalTime, $avgTotalTimeUser, 
             $engineShutdownTime, $engineShutdownTimeUser)
+    :)
+    
+    return 
+      <pdash:measurements>
+        <pdash:engineStartupTime>{$engineStartupTime}</pdash:engineStartupTime>
+        <pdash:avgCompilationTime>{$avgCompilationTime}</pdash:avgCompilationTime>
+        <pdash:avgExecutionTime>{$avgExecutionTime}</pdash:avgExecutionTime>
+        <pdash:avgLoadingTime>{$avgLoadingTime}</pdash:avgLoadingTime>
+        <pdash:avgUnloadingTime>{$avgUnloadingTime}</pdash:avgUnloadingTime>
+        <pdash:avgTotalTime>{$avgTotalTime}</pdash:avgTotalTime>
+        <pdash:engineShutdownTime>{$engineShutdownTime}</pdash:engineShutdownTime>
+      </pdash:measurements>
 };
 
 
