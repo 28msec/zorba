@@ -95,8 +95,8 @@ inline ft_int to_ft_int( xs_integer const &i ) {
  * @param s The stack to push onto.
  * @param p A pointer to the object to push.
  */
-template<typename StackValueType,typename PointedToType>
-inline void push( std::stack<StackValueType> &s, std::auto_ptr<PointedToType> p ) {
+template<typename StackValueType,typename PointedToType> inline
+void push( std::stack<StackValueType> &s, std::auto_ptr<PointedToType> p ) {
   s.push( p.get() );
   p.release();
 }
@@ -159,6 +159,8 @@ ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
 ftcontains_visitor::~ftcontains_visitor() {
   while ( !matches_stack_.empty() )
     delete POP( matches_stack_ );
+  while ( !options_stack_.empty() )
+    delete POP( options_stack_ );
 }
 
 void ftcontains_visitor::eval_ftrange( ftrange const &range,

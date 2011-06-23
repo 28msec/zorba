@@ -696,6 +696,11 @@ TranslatorImpl(
   }
 }
 
+~TranslatorImpl() {
+  while ( !theFTNodeStack.empty() )
+    delete ztd::pop_stack( theFTNodeStack );
+}
+
 
 const QName* getDotVarName() const
 {
