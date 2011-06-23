@@ -86,8 +86,6 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   theCollections       : Container which contains the collections of the store.
                          It includes a map that maps the qname of each collection
                          to the collection's container object.
-  theUriCollections    : A hashmap that for each W3C collection, maps the URI
-                         of the collection to the collection container object.
   theIndices           : A hashmap that for each index, maps the qname of the
                          index to the index container object.
   theICs               : A hashmap the for each integrity constraint, maps the
@@ -136,7 +134,6 @@ protected:
 
   DocumentSet                   theDocuments;
   CollectionSet*                theCollections;
-  UriCollectionSet              theUriCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;
   IndexSet                      theHashMaps;
@@ -182,12 +179,6 @@ public:
   ulong createCollectionId();
 
   ulong createTreeId();
-
-  store::Collection_t createUriCollection(const zstring& uri);
-
-  store::Collection_t getUriCollection(const zstring& uri);
-
-  void deleteUriCollection(const zstring& uri);
 
   store::Collection_t createCollection(
       store::Item_t& aName,

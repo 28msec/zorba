@@ -95,7 +95,6 @@ SimpleStore::SimpleStore()
   thePULFactory(NULL),
   theDocuments(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(0),
-  theUriCollections(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
@@ -273,8 +272,6 @@ void SimpleStore::shutdown(bool soft)
       destroyCollectionSet(theCollections);
       theCollections = NULL;
     }
-
-    theUriCollections.clear();
 
     theDocuments.clear();
 
@@ -889,72 +886,6 @@ SimpleStore::getMap(const store::Item* aQName) const
   const_cast<IndexSet*>(&theHashMaps)->get(lQName, lIndex);
 
   return lIndex.getp();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Collection_t SimpleStore::createUriCollection(const zstring& uri)
-{
-  if (uri.empty())
-    return NULL;
-
-  store::Item_t uriItem;
-  zstring tmpuri(uri);
-  theItemFactory->createAnyURI(uriItem, tmpuri);
-
-  store::Collection_t collection(new SimpleCollection(uriItem));
-
-  zstring_b urib;
-  urib.wrap_memory(uri.data(), uri.size());
-
-  bool inserted = theUriCollections.insert(urib, collection);
-
-  if (!inserted)
-  {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0008_COLLECTION_ALREADY_EXISTS, ERROR_PARAMS( uri )
-    );
-  }
-
-  return collection;
-}
-
-
-store::Collection_t SimpleStore::getUriCollection(const zstring& uri)
-{
-  if (uri.empty())
-    return NULL;
-
-  store::Collection_t collection;
-
-  zstring_b urib;
-  urib.wrap_memory(uri.data(), uri.size());
-
-  if (theUriCollections.get(urib, collection))
-    return collection.getp();
-  else
-    return NULL;
-}
-
-
-void SimpleStore::deleteUriCollection(const zstring& uri)
-{
-  if (uri.empty())
-    return;
-
-  zstring_b urib;
-  urib.wrap_memory(uri.data(), uri.size());
-
-  bool deleted = theUriCollections.remove(urib);
-
-  if (!deleted)
-  {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0009_COLLECTION_NOT_FOUND, ERROR_PARAMS( uri )
-    );
-  }
 }
 
 
