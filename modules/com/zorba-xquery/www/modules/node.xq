@@ -21,7 +21,7 @@
  : nodes (e.g. their level in the tree).
  :
  : @author Matthias Brantner
- : @project "XDM/node"
+ : @project XDM/node
  :)
 module namespace node = "http://www.zorba-xquery.com/modules/node";
 
