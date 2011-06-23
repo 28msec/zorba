@@ -4,24 +4,39 @@
 
 This is a list of issues that we are aware of but are not fixed in this version:
 
-1) floating-point precision problems.
-   For details see the following bugs:
-   - 2210842 (https://sourceforge.net/tracker2/?func=detail&aid=2210842&group_id=226244&atid=1067586)
-   - 2210787 (https://sourceforge.net/tracker2/?func=detail&aid=2210787&group_id=226244&atid=1067586)
-   - 2210779 (https://sourceforge.net/tracker2/?func=detail&aid=2210779&group_id=226244&atid=1067586)
-   - 2204089 (https://sourceforge.net/tracker2/?func=detail&aid=2204089&group_id=226244&atid=1067586)
-   - 2210786 (https://sourceforge.net/tracker2/?func=detail&aid=2210786&group_id=226244&atid=1067586)
-   - 2205034 (https://sourceforge.net/tracker2/?func=detail&aid=2205034&group_id=226244&atid=1067586)
-   - 2210851 (https://sourceforge.net/tracker2/?func=detail&aid=2210851&group_id=226244&atid=1067586)
+* Floating-point precision problems.
+  For details, see the following bugs:
+  - 2210842 <https://sourceforge.net/tracker2/?func=detail&aid=2210842&group_id=226244&atid=1067586>
+  - 2210787 <https://sourceforge.net/tracker2/?func=detail&aid=2210787&group_id=226244&atid=1067586>
+  - 2210779 <https://sourceforge.net/tracker2/?func=detail&aid=2210779&group_id=226244&atid=1067586>
+  - 2204089 <https://sourceforge.net/tracker2/?func=detail&aid=2204089&group_id=226244&atid=1067586>
+  - 2210786 <https://sourceforge.net/tracker2/?func=detail&aid=2210786&group_id=226244&atid=1067586>
+  - 2205034 <https://sourceforge.net/tracker2/?func=detail&aid=2205034&group_id=226244&atid=1067586>
+  - 2210851 <https://sourceforge.net/tracker2/?func=detail&aid=2210851&group_id=226244&atid=1067586>
 
-2) Zorba uses ICU for the regular expressions that does not support range subtraction and unicode properties.
-   For details see the following bugs:
-   - 2210801 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210801&group_id=226244&atid=1067586)
+* When using the (now default) xs:integer representation of a C++ "long long",
+  the largest xs:unsignedLong values are not handled correctly.
+  For details, see the following bug:
+  - 3323548 <https://sourceforge.net/tracker/?func=detail&aid=3323548&group_id=226244&atid=1067586>
 
-3) If you link against ICU <= ICU 3.8.1 you can get wrong results when using \s to match a white space character.
-   For details please see following bug:
-   - 3155900 (https://sourceforge.net/tracker/?func=detail&aid=3155900&group_id=226244&atid=1067586)
+* Zorba uses ICU for regular expressions that does not support range
+  subtraction.
+  For details, see the following bug:
+  - 3150856 <https://sourceforge.net/tracker/?func=detail&aid=3150856&group_id=226244&atid=1067586>
 
-4) A known bug in Xerces versions before 3.0, when .xsd contains an any wildcard with namespace #others and the instance contains an element without a namespace there should still be an error, see Definitive XMLSchema by Priscilla Wamsley page 279. This was fixed in Xerses version 3+.
-   For the details please see following bug:
-   - 3137594 (https://sourceforge.net/tracker/index.php?func=detail&aid=3137594&group_id=226244&atid=1067586)
+* If you link against ICU <= 3.8.1, you can get wrong results when using \s to
+  match a white space character.
+  For details please, see following bug:
+  - 3155900 <https://sourceforge.net/tracker/?func=detail&aid=3155900&group_id=226244&atid=1067586>
+
+* A known bug in Xerces < 3.0, when an .xsd contains an any wildcard with
+  namespace #others and the instance contains an element without a namespace,
+  there should still be an error.  See "Definitive XMLSchema" by Priscilla
+  Wamsley, p. 279. This was fixed in Xerses > 3.0.
+  For details please, see following bug:
+  - 3137594 <https://sourceforge.net/tracker/index.php?func=detail&aid=3137594&group_id=226244&atid=1067586>
+
+* XQuery Full-Text is mostly, but not completely, implemented.
+  For details please, see following bugs:
+  - 3187470 <https://sourceforge.net/tracker/?func=detail&aid=3187470&group_id=226244&atid=1067586>
+  - 3187462 <https://sourceforge.net/tracker/?func=detail&aid=3187462&group_id=226244&atid=1067586>
