@@ -32,6 +32,7 @@
    version 2.2 of Bison.  */
 
 // Take the name prefix into account.
+#include "stdafx.h"
 #define yylex   zorbalex
 
 /* First part of user declarations.  */
