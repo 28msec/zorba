@@ -124,7 +124,7 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
   # print some help
   IF (NOT LIST_CMAKE_PREFIX_PATH)
     MESSAGE (STATUS "No candidate ${MODULE_NAME} directory was found in the paths: ${SEARCH_PATHS};%PATH%")
-    MESSAGE (STATUS "You might wanna check:")
+    MESSAGE (STATUS "You might want to check the following:")
     MESSAGE (STATUS "  1. Did you set ZORBA_THIRD_PARTY_REQUIREMENTS properly?")
     MESSAGE (STATUS "  2. Is your ${MODULE_NAME} directory matching one of the search names: ${SEARCH_NAMES} ?")
     MESSAGE (STATUS "  3. Is ${MODULE_NAME} or its \"bin\" directory in the PATH environment variable?")
