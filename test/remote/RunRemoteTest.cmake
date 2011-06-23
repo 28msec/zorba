@@ -117,6 +117,7 @@ execute_process (COMMAND
                  "${CMAKE_ZORBA_BUILD_DIR}/remotequeue/${changefile}"
                  "${svn_path}/workingsets/${changefile}"
                  TIMEOUT 300 RESULT_VARIABLE result)
+MESSAGE (FATAL_ERROR "${datetime}")
 
 if (NOT result STREQUAL 0)
   message ("Job failed to submit!")
