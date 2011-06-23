@@ -173,24 +173,27 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
 
   FOREACH (NAME ${DLL_NAMES})
 
+    # first delete the cache entry for DLL to make sure the correct one is chosen
+    SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+
+    # find now the DLL
     FIND_FILE (
-      ${NAME}
+      TMP_DLL_VAR
       "${NAME}"
       PATHS "${LIBRARY_LOCATION}"
       PATH_SUFFIXES "bin" "bin/Release" 
       NO_DEFAULT_PATH
     )
-    SET(FOUND_DLL "${${NAME}}")
-    
-    IF (FOUND_DLL AND EXISTS ${FOUND_DLL})
-      LIST (APPEND ZORBA_REQUIRED_DLLS "${FOUND_DLL}")
-      MESSAGE(STATUS "Added dll to ZORBA_REQUIRED_DLLS: ${${NAME}}")
-      STRING (REPLACE "/${NAME}" "" PATH "${FOUND_DLL}")
+
+    IF (TMP_DLL_VAR)
+      LIST (APPEND ZORBA_REQUIRED_DLLS "${TMP_DLL_VAR}")
+      MESSAGE(STATUS "Added dll to ZORBA_REQUIRED_DLLS: ${TMP_DLL_VAR}")
+      STRING (REPLACE "/${NAME}" "" PATH "${TMP_DLL_VAR}")
       FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
       LIST (APPEND ZORBA_REQUIRED_DLL_PATHS "${NATIVE_PATH}")
-    ELSE (FOUND_DLL AND EXISTS ${FOUND_DLL})
+    ELSE (TMP_DLL_VAR)
       MESSAGE (WARNING "${NAME} was not found in: ${LIBRARY_LOCATION}. Zorba will not run unless you have it in the path.")
-    ENDIF (FOUND_DLL AND EXISTS ${FOUND_DLL})
+    ENDIF (TMP_DLL_VAR)
     
   ENDFOREACH (NAME)
 
@@ -199,13 +202,20 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
     LIST(REMOVE_DUPLICATES ZORBA_REQUIRED_DLL_PATHS)
   ENDIF (${LEN} GREATER 0)
 
+  # make sure we don't leave garbage in the cache and don't influence other logic with this
+  SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+
 ENDMACRO(FIND_PACKAGE_DLLS_WIN32)
 
 
-MACRO (FIND_DLL DLL_NAME)
+MACRO (FIND_DLL_WIN32 DLL_NAME)
+
+  IF (NOT WIN32)
+    MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
+  ENDIF (NOT WIN32)
 
   # first delete the cache entry for DLL to make sure the correct one is chosen
-  SET (${DLL_NAME}_VAR ${DLL_NAME}_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+  SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
 
   # try to find ${DLL_NAME} somewhere
   # the search order is:
@@ -213,7 +223,7 @@ MACRO (FIND_DLL DLL_NAME)
   #.  2. all the third paty library directory hints (ZORBA_THIRD_PARTY_REQUIREMENTS)
   #.  3. the paths in the PATH environment variable (ENV{PATH})
   FIND_FILE (
-    ${DLL_NAME}_VAR
+    TMP_DLL_VAR
     ${DLL_NAME}
     PATHS
       ${ZORBA_REQUIRED_DLL_PATHS}
@@ -222,16 +232,19 @@ MACRO (FIND_DLL DLL_NAME)
     NO_DEFAULT_PATH
   )
 
-  IF (${DLL_NAME}_VAR)
+  IF (TMP_DLL_VAR)
     MESSAGE (STATUS "Found ${DLL_NAME}")
-    LIST (APPEND ZORBA_REQUIRED_DLLS "${${DLL_NAME}_VAR}")
-    STRING (REPLACE "/${DLL_NAME}" "" PATH "${${DLL_NAME}_VAR}")
+    LIST (APPEND ZORBA_REQUIRED_DLLS "${TMP_DLL_VAR}")
+    STRING (REPLACE "/${DLL_NAME}" "" PATH "${TMP_DLL_VAR}")
     FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
     LIST (APPEND ZORBA_REQUIRED_DLL_PATHS "${NATIVE_PATH}")
-    MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS: ${${DLL_NAME}_VAR}")
-  ELSE (${DLL_NAME}_VAR)
+    MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS: ${TMP_DLL_VAR}")
+  ELSE (TMP_DLL_VAR)
     MESSAGE (STATUS "Did not find ${DLL_NAME}")
     MESSAGE (WARNING "You will not be able to run zorba unless you have ${DLL_NAME} in your path.")
-  ENDIF (${DLL_NAME}_VAR)
+  ENDIF (TMP_DLL_VAR)
 
-ENDMACRO (FIND_DLL)
+  # make sure we don't leave garbage in the cache and don't influence other logic with this
+  SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+
+ENDMACRO (FIND_DLL_WIN32)

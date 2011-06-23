@@ -31,10 +31,25 @@ FIND_PACKAGE_WIN32(XercesC XERCESC_FOUND xerces)
 
 IF (XERCESC_FOUND)
 
+MESSAGE (STATUS "${FOUND_LOCATION}+++++++++++++++++")
+
+  FILE (GLOB_RECURSE XDLLS RELATIVE "${FOUND_LOCATION}" "${FOUND_LOCATION}/*.dll")
+  SET(REGEX ".*/(xerces-c_._.\\.dll)")
+  FOREACH (DLL ${XDLLS})
+    IF (DLL MATCHES ${REGEX})
+      STRING(REGEX REPLACE ".*/(xerces-c_._.\\.dll)$" "\\1" XERCES_DLL ${DLL})
+      BREAK ()
+    ENDIF (DLL MATCHES ${REGEX})
+  ENDFOREACH (DLL)
+
+  # I know that the logic above can already provide the DLL and it's path.
+  # But in order to keep the solution uniform for all FindXXX.cmake modules
+  # I still rely on the FIND_PACKAGE_DLLS_WIN32 macro to do this job.
+  
   # find the needed DLL's
-  FIND_PACKAGE_DLLS_WIN32 (${FOUND_LOCATION} xerces-c_3_1.dll)
+  FIND_PACKAGE_DLLS_WIN32 (${FOUND_LOCATION} ${XERCES_DLL})
 
   # find additional DLL's
-  FIND_DLL (zlib1.dll)
+  FIND_DLL_WIN32 (zlib1.dll)
 
 ENDIF (XERCESC_FOUND)
