@@ -24,26 +24,24 @@
 #include <zorba/config.h>
 #include "common/common.h"
 
-//#ifdef ZORBA_WITH_BIG_INTEGER
-# include "zorbatypes/m_apm.h"
-//#endif /* ZORBA_WITH_BIG_INTEGER */
-
 #include "zorbaserialization/archiver.h"
 #include "zorbaserialization/zorba_class_serializer.h"
 
+#include "m_apm.h"
 #include "zorbatypes_decl.h"
 #include "zstring.h"
 
 namespace zorba {
 
 class Integer;
-namespace serialization{
-void operator&(serialization::Archiver &ar, zorba::Integer &obj);
+namespace serialization {
+  void operator&(serialization::Archiver&, zorba::Integer&);
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // exported for testing only
-class ZORBA_DLL_PUBLIC Integer{
+class ZORBA_DLL_PUBLIC Integer {
 public:
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -231,7 +229,7 @@ private:
   friend class Decimal;
   template<typename T> friend class FloatImpl;
   friend class NumConversions;
-  friend void serialization::operator&(serialization::Archiver &ar, Integer &obj);
+  friend void serialization::operator&(serialization::Archiver&, Integer&);
 };
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -551,7 +549,9 @@ inline int Integer::sign() const {
 
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-std::ostream& operator<<( std::ostream &os, Integer const& );
+inline std::ostream& operator<<( std::ostream &os, Integer const &i ) {
+  return os << i.toString();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

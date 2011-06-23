@@ -62,7 +62,6 @@ void Integer::parse( char const *s ) {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
-
 ////////// constructors ///////////////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_BIG_INTEGER
@@ -260,10 +259,6 @@ zstring Integer::toString() const {
 Integer const& Integer::zero() {
   static Integer const i(0);
   return i;
-}
-
-std::ostream& operator<<( std::ostream &os, Integer const &i ) {
-  return os << i.toString();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
