@@ -24,22 +24,26 @@
 #include <zorba/config.h>
 #include "common/common.h"
 
-#ifdef ZORBA_WITH_BIG_INTEGER
+//#ifdef ZORBA_WITH_BIG_INTEGER
 # include "zorbatypes/m_apm.h"
-#endif /* ZORBA_WITH_BIG_INTEGER */
+//#endif /* ZORBA_WITH_BIG_INTEGER */
 
 #include "zorbaserialization/archiver.h"
-#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/zorba_class_serializer.h"
 
 #include "zorbatypes_decl.h"
 #include "zstring.h"
 
 namespace zorba {
 
+class Integer;
+namespace serialization{
+void operator&(serialization::Archiver &ar, zorba::Integer &obj);
+}
 ///////////////////////////////////////////////////////////////////////////////
 
 // exported for testing only
-class ZORBA_DLL_PUBLIC Integer : public serialization::SerializeBaseClass {
+class ZORBA_DLL_PUBLIC Integer{
 public:
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -182,10 +186,6 @@ public:
 
   /////////////////////////////////////////////////////////////////////////////
 
-  SERIALIZABLE_CLASS(Integer)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(Integer)
-  void serialize( serialization::Archiver& );
-
 private:
 #ifdef ZORBA_WITH_BIG_INTEGER
   typedef MAPM value_type;
@@ -231,6 +231,7 @@ private:
   friend class Decimal;
   template<typename T> friend class FloatImpl;
   friend class NumConversions;
+  friend void serialization::operator&(serialization::Archiver &ar, Integer &obj);
 };
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -299,7 +300,7 @@ inline Integer::Integer( char const *s ) {
 }
 
 inline Integer::Integer( Integer const &i ) :
-  serialization::SerializeBaseClass(), value_( i.value_ )
+  value_( i.value_ )
 {
 }
 

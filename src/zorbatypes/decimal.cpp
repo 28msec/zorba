@@ -170,7 +170,7 @@ void Decimal::reduce( char *s ) {
 }
 
 void Decimal::serialize( serialization::Archiver &ar ) {
-  //ar & value_;
+  ar & value_;
 }
 
 ////////// constructors ///////////////////////////////////////////////////////

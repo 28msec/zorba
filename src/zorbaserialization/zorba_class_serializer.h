@@ -36,11 +36,13 @@ namespace zorba{
   class function;
   class Diagnostic;
   class ZorbaException;
+  class Integer;
 
   namespace serialization{
 //void operator&(Archiver &ar, XQType *&obj);
 void operator&(Archiver &ar, const XQType *&obj);
 void operator&(Archiver &ar, MAPM &obj);
+void operator&(Archiver &ar, Integer &obj);
 
 void operator&(Archiver &ar, XQPCollator *&obj);
 void operator&(Archiver &ar, store::Item* &obj);

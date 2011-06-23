@@ -22,7 +22,6 @@
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/string_util.h"
-#include "zorbaserialization/zorba_class_serializer.h"
 
 #include "integer.h"
 #include "decimal.h"
@@ -40,9 +39,6 @@ namespace std {
 using namespace std;
 
 namespace zorba {
-
-SERIALIZABLE_CLASS_VERSIONS(Integer)
-END_SERIALIZABLE_CLASS_VERSIONS(Integer)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -66,9 +62,6 @@ void Integer::parse( char const *s ) {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
-void Integer::serialize( serialization::Archiver &ar ) {
-  ar & value_;
-}
 
 ////////// constructors ///////////////////////////////////////////////////////
 

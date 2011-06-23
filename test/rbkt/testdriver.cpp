@@ -381,7 +381,8 @@ main(int argc, char** argv)
       bool load_ret;
       if ( isW3Ctest ) 
       {
-        std::vector<URIMapper*> lMappers;
+        std::vector< zorba::URIMapper* > lMappers;
+        lMappers.push_back(smapper.get());
         lMappers.push_back(cmapper.get());
         lMappers.push_back(mmapper.get());
 

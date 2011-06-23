@@ -36,6 +36,7 @@
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
+#include "zorbatypes/integer.h"
 
 #include "functions/function.h"
 #include "runtime/function_item/function_item.h"
@@ -204,6 +205,10 @@ void operator&(Archiver &ar, MAPM &obj)
   }
 }
 
+void operator&(serialization::Archiver &ar, Integer &obj)
+{
+  ar & obj.value_;
+}
 
 void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &items)
 {
