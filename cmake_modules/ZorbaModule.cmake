@@ -206,15 +206,18 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
       "${major_ver}.${minor_ver}.${patch_ver}")
     ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}/${module_filename}"
       "${version_infix}" "${SOURCE_FILE}")
-
-    # Also copy the dynamic library from the location it was built.
-    IF (MODULE_LIB_NAME)
-      GET_TARGET_PROPERTY (lib_location "${MODULE_LIB_NAME}" LOCATION)
-      GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
-      ADD_COPY_RULE ("${lib_location}" "${output_dir}/${lib_filename}"
-        "${version_infix}" "${MODULE_LIB_NAME}")
-    ENDIF (MODULE_LIB_NAME)
   ENDFOREACH (version_infix)
+    
+  # Also copy the dynamic library from the location it was built.
+  # Because the dynamic library is only loaded after the .xq file, the
+  # exact module version is known; thus only one copy needs to be
+  # made.
+  IF (MODULE_LIB_NAME)
+    GET_TARGET_PROPERTY (lib_location "${MODULE_LIB_NAME}" LOCATION)
+    GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
+    ADD_COPY_RULE ("${lib_location}" "${output_dir}/${lib_filename}"
+      "${MODULE_VERSION}" "${MODULE_LIB_NAME}")
+  ENDIF (MODULE_LIB_NAME)
 
   # Associate these custom commands with the "all" target via a custom
   # target. (I couldn't find any neater way to do this in CMake; you
