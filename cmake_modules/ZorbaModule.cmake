@@ -581,8 +581,7 @@ MACRO (ADD_XQDOC_TARGETS)
   MESSAGE(STATUS "ADD_XQDOC_TARGETS for project ${PROJECT_NAME}")
 
   # Add the xqdoc command for which a working zorba cmd is required.
-  GET_TARGET_PROPERTY(ZORBA_EXE_LOCATION "zorba" LOCATION)
-  SET(ZORBA_EXE_SCRIPT ${ZORBA_EXE_LOCATION} CACHE PATH "Path to installed zorba.exe")
+  SET(ZORBA_EXE_SCRIPT  ${Zorba_DIR}/bin/zorba CACHE PATH "Path to installed zorba.exe")
  
   FILE(GLOB_RECURSE LOCAL_MODULES  ${PROJECT_SOURCE_DIR}/src/*.xq)
   SET(ZORBA_XQDOC_MAIN_EXTMODULES_XML_XQ  ${Zorba_DIR}/xqdoc/generator/xqdoc-main-extmodules-xml.xq CACHE PATH "The xqdoc xml generator for external modules")
