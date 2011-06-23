@@ -34,4 +34,7 @@ IF (CURL_FOUND)
   # find the needed DLL's
   FIND_PACKAGE_DLLS_WIN32 (${FOUND_LOCATION} "curllib.dll;libeay32.dll;openldap.dll;ssleay32.dll")
 
+  # find additional DLL's
+  FIND_DLL (libsasl.dll)
+
 ENDIF (CURL_FOUND)

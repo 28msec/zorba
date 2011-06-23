@@ -200,3 +200,38 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
   ENDIF (${LEN} GREATER 0)
 
 ENDMACRO(FIND_PACKAGE_DLLS_WIN32)
+
+
+MACRO (FIND_DLL DLL_NAME)
+
+  # first delete the cache entry for DLL to make sure the correct one is chosen
+  SET (${DLL_NAME}_VAR ${DLL_NAME}_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+
+  # try to find ${DLL_NAME} somewhere
+  # the search order is:
+  #   1. all the paths of the DLL's tools Zorba uses (ZORBA_REQUIRED_DLL_PATHS)
+  #.  2. all the third paty library directory hints (ZORBA_THIRD_PARTY_REQUIREMENTS)
+  #.  3. the paths in the PATH environment variable (ENV{PATH})
+  FIND_FILE (
+    ${DLL_NAME}_VAR
+    ${DLL_NAME}
+    PATHS
+      ${ZORBA_REQUIRED_DLL_PATHS}
+      ${ZORBA_THIRD_PARTY_REQUIREMENTS}
+      $ENV{PATH}
+    NO_DEFAULT_PATH
+  )
+
+  IF (${DLL_NAME}_VAR)
+    MESSAGE (STATUS "Found ${DLL_NAME}")
+    LIST (APPEND ZORBA_REQUIRED_DLLS "${${DLL_NAME}_VAR}")
+    STRING (REPLACE "/${DLL_NAME}" "" PATH "${${DLL_NAME}_VAR}")
+    FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
+    LIST (APPEND ZORBA_REQUIRED_DLL_PATHS "${NATIVE_PATH}")
+    MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS: ${${DLL_NAME}_VAR}")
+  ELSE (${DLL_NAME}_VAR)
+    MESSAGE (STATUS "Did not find ${DLL_NAME}")
+    MESSAGE (WARNING "You will not be able to run zorba unless you have ${DLL_NAME} in your path.")
+  ENDIF (${DLL_NAME}_VAR)
+
+ENDMACRO (FIND_DLL)

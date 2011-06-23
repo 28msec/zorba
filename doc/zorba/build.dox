@@ -272,12 +272,13 @@ libraries.  It will also add some symbolic links to the libraries.
   - Tidy: http://dev.int64.org/tidy.html
   - Libxslt: http://www.zlatkovic.com/pub/libxml/
   - IMAP CClient: http://www.washington.edu/imap/
-- In order to execute Zorba, please note that the paths to all shared libraries (.dll) of all the installed/built packages need to be visible to the zorba executable. For this you have 3 choices:
-  - set the <tt>PATH</tt> environment variable before calling zorba
-    \code SET PATH=path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin;%PATH% \endcode
-  - include all the paths in the <tt>PATH</tt> environment variable for the current user/system. This can be done in Control Panel -> System -> Advanced (System Settings) -> Environment Variables... -> edit the PATH variable for either the current user or for the entire system.
-  - copy all the required DLLs in the same directory as the zorba.exe file (or your own executable if you build an application that is using Zorba). Since not all the DLL's from the required packages are needed you can either execute Zorba or run the Dependency Walker to find out the needed DLL's.
-  - copy all the required DLLs in one directory. Set the ZORBA_REQUIRED_DLLS_PATH Cmake variable to point to that directory.
+- Zorba has in place an automatic DLL detection mechanism. This will try to automatically gather all the DLLs from the third party librbaries and install them with Zorba when you do "name install" or you build the Visual Studio INSTALL project. Zorba will search for the third party libraries in order in:
+  - all the directories pointed by the ZORBA_THIRD_PARTY_REQUIREMENTS cmake variable
+    - e.g. if you have Xerces in "C:\tools" and IConv in "D:\tools", you must build with -D ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool and Zorba will find all it needs from Xerces and Iconv. (The directory names must contain "xerces" and "iconv" respectively, case insensitive)
+  - in the program files directory on your system
+    - e.g. if you have cURL installed in "C:\Program Files\*cURL*", Zorba will find all it needs from cURL. (The directory must contain "curl" case insensitive)
+  - all the paths in the PATH variable
+    - e.g. if you have "C:\tools\*ICU*\bin" in your path, Zorba will find all it needs from ICU. (The directory must only contain "icu")
 - Note, you can also use CMake's graphical interface. This can usually be found in Start menu. This eases up setup and makes it more intuitive.
 
 \subsection nmake Building Zorba using a NMake Project
@@ -288,7 +289,7 @@ libraries.  It will also add some symbolic links to the libraries.
 -# Execute CMake as follows <tt>cmake -G "NMake Makefiles" [ZORBA]</tt>. CMake will try to find the necessary packages in the program files directory on your system and in the <tt>PATH</tt> environment variable. If one of the required dependencies were not found, CMake will stop with an error. See the next step only if this step did not find the required third party dependencies on your system.
 -# If the command above fails or if you see that some optional packages were not found, you can help CMake a little by providing the lists of path where it should look for the libraries you need. In this case the CMake command should look like:
 \code
-"cmake" -G "NMake Makefiles" -D ZORBA_THIRD_PARTY_REQUIREMENTS "path/to/dir1;path/to/dir2/..."
+"cmake" -G "NMake Makefiles" -D ZORBA_THIRD_PARTY_REQUIREMENTS=path\to\dir1;path\to\dir2;...
 \endcode
 
 But you can also manually set the paths to individual libraries and include directory by directly providing the variables set by each find package module (in the <tt>cmake_modules</tt> directory).

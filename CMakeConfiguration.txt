@@ -120,11 +120,6 @@ ELSE (MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
 ENDIF (MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
 MESSAGE(STATUS "ZORBA_WIN_DLL:                        " ${ZORBA_WIN_DLL})
 
-# ZORBA_REQUIRED_DLLS_PATH_NATIVE must be available for execution scripts like bin\zorba.bat
-IF(WIN32 AND EXISTS ${ZORBA_REQUIRED_DLLS_PATH})
-  FILE(TO_NATIVE_PATH ${ZORBA_REQUIRED_DLLS_PATH} ZORBA_REQUIRED_DLLS_PATH_NATIVE)
-ENDIF (WIN32 AND EXISTS ${ZORBA_REQUIRED_DLLS_PATH})
-
 # We need the path to the zorba executable because it will be used during the
 # build to generate source code and documentation.
 IF(WIN32)
