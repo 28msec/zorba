@@ -15,6 +15,13 @@
 :)
 
 (:~
+ : This module provides functions to fetch the contents or the type
+ : of the content for a resource identified by a URI.
+ : For example, it fetches content for file or http resources if Zorba
+ : allows file or http access, respectively.
+ :
+ : @author Matthias Brantner
+ : @project external
  :)
 module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
