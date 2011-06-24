@@ -319,7 +319,6 @@ private:
   friend class Decimal;
   friend class FloatCommons;
   template<typename T> friend class FloatImplTraits;
-  friend class NumConversions;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

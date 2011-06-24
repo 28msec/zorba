@@ -422,12 +422,11 @@ bool SubstringIterator::nextImpl(
       {
         if (start.isFinite())
         {
-          xs_int lInt;
-          if (NumConversions::doubleToInt(start.round(), lInt))
+          try
           {
-            istart = lInt;
+            istart = to_xs_int(start.round());
           }
-          else
+          catch ( std::range_error const& )
           {
             istart = (xs_int)utf8_string<zstring>(strval).length();
           }
@@ -475,12 +474,11 @@ bool SubstringIterator::nextImpl(
           {
             if (len.isFinite())
             {
-              xs_int lInt;
-              if (NumConversions::doubleToInt(len.round(), lInt))
+              try
               {
-                ilen = lInt;
+                ilen = to_xs_int(len.round());
               }
-              else
+              catch ( std::range_error const& )
               {
                 ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
               }

@@ -90,11 +90,13 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case XS_UNTYPED_ATOMIC:
   {
     const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(this);
-    try {
+    try
+    {
       longValue = ztd::aton<xs_long>(item->theValue.c_str());
       GET_FACTORY().createLong(result, longValue);
     }
-    catch ( std::exception const& ) {
+    catch ( std::exception const& )
+    {
       // ignore
     }
     break;
@@ -115,9 +117,15 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case XS_DECIMAL:
   {
     const DecimalItem* item = static_cast<const DecimalItem*>(this);
-    if (NumConversions::decimalToLong(item->theValue, longValue))
+    try
+    {
+      longValue = to_xs_long(item->theValue);
       GET_FACTORY().createLong(result, longValue);
-
+    }
+    catch ( std::range_error const& )
+    {
+      // ignore
+    }
     break;
   }
 
@@ -128,9 +136,15 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case XS_POSITIVE_INTEGER:
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(this);
-    if (NumConversions::integerToLong(item->theValue, longValue))
+    try
+    {
+      longValue = to_xs_long( item->theValue );
       GET_FACTORY().createLong(result, longValue);
-
+    }
+    catch ( std::range_error const& )
+    {
+      // ignore
+    }
     break;
   }
 
@@ -383,11 +397,13 @@ bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 {
-  try {
+  try
+  {
     xs_decimal const decValue(theValue.c_str());
     return GET_FACTORY().createDecimal(result, decValue);
   }
-  catch ( std::exception const& ) {
+  catch ( std::exception const& )
+  {
     result = NULL;
     return false;
   }
@@ -396,11 +412,13 @@ bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToInteger(store::Item_t& result) const
 {
-  try {
+  try
+  {
     xs_integer const intValue(theValue.c_str());
     return GET_FACTORY().createInteger(result, intValue);
   }
-  catch ( std::exception const& ) {
+  catch ( std::exception const& )
+  {
     result = NULL;
     return false;
   }
@@ -1573,10 +1591,12 @@ zstring DecimalItem::show() const
 ********************************************************************************/
 
 long IntegerItem::compare( Item const *other, long, const XQPCollator* ) const {
-  try {
+  try
+  {
     return theValue.compare( other->getIntegerValue() );
   }
-  catch ( ZorbaException const& ) {
+  catch ( ZorbaException const& )
+  {
     return getDecimalValue().compare( other->getDecimalValue() );
   }
 }
@@ -1602,15 +1622,17 @@ xs_decimal IntegerItem::getDecimalValue() const
 
 xs_long IntegerItem::getLongValue() const
 {
-  xs_long longValue;
-
-  if (NumConversions::integerToLong(theValue, longValue))
-    return longValue;
-
-  throw XQUERY_EXCEPTION(
-    err::FORG0001,
-    ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-  );
+  try
+  {
+    return to_xs_long(theValue);
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FORG0001,
+      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
+    );
+  }
 }
 
 

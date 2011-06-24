@@ -10230,8 +10230,10 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
 
-  if (!NumConversions::integerToUInt(v.getArity(), arity))
-  {
+  try {
+    arity = to_xs_unsignedInt(v.getArity());
+  }
+  catch ( std::range_error const& ) {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));
   }

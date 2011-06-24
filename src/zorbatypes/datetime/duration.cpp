@@ -756,11 +756,11 @@ Duration* Duration::operator*(const Double& value) const
 
   result = result.round(significants);
 
-  NumConversions::doubleToInt(result.floor(), seconds);
+  seconds = to_xs_int(result.floor());
 
   result = (result - result.floor()) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
 
-  NumConversions::doubleToInt(result.round(), frac_seconds);
+  frac_seconds = to_xs_int(result.round());
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
@@ -785,10 +785,10 @@ Duration* Duration::operator/(const Double& value) const
   result = getTotalSeconds() / value;
   result = result.round(significants);
   dSeconds = result.round();
-  NumConversions::doubleToInt(dSeconds.floor(), seconds);
+  seconds = to_xs_int(dSeconds.floor());
 
   result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-  NumConversions::doubleToInt(result.round(), frac_seconds);
+  frac_seconds = to_xs_int(result.round());
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;

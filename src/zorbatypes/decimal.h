@@ -25,6 +25,7 @@
 #include "zorbaserialization/class_serializer.h"
 
 #include "m_apm.h"
+#include "schema_types_base.h"
 #include "zorbatypes_decl.h"
 #include "zstring.h"
 
@@ -219,7 +220,8 @@ private:
 
   friend class Integer;
   template<typename T> friend class FloatImpl;
-  friend class NumConversions;
+
+  friend xs_long to_xs_long( Decimal const& );
 };
 
 ////////// constructors ///////////////////////////////////////////////////////

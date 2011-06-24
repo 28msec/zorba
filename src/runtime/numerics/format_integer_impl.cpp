@@ -167,8 +167,7 @@ void FormatIntegerIterator::formatIntegerAZ(xs_integer valueInteger, char c0, zs
   if(upper_int > xs_integer::zero())
     formatIntegerAZ(upper_int - xs_integer::one(), c0, resultString);
   xs_integer  mod_integer = valueInteger % integer_digit;
-  xs_int      mod_int;
-  NumConversions::integerToInt(mod_integer, mod_int);
+  xs_int      mod_int = to_xs_int(mod_integer);
   resultString += (c0 + mod_int);
 }
 
@@ -890,8 +889,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
               (c0 == 0x2488))   //DIGIT ONE FULL STOP (1-20)
       {
         checkOptionalModifier(utf8_picture, 1, &is_ordinal, &is_traditional, utf8_word_terminal);
-        xs_int  val_int;
-        NumConversions::integerToInt(valueInteger, val_int);
+        xs_int val_int = to_xs_int(valueInteger);
         if((val_int < 1) || (val_int > 20))
         {
           throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_20), val_int), ERROR_LOC(loc));
@@ -911,8 +909,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
               (c0 == 0x1D360)) //COUNTING ROD UNIT DIGIT ONE (1-10)
       {
         checkOptionalModifier(utf8_picture, 1, &is_ordinal, &is_traditional, utf8_word_terminal);
-        xs_int  val_int;
-        NumConversions::integerToInt(valueInteger, val_int);
+        xs_int val_int = to_xs_int(valueInteger);
         if((val_int < 1) || (val_int > 10))
         {
           throw XQUERY_EXCEPTION(err::FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_10), val_int), ERROR_LOC(loc));

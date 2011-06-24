@@ -77,11 +77,12 @@ inline double to_double( xs_double const &d ) {
 }
 
 inline ft_int to_ft_int( xs_integer const &i ) {
-  ft_int result;
-  if ( !NumConversions::integerToUInt( i, result ) ) {
-    // TODO
+  try {
+    return to_xs_unsignedInt( i );
   }
-  return result;
+  catch ( std::range_error const& ) {
+    throw XQUERY_EXCEPTION( err::FOCA0003, ERROR_PARAMS( i.toString() ) );
+  }
 }
 
 ////////// PUSH/POP ///////////////////////////////////////////////////////////

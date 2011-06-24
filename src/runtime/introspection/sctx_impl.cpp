@@ -988,7 +988,7 @@ FunctionAnnotationsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSt
   consumeNext(lName, theChildren[0].getp(), aPlanState);
   consumeNext(lArity, theChildren[1].getp(), aPlanState);
 
-  NumConversions::integerToInt(lArity->getIntegerValue(), arity);
+  arity = to_xs_int(lArity->getIntegerValue());
   lState->theFunction = theSctx->lookup_fn(lName.getp(), arity);
   lState->thePosition = 0;
   if (lState->theFunction != NULL && lState->theFunction->getAnnotationList() == NULL)   // no annotations

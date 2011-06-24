@@ -18,55 +18,66 @@
 #ifndef ZORBA_NUM_CONVERSIONS_H
 #define ZORBA_NUM_CONVERSIONS_H
 
-#include <zorba/config.h>
-#include "zorbatypes/schema_types.h"
+#include "schema_types.h"
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 /**
- * Class contains all num conversions and string to num and num to string conversions
- * that are used in Zorba.
+ * Converts an xs:double value to an xs:int.
  *
- * All functions which might not work return a bool which indicates the success of the
- * conversions. Functions which aways work return the value directly.
+ * @param d The xs:double value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the xs:double value can not be accurately
+ * represented as an xs:int.
  */
-class ZORBA_DLL_PUBLIC NumConversions 
-{
-public:
+xs_int to_xs_int( xs_double const &d );
 
-  /*****************************************************************************
-    Numeric to Numeric Conversions
-  ******************************************************************************/
+/**
+ * Converts an xs:integer value to an xs:int.
+ *
+ * @param d The xs:integer value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the xs:integer value can not be accurately
+ * represented as an xs:int.
+ */
+xs_int to_xs_int( xs_integer const& );
 
-  static bool doubleToInt(const xs_double&, xs_int&);
+/**
+ * Converts an xs:decimal value to an xs:long.
+ *
+ * @param d The xs:decimal value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the xs:decimal value can not be accurately
+ * represented as an xs:long.
+ */
+xs_long to_xs_long( xs_decimal const& );
 
-  static bool doubleToLong(const xs_double&, xs_long&);
+/**
+ * Converts an xs:integer value to an xs:long.
+ *
+ * @param d The xs:integer value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the xs:integer value can not be accurately
+ * represented as an xs:long.
+ */
+xs_long to_xs_long( xs_integer const& );
 
-  static bool floatToInt(const xs_float&, xs_int&);
+/**
+ * Converts an xs:integer value to an xs:unsignedInt.
+ *
+ * @param d The xs:integer value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the xs:integer value can not be accurately
+ * represented as an xs:unsignedInt.
+ */
+xs_unsignedInt to_xs_unsignedInt( xs_integer const& );
 
-  static bool decimalToInteger(const xs_decimal&, xs_integer&);
-
-  static bool decimalToULong(const xs_decimal&, xs_unsignedLong&);
-
-  static bool decimalToLong(const xs_decimal&, xs_long&);
-
-  static bool decimalToUInt(const xs_decimal&, xs_unsignedInt&);
-
-  static bool decimalToInt(const xs_decimal&, xs_int&);
-
-  static bool integerToLong(const xs_integer&, xs_long&);
-
-  static bool integerToUInt(const xs_integer&, xs_unsignedInt&);
-
-  static bool integerToInt(const xs_integer&, xs_int&);
-
-private:
-  static bool isNegative(const char*& chp, bool& isNegZero);
-};
-
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif
+#endif /* ZORBA_NUM_CONVERSIONS_H */
 /*
  * Local variables:
  * mode: c++

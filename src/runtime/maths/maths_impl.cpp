@@ -384,9 +384,13 @@ PowIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         }
         else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
         {
-          xs_int  n1_int;
           xs_integer n1_integer = n1->getIntegerValue();
-          if(!NumConversions::integerToInt(n1_integer, n1_int))
+          try
+          {
+            xs_int const n1_int = to_xs_int(n1_integer);
+            GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_int));
+          }
+          catch ( std::range_error const& )
           {
             throw XQUERY_EXCEPTION(
               err::XPTY0004,
@@ -394,7 +398,6 @@ PowIterator::nextImpl(store::Item_t& result, PlanState& planState) const
               ERROR_LOC( loc )
             );
           }
-          GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_int));
         }
         else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
         {
