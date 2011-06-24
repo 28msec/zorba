@@ -195,10 +195,7 @@ private:
 
   static uint32_t hash( value_type const& );
 
-  bool is_xs_int() const;
   bool is_xs_long() const;
-  bool is_xs_uint() const;
-  bool is_xs_ulong() const;
 
   enum parse_options {
     parse_integer,
@@ -426,26 +423,9 @@ inline bool Decimal::is_integer() const {
   return value_.is_integer() != 0;
 }
 
-inline bool Decimal::is_xs_int() const {
-  return  value_.is_integer() &&
-          value_ > MAPM::getMinInt32() && value_ < MAPM::getMaxInt32();
-}
-
 inline bool Decimal::is_xs_long() const {
   return value_.is_integer() &&
          value_ > MAPM::getMinInt64() && value_ < MAPM::getMaxInt64();
-}
-
-inline bool Decimal::is_xs_uint() const {
-  return  value_.is_integer() &&
-          value_.sign() >= 0 &&
-          value_ < MAPM::getMaxUInt32();
-}
-
-inline bool Decimal::is_xs_ulong() const {
-  return  value_.is_integer() &&
-          value_.sign() >= 0 &&
-          value_ < MAPM::getMaxUInt64();
 }
 
 inline int Decimal::sign() const {

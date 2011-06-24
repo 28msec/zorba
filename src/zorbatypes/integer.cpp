@@ -217,7 +217,7 @@ Integer::value_type Integer::ftoi( MAPM const &d ) {
 }
 
 MAPM Integer::itod() const {
-  if ( is_xs_long() )
+  if ( is_long() )
     return static_cast<long>( value_ );
   ztd::itoa_buf_type buf;
   return ztd::itoa( value_, buf );

@@ -198,11 +198,6 @@ private:
   Integer( value_type const &v ) : value_( v ) { }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-  bool is_xs_int() const;
-  bool is_xs_long() const;
-  bool is_xs_uint() const;
-  bool is_xs_ulong() const;
-
   static value_type ftoi( double d ) {
     return value_type( d >= 0 ? floor( d ) : ceil( d ) );
   }
@@ -216,6 +211,8 @@ private:
     return value_;                      // intentional no-op
   }
 #else
+  bool is_long() const;
+
   static value_type ftoi( value_type v ) {
     return v;                           // intentional no-op
   }
@@ -495,22 +492,6 @@ inline int Integer::compare( Integer const &i ) const {
   return value_.compare( i.value_ );
 }
 
-inline bool Integer::is_xs_int() const {
-  return value_ >= MAPM::getMinInt32() && value_ <= MAPM::getMaxInt32();
-}
-
-inline bool Integer::is_xs_long() const {
-  return value_ >= MAPM::getMinInt64() && value_ <= MAPM::getMaxInt64();
-}
-
-inline bool Integer::is_xs_uint() const {
-  return value_.sign() >= 0 && value_ < MAPM::getMaxUInt32();
-}
-
-inline bool Integer::is_xs_ulong() const {
-  return value_.sign() >= 0 && value_ < MAPM::getMaxUInt64();
-}
-
 inline int Integer::sign() const {
   return value_.sign();
 }
@@ -530,22 +511,9 @@ inline uint32_t Integer::hash() const {
   return static_cast<uint32_t>( value_ );
 }
 
-inline bool Integer::is_xs_int() const {
-  return  value_ >= std::numeric_limits<int32_t>::min() &&
-          value_ <= std::numeric_limits<int32_t>::max();
-}
-
-inline bool Integer::is_xs_long() const {
-  return  value_ >= std::numeric_limits<int64_t>::min() &&
-          value_ <= std::numeric_limits<int64_t>::max();
-}
-
-inline bool Integer::is_xs_uint() const {
-  return value_ >= 0 && value_ <= std::numeric_limits<uint32_t>::max();
-}
-
-inline bool Integer::is_xs_ulong() const {
-  return value_ >= 0;
+inline bool Integer::is_long() const {
+  return  value_ >= std::numeric_limits<long>::min() &&
+          value_ <= std::numeric_limits<long>::max();
 }
 
 inline int Integer::sign() const {
