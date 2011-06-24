@@ -491,11 +491,11 @@ inline int Integer::compare( Integer const &i ) const {
 }
 
 inline bool Integer::is_xs_int() const {
-  return value_ > MAPM::getMinInt32() && value_ < MAPM::getMaxInt32();
+  return value_ >= MAPM::getMinInt32() && value_ <= MAPM::getMaxInt32();
 }
 
 inline bool Integer::is_xs_long() const {
-  return value_ > MAPM::getMinInt64() && value_ < MAPM::getMaxInt64();
+  return value_ >= MAPM::getMinInt64() && value_ <= MAPM::getMaxInt64();
 }
 
 inline bool Integer::is_xs_uint() const {
