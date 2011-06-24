@@ -85,7 +85,7 @@ declare %sequential function local:svnCo($svnCmd as xs:string,
 
 
 declare %sequential function local:makeSvnDir($svnCmd as xs:string, 
-    $svnDir as xs:string, $svnRevs as xs:integer+)
+    $svnDir as xs:string, $svnRev as xs:integer)
 {    
     if ( file:exists(fn:concat($svnDir, file:directory-separator(), "AUTHORS.txt")) and 
          file:exists(fn:concat($svnDir, file:directory-separator(), "src"))  )
@@ -94,7 +94,7 @@ declare %sequential function local:makeSvnDir($svnCmd as xs:string,
     else
         if ( fn:empty(file:list($svnDir)) )
         then
-            local:svnCo($svnCmd, $svnDir, $svnRevs);
+            local:svnCo($svnCmd, $svnDir, $svnRev);
         else
         {
             variable $msg := fn:concat("Error: ", $svnDir, " is not empty and it doesn't contain Zorba.");
@@ -353,7 +353,7 @@ let $zorbaCmd := fn:concat($buildDir, file:directory-separator(),"bin", file:dir
 let $makeCmd := xs:string("/usr/bin/make") 
 let $svnRevs := (8625, 8709, 8852, 9023, 9252, 9496, 9745, 9938, 10069, 10237, 
                 10431, 10742, 10766)
-let $buildName := "zorba3"
+let $buildName := "ztest"
 let $initialNoOfRuns := xs:int(100)
 let $inputCtx := "input-context:=auction.xml"     
 let $platform := local:getPlatform()
@@ -362,7 +362,7 @@ return
     fn:trace(fn:current-dateTime(), "----- Starting time");
     
     local:makeDir($svnDir);
-    local:makeSvnDir($svnCmd, $svnDir, $svnRevs);
+    local:makeSvnDir($svnCmd, $svnDir, $svnRevs[1]);
     
     for $i in ($svnRevs)
     return
