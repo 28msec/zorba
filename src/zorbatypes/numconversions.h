@@ -37,12 +37,12 @@ xs_int to_xs_int( xs_double const &d );
 /**
  * Converts an xs:integer value to an xs:int.
  *
- * @param d The xs:integer value to convert.
+ * @param i The xs:integer value to convert.
  * @return Returns said value.
  * @throws std::range_error if the xs:integer value can not be accurately
  * represented as an xs:int.
  */
-xs_int to_xs_int( xs_integer const& );
+xs_int to_xs_int( xs_integer const &i );
 
 /**
  * Converts an xs:decimal value to an xs:long.
@@ -52,27 +52,27 @@ xs_int to_xs_int( xs_integer const& );
  * @throws std::range_error if the xs:decimal value can not be accurately
  * represented as an xs:long.
  */
-xs_long to_xs_long( xs_decimal const& );
+xs_long to_xs_long( xs_decimal const &d );
 
 /**
  * Converts an xs:integer value to an xs:long.
  *
- * @param d The xs:integer value to convert.
+ * @param i The xs:integer value to convert.
  * @return Returns said value.
  * @throws std::range_error if the xs:integer value can not be accurately
  * represented as an xs:long.
  */
-xs_long to_xs_long( xs_integer const& );
+xs_long to_xs_long( xs_integer const &i );
 
 /**
  * Converts an xs:integer value to an xs:unsignedInt.
  *
- * @param d The xs:integer value to convert.
+ * @param i The xs:integer value to convert.
  * @return Returns said value.
  * @throws std::range_error if the xs:integer value can not be accurately
  * represented as an xs:unsignedInt.
  */
-xs_unsignedInt to_xs_unsignedInt( xs_integer const& );
+xs_unsignedInt to_xs_unsignedInt( xs_integer const &i );
 
 ///////////////////////////////////////////////////////////////////////////////
 
