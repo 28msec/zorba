@@ -239,9 +239,9 @@ zstring Integer::toString() const {
 #ifdef ZORBA_WITH_BIG_INTEGER
   char *const buf = new char[ value_.exponent() + 3 ];
   value_.toIntegerString( buf );
-  zstring const s( buf );
+  zstring const result( buf );
   delete[] buf;
-  return s;
+  return result;
 #else
   ztd::itoa_buf_type buf;
   return ztd::itoa( value_, buf );
