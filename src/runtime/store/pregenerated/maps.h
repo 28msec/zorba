@@ -311,6 +311,54 @@ public:
 };
 
 
+/**
+ * 
+ *    
+ * Author: Matthias Brantner
+ */
+class AvailableMapsIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //the current iterator
+
+  AvailableMapsIteratorState();
+
+  ~AvailableMapsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class AvailableMapsIterator : public NaryBaseIterator<AvailableMapsIterator, AvailableMapsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(AvailableMapsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableMapsIterator,
+    NaryBaseIterator<AvailableMapsIterator, AvailableMapsIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<AvailableMapsIterator, AvailableMapsIteratorState>*)this);
+  }
+
+  AvailableMapsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<AvailableMapsIterator, AvailableMapsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~AvailableMapsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

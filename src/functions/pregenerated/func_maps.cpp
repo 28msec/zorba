@@ -101,6 +101,16 @@ PlanIter_t zorba_store_data_structure_unordered_map_size::codegen(
   return new MapSizeIterator(sctx, loc, argv);
 }
 
+PlanIter_t zorba_store_data_structure_unordered_map_available_maps::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new AvailableMapsIterator(sctx, loc, argv);
+}
+
 void populate_context_maps(static_context* sctx)
 {
   {
@@ -188,6 +198,17 @@ void populate_context_maps(static_context* sctx)
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
         FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_SIZE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_available_maps,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","available-maps"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_STAR),
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_AVAILABLE_MAPS_0);
 
   }
 

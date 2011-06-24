@@ -191,3 +191,12 @@ declare function map:keys(
  :)
 declare function map:size(
   $name as xs:QName) as xs:integer external;
+
+(:~
+ : The function returns a sequence of QNames of the maps that are
+ : available. The sequence will be empty if there are no maps.
+ :
+ : @return A sequence of QNames, one for each available map, or an emtpy sequence.
+ :
+ :)
+declare function map:available-maps() as xs:QName* external;

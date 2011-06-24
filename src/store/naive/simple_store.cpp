@@ -888,6 +888,13 @@ SimpleStore::getMap(const store::Item* aQName) const
   return lIndex.getp();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+store::Iterator_t SimpleStore::listMapNames() 
+{
+  return new NameIterator<IndexSet>(theHashMaps);
+}
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new

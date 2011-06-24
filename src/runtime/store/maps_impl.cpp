@@ -513,5 +513,56 @@ MapSizeIterator::nextImpl(
   STACK_END(state);
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+AvailableMapsIteratorState::~AvailableMapsIteratorState()
+{
+  if ( nameItState != NULL ) 
+  {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+
+void AvailableMapsIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  nameItState = NULL;
+}
+
+
+void AvailableMapsIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+
+bool
+AvailableMapsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  AvailableMapsIteratorState * state;
+  store::Item_t              nameItem;
+
+  DEFAULT_STACK_INIT(AvailableMapsIteratorState, state, planState);
+
+  for ((state->nameItState = GENV_STORE.listMapNames())->open ();
+       state->nameItState->next(nameItem); ) 
+  {
+    result = nameItem;
+    STACK_PUSH( true, state);
+  }
+
+  state->nameItState->close();
+
+  STACK_END (state);
+}
+
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

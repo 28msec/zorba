@@ -254,6 +254,36 @@ MapSizeIterator::~MapSizeIterator() {}
 // </MapSizeIterator>
 
 
+// <AvailableMapsIterator>
+const char* AvailableMapsIterator::class_name_str = "AvailableMapsIterator";
+AvailableMapsIterator::class_factory<AvailableMapsIterator>
+AvailableMapsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+AvailableMapsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int AvailableMapsIterator::class_versions_count =
+sizeof(AvailableMapsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void AvailableMapsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableMapsIterator::~AvailableMapsIterator() {}
+
+AvailableMapsIteratorState::AvailableMapsIteratorState() {}
+
+// </AvailableMapsIterator>
+
+
 
 }
 

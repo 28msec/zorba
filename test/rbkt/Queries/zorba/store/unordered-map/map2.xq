@@ -17,7 +17,7 @@ return
 
     map:remove($name, 1);
 
-    $foo := ($foo, map:get($name, 1), map:size($name));
+    $foo := ($foo, map:get($name, 1), map:size($name), map:available-maps());
 
     $foo
 

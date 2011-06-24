@@ -3161,6 +3161,20 @@ void PrinterVisitor::endVisit ( const MapSizeIterator& ) {
 // </MapSizeIterator>
 
 
+// <AvailableMapsIterator>
+void PrinterVisitor::beginVisit ( const AvailableMapsIterator& a) {
+  thePrinter.startBeginVisit("AvailableMapsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AvailableMapsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AvailableMapsIterator>
+
+
 // <CodepointsToStringIterator>
 void PrinterVisitor::beginVisit ( const CodepointsToStringIterator& a) {
   thePrinter.startBeginVisit("CodepointsToStringIterator", ++theId);

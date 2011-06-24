@@ -468,6 +468,8 @@ namespace zorba{
 
     class MapSizeIterator;
 
+    class AvailableMapsIterator;
+
     class CodepointsToStringIterator;
 
     class StringToCodepointsIterator;
@@ -1191,6 +1193,9 @@ public:
 
     virtual void beginVisit ( const MapSizeIterator& ) = 0;
     virtual void endVisit   ( const MapSizeIterator& ) = 0;
+
+    virtual void beginVisit ( const AvailableMapsIterator& ) = 0;
+    virtual void endVisit   ( const AvailableMapsIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;

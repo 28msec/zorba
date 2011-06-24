@@ -151,6 +151,21 @@ public:
 };
 
 
+//zorba-store-data-structure-unordered-map:available-maps
+class zorba_store_data_structure_unordered_map_available_maps : public function
+{
+public:
+  zorba_store_data_structure_unordered_map_available_maps(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

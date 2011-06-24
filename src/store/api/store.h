@@ -324,6 +324,8 @@ public:
 
   /* ------------------------ Map Management ---------------------------*/
   virtual Index* getMap(const Item* aQName) const = 0;
+
+  virtual Iterator_t listMapNames() = 0;
 };
 
 } // namespace store

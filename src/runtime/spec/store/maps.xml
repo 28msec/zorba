@@ -216,4 +216,32 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="AvailableMapsIterator" >
+
+    <zorba:description author="Matthias Brantner">
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="available-maps" prefix="zorba-store-data-structure-unordered-map">
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
+
+</zorba:iterator>
+
 </zorba:iterators>

@@ -705,6 +705,9 @@ namespace zorba {
     void beginVisit( const MapSizeIterator& );
     void endVisit  ( const MapSizeIterator& );
 
+    void beginVisit( const AvailableMapsIterator& );
+    void endVisit  ( const AvailableMapsIterator& );
+
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );
 
