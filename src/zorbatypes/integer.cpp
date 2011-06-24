@@ -30,6 +30,18 @@
 
 using namespace std;
 
+#ifdef WIN32
+namespace std {
+  inline long long strtoll( char const *s, char **end, int base ) {
+    return ::_strtoi64( s, end, base );
+  }
+
+  inline long long strtoull( char const *s, char **end, int base ) {
+    return ::_strtoui64( s, end, base );
+  }
+}
+#endif /* WIN32 */
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
