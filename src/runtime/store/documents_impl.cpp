@@ -81,7 +81,7 @@ bool AddDocumentIterator::nextImpl(
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   consumeNext(lDoc, theChildren[1].getp(), aPlanState);
-  lPul->addCreateDocument(lResolvedUriItem, lDoc);
+  lPul->addCreateDocument(&loc, lResolvedUriItem, lDoc);
 
   result = lPul.release();
   STACK_PUSH(result != NULL, state);
@@ -134,7 +134,7 @@ bool RemoveDocumentIterator::nextImpl(
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  lPul->addDeleteDocument(lResolvedUriItem);
+  lPul->addDeleteDocument(&loc, lResolvedUriItem);
 
   result = lPul.release();
   STACK_PUSH(result != NULL, state);

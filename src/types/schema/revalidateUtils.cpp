@@ -263,7 +263,8 @@ void SchemaValidatorImpl::processElement(
     //  cout.flush();
 
     if ( typedValues.size()==1 )
-      pul->addSetElementType(elm,
+      pul->addSetElementType(&loc,
+                             elm,
                              typeQName,
                              typedValues[0],
                              tHasValue,
@@ -271,7 +272,8 @@ void SchemaValidatorImpl::processElement(
                              tHasTypedValue,
                              isInSubstitutionElement);
     else
-      pul->addSetElementType(elm,
+      pul->addSetElementType(&loc,
+                             elm,
                              typeQName,
                              (std::vector<store::Item_t>&)typedValues,
                              tHasValue,
@@ -371,16 +373,16 @@ void SchemaValidatorImpl::processAttributes(
     {
       store::Item_t atr = store::Item_t(attrib);
       if ( typedValues.size()==1 )        // optimize when only one item is available
-        pul->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]) );
+        pul->addSetAttributeType( &loc, atr, typeQName, (store::Item_t&)(typedValues[0]) );
       else
-        pul->addSetAttributeType( atr, typeQName, typedValues );
+        pul->addSetAttributeType( &loc, atr, typeQName, typedValues );
     }
   }
 
   if ( defaultAtts.size()>0 )
   {
     store::Item_t parentElem = store::Item_t(parent);
-    pul->addInsertAttributes(parentElem, defaultAtts);
+    pul->addInsertAttributes(&loc, parentElem, defaultAtts);
   }
 }
 

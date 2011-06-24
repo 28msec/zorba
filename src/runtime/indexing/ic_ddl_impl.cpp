@@ -70,12 +70,14 @@ ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
     case store::IC::ic_collection:
       static_cast<store::PUL*>(result.getp())->addActivateIC(
+          &loc,
           vic->getICName(),
           vic->getCollectionName());
       break;
       
     case store::IC::ic_foreignkey:
       static_cast<store::PUL*>(result.getp())->addActivateForeignKeyIC(
+          &loc,
           vic->getICName(),
           vic->getFromCollectionName(),
           vic->getToCollectionName());
@@ -128,7 +130,7 @@ DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   else
   {
     result = GENV_ITEMFACTORY->createPendingUpdateList();
-    static_cast<store::PUL*>(result.getp())->addDeActivateIC(qname);
+    static_cast<store::PUL*>(result.getp())->addDeActivateIC(&loc, qname);
   }
 
   STACK_PUSH(result != NULL, state);

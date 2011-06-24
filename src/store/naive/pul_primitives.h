@@ -107,6 +107,7 @@ class UpdatePrimitive
 protected:
   PULImpl        * thePul;
   CollectionPul  * theCollectionPul;
+  const QueryLoc * theLoc;
 
   store::Item_t    theTarget;
   bool             theIsApplied;
@@ -114,13 +115,13 @@ protected:
   TypeUndoList     theTypeUndoList;
 
 protected:
-  UpdatePrimitive(PULImpl* pul, store::Item_t& target);
+  UpdatePrimitive(PULImpl* pul, const QueryLoc*, store::Item_t& target);
 
-  UpdatePrimitive(CollectionPul* pul, store::Item_t& target);
+  UpdatePrimitive(CollectionPul* pul, const QueryLoc*, store::Item_t& target);
 
-  UpdatePrimitive(PULImpl* pul);
+  UpdatePrimitive(PULImpl* pul, const QueryLoc*);
 
-  UpdatePrimitive(CollectionPul* pul);
+  UpdatePrimitive(CollectionPul* pul, const QueryLoc*);
 
 public:
   virtual ~UpdatePrimitive();
@@ -163,9 +164,9 @@ protected:
   zstring          theLeftContent;
 
 protected:
-  UpdDelete(CollectionPul* pul, store::Item_t& target)
+  UpdDelete(CollectionPul* pul, const QueryLoc* aLoc, store::Item_t& target)
     :
-    UpdatePrimitive(pul, target)
+    UpdatePrimitive(pul, aLoc, target)
   {
   }
 
@@ -230,6 +231,7 @@ protected:
 
   UpdInsertChildren(
         CollectionPul* pul,
+        const QueryLoc*,
         store::UpdateConsts::UpdPrimKind kind,
         store::Item_t& target,
         store::Item_t& sibling,
@@ -267,6 +269,7 @@ protected:
 
   UpdInsertAttributes(
         CollectionPul* pul,
+          const QueryLoc* aLoc,
         store::Item_t& target,
         std::vector<store::Item_t>&  attrs);
 
@@ -302,6 +305,7 @@ protected:
 
   UpdReplaceAttribute(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         store::Item_t& attr,
         std::vector<store::Item_t>& newAttrs);
@@ -340,6 +344,7 @@ protected:
 
   UpdReplaceChild(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         store::Item_t& child,
         std::vector<store::Item_t>& newChildren);
@@ -374,10 +379,11 @@ protected:
 
   UpdReplaceElemContent(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         store::Item_t& newChild)
     :
-    UpdatePrimitive(pul, target),
+    UpdatePrimitive(pul, aLoc, target),
     theIsTyped(false)
   {
     theNewChild.transfer(newChild);
@@ -414,10 +420,11 @@ protected:
 
   UpdRenameElem(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         store::Item_t& newName) 
     :
-    UpdatePrimitive(pul, target),
+    UpdatePrimitive(pul, aLoc, target),
     theNewBinding(false),
     theRestoreParentType(false)
   {
@@ -451,10 +458,11 @@ protected:
 
   UpdReplaceAttrValue(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         zstring& newValue)
     :
-    UpdatePrimitive(pul, target)
+    UpdatePrimitive(pul, aLoc, target)
   {
     theNewValue.take(newValue);
   }
@@ -495,10 +503,11 @@ protected:
 
   UpdRenameAttr(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         store::Item_t& newName)
     :
-    UpdatePrimitive(pul, target),
+    UpdatePrimitive(pul, aLoc, target),
     theNewBinding(false)
   {
     theNewName.transfer(newName);
@@ -535,10 +544,11 @@ protected:
 
   UpdReplaceTextValue(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         zstring& newValue) 
     :
-    UpdatePrimitive(pul, target),
+    UpdatePrimitive(pul, aLoc, target),
     theIsTyped(false)
   {
     theNewContent.take(newValue);
@@ -572,10 +582,11 @@ protected:
 
   UpdReplacePiValue(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         zstring& newValue)
     :
-    UpdatePrimitive(pul, target)
+    UpdatePrimitive(pul, aLoc, target)
   {
     theNewValue.take(newValue);
   }
@@ -606,10 +617,11 @@ protected:
 
   UpdRenamePi(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         zstring& newName) 
     :
-    UpdatePrimitive(pul, target)
+    UpdatePrimitive(pul, aLoc, target)
   {
     theNewName.take(newName);
   }
@@ -640,10 +652,11 @@ protected:
 
   UpdReplaceCommentValue(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         zstring& newValue)
     :
-    UpdatePrimitive(pul, target)
+    UpdatePrimitive(pul, aLoc, target)
   {
     theNewValue.take(newValue);
   }
@@ -694,17 +707,18 @@ protected:
   bool                     theIsInSubstitutionGroup;
 
   UpdSetElementType(
-        PULImpl*       pul,
-        store::Item_t& target,
-        store::Item_t& typeName,
-        store::Item_t& typedValue,
-        bool           haveValue,
-        bool           haveEmptyValue,
-        bool           haveTypedValue,
-        bool           haveListValue,
-        bool           isInSubstitutionGroup)
+        PULImpl*        pul,
+        const QueryLoc* aLoc,
+        store::Item_t&  target,
+        store::Item_t&  typeName,
+        store::Item_t&  typedValue,
+        bool            haveValue,
+        bool            haveEmptyValue,
+        bool            haveTypedValue,
+        bool            haveListValue,
+        bool            isInSubstitutionGroup)
     :
-    UpdatePrimitive(pul, target),
+    UpdatePrimitive(pul, aLoc, target),
     theHaveValue(haveValue),
     theHaveEmptyValue(haveEmptyValue),
     theHaveTypedValue(haveTypedValue),
@@ -740,13 +754,14 @@ protected:
   bool                     theHaveListValue;
 
   UpdSetAttributeType(
-        PULImpl*       pul,
-        store::Item_t& target,
-        store::Item_t& typeName,
-        store::Item_t& typedValue,
-        bool           haveListValue)
+        PULImpl*        pul,
+        const QueryLoc* aLoc,
+        store::Item_t&  target,
+        store::Item_t&  typeName,
+        store::Item_t&  typedValue,
+        bool            haveListValue)
     :
-    UpdatePrimitive(pul, target),
+    UpdatePrimitive(pul, aLoc, target),
     theHaveListValue(haveListValue)
   {
     theTypeName.transfer(typeName);
@@ -784,9 +799,9 @@ protected:
 
   store::Item_t theOldDocument;
 
-  UpdPut(PULImpl* pul, store::Item_t& target, store::Item_t& uri)
+  UpdPut(PULImpl* pul, const QueryLoc* aLoc, store::Item_t& target, store::Item_t& uri)
     :
-    UpdatePrimitive(pul, target)
+    UpdatePrimitive(pul, aLoc, target)
   {
     theTargetUri.transfer(uri);
   }
@@ -823,10 +838,11 @@ protected:
 
   UpdCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         bool dyn_collection = false)
     :
-    UpdatePrimitive(pul),
+    UpdatePrimitive(pul, aLoc),
     theName(name),
     theDynamicCollection(dyn_collection)
   {
@@ -834,12 +850,14 @@ protected:
 
   UpdCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection = false);
 
   UpdCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& target,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
@@ -866,10 +884,11 @@ class UpdCreateCollection : public UpdCollection
 protected:
   UpdCreateCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         bool dyn_collection)
     :
-    UpdCollection(pul, name, dyn_collection)
+    UpdCollection(pul, aLoc, name, dyn_collection)
   {
   }
 
@@ -896,10 +915,11 @@ protected:
 
   UpdDeleteCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         bool dyn_collection)
     :
-    UpdCollection(pul, name, dyn_collection)
+    UpdCollection(pul, aLoc, name, dyn_collection)
   {
   }
 
@@ -926,11 +946,12 @@ protected:
 
   UpdInsertIntoCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name, 
         std::vector<store::Item_t>& nodes,
         bool dyn_collection)
       :
-    UpdCollection(pul, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
     theNumApplied(0)
   {
   }
@@ -958,11 +979,12 @@ protected:
 
   UpdInsertFirstIntoCollection(
       CollectionPul* pul,
+        const QueryLoc* aLoc,
       store::Item_t& name,
       std::vector<store::Item_t>& nodes,
       bool dyn_collection)
     :
-    UpdCollection(pul, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
     theNumApplied(0)
   {
   }
@@ -990,11 +1012,12 @@ protected:
 
   UpdInsertLastIntoCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection)
     :
-    UpdCollection(pul, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
     theNumApplied(0)
   {
   }
@@ -1023,12 +1046,13 @@ protected:
 
   UpdInsertBeforeIntoCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection)
     :
-    UpdCollection(pul, target, name, nodes, dyn_collection)
+    UpdCollection(pul, aLoc, target, name, nodes, dyn_collection)
   {
   }
 
@@ -1056,12 +1080,13 @@ protected:
 
   UpdInsertAfterIntoCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection)
     :
-    UpdCollection(pul, target, name, nodes, dyn_collection)
+    UpdCollection(pul, aLoc, target, name, nodes, dyn_collection)
   {
   }
 
@@ -1092,12 +1117,13 @@ protected:
 
   UpdDeleteNodesFromCollection(
         CollectionPul* pul,
+        const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
         bool dyn_collection)
     :
-    UpdCollection(pul, name, nodes, dyn_collection),
+    UpdCollection(pul, aLoc, name, nodes, dyn_collection),
     theIsLast(isLast),
     theNumApplied(0)
   {
@@ -1138,6 +1164,7 @@ protected:
 
   UpdCreateIndex(
       PULImpl* pul,
+      const QueryLoc* aLoc,
       const store::Item_t& qname,
       const store::IndexSpecification& spec,
       store::Iterator* sourceIter);
@@ -1168,7 +1195,7 @@ protected:
 
   store::Index_t       theIndex;
 
-  UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname);
+  UpdDeleteIndex(PULImpl* pul, const QueryLoc* aLoc, const store::Item_t& qname);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1197,6 +1224,7 @@ protected:
 
   UpdRefreshIndex(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& qname,
         store::Iterator* sourceIter);
 
@@ -1234,6 +1262,7 @@ protected:
 
   UpdActivateIC(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& aQName,
         const store::Item_t& aCollectionName);
 
@@ -1265,6 +1294,7 @@ protected:
 
   UpdActivateForeignKeyIC(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& qQName,
         const store::Item_t& aFromCollectionName,
         const store::Item_t& aToCollectionName);
@@ -1298,6 +1328,7 @@ protected:
 
   UpdDeActivateIC(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& qname);
 
 public:
@@ -1326,6 +1357,7 @@ protected:
 
   UpdCreateDocument(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& uri,
         store::Item_t& doc
         );
@@ -1353,6 +1385,7 @@ protected:
 
   UpdDeleteDocument(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& uri
         );
 
@@ -1378,6 +1411,7 @@ protected:
 
   UpdHashMap(
         PULImpl* pul,
+        const QueryLoc* aLoc,
         const store::Item_t& aQName);
 };
 
@@ -1393,6 +1427,7 @@ protected:
 
   UpdCreateHashMap(
         PULImpl* pul,
+        const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKeyTypes,
         const std::vector<zstring>& aCollations,
@@ -1423,6 +1458,7 @@ protected:
 
   UpdDestroyHashMap(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& aQName);
 
   store::Index_t theMap; //required for undo
@@ -1448,6 +1484,7 @@ protected:
 
   UpdInsertIntoHashMap(
         PULImpl* pul,
+        const QueryLoc*,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey,
         const store::Iterator_t& aValue);
@@ -1477,6 +1514,7 @@ protected:
 
   UpdRemoveFromHashMap(
         PULImpl* pul,
+        const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey);
 

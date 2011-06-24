@@ -264,7 +264,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  reinterpret_cast<store::PUL*>(result.getp())->addCreateIndex(qname, spec, planWrapper);
+  reinterpret_cast<store::PUL*>(result.getp())->addCreateIndex(&loc, qname, spec, planWrapper);
 
   STACK_PUSH(true, state);
 
@@ -321,7 +321,7 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  reinterpret_cast<store::PUL*>(result.getp())->addDeleteIndex(qname);
+  reinterpret_cast<store::PUL*>(result.getp())->addDeleteIndex(&loc, qname);
 
   STACK_PUSH(true, state);
 
@@ -391,7 +391,7 @@ bool RefreshIndexIterator::nextImpl(
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  reinterpret_cast<store::PUL*>(result.getp())->addRefreshIndex(qname, planWrapper);
+  reinterpret_cast<store::PUL*>(result.getp())->addRefreshIndex(&loc, qname, planWrapper);
 
   STACK_PUSH(true, state);
 

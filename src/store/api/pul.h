@@ -28,7 +28,7 @@
 namespace zorba 
 { 
 
-class static_context;
+class QueryLoc;
 
 typedef std::pair<const store::Item*, store::Index_t> IndexBinding;
 
@@ -55,49 +55,62 @@ protected:
 public:
   virtual ~PUL() { }
 
-  virtual void addDelete(Item_t& node) = 0;
+  virtual void addDelete(
+      const QueryLoc* aQueryLoc,
+      Item_t& node) = 0;
 
   virtual void addInsertInto(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         std::vector<Item_t>& children) = 0;
 
   virtual void addInsertFirst(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         std::vector<Item_t>& children) = 0;
 
   virtual void addInsertLast(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         std::vector<Item_t>& children) = 0;
 
   virtual void addInsertBefore(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         std::vector<Item_t>& siblings) = 0;
 
   virtual void addInsertAfter(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         std::vector<Item_t>& siblings) = 0;
   
   virtual void addInsertAttributes(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         std::vector<Item_t>& attrs) = 0;
 
   virtual void addReplaceNode(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         std::vector<Item_t>& replacementNodes) = 0;
 
   virtual void addReplaceContent(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         Item_t& newTextChild) = 0;
 
   virtual void addReplaceValue(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         zstring& newValue) = 0;
 
   virtual void addRename(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         Item_t& newName) = 0;
 
   virtual void addSetElementType(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         Item_t& typeName,
         Item_t& typedValue,
@@ -107,6 +120,7 @@ public:
         bool isInSubstitutionGroup) = 0;
 
   virtual void addSetElementType(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         Item_t& typeName,
         std::vector<Item_t>& typedValue,
@@ -116,58 +130,69 @@ public:
         bool isInSubstitutionGroup) = 0;
 
   virtual void addSetAttributeType(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         Item_t& typeName,
         Item_t& typedValue) = 0;
 
   virtual void addSetAttributeType(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         Item_t& typeName,
         std::vector<Item_t>& typedValue) = 0;
 
 
   virtual void addPut(
+        const QueryLoc* aQueryLoc,
         Item_t& target,
         Item_t& uri) = 0;
 
   // functions to add primitives for updating collection functions
 
   virtual void addCreateCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         bool dyn_collection = false) = 0;
 
   virtual void addDeleteCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         bool dyn_collection = false) = 0;
 
   virtual void addInsertIntoCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
         bool dyn_collection = false) = 0;
 
   virtual void addInsertFirstIntoCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
         bool dyn_collection = false) = 0;
 
   virtual void addInsertLastIntoCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<Item_t>& nodes,
         bool dyn_collection = false) = 0;
 
   virtual void addInsertBeforeIntoCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         Item_t& target,
         std::vector<Item_t>& nodes,
         bool dyn_collection = false) = 0;
 
   virtual void addInsertAfterIntoCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         Item_t& target,
         std::vector<Item_t>& nodes,
         bool dyn_collection = false) = 0;
 
   virtual void addDeleteFromCollection(
+        const QueryLoc* aQueryLoc,
         Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
@@ -176,57 +201,69 @@ public:
   // functions to add primitives for indexes
 
   virtual void addCreateIndex(
+        const QueryLoc* aQueryLoc,
         const Item_t& qname,
         const IndexSpecification& spec,
         Iterator* sourceIter) = 0;
 
   virtual void addDeleteIndex(
+        const QueryLoc* aQueryLoc,
         const Item_t& qname) = 0;
 
   virtual void addRefreshIndex(
+        const QueryLoc* aQueryLoc,
         const Item_t& qname,
         Iterator* sourceIter) = 0;
 
   // functions to add primitives for integrity constraints
 
   virtual void addActivateIC(
+        const QueryLoc* aQueryLoc,
         const Item_t& qname,
         const Item_t& aCollectionName) = 0;
 
   virtual void addActivateForeignKeyIC(
+        const QueryLoc* aQueryLoc,
         const Item_t& qname,
         const Item_t& aFromCollectionName,
         const Item_t& aToCollectionName) = 0;
 
   virtual void addDeActivateIC(
+        const QueryLoc* aQueryLoc,
         const Item_t& qname) = 0;
 
   // functions to add primitives for documents 
 
   virtual void addCreateDocument(
+        const QueryLoc* aQueryLoc,
         const Item_t& uri,
         Item_t& doc) = 0;
 
   virtual void addDeleteDocument(
+        const QueryLoc* aQueryLoc,
         const Item_t& uri) = 0;
 
   // functions to add primitives for hash maps
 
   virtual void addCreateHashMap(
+        const QueryLoc* aQueryLoc,
         const Item_t& aQName,
         const std::vector<Item_t>& aKeyTypes,
         const std::vector<zstring>& aCollations,
         long  aTimezone) = 0;
 
   virtual void addDestroyHashMap(
+        const QueryLoc* aQueryLoc,
         const Item_t& aQName) = 0;
 
   virtual void addInsertIntoHashMap(
+        const QueryLoc* aQueryLoc,
         const Item_t& aQName,
         const std::vector<Item_t>& aKey,
         const Iterator_t& aValue) = 0;
 
   virtual void addRemoveFromHashMap(
+        const QueryLoc* aQueryLoc,
         const Item_t& aQName,
         const std::vector<Item_t>& aKey) = 0;
 

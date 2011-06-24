@@ -26,9 +26,12 @@ namespace zorba { namespace simplestore {
 
 ***************************************************************************/
 UpdDelete*
-PULPrimitiveFactory::createUpdDelete(CollectionPul* pul, store::Item_t& target)
+PULPrimitiveFactory::createUpdDelete(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& target)
 {
-  return new UpdDelete(pul, target);
+  return new UpdDelete(pul, aLoc, target);
 }
 
     
@@ -38,12 +41,13 @@ PULPrimitiveFactory::createUpdDelete(CollectionPul* pul, store::Item_t& target)
 UpdInsertChildren*
 PULPrimitiveFactory::createUpdInsertChildren(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::UpdateConsts::UpdPrimKind kind,
     store::Item_t& target,
     store::Item_t& sibling,
     std::vector<store::Item_t>& children)
 {
-  return new UpdInsertChildren(pul, kind, target, sibling, children);
+  return new UpdInsertChildren(pul, aLoc, kind, target, sibling, children);
 }
 
     
@@ -52,10 +56,11 @@ PULPrimitiveFactory::createUpdInsertChildren(
     UpdInsertAttributes*
     PULPrimitiveFactory::createUpdInsertAttributes(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& target,
           std::vector<store::Item_t>&  attrs)
     {
-      return new UpdInsertAttributes(pul, target, attrs);
+      return new UpdInsertAttributes(pul, aLoc, target, attrs);
     }
     
     /***************************************************************************
@@ -63,11 +68,12 @@ PULPrimitiveFactory::createUpdInsertChildren(
     UpdReplaceAttribute*
     PULPrimitiveFactory::createUpdReplaceAttribute(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& target,
           store::Item_t& attr,
           std::vector<store::Item_t>& newAttrs)
     {
-      return new UpdReplaceAttribute(pul, target, attr, newAttrs);
+      return new UpdReplaceAttribute(pul, aLoc, target, attr, newAttrs);
     }
     
     /***************************************************************************
@@ -75,11 +81,12 @@ PULPrimitiveFactory::createUpdInsertChildren(
     UpdReplaceChild*
     PULPrimitiveFactory::createUpdReplaceChild(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& target,
           store::Item_t& child,
           std::vector<store::Item_t>& newChildren)
     {
-      return new UpdReplaceChild(pul, target, child, newChildren);
+      return new UpdReplaceChild(pul, aLoc, target, child, newChildren);
     }
     
     /***************************************************************************
@@ -87,10 +94,11 @@ PULPrimitiveFactory::createUpdInsertChildren(
     UpdReplaceElemContent*
     PULPrimitiveFactory::createUpdReplaceElemContent(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& target,
           store::Item_t& newChild)
     {
-      return new UpdReplaceElemContent(pul, target, newChild);
+      return new UpdReplaceElemContent(pul, aLoc, target, newChild);
     }
     
     /***************************************************************************
@@ -98,10 +106,11 @@ PULPrimitiveFactory::createUpdInsertChildren(
     UpdRenameElem*
     PULPrimitiveFactory::createUpdRenameElem(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& target,
           store::Item_t& newName)
     {
-      return new UpdRenameElem(pul, target, newName);
+      return new UpdRenameElem(pul, aLoc, target, newName);
     }
     
 
@@ -110,10 +119,11 @@ PULPrimitiveFactory::createUpdInsertChildren(
 ***************************************************************************/
 UpdReplaceAttrValue* PULPrimitiveFactory::createUpdReplaceAttrValue(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     zstring& newValue)
 {
-  return new UpdReplaceAttrValue(pul, target, newValue);
+  return new UpdReplaceAttrValue(pul, aLoc, target, newValue);
 }
 
     
@@ -122,10 +132,11 @@ UpdReplaceAttrValue* PULPrimitiveFactory::createUpdReplaceAttrValue(
 ***************************************************************************/
 UpdRenameAttr* PULPrimitiveFactory::createUpdRenameAttr(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     store::Item_t& newName)
 {
-  return new UpdRenameAttr(pul, target, newName);
+  return new UpdRenameAttr(pul, aLoc, target, newName);
 }
     
 
@@ -134,10 +145,11 @@ UpdRenameAttr* PULPrimitiveFactory::createUpdRenameAttr(
 ***************************************************************************/
 UpdReplaceTextValue* PULPrimitiveFactory::createUpdReplaceTextValue(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     zstring& newValue)
 {
-  return new UpdReplaceTextValue(pul, target, newValue);
+  return new UpdReplaceTextValue(pul, aLoc, target, newValue);
 }
     
 
@@ -146,10 +158,11 @@ UpdReplaceTextValue* PULPrimitiveFactory::createUpdReplaceTextValue(
 ***************************************************************************/
 UpdReplacePiValue* PULPrimitiveFactory::createUpdReplacePiValue(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     zstring& newValue)
 {
-  return new UpdReplacePiValue(pul, target, newValue);
+  return new UpdReplacePiValue(pul, aLoc, target, newValue);
 }
     
 
@@ -159,10 +172,11 @@ UpdReplacePiValue* PULPrimitiveFactory::createUpdReplacePiValue(
 UpdRenamePi*
 PULPrimitiveFactory::createUpdRenamePi(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     zstring& newName)
 {
-  return new UpdRenamePi(pul, target, newName);
+  return new UpdRenamePi(pul, aLoc, target, newName);
 }
 
     
@@ -172,10 +186,11 @@ PULPrimitiveFactory::createUpdRenamePi(
 UpdReplaceCommentValue*
 PULPrimitiveFactory::createUpdReplaceCommentValue(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     zstring& newValue)
 {
-  return new UpdReplaceCommentValue(pul, target, newValue);
+  return new UpdReplaceCommentValue(pul, aLoc, target, newValue);
 }
     
 
@@ -185,6 +200,7 @@ PULPrimitiveFactory::createUpdReplaceCommentValue(
 UpdSetElementType*
 PULPrimitiveFactory::createUpdSetElementType(
     PULImpl*       pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     store::Item_t& typeName,
     store::Item_t& typedValue,
@@ -194,7 +210,7 @@ PULPrimitiveFactory::createUpdSetElementType(
     bool           haveListValue,
     bool           isInSubstitutionGroup)
 {
-  return new UpdSetElementType(pul, target, typeName, typedValue,
+  return new UpdSetElementType(pul, aLoc, target, typeName, typedValue,
                                haveValue, haveEmptyValue, haveTypedValue, haveListValue,
                                isInSubstitutionGroup);
 }
@@ -206,12 +222,13 @@ PULPrimitiveFactory::createUpdSetElementType(
 UpdSetAttributeType*
 PULPrimitiveFactory::createUpdSetAttributeType(
     PULImpl*       pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     store::Item_t& typeName,
     store::Item_t& typedValue,
     bool           haveListValue)
 {
-  return new UpdSetAttributeType(pul, target, typeName, typedValue, haveListValue);
+  return new UpdSetAttributeType(pul, aLoc, target, typeName, typedValue, haveListValue);
 }
     
 
@@ -221,10 +238,11 @@ PULPrimitiveFactory::createUpdSetAttributeType(
 UpdPut*
 PULPrimitiveFactory::createUpdPut(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     store::Item_t& uri)
 {
-  return new UpdPut(pul, target, uri);
+  return new UpdPut(pul, aLoc, target, uri);
 }
 
     
@@ -233,10 +251,11 @@ PULPrimitiveFactory::createUpdPut(
     UpdCreateCollection*
     PULPrimitiveFactory::createUpdCreateCollection(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& name,
           bool dyn_collection)
     {
-      return new UpdCreateCollection(pul, name, dyn_collection);
+      return new UpdCreateCollection(pul, aLoc, name, dyn_collection);
     }
 
     
@@ -245,10 +264,11 @@ PULPrimitiveFactory::createUpdPut(
     UpdDeleteCollection*
     PULPrimitiveFactory::createUpdDeleteCollection(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& name,
           bool dyn_collection)
     {
-      return new UpdDeleteCollection(pul, name, dyn_collection);
+      return new UpdDeleteCollection(pul, aLoc, name, dyn_collection);
     }
 
     
@@ -257,11 +277,12 @@ PULPrimitiveFactory::createUpdPut(
     UpdInsertIntoCollection*
     PULPrimitiveFactory::createUpdInsertIntoCollection(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& name, 
           std::vector<store::Item_t>& nodes,
           bool dyn_collection)
     {
-      return new UpdInsertIntoCollection(pul, name, nodes, dyn_collection);
+      return new UpdInsertIntoCollection(pul, aLoc, name, nodes, dyn_collection);
     }
 
     
@@ -270,11 +291,12 @@ PULPrimitiveFactory::createUpdPut(
     UpdInsertFirstIntoCollection*
     PULPrimitiveFactory::createUpdInsertFirstIntoCollection(
         CollectionPul* pul,
+          const QueryLoc* aLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection)
     {
-      return new UpdInsertFirstIntoCollection(pul, name, nodes, dyn_collection);
+      return new UpdInsertFirstIntoCollection(pul, aLoc, name, nodes, dyn_collection);
     }
 
     
@@ -283,11 +305,12 @@ PULPrimitiveFactory::createUpdPut(
     UpdInsertLastIntoCollection*
     PULPrimitiveFactory::createUpdInsertLastIntoCollection(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& name,
           std::vector<store::Item_t>& nodes,
           bool dyn_collection)
     {
-      return new UpdInsertLastIntoCollection(pul, name, nodes, dyn_collection);
+      return new UpdInsertLastIntoCollection(pul, aLoc, name, nodes, dyn_collection);
     }
 
     
@@ -296,12 +319,13 @@ PULPrimitiveFactory::createUpdPut(
     UpdInsertBeforeIntoCollection*
     PULPrimitiveFactory::createUpdInsertBeforeIntoCollection(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& name,
           store::Item_t& target,
           std::vector<store::Item_t>& nodes,
           bool dyn_collection)
     {
-      return new UpdInsertBeforeIntoCollection(pul, name, target, nodes, dyn_collection);
+      return new UpdInsertBeforeIntoCollection(pul, aLoc, name, target, nodes, dyn_collection);
     }
 
     
@@ -310,12 +334,13 @@ PULPrimitiveFactory::createUpdPut(
     UpdInsertAfterIntoCollection*
     PULPrimitiveFactory::createUpdInsertAfterIntoCollection(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& name,
           store::Item_t& target,
           std::vector<store::Item_t>& nodes,
           bool dyn_collection)
     {
-      return new UpdInsertAfterIntoCollection(pul, name, target, nodes, dyn_collection);
+      return new UpdInsertAfterIntoCollection(pul, aLoc, name, target, nodes, dyn_collection);
     }
 
     
@@ -324,12 +349,13 @@ PULPrimitiveFactory::createUpdPut(
     UpdDeleteNodesFromCollection*
     PULPrimitiveFactory::createUpdDeleteNodesFromCollection(
           CollectionPul* pul,
+          const QueryLoc* aLoc,
           store::Item_t& name,
           std::vector<store::Item_t>& nodes,
           bool isLast,
           bool dyn_collection)
     {
-      return new UpdDeleteNodesFromCollection(pul, name, nodes, isLast, dyn_collection);
+      return new UpdDeleteNodesFromCollection(pul, aLoc, name, nodes, isLast, dyn_collection);
     }
 
     
@@ -338,20 +364,24 @@ PULPrimitiveFactory::createUpdPut(
     UpdCreateIndex*
     PULPrimitiveFactory::createUpdCreateIndex(
           PULImpl* pul,
+          const QueryLoc* aLoc,
           const store::Item_t& qname,
           const store::IndexSpecification& spec,
           store::Iterator* sourceIter)
     {
-      return new UpdCreateIndex(pul, qname, spec, sourceIter);
+      return new UpdCreateIndex(pul, aLoc, qname, spec, sourceIter);
     }
 
     
     /***************************************************************************
     ***************************************************************************/
     UpdDeleteIndex*
-    PULPrimitiveFactory::createUpdDeleteIndex(PULImpl* pul, const store::Item_t& qname)
+    PULPrimitiveFactory::createUpdDeleteIndex(
+        PULImpl* pul,
+        const QueryLoc* aLoc,
+        const store::Item_t& qname)
     {
-      return new UpdDeleteIndex(pul, qname);
+      return new UpdDeleteIndex(pul, aLoc, qname);
     }
 
     
@@ -360,10 +390,11 @@ PULPrimitiveFactory::createUpdPut(
     UpdRefreshIndex*
     PULPrimitiveFactory::createUpdRefreshIndex(
           PULImpl* pul,
+          const QueryLoc* aLoc,
           const store::Item_t& qname,
           store::Iterator* sourceIter)
     {
-      return new UpdRefreshIndex(pul, qname, sourceIter);
+      return new UpdRefreshIndex(pul, aLoc, qname, sourceIter);
     }
 
     
@@ -372,10 +403,11 @@ PULPrimitiveFactory::createUpdPut(
     UpdActivateIC*
     PULPrimitiveFactory::createUpdActivateIC(
           PULImpl* pul,
+          const QueryLoc* aLoc,
           const store::Item_t& aQName,
           const store::Item_t& aCollectionName)
     {
-      return new UpdActivateIC(pul, aQName, aCollectionName);
+      return new UpdActivateIC(pul, aLoc, aQName, aCollectionName);
     }
     
 
@@ -384,11 +416,12 @@ PULPrimitiveFactory::createUpdPut(
     UpdActivateForeignKeyIC*
     PULPrimitiveFactory::createUpdActivateForeignKeyIC(
           PULImpl* pul,
+          const QueryLoc* aLoc,
           const store::Item_t& qQName,
           const store::Item_t& aFromCollectionName,
           const store::Item_t& aToCollectionName)
     {
-      return new UpdActivateForeignKeyIC(pul, qQName, aFromCollectionName, aToCollectionName);
+      return new UpdActivateForeignKeyIC(pul, aLoc, qQName, aFromCollectionName, aToCollectionName);
     }
     
 
@@ -397,9 +430,10 @@ PULPrimitiveFactory::createUpdPut(
     UpdDeActivateIC*
     PULPrimitiveFactory::createUpdDeActivateIC(
         PULImpl* pul,
+          const QueryLoc* aLoc,
         const store::Item_t& qname)
     {
-      return new UpdDeActivateIC(pul, qname);
+      return new UpdDeActivateIC(pul, aLoc, qname);
     }
 
 
@@ -408,10 +442,11 @@ PULPrimitiveFactory::createUpdPut(
     UpdCreateDocument*
     PULPrimitiveFactory::createUpdCreateDocument(
           PULImpl* pul,
+          const QueryLoc* aLoc,
           const store::Item_t& uri,
           store::Item_t& doc)
     {
-      return new UpdCreateDocument(pul, uri, doc);
+      return new UpdCreateDocument(pul, aLoc, uri, doc);
     }
     
     /***************************************************************************
@@ -419,9 +454,10 @@ PULPrimitiveFactory::createUpdPut(
     UpdDeleteDocument*
     PULPrimitiveFactory::createUpdDeleteDocument(
           PULImpl* pul,
+          const QueryLoc* aLoc,
           const store::Item_t& uri)
    {
-     return new UpdDeleteDocument(pul, uri);
+     return new UpdDeleteDocument(pul, aLoc, uri);
    }
 
   /***************************************************************************
@@ -429,13 +465,14 @@ PULPrimitiveFactory::createUpdPut(
   UpdCreateHashMap*
   PULPrimitiveFactory::createUpdCreateHashMap(
         PULImpl* pul,
+        const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKeyTypes,
         const std::vector<zstring>& aCollations,
         long aTimezone)
   {
     return new UpdCreateHashMap(
-        pul, aQName, aKeyTypes, aCollations, aTimezone);;
+        pul, aLoc, aQName, aKeyTypes, aCollations, aTimezone);;
   }
 
   /***************************************************************************
@@ -443,9 +480,10 @@ PULPrimitiveFactory::createUpdPut(
   UpdDestroyHashMap*
   PULPrimitiveFactory::createUpdDestroyHashMap(
         PULImpl* pul,
+        const QueryLoc* aLoc,
         const store::Item_t& aQName)
   {
-    return new UpdDestroyHashMap(pul, aQName);
+    return new UpdDestroyHashMap(pul, aLoc, aQName);
   }
 
   /***************************************************************************
@@ -453,11 +491,12 @@ PULPrimitiveFactory::createUpdPut(
   UpdInsertIntoHashMap*
   PULPrimitiveFactory::createUpdInsertIntoHashMap(
         PULImpl* pul,
+        const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey,
         const store::Iterator_t& aValue)
   {
-    return new UpdInsertIntoHashMap(pul, aQName, aKey, aValue);
+    return new UpdInsertIntoHashMap(pul, aLoc, aQName, aKey, aValue);
   }
 
   /***************************************************************************
@@ -465,10 +504,11 @@ PULPrimitiveFactory::createUpdPut(
   UpdRemoveFromHashMap*
   PULPrimitiveFactory::createUpdRemoveFromHashMap(
         PULImpl* pul,
+        const QueryLoc* aLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey)
   {
-    return new UpdRemoveFromHashMap(pul, aQName, aKey);
+    return new UpdRemoveFromHashMap(pul, aLoc, aQName, aKey);
   }
 
 } /* namespace simplestore */ } /* namespace zorba */

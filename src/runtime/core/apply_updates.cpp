@@ -201,7 +201,7 @@ void apply_updates(
 
           PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL);
 
-          indexPul->addRefreshIndex(zorbaIndex->getName(), planWrapper);
+          indexPul->addRefreshIndex(&loc, zorbaIndex->getName(), planWrapper);
         }
       }
 

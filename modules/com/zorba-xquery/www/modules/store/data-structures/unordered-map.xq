@@ -156,13 +156,13 @@ declare %ann:variadic %sequential function map:remove(
  : Returns the keys of all entries of a map. The keys
  : are returned as sequence of nodes of the form:
  :
- : <tt>
- ; &lt;key xmlns="http://www.zorba-xquery.com/modules/store/data-structures/unordered-map">
- ;   &lt;attribute value="key1_value"/>
- ;   &lt;attribute value="key2_value"/>
- ;   &lt;attribute value="key3_value"/>
- ; &lt;/key>
- : </tt>
+ : <pre>
+ : &lt;key xmlns="http://www.zorba-xquery.com/modules/store/data-structures/unordered-map">
+ :   &lt;attribute value="key1_value"/>
+ :   &lt;attribute value="key2_value"/>
+ :   &lt;attribute value="key3_value"/>
+ : &lt;/key>
+ : </pre>
  :
  : The following condition always holds:
  : <tt>map:size($name) eq fn:count(map:keys($name))</tt>

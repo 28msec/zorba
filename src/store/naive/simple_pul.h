@@ -274,54 +274,68 @@ public:
   ~PULImpl();
 
   // XQUF primitives
-  void addDelete(store::Item_t& n);
+  void addDelete(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& n);
 
   void addInsertInto(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         std::vector<store::Item_t>& children);
 
   void addInsertFirst(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         std::vector<store::Item_t>& children);
 
   void addInsertLast(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         std::vector<store::Item_t>& children);
 
   void addInsertBefore(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         std::vector<store::Item_t>& siblings);
 
   void addInsertAfter(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         std::vector<store::Item_t>& siblings);
 
   void addInsertAttributes(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         std::vector<store::Item_t>& attrs);
 
   void addReplaceNode(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         std::vector<store::Item_t>& replacementNodes);
 
   void addReplaceContent(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         store::Item_t& newTextChild);
 
   void addReplaceValue(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         zstring& newValue);
 
   void addRename(
+        const QueryLoc* aQueryLoc,
         store::Item_t& target,
         store::Item_t& newName);
 
   void addPut(
+        const QueryLoc* aQueryLoc,
         store::Item_t& node,
         store::Item_t& uri);
 
   // Revalidation primitives
   void addSetElementType(
+        const QueryLoc* aQueryLoc,
         store::Item_t&               target,
         store::Item_t&               typeName,
         store::Item_t&               value,
@@ -331,6 +345,7 @@ public:
         bool                         isInSubstitutionGroup);
 
   void addSetElementType(
+        const QueryLoc* aQueryLoc,
         store::Item_t&               target,
         store::Item_t&               typeName,
         std::vector<store::Item_t>&  value,
@@ -340,52 +355,62 @@ public:
         bool                         isInSubstitutionGroup);
 
   void addSetAttributeType(
+        const QueryLoc* aQueryLoc,
         store::Item_t&               target,
         store::Item_t&               typeName,
         store::Item_t&               typedValue);
 
   void addSetAttributeType(
+        const QueryLoc* aQueryLoc,
         store::Item_t&              target,
         store::Item_t&              typeName,
         std::vector<store::Item_t>& typedValue);
 
   // Collection primitives
   void addCreateCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         bool dyn_collection = false);
 
   void addDeleteCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         bool dyn_collection = false);
 
   void addInsertIntoCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection = false);
 
   void addInsertFirstIntoCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection = false);
 
   void addInsertLastIntoCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection = false);
 
   void addInsertBeforeIntoCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection = false);
 
   void addInsertAfterIntoCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes,
         bool dyn_collection = false);
 
   void addDeleteFromCollection(
+        const QueryLoc* aQueryLoc,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
@@ -393,54 +418,66 @@ public:
 
   // Index primitives
   void addCreateIndex(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& qname,
         const store::IndexSpecification& spec,
         store::Iterator* sourceIter);
 
   void addDeleteIndex(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& qname);
 
   void addRefreshIndex(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& qname,
         store::Iterator* sourceIter);
 
   virtual void addActivateIC(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& qname,
         const store::Item_t& aCollectionName);
 
   virtual void addActivateForeignKeyIC(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& qname,
         const store::Item_t& aFromCollectionName,
         const store::Item_t& aToCollectionName);
 
   virtual void addDeActivateIC(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& qname);
 
   // document primitives
   virtual void addCreateDocument(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& uri,
         store::Item_t& doc);
 
   virtual void addDeleteDocument(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& uri);
 
   // hash map primitives
 
   virtual void addCreateHashMap(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKeyTypes,
         const std::vector<zstring>& aCollations,
         long  aTimezone);
 
   virtual void addDestroyHashMap(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& aQName);
 
   virtual void addInsertIntoHashMap(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey,
         const store::Iterator_t& aValue);
 
   virtual void addRemoveFromHashMap(
+        const QueryLoc* aQueryLoc,
         const store::Item_t& aQName,
         const std::vector<store::Item_t>& aKey);
 
@@ -479,6 +516,7 @@ protected:
         UpdListKind listKind);
 
   void addInsertChildren(
+        const QueryLoc* aQueryLoc,
         store::UpdateConsts::UpdPrimKind kind,
         store::Item_t& target,
         store::Item_t& sibling,

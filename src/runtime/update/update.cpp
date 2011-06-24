@@ -213,7 +213,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       for (ulong i = 0; i < numAttrs; ++i)
         attrs[i] = attrs[i]->copy(NULL, lCopyMode);
 
-      pul->addInsertAttributes(parent, attrs);
+      pul->addInsertAttributes(&loc, parent, attrs);
     }
 
     if (numNodes > 0)
@@ -224,9 +224,9 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
         nodes[i] = nodes[i]->copy(NULL, lCopyMode);
 
       if (theType == store::UpdateConsts::BEFORE)
-        pul->addInsertBefore(target, nodes);
+        pul->addInsertBefore(&loc, target, nodes);
       else
-        pul->addInsertAfter(target, nodes);
+        pul->addInsertAfter(&loc, target, nodes);
     }
 
     result = pul.release();
@@ -288,7 +288,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       for (ulong i = 0; i < numAttrs; ++i)
         attrs[i] = attrs[i]->copy(NULL, lCopyMode);
 
-      pul->addInsertAttributes(target, attrs);
+      pul->addInsertAttributes(&loc, target, attrs);
     }
 
     if (numNodes > 0)
@@ -299,11 +299,11 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
         nodes[i] = nodes[i]->copy(NULL, lCopyMode);
 
       if (theType == store::UpdateConsts::INTO)
-        pul->addInsertInto(target, nodes);
+        pul->addInsertInto(&loc, target, nodes);
       else if (theType == store::UpdateConsts::AS_FIRST_INTO)
-        pul->addInsertFirst(target, nodes);
+        pul->addInsertFirst(&loc, target, nodes);
       else
-        pul->addInsertLast(target, nodes);
+        pul->addInsertLast(&loc, target, nodes);
     }
 
     result = pul.release();
@@ -338,7 +338,7 @@ DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
     areNodeModifiersViolated(theSctx, target, loc);
 
-    pul->addDelete(target);
+    pul->addDelete(&loc, target);
 
   }
   result = pul.release();
@@ -496,7 +496,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
     lNodes.resize(lNumNodes);
-    lPul->addReplaceNode(lTarget, lNodes);
+    lPul->addReplaceNode(&loc, lTarget, lNodes);
   }
   else // replace value of node ...
   {
@@ -588,7 +588,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
       areNodeModifiersViolated(theSctx, lTarget, loc);
 
-      lPul->addReplaceContent(lTarget, lWith);
+      lPul->addReplaceContent(&loc, lTarget, lWith);
     }
     else
     {
@@ -608,12 +608,12 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       if (content.empty() && lTargetKind == store::StoreConsts::textNode)
       {
         store::Item_t temp = lTarget;
-        lPul->addReplaceValue(temp, content);
-        lPul->addDelete(lTarget);
+        lPul->addReplaceValue(&loc, temp, content);
+        lPul->addDelete(&loc, lTarget);
       }
       else
       {
-        lPul->addReplaceValue(lTarget, content);
+        lPul->addReplaceValue(&loc, lTarget, content);
       }
     }
   }
@@ -734,7 +734,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   }
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addRename(lTarget, qnameItem);
+  lPul->addRename(&loc, lTarget, qnameItem);
 
   result = lPul.release();
   STACK_PUSH(true, lState);

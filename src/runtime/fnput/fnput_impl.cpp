@@ -75,7 +75,7 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addPut(node, resolvedUriItem);
+  pul->addPut(&loc, node, resolvedUriItem);
 
   result = pul.release();
 

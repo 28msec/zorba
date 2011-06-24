@@ -45,10 +45,11 @@ namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-UpdatePrimitive::UpdatePrimitive(PULImpl* pul, store::Item_t& target)
+UpdatePrimitive::UpdatePrimitive(PULImpl* pul, const QueryLoc* aLoc, store::Item_t& target)
   :
   thePul(pul),
   theCollectionPul(NULL),
+  theLoc(aLoc),
   theIsApplied(false),
   theRemoveType(false)
 {
@@ -58,10 +59,11 @@ UpdatePrimitive::UpdatePrimitive(PULImpl* pul, store::Item_t& target)
 }
 
 
-UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, store::Item_t& target)
+UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, const QueryLoc* aLoc, store::Item_t& target)
   :
   thePul(pul->thePul),
   theCollectionPul(pul),
+  theLoc(aLoc),
   theIsApplied(false),
   theRemoveType(false)
 {
@@ -71,10 +73,11 @@ UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, store::Item_t& target)
 }
 
 
-UpdatePrimitive::UpdatePrimitive(PULImpl* pul)
+UpdatePrimitive::UpdatePrimitive(PULImpl* pul, const QueryLoc* aLoc)
   :
   thePul(pul),
   theCollectionPul(NULL),
+  theLoc(aLoc),
   theTarget(NULL),
   theIsApplied(false),
   theRemoveType(false)
@@ -83,10 +86,11 @@ UpdatePrimitive::UpdatePrimitive(PULImpl* pul)
 }
 
 
-UpdatePrimitive::UpdatePrimitive(CollectionPul* pul)
+UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, const QueryLoc* aLoc)
   :
   thePul(pul->thePul),
   theCollectionPul(pul),
+  theLoc(aLoc),
   theIsApplied(false),
   theRemoveType(false)
 {
@@ -143,12 +147,13 @@ void UpdDelete::undo()
 ********************************************************************************/
 UpdInsertChildren::UpdInsertChildren(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::UpdateConsts::UpdPrimKind kind,
     store::Item_t& target,
     store::Item_t& sibling,
     std::vector<store::Item_t>& children)
   :
-  UpdatePrimitive(pul, target),
+  UpdatePrimitive(pul, aLoc, target),
   theKind(kind),
   theNumApplied(0)
 {
@@ -251,10 +256,11 @@ void UpdInsertChildren::undo()
 ********************************************************************************/
 UpdInsertAttributes::UpdInsertAttributes(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     std::vector<store::Item_t>&  attrs)
   :
-  UpdatePrimitive(pul, target),
+  UpdatePrimitive(pul, aLoc, target),
   theNumApplied(0)
 {
   ulong numAttrs = (ulong)attrs.size();
@@ -280,7 +286,14 @@ void UpdInsertAttributes::undo()
 void UpdInsertAttributes::check()
 {
   ElementNode* target = ELEM_NODE(theTarget);
-  target->checkUniqueAttrs();
+  try
+  {
+    target->checkUniqueAttrs();
+  } catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -289,11 +302,12 @@ void UpdInsertAttributes::check()
 ********************************************************************************/
 UpdReplaceAttribute::UpdReplaceAttribute(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     store::Item_t& attr,
     std::vector<store::Item_t>& newAttrs)
   :
-  UpdatePrimitive(pul, target),
+  UpdatePrimitive(pul, aLoc, target),
   theNumApplied(0)
 {
   theAttr.transfer(attr);
@@ -321,7 +335,14 @@ void UpdReplaceAttribute::undo()
 void UpdReplaceAttribute::check()
 {
   ElementNode* target = ELEM_NODE(theTarget);
-  target->checkUniqueAttrs();
+  try
+  {
+    target->checkUniqueAttrs();
+  } catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -330,11 +351,12 @@ void UpdReplaceAttribute::check()
 ********************************************************************************/
 UpdReplaceChild::UpdReplaceChild(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     store::Item_t& child,
     std::vector<store::Item_t>& newChildren)
   :
-  UpdatePrimitive(pul, target),
+  UpdatePrimitive(pul, aLoc, target),
   theNumApplied(0),
   theIsTyped(false)
 {
@@ -497,10 +519,17 @@ void UpdRenameAttr::undo()
 void UpdRenameAttr::check()
 {
   AttributeNode* attr = ATTR_NODE(theTarget);
-  if (attr->getParent() != NULL)
+  try
   {
-    ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
-    parent->checkUniqueAttrs();
+    if (attr->getParent() != NULL)
+    {
+      ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
+      parent->checkUniqueAttrs();
+    }
+  } catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
   }
 }
 
@@ -677,11 +706,12 @@ void UpdPut::undo()
 ********************************************************************************/
 UpdCollection::UpdCollection(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theDynamicCollection(dyn_collection)
 {
   theName.transfer(name);
@@ -696,12 +726,13 @@ UpdCollection::UpdCollection(
 
 UpdCollection::UpdCollection(
     CollectionPul* pul,
+    const QueryLoc* aLoc,
     store::Item_t& target,
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
   :
-  UpdatePrimitive(pul, target),
+  UpdatePrimitive(pul, aLoc, target),
   theDynamicCollection(dyn_collection)
 {
   theName.transfer(name);
@@ -755,7 +786,8 @@ void UpdDeleteCollection::apply()
   if (!indexes.empty())
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
-      ERROR_PARAMS( collection->getName()->getStringValue() )
+      ERROR_PARAMS( collection->getName()->getStringValue() ),
+      ERROR_LOC( theLoc )
     );
 
   std::vector<store::IC*> activeICs;
@@ -764,7 +796,8 @@ void UpdDeleteCollection::apply()
   if (!activeICs.empty())
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0014_COLLECTION_BAD_DESTROY_ICS,
-      ERROR_PARAMS( collection->getName()->getStringValue() )
+      ERROR_PARAMS( collection->getName()->getStringValue() ),
+      ERROR_LOC( theLoc )
     );
 
   ulong size = collection->size();
@@ -775,7 +808,8 @@ void UpdDeleteCollection::apply()
     if (tree->getRefCount() > 1)
       throw XQUERY_EXCEPTION(
         zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES,
-        ERROR_PARAMS( collection->getName()->getStringValue() )
+        ERROR_PARAMS( collection->getName()->getStringValue() ),
+        ERROR_LOC( theLoc )
       );
   }
 
@@ -1033,11 +1067,12 @@ void UpdDeleteNodesFromCollection::undo()
 ********************************************************************************/
 UpdCreateIndex::UpdCreateIndex(
    PULImpl* pul,
+   const QueryLoc* aLoc,
    const store::Item_t& qname,
    const store::IndexSpecification& spec,
    store::Iterator* sourceIter)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theQName(qname),
   theSpec(spec),
   theSourceIter(sourceIter)
@@ -1083,9 +1118,9 @@ void UpdCreateIndex::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname)
+UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const QueryLoc* aLoc, const store::Item_t& qname)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theQName(qname)
 {
 }
@@ -1125,10 +1160,11 @@ void UpdDeleteIndex::undo()
 ********************************************************************************/
 UpdRefreshIndex::UpdRefreshIndex(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& qname,
     store::Iterator* sourceIter)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theQName(qname),
   theSourceIter(sourceIter)
 {
@@ -1174,10 +1210,11 @@ void UpdRefreshIndex::undo()
 ********************************************************************************/
 UpdActivateIC::UpdActivateIC(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& qname,
     const store::Item_t& aCollectionName)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theQName(qname),
   theCollectionName(aCollectionName)
 {
@@ -1213,11 +1250,12 @@ void UpdActivateIC::undo()
 ********************************************************************************/
 UpdActivateForeignKeyIC::UpdActivateForeignKeyIC(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aQName,
     const store::Item_t& aFromCollection,
     const store::Item_t& aToCollection)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theQName(aQName),
   theFromCollectionName(aFromCollection),
   theToCollectionName(aToCollection)
@@ -1254,9 +1292,10 @@ void UpdActivateForeignKeyIC::undo()
 ********************************************************************************/
 UpdDeActivateIC::UpdDeActivateIC(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aQName)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theQName(aQName)
 {
 }
@@ -1315,10 +1354,11 @@ void UpdDeActivateIC::undo()
 ********************************************************************************/
 UpdCreateDocument::UpdCreateDocument(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aUri,
     store::Item_t& aDoc)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theUri(aUri),
   theDoc(aDoc)
 {
@@ -1352,9 +1392,10 @@ void UpdCreateDocument::undo()
 ********************************************************************************/
 UpdDeleteDocument::UpdDeleteDocument(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aUri)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theUri(aUri)
 {
 }
@@ -1392,9 +1433,10 @@ void UpdDeleteDocument::undo()
 ********************************************************************************/
 UpdHashMap::UpdHashMap(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aQName)
   :
-  UpdatePrimitive(pul),
+  UpdatePrimitive(pul, aLoc),
   theQName(aQName)
 {
 }
@@ -1404,12 +1446,13 @@ UpdHashMap::UpdHashMap(
 ********************************************************************************/
 UpdCreateHashMap::UpdCreateHashMap(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aQName,
     const std::vector<store::Item_t>& aKeyTypes,
     const std::vector<zstring>& aCollations,
     long aTimezone)
   :
-  UpdHashMap(pul, aQName),
+  UpdHashMap(pul, aLoc, aQName),
   theKeyTypes(aKeyTypes),
   theCollations(aCollations),
   theTimezone(aTimezone)
@@ -1454,9 +1497,10 @@ void UpdCreateHashMap::undo()
 ********************************************************************************/
 UpdDestroyHashMap::UpdDestroyHashMap(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aQName)
   :
-  UpdHashMap(pul, aQName)
+  UpdHashMap(pul, aLoc, aQName)
 {
 }
 
@@ -1482,11 +1526,12 @@ void UpdDestroyHashMap::undo()
 ********************************************************************************/
 UpdInsertIntoHashMap::UpdInsertIntoHashMap(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aQName,
     const std::vector<store::Item_t>& aKey,
     const store::Iterator_t& aValue)
   :
-  UpdHashMap(pul, aQName),
+  UpdHashMap(pul, aLoc, aQName),
   theKey(aKey),
   theValue(aValue)
 {
@@ -1539,10 +1584,11 @@ void UpdInsertIntoHashMap::undo()
 ********************************************************************************/
 UpdRemoveFromHashMap::UpdRemoveFromHashMap(
     PULImpl* pul,
+    const QueryLoc* aLoc,
     const store::Item_t& aQName,
     const std::vector<store::Item_t>& aKey)
   :
-  UpdHashMap(pul, aQName),
+  UpdHashMap(pul, aLoc, aQName),
   theKey(aKey)
 {
 }

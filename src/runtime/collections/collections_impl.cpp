@@ -386,7 +386,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addCreateCollection(collectionName, theDynamicCollection);
+  pul->addCreateCollection(&loc, collectionName, theDynamicCollection);
 
   // also add some optional nodes to the collection
   if (theChildren.size() == 2) 
@@ -406,7 +406,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
       nodes[numNodes++].transfer(copyNode);
     }
 
-    pul->addInsertIntoCollection(collectionName, nodes, theDynamicCollection);
+    pul->addInsertIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
   }
 
   result = pul.release();
@@ -460,7 +460,7 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDeleteCollection(collectionName, theDynamicCollection);
+  pul->addDeleteCollection(&loc, collectionName, theDynamicCollection);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -520,7 +520,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   if (nodes.size() > 0)
-    pul->addInsertIntoCollection(collectionName, nodes, theDynamicCollection);
+    pul->addInsertIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -602,7 +602,7 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertFirstIntoCollection(collectionName, nodes, theDynamicCollection);
+  pul->addInsertFirstIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -700,7 +700,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertLastIntoCollection(collectionName, nodes, theDynamicCollection);
+  pul->addInsertLastIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -784,7 +784,7 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertBeforeIntoCollection(collectionName, targetNode, nodes, theDynamicCollection);
+  pul->addInsertBeforeIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -883,7 +883,7 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertAfterIntoCollection(collectionName, targetNode, nodes, theDynamicCollection);
+  pul->addInsertAfterIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -997,7 +997,7 @@ bool ZorbaApplyInsertNodesIterator::nextImpl(
     // hence, we also store them in a separate vector in the state
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertIntoCollection(collectionName, nodes, theDynamicCollection);
+    pul->addInsertIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
   }
 
   if (pul.get()) {
@@ -1063,7 +1063,7 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
   if (nodes.size() > 0) {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertFirstIntoCollection(collectionName, nodes, theDynamicCollection);
+    pul->addInsertFirstIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
   }
 
   if (pul.get()) {
@@ -1128,7 +1128,7 @@ ZorbaApplyInsertNodesLastIterator::nextImpl(
   if (nodes.size() > 0) {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertLastIntoCollection(collectionName, nodes, theDynamicCollection);
+    pul->addInsertLastIntoCollection(&loc, collectionName, nodes, theDynamicCollection);
   }
 
   if (pul.get()) {
@@ -1195,7 +1195,7 @@ ZorbaApplyInsertNodesBeforeIterator::nextImpl(
   if (nodes.size() > 0) {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertBeforeIntoCollection(collectionName, targetNode, nodes, theDynamicCollection);
+    pul->addInsertBeforeIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
   }
 
   if (pul.get()) {
@@ -1262,7 +1262,7 @@ ZorbaApplyInsertNodesAfterIterator::nextImpl(
   if (nodes.size() > 0) {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
-    pul->addInsertAfterIntoCollection(collectionName, targetNode, nodes, theDynamicCollection);
+    pul->addInsertAfterIntoCollection(&loc, collectionName, targetNode, nodes, theDynamicCollection);
   }
 
   if (pul.get()) {
@@ -1334,7 +1334,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
     // create the pul and add the primitive
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-    pul->addDeleteFromCollection(collectionName, nodes, false, theDynamicCollection);
+    pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
 
     // this should not be necessary. we reset everything in the sequential iterator
     theChildren[theChildren.size()-1]->reset(planState);
@@ -1459,7 +1459,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   for (ulong i = 0; i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
-  pul->addDeleteFromCollection(collectionName, nodes, false, theDynamicCollection);
+  pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -1573,7 +1573,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   for (xs_unsignedLong i = numNodes; i > 0; --i)
     nodes.push_back(collection->nodeAt(collectionSize - i));
 
-  pul->addDeleteFromCollection(collectionName, nodes, true, theDynamicCollection);
+  pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theDynamicCollection);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);

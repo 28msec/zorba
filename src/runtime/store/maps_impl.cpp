@@ -116,7 +116,7 @@ MapCreateIterator::nextImpl(
   }
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addCreateHashMap(lQName, lTypes, lCollations, lTimezone);
+  lPul->addCreateHashMap(&loc, lQName, lTypes, lCollations, lTimezone);
 
   apply_updates(
       aPlanState.theCompilerCB,
@@ -160,7 +160,7 @@ MapDestroyIterator::nextImpl(
 
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addDestroyHashMap(lQName);
+  lPul->addDestroyHashMap(&loc, lQName);
 
   apply_updates(
       aPlanState.theCompilerCB,
@@ -314,7 +314,7 @@ MapInsertIterator::nextImpl(
   }
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addInsertIntoHashMap(lQName, lKey, lValue);
+  lPul->addInsertIntoHashMap(&loc, lQName, lKey, lValue);
 
   apply_updates(
       aPlanState.theCompilerCB,
@@ -381,7 +381,7 @@ MapRemoveIterator::nextImpl(
   }
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addRemoveFromHashMap(lQName, lKey);
+  lPul->addRemoveFromHashMap(&loc, lQName, lKey);
 
   apply_updates(
       aPlanState.theCompilerCB,
