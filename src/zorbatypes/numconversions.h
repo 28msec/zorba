@@ -35,29 +35,6 @@ class ZORBA_DLL_PUBLIC NumConversions
 public:
 
   /*****************************************************************************
-    String to Numeric Conversions
-  ******************************************************************************/
-
-  static bool strToUInteger(const char* aStr, xs_uinteger& aUInteger);
-
-  static bool strToLong(const char* aStr, xs_long& aLong);
-
-  static bool strToULong(const char* aStr, xs_unsignedLong& aULong);
-
-  static bool strToInt(const char* aStarChar, xs_int& aInt);
-
-  static bool strToUInt(const char* aStr, xs_unsignedInt& aUInt);
-
-  static bool strToShort(const char* aStr, xs_short& aShort);
-
-  static bool strToUShort(const char* aStr, xs_unsignedShort& aUShort);
-
-  static bool strToByte(const char* aStr, xs_byte& aByte);
-
-  static bool strToUByte(const char* aStr, xs_unsignedByte& aUByte);
-
-
-  /*****************************************************************************
     Numeric to Numeric Conversions
   ******************************************************************************/
 

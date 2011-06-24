@@ -394,12 +394,13 @@ CSequence::integer_value(const XQC_Sequence* seq, int* value)
         // const char*, or else the const char* will point to
         // de-allocated memory.
         String lStringValue = me->theItem.getStringValue();
-        const char* strvalue = lStringValue.c_str();
-        xs_int intvalue;
-        if ( ! NumConversions::strToInt(strvalue, intvalue)) {
+        try {
+          xs_int const intvalue = ztd::aton<xs_int>(lStringValue.c_str());
+          *value = static_cast<int>(intvalue);
+        }
+        catch ( std::exception const& ) {
           return XQC_TYPE_ERROR;
         }
-        (*value) = static_cast<int> (intvalue);
       }
       else {
         throw;

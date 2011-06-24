@@ -74,9 +74,9 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
     {
       {
         zstring lUtf8Code = item->getIntegerValue().toString();
-        xs_unsignedInt lCode;
-        if (NumConversions::strToUInt(lUtf8Code.c_str(), lCode)) 
+        try
         {
+          xs_unsignedInt lCode = ztd::aton<xs_unsignedInt>(lUtf8Code.c_str());
           if (!xml::is_valid(lCode))
             throw XQUERY_EXCEPTION(
               err::FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )
@@ -92,7 +92,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
             throw;
           }
         }
-        else
+        catch ( std::exception const& )
         {
           throw XQUERY_EXCEPTION(
             err::FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )

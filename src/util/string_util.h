@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #pragma once
 #ifndef ZORBA_STRING_UTIL_H
 #define ZORBA_STRING_UTIL_H
 
 #include <cstring>
+#include <limits>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 #include <zorba/internal/ztd.h>
@@ -391,6 +394,77 @@ template<
 inline bool split( InputStringType const &in, DelimStringType const &delim,
                    OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>(0) );
+}
+
+////////// String number parsing ///////////////////////////////////////////////
+
+/**
+ * Parses the given string for a <code>long lomg</code>.
+ *
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the <code>long long</code> value.
+ * @throws invalid_argument if \a s contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+long long atoll( char const *s );
+
+/**
+ * Parses the given string for an <code>unsigned long lomg</code>.
+ *
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the <code>unsigned long long</code> value.
+ * @throws invalid_argument if \a s contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+unsigned long long atoull( char const *s );
+
+/**
+ * Parses the given string for a C++ signed integral type.
+ *
+ * @tparam IntegralType The C++ signed integral type to parse for.
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a s contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+template<typename IntegralType> inline
+typename enable_if<ZORBA_TR1_NS::is_signed<IntegralType>::value,
+                   IntegralType>::type
+aton( char const *s ) {
+  long long const result = atoll( s );
+  if ( result < std::numeric_limits<IntegralType>::min() ||
+       result > std::numeric_limits<IntegralType>::max() )
+    throw std::range_error(
+      BUILD_STRING( '"', result, "\": number too big/small" )
+    );
+  return static_cast<IntegralType>( result );
+}
+
+/**
+ * Parses the given string for a C++ unsigned integral types.
+ *
+ * @tparam IntegralType The C++ unsigned integral type to parse for.
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a s contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+template<typename IntegralType> inline
+typename enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
+                   IntegralType>::type
+aton( char const *s ) {
+  unsigned long long const result = atoull( s );
+  if ( result > std::numeric_limits<IntegralType>::max() )
+    throw std::range_error( BUILD_STRING( '"', result, "\": number too big" ) );
+  return static_cast<IntegralType>( result );
 }
 
 ////////// To-string conversion ////////////////////////////////////////////////

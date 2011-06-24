@@ -1341,95 +1341,127 @@ bool int_down(
   {
   case TypeConstants::XS_NON_POSITIVE_INTEGER:
   {
-    xs_integer lInteger = aItem->getIntegerValue();
+    xs_integer const lInteger = aItem->getIntegerValue();
     if (lInteger <= xs_integer::zero())
       return aFactory->createNonPositiveInteger(result, lInteger);
     break;
   }
   case TypeConstants::XS_NEGATIVE_INTEGER:
   {
-    xs_integer lInteger = aItem->getIntegerValue();
+    xs_integer const lInteger = aItem->getIntegerValue();
     if (lInteger < xs_integer::zero())
       return aFactory->createNegativeInteger(result, lInteger);
     break;
   }
   case TypeConstants::XS_LONG:
   {
-    xs_long n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToLong(lString.c_str(), n))
+    try {
+      xs_long const n = ztd::aton<xs_long>(lString.c_str());
       return aFactory->createLong(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_INT:
   {
-    xs_int n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToInt(lString.c_str(), n))
+    try {
+      xs_int const n = ztd::aton<xs_int>(lString.c_str());
       return aFactory->createInt(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_SHORT:
   {
-    xs_short n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToShort(lString.c_str(), n))
+    try {
+      xs_short const n = ztd::aton<xs_short>(lString.c_str());
       return aFactory->createShort(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_BYTE:
   {
-    xs_byte n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToByte(lString.c_str(), n))
+    try {
+      xs_byte const n = ztd::aton<xs_byte>(lString.c_str());
       return aFactory->createByte(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_NON_NEGATIVE_INTEGER:
   {
-    xs_integer lInteger = aItem->getIntegerValue();
+    xs_integer const lInteger = aItem->getIntegerValue();
     if (lInteger >= xs_integer::zero())
       return aFactory->createNonNegativeInteger(result, lInteger);
     break;
   }
   case TypeConstants::XS_UNSIGNED_LONG:
   {
-    xs_unsignedLong n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToULong(lString.c_str(), n))
+    try {
+      xs_unsignedLong const n = ztd::aton<xs_unsignedLong>(lString.c_str());
       return aFactory->createUnsignedLong(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_UNSIGNED_INT:
   {
-    xs_unsignedInt n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToUInt(lString.c_str(), n))
+    try {
+      xs_unsignedInt const n = ztd::aton<xs_unsignedInt>(lString.c_str());
       return aFactory->createUnsignedInt(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_UNSIGNED_SHORT:
   {
-    xs_unsignedShort n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToUShort(lString.c_str(), n))
+    try {
+      xs_unsignedShort const n = ztd::aton<xs_unsignedShort>(lString.c_str());
       return aFactory->createUnsignedShort(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_UNSIGNED_BYTE:
   {
-    xs_unsignedByte n;
     zstring lString;
     aItem->getStringValue2(lString);
-    if (NumConversions::strToUByte(lString.c_str(), n))
+    try {
+      xs_unsignedByte const n = ztd::aton<xs_unsignedByte>(lString.c_str());
       return aFactory->createUnsignedByte(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
   case TypeConstants::XS_POSITIVE_INTEGER:

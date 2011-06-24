@@ -60,150 +60,42 @@ bool NumConversions::isNegative(const char*& chp, bool& isNegZero)
 }
 
 
-bool NumConversions::strToUInteger(const char* aStr, xs_uinteger& aUInteger)
-{
-  try {
-    xs_integer const temp( aStr );
-    if ( temp.sign() >= 0 ) {
-      aUInteger = temp;
-      return true;
-    }
-  }
-  catch ( std::exception const& ) {
-    // ignore
-  }
-  return false;
-}
-
-
-bool NumConversions::strToLong(const char* aStr, xs_long& aLong)
-{
-  std::stringstream lStream;
-  return lStream << aStr && lStream >> aLong && lStream.eof();
-}
-
-
-bool NumConversions::strToULong(const char* aStr, xs_unsignedLong& aULong)
-{
-  const char* chp = aStr;
-  bool negZero;
-
-  if (isNegative(chp, negZero))
-  {
-    return false;
-  }
-
-  if (negZero)
-  {
-    aULong = 0;
-    return true;
-  }
-
-  std::stringstream lStream;
-  return lStream << chp && lStream >> aULong && lStream.eof();
-}
-
-
-bool NumConversions::strToInt(const char* aCharStar, xs_int& aInt)
-{
-  std::stringstream lStream;
-  return lStream << aCharStar && lStream >> aInt && lStream.eof();
-}
-
-
-bool NumConversions::strToUInt(const char* aStr, xs_unsignedInt& aUInt)
-{
-  const char* chp = aStr;
-  bool negZero;
-
-  if (isNegative(chp, negZero))
-  {
-    return false;
-  }
-
-  if (negZero)
-  {
-    aUInt = 0;
-    return true;
-  }
-
-  std::stringstream lStream;
-  return lStream << aStr && lStream >> aUInt && lStream.eof();
-}
-
-
-bool NumConversions::strToShort(const char* aStr, xs_short& aShort)
-{
-  std::stringstream lStream;
-  return lStream << aStr && lStream >> aShort && lStream.eof();
-}
-
-
-bool NumConversions::strToUShort(const char* aStr, xs_unsignedShort& aUShort)
-{
-  const char* chp = aStr;
-  bool negZero;
-
-  if (isNegative(chp, negZero))
-  {
-    return false;
-  }
-
-  if (negZero)
-  {
-    aUShort = 0;
-    return true;
-  }
-
-  std::stringstream lStream;
-  return lStream << aStr && lStream >> aUShort && lStream.eof();
-}
-
-
-bool NumConversions::strToByte(const char* aStr, xs_byte& aByte)
-{
-  short lShort;
-  if (strToShort(aStr, lShort)) {
-    if (lShort >= -128 && lShort <= 127) {
-      aByte = (xs_byte)lShort;
-      return true;
-    } 
-  }
-  return false;
-}
-
-
-bool NumConversions::strToUByte(const char* aStr, xs_unsignedByte& aUByte)
-{
-  unsigned short lUShort;
-  if (strToUShort(aStr, lUShort)) {
-    if (lUShort <= 255) {
-      aUByte = (xs_unsignedByte)lUShort;
-      return true;
-    }
-  }
-  return false;
-}
-
-
 bool NumConversions::doubleToLong(const xs_double& aDouble, xs_long& aLong) 
 {
-  zstring lStr = aDouble.toIntegerString();
-  return strToLong(lStr.c_str(), aLong);
+  zstring const lStr( aDouble.toIntegerString() );
+  try {
+    aLong = ztd::aton<xs_long>(lStr.c_str());
+    return true;
+  }
+  catch ( std::exception const& ) {
+    return false;
+  }
 }
 
  
 bool NumConversions::doubleToInt(const xs_double& aDouble, xs_int& aInt) 
 {
-  zstring lStr = aDouble.toIntegerString();
-  return NumConversions::strToInt(lStr.c_str(), aInt);
+  zstring const lStr( aDouble.toIntegerString() );
+  try {
+    aInt = ztd::aton<xs_int>(lStr.c_str());
+    return true;
+  }
+  catch ( std::exception const& ) {
+    return false;
+  }
 }
 
 
 bool NumConversions::floatToInt(const xs_float& aFloat, xs_int& aInt) 
 {
-  zstring lStr = aFloat.toIntegerString();
-  return NumConversions::strToInt(lStr.c_str(), aInt);
+  zstring const lStr( aFloat.toIntegerString() );
+  try {
+    aInt = ztd::aton<xs_int>(lStr.c_str());
+    return true;
+  }
+  catch ( std::exception const& ) {
+    return false;
+  }
 }
 
 
@@ -224,57 +116,64 @@ bool NumConversions::decimalToInteger(const xs_decimal& aDecimal, xs_integer& aI
 
 bool NumConversions::decimalToULong(const xs_decimal& aDecimal, xs_unsignedLong& aULong)
 {
-  if (aDecimal.is_xs_ulong())
-  {
+  if (aDecimal.is_xs_ulong()) {
     zstring lStr = aDecimal.toString();
-    return strToULong(lStr.c_str(), aULong);
+    try {
+      aULong = ztd::aton<xs_unsignedLong>(lStr.c_str());
+      return true;
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
   }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 
 bool NumConversions::decimalToLong(const xs_decimal& aDecimal, xs_long& aLong)
 {
-  if (aDecimal.is_xs_long())
-  {
-    zstring lStr = aDecimal.toString();
-    return strToLong(lStr.c_str(), aLong);
+  if (aDecimal.is_xs_long()) {
+    zstring lStr( aDecimal.toString() );
+    try {
+      aLong = ztd::aton<xs_long>( lStr.c_str() );
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
   }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 
 bool NumConversions::decimalToUInt(const xs_decimal& aDecimal, xs_unsignedInt& aUInt)
 {
-  if (aDecimal.is_xs_uint())
-  {
+  if (aDecimal.is_xs_uint()) {
     zstring lStr = aDecimal.toString();
-    return NumConversions::strToUInt(lStr.c_str(), aUInt);
+    try {
+      aUInt = ztd::aton<xs_unsignedInt>(lStr.c_str());
+      return true;
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
   }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 
 bool NumConversions::decimalToInt(const xs_decimal& aDecimal, xs_int& aInt) 
 {
-  if (aDecimal.is_xs_int())
-  {
-    zstring lStr = aDecimal.toString();
-    return NumConversions::strToInt(lStr.c_str(), aInt);
+  if (aDecimal.is_xs_int()) {
+    zstring const lStr( aDecimal.toString() );
+    try {
+      aInt = ztd::aton<xs_int>(lStr.c_str());
+      return true;
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
   }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
   
@@ -282,8 +181,14 @@ bool NumConversions::integerToLong(const xs_integer& aInteger, xs_long& aLong)
 {
 #ifdef ZORBA_WITH_BIG_INTEGER
   if (aInteger.is_xs_long()) {
-    zstring lStr = aInteger.toString();
-    return strToLong(lStr.c_str(), aLong);
+    zstring const lStr( aInteger.toString() );
+    try {
+      aLong = ztd::aton<xs_long>(lStr.c_str());
+      return true;
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
   }
   return false;
 #else
@@ -296,15 +201,17 @@ bool NumConversions::integerToLong(const xs_integer& aInteger, xs_long& aLong)
 bool NumConversions::integerToUInt(const xs_integer& aInteger, xs_unsignedInt& aUInt) 
 {
 #ifdef ZORBA_WITH_BIG_INTEGER
-  if (aInteger.is_xs_uint())
-  {
+  if (aInteger.is_xs_uint()) {
     zstring lStr = aInteger.toString();
-    return NumConversions::strToUInt(lStr.c_str(), aUInt);
+    try {
+      aUInt = ztd::aton<xs_unsignedInt>(lStr.c_str());
+      return true;
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
   }
-  else
-  {
-    return false;
-  }
+  return false;
 #else
   aUInt = static_cast<xs_unsignedInt>(aInteger.value_);
   return true;
@@ -312,18 +219,19 @@ bool NumConversions::integerToUInt(const xs_integer& aInteger, xs_unsignedInt& a
 }
 
 
-bool NumConversions::integerToInt(const xs_integer& aInteger, xs_int& aInt) 
-{
+bool NumConversions::integerToInt(const xs_integer& aInteger, xs_int& aInt) {
 #ifdef ZORBA_WITH_BIG_INTEGER
-  if (aInteger.is_xs_int())
-  {
-    zstring lStr = aInteger.toString();
-    return NumConversions::strToInt(lStr.c_str(), aInt);
+  if (aInteger.is_xs_int()) {
+    zstring lStr( aInteger.toString() );
+    try {
+      aInt = ztd::aton<xs_int>(lStr.c_str());
+      return true;
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
   }
-  else
-  {
-    return false;
-  }
+  return false;
 #else
   aInt = static_cast<xs_int>(aInteger.value_);
   return true;

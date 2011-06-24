@@ -15,7 +15,23 @@
  */
 #include "stdafx.h"
 
+#include <cerrno>
+#include <cstdlib>
+
+#include "ascii_util.h"
 #include "string_util.h"
+
+#ifdef WIN32
+namespace std {
+  inline long long strtoll( char const *s, char **end, int base ) {
+    return ::_strtoi64( s, end, base );
+  }
+
+  inline long long strtoull( char const *s, char **end, int base ) {
+    return ::_strtoui64( s, end, base );
+  }
+}
+#endif /* WIN32 */
 
 using namespace std;
 
@@ -23,6 +39,40 @@ namespace zorba {
 namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+long long atoll( char const *s ) {
+  char *end;
+  long long const result = std::strtoll( s, &end, 10 );
+  if ( errno == ERANGE )
+    throw std::range_error(
+      BUILD_STRING( '"', s, "\": number too big/small" )
+    );
+  if ( end == s )
+    throw std::invalid_argument( BUILD_STRING( '"', s, "\": no digits" ) );
+  for ( ; *end; ++end )                 // remaining characters, if any, ...
+    if ( !ascii::is_space( *end ) )     // ... may only be whitespace
+      throw std::invalid_argument(
+        BUILD_STRING( '"', *end, "\": invalid character" )
+      );
+  return result;
+}
+
+unsigned long long atoull( char const *s ) {
+  char *end;
+  unsigned long long const result = std::strtoull( s, &end, 10 );
+  if ( errno == ERANGE )
+    throw std::range_error(
+      BUILD_STRING( '"', s, "\": number too big" )
+    );
+  if ( end == s )
+    throw std::invalid_argument( BUILD_STRING( '"', s, "\": no digits" ) );
+  for ( ; *end; ++end )                 // remaining characters, if any, ...
+    if ( !ascii::is_space( *end ) )     // ... may only be whitespace
+      throw std::invalid_argument(
+        BUILD_STRING( '"', *end, "\": invalid character" )
+      );
+  return result;
+}
 
 char* itoa( long long n, char *buf ) {
   //

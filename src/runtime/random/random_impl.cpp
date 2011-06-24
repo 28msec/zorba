@@ -32,8 +32,6 @@ bool
 PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    item;
-  zstring seed;
-  xs_unsignedInt   seedInt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -41,9 +39,15 @@ PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if((theChildren.size() == 1) &&
       consumeNext(item, theChildren[0].getp(), planState))
   {
-    seed = item->getIntegerValue().toString();
-    NumConversions::strToUInt(seed.c_str(), seedInt);
-    std::srand((unsigned int)seedInt);
+    zstring const seed( item->getIntegerValue().toString() );
+    try {
+      xs_unsignedInt const seedInt = ztd::aton<xs_unsignedInt>(seed.c_str());
+      std::srand((unsigned int)seedInt);
+    }
+    catch ( std::exception const& ) {
+      // TODO
+      throw;
+    }
   }
   else
   {
@@ -60,8 +64,6 @@ bool
 RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    item;
-  zstring seed;
-  xs_unsignedInt   seedInt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -69,9 +71,15 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if((theChildren.size() == 1) &&
       consumeNext(item, theChildren[0].getp(), planState))
   {
-    seed = item->getIntegerValue().toString();
-    NumConversions::strToUInt(seed.c_str(), seedInt);
-    std::srand((unsigned int)seedInt);
+    zstring const seed( item->getIntegerValue().toString() );
+    try {
+      xs_unsignedInt const seedInt = ztd::aton<xs_unsignedInt>(seed.c_str());
+      std::srand((unsigned int)seedInt);
+    }
+    catch ( std::exception const& ) {
+      // TODO
+      throw;
+    }
   }
   else
   {

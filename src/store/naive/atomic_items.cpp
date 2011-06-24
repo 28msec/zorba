@@ -90,9 +90,13 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case XS_UNTYPED_ATOMIC:
   {
     const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(this);
-    if (NumConversions::strToLong(item->theValue.c_str(), longValue))
+    try {
+      longValue = ztd::aton<xs_long>(item->theValue.c_str());
       GET_FACTORY().createLong(result, longValue);
-
+    }
+    catch ( std::exception const& ) {
+      // ignore
+    }
     break;
   }
 

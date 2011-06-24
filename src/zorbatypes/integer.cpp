@@ -28,14 +28,6 @@
 #include "floatimpl.h"
 #include "numconversions.h"
 
-#ifdef WIN32
-namespace std {
-  inline long long strtoll( char const *s, char **end, int base ) {
-    return ::_strtoi64( s, end, base );
-  }
-}
-#endif /* WIN32 */
-
 using namespace std;
 
 namespace zorba {
@@ -46,19 +38,7 @@ void Integer::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
-  char *end;
-  value_ = std::strtoll( s, &end, 10 );
-  if ( errno == ERANGE )
-    throw std::range_error(
-      BUILD_STRING( '"', s, "\": number too big/small" )
-    );
-  if ( end == s )
-    throw std::invalid_argument( BUILD_STRING( '"', s, "\": no digits" ) );
-  for ( ; *end; ++end )                 // remaining characters, if any, ...
-    if ( !ascii::is_space( *end ) )     // ... may only be whitespace
-      throw std::invalid_argument(
-        BUILD_STRING( '"', *end, "\": invalid character" )
-      );
+  value_ = ztd::atoll( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
