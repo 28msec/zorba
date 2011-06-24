@@ -300,16 +300,12 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
-IF(NOT ZORBA_WITH_BIG_INTEGER)
-  # These tests fail due to integer overflow.
-  EXPECTED_FAILURE(test/rbkt/zorba/math/format_integer/format_integer_En5 3323954)
-  EXPECTED_FAILURE(test/rbkt/zorba/numerics/longinteger 3323954)
-  IF(FOUND_XQTS)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
-  ENDIF(FOUND_XQTS)
-ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
+# These tests fail due to integer overflow.
+IF(NOT ZORBA_WITH_BIG_INTEGER AND FOUND_XQTS)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
+  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
+ENDIF(NOT ZORBA_WITH_BIG_INTEGER AND FOUND_XQTS)
 
 # vim:set et sw=2 ts=2:
