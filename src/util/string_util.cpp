@@ -27,7 +27,7 @@ namespace std {
     return ::_strtoi64( s, end, base );
   }
 
-  inline long long strtoull( char const *s, char **end, int base ) {
+  inline unsigned long long strtoull( char const *s, char **end, int base ) {
     return ::_strtoui64( s, end, base );
   }
 }
