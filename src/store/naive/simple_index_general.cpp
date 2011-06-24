@@ -1036,27 +1036,6 @@ bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
     while (theIte != theEnd)
     {
       result = (*theIte).theNode;
-#if 0
-      if (theProbeKind == store::IndexCondition::POINT_VALUE)
-      {
-        if ((*theIte).theMultiKey)
-        {
-          ZORBA_ERROR_DESC_OSS(XPTY0004,
-                               "During a value probe on index "
-                               << theIndex->getName()->getStringValue()
-                               << " a node was found that has more than one key values");
-        }
-
-        if ((*theIte).theUntyped)
-        {
-          ZORBA_ERROR_DESC_OSS(XPTY0004,
-                               "During a value probe on index "
-                               << theIndex->getName()->getStringValue()
-                               << " a node was found that has an untyped key value");
-        }
-      }
-#endif
-
       ++theIte;
       return true;
     }

@@ -795,11 +795,6 @@ void URI::initializeAuthority(const zstring& uri)
 
     ++lIndex; // skip the colon
     lStart += lIndex;
-    //if(lStart >= lEnd)
-    //{
-    //  //port number is missing after ':'
-    //  ZORBA_ERROR_DESC_OSS(XQST0046, "Port number is missing after ':'.");
-    //}
   }
   else
   {

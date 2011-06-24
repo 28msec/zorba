@@ -3642,20 +3642,6 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     for (; ite != end; ++ite)
     {
       var_expr_t ve = ite.getValue();
-
-#if 0
-      // This check has been moved to the translator (in the translation of
-      // a VarRef).
-      xqtref_t type = ve->get_return_type();
-      if (!TypeOps::is_in_scope(get_typemanager(), *type))
-      {
-        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                 "The type " << type->toString()
-                                 << " is not among the in-scope types"
-                                 << " of the importing module");
-      }
-#endif
-
       if (!ve->is_private())
         bind_var(ve, loc, err::XQST0049);
     }
@@ -3676,33 +3662,6 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     for (; ite != end; ++ite)
     {
       function_t f = (*ite).second.theFunction;
-#if 0
-      // This check has been moved to the translator (in the translation of
-      // a FunctionCall).
-      const signature& sign = f->getSignature();
-      ulong numArgs = f->getArity();
-
-      for (ulong i = 0; i < numArgs; ++i)
-      {
-        xqtref_t type = sign[i];
-        if (!TypeOps::is_in_scope(get_typemanager(), *type))
-        {
-          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                   "The type " << type->toString()
-                                   << " is not among the in-scope types"
-                                   << " of the importing module");
-        }
-      }
-
-      xqtref_t type = sign.return_type();
-      if (!TypeOps::is_in_scope(get_typemanager(), *type))
-      {
-        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                 "The type " << type->toString()
-                                 << " is not among the in-scope types"
-                                 << " of the importing module");
-      }
-#endif
       if (!f->isPrivate())
         bind_fn(f, f->getArity(), loc);
     }
@@ -3727,35 +3686,6 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       for (ulong i = 0; i < num; ++i)
       {
         function_t f = (*fv)[i].theFunction;
-
-#if 0
-      // This check has been moved to the translator (in the translation of
-      // a FunctionCall).
-        const signature& sign = f->getSignature();
-        ulong numArgs = f->getArity();
-
-        for (ulong i = 0; i < numArgs; ++i)
-        {
-          xqtref_t type = sign[i];
-          if (!TypeOps::is_in_scope(get_typemanager(), *type))
-          {
-            ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                     "The type " << type->toString()
-                                     << " is not among the in-scope types"
-                                     << " of the importing module");
-          }
-        }
-
-        xqtref_t type = sign.return_type();
-        if (!TypeOps::is_in_scope(get_typemanager(), *type))
-        {
-          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
-                                   "The type " << type->toString()
-                                   << " is not among the in-scope types"
-                                   << " of the importing module");
-        }
-#endif
-
         bind_fn(f, f->getArity(), loc);
       }
     }
