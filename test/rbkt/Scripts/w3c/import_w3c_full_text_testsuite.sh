@@ -236,8 +236,8 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   if ( $inlist ne "noinlist" ) {
     foreach (@inbnd) {
       my ($var, $srcid) = split /=/;
-      print SPEC " -x $var=$test_src_path/" . $sources {$srcid};
-      print SPECX " -x $var=$test_src_path/" . $sources {$srcid};
+      print SPEC "\n -x \n$var=$test_src_path/" . $sources {$srcid} ."\n";
+      print SPECX "\n -x \n$var=$test_src_path/" . $sources {$srcid} ."\n";
       # Rather ugly query post-processing; see bug 2788838
       if (grep $_ eq "XPST0005", @errs) {
         change_doc("$dstqpath/$name.xq", $var);
@@ -248,14 +248,14 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   if ( $urilist ne "nourilist" ) {
     foreach (@uribnd) {
       my ($var, $srcid) = split /=/;
-      print SPEC " -x $var:=" . $srcid;
-      print SPECX " -x $var:=" . $srcid;
+      print SPEC "\n -x \n$var:=" . $srcid ."\n";
+      print SPECX "\n -x \n$var:=" . $srcid ."\n";
     }
   }
 
   if ( $ctx ne "nocontext" ) {
-    print SPEC " -x .=$test_src_path/" . $sources {$ctx};
-    print SPECX " -x .=$test_src_path/" . $sources {$ctx};
+    print SPEC "\n -x .=$test_src_path/" . $sources {$ctx} ."\n";
+    print SPECX "\n -x .=$test_src_path/" . $sources {$ctx} ."\n";
   }
   print SPEC "\n";
   print SPECX "\n";

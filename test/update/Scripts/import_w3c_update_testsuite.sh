@@ -111,17 +111,17 @@ string-join (
       concat("Args:", 
              string-join(for $infile in $state/input-file 
                          let $source := //source[@ID eq $infile/text()]
-                         return concat(" -x ",
+                         return concat("\n -x \n",
                                        $infile/@variable,
                                        "=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",
-                                       $source/@FileName) ,
+                                       $source/@FileName, "\n") ,
                          ""),
              string-join(for $inuri in $state/input-URI 
                          let $source := //source[@ID eq $inuri/text()]
-                         return concat(" -x ",
+                         return concat("\n -x \n",
                                        $inuri/@variable,
                                        ":=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",
-                                       $source/@FileName) ,
+                                       $source/@FileName, "\n") ,
                          ""),
              if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
 
