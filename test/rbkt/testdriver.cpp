@@ -392,6 +392,7 @@ main(int argc, char** argv)
       }
       else
       {
+        lContext->setDocumentURIResolver ( dresolver.get() );
         load_ret = lQuery->loadExecutionPlan(ifbinary);
       }
       if(!load_ret)
