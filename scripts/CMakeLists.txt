@@ -12,19 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/create-doc-tar.sh.in ${CMAKE_CURRENT_BINARY_DIR}/create-doc-tar.sh)
-MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/create-doc-tar.sh.in -> ${CMAKE_CURRENT_BINARY_DIR}/create-doc-tar.sh") 
 
-IF (WIN32)
-  SET (MSVC_PATH_SUFFIX)
-  IF (MSVC_IDE)
-    SET (MSVC_IDE_PATH_SUFFIX "\\${CMAKE_BUILD_TYPE}")
-  ENDIF (MSVC_IDE)
-  FILE(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}" WIN_CMAKE_BINARY_DIR)
-  
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/win_exec_cmake.bat.in ${CMAKE_CURRENT_BINARY_DIR}/win_exec_cmake.bat @only)
-  MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/win_exec_cmake.bat.in -> ${CMAKE_CURRENT_BINARY_DIR}/win_exec_cmake.bat") 
+IF (NOT WIN32)
 
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorba_cmake.bat.in ${CMAKE_CURRENT_BINARY_DIR}/zorba_cmake.bat @only)
-  MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/zorba_cmake.bat.in -> ${CMAKE_BINARY_DIR}/zorba_cmake.bat") 
-ENDIF(WIN32)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/create-doc-tar.sh.in ${CMAKE_CURRENT_BINARY_DIR}/create-doc-tar.sh)
+  MESSAGE (STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/create-doc-tar.sh.in -> ${CMAKE_CURRENT_BINARY_DIR}/create-doc-tar.sh") 
+
+ENDIF(NOT WIN32)

@@ -65,7 +65,7 @@ ENDMACRO (PRINT_FIND_TITLE MODULE_NAME)
 MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
 
   IF (NOT WIN32)
-    MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
+    MESSAGE(FATAL_ERROR "This macro is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
 
   PRINT_FIND_TITLE (${MODULE_NAME})
@@ -168,13 +168,17 @@ ENDMACRO (FIND_PACKAGE_WIN32)
 MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
 
   IF (NOT WIN32)
-    MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
+    MESSAGE(FATAL_ERROR "This macro is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
+
+  # get the current DLLs and their paths
+  SET (ZORBA_REQUIRED_DLLS "$ENV{ZORBA_REQUIRED_DLLS}")
+  SET (ZORBA_REQUIRED_DLL_PATHS "$ENV{ZORBA_REQUIRED_DLL_PATHS}")
 
   FOREACH (NAME ${DLL_NAMES})
 
     # first delete the cache entry for DLL to make sure the correct one is chosen
-    SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+    UNSET (TMP_DLL_VAR CACHE)
 
     # find now the DLL
     FIND_FILE (
@@ -187,15 +191,18 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
 
     IF (TMP_DLL_VAR)
       LIST (APPEND ZORBA_REQUIRED_DLLS "${TMP_DLL_VAR}")
-      MESSAGE(STATUS "Added dll to ZORBA_REQUIRED_DLLS: ${TMP_DLL_VAR}")
       STRING (REPLACE "/${NAME}" "" PATH "${TMP_DLL_VAR}")
       FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
       LIST (APPEND ZORBA_REQUIRED_DLL_PATHS "${NATIVE_PATH}")
+      MESSAGE(STATUS "Added dll to ZORBA_REQUIRED_DLLS environment variable: ${TMP_DLL_VAR}")
     ELSE (TMP_DLL_VAR)
       MESSAGE (WARNING "${NAME} was not found in: ${LIBRARY_LOCATION}. Zorba will not run unless you have it in the path.")
     ENDIF (TMP_DLL_VAR)
     
   ENDFOREACH (NAME)
+
+  # make sure we don't leave garbage in the cache and don't influence other logic with this
+  UNSET (TMP_DLL_VAR CACHE)
 
   LIST(LENGTH ZORBA_REQUIRED_DLL_PATHS LEN)
   IF (${LEN} GREATER 0)
@@ -205,17 +212,25 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
   # make sure we don't leave garbage in the cache and don't influence other logic with this
   SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
 
+  # set the current DLLs and their paths in a variable
+  SET (ENV{ZORBA_REQUIRED_DLLS} "${ZORBA_REQUIRED_DLLS}")
+  SET (ENV{ZORBA_REQUIRED_DLL_PATHS} "${ZORBA_REQUIRED_DLL_PATHS}")
+
 ENDMACRO(FIND_PACKAGE_DLLS_WIN32)
 
 
 MACRO (FIND_DLL_WIN32 DLL_NAME)
 
   IF (NOT WIN32)
-    MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
+    MESSAGE(FATAL_ERROR "This macro is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
 
+  # get the current DLLs and their paths
+  SET (ZORBA_REQUIRED_DLLS "$ENV{ZORBA_REQUIRED_DLLS}")
+  SET (ZORBA_REQUIRED_DLL_PATHS "$ENV{ZORBA_REQUIRED_DLL_PATHS}")
+
   # first delete the cache entry for DLL to make sure the correct one is chosen
-  SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+  UNSET (TMP_DLL_VAR CACHE)
 
   # try to find ${DLL_NAME} somewhere
   # the search order is:
@@ -233,18 +248,21 @@ MACRO (FIND_DLL_WIN32 DLL_NAME)
   )
 
   IF (TMP_DLL_VAR)
-    MESSAGE (STATUS "Found ${DLL_NAME}")
     LIST (APPEND ZORBA_REQUIRED_DLLS "${TMP_DLL_VAR}")
     STRING (REPLACE "/${DLL_NAME}" "" PATH "${TMP_DLL_VAR}")
     FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
     LIST (APPEND ZORBA_REQUIRED_DLL_PATHS "${NATIVE_PATH}")
-    MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS: ${TMP_DLL_VAR}")
+    MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS environment variable: ${TMP_DLL_VAR}")
   ELSE (TMP_DLL_VAR)
     MESSAGE (STATUS "Did not find ${DLL_NAME}")
     MESSAGE (WARNING "You will not be able to run zorba unless you have ${DLL_NAME} in your path.")
   ENDIF (TMP_DLL_VAR)
 
   # make sure we don't leave garbage in the cache and don't influence other logic with this
-  SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
+  UNSET (TMP_DLL_VAR CACHE)
+
+  # set the current DLLs and their paths in a variable
+  SET (ENV{ZORBA_REQUIRED_DLLS} "${ZORBA_REQUIRED_DLLS}")
+  SET (ENV{ZORBA_REQUIRED_DLL_PATHS} "${ZORBA_REQUIRED_DLL_PATHS}")
 
 ENDMACRO (FIND_DLL_WIN32)

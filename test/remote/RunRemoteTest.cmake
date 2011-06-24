@@ -51,7 +51,7 @@ endif (NOT IS_DIRECTORY "${CMAKE_ZORBA_BUILD_DIR}")
 
 # Load utilities lib and find all required executables
 include ("${cwd}/SvnPackage.cmake")
-find_prereqs ()
+FIND_PREREQS ()
 
 # Create a working directory named after the current time, to ensure
 # first-come, first-serve and prevent collisions

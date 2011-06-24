@@ -1,10 +1,59 @@
 @ECHO OFF
 
 SETLOCAL
-SET PATH=@WIN_CMAKE_BINARY_DIR@\src@MSVC_IDE_PATH_SUFFIX@;@ZORBA_REQUIRED_DLLS_PATH_NATIVE@;@ZORBA_REQUIRED_DLL_PATHS@;%PATH%
-"@WIN_TARGET_LOCATION@" %*
-ENDLOCAL
+
+:: this is where zorba_simplestore.dll is
+SET PATH_ZORBA_SIMPLESTORE=@CMAKE_BINARY_DIR_NATIVE@\src
+:: this is where all the required DLLs are
+SET PATH_EXTERNAL_DLLS=@ZORBA_REQUIRED_DLL_PATHS@
+:: used to dtermine the executable file name and path
+SET SCRIPT_FULL_PATH=@SCRIPT_NATIVE@
+:: used to make a difference between VS and NMake
+SET IDE=@IDE@
+
+CALL ::get_path_dir TARGET_DIRECTORY "%SCRIPT_FULL_PATH%"
+CALL ::get_file_name TARGET_FILENAME "%SCRIPT_FULL_PATH%"
+
+SET CONFIG=
+
+:: if we generated a MSVS solution look for the configuration
+:: subdirectories in a desperate attempts to find the executable
+:: TODO: let CMake tells us the configuration names. CTest knows
+:: for example about: Release, Debug, MinSizeRel, RelWithDebInfo,
+:: Deployment, Development
+IF "%IDE%" == "MSVC" (
+  IF EXIST "%TARGET_DIRECTORY%\Debug\%TARGET_FILENAME%" (
+    SET CONFIG=\Debug
+  ) ELSE IF EXIST "%TARGET_DIRECTORY%\Release\%TARGET_FILENAME%" (
+    SET CONFIG=\Release
+  )
+)
+
+:: if we have a configuration (e.a. in MSVC),
+:: use is for the zorba_simplestore.dll path
+IF DEFINED CONFIG (
+  SET PATH_ZORBA_SIMPLESTORE=%PATH_ZORBA_SIMPLESTORE%%CONFIG%
+)
+
+:: now set the path that contains the answers to all the wonders of the world
+SET PATH=%PATH_ZORBA_SIMPLESTORE%;%PATH_EXTERNAL_DLLS%;%PATH%
+
+"%TARGET_DIRECTORY%%CONFIG%\%TARGET_FILENAME%" %*
 
 IF %ERRORLEVEL% neq 0 (
   EXIT /B %ERRORLEVEL%
 )
+
+ENDLOCAL
+
+GOTO :EOF
+
+
+:get_path_dir
+SET %1=%~dp2
+GOTO :eof
+
+:get_file_name
+SET %1=%~n2.exe
+GOTO :eof
+

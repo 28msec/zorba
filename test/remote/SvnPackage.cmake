@@ -17,29 +17,28 @@
 # elsewhere.
 
 
-MACRO (find_prereqs)
+MACRO (FIND_PREREQS)
   # Definitely need svn here.
   FIND_PROGRAM(SVN_EXECUTABLE svn DOC "subversion command line client")
   IF(NOT SVN_EXECUTABLE)
-    message (FATAL_ERROR "Subversion is required; not found")
+    MESSAGE (FATAL_ERROR "Subversion is required; not found")
   ENDIF(NOT SVN_EXECUTABLE)
-  set (svn "${SVN_EXECUTABLE}")
+  SET (svn "${SVN_EXECUTABLE}")
 
   # create path to execute zorba
+  SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/bin/zorba")
   IF (WIN32)
-    SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
-  ELSE (WIN32)
-    SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/bin/zorba")
+    SET(ZORBA_EXE_SCRIPT "${ZORBA_EXE_SCRIPT}.bat")
   ENDIF (WIN32)
-  if (NOT EXISTS ${ZORBA_EXE_SCRIPT})
-    message (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
-  endif (NOT EXISTS ${ZORBA_EXE_SCRIPT})
-  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+  IF (NOT EXISTS ${ZORBA_EXE_SCRIPT})
+    MESSAGE (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
+  ENDIF (NOT EXISTS ${ZORBA_EXE_SCRIPT})
+  EXECUTE_PROCESS (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
     --query "1+1" OUTPUT_VARIABLE ignored RESULT_VARIABLE result)
-  if (result)
-    message (FATAL_ERROR "Zorba is not functional. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
-  endif (result)
-ENDMACRO (find_prereqs)
+  IF (result)
+    MESSAGE (FATAL_ERROR "Zorba is not functional. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
+  ENDIF (result)
+ENDMACRO (FIND_PREREQS)
 
 
 # Utility routine: given svn-status.xml file and a changelist (may be

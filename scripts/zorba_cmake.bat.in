@@ -1,6 +1,0 @@
-@ECHO OFF
-
-rem Script is used to execute zorba from ZorbaRuntimeGenerator.cmake
-rem Note: This script closes cmd.exe if an error happens!
-
-"@WIN_CMAKE_BINARY_DIR@\scripts\win_exec_cmake.bat" "@ZORBA_EXE_PATH@" %*

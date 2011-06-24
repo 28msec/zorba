@@ -35,24 +35,27 @@
 # file API for the generation of the runtime and codegen. Zorba will
 # fail running the test query if the file API dll is not found in the
 # correct location.
-SET(ZORBA_WORKS)
-IF(EXISTS ${ZORBA_EXE})
-  EXECUTE_PROCESS(COMMAND ${ZORBA_EXE}
-    -q "import module namespace file = 'http://expath.org/ns/file'; file:exists( 'a non existant file' )"
+SET (ZORBA_WORKS)
+IF (EXISTS ${ZORBA_EXE})
+  EXECUTE_PROCESS (
+    COMMAND
+      ${ZORBA_EXE}
+      -q "import module namespace file = 'http://expath.org/ns/file'; file:exists( 'a non existant file' )"
     RESULT_VARIABLE ZORBA_WORKS_RES
-    OUTPUT_VARIABLE ZORBA_WORKS_OUTPUT)
-  IF(NOT ZORBA_WORKS_RES EQUAL 0)
-    SET(ZORBA_WORKS FALSE)
-    MESSAGE(STATUS "[WARNING] Zorba Command Line Utility at \"${ZORBA_EXE}\ "
+    OUTPUT_VARIABLE ZORBA_WORKS_OUTPUT
+  )
+  IF (NOT ZORBA_WORKS_RES EQUAL 0)
+    SET (ZORBA_WORKS FALSE)
+    MESSAGE (STATUS "[WARNING] Zorba Command Line Utility at \"${ZORBA_EXE}\ "
       "does not work properly and cannot generate the runtime source files. "
       "This will cause the repository version of these files to be used. "
       "(Output from Zorba test command: ${ZORBA_WORKS_OUTPUT}")
-  ELSE(NOT ZORBA_WORKS_RES EQUAL 0)
-    SET(ZORBA_WORKS TRUE)
-  ENDIF(NOT ZORBA_WORKS_RES EQUAL 0)
-ELSE(EXISTS ${ZORBA_EXE})
-  SET(ZORBA_WORKS FALSE)
-ENDIF(EXISTS ${ZORBA_EXE})
+  ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
+    SET (ZORBA_WORKS TRUE)
+  ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
+ELSE (EXISTS ${ZORBA_EXE})
+  SET (ZORBA_WORKS FALSE)
+ENDIF (EXISTS ${ZORBA_EXE})
 
 # Compute the relative path to the generated file
 FILE(RELATIVE_PATH gen_relfile "${binary_dir}" "${gen_file}")

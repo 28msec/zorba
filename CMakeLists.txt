@@ -50,13 +50,22 @@ IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   MESSAGE(FATAL_ERROR "Please create a separate build directory and call CMake again")
 ENDIF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
-# set the default build type to release
-# NOTE: the "NMake Makefiles" generator will always set the default build type to "Debug"
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Release CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-      FORCE)
-ENDIF(NOT CMAKE_BUILD_TYPE)
+IF (MSVC)
+  IF (CMAKE_BUILD_TYPE)
+    MESSAGE (STATUS "You provided CMAKE_BUILD_TYPE but the Visual Studio generator cannot make use of it. So I'd better clear it now! Sorry! :(")
+    SET (CMAKE_BUILD_TYPE)
+  ELSE (CMAKE_BUILD_TYPE)
+    MESSAGE (STATUS "No CMAKE_BUILD_TYPE was provided, which is exactly what the Visual Studio generator expects from you. Very good! Weiter machen! :)")
+  ENDIF(CMAKE_BUILD_TYPE)
+ELSE(MSVC)
+  # set the default build type to release
+  # NOTE: the "NMake Makefiles" generator will always set the default build type to "Debug"
+  IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Release CACHE STRING
+        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+        FORCE)
+  ENDIF(NOT CMAKE_BUILD_TYPE)
+ENDIF(MSVC)
 
 # this is needed for the next step: we clear the default value of CMAKE_INSTALL_DIR
 # this happens only with the NMake generator
@@ -184,13 +193,6 @@ IF(_clock_gettime_in_rt)
 ELSE(_clock_gettime_in_rt)
   CHECK_FUNCTION_EXISTS(clock_gettime   ZORBA_HAVE_CLOCKGETTIME_FUNCTION)
 ENDIF(_clock_gettime_in_rt)
-
-IF (WIN32)
-  # The following required libraries need to gather the DLL's and the paths to them:
-  # LibXml2, cURL, Iconv, ICU, XercesC
-  SET(ZORBA_REQUIRED_DLLS)
-  SET(ZORBA_REQUIRED_DLL_PATHS)
-ENDIF (WIN32)
 
 #
 # TcMalloc support
@@ -502,32 +504,15 @@ IF (NOT ZORBA_SKIP_CPACK)
   INCLUDE(CMakeCPack.cmake)
 ENDIF (NOT ZORBA_SKIP_CPACK)
 
-IF( APPLE AND UNIVERSAL )
-  SET ( CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "archs" FORCE)
-  SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -v" )
-# The following is not the default when building universal
-  INCLUDE_DIRECTORIES	 ( SYSTEM /usr/local/include )
-  SET ( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -v")
-  MESSAGE( "Building Apple universal binaries" )
-ENDIF( APPLE AND UNIVERSAL )
+IF (APPLE AND UNIVERSAL)
+  SET (CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "archs" FORCE)
+  SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -v" )
+  # The following is not the default when building universal
+  INCLUDE_DIRECTORIES	(SYSTEM /usr/local/include)
+  SET (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -v")
+  MESSAGE ("Building Apple universal binaries")
+ENDIF (APPLE AND UNIVERSAL)
 
-IF(WIN32)
-  # automatic detection of external dll dependencies
-  FIND_PACKAGE(DependencyWalker)
-
-  IF(DEPENDS_EXE)
-    FILE(TO_CMAKE_PATH ${DEPENDS_EXE} DEPENDS_EXE)
-  ENDIF(DEPENDS_EXE)
-
-  GET_TARGET_PROPERTY(ZORBA_EXE_PATH zorbacmd LOCATION)
-
-  # script to be executed before CPack
-  CONFIGURE_FILE(
-      "${CMAKE_CURRENT_SOURCE_DIR}/install_external_dll_script.txt.in"
-      "${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt"
-      @ONLY)
-  INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt)
-
-  FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls")
-  INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls/" DESTINATION bin)
-ENDIF(WIN32)
+IF (WIN32)
+  ZORBA_GENERATE_EXE_SCRIPTS_WIN32 ()
+ENDIF (WIN32)
