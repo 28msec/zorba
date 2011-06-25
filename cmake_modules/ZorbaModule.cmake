@@ -28,19 +28,6 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
  
   SET(SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq")
   
-  # only for smtp library set -Wno-write-strings in order to remove
-  # the warning "deprecated conversion from string constant to char*".
-  # we need to set it to both GNUCC and GNUCXX because of linkage.c
-  # and c-client.h. QQQ this is a crappy solution - move it somehow to
-  # the smtp module itself
-  IF(${MODULE_NAME} STREQUAL "smtp")
-    IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-      FOREACH(SMTP_SRC ${SRC_FILES})
-        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/smtp.xq.src/${SMTP_SRC} PROPERTIES COMPILE_FLAGS "-Wno-write-strings")
-      ENDFOREACH(SMTP_SRC)
-    ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  ENDIF(${MODULE_NAME} STREQUAL "smtp")
-  
   # Mangle the module URI into Zorba's filesystem form - namely:
   # 1. Drop the scheme: (and // if present)
   # 2. Reverse the authority (host) on dots, then split on dots into subdirs
