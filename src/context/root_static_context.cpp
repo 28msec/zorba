@@ -106,7 +106,6 @@ void root_static_context::init()
   add_url_resolver(new impl::ZorbaCollectionURLResolver());
   add_uri_mapper(new impl::ZorbaCollectionURIMapper());
 
-  set_document_uri_resolver(new StandardDocumentURIResolver());
   set_validation_mode(StaticContextConsts::lax_validation);
 
   std::vector<zstring> lRootModulePaths;

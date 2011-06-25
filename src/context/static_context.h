@@ -495,8 +495,6 @@ protected:
 
   ztd::auto_vector<impl::URLResolver>     theURLResolvers;
 
-  InternalDocumentURIResolver           * theDocResolver;
-
 #ifndef ZORBA_NO_FULL_TEXT
   std::vector<InternalFullTextURIResolver*> theStopWordsResolvers;
 
@@ -688,10 +686,6 @@ public:
     std::vector<zstring>& oComponents) const;
 
   // QQQ old stuff below
-  void set_document_uri_resolver(InternalDocumentURIResolver*);
-
-  InternalDocumentURIResolver* get_document_uri_resolver() const;
-
 #ifndef ZORBA_NO_FULL_TEXT
   void add_stop_words_uri_resolver(InternalFullTextURIResolver*);
 

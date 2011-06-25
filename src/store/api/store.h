@@ -213,18 +213,6 @@ public:
    */
   virtual Item_t getDocument(const zstring& uri) = 0;
 
-  /**
-   * Delete the document with the given uri.
-   *
-   * @param uri The uri of the document to delete.
-   */
-  virtual void deleteDocument(const zstring& uri) = 0;
-		
-  /**
-   * Delete all the documents in the store
-   */
-  virtual void deleteAllDocuments() = 0;
-
   virtual void addNode(const zstring& uri, const Item_t& node) = 0;
 
   virtual Iterator_t getDocumentNames() const = 0;

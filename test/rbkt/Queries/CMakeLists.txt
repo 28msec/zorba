@@ -293,12 +293,20 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3299353)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
-# Failing test due to the new scripting spec. The test should be removed as it does not make sense any longer
+# Failing test due to the new scripting spec. The test should be
+# removed as it does not make sense any longer
 EXPECTED_FAILURE(test/rbkt/zorba/scripting/exit4 666)
 
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
+
+# Failing due to missing validation functionality in C++ API.
+EXPECTED_FAILURE(test/rbkt/zorba/schemas/atomic2 3330316)
+EXPECTED_FAILURE(test/rbkt/zorba/schemas/atomic1 3330316)
+EXPECTED_FAILURE(test/rbkt/zorba/schemas/books 3330316)
+EXPECTED_FAILURE(test/rbkt/zorba/schemas/q2 3330316)
+EXPECTED_FAILURE(test/rbkt/zorba/schemas/books1 3330316)
 
 # These tests fail due to integer overflow.
 IF(NOT ZORBA_WITH_BIG_INTEGER AND FOUND_XQTS)

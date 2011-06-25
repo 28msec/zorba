@@ -27,37 +27,6 @@
 namespace zorba 
 {
 
-
-/*******************************************************************************
-
-********************************************************************************/
-class InternalDocumentURIResolver
-{
-public:
-  virtual ~InternalDocumentURIResolver() {}
-
-  virtual store::Item_t resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext,
-        bool validateUri,
-        bool replaceDoc) = 0;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class InternalCollectionURIResolver
-{
-public:
-  virtual ~InternalCollectionURIResolver() {}
-  
-  virtual store::Collection_t resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext) = 0;
-};
-  
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 

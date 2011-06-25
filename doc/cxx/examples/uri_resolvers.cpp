@@ -47,90 +47,6 @@ class MySchemaURIMapper: public URIMapper
 };
 
 
-/** Document Resolver */
-class MyDocumentURIResolverResult : public DocumentURIResolverResult
-{
-  public:
-    virtual Item
-    getDocument() const
-    {
-      return theDocument;
-    }
-
-  protected:
-    friend class MyDocumentURIResolver;
-    Item theDocument;
-};
-
-
-class MyDocumentURIResolver : public  DocumentURIResolver
-{
-public:
-  virtual ~MyDocumentURIResolver() {}
-
-  virtual std::auto_ptr<DocumentURIResolverResult>
-  resolve(
-        const Item& aURI,
-        StaticContext* aStaticContext,
-        XmlDataManager* aXmlDataManager,
-        bool validate,
-        bool replaceDoc)
-    {
-      std::auto_ptr<MyDocumentURIResolverResult> lResult(new MyDocumentURIResolverResult());
-      if (aURI.getStringValue() == "mydoc.xml") 
-      {
-        // we have only one document
-        lResult->theDocument = aXmlDataManager->getDocumentManager()->document(aURI.getStringValue());
-        lResult->setError(URIResolverResult::UR_NOERROR);
-      }
-      else
-      {
-        lResult->setError(URIResolverResult::UR_FODC0002);
-        std::stringstream lErrorStream;
-        lErrorStream << "Document could not be found " << aURI.getStringValue();
-        lResult->setErrorDescription(lErrorStream.str());
-      }
-      return std::auto_ptr<DocumentURIResolverResult>(lResult.release()); 
-    }
-};
-
-
-bool 
-resolver_example_1(Zorba* aZorba)
-{
-  try
-  {
-    // load one document into the store
-    {
-      std::stringstream lDocStream;
-      lDocStream << "<mydoc><a>1</a></mydoc>";
-
-      XmlDataManager* lDataManager = aZorba->getXmlDataManager();
-
-      DocumentManager* lMgr = lDataManager->getDocumentManager();
-
-      lMgr->add("mydoc.xml", lDataManager->parseXML(lDocStream));
-    }
-
-    StaticContext_t lContext = aZorba->createStaticContext();
-
-    MyDocumentURIResolver lResolver;
-
-    lContext->setDocumentURIResolver(&lResolver);
-
-    XQuery_t lQuery = aZorba->compileQuery("fn:doc('file:///mydoc.xml')", lContext); 
-    std::cout << lQuery << std::endl;
-  }
-  catch (ZorbaException& e)
-  {
-    std::cerr << e.what() << std::endl;
-    return false;
-  }
-
-
-	return true;
-}
-
 // Call this MyModuleURLResolver2 to avoid conflicts with
 // MyModuleURLResolver in external_functions.cpp
 class MyModuleURLResolver2 : public URLResolver
@@ -171,7 +87,7 @@ class URIResolverSerializationCallback : public SerializationCallback
 
 
 bool 
-resolver_example_2(Zorba* aZorba)
+resolver_example_1(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
@@ -209,7 +125,7 @@ resolver_example_2(Zorba* aZorba)
 }
 
 bool 
-resolver_example_3(Zorba* aZorba)
+resolver_example_2(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
@@ -246,11 +162,6 @@ uri_resolvers(int argc, char* argv[])
   std::cout << std::endl  << "executing uri resolver example test 2" << std::endl;
   res = resolver_example_2(lZorba);
   if (!res) return 2; 
-  std::cout << std::endl;
-
-  std::cout << std::endl  << "executing uri resolver example test 3" << std::endl;
-  res = resolver_example_3(lZorba);
-  if (!res) return 3; 
   std::cout << std::endl;
 
   lZorba->shutdown();

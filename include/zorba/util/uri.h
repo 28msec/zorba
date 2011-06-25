@@ -14,23 +14,19 @@ class ZORBA_DLL_PUBLIC URIHelper
 {
 public:
   /**
-    * @brief Decodes a uri to a file uri.
+    * @brief Decodes a file:// URI to a filesystem path in native form.
     *
-    * This function is useful if you need to decode a file uri from a given uri.
-    *
-    * @arg uri A uri of a file.
-    * @returns The file uri of uri.
+    * @arg uri A file:// URI.
+    * @returns The filesystem path.
     */
   static String decodeFileURI(const String& uri);
   /**
-    * @brief Encodes a file uri to a uri.
+    * @brief Encodes a native filesystem path to a file:// URI.
     *
-    * This function encodes a given uri to a file uri.
-    *
-    * @arg fileUri The file uri of a file.
-    * @returns The encoded uri of the file.
+    * @arg filepath The filesystem path.
+    * @returns The encoded URI of the file.
     */
-  static String encodeFileURI(const String& fileUri);
+  static String encodeFileURI(const String& filepath);
 };
 
 } //namespace zorba

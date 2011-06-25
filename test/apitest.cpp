@@ -62,13 +62,16 @@ void set_var (string name, string val, DynamicContext* dctx)
   }
   else if (name[name.size () - 1] != ':')
   {
-    ifstream* is = new ifstream(val.c_str ());
+    ifstream* is = new ifstream(val.c_str());
     assert (*is);
     try {
+      XmlDataManager* lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
+      Item lDoc = lXmlMgr->parseXML(*is);
+      assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
       if(name != ".")
-        dctx->setVariableAsDocument(name, val.c_str(), std::auto_ptr<std::istream>(is));
+        dctx->setVariable(name, lDoc);
       else
-        dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
+        dctx->setContextItem(lDoc);
     } catch (zorba::ZorbaException& e) {
       std::cerr << "could not set external variable "  << e << std::endl;
       exit(1);

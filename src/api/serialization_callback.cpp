@@ -25,9 +25,6 @@ namespace zorba {
   bool
   SerializationCallback::getTraceStream(std::ostream*&) const { return false; }
 
-  DocumentURIResolver*
-  SerializationCallback::getDocumentURIResolver() const { return 0; }
-
   URIMapper*
   SerializationCallback::getURIMapper(size_t i) const { return 0; }
 

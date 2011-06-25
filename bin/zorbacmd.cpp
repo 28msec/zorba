@@ -178,10 +178,11 @@ populateDynamicContext(
   zorba::DynamicContext* aDynamicContext,
   const ZorbaCMDProperties& aProperties)
 {
+  XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
   if ( aProperties.contextItem().size() != 0 ) {
     std::ifstream* lInStream = new std::ifstream(aProperties.contextItem().c_str());
-    aDynamicContext->setContextItemAsDocument(aProperties.contextItem(),
-      std::auto_ptr<std::istream>(lInStream));
+    Item lDoc = lXmlMgr->parseXML(*lInStream);
+    aDynamicContext->setContextItem(lDoc);
   }
 
   ZorbaCMDProperties::ExternalVars_t::const_iterator lIter;
@@ -195,8 +196,8 @@ populateDynamicContext(
       if ((*lIter).inline_file)
       {
         std::ifstream* lInStream = new std::ifstream((*lIter).var_value.c_str());
-        aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value,
-          std::auto_ptr<std::istream>(lInStream));
+        Item lDoc = lXmlMgr->parseXML(*lInStream);
+        aDynamicContext->setVariable((*lIter).var_name, lDoc);
       }
       else
       {

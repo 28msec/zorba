@@ -61,12 +61,13 @@ class Resource
     THESAURUS,
     STOP_WORDS,
     COLLECTION,
+    DOCUMENT,
     SOME_CONTENT
   };
 
   /**
    * @brief enum listing the concrete subclasses of Resource that
-   * exist (only one so far).
+   * exist.
    */
   enum Kind {
     STREAM,

@@ -22,35 +22,6 @@
 namespace zorba {
 
 
-/*******************************************************************************
-  DocumentURIResolverWrapper wraps a user-provided DocumentURIResolver obj.
-  DocumentURIResolver is a c++ API class that offers the same functionality as
-  InternalDocumentURIResolver, but uses c++ API types for the perametes and the
-  results of its methods. So, the purpose of this wrapper class is to do data
-  marshaling and unmarshaling, so that invocations of InternalDocumentURIResolver
-  methods are converted to invocations of the corresponding DocumentURIResolver
-  methods 
-********************************************************************************/
-class DocumentURIResolverWrapper : public InternalDocumentURIResolver
-{
-public:
-  DocumentURIResolverWrapper(DocumentURIResolver*);
-
-  virtual ~DocumentURIResolverWrapper() {}
-
-  virtual store::Item_t resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext,
-        bool validateUri,
-        bool replaceDoc);
-  
-protected:
-  friend class StaticContextImpl;
-
-  DocumentURIResolver* theDocResolver;
-};
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 

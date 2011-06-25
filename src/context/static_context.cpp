@@ -450,7 +450,6 @@ static_context::static_context()
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
-  theDocResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
@@ -495,7 +494,6 @@ static_context::static_context(static_context* parent)
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
-  theDocResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
@@ -543,7 +541,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
-  theDocResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
@@ -688,18 +685,13 @@ static_context::~static_context()
 ********************************************************************************/
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
-  bool lUserDocResolver;
   size_t lNumURIMappers, lNumURLResolvers;
   if (ar.is_serializing_out())
   {
-    // serialize out: remember whether a doc and collection
-    //                resolver was registered by the user
-    lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL));
     lNumURIMappers = theURIMappers.size();
     lNumURLResolvers = theURLResolvers.size();
 
     ar.set_is_temp_field(true);
-    ar & lUserDocResolver;
     ar & lNumURIMappers;
     ar & lNumURLResolvers;
     ar.set_is_temp_field(false);
@@ -712,30 +704,17 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     SerializationCallback* lCallback = ar.getUserCallback();
 
     ar.set_is_temp_field(true);
-    ar & lUserDocResolver; // doc resolver passed by the user
     ar & lNumURIMappers;   // number of URIMappers passed by the user
     ar & lNumURLResolvers; // number of URLResolvers passed by the user
     ar.set_is_temp_field(false);
 
     // callback required but not available
-    if ((lUserDocResolver || lNumURIMappers || lNumURLResolvers) && !lCallback)
+    if ((lNumURIMappers || lNumURLResolvers) && !lCallback)
     {
       throw ZORBA_EXCEPTION(
         zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
         ERROR_PARAMS( ZED( NoSerializationCallbackForDocColMod ) )
       );
-    }
-
-    if (lUserDocResolver) {
-      DocumentURIResolver* lDocResolver = lCallback->getDocumentURIResolver();
-      if (!lDocResolver)
-      {
-        throw ZORBA_EXCEPTION(
-          zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-          ERROR_PARAMS( ZED( NoDocumentURIResolver ) )
-        );
-      }
-      set_document_uri_resolver(new DocumentURIResolverWrapper(lDocResolver));
     }
 
     if (lNumURIMappers) {
@@ -1468,30 +1447,6 @@ static_context::apply_url_resolvers
       }
     }
   }
-}
-
-/***************************************************************************//**
-QQQ delete all these empty comment headers
-********************************************************************************/
-void static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDocResolver)
-{
-  delete theDocResolver;
-
-  theDocResolver = aDocResolver;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-InternalDocumentURIResolver* static_context::get_document_uri_resolver() const
-{
-  if ( theDocResolver != 0 )
-    return theDocResolver;
-
-  return (theParent != NULL ?
-          dynamic_cast<static_context*>(theParent)->get_document_uri_resolver() :
-          0);
 }
 
 

@@ -126,8 +126,6 @@ context_example_4(Zorba* aZorba)
   std::auto_ptr<std::istream> lDocStream2(
     new std::stringstream("<books><book>Book 1.1</book><book>Book 2.2</book></books>"));
 
-  zorba::XmlDataManager::LoadProperties ldProps;
-
   try
   {
     XQuery_t lQuery = aZorba->compileQuery("declare variable $doc external; $doc//book[1]/text()");
@@ -135,15 +133,18 @@ context_example_4(Zorba* aZorba)
     DynamicContext* lCtx = lQuery->getDynamicContext();
 
     // Parses the input stream and internally creates a datamodel instance
-    // that can be bound to the variable. Note that ownership of the stream
-    // is transfered to the system using an auto_ptr.
-    lCtx->setVariableAsDocument("doc", "books.xml", lDocStream1, ldProps);
+    // that can be bound to the variable.
+    XmlDataManager* lXmlMgr = aZorba->getXmlDataManager();
+    Item lDoc = lXmlMgr->parseXML(*lDocStream1);
+
+    lCtx->setVariable("doc", lDoc);
 
     outStream1 << lQuery << std::endl;
     std::cout << outStream1.str() << std::endl;
 
     // Reset the value of the $doc variable to the 2nd document.
-    lCtx->setVariableAsDocument("doc", "books.xml", lDocStream2, ldProps, true);
+    lDoc = lXmlMgr->parseXML(*lDocStream2);
+    lCtx->setVariable("doc", lDoc);
 
     outStream2 << lQuery << std::endl;
     std::cout << outStream2.str() << std::endl;
@@ -184,8 +185,9 @@ context_example_5(Zorba* aZorba)
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; .//book");
 
   DynamicContext* lCtx = lQuery->getDynamicContext();
-
-  lCtx->setContextItemAsDocument("other_books.xml", lDocStream);
+  XmlDataManager* lXmlMgr = aZorba->getXmlDataManager();
+  Item lDoc = lXmlMgr->parseXML(*lDocStream);
+  lCtx->setContextItem(lDoc);
 
   try {
     std::cout << lQuery << std::endl;

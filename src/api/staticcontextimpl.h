@@ -187,12 +187,6 @@ public:
   registerURLResolver(URLResolver* aResolver);
 
   virtual void
-  setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver);
-
-  virtual DocumentURIResolver*
-  getDocumentURIResolver() const;
-
-  virtual void
   setCollectionType(const String& aCollectionUri, TypeIdentifier_t type);
 
   virtual TypeIdentifier_t

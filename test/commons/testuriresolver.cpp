@@ -36,58 +36,27 @@ namespace zorba
 
 
 /******************************************************************************
- "Document resolver"
+ URIMapper for "test:" URI scheme.
 *******************************************************************************/
-TestDocumentURIResolver::TestDocumentURIResolver(zorba::String aBaseFile)
-{
-  theBaseFile = URIHelper::encodeFileURI(aBaseFile);
-}
-
-TestDocumentURIResolver::~TestDocumentURIResolver()
+TestSchemeURIMapper::TestSchemeURIMapper(String aBaseFile)
+  : theBaseFile(aBaseFile)
 {
 }
 
-TestDocumentURIResolverResult::~TestDocumentURIResolverResult()
+TestSchemeURIMapper::~TestSchemeURIMapper()
 {
 }
 
-Item
-TestDocumentURIResolverResult::getDocument() const
+void
+TestSchemeURIMapper::mapURI(const String aURI, Resource::EntityType aEntityType,
+                            std::vector<String>& oUris) throw()
 {
-  return theDocument;
-}
-
-std::auto_ptr<DocumentURIResolverResult>
-TestDocumentURIResolver::resolve(const Item& aURI,
-  StaticContext* aStaticContext,
-  XmlDataManager* aXmlDataManager,
-  bool validateUri,
-  bool replaceDoc)
-{
-  zorba::String lUri = aURI.getStringValue();
-  if (ascii::begins_with(lUri,"test://")) {
-    lUri = theBaseFile + lUri.substr(7);
+  std::cout << "mapping " << aURI << " with base " << theBaseFile << std::endl;
+  if (ascii::begins_with(aURI, "test://")) {
+    String lFileURI = URIHelper::encodeFileURI(theBaseFile + aURI.substr(7));
+    std::cout << "mapped to " << lFileURI << std::endl;
+    oUris.push_back((lFileURI));
   }
-  std::auto_ptr<TestDocumentURIResolverResult> lResult
-    (new TestDocumentURIResolverResult());
-  try {
-    DocumentManager* lMgr = aXmlDataManager->getDocumentManager();
-
-    if ( replaceDoc && lMgr->isAvailableDocument(lUri) ) {
-      lMgr->remove(lUri);
-    }
-
-    Item lStream = aXmlDataManager->fetch(lUri);
-    assert (lStream.isStreamable());
-    lResult->theDocument = aXmlDataManager->parseXML(lStream.getStream());
-    lMgr->add(lUri, lResult->theDocument);
-
-  }
-  catch (ZorbaException &e) {
-    lResult->setError(URIResolverResult::UR_FODC0002);
-    lResult->setErrorDescription(e.what());
-  }
-  return std::auto_ptr<DocumentURIResolverResult>(lResult.release());
 }
 
 

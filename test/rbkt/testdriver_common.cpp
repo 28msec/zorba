@@ -18,9 +18,11 @@
 #include <zorbatypes/URI.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/iterator.h>
-#include "util/string_util.h"
-#include "util/ascii_util.h"
-#include "zorbamisc/ns_consts.h"
+#include <zorba/xmldatamanager.h>
+#include <zorba/store_consts.h>
+#include <util/string_util.h>
+#include <util/ascii_util.h>
+#include <zorbamisc/ns_consts.h>
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
@@ -388,23 +390,17 @@ void set_var(
       assert (false);
     }
 
-
-    zorba::XmlDataManager::LoadProperties lLoadProperties;
-    lLoadProperties.setEnableDtd(enableDtd);
-
+    zorba::XmlDataManager* lXmlMgr =
+        zorba::Zorba::getInstance(NULL)->getXmlDataManager();
+    zorba::Item lDoc = lXmlMgr->parseXML(*is);
+    assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
     if(name != ".")
     {
-      lLoadProperties.setValidationMode(validate_lax);
-			dctx->setVariableAsDocument(name,
-                                  val.c_str(),
-                                  std::auto_ptr<std::istream>(is),
-                                  lLoadProperties);
+      dctx->setVariable(name, lDoc);
     }
-		else
+    else
     {
-			dctx->setContextItemAsDocument(val.c_str(),
-                                     std::auto_ptr<std::istream>(is),
-                                     lLoadProperties);
+      dctx->setContextItem(lDoc);
     }
   }
 }

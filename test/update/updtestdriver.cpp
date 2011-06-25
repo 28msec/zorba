@@ -35,6 +35,7 @@
 #include <zorba/zorba_string.h>
 #include <zorba/util/file.h>
 #include <zorba/static_context_consts.h>
+#include <zorba/store_consts.h>
 
 #include "util/ascii_util.h"
 
@@ -109,17 +110,17 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
       std::cout << "Error: Location not found: " << val.c_str() << std::endl;
     
     assert (*is);
-
+    zorba::XmlDataManager* lXmlMgr =
+        zorba::Zorba::getInstance(NULL)->getXmlDataManager();
+    zorba::Item lDoc = lXmlMgr->parseXML(*is);
+    assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
     if(name != ".")
     {
-      dctx->setVariableAsDocument(name,
-                                  val.c_str(),
-                                  std::auto_ptr<std::istream>(is),
-                                  validate_lax);
+      dctx->setVariable(name, lDoc);
     }
     else
     {
-      dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
+      dctx->setContextItem(lDoc);
     }
   }
 }

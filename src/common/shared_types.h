@@ -146,10 +146,6 @@ typedef FloatImpl<float>  Float;
 /* api */
 class serializer;
 
-/* URI resolvers */
-class InternalDocumentURIResolver;
-class InternalCollectionURIResolver;
-
 } // namespace zorba
 
 #endif /* ZORBA_SHARED_TYPES_H */

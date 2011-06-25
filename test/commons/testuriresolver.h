@@ -27,40 +27,21 @@ namespace zorba
 {
 
 /******************************************************************************
-
+ A URIMapper that maps the "test:" URI scheme to a file: URI.
 *******************************************************************************/
-class TestDocumentURIResolverResult : public DocumentURIResolverResult
+class TestSchemeURIMapper : public URIMapper
 {
-  protected:
-    friend class TestDocumentURIResolver;
-    Item theDocument;
+public:
+  TestSchemeURIMapper(String aBaseFile);
 
-  public:
-    virtual ~TestDocumentURIResolverResult();
-    virtual Item getDocument() const;
+  virtual ~TestSchemeURIMapper();
+
+  virtual void mapURI(const String aURI, Resource::EntityType aEntityType,
+    std::vector<String>& oUris) throw ();
+
+private:
+  String const theBaseFile;
 };
-
-
-/******************************************************************************
-
-*******************************************************************************/
-class TestDocumentURIResolver : public DocumentURIResolver
-{
-  public:
-    TestDocumentURIResolver(String aBaseFile);
-    virtual ~TestDocumentURIResolver();
-
-  virtual std::auto_ptr<DocumentURIResolverResult>
-  resolve(const Item& aURI,
-          StaticContext* aStaticContext,
-          XmlDataManager* aXmlDataManager,
-          bool validateUri,
-          bool replaceDoc = false);
-  private:
-    String theBaseFile;
-};
-
-
 
 /******************************************************************************
 

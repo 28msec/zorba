@@ -104,61 +104,8 @@ public:
     const String& inLocalname,
     const Iterator_t& inValue);
 
-  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
-  virtual bool
-  setVariableAsDocument(
-        const String& inVarName,
-        const String& inDocUri,
-        validation_mode_t inMode);
-
-  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
-  virtual bool
-  setVariableAsDocument(
-        const String& inVarName,
-        const String& inDocURI,
-        std::auto_ptr<std::istream> inStream,
-        validation_mode_t inMode);
-
-  virtual bool
-  setVariableAsDocument(
-        const String& inVarName,
-        const String& inDocUri,
-        const XmlDataManager::LoadProperties& inLoadProperties,
-        bool inReplaceDoc);
-
-  virtual bool
-  setVariableAsDocument(
-        const String& inVarName,
-        const String& inDocURI,
-        std::auto_ptr<std::istream> inStream,
-        const XmlDataManager::LoadProperties& inLoadProperties,
-        bool inReplaceDoc);
-
   virtual bool
   setContextItem(const Item& inValue);
-
-  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
-  virtual bool
-  setContextItemAsDocument(
-        const String& inDocURI,
-        std::auto_ptr<std::istream> inStream);
-
-  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
-  virtual bool
-  setContextItemAsDocument(const String& inDocURI);
-
-  virtual bool
-  setContextItemAsDocument(
-        const String& inDocURI,
-        std::auto_ptr<std::istream> inStream,
-        const XmlDataManager::LoadProperties& inLoadProperties,
-        bool inReplaceDoc);
-
-  virtual bool
-  setContextItemAsDocument(
-        const String& inDocURI,
-        const XmlDataManager::LoadProperties& inLoadProperties,
-        bool inReplaceDoc);
 
   virtual bool
   getContextItem(Item& outValue) const;
@@ -191,19 +138,6 @@ public:
 
 protected:
   void checkNoIterators() const;
-
-  void validateIfNecesary(
-      store::Item_t& docItem,
-      const zstring& docUri,
-      store::Item_t& docUriItem,
-      const XmlDataManager::LoadProperties& aLoadProperties);
-
-  void validateIfNecesary(
-      store::Item_t& docItem,
-      const zstring& docUri,
-      const zstring& baseUri,
-      std::auto_ptr<std::istream> aInStream,
-      const XmlDataManager::LoadProperties& aLoadProperties);
 
 private:
   var_expr* get_var_expr(const zstring& inVarName);

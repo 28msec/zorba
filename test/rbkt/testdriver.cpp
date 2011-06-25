@@ -163,7 +163,7 @@ main(int argc, char** argv)
     std::auto_ptr<zorba::TestSchemaURIMapper>        smapper;
     std::auto_ptr<zorba::TestModuleURIMapper>        mmapper;
     std::auto_ptr<zorba::TestCollectionURIMapper>    cmapper;
-    std::auto_ptr<zorba::TestDocumentURIResolver>    dresolver;
+    std::auto_ptr<zorba::TestSchemeURIMapper>        dmapper;
     // Create the static context. If this is a w3c query, install special uri
     // resolvers in the static context.
     zorba::StaticContext_t lContext = engine->createStaticContext();
@@ -236,8 +236,8 @@ main(int argc, char** argv)
     // If --enable-uritestresolver is specified, enable our document
     // URI resolver for test:// scheme URIs
     if (lSpec.getEnableUriTestResolver()) {
-      dresolver.reset(new zorba::TestDocumentURIResolver(rbkt_src_dir));
-      lContext->setDocumentURIResolver ( dresolver.get() );
+      dmapper.reset(new zorba::TestSchemeURIMapper(rbkt_src_dir));
+      lContext->registerURIMapper(dmapper.get());
     }
 
     // Bind any options from the .spec file to the static context

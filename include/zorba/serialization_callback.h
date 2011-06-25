@@ -33,9 +33,6 @@ namespace zorba {
       virtual bool
       getTraceStream(std::ostream*&) const;
 
-      virtual DocumentURIResolver*
-      getDocumentURIResolver() const;
-
       /**
        * Get the i-th URIMapper that was registered before
        * serialization.

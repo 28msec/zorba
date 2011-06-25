@@ -20,38 +20,39 @@
 #include <vector>
 #include <sstream>
 
-#include "zorbautils/fatal.h"
-#include "diagnostics/xquery_diagnostics.h"
-#include "zorbatypes/URI.h"
+#include <zorbautils/fatal.h>
+#include <diagnostics/xquery_diagnostics.h>
+#include <zorbatypes/URI.h>
+#include <zorbamisc/ns_consts.h>
 
 // For timing
-#include "zorba/util/time.h"
+#include <zorba/util/time.h>
 
-#include "util/fs_util.h"
-#include "util/uri_util.h"
+#include <util/fs_util.h>
+#include <util/uri_util.h>
 
-#include "compiler/api/compilercb.h"
+#include <compiler/api/compilercb.h>
 
-#include "runtime/sequences/sequences.h"
-#include "runtime/core/arithmetic_impl.h"
-#include "runtime/util/iterator_impl.h"
-#include "runtime/util/handle_hashset_item_value.h"
-#include "runtime/visitors/planiter_visitor.h"
+#include <runtime/sequences/sequences.h>
+#include <runtime/core/arithmetic_impl.h>
+#include <runtime/util/iterator_impl.h>
+#include <runtime/util/handle_hashset_item_value.h>
+#include <runtime/visitors/planiter_visitor.h>
 
-#include "system/globalenv.h"
+#include <system/globalenv.h>
 
-#include "types/casting.h"
-#include "types/typeops.h"
-#include "types/typeimpl.h"
+#include <types/casting.h>
+#include <types/typeops.h>
+#include <types/typeimpl.h>
 
-#include "store/api/store.h"
-#include "store/api/iterator.h"
-#include "store/api/item_factory.h"
-#include "store/api/pul.h"
-#include "store/util/hashset_node_handle.h"
+#include <store/api/store.h>
+#include <store/api/iterator.h>
+#include <store/api/item_factory.h>
+#include <store/api/pul.h>
+#include <store/util/hashset_node_handle.h>
 
-#include "context/static_context.h"
-#include "context/internal_uri_resolvers.h"
+#include <context/static_context.h>
+#include <context/internal_uri_resolvers.h>
 
 namespace zorbatm = zorba::time;
 
@@ -1722,117 +1723,155 @@ static void fillTime (
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
+/**
+ * Utility method for fn:doc() and fn:doc-available(). Given an input string,
+ * use a few heuristics to create a valid URI, assuming that the input might
+ * be an absolute or relative filesystem path, etc.
+ */
+static zstring normalizeInput(zstring const& aUri, static_context* aSctx,
+                              QueryLoc const& loc)
+{
+  zstring const aBaseUri = aSctx->get_base_uri();
+  zstring lResolvedURI;
+
+  try
+  {
+    // To support the very common (if technically incorrect) use
+    // case of users passing local filesystem paths to fn:doc(),
+    // we use the following heuristic: IF the base URI has a file:
+    // scheme AND the incoming URI has no scheme, we will assume
+    // the incoming URI is actually a filesystem path.  QQQ For
+    // the moment, we assume any "unknown" schemes are probably
+    // Windows drive letters.
+    if ((uri::get_scheme(aUri) == uri::none ||
+         uri::get_scheme(aUri) == uri::unknown) &&
+        uri::get_scheme(aBaseUri) == uri::file)
+    {
+      // Ok, we assume it's a filesystem path. First normalize it.
+      zstring lNormalizedPath =
+        fs::get_normalized_path(aUri, zstring(""));
+      // QQQ For now, get_normalized_path() doesn't do what we
+      // want when base URI represents a file. So, when the
+      // normalized path is relative, we pretend it's a relative
+      // URI and resolve it as such.
+      if (fs::is_absolute(lNormalizedPath))
+      {
+        URI::encode_file_URI(lNormalizedPath, lResolvedURI);
+      }
+      else
+      {
+#ifdef WIN32
+        ascii::replace_all(normalizedPath, '\\', '/');
+#endif
+        lResolvedURI = aSctx->resolve_relative_uri(lNormalizedPath, true);
+      }
+    }
+    else
+    {
+      // We do NOT assume it's a filesystem path; just resolve it.
+      lResolvedURI = aSctx->resolve_relative_uri(aUri, true);
+    }
+  }
+  catch (ZorbaException& e)
+  {
+    if (e.diagnostic() == err::XQST0046)
+      // the value of a URILiteral is of nonzero length and is not in the
+      // lexical space of xs:anyURI.
+      e.set_diagnostic(err::FODC0005);
+    else
+      e.set_diagnostic(err::FODC0002);
+
+    set_source(e, loc);
+    throw;
+  }
+
+  return lResolvedURI;
+}
+
+static void loadDocument(
+  zstring const& aUri,
+  static_context* aSctx,
+  PlanState& aPlanState,
+  QueryLoc const& loc,
+  store::Item_t& oResult)
+{
+  // Normalize input to handle filesystem paths, etc.
+  zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
+
+  // See if this (normalized) URI is already loaded in the store.
+  try {
+    oResult = GENV_STORE.getDocument(lNormUri);
+  }
+  catch (XQueryException& e) {
+    set_source(e, loc);
+    throw;
+  }
+  if (oResult != NULL) {
+    return;
+  }
+
+  // Prepare a LoadProperties for loading the stream into the store
+  store::LoadProperties lLoadProperties;
+  lLoadProperties.setStoreDocument(true);
+  zstring lEnableDtdOptionValue;
+  store::Item_t lEnDtdQName;
+  GENV.getItemFactory()->createQName(lEnDtdQName, ZORBA_OPTIONS_NS, "",
+                                       ZORBA_OPTION_ENABLE_DTD);
+  aSctx->lookup_option(lEnDtdQName, lEnableDtdOptionValue);
+  lLoadProperties.setEnableDtd( lEnableDtdOptionValue.compare("true")==0 );
+
+  // Resolve URI to a stream
+  zstring lErrorMessage;
+  std::auto_ptr<impl::Resource> lResource = aSctx->resolve_uri
+      (lNormUri, impl::Resource::DOCUMENT, lErrorMessage);
+  if (!lResource.get() || lResource->getKind() != impl::Resource::STREAM) {
+    throw XQUERY_EXCEPTION
+        (err::FODC0002, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
+  }
+  std::auto_ptr<std::istream> lStream
+      (static_cast<impl::StreamResource*>(lResource.get())->getStream());
+  if (lStream.get() == NULL) {
+    throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
+  }
+
+  // Load stream into store. NOTE: this will be replaced by calls to XQuery
+  // functions doc:add() et al soon.
+  zorbatm::walltime t0;
+  zorbatm::cputime t0user;
+  zorbatm::get_current_cputime (t0user);
+  zorbatm::get_current_walltime(t0);
+  try {
+    store::Store& lStore = GENV.getStore();
+    zstring lBaseUri = aSctx->get_base_uri();
+    oResult = lStore.loadDocument(lBaseUri, lNormUri,
+                                  lStream.release(), lLoadProperties);
+    fillTime(t0, t0user, aPlanState);
+  }
+  catch (ZorbaException& e) {
+    e.set_diagnostic(err::FODC0002);
+    set_source(e, loc);
+    throw;
+  }
+  if (oResult == NULL) {
+    throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
+  }
+}
+
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t uriItem;
-  zstring uriString;
-  zstring resolvedURIString;
-  store::Item_t resolvedURIItem;
-  zorbatm::walltime t0;
-  zorbatm::cputime t0user;
-
   PlanIteratorState* state;
+  zstring uriString;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(uriItem, theChildren[0].getp(), planState))
   {
     uriItem->getStringValue2(uriString);
-
-    try
-    {
-      // maybe the document is stored with the uri that is given by the user
-      result = GENV_STORE.getDocument(uriString);
-    }
-    catch (XQueryException& e)
-    {
-      set_source(e, loc);
-      throw;
-    }
-
-    if (result != NULL)
-    {
-      fillTime(t0, t0user, planState);
-      STACK_PUSH(true, state);
-    }
-    else
-    {
-      try
-      {
-        // To support the very common (if technically incorrect) use
-        // case of users passing local filesystem paths to fn:doc(),
-        // we use the following heuristic: IF the base URI has a file:
-        // scheme AND the incoming URI has no scheme, we will assume
-        // the incoming URI is actually a filesystem path.  QQQ For
-        // the moment, we assume any "unknown" schemes are probably
-        // Windows drive letters.
-        zstring baseUri = theSctx->get_base_uri();
-        if ((uri::get_scheme(uriString) == uri::none ||
-             uri::get_scheme(uriString) == uri::unknown) &&
-            uri::get_scheme(baseUri) == uri::file) 
-        {
-          // Ok, we assume it's a filesystem path. First normalize it.
-          zstring normalizedPath =
-            fs::get_normalized_path(uriString, zstring(""));
-          // QQQ For now, get_normalized_path() doesn't do what we
-          // want when base URI represents a file. So, when the
-          // normalized path is relative, we pretend it's a relative
-          // URI and resolve it as such.
-          if (fs::is_absolute(normalizedPath)) 
-          {
-            URI::encode_file_URI(normalizedPath, resolvedURIString);
-          }
-          else 
-          {
-#ifdef WIN32
-            ascii::replace_all(normalizedPath, '\\', '/');
-#endif
-            resolvedURIString = theSctx->resolve_relative_uri(normalizedPath, true);
-          }
-        }
-        else 
-        {
-          resolvedURIString = theSctx->resolve_relative_uri(uriString, true);
-        }
-      }
-      catch (ZorbaException& e)
-      {
-        if (e.diagnostic() == err::XQST0046) 
-          //the value of a URILiteral is of nonzero length and is not in the
-          // lexical space of xs:anyURI.
-          e.set_diagnostic(err::FODC0005);
-        else
-          e.set_diagnostic(err::FODC0002);
-        
-        set_source(e, loc);
-        throw;
-      }
-
-      GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-
-      try
-      {
-        zorbatm::get_current_cputime (t0user);
-        zorbatm::get_current_walltime(t0);
-
-        result = theSctx->get_document_uri_resolver()->resolve(resolvedURIItem,
-                                                               theSctx,
-                                                               false,
-                                                               false);
-
-        fillTime(t0, t0user, planState);
-      }
-      catch (ZorbaException& e)
-      {
-				e.set_diagnostic(err::FODC0002);
-				set_source(e, loc);
-				throw;
-      }
-
-      STACK_PUSH(true, state);
-    }
+    loadDocument(uriString, theSctx, planState, loc, result);
+    STACK_PUSH(true, state);
   } // return empty sequence if input is the empty sequence
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 /*******************************************************************************
@@ -1842,7 +1881,6 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
 {
   store::Item_t    doc;
   store::Item_t    uriItem;
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -1850,10 +1888,9 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     try
     {
-      doc = theSctx->get_document_uri_resolver()->resolve(uriItem,
-                                                          theSctx,
-                                                          false,
-                                                          false);
+      zstring uriString;
+      uriItem->getStringValue2(uriString);
+      loadDocument(uriString, theSctx, planState, loc, doc);
     }
     catch (ZorbaException& e)
     {

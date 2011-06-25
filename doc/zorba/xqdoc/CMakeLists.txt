@@ -79,6 +79,8 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
       -e "examplePath:=${CMAKE_SOURCE_DIR}"
       -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
       )
+
+  EXPECTED_FAILURE(doc/stress_tests/make_xqdoc 3330316)
   
   # Add the modules_svg command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(modules_svg

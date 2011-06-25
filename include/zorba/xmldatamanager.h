@@ -25,8 +25,8 @@ namespace zorba {
 
   /** \brief Using the XmlDataManager one can manage documents and collections.
    *
-   * The XmlDataManager is a singelton instance. The Zorba object is reponsible
-   * for maintaining it's lifetime. The instance can be accessed by calling
+   * The XmlDataManager is a singleton instance. The Zorba object is reponsible
+   * for maintaining its lifetime. The instance can be accessed by calling
    * getXmlDataManager() on the Zorba object. It may not be accessed anymore
    * after Zorba::shutdown() has been called.
    *
@@ -82,86 +82,91 @@ namespace zorba {
     virtual Item
     fetch(const String& aURI) const = 0;
 
+    /**
+     * \brief The LoadProperties class stores various properties that affect
+     *        how a document load is done. An instance of this class is passed
+     *        as input to the setVariableAsDocument and setContextItemAsDocument
+     *        method of the DynamicContext class.
+     */
+    class LoadProperties
+    {
+    private:
+      validation_mode_t theValidationMode;
+      bool              theEnableDtdLoader;
+
+    public:
+      LoadProperties() :
+        theValidationMode(validate_skip),
+        theEnableDtdLoader(false)
+      {}
+
+      ~LoadProperties() {}
+
       /**
-       * \brief The LoadProperties class stores various properties that affect
-       *        how a document load is done. An instance of this class is passed
-       *        as input to the setVariableAsDocument and setContextItemAsDocument
-       *        method of the DynamicContext class.
+       * Set the property validationMode, it specifies what validation
+       * mode should be used when loading the document. If it is equal
+       * to validate_skip, no validation is done. Otherwise, the
+       * document will be validated in strict or lax mode using the
+       * in-scope schema definitions that are found in the query's
+       * static context.
        */
-      class LoadProperties
+      void setValidationMode(validation_mode_t aValidationMode)
       {
-      private:
-          validation_mode_t theValidationMode;
-          bool              theEnableDtdLoader;
+        theValidationMode = aValidationMode;
+      }
 
-      public:
-          LoadProperties() :
-              theValidationMode(validate_skip),
-              theEnableDtdLoader(false)
-          {}
-
-          ~LoadProperties() {}
-
-          /**
-           * Set the property validationMode, it specifies what validation mode
-           * should be used when loading the document. If it is equal to
-           * validate_skip, no validation is done. Otherwise, the document will
-           * be validated in strict or lax mode using the in-scope schema definitions
-           * that are found in the query's static context.
-           */
-          void setValidationMode(validation_mode_t aValidationMode)
-          {
-              theValidationMode = aValidationMode;
-          }
-
-          /**
-           * Get the property validationMode, it specifies what validation mode
-           * should be used when loading the document. If it is equal to
-           * validate_skip, no validation is done. Otherwise, the document will
-           * be validated in strict or lax mode using the in-scope schema definitions
-           * that are found in the query's static context.
-           */
-          validation_mode_t getValidationMode() const
-          {
-              return theValidationMode;
-          }
-
-          /**
-           * Set the property enableDtd, which specifies whether the document should be
-           * validated against its associated DTD (if any).
-           */
-          void setEnableDtd(bool aEnableDtdLoader)
-          {
-              theEnableDtdLoader = aEnableDtdLoader;
-          }
-
-          /**
-           * Get the property enableDtd, which specifies whether the document should be
-           * validated against its associated DTD (if any).
-           */
-          bool getEnableDtd() const
-          {
-              return theEnableDtdLoader;
-          }
-      };
-
-      /** \brief Register an DiagnosticHandler to which errors occuring during the
-       * management of documents and collections are reported.
-       *
-       * If no DiagnosticHandler has been set using this function then subclasses of
-       * the ZorbaException class are thrown to report errors.
-       *
-       *  @param aDiagnosticHandler DiagnosticHandler to which errors are reported. The
-       *         caller retains ownership over the DiagnosticHandler passed as
-       *         parameter.
+      /**
+       * Get the property validationMode, it specifies what validation
+       * mode should be used when loading the document. If it is equal
+       * to validate_skip, no validation is done. Otherwise, the
+       * document will be validated in strict or lax mode using the
+       * in-scope schema definitions that are found in the query's
+       * static context.
        */
-      void
+      validation_mode_t getValidationMode() const
+      {
+        return theValidationMode;
+      }
+
+      /**
+       * Set the property enableDtd, which specifies whether the
+       * document should be validated against its associated DTD (if
+       * any).
+       */
+      void setEnableDtd(bool aEnableDtdLoader)
+      {
+        theEnableDtdLoader = aEnableDtdLoader;
+      }
+
+      /**
+       * Get the property enableDtd, which specifies whether the
+       * document should be validated against its associated DTD (if
+       * any).
+       */
+      bool getEnableDtd() const
+      {
+        return theEnableDtdLoader;
+      }
+    };
+
+    /** \brief Register an DiagnosticHandler to which errors occuring during the
+     * management of documents and collections are reported.
+     *
+     * If no DiagnosticHandler has been set using this function then
+     * subclasses of the ZorbaException class are thrown to report
+     * errors.
+     *
+     *  @param aDiagnosticHandler DiagnosticHandler to which errors
+     *         are reported. The caller retains ownership over the
+     *         DiagnosticHandler passed as parameter.
+     */
+    void
       registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
     protected:
-      /** \brief Destructor
-       */
-      virtual ~XmlDataManager() {}
+    /** \brief Destructor
+     */
+    virtual ~XmlDataManager() {}
 
   }; /* class XmlDataManager */
 

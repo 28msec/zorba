@@ -22,31 +22,6 @@
 namespace zorba 
 {
 
-class URI;
-
-
-class InternalResolver 
-{
- public:
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class StandardDocumentURIResolver : public InternalDocumentURIResolver
-{
-public:
-  virtual ~StandardDocumentURIResolver() {}
-
-  virtual store::Item_t resolve(
-        const store::Item_t& aURI,
-        static_context* aStaticContext,
-        bool validateUri,
-        bool replaceDoc);
-};
-
-
 #ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 

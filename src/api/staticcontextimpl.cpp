@@ -719,35 +719,6 @@ StaticContextImpl::registerURLResolver(URLResolver* aResolver)
   theCtx->add_url_resolver(new URLResolverWrapper(*aResolver));
 }
 
-/*******************************************************************************
-
-*******************************************************************************/
-void
-StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver)
-{
-  try
-  {
-    theCtx->set_document_uri_resolver(new DocumentURIResolverWrapper(aDocumentURIResolver));
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-DocumentURIResolver*
-StaticContextImpl::getDocumentURIResolver() const
-{
-  DocumentURIResolverWrapper* lWrapper = dynamic_cast<DocumentURIResolverWrapper*>(theCtx->get_document_uri_resolver());
-  if (lWrapper) { // if it's the user's resolver
-    return lWrapper->theDocResolver;
-  }
-  return 0;
-}
 
 
 /*******************************************************************************

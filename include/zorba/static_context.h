@@ -364,12 +364,6 @@ namespace zorba {
       virtual void
       registerURLResolver(URLResolver* aResolver) = 0;
 
-      virtual void
-      setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver) = 0;
-
-      virtual DocumentURIResolver*
-      getDocumentURIResolver() const = 0;
-
       /** \brief Set the type of a statically known document
        */
       virtual void
