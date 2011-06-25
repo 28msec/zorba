@@ -421,7 +421,8 @@ bool thesaurus::iterator::next( zstring *synonym ) {
         make_pair( ptr->synset_id_, synset_ptr_dir + current_ptr_dir )
       );
 
-#if 0
+#define DO_PTR_SOURCE 0
+#if DO_PTR_SOURCE
       if ( ptr->source_ ) {
         lemma_id_t const source_lemma_id = ss.lemma_ids()[ ptr->source_ - 1 ];
 

@@ -395,7 +395,8 @@ public:
     return data()[ check_pos( pos, "at" ) ];
   }
 
-#if 0
+#define DISABLE_NON_CONST_OPERATOR_BRACKETS 1
+#if DISABLE_NON_CONST_OPERATOR_BRACKETS
   /**
    * References a particular character within the string.
    *

@@ -69,6 +69,8 @@ typedef std::list<ft_string_match> ft_string_matches;
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#define FT_MATCH_OPTIMIZE_SORT 0
+
 /**
  * An %ft_match describes one result to the FTSelection.
  */
@@ -78,7 +80,7 @@ public:
   typedef ft_string_matches excludes_t;
   typedef ft_string_matches ft_match::*string_match_ptr;
 
-#if 0
+#if FT_MATCH_OPTIMIZE_SORT
   includes_t const& includes() const { return includes_; }
   excludes_t const& excludes() const { return excludes_; }
 #endif
@@ -87,18 +89,18 @@ public:
   excludes_t excludes;
 
   void sort_includes() const {
-#if 0
+#if FT_MATCH_OPTIMIZE_SORT
     // TODO: optimize later
     if ( !includes_sorted_ ) {
       includes_sorted_ = true;
 #endif
       includes.sort();
-#if 0
+#if FT_MATCH_OPTIMIZE_SORT
     }
 #endif
   }
 
-#if 0
+#if FT_MATCH_OPTIMIZE_SORT
 private:
   mutable bool includes_sorted_;
 #endif

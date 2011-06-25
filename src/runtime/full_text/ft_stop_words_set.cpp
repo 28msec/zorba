@@ -57,10 +57,6 @@ static ft_stop_table get_table_for( iso639_1::type lang ) {
     case LANG(no);
     case LANG(pt);
     case LANG(sv);
-
-#if 0
-    case LANG(ru);
-#endif
     default:
       return 0;
   }
