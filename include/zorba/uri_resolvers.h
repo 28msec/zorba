@@ -36,6 +36,8 @@
  */
 
 namespace zorba {
+  
+class HttpStream;
 
 /**
  * @brief The class representing the result of URL resolution.
@@ -92,7 +94,7 @@ class ZORBA_DLL_PUBLIC Resource
  */
 class ZORBA_DLL_PUBLIC StreamResource : public Resource
 {
-  public:
+public:
 
   /**
    * @brief Public constructor from istream.
@@ -107,14 +109,14 @@ class ZORBA_DLL_PUBLIC StreamResource : public Resource
    * create your istreams with "new" before passing to this constructor.
    */
   StreamResource(std::auto_ptr<std::istream> aStream);
-
+  
   /**
    * @brief Retrieve the istream associated with this Resource, and
    * take memory ownership of it.
    */
   std::auto_ptr<std::istream> getStream() throw ();
 
-  private:
+private:
 
   std::auto_ptr<std::istream> theStream;
 };

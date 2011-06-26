@@ -13,10 +13,23 @@
 # limitations under the License.
 
 
+#
+# cURL
+#
+IF(ZORBA_SUPPRESS_CURL)
+  MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
+ELSE(ZORBA_SUPPRESS_CURL)
+  MESSAGE(STATUS "Looking for cURL")
+  FIND_PACKAGE(CURL)
 
-IF(CURL_FOUND)
-  GENERATE_MODULE_LIBRARY(http-client "")
-ENDIF(CURL_FOUND)
+  IF(CURL_FOUND)
+    MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
+    INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
 
+    GENERATE_MODULE_LIBRARY(http-client ${CURL_LIBRARIES})
+  ELSE(CURL_FOUND)
+    MESSAGE(STATUS "The cURL library was not found - http-client will not be built")
+  ENDIF(CURL_FOUND)
+ENDIF(ZORBA_SUPPRESS_CURL)
 
 GENERATE_MODULE_LIBRARY(datetime "")

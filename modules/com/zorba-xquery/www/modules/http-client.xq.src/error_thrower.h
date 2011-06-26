@@ -28,7 +28,8 @@ public:
       curl_slist_free_all(*theHeaderList);
     }
 
-    throw USER_EXCEPTION(theFactory->createQName(aNamespace, aLocalName), aDescription);
+    UserException ex = USER_EXCEPTION(theFactory->createQName(aNamespace, aLocalName), aDescription);
+    throw ex;
   }
 };
   

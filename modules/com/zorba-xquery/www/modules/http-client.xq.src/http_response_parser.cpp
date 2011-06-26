@@ -32,15 +32,17 @@
 #include "curl_stream_buffer.h"
 
 namespace zorba { namespace http_client {
-
+  
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
-    ErrorThrower& aErrorThrower,
-    std::string aOverridenContentType, bool aStatusOnly)
-    : 
+                                         ErrorThrower& aErrorThrower,
+                                         HttpResponseIterator& aResponseIterator,
+                                         std::string aOverridenContentType, bool aStatusOnly)
+  : 
   theHandler(aHandler), theCurl(aCurl), theErrorThrower(aErrorThrower),
-    theStatus(-1), theStreamBuffer(0), theInsideRead(false),
-    theOverridenContentType(aOverridenContentType),
-    theStatusOnly(aStatusOnly)
+  theResponseIterator(aResponseIterator),
+  theStatus(-1), theStreamBuffer(0), theInsideRead(false),
+  theOverridenContentType(aOverridenContentType),
+  theStatusOnly(aStatusOnly)
   {
     registerHandler();
     theStreamBuffer = new zorba::curl::streambuf(theCurl);
@@ -60,7 +62,7 @@ namespace zorba { namespace http_client {
     if (lCode)
       return lCode; 
     if (!theStatusOnly) {
-      std::istream lStream(theStreamBuffer);
+      std::auto_ptr<std::istream> lStream(new std::istream(theStreamBuffer));
       Item lItem;
       if (theOverridenContentType != "") {
         theCurrentContentType = theOverridenContentType;
@@ -70,13 +72,13 @@ namespace zorba { namespace http_client {
           theCurrentContentType == "text/xml-external-parsed-entity" ||
           theCurrentContentType == "application/xml-external-parsed-entity" ||
           theCurrentContentType.find("+xml") == theCurrentContentType.size()-4) {
-        lItem = createXmlItem(lStream);
+        lItem = createXmlItem(*lStream.get());
       } else if (theCurrentContentType.find("text/html") == 0) {
-        lItem = createTextItem(lStream);
+        lItem = createTextItem(lStream.release());
       } else if (theCurrentContentType.find("text/") == 0) {
-        lItem = createTextItem(lStream);
+        lItem = createTextItem(lStream.release());
       } else {
-        lItem = createBase64Item(lStream);
+        lItem = createBase64Item(*lStream.get());
       }
       if (!lItem.isNull()) {
         theHandler.any(lItem);
@@ -212,26 +214,11 @@ namespace zorba { namespace http_client {
     }
   }
 
-  zorba::Item HttpResponseParser::createTextItem(std::istream& aStream)
+  zorba::Item HttpResponseParser::createTextItem(std::istream* aStream)
   {
-    std::string lData;
-    {
-      std::stringstream lOut;
-      bool lFirst = true;
-      while (aStream.good()) {
-        if (!lFirst) {
-          lOut << " ";
-        }
-        lFirst = false;
-        std::string lTmp;
-        aStream >> lTmp;
-        lOut << lTmp;
-      }
-      lData = lOut.str();
-    }
-    aStream >> lData;
+    theResponseIterator.setStream(aStream);
     ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
-    return lFactory->createString(lData);
+    return lFactory->createStreamableString(*aStream, &HttpResponseIterator::streamDestroyer, false);
   }
 
   zorba::Item HttpResponseParser::createBase64Item( std::istream& aStream )

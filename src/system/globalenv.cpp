@@ -48,10 +48,6 @@
 
 #include "store/api/store.h"
 
-#ifdef ZORBA_WITH_REST
-#include <curl/curl.h>
-#endif
-
 #ifdef ZORBA_XQUERYX
 #include <libxslt/xslt.h>
 #include <libxml/parser.h>
@@ -84,39 +80,6 @@ void GlobalEnvironment::init(store::Store* store)
 
   BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
   AnnotationList::createBuiltIn(m_globalEnv->m_rootStaticContext);
-
-#ifdef ZORBA_WITH_REST
-#  ifdef ZORBA_WITH_SSL
-  curl_global_init(CURL_GLOBAL_ALL);
-#ifdef ZORBA_VERIFY_PEER_SSL_CERTIFICATE
-#if defined WIN32
-  //for Windows, try to find the "cacert.pem" file in one of system paths or current dir
-  DWORD   search_result;
-#ifndef UNICODE
-  char  *certpath = m_globalEnv->g_curl_root_CA_certificates_path;
-#else
-  WCHAR certpath[sizeof(m_globalEnv->g_curl_root_CA_certificates_path)];
-#endif
-  search_result = SearchPath(NULL, 
-                             "cacert.pem", NULL,
-                             sizeof(m_globalEnv->g_curl_root_CA_certificates_path),
-                             certpath, NULL);
-  if(!search_result)
-    certpath[0] = 0;
-  else
-    certpath[search_result] = 0;
-#ifdef UNICODE
-  //convert from UNICODE to ASCII
-  WideCharToMultiByte(CP_ACP, 0, certpath, -1, 
-                      m_globalEnv->g_curl_root_CA_certificates_path, sizeof(m_globalEnv->g_curl_root_CA_certificates_path),
-                      NULL, NULL);
-    #endif
-#endif
-#endif
-#  else
-    curl_global_init(CURL_GLOBAL_NOTHING);
-#  endif
-#endif
 
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
@@ -165,11 +128,6 @@ void GlobalEnvironment::destroy()
   xmlCleanupParser();
   delete m_globalEnv->xqueryx_convertor;
 #endif
-
-#ifdef ZORBA_WITH_REST
-  curl_global_cleanup();
-#endif
-
 
   RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
   m_globalEnv->m_rootStaticContext = 0;

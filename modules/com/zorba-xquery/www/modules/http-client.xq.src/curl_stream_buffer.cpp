@@ -16,8 +16,6 @@
 
 #include <zorba/config.h>
 
-#ifdef ZORBA_WITH_REST
-
 #include <cstdlib>
 #include <cstring>                      /* for memcpy(3) */
 #ifndef WIN32
@@ -351,4 +349,3 @@ throw exception( #expr, "", code##__LINE__ );   \
     
   } // namespace curl
 } // namespace zorba
-#endif /* ZORBA_WITH_REST */

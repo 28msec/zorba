@@ -113,7 +113,7 @@ namespace zorba {
     public:
       virtual ~HttpClientModule();
       
-      HttpClientModule() 
+      HttpClientModule() : theModuleUri("http://www.zorba-xquery.com/modules/http-client")
       {
         for (FuncMap_t::const_iterator lIter = theFunctions.begin();
              lIter != theFunctions.end(); ++lIter) {
@@ -123,7 +123,7 @@ namespace zorba {
       }
       
       virtual String
-      getURI() const { return "http://www.zorba-xquery.com/modules/http-client"; }
+      getURI() const { return theModuleUri; }
       
       virtual ExternalFunction*
       getExternalFunction(const String& aLocalname)
@@ -147,6 +147,9 @@ namespace zorba {
         }
         delete this;
       }
+      
+    private:
+      String theModuleUri;
     };
 
     ItemSequence_t
@@ -192,26 +195,22 @@ namespace zorba {
       std::string caCertPath;
       set_cacert(lCURL, caCertPath);
 #endif
-      HttpResponseHandler lRespHandler(aFactory);
+      HttpResponseHandler lRespHandler(aFactory, lHeaderList);
       //This gives the ownership of lCurl to the HttpResponseParser
       String lOverrideContentType;
       if (lHandler.get())
         lHandler->getOverrideContentType(lOverrideContentType);
       bool lStatusOnly =
           lHandler.get() == NULL ? false : (lHandler->isStatusOnly() || lHandler->isHeadRequest());
-      HttpResponseParser lRespParser(lRespHandler, lCURL, thrower,
-        lOverrideContentType.c_str(), lStatusOnly);
-      int lRetCode = lRespParser.parse();
-
-      if (lHeaderList) {
-        curl_slist_free_all(lHeaderList);
-      }
+      std::auto_ptr<HttpResponseParser> lRespParser(new HttpResponseParser(lRespHandler, lCURL, thrower, *lRespHandler.getResult(),
+        lOverrideContentType.c_str(), lStatusOnly));
+      int lRetCode = lRespParser->parse();
 
       if (lRetCode) {
-        throw USER_EXCEPTION(aFactory->createQName("http://www.zorba-xquery.com/modules/error", "HC001"), "An HTTP error occurred");
+        thrower.raiseException("http://www.zorba-xquery.com/modules/error", "HC001", "An HTTP error occurred");
       }
 
-      return ItemSequence_t(lRespHandler.getResult());
+      return ItemSequence_t(lRespHandler.releaseResult()->setResponseParser(lRespParser.release()));
     }
 
     ItemSequence_t 

@@ -23,6 +23,7 @@
 
 #include "inform_data_read.h"
 #include "error_thrower.h"
+#include "http_response_handler.h"
 
 namespace zorba {
 class Item;
@@ -38,6 +39,7 @@ namespace http_client {
     RequestHandler& theHandler;
     CURL* theCurl;
     ErrorThrower& theErrorThrower;
+    HttpResponseIterator& theResponseIterator;
     std::string theCurrentContentType;
     std::vector<std::pair<std::string, std::string> > theHeaders;
     int theStatus;
@@ -54,6 +56,7 @@ namespace http_client {
       RequestHandler& aHandler,
       CURL* aCurl,
       ErrorThrower& aErrorThrower,
+      HttpResponseIterator& aResponseIterator,
       std::string aOverridenContentType = "",
       bool aStatusOnly = false);
     virtual ~HttpResponseParser();
@@ -65,7 +68,7 @@ namespace http_client {
     void parseStatusAndMessage(std::string aHeader);
     Item createXmlItem(std::istream& aStream);
     Item createHtmlItem(std::istream& aStream);
-    Item createTextItem(std::istream& aStream);
+    Item createTextItem(std::istream* aStream);
     Item createBase64Item(std::istream& aStream);
   public: //Handler
     static size_t headerfunction( void *ptr, size_t size, size_t nmemb,

@@ -32,6 +32,7 @@
 #include <istream>
 #include <zorbatypes/zstring.h>
 #include <util/auto_vector.h>
+#include <util/http_util.h>
 #include "store/api/shared_types.h"
 
 namespace zorba {
@@ -110,7 +111,7 @@ class Resource
  */
 class StreamResource : public Resource
 {
-  public:
+public:
 
   /**
    * @brief Public constructor from istream.
@@ -131,6 +132,10 @@ class StreamResource : public Resource
    * that case, the URLResolver may pass the true URL here.
    */
   StreamResource(std::auto_ptr<std::istream> aStream, zstring aStreamUrl = "");
+  
+  StreamResource(HttpStream* aHttpStream, const zstring& aUrl = "");
+  
+  virtual ~StreamResource();
 
   /**
    * @brief Retrieve the istream associated with this Resource.
@@ -143,10 +148,11 @@ class StreamResource : public Resource
    */
   zstring getStreamUrl() throw ();
 
-  private:
+private:
 
   std::auto_ptr<std::istream> theStream;
   zstring theStreamUrl;
+  HttpStream* theHttpStream;
 };
 
 /**

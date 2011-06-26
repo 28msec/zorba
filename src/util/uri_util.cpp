@@ -28,10 +28,10 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zstring.h"
 
-#include "curl_util.h"
 #include "fs_util.h"
 #include "less.h"
 #include "uri_util.h"
+#include "http_util.h"
 
 using namespace std;
 
@@ -105,35 +105,6 @@ ZORBA_DLL_PUBLIC extern char const uri_safe[256] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_REST
-extern "C" {
-
-static size_t fetch_curl_write_fn( void *ptr, size_t size, size_t nmemb,
-                                   void *data ) {
-  size *= nmemb;
-  iostream &stream = *static_cast<iostream*>( data );
-  stream.write(
-    static_cast<char const*>( ptr ), static_cast<streamsize>( size )
-  );
-  // TODO: should check to see if write() failed
-  return size;
-}
-
-} // extern "C"
-#endif /* ZORBA_WITH_REST */
-
-void fetch( char const *uri, iostream &result ) {
-#ifdef ZORBA_WITH_REST
-  CURL *const curl_ptr = curl::create( uri, fetch_curl_write_fn, &result );
-  CURLcode const curl_code = curl_easy_perform( curl_ptr );
-  curl::destroy( curl_ptr );
-  if ( curl_code )
-    throw exception( "curl_easy_perform()", uri, curl_code );
-#else
-  throw ZORBA_EXCEPTION( zerr::ZXQP0005_NOT_ENABLED, ERROR_PARAMS( "HTTP" ) );
-#endif /* ZORBA_WITH_REST */
-}
-
 void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
 #ifdef ZORBA_WITH_FILE_ACCESS
   zstring zpath;
@@ -146,7 +117,10 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
     default:
       fs::get_temp_file( &zpath );
       fstream stream( zpath.c_str() );
-      fetch( uri, stream );
+      HttpStream lHttpStream(uri);
+      lHttpStream.init();
+      lHttpStream.getStream().get(*stream.rdbuf(), EOF);
+      //fetch( uri, stream );
       temp = true;
       break;
   }

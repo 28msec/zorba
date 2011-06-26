@@ -18,6 +18,7 @@
 
 #include "context/default_url_resolvers.h"
 #include "util/uri_util.h"
+#include "util/http_util.h"
 #include "util/fs_util.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -60,11 +61,15 @@ HTTPURLResolver::resolveURL
   if (ascii::begins_with(aUrl, "http://example.com") ||
     ascii::begins_with(aUrl, "http://www.example.com"))
   {
-    throw uri::exception("", aUrl.c_str(), "illegal host");
+    throw os_error::exception("", aUrl.c_str(), "illegal host");
   }
-  std::auto_ptr<std::stringstream> lStream(new std::stringstream());
-  uri::fetch(aUrl.c_str(), (*lStream.get()));
-  return new StreamResource(static_cast<std::auto_ptr<std::istream> >(lStream));
+  try {
+    std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
+    lStream->init();
+    return new StreamResource(lStream.release(), aUrl);
+  } catch (...) {
+    throw os_error::exception("", aUrl.c_str(), "Could not create stream resource");
+  }
 }
 
 

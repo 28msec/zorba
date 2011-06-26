@@ -17,6 +17,8 @@
 #define HTTP_RESPONSE_HANDLER_H
 
 #include <vector>
+#include <map>
+#include <curl/curl.h>
 
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
@@ -27,6 +29,8 @@ namespace zorba {
 class Item;
 class ItemFactory;
 namespace http_client {
+  class HttpResponseParser;
+
   class HttpResponseIterator : public ItemSequence {
     class InternalIterator : public Iterator
     {
@@ -46,7 +50,7 @@ namespace http_client {
     std::vector<Item> theItems;
     bool theResponseSet;
   public:
-    HttpResponseIterator();
+    HttpResponseIterator(curl_slist* aHeaderList);
     virtual ~HttpResponseIterator();
 
   public:
@@ -55,6 +59,22 @@ namespace http_client {
   public: //Implementation specific functions
     void addItem(const Item& aItem);
     void setResponseItem(const Item& aItem);
+    void setStream(std::istream* aStream);
+    HttpResponseIterator* setResponseParser(HttpResponseParser* aResponseParser)
+    {
+      theResponseParser = aResponseParser;
+      return this;
+    }
+    
+  public:
+    static void streamDestroyer(std::istream& aStream);
+    
+  private:
+    static std::map<std::istream*, HttpResponseIterator*> theStreams;
+    std::istream* theStream;
+    HttpResponseParser* theResponseParser;
+    curl_slist* theHeaderList;
+    void destroyStream();
   };
 
   class HttpResponseHandler : public RequestHandler {
@@ -67,10 +87,11 @@ namespace http_client {
     bool theDeleteResponse;
     Item theUntypedQName;
   public:
-    HttpResponseHandler(ItemFactory* aFactory);
+    HttpResponseHandler(ItemFactory* aFactory, curl_slist* theHeaderList);
     virtual ~HttpResponseHandler();
   public:
-    ItemSequence* getResult();
+    HttpResponseIterator* getResult();
+    HttpResponseIterator* releaseResult();
   public: //Interface implementation
     virtual void begin();
     virtual void beginResponse(int aStatus, String aMessage);

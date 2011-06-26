@@ -30,14 +30,13 @@ SET(UTIL_SRCS
   fx/fxcharheap.cpp
   string/empty_rep_base.cpp
   uuid/sysdep.cpp
-  uuid/uuid.cpp)
+  uuid/uuid.cpp
+  http_util.h
+  http_util.cpp)
 
 IF(ZORBA_WITH_FILE_ACCESS)
   LIST(APPEND UTIL_SRCS mmap_file.cpp)
 ENDIF(ZORBA_WITH_FILE_ACCESS)
-IF(ZORBA_WITH_REST)
-  LIST(APPEND UTIL_SRCS curl_util.cpp)
-ENDIF(ZORBA_WITH_REST)
 
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS win32)

@@ -26,6 +26,7 @@
 #include <zorba/util/file.h>
 #include <zorba/zorba_string.h>
 
+#include <util/http_util.h>
 #include "util/string_util.h"
 #include "util/uri_util.h"
 

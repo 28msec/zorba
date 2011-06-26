@@ -19,8 +19,6 @@
 
 #include <zorba/config.h>
 
-#ifdef ZORBA_WITH_REST
-
 #include <istream>
 #include <exception>
 #include <streambuf>
@@ -179,5 +177,4 @@ namespace zorba {
     
   } // namespace curl
 } // namespace zorba
-#endif /* ZORBA_WITH_REST */
 #endif /* ZORBA_CURL_UTIL_H */

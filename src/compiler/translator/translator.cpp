@@ -2002,7 +2002,7 @@ void* import_schema(
     {
       lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA, lErrorMessage);
       if (lSchema.get() != NULL &&
-        lSchema->getKind() == impl::Resource::STREAM)
+          lSchema->getKind() == impl::Resource::STREAM)
       {
         break;
       }
@@ -2024,8 +2024,8 @@ void* import_schema(
     // representaton of it.
     impl::StreamResource* lStream =
       static_cast<impl::StreamResource*>(lSchema.get());
-
     schema_p->registerXSD(lNsURI.c_str(), theSctx, lStream, loc);
+
   }
   catch (XQueryException& e)
   {

@@ -804,7 +804,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
   bool is_ref;
   if(ar.is_serializing_out())
   {
-    if((obj == NULL))
+    if(obj == NULL)
     {
       ar.add_compound_field("NULL", 
                             1 ,//class_version

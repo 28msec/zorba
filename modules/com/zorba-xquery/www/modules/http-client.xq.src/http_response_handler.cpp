@@ -20,6 +20,7 @@
 #include <zorba/zorba_string.h>
 
 #include "http_response_handler.h"
+#include "http_response_parser.h"
 
 namespace zorba { namespace http_client {
 
@@ -29,8 +30,8 @@ namespace zorba { namespace http_client {
 
   const char* theNamespace = "http://expath.org/ns/http-client";
 
-  HttpResponseIterator::HttpResponseIterator()
-    : theResponseSet(false)
+  HttpResponseIterator::HttpResponseIterator(curl_slist* aHeaderList)
+    : theResponseSet(false), theStream(0), theResponseParser(0), theHeaderList(aHeaderList)
   {
     // Set an empty item as the response item
     theItems.push_back(Item());
@@ -38,6 +39,12 @@ namespace zorba { namespace http_client {
 
   HttpResponseIterator::~HttpResponseIterator()
   {
+    if (theStream)
+      delete theStream;
+    if (theResponseParser)
+      delete theResponseParser;
+    if (theHeaderList)
+      curl_slist_free_all(theHeaderList);
   }
 
   Iterator_t HttpResponseIterator::getIterator()
@@ -91,13 +98,32 @@ namespace zorba { namespace http_client {
     theItems[0] = aItem;
     theResponseSet = true;
   }
+  
+  void HttpResponseIterator::setStream(std::istream *aStream)
+  {
+    theStreams.insert(std::make_pair(aStream, this));
+    theStream = aStream;
+  }
+  
+  void HttpResponseIterator::destroyStream()
+  {
+    theStreams.erase(theStream);
+  }
+  
+  std::map<std::istream*, HttpResponseIterator*> HttpResponseIterator::theStreams;
+  
+  void HttpResponseIterator::streamDestroyer(std::istream& aStream)
+  {
+    theStreams[&aStream]->destroyStream();
+  }
+  
   //////////////////////////////////////////////////////////////////////////
   // HttpResponseHandler
   //////////////////////////////////////////////////////////////////////////
 
-  HttpResponseHandler::HttpResponseHandler(ItemFactory* aFactory)
+  HttpResponseHandler::HttpResponseHandler(ItemFactory* aFactory, curl_slist* aHeaderList)
     :
-  theResult(new HttpResponseIterator()),
+  theResult(new HttpResponseIterator(aHeaderList)),
   theFactory(aFactory),
   theIsInsideMultipart(false),
   theDeleteResponse(true)
@@ -215,7 +241,12 @@ namespace zorba { namespace http_client {
   {
   }
 
-  ItemSequence* HttpResponseHandler::getResult()
+  HttpResponseIterator* HttpResponseHandler::getResult()
+  {
+    return theResult;
+  }
+
+  HttpResponseIterator* HttpResponseHandler::releaseResult()
   {
     theDeleteResponse = false;
     return theResult;

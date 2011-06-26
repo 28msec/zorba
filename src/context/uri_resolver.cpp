@@ -43,13 +43,34 @@ namespace impl {
   (std::auto_ptr<std::istream> aStream, zstring aStreamUrl /* = "" */)
     : Resource(Resource::STREAM),
       theStream(aStream),
-      theStreamUrl(aStreamUrl)
+      theStreamUrl(aStreamUrl),
+      theHttpStream(0)
   {}
+  
+  StreamResource::StreamResource
+  (HttpStream* aHttpStream, const zstring& aUrl)
+  : Resource(Resource::STREAM),
+  theStream(0),
+  theStreamUrl(aUrl),
+  theHttpStream(aHttpStream)
+  {
+  }
 
+  StreamResource::~StreamResource()
+  {
+    if (theHttpStream)
+      delete theHttpStream;
+  }
+  
   std::auto_ptr<std::istream>
   StreamResource::getStream() throw ()
   {
-    return theStream;
+    if (theStream.get())
+      return theStream;
+    else {
+      std::auto_ptr<std::istream> res(new std::istream(theHttpStream->getStream().rdbuf()));
+      return res;
+    }
   }
 
   zstring

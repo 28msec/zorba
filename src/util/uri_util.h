@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <iostream>
 
-#include "curl_util.h"
 #include "error_util.h"
 #include "fs_util.h"
 #include "stl_util.h"
@@ -188,42 +187,11 @@ void encode( StringType &s, bool encode_slash = true ) {
   encode( s, &temp, encode_slash );
   s = temp;
 }
-
+  
 ////////// Fetching ///////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_REST
-typedef curl::exception exception;
-#else
-typedef os_error::exception exception;
-#endif /* ZORBA_WITH_REST */
-
-/**
- * Fetches a resource from the given URI.  Supported URI schemes are: "file",
- * "ftp", "http", and "https".
- *
- * @param uri The URI specifying the resource.
- * @param result The stream to which to write the resource to.
- * @throws uri::exception if there was a problem fetching the resource.
- */
-void fetch( char const *uri, std::iostream &result );
-
-/**
- * Fetches a resource from the given URI.  Supported URI schemes are: "file",
- * "ftp", "http", and "https".
- *
- * @tparam URIStringType The URI string type.
- * @param uri The URI specifying the resource.
- * @param result The stream to which to write the resource to.
- * @throws uri::exception if there was a problem fetching the resource.
- */
-template<class URIStringType> inline
-void fetch( URIStringType const &uri, std::iostream &result ) {
-  fetch( uri.c_str(), result );
-}
-
 // Internal use only!
 void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
-
+  
 /**
  * Fetches a resource from the given URI to a local file.
  *
@@ -239,7 +207,7 @@ void fetch( char const *uri, PathStringType *path, bool *is_temp = 0 ) {
   fetch_to_path_impl( uri, path_buf, is_temp );
   *path = path_buf;
 }
-
+  
 /**
  * Fetches a resource from the given URI to a local file.
  *
@@ -252,18 +220,10 @@ void fetch( char const *uri, PathStringType *path, bool *is_temp = 0 ) {
  */
 template<class URIStringType,class PathStringType> inline
 void fetch( URIStringType const &uri, PathStringType *file,
-            bool *is_temp = 0 ) {
+           bool *is_temp = 0 ) {
   fetch( uri.c_str(), file, is_temp );
 }
 
-////////// streaming //////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_REST
-typedef curl::streambuf streambuf;
-typedef curl::istream istream;
-#endif /* ZORBA_WITH_REST */
-
-///////////////////////////////////////////////////////////////////////////////
 
 } // namespace uri
 } // namespace zorba
