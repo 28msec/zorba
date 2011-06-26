@@ -99,7 +99,6 @@
 %include "DiagnosticHandler.i"
 %include "CompilerHints.i"
 %include "StaticContext.i"
-%include "Resolvers.i"
 %include "Zorba.i"
 
 

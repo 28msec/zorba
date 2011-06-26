@@ -117,16 +117,6 @@ public:
     return lStream.str();
   }
 
-  void setVariableAsDocument(const std::string& aVarName, 
-                             const std::string& aURL, 
-                             const std::string& aContent)
-  {
-    std::auto_ptr<std::istream> lDocStream(new std::stringstream(aContent));
-  	zorba::DynamicContext* lCtx = theQuery->getDynamicContext();
-
-  	lCtx->setVariableAsDocument(aVarName, aURL, lDocStream);
-   }
-
   std::string printPlanAsXML()
   {
     std::ostringstream lStream;
@@ -211,9 +201,6 @@ public:
 
   void destroy();
   Iterator iterator();
-  void setVariableAsDocument(const std::string& aVarName, 
-                             const std::string& aURL, 
-                             const std::string& aContent);
 
   /*XQuery_t 	clone () const;
   void 	close ();
