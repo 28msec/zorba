@@ -20,7 +20,6 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "context/internal_uri_resolvers.h"
 
 #include "system/globalenv.h"
 

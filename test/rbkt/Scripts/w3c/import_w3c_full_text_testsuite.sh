@@ -230,14 +230,14 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   open (SPEC, ">>$specfile");
   open (SPECX, ">>$xqueryxspecfile");
 
-  print SPEC "Args:";
-  print SPECX "Args:";
+  print SPEC "Args:\n";
+  print SPECX "Args:\n";
 
   if ( $inlist ne "noinlist" ) {
     foreach (@inbnd) {
       my ($var, $srcid) = split /=/;
-      print SPEC "\n -x \n$var=$test_src_path/" . $sources {$srcid} ."\n";
-      print SPECX "\n -x \n$var=$test_src_path/" . $sources {$srcid} ."\n";
+      print SPEC "-x \n$var=$test_src_path/" . $sources {$srcid} ."\n";
+      print SPECX "-x \n$var=$test_src_path/" . $sources {$srcid} ."\n";
       # Rather ugly query post-processing; see bug 2788838
       if (grep $_ eq "XPST0005", @errs) {
         change_doc("$dstqpath/$name.xq", $var);
@@ -248,17 +248,15 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   if ( $urilist ne "nourilist" ) {
     foreach (@uribnd) {
       my ($var, $srcid) = split /=/;
-      print SPEC "\n -x \n$var:=" . $srcid ."\n";
-      print SPECX "\n -x \n$var:=" . $srcid ."\n";
+      print SPEC "-x \n$var:=" . $srcid ."\n";
+      print SPECX "-x \n$var:=" . $srcid ."\n";
     }
   }
 
   if ( $ctx ne "nocontext" ) {
-    print SPEC "\n -x .=$test_src_path/" . $sources {$ctx} ."\n";
-    print SPECX "\n -x .=$test_src_path/" . $sources {$ctx} ."\n";
+    print SPEC "-x .=$test_src_path/" . $sources {$ctx} ."\n";
+    print SPECX "-x .=$test_src_path/" . $sources {$ctx} ."\n";
   }
-  print SPEC "\n";
-  print SPECX "\n";
   close (SPEC);
   close (SPECX);
 }
@@ -267,17 +265,15 @@ if ( @thesauri >= 1 || @stopwords >= 1 ) {
   open (SPEC, ">>$specfile");
   open (SPECX, ">>$xqueryxspecfile");
 
-  print SPEC "Args:";
-  print SPECX "Args:";
+  print SPEC "Args:\n";
+  print SPECX "Args:\n";
 
   foreach my $thesaurus (@thesauri) {
-    print SPEC " --thesaurus " . $thesauri{$thesaurus};
+    print SPEC "--thesaurus\n" . $thesauri{$thesaurus} . "\n";
   }
   foreach my $stopword (@stopwords) {
-    print SPEC " --stop-words " . $stopwords{$stopword};
+    print SPEC "--stop-words\n" . $stopwords{$stopword} . "\n";
   }
-  print SPEC "\n";
-  print SPECX "\n";
   close (SPEC);
   close (SPECX);
 }

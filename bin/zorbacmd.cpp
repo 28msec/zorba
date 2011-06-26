@@ -37,6 +37,7 @@
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/uri_resolvers.h>
 
 #include <zorba/store_manager.h>
 
@@ -49,7 +50,6 @@
 #include "error_printer.h"
 #include "util.h"
 #include "module_path.h"
-#include "full_text_resolver.h"
 
 // For setting the base URI from the current directory
 #include <zorba/util/path.h>
@@ -75,8 +75,8 @@ const char *copyright_str =
 #define PATH_SEP (zorba::filesystem_path::get_directory_separator ())
 
 #ifndef ZORBA_NO_FULL_TEXT
-ZorbaCMDFullTextURIResolver theStopWordsResolver;
-ZorbaCMDFullTextURIResolver theThesaurusResolver;
+OneToOneURIMapper theStopWordsMapper(Resource::STOP_WORDS);
+OneToOneURIMapper theThesaurusMapper(Resource::THESAURUS, URIMapper::COMPONENT);
 #endif
 
 bool
@@ -155,17 +155,17 @@ populateStaticContext(
     ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.stopWordsBegin();
     ZorbaCMDProperties::FullText_t::const_iterator end = aProperties.stopWordsEnd();
     for (; lIter != end; ++lIter) {
-      theStopWordsResolver.add_mapping(lIter->uri, lIter->value);
+      theStopWordsMapper.addMapping(lIter->uri, lIter->value);
     }
-    aStaticContext->addStopWordsURIResolver(&theStopWordsResolver);
+    aStaticContext->registerURIMapper(&theStopWordsMapper);
   }
   {
     ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.thesaurusBegin();
     ZorbaCMDProperties::FullText_t::const_iterator end = aProperties.thesaurusEnd();
     for (; lIter != end; ++lIter) {
-      theThesaurusResolver.add_mapping(lIter->uri, lIter->value);
+      theThesaurusMapper.addMapping(lIter->uri, lIter->value);
     }
-    aStaticContext->addThesaurusURIResolver(&theThesaurusResolver);
+    aStaticContext->registerURIMapper(&theThesaurusMapper);
   }
 #endif
   return true;

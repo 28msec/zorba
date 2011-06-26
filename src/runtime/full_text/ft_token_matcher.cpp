@@ -46,9 +46,10 @@ inline bool get_stemming( ftmatch_options const &options ) {
 }
 
 inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
-                                                iso639_1::type lang ) {
+                                                iso639_1::type lang,
+                                                static_context const& sctx ) {
   if ( ftstop_word_option const *const sw = options.get_stop_word_option() )
-    return ft_stop_words_set::construct( *sw, lang );
+    return ft_stop_words_set::construct( *sw, lang, sctx );
   return nullptr;
 }
 
@@ -61,7 +62,7 @@ ft_token_matcher::ft_token_matcher( ftmatch_options const &options,
   lang_( get_lang_from( &options ) ),
   stemming_( get_stemming( options ) ),
   stemmer_( sctx ),
-  stop_words_( get_stop_words( options, lang_ ) ),
+  stop_words_( get_stop_words( options, lang_, sctx ) ),
   wildcards_( get_wildcards_from( &options ) )
 {
 }

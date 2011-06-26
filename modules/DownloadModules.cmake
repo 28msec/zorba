@@ -82,7 +82,7 @@ foreach (modline ${modlines})
       # the remote queue semi-stable
       foreach (s 1 2)
         execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
-          WORKING_DIRECTORY "${outdir}")
+          WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
       endforeach (s 1 2)
     endif (_getmod)
   endif (modline)

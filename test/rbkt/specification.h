@@ -20,8 +20,10 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "util/ascii_util.h"
+#include <util/ascii_util.h>
+#include <zorba/util/uri.h>
 #include <testuriresolver.h>
+#include <zorba/uri_resolvers.h>
 
 #undef WIN32_LEAN_AND_MEAN
 
@@ -53,7 +55,9 @@ public:
       theSerializationMethod("XML"),
       theUseIndent(false),
       theEnableDtd(false),
-      theEnableUriTestResolver(false)
+      theEnableUriTestResolver(false),
+      theStopWordsMapper(zorba::Resource::STOP_WORDS),
+      theThesaurusMapper(zorba::Resource::THESAURUS, zorba::URIMapper::COMPONENT)
   {}
 
 private:
@@ -74,8 +78,8 @@ private:
   bool                     theEnableDtd;
   bool                     theEnableUriTestResolver;
 #ifndef ZORBA_NO_FULL_TEXT
-  zorba::TestFullTextURIResolver  theStopWordsResolver;
-  zorba::TestFullTextURIResolver  theThesaurusResolver;
+  zorba::OneToOneURIMapper theStopWordsMapper;
+  zorba::OneToOneURIMapper theThesaurusMapper;
 #endif
 
   void setInline(bool inl) {
@@ -96,12 +100,13 @@ private:
   }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  void addStopWords() {
-    theStopWordsResolver.add_mapping(theVarName, theVarValue);
+  void addStopWordMapping() {
+    zorba::String lUri = zorba::URIHelper::encodeFileURI(theVarValue);
+    theStopWordsMapper.addMapping(theVarName, lUri);
   }
 
-  void addThesaurus() {
-    theThesaurusResolver.add_mapping(theVarName, theVarValue);
+  void addThesaurusMapping() {
+    theThesaurusMapper.addMapping(theVarName, theVarValue);
   }
 #endif
 
@@ -168,11 +173,11 @@ public:
   errorsSize() const { return theErrors.size(); }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  zorba::TestFullTextURIResolver*
-  getThesaurusResolver() { return &theThesaurusResolver; }
+  zorba::OneToOneURIMapper*
+  getThesaurusMapper() { return &theThesaurusMapper; }
 
-  zorba::TestFullTextURIResolver*
-  getStopWordsResolver() { return &theStopWordsResolver; }
+  zorba::OneToOneURIMapper*
+  getStopWordsMapper() { return &theStopWordsMapper; }
 #endif
 
   bool hasDateSet() const {
@@ -365,10 +370,10 @@ bool isKeyword(std::string& str) {
               }
 #ifndef ZORBA_NO_FULL_TEXT
               else if (lArg == "--stop-words") {
-                addStopWords();
+                addStopWordMapping();
               }
               else if (lArg == "--thesaurus") {
-                addThesaurus();
+                addThesaurusMapping();
               }
 #endif
             }

@@ -17,15 +17,14 @@
 
 #include <zorba/config.h>
 
-#include "util/ascii_util.h"
-#include "util/cxx_util.h"
-#include "util/mmap_file.h"
-#include "util/stl_util.h"
-#include "util/uri_util.h"
-#ifndef ZORBA_WITH_FILE_ACCESS
-#include "diagnostics/xquery_diagnostics.h"
-#endif
-#include "zorbautils/locale.h"
+#include <util/ascii_util.h>
+#include <util/cxx_util.h>
+#include <util/mmap_file.h>
+#include <util/stl_util.h>
+#include <util/uri_util.h>
+#include <context/static_context.h>
+#include <context/uri_resolver.h>
+#include <zorbautils/locale.h>
 
 #include "ft_stop_words_set.h"
 
@@ -76,6 +75,7 @@ static bool is_word_char( char c ) {
 void ft_stop_words_set::apply_word( zstring const &word, set_t &word_set,
                                     ft_stop_words_unex::type mode ) {
   // TODO: should "word" be converted to lower-case?
+  std::cout << "applying word " << word << std::endl;
   switch ( mode ) {
     case ft_stop_words_unex::union_:
       word_set.insert( word );
@@ -95,7 +95,8 @@ void ft_stop_words_set::apply_word( char const *begin, char const *end,
 
 ft_stop_words_set const*
 ft_stop_words_set::construct( ftstop_word_option const &option,
-                              iso639_1::type lang ) {
+                              iso639_1::type lang,
+                              static_context const& sctx ) {
   bool must_delete = false;
   set_t *word_set = nullptr;            // pointless init. to stifle warning
 
@@ -119,42 +120,49 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
     ft_stop_words_unex::type const mode = (*ftsw)->get_mode();
     zstring const &uri = (*ftsw)->get_uri();
 
-#ifdef ZORBA_WITH_FILE_ACCESS
     if ( !uri.empty() ) {
       if ( !must_delete ) {
         word_set = new set_t( *word_set );
         must_delete = true;
       }
 
-      zstring file_path;
-      bool is_temp_file;
-      uri::fetch( uri, &file_path, &is_temp_file );
-      fs::auto_remover<zstring> file_remover;
-      if ( is_temp_file )
-        file_remover.reset( file_path );
+      zstring error_msg;
+      std::auto_ptr<impl::Resource> rsrc =
+          sctx.resolve_uri(uri, impl::Resource::STOP_WORDS, error_msg);
+      if (rsrc.get() == NULL || rsrc->getKind() != impl::Resource::STREAM) {
+        // Technically this should be thrown during static analysis.
+        throw ZORBA_EXCEPTION(err::FTST0008, ERROR_PARAMS(uri));
+      }
+      std::auto_ptr<std::istream> stream_ptr =
+          static_cast<impl::StreamResource*>(rsrc.get())->getStream();
+      std::istream* stream = stream_ptr.get();
 
-      mmap_file const words_file( file_path.c_str() );
-      mmap_file::const_iterator word_start;
       bool in_word = false;
-      FOR_EACH( mmap_file, c, words_file ) {
-        if ( is_word_char( *c ) ) {
+      zstring cur_word;
+      cur_word.reserve(128);
+      char c;
+      while (stream->good()) {
+        stream->get(c);
+        // Have to check for EOF *after* attempting the read
+        if (stream->eof()) {
+          break;
+        }
+        if ( is_word_char( c ) ) {
           if ( !in_word ) {
-            word_start = c;
+            cur_word.clear();
             in_word = true;
           }
+          cur_word += c;
         } else {
           if ( in_word ) {
-            apply_word( word_start, c, *word_set, mode );
+            apply_word( cur_word, *word_set, mode );
             in_word = false;
           }
         }
       }
       if ( in_word )
-        apply_word( word_start, words_file.end(), *word_set, mode );
+        apply_word( cur_word, *word_set, mode );
     }
-#else
-    throw ZORBA_EXCEPTION( zerr::ZXQP0017_FILE_ACCESS_DISABLED );
-#endif /* ZORBA_WITH_FILE_ACCESS */
 
     ftstop_words::list_t const &word_list = (*ftsw)->get_list();
     if ( !word_list.empty() ) {

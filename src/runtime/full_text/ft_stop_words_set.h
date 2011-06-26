@@ -45,7 +45,8 @@ public:
    * @return Returns a new %ft_stop_words_set.
    */
   static ft_stop_words_set const* construct( ftstop_word_option const &option,
-                                             locale::iso639_1::type lang );
+                                             locale::iso639_1::type lang,
+                                             static_context const& sctx );
 
   /**
    * Checks whether this %ft_stop_words_set contains the given word.

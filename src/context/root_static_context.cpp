@@ -17,10 +17,8 @@
 
 #include "context/root_static_context.h"
 #include "context/namespace_context.h"
-#include "context/uri_resolver_wrapper.h"
 #include "context/default_url_resolvers.h"
 #include "context/default_uri_mappers.h"
-#include "context/standard_uri_resolvers.h"
 
 #include "types/root_typemanager.h"
 

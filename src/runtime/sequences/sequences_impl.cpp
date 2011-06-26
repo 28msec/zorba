@@ -52,7 +52,6 @@
 #include <store/util/hashset_node_handle.h>
 
 #include <context/static_context.h>
-#include <context/internal_uri_resolvers.h>
 
 namespace zorbatm = zorba::time;
 

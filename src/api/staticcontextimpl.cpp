@@ -38,7 +38,6 @@
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
-#include "context/uri_resolver_wrapper.h"
 #include "uri_resolver_wrappers.h"
 #include "context/stemmer_wrappers.h"
 
@@ -126,26 +125,6 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   {
     theDiagnosticHandler = new DiagnosticHandler();
   }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  std::map<FullTextURIResolver*, FullTextURIResolverWrapper*>::const_iterator iter3;
-
-  for (iter3 = aStaticContext.theStopWordsWrappers.begin();
-       iter3 != aStaticContext.theStopWordsWrappers.end();
-       ++iter3)
-  {
-    addStopWordsURIResolver(iter3->first);
-  }
-
-  std::map<FullTextURIResolver*, FullTextURIResolverWrapper*>::const_iterator iter4;
-
-  for (iter4 = aStaticContext.theThesaurusWrappers.begin();
-       iter4 != aStaticContext.theThesaurusWrappers.end();
-       ++iter4)
-  {
-    addThesaurusURIResolver(iter4->first);
-  }
-#endif
 }
 
 
@@ -154,29 +133,6 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
 ********************************************************************************/
 StaticContextImpl::~StaticContextImpl()
 {
-
-#ifndef ZORBA_NO_FULL_TEXT
-  for (std::map<FullTextURIResolver*, FullTextURIResolverWrapper*>::iterator
-        lIter = theThesaurusWrappers.begin();
-        lIter != theThesaurusWrappers.end(); ++lIter)
-  {
-      theCtx->remove_thesaurus_uri_resolver(lIter->second);
-      delete lIter->second;
-  }
-
-  theThesaurusWrappers.clear();
-
-  for (std::map<FullTextURIResolver*, FullTextURIResolverWrapper*>::iterator
-        lIter = theStopWordsWrappers.begin();
-        lIter != theStopWordsWrappers.end(); ++lIter)
-  {
-      theCtx->remove_thesaurus_uri_resolver(lIter->second);
-      delete lIter->second;
-  }
-
-  theStopWordsWrappers.clear();
-#endif
-
   if ( ! theUserDiagnosticHandler )
     delete theDiagnosticHandler;
 
@@ -797,79 +753,6 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 /*******************************************************************************
 
 ********************************************************************************/
-std::vector<FullTextURIResolver*>
-StaticContextImpl::getThesaurusURIResolvers() const
-{
-  std::vector<FullTextURIResolver*> lResult;
-  std::vector<InternalFullTextURIResolver*> lResolvers;
-  try {
-    theCtx->get_thesaurus_uri_resolvers(lResolvers);
-    std::vector<InternalFullTextURIResolver*>::iterator lIter;
-    for (lIter = lResolvers.begin(); lIter != lResolvers.end(); ++lIter) {
-      FullTextURIResolverWrapper* lWrapper =
-        dynamic_cast<FullTextURIResolverWrapper*>(*lIter);
-      if (lWrapper) { // if it's the user's resolver
-        lResult.push_back(lWrapper->theFullTextResolver);
-      }
-    }
-  } catch (ZorbaException const& e) {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-  return lResult;
-}
-
-std::vector<FullTextURIResolver*>
-StaticContextImpl::getStopWordsURIResolvers() const
-{
-  std::vector<FullTextURIResolver*> lResult;
-  std::vector<InternalFullTextURIResolver*> lResolvers;
-  try {
-    theCtx->get_thesaurus_uri_resolvers(lResolvers);
-    std::vector<InternalFullTextURIResolver*>::iterator lIter;
-    for (lIter = lResolvers.begin(); lIter != lResolvers.end(); ++lIter) {
-      FullTextURIResolverWrapper* lWrapper =
-        dynamic_cast<FullTextURIResolverWrapper*>(*lIter);
-      if (lWrapper) { // if it's the user's resolver
-        lResult.push_back(lWrapper->theFullTextResolver);
-      }
-    }
-  } catch (ZorbaException const& e) {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-  return lResult;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void
-StaticContextImpl::addThesaurusURIResolver(
-    FullTextURIResolver* aFullTextUriResolver)
-{
-  try
-  {
-    // do nothing if the resolver is already registered
-    if (theThesaurusWrappers[aFullTextUriResolver])
-    {
-      return;
-    }
-
-    FullTextURIResolverWrapper* lWrapper =
-      new FullTextURIResolverWrapper(aFullTextUriResolver);
-
-    // put the wrapper in the map (ownership of the wrapper belongs to "this")
-    theThesaurusWrappers[aFullTextUriResolver] = lWrapper;
-
-    // register the wrapper in the internal context
-    theCtx->add_thesaurus_uri_resolver(lWrapper);
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
 void StaticContextImpl::addStemmerProvider( zorba::StemmerProvider const *p ) {
   if ( !theStemmerProviders[ p ] ) {
     core::StemmerProviderWrapper *w = new core::StemmerProviderWrapper( p );
@@ -888,96 +771,6 @@ void StaticContextImpl::removeStemmerProvider( StemmerProvider const *p ) {
   }
 }
 
-void
-StaticContextImpl::addStopWordsURIResolver(
-    FullTextURIResolver* aFullTextUriResolver)
-{
-  try
-  {
-    // do nothing if the resolver is already registered
-    if (theStopWordsWrappers[aFullTextUriResolver])
-    {
-      return;
-    }
-
-    FullTextURIResolverWrapper* lWrapper =
-      new FullTextURIResolverWrapper(aFullTextUriResolver);
-
-    // put the wrapper in the map (ownership of the wrapper belongs to "this")
-    theStopWordsWrappers[aFullTextUriResolver] = lWrapper;
-
-    // register the wrapper in the internal context
-    theCtx->add_thesaurus_uri_resolver(lWrapper);
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void
-StaticContextImpl::removeThesaurusURIResolver(
-    FullTextURIResolver* aFullTextUriResolver)
-{
-  try
-  {
-    // look for a resolver, if found
-    // (1) remove it from the internal context
-    // (2) delete the wrapper
-    // (3) remove the entry from the map
-    for (std::map<FullTextURIResolver*, FullTextURIResolverWrapper*>::iterator
-          lIter = theThesaurusWrappers.begin();
-          lIter != theThesaurusWrappers.end(); ++lIter)
-    {
-      if (lIter->first == aFullTextUriResolver)
-      {
-        // pointer equality
-        theCtx->remove_thesaurus_uri_resolver(lIter->second);
-        delete lIter->second;
-        theThesaurusWrappers.erase(lIter);
-        return;
-      }
-    }
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
-
-void
-StaticContextImpl::removeStopWordsURIResolver(
-    FullTextURIResolver* aFullTextUriResolver)
-{
-  try
-  {
-    // look for a resolver, if found
-    // (1) remove it from the internal context
-    // (2) delete the wrapper
-    // (3) remove the entry from the map
-    for (std::map<FullTextURIResolver*, FullTextURIResolverWrapper*>::iterator
-          lIter = theThesaurusWrappers.begin();
-          lIter != theThesaurusWrappers.end(); ++lIter)
-    {
-      if (lIter->first == aFullTextUriResolver)
-      {
-        // pointer equality
-        theCtx->remove_thesaurus_uri_resolver(lIter->second);
-        delete lIter->second;
-        theThesaurusWrappers.erase(lIter);
-        return;
-      }
-    }
-  }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-}
 #endif /* ZORBA_NO_FULL_TEXT */
 
 

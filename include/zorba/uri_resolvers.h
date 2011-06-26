@@ -18,6 +18,7 @@
 
 #include <istream>
 #include <vector>
+#include <map>
 #include <memory>
 
 #include <zorba/config.h>
@@ -53,8 +54,6 @@ class ZORBA_DLL_PUBLIC Resource
    * by URIs, and hence may be looked up via the URI resolution
    * mechanism.
    */
-  // QQQ Hmm... having the enum values for Kind and EntityType all end
-  // up as Resource::FOO is ugly.
   enum EntityType {
     SCHEMA,
     MODULE,
@@ -245,153 +244,41 @@ class ZORBA_DLL_PUBLIC URIMapper
 
 
 /**
-  * @brief The base class for results of the URI resolvers.
-  *
-  * This class is the base class for all classes representing a result from
-  * a uri resolver. The user should not subclass this class herself, but use
-  * a subclass for the specific uri resolver she wants to implement.
-  *
-  * This class is used for both: to return a result of a successful resolve
-  * call and to report errors to %Zorba.
-  */
-class ZORBA_DLL_PUBLIC URIResolverResult
-{
- public:
-  /**
-    * @brief Erros a uri resolver can return.
-    *
-    * These are the available error codes a uri resolver can return.
-    */
-  enum ErrorCode
-  {
-    UR_NOERROR,
-    /**
-      * documents and collections errors
-      */
-    UR_FODC0002,
-    UR_FODC0003,
-    UR_FODC0004,
-    UR_FODC0005,
-    /**
-      * module errors
-      */
-    UR_XQST0088,
-    UR_XQST0046,
-    UR_XQST0059,
-    /**
-      * schemas errors
-      */
-    UR_XQST0057
-  };
+ * Convenience implementation of a mapper that maps URIs to other
+ * single URIs. Will only map for one specific EntityType.
+ */
+class ZORBA_DLL_PUBLIC OneToOneURIMapper : public URIMapper {
+
+public:
 
   /**
-    * @brief Default constructor.
-    *
-    * The default constructor initializes the error code of the result to
-    * UR_NOERROR.
-    */
-  URIResolverResult() : theErrorCode(UR_NOERROR) {}
-
-  virtual ~URIResolverResult() {}
+   * Constructor. Specify the EntityType you wish to map. Optionally,
+   * specify whether this should be a CANDIDATE or COMPONENT mapper;
+   * default is CANDIDATE.
+   */
+  OneToOneURIMapper(Resource::EntityType aEntityType,
+                    URIMapper::Kind aMapperKind = URIMapper::CANDIDATE);
 
   /**
-    * @brief Get the error from this result.
-    *
-    * Whenever %Zorba resolves a namespace, it will first consult this function
-    * for errors.
-    *
-    * @return The error code of ths result.
-    */
-  ErrorCode
-  getError() const { return theErrorCode; }
-
-  /**
-    * @brief Sets the error code of the result.
-    *
-    * Sets the error code for this result. By default, the error code will be
-    * UR_NOERROR. If the namespace could not be resolved, the code has to be
-    * set to something else.
-    *
-    * @param aErrorCode The error code which should been set for this result.
-    */
+   * Add a mapping from a given URI to another URI.
+   */
   void
-  setError(const ErrorCode& aErrorCode) { theErrorCode = aErrorCode; }
+  addMapping(const String& aUri, const String& aMappedUri) throw ();
 
-  /**
-    * @brief Sets the error description for the result.
-    *
-    * In case, the namespace resolving went wrong, an error description can be
-    * set as a hint to the user. If URIResolverResult::getError returns
-    * UR_NOERROR, setting the description will have no effect.
-    *
-    * @param aDescription The error description for this result.
-    */
-  void
-  setErrorDescription(const String& aDescription) { theDescription = aDescription; }
+  virtual Kind mapperKind() throw ();
 
-  /**
-    * @brief Gets the error description.
-    *
-    * This method will return the error description of this result.
-    */
-  String
-  getErrorDescription() { return theDescription; }
+  virtual void mapURI(const zorba::String aUri,
+    Resource::EntityType aEntityType, std::vector<zorba::String>& oUris)
+    throw ();
 
- protected:
-  /**
-    * @brief The error code for this result.
-    *
-    * This variable saves the error code of this result. By default (after
-    * initialization with the default constructor), the value of this variable
-    * will be UR_NOERROR. If the uri resolver could not find a result, the user
-    * has to change this value (either in the subclass or with
-    * URIResolverResult::setError).
-    */
-  ErrorCode theErrorCode;
-  /**
-    * @brief The error description.
-    *
-    * The result also can set a description for the error. This description will
-    * be shown to the user. Set this value either in a subclass or with
-    * URIResolverResult::setErrorDescription.
-    */
-  String    theDescription;
+private:
+
+  Resource::EntityType const theEntityType;
+  URIMapper::Kind const theMapperKind;
+  typedef std::map<String, String> Mapping_t;
+  typedef Mapping_t::const_iterator          MappingIter_t;
+  Mapping_t theMappings;
 };
-
-#ifndef ZORBA_NO_FULL_TEXT
-/**
-  * @brief The result of a FullTextURIResolver.
-  *
-  */
-class ZORBA_DLL_PUBLIC FullTextURIResolverResult : public URIResolverResult 
-{
- public:
-
-  /**
-    */
-  virtual String
-  getResolvedFullText() const = 0;
-};
-  
-/**
-  * @brief A thesaurus uri resolver.
-  *
-  * Maps an arbitrary thesaurus ID (i.e. a URI) to some string that may be
-  * either a URI or a special string like "##default".
-  */
-class ZORBA_DLL_PUBLIC FullTextURIResolver
-{
- public:
-  virtual ~FullTextURIResolver() {}
-
-  /**
-    * @brief Resolves a thesaurus uri.
-    *
-    */
-  virtual std::auto_ptr<FullTextURIResolverResult>
-  resolve(const Item& aURI, StaticContext* aStaticContext) = 0;
-};
-#endif /* ZORBA_NO_FULL_TEXT */
 
 } /* namespace zorba */
 

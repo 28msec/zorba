@@ -19,19 +19,20 @@
 
 #include <zorba/config.h>
 
-#include "util/cxx_util.h"
-#include "util/fs_util.h"
-#include "util/less.h"
-#include "util/string_util.h"
-#include "util/uri_util.h"
-#include "diagnostics/xquery_diagnostics.h"
-#include "diagnostics/dict.h"
+#include <util/cxx_util.h>
+#include <util/fs_util.h>
+#include <util/less.h>
+#include <util/string_util.h>
+#include <util/uri_util.h>
+#include <diagnostics/xquery_diagnostics.h>
+#include <diagnostics/dict.h>
+#include <context/static_context.h>
 
 #include "ft_thesaurus.h"
 #ifdef ZORBA_WITH_FILE_ACCESS
 #include "thesauri/wn_thesaurus.h"
-#include "thesauri/xqftts_thesaurus.h"
 #endif
+#include "thesauri/xqftts_thesaurus.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -100,11 +101,20 @@ ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
 
-ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
-                                     iso639_1::type lang ) {
-  thesaurus_impl::type th_impl;
+ft_thesaurus::ptr ft_thesaurus::get( zstring const &in_uri,
+                                     iso639_1::type lang,
+                                     static_context const& sctx ) {
+  std::vector<zstring> components;
+  // QQQ For now, we use a component URI mapper to return the mapping string.
+  // I believe we can eliminate the need for this string, and hence we should
+  // be able to call the normal resolve_uri() here in future.
+  sctx.get_component_uris(in_uri, impl::Resource::THESAURUS, components);
+  if (components.size() != 1) {
+    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( in_uri ) );
+  }
   zstring uri;
-  parse_mapping( mapping, &th_impl, &uri );
+  thesaurus_impl::type th_impl;
+  parse_mapping( components[0], &th_impl, &uri );
 
   zstring th_path;
   switch ( uri::get_scheme( uri ) ) {
@@ -125,12 +135,12 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
     case thesaurus_impl::wordnet:
       result = new wordnet::thesaurus( th_path, lang );
       break;
+#   endif /* ZORBA_WITH_FILE_ACCESS */
     case thesaurus_impl::xqftts:
       result = new xqftts::thesaurus( th_path, lang );
       break;
-#   endif /* ZORBA_WITH_FILE_ACCESS */
     default:
-      result = nullptr;
+      throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( components[0] ) );
   }
   return ptr( result );
 }

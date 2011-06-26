@@ -34,7 +34,6 @@
 
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
-#include "context/internal_uri_resolvers.h"
 #include "context/uri_resolver.h"
 #include "compiler/parser/xquery_driver.h"
 
@@ -260,10 +259,6 @@ public:
   theColResolver :
   ----------------
   URI resolver used for retrieving W3C collections (used by fn:collection).
-
-  theFullTextResolvers :
-  -------------------
-  Vector of URI resolvers used for retrieving a full-text component given a URI.
 
   theModulePaths :
   ----------------
@@ -496,11 +491,6 @@ protected:
   ztd::auto_vector<impl::URLResolver>     theURLResolvers;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  std::vector<InternalFullTextURIResolver*> theStopWordsResolvers;
-
-  typedef std::vector<InternalFullTextURIResolver*> thesaurus_resolvers_t;
-  thesaurus_resolvers_t theThesaurusResolvers;
-
   typedef std::deque<core::StemmerProvider const*> stemmer_providers_t;
   stemmer_providers_t                     theStemmerProviders;
 #endif
@@ -685,20 +675,7 @@ public:
   (zstring const& aUri, impl::Resource::EntityType aEntityType,
     std::vector<zstring>& oComponents) const;
 
-  // QQQ old stuff below
 #ifndef ZORBA_NO_FULL_TEXT
-  void add_stop_words_uri_resolver(InternalFullTextURIResolver*);
-
-  void get_stop_words_uri_resolvers(std::vector<InternalFullTextURIResolver*>& resolvers) const;
-
-  void remove_stop_words_uri_resolver(InternalFullTextURIResolver*);
-
-  void add_thesaurus_uri_resolver(InternalFullTextURIResolver*);
-
-  void get_thesaurus_uri_resolvers(std::vector<InternalFullTextURIResolver*>& resolvers) const;
-
-  void remove_thesaurus_uri_resolver(InternalFullTextURIResolver*);
-
   void add_stemmer_provider( core::StemmerProvider const *p ) {
     theStemmerProviders.push_front( p );
   }

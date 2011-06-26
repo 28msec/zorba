@@ -68,5 +68,42 @@ namespace zorba {
   URLResolver::~URLResolver()
   {}
 
+/************
+ * Implementation of OneToOneURIMapper.
+ ************/
+  OneToOneURIMapper::OneToOneURIMapper(Resource::EntityType aEntityType,
+                                       URIMapper::Kind aMapperKind)
+    : theEntityType(aEntityType),
+      theMapperKind(aMapperKind)
+  {
+  }
+
+  void
+  OneToOneURIMapper::mapURI(
+    const String aURI,
+    Resource::EntityType aEntityType,
+    std::vector<String>& oUris) throw ()
+  {
+    if (aEntityType != theEntityType) {
+      return;
+    }
+    MappingIter_t lIter = theMappings.find(aURI);
+    if (lIter != theMappings.end()) {
+      oUris.push_back(lIter->second);
+    }
+  }
+
+  URIMapper::Kind
+  OneToOneURIMapper::mapperKind() throw()
+  {
+    return theMapperKind;
+  }
+
+  void
+  OneToOneURIMapper::addMapping(
+    const String& aURI, const String& aValue) throw ()
+  {
+    theMappings[aURI] = aValue;
+  }
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

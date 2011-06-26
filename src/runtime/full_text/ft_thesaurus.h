@@ -56,12 +56,13 @@ public:
   /**
    * Gets an instance of the requested thesaurus.
    *
-   * @param mapping The mapping string specifying the thesaurus to use.
+   * @param uri The URI provided in the query for the thesaurus.
    * @param lang The language of the thesaurus.
    * @return Returns said thesaurus or \c nullptr if no thesaurus matches the
    * request.
    */
-  static ptr get( zstring const &mapping, locale::iso639_1::type lang );
+  static ptr get( zstring const &uri, locale::iso639_1::type lang,
+                  static_context const& sctx );
 
   /**
    * Looks-up the given phrase.

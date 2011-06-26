@@ -33,7 +33,6 @@
 #include "types/root_typemanager.h"
 #include "types/schema/schema.h"
 #include "context/root_static_context.h"
-#include "context/standard_uri_resolvers.h"
 #include "context/default_url_resolvers.h"
 #include "functions/library.h"
 #include "annotations/annotations.h"
@@ -97,11 +96,6 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
   m_globalEnv->m_http_resolver      = new impl::HTTPURLResolver();
-
-#ifndef ZORBA_NO_FULL_TEXT
-  m_globalEnv->m_stop_words_resolver = new StandardFullTextURIResolver();
-  m_globalEnv->m_thesaurus_resolver  = new StandardFullTextURIResolver();
-#endif
 }
 
 
@@ -110,11 +104,6 @@ void GlobalEnvironment::init(store::Store* store)
 void GlobalEnvironment::destroy()
 {
   delete m_globalEnv->m_http_resolver;
-
-#ifndef ZORBA_NO_FULL_TEXT
-  delete m_globalEnv->m_stop_words_resolver;
-  delete m_globalEnv->m_thesaurus_resolver;
-#endif
 
   serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
 

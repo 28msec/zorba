@@ -69,7 +69,6 @@ namespace zorba {
   class URIMapper;
   class Resource;
   class URLResolver;
-  class FullTextURIResolver;
   class ModuleImportChecker;
 
   namespace audit {

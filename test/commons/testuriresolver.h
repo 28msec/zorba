@@ -157,42 +157,6 @@ class TestSerializationCallback : public zorba::SerializationCallback
 
 };
 
-#ifndef ZORBA_NO_FULL_TEXT
-/******************************************************************************
-
-*******************************************************************************/
-class TestFullTextURIResolverResult: public FullTextURIResolverResult
-{
-  public:
-    virtual String getResolvedFullText() const { return theFullText; }
-  
-  protected:
-    friend class TestFullTextURIResolver;
-    String theFullText;
-};
-
-class TestFullTextURIResolver: public FullTextURIResolver
-{
-  public:
-    virtual ~TestFullTextURIResolver();
-  
-    virtual std::auto_ptr<FullTextURIResolverResult>
-    resolve(
-      const Item& aURI,
-      StaticContext* aStaticContext);
-  
-    public:
-      void
-      add_mapping(const std::string& aURI, const std::string& aValue);
-  
-  protected:
-    typedef std::map<std::string, std::string> Mapping_t;
-    typedef Mapping_t::const_iterator          MappingIter_t;
-    Mapping_t theMappings;
-};
-#endif
-
-
 } // namespace zorba
 
 #endif /* ZORBA_TESTURIRESOLVER_H */

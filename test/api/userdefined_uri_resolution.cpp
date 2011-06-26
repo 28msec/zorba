@@ -239,53 +239,6 @@ bool test_unresolved_schema_uri(Zorba* aZorba)
   return false;
 }
 
-
-#ifndef ZORBA_NO_FULL_TEXT
-/** FullText Resolver */
-class MyFullTextURIMapper: public URIMapper
-{
-  public:
-  virtual ~MyFullTextURIMapper(){}
-
-  virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType,
-    std::vector<zorba::String>& oUris) throw ()
-  {
-    if (aEntityType != Resource::THESAURUS) {
-      return;
-    }
-    if(aUri == "http://bstore1.example.com/UsabilityThesaurus.xml") {
-      oUris.push_back("default");
-    }
-  }
-};
-
-bool 
-thesaurus_resolver_example_1(Zorba* aZorba)
-{
-  StaticContext_t lContext = aZorba->createStaticContext();
-
-  MyFullTextURIMapper lMapper;
-
-  lContext->registerURIMapper(&lMapper);
-
-  try {
-    std::ostringstream lStr;
-    lStr << "<books/>" << std::endl
-      << "/books/book[./content contains text 'people' using" << std::endl
-      << "thesaurus at 'http://bstore1.example.com/UsabilityThesaurus.xml'" << std::endl
-      << "relationship 'NT' at most 2 levels]";
-
-    XQuery_t lQuery = aZorba->compileQuery(lStr.str(), lContext); 
-    std::cout << lQuery << std::endl;
-  } catch (ZorbaException& e) {
-    std::cerr << e.what() << std::endl;
-    return false;
-  }
-  return true;
-}
-#endif
-
 /**
  * Main test entry point
  */
@@ -325,14 +278,6 @@ int userdefined_uri_resolution(int argc, char* argv[])
     retval = 1;
     std::cout << "  ...failed!" << std::endl;
   }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  std::cout << "executing thesaurus uri resolver example test 1" << std::endl;
-  if(!thesaurus_resolver_example_1(lZorba)) {
-    retval = 1;
-    std::cout << "  ...failed!" << std::endl;
-  }
-#endif
 
   lZorba->shutdown();
   zorba::StoreManager::shutdownStore(lStore);

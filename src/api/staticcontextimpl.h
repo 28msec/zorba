@@ -31,7 +31,6 @@ namespace zorba {
   class StaticCollectionManagerImpl;
   class static_context;
 #ifndef ZORBA_NO_FULL_TEXT
-  class FullTextURIResolverWrapper;
   namespace core {
     class StemmerProviderWrapper;
   }
@@ -63,15 +62,9 @@ protected:
   DiagnosticHandler                 * theDiagnosticHandler;
   bool                                theUserDiagnosticHandler;
 
-  // remeber all the resolver wrappers that this context has created
 #ifndef ZORBA_NO_FULL_TEXT
-  std::map<FullTextURIResolver*,
-           FullTextURIResolverWrapper*> theStopWordsWrappers;
-  std::map<FullTextURIResolver*,
-           FullTextURIResolverWrapper*> theThesaurusWrappers;
-
   typedef std::map<StemmerProvider const*,core::StemmerProviderWrapper const*>
-          stemmer_providers_t;
+  stemmer_providers_t;
 
   stemmer_providers_t theStemmerProviders;
 #endif
@@ -193,24 +186,6 @@ public:
   getCollectionType(const String& aCollectionUri) const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  virtual void
-  addThesaurusURIResolver(FullTextURIResolver* aFullTextUriResolver);
-
-  virtual void
-  removeThesaurusURIResolver(FullTextURIResolver* aFullTextUriResolver);
-
-  virtual std::vector<FullTextURIResolver*>
-  getThesaurusURIResolvers() const;
-
-  virtual void
-  addStopWordsURIResolver(FullTextURIResolver* aFullTextUriResolver);
-
-  virtual void
-  removeStopWordsURIResolver(FullTextURIResolver* aFullTextUriResolver);
-
-  virtual std::vector<FullTextURIResolver*>
-  getStopWordsURIResolvers() const;
-
   virtual void
   addStemmerProvider( StemmerProvider const* );
 

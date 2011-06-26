@@ -1204,9 +1204,8 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
   else
     at_least = 0, at_most = numeric_limits<ft_int>::max();
 
-  ft_thesaurus::ptr thesaurus( ft_thesaurus::get( tid.get_uri(), qt0.lang() ) );
-  if ( !thesaurus.get() )
-    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( tid.get_uri() ) );
+  ft_thesaurus::ptr thesaurus( ft_thesaurus::get( tid.get_uri(), qt0.lang(),
+                                                  static_ctx_ ) );
 
   ft_thesaurus::iterator_ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )

@@ -34,8 +34,6 @@
 #include "context/static_context_consts.h"
 #include "context/static_context.h"
 #include "context/root_static_context.h"
-#include "context/uri_resolver_wrapper.h"
-#include "context/standard_uri_resolvers.h"
 #include "context/dynamic_loader.h"
 #include "context/decimal_format.h"
 #include "context/sctx_map_iterator.h"
@@ -1451,21 +1449,6 @@ static_context::apply_url_resolvers
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-/******************************************************************************
-
- ******************************************************************************/
-
-void static_context::add_stop_words_uri_resolver(
-    InternalFullTextURIResolver* aFullTextResolver)
-{
-  theStopWordsResolvers.push_back(aFullTextResolver);
-}
-
-void static_context::add_thesaurus_uri_resolver(
-    InternalFullTextURIResolver* aFullTextResolver)
-{
-  theThesaurusResolvers.push_back(aFullTextResolver);
-}
 
 core::Stemmer const* static_context::get_stemmer( iso639_1::type lang ) const {
   FOR_EACH( stemmer_providers_t, provider, theStemmerProviders )
@@ -1476,29 +1459,6 @@ core::Stemmer const* static_context::get_stemmer( iso639_1::type lang ) const {
     core::StemmerProvider::get_default_provider().get_stemmer( lang );
 }
 
-void static_context::get_stop_words_uri_resolvers(
-    std::vector<InternalFullTextURIResolver*>& aResolvers) const
-{
-  if (theParent)
-    theParent->get_stop_words_uri_resolvers(aResolvers);
-
-  aResolvers.insert(aResolvers.end(),
-                    theStopWordsResolvers.begin(),
-                    theStopWordsResolvers.end());
-}
-
-void static_context::get_thesaurus_uri_resolvers(
-    std::vector<InternalFullTextURIResolver*>& aResolvers) const
-{
-  if (theParent)
-    theParent->get_thesaurus_uri_resolvers(aResolvers);
-
-  aResolvers.insert(aResolvers.end(),
-                    theThesaurusResolvers.begin(),
-                    theThesaurusResolvers.end());
-}
-
-
 void static_context::remove_stemmer_provider( core::StemmerProvider const *p ) {
   ztd::erase_1st_if(
     theStemmerProviders,
@@ -1506,28 +1466,6 @@ void static_context::remove_stemmer_provider( core::StemmerProvider const *p ) {
   );
 }
 
-void static_context::remove_stop_words_uri_resolver(
-    InternalFullTextURIResolver* aResolver)
-{
-  ztd::erase_1st_if(
-    theStopWordsResolvers,
-    std::bind2nd( std::equal_to<InternalFullTextURIResolver*>(), aResolver )
-  );
-}
-
-void static_context::remove_thesaurus_uri_resolver(
-    InternalFullTextURIResolver* aResolver)
-{
-  std::vector<InternalFullTextURIResolver*>::iterator ite;
-  for (ite = theThesaurusResolvers.begin(); ite != theThesaurusResolvers.end(); ++ite)
-  {
-    if (aResolver == *ite)
-    {
-      theThesaurusResolvers.erase(ite);
-      return; // no duplicates in the vector
-    }
-  }
-}
 #endif /* ZORBA_NO_FULL_TEXT */
 
 

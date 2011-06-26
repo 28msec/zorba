@@ -143,6 +143,9 @@ TestModuleURIMapper::TestModuleURIMapper(
 {
 }
 
+TestModuleURIMapper::~TestModuleURIMapper()
+{
+}
 
 TestModuleURIMapper::TestModuleURIMapper(
     const char* file,
@@ -153,12 +156,6 @@ TestModuleURIMapper::TestModuleURIMapper(
 {
   initialize();
 }
-
-
-TestModuleURIMapper::~TestModuleURIMapper ()
-{
-}
-
 
 void TestModuleURIMapper::initialize()
 {
@@ -230,6 +227,10 @@ void TestModuleURIMapper::mapURI
 (const String aURI, Resource::EntityType aEntityType,
   std::vector<String>& oUris) throw ()
 {
+  if (aEntityType != Resource::MODULE)
+  {
+    return;
+  }
   if (theUriMap.empty()) 
   {
     initialize();
@@ -308,7 +309,7 @@ void TestCollectionURIMapper::trim(std::string& str)
 void TestCollectionURIMapper::initialize()
 {
   std::ifstream urifile ( theMapFileName.c_str() );
-  if ( urifile.bad() ) return;
+  if ( !urifile.good() ) return;
 
   while ( !urifile.eof() ) {
     std::string lCollectionMapping;
@@ -371,38 +372,5 @@ TestCollectionURIMapper::mapURI(
   }
   oUris.push_back(request);
 }
-
-#ifndef ZORBA_NO_FULL_TEXT
-/******************************************************************************
-  Full-Text URI Resolver
-*******************************************************************************/
-TestFullTextURIResolver::~TestFullTextURIResolver()
-{
-}
-  
-std::auto_ptr<FullTextURIResolverResult>
-TestFullTextURIResolver::resolve(
-  const Item& aURI,
-  StaticContext* aStaticContext)
-{
-  std::auto_ptr<TestFullTextURIResolverResult>
-    lResult(new TestFullTextURIResolverResult());
-  MappingIter_t lIter = theMappings.find(aURI.getStringValue().c_str());
-  if (lIter != theMappings.end()) {
-    lResult->theFullText = lIter->second;
-    lResult->setError(URIResolverResult::UR_NOERROR);
-  } else {
-    lResult->setError(URIResolverResult::UR_XQST0057);
-  }
-  return std::auto_ptr<FullTextURIResolverResult>(lResult.release());
-};
-
-void
-TestFullTextURIResolver::add_mapping(
-  const std::string& aURI, const std::string& aValue)
-{
-  theMappings[aURI] = aValue;
-}
-#endif
 
 } /* namespace zorba */

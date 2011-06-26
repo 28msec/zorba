@@ -435,8 +435,8 @@ void setFullTextResolvers
 {
 #ifndef ZORBA_NO_FULL_TEXT
   Specification& spec = * (driverCtx.theSpec);
-  sctx->addStopWordsURIResolver(spec.getStopWordsResolver());
-  sctx->addThesaurusURIResolver(spec.getThesaurusResolver());
+  sctx->registerURIMapper(spec.getStopWordsMapper());
+  sctx->registerURIMapper(spec.getThesaurusMapper());
 #endif
 }
 

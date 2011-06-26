@@ -74,7 +74,6 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
-#include "context/standard_uri_resolvers.h"
 
 #include "types/node_test.h"
 #include "types/casting.h"
@@ -12256,18 +12255,6 @@ template<typename FTNodeType> bool flatten( ftnode *n ) {
   }
   return false;
 }
-
-zstring ft_resolve_stop_words( zstring const &uri ) {
-  store::Item_t uri_item = NULL;
-  ITEM_FACTORY->createAnyURI( uri_item, uri.c_str() );
-  return GENV.getStopWordsURIResolver()->resolve( uri_item, theSctx );
-}
-
-zstring ft_resolve_thesaurus( zstring const &uri ) {
-  store::Item_t uri_item = NULL;
-  ITEM_FACTORY->createAnyURI( uri_item, uri.c_str() );
-  return GENV.getThesaurusURIResolver()->resolve( uri_item, theSctx );
-}
 #endif /* ZORBA_NO_FULL_TEXT */
 
 void *begin_visit (const FTAnd& v) {
@@ -12733,7 +12720,7 @@ void end_visit (const FTStopWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   ftstop_words *const sw = new ftstop_words(
-    loc, ft_resolve_stop_words( v.get_uri() ), v.get_stop_words()
+    loc, v.get_uri(), v.get_stop_words()
   );
   push_ftstack( sw );
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -12807,7 +12794,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     levels = NULL;
 
   ftthesaurus_id *const tid = new ftthesaurus_id(
-    loc, ft_resolve_thesaurus( v.get_uri() ), v.get_relationship(), levels
+    loc, v.get_uri(), v.get_relationship(), levels
   );
   push_ftstack( tid );
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -12826,10 +12813,7 @@ void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   ftthesaurus_id *default_tid = NULL;
   if ( v.includes_default() ) {
-    zstring resolved_uri = ft_resolve_thesaurus( "default" );
-    if ( resolved_uri == "default" )
-      resolved_uri = ft_resolve_thesaurus( "##default" );
-    default_tid = new ftthesaurus_id( loc, resolved_uri );
+    default_tid = new ftthesaurus_id( loc, "##default" );
   }
 
   ftthesaurus_option::thesaurus_id_list_t list;

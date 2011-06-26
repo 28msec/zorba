@@ -386,18 +386,6 @@ namespace zorba {
 
 #ifndef ZORBA_NO_FULL_TEXT
       virtual void
-      addStopWordsURIResolver(FullTextURIResolver* aFullTextUriResolver) = 0;
-
-      virtual std::vector<FullTextURIResolver*>
-      getStopWordsURIResolvers() const = 0;
-
-      virtual void
-      addThesaurusURIResolver(FullTextURIResolver* aFullTextUriResolver) = 0;
-
-      virtual std::vector<FullTextURIResolver*>
-      getThesaurusURIResolvers() const = 0;
-
-      virtual void
       addStemmerProvider( StemmerProvider const* ) = 0;
 
       virtual void

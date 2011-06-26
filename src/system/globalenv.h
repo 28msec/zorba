@@ -27,7 +27,6 @@ namespace zorba {
 class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
-class StandardFullTextURIResolver;
 
 namespace impl {
 class HTTPURLResolver;
@@ -61,11 +60,6 @@ private:
   impl::HTTPURLResolver  * m_http_resolver;
   impl::FileURLResolver  * m_file_resolver;
   impl::AutoFSURIMapper  * m_autofs_mapper;
-
-#ifndef ZORBA_NO_FULL_TEXT
-  StandardFullTextURIResolver* m_stop_words_resolver;
-  StandardFullTextURIResolver* m_thesaurus_resolver;
-#endif
 
 public:
 
@@ -103,11 +97,6 @@ public:
   impl::FileURLResolver* getFileURLResolver() const { return m_file_resolver; }
 
   impl::AutoFSURIMapper* getAutoFSURIMapper() const { return m_autofs_mapper; }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  StandardFullTextURIResolver* getStopWordsURIResolver() const { return m_stop_words_resolver; }
-  StandardFullTextURIResolver* getThesaurusURIResolver() const { return m_thesaurus_resolver; }
-#endif
 
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor* getXQueryXConvertor();
