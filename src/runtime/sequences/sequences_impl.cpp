@@ -1760,7 +1760,7 @@ static zstring normalizeInput(zstring const& aUri, static_context* aSctx,
       else
       {
 #ifdef WIN32
-        ascii::replace_all(normalizedPath, '\\', '/');
+        ascii::replace_all(lNormalizedPath, '\\', '/');
 #endif
         lResolvedURI = aSctx->resolve_relative_uri(lNormalizedPath, true);
       }
