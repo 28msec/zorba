@@ -14,17 +14,22 @@
 
 # Build and install any test modules
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 2.3
-  "ver2")
+  "ver2.xq")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 1.4
-  "ver")
+  "${CMAKE_CURRENT_SOURCE_DIR}/ver.xq")
 
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/bad-ver" 1.4
-  "bad-ver")
+  "bad-ver.xq")
 
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/A" 1.0
-  "module-A")
+  "module-A.xq")
 DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/B" 1.0
-  "module-B")
+  "${CMAKE_CURRENT_SOURCE_DIR}/module-B.xq")
 
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 2.0 "ext2")
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 1.0 "ext")
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 2.0 "ext2.xq")
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 1.0 "ext.xq")
+
+ADD_SUBDIRECTORY(ourlib)
+
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/link" 1.0
+  "link.xq" "ourlib")

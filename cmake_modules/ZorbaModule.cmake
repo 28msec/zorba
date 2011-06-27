@@ -15,8 +15,12 @@
 # Macro which declares a module. This sets up the installation of the
 # module, including creating the correct paths for module versioning.
 #
-# QQQ either this should subsume GENERATE_MODULE_LIBRARY entirely, or
-# else the latter should be changed to more closely match this.
+# Args: MODULE_URI - the namespace URI of the module
+#       MODULE_VERSION - the version of the module, major.minor[.patch]
+#       MODULE_FILE - path to .xq file (if not absolute, will be resolved
+#                     relative to CMAKE_CURRENT_SOURCE_DIR)
+#       LINK_LIBRARIES - (optional) List of libraries to link external
+#                        function library against
 #
 # QQQ this currently doesn't support modules with multiple component
 # .xq files. (Neither does Zorba's automatic loading mechanism, so
@@ -24,10 +28,23 @@
 #
 # QQQ might it be possible / reasonable to attempt to parse the source
 # file enough to deduce the URI and version?
-MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
- 
-  SET(SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq")
-  
+MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
+  # CMake macro ARGN parameter is... weird.
+  SET (argn ${ARGN})
+  # Optional LINK_LIBRARIES argument
+  SET (link_libraries)
+  LIST (LENGTH argn num_opt_args)
+  IF (num_opt_args GREATER 0)
+    LIST (GET argn 0 link_libraries)
+  ENDIF (num_opt_args GREATER 0)
+  IF (NOT IS_ABSOLUTE "${MODULE_FILE}")
+    SET (SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FILE}")
+    SET (module_name "${MODULE_FILE}")
+  ELSE (NOT IS_ABSOLUTE "${MODULE_FILE}")
+    SET (SOURCE_FILE "${MODULE_FILE}")
+    GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
+  ENDIF (NOT IS_ABSOLUTE "${MODULE_FILE}")
+
   # Mangle the module URI into Zorba's filesystem form - namely:
   # 1. Drop the scheme: (and // if present)
   # 2. Reverse the authority (host) on dots, then split on dots into subdirs
@@ -94,14 +111,14 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
 
   # Now, deal with associated C++ source for external functions.
 
-  IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/")
-    # all the cpp files found in the ${MODULE_NAME}.xq.src
+  IF(EXISTS "${SOURCE_FILE}.src/")
+    # all the cpp files found in the ${module_name}.xq.src
     # directory are added to the sources list
     SET (SRC_FILES)
     FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-      "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/*.cpp")
+      "${SOURCE_FILE}.src/*.cpp")
     
-    MESSAGE(STATUS "Add library " ${MODULE_NAME})
+    MESSAGE(STATUS "Add library " ${module_name})
     FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
       SET(SUFFIX)
       # simplestore executable doesn't need an extension
@@ -113,13 +130,13 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
 #        # configure_file doesn't replace variable with parameters; they
 #        # have to be defined in the macro
 #        SET(MODULE_VERSION ${MODULE_VERSION})
-#        SET(MODULE_NAME ${MODULE_NAME})
+#        SET(MODULE_NAME ${module_name})
 #        # set the rc file for the windows dll version
 #        CONFIGURE_FILE("${Zorba_CMAKE_MODULES_DIR}/Windows/WindowsDLLVersion.rc.in"
-#                        "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc"
+#                        "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc"
 #                        @ONLY)                        
 #        LIST(APPEND SRC_FILES 
-#          "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/version.rc")
+#          "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc")
 #      ENDIF(WIN32)
 
       # Shared libraries are considered RUNTIME targets on Win32
@@ -132,13 +149,9 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
 
       # Add the library target. Ensure that the output name is based on
       # the module *URI*'s final component.
-      SET(MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}${SUFFIX}")
+      SET(MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${module_name}${SUFFIX}")
       ADD_LIBRARY(${MODULE_LIB_NAME} SHARED ${SRC_FILES})
       GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
-      SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES 
-        OUTPUT_NAME "${module_filewe}${SUFFIX}"
-        ${target_type}_OUTPUT_DIRECTORY
-        "${CMAKE_CURRENT_BINARY_DIR}/${MODULE_NAME}.xq.src")
       # It seems like it would be nice to set the VERSION and/or
       # SOVERSION target properties here. However: On Windows, it
       # doesn't seem to do anything (the .rc file configured above
@@ -147,8 +160,12 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
       # "libext.so.2.0", which is difficult to transmogrify into the
       # target filename we actually want later. So in either case, the
       # target property isn't desirable.
+      SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES 
+        OUTPUT_NAME "${module_filewe}${SUFFIX}"
+        ${target_type}_OUTPUT_DIRECTORY
+        "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src")
       TARGET_LINK_LIBRARIES(${MODULE_LIB_NAME}
-        zorba_${ZORBA_STORE_NAME} ${LINK_LIBRARIES})
+        zorba_${ZORBA_STORE_NAME} ${link_libraries})
 
 #      IF (WIN32 AND MSVC_IDE)
 #        # in VS, the dll's are generated in the $(ConfigurationName)
@@ -177,7 +194,7 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
 #        
     ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})   
    
-  ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/")
+  ENDIF(EXISTS "${SOURCE_FILE}.src/")
 
 
   # Done dealing with C++. Now, set up CMake custom commands which
@@ -238,9 +255,9 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_NAME)
         PATTERN "*")
     SET_PROPERTY(GLOBAL PROPERTY ${ZORBA_OUTPUT_INSTALLED} 1)
    ENDIF(NOT is_installed)
-
     
 ENDMACRO (DECLARE_ZORBA_MODULE)
+
 
 # Utility macro for setting up a build rule to copy a file to a particular
 # versioned name.
