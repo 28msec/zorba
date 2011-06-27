@@ -271,7 +271,6 @@ extern entry const dict_en[] = {
   { "ZAPI0040", "iterator is not open" },
   { "ZAPI0041", "iterator is already open" },
   { "ZAPI0042", "iterator is closed" },
-  { "ZAPI0051", "REST error payload" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
