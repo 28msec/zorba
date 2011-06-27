@@ -296,6 +296,54 @@ bool StaticallyKnownCollationsIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
+bool DefaultFunctionNamespaceIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  zstring temp = static_context::W3C_FN_NS;
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp), state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool SctxBaseUriIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  zstring temp = theSctx->get_base_uri();
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  if (!temp.empty())
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp), state);
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool SctxDefaultCollationIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  zstring temp = theSctx->get_default_collation(loc);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp), state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool ConstructionModeIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const

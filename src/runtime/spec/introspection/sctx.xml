@@ -43,6 +43,57 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
+<zorba:iterator name="DefaultFunctionNamespaceIterator">
+    <zorba:description author="Zorba Team">
+      sc:default-function-namespace
+    </zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="default-function-namespace"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="SctxBaseUriIterator">
+    <zorba:description author="Zorba Team">
+      sc:base-uri
+    </zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="base-uri"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:output>xs:string?</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="SctxDefaultCollationIterator">
+    <zorba:description author="Zorba Team">
+      sc:default-collation
+    </zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="default-collation"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="StaticNamespaceBindingIterator">
     <zorba:description author="Zorba Team">
       sc:statically-known-namespace-binding

@@ -2271,7 +2271,8 @@ void static_context::get_functions(
 
               const zstring& ns = f->getName()->getNamespace();
 
-              if (ns != W3C_FN_NS)
+              // if (ns != W3C_FN_NS)
+              if ( ! utf8::begins_with(ns, W3C_FN_NS))
               {
                 if (ns == XQUERY_OP_NS || ns == ZORBA_OP_NS)
                   continue;
@@ -2327,7 +2328,8 @@ void static_context::get_functions(
 
                 const zstring& ns = f->getName()->getNamespace();
 
-                if (ns != W3C_FN_NS)
+                // if (ns != W3C_FN_NS)
+                if ( ! utf8::begins_with(ns, W3C_FN_NS))
                 {
                   if (ns == XQUERY_OP_NS || ns == ZORBA_OP_NS)
                     continue;

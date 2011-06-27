@@ -1312,6 +1312,48 @@ void PrinterVisitor::endVisit ( const StaticNamespacesIterator& ) {
 // </StaticNamespacesIterator>
 
 
+// <DefaultFunctionNamespaceIterator>
+void PrinterVisitor::beginVisit ( const DefaultFunctionNamespaceIterator& a) {
+  thePrinter.startBeginVisit("DefaultFunctionNamespaceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DefaultFunctionNamespaceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DefaultFunctionNamespaceIterator>
+
+
+// <SctxBaseUriIterator>
+void PrinterVisitor::beginVisit ( const SctxBaseUriIterator& a) {
+  thePrinter.startBeginVisit("SctxBaseUriIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxBaseUriIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxBaseUriIterator>
+
+
+// <SctxDefaultCollationIterator>
+void PrinterVisitor::beginVisit ( const SctxDefaultCollationIterator& a) {
+  thePrinter.startBeginVisit("SctxDefaultCollationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxDefaultCollationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxDefaultCollationIterator>
+
+
 // <StaticNamespaceBindingIterator>
 void PrinterVisitor::beginVisit ( const StaticNamespaceBindingIterator& a) {
   thePrinter.startBeginVisit("StaticNamespaceBindingIterator", ++theId);

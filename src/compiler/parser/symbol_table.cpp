@@ -19,6 +19,9 @@
 
 #include "compiler/parser/symbol_table.h"
 
+// Include the driver for the createQueryLoc() function
+#include "compiler/parser/xquery_driver.h"
+
 #include "util/ascii_util.h"
 #include "util/xml_util.h"
 
@@ -35,13 +38,13 @@ namespace zorba {
 static const char* whitespace = " \t\r\n\f\v";
 
 
-static bool decode_string (const char *yytext, uint32_t yyleng, string *result) {
+static bool decode_string(const char *yytext, uint32_t yyleng, string *result) {
   char delim = yytext [0];
   uint32_t i;
   for (i = 1; i + 1 < yyleng; i++) {
     char ch = yytext [i];
     if (ch == '&') {
-      int d = xml::parse_entity (yytext + i + 1, result);
+      int d = xml::parse_entity(yytext + i + 1, result);
       if (d < 0) return false;
       i += d;
     } else {
@@ -187,14 +190,13 @@ xs_double* symbol_table::doubleval(char const* text, uint32_t length)
   return new xs_double(lDouble);
 }
 
-xs_integer* symbol_table::integerval(char const* text, uint32_t length)
+xs_integer* symbol_table::integerval(char const* text, uint32_t length, const location& loc)
 {
   try {
     return new xs_integer(text);
   }
   catch ( std::range_error const& ) {
-    // TODO: needs query location
-    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( text ) );
+    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( text ), ERROR_LOC(xquery_driver::createQueryLocStatic(loc)) );
   }
 }
 

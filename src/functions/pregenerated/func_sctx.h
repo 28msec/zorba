@@ -51,6 +51,45 @@ public:
 };
 
 
+//fn-zorba-introspect-sctx:default-function-namespace
+class fn_zorba_introspect_sctx_default_function_namespace : public function
+{
+public:
+  fn_zorba_introspect_sctx_default_function_namespace(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-sctx:base-uri
+class fn_zorba_introspect_sctx_base_uri : public function
+{
+public:
+  fn_zorba_introspect_sctx_base_uri(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-sctx:default-collation
+class fn_zorba_introspect_sctx_default_collation : public function
+{
+public:
+  fn_zorba_introspect_sctx_default_collation(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-introspect-sctx:statically-known-namespace-binding
 class fn_zorba_introspect_sctx_statically_known_namespace_binding : public function
 {

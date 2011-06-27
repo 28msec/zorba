@@ -55,10 +55,7 @@ declare function sctx:statically-known-namespace-binding($prefix as xs:string) a
  :
  : @see http://www.w3.org/TR/xquery/#dt-def-fn-ns
  :)
-declare function sctx:default-function-namespace() as xs:string
-{
-  sctx:statically-known-namespace-binding("fn")
-};
+declare function sctx:default-function-namespace() as xs:string external;
 
 (:~
  : The function returns the base URI.
@@ -67,10 +64,7 @@ declare function sctx:default-function-namespace() as xs:string
  :
  : @see http://www.w3.org/TR/xquery/#dt-base-uri
  :)
-declare function sctx:base-uri() as xs:string?
-{
-  fn:static-base-uri()
-};
+declare function sctx:base-uri() as xs:string? external;
 
 (:~
  : The function returns the statically known default collection type. This
@@ -192,10 +186,7 @@ declare function sctx:xpath10-compatibility-mode() as xs:boolean external;
  :
  : @see http://www.w3.org/TR/xquery/#dt-def-collation
  :)
-declare function sctx:default-collation() as xs:string
-{
-  fn:default-collation()
-};
+declare function sctx:default-collation() as xs:string external;
 
 (:~
   : The function returns a sequence that contains the URIs of all statically known documents.

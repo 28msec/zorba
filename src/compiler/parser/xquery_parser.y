@@ -57,9 +57,8 @@ typedef std::list<zorba::zstring> string_list_t;
 typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
-
-
 } // %code requires
+
 
 /*
 **  Because the parser uses the xquery_driver and reciprocally, both
@@ -125,16 +124,6 @@ using namespace zorba;
 {
     @$.begin.filename = @$.end.filename = &(driver.theFilename2);
 };
-
-
-/*
-**  The two following directives to enable parser tracing and verbose
-**  error messages.
-*/
-/*
-%debug
-%error-verbose
-*/
 
 /*
 %{
@@ -6810,16 +6799,3 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
 }
 
 } // namespace zorba
-
-
-#if 0
-static void print_token_value(FILE *file, int type, YYSTYPE value)
-{
-  if (type==VAR) {
-    fprintf (file, "%s", value.tptr->name);
-  }
-  else if (type==NUM) {
-    fprintf (file, "%d", value.val);
-  }
-}
-#endif

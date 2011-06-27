@@ -85,6 +85,114 @@ public:
 
 /**
  * 
+ *      sc:default-function-namespace
+ *    
+ * Author: Zorba Team
+ */
+class DefaultFunctionNamespaceIterator : public NaryBaseIterator<DefaultFunctionNamespaceIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(DefaultFunctionNamespaceIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultFunctionNamespaceIterator,
+    NaryBaseIterator<DefaultFunctionNamespaceIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DefaultFunctionNamespaceIterator, PlanIteratorState>*)this);
+  }
+
+  DefaultFunctionNamespaceIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<DefaultFunctionNamespaceIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~DefaultFunctionNamespaceIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      sc:base-uri
+ *    
+ * Author: Zorba Team
+ */
+class SctxBaseUriIterator : public NaryBaseIterator<SctxBaseUriIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SctxBaseUriIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxBaseUriIterator,
+    NaryBaseIterator<SctxBaseUriIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SctxBaseUriIterator, PlanIteratorState>*)this);
+  }
+
+  SctxBaseUriIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SctxBaseUriIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~SctxBaseUriIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      sc:default-collation
+ *    
+ * Author: Zorba Team
+ */
+class SctxDefaultCollationIterator : public NaryBaseIterator<SctxDefaultCollationIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SctxDefaultCollationIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxDefaultCollationIterator,
+    NaryBaseIterator<SctxDefaultCollationIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SctxDefaultCollationIterator, PlanIteratorState>*)this);
+  }
+
+  SctxDefaultCollationIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SctxDefaultCollationIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~SctxDefaultCollationIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      sc:statically-known-namespace-binding
  *    
  * Author: Zorba Team

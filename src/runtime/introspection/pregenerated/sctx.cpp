@@ -68,6 +68,90 @@ void StaticNamespacesIteratorState::init(PlanState& planState) {
 // </StaticNamespacesIterator>
 
 
+// <DefaultFunctionNamespaceIterator>
+const char* DefaultFunctionNamespaceIterator::class_name_str = "DefaultFunctionNamespaceIterator";
+DefaultFunctionNamespaceIterator::class_factory<DefaultFunctionNamespaceIterator>
+DefaultFunctionNamespaceIterator::g_class_factory;
+
+const serialization::ClassVersion 
+DefaultFunctionNamespaceIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int DefaultFunctionNamespaceIterator::class_versions_count =
+sizeof(DefaultFunctionNamespaceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void DefaultFunctionNamespaceIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+DefaultFunctionNamespaceIterator::~DefaultFunctionNamespaceIterator() {}
+
+// </DefaultFunctionNamespaceIterator>
+
+
+// <SctxBaseUriIterator>
+const char* SctxBaseUriIterator::class_name_str = "SctxBaseUriIterator";
+SctxBaseUriIterator::class_factory<SctxBaseUriIterator>
+SctxBaseUriIterator::g_class_factory;
+
+const serialization::ClassVersion 
+SctxBaseUriIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int SctxBaseUriIterator::class_versions_count =
+sizeof(SctxBaseUriIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void SctxBaseUriIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SctxBaseUriIterator::~SctxBaseUriIterator() {}
+
+// </SctxBaseUriIterator>
+
+
+// <SctxDefaultCollationIterator>
+const char* SctxDefaultCollationIterator::class_name_str = "SctxDefaultCollationIterator";
+SctxDefaultCollationIterator::class_factory<SctxDefaultCollationIterator>
+SctxDefaultCollationIterator::g_class_factory;
+
+const serialization::ClassVersion 
+SctxDefaultCollationIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int SctxDefaultCollationIterator::class_versions_count =
+sizeof(SctxDefaultCollationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void SctxDefaultCollationIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SctxDefaultCollationIterator::~SctxDefaultCollationIterator() {}
+
+// </SctxDefaultCollationIterator>
+
+
 // <StaticNamespaceBindingIterator>
 const char* StaticNamespaceBindingIterator::class_name_str = "StaticNamespaceBindingIterator";
 StaticNamespaceBindingIterator::class_factory<StaticNamespaceBindingIterator>

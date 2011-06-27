@@ -226,7 +226,7 @@ void xquery_driver::set_expr(parsenode* e_p)
   expr_p = e_p;
 }
 
-QueryLoc xquery_driver::createQueryLoc(const location& aLoc)
+QueryLoc xquery_driver::createQueryLoc(const location& aLoc) const
 {
   QueryLoc lLoc;
   lLoc.setFilename(theFilename);

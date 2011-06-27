@@ -41,6 +41,36 @@ PlanIter_t fn_zorba_introspect_sctx_statically_known_namespaces::codegen(
   return new StaticNamespacesIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_sctx_default_function_namespace::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new DefaultFunctionNamespaceIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_introspect_sctx_base_uri::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new SctxBaseUriIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_introspect_sctx_default_collation::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new SctxDefaultCollationIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_introspect_sctx_statically_known_namespace_binding::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -260,6 +290,39 @@ void populate_context_sctx(static_context* sctx)
         (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","statically-known-namespaces"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_STATICALLY_KNOWN_NAMESPACES_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_introspect_sctx_default_function_namespace,
+        (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","default-function-namespace"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_DEFAULT_FUNCTION_NAMESPACE_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_introspect_sctx_base_uri,
+        (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","base-uri"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_BASE_URI_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_introspect_sctx_default_collation,
+        (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","default-collation"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_DEFAULT_COLLATION_0);
 
   }
 

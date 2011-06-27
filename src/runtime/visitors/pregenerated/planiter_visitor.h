@@ -203,6 +203,12 @@ namespace zorba{
 
     class StaticNamespacesIterator;
 
+    class DefaultFunctionNamespaceIterator;
+
+    class SctxBaseUriIterator;
+
+    class SctxDefaultCollationIterator;
+
     class StaticNamespaceBindingIterator;
 
     class InscopeVariablesIterator;
@@ -796,6 +802,15 @@ public:
 
     virtual void beginVisit ( const StaticNamespacesIterator& ) = 0;
     virtual void endVisit   ( const StaticNamespacesIterator& ) = 0;
+
+    virtual void beginVisit ( const DefaultFunctionNamespaceIterator& ) = 0;
+    virtual void endVisit   ( const DefaultFunctionNamespaceIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxBaseUriIterator& ) = 0;
+    virtual void endVisit   ( const SctxBaseUriIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxDefaultCollationIterator& ) = 0;
+    virtual void endVisit   ( const SctxDefaultCollationIterator& ) = 0;
 
     virtual void beginVisit ( const StaticNamespaceBindingIterator& ) = 0;
     virtual void endVisit   ( const StaticNamespaceBindingIterator& ) = 0;

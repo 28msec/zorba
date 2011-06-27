@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,8 @@
 #include "util/fx/fxcharheap.h"
 
 namespace zorba {
+
+class location;
 
 class ZORBA_DLL_PUBLIC symbol_table
 {
@@ -42,7 +44,7 @@ public:			// table interface
    * normalizationType = 2 -- Attribute value normalization
    */
 	off_t put(char const* text, uint32_t length, int normalizationType = 0);
-  
+
 	off_t put_ncname(char const* text, uint32_t length);
 	off_t put_qname(char const* text, uint32_t length, bool do_trim_start = false, bool do_trim_end = false);
 	off_t put_uri(char const* text, uint32_t length);
@@ -57,7 +59,7 @@ public:			// table interface
 
 	xs_decimal* decimalval(char const* text, uint32_t length);
 	xs_double* doubleval(char const* text, uint32_t length);
-	xs_integer* integerval(char const* text, uint32_t length);
+  xs_integer* integerval(char const* text, uint32_t length, const location& loc);
 
 };
 

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #line 2 "xquery_scanner.yy.cpp"
 
 #line 4 "xquery_scanner.yy.cpp"
@@ -4887,7 +4886,7 @@ case 246:
 YY_RULE_SETUP
 #line 685 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-  yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
+  yylval->ival = getDriver()->symtab.integerval(yytext, yyleng, *yylloc);
   return token::INTEGER_LITERAL;
 }
 	YY_BREAK
@@ -4935,7 +4934,7 @@ case 253:
 /* rule 253 can match eol */
 YY_RULE_SETUP
 #line 712 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN(ANNOTATION_EQNAME_SVAL, put_qname(yytext, yyleng), yytext); /* skip the % sign */ }
+{ TRY_SVAL_TOKEN(ANNOTATION_EQNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
 	YY_BREAK
 case 254:
 YY_RULE_SETUP

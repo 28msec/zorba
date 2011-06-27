@@ -307,6 +307,15 @@ namespace zorba {
     void beginVisit( const StaticNamespacesIterator& );
     void endVisit  ( const StaticNamespacesIterator& );
 
+    void beginVisit( const DefaultFunctionNamespaceIterator& );
+    void endVisit  ( const DefaultFunctionNamespaceIterator& );
+
+    void beginVisit( const SctxBaseUriIterator& );
+    void endVisit  ( const SctxBaseUriIterator& );
+
+    void beginVisit( const SctxDefaultCollationIterator& );
+    void endVisit  ( const SctxDefaultCollationIterator& );
+
     void beginVisit( const StaticNamespaceBindingIterator& );
     void endVisit  ( const StaticNamespaceBindingIterator& );
 

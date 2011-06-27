@@ -74,8 +74,7 @@ public:
 
 	parsenode* get_expr() { return expr_p; }
 
-  QueryLoc createQueryLoc(const location& aLoc);
-  static QueryLoc createQueryLocStatic(const location& aLoc);
+  QueryLoc createQueryLoc(const location& aLoc) const;
 
   // Error generators
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);
@@ -86,6 +85,10 @@ public:
   ZorbaParserError* invalidCharRef(const char* _error_token, const location& loc);
   ZorbaParserError* parserErr(const std::string& _message, const location& loc, Error const &code = err::XPST0003);
   ZorbaParserError* parserErr(const std::string& _message, const QueryLoc& loc, Error const &code = err::XPST0003);
+
+public:
+  // transform a parser location into a QueryLoc
+  static QueryLoc createQueryLocStatic(const location& aLoc);
 };
 
 }	/* namespace zorba */
