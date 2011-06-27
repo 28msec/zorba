@@ -26,7 +26,6 @@ SET(CONTEXT_SRCS
     root_static_context.cpp
     dynamic_loader.cpp
     sctx_map_iterator.cpp
-    module_import_checker.cpp
     uri_resolver.cpp
     default_url_resolvers.cpp
     default_uri_mappers.cpp

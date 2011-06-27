@@ -241,12 +241,6 @@ public:
   virtual String
   resolve(const String& aRelativeUri, const String& aBaseUri) const;
 
-  virtual void
-  addModuleImportChecker(ModuleImportChecker* aChecker);
-
-  virtual void
-  removeModuleImportChecker(ModuleImportChecker* aChecker);
-
   virtual bool
   validate(const Item& rootElement, Item& validatedResult,
            validation_mode_t validationMode = validate_strict);

@@ -16,8 +16,19 @@
 #include "stdafx.h"
 
 #include "uri_resolver.h"
+#include <zorba/uri_resolvers.h>
 
-#include "store/api/collection.h"
+#include <store/api/collection.h>
+
+/***********
+ * Constants
+ ***********/
+// We avoid the "static initialization order fiasco" by initializing both of
+// these constants here in the same file. This also makes it easy to ensure
+// both strings have the same value.
+const zorba::zstring zorba::impl::URIMapper::DENY_ACCESS("[~~Deny Access~~]");
+const zorba::String zorba::URIMapper::DENY_ACCESS(zorba::impl::URIMapper::DENY_ACCESS.c_str());
+
 
 namespace zorba {
 

@@ -475,31 +475,6 @@ namespace zorba {
       virtual String
       resolve(const String& aRelativeUri, const String& aBaseUri) const = 0;
 
-      /**
-        * @brief Add a new ModuleImportChecker to this module.
-        *
-        * Module import checkers are used by zorba to allow users to deny
-        * the import of specific modules. This method adds such a module
-        * import checker to the current static context.
-        *
-        * @param aChecker The ModuleImportChecker which should be added to
-        *                 the current static context.
-        */
-      virtual void
-      addModuleImportChecker(ModuleImportChecker* aChecker) = 0;
-
-      /**
-        * @brief Removes aChecker from the current static contect.
-        *
-        * Will compare all currently registered module import checkers with
-        * aChecker by using the operator== and will remove all found module
-        * import checkers.
-        *
-        * @param aChecker The module import checker to remove.
-        */
-      virtual void
-      removeModuleImportChecker(ModuleImportChecker* aChecker) = 0;
-      
       /** \brief Validates this Item.
         *  Note: works only on document and element nodes, otherwise returns false.
         * 

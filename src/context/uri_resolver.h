@@ -33,7 +33,7 @@
 #include <zorbatypes/zstring.h>
 #include <util/auto_vector.h>
 #include <util/http_util.h>
-#include "store/api/shared_types.h"
+#include <store/api/shared_types.h>
 
 namespace zorba {
 
@@ -277,6 +277,17 @@ class URIMapper
    * If you do not override this method, the default is "candidate".
    */
   virtual Kind mapperKind() throw () { return CANDIDATE; }
+
+  /**
+   * @brief Constant indicating that Zorba should deny access to the
+   * given URI.
+   *
+   * If any kind of URIMapper returns this value at any point in the
+   * vector of URIs, Zorba will cause the resolution of this URI to be
+   * denied with an error.  This can be used, for example, to suppress
+   * importing particular modules by URI.
+   */
+  static const zstring DENY_ACCESS;
 };
 
 } /* namespace zorba::impl */

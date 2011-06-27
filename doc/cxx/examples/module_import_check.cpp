@@ -20,33 +20,33 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
-#include <zorba/module_import_checker.h>
+#include <zorba/error_list.h>
+#include <zorba/uri_resolvers.h>
 #include <zorba/zorba_exception.h>
 
 using namespace zorba;
 
-class ModuleFileChecker : public zorba::ModuleImportChecker
+class FileModuleDisallow : public URIMapper
 {
 public:
-
-  virtual bool checkModuleUri(const zorba::String& aModuleUri) const
+  virtual void mapURI(const zorba::String aUri,
+                      Resource::EntityType aEntityType,
+                      std::vector<zorba::String>& oUris) throw ()
   {
-    if (aModuleUri == "http://www.zorba-xquery.com/modules/file")
-      return false;
-    return true;
-  }
-
-  virtual bool operator==(const ModuleImportChecker& aOther) const
-  {
-    const ModuleFileChecker* checker = dynamic_cast<const ModuleFileChecker*>(&aOther);
-    return checker != 0;
+    if (aEntityType != Resource::MODULE) {
+      return;
+    }
+    if (aUri == "http://www.zorba-xquery.com/modules/file") {
+      oUris.push_back(URIMapper::DENY_ACCESS);
+    }
   }
 };
 
 bool example1(Zorba* aZorba)
 {
   StaticContext_t lStcxt = aZorba->createStaticContext();
-  lStcxt->addModuleImportChecker(new ModuleFileChecker());
+  FileModuleDisallow lChecker;
+  lStcxt->registerURIMapper(&lChecker);
 
   std::stringstream lStream;
   lStream << "import module namespace file = 'http://www.zorba-xquery.com/modules/file';";
@@ -56,8 +56,11 @@ bool example1(Zorba* aZorba)
   try {
     XQuery_t lQuery = aZorba->compileQuery(lStream, lStcxt);
     std::cout << lQuery << std::endl;
-  } catch (ZorbaException&) {
-    return true;
+  } catch (ZorbaException &e) {
+    if (e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED) {
+      return true;
+    }
+    return false;
   } catch (...) {
     return false;
   }

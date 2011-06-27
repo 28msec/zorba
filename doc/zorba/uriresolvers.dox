@@ -1,5 +1,7 @@
 /** \page uriresolvers Zorba Module and Schema URI Resolving
 
+QQQ This needs to be entirely re-written!
+
 \section motivation Motivation
 
 When writing an XQuery application, developers often use location hints to import library modules and schemas. For example, the following code snippet imports a library module with target namespace "http://www.example.com/modules/utils".

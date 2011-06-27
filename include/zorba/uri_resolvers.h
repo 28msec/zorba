@@ -239,7 +239,7 @@ class ZORBA_DLL_PUBLIC URIMapper
    * denied with an error.  This can be used, for example, to suppress
    * importing particular modules by URI.
    */
-  const zorba::String DENY_ACCESS;
+  const static zorba::String DENY_ACCESS;
 };
 
 

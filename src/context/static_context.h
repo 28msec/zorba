@@ -560,8 +560,6 @@ protected:
 
   std::vector<DecimalFormat_t>             * theDecimalFormats;
 
-  std::vector<ModuleImportChecker*>          theModuleImportCheckers;
-
   std::vector<store::Item_t>                 theDisabledWarnings;
 
   bool                                       theAllWarningsDisabled;
@@ -691,13 +689,6 @@ public:
 
   void get_full_module_paths(std::vector<zstring>& aFullModulePaths) const;
 
-  // Module import checkers
-
-  void addModuleImportChecker(ModuleImportChecker* aChecker);
-
-  void removeModuleImportChecker(ModuleImportChecker* aChecker);
-
-  std::vector<ModuleImportChecker*> getAllModuleImportCheckers() const;
 
   //
   // Validating Items
@@ -1001,7 +992,7 @@ private:
   void apply_uri_mappers(zstring const& aUri,
     impl::Resource::EntityType aEntityType,
     impl::URIMapper::Kind aMapperKind,
-    std::vector<zstring>& oUris) const throw ();
+    std::vector<zstring>& oUris) const;
 
   void apply_url_resolvers(std::vector<zstring>& aUrls,
     impl::Resource::EntityType aEntityType,

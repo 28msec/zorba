@@ -71,8 +71,6 @@
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 
-#include "zorba/module_import_checker.h"
-
 
 using namespace std;
 using namespace zorba::locale;
@@ -667,14 +665,6 @@ static_context::~static_context()
 
   if (theParent)
     RCHelper::removeReference(theParent);
-
-  {
-    std::vector<ModuleImportChecker*>::iterator i =
-        theModuleImportCheckers.begin();
-    for (; i != theModuleImportCheckers.end(); ++i) {
-      delete *i;
-    }
-  }
 }
 
 
@@ -1360,7 +1350,7 @@ static_context::get_component_uris
 void
 static_context::apply_uri_mappers
 (zstring const& aUri, impl::Resource::EntityType aEntityType,
-  impl::URIMapper::Kind aMapperKind, std::vector<zstring>& oUris) const throw ()
+  impl::URIMapper::Kind aMapperKind, std::vector<zstring>& oUris) const
 {
   // Initialize list with the one input URI.
   oUris.push_back(aUri);
@@ -1387,12 +1377,22 @@ static_context::apply_uri_mappers
            uri != oUris.end(); uri++)
       {
         // And call the current mapper with the current URI.
-        size_t lNumResultUris = lResultUris.size();
+        size_t const lPreNumResultUris = lResultUris.size();
         (*mapper)->mapURI(*uri, aEntityType, *this, lResultUris);
-        if (lNumResultUris == lResultUris.size()) {
+        size_t const lPostNumResultUris = lResultUris.size();
+        if (lPreNumResultUris == lPostNumResultUris) {
           // Mapper didn't map this URI to anything new, therefore add
           // the original URI to the result list
           lResultUris.push_back(*uri);
+        }
+        else {
+          // Check the new entries for DENY_ACCESS.
+          for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++) {
+            if (lResultUris.at(i) == impl::URIMapper::DENY_ACCESS) {
+              throw XQUERY_EXCEPTION(zerr::ZXQP0029_URI_ACCESS_DENIED,
+                                     ERROR_PARAMS(aUri));
+            }
+          }
         }
       }
 
@@ -1499,44 +1499,6 @@ void static_context::get_full_module_paths(std::vector<zstring>& paths) const
 
   get_module_paths(paths);
 }
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Module import chekcers                                                     //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-void static_context::addModuleImportChecker(ModuleImportChecker* aChecker)
-{
-  theModuleImportCheckers.push_back(aChecker);
-}
-
-void static_context::removeModuleImportChecker(ModuleImportChecker* aChecker)
-{
-  std::vector<ModuleImportChecker*> lCheckers = getAllModuleImportCheckers();
-  std::vector<ModuleImportChecker*>::iterator lIter =
-      lCheckers.begin();
-  for (; lIter != lCheckers.end(); ++lIter)
-  {
-    if (**lIter == *aChecker) {
-      theModuleImportCheckers.erase(lIter);
-    }
-  }
-}
-
-std::vector<ModuleImportChecker*> static_context::getAllModuleImportCheckers() const
-{
-  std::vector<ModuleImportChecker*> lResult;
-  lResult.insert(lResult.end(), theModuleImportCheckers.begin(),
-                 theModuleImportCheckers.end());
-  static_context* lParent = get_parent();
-  if (lParent) {
-    std::vector<ModuleImportChecker*> lC = lParent->getAllModuleImportCheckers();
-    lResult.insert(lResult.end(), lC.begin(), lC.end());
-  }
-  return lResult;
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

@@ -1071,20 +1071,6 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
 }
 
 
-void
-StaticContextImpl::addModuleImportChecker(ModuleImportChecker* aChecker)
-{
-  theCtx->addModuleImportChecker(aChecker);
-}
-
-
-void
-StaticContextImpl::removeModuleImportChecker(ModuleImportChecker* aChecker)
-{
-  theCtx->removeModuleImportChecker(aChecker);
-}
-
-
 bool
 StaticContextImpl::validate(
     const Item& rootElement,
