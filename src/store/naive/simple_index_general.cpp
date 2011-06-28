@@ -60,6 +60,19 @@ GeneralIndex::GeneralIndex(
 }
 
 
+/******************************************************************************
+  Macro used during the population of both hash and tree general indexes.
+*******************************************************************************/
+#define ADD_IN_MAP(MAP_ID, untyped)                                            \
+if (castItem !=  NULL)                                                         \
+{                                                                              \
+  if (key == NULL) key = new store::IndexKey(1);                               \
+  (*key)[0].transfer(castItem);                                                \
+  found = found || insertInMap(key, node, theMaps[MAP_ID], multikey, untyped); \
+  node = node2;                                                                \
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Hash Map General Index                                                     //
@@ -165,20 +178,6 @@ store::Index::KeyIterator_t GeneralHashIndex::keys() const
 {
   assert(false);
   return 0;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-
-#define ADD_IN_MAP(MAP_ID, untyped)                                            \
-if (castItem !=  NULL)                                                         \
-{                                                                              \
-  if (key == NULL) key = new store::IndexKey(1);                               \
-  (*key)[0].transfer(castItem);                                                \
-  found = found || insertInMap(key, node, theMaps[MAP_ID], multikey, untyped); \
-  node = node2;                                                                \
 }
 
 
@@ -1125,6 +1124,7 @@ bool GeneralTreeIndex::insert(
   bool found = false;
   store::Item_t castItem;
   store::Item_t node2;
+  bool lossy;
 
   AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
 
@@ -1203,7 +1203,6 @@ bool GeneralTreeIndex::insert(
       goto longmap;
     }
 
-    bool lossy;
     keyItem->coerceToDouble(castItem, true, lossy);
 
     if (lossy)
@@ -1221,21 +1220,17 @@ bool GeneralTreeIndex::insert(
   }
 
   case XS_LONG:
-  case XS_INT:
-  case XS_SHORT:
-  case XS_BYTE:
-  case XS_UNSIGNED_INT:
-  case XS_UNSIGNED_SHORT:
-  case XS_UNSIGNED_BYTE:
   {
 longmap:
-    bool lossy;
-    keyItem->coerceToDouble(castItem, false, lossy);
+    xs_long longValue = static_cast<LongItem*>(keyItem)->getLongValue();
 
-    if (lossy)
+    if (longValue > theMaxLong || longValue < theMinLong)
     {
       node2 = node;
       found = insertInMap(key, node2, theMaps[XS_LONG], multikey, false);
+
+      xs_double doubleValue = xs_double::parseLong(longValue);
+      GET_FACTORY().createDouble(castItem, doubleValue);
 
       if (key == NULL) key = new store::IndexKey(1);
       (*key)[0].transfer(castItem);
@@ -1248,6 +1243,16 @@ longmap:
     }
 
     return found;
+  }
+
+  case XS_INT:
+  case XS_SHORT:
+  case XS_BYTE:
+  case XS_UNSIGNED_INT:
+  case XS_UNSIGNED_SHORT:
+  case XS_UNSIGNED_BYTE:
+  {
+    return insertInMap(key, node, theMaps[XS_LONG], multikey, false);
   }
 
   case XS_UNTYPED_ATOMIC:
@@ -1266,14 +1271,16 @@ longmap:
     // try casting to xs:long
     if (untypedItem->castToLong(castItem))
     {
-      store::ItemHandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
-
       ADD_IN_MAP(XS_LONG, true);
 
-      bool lossy;
-      longItem->coerceToDouble(castItem, false, lossy);
-      if (lossy)
+      store::ItemHandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+      xs_long longValue = longItem->getLongValue();
+
+      if (longValue > theMaxLong || longValue < theMinLong)
       {
+        xs_double doubleValue = xs_double::parseLong(longValue);
+        GET_FACTORY().createDouble(castItem, doubleValue);
+
         ADD_IN_MAP(XS_DOUBLE, true);
       }
     }
@@ -1286,7 +1293,6 @@ longmap:
 
       ADD_IN_MAP(XS_DOUBLE, true);
 
-      bool lossy;
       decimalItem->coerceToDouble(castItem, true, lossy);
       if (lossy)
       {
@@ -1329,10 +1335,8 @@ longmap:
 
   default:
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZDTY0012_INDEX_KEY_TYPE_ERROR, 
-      ERROR_PARAMS( getName()->getStringValue() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZDTY0012_INDEX_KEY_TYPE_ERROR, 
+    ERROR_PARAMS(getName()->getStringValue()));
   }
   }
 }
@@ -1365,10 +1369,8 @@ bool GeneralTreeIndex::insertInMap(
   {
     if (isUnique())
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
-        ERROR_PARAMS( theQname->getStringValue() )
-      );
+      RAISE_ERROR_NO_LOC(zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      ERROR_PARAMS(theQname->getStringValue()));
     }
     
     pos->second->addNode(node, multikey, untyped);
@@ -1565,6 +1567,7 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     bool lossy;
     store::Item_t castItem;
     store::IndexKey altKey(1);
+
     AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
 
     if (keyItem->getBaseItem() != NULL)
@@ -1577,24 +1580,6 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
     switch (keyType)
     {
-    case XS_ANY_URI:
-    {
-      if (theIndex->theMaps[XS_ANY_URI])
-        PROBE_TREE_MAP(XS_ANY_URI);
-
-      if (theIndex->theMaps[XS_STRING] != NULL)
-      {
-        store::Item_t castItem;
-        zstring tmp;
-        keyItem->getStringValue2(tmp);
-        GET_FACTORY().createString(castItem, tmp);
-
-        PROBE_ALT_TREE_MAP(XS_STRING);
-      }
-
-      break;
-    }
-
     case XS_BOOLEAN:
     case XS_DATETIME:
     case XS_DATE:
@@ -1616,6 +1601,23 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
       break;
     }
 
+    case XS_ANY_URI:
+    {
+      if (theIndex->theMaps[XS_ANY_URI])
+        PROBE_TREE_MAP(XS_ANY_URI);
+
+      if (theIndex->theMaps[XS_STRING] != NULL)
+      {
+        zstring tmp;
+        keyItem->getStringValue2(tmp);
+        GET_FACTORY().createString(castItem, tmp);
+
+        PROBE_ALT_TREE_MAP(XS_STRING);
+      }
+
+      break;
+    }
+
     case XS_STRING:
     case XS_NORMALIZED_STRING:
     case XS_TOKEN:
@@ -1632,7 +1634,6 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
       if (theIndex->theMaps[XS_ANY_URI])
       {
-        store::Item_t castItem;
         zstring tmp;
         keyItem->getStringValue2(tmp);
         GET_FACTORY().createAnyURI(castItem, tmp);
@@ -1847,6 +1848,128 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
 }
 
 
+
+/******************************************************************************
+  
+********************************************************************************/
+void ProbeGeneralTreeIndexIterator::probeMap(
+    GeneralTreeIndex::IndexMap* map,
+    const store::IndexKey* key)
+{
+  if (map == NULL)
+    return;
+
+  bool haveLower = theBoxGeneralCondition->theRangeFlags.theHaveLowerBound;
+  bool haveUpper = theBoxGeneralCondition->theRangeFlags.theHaveUpperBound;
+  bool lowerIncl = theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl;
+  bool upperIncl = theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl;
+
+  if (haveLower && haveUpper)
+  {
+    if (lowerIncl)
+      theMapBegins.push_back(map->lower_bound(key));
+    else
+      theMapBegins.push_back(map->upper_bound(key));
+
+    if (upperIncl)
+      theMapEnds.push_back(map->upper_bound(key));
+    else
+      theMapEnds.push_back(map->lower_bound(key));
+  }
+  else if (haveLower)
+  {
+    theMapEnds.push_back(map->end());
+
+    if (lowerIncl)
+      theMapBegins.push_back(map->lower_bound(key));
+    else
+      theMapBegins.push_back(map->upper_bound(key));
+  }
+  else if (haveUpper)
+  {
+    theMapBegins.push_back(map->begin());
+    
+    if (upperIncl)
+      theMapEnds.push_back(map->upper_bound(key));
+    else
+      theMapEnds.push_back(map->lower_bound(key));
+  }
+  else
+  {
+    theMapBegins.push_back(map->begin());
+    theMapEnds.push_back(map->end());
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ProbeGeneralTreeIndexIterator::doubleToLongProbe(
+    const AtomicItem* doubleItem,
+    store::Item_t& result) const
+{
+  xs_double doubleObj = doubleItem->getDoubleValue();
+
+  if (doubleObj.isNaN())
+    throw ZORBA_EXCEPTION(zerr::ZSTR0041_NAN_COMPARISON);
+
+  double doubleValue = doubleObj.getNumber();
+
+  bool haveLower = theBoxGeneralCondition->theRangeFlags.theHaveLowerBound;
+  bool haveUpper = theBoxGeneralCondition->theRangeFlags.theHaveUpperBound;
+
+  int64_t longValue;
+
+  result = NULL;
+
+  if (doubleObj.isPosInf() || doubleValue > GeneralTreeIndex::theDoubleMaxLong)
+  {
+    if (haveLower)
+    {
+      return;
+    }
+    else
+    {
+      longValue = GeneralTreeIndex::theMaxLong;
+      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
+    }
+  }
+  else if (doubleObj.isNegInf() || doubleValue < GeneralTreeIndex::theDoubleMinLong)
+  {
+    if (haveLower)
+    {
+      longValue = GeneralTreeIndex::theMinLong;
+      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = true;
+    }
+    else
+    {
+      return;
+    }
+  }
+  else
+  {
+    double doubleFloor = ::floor(doubleValue);
+    longValue = static_cast<uint64_t>(doubleFloor);
+    
+    bool lossy = (doubleFloor != doubleValue);
+
+    assert(doubleFloor + 1.0 > doubleValue);
+
+    if (haveLower && lossy)
+    {
+      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = false;
+    }
+    else if (haveUpper && lossy)
+    {
+      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
+    }
+  }
+
+  GET_FACTORY().createLong(result, longValue);
+}
+
+
 /******************************************************************************
   
 ********************************************************************************/
@@ -1859,36 +1982,191 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 
   bool haveLower = theBoxGeneralCondition->theRangeFlags.theHaveLowerBound;
   bool haveUpper = theBoxGeneralCondition->theRangeFlags.theHaveUpperBound;
-  bool lowerIncl = theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl;
-  bool upperIncl = theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl;
+  //bool lowerIncl = theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl;
+  //bool upperIncl = theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl;
+
+  assert(!(haveLower && haveUpper));
 
   if (theIndex->isTyped())
   {
     // Note: the runtime (or compiler) makes sure that the search key is a
     // subtype of the index key type.
 
-    if (haveLower)
-    {
-      theMapEnds.push_back(theIndex->theSingleMap->end());
+    probeMap(theIndex->theSingleMap, key);
+  }
+  else if (haveLower || haveUpper)
+  {
+    //bool lossy;
+    store::Item_t castItem;
+    store::IndexKey altKey(1);
 
-      if (lowerIncl)
-        theMapBegins.push_back(theIndex->theSingleMap->lower_bound(key));
-      else
-        theMapBegins.push_back(theIndex->theSingleMap->upper_bound(key));
-    }
-    else if (haveUpper)
-    {
-      theMapBegins.push_back(theIndex->theSingleMap->begin());
+    AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
 
-      if (upperIncl)
-        theMapEnds.push_back(theIndex->theSingleMap->upper_bound(key));
-      else
-        theMapEnds.push_back(theIndex->theSingleMap->lower_bound(key));
-    }
-    else
+    if (keyItem->getBaseItem() != NULL)
     {
-      theMapBegins.push_back(theIndex->theSingleMap->begin());
-      theMapEnds.push_back(theIndex->theSingleMap->end());
+      keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+      (*key)[0] = keyItem;
+    }
+
+    SchemaTypeCode keyType = keyItem->getTypeCode();
+
+    switch (keyType)
+    {
+    case XS_BOOLEAN:
+    case XS_DATETIME:
+    case XS_DATE:
+    case XS_TIME:
+    {
+      probeMap(theIndex->theMaps[keyType], key);
+      break;
+    }
+
+    case XS_DURATION:
+    case XS_YM_DURATION:
+    case XS_DT_DURATION:
+    {
+      probeMap(theIndex->theMaps[XS_DURATION], key);
+      break;
+    }
+
+    case XS_ANY_URI:
+    {
+      probeMap(theIndex->theMaps[XS_ANY_URI], key);
+
+      if (theIndex->theMaps[XS_STRING])
+      {
+        zstring tmp;
+        keyItem->getStringValue2(tmp);
+        GET_FACTORY().createAnyURI(castItem, tmp);
+
+        altKey[0].transfer(castItem);
+        
+        probeMap(theIndex->theMaps[XS_STRING], &altKey);
+      }
+
+      break;
+    }
+
+    case XS_STRING:
+    case XS_NORMALIZED_STRING:
+    case XS_TOKEN:
+    case XS_NMTOKEN:
+    case XS_LANGUAGE:
+    case XS_NAME:
+    case XS_NCNAME:
+    case XS_ID:
+    case XS_IDREF:
+    case XS_ENTITY:
+    {
+      probeMap(theIndex->theMaps[XS_STRING], key);
+
+      if (theIndex->theMaps[XS_ANY_URI])
+      {
+        zstring tmp;
+        keyItem->getStringValue2(tmp);
+        GET_FACTORY().createAnyURI(castItem, tmp);
+
+        altKey[0].transfer(castItem);
+        
+        probeMap(theIndex->theMaps[XS_ANY_URI], &altKey);
+      }
+
+      break;
+    }
+
+    case XS_DOUBLE:
+    case XS_FLOAT:
+    {
+      probeMap(theIndex->theMaps[XS_DOUBLE], key);
+
+      if (theIndex->theMaps[XS_LONG])
+      {
+        doubleToLongProbe(keyItem, castItem);
+
+        if (castItem)
+        {
+          altKey[0].transfer(castItem);
+          probeMap(theIndex->theMaps[XS_LONG], &altKey);
+        }
+      }
+
+      break;
+    }
+
+    case XS_DECIMAL:
+    case XS_INTEGER:
+    case XS_NON_POSITIVE_INTEGER:
+    case XS_NEGATIVE_INTEGER:
+    case XS_NON_NEGATIVE_INTEGER:
+    case XS_POSITIVE_INTEGER:
+    case XS_UNSIGNED_LONG:
+    {
+      probeMap(theIndex->theMaps[XS_DECIMAL], key);
+
+      if (theIndex->theMaps[XS_LONG])
+      {
+        altKey[0] = keyItem;
+        probeMap(theIndex->theMaps[XS_LONG], key);
+      }
+
+      if (theIndex->theMaps[XS_DOUBLE])
+      {
+        xs_double doubleValue = xs_double::parseDecimal(keyItem->getDecimalValue());
+        GET_FACTORY().createDouble(castItem, doubleValue);
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_DOUBLE], &altKey);
+      }
+
+      break;
+    }
+
+    case XS_LONG:
+    case XS_INT:
+    case XS_SHORT:
+    case XS_BYTE:
+    case XS_UNSIGNED_INT:
+    case XS_UNSIGNED_SHORT:
+    case XS_UNSIGNED_BYTE:
+    {
+      probeMap(theIndex->theMaps[XS_LONG], key);
+
+      if (theIndex->theMaps[XS_DECIMAL])
+      {
+        altKey[0] = keyItem;
+        probeMap(theIndex->theMaps[XS_DECIMAL], key);
+      }
+
+      if (theIndex->theMaps[XS_DOUBLE])
+      {
+        xs_double doubleValue = xs_double::parseLong(keyItem->getLongValue());
+        GET_FACTORY().createDouble(castItem, doubleValue);
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_DOUBLE], &altKey);
+      }
+
+      break;
+    }
+
+    case XS_UNTYPED_ATOMIC:
+    {
+      store::ItemHandle<UntypedAtomicItem> untypedItem = 
+      static_cast<UntypedAtomicItem*>(keyItem);
+
+      // cast to xs:string
+      if (theIndex->theMaps[XS_STRING])
+      {
+        untypedItem->castToString(castItem);
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_STRING], &altKey);
+      }
+
+      break;
+    }
+
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
     }
   }
   else
@@ -1921,17 +2199,20 @@ void ProbeGeneralTreeIndexIterator::open()
   }
   else
   {
-    assert(!theMapBegins.empty());
-    assert(!theMapEnds.empty());
-
     theCurrentMap = 0;
-    theMapIte = theMapBegins[theCurrentMap];
 
-    if (theMapIte != theMapEnds[theCurrentMap])
+    if (!theMapBegins.empty())
     {
-      GeneralIndexValue* resultSet = theMapIte->second;
-      theIte = resultSet->begin();
-      theEnd = resultSet->end();
+      assert(!theMapEnds.empty());
+
+      theMapIte = theMapBegins[theCurrentMap];
+
+      if (theMapIte != theMapEnds[theCurrentMap])
+      {
+        GeneralIndexValue* resultSet = theMapIte->second;
+        theIte = resultSet->begin();
+        theEnd = resultSet->end();
+      }
     }
   }
 }

@@ -47,7 +47,8 @@ class FloatCommons
 
 // exported for testing only
 template<typename FloatType>
-class ZORBA_DLL_PUBLIC FloatImpl : public serialization::SerializeBaseClass {
+class ZORBA_DLL_PUBLIC FloatImpl : public serialization::SerializeBaseClass 
+{
 public:
   typedef FloatType value_type;
 

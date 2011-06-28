@@ -523,7 +523,7 @@ IndexBoxGeneralCondition::IndexBoxGeneralCondition(IndexImpl* idx)
 ********************************************************************************/
 void IndexBoxGeneralCondition::clear()
 {
-  theBound = NULL;
+  theBound.clear();
 }
 
 

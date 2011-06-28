@@ -71,8 +71,15 @@ static void checkKeyType(
 
     if (TypeOps::is_equal(tm, *searchKeyType, *rtm.ANY_ATOMIC_TYPE_ONE) ||
         (indexDecl->isOrdered() &&
-         (TypeOps::is_subtype(tm, *searchKeyType, *rtm.NOTATION_TYPE_ONE) ||
-          TypeOps::is_subtype(tm, *searchKeyType, *rtm.HEXBINARY_TYPE_ONE))))
+         (TypeOps::is_subtype(tm, *searchKeyType, *rtm.QNAME_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.NOTATION_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.BASE64BINARY_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.HEXBINARY_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.GYEAR_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.GYEAR_MONTH_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.GMONTH_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.GMONTH_DAY_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *searchKeyType, *rtm.GDAY_TYPE_ONE))))
     {
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(SearchKeyTypeNoProbeIndex_23),
@@ -1078,6 +1085,29 @@ ProbeIndexRangeGeneralIteratorState::ProbeIndexRangeGeneralIteratorState()
 }
 
 
+void ProbeIndexRangeGeneralIteratorState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+  theQname = 0;
+  theIndex = 0;
+  theIterator = NULL;
+}
+
+
+void ProbeIndexRangeGeneralIteratorState::reset(PlanState& state)
+{
+  PlanIteratorState::reset(state);
+  if (theIterator != NULL) 
+  {
+    theIterator->close();
+  }
+
+  theQname = 0;
+  theIndex = 0;
+  theIterator = NULL;
+}
+
+
 ProbeIndexRangeGeneralIterator::ProbeIndexRangeGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -1170,7 +1200,8 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
 
     xqtref_t keyType = indexDecl->getKeyTypes()[0];
 
-    assert(keyType->get_quantifier() == TypeConstants::QUANT_ONE);
+    assert(keyType == NULL ||
+           keyType->get_quantifier() == TypeConstants::QUANT_ONE);
 
     if (keyType != NULL && 
         !TypeOps::is_subtype(tm, *keyType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&

@@ -72,7 +72,10 @@ public:
 
   bool castToLong(store::Item_t& result) const;
 
-  void coerceToDouble(store::Item_t& result, bool force, bool& lossy) const;
+  void coerceToDouble(
+      store::Item_t& result,
+      bool force,
+      bool& lossy) const;
 };
 
 
@@ -950,6 +953,7 @@ public:
 	xs_double getDoubleValue() const { return theValue; }
 
   bool isNaN() const;
+
   bool isPosOrNegInf() const;
 
   SchemaTypeCode getTypeCode() const { return XS_DOUBLE; }
@@ -972,7 +976,7 @@ public:
         const XQPCollator* aCollation = 0) const
   {
     if (theValue.isNaN() || other->getDoubleValue().isNaN())
-      throw ZORBA_EXCEPTION( zerr::ZSTR0041_NAN_COMPARISON );
+      throw ZORBA_EXCEPTION(zerr::ZSTR0041_NAN_COMPARISON);
 
     return theValue.compare(other->getDoubleValue());
   }

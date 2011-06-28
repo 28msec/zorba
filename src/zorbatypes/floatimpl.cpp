@@ -137,7 +137,8 @@ FloatImpl<FloatType> const& FloatImpl<FloatType>::zero()
 
 
 template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_zero() {
+FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_zero() 
+{
   static FloatImpl<FloatType> lValue(-0.0);
   return lValue;
 }
@@ -150,8 +151,10 @@ FloatImpl<FloatType> const& FloatImpl<FloatType>::one()
   return lValue;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_one() {
+FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_one() 
+{
   static FloatImpl<FloatType> lValue(-1);
   return lValue;
 }
@@ -564,6 +567,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const
   return lFloatImpl;
 }
 
+
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) const
 {
@@ -726,7 +730,9 @@ FloatImpl<FloatType> FloatImpl<FloatType>::fmod(FloatImpl<FloatType> p) const
 
 
 template <typename FloatType>
-void FloatImpl<FloatType>::frexp(FloatImpl<FloatType> &out_mantissa, Integer &out_exponent) const
+void FloatImpl<FloatType>::frexp(
+    FloatImpl<FloatType>& out_mantissa,
+    Integer& out_exponent) const
 {
   int expint;
   out_mantissa = FloatImpl (::frexp(theFloating, &expint));
@@ -735,7 +741,9 @@ void FloatImpl<FloatType>::frexp(FloatImpl<FloatType> &out_mantissa, Integer &ou
 
 
 template <>
-void FloatImpl<double>::modf(FloatImpl<double> &out_fraction, FloatImpl<double> &out_integer) const
+void FloatImpl<double>::modf(
+    FloatImpl<double>& out_fraction,
+    FloatImpl<double>& out_integer) const
 {
   double int_part;
   out_fraction = FloatImpl (::modf(theFloating, &int_part));
@@ -744,7 +752,9 @@ void FloatImpl<double>::modf(FloatImpl<double> &out_fraction, FloatImpl<double> 
 
 
 template <>
-void FloatImpl<float>::modf(FloatImpl<float> &out_fraction, FloatImpl<float> &out_integer) const
+void FloatImpl<float>::modf(
+    FloatImpl<float>& out_fraction,
+    FloatImpl<float>& out_integer) const
 {
   float int_part;
   out_fraction = FloatImpl (::modff(theFloating, &int_part));
@@ -1084,6 +1094,7 @@ Double operator/(const Float& aFloat, const Double& aDouble)
 {
   return FloatCommons::parseFloat(aFloat) / aDouble;
 }
+
 
 Double operator%(const Double& aDouble, const Float& aFloat)
 {

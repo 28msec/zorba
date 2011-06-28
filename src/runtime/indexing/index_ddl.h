@@ -523,12 +523,17 @@ public:
   Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
   function.
 ********************************************************************************/
-class ProbeIndexRangeGeneralIteratorState : public ProbeIndexRangeValueIteratorState
+class ProbeIndexRangeGeneralIteratorState : public PlanIteratorState
 {
 public:
-  long                       theTimezone;
-  const XQPCollator        * theCollator;
-  xqtref_t                   theKeyType;
+  const store::Item           * theQname;
+  store::Index                * theIndex;
+
+  long                          theTimezone;
+  const XQPCollator           * theCollator;
+  xqtref_t                      theKeyType;
+
+  store::IndexProbeIterator_t   theIterator;
 
   std::vector<store::Item_t>           theSearchItems;
   std::vector<store::Item_t>::iterator theSearchItemsIte;
@@ -536,6 +541,10 @@ public:
 
 public:
   ProbeIndexRangeGeneralIteratorState();
+
+  void init(PlanState&);
+
+  void reset(PlanState&);
 };
 
 

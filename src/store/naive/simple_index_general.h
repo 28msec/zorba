@@ -27,6 +27,9 @@ namespace zorba
 namespace simplestore 
 {
 
+class AtomicItem;
+
+
 /**************************************************************************//**
 
 *******************************************************************************/
@@ -201,6 +204,12 @@ class GeneralTreeIndex : public GeneralIndex
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
+  static const int64_t  theMaxLong       =  99999999999;
+  static const int64_t  theMinLong       = -99999999999;
+  static const double   theDoubleMaxLong =  99999999999.0;
+  static const double   theDoubleMinLong = -99999999999.0;
+
+private:
   IndexMap       * theMaps[XS_LAST];
   IndexMap       * theSingleMap;
   SYNC_CODE(Mutex  theMapMutex;)
@@ -307,6 +316,12 @@ protected:
   void initValueBox(const store::IndexCondition_t& cond);
 
   void initGeneralBox(const store::IndexCondition_t& cond);
+
+  void probeMap(GeneralTreeIndex::IndexMap* map, const store::IndexKey* key);
+
+  void doubleToLongProbe(
+      const AtomicItem* doubleItem,
+      store::Item_t& result) const;
 };
 
 

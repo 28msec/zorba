@@ -257,9 +257,9 @@ catch * ($code, $desc)
 
 
 for $id in index_dml:probe-index-point-general($auctions:AuctionDates2, 
-                                           (xs:date("2000-12-04"),
-                                            xs:date("2000-01-03"),
-                                            xs:date("1998-08-18")))/@id
+                                               (xs:date("2000-12-04"),
+                                                xs:date("2000-01-03"),
+                                                xs:date("1998-08-18")))/@id
 return <open_auction>{$id}</open_auction>,
 
 "
@@ -267,13 +267,38 @@ return <open_auction>{$id}</open_auction>,
 ",
 
 for $id in index_dml:probe-index-point-general($auctions:AuctionDates2, 
-                                           ("2000-12-04",
-                                            "2000-01-03",
-                                            10.23,
-                                            xs:date("2000-01-03"),
-                                            "1998-08-18"))/@id
+                                               ("2000-12-04",
+                                                "2000-01-03",
+                                                10.23,
+                                                xs:date("2000-01-03"),
+                                                "1998-08-18"))/@id
 return <open_auction>{$id}</open_auction>,
 
+"
+
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates2, 
+                                               (xs:date("2001-12-13"),
+                                                xs:date("2001-11-11")),
+                                               (),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:false(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates2, 
+                                               xs:double("2001"),
+                                               (),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:false(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
 "
 "
 

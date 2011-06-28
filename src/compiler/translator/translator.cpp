@@ -2731,19 +2731,15 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(targetNS))
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE,
-      ERROR_PARAMS( targetNS ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ERROR_PARAMS(targetNS));
   }
 
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
   if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
-    throw XQUERY_EXCEPTION(
-      err::XQST0070, ERROR_PARAMS( pfx, ZED( NoRebindPrefix ) ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0070, loc,
+    ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
 
   // The first URILiteral in a module import must be of nonzero length
   // [err:XQST0088]
@@ -2757,9 +2753,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // since after import, they would both have the same namespace URI, and hence
   // any references to that namespace would be ambiguous.
   if (! theImportedModules.insert(targetNS.str()).second)
-    throw XQUERY_EXCEPTION(
-      err::XQST0047, ERROR_PARAMS(targetNS), ERROR_LOC(loc)
-    );
+    RAISE_ERROR(err::XQST0047, loc, ERROR_PARAMS(targetNS));
 
   // The namespace prefix specified in a module import must not be the same as
   // any namespace prefix bound in the same module by another module import,

@@ -190,7 +190,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
     doubleValue = xs_double::parseDecimal(item->theValue);
 
-    xs_decimal const decValue(doubleValue);
+    const xs_decimal decValue(doubleValue);
 
     lossy = (decValue != item->theValue);
     break;
@@ -206,7 +206,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
     doubleValue = xs_double::parseInteger(item->theValue);
 
-    xs_integer const intValue( doubleValue );
+    const xs_integer intValue(doubleValue);
 
     lossy = (intValue != item->theValue);
     break;
@@ -223,29 +223,12 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     lossy = (ulongValue != item->theValue);
     break;
   }
+
   case XS_UNSIGNED_INT:
-  {
-    const UnsignedIntItem* item = static_cast<const UnsignedIntItem*>(this);
-
-    doubleValue = xs_double::parseUInt(item->theValue);
-    lossy = false;
-    break;
-  }
   case XS_UNSIGNED_SHORT:
-  {
-    const UnsignedShortItem* item = static_cast<const UnsignedShortItem*>(this);
-
-    doubleValue = xs_double::parseUInt(item->theValue);
-
-    lossy = false;
-    break;
-  }
   case XS_UNSIGNED_BYTE:
   {
-    const UnsignedByteItem* item = static_cast<const UnsignedByteItem*>(this);
-
-    doubleValue = xs_double::parseUInt(item->theValue);
-
+    doubleValue = xs_double::parseUInt(getUnsignedIntValue());
     lossy = false;
     break;
   }
@@ -261,43 +244,107 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
     lossy = (longValue != item->theValue);
     break;
   }
+
   case XS_INT:
-  {
-    const IntItem* item = static_cast<const IntItem*>(this);
-
-    doubleValue = xs_double::parseLong(item->theValue);
-    lossy = false;
-    break;
-  }
   case XS_SHORT:
-  {
-    const ShortItem* item = static_cast<const ShortItem*>(this);
-
-    doubleValue = xs_double::parseInt(item->theValue);
-    lossy = false;
-    break;
-  }
   case XS_BYTE:
   {
-    const ByteItem* item = static_cast<const ByteItem*>(this);
-
-    doubleValue = xs_double::parseInt(item->theValue);
+    doubleValue = xs_double::parseInt(getIntValue());
     lossy = false;
     break;
   }
 
   default:
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-      ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
-    );
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
   }
   }
 
   if (force || lossy)
     GET_FACTORY().createDouble(result, doubleValue);
 }
+
+
+#if 0
+/*******************************************************************************
+  For xs:double and xs:float items: convert this item to an xs:long item. If 
+  the conversion is a lossy one, set "lossy" to true, otherwise set "lossy" 
+  to false. 
+********************************************************************************/
+void AtomicItem::coerceToLong(
+    store::Item_t& result,
+    bool& lossy,
+    bool& negINF,
+    bool& posINF) const
+{
+  if (getTypeCode() != XS_DOUBLE && getTypeCode() != XS_FLOAT)
+  {
+    RAISE_ERROR_NO_LOC(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
+  }
+
+  xs_double doubleObj = getDoubleValue();
+
+  if (doubleObj.isNaN())
+    throw ZORBA_EXCEPTION(zerr::ZSTR0041_NAN_COMPARISON);
+
+  int64_t longMax = std::numeric_limits<int64_t>::max();
+  int64_t longMin = std::numeric_limits<int64_t>::min();
+
+  int64_t longValue;
+
+  if (doubleObj.isPosInf())
+  {
+    longValue = longMax;
+    lossy = true;
+    negINF = false;
+    posINF = true;
+  }
+  else if (doubleObj.isNegInf())
+  {
+    longValue = longMin;
+    lossy = true;
+    negINF = true;
+    posINF = false;
+  }
+  else
+  {
+    double doubleMaxLong = static_cast<double>(longMax);
+    double doubleMinLong = static_cast<double>(longMin);
+
+    assert(longMax == static_cast<int64_t>(doubleMaxLong));
+    assert(longMin == static_cast<int64_t>(doubleMinLong));
+
+    double doubleValue = doubleObj.getNumber();
+
+    if (doubleValue > doubleMaxLong)
+    {
+      longValue = longMax;
+      lossy = true;
+      negINF = false;
+      posINF = true;
+    }
+    else if (doubleValue < doubleMinLong)
+    {
+      longValue = longMin;
+      lossy = true;
+      negINF = true;
+      posINF = false;
+    }
+    else
+    {
+      double doubleFloor = ::floor(doubleValue);
+      longValue = static_cast<uint64_t>(doubleFloor);
+      lossy = (doubleFloor != doubleValue);
+      negINF = false;
+      posINF = false;
+    }
+  }
+
+  GET_FACTORY().createLong(result, longValue);
+}
+#endif
 
 
 /*******************************************************************************
@@ -1380,12 +1427,8 @@ store::Item* DurationItem::getType() const
 
 store::Item_t DurationItem::getEBV() const
 {
-  throw XQUERY_EXCEPTION(
-    err::FORG0006,
-    ERROR_PARAMS(
-      ZED( OperationNotDef_23 ), ZED( EffectiveBooleanValue ), "duration"
-    )
-  );
+  RAISE_ERROR_NO_LOC(err::FORG0006,
+  ERROR_PARAMS(ZED(OperationNotDef_23), ZED(EffectiveBooleanValue), "duration"));
 }
 
 
@@ -1480,15 +1523,19 @@ store::Item* FloatItem::getType() const
 store::Item_t FloatItem::getEBV() const
 {
   bool b;
-  if (theValue.isNaN()) {
+  if (theValue.isNaN()) 
+  {
     b = false;
-  } else {
+  }
+  else
+  {
     b = !theValue.isZero();
   }
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
+
 
 zstring FloatItem::getStringValue() const
 {
@@ -2412,7 +2459,7 @@ ErrorItem::~ErrorItem()
 {
   if (theError)
   {
-    //theError->free();
+    delete theError;
     theError = NULL;
   }
 }
