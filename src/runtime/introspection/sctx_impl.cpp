@@ -488,9 +488,11 @@ bool FunctionNamesIterator::nextImpl(
 
     for (unsigned int i = 0; i < state->thePosition; ++i)
     {
-      if (state->theFunctions[state->thePosition]->getName()->equals(state->theFunctions[i]->getName()))
+      if (state->theFunctions[i]->getName()->equals(state->theFunctions[state->thePosition]->getName())
+          &&
+          state->theFunctions[i]->getXQueryVersion() <= theSctx->xquery_version())
       {
-        // skip functions with the same name but different arities
+        // skip functions with the same name but different arities, which were previously returned
         already_returned = true;
         break;
       }
