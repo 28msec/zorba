@@ -870,6 +870,7 @@ FLWORIterator::FLWORIterator(
 {
   if (theOrderByClause != 0 && theOrderByClause->theOrderSpecs.size() == 0)
   {
+    delete theOrderByClause;
     theOrderByClause = NULL;
   }
 
@@ -878,6 +879,7 @@ FLWORIterator::FLWORIterator(
     theMaterializeClause->addSort(theOrderByClause->theLocation,
                                   theOrderByClause->theOrderSpecs,
                                   theOrderByClause->theStable);
+    delete theOrderByClause;
     theOrderByClause = NULL; 
   }
 }
