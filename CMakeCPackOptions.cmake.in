@@ -18,6 +18,8 @@ SET ( CPACK_SET_DESTDIR ON )
 MESSAGE ( STATUS "current source: " ${CMAKE_SOURCE_DIR} )
 SET ( CPACK_PACKAGE_DESCRIPTION_FILE "@CMAKE_SOURCE_DIR@/README.txt")
 
+SET ( CPACK_DEBIAN_PACKAGE_DEPENDS "libxml2-dev, libicu-dev, libxerces-c-dev" )
+
 # for Windows Null Soft Installer System ...
 if(CPACK_GENERATOR MATCHES "NSIS")
   SET(CPACK_PACKAGE_EXECUTABLES "zorba" "Zorba Command Line Client" )

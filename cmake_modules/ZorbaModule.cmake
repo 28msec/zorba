@@ -230,29 +230,28 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
   ADD_CUSTOM_TARGET ("check_${uri_sym}_${MODULE_VERSION}" ALL
     DEPENDS ${output_files})
 
-
-#  QQQ FILE(COPY ...) only exists in Cmake 2.8 :(
-#  FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}
-#        DESTINATION "${output_dir}/.."
-#        FILES_MATCHING
-#        PATTERN "*.xsd"
-#        PATTERN "*.svn" EXCLUDE
-#        PATTERN "*.xq.src" EXCLUDE)
-
-
    STRING(REPLACE "/" "_" ZORBA_OUTPUT_INSTALLED "${output_dir}_installed")
    GET_PROPERTY (is_installed GLOBAL PROPERTY ${ZORBA_OUTPUT_INSTALLED})
    IF(NOT is_installed)
-    INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/modules
-        DESTINATION "include/zorba/"
-        FILES_MATCHING
-        PATTERN "*.vc*" EXCLUDE
-        PATTERN "*.cmake" EXCLUDE
-        PATTERN "CMakeFiles" EXCLUDE
-        PATTERN "*.dir" EXCLUDE
-        PATTERN "Debug" EXCLUDE
-        PATTERN "Release" EXCLUDE
-        PATTERN "*")
+   
+    #Copy .xsd files in directory
+    FILE(GLOB XSD_FILES "*.xsd")
+    FOREACH(XSD_FILE ${XSD_FILES})
+     CONFIGURE_FILE(${XSD_FILE} ${output_dir} COPYONLY)
+    ENDFOREACH(XSD_FILE ${XSD_FILES})
+   
+    INSTALL(DIRECTORY "${PROJECT_BINARY_DIR}/MODULE_PATH/."
+            DESTINATION "include/zorba/modules/")
+    #INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/modules
+    #    DESTINATION "include/zorba/"
+    #    FILES_MATCHING
+    #    PATTERN "*.vc*" EXCLUDE
+    #    PATTERN "*.cmake" EXCLUDE
+    #    PATTERN "CMakeFiles" EXCLUDE
+    #    PATTERN "*.dir" EXCLUDE
+    #    PATTERN "Debug" EXCLUDE
+    #    PATTERN "Release" EXCLUDE
+    #    PATTERN "*")
     SET_PROPERTY(GLOBAL PROPERTY ${ZORBA_OUTPUT_INSTALLED} 1)
    ENDIF(NOT is_installed)
     
