@@ -49,33 +49,33 @@ public:
 
   bool empty();
   
-  ulong getSize();
+  xs_integer getSize();
 
   void init(store::Iterator_t& iter, bool copy = false);
 
   void append(store::Iterator_t iter, bool copy);
 
-  store::Item_t operator[](ulong aIndex);
+  store::Item_t operator[](xs_integer aIndex);
 
-  void getItem(ulong position, store::Item_t& res);
+  void getItem(xs_integer position, store::Item_t& res);
 
-  bool containsItem(ulong position);
+  bool containsItem(xs_integer position);
 
   store::Iterator_t getIterator();
 
   store::Iterator_t getIterator(
-        ulong startPos,
-        ulong endPos,
+        xs_integer startPos,
+        xs_integer endPos,
         bool streaming = false);
 
   store::Iterator_t getIterator(
-        ulong startPos,
+        xs_integer startPos,
         store::Iterator_t function,
         const std::vector<store::Iterator_t>& var,
         bool streaming = false );
 
   store::Iterator_t getIterator(
-        const std::vector<ulong>& positions,
+        const std::vector<xs_integer>& positions,
         bool streaming = false);
 
   store::Iterator_t getIterator(
@@ -83,7 +83,7 @@ public:
         bool streaming = false);
   
   void purge();
-  void purgeUpTo(ulong upTo );
+  void purgeUpTo(xs_integer upTo );
 };
 
 
@@ -99,19 +99,22 @@ class SimpleTempSeqIter : public store::TempSeqIterator
     startEnd
   };
 
-  SimpleTempSeq_t          theTempSeq;
-  BorderType               theBorderType;
+  SimpleTempSeq_t     theTempSeq;
+  BorderType          theBorderType;
 
-  ulong                    theCurPos;
-  ulong                    theStartPos;
-  ulong                    theEndPos;
-    
+  ulong               theCurPos;
+  ulong               theStartPos;
+  ulong               theEndPos;
+
  public:
   SimpleTempSeqIter() {}
 
   SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
 
-  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, ulong startPos, ulong endPos);
+  SimpleTempSeqIter(
+      SimpleTempSeq_t aTempSeq,
+      xs_integer startPos,
+      xs_integer endPos);
 
   virtual ~SimpleTempSeqIter();
 

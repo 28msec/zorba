@@ -50,29 +50,31 @@ bool SimpleTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleTempSeq::operator[](ulong aIndex) 
+store::Item_t SimpleTempSeq::operator[](xs_integer aIndex) 
 {
-  return theItems[aIndex];
+  ulong lIndex = to_xs_long(aIndex);
+  return theItems[lIndex];
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-ulong SimpleTempSeq::getSize() 
+xs_integer SimpleTempSeq::getSize() 
 {
-  return (ulong)theItems.size();
+  return theItems.size();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleTempSeq::getItem(ulong position, store::Item_t& res)
+void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 {
-  if (containsItem(position))
+  ulong lPos = to_xs_long(position);
+  if (containsItem(lPos))
 	{
-    res = theItems[position - 1];
+    res = theItems[lPos - 1];
   }
   else
 	{
@@ -84,9 +86,10 @@ void SimpleTempSeq::getItem(ulong position, store::Item_t& res)
 /*******************************************************************************
 
 ********************************************************************************/
-bool SimpleTempSeq::containsItem(ulong position)
+bool SimpleTempSeq::containsItem(xs_integer position)
 {
-  return theItems.size() >= position;
+  ulong lPos = to_xs_long(position);
+  return theItems.size() >= lPos;
 }
 
 
@@ -150,8 +153,8 @@ store::Iterator_t SimpleTempSeq::getIterator()
   @return Iterator
 ********************************************************************************/
 store::Iterator_t SimpleTempSeq::getIterator(
-    ulong startPos,
-    ulong endPos,
+    xs_integer startPos,
+    xs_integer endPos,
     bool streaming)
 {
   return new SimpleTempSeqIter(this, startPos, endPos);
@@ -162,7 +165,7 @@ store::Iterator_t SimpleTempSeq::getIterator(
 
 ********************************************************************************/
 store::Iterator_t SimpleTempSeq::getIterator(
-    ulong startPos,
+    xs_integer startPos,
     store::Iterator_t function,
     const std::vector<store::Iterator_t>& vars,
     bool streaming)
@@ -175,7 +178,7 @@ store::Iterator_t SimpleTempSeq::getIterator(
 
 ********************************************************************************/
 store::Iterator_t SimpleTempSeq::getIterator(
-    const std::vector<ulong>& positions,
+    const std::vector<xs_integer>& positions,
     bool streaming)
 {
   return store::Iterator_t ( NULL );
@@ -205,7 +208,7 @@ void SimpleTempSeq::purge()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleTempSeq::purgeUpTo(ulong upTo)
+void SimpleTempSeq::purgeUpTo(xs_integer upTo)
 {
 
 }
@@ -226,14 +229,14 @@ SimpleTempSeqIter::SimpleTempSeqIter(
 
 SimpleTempSeqIter::SimpleTempSeqIter(
     SimpleTempSeq_t aTempSeq,
-    ulong startPos,
-    ulong endPos)
+    xs_integer startPos,
+    xs_integer endPos)
 	:
 		theTempSeq(aTempSeq),
     theBorderType(startEnd),
-    theCurPos(startPos - 2),
-    theStartPos(startPos),
-    theEndPos(endPos)
+    theCurPos(to_xs_long(startPos) - 2),
+    theStartPos(to_xs_long(startPos)),
+    theEndPos(to_xs_long(endPos))
 {
 }
 
@@ -271,7 +274,7 @@ bool SimpleTempSeqIter::next(store::Item_t& result)
   switch (theBorderType)
 	{
   case none:
-    if ( theCurPos < theTempSeq->getSize() ) 
+    if ( theCurPos < to_xs_long(theTempSeq->getSize()) ) 
     {
       result = (*theTempSeq)[theCurPos];
       return true;
@@ -296,7 +299,7 @@ store::Item* SimpleTempSeqIter::next()
   switch (theBorderType)
 	{
   case none:
-    if ( theCurPos < theTempSeq->getSize() ) 
+    if ( theCurPos < to_xs_long(theTempSeq->getSize()) ) 
       return (*theTempSeq)[theCurPos];
     break;
   case startEnd:

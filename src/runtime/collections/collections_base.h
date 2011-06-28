@@ -101,7 +101,7 @@ protected:
     const StaticallyKnownCollection* collectionDecl;
     store::Item_t                    node;
     store::Item_t                    copyNode;
-    ulong                            targetPos;
+    xs_integer                       targetPos;
   
     store::CopyMode lCopyMode;
   

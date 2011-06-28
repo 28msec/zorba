@@ -25,6 +25,7 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"
+#include "zorbatypes/numconversions.h"
 
 namespace zorba { namespace simplestore {
 
@@ -89,8 +90,10 @@ store::Iterator_t SimpleCollection::getIterator()
 ********************************************************************************/
 void SimpleCollection::addNode(
     store::Item* nodeItem,
-    long position)
+    xs_integer position)
 {
+  xs_long lPosition = to_xs_long(position);
+
   if (!nodeItem->isNode())
   {
     throw ZORBA_EXCEPTION(
@@ -122,15 +125,15 @@ void SimpleCollection::addNode(
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
-  if (position < 0 || position >= static_cast<long>(theXmlTrees.size()))
+  if (lPosition < 0 || lPosition >= theXmlTrees.size())
   {
     theXmlTrees.push_back(nodeItem);
     node->setCollection(this, (ulong)theXmlTrees.size() - 1);
   }
   else
   {
-    theXmlTrees.insert(theXmlTrees.begin() + position, nodeItem);
-    node->setCollection(this, position);
+    theXmlTrees.insert(theXmlTrees.begin() + lPosition, nodeItem);
+    node->setCollection(this, lPosition);
   }
 }
 
@@ -148,8 +151,10 @@ ulong SimpleCollection::addNodes(
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  ulong targetPos;
+  xs_integer targetPos;
   bool found = findNode(targetNode, targetPos);
+  ulong lTargetPos = to_xs_long(targetPos);
+
   if (!found)
   {
     throw ZORBA_EXCEPTION(
@@ -159,7 +164,7 @@ ulong SimpleCollection::addNodes(
   }
 
   if (!before)
-    ++targetPos;
+    ++lTargetPos;
 
   ulong numNodes = (ulong)theXmlTrees.size();
   ulong numNewNodes = (ulong)nodes.size();
@@ -195,20 +200,20 @@ ulong SimpleCollection::addNodes(
       );
     }
     
-    node->setCollection(this, targetPos + i);
+    node->setCollection(this, lTargetPos + i);
   }
 
   theXmlTrees.resize(numNodes + numNewNodes);
 
 #if 1
-  memmove(&theXmlTrees[targetPos + numNewNodes], 
-          &theXmlTrees[targetPos],
-          (numNodes-targetPos) * sizeof(store::Item_t));
+  memmove(&theXmlTrees[lTargetPos + numNewNodes], 
+          &theXmlTrees[lTargetPos],
+          (numNodes-lTargetPos) * sizeof(store::Item_t));
 
-  for (ulong i = targetPos; i < targetPos + numNewNodes; ++i)
+  for (ulong i = lTargetPos; i < lTargetPos + numNewNodes; ++i)
     theXmlTrees[i].setNull();
 #else
-  for (long j = numNodes-1, i = theXmlTrees.size()-1; j >= targetPos; --j, --i)
+  for (long j = numNodes-1, i = theXmlTrees.size()-1; j >= lTargetPos; --j, --i)
   {
     theXmlTrees[i].transfer(theXmlTrees[j]);
   }
@@ -216,10 +221,10 @@ ulong SimpleCollection::addNodes(
 
   for (ulong i = 0; i < numNewNodes; ++i)
   {
-    theXmlTrees[targetPos + i].transfer(nodes[i]);
+    theXmlTrees[lTargetPos + i].transfer(nodes[i]);
   }
 
-  return targetPos;
+  return lTargetPos;
 }
 
 
@@ -228,7 +233,7 @@ ulong SimpleCollection::addNodes(
   collection. If the tree was found return true and the position of the tree;
   otherwise, return false.
 ********************************************************************************/
-bool SimpleCollection::removeNode(store::Item* nodeItem, ulong& position)
+bool SimpleCollection::removeNode(store::Item* nodeItem, xs_integer& position)
 {
   if (!nodeItem->isNode())
   {
@@ -243,13 +248,14 @@ bool SimpleCollection::removeNode(store::Item* nodeItem, ulong& position)
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   bool found = findNode(nodeItem, position);
+  ulong lPosition = to_xs_long(position);
 
   if (found)
   {
     ZORBA_ASSERT(node->getCollection() == this);
 
     node->setCollection(NULL, 0);
-    theXmlTrees.erase(theXmlTrees.begin() + position);
+    theXmlTrees.erase(theXmlTrees.begin() + lPosition);
     return true;
   }
   else
@@ -264,21 +270,23 @@ bool SimpleCollection::removeNode(store::Item* nodeItem, ulong& position)
   of trees in the collection, this mothod is a noop. The method returns true if
   a tree is actually deleted, otherwise it returns false.
 ********************************************************************************/
-bool SimpleCollection::removeNode(ulong position)
+bool SimpleCollection::removeNode(xs_integer position)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  if (position >= theXmlTrees.size())
+  ulong lPosition = to_xs_long(position);
+
+  if (lPosition >= theXmlTrees.size())
   {
     return false;
   }
   else 
   {
-    XmlNode* node = static_cast<XmlNode*>(theXmlTrees[position].getp());
+    XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
     ZORBA_ASSERT(node->getCollection() == this);
 
     node->setCollection(NULL, 0);
-    theXmlTrees.erase(theXmlTrees.begin() + position);
+    theXmlTrees.erase(theXmlTrees.begin() + lPosition);
     return true;
   }
 }
@@ -290,30 +298,33 @@ bool SimpleCollection::removeNode(ulong position)
   in the collection, this mothod is a noop. The method returns the number of 
   trees that are actually deleted.
 ********************************************************************************/
-ulong SimpleCollection::removeNodes(ulong position, ulong num)
+xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  if (num == 0 || position >= theXmlTrees.size())
+  ulong lPosition = to_xs_long(position);
+  ulong lNum = to_xs_long(num);
+
+  if (lNum == 0 || lPosition >= theXmlTrees.size())
   {
     return 0;
   }
   else 
   {
-    ulong last = position + num;
+    ulong last = lPosition + lNum;
     if (last > theXmlTrees.size())
-      last = (ulong)theXmlTrees.size();
+      last = theXmlTrees.size();
 
-    for (ulong i = position; i < last; ++i)
+    for (ulong i = lPosition; i < last; ++i)
     { 
-      XmlNode* node = static_cast<XmlNode*>(theXmlTrees[position].getp());
+      XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
       ZORBA_ASSERT(node->getCollection() == this);
       node->setCollection(NULL, 0);
 
-      theXmlTrees.erase(theXmlTrees.begin() + position);
+      theXmlTrees.erase(theXmlTrees.begin() + lPosition);
     }
 
-    return last-position;
+    return last-lPosition;
   }
 }
 
@@ -322,14 +333,15 @@ ulong SimpleCollection::removeNodes(ulong position, ulong num)
   Return the node at the given position within the collection, or NULL if the
   given position is >= than the number of nodes in the collection.
 ********************************************************************************/
-store::Item_t SimpleCollection::nodeAt(ulong position)
+store::Item_t SimpleCollection::nodeAt(xs_integer position)
 {
-  if(position >= theXmlTrees.size())
+  ulong lPosition = to_xs_long(position);
+  if (lPosition >= theXmlTrees.size())
   {
     return NULL;
   }
 
-  return theXmlTrees[position];
+  return theXmlTrees[lPosition];
 }
 
 
@@ -338,7 +350,7 @@ store::Item_t SimpleCollection::nodeAt(ulong position)
   return true and the position of the tree within the collection. Otherwise, 
   return false.
 ********************************************************************************/
-bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
+bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) const
 {
   if (!node->isNode())
   {
@@ -358,8 +370,10 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 
   position = n->getTree()->getPosition();
 
-  if (position < theXmlTrees.size() &&
-      BASE_NODE(theXmlTrees[position])->getTreeId() == n->getTreeId())
+  ulong lPosition = to_xs_long(position);
+
+  if (lPosition < theXmlTrees.size() &&
+      BASE_NODE(theXmlTrees[lPosition])->getTreeId() == n->getTreeId())
   {
     return true;
   }

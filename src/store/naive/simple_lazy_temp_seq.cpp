@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "stdafx.h"
+#include <limits>
 
 #include "diagnostics/assert.h"
 
@@ -25,8 +26,6 @@ namespace zorba
 {
 namespace simplestore
 {
-
-const ulong SimpleLazyTempSeq::MAX_POSITION = (ulong)std::vector<store::Item_t>().max_size();  //FIXME Is there no better way?
 
 
 /*******************************************************************************
@@ -110,13 +109,14 @@ void SimpleLazyTempSeq::purge()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purgeUpTo(ulong upTo)
+void SimpleLazyTempSeq::purgeUpTo(xs_integer upTo)
 {
-  ZORBA_ASSERT(upTo >= thePurgedUpTo);
-  ZORBA_ASSERT(upTo - thePurgedUpTo <= theItems.size());
+  ulong lUpTo = to_xs_long(upTo);
+  ZORBA_ASSERT(lUpTo >= thePurgedUpTo);
+  ZORBA_ASSERT(lUpTo - thePurgedUpTo <= theItems.size());
 
-  theItems.erase(theItems.begin(), (theItems.begin() + (upTo - thePurgedUpTo)));
-  thePurgedUpTo = upTo;
+  theItems.erase(theItems.begin(), (theItems.begin() + (lUpTo - thePurgedUpTo)));
+  thePurgedUpTo = lUpTo;
 }
 
 
@@ -128,7 +128,7 @@ void SimpleLazyTempSeq::purgeUpTo(ulong upTo)
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator()
 {
-  return new SimpleLazyTempSeqIter(this, 1,  SimpleLazyTempSeq::MAX_POSITION);
+  return new SimpleLazyTempSeqIter(this, 1, std::numeric_limits<long>::max());
 }
 
 
@@ -140,8 +140,8 @@ store::Iterator_t SimpleLazyTempSeq::getIterator()
   @return Iterator
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator(
-    ulong startPos,
-    ulong endPos,
+    xs_integer startPos,
+    xs_integer endPos,
     bool streaming)
 {
   return new SimpleLazyTempSeqIter(this, startPos, endPos);
@@ -152,7 +152,7 @@ store::Iterator_t SimpleLazyTempSeq::getIterator(
 
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator(
-    ulong startPos,
+    xs_integer startPos,
     store::Iterator_t function,
     const std::vector<store::Iterator_t>& vars,
     bool streaming)
@@ -166,7 +166,7 @@ store::Iterator_t SimpleLazyTempSeq::getIterator(
 
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator(
-    const std::vector<ulong>& positions,
+    const std::vector<xs_integer>& positions,
     bool streaming)
 {
   assert (false); //Not implemented
@@ -191,13 +191,13 @@ store::Iterator_t SimpleLazyTempSeq::getIterator(
 ********************************************************************************/
 SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
     SimpleLazyTempSeq_t aTempSeq,
-    ulong aStartPos,
-    ulong aEndPos)
+    xs_integer aStartPos,
+    xs_integer aEndPos)
   :
   theTempSeq(aTempSeq),
-  theCurPos(aStartPos - 1),
-  theStartPos(aStartPos),
-  theEndPos(aEndPos)
+  theCurPos(to_xs_long(aStartPos) - 1),
+  theStartPos(to_xs_long(aStartPos)),
+  theEndPos(to_xs_long(aEndPos))
 {
 }
 

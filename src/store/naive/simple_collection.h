@@ -92,7 +92,7 @@ public:
 
   const store::Item* getName() const { return theName.getp(); }
 
-  ulong size() const { return (ulong)theXmlTrees.size(); }
+  xs_integer size() const { return theXmlTrees.size(); }
 
   bool isDynamic() const { return theIsDynamic; }
 
@@ -139,7 +139,7 @@ public:
 
   void addNode(
         store::Item* node,
-        long position = -1);
+        xs_integer position = -1);
 
   // virtual to allow extension by subclasses
   virtual ulong addNodes(
@@ -148,17 +148,17 @@ public:
         bool before);
 
   // virtual to allow extension by subclasses
-  virtual bool removeNode(store::Item* node, ulong& pos);
+  virtual bool removeNode(store::Item* node, xs_integer& pos);
 
   // virtual to allow extension by subclasses
-  virtual bool removeNode(ulong position);
+  virtual bool removeNode(xs_integer position);
 
   // virtual to allow extension by subclasses
-  virtual ulong removeNodes(ulong position, ulong num);
+  virtual xs_integer removeNodes(xs_integer position, xs_integer num);
 
-  bool findNode(const store::Item* node, ulong& position) const;
+  bool findNode(const store::Item* node, xs_integer& position) const;
 
-  store::Item_t nodeAt(ulong position);
+  store::Item_t nodeAt(xs_integer position);
 
   // virtual to allow extension by subclasses
   virtual void adjustTreePositions();

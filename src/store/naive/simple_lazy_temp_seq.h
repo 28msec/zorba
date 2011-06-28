@@ -44,9 +44,6 @@ typedef rchandle<class SimpleLazyTempSeq> SimpleLazyTempSeq_t;
 ********************************************************************************/
 class SimpleLazyTempSeq : public store::TempSeq 
 {
- public:
-  static const ulong MAX_POSITION;
-
  private:
   store::Iterator_t          theIterator;
   bool                       theCopy;
@@ -68,25 +65,25 @@ class SimpleLazyTempSeq : public store::TempSeq
 
   void append(store::Iterator_t iter, bool copy);
 
-  inline void getItem(ulong position, store::Item_t& result);
+  inline void getItem(xs_integer position, store::Item_t& result);
 
-  inline bool containsItem(ulong position);
+  inline bool containsItem(xs_integer position);
 
   store::Iterator_t getIterator();
 
   store::Iterator_t getIterator(
-        ulong startPos,
-        ulong endPos,
+        xs_integer startPos,
+        xs_integer endPos,
         bool streaming = false);
 
   store::Iterator_t getIterator(
-        ulong startPos,
+        xs_integer startPos,
         store::Iterator_t function,
         const std::vector<store::Iterator_t>& var,
         bool streaming = false);
 
   store::Iterator_t getIterator(
-        const std::vector<ulong>& positions,
+        const std::vector<xs_integer>& positions,
         bool streaming = false);
 
   store::Iterator_t getIterator(
@@ -95,7 +92,7 @@ class SimpleLazyTempSeq : public store::TempSeq
         
   void purge();
 
-  void purgeUpTo(ulong upTo);
+  void purgeUpTo(xs_integer upTo);
 
  private:
   inline void matNextItem();
@@ -114,8 +111,8 @@ class SimpleLazyTempSeqIter : public store::Iterator
  public:
   SimpleLazyTempSeqIter(
         SimpleLazyTempSeq_t aTempSeq,
-        ulong aStartPos,
-        ulong aEndPos);
+        xs_integer aStartPos,
+        xs_integer aEndPos);
 
   virtual ~SimpleLazyTempSeqIter();
 
@@ -130,11 +127,12 @@ class SimpleLazyTempSeqIter : public store::Iterator
 /*******************************************************************************
 
 ********************************************************************************/
-inline void SimpleLazyTempSeq::getItem(ulong position, store::Item_t& result)
+inline void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
 {
-  if ( this->containsItem ( position ) ) 
+  ulong lPos = to_xs_long( position );
+  if ( this->containsItem ( lPos ) ) 
   {
-    result = theItems[position - thePurgedUpTo - 1];
+    result = theItems[lPos - thePurgedUpTo - 1];
   }
   else 
   {
@@ -163,11 +161,12 @@ inline void SimpleLazyTempSeq::getItem(ulong position, store::Item_t& result)
 
   If the i-th item is already in the queue, the method will simply return true. 
 ********************************************************************************/
-inline bool SimpleLazyTempSeq::containsItem(ulong position) 
+inline bool SimpleLazyTempSeq::containsItem(xs_integer position) 
 {
-  assert(position > thePurgedUpTo);
+  ulong lPos = to_xs_long(position);
+  assert(lPos > thePurgedUpTo);
 
-  ulong numItemsToBuffer = position - thePurgedUpTo;
+  ulong numItemsToBuffer = lPos - thePurgedUpTo;
 
   while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
   {

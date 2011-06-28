@@ -601,7 +601,7 @@ void populate_context_collections(static_context* sctx)
     DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_delete_node_first,
         (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-nodes-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_DELETE_NODES_FIRST_2);
 
@@ -626,7 +626,7 @@ void populate_context_collections(static_context* sctx)
     DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_delete_node_first,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-nodes-first"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_NODES_FIRST_2);
 
@@ -651,7 +651,7 @@ void populate_context_collections(static_context* sctx)
     DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_delete_node_last,
         (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","delete-nodes-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_DELETE_NODES_LAST_2);
 
@@ -676,7 +676,7 @@ void populate_context_collections(static_context* sctx)
     DECL_WITH_KIND(sctx, zorba_store_collections_static_dml_delete_node_last,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","delete-nodes-last"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
-        GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_DELETE_NODES_LAST_2);
 

@@ -804,7 +804,7 @@ void UpdDeleteCollection::apply()
       ERROR_LOC( theLoc )
     );
 
-  ulong size = collection->size();
+  ulong size = to_xs_long(collection->size());
   for (ulong i = 0; i < size; ++i)
   {
     XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
@@ -854,7 +854,7 @@ void UpdInsertIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  ulong lastPos = lColl->size()-1;
+  ulong lastPos = to_xs_long(lColl->size()) - 1;
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
@@ -928,7 +928,7 @@ void UpdInsertLastIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  ulong lastPos = lColl->size()-1;
+  ulong lastPos = to_xs_long(lColl->size()) - 1;
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
@@ -1011,15 +1011,15 @@ void UpdDeleteNodesFromCollection::apply()
 
   theIsApplied = true;
 
-  ulong size = lColl->size();
+  ulong size = to_xs_long(lColl->size());
 
-  ulong numNodes = (ulong)theNodes.size();
+  size_t numNodes = theNodes.size();
 
   bool isLast = theIsLast;
 
   if (theIsLast)
   {
-    for (ulong i = numNodes; i > 0; --i)
+    for (size_t i = numNodes; i > 0; --i)
     {
       if (theNodes[i-1] != lColl->nodeAt(size - i))
       {

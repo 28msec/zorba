@@ -19,7 +19,7 @@
 #include <vector>
 
 #include <zorba/config.h>
-
+#include "zorbatypes/schema_types.h"
 #include "store/api/shared_types.h"
 
 
@@ -64,8 +64,8 @@ public:
    * @return Iterator
    */
   virtual Iterator_t getIterator(
-        ulong startPos,
-        ulong endPos,
+        xs_integer startPos,
+        xs_integer endPos,
         bool streaming = false) = 0;
 		
   /**
@@ -76,7 +76,7 @@ public:
    * @param position (first position in XQuery is 1 and not 0!)
    * @return item
    */
-  virtual void getItem(ulong position, Item_t& result) = 0;
+  virtual void getItem(xs_integer position, Item_t& result) = 0;
 		
 		
   /**
@@ -87,7 +87,7 @@ public:
    * @param position 
    * @return 
    */
-  virtual bool containsItem(ulong position) = 0;
+  virtual bool containsItem(xs_integer position) = 0;
 		
   /**
    * purge() allows the store to do proper garbage collection. If e.g. a let 
@@ -106,7 +106,7 @@ public:
    * 
    * @param upTo boundary for garbage collector
    */
-  virtual void purgeUpTo(ulong upTo) = 0;
+  virtual void purgeUpTo(xs_integer upTo) = 0;
 		
   /**
    * @return Does this TempSeq save an empty sequence? 

@@ -357,7 +357,7 @@ declare updating function dml:delete-node-first($name as xs:QName) external;
  :)
 declare updating function dml:delete-nodes-first(
   $name as xs:QName,
-  $number as xs:unsignedLong)  external;
+  $number as xs:integer)  external;
 
 (:~
  : The delete-node-last function is an updating function that deletes the
@@ -395,7 +395,7 @@ declare updating function dml:delete-node-last($name as xs:QName)  external;
  :)
 declare updating function dml:delete-nodes-last(
   $name as xs:QName,
-  $number as xs:unsignedLong)  external;
+  $number as xs:integer)  external;
 
 (:~
  : The index-of function that returns the position of the node in its collection.

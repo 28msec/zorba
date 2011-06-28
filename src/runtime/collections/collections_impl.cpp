@@ -293,7 +293,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 {
   store::Collection_t collection;
   store::Item_t node;
-  ulong pos = 1;
+  xs_integer pos = 1;
   bool found;
 
   PlanIteratorState* state;
@@ -308,7 +308,7 @@ bool ZorbaIndexOfIterator::nextImpl(
 
     found = collection->findNode(node, pos);
     ZORBA_ASSERT(found);
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(pos+1)),
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+xs_integer(1)),
                state);
   }
 
@@ -1454,9 +1454,8 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   store::Collection_t              collection;
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
-  ulong                            collectionSize;
   store::Item_t                    numNodesItem;
-  xs_unsignedLong                  numNodes = 1;
+  xs_integer                       numNodes = 1;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1474,12 +1473,10 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
     if (!consumeNext(numNodesItem, theChildren[1].getp(), planState))
       ZORBA_ASSERT(false);
 
-    numNodes = numNodesItem->getUnsignedLongValue();
+    numNodes = numNodesItem->getIntegerValue();
   }
 
-  collectionSize = collection->size();
-
-  if (collectionSize < numNodes)
+  if (collection->size() < numNodes)
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
@@ -1491,7 +1488,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (ulong i = 0; i < numNodes; ++i)
+  for (xs_integer i = 0; i < numNodes; ++i)
     nodes.push_back(collection->nodeAt(i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, false, theDynamicCollection);
@@ -1569,9 +1566,8 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   store::Collection_t              collection;
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
-  xs_unsignedLong                  collectionSize;
   store::Item_t                    numNodesItem;
-  xs_unsignedLong                  numNodes = 1;
+  xs_integer                       numNodes = 1;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1587,13 +1583,10 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   {
     if (!consumeNext(numNodesItem, theChildren[1].getp(), planState))
       ZORBA_ASSERT(false);
-
-    numNodes = numNodesItem->getUnsignedLongValue();
+    numNodes = numNodesItem->getIntegerValue();
   }
 
-  collectionSize = collection->size();
-
-  if (collectionSize < numNodes) 
+  if (collection->size() < numNodes) 
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
@@ -1605,8 +1598,8 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xs_unsignedLong i = numNodes; i > 0; --i)
-    nodes.push_back(collection->nodeAt(collectionSize - i));
+  for (xs_integer i = numNodes; i > xs_integer(0); --i)
+    nodes.push_back(collection->nodeAt(collection->size() - i));
 
   pul->addDeleteFromCollection(&loc, collectionName, nodes, true, theDynamicCollection);
 

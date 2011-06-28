@@ -275,7 +275,7 @@ declare updating function dml:delete-node-first($name as xs:string)
  :)
 declare updating function dml:delete-nodes-first(
   $name as xs:string,
-  $number as xs:unsignedLong)
+  $number as xs:integer)
 {
   qdml:delete-nodes-first(ddl:to-qname($name), $number)
 };
@@ -314,7 +314,7 @@ declare updating function dml:delete-node-last($name as xs:string)
  :)
 declare updating function dml:delete-nodes-last(
   $name as xs:string,
-  $number as xs:unsignedLong)
+  $number as xs:integer)
 {
   qdml:delete-nodes-last(ddl:to-qname($name), $number)
 };

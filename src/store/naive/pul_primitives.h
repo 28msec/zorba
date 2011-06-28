@@ -1121,7 +1121,7 @@ protected:
 
   ulong              theNumApplied;
   std::vector<bool>  theFound;
-  std::vector<ulong> thePositions;
+  std::vector<xs_integer> thePositions;
 
   UpdDeleteNodesFromCollection(
         CollectionPul* pul,

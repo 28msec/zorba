@@ -17,6 +17,7 @@
 #define ZORBA_STORE_COLLECTION_H
 
 #include <zorba/config.h>
+#include "zorbatypes/schema_types.h"
 #include "store/api/shared_types.h"
 
 namespace zorba { namespace store {
@@ -45,7 +46,7 @@ public:
   /**
    * Returns the number of items in the collection.
    */
-  virtual unsigned long size() const = 0;
+  virtual xs_integer size() const = 0;
 
   /**
    * Get an iterator to iterate over the nodes of the collection.
@@ -62,7 +63,7 @@ public:
    * @return The node at the given position, or NULL if the position is
    *         >= than the number of nodes in the collection.
    */
-  virtual Item_t nodeAt(ulong aPosition) = 0;
+  virtual Item_t nodeAt(xs_integer aPosition) = 0;
 
   /**
    * Check if a given root node belongs to this collection, and if so return
@@ -73,7 +74,7 @@ public:
    *         node is indeed in the collection.
    * @return True if the node is in the collection; false otherwise.
    */
-  virtual bool findNode(const Item* aNode, ulong& position) const = 0;
+  virtual bool findNode(const Item* aNode, xs_integer& position) const = 0;
 
   /**
    * Returns true if the collection is dynamic or static
