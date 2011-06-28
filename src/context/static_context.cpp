@@ -714,7 +714,6 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
             ERROR_PARAMS( ZED( NoModuleURIResolver ) )
           );
         }
-        // QQQ memory management?
         add_uri_mapper(new URIMapperWrapper(*lURIMapper));
       }
     }
@@ -727,7 +726,6 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
             ERROR_PARAMS( ZED( NoModuleURIResolver ) )
           );
         }
-        // QQQ memory management?
         add_url_resolver(new URLResolverWrapper(*lURLResolver));
       }
     }
@@ -1333,7 +1331,7 @@ static_context::resolve_uri
   std::auto_ptr<impl::Resource> lRetval;
   apply_url_resolvers(lUris, aEntityType, lRetval, oErrorMessage);
 
-  return std::auto_ptr<impl::Resource>(lRetval.release());
+  return lRetval;
 }
 
 void

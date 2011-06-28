@@ -426,17 +426,40 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
   sctx->declareOption(lQName, lValue);
 }
 
+/**
+ * Register a URIMapper on the provided static context, and save it
+ * in the DriverContext for later reference.
+ */
+void addURIMapper
+(DriverContext& driverCtx, const zorba::StaticContext_t& sctx,
+ zorba::URIMapper* mapper)
+{
+  sctx->registerURIMapper(mapper);
+  driverCtx.theURIMappers.push_back(mapper);
+}
 
 /**
- * Set all full-text URI resolvers on the provided static context.
+ * Register a URLResolver on the provided static context, and save it
+ * in the DriverContext for later reference.
  */
-void setFullTextResolvers
+void addURLResolver
+(DriverContext& driverCtx, const zorba::StaticContext_t& sctx,
+ zorba::URLResolver* resolver)
+{
+  sctx->registerURLResolver(resolver);
+  driverCtx.theURLResolvers.push_back(resolver);
+}
+
+/**
+ * Set all full-text URI mappers on the provided static context.
+ */
+void setFullTextURIMappers
 (DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
 {
 #ifndef ZORBA_NO_FULL_TEXT
   Specification& spec = * (driverCtx.theSpec);
-  sctx->registerURIMapper(spec.getStopWordsMapper());
-  sctx->registerURIMapper(spec.getThesaurusMapper());
+  addURIMapper(driverCtx, sctx, spec.getStopWordsMapper());
+  addURIMapper(driverCtx, sctx, spec.getThesaurusMapper());
 #endif
 }
 

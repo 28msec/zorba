@@ -202,7 +202,7 @@ main(int argc, char** argv)
     return 1;
   }
 
-  zorba::Properties::load (NULL, NULL);
+  zorba::Properties::load (0, NULL);
 
   zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
 

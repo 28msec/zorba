@@ -324,6 +324,7 @@ DWORD WINAPI thread_main(LPVOID param)
   std::auto_ptr<zorba::TestModuleURIMapper> mmapper;
   std::auto_ptr<zorba::TestCollectionURIMapper>    cmapper;
   std::auto_ptr<zorba::TestSchemeURIMapper>    dmapper;
+  std::auto_ptr<zorba::TestURLResolver> tresolver;
 
   while (1)
   {
@@ -457,19 +458,21 @@ DWORD WINAPI thread_main(LPVOID param)
           testName, false));
       cmapper.reset(new zorba::TestCollectionURIMapper(
             col_map_file.c_str(), rbkt_src_dir));
-      sctx->registerURIMapper(smapper.get());
-      sctx->registerURIMapper(mmapper.get());
-      sctx->registerURIMapper(cmapper.get());
+      addURIMapper(driverContext, sctx, smapper.get());
+      addURIMapper(driverContext, sctx, mmapper.get());
+      addURIMapper(driverContext, sctx, cmapper.get());
 
       sctx->setXQueryVersion(xquery_version_1_0);
       sctx->setTraceStream(queries->theOutput);
     }
 
     // If --enable-uritestresolver is specified, enable our document
-    // URI resolver for test:// scheme URIs
+    // URI resolver for test:// scheme URIs as well as a silly URLResolver
     if (querySpec.getEnableUriTestResolver()) {
       dmapper.reset(new zorba::TestSchemeURIMapper(rbkt_src_dir));
-      sctx->registerURIMapper(dmapper.get());
+      addURIMapper(driverContext, sctx, dmapper.get());
+      tresolver.reset(new zorba::TestURLResolver());
+      addURLResolver(driverContext, sctx, tresolver.get());
     }
 
     // Set any options on the static context
@@ -477,7 +480,7 @@ DWORD WINAPI thread_main(LPVOID param)
 
     // Bind any full-text URI resolvers from the .spec file to the
     // static context
-    setFullTextResolvers(driverContext, sctx);
+    setFullTextURIMappers(driverContext, sctx);
 
     // If command-line argument --module-path passed, set up module paths.
     setModulePaths(module_path, sctx);

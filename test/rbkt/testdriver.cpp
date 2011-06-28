@@ -45,8 +45,6 @@
 #include "testdriver_comparator.h"
 
 
-//#define ZORBA_TEST_PLAN_SERIALIZATION
-
 #define EXPECTED_ERROR  0
 #define UNEXPECTED_ERROR  6
 
@@ -164,6 +162,8 @@ main(int argc, char** argv)
     std::auto_ptr<zorba::TestModuleURIMapper>        mmapper;
     std::auto_ptr<zorba::TestCollectionURIMapper>    cmapper;
     std::auto_ptr<zorba::TestSchemeURIMapper>        dmapper;
+    std::auto_ptr<zorba::TestURLResolver>            tresolver;
+
     // Create the static context. If this is a w3c query, install special uri
     // resolvers in the static context.
     zorba::StaticContext_t lContext = engine->createStaticContext();
@@ -187,9 +187,9 @@ main(int argc, char** argv)
       cmapper.reset(new zorba::TestCollectionURIMapper(
             col_map_file.c_str(), rbkt_src_dir));
 
-      lContext->registerURIMapper( smapper.get() );
-      lContext->registerURIMapper( mmapper.get() );
-      lContext->registerURIMapper( cmapper.get() );
+      addURIMapper(driverContext, lContext, smapper.get() );
+      addURIMapper(driverContext, lContext, mmapper.get() );
+      addURIMapper(driverContext, lContext, cmapper.get() );
 
       // the w3c testsuite always uses xquery 1.0
       lContext->setXQueryVersion( xquery_version_1_0 );
@@ -234,10 +234,12 @@ main(int argc, char** argv)
     }
 
     // If --enable-uritestresolver is specified, enable our document
-    // URI resolver for test:// scheme URIs
+    // URI resolver for test:// scheme URIs as well as a silly URLResolver
     if (lSpec.getEnableUriTestResolver()) {
       dmapper.reset(new zorba::TestSchemeURIMapper(rbkt_src_dir));
-      lContext->registerURIMapper(dmapper.get());
+      addURIMapper(driverContext, lContext, dmapper.get());
+      tresolver.reset(new zorba::TestURLResolver());
+      addURLResolver(driverContext, lContext, tresolver.get());
     }
 
     // Bind any options from the .spec file to the static context
@@ -245,7 +247,7 @@ main(int argc, char** argv)
 
     // Bind any full-text URI resolvers from the .spec file to the
     // static context
-    setFullTextResolvers(driverContext, lContext);
+    setFullTextURIMappers(driverContext, lContext);
 
     // If command-line argument --module-path passed, set up module paths.
     setModulePaths(lModulePath, lContext);
@@ -357,9 +359,9 @@ main(int argc, char** argv)
       std::cout << err << std::endl;
       return -1;
     }
-#endif//ZORBA_TEST_PLAN_SERIALIZATION
+#endif // ZORBA_TEST_PLAN_SERIALIZATION
 
-#endif//#ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
+#endif // #ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
 
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
 
@@ -379,22 +381,9 @@ main(int argc, char** argv)
         return 15;
       }
       bool load_ret;
-      if ( isW3Ctest ) 
-      {
-        std::vector< zorba::URIMapper* > lMappers;
-        lMappers.push_back(smapper.get());
-        lMappers.push_back(cmapper.get());
-        lMappers.push_back(mmapper.get());
-
-        zorba::TestSerializationCallback   serl_callback(lMappers);
-
-        load_ret = lQuery->loadExecutionPlan(ifbinary, &serl_callback);
-      }
-      else
-      {
-        lContext->setDocumentURIResolver ( dresolver.get() );
-        load_ret = lQuery->loadExecutionPlan(ifbinary);
-      }
+      zorba::TestSerializationCallback  serl_callback
+          (driverContext.theURIMappers, driverContext.theURLResolvers);
+      load_ret = lQuery->loadExecutionPlan(ifbinary, &serl_callback);
       if(!load_ret)
       {
         std::cout << "cannot load plan " << binary_path << std::endl;

@@ -28,7 +28,6 @@
 
 class Specification;
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -128,6 +127,8 @@ public:
   Specification * theSpec;
   std::string     theRbktSourceDir;
   std::string     theRbktBinaryDir;
+  std::vector<zorba::URIMapper*>  theURIMappers;
+  std::vector<zorba::URLResolver*>  theURLResolvers;
 };
 
 
@@ -141,7 +142,17 @@ void setOptions(
     DriverContext& driverCtx,
     const zorba::StaticContext_t& sctx);
 
-void setFullTextResolvers(
+void addURIMapper(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx,
+    zorba::URIMapper* mapper);
+
+void addURLResolver(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx,
+    zorba::URLResolver* resolver);
+
+void setFullTextURIMappers(
     DriverContext& driverCtx,
     const zorba::StaticContext_t& sctx);
 

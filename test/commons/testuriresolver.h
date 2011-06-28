@@ -43,6 +43,17 @@ private:
   String const theBaseFile;
 };
 
+/*****************************************************************************
+ A URLResolver that returns a built-in document for a specific URL
+ *****************************************************************************/
+class TestURLResolver : public URLResolver
+{
+public:
+  virtual Resource*
+  resolveURL(const zorba::String &aUrl,
+             Resource::EntityType aEntityType);
+};
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -143,17 +154,23 @@ public:
 class TestSerializationCallback : public zorba::SerializationCallback
 {
   std::vector<URIMapper*> theUriMappers;
+  std::vector<URLResolver*> theUrlResolvers;
+
   public:
-    TestSerializationCallback(const std::vector<URIMapper*>& my_uri_mappers)
+    TestSerializationCallback(const std::vector<URIMapper*>& my_uri_mappers,
+                              const std::vector<URLResolver*>& my_url_resolvers)
+      : theUriMappers(my_uri_mappers),
+        theUrlResolvers(my_url_resolvers)
     {
-      theUriMappers = my_uri_mappers;
     }
                               
     virtual ~TestSerializationCallback() {}
 
-  virtual URIMapper*
-    getURIMapper(size_t  i ) const {return theUriMappers[i];}
+    virtual URIMapper*
+    getURIMapper(size_t  i ) const { return theUriMappers[i]; }
 
+    virtual URLResolver*
+    getURLResolver(size_t i) const { return theUrlResolvers[i]; }
 
 };
 

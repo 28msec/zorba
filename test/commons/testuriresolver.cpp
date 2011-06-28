@@ -51,12 +51,27 @@ void
 TestSchemeURIMapper::mapURI(const String aURI, Resource::EntityType aEntityType,
                             std::vector<String>& oUris) throw()
 {
-  std::cout << "mapping " << aURI << " with base " << theBaseFile << std::endl;
   if (ascii::begins_with(aURI, "test://")) {
     String lFileURI = URIHelper::encodeFileURI(theBaseFile + aURI.substr(7));
-    std::cout << "mapped to " << lFileURI << std::endl;
     oUris.push_back((lFileURI));
   }
+}
+
+
+/******************************************************************************
+  Mostly pointless URLResolver; really only here to check plan serialization
+  of URLResolvers.
+ ******************************************************************************/
+Resource*
+TestURLResolver::resolveURL(const zorba::String &aUrl,
+                            Resource::EntityType aEntityType)
+{
+  if (aUrl != "http://www.zorba-xquery.com/testuriresolver.cpp/hello.xml") {
+    return NULL;
+  }
+  std::stringstream* ss = new std::stringstream();
+  *ss << "<a>Hello, world</a>";
+  return new StreamResource(std::auto_ptr<std::istream>(ss));
 }
 
 

@@ -1,0 +1,2 @@
+Args:
+--enable-uritestresolver
