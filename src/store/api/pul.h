@@ -153,7 +153,7 @@ public:
         const QueryLoc* aQueryLoc,
         Item_t& name,
         uint32_t flags, // see Collection::Properties enum
-        const Item_t& nodeType,
+        const Item_t& nodeType, // can be null if not a schema type
         bool dyn_collection = false) = 0;
 
   virtual void addDeleteCollection(

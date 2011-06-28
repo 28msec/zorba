@@ -391,14 +391,13 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   if (theDynamicCollection)
   {
-    lNodeType = GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE->get_qname();
     pul->addCreateCollection(
         &loc,
         collectionName,
         ( store::Collection::coll_mutable | // dynamic collection have
           store::Collection::coll_ordered | // some default properties
           store::Collection::node_mutable ),
-        lNodeType,
+        NULL,
         theDynamicCollection);
   }
   else
