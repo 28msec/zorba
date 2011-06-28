@@ -4,16 +4,51 @@
 class Iterator 
 {
 protected:
+  friend class DynamicContext;
   zorba::Iterator_t theIterator;
+  zorba::Item theItem;
+  bool theConsumed;
 
 public:
   Iterator() {}
-  Iterator(const Iterator& anIterator) : theIterator(anIterator.theIterator) {}
-  Iterator(zorba::Iterator_t anIterator) : theIterator(anIterator) {}
-  void open()            { theIterator->open(); }
+  Iterator(const Iterator& anIterator)
+    : theIterator(anIterator.theIterator),
+      theItem(anIterator.theItem),
+      theConsumed(false)
+  {}
+
+  Iterator(zorba::Iterator_t anIterator)
+    : theIterator(anIterator),
+      theConsumed(false)
+  {}
+
+  Iterator(zorba::Item& aItem)
+    : theIterator(0),
+      theItem(aItem),
+      theConsumed(false)
+  {}
+
+  void open()
+  {
+    if (theIterator)
+      theIterator->open();
+    theConsumed = false;
+  }
+
   bool next(Item& aItem);
-  void close()           { theIterator->close(); }
-  void destroy()         { theIterator = 0; }
+
+  void close()
+  {
+    if (theIterator)
+      theIterator->close();
+    theConsumed = true;
+  }
+
+  void destroy()
+  {
+    theIterator = 0;
+  }
+
 }; // class Iterator
 
 
@@ -21,7 +56,9 @@ class Item
 {
   friend class Iterator;
   friend class StaticContext;
-  friend class DocumentURIResolver;
+  friend class DocumentManager; 
+  friend class SingletonIterator;
+  friend class DynamicContext;
 
 private:
   zorba::Item theItem;
@@ -35,7 +72,7 @@ public:
   { return Item(); }
 
   std::string getStringValue() const 
-  { return 		std::string(theItem.getStringValue().c_str()); }
+  { return std::string(theItem.getStringValue().c_str()); }
   
   std::string serialize() const 
   {
@@ -47,58 +84,95 @@ public:
     return lStream.str();
   }
   
-  Iterator 	getAtomizationValue () const
+  Iterator getAtomizationValue () const
   { return Iterator(theItem.getAtomizationValue()); }
   
   Iterator getAttributes () const
   { return Iterator(theItem.getAttributes()); }
   
-  bool 	getBooleanValue () const
+  bool getBooleanValue () const
   { return theItem.getBooleanValue(); }
 
-  Iterator 	getChildren () const
+  Iterator getChildren () const
   { return Iterator(theItem.getChildren()); }
 
-  Item 	getEBV () const
+  Item getEBV () const
   { return Item(theItem.getEBV()); }
 
-  int 	getIntValue () const
+  int getIntValue () const
   { return theItem.getIntValue(); }
   
-  std::string 	getLocalName () const
+  std::string getLocalName () const
   { return std::string(theItem.getLocalName().c_str()); }
 
-  std::string 	getNamespace () const
+  std::string getNamespace () const
   { return std::string(theItem.getNamespace().c_str()); }
 
-  bool 	getNodeName (Item &aNodeName) const
+  bool getNodeName (Item &aNodeName) const
   { return theItem.getNodeName( aNodeName.theItem ); }
 
-  std::string	getPrefix () const
+  std::string getPrefix () const
   { return std::string(theItem.getPrefix().c_str()); }
 
-  Item 	getType () const
+  Item getType () const
   { return Item( theItem.getType() ); }
 
-  unsigned int 	getUnsignedIntValue () const
+  unsigned int getUnsignedIntValue () const
   { return theItem.getUnsignedIntValue(); }
 
-  bool 	isAtomic () const
+  bool isAtomic () const
   { return theItem.isAtomic(); }
 
-  bool 	isNaN () const
+  bool isNaN () const
   { return theItem.isNaN(); }
 
-  bool 	isNode () const
+  bool isNode () const
   { return theItem.isNode(); }
 
-  bool 	isNull () const
+  bool isNull () const
   { return theItem.isNull(); }
 
-  bool 	isPosOrNegInf () const
+  bool isPosOrNegInf () const
   { return theItem.isPosOrNegInf(); }
+
 }; // class Item
 
+class DynamicContext
+{
+private:
+  zorba::DynamicContext* theContext;
+
+public:
+  DynamicContext()
+    : theContext(0)
+  {
+  }
+
+  DynamicContext(const DynamicContext& aCtx)
+    : theContext(aCtx.theContext)
+  {
+  }
+
+  DynamicContext(zorba::DynamicContext* aCtx)
+    : theContext(aCtx)
+  {
+  }
+
+  void
+  setVariable(
+    const std::string& aNamespace,
+    const std::string& aLocalname,
+    Iterator aIter)
+  {
+    theContext->setVariable(aNamespace, aLocalname, aIter.theIterator);
+  }
+
+  void
+  setContextItem(Item aItem)
+  {
+    theContext->setContextItem(aItem.theItem);
+  }
+};
 
 class XQuery 
 {
@@ -131,6 +205,12 @@ public:
     return lStream.str();
   }
 
+  DynamicContext
+  getDynamicContext()
+  {
+    return DynamicContext(theQuery->getDynamicContext());
+  }
+
 #ifdef SWIGPYTHON
   void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy)
   { theQuery->executeSAX(contentHandlerProxy); }
@@ -142,8 +222,26 @@ public:
 
 
 // remaining method definitions from Iterator
-bool Iterator::next(Item& aItem)
-{ return theIterator->next(aItem.theItem); }
+bool
+Iterator::next(Item& aItem)
+{
+  if (theIterator)
+  {
+    return theIterator->next(aItem.theItem);
+  }
+  else
+  {
+    if (!theConsumed)
+    {
+      aItem = theItem;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
 
 
 %}  // end   Implementation
@@ -151,31 +249,43 @@ bool Iterator::next(Item& aItem)
 
 // Interfaces
 
+class DynamicContext
+{
+public:
+  void
+  setVariable(
+    const std::string& aNamespace,
+    const std::string& aLocalname,
+    Iterator);
+
+  void
+  setContextItem(Item);
+};
+
 class Item 
 {
 public: 
   static Item createEmptyItem();
   std::string getStringValue() const;
   std::string serialize() const;
-  Iterator 	getAtomizationValue () const;
-  Iterator 	getAttributes () const;
-  bool 	getBooleanValue () const;
-  Iterator 	getChildren () const;
-  Item 	getEBV () const;
-  int 	getIntValue () const;
-  std::string 	getLocalName () const;
-  std::string 	getNamespace () const;
-  bool 	getNodeName (Item &aNodeName) const;
-  std::string 	getPrefix () const;
-  Item 	getType () const;
-  unsigned int 	getUnsignedIntValue () const;
-  bool 	isAtomic () const;
-  bool 	isNaN () const;
-  bool 	isNode () const;
-  bool 	isNull () const;
-  bool 	isPosOrNegInf () const;
+  Iterator getAtomizationValue () const;
+  Iterator getAttributes () const;
+  bool getBooleanValue () const;
+  Iterator getChildren () const;
+  Item getEBV () const;
+  int getIntValue () const;
+  std::string getLocalName () const;
+  std::string getNamespace () const;
+  bool getNodeName (Item &aNodeName) const;
+  std::string getPrefix () const;
+  Item getType () const;
+  unsigned int getUnsignedIntValue () const;
+  bool isAtomic () const;
+  bool isNaN () const;
+  bool isNode () const;
+  bool isNull () const;
+  bool isPosOrNegInf () const;
 }; // class Item
-
 
 class Iterator 
 {
@@ -185,8 +295,6 @@ public:
   void close();
   void destroy();
 }; // class Iterator
-
-
 
 class XQuery 
 {
@@ -201,12 +309,5 @@ public:
 
   void destroy();
   Iterator iterator();
-
-  /*XQuery_t 	clone () const;
-  void 	close ();
-  void 	compile (std::istream &aQuery, const StaticContext_t &aStaticContext, const Zorba_CompilerHints_t &aHints);
-  void 	compile (const String &aQuery, const StaticContext_t &aStaticContext, const Zorba_CompilerHints_t &aHints);
-  void 	compile (std::istream &aQuery, const Zorba_CompilerHints_t &aHints);
-  void 	compile (const String &aQuery, const Zorba_CompilerHints_t &aHints);
-  void 	compile (const String &aQuery);*/
+  DynamicContext getDynamicContext();
 }; // class XQuery

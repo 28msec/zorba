@@ -69,24 +69,24 @@ function example_4(Zorba $aZorba)
 function example_5(Zorba $aZorba)
 {
   $lDataManager = $aZorba->getXmlDataManager();
-  $lDataManager->loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>");
-  $lQuery = $aZorba->compileQuery("doc('books.xml')//book");
-  echo $lQuery->execute();
-  $lQuery->destroy();
-  $lDataManager->deleteDocument("books.xml");
-  return true;
-}
+  $lDocMgr = $lDataManager->getDocumentManager();
 
-function example_6(Zorba $aZorba)
-{
-  $lDataManager = $aZorba->getXmlDataManager();
-  $lDataManager->loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>");
-  $lQuery1 = $aZorba->compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books");
-  $lQuery1->execute();
-  $lQuery2 = $aZorba->compileQuery("doc('books.xml')//book");
-  echo $lQuery2->execute();
-  $lQuery1->destroy();
-  $lQuery2->destroy();
+  $iter = $lDataManager->parseXML("<books><book>Book 1</book><book>Book 2</book></books>");
+  $iter->open();
+  $doc = Item::createEmptyItem();
+
+  $iter->next($doc);
+  $iter->close();
+  $iter->destroy();
+
+  $lDocMgr->add("books.xml", $doc);
+
+  $lQuery = $aZorba->compileQuery("doc('books.xml')//book");
+
+  echo $lQuery->execute();
+
+  $lQuery->destroy();
+
   return true;
 }
 
@@ -115,11 +115,6 @@ print "\n\n";
 
 print "Example5:\n";
 $res = example_5($zorba);
-assert($res);
-print "\n\n";
-
-print "Example6:\n";
-$res = example_6($zorba);
 assert($res);
 print "\n\n";
 

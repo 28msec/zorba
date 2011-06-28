@@ -16,44 +16,76 @@
 
 %{  // start Implementation
 
-    // Interface
 
-class XmlDataManager 
+class DocumentManager
 {
 private:
-  zorba::XmlDataManager* theManager;
-public:
-  XmlDataManager() : theManager(0) {}
-  XmlDataManager(const XmlDataManager& aManager)
-    : theManager(aManager.theManager) {} 
-  XmlDataManager(zorba::XmlDataManager* aManager) : theManager(aManager) {}
+  zorba::DocumentManager* theManager;
 
-  
-  void loadDocument(const std::string& aName, const std::string& aContent)
+public:
+  DocumentManager() : theManager(0) {}
+  DocumentManager(const DocumentManager& aMgr) : theManager(aMgr.theManager) {}
+  DocumentManager(zorba::DocumentManager* aMgr) : theManager(aMgr) {}
+
+  void add(const std::string& aName, Item aDoc)
   {
-    std::stringstream lStream(aContent);
-    zorba::Item lDoc = theManager->parseXML(lStream);
-    zorba::DocumentManager* lDocMgr = theManager->getDocumentManager();
-    lDocMgr->add(aName, lDoc);
+    theManager->add(aName, aDoc.theItem);
   }
 
-  void deleteDocument(const std::string& aName) 
+  void remove(const std::string& aName)
   {
-    zorba::DocumentManager* lDocMgr = theManager->getDocumentManager();
-    lDocMgr->remove(aName);
+    theManager->remove(aName);
+  }
+
+  Item document(const std::string& aName)
+  {
+    return theManager->document(aName);
   }
 };
 
+class XmlDataManager
+{
+private:
+  zorba::XmlDataManager* theManager;
 
+public:
+  XmlDataManager() : theManager(0) {}
+  XmlDataManager(const XmlDataManager& aMgr) : theManager(aMgr.theManager) {}
+  XmlDataManager(zorba::XmlDataManager* aMgr) : theManager(aMgr) {}
+
+  DocumentManager getDocumentManager()
+  {
+    return DocumentManager(theManager->getDocumentManager()); 
+  }
+
+  Iterator parseXML(const std::string& aDoc)
+  {
+    std::stringstream lDoc;
+    lDoc << aDoc;
+    zorba::Item lItem = theManager->parseXML(lDoc);
+    return Iterator(lItem);
+  }
+
+};
 
 %}  // end   Implementation
 
+class DocumentManager
+{
+public:
+  void add(const std::string& aName, Item aDoc);
 
+  void remove(const std::string& aName);
+
+  Item document(const std::string& aName);
+};
 
 
 class XmlDataManager 
 {
- public:
-  void loadDocument(const std::string& aName, const std::string& aContent);
-  void deleteDocument(const std::string& aName);
+public:
+  DocumentManager getDocumentManager();
+
+  Iterator parseXML(const std::string& aDoc);
+   
 }; // class XmlDataManager

@@ -51,19 +51,38 @@ def example4(zorba):
 
 def example5(zorba):
   dataManager = zorba.getXmlDataManager()
-  dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
+  docIter = dataManager.parseXML("<books><book>Book 1</book><book>Book 2</book></books>")
+  docIter.open();
+
+  doc = zorba_api.Item_createEmptyItem()
+  docIter.next(doc)
+
+  docIter.close()
+  docIter.destroy()
+
+  docManager = dataManager.getDocumentManager()
+  docManager.add("books.xml", doc)
   xquery = zorba.compileQuery("doc('books.xml')//book")
   print xquery.execute()
-  dataManager.deleteDocument("books.xml");
+  docManager.remove("books.xml");
   return
 
 def example6(zorba):
   dataManager = zorba.getXmlDataManager()
-  dataManager.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>")
-  xquery1 = zorba.compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books")
-  print xquery1.execute()
-  xquery2 = zorba.compileQuery("doc('books.xml')//book")
-  print xquery2.execute()
+  docIter = dataManager.parseXML("<books><book>Book 1</book><book>Book 2</book></books>")
+  docIter.open();
+
+  doc = zorba_api.Item_createEmptyItem()
+  docIter.next(doc)
+
+  docIter.close()
+  docIter.destroy()
+
+  xquery = zorba.compileQuery(".")
+  dynCtx = xquery.getDynamicContext();
+
+  dynCtx.setContextItem(doc);
+  print xquery.execute()
   return
 
 store = zorba_api.InMemoryStore_getInstance()

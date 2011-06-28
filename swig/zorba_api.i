@@ -78,16 +78,6 @@
   class UserException;
   class ZorbaException;
 
-  class URIResolverResult;
-  class CollectionURIResolverResult;
-  class DocumentURIResolverResult;
-  class ModuleURIResolverResult;
-  class SchemaURIResolverResult;
-  class CollectionURIResolver;
-  class DocumentURIResolver;
-  class ModuleURIResolver;
-  class SchemaURIResolver;
-
 %}
 
 

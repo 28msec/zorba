@@ -19,6 +19,7 @@ import org.zorbaxquery.api.XQuery;
 import org.zorbaxquery.api.Iterator;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.XmlDataManager;
+import org.zorbaxquery.api.DocumentManager;
 import org.zorbaxquery.api.InMemoryStore;
 
 
@@ -95,29 +96,26 @@ public class Test_Zorba
   static boolean example_5 ( Zorba zorba )
   {
     XmlDataManager dm = zorba.getXmlDataManager();
-    dm.loadDocument("books.xml", 
-                    "<books><book>Book 1</book><book>Book 2</book></books>");
+
+    Iterator i = dm.parseXML("<books><book>Book 1</book><book>Book 2</book></books>");
+    i.open();
+    Item doc = Item.createEmptyItem();
+    i.next(doc);
+    i.close();
+    i.delete();
+
+    DocumentManager docMgr = dm.getDocumentManager();
+    docMgr.add("books.xml", doc);
+
+    doc.delete();
+
     XQuery xquery = zorba.compileQuery("doc('books.xml')//book");
     System.out.println (  xquery.execute() );
 
-    dm.deleteDocument("books.xml");
+    docMgr.remove("books.xml");
 
     return true;
   }
-
-  static boolean example_6 ( Zorba zorba )
-  {
-    XmlDataManager dm = zorba.getXmlDataManager();
-    dm.loadDocument("books.xml", 
-                    "<books><book>Book 1</book><book>Book 2</book></books>");
-    XQuery xquery1 = zorba.
-      compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books");
-    
-    XQuery xquery2 = zorba.compileQuery("doc('books.xml')//book");
-    System.out.println ( xquery2.execute() );
-    return true;
-  }
-
 
   public static void main ( String argv[] )
   {
@@ -150,12 +148,6 @@ public class Test_Zorba
     res = example_5 ( zorba );
     if (!res) 
       System.exit ( 1 ); 
-
-    System.out.println ( "executing example 6" );
-    res = example_6 ( zorba );
-    if (!res) 
-      System.exit ( 1 ); 
-
 
     zorba.shutdown();
     InMemoryStore.shutdown ( store );
