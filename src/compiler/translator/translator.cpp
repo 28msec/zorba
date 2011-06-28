@@ -916,7 +916,7 @@ void push_scope()
   theSctx = theSctx->create_child_context();
 
 #ifdef ZORBA_WITH_DEBUGGER
-  if (theCCB->theDebuggerCommons != NULL) 
+  if (theCCB->theDebuggerCommons != NULL)
   {
     // in debug mode, we remember all static contexts
     // this allows the debugger to introspect (during runtime)
@@ -925,7 +925,7 @@ void push_scope()
     theCurrSctxId = (short)theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
   }
-  else 
+  else
   {
 #endif
     // in non-debug mode, we need to make sure that the scoped
@@ -1298,7 +1298,7 @@ void normalize_fo(fo_expr* foExpr)
 
     if (qname != NULL)
     {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, 
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
                   foExpr->get_loc(),
                   ERROR_PARAMS(qname->getStringValue()));
     }
@@ -2081,8 +2081,8 @@ import_schema_auto_prefix(
       if (lIter->first == lPrefixStr) {
         lPrefixStr += "_";
         lIter = lNsBindings.begin();
-      }      
-    }    
+      }
+    }
 
     // now import the schema
     SchemaPrefix lPrefix(aLoc, lPrefixStr);
@@ -3739,13 +3739,11 @@ void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
     throw XQUERY_EXCEPTION(
       err::XPST0003,
-      ERROR_PARAMS(
-        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
-      ),
+      ERROR_PARAMS("functions and variables annotations only available in XQuery 1.1 or later"),
       ERROR_LOC( loc )
     );
   }
