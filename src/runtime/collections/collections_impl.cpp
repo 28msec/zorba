@@ -41,6 +41,8 @@
 #include "store/api/iterator.h"
 #include "store/api/ic.h"
 #include "store/api/index.h"
+#include "types/typeops.h"
+#include "types/root_typemanager.h"
 
 
 namespace zorba {
@@ -365,6 +367,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   store::Item_t node;
   store::Item_t copyNode;
   std::auto_ptr<store::PUL> pul;
+  store::Item_t lNodeType;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -386,7 +389,40 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addCreateCollection(&loc, collectionName, theDynamicCollection);
+  if (theDynamicCollection)
+  {
+    lNodeType = GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE->get_qname();
+    pul->addCreateCollection(
+        &loc,
+        collectionName,
+        ( store::Collection::coll_mutable | // dynamic collection have
+          store::Collection::coll_ordered | // some default properties
+          store::Collection::node_mutable ),
+        lNodeType,
+        theDynamicCollection);
+  }
+  else
+  {
+    uint32_t lFlags;
+    lFlags =
+        (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_const)
+      | (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_append_only)
+      | (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_queue)
+      | (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_mutable)
+      | (collectionDecl->getOrderProperty() == StaticContextConsts::decl_ordered)
+      | (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+      | (collectionDecl->getNodeModifier() == StaticContextConsts::read_only)
+      | (collectionDecl->getNodeModifier() == StaticContextConsts::mutable_node);
+
+
+    lNodeType = collectionDecl->getNodeType()->get_qname();
+
+    pul->addCreateCollection(
+        &loc,
+        collectionName,
+        lFlags, lNodeType,
+        theDynamicCollection);
+  }
 
   // also add some optional nodes to the collection
   if (theChildren.size() == 2) 

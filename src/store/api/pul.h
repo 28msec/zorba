@@ -152,6 +152,8 @@ public:
   virtual void addCreateCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
+        uint32_t flags, // see Collection::Properties enum
+        const Item_t& nodeType,
         bool dyn_collection = false) = 0;
 
   virtual void addDeleteCollection(

@@ -882,13 +882,21 @@ class UpdCreateCollection : public UpdCollection
   friend class PULPrimitiveFactory;
 
 protected:
+  uint32_t theFlags; // see Collection::Properties
+  store::Item_t theNodeType;
+
+protected:
   UpdCreateCollection(
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,
+        uint32_t flags,
+        const store::Item_t& nodeType,
         bool dyn_collection)
     :
-    UpdCollection(pul, aLoc, name, dyn_collection)
+    UpdCollection(pul, aLoc, name, dyn_collection),
+    theFlags(flags),
+    theNodeType(nodeType)
   {
   }
 

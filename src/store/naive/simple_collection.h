@@ -69,6 +69,9 @@ protected:
 
   ulong                         theTreeCounter;
 
+  uint32_t                      theFlags;
+  store::Item_t                 theNodeType;
+
   SYNC_CODE(Latch               theLatch;)
 
   // default constructor added in order to allow subclasses to instantiate
@@ -76,7 +79,11 @@ protected:
   SimpleCollection();
 
 public:
-  SimpleCollection(store::Item_t& aName, bool aDynamicCollection = false);
+  SimpleCollection(
+      store::Item_t& aName,
+      uint32_t aFlags,
+      const store::Item_t& aNodeType,
+      bool aDynamicCollection = false);
 
   virtual ~SimpleCollection();
 
@@ -89,16 +96,46 @@ public:
 
   bool isDynamic() const { return theIsDynamic; }
 
+  bool
+  isConst() const
+  {
+    return (theFlags & Collection::coll_const) != 0;
+  }
+
+  bool
+  isAppendOnly() const
+  {
+    return (theFlags & Collection::coll_append_only) != 0;
+  }
+
+  bool
+  isQueue() const
+  {
+    return (theFlags & Collection::coll_queue) != 0;
+  }
+
+  bool
+  isMutable() const
+  {
+    return (theFlags & Collection::coll_mutable) != 0;
+  }
+
+  bool
+  isOrdered() const
+  {
+    return (theFlags & Collection::coll_ordered) != 0;
+  }
+
+  bool
+  areNodesReadOnly() const
+  {
+    return (theFlags & Collection::node_read_only) != 0;
+  }
+
   // virtual to allow extension by subclasses
   virtual ulong createTreeId() { return theTreeCounter++; }
 
   store::Iterator_t getIterator();
-
-#if 0
-  store::Item_t loadDocument(
-        std::istream& stream,
-        long position = -1);
-#endif
 
   void addNode(
         store::Item* node,

@@ -225,6 +225,8 @@ class PULPrimitiveFactory
         CollectionPul* pul,
         const QueryLoc*,
         store::Item_t& name,
+        uint32_t flags,
+        const store::Item_t& nodeType,
         bool dyn_collection = false);
     
   /***************************************************************************

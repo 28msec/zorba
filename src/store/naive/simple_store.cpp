@@ -903,12 +903,19 @@ store::Iterator_t SimpleStore::listMapNames()
 ********************************************************************************/
 store::Collection_t SimpleStore::createCollection(
     store::Item_t& aName,
+    uint32_t aFlags,
+    const store::Item_t& aNodeType,
     bool aDynamicCollection)
 {
   if (aName == NULL)
     return NULL;
 
-  store::Collection_t collection(new SimpleCollection(aName, aDynamicCollection));
+  store::Collection_t collection(
+      new SimpleCollection(
+        aName,
+        aFlags,
+        aNodeType,
+        aDynamicCollection));
 
   const store::Item* lName = collection->getName();
 

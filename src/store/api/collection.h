@@ -79,6 +79,58 @@ public:
    * Returns true if the collection is dynamic or static
    */
   virtual bool isDynamic() const = 0;
+
+  /**
+   * Returns true if the collection is constant, false otherwise
+   */
+  virtual bool isConst() const = 0;
+
+  /**
+   * Returns true if the collection is append-only, false otherwise
+   */
+  virtual bool isAppendOnly() const = 0;
+
+  /**
+   * Returns true if the collection is a queue (fifo), false otherwise
+   */
+  virtual bool isQueue() const = 0;
+
+  /**
+   * Returns true if the collection is mutable, false otherwise
+   */
+  virtual bool isMutable() const = 0;
+
+  /**
+   * Returns true if the collection is ordered, false otherwise
+   */
+  virtual bool isOrdered() const = 0;
+
+  /**
+   * Returns true if the nodes in a collection
+   * cannot be modified, false otherwise
+   */
+  virtual bool areNodesReadOnly() const = 0;
+
+public:
+  // Properties of a collection
+  // They are specified when the collection is created
+  // see PUL::addCreateCollection
+  enum Properties
+  {
+    // Collection update mode
+    coll_const = 1,
+    coll_append_only = 2,
+    coll_queue = 4,
+    coll_mutable = 8,
+
+    // Collection ordering
+    coll_ordered = 16,
+    coll_unordered = 32,
+
+    // properties of nodes in a collection
+    node_read_only = 64,
+    node_mutable = 128
+  };
 };
 
 } // namespace store

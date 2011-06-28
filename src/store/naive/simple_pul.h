@@ -370,6 +370,8 @@ public:
   void addCreateCollection(
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
+        uint32_t flags,
+        const store::Item_t& nodeType,
         bool dyn_collection = false);
 
   void addDeleteCollection(

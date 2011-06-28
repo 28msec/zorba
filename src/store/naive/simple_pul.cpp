@@ -782,12 +782,20 @@ void PULImpl::addSetAttributeType(
 void PULImpl::addCreateCollection(
     const QueryLoc* aQueryLoc,
     store::Item_t& name,
+    uint32_t flags,
+    const store::Item_t& nodeType,
     bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theCreateCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdCreateCollection(pul, aQueryLoc, name, dyn_collection));
+  GET_STORE().getPULFactory().createUpdCreateCollection(
+    pul,
+    aQueryLoc,
+    name,
+    flags,
+    nodeType,
+    dyn_collection));
 }
 
 

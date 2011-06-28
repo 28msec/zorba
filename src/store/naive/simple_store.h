@@ -182,6 +182,8 @@ public:
 
   store::Collection_t createCollection(
       store::Item_t& aName,
+      uint32_t aFlags,
+      const store::Item_t& aNodeType,
       bool aDynamicCollection = false);
 
   void deleteCollection(
