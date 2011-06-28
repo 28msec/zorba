@@ -21,7 +21,7 @@
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store
+ : @project store/dynamic
  :)
 module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 

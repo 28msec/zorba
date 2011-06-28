@@ -24,8 +24,6 @@
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project store/indexes/static
  :
- : @project store/indexes
- :
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
