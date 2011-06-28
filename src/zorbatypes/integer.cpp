@@ -19,7 +19,6 @@
 #include <cerrno>
 #include <cstdlib>
 
-#include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/string_util.h"
 
