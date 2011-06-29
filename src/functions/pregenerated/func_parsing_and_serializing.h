@@ -73,12 +73,12 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 
 
 //fn:serialize
-class fn_serialize : public function
+class fn_serialize_3_0 : public function
 {
 public:
-  fn_serialize(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_serialize_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 }
 
   bool accessesDynCtx() const { return true; }

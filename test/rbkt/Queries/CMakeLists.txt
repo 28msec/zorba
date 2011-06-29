@@ -289,7 +289,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3299356)
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3299353)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 

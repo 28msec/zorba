@@ -61,6 +61,15 @@ PlanIter_t fn_floor::codegen(
   return new FloorIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_round_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new RoundIterator(sctx, loc, argv);
+}
 PlanIter_t fn_round::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -154,7 +163,7 @@ void populate_context_numerics(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, fn_round,
+    DECL_WITH_KIND(sctx, fn_round_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","round"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 

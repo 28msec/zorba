@@ -82,6 +82,18 @@ public:
 
 
 //fn:round
+class fn_round_3_0 : public function
+{
+public:
+  fn_round_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  CODEGEN_DECL();
+};
+
+//fn:round
 class fn_round : public function
 {
 public:

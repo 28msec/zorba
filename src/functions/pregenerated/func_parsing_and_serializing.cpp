@@ -51,7 +51,7 @@ PlanIter_t fn_zorba_string_parse_xml_fragment_3_0::codegen(
   return new FnParseXmlFragmentIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_serialize::codegen(
+PlanIter_t fn_serialize_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -104,7 +104,7 @@ void populate_context_parsing_and_serializing(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, fn_serialize,
+    DECL_WITH_KIND(sctx, fn_serialize_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","serialize"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -116,7 +116,7 @@ void populate_context_parsing_and_serializing(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, fn_serialize,
+    DECL_WITH_KIND(sctx, fn_serialize_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","serialize"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION, 
