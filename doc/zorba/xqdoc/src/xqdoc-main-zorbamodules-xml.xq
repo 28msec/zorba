@@ -5,4 +5,4 @@ declare variable $xqdocBuildPath      as xs:string external;
 
 pxq:delete-XML-dir($xqdocBuildPath);
 
-pxq:generate-xqdoc-XML($modulesPath,$xqdocBuildPath);
+pxq:generate-xqdoc-XML($modulesPath, $xqdocBuildPath, fn:true());

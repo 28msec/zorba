@@ -4,4 +4,4 @@ declare variable $modulePath         as xs:string external;
 declare variable $xqdocBuildPath     as xs:string external;
 
 
-pxq:generate-xqdoc-XML($modulePath,$xqdocBuildPath);
+pxq:generate-xqdoc-XML($modulePath,$xqdocBuildPath, fn:false());

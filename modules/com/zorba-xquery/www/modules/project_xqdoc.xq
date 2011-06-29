@@ -31,9 +31,6 @@ import module namespace file = "http://expath.org/ns/file";
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-
 (:~
  : The serialization parameters for XML serialization.
  :)
@@ -42,9 +39,6 @@ declare variable $pxqdoc:serParamXml :=
     <output:method value="xml"/>
     <output:indent value="yes"/>
   </output:serialization-parameters>;
-
-declare variable $pxqdoc:mappings as xs:QName := xs:QName("pxqdoc:mappings");
-declare collection pxqdoc:mappings as node()*;
 
 (:~
  : Delete the intermediary xml dir
@@ -75,17 +69,22 @@ declare %sequential function pxqdoc:delete-XML-dir(
  :)
 declare %sequential function pxqdoc:generate-xqdoc-XML(
   $modulesPath as xs:string,
-  $xqdocPath as xs:string) as element()*
+  $xqdocPath as xs:string,
+  $isInsideZorbaCore as xs:boolean) as element()*
 {
- (: ddl:create-collection(xs:QName("pxqdoc:mappings")); :)
-
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
                                         file:directory-separator(),
                                         "xml");
-  
+                                        
+  variable $xqdocXMLConfigPath  := fn:concat( $xqdocPath,
+                                              file:directory-separator(),
+                                              "config"); 
  
   (: create the XML folder if it does not exist already :)
   file:create-directory($xqdocXMLPath);
+  
+  (: create the XML config folder if it does not exist already :)
+  file:create-directory($xqdocXMLConfigPath);
   
   (: make sure all the passed paths point to existing folders :)
   variable $lPaths := tokenize($modulesPath, ";");
@@ -107,19 +106,24 @@ declare %sequential function pxqdoc:generate-xqdoc-XML(
                                                 file:directory-separator(),
                                                 $xqdocRelFileName, 
                                                 ".xml");
-      file:write(trace($xqdocFileName," write XQDoc XML"), 
-            <module modulePath="{$filePath}" 
-                  moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
-                  examplePath="{fn:substring-before($filePath,$src_dir)}">
-               {$xqdoc}
-            </module>, 
-            $pxqdoc:serParamXml);
+      variable $xqdocConfigFileName := fn:concat( $xqdocXMLConfigPath,
+                                                  file:directory-separator(),
+                                                  $xqdocRelFileName, 
+                                                  ".xml"); 
+      (: Write the XQDoc XML's :)
+      file:write( trace($xqdocFileName," write XQDoc XML"),
+                  $xqdoc, 
+                  $pxqdoc:serParamXml);
+
+      (: Write the additional information needed by the XQDoc generator:)                                                
+      file:write( $xqdocConfigFileName, 
+                  <module modulePath="{$filePath}" 
+                          moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
+                          examplePath="{fn:substring-before($filePath,$src_dir)}"
+                          moduleRelLocation="{fn:substring-before($filePath,$src_dir)}"
+                          isCore="{$isInsideZorbaCore}" />,
+                  $pxqdoc:serParamXml);
       
-    (:  dml:apply-insert-nodes(xs:QName("pxqdoc:mappings"), 
-          <module modulePath="{$filePath}" 
-                  moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
-                  examplePath="{fn:substring-before($filePath,$src_dir)}"
-          />); :)
     }
   }
 };

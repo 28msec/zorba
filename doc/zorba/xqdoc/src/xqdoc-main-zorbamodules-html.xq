@@ -10,7 +10,8 @@ declare variable $zorbaVersion        as xs:string external;
 
 x2h:copy-xhtml-requisites($modulesPath,
                           $xhtmlRequisitesPath,
-                          fn:trace($xqdocBuildPath,"Copy XHTML requisites in:"));
+                          fn:trace($xqdocBuildPath,"Copy XHTML requisites in:"),
+                          $examplePath);
                           
 
 variable $indexHtmlPath as xs:string := 

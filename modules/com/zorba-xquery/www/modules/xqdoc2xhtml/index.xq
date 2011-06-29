@@ -44,6 +44,9 @@ declare variable $xqdoc2html:exampleFolderName as xs:string := "examples";
 declare variable $xqdoc2html:collection as xs:QName := xs:QName("xqdoc2html:collection");
 declare collection xqdoc2html:collection as node()*;
 
+declare variable $xqdoc2html:collectionConfig as xs:QName := xs:QName("xqdoc2html:collectionConfig");
+declare collection xqdoc2html:collectionConfig as node()*;
+
 declare variable $xqdoc2html:menuEntries := <entries/>;
 
 (:~
@@ -150,7 +153,7 @@ declare %private %sequential function xqdoc2html:collect-functions(
   {
     insert nodes
       for $function in $xqdoc/xqdoc:functions/xqdoc:function
-      let $name := $function/xqdoc:name/text(),
+      let $name := fn:substring-after($function/xqdoc:name/text(),':'),
           $signature := $function/xqdoc:signature/text(),
           $arity := $function/@arity,
           $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
@@ -160,7 +163,7 @@ declare %private %sequential function xqdoc2html:collect-functions(
       return
         <function moduleUri="{$xqdoc/xqdoc:module/xqdoc:uri/text()}"
                   file="{$relativeFileName}"
-                  name="{$function/xqdoc:name/text()}"
+                  name="{$name}"
                   signature="{$function/xqdoc:signature/text()}"
                   arity="{$arity}"
                   isDeprecated="{fn:exists($function/xqdoc:comment/xqdoc:deprecated)}"/>
@@ -202,6 +205,22 @@ declare %private function  xqdoc2html:value-intersect(
 {
   fn:distinct-values($arg1[.=$arg2])
 };
+
+(:~
+ : This function returns a sequence containing all the distinct items 
+ : that appear in $arg1 and $arg2, in an arbitrary order.
+ :
+ : @param $arg1 first sequence.
+ : @param $arg2 second sequence.
+ : @return $arg1 union $arg2.
+ :)
+declare function xqdoc2html:value-union (
+  $arg1 as xs:anyAtomicType*,
+  $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* 
+{
+  fn:distinct-values(($arg1, $arg2))
+};
+    
 
 (:~
  : The function gathers all the files with the given extensions from the provided $sourcePath
@@ -320,12 +339,24 @@ declare %private %sequential function xqdoc2html:copy-xqsrc-folders(
  : @return empty sequence
  :)
 declare %private %sequential function xqdoc2html:gather-schemas(
-  $modulePaths as xs:string,
-  $schemasPath as xs:string) 
+  $xqdocBuildPath as xs:string,
+  $schemasPath as xs:string,
+  $zorbaModulesPath as xs:string) 
  {
- (: make sure all the passed paths point to existing folders :)
-  variable $lPaths := tokenize($modulePaths, ";");
-  variable $lModulePaths as xs:string* := distinct-values(for $lPath in $lPaths return if (file:is-directory($lPath)) then $lPath else () );
+  (: gather all the config XML's :)
+  variable $xqdocXmlConfigPath as xs:string := 
+  fn:concat($xqdocBuildPath, file:directory-separator(), "config");
+  
+  xqdoc2html:create-collection-categories (xs:QName("xqdoc2html:collectionConfig"), $xqdocXmlConfigPath);
+  
+  
+  variable $lPaths := fn:distinct-values(dml:collection(xs:QName("xqdoc2html:collectionConfig"))//module/@moduleRelLocation);
+  variable $lPaths1 as xs:string*:= xqdoc2html:value-union(for $lPath in $lPaths where fn:exists($lPath) return xs:string($lPath),$zorbaModulesPath);
+  
+  (: make sure all the passed paths point to existing folders :)
+  variable $lModulePaths as xs:string* := distinct-values(for $lPath in $lPaths1 return
+                                                          if($lPath eq xs:string("")) then () 
+                                                          else if (file:is-directory($lPath)) then $lPath else () );
  
   for $filedirs in $lModulePaths
   for $file in file:list($filedirs, fn:true(), "*.xsd")
@@ -368,7 +399,8 @@ declare %private %sequential function xqdoc2html:gather-schemas(
 declare %sequential function xqdoc2html:copy-xhtml-requisites(
   $modulePaths          as xs:string,
   $xhtmlRequisitesPath  as xs:string,
-  $xqdocBuildPath       as xs:string)
+  $xqdocBuildPath       as xs:string,
+  $examplePath          as xs:string)
 {
   let $xhtmlPath      := fn:concat($xqdocBuildPath, file:directory-separator(), "xhtml"),
       $xmlPath        := fn:concat($xqdocBuildPath, file:directory-separator(), "xml"),
@@ -396,9 +428,7 @@ declare %sequential function xqdoc2html:copy-xhtml-requisites(
       
       (:TODO replace this: find the schema file location starting from the import schema statement in the XQDoc XML :)     
       file:create-directory($schemasPath);
-      xqdoc2html:gather-schemas($modulePaths, fn:trace($schemasPath," copy schemas in :"));
-      
-      
+      xqdoc2html:gather-schemas($xqdocBuildPath, fn:trace($schemasPath," copy schemas in :"), fn:concat($examplePath,file:directory-separator(), "modules"));      
     }
 };
 
@@ -462,7 +492,8 @@ declare %sequential function xqdoc2html:main(
   else
     ();
     
-  (: generate the XQDoc XHTML for all the modules :)
+  (: start generate the XQDoc XHTML for all the modules :)
+  
   xqdoc2html:create-collection-categories (xs:QName("xqdoc2html:collection"), $xqdocXmlPath);
   
   trace(xs:string(1)," collect-menu-entries");
@@ -504,24 +535,23 @@ declare %sequential function xqdoc2html:main(
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));                           
   ddl:delete-collection(xs:QName("xqdoc2html:collection"));
   
- (: dml:delete-nodes(dml:collection(xs:QName("pxqdoc:mappings")));                           
-  ddl:delete-collection(xs:QName("pxqdoc:mappings")); :)
+  dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collectionConfig")));                           
+  ddl:delete-collection(xs:QName("xqdoc2html:collectionConfig"));
+  
 };
 
 declare %private function xqdoc2html:get-module-path(
-  $moduleXML as node()
+  $moduleUri as xs:string
 ) as xs:string
 {
-  (: dml:collection(xs:QName("pxqdoc:mappings"))[@moduleURI=$moduleURI]/@modulePath :)
-  $moduleXML/module/@modulePath
+  dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@modulePath
 };
 
 declare %private function xqdoc2html:get-examples-path(
-  $moduleXML as node()
+  $moduleUri as xs:string
   ) as xs:string
 {
-  (: dml:collection(xs:QName("pxqdoc:mappings"))[@moduleURI=$moduleURI]/@examplePath :)
-  $moduleXML/module/@examplePath
+  dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@examplePath
 };
 
 (:~
@@ -550,9 +580,9 @@ declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
   file:create-directory($examplesFolderDestination);
   
   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-  let $moduleDoc := $docNode/module/xqdoc:xqdoc/xqdoc:module
+  let $moduleDoc := $docNode/xqdoc:xqdoc/xqdoc:module
   let $moduleName := $moduleDoc/xqdoc:name
-  let $moduleUri := data($moduleDoc/xqdoc:uri)
+  let $moduleUri := xs:string(data($moduleDoc/xqdoc:uri))
   let $getFilename := xqdoc2html:get-filename($moduleUri)
   let $xhtmlRelativeFilePath := fn:concat($getFilename, ".html")
   return
@@ -576,17 +606,17 @@ declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
     else
     {      
       (: replace the inlined examples with actual XQuery code :)
-      variable $examplesPath := xqdoc2html:get-examples-path($docNode);
+      variable $examplesPath := xqdoc2html:get-examples-path($moduleUri);
       if($examplesPath eq "") then
         $examplesPath := $zorbaPath;
       else ();
-      variable $xqdoc2 := xqdoc2html:configure-xml($docNode/module/xqdoc:xqdoc, $examplesPath, $xqdocXhtmlPath);
+      variable $xqdoc2 := xqdoc2html:configure-xml($docNode/xqdoc:xqdoc, $examplesPath, $xqdocXhtmlPath);
       
       (: copy the examples listed in the .xq file into the xhtml/examples folder :)
       xqdoc2html:copy-examples($xqdoc2, $examplesFolderDestination, $examplesPath);
       
       (: copy the .xq module to the xhtml/modules folder :)
-      variable $modulefilePath := xqdoc2html:get-module-path($docNode);
+      variable $modulefilePath := xqdoc2html:get-module-path($moduleUri);
       variable $destination := fn:concat($modulePath, file:directory-separator(), pxqdoc:get-filename($moduleUri),".xq");
       file:copy($modulefilePath, $destination);
       
@@ -983,18 +1013,35 @@ declare %sequential function xqdoc2html:configure-xhtml (
   where $typeTd/@class eq "type"
   let $type := $typeTd/text()
   return {
-    if (matches($type, "updating")) then
+    if (contains($type, "updating ")) then
       replace node $typeTd/text() with
-        <a href="{$xquSpec}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>
-    else if (matches($type, "sequential")) then
+        <span class="no_underline">
+          <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>
+          {if(contains($type, " external")) then
+           <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+           else ()}
+        </span>          
+    else if (contains($type, "sequential ")) then
       replace node $typeTd/text() with
-        <a href="{$xqsSpec}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
-    else if (matches($type, "nondeterministic")) then
+        <span class="no_underline">
+          <a href="{$xquSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
+          {if(contains($type, " external")) then
+           <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+           else ()}
+        </span>
+    else if (contains($type, "nondeterministic ")) then
       replace node $typeTd/text() with
-        <a href="{$xq11Spec}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
-    else if (matches($type, "external")) then
+        <span class="no_underline">
+          <a href="{$xquSpec}" title="%nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
+          {if(contains($type, " external")) then
+           <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+           else ()}
+        </span>
+    else if (contains($type, " external")) then
       replace node $typeTd/text() with
-        <a href="{$xqExternal}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>    
+        <span class="no_underline">
+          <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+        </span> 
     else ()
   };
   
@@ -1013,36 +1060,36 @@ declare %sequential function xqdoc2html:configure-xhtml (
       replace node $func/text() with
         <span class="no_underline">
           <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>
-          {text {substring-after(if(ends-with($funcName, " external")) then substring-before($funcName," external") else $funcName, "updating")}}
-          {if(ends-with($funcName, " external")) then
+          {if(contains($funcName, " external ")) then
             <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-          else ()}
+          else ()}          
+          {text {fn:replace(fn:replace($funcName,"external "," "),"updating ","")}}
         </span>
         
     else if (starts-with($funcName, "sequential")) then
       replace node $func/text() with
         <span class="no_underline">
           <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
-          {text {substring-after(if(ends-with($funcName, " external")) then substring-before($funcName," external") else $funcName, "sequential")}}
-          {if(ends-with($funcName, " external")) then
+          {if(contains($funcName, " external ")) then
             <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-          else ()}
+          else ()}          
+          {text {fn:replace(fn:replace($funcName,"external "," "),"sequential ","")}}
         </span>
         
     else if (starts-with($funcName, "nondeterministic")) then
       replace node $func/text() with
         <span class="no_underline">
-          <a href="{$xq11Spec}" title="nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
-          {text {substring-after(if(ends-with($funcName, " external")) then substring-before($funcName," external") else $funcName, "nondeterministic")}}
-          {if(ends-with($funcName, " external")) then
+          <a href="{$xq11Spec}" title="%nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
+          {if(contains($funcName, " external ")) then
             <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-          else ()}
+          else ()}          
+          {text {fn:replace(fn:replace($funcName,"external "," "),"nondeterministic ","")}}
         </span>
-    else if(ends-with($funcName, " external")) then
+    else if(contains($funcName, "external ")) then
       replace node $func/text() with
-        <span class="no_underline">
-          {text {if(ends-with($funcName, " external")) then substring-before($funcName," external") else $funcName}}
-          <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+        <span class="no_underline">          
+          <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>          
+          {text {fn:replace($funcName,"external "," ")}}
         </span>
     else ()
   };
@@ -1138,9 +1185,16 @@ declare function xqdoc2html:body(
   let $functions := for $function in $xqdoc/xqdoc:functions/xqdoc:function 
                     where xqdoc2html:function-is-not-private($function)
                     return $function
+  let $moduleUri := xqdoc2html:module-uri($xqdoc)
+  let $isZorbaCore as xs:boolean := xs:boolean(dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@isCore)
+  let $modulePrefix as xs:string := if(count($functions) ne xs:integer(0)) then 
+  substring-before($xqdoc/xqdoc:functions/xqdoc:function[1]/xqdoc:name/text(),':') else
+  if($xqdoc/xqdoc:variables/xqdoc:variable) then
+  substring-before($xqdoc/xqdoc:variables/xqdoc:variable[1]/xqdoc:uri/text(),':') else
+  "modNS"
   return
-  (<h1>{xqdoc2html:module-uri($xqdoc)}</h1>,
-    xqdoc2html:module-description($xqdoc/xqdoc:module),
+  (<h1>{if ($isZorbaCore) then <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup> else () }{$moduleUri}</h1>,
+    xqdoc2html:module-description($moduleUri, $modulePrefix, $xqdoc/xqdoc:module),
     xqdoc2html:module-resources($xqdocXhtmlPath, xqdoc2html:module-uri($xqdoc)),
     xqdoc2html:module-dependencies($xqdoc),
     xqdoc2html:module-external-specifications($xqdoc/xqdoc:module),
@@ -1156,8 +1210,12 @@ declare function xqdoc2html:body(
  : @param $module the node containing the XQDoc XML module.
  : @return the XHTML for the module description and module annotations.
  :)
-declare function xqdoc2html:module-description($module) {
-    (<div class="section"><span id="module_description">Module Description</span></div>,
+declare function xqdoc2html:module-description($moduleUri as xs:string, $modulePrefix as xs:string, $module) {
+    ( <div class="section"><span id="module_description">Module Description</span></div>,
+      <span>Before using any of the functions below please remember to import the module namespace:
+      <pre class="brush: xquery;">import module namespace {$modulePrefix} = "{$moduleUri}";</pre>
+      Also check out the examples that show the parameters( if any) that have to be passed to each function.
+      </span>,<br />,
      xqdoc2html:description($module/xqdoc:comment),
      xqdoc2html:annotations-module($module/xqdoc:comment))
 };
@@ -1343,7 +1401,7 @@ declare function xqdoc2html:module-variables($variables)
       (:where empty($variable/xqdoc:invoked) :)
       order by $varName
       return (<tr>
-              <td>{$variable/xqdoc:uri/text()}</td>
+              <td>${$varName}</td>
               <td>{xqdoc2html:description($variable/xqdoc:comment)}</td>
               </tr>
              )
@@ -1364,8 +1422,8 @@ declare function xqdoc2html:module-function-summary($functions)
   if(count($functions)) then
     <table class="funclist">{
       for $function in $functions
-      let $name := $function/xqdoc:name/text(),
-          $signature := replace($function/xqdoc:signature/text(),"\%",""),
+      let $name := fn:substring-after($function/xqdoc:name/text(),':'),
+          $signature := $function/xqdoc:signature/text(),
           $param-number := $function/@arity,
           $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated),
           $description := data($function/xqdoc:comment/xqdoc:description),
@@ -1379,7 +1437,7 @@ declare function xqdoc2html:module-function-summary($functions)
             $external := if(ends-with($signature,"external")) then "external" else ""
         return
           <tr>
-            <td class="type">{$type}</td>
+            <td class="type">{concat($type," ",$external)}</td>
             <td>
               <tt>{
                 if ($isDeprecated) then
@@ -1389,7 +1447,6 @@ declare function xqdoc2html:module-function-summary($functions)
               }{xqdoc2html:split-function-signature($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
               </tt>
             </td>
-            <td class="type">{$external}</td>
           </tr>
     }</table>
   else
@@ -1455,8 +1512,8 @@ declare function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
     if(count($functions)) then (
       <div class="section"><span id="functions">Functions</span></div>,
       for $function in $functions
-      let $name := $function/xqdoc:name/text(),
-          $signature := fn:replace($function/xqdoc:signature/text(),"\%",""),
+      let $name := fn:substring-after($function/xqdoc:name/text(),':'),
+          $signature := $function/xqdoc:signature/text(),
           $param-number := $function/@arity,
           $comment := $function/xqdoc:comment,
           $isDeprecated := fn:exists($comment/xqdoc:deprecated)
@@ -1502,7 +1559,7 @@ declare function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
 declare %private function xqdoc2html:module-function-link($name as xs:string, $signature) {
 
 let $lcSignature := fn:lower-case($signature)
-let $lname := if(ends-with($signature, 'external')) then concat($name, ' external') else $name
+let $lname := if(ends-with($signature, 'external')) then concat('external ',$name) else $name
 return
   if(contains($lcSignature, 'updating')) then
     concat('updating ',$lname)
@@ -1673,8 +1730,8 @@ declare function xqdoc2html:generate-function-index()
   let $alphabet := ("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
   let $letters := distinct-values(
                   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-                  for $function in $docNode/module/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
-                    let $functionName := $function/xqdoc:name/text()
+                  for $function in $docNode/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
+                    let $functionName := substring-after($function/xqdoc:name/text(),':')
                     where xqdoc2html:function-is-not-private($function)
                   return upper-case(substring($functionName,1,1)))
   return
@@ -1699,11 +1756,11 @@ declare function xqdoc2html:generate-function-index()
         <table class="funclist">
           {
             for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-            for $function in $docNode/module/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
-            let $module := $docNode/module/xqdoc:xqdoc/xqdoc:module,
+            for $function in $docNode/xqdoc:xqdoc/xqdoc:functions//xqdoc:function
+            let $module := $docNode/xqdoc:xqdoc/xqdoc:module,
                 $moduleUri := $module/xqdoc:uri/text(),
                 $file := fn:concat(pxqdoc:get-filename($moduleUri),'.html'),
-                $functionName := $function/xqdoc:name/text(),
+                $functionName := fn:substring-after($function/xqdoc:name/text(),':'),
                 $signature := $function/xqdoc:signature/text(),
                 $arity :=  $function/@arity,
                 $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated),
@@ -1791,12 +1848,12 @@ declare %private %sequential function xqdoc2html:collect-entry (
 declare %private %sequential function xqdoc2html:collect-menu-entries()
 {
   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-      let $module := $docNode/module/xqdoc:xqdoc/xqdoc:module,
+      let $module := $docNode/xqdoc:xqdoc/xqdoc:module,
           $lModuleProject := $module/xqdoc:custom[@tag="project"]/text(),
           $lModuleUri     := $module/xqdoc:uri/text(),
           $lModuleName    := substring-before($module/xqdoc:name/text(),".xq"),  
           $lXHTMLFileName := pxqdoc:get-filename($lModuleUri),
-          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/module/xqdoc:xqdoc)),
+          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/xqdoc:xqdoc)),
           $lTmp := substring-after($lModuleUri,'http://'),
           $lTmpTok := tokenize($lTmp,'/'),
           $lTmp2 := if(ends-with($lTmp,'/')) then substring($lTmp,1,string-length($lTmp)-1) else string-join(xqdoc2html:value-except($lTmpTok,$lTmpTok[last()]),'/'),
@@ -1828,17 +1885,23 @@ declare %private %sequential function xqdoc2html:create-module-helper(
     <ul>
     {
       for $entry in $xqdoc2html:menuEntries/entry
+      let $isZorbaCore as xs:boolean := xs:boolean(dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=data($entry/@moduleURI)]/@isCore)
       order by $entry/@structure
       where ($entry/@structure eq $currentCategory)
       return
         <li>
+          {
+            if($isZorbaCore) then
+              <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>
+            else ()
+          }
           <a href="{data($entry/@href)}.html" title="{data($entry/@moduleURI)}">{data($entry/@name)}</a>
           {
             if(xs:boolean(data($entry/@pureXQuery))) then ()
             else
               <span class="superscript"><a href="http://www.w3.org/TR/xquery-30/#dt-external-function" 
               target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a></span>
-          }
+          }          
         </li>
     }    
     </ul></li>
@@ -1944,16 +2007,23 @@ declare %private %sequential function xqdoc2html:create-specialized-left-menu(
 {  
   {
     for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
-      let $module := $docNode/module/xqdoc:xqdoc/xqdoc:module,
+      let $module := $docNode/xqdoc:xqdoc/xqdoc:module,
           $lModuleUri     := $module/xqdoc:uri/text(),
-          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/module/xqdoc:xqdoc))
+          $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/xqdoc:xqdoc))
     where $lModuleUri = $moduleUri
             
     for $node in $generalLeftMenu//li
+    let $isZorbaCore as xs:boolean := xs:boolean(dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@isCore)
     where $node/a[@title eq $moduleUri] 
     return   
     replace node $node with
-      <li><span class="leftmenu_active">{$node/a/text()}
+      <li>
+      {
+        if($isZorbaCore) then
+          <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>
+        else ()
+      }
+      <span class="leftmenu_active">{$node/a/text()}
       {
         if($lPureXquery) then ()
         else

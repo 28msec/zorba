@@ -599,7 +599,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       lSigElem, lFuncElem, lSigQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  zstring lNameString = n.get_name()->get_localname();
+  zstring lNameString = n.get_name()->get_qname();
   theFactory->createTextNode(lNameText, lNameElem, lNameString);
 
   ostringstream lSig;
@@ -731,7 +731,7 @@ void end_visit(const VarDecl& n, void*)
       lUriElem, lVariableElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  zstring lUriString(n.get_name()->get_localname());
+  zstring lUriString(n.get_name()->get_qname());
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
