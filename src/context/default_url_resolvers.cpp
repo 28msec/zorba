@@ -52,17 +52,6 @@ HTTPURLResolver::resolveURL
       // We don't implement other schemes
       return NULL;
   }
-  // QQQ This is a horrible hack, but I can't figure out a way around
-  // it. Several W3C tests attempt to access schema URIs on
-  // example.com. Those URIs redirect to a page on iana.org which has
-  // DTD references, which Xerces also tries to load - but they're
-  // extremely slow. I do not know why the old code (which used
-  // Xerces's own URLInputSource) did not have the same problem.
-  if (ascii::begins_with(aUrl, "http://example.com") ||
-    ascii::begins_with(aUrl, "http://www.example.com"))
-  {
-    throw os_error::exception("", aUrl.c_str(), "illegal host");
-  }
   try {
     std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
     lStream->init();
