@@ -258,7 +258,7 @@ ENDIF (FOUND_XQTS)
 
 # The dirname_basename test depends on the system module
 #IF (NOT zorba_system_module_BINARY_DIR)
-  SET_TESTS_PROPERTIES (test/rbkt/zorba/file/dirname_basename PROPERTIES WILL_FAIL TRUE)
+#  SET_TESTS_PROPERTIES (test/rbkt/zorba/file/dirname_basename PROPERTIES WILL_FAIL TRUE)
 #ENDIF ()
 
 

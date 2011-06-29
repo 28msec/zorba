@@ -165,7 +165,7 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
         ${target_type}_OUTPUT_DIRECTORY
         "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src")
       TARGET_LINK_LIBRARIES(${MODULE_LIB_NAME}
-        zorba_${ZORBA_STORE_NAME} ${link_libraries})
+        zorba_${ZORBA_STORE_NAME} ${ARGN})
 
 #      IF (WIN32 AND MSVC_IDE)
 #        # in VS, the dll's are generated in the $(ConfigurationName)
@@ -202,7 +202,7 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
   # target filename in the output directory.
 
   # Create the output directory for this module.
-  SET (output_dir "${PROJECT_BINARY_DIR}/MODULE_PATH/${module_path}")
+  SET (output_dir "${CMAKE_BINARY_DIR}/MODULE_PATH/${module_path}")
   FILE (MAKE_DIRECTORY "${output_dir}")
 
   SET (output_files)
