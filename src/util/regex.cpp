@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "stdafx.h"
+//#include "stdafx.h"
+
+#include "regex.h"
 
 #include <cstring>
 #include <vector>
@@ -26,7 +28,6 @@
 
 #include "ascii_util.h"
 #include "cxx_util.h"
-#include "regex.h"
 #include "stl_util.h"
 
 #ifndef ZORBA_NO_UNICODE
