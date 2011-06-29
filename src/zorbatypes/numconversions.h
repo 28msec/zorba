@@ -25,52 +25,52 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Converts an xs:double value to an xs:int.
+ * Converts an \c xs:double value to an \c xs:int.
  *
- * @param d The xs:double value to convert.
+ * @param d The \c xs:double value to convert.
  * @return Returns said value.
- * @throws std::range_error if the xs:double value can not be accurately
- * represented as an xs:int.
+ * @throws std::range_error if the \c xs:double value can not be accurately
+ * represented as an \c xs:int.
  */
 xs_int to_xs_int( xs_double const &d );
 
 /**
- * Converts an xs:integer value to an xs:int.
+ * Converts an \c xs:integer value to an \c xs:int.
  *
- * @param i The xs:integer value to convert.
+ * @param i The \c xs:integer value to convert.
  * @return Returns said value.
- * @throws std::range_error if the xs:integer value can not be accurately
- * represented as an xs:int.
+ * @throws std::range_error if the \c xs:integer value can not be accurately
+ * represented as an \c xs:int.
  */
 xs_int to_xs_int( xs_integer const &i );
 
 /**
- * Converts an xs:decimal value to an xs:long.
+ * Converts an \c xs:decimal value to an \c xs:long.
  *
- * @param d The xs:decimal value to convert.
+ * @param d The \c xs:decimal value to convert.
  * @return Returns said value.
- * @throws std::range_error if the xs:decimal value can not be accurately
- * represented as an xs:long.
+ * @throws std::range_error if the \c xs:decimal value can not be accurately
+ * represented as an \c xs:long.
  */
 xs_long to_xs_long( xs_decimal const &d );
 
 /**
- * Converts an xs:integer value to an xs:long.
+ * Converts an \c xs:integer value to an \c xs:long.
  *
- * @param i The xs:integer value to convert.
+ * @param i The \c xs:integer value to convert.
  * @return Returns said value.
- * @throws std::range_error if the xs:integer value can not be accurately
- * represented as an xs:long.
+ * @throws std::range_error if the \c xs:integer value can not be accurately
+ * represented as an \c xs:long.
  */
 xs_long to_xs_long( xs_integer const &i );
 
 /**
- * Converts an xs:integer value to an xs:unsignedInt.
+ * Converts an \c xs:integer value to an \c xs:unsignedInt.
  *
- * @param i The xs:integer value to convert.
+ * @param i The \c xs:integer value to convert.
  * @return Returns said value.
- * @throws std::range_error if the xs:integer value can not be accurately
- * represented as an xs:unsignedInt.
+ * @throws std::range_error if the \c xs:integer value can not be accurately
+ * represented as an \c xs:unsignedInt.
  */
 xs_unsignedInt to_xs_unsignedInt( xs_integer const &i );
 
