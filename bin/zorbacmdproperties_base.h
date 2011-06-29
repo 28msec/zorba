@@ -34,7 +34,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo", "--timeout", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
     return result;
   }
   bool theTiming;
@@ -62,11 +62,9 @@ protected:
   bool theParseOnly;
   bool theCompileOnly;
   bool theNoSerializer;
-  std::string theDebugPorts;
   bool theDebug;
-  bool theDebugServer;
-  std::string theDebugServerHost;
-  bool theNoColors;
+  std::string theDebugHost;
+  unsigned int theDebugPort;
   bool theNoLogo;
   long theTimeout;
   std::string theModulePath;
@@ -91,10 +89,9 @@ protected:
     theParseOnly = false;
     theCompileOnly = false;
     theNoSerializer = false;
-    theDebugPorts = "28028:28029";
     theDebug = false;
-    theDebugServer = false;
-    theNoColors = false;
+    theDebugHost = "127.0.0.1";
+    theDebugPort = 28028;
     theNoLogo = false;
     theTimeout = -1;
     theTrailingNl = false;
@@ -125,11 +122,9 @@ public:
   const bool &parseOnly () const { return theParseOnly; }
   const bool &compileOnly () const { return theCompileOnly; }
   const bool &noSerializer () const { return theNoSerializer; }
-  const std::string &debugPorts () const { return theDebugPorts; }
   const bool &debug () const { return theDebug; }
-  const bool &debugServer () const { return theDebugServer; }
-  const std::string &debugServerHost () const { return theDebugServerHost; }
-  const bool &noColors () const { return theNoColors; }
+  const std::string &debugHost () const { return theDebugHost; }
+  const unsigned int &debugPort () const { return theDebugPort; }
   const bool &noLogo () const { return theNoLogo; }
   const long &timeout () const { return theTimeout; }
   const std::string &modulePath () const { return theModulePath; }
@@ -246,24 +241,18 @@ public:
       else if (strcmp (*argv, "--no-serializer") == 0) {
         theNoSerializer = true;
       }
-      else if (strcmp (*argv, "--debug-ports") == 0 || strncmp (*argv, "-p", 2) == 0) {
-        int d = 2;
-        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --debug-ports option"; break; }        init_val (*argv, theDebugPorts, d);
-      }
       else if (strcmp (*argv, "--debug") == 0 || strncmp (*argv, "-d", 2) == 0) {
         theDebug = true;
       }
-      else if (strcmp (*argv, "--debug-server") == 0) {
-        theDebugServer = true;
-      }
-      else if (strcmp (*argv, "--debug-server-host") == 0) {
+      else if (strcmp (*argv, "--debug-host") == 0 || strncmp (*argv, "-h", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --debug-server-host option"; break; }        init_val (*argv, theDebugServerHost, d);
+        if (*argv == NULL) { result = "No value given for --debug-host option"; break; }        init_val (*argv, theDebugHost, d);
       }
-      else if (strcmp (*argv, "--no-colors") == 0) {
-        theNoColors = true;
+      else if (strcmp (*argv, "--debug-port") == 0 || strncmp (*argv, "-p", 2) == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --debug-port option"; break; }        init_val (*argv, theDebugPort, d);
       }
       else if (strcmp (*argv, "--no-logo") == 0) {
         theNoLogo = true;
@@ -337,12 +326,10 @@ public:
 "--parse-only\nStop after parsing the query.\n\n"
 "--compile-only\nOnly compile (don't execute)\n\n"
 "--no-serializer\nDo not serialize (discard) result.\n\n"
-"--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
-"--debug, -d\nLaunch the Zorba command line debugger.\n\n"
-"--debug-server\nLaunch the Zorba debugger server and wait for incomming client connections.\n\n"
-"--debug-server-host\nSet the host, on which the debugger server is run\n\n"
-"--no-colors\nUse no colors in the debugger client.\n\n"
-"--no-logo\nPrint no logo when starting the debugger client or server.\n\n"
+"--debug, -d\nLaunch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
+"--debug-port, -p\nThe host where the DBGP-enabled debugger client listens for conenctions. Defaults to: 127.0.0.1\n\n"
+"--debug-port, -p\nThe port on which the DBGP-enabled debugger client listens for conenctions. Defaults to: 28028\n\n"
+"--no-logo\nPrint no logo when starting.\n\n"
 "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
 "--module-path\nModule paths added to the built-in resolver, i.e. where module imports are looking for modules.\n\n"
 "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"

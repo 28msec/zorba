@@ -49,8 +49,8 @@ protected:
   FullText_t     theStopWordsMapping;
   FullText_t     theThesaurusMapping;
 
-  unsigned int theRequestPort;
-  unsigned int theEventPort;
+  std::string theDebugHost;
+  unsigned int theDebugPort;
 
 public:
   ExternalVars_t::const_iterator
@@ -89,17 +89,13 @@ public:
   void
   getModulePaths(std::string&) const;
   
-  bool hasNoSyntaxHighlighting(){ return theNoColors; }
-
   bool isDebug(){ return theDebug; }
-
-  bool isDebugServer(){ return theDebugServer; }
 
   bool hasNoLogo(){ return theNoLogo; }
 
-  unsigned int getRequestPort(){ return theRequestPort; }
+  std::string getDebugHost(){ return theDebugHost; }
 
-  unsigned int getEventPort(){ return theEventPort; }
+  unsigned int getDebugPort(){ return theDebugPort; }
 
   std::string check_args ();
 
@@ -112,9 +108,3 @@ public:
   bool loadProperties(int argc, char* argv[]);
 };
 #endif
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */

@@ -42,7 +42,6 @@
 #include <zorba/store_manager.h>
 
 #ifdef ZORBA_WITH_DEBUGGER
-//#include <zorba/debugger_client.h>
 #include "debugger_server_runnable.h"
 #include "debugger_handler.h"
 #endif
@@ -715,7 +714,7 @@ _tmain(int argc, _TCHAR* argv[])
   bool doTiming = lProperties.timing();
   bool debug = false;
 #ifdef ZORBA_WITH_DEBUGGER
-  debug = (lProperties.debugServer() || lProperties.debug());
+  debug = (lProperties.debug());
 #endif
 
   // libModule assumes compileOnly even if compileOnly is false
@@ -929,21 +928,14 @@ _tmain(int argc, _TCHAR* argv[])
         }
 
         std::auto_ptr<zorba::DebuggerServerRunnable> lServer;
-//        std::auto_ptr<DebuggerClient>                lClient;
         std::auto_ptr<DebuggerHandler>               lHandler;
 
-        if (lProperties.getRequestPort() == lProperties.getEventPort()) {
-          std::cout << "Command and event ports have to be different"
-                    << std::endl;
-          return 10;
-        }
-
-        std::string lHost = lProperties.debugServerHost();
+        std::string lHost = lProperties.debugHost();
         if (lHost == "") {
           lHost = "127.0.0.1";
         }
 
-        if (lProperties.debugServer() || lProperties.debug()) {
+        if (lProperties.debug()) {
           Zorba_SerializerOptions lSerOptions =
               Zorba_SerializerOptions::SerializerOptionsFromStringParams(
               lProperties.getSerializerParameters());
@@ -952,7 +944,7 @@ _tmain(int argc, _TCHAR* argv[])
                             lQuery,
                             *lOutputStream,
                             lHost,
-                            lProperties.getEventPort(),
+                            lProperties.getDebugPort(),
                             lSerOptions));
           if (!lProperties.hasNoLogo() && !lProperties.debug()) {
             std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
@@ -964,30 +956,11 @@ _tmain(int argc, _TCHAR* argv[])
           if (!lProperties.hasNoLogo() ) {
             std::cout << "Zorba XQuery Debugger\n" << copyright_str << std::endl;
           }
-
-          // Try to connect 3 times on the server thread
-          //for (unsigned int i = 0; i < 3; i++) {
-          //  try {
-          //    // wait 1 second before trying to reconnect
-          //    sleep(1);
-          //    lClient.reset(DebuggerClient::createClient(
-          //      lHost, lProperties.getRequestPort(), lProperties.getEventPort()));
-          //    lHandler.reset(new DebuggerHandler(lZorbaInstance, lClient.get(), lFileName));
-          //    lClient->registerEventHandler( lHandler.get() );
-          //    break;
-          //  } catch( std::exception const &e ) {
-          //    if ( i < 2 ){ continue; }
-          //    std::cerr << "Could not start the debugger: {" << e.what() << "}" << std::endl;
-          //  }
-          //  return 1;
-          //}
         }
 
-        // important to destroy the client before joining the server
-//        lClient.reset(0);
         lHandler.reset(0);
 
-        if (lProperties.debugServer() || lProperties.debug())
+        if (lProperties.debug())
         {
           lServer->join();
           lServer.reset(0);
