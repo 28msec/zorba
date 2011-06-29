@@ -1646,18 +1646,99 @@ static void addNonMatchElement(store::Item_t &parent,
   GENV_ITEMFACTORY->createTextNode(non_match_text_item, non_match_elem, non_match_str);
 }
 
-void addMatchElement(store::Item_t &parent, 
+static void addGroupElement(store::Item_t &parent, 
+                            store::Item_t &untyped_type_name,
+                            store::NsBindings   &ns_binding,
+                            zstring &baseURI,
+                            int match_start2, 
+                            int match_end2, 
+                            unsigned int &match_end1_bytes,
+                            const char *&sin,
+                            unicode::regex &rx,
+                            int gparent,
+                            std::vector<int> &group_parent,
+                            int nr_pattern_groups,
+                            int &i)
+{
+  int    match_startg = match_start2;
+  int    match_endg = match_start2;
+  store::Item_t group_element_name;
+  store::Item_t nr_attrib_name;
+  for(i=i+1;i<nr_pattern_groups;i++)
+  {
+    if(group_parent[i] < gparent)
+    {
+      i--;
+      break;
+    }
+    match_startg = rx.get_match_start(i+1);
+    if((match_startg < 0) && (gparent < 0))
+      continue;
+    if(match_endg < match_startg)
+    {
+      //add non-group match text
+      zstring                non_group_str;
+
+      copyUtf8Chars(sin, match_endg, match_end1_bytes, match_startg, non_group_str);
+      store::Item_t non_group_text_item;
+      GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent.getp(), non_group_str);
+    }
+    match_endg = rx.get_match_end(i+1);
+    //add group match text
+    GENV_ITEMFACTORY->createQName(group_element_name,
+                                  static_context::W3C_FN_NS, "fn", "group");
+    GENV_ITEMFACTORY->createQName(nr_attrib_name,
+                                  "", "", "nr");
+    store::Item_t group_elem;
+    GENV_ITEMFACTORY->createElementNode(group_elem, parent, group_element_name, untyped_type_name, false, false, ns_binding, baseURI);
+    char strid[40];
+    sprintf(strid, "%d", i+1);
+    zstring zstrid(strid);
+    store::Item_t strid_item;
+    GENV_ITEMFACTORY->createString(strid_item, zstrid);
+    store::Item_t id_attrib_item;
+    GENV_ITEMFACTORY->createAttributeNode(id_attrib_item, group_elem.getp(), nr_attrib_name, untyped_type_name, strid_item);
+    if(match_startg < 0)
+      continue;
+    if((i+1)<nr_pattern_groups)
+    {
+      if(group_parent[i+1] > gparent)
+      {
+        addGroupElement(group_elem, untyped_type_name, ns_binding, baseURI, 
+                        match_startg, match_endg, match_end1_bytes, 
+                        sin, rx, 
+                        i, group_parent, nr_pattern_groups, i);
+        continue;
+      }
+    }
+    zstring                group_str;
+
+    copyUtf8Chars(sin, match_startg, match_end1_bytes, match_endg, group_str);
+    store::Item_t group_text_item;
+    GENV_ITEMFACTORY->createTextNode(group_text_item, group_elem.getp(), group_str);
+  }
+  //add last non-group match
+  if(match_endg < match_end2)
+  {
+    zstring                non_group_str;
+
+    copyUtf8Chars(sin, match_endg, match_end1_bytes, match_end2, non_group_str);
+    store::Item_t non_group_text_item;
+    GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent, non_group_str);
+  }
+}
+
+static void addMatchElement(store::Item_t &parent, 
                     int match_start2, 
                     unsigned int &match_end1_bytes,
                     int match_end2,
                     //utf8_string<zstring_p>::const_iterator& utf8_it,
                     const char *&sin,
                     unicode::regex &rx,
+                    std::vector<int> &group_parent,
                     int nr_pattern_groups)
 {
   store::Item_t match_element_name;
-  store::Item_t group_element_name;
-  store::Item_t nr_attrib_name;
   store::Item_t untyped_type_name;
   store::NsBindings   ns_binding;
   zstring baseURI;
@@ -1667,72 +1748,41 @@ void addMatchElement(store::Item_t &parent,
                                 static_context::W3C_FN_NS, "fn", "match");
   store::Item_t match_elem;
   GENV_ITEMFACTORY->createElementNode(match_elem, parent, match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
-  int    match_startg = match_start2;
-  int    match_endg = match_start2;
-  for(int i=0;i<nr_pattern_groups;i++)
-  {
-    match_startg = rx.get_match_start(i+1);
-    if(match_startg < 0)
-      continue;
-    if(match_endg < match_startg)
-    {
-      //add non-group match text
-      zstring                non_group_str;
-      //utf8_string<zstring>   non_group_utf8(non_group_str);
-      //while(match_endg < match_startg)
-      //{
-      //  non_group_utf8 += *utf8_it;
-      //  utf8_it++;
-      //  match_endg++;
-      //}
-      copyUtf8Chars(sin, match_endg, match_end1_bytes, match_startg, non_group_str);
-      store::Item_t non_group_text_item;
-      GENV_ITEMFACTORY->createTextNode(non_group_text_item, match_elem.getp(), non_group_str);
-    }
-    match_endg = rx.get_match_end(i+1);
-    //add group match text
-    GENV_ITEMFACTORY->createQName(group_element_name,
-                                  static_context::W3C_FN_NS, "fn", "group");
-    GENV_ITEMFACTORY->createQName(nr_attrib_name,
-                                  "", "", "nr");
-    store::Item_t group_elem;
-    GENV_ITEMFACTORY->createElementNode(group_elem, match_elem, group_element_name, untyped_type_name, false, false, ns_binding, baseURI);
-    char strid[40];
-    sprintf(strid, "%d", i+1);
-    zstring zstrid(strid);
-    store::Item_t strid_item;
-    GENV_ITEMFACTORY->createString(strid_item, zstrid);
-    store::Item_t id_attrib_item;
-    GENV_ITEMFACTORY->createAttributeNode(id_attrib_item, group_elem.getp(), nr_attrib_name, untyped_type_name, strid_item);
-    zstring                group_str;
-    //utf8_string<zstring>   group_utf8(group_str);
-    //while(match_startg < match_endg)
-    //{
-    //  group_utf8 += *utf8_it;
-    //  utf8_it++;
-    //  match_startg++;
-    //}
-    copyUtf8Chars(sin, match_startg, match_end1_bytes, match_endg, group_str);
-    store::Item_t group_text_item;
-    GENV_ITEMFACTORY->createTextNode(group_text_item, group_elem.getp(), group_str);
-  }
-  //add last non-group match
-  if(match_endg < match_end2)
-  {
-    zstring                non_group_str;
-    //utf8_string<zstring>   non_group_utf8(non_group_str);
-    //while(match_endg < match_end2)
-    //{
-    //  non_group_utf8 += *utf8_it;
-    //  utf8_it++;
-    //  match_endg++;
-    //}
-    copyUtf8Chars(sin, match_endg, match_end1_bytes, match_end2, non_group_str);
-    store::Item_t non_group_text_item;
-    GENV_ITEMFACTORY->createTextNode(non_group_text_item, match_elem, non_group_str);
-  }
+  int i = -1;
+  addGroupElement(match_elem, untyped_type_name, ns_binding, baseURI, match_start2, match_end2, match_end1_bytes, sin, rx, -1, group_parent, nr_pattern_groups, i);
 }
 
+static void computePatternGroupsParents(zstring &xquery_pattern, std::vector<int> &group_parent)
+{
+  utf8_string<zstring>   utf8_pattern(xquery_pattern);
+  utf8_string<zstring>::const_iterator    c;
+  std::list<int>    parents;
+  int i = 0;
+
+  for(c = utf8_pattern.begin(); c != utf8_pattern.end(); c++)
+  {
+    if(*c == '\\')
+    {
+      c++;
+      continue;
+    }
+    if(*c == '(')
+    {
+      //begin group
+      if(parents.size())
+        group_parent.push_back(parents.back());
+      else
+        group_parent.push_back(-1);
+      parents.push_back(i);
+      i++;
+    }
+    else if(*c == ')')
+    {
+      if(parents.size())
+        parents.pop_back();
+    }
+  }
+}
 
 bool FnAnalyzeStringIterator::nextImpl(
     store::Item_t& result, 
@@ -1831,6 +1881,8 @@ bool FnAnalyzeStringIterator::nextImpl(
     unicode::regex    rx;
     rx.compile(lib_pattern, flags.c_str());
     int   nr_pattern_groups = rx.get_pattern_group_count();
+    std::vector<int>    group_parent;
+    computePatternGroupsParents(xquery_pattern, group_parent);
 
     //see if regex can match empty strings
     bool   reachedEnd = false;
@@ -1914,7 +1966,7 @@ bool FnAnalyzeStringIterator::nextImpl(
         }
 
         //construct the fn:match
-        addMatchElement(result, match_start2, match_end1_bytes, match_end2, instr, rx, nr_pattern_groups);
+        addMatchElement(result, match_start2, match_end1_bytes, match_end2, instr, rx, group_parent, nr_pattern_groups);
         match_end1 = match_end2;
       }
 

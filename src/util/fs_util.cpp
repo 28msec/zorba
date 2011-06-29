@@ -63,7 +63,7 @@ static type get_type( LPCWSTR wpath, size_type *size = 0 ) {
     if ( data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT )
       return link;
     if ( size )
-      *size = (data.nFileSizeHigh << 32) | data.nFileSizeLow;
+      *size = ((size_type)data.nFileSizeHigh << 32) | data.nFileSizeLow;
     return file;
   }
   return non_existent;
