@@ -31,6 +31,10 @@ namespace zorba
 namespace simplestore 
 {
 
+const int64_t  GeneralTreeIndex::theMaxLong       =  99999999999;
+const int64_t  GeneralTreeIndex::theMinLong       = -99999999999;
+const double   GeneralTreeIndex::theDoubleMaxLong =  99999999999.0;
+const double   GeneralTreeIndex::theDoubleMinLong = -99999999999.0;
 
 /******************************************************************************
 

@@ -204,10 +204,10 @@ class GeneralTreeIndex : public GeneralIndex
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
-  static const int64_t  theMaxLong       =  99999999999;
-  static const int64_t  theMinLong       = -99999999999;
-  static const double   theDoubleMaxLong =  99999999999.0;
-  static const double   theDoubleMinLong = -99999999999.0;
+  static const int64_t  theMaxLong;
+  static const int64_t  theMinLong;
+  static const double   theDoubleMaxLong;
+  static const double   theDoubleMinLong;
 
 private:
   IndexMap       * theMaps[XS_LAST];
