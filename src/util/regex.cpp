@@ -106,11 +106,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   bool in_char_class = false;           // within [...]
 
   bool in_backref = false;              // '\'[1-9][0-9]*
-  unsigned backref_no = 0;
+  unsigned backref_no = 0;              // 1-based
+  unsigned cur_cap_sub = 0;             // 1-based
   unsigned open_cap_subs = 0;
 
   // capture subgroup: true = open; false = closed
-  vector<bool> cap_sub;
+  vector<bool> cap_sub;                 // 0-based
 
   FOR_EACH( zstring, xq_c, xq_re ) {
     if ( got_backslash ) {
@@ -194,6 +195,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else {
             ++open_cap_subs;
             cap_sub.push_back( true );
+            cur_cap_sub = cap_sub.size();
           }
           break;
         case ')':
@@ -202,7 +204,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else {
             if ( !open_cap_subs )
               throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
-            cap_sub[ --open_cap_subs ] = false;
+            cap_sub[ --cur_cap_sub ] = false;
           }
           break;
         case '[':
