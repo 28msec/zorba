@@ -49,9 +49,6 @@ protected:
   FullText_t     theStopWordsMapping;
   FullText_t     theThesaurusMapping;
 
-  std::string theDebugHost;
-  unsigned int theDebugPort;
-
 public:
   ExternalVars_t::const_iterator
   externalVarsBegin() const  { return theExternalVars.begin(); }
