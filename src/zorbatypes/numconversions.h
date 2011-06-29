@@ -74,6 +74,16 @@ xs_long to_xs_long( xs_integer const &i );
  */
 xs_unsignedInt to_xs_unsignedInt( xs_integer const &i );
 
+/**
+ * Converts an \c xs:integer value to an \c xs:unsignedLong.
+ *
+ * @param i The \c xs:integer value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the \c xs:integer value can not be accurately
+ * represented as an \c xs:unsignedLong.
+ */
+xs_unsignedLong to_xs_unsignedLong( xs_integer const &i );
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

@@ -230,6 +230,7 @@ private:
   friend xs_int to_xs_int( Integer const& );
   friend xs_long to_xs_long( Integer const& );
   friend xs_unsignedInt to_xs_unsignedInt( Integer const& );
+  friend xs_unsignedLong to_xs_unsignedLong( Integer const& );
 
   friend void serialization::operator&(serialization::Archiver&, Integer&);
 };

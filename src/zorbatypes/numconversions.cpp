@@ -21,6 +21,8 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 xs_int to_xs_int( xs_double const &d ) {
   zstring const temp( d.toIntegerString() );
   return ztd::aton<xs_int>( temp.c_str() );
@@ -62,6 +64,17 @@ xs_unsignedInt to_xs_unsignedInt( xs_integer const &i ) {
   return static_cast<xs_unsignedInt>( i.value_ );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
+
+xs_unsignedLong to_xs_unsignedLong( xs_integer const &i ) {
+#ifdef ZORBA_WITH_BIG_INTEGER
+  zstring const temp( i.toString() );
+  return ztd::aton<xs_unsignedLong>( temp.c_str() );
+#else
+  return static_cast<xs_unsignedLong>( i.value_ );
+#endif /* ZORBA_WITH_BIG_INTEGER */
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
