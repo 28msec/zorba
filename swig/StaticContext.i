@@ -65,13 +65,13 @@ public:
   virtual std::string getBaseURI () const
   { return std::string(theStaticContext->getBaseURI().c_str()); }
 
-  virtual boundary_space_mode_t getBoundarySpacePolicy() const
+  virtual zorba::boundary_space_mode_t getBoundarySpacePolicy() const
   { return theStaticContext->getBoundarySpacePolicy(); }
 
-  virtual construction_mode_t getConstructionMode () const 
+  virtual zorba::construction_mode_t getConstructionMode () const 
   { return theStaticContext->getConstructionMode(); }		
 
-  virtual void 	getCopyNamespacesMode (preserve_mode_t &aPreserve, inherit_mode_t &aInherit) const
+  virtual void 	getCopyNamespacesMode (zorba::preserve_mode_t &aPreserve, zorba::inherit_mode_t &aInherit) const
   { return theStaticContext->getCopyNamespacesMode(aPreserve, aInherit); }		
 
   virtual std::string getDefaultCollation () const 
@@ -88,7 +88,7 @@ public:
     return std::string(theStaticContext->getDefaultFunctionNamespace().c_str());
   }
 
-  virtual order_empty_mode_t getDefaultOrderForEmptySequences() const
+  virtual zorba::order_empty_mode_t getDefaultOrderForEmptySequences() const
   { return theStaticContext->getDefaultOrderForEmptySequences(); }
 
   virtual std::string getNamespaceURIByPrefix(const std::string &aPrefix) const
@@ -103,16 +103,16 @@ public:
     return theStaticContext->getOption(aQName.theItem, optVal); 
   }
 
-  virtual ordering_mode_t getOrderingMode () const
+  virtual zorba::ordering_mode_t getOrderingMode () const
   { return theStaticContext->getOrderingMode(); }
 
   long getRefCount () const
   { return theStaticContext->getRefCount(); }
 
-  virtual validation_mode_t getRevalidationMode ()
+  virtual zorba::validation_mode_t getRevalidationMode ()
   { return theStaticContext->getRevalidationMode(); }
 
-  virtual xpath1_0compatib_mode_t getXPath1_0CompatibMode () const
+  virtual zorba::xpath1_0compatib_mode_t getXPath1_0CompatibMode () const
   { return theStaticContext->getXPath1_0CompatibMode(); } 
 
   virtual void loadProlog (const std::string & aProlog, 
@@ -128,14 +128,14 @@ public:
   virtual bool setBaseURI (const std::string &aBaseURI)
   { return theStaticContext->setBaseURI(aBaseURI); }
 
-  virtual bool setBoundarySpacePolicy (boundary_space_mode_t aMode)
+  virtual bool setBoundarySpacePolicy (zorba::boundary_space_mode_t aMode)
   { return theStaticContext->setBoundarySpacePolicy(aMode); } 
 
-  virtual bool setConstructionMode (construction_mode_t aMode)
+  virtual bool setConstructionMode (zorba::construction_mode_t aMode)
   { return theStaticContext->setConstructionMode(aMode); } 
 
-  virtual bool setCopyNamespacesMode (preserve_mode_t aPreserve, 
-    inherit_mode_t aInherit)
+  virtual bool setCopyNamespacesMode (zorba::preserve_mode_t aPreserve, 
+    zorba::inherit_mode_t aInherit)
   { return theStaticContext->setCopyNamespacesMode(aPreserve, aInherit); }   
 
   virtual void setDefaultCollation (const std::string &aURI)
@@ -147,16 +147,16 @@ public:
   virtual bool setDefaultFunctionNamespace (const std::string &aURI)
   { return theStaticContext->setDefaultFunctionNamespace(aURI); }
 
-  virtual bool setDefaultOrderForEmptySequences (order_empty_mode_t aMode)
+  virtual bool setDefaultOrderForEmptySequences (zorba::order_empty_mode_t aMode)
   { return theStaticContext->setDefaultOrderForEmptySequences(aMode); } 
 
-  virtual bool setOrderingMode (ordering_mode_t aMode)
+  virtual bool setOrderingMode (zorba::ordering_mode_t aMode)
   { return theStaticContext->setOrderingMode(aMode); } 
 
-  virtual void setRevalidationMode (validation_mode_t aMode)
+  virtual void setRevalidationMode (zorba::validation_mode_t aMode)
   { return theStaticContext->setRevalidationMode(aMode); } 
 
-  virtual bool setXPath1_0CompatibMode (xpath1_0compatib_mode_t aMode)
+  virtual bool setXPath1_0CompatibMode (zorba::xpath1_0compatib_mode_t aMode)
   { return theStaticContext->setXPath1_0CompatibMode(aMode); }
 
   void destroy() 
@@ -172,39 +172,39 @@ public:
 
     // Interface
 
-%rename(XPath1_0CompatibModeEnum) xpath1_0compatib_mode_t;
+%rename(XPath1_0CompatibModeEnum) zorba::xpath1_0compatib_mode_t;
 %rename(XPATH2_0) xpath2_0;
 %rename(XPATH1_0) xpath1_0;
 
-%rename(OrderingModeEnum) ordering_mode_t;
+%rename(OrderingModeEnum) zorba::ordering_mode_t;
 %rename(ORDERED) ordered;
 %rename(UNORDERED) unordered;
 
-%rename(OrderEmptyModeEnum) order_empty_mode_t;
+%rename(OrderEmptyModeEnum) zorba::order_empty_mode_t;
 %rename(EMPTY_GREATEST) empty_greatest;
 %rename(EMPTY_LEAST) empty_least;
 
-%rename(InheritModeEnum) inherit_mode_t;
+%rename(InheritModeEnum) zorba::inherit_mode_t;
 %rename(INHERIT_NS) inherit_ns;
 %rename(NO_INHERIT_NS) no_inherit_ns;
 
-%rename(PreserveModeEnum) preserve_mode_t;
+%rename(PreserveModeEnum) zorba::preserve_mode_t;
 %rename(PRESERVE_NS) preserve_ns;
 %rename(NO_PRESERVE_NS) no_preserve_ns;
 
-%rename(BoundarySpaceModeEnum) boundary_space_mode_t;
+%rename(BoundarySpaceModeEnum) zorba::boundary_space_mode_t;
 %rename(PRESERVE_SPACE) preserve_space;
 %rename(STRIP_SPACE) strip_space;
 
-%rename(ConstructionModeEnum) construction_mode_t;
+%rename(ConstructionModeEnum) zorba::construction_mode_t;
 %rename(PRESERVE_CONS) preserve_cons;
 %rename(STRIP_CONS) strip_cons;
 
-%rename(XQueryVersionEnum) xquery_version_t;
+%rename(XQueryVersionEnum) zorba::xquery_version_t;
 %rename(XQUERY_VERSION_1_0) xquery_version_1_0;
 %rename(XQUERY_VERSION_3_0) xquery_version_3_0;
 
-%rename(ValidationModeEnum) validation_mode_t;
+%rename(ValidationModeEnum) zorba::validation_mode_t;
 %rename(VALIDATE_SKIP) validate_skip;
 %rename(VALIDATE_LAX) validate_lax;
 %rename(VALIDATE_STRICT) validate_strict;
@@ -230,42 +230,42 @@ class StaticContext
 
   virtual void free ();
   virtual std::string getBaseURI () const;
-  virtual boundary_space_mode_t getBoundarySpacePolicy () const;
+  virtual zorba::boundary_space_mode_t getBoundarySpacePolicy () const;
 
-  virtual construction_mode_t getConstructionMode () const;
-  virtual void getCopyNamespacesMode (preserve_mode_t &aPreserve, inherit_mode_t &aInherit) const;
+  virtual zorba::construction_mode_t getConstructionMode () const;
+  virtual void getCopyNamespacesMode (zorba::preserve_mode_t &aPreserve, zorba::inherit_mode_t &aInherit) const;
   virtual std::string getDefaultCollation () const;
   virtual std::string getDefaultElementAndTypeNamespace () const;
   virtual std::string getDefaultFunctionNamespace () const;
-  virtual order_empty_mode_t getDefaultOrderForEmptySequences () const;
+  virtual zorba::order_empty_mode_t getDefaultOrderForEmptySequences () const;
 
   virtual std::string getNamespaceURIByPrefix(const std::string &aPrefix) const;
   virtual bool getOption(const Item &aQName, std::string &aOptionValue) const;
-  virtual ordering_mode_t getOrderingMode() const;
+  virtual zorba::ordering_mode_t getOrderingMode() const;
   long getRefCount() const;
-  virtual validation_mode_t getRevalidationMode();
-  virtual xpath1_0compatib_mode_t getXPath1_0CompatibMode () const;
+  virtual zorba::validation_mode_t getRevalidationMode();
+  virtual zorba::xpath1_0compatib_mode_t getXPath1_0CompatibMode () const;
   virtual void loadProlog (const std::string &, 
                            const Zorba_CompilerHints_t &hints);
 
   void removeReference ();
   virtual void resetTraceStream ();
   virtual bool setBaseURI (const std::string &aBaseURI);
-  virtual bool setBoundarySpacePolicy (boundary_space_mode_t aMode);
+  virtual bool setBoundarySpacePolicy (zorba::boundary_space_mode_t aMode);
 
-  virtual bool setConstructionMode (construction_mode_t aMode);
+  virtual bool setConstructionMode (zorba::construction_mode_t aMode);
 
-  virtual bool setCopyNamespacesMode (preserve_mode_t aPreserve, 
-                                      inherit_mode_t aInherit);
+  virtual bool setCopyNamespacesMode (zorba::preserve_mode_t aPreserve, 
+                                      zorba::inherit_mode_t aInherit);
   virtual void setDefaultCollation (const std::string &aURI);
   virtual bool setDefaultElementAndTypeNamespace (const std::string &aURI);
   virtual bool setDefaultFunctionNamespace (const std::string &aURI);
-  virtual bool setDefaultOrderForEmptySequences (order_empty_mode_t aMode);
+  virtual bool setDefaultOrderForEmptySequences (zorba::order_empty_mode_t aMode);
 
-  virtual bool setOrderingMode (ordering_mode_t aMode);
-  virtual void setRevalidationMode (validation_mode_t aMode);
+  virtual bool setOrderingMode (zorba::ordering_mode_t aMode);
+  virtual void setRevalidationMode (zorba::validation_mode_t aMode);
 
-  virtual bool setXPath1_0CompatibMode (xpath1_0compatib_mode_t aMode);
+  virtual bool setXPath1_0CompatibMode (zorba::xpath1_0compatib_mode_t aMode);
 
   void destroy();
 }; // class StaticContext
