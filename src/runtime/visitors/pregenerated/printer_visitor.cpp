@@ -2390,6 +2390,20 @@ void PrinterVisitor::endVisit ( const FnParseXmlIterator& ) {
 // </FnParseXmlIterator>
 
 
+// <FnParseXmlFragmentIterator>
+void PrinterVisitor::beginVisit ( const FnParseXmlFragmentIterator& a) {
+  thePrinter.startBeginVisit("FnParseXmlFragmentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnParseXmlFragmentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnParseXmlFragmentIterator>
+
+
 // <FnSerializeIterator>
 void PrinterVisitor::beginVisit ( const FnSerializeIterator& a) {
   thePrinter.startBeginVisit("FnSerializeIterator", ++theId);

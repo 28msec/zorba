@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,18 +27,18 @@
 #include "zorbautils/stack.h"
 
 
-namespace zorba 
-{ 
-  
-class XQueryDiagnostics; 
+namespace zorba
+{
 
-namespace store 
+class XQueryDiagnostics;
+
+namespace store
 {
   class Item;
 }
 
 
-namespace simplestore 
+namespace simplestore
 {
 
 class BasicItemFactory;
@@ -54,11 +54,11 @@ class NsBindingsContext;
 
   theSaxHandler   : The struct containing the callback functions defined by the
                     XmlLoader and given as input to the libxml SAX parser.
- 
+
   theBuffer       : A buffer to read chunks of the source stream in.
 
   theFactory      : The item factory of the store.
-  theXQueryDiagnostics : 
+  theXQueryDiagnostics :
 
   theTraceLevel   :
 
@@ -115,7 +115,7 @@ public:
 /*******************************************************************************
 
   theNodeStack : The startElement and startDocument methods create an element
-                 or document XmlNode (say N) and push it in theNodeStack. If N 
+                 or document XmlNode (say N) and push it in theNodeStack. If N
                  has k children, then when the closing tag of N is reached,
                  the children of N will be at the k top positions of theNodeStack
                  and the endElement and endDocument methods will remove these
@@ -132,12 +132,14 @@ class FastXmlLoader : public XmlLoader
     PathStepInfo(ElementNode* node, const zstring& uri)
       :
       theNode(node),
-      theBaseUri(uri) 
+      theBaseUri(uri)
     {
     }
   };
 
 protected:
+  bool                             theParseExtParsedEntity;
+
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 
@@ -154,7 +156,8 @@ public:
   FastXmlLoader(
         BasicItemFactory* factory,
         XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide);
+        bool dataguide,
+        bool parseExtParsedEntity = false);
 
   ~FastXmlLoader();
 
@@ -178,20 +181,20 @@ public:
   static void endDocument(void * ctx);
 
   static void startElement(
-        void * ctx, 
-        const xmlChar * localname, 
-        const xmlChar * prefix, 
-        const xmlChar * URI, 
-        int nb_namespaces, 
-        const xmlChar ** namespaces, 
-        int nb_attributes, 
-        int nb_defaulted, 
+        void * ctx,
+        const xmlChar * localname,
+        const xmlChar * prefix,
+        const xmlChar * URI,
+        int nb_namespaces,
+        const xmlChar ** namespaces,
+        int nb_attributes,
+        int nb_defaulted,
         const xmlChar ** attributes);
-  
+
   static void endElement(
-        void * ctx, 
-        const xmlChar * localname, 
-        const xmlChar * prefix, 
+        void * ctx,
+        const xmlChar * localname,
+        const xmlChar * prefix,
         const xmlChar * URI);
 
   static void characters(
@@ -200,17 +203,17 @@ public:
         int len);
 
   static void	cdataBlock(
-        void * ctx, 
-        const xmlChar * value, 
+        void * ctx,
+        const xmlChar * value,
         int len);
 
   static void comment(
-        void * ctx, 
+        void * ctx,
         const xmlChar * value);
 
   static void	processingInstruction(
-        void * ctx, 
-        const xmlChar * target, 
+        void * ctx,
+        const xmlChar * target,
         const xmlChar * data);
 
   static void error(void * ctx, const char * msg, ... );
@@ -218,7 +221,7 @@ public:
   static void warning(void * ctx, const char * msg, ... );
 
   static xmlEntityPtr	getEntity(
-        void * ctx, 					 
+        void * ctx,
         const xmlChar * name);
 
   static xmlEntityPtr getParameterEntity(
@@ -237,10 +240,10 @@ public:
 
 /*******************************************************************************
 
-  DtdXmlLoader - implements XmlLoader interface as FastXmlLoader but it uses 
+  DtdXmlLoader - implements XmlLoader interface as FastXmlLoader but it uses
                  libxml2's tree parser to be able identify ID, IDREF and IDREFS
                - has more functionality but uses more memory - potentialy slower
-                 for big documents 
+                 for big documents
 
 *******************************************************************************/
 class DtdXmlLoader : public XmlLoader
@@ -253,7 +256,7 @@ class DtdXmlLoader : public XmlLoader
     PathStepInfo(ElementNode* node, const zstring& uri)
       :
       theNode(node),
-      theBaseUri(uri) 
+      theBaseUri(uri)
     {
     }
   };
@@ -302,11 +305,11 @@ public:
   static void endDocument(void * ctx);
 
   static void startElement(
-        void * ctx, 
+        void * ctx,
         xmlNode *node);
-  
+
   static void endElement(
-        void * ctx, 
+        void * ctx,
         xmlNode *node);
 
   static void characters(
@@ -315,17 +318,17 @@ public:
         int len);
 
   static void	cdataBlock(
-        void * ctx, 
-        const xmlChar * value, 
+        void * ctx,
+        const xmlChar * value,
         int len);
 
   static void comment(
-        void * ctx, 
+        void * ctx,
         const xmlChar * value);
 
   static void	processingInstruction(
-        void * ctx, 
-        const xmlChar * target, 
+        void * ctx,
+        const xmlChar * target,
         const xmlChar * data);
 
   static void error(void * ctx, const char * msg, ... );
@@ -333,7 +336,7 @@ public:
   static void warning(void * ctx, const char * msg, ... );
 
   static xmlEntityPtr	getEntity(
-        void * ctx, 					 
+        void * ctx,
         const xmlChar * name);
 
   static xmlEntityPtr getParameterEntity(

@@ -443,14 +443,15 @@ ulong SimpleStore::createTreeId()
 XmlLoader* SimpleStore::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
     const store::LoadProperties& loadProperties)
 {
-  if ( loadProperties.getEnableDtd() )
+  if (loadProperties.getEnableDtd())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
                             store::Properties::instance()->buildDataguide());
   else
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
-                             store::Properties::instance()->buildDataguide());
+                             store::Properties::instance()->buildDataguide(),
+                             loadProperties.getEnableExtParsedEntity());
 }
 
 
@@ -623,7 +624,7 @@ void SimpleStore::populateGeneralIndex(
           continue;
         }
 
-        // Prepare to insert the 1st key. Note: we have to copy domainNode 
+        // Prepare to insert the 1st key. Note: we have to copy domainNode
         // rchandle because index->insert() will transfer the given node.
         store::Item_t node = domainNode;
         (*key)[0].transfer(firstKeyItem);
@@ -636,7 +637,7 @@ void SimpleStore::populateGeneralIndex(
           // Current domain node has exactly 1 key. So insert it in the
           // index and continue with next domain node, if any.
           index->insert(key, node, false);
-            
+
           domainNode.transfer(keyItem);
           continue;
         }
@@ -646,7 +647,7 @@ void SimpleStore::populateGeneralIndex(
 
         if (key == NULL)
           key = new store::IndexKey(numColumns);
-            
+
         node = domainNode;
         (*key)[0].transfer(keyItem);
 
@@ -660,13 +661,13 @@ void SimpleStore::populateGeneralIndex(
             domainNode.transfer(keyItem);
             break;
           }
-            
+
           if (key == NULL)
             key = new store::IndexKey(numColumns);
-              
+
           (*key)[0].transfer(keyItem);
           node = domainNode;
-          
+
           index->insert(key, node);
         }
       }
@@ -891,7 +892,7 @@ SimpleStore::getMap(const store::Item* aQName) const
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t SimpleStore::listMapNames() 
+store::Iterator_t SimpleStore::listMapNames()
 {
   return new NameIterator<IndexSet>(theHashMaps);
 }

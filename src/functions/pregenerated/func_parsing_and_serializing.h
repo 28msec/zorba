@@ -55,6 +55,23 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//fn-zorba-string:parse-xml-fragment
+class fn_zorba_string_parse_xml_fragment_3_0 : public function
+{
+public:
+  fn_zorba_string_parse_xml_fragment_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:serialize
 class fn_serialize : public function
 {

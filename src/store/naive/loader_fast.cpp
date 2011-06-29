@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -76,9 +76,12 @@ namespace simplestore {
 FastXmlLoader::FastXmlLoader(
     BasicItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
-    bool dataguide)
+    bool dataguide,
+    bool parseExtParsedEntity
+    )
   :
   XmlLoader(factory, xqueryDiagnostics, dataguide),
+  theParseExtParsedEntity(parseExtParsedEntity),
   theTree(NULL),
   theRootNode(NULL),
   theNodeStack(2048)
@@ -304,36 +307,44 @@ store::Item_t FastXmlLoader::loadXml(
     if (ctxt == NULL)
     {
       theXQueryDiagnostics->add_error(
-        NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS( ZED( ParserInitFailed ) )
-        )
-      );
+        NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,ERROR_PARAMS( ZED( ParserInitFailed ) )));
       abortload();
 			return NULL;
     }
 
-    while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
+    if (theParseExtParsedEntity)
     {
-      xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
-
-      if (!theXQueryDiagnostics->errors().empty())
+      if (xmlParseExtParsedEnt(ctxt)==-1)
       {
+        theXQueryDiagnostics->add_error(
+          NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParserNoCreateTree ))) );
         abortload();
         return NULL;
       }
     }
-
-    if (numChars < 0)
+    else
     {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
-      );
-      abortload();
-      return NULL;
-    }
+      while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
+      {
+        xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
 
-    xmlParseChunk(ctxt, theBuffer, 0, 1);
+        if (!theXQueryDiagnostics->errors().empty())
+        {
+          abortload();
+          return NULL;
+        }
+      }
+
+      if (numChars < 0)
+      {
+        theXQueryDiagnostics->add_error(
+      	 NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR ));
+        abortload();
+        return NULL;
+      }
+
+      xmlParseChunk(ctxt, theBuffer, 0, 1);
+    } // else
   }
   catch(...)
   {
@@ -344,6 +355,7 @@ store::Item_t FastXmlLoader::loadXml(
 
   bool ok = ctxt->wellFormed != 0;
 
+  // Free parser resources
   xmlCtxtReset(ctxt);
   xmlFreeParserCtxt(ctxt);
   ctxt = NULL;
@@ -398,7 +410,7 @@ void FastXmlLoader::startDocument(void * ctx)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-  
+
   try
   {
     XmlNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
@@ -406,7 +418,7 @@ void FastXmlLoader::startDocument(void * ctx)
     loader.setRoot(docNode);
     loader.theNodeStack.push(docNode);
     loader.theNodeStack.push(NULL);
-    
+
 #ifdef DATAGUIDE
     if (loader.theBuildDataGuide)
     {
@@ -460,7 +472,7 @@ void FastXmlLoader::endDocument(void * ctx)
     // that libXml calls endDocument() without having called startDocument().
     if (stackSize == 0)
       return;
-  
+
     // Find the position of the 1st child of this doc node in the node stack
     firstChildPos = stackSize - 1;
     while (nodeStack[firstChildPos] != NULL)
@@ -535,14 +547,14 @@ void FastXmlLoader::endDocument(void * ctx)
                  attribute values.
 ********************************************************************************/
 void FastXmlLoader::startElement(
-    void * ctx, 
-    const xmlChar * lname, 
-    const xmlChar * prefix, 
+    void * ctx,
+    const xmlChar * lname,
+    const xmlChar * prefix,
     const xmlChar * uri,
     int numNamespaces,
     const xmlChar ** namespaces,
-    int numAttrs, 
-    int numDefaulted, 
+    int numAttrs,
+    int numDefaulted,
     const xmlChar ** attributes)
 {
   SimpleStore& store = GET_STORE();
@@ -559,11 +571,11 @@ void FastXmlLoader::startElement(
     csize numAttributes = static_cast<csize>(numAttrs);
     csize numBindings = static_cast<csize>(numNamespaces);
 
-    // Construct node name 
+    // Construct node name
     store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
                                            reinterpret_cast<const char*>(prefix),
                                            reinterpret_cast<const char*>(lname));
-    
+
     // Create the element node and push it to the node stack
     ElementNode* elemNode = nfactory.createElementNode(nodeName,
                                                        numBindings,
@@ -719,9 +731,9 @@ void FastXmlLoader::startElement(
 
         loader.theOrdPath.nextChild();
 
-        LOADER_TRACE2("Attribute: node = " << attrNode << " name [" 
-                      << (prefix != NULL ? prefix : "") << ":" << lname << " (" 
-                      << (uri != NULL ? uri : "NULL") << ")]" << " value = " 
+        LOADER_TRACE2("Attribute: node = " << attrNode << " name ["
+                      << (prefix != NULL ? prefix : "") << ":" << lname << " ("
+                      << (uri != NULL ? uri : "NULL") << ")]" << " value = "
                       << attrNode->theTypedValue->getStringValue()
                       << std::endl << " ordpath = "
                       << attrNode->getOrdPath().show() << std::endl);
@@ -744,7 +756,7 @@ void FastXmlLoader::startElement(
   }
 }
 
-  
+
 /*******************************************************************************
   SAX2 callback when an element end has been detected by the parser. It
   provides the expanded qname of the element.
@@ -755,9 +767,9 @@ void FastXmlLoader::startElement(
   URI:       the element namespace name if available
 ********************************************************************************/
 void  FastXmlLoader::endElement(
-    void * ctx, 
-    const xmlChar * localName, 
-    const xmlChar * prefix, 
+    void * ctx,
+    const xmlChar * localName,
+    const xmlChar * prefix,
     const xmlChar * uri)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
@@ -901,7 +913,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     textNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-#ifndef NDEBUG  
+#ifndef NDEBUG
     std::stringstream lSs;
     lSs << "Text Node = " << textNode << " content = "
         << std::string(charp, len) << std::endl
@@ -954,7 +966,7 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     cdataNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-#ifndef NDEBUG  
+#ifndef NDEBUG
     std::stringstream lSs;
     lSs << "CDATA Node = " << cdataNode << " content = "
         << std::string(charp, len) << std::endl
@@ -985,8 +997,8 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
 ********************************************************************************/
 void FastXmlLoader::processingInstruction(
-    void * ctx, 
-    const xmlChar * targetp, 
+    void * ctx,
+    const xmlChar * targetp,
     const xmlChar * data)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
@@ -1075,7 +1087,7 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
 
 /*******************************************************************************
   Display and format an error messages, callback.
- 
+
    ctx:  an XML parser context
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
@@ -1098,7 +1110,7 @@ void FastXmlLoader::error(void * ctx, const char * msg, ... )
 
 /*******************************************************************************
    Display and format a warning messages, callback.
-  
+
    ctx:  an XML parser context
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
@@ -1119,7 +1131,7 @@ void FastXmlLoader::warning(void * ctx, const char * msg, ... )
 
 ********************************************************************************/
 xmlEntityPtr	FastXmlLoader::getEntity(
-    void * ctx, 					 
+    void * ctx,
     const xmlChar * name)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));

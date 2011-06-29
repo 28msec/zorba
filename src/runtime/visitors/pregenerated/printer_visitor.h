@@ -538,6 +538,9 @@ namespace zorba {
     void beginVisit( const FnParseXmlIterator& );
     void endVisit  ( const FnParseXmlIterator& );
 
+    void beginVisit( const FnParseXmlFragmentIterator& );
+    void endVisit  ( const FnParseXmlFragmentIterator& );
+
     void beginVisit( const FnSerializeIterator& );
     void endVisit  ( const FnSerializeIterator& );
 

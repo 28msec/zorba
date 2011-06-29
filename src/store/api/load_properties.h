@@ -36,9 +36,10 @@ class LoadProperties
 private:
   bool theStoreDocument;
   bool theEnableDtdLoader;
+  bool theEnableExtParsedEntityLoader;
 
 public:
-  LoadProperties() : theStoreDocument(true), theEnableDtdLoader(false) {}
+  LoadProperties() : theStoreDocument(true), theEnableDtdLoader(false), theEnableExtParsedEntityLoader(false) {}
   virtual ~LoadProperties() {}
 
   /**
@@ -75,6 +76,24 @@ public:
   bool getEnableDtd() const
   {
     return theEnableDtdLoader;
+  }
+
+  /**
+   * Set the property enableExtParsedEntity, it specifies whether the document
+   * should be parsed as an enxternal general parsed entity
+   */
+  void setEnableExtParsedEntity(bool aEnableExtParsedEntityLoader)
+  {
+    theEnableExtParsedEntityLoader = aEnableExtParsedEntityLoader;
+  }
+
+  /**
+   * Get the property enableDtd, it specifies whether the document
+   * should be parsed as an enxternal general parsed entity
+   */
+  bool getEnableExtParsedEntity() const
+  {
+    return theEnableExtParsedEntityLoader;
   }
 };
 
