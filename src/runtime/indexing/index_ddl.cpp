@@ -38,6 +38,8 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
+#include "zorbautils/hashset_itemh.h"
+
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/util_macros.h"
 
@@ -1080,8 +1082,16 @@ void ProbeIndexRangeValueIterator::accept(PlanIterVisitor& v) const
 ProbeIndexRangeGeneralIteratorState::ProbeIndexRangeGeneralIteratorState()
   :
   theTimezone(0),
-  theCollator(NULL)
+  theCollator(NULL),
+  theNodeHashSet(NULL)
 {
+}
+
+
+ProbeIndexRangeGeneralIteratorState::~ProbeIndexRangeGeneralIteratorState()
+{
+  if (theNodeHashSet)
+    delete theNodeHashSet;
 }
 
 
@@ -1105,6 +1115,9 @@ void ProbeIndexRangeGeneralIteratorState::reset(PlanState& state)
   theQname = 0;
   theIndex = 0;
   theIterator = NULL;
+
+  if (theNodeHashSet)
+    theNodeHashSet->clear();
 }
 
 
@@ -1146,10 +1159,8 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
   bool haveUpper = false;
   bool inclLower = false;
   bool inclUpper = false;
+  bool inclBound;
   xqtref_t keyType;
-  store::Item_t searchItem;
-  store::Item_t minmaxItem;
-  ulong childIdx;
   bool status;
 
   TypeManager* tm = theSctx->get_typemanager();
@@ -1237,36 +1248,95 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
     inclUpper = itemInclUpper->getBooleanValue();
   }
 
+  cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+
   if (haveLower && haveUpper)
   {
-  }
-  else if (haveLower || haveUpper)
-  {
-    childIdx = (haveLower ? 1 : 2);
-
-    if (!consumeNext(searchItem, theChildren[childIdx], planState))
+    //
+    // Build hashmap from the nodes satisfying the lower bound condition
+    //
+    if (!getSearchItems(planState, state, true, false, inclLower, false))
       goto done;
 
-    cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+    assert(state->theSearchItems.size() >= 1);
+    assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
 
-    minmaxItem.transfer(searchItem);
+    state->theNodeHashSet = new ItemHandleHashSet(1024, false);
 
-    if (state->theKeyType != NULL)
+    state->theSearchItemsIte = state->theSearchItems.begin();
+    state->theSearchItemsEnd = state->theSearchItems.end();
+
+    for (;
+         state->theSearchItemsIte != state->theSearchItemsEnd;
+         ++state->theSearchItemsIte)
     {
-      while (consumeNext(searchItem, theChildren[childIdx], planState))
+      cond->pushBound(*state->theSearchItemsIte, true, inclLower);
+      
+      state->theIterator->init(cond);
+      state->theIterator->open();
+
+      while(state->theIterator->next(result)) 
       {
-        long comp = minmaxItem->compare(searchItem,
-                                        state->theTimezone,
-                                        state->theCollator);
-        if ((haveLower && comp > 0) || (haveUpper && comp < 0))
-          minmaxItem.transfer(searchItem);
+        state->theNodeHashSet->insert(result.getp());
       }
+      
+      state->theIterator->close();
+    }
 
-      if (haveLower)
-        cond->pushLowerBound(minmaxItem, haveLower, inclLower);
-      else
-        cond->pushUpperBound(minmaxItem, haveUpper, inclUpper);
+    state->theSearchItems.clear();
+    cond->clear();
 
+    //
+    // Compute the nodes satisfying the upper bound condition and probe the
+    // node hashmap.
+    //
+    if (!getSearchItems(planState, state, false, true, false, inclUpper))
+      goto done;
+
+    assert(state->theSearchItems.size() >= 1);
+    assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
+
+    state->theSearchItemsIte = state->theSearchItems.begin();
+    state->theSearchItemsEnd = state->theSearchItems.end();
+
+    for (;
+         state->theSearchItemsIte != state->theSearchItemsEnd;
+         ++state->theSearchItemsIte)
+    {
+      cond->pushBound(*state->theSearchItemsIte, false, inclUpper);
+
+      state->theIterator->init(cond);
+      state->theIterator->open();
+
+      while(state->theIterator->next(result)) 
+      {
+        if (state->theNodeHashSet->find(result))
+          STACK_PUSH(true, state);
+      }
+      
+      state->theIterator->close();
+    }
+  }
+
+  else if (haveLower || haveUpper)
+  {
+    if (!getSearchItems(planState, state, haveLower, haveUpper, inclLower, inclUpper))
+      goto done;
+
+    assert(state->theSearchItems.size() >= 1);
+    assert(state->theKeyType == NULL || state->theSearchItems.size() == 1);
+
+    inclBound = (haveLower ? inclLower : inclUpper);
+
+    state->theSearchItemsIte = state->theSearchItems.begin();
+    state->theSearchItemsEnd = state->theSearchItems.end();
+
+    for (;
+         state->theSearchItemsIte != state->theSearchItemsEnd;
+         ++state->theSearchItemsIte)
+    {
+      cond->pushBound(*state->theSearchItemsIte, haveLower, inclBound);
+      
       state->theIterator->init(cond);
       state->theIterator->open();
 
@@ -1274,57 +1344,14 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
       {
         STACK_PUSH(true, state);
       }
-    }
-    else
-    {
-      while (consumeNext(searchItem, theChildren[childIdx], planState))
-      {
-        xqtref_t minmaxItemType = tm->create_value_type(minmaxItem, loc);
-        xqtref_t searchItemType = tm->create_value_type(searchItem, loc);
 
-        if (TypeOps::is_subtype(tm, *searchItemType, *minmaxItemType))
-        {
-          if (minmaxItem->compare(searchItem, state->theTimezone, state->theCollator) > 0)
-            minmaxItem.transfer(searchItem);
-        }
-        else
-        {
-          state->theSearchItems.push_back(NULL);
-          state->theSearchItems.back().transfer(minmaxItem);
-        }
-      }
-
-      if (minmaxItem != NULL)
-      {
-        state->theSearchItems.push_back(NULL);
-        state->theSearchItems.back().transfer(minmaxItem);
-      }
-
-      state->theSearchItemsIte = state->theSearchItems.begin();
-      state->theSearchItemsEnd = state->theSearchItems.end();
-
-      for (;
-           state->theSearchItemsIte != state->theSearchItemsEnd;
-           ++state->theSearchItemsIte)
-      {
-        if (haveLower)
-          cond->pushLowerBound(*state->theSearchItemsIte, haveLower, inclLower);
-        else
-          cond->pushUpperBound(*state->theSearchItemsIte, haveUpper, inclUpper);
-
-        state->theIterator->init(cond);
-        state->theIterator->open();
-
-        while(state->theIterator->next(result)) 
-        {
-          STACK_PUSH(true, state);
-        }
-      }
+      state->theIterator->close();
     }
   }
+
   else
   {
-    cond = state->theIndex->createCondition(store::IndexCondition::BOX_GENERAL);
+    getSearchItems(planState, state, false, false, false, false);
 
     state->theIterator->init(cond);
     state->theIterator->open();
@@ -1333,10 +1360,80 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
     {
       STACK_PUSH(true, state);
     }
+
+    state->theIterator->close();
   }
 
  done:
   STACK_END(state);
+}
+
+
+bool ProbeIndexRangeGeneralIterator::getSearchItems(
+    PlanState& planState,
+    ProbeIndexRangeGeneralIteratorState* state,
+    bool haveLower,
+    bool haveUpper,
+    bool inclLower,
+    bool inclUpper) const
+{
+  store::Item_t searchItem;
+  store::Item_t minmaxItem;
+  long cmp;
+
+  TypeManager* tm = theSctx->get_typemanager();
+
+  ulong childIdx = (haveLower ? 1 : 2);
+
+  assert(!(haveLower && haveUpper));
+
+  if (!haveLower && !haveUpper)
+    return true;
+
+  if (!consumeNext(searchItem, theChildren[childIdx], planState))
+      return false;
+
+  minmaxItem.transfer(searchItem);
+
+  if (state->theKeyType != NULL)
+  {
+    while (consumeNext(searchItem, theChildren[childIdx], planState))
+    {
+      cmp = minmaxItem->compare(searchItem, state->theTimezone, state->theCollator);
+
+      if ((haveLower && cmp > 0) || (haveUpper && cmp < 0))
+        minmaxItem.transfer(searchItem);
+    }
+  }
+  else
+  {
+    while (consumeNext(searchItem, theChildren[childIdx], planState))
+    {
+      xqtref_t minmaxItemType = tm->create_value_type(minmaxItem, loc);
+      xqtref_t searchItemType = tm->create_value_type(searchItem, loc);
+
+      if (TypeOps::is_subtype(tm, *searchItemType, *minmaxItemType))
+      {
+        cmp = minmaxItem->compare(searchItem, state->theTimezone, state->theCollator);
+        
+        if ((haveLower && cmp > 0) || (haveUpper && cmp < 0))
+          minmaxItem.transfer(searchItem);
+      }
+      else
+      {
+        state->theSearchItems.push_back(NULL);
+        state->theSearchItems.back().transfer(minmaxItem);
+      }
+    }
+  }
+
+  if (minmaxItem != NULL)
+  {
+    state->theSearchItems.push_back(NULL);
+    state->theSearchItems.back().transfer(minmaxItem);
+  }
+
+  return true;
 }
 
 

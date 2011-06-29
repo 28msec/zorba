@@ -1989,6 +1989,9 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
   //bool lowerIncl = theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl;
   //bool upperIncl = theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl;
 
+  theMapBegins.clear();
+  theMapEnds.clear();
+  
   assert(!(haveLower && haveUpper));
 
   if (theIndex->isTyped())

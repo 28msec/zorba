@@ -240,34 +240,14 @@ public:
   /**
    * This method applies to BOX_GENERAL conditions only.
    *
-   * @param bound An item that constitutes lower bounds for the key values
-   *        May be NULL, which indicates either the empty sequence or
-   *        -INFINITY. The haveBound parameter is used to distinguish 
-   *        between these two cases.
-   * @param haveBound False if the lower bound is -INFINITY. True otherwise.
+   * @param bound An item that constitutes either a lower or an upper bound
+   *        for the key values.
+   * @param isLower True if the bound is a lower one; false if it is an upper
+   *        one.
    * @param boundIncl True if the boundary search key is included in the 
    *        search. False otherwise.
    */
-  virtual void pushLowerBound(
-        Item_t& bound,
-        bool haveBound,
-        bool boundIncl) = 0;
-
-  /**
-   * This method applies to BOX_GENERAL conditions only.
-   *
-   * @param bound An item that constitutes a lower bounds for the key values 
-   *        May be NULL, which indicates either the empty sequence or 
-   *        +INFINITY. The haveBound parameter is used to distinguish 
-   *        between these two cases.
-   * @param haveBound False if the upper bound is +INFINITY. True otherwise.
-   * @param boundIncl True if the boundary search key is included in the 
-   *        search. False otherwise.
-   */
-  virtual void pushUpperBound(
-        Item_t& bound,
-        bool haveBound,
-        bool boundIncl) = 0;
+  virtual void pushBound(Item_t& bound, bool isLower, bool boundIncl) = 0;
 
   /**
    *  Serialize this condition.

@@ -259,21 +259,9 @@ void IndexPointCondition::pushRange(
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexPointCondition::pushLowerBound(
+void IndexPointCondition::pushBound(
     store::Item_t& bound,
-    bool haveBound,
-    bool boundIncl)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void IndexPointCondition::pushUpperBound(
-    store::Item_t& bound,
-    bool haveBound,
+    bool isLower,
     bool boundIncl)
 {
   ZORBA_ASSERT(false);
@@ -386,18 +374,9 @@ void IndexBoxValueCondition::pushRange(
 }
 
 
-void IndexBoxValueCondition::pushLowerBound(
-    store::Item_t& bound,
-    bool haveBound,
-    bool boundIncl)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-void IndexBoxValueCondition::pushUpperBound(
-    store::Item_t& bound,
-    bool haveBound,
+void IndexBoxValueCondition::pushBound(
+    store::Item_t& bound, 
+    bool isLower,
     bool boundIncl)
 {
   ZORBA_ASSERT(false);
@@ -542,39 +521,15 @@ void IndexBoxGeneralCondition::pushRange(
 }
 
 
-void IndexBoxGeneralCondition::pushLowerBound(
+void IndexBoxGeneralCondition::pushBound(
     store::Item_t& bound,
-    bool haveBound,
+    bool isLower, 
     bool boundIncl)
 {
-  theRangeFlags.theHaveLowerBound = haveBound;
+  theRangeFlags.theHaveLowerBound = isLower;
+  theRangeFlags.theHaveUpperBound = !isLower;
   theRangeFlags.theLowerBoundIncl = boundIncl;
-
-  if (!haveBound)
-  {
-    assert(bound == NULL);
-    return;
-  }
-
-  assert(bound != NULL);
-
-  theBound.transfer_back(bound);
-}
-
-
-void IndexBoxGeneralCondition::pushUpperBound(
-    store::Item_t& bound,
-    bool haveBound,
-    bool boundIncl)
-{
-  theRangeFlags.theHaveUpperBound = haveBound;
   theRangeFlags.theUpperBoundIncl = boundIncl;
-
-  if (!haveBound)
-  {
-    assert(bound == NULL);
-    return;
-  }
 
   assert(bound != NULL);
 

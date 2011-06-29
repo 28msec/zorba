@@ -124,6 +124,8 @@ Probing the typed AuctionDates sorted general index
 
 <open_auction id="open_auction1"/><open_auction id="open_auction9"/>
 
+<open_auction id="open_auction9"/>
+
 Empty Probe
  
 

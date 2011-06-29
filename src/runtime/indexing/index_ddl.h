@@ -29,6 +29,7 @@ namespace zorba
 {
 
 class IndexDecl;
+class ItemHandleHashSet;
 
 
 /*******************************************************************************
@@ -526,21 +527,25 @@ public:
 class ProbeIndexRangeGeneralIteratorState : public PlanIteratorState
 {
 public:
-  const store::Item           * theQname;
-  store::Index                * theIndex;
+  const store::Item                  * theQname;
+  store::Index                       * theIndex;
 
-  long                          theTimezone;
-  const XQPCollator           * theCollator;
-  xqtref_t                      theKeyType;
-
-  store::IndexProbeIterator_t   theIterator;
+  long                                 theTimezone;
+  const XQPCollator                  * theCollator;
+  xqtref_t                             theKeyType;
 
   std::vector<store::Item_t>           theSearchItems;
   std::vector<store::Item_t>::iterator theSearchItemsIte;
   std::vector<store::Item_t>::iterator theSearchItemsEnd;
 
+  store::IndexProbeIterator_t          theIterator;
+
+  ItemHandleHashSet                  * theNodeHashSet;
+
 public:
   ProbeIndexRangeGeneralIteratorState();
+
+  ~ProbeIndexRangeGeneralIteratorState();
 
   void init(PlanState&);
 
@@ -574,6 +579,15 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+private:
+  bool getSearchItems(
+      PlanState& planState,
+      ProbeIndexRangeGeneralIteratorState* state,
+      bool haveLower,
+      bool haveUpper,
+      bool inclLower,
+      bool inclUpper) const;
 };
 
 

@@ -24,7 +24,7 @@ namespace zorba { namespace store {
 
 /*******************************************************************************
   A hash-based set container of node rchandles, where equality is based on
-  node identity (i.e.  ordpath).
+  node identity
 ********************************************************************************/
 class NodeHashSet
 {
@@ -51,9 +51,6 @@ public:
   NodeHashSet(ulong size = 1024) : theSet(size, false) 
   {
   }
-
-  //iterator begin() { return theSet.begin(); }
-  //iterator end() { return theSet.end(); }
 
   void clear() { theSet.clear(); }
 

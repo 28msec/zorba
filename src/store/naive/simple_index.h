@@ -175,15 +175,7 @@ public:
         bool lowerIncl,
         bool upperIncl);
 
-  void pushLowerBound(
-      store::Item_t& bound,
-      bool haveBound,
-      bool boundIncl);
-
-  void pushUpperBound(
-      store::Item_t& bound,
-      bool haveBound,
-      bool boundIncl);
+  void pushBound(store::Item_t& bound, bool isLower, bool boundIncl);
 
   bool test(const store::IndexKey& key) const;
 
@@ -286,15 +278,7 @@ public:
       bool lowerIncl,
       bool upperIncl);
 
-  void pushLowerBound(
-      store::Item_t& bound,
-      bool haveBound,
-      bool boundIncl);
-
-  void pushUpperBound(
-      store::Item_t& bound,
-      bool haveBound,
-      bool boundIncl);
+  void pushBound(store::Item_t& bound, bool isLower, bool boundIncl);
 
   bool test(const store::IndexKey& key) const;
 
@@ -336,15 +320,7 @@ public:
       bool lowerIncl,
       bool upperIncl);
 
-  void pushLowerBound(
-      store::Item_t& bound,
-      bool haveBound,
-      bool boundIncl);
-
-  void pushUpperBound(
-      store::Item_t& bound,
-      bool haveBound,
-      bool boundIncl);
+  void pushBound(store::Item_t& bound, bool isLower, bool boundIncl);
 
   bool test(const store::IndexKey& key) const;
 

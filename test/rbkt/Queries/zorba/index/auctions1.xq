@@ -162,6 +162,21 @@ return <open_auction>{$id}</open_auction>,
 
 "
 
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates, 
+                                               (xs:date("2001-11-11"),
+                                                xs:date("2001-12-13")),
+                                               (xs:date("1998-09-01")),
+                                               fn:true(),
+                                               fn:true(),
+                                               fn:true(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+
+"
+
 Empty Probe
 ",
 
