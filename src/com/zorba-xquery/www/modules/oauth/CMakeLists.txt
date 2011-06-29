@@ -11,3 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/oauth/client" 1.0 "client.xq")
+DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/oauth/error" 1.0 "error.xq")

@@ -23,6 +23,9 @@
  :)
 module namespace  err = "http://www.zorba-xquery.com/modules/oauth/error";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "1.0";
+
 (:~
  : Errors namespace URI.
  :)

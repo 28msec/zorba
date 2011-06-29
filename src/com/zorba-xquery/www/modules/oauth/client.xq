@@ -27,6 +27,9 @@ declare namespace op = "http://www.zorba-xquery.org/options";
 
 declare option op:trace "disable";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "1.0";
+
 (:~
  : The timestamp is expressed in the number of seconds since January 1, 1970 00:00:00 GMT.
  :
