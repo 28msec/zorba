@@ -646,7 +646,7 @@ void apply_ftor( ft_all_matches const &ami, ft_all_matches const &amj,
  * Helper function for apply_ftorder(): checks whether the given two string
  * matches are ordered.
  */
-inline bool ordered( ft_string_match const &smi, ft_string_match const &smj ) {
+inline bool are_ordered( ft_string_match const &smi, ft_string_match const &smj ) {
   return
     ( smi.pos.start <= smj.pos.start && smi.query_pos <= smj.query_pos ) ||
     ( smi.pos.start >= smj.pos.start && smi.query_pos >= smj.query_pos );
@@ -660,7 +660,7 @@ void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
     bool every_satisfies = true;
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
       FOR_EACH( ft_match::includes_t, i2, m->includes ) {
-        if ( &*i1 != &*i2 && !ordered( *i1, *i2 ) ) {
+        if ( &*i1 != &*i2 && !are_ordered( *i1, *i2 ) ) {
           every_satisfies = false;
           break;
         }
@@ -671,7 +671,7 @@ void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
       ztd::copy_seq( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
-          if ( ordered( *e, *i ) )
+          if ( are_ordered( *e, *i ) )
             m_new.excludes.push_back( *e );
         }
       }

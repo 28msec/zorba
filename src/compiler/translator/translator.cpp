@@ -9793,9 +9793,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     if (! theSctx->is_imported_builtin_module(fn_ns))
     {
       RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(),
-                   ZED(FunctionUndeclared_3),
-                   numArgs));
+      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
   }
 
@@ -9812,9 +9810,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     {
       RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(),
-                   ZED(FunctionUndeclared_3),
-                   numArgs));
+      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
 
     push_nodestack(create_cast_expr(loc, arguments[0], type, true));
@@ -9841,9 +9837,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
 
       RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(),
-                   ZED(FunctionUndeclared_3),
-                   numArgs));
+      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf

@@ -277,14 +277,14 @@ main(int argc, char** argv)
       std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
       if (path.find("w3c_update_testsuite") != std::string::npos) 
       {
-        lContext->setXQueryVersion(xquery_version_1_0);
+        lContext->setXQueryVersion(zorba::xquery_version_1_0);
 
         std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
         smapper.reset(new zorba::TestSchemaURIMapper( uri_map_file.c_str() ));
         lContext->registerURIMapper( smapper.get() );
 #if 1
         if (path.find("Val") != std::string::npos)
-          lContext->setBoundarySpacePolicy(preserve_space);
+          lContext->setBoundarySpacePolicy(zorba::preserve_space);
 #endif
 #if 1
       	zorba::String lProlog = zorba::String(std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));

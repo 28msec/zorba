@@ -248,20 +248,46 @@ namespace zorbac {
 
   XQC_Error
   CStaticContext::set_xquery_version
-  (Zorba_StaticContext* context, xquery_version_t mode )
+  (Zorba_StaticContext* context, XQC_XQueryVersion ver)
   {
-    SC_TRY {
-      me->theContext.get()->setXQueryVersion(mode);
+    SC_TRY 
+    {
+      xquery_version_t zver;
+      switch (ver)
+      {
+      default:
+        assert(false);
+        // Fall through - 2.0 is fallback default
+      case XQC_VERSION_3_0:
+        zver = xquery_version_3_0;
+        break;
+      case XQC_VERSION_1_0:
+        zver = xquery_version_1_0;
+        break;
+      } 
+      me->theContext.get()->setXQueryVersion(zver);
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::get_xquery_version
-  (Zorba_StaticContext* context, xquery_version_t* mode)
+  (Zorba_StaticContext* context, XQC_XQueryVersion* ver)
   {
     SC_TRY {
-      *mode = me->theContext.get()->getXQueryVersion();
+      xquery_version_t zver = me->theContext.get()->getXQueryVersion();
+      switch (zver)
+      {
+      case xquery_version_1_0:
+        *ver = XQC_VERSION_1_0;
+        break;
+      case xquery_version_3_0:
+        *ver = XQC_VERSION_3_0;
+        break;
+      default:
+        *ver = XQC_VERSION_3_0;
+        assert(false);
+      }
     }
     SC_CATCH;
   }

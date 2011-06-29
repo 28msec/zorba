@@ -19,7 +19,6 @@
 
 #include <stdio.h>
 #include <zorba/config.h>
-#include <zorba/static_context_consts.h>
 #include <xqc.h>
 
 typedef struct Zorba_StaticContext_s Zorba_StaticContext;
@@ -126,7 +125,7 @@ extern "C" {
      */
       // TODO add xquery version test cases
     XQC_Error
-    (*set_xquery_version)(Zorba_StaticContext* context, xquery_version_t mode );
+    (*set_xquery_version)(Zorba_StaticContext* context, XQC_XQueryVersion ver);
 
     /**
      * Returns the XQuery processor's version that is set in the given static context.
@@ -138,7 +137,7 @@ extern "C" {
      * \retval ::XQC_INTERNAL_ERROR
      */
     XQC_Error 
-    (*get_xquery_version)(Zorba_StaticContext* context, xquery_version_t* mode);
+    (*get_xquery_version)(Zorba_StaticContext* context, XQC_XQueryVersion* ver);
  
     /**
      * Register an external function that can be called within a query.

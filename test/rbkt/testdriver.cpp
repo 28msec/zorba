@@ -192,7 +192,7 @@ main(int argc, char** argv)
       addURIMapper(driverContext, lContext, cmapper.get() );
 
       // the w3c testsuite always uses xquery 1.0
-      lContext->setXQueryVersion( xquery_version_1_0 );
+      lContext->setXQueryVersion( zorba::xquery_version_1_0 );
     }
 
     // Form the full pathname for the files that will receive the result or the

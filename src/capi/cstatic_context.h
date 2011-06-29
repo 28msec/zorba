@@ -134,10 +134,10 @@ namespace zorbac {
       get_default_collation(Zorba_StaticContext* context, const char** uri);
 
       static XQC_Error
-      set_xquery_version(Zorba_StaticContext* context, xquery_version_t mode );
+      set_xquery_version(Zorba_StaticContext* context, XQC_XQueryVersion ver);
 
       static XQC_Error 
-      get_xquery_version(Zorba_StaticContext* context, xquery_version_t* mode);
+      get_xquery_version(Zorba_StaticContext* context, XQC_XQueryVersion* ver);
 
       static XQC_Error
       register_external_function(Zorba_StaticContext* context, 

@@ -16,6 +16,9 @@
 #ifndef ZORBA_STATIC_CONTEXT_CONSTS_API_H
 #define ZORBA_STATIC_CONTEXT_CONSTS_API_H
 
+namespace zorba
+{
+
 /** \brief XPath 1.0 compatibility mode as defined in 
  *         http://www.w3.org/TR/xquery/#static_context 
  */
@@ -81,6 +84,8 @@ typedef enum { index_automatic, index_manual } index_maintenance_mode_t;
  *         in the XQuery Data Definition Facility
  */
 typedef enum { index_hash, index_tree } index_container_kind_t;
+
+}
 
 #endif
 /* vim:set et sw=2 ts=2: */

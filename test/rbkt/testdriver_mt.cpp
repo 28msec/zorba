@@ -462,7 +462,7 @@ DWORD WINAPI thread_main(LPVOID param)
       addURIMapper(driverContext, sctx, mmapper.get());
       addURIMapper(driverContext, sctx, cmapper.get());
 
-      sctx->setXQueryVersion(xquery_version_1_0);
+      sctx->setXQueryVersion(zorba::xquery_version_1_0);
       sctx->setTraceStream(queries->theOutput);
     }
 

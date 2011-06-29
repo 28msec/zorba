@@ -351,6 +351,16 @@ struct XQC_Implementation_s {
 	void (*free)(XQC_Implementation *implementation);
 };
 
+
+/** 
+ * The XQuery version, taken from the version declaration, an XQuery 3.0 feature.
+ */
+typedef enum 
+{ 
+  XQC_VERSION_1_0 = 100,
+  XQC_VERSION_3_0 = 300 
+} XQC_XQueryVersion;
+
 /** 
  * XPath 1.0 compatibility mode as defined in
  * http://www.w3.org/TR/xquery/#static_context
