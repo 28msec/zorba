@@ -575,7 +575,7 @@ extern entry const dict_en[] = {
   { "~NoTypeInMainModule_4", "type of variable \"$4\" is not among the in-scope types of the main module" },
   { "~NoTypeInModule_45", "type of variable \"$4\" is not among the in-scope types module \"$5\"" },
   { "~NoTypePromotion_23", "\"$2\": can not promote to type \"$3\"" },
-  { "~NoTypePromotion_234", "\"$2\": can not promote to return type \"$3\" of function $3()" },
+  { "~NoTypePromotion_234", "\"$2\": can not promote to return type \"$3\" of function $4()" },
   { "~NoURIAuthority", "no authority" },
   { "~NoURIInStore", "URI for document not found in store" },
   { "~NoURIScheme", "no URI scheme" },
