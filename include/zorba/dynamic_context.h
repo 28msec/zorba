@@ -46,6 +46,14 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * \brief Defines the external variable identified by aQName and assigns it
    * the value of aItem.
    *
+   * aQName may be in one of two forms: A lexical QName (eg. "ns:foo"), or a
+   * James Clark-style universal name (eg. "{nsuri}:foo"). If it is a universal
+   * name, then this method will find the named external variable in the main
+   * query or in any modules imported directly or indirectly by the query. If it
+   * is a lexical QName, then it is only possible to resolve the prefix in the
+   * the context of the main query, hence only external variables in the main
+   * query or those in directly-imported modules may be bound.
+   *
    * @param aQName the QName that identifies the external variable.
    * @param aItem the Item that is used as value for the variable.
    * @return true if the variable has been set, false otherwise.
@@ -59,6 +67,14 @@ class ZORBA_DLL_PUBLIC DynamicContext
   /**
    * \brief Defines the external variable identified by aQName and assigns it
    * the sequence that is returned by evaluating aIterator.
+   *
+   * aQName may be in one of two forms: A lexical QName (eg. "ns:foo"), or a
+   * James Clark-style universal name (eg. "{nsuri}:foo"). If it is a universal
+   * name, then this method will find the named external variable in the main
+   * query or in any modules imported directly or indirectly by the query. If it
+   * is a lexical QName, then it is only possible to resolve the prefix in the
+   * the context of the main query, hence only external variables in the main
+   * query or those in directly-imported modules may be bound.
    *
    * @param aQName the QName that identifies the external variable.
    * @param aIterator the Iterator producing the sequence that is assigned
@@ -74,6 +90,9 @@ class ZORBA_DLL_PUBLIC DynamicContext
   /** 
    * \brief Defines the external variable identified by an expanded QName and
    * assigns it the sequence that is returned by evaluating aIterator.
+   *
+   * The named external variable may be located in the main query or in any
+   * modules imported directly or indirectly by the query.
    *
    * @param aNamespace the namespace URI of the variable's expanded QName
    * @param aLocalname the local name of the variable's expanded QName
@@ -92,6 +111,9 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * variable. Exactly one of the two return values (aItem or
    * aIterator) will be non-null; that is, have isNull() == false.
    *
+   * The named external variable may be located in the main query or in any
+   * modules imported directly or indirectly by the query.
+   *
    * @param aNamespace the namespace URI of the variable's expanded QName
    * @param aLocalname the local name of the variable's expanded QName
    * @param aItem an Item representing the current (single-item) value of
@@ -99,7 +121,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @param aIterator an Iterator representing the current (possibly
    *  multi-item) value of the external variable.
    * @return true if the variable has been retrieved successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
+   * @throw ZorbaException if an error occured.
    */
   virtual bool
   getVariable( const String& aNamespace,
@@ -120,7 +142,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *
    * @param aItem an Item representing the current value of the context item.
    * @return true if the variable has been retrieved successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
+   * @throw ZorbaException if an error occured.
    */
   virtual bool
   getContextItem( Item& aItem ) const = 0;
@@ -134,7 +156,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @param aDateTimeItem the dateTime Item.
    * @return true if the variable has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured (e.g. the given Item is invalid
-   *        or not a Item of type dateTime
+   *        or not a Item of type dateTime)
    */
   virtual bool
   setCurrentDateTime( const Item& aDateTimeItem ) = 0;
