@@ -382,8 +382,8 @@ void set_var(
     std::cout << "Load xml " << val << std::endl;
 #endif
     const char *val_fname = val.c_str ();
-    std::ifstream* is = new std::ifstream(val_fname);
-    if (! is || !is->is_open() )
+    std::ifstream ifile(val_fname);
+    if (! ifile || !ifile.is_open() )
     {
       std::cerr << "Could not open file `" << val_fname << "' for variable `"
                 << name << "'" << std::endl;
@@ -392,7 +392,7 @@ void set_var(
 
     zorba::XmlDataManager* lXmlMgr =
         zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-    zorba::Item lDoc = lXmlMgr->parseXML(*is);
+    zorba::Item lDoc = lXmlMgr->parseXML(ifile);
     assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
     if(name != ".")
     {

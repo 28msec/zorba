@@ -62,11 +62,11 @@ void set_var (string name, string val, DynamicContext* dctx)
   }
   else if (name[name.size () - 1] != ':')
   {
-    ifstream* is = new ifstream(val.c_str());
-    assert (*is);
+    ifstream is(val.c_str());
+    assert (is);
     try {
       XmlDataManager* lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
-      Item lDoc = lXmlMgr->parseXML(*is);
+      Item lDoc = lXmlMgr->parseXML(is);
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
       if(name != ".")
         dctx->setVariable(name, lDoc);

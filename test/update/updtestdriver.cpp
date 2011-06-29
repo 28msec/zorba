@@ -104,15 +104,15 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
   }
   else
   {
-    std::ifstream* is = new std::ifstream(val.c_str ());
+    std::ifstream is(val.c_str ());
     
-    if ( *is==NULL )
+    if ( !is )
       std::cout << "Error: Location not found: " << val.c_str() << std::endl;
     
-    assert (*is);
+    assert (is);
     zorba::XmlDataManager* lXmlMgr =
         zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-    zorba::Item lDoc = lXmlMgr->parseXML(*is);
+    zorba::Item lDoc = lXmlMgr->parseXML(is);
     assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
     if(name != ".")
     {
