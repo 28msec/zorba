@@ -67,29 +67,11 @@ ELSE(MSVC)
   ENDIF(NOT CMAKE_BUILD_TYPE)
 ENDIF(MSVC)
 
-# this is needed for the next step: we clear the default value of CMAKE_INSTALL_DIR
-# this happens only with the NMake generator
-# this happens only with the NMake generator
-IF(CMAKE_GENERATOR STREQUAL "NMake Makefiles")
-  FILE(TO_CMAKE_PATH $ENV{ProgramFiles} PROGRAM_FILES)
-  IF(CMAKE_INSTALL_PREFIX STREQUAL "${PROGRAM_FILES}/${CMAKE_PROJECT_NAME}")
-    MESSAGE(STATUS "Clearing the default CMAKE_INSTALL_PREFIX for generator: ${CMAKE_GENERATOR}")
-    SET(CMAKE_INSTALL_PREFIX "" CACHE STRING
-      "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
-  ENDIF(CMAKE_INSTALL_PREFIX STREQUAL "${PROGRAM_FILES}/${CMAKE_PROJECT_NAME}")
-ELSEIF(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
-  IF(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
-    MESSAGE(STATUS "Clearing the default CMAKE_INSTALL_PREFIX for generator: ${CMAKE_GENERATOR}")
-    SET(CMAKE_INSTALL_PREFIX "" CACHE STRING
-      "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
-  ENDIF(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
-ENDIF(CMAKE_GENERATOR STREQUAL "NMake Makefiles")
-
 # set the default installation directory to "dist" in the build directory
-IF(NOT CMAKE_INSTALL_PREFIX)
+IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist CACHE STRING
       "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
-ENDIF(NOT CMAKE_INSTALL_PREFIX)
+ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 
 ###############################################################################
