@@ -85,6 +85,28 @@ def example6(zorba):
   print xquery.execute()
   return
 
+def example7(zorba, file):
+  #Read and write result
+  print 'Executing: '+file+'.xq'
+  f = open(file+'.xq', 'r')
+  lines = f.read()
+  f.close()
+  xquery = zorba.compileQuery(lines)
+  result = xquery.execute()
+  print result
+  f = open(file + '_result.xml', 'w')
+  f.write(result)
+  f.close()
+  return
+
+def example8(zorba):
+  try:
+    xquery = zorba.compileQuery('(xs:QName (" fn:a ") eq QName ("http://www.w3.org/2005/xpath-functions", "pre:a")) and (xs:QName (" x ") eq xs:QName ("x"))')
+    print xquery.execute()
+  except RuntimeError, e:
+    print e 
+  return
+
 store = zorba_api.InMemoryStore_getInstance()
 zorba = zorba_api.Zorba_getInstance(store)
 
@@ -112,5 +134,16 @@ print "Example6:"
 example6(zorba)
 print ""
 
+print "Example7:"
+a = range(10)
+for x in a:
+  example7(zorba, 'test'+str(x))
+print ""
+
+print "Example8:"
+example8(zorba)
+print ""
+
 zorba.shutdown()
 zorba_api.InMemoryStore_shutdown(store)
+
