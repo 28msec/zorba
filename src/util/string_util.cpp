@@ -90,7 +90,11 @@ double atod( char const *s ) {
 
 float atof( char const *s ) {
   char *end;
+#ifdef WIN32
+  float result = static_cast<float>( std::strtod( s, &end ) );
+#else
   float result = std::strtof( s, &end );
+#endif
   check_parse_number( s, end, &result );
   return result;
 }

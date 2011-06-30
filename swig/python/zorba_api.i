@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+%begin %{
+#include <zorba/zorba.h>
+#include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
+#include <zorba/diagnostic_handler.h>
+#include <zorba/options.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/serializer.h>
+%}
 
 %{
 
