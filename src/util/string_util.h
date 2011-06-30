@@ -492,26 +492,6 @@ aton( char const *s ) {
   return static_cast<IntegralType>( result );
 }
 
-template<typename T>
-struct is_double {
-  static bool const value = false;
-};
-
-template<>
-struct is_double<double> {
-  static bool const value = true;
-};
-
-template<typename T>
-struct is_float {
-  static bool const value = false;
-};
-
-template<>
-struct is_float<float> {
-  static bool const value = true;
-};
-
 /**
  * Parses the given string for a C++ \c double type.
  *

@@ -268,6 +268,26 @@ typename StackType::value_type pop_stack( StackType &s ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+template<typename T>
+struct is_double {
+  static bool const value = false;
+};
+
+template<>
+struct is_double<double> {
+  static bool const value = true;
+};
+
+template<typename T>
+struct is_float {
+  static bool const value = false;
+};
+
+template<>
+struct is_float<float> {
+  static bool const value = true;
+};
+
 template<typename NumericType> inline
 typename enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
 ge0( NumericType n ) {
