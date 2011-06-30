@@ -196,13 +196,8 @@ private:
   friend class FloatImpl<double>;
 };
 
-#ifdef WIN32 /* temporary hack to eliminate warnings on non-Windows */
-typedef ZORBA_DLL_PUBLIC FloatImpl<float> Float;
-typedef ZORBA_DLL_PUBLIC FloatImpl<double> Double;
-#else
 typedef FloatImpl<float> Float;
 typedef FloatImpl<double> Double;
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
