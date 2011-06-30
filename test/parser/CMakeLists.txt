@@ -15,7 +15,7 @@
 CONFIGURE_FILE(parsertestdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/parsertestdriverconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("parsertestdriver" "parsertestdriver.cpp" "" "" "")
+ZORBA_GENERATE_EXE("parsertestdriver" "parsertestdriver.cpp" "" "" "")
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
@@ -28,12 +28,12 @@ FOREACH(TESTFILE ${TESTFILES})
   STRING(SUBSTRING ${TESTFILE} 0 ${TESTLENGTH} TESTNAME)
 
   SET (TESTNAME "test/parser/${TESTNAME}")
-  ZORBA_ADD_TEST_ALLSTORES(${TESTNAME} parsertestdriver ${TESTFILE})
+  ZORBA_ADD_TEST(${TESTNAME} parsertestdriver ${TESTFILE})
 
   IF (${TESTFILE} MATCHES "fail")
-    ZORBA_SET_TEST_PROPERTY_ALLSTORES (${TESTNAME} WILL_FAIL TRUE)
+    ZORBA_SET_TEST_PROPERTY (${TESTNAME} WILL_FAIL TRUE)
   ELSE (${TESTFILE} MATCHES "fail")
-    ZORBA_SET_TEST_PROPERTY_ALLSTORES (${TESTNAME} FAIL_REGULAR_EXPRESSION "no parsenode root generated")
+    ZORBA_SET_TEST_PROPERTY (${TESTNAME} FAIL_REGULAR_EXPRESSION "no parsenode root generated")
   ENDIF (${TESTFILE} MATCHES "fail")
 
 ENDFOREACH(TESTFILE)

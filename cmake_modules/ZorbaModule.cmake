@@ -119,80 +119,78 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
       "${SOURCE_FILE}.src/*.cpp")
     
     MESSAGE(STATUS "Add library " ${module_name})
-    FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-      SET(SUFFIX)
-      # simplestore executable doesn't need an extension
-      IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-        SET(SUFFIX "_${ZORBA_STORE_NAME}")
-      ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+    SET(SUFFIX)
+    # simplestore executable doesn't need an extension
+    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+      SET(SUFFIX "_${ZORBA_STORE_NAME}")
+    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
   
-#      IF(WIN32)
-#        # configure_file doesn't replace variable with parameters; they
-#        # have to be defined in the macro
-#        SET(MODULE_VERSION ${MODULE_VERSION})
-#        SET(MODULE_NAME ${module_name})
-#        # set the rc file for the windows dll version
-#        CONFIGURE_FILE("${Zorba_CMAKE_MODULES_DIR}/Windows/WindowsDLLVersion.rc.in"
-#                        "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc"
-#                        @ONLY)                        
-#        LIST(APPEND SRC_FILES 
-#          "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc")
-#      ENDIF(WIN32)
+#    IF(WIN32)
+#      # configure_file doesn't replace variable with parameters; they
+#      # have to be defined in the macro
+#      SET(MODULE_VERSION ${MODULE_VERSION})
+#      SET(MODULE_NAME ${module_name})
+#      # set the rc file for the windows dll version
+#      CONFIGURE_FILE("${Zorba_CMAKE_MODULES_DIR}/Windows/WindowsDLLVersion.rc.in"
+#                      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc"
+#                      @ONLY)                        
+#      LIST(APPEND SRC_FILES 
+#        "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc")
+#    ENDIF(WIN32)
 
-      # Shared libraries are considered RUNTIME targets on Win32
-      # platforms and LIBRARY targets elsewhere
-      IF (WIN32)
-        SET (target_type RUNTIME)
-      ELSE (WIN32)
-        SET (target_type LIBRARY)
-      ENDIF (WIN32)
+    # Shared libraries are considered RUNTIME targets on Win32
+    # platforms and LIBRARY targets elsewhere
+    IF (WIN32)
+      SET (target_type RUNTIME)
+    ELSE (WIN32)
+      SET (target_type LIBRARY)
+    ENDIF (WIN32)
 
-      # Add the library target. Ensure that the output name is based on
-      # the module *URI*'s final component.
-      SET(MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${module_name}${SUFFIX}")
-      ADD_LIBRARY(${MODULE_LIB_NAME} SHARED ${SRC_FILES})
-      GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
-      # It seems like it would be nice to set the VERSION and/or
-      # SOVERSION target properties here. However: On Windows, it
-      # doesn't seem to do anything (the .rc file configured above
-      # embeds the version instead).  On the other hand, on Unix, it
-      # changes the actual output target location to something like
-      # "libext.so.2.0", which is difficult to transmogrify into the
-      # target filename we actually want later. So in either case, the
-      # target property isn't desirable.
-      SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES 
-        OUTPUT_NAME "${module_filewe}${SUFFIX}"
-        ${target_type}_OUTPUT_DIRECTORY
-        "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src")
-      TARGET_LINK_LIBRARIES(${MODULE_LIB_NAME}
-        zorba_${ZORBA_STORE_NAME} ${ARGN})
+    # Add the library target. Ensure that the output name is based on
+    # the module *URI*'s final component.
+    SET(MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${module_name}${SUFFIX}")
+    ADD_LIBRARY(${MODULE_LIB_NAME} SHARED ${SRC_FILES})
+    GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
+    # It seems like it would be nice to set the VERSION and/or
+    # SOVERSION target properties here. However: On Windows, it
+    # doesn't seem to do anything (the .rc file configured above
+    # embeds the version instead).  On the other hand, on Unix, it
+    # changes the actual output target location to something like
+    # "libext.so.2.0", which is difficult to transmogrify into the
+    # target filename we actually want later. So in either case, the
+    # target property isn't desirable.
+    SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES 
+      OUTPUT_NAME "${module_filewe}${SUFFIX}"
+      ${target_type}_OUTPUT_DIRECTORY
+      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src")
+    TARGET_LINK_LIBRARIES(${MODULE_LIB_NAME}
+      zorba_${ZORBA_STORE_NAME} ${ARGN})
 
-#      IF (WIN32 AND MSVC_IDE)
-#        # in VS, the dll's are generated in the $(ConfigurationName)
-#        # directory, so we have to copy these dll's one level up in the
-#        # ${CMAKE_CURRENT_BINARY_DIR} the commands below use VS macro
-#        # expansions $(...)
+#    IF (WIN32 AND MSVC_IDE)
+#      # in VS, the dll's are generated in the $(ConfigurationName)
+#      # directory, so we have to copy these dll's one level up in the
+#      # ${CMAKE_CURRENT_BINARY_DIR} the commands below use VS macro
+#      # expansions $(...)
 
-#        # if we change something in the project generating this target, make
-#        # sure we don't have a zombie DLL hanging around from an older build
-#        #left in for ctest need to change testing macro to be able to remove this
-#        ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
-#          if exist "\"$(ProjectDir)\\$(TargetFileName)\"" del "\"$(ProjectDir)\\$(TargetFileName)\"")
-#        ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
-#          copy "\"$(TargetPath)\"" "\"$(ProjectDir)\"")
-#        #Copy file to the corresponding module path inside the build  
-#        ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
-#          if exist "\"${output_dir}\\$(TargetFileName)\"" del "\"${output_dir}\\$(TargetFileName)\"")
-#        ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
-#          copy "\"$(TargetPath)\"" "\"${output_dir}\"")
-#        #Copy a versioned file to the corresponding module path inside the build
-#        ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
-#          if exist "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"" del "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"")  
-#        ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
-#          copy "\"${output_dir}\\$(TargetFileName)\""  "\"${output_dir}\\${MODULE_NAME}.${MODULE_VERSION}.dll\"")                   
-#      ENDIF (WIN32 AND MSVC_IDE)
-#        
-    ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})   
+#      # if we change something in the project generating this target, make
+#      # sure we don't have a zombie DLL hanging around from an older build
+#      #left in for ctest need to change testing macro to be able to remove this
+#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
+#        if exist "\"$(ProjectDir)\\$(TargetFileName)\"" del "\"$(ProjectDir)\\$(TargetFileName)\"")
+#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
+#        copy "\"$(TargetPath)\"" "\"$(ProjectDir)\"")
+#      #Copy file to the corresponding module path inside the build  
+#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
+#        if exist "\"${output_dir}\\$(TargetFileName)\"" del "\"${output_dir}\\$(TargetFileName)\"")
+#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
+#        copy "\"$(TargetPath)\"" "\"${output_dir}\"")
+#      #Copy a versioned file to the corresponding module path inside the build
+#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
+#        if exist "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"" del "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"")  
+#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
+#        copy "\"${output_dir}\\$(TargetFileName)\""  "\"${output_dir}\\${MODULE_NAME}.${MODULE_VERSION}.dll\"")                   
+#    ENDIF (WIN32 AND MSVC_IDE)
+#      
    
   ENDIF(EXISTS "${SOURCE_FILE}.src/")
 
@@ -344,19 +342,18 @@ MACRO (GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   STRING (REPLACE "/" "_" ZORBA_MODULE_PREFIX ${ZORBA_MODULE_RELPATH})
 
   MESSAGE (STATUS "Add library " ${MODULE_NAME})
-  FOREACH (ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-    SET (SUFFIX)
-    # simplestore executable doesn't need an extension
-    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-      SET (SUFFIX "_${ZORBA_STORE_NAME}")
-    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+  SET (SUFFIX)
+  # simplestore executable doesn't need an extension
+  IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+    SET (SUFFIX "_${ZORBA_STORE_NAME}")
+  ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
 
-    SET (MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}${SUFFIX}")
-    ADD_LIBRARY (${MODULE_LIB_NAME} SHARED ${SRC_FILES})
-    SET_TARGET_PROPERTIES (${MODULE_LIB_NAME} PROPERTIES 
-      OUTPUT_NAME "${MODULE_NAME}${SUFFIX}")
-    TARGET_LINK_LIBRARIES (${MODULE_LIB_NAME}
-      zorba_${ZORBA_STORE_NAME} ${LINK_LIBRARIES})
+  SET (MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}${SUFFIX}")
+  ADD_LIBRARY (${MODULE_LIB_NAME} SHARED ${SRC_FILES})
+  SET_TARGET_PROPERTIES (${MODULE_LIB_NAME} PROPERTIES 
+    OUTPUT_NAME "${MODULE_NAME}${SUFFIX}")
+  TARGET_LINK_LIBRARIES (${MODULE_LIB_NAME}
+    zorba_${ZORBA_STORE_NAME} ${LINK_LIBRARIES})
 
 #  MESSAGE (STATUS "----------------------------------------------${CMAKE_CURRENT_SOURCE_DIR}")
 #  MESSAGE (STATUS "----------------------------------------------${CMAKE_CURRENT_BINARY_DIR}")
@@ -384,11 +381,10 @@ MACRO (GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
 #        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 #    ENDIF (WIN32)
 
-    # QQQ This should be the *module* version, not the Zorba version!
-    SET_TARGET_PROPERTIES (${MODULE_LIB_NAME} PROPERTIES
-      VERSION ${ZORBA_VERSION}
-      CLEAN_DIRECT_OUTPUT 0)
-  ENDFOREACH (ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+  # QQQ This should be the *module* version, not the Zorba version!
+  SET_TARGET_PROPERTIES (${MODULE_LIB_NAME} PROPERTIES
+    VERSION ${ZORBA_VERSION}
+    CLEAN_DIRECT_OUTPUT 0)
 
   # install to include/zorba/modules/com/zorba-xquery/www/modules
   # (simplestore libs only).  the include/zorba/modules directory
@@ -430,20 +426,18 @@ MACRO(expected_failure testname bugid)
     set (willfail 1)
   endif (willfail)
 
-  FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-    # simplestore executable doesn't need an extension
-    SET(SUFFIX)
-    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-      SET(SUFFIX "_${ZORBA_STORE_NAME}")
-    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+  # simplestore executable doesn't need an extension
+  SET(SUFFIX)
+  IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+    SET(SUFFIX "_${ZORBA_STORE_NAME}")
+  ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
 
-    set_tests_properties ("${testname}${SUFFIX}"
-      PROPERTIES WILL_FAIL ${willfail})
+  set_tests_properties ("${testname}${SUFFIX}"
+    PROPERTIES WILL_FAIL ${willfail})
 
-    # Also store the name and bug ID of this test in our output file
-    file (APPEND "${expected_failures_file}"
-      "<Test name=\"${testname}${SUFFIX}\" bug=\"${bugid}\"/>")
-  ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+  # Also store the name and bug ID of this test in our output file
+  file (APPEND "${expected_failures_file}"
+    "<Test name=\"${testname}${SUFFIX}\" bug=\"${bugid}\"/>")
 
 ENDMACRO(expected_failure)
 
@@ -461,7 +455,7 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
     ELSE(WIN32)
       SET(PATH_SEP ":")
     ENDIF(WIN32)
-    ZORBA_ADD_TEST_ALLSTORES(${TESTNAME} testdriver
+    ZORBA_ADD_TEST(${TESTNAME} testdriver
       "--rbkt-src" "${TEST_DIR}"
       "--module-path" "${PROJECT_SOURCE_DIR}/src/${PATH_SEP}${PROJECT_BINARY_DIR}/src/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
       "${TESTFILE}")
@@ -487,18 +481,31 @@ MACRO(CREATE_MODULE_CONFIG name src_dir bin_dir)
     "${MODULE_BINARY_DIR}/${name}Config.cmake" @ONLY)
 ENDMACRO(CREATE_MODULE_CONFIG)
 
-# Adds a test to the project.
+# This macro easies the process of adding test for store dependent executables 
+# (e.g. if the rbkt tests must be added for the executables testdriver and testdriver_firststore). 
+# It adds one test for each store registered. It has the same naming convection for the target as 
+# the macro that is used to generated store dependent executables (thus, 
+# 'testdriver' must be passed as TARGET if the test should be executed with the executables
+# testdriver and testdriver_firststore).
 #
 # Syntax:
 #
 #   ZORBA_ADD_TEST_SIMPLE(NAME TARGET ...) 
 #   
 #     NAME - the name of the added test
-#     TARGET - target that will be executed when the test is run
+#     TARGET - target that will be executed when the test is run. For each registered store, 
+#              a suffix will be added to the target 
+#              (similar convention than in ZORBA_GENERATE_EXE)
 #     ... - arguments that will be passed to the target
 #
-MACRO (ZORBA_ADD_TEST_SIMPLE NAME TARGET ...)
-  SET (ARGS ${ARGV2} ${ARGN})
+MACRO(ZORBA_ADD_TEST NAME TARGET ...)
+  SET(ARGS ${ARGV2} ${ARGN})
+
+  # simplestore executable doesn't need an extension
+  SET(SUFFIX)
+  IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+    SET(SUFFIX "_${ZORBA_STORE_NAME}")
+  ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
 
   GET_TARGET_PROPERTY (TARGET_LOCATION "${TARGET}" LOCATION)
   IF (WIN32)
@@ -520,57 +527,20 @@ MACRO (ZORBA_ADD_TEST_SIMPLE NAME TARGET ...)
     MESSAGE (STATUS "using additional properties for ${NAME}: [${TEST_EXTRAPROPS}]")
     SET_TESTS_PROPERTIES ("${NAME}" PROPERTIES ${TEST_EXTRAPROPS})
   ENDIF (TEST_EXTRAPROPS)
-ENDMACRO (ZORBA_ADD_TEST_SIMPLE)
+ENDMACRO(ZORBA_ADD_TEST)
 
-# This macro easies the process of adding test for store dependent executables 
-# (e.g. if the rbkt tests must be added for the executables testdriver and testdriver_firststore). 
-# It adds one test for each store registered. It has the same naming convection for the target as 
-# the macro that is used to generated store dependent executables (thus, 
-# 'testdriver' must be passed as TARGET if the test should be executed with the executables
-# testdriver and testdriver_firststore).
+# This macro can be used to set a property to each test generated by the macro ZORBA_ADD_TEST.
 #
 # Syntax:
 #
-#   ZORBA_ADD_TEST_SIMPLE(NAME TARGET ...) 
-#   
-#     NAME - the name of the added test
-#     TARGET - target that will be executed when the test is run. For each registered store, 
-#              a suffix will be added to the target 
-#              (similar convention than in ZORBA_GENERATE_STORE_SPECIFIC_EXES)
-#     ... - arguments that will be passed to the target
-#
-MACRO(ZORBA_ADD_TEST_ALLSTORES NAME TARGET ...)
-  SET(ARGS ${ARGV2} ${ARGN})
-  FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-    # simplestore executable doesn't need an extension
-    SET(SUFFIX)
-    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-      SET(SUFFIX "_${ZORBA_STORE_NAME}")
-    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-
-    ZORBA_ADD_TEST_SIMPLE("${NAME}${SUFFIX}" "${TARGET}${SUFFIX}" ${ARGS})
-  ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-ENDMACRO(ZORBA_ADD_TEST_ALLSTORES)
-
-# This macro can be used to set a property to each test generated by the macro ZORBA_ADD_TEST_ALLSTORES.
-#
-# Syntax:
-#
-#   ZORBA_SET_TEST_PROPERTY_ALLSTORES(NAME PROPERTY VALUE) 
+#   ZORBA_SET_TEST_PROPERTY(NAME PROPERTY VALUE) 
 #   
 #     PROPERTY - property
 #     VALUE - value of property
 #
-MACRO(ZORBA_SET_TEST_PROPERTY_ALLSTORES NAME PROPERTY VALUE)
-  FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-    # simplestore executable doesn't need an extension
-    SET(SUFFIX)
-    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-      SET(SUFFIX "_${ZORBA_STORE_NAME}")
-    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-    SET_TESTS_PROPERTIES ("${NAME}${SUFFIX}" PROPERTIES ${PROPERTY} "${VALUE}")
-  ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-ENDMACRO(ZORBA_SET_TEST_PROPERTY_ALLSTORES)
+MACRO(ZORBA_SET_TEST_PROPERTY NAME PROPERTY VALUE)
+  SET_TESTS_PROPERTIES ("${NAME}" PROPERTIES ${PROPERTY} "${VALUE}")
+ENDMACRO(ZORBA_SET_TEST_PROPERTY)
 
 
 

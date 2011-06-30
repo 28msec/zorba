@@ -13,8 +13,8 @@
 # limitations under the License.
 #
 # This macro helps creating executables that are store dependent (e.g. one zorbacmd version must be 
-# compiled and linked for each registered store). This macro iterates through the CMake variable 
-# ZORBA_STORE_NAMES and creates one executable for each store name.
+# compiled and linked for each registered store). This macro takes the CMake variable 
+# ZORBA_STORE_NAME and creates one executable with this name.
 # Per convention, the source file that contains the main function of the executable must be located in 
 # the directory where this macro is executabed and must the following name: '${EXE_NAME}.cpp'. 
 # If the cmake variable ZORBA_BUILD_STATIC_LIBRARY is set to "ON", the macro produces additinally a 
@@ -26,7 +26,7 @@
 #
 # Synatx:
 # 
-#   ZORBA_GENERATE_STORE_SPECIFIC_EXES(EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME) 
+#   ZORBA_GENERATE_EXE(EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME) 
 #   
 #     EXE_NAME - the name of the executable.
 #     SRCS - source files which will be compiled and linked to the created libraries
@@ -36,72 +36,68 @@
 #                           the passed destination
 #
 #
-MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
+MACRO(ZORBA_GENERATE_EXE EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
 
-  FOREACH (ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+  SET (SUFFIX)
+  # simplestore executable doesn't need an extension
+  IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+    SET (SUFFIX "_${ZORBA_STORE_NAME}")
+  ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
 
-    SET (SUFFIX)
-    # simplestore executable doesn't need an extension
-    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-      SET (SUFFIX "_${ZORBA_STORE_NAME}")
-    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+  ADD_EXECUTABLE ("${EXE_NAME}${SUFFIX}" ${SRCS})
+  TARGET_LINK_LIBRARIES (
+    "${EXE_NAME}${SUFFIX}" 
+    "zorba_${ZORBA_STORE_NAME}"
+    ${DEPEND_LIBS}
+  )
+  IF (NOT ${NEW_NAME} STREQUAL "")
+    SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}" PROPERTIES OUTPUT_NAME "${NEW_NAME}${SUFFIX}")
+  ENDIF (NOT ${NEW_NAME} STREQUAL "")
 
-    ADD_EXECUTABLE ("${EXE_NAME}${SUFFIX}" ${SRCS})
+  IF (NOT ${INSTALL_DESTINATION} STREQUAL "")
+    INSTALL (TARGETS ${EXE_NAME}${SUFFIX} DESTINATION ${INSTALL_DESTINATION})
+  ENDIF (NOT ${INSTALL_DESTINATION} STREQUAL "")
+
+  # generate list of bat scripts to set the PATH variable for the executables
+  IF (WIN32)
+    IF (NOT ${NEW_NAME} STREQUAL "")
+      SET (ZORBA_EXE_NAME "${NEW_NAME}${SUFFIX}")
+    ELSE (NOT ${NEW_NAME} STREQUAL "")
+      SET (ZORBA_EXE_NAME "${EXE_NAME}${SUFFIX}")
+    ENDIF (NOT ${NEW_NAME} STREQUAL "")
+
+    SET (ENV{ZORBA_EXE_SCRIPT_LIST} "$ENV{ZORBA_EXE_SCRIPT_LIST}${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_EXE_NAME}.bat;")
+  ENDIF (WIN32)
+  
+  # generating initial property file for each executable in visual studio
+  # is done to set the PATH variable correctly
+  IF (MSVC_IDE)
+    SET (SYSTEM_NAME $ENV{USERDOMAIN})
+    SET (USER_NAME $ENV{USERNAME})
+    SET (ZORBA_VC_PROJECT_CONFIG_FILE "${EXE_NAME}${SUFFIX}.vcproj.${SYSTEM_NAME}.${USER_NAME}.user")
+    # Do not overwrite old property files. The user might have adapted something.
+    IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
+      CONFIGURE_FILE (${CMAKE_SOURCE_DIR}/cmake_modules/VCProject.vcproj.in ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
+    ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
+  ENDIF (MSVC_IDE)
+
+  IF (ZORBA_BUILD_STATIC_LIBRARY)
+    ADD_EXECUTABLE ("${EXE_NAME}${SUFFIX}_static" ${SRCS})
+    SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}_static" PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
     TARGET_LINK_LIBRARIES (
-      "${EXE_NAME}${SUFFIX}" 
-      "zorba_${ZORBA_STORE_NAME}"
+      "${EXE_NAME}${SUFFIX}_static" 
+      "zorba_${ZORBA_STORE_NAME}_static"
       ${DEPEND_LIBS}
     )
     IF (NOT ${NEW_NAME} STREQUAL "")
-      SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}" PROPERTIES OUTPUT_NAME "${NEW_NAME}${SUFFIX}")
+      SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}_static" PROPERTIES OUTPUT_NAME "${NEW_NAME}${SUFFIX}_static")
     ENDIF (NOT ${NEW_NAME} STREQUAL "")
+    IF (INSTALL_DESTINATION)
+      INSTALL (TARGETS "${EXE_NAME}${SUFFIX}_static" DESTINATION ${INSTALL_DESTINATION})
+    ENDIF (INSTALL_DESTINATION)
+  ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
-    IF (NOT ${INSTALL_DESTINATION} STREQUAL "")
-      INSTALL (TARGETS ${EXE_NAME}${SUFFIX} DESTINATION ${INSTALL_DESTINATION})
-    ENDIF (NOT ${INSTALL_DESTINATION} STREQUAL "")
-
-    # generate list of bat scripts to set the PATH variable for the executables
-    IF (WIN32)
-      IF (NOT ${NEW_NAME} STREQUAL "")
-        SET (ZORBA_EXE_NAME "${NEW_NAME}${SUFFIX}")
-      ELSE (NOT ${NEW_NAME} STREQUAL "")
-        SET (ZORBA_EXE_NAME "${EXE_NAME}${SUFFIX}")
-      ENDIF (NOT ${NEW_NAME} STREQUAL "")
-
-      SET (ENV{ZORBA_EXE_SCRIPT_LIST} "$ENV{ZORBA_EXE_SCRIPT_LIST}${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_EXE_NAME}.bat;")
-    ENDIF (WIN32)
-    
-    # generating initial property file for each executable in visual studio
-    # is done to set the PATH variable correctly
-    IF (MSVC_IDE)
-      SET (SYSTEM_NAME $ENV{USERDOMAIN})
-      SET (USER_NAME $ENV{USERNAME})
-      SET (ZORBA_VC_PROJECT_CONFIG_FILE "${EXE_NAME}${SUFFIX}.vcproj.${SYSTEM_NAME}.${USER_NAME}.user")
-      # Do not overwrite old property files. The user might have adapted something.
-      IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
-        CONFIGURE_FILE (${CMAKE_SOURCE_DIR}/cmake_modules/VCProject.vcproj.in ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
-      ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
-    ENDIF (MSVC_IDE)
-
-    IF (ZORBA_BUILD_STATIC_LIBRARY)
-      ADD_EXECUTABLE ("${EXE_NAME}${SUFFIX}_static" ${SRCS})
-      SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}_static" PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-      TARGET_LINK_LIBRARIES (
-        "${EXE_NAME}${SUFFIX}_static" 
-        "zorba_${ZORBA_STORE_NAME}_static"
-        ${DEPEND_LIBS}
-      )
-      IF (NOT ${NEW_NAME} STREQUAL "")
-        SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}_static" PROPERTIES OUTPUT_NAME "${NEW_NAME}${SUFFIX}_static")
-      ENDIF (NOT ${NEW_NAME} STREQUAL "")
-      IF (INSTALL_DESTINATION)
-        INSTALL (TARGETS "${EXE_NAME}${SUFFIX}_static" DESTINATION ${INSTALL_DESTINATION})
-      ENDIF (INSTALL_DESTINATION)
-    ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-  ENDFOREACH (ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-
-ENDMACRO (ZORBA_GENERATE_STORE_SPECIFIC_EXES)
+ENDMACRO (ZORBA_GENERATE_EXE)
 
 
 # This macro will read the ZORBA_EXE_SCRIPT_LIST environments variable and will

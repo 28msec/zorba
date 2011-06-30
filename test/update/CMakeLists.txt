@@ -31,8 +31,8 @@ SET(UPDTESTDRIVER_SRCS
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("updtestdriver" "${UPDTESTDRIVER_SRCS}" "" "" "")
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake)
+ZORBA_GENERATE_EXE("updtestdriver" "${UPDTESTDRIVER_SRCS}" "" "" "")
 
 # collect all spec files (suffix .spec) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ FOLLOW_SYMLINKS "*.spec")
@@ -55,7 +55,7 @@ FOREACH(TESTFILE ${TESTFILES})
      SET(TESTNAME "test/update/${TESTNAME}")
    ENDIF (TESTFILE MATCHES ".*XQueryX.*")
 
-   ZORBA_ADD_TEST_ALLSTORES("${TESTNAME}" updtestdriver ${TESTFILE})
+   ZORBA_ADD_TEST("${TESTNAME}" updtestdriver ${TESTFILE})
 
    MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
    MATH(EXPR TESTMOD "${TESTCOUNTER}/100")

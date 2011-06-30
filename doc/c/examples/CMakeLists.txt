@@ -32,7 +32,7 @@ CREATE_TEST_SOURCELIST(cexamples
 )
 
 # add the executable
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(cexamples "${cexamples}" "" "" "")
+ZORBA_GENERATE_EXE(cexamples "${cexamples}" "" "" "")
 
 # remove the test driver source file
 SET (TestsToRun ${cexamples})
@@ -49,7 +49,7 @@ FOREACH (test ${TestsToRun})
   
   STRING(SUBSTRING ${FULL_TEST_NAME} ${SOURCE_DIR_LENGTH} ${TEST_NAME_LENGTH} TName)
   MESSAGE(STATUS "Adding test for the C API's documentation: ${TName}")
-  ZORBA_ADD_TEST_ALLSTORES(${TName} cexamples ${NAME_WITHOUT_EXT})
+  ZORBA_ADD_TEST(${TName} cexamples ${NAME_WITHOUT_EXT})
 ENDFOREACH(test)
 
 # Copy cparsing.xml to binary dir, and install it

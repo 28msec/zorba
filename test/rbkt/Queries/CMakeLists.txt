@@ -87,7 +87,7 @@ IF(${cxqNO} STRGREATER "0")
     SET(TEST_NAME "test/rbkt/${TEST_NAME}")
     
     # finally add the test
-    ZORBA_ADD_TEST_ALLSTORES("${TEST_NAME}" testdriver ${CHAINED_TESTS_FILES})
+    ZORBA_ADD_TEST("${TEST_NAME}" testdriver ${CHAINED_TESTS_FILES})
 
 
     # clear the list of testfiles, args and also the name of the test
@@ -173,7 +173,7 @@ FOREACH(TESTFILE ${TESTFILES})
 
   IF(NOT SKIP_TEST)
 
-    ZORBA_ADD_TEST_ALLSTORES("${TESTNAME}" testdriver ${TESTFILE})
+    ZORBA_ADD_TEST("${TESTNAME}" testdriver ${TESTFILE})
 
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
     MATH(EXPR TESTMOD "${TESTCOUNTER}/1000")
@@ -194,7 +194,7 @@ IF (FOUND_XQTS)
   IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
 
     MESSAGE (STATUS "Adding multi-threaded XQTS test")
-    ZORBA_ADD_TEST_SIMPLE(xqts testdriver_mt -q -b w3c_testsuite
+    ZORBA_ADD_TEST(xqts testdriver_mt -q -b w3c_testsuite
       -k "${CMAKE_CURRENT_SOURCE_DIR}/w3c_known_failures.txt")
 
   ELSE (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)

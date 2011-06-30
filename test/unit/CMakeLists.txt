@@ -85,7 +85,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 )
 
 # add the executable
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(UnitTests "${UnitTests}" "" "" "")
+ZORBA_GENERATE_EXE(UnitTests "${UnitTests}" "" "" "")
 
 # remove the test driver source file
 SET (TestsToRun ${UnitTests})
@@ -97,19 +97,14 @@ MESSAGE(STATUS "Adding unit tests for CTest")
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
   SET (TestName "test/unit/${TName}")
-  ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
+  ZORBA_ADD_TEST(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
 # Add lib-internal unit tests
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(LibUnitTest lib_unit_test.cpp "" "" "")
+ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 
 # ADD NEW UNIT TESTS HERE
-ZORBA_ADD_TEST_ALLSTORES("test/libunit/uri" LibUnitTest uri)
-IF(ZORBA_WITH_DEBUGGER)
-#  ZORBA_ADD_TEST_ALLSTORES("test/libunit/debugger_protocol" LibUnitTest debugger_protocol)
-ENDIF(ZORBA_WITH_DEBUGGER)
-
-
+ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
 
 IF(ZORBA_WITH_DEBUGGER)

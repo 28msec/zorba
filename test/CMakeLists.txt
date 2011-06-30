@@ -26,7 +26,7 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/src)
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/test)
 INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
 
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake)
 
 ADD_SUBDIRECTORY(api)
 ADD_SUBDIRECTORY(rbkt)
@@ -44,26 +44,23 @@ SET (TEST_PLAN_SERIALIZER_SRCS
 #
 # apitest
 #
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "apitest.cpp" "" "" "")
+ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
 
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
+ZORBA_GENERATE_EXE("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
   
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("path_test" "path_test.cpp" "" "" "")
+ZORBA_GENERATE_EXE("path_test" "path_test.cpp" "" "" "")
   
-ZORBA_ADD_TEST_ALLSTORES (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspathbranch1 PASS_REGULAR_EXPRESSION /d1)
+ZORBA_ADD_TEST (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
+ZORBA_SET_TEST_PROPERTY (test/fspathbranch1 PASS_REGULAR_EXPRESSION /d1)
   
-ZORBA_ADD_TEST_ALLSTORES (test/fspathbranch2 path_test --branch-path /dir)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspathbranch2 PASS_REGULAR_EXPRESSION /)
+ZORBA_ADD_TEST (test/fspathbranch2 path_test --branch-path /dir)
+ZORBA_SET_TEST_PROPERTY (test/fspathbranch2 PASS_REGULAR_EXPRESSION /)
   
-ZORBA_ADD_TEST_ALLSTORES (test/fspath1 path_test --path /../d1/./././././././../..)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath1 PASS_REGULAR_EXPRESSION /)
+ZORBA_ADD_TEST (test/fspath1 path_test --path /../d1/./././././././../..)
+ZORBA_SET_TEST_PROPERTY (test/fspath1 PASS_REGULAR_EXPRESSION /)
   
-ZORBA_ADD_TEST_ALLSTORES (test/fspath2 path_test --path d1/d2/../../../../d3//)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3)
+ZORBA_ADD_TEST (test/fspath2 path_test --path d1/d2/../../../../d3//)
+ZORBA_SET_TEST_PROPERTY (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3)
 
 # External testsuites
 ADD_SUBDIRECTORY(testsuites)
-
-#SET (ORDPATH_SRCS test_ordpath.cpp)
-#ZORBA_GENERATE_STORE_SPECIFIC_EXES("ordpath" "${ORDPATH_SRCS}" "" "" "bin")

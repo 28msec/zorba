@@ -107,18 +107,6 @@ ENDIF(ZORBA_PRECOMPILED_HEADERS)
 
 SET(ZORBA_LIBRARY_INSTALL_LIST)
 
-# if you want a cross-platform approach to compile all zorba sources only once 
-# you could extract the locations of previously built object files and insert them directly into
-# the libraries that need them. This is documented in CMake Feature Request #5155:
-# standard way to locate object files
-LIST(LENGTH ZORBA_STORE_DIRS ZORBA_STORE_DIRS_LENGTH)
-LIST(LENGTH ZORBA_STORE_NAMES ZORBA_STORE_NAMES_LENGTH)
-IF (NOT ${ZORBA_STORE_DIRS_LENGTH} EQUAL ${ZORBA_STORE_NAMES_LENGTH})
-  MESSAGE(FATAL_ERROR 
-    "the variables ZORBA_STORE_DIRS_LENGTH and ZORBA_STORE_NAMES_LENGTH must contain the same amount of items")
-ENDIF (NOT ${ZORBA_STORE_DIRS_LENGTH} EQUAL ${ZORBA_STORE_NAMES_LENGTH})
-MATH(EXPR BOUNDARY ${ZORBA_STORE_DIRS_LENGTH}-1)
-
 # The standard uri resolver must know the store suffix that is added to the dynamically loaded
 # module libs. This is done with the helper header file src/context/get_current_lib_suffix.h.in.
 # This file contains the function get_current_lib_suffix. Its body is filed by the following cmake code:
@@ -129,16 +117,14 @@ IF (WIN32)
 ELSE (WIN32)
   SET(EOL "\n")
 ENDIF (WIN32)
-FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-  # adding an ifdef zorba_*_EXPRTS for each registered store
-  IF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
-    SET(GET_CURRENT_LIB_SUFFIX_CODE 
-          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}#define CURRENT_LIB_SUFFIX \"\";${EOL}\#endif${EOL}")
-  ELSE (${ZORBA_STORE_NAME} STREQUAL "simplestore")
-    SET(GET_CURRENT_LIB_SUFFIX_CODE 
-          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}#define CURRENT_LIB_SUFFIX \"_${ZORBA_STORE_NAME}\";${EOL}\#endif${EOL}")
-  ENDIF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
-ENDFOREACH(ZORBA_STORE_NAME)
+# adding an ifdef zorba_*_EXPRTS for each registered store
+IF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
+  SET(GET_CURRENT_LIB_SUFFIX_CODE 
+        "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}#define CURRENT_LIB_SUFFIX \"\";${EOL}\#endif${EOL}")
+ELSE (${ZORBA_STORE_NAME} STREQUAL "simplestore")
+  SET(GET_CURRENT_LIB_SUFFIX_CODE 
+        "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}#define CURRENT_LIB_SUFFIX \"_${ZORBA_STORE_NAME}\";${EOL}\#endif${EOL}")
+ENDIF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
 
 
 CONFIGURE_FILE(
@@ -219,52 +205,46 @@ ENDIF(WIN32)
 
 
 
-FOREACH(INDEX RANGE ${BOUNDARY})
-  LIST(GET ZORBA_STORE_DIRS ${INDEX} ZORBA_STORE_DIR)
-  LIST(GET ZORBA_STORE_NAMES ${INDEX} ZORBA_STORE_NAME)
+MESSAGE(STATUS "processing store dir ${ZORBA_STORE_DIR} with name ${ZORBA_STORE_NAME}")
 
-  MESSAGE(STATUS "processing store dir ${ZORBA_STORE_DIR} with name ${ZORBA_STORE_NAME}")
+INCLUDE (${ZORBA_STORE_DIR}/CMakeLists.txt)     # side-effects!
 
-  INCLUDE (${ZORBA_STORE_DIR}/CMakeLists.txt)     # side-effects!
+SET(STORE_SRCS)
+FOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
+  LIST(APPEND STORE_SRCS ${ZORBA_STORE_DIR}/${SRCS})
+ENDFOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
 
-  SET(STORE_SRCS)
-  FOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
-    LIST(APPEND STORE_SRCS ${ZORBA_STORE_DIR}/${SRCS})
-  ENDFOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
+#
+# Build the Zorba SHARED library
+#
+ADD_LIBRARY(zorba_${ZORBA_STORE_NAME} SHARED ${ZORBA_SRCS} ${STORE_SRCS})
+LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_NAME})
+TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_NAME} ${requiredlibs})
 
-  #
-  # Build the Zorba SHARED library
-  #
-  ADD_LIBRARY(zorba_${ZORBA_STORE_NAME} SHARED ${ZORBA_SRCS} ${STORE_SRCS})
-  LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_NAME})
-  TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_NAME} ${requiredlibs})
+SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
+SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES CLEAN_DIRECT_OUTPUT 0)
 
-  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
-  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES CLEAN_DIRECT_OUTPUT 0)
+#
+# Build the Zorba STATIC library
+#
+IF (ZORBA_BUILD_STATIC_LIBRARY)
+  # Set the ar append flag to "q" instead of "r", which could create incomplete archives by replacing the files with the same names
+  SET(CMAKE_C_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
+  SET(CMAKE_CXX_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
 
-  #
-  # Build the Zorba STATIC library
-  #
-  IF (ZORBA_BUILD_STATIC_LIBRARY)
-    # Set the ar append flag to "q" instead of "r", which could create incomplete archives by replacing the files with the same names
-    SET(CMAKE_C_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
-    SET(CMAKE_CXX_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
+  ADD_LIBRARY(zorba_${ZORBA_STORE_NAME}_static STATIC ${ZORBA_SRCS} ${STORE_SRCS})
+  LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_NAME}_static)
+  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
+  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
+  SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)  
+  TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_NAME}_static ${requiredlibs})
 
-    ADD_LIBRARY(zorba_${ZORBA_STORE_NAME}_static STATIC ${ZORBA_SRCS} ${STORE_SRCS})
-    LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_NAME}_static)
-    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
-    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)  
-    TARGET_LINK_LIBRARIES(zorba_${ZORBA_STORE_NAME}_static ${requiredlibs})
-
-    # on windows, the static lib needs a different name because .lib is already generated when creating the .dll 
-    # on unix, the static library can have the same name because it uses a different file suffix (e.g. .a)
-    IF (UNIX)
-      SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_NAME}")      
-    ENDIF (UNIX)
-  ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-ENDFOREACH(INDEX)
+  # on windows, the static lib needs a different name because .lib is already generated when creating the .dll 
+  # on unix, the static library can have the same name because it uses a different file suffix (e.g. .a)
+  IF (UNIX)
+    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_NAME}")      
+  ENDIF (UNIX)
+ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 
 #

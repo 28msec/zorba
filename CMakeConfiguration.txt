@@ -35,12 +35,12 @@ MESSAGE(STATUS "ZORBA_NATIVE_STORE:                   " ${ZORBA_NATIVE_STORE})
 
 # Adding store srcs
 IF(ZORBA_NATIVE_STORE)
-  SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATH "Path to the store directories. Must contain CMakeLists.txt defining the variable ZORBA_STORE_IMPL_SRCS.") 
-  SET(ZORBA_STORE_NAMES "simplestore" CACHE STRING "Names of the stores. Must have be in sync with ZORBA_STORE_DIRS")
+  SET(ZORBA_STORE_DIR "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATH "Path to the store directory. Must contain CMakeLists.txt defining the variable ZORBA_STORE_IMPL_SRCS.") 
+  SET(ZORBA_STORE_NAME "simplestore" CACHE STRING "Names of the stores. Must have be in sync with ZORBA_STORE_DIR")
 ENDIF(ZORBA_NATIVE_STORE)
 
-MESSAGE(STATUS "ZORBA_STORE_DIRS:                     " ${ZORBA_STORE_DIRS})
-MESSAGE(STATUS "ZORBA_STORE_NAMES:                    " ${ZORBA_STORE_NAMES})
+MESSAGE(STATUS "ZORBA_STORE_DIR:                     " ${ZORBA_STORE_DIR})
+MESSAGE(STATUS "ZORBA_STORE_NAME:                    " ${ZORBA_STORE_NAME})
 
 # how should batching in the runtime system be done
 SET(ZORBA_BATCHING_TYPE 0 CACHE STRING 

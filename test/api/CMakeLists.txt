@@ -25,7 +25,7 @@ CREATE_TEST_SOURCELIST(APITests
 )
 
 # add the executable
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(APITests "${APITests}" "" "" "")
+ZORBA_GENERATE_EXE(APITests "${APITests}" "" "" "")
 
 # remove the test driver source file
 SET (TestsToRun ${APITests})
@@ -37,7 +37,7 @@ MESSAGE(STATUS "Adding API tests for CTest")
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
   SET (TestName "test/api/${TName}")
-  ZORBA_ADD_TEST_ALLSTORES(${TestName} APITests ${TName})
+  ZORBA_ADD_TEST(${TestName} APITests ${TName})
 ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/api/test_static_context 3118348)
