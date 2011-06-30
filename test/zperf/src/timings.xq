@@ -68,15 +68,20 @@ declare function tims:parseTimings ($string as xs:string)
     :)
     
     return 
-      <pdash:measurements>
-        <pdash:engineStartupTime>{$engineStartupTime}</pdash:engineStartupTime>
-        <pdash:avgCompilationTime>{$avgCompilationTime}</pdash:avgCompilationTime>
-        <pdash:avgExecutionTime>{$avgExecutionTime}</pdash:avgExecutionTime>
-        <pdash:avgLoadingTime>{$avgLoadingTime}</pdash:avgLoadingTime>
-        <pdash:avgUnloadingTime>{$avgUnloadingTime}</pdash:avgUnloadingTime>
-        <pdash:avgTotalTime>{$avgTotalTime}</pdash:avgTotalTime>
-        <pdash:engineShutdownTime>{$engineShutdownTime}</pdash:engineShutdownTime>
-      </pdash:measurements>
+      ( <pdash:measurements>
+            <pdash:avgCompilationTime>{$avgCompilationTime}</pdash:avgCompilationTime>
+            <pdash:avgExecutionTime>{$avgExecutionTime}</pdash:avgExecutionTime>
+            <pdash:avgLoadingTime>{$avgLoadingTime}</pdash:avgLoadingTime>
+            <pdash:avgUnloadingTime>{$avgUnloadingTime}</pdash:avgUnloadingTime>
+            <pdash:avgDiffToTotalTime>
+                {$avgTotalTime - $avgCompilationTime - $avgExecutionTime - $avgLoadingTime - $avgUnloadingTime}
+            </pdash:avgDiffToTotalTime>
+        </pdash:measurements>,
+        <extra>
+            <pdash:engineStartupTime>{$engineStartupTime}</pdash:engineStartupTime> 
+            <pdash:engineShutdownTime>{$engineShutdownTime}</pdash:engineShutdownTime>
+        </extra>
+      )
 };
 
 

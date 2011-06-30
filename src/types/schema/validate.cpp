@@ -509,7 +509,7 @@ void Validator::processChildren(
         //xqType is NULL, create_type can't find it
         xqtref_t xqType = typeManager->create_type(*typeIdentifier);
 
-#if 0
+#if 0   // enable this to debug children values
         if ( typeQName.getp() && xqType.getp() )
         {
           cout << "     - text: '" << childStringValue << "' T: " <<
@@ -686,12 +686,12 @@ void Validator::processTextValue(
           // type which has to be simple
           xqtref_t baseType = udt.getBaseType();
           
-		  while ( baseType->type_kind() == XQType::USER_DEFINED_KIND &&
+          while ( baseType->type_kind() == XQType::USER_DEFINED_KIND &&
 			      static_cast<const UserDefinedXQType&>(*baseType).isComplex() )
-		  {
-			const UserDefinedXQType udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
-			baseType = udBaseType.getBaseType();
-		  }
+          {
+            const UserDefinedXQType udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+            baseType = udBaseType.getBaseType();
+          }
           bool res = GenericCast::castToSimple(textValue, baseType.getp(),
                                                resultList, typeManager, loc);
 
@@ -719,7 +719,7 @@ void Validator::processTextValue(
       catch(ZorbaException const& /*err*/)
       {
         // do nothing here, the validator will throw the right error at end elemet event call
-		//std::cout << "validate.cpp: processTextValue2 '" << textValue << "' err:" << err.toString() << std::endl; std::cout.flush();
+        //std::cout << "validate.cpp: processTextValue2 '" << textValue << "' err:" << err.toString() << std::endl; std::cout.flush();
       } 
     }
     else

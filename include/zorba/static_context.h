@@ -479,7 +479,7 @@ namespace zorba {
         *  Note: works only on document and element nodes, otherwise returns false.
         * 
         * @param rootElement the root of the tree beeing validated 
-        * @return true if validating is correct, throws errors if validation fails
+        * @return true if validation is correct, false if validation is disabled, throws errors if validation fails
         * @return validatedResult the result of the validation
         * @throw ZorbaException if any validation error occured
         */
@@ -493,7 +493,7 @@ namespace zorba {
         * @param rootElement the root of the tree beeing validated 
         * @return validatedResult the result of the validation
         * @param targetNamespace the expected namespace of root of the tree beeing validated ???
-        * @return true if validating is correct, throws errors if validation fails
+        * @return true if validation is correct, false if validation is disabled, throws errors if validation fails
         * @throw ZorbaException if any validation error occured
         */
       virtual bool 
@@ -505,7 +505,7 @@ namespace zorba {
         * text only element content.
         * 
         * @param stringValue the value to be validated
-        * @return true if validating is correct, throws errors if validation fails
+        * @return true if validation is correct, false if validation is disabled, throws errors if validation fails
         * @return resultList the result of the validation, a vector of atomic Items
         * @throw ZorbaException if any validation error occured
         */

@@ -6,30 +6,9 @@ import module namespace tims="http://www.example.com/timings" at "timings.xq";
 import module namespace sys ="http://www.zorba-xquery.com/modules/system";
 import module namespace http="http://expath.org/ns/http-client";
 
-
 declare namespace pdash = "http://www.28msec.com/pdash";
 
-(:
-(
-    sys:property($sys:os-name),
-    sys:property($sys:os-node-name),
-    sys:property($sys:os-version),
-    sys:property($sys:os-version-build),
-    sys:property($sys:os-version-major),
-    sys:property($sys:os-version-minor),
-    sys:property($sys:os-version-release),
-    sys:property($sys:os-version-version),
-    sys:property($sys:linux-distributor),
-    sys:property($sys:linux-distributor-version),
-    sys:property($sys:user-name),
-    sys:property($sys:os-arch),
-    sys:property($sys:zorba-module-path),
-    sys:property($sys:zorba-version),
-    sys:property($sys:zorba-version-major),
-    sys:property($sys:zorba-version-minor),
-    sys:property($sys:zorba-version-patch) 
-)
-:)
+
 
 declare %sequential function local:getPlatform()
 {    
@@ -112,8 +91,8 @@ declare %sequential function local:update($svnCmd as xs:string,
     fn:trace($svnUp, "  - svn up");
 
     variable $svnUpResult := proc:exec($svnCmd, 
-        ("up", "-r", xs:string($svnRev), $svnDir));
-                  
+        ("up", "-r", xs:string($svnRev), "--accept", "theirs-full", $svnDir));
+
     if( $svnUpResult/exit-code eq "0")
     then 
         fn:trace( fn:data($svnUpResult/stdout), "svn up: ");
@@ -228,52 +207,78 @@ declare %sequential function local:build( $buildDir as xs:string,
 };
 
 
-declare %sequential function local:runAllTests($zorbaCmd as xs:string, $xmarkDir as xs:string, 
-    $initialNoOfRuns as xs:int, $revision as xs:integer, $revDate as xs:dateTime, $inputCtx as xs:string)
-{   
-    <rez rev="{$revision}" revDate="{$revDate}">
-        <pdash:suite id="{fn:concat("xmark-", $inputCtx, "-", $initialNoOfRuns, "x")}">
-        {
-            local:runTests($zorbaCmd, $xmarkDir, $initialNoOfRuns, $inputCtx)
-        }
-        </pdash:suite>
-    </rez>
-};
-            
-
-declare %sequential function local:runTests($zorbaCmd as xs:string, $xmarkDir as xs:string, 
-    $initialNoOfRuns as xs:int, $inputCtx as xs:string)
+declare %sequential function local:runXMarkTestSuits($zorbaCmd as xs:string, $xmarkDir as xs:string, 
+    $initialNoOfRuns as xs:int, $revision as xs:integer, $revDate as xs:dateTime)
 {   
     fn:trace("---", "--- Running xmark tests ... ");
-    
-    for $i in 1 to 20 
+
+    let $inputNames := ("f0.01-1MB.xml", "f0.1-11MB.xml", "f1-116MB.xml")
+    let $inputTimes := (20, 3, 1)
+    for $name at $pos in $inputNames
     return
     {
+        variable $inputCtx as xs:string := fn:concat("input-context:=", $name);
+        variable $noOfRuns := $inputTimes[$pos];
+        
+        <rez rev="{$revision}" revDate="{$revDate}">
+            <pdash:suite id="{fn:concat("xmark-", $inputCtx, "-", xs:string($noOfRuns), "x")}">
+            {
+                local:runXMarkTests($zorbaCmd, $xmarkDir, $noOfRuns, $inputCtx)
+            }
+            </pdash:suite>
+        </rez>
+    }
+};
+
+
+declare %sequential function local:runXMarkTests($zorbaCmd as xs:string, $xmarkDir as xs:string, 
+    $noOfRuns as xs:integer, $inputCtx as xs:string)
+{   
+    fn:trace("---", fn:concat(" -- xmark tests ", $noOfRuns, " ", $inputCtx));
+
+    for $i in 1 to 20
+    return
+    {
+        variable $testName := fn:concat("q", $i);
         variable $testFile := fn:concat($xmarkDir, file:directory-separator(), "q", $i, ".xq");
         fn:trace($testFile, "test file");
         
-        variable $res := proc:exec($zorbaCmd, ("-m", xs:string($initialNoOfRuns), "-e", $inputCtx, 
+        variable $res := proc:exec($zorbaCmd, ("-m", xs:string($noOfRuns), "-e", $inputCtx, 
             "-t", "-f", "-q", $testFile));
         
         if( $res/exit-code eq "0" )
         then
         {
-            fn:trace(fn:data($res/stdout), fn:concat("zorba ", $testFile));
+            (: fn:trace(fn:data($res/stdout), fn:concat("zorba ", $testFile)); :)
+            variable $times := tims:substring-after-last( fn:data($res/stdout),  
+                                                          'Number of executions'); 
+            fn:trace( $times, fn:concat("zorba ", $testFile));
             
             variable $t;
             try
             {
-                $t := tims:parseTimings(fn:data($res/stdout));
+                $t := tims:parseTimings($times);
             }
             catch * ($ecode, $desc)
             {
-                fn:trace("", fn:concat("  - Test q", $i, " failed, skip submiting it: ", $ecode, "  ", $desc ));
-                exit returning ();
+                fn:trace("", fn:concat("  - Test ", $testName, " failed, skip submiting it: ", $ecode, "  ", $desc ));
+
+                exit returning 
+                    <pdash:test id="{$testName}" iterations="{$noOfRuns}">
+                      <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
+                      <error>
+                      {   
+                        fn:concat("  - Test ", $testName, " failed: erorcode=", $ecode, "  desc=", $desc, 
+                        " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
+                      }
+                      </error>
+                    </pdash:test>                        
+                ;
             }
             
             fn:trace($t, fn:concat("--- Results for q", $i));
             
-            <pdash:test id="{fn:concat("q", $i)}" iterations="{$initialNoOfRuns}">
+            <pdash:test id="{$testName}" iterations="{$noOfRuns}">
             {   
                 $t, 
                 <extra>{$inputCtx}</extra>
@@ -284,6 +289,18 @@ declare %sequential function local:runTests($zorbaCmd as xs:string, $xmarkDir as
         {
             fn:trace($res, fn:concat("ERROR: zorba ", $testFile));
             fn:error(xs:QName("local:ZPERF0010"), fn:concat("Error zorba ", $testFile, " : ", fn:data($res/stderr)));
+
+            exit returning 
+                <pdash:test id="{$testName}" iterations="{$noOfRuns}">
+                  <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
+                  <error>
+                  {   
+                    fn:concat("  - Test ", $testName, " failed: " 
+                    " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
+                  }
+                  </error>
+                </pdash:test>                        
+            ;
         }
     }
 };
@@ -337,42 +354,152 @@ declare %sequential function local:submitMessage($msg)
 };
 
 
+declare %sequential function local:runXRayTestSuits($zorbaCmd as xs:string, 
+    $xrayDir as xs:string, $initialNoOfRuns as xs:int, $revision as xs:integer, 
+    $revDate as xs:dateTime)
+{   
+    fn:trace("---", "--- Running xray tests ... ");
+
+    variable $noOfRuns := $initialNoOfRuns;
+        
+    variable $resXRay := local:runXRayTests($zorbaCmd, $xrayDir, $noOfRuns);
+    
+    if ( fn:exists($resXRay) )
+    then 
+        <rez rev="{$revision}" revDate="{$revDate}">
+            <pdash:suite id="{fn:concat("xray-320x240-", xs:string($noOfRuns), "x")}">
+            {
+               $resXRay 
+            }
+            </pdash:suite>
+        </rez>
+    else
+        ()
+};
+
+
+declare %sequential function local:runXRayTests($zorbaCmd as xs:string, 
+    $xrayDir as xs:string, $noOfRuns as xs:integer)
+{   
+    fn:trace("---", fn:concat(" -- xray test  ", $noOfRuns, "x"));
+
+    variable $testFile := fn:concat($xrayDir, file:directory-separator(), "ppm_10.xq");
+    fn:trace($testFile, "test file");
+    
+    variable $res := proc:exec($zorbaCmd, ("-m", xs:string($noOfRuns), 
+        "-t", "-f", "-q", $testFile));
+    
+    variable $times := tims:substring-after-last( fn:data($res/stdout),  
+                                                  'Number of executions');
+    
+    if( $res/exit-code eq "0" )
+    then
+    {
+        fn:trace($times, fn:concat("zorba ", $testFile));
+        
+        variable $t;
+        try
+        {
+            $t := tims:parseTimings($times);
+        }
+        catch * ($ecode, $desc)
+        {
+            fn:trace("", fn:concat("  - Test xray failed, skip submiting it: ", $ecode, "  ", $desc ));
+            
+            exit returning 
+                <pdash:test id="xray" iterations="{$noOfRuns}">
+                  <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
+                  <error>
+                  {   
+                    fn:concat("  - Test xray failed, skip submiting it: erorcode=", $ecode, "  desc=", $desc, 
+                    " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
+                  }
+                  </error>
+                </pdash:test>                        
+            ;
+        }
+        
+        fn:trace($t, "--- Results for xray ");
+        
+        <pdash:test id="xray" iterations="{$noOfRuns}">
+        {   
+            $t
+        }
+        </pdash:test>
+    }
+    else
+    {
+        fn:trace($res, fn:concat("ERROR: zorba ", $testFile));
+        fn:error(xs:QName("local:ZPERF0010"), fn:concat("Error zorba ", $testFile, " : ", fn:data($res/stderr)));
+
+        exit returning 
+            <pdash:test id="xray" iterations="{$noOfRuns}">
+                <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
+                <error>
+                {   
+                    fn:concat("Error zorba ", $testFile, " : ",  
+                    " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
+                }
+                </error>
+            </pdash:test>                        
+        ;
+    }
+};
+
 
 let $svnDir := "svndir"
 let $buildDir := fn:concat($svnDir, file:directory-separator(),"build")
-let $xmarkDir := fn:concat($svnDir, file:directory-separator(),
+let $xmarkDir := "xmark"
+                 (:fn:concat(
+                     $svnDir, file:directory-separator(),
                     "test", file:directory-separator(), 
                     "rbkt", file:directory-separator(), 
                     "Queries", file:directory-separator(), 
                     "zorba", file:directory-separator(), 
                     "xmark"
-                 )
+                 ):) 
+let $xrayDir := "xray"                    
 let $svnCmd := "/usr/bin/svn"
 let $cmakeCmd := "/usr/bin/cmake"
 let $zorbaCmd := fn:concat($buildDir, file:directory-separator(),"bin", file:directory-separator(),"zorba")
 let $makeCmd := xs:string("/usr/bin/make") 
-let $svnRevs := (8625, 8709, 8852, 9023, 9252, 9496, 9745, 9938, 10069, 10237, 
-                10431, 10742, 10766)
-let $buildName := "ztest"
+(: let $svnRevs := (8625, 8709, 8852, 9023, 9252, 9496, 9745, 9938, 10069, 10237, 
+                10431, 10742, 10766)  
+:)
+(: let $svnRevs := (8625, 8709, 8852, 9023, 9252, 9496, 9938, 10069, 10237, 
+                  10916 )  
+let $svnRevs := ( 9500, 9600, 9650, 9700, 9750, 9800, 9850, 9900,
+                  10100, 10133, 10166, 10200) :) 
+let $svnRevs := (8709, 8852, 9023, 9252, 
+                9496,   
+                9745, 9938, 10069,  
+                10237, 
+                10431, 10742)
+
+let $buildName := "ztest2"
 let $initialNoOfRuns := xs:int(100)
-let $inputCtx := "input-context:=auction.xml"     
 let $platform := local:getPlatform()
 return 
 {
     fn:trace(fn:current-dateTime(), "----- Starting time");
-    
+
     local:makeDir($svnDir);
     local:makeSvnDir($svnCmd, $svnDir, $svnRevs[1]);
-    
+
     for $i in ($svnRevs)
     return
     {
         variable $revDate as xs:dateTime := local:update($svnCmd, $svnDir, $i);
         local:build($buildDir, fn:false(), $cmakeCmd, $makeCmd, $platform/@number-of-logical-cpu);
 
-        variable $res := local:runAllTests($zorbaCmd, $xmarkDir, $initialNoOfRuns, $i, $revDate, $inputCtx);
-        local:publishResults($res, $platform, $buildName);        
-    }    
+        variable $resXRay := local:runXRayTestSuits($zorbaCmd, $xrayDir, xs:int(3), $i, $revDate);
+        local:publishResults($resXRay, $platform, $buildName);
+
+        (:
+        variable $resXMark := local:runXMarkTestSuits($zorbaCmd, $xmarkDir, $initialNoOfRuns, $i, $revDate);
+        local:publishResults($resXMark, $platform, $buildName); :)        
+        
+    }
     
     fn:trace(fn:current-dateTime(), "----- Ending time");
     
