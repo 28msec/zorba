@@ -24,4 +24,14 @@ IF (DOXYGEN_FOUND)
   ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_r.gif COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_l.gif
   ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_l.gif COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/download.png
+  ${CMAKE_CURRENT_BINARY_DIR}/html/download.png COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/modules.png
+  ${CMAKE_CURRENT_BINARY_DIR}/html/modules.png COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/terminal.png
+  ${CMAKE_CURRENT_BINARY_DIR}/html/terminal.png COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/documentation.png
+  ${CMAKE_CURRENT_BINARY_DIR}/html/documentation.png COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/noisepattern.png
+  ${CMAKE_CURRENT_BINARY_DIR}/html/noisepattern.png COPYONLY)
 ENDIF (DOXYGEN_FOUND)
