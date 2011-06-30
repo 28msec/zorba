@@ -210,7 +210,7 @@ namespace zorba { namespace http_client {
     lStream >> theStatus;
     // everything that is not a valid http status is an error
     if (theStatus < 100) {
-      theErrorThrower.raiseException("http://www.zorba-xquery.com/modules/error", "HC001", "An HTTP error occurred");
+      theErrorThrower.raiseException("http://expath.org/ns/error", "HC001", "An HTTP error occurred");
     }
   }
 
@@ -237,7 +237,7 @@ namespace zorba { namespace http_client {
       XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
       return lDM->parseXML(aStream);
     } catch (...) {
-      theErrorThrower.raiseException("http://www.zorba-xquery.com/modules/error", 
+      theErrorThrower.raiseException("http://expath.org/ns/error", 
           "HC002", "Error parsing the entity content as XML.");
       //compiler does not recognize, that this function throws an exception, so we just
       // return something

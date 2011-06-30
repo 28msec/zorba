@@ -106,7 +106,7 @@
  :)
 module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
-import module namespace err = "http://www.zorba-xquery.com/modules/error";
+import module namespace err = "http://expath.org/ns/error";
 
 
 import schema namespace https = "http://expath.org/ns/http-client";

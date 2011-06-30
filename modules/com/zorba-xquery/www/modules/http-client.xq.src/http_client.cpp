@@ -207,7 +207,7 @@ namespace zorba {
       int lRetCode = lRespParser->parse();
 
       if (lRetCode) {
-        thrower.raiseException("http://www.zorba-xquery.com/modules/error", "HC001", "An HTTP error occurred");
+        thrower.raiseException("http://expath.org/ns/error", "HC001", "An HTTP error occurred");
       }
 
       return ItemSequence_t(lRespHandler.releaseResult()->setResponseParser(lRespParser.release()));
