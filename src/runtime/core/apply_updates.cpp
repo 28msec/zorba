@@ -210,8 +210,34 @@ void apply_updates(
   }
   catch (XQueryException& e)
   {
-    set_source(e, loc);
-    throw;
+    if ( e.has_source() &&
+         ( e.diagnostic() == err::XUDY0021 ||
+           e.diagnostic() == err::XUDY0015 ||
+           e.diagnostic() == err::XUDY0016 ||
+           e.diagnostic() == err::XUDY0017 ||
+           e.diagnostic() == err::XUDY0014 ) ) 
+    {
+      XQueryException lNewE = XQUERY_EXCEPTION(
+        err::XUDY0021,
+        ERROR_PARAMS( ZED( XUDY0021_AppliedAt ), loc )
+      );
+
+      QueryLoc lLoc;
+      lLoc.setFilename(e.source_uri());
+      lLoc.setLineBegin(e.source_line());
+      lLoc.setColumnBegin(e.source_column());
+      set_source(lNewE, lLoc);
+      lNewE.set_diagnostic(e.diagnostic());
+
+      throw lNewE;
+    }
+    else
+    {
+      // exception raised by the store doesn't have a store location
+      // hence, we add the location of the apply expression
+      set_source(e, loc);
+      throw;
+    }
   }
 }
 
