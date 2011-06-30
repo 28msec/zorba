@@ -47,10 +47,11 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   while ( ascii::is_digit( *s ) )
     ++s;
   if ( parse_options & parse_decimal ) {
-    if ( *s == '.' )
+    if ( *s == '.' ) {
       ++s;
-    while ( ascii::is_digit( *s ) )
-      ++s;
+      while ( ascii::is_digit( *s ) )
+        ++s;
+    }
   }
   char const *first_trailing_ws = nullptr;
   while ( ascii::is_space( *s ) ) {
@@ -209,13 +210,13 @@ Decimal::Decimal( double d ) {
 Decimal::Decimal( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "double value = infinity" );
-  value_ = d.theFloating;
+  value_ = d.getNumber();
 }
 
 Decimal::Decimal( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "float value = infinity" );
-  value_ = f.theFloating;
+  value_ = f.getNumber();
 }
 
 Decimal::Decimal( Integer const &i ) : value_( i.itod() ) {
@@ -243,14 +244,14 @@ Decimal& Decimal::operator=( Integer const &i ) {
 Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = d.theFloating;
+  value_ = d.getNumber();
   return *this;
 }
 
 Decimal& Decimal::operator=( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = f.theFloating;
+  value_ = f.getNumber();
   return *this;
 }
 

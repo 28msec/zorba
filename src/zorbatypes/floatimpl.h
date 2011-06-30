@@ -18,7 +18,8 @@
 #ifndef ZORBA_FLOATIMPL_H
 #define ZORBA_FLOATIMPL_H
 
-#include <math.h>
+#include <cmath>
+#include <limits>
 
 #include <zorba/config.h>
 
@@ -32,19 +33,6 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class FloatCommons
-{
- public:
-  static const zstring& get_INF_POS_STR();
-  static const zstring& get_INF_NEG_STR();
-  static const zstring& get_NOT_A_NUM_STR();
-
-  static Double parseFloat(const Float&);
-
-  static Float parseDouble(const Double&);
-};
-
-
 // exported for testing only
 template<typename FloatType>
 class ZORBA_DLL_PUBLIC FloatImpl : public serialization::SerializeBaseClass 
@@ -52,291 +40,755 @@ class ZORBA_DLL_PUBLIC FloatImpl : public serialization::SerializeBaseClass
 public:
   typedef FloatType value_type;
 
-  /**
-   * @return float or double that represents 0
-   */
-  static FloatImpl<FloatType> const& zero();
+  ////////// constructors /////////////////////////////////////////////////////
 
-  /**
-   * @return float or double that represents -0
-   */
-  static FloatImpl<FloatType> const& neg_zero();
+  FloatImpl( char );
+  FloatImpl( signed char c );
+  FloatImpl( short n );
+  FloatImpl( int n = 0 );
+  FloatImpl( long n );
+  FloatImpl( long long n );
+  FloatImpl( unsigned char c );
+  FloatImpl( unsigned short n );
+  FloatImpl( unsigned int n );
+  FloatImpl( unsigned long n );
+  FloatImpl( unsigned long long n );
+  FloatImpl( float n );
+  FloatImpl( double n );
+  FloatImpl( Decimal const &d );
+  FloatImpl( Integer const &i );
 
-  /**
-   * @return float or double that represents +1
-   */
-  static FloatImpl<FloatType> const& one();
+  FloatImpl( char const *s );
 
-  /**
-   * @return float or double that represents -1
-   */
-  static FloatImpl<FloatType> const& neg_one();
+  template<typename FloatType2>
+  FloatImpl( FloatImpl<FloatType2> const &f );
 
-  /**
-   * @return float or double that represents NaN
-   */
-  static FloatImpl<FloatType> const& nan();
+  ////////// assignment operators /////////////////////////////////////////////
 
-  /**
-   * @return float or double that represents +INF
-   */
-  static FloatImpl<FloatType> const& inf_pos();
+  FloatImpl& operator=( char c );
+  FloatImpl& operator=( signed char c );
+  FloatImpl& operator=( int n );
+  FloatImpl& operator=( short n );
+  FloatImpl& operator=( long n );
+  FloatImpl& operator=( long long n );
+  FloatImpl& operator=( unsigned char c );
+  FloatImpl& operator=( unsigned int n );
+  FloatImpl& operator=( unsigned short n );
+  FloatImpl& operator=( unsigned long n );
+  FloatImpl& operator=( unsigned long long n );
+  FloatImpl& operator=( float n );
+  FloatImpl& operator=( double n );
 
-  /**
-   * @return float or double that represents -INF
-   */
-  static FloatImpl<FloatType> const& inf_neg();
+  template<typename FloatType2>
+  FloatImpl& operator=( FloatImpl<FloatType2> const &f );
 
-  static int max_precision();
+  ////////// arithmetic operators /////////////////////////////////////////////
 
-  /**
-   * Parses string to float value
-   */
-  static bool parseString(const char* aCharStar, FloatImpl& aFloatImpl);
+  template<typename FloatType2>
+  FloatImpl& operator+=( FloatImpl<FloatType2> const &f );
 
-  /**
-   * Parses float type (double of float) to float value
-   */
-  static FloatImpl<FloatType> parseFloatType(FloatType aFloatImpl);
+  template<typename FloatType2>
+  FloatImpl& operator-=( FloatImpl<FloatType2> const &f );
 
-  static FloatImpl<FloatType> parseDecimal(const Decimal&);
+  template<typename FloatType2>
+  FloatImpl& operator*=( FloatImpl<FloatType2> const &f );
 
-  static FloatImpl<FloatType> parseInteger(const Integer&);
+  template<typename FloatType2>
+  FloatImpl& operator/=( FloatImpl<FloatType2> const &f );
 
-  /**
-   * Parses long to float value
-   */
-  static FloatImpl<FloatType> parseULong(uint64_t);
+  template<typename FloatType2>
+  FloatImpl& operator%=( FloatImpl<FloatType2> const &f );
 
-  /**
-   * Parses long to float value
-   */
-  static FloatImpl<FloatType> parseLong(int64_t);
+  FloatImpl operator-() const;
 
-  /**
-   * Parses int to float value
-   */
-  static FloatImpl<FloatType> parseInt(int32_t);
+  ////////// math functions ///////////////////////////////////////////////////
 
-  /**
-   * Parses int to float value
-   */
-  static FloatImpl<FloatType> parseUInt(uint32_t);
+  FloatImpl acos() const;
+  FloatImpl acosh() const;
+  FloatImpl asin() const;
+  FloatImpl asinh() const;
+  FloatImpl atan() const;
+  FloatImpl atan2( double x ) const;
+  FloatImpl atan2( FloatImpl const &x ) const;
+  FloatImpl atanh() const;
+  FloatImpl ceil() const;
+  FloatImpl cos() const;
+  FloatImpl cosh() const;
+  FloatImpl exp() const;
+  FloatImpl exp10() const;
+  FloatImpl floor() const;
+  FloatImpl fmod( double d ) const;
+  FloatImpl fmod( FloatImpl const &f ) const;
+  FloatImpl log() const;
+  FloatImpl log10() const;
+  FloatImpl pow( int p ) const;
+  FloatImpl pow( FloatImpl const &p ) const;
+  FloatImpl round( Integer const &precision ) const;
+  FloatImpl round() const;
+  FloatImpl roundHalfToEven( Integer const &precision ) const;
+  FloatImpl sin() const;
+  FloatImpl sinh() const;
+  FloatImpl sqrt() const;
+  FloatImpl tan() const;
+  FloatImpl tanh() const;
 
-protected:
-  /**
-   * Checks if the passed number in string format is NaN, INF,
-   * -INF, negative or non-negative number.
-   * @param aNumber Number in string format
-   * @param parsed number
-   * @return false if aNumber is not parsable to INF or nan
-   */
-  static bool parseInfNaNString(const char* aNumber, FloatImpl& aFloatImpl);
+  void frexp( FloatImpl &out_mantissa, Integer &out_exponent ) const;
 
-public:
-  SERIALIZABLE_TEMPLATE_CLASS(FloatImpl)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(FloatImpl)
-  void serialize(::zorba::serialization::Archiver& ar);
+  void modf( FloatImpl &out_fraction, FloatImpl &out_integer ) const;
 
-public:
-  FloatImpl( int n = 0 ) :
-    theFloating( static_cast<value_type>( n ) ), precision( max_precision() )
-  {
-  }
+  ////////// miscellaneous ////////////////////////////////////////////////////
 
-  FloatImpl( float n ) :
-    theFloating( static_cast<value_type>( n ) ), precision( max_precision() )
-  {
-  }
-
-  FloatImpl( double n ) :
-    theFloating( static_cast<value_type>( n ) ), precision( max_precision() )
-  {
-  }
-
-  FloatImpl(const FloatImpl& aFloatImpl)
-    :
-    ::zorba::serialization::SerializeBaseClass(),
-    theFloating(aFloatImpl.theFloating),
-    precision(aFloatImpl.precision)
-  {
-  }
-
-  FloatImpl<FloatType>& operator=(const FloatImpl& aFloatImpl)
-  {
-    theFloating = aFloatImpl.theFloating;
-    precision = aFloatImpl.precision;
-    return *this;
-  }
-
-  value_type getNumber() const { return theFloating; }
-
-  bool isNaN() const;
-
-  bool isFinite() const;
-
-  bool isPosInf() const;
-
-  bool isNegInf() const;
-
-  bool isNeg() const;
-
-  bool isPos() const;
-
-  bool isZero() const;
-
-  bool isPosZero() const;
-
-  bool isNegZero() const;
-
-  bool isInteger() const { return isFinite() && ::floor(theFloating) == theFloating; }
+  template<typename FloatType2>
+  int compare( FloatImpl<FloatType2> const &f ) const;
 
   uint32_t hash() const;
 
-  bool operator==(const FloatImpl& aFloatImpl) const;
+  bool isNaN() const;
+  bool isFinite() const;
+  bool isPosInf() const;
+  bool isNegInf() const;
+  bool isNeg() const;
+  bool isPos() const;
+  bool isZero() const;
+  bool isPosZero() const;
+  bool isNegZero() const;
+  bool isInteger() const;
 
-  bool operator!=(const FloatImpl& aFloatImpl) const;
+  static FloatImpl const& zero();
+  static FloatImpl const& neg_zero();
+  static FloatImpl const& one();
+  static FloatImpl const& neg_one();
+  static FloatImpl const& nan();
+  static FloatImpl const& pos_inf();
+  static FloatImpl const& neg_inf();
 
-  bool operator<(const FloatImpl& aFloatImpl) const;
-
-  bool operator<=(const FloatImpl& aFloatImpl) const;
-
-  bool operator>(const FloatImpl& aFloatImpl) const;
-
-  bool operator>=(const FloatImpl& aFloatImpl) const;
-
-  long compare(const FloatImpl& aFloatImpl) const
-  {
-    return (*this < aFloatImpl ? -1 : (*this == aFloatImpl ? 0 : 1));
+  value_type getNumber() const {
+    return value_;
   }
-
-  FloatImpl<FloatType> operator+(const FloatImpl& aFloatImpl) const;
-
-  FloatImpl<FloatType>& operator+=(const FloatImpl& aFloatImpl)
-  {
-    *this = *this + aFloatImpl;
-    return *this;
-  }
-
-  FloatImpl<FloatType> operator-(const FloatImpl& aFloatImpl) const;
-
-  FloatImpl<FloatType>& operator-=(const FloatImpl& aFloatImpl)
-  {
-    *this = *this - aFloatImpl;
-    return *this;
-  }
-
-  FloatImpl<FloatType> operator*(const FloatImpl& aFloatImpl) const;
-
-  FloatImpl<FloatType>& operator*=(const FloatImpl& aFloatImpl)
-  {
-    *this = *this * aFloatImpl;
-    return *this;
-  }
-
-  FloatImpl<FloatType> operator/(const FloatImpl& aFloatImpl) const;
-
-  FloatImpl<FloatType>& operator/=(const FloatImpl& aFloatImpl)
-  {
-    *this = *this / aFloatImpl;
-    return *this;
-  }
-
-  FloatImpl<FloatType> operator%(const FloatImpl& aFloatImpl) const;
-
-  FloatImpl<FloatType>& operator%=(const FloatImpl& aFloatImpl)
-  {
-    *this = *this % aFloatImpl;
-    return *this;
-  }
-
-  FloatImpl<FloatType> operator-() const;
-
-  FloatImpl<FloatType> floor() const;
-
-  FloatImpl<FloatType> ceil() const;
-
-  FloatImpl<FloatType> round() const;
-
-  FloatImpl<FloatType> round(Integer aPrecision) const;
-
-  FloatImpl<FloatType> roundHalfToEven(Integer aPrecision) const;
-
-  FloatImpl<FloatType> sqrt() const;
-
-  FloatImpl<FloatType> exp() const;
-
-  FloatImpl<FloatType> exp10() const;
-
-  FloatImpl<FloatType> log() const;
-
-  FloatImpl<FloatType> log10() const;
-
-  FloatImpl<FloatType> sin() const;
-
-  FloatImpl<FloatType> cos() const;
-
-  FloatImpl<FloatType> tan() const;
-
-  FloatImpl<FloatType> asin() const;
-
-  FloatImpl<FloatType> acos() const;
-
-  FloatImpl<FloatType> atan() const;
-
-  FloatImpl<FloatType> sinh() const;
-
-  FloatImpl<FloatType> cosh() const;
-
-  FloatImpl<FloatType> tanh() const;
-
-  FloatImpl<FloatType> asinh() const;
-
-  FloatImpl<FloatType> acosh() const;
-
-  FloatImpl<FloatType> atanh() const;
-
-  FloatImpl<FloatType> atan2(FloatImpl<FloatType> x) const;
-
-  FloatImpl<FloatType> pow(FloatImpl<FloatType> p) const;
-
-  FloatImpl<FloatType> pow(int p) const;
-
-  FloatImpl<FloatType> fmod(FloatImpl<FloatType> p) const;
-
-  void frexp(FloatImpl<FloatType>& out_mantissa, Integer& out_exponent) const;
-
-  void modf(FloatImpl<FloatType>& out_fraction, FloatImpl<FloatType>& out_integer) const;
 
   zstring toIntegerString() const;
 
-  zstring toString(bool no_scientific_mode = false) const;
+  zstring toString( bool no_scientific_mode = false ) const;
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  SERIALIZABLE_TEMPLATE_CLASS(FloatImpl)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(FloatImpl)
+  void serialize( serialization::Archiver& );
 
 private:
-  value_type     theFloating;
-  unsigned short precision;
+  typedef unsigned short precision_type;
+
+  value_type     value_;
+  precision_type precision_;
+
+  FloatImpl( value_type v, precision_type p );
+
+  static precision_type max_precision();
+
+  void parse( char const* );
+  bool parse_etc( char const* );
 
   friend class Integer;
   friend class Decimal;
-  friend class FloatCommons;
-  template<typename T> friend class FloatImplTraits;
+
+  friend class FloatImpl<float>;
+  friend class FloatImpl<double>;
 };
+
+typedef FloatImpl<float> Float;
+typedef FloatImpl<double> Double;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::ostream& operator<<(std::ostream& os, const Double& aFloatImpl);
-std::ostream& operator<<(std::ostream& os, const Float& aFloatImpl);
+template<>
+inline FloatImpl<float>::precision_type FloatImpl<float>::max_precision() {
+  return 7;
+}
 
-Double operator+(const Double&, const Float&);
-Double operator+(const Float&, const Double&);
-Double operator-(const Double&, const Float&);
-Double operator-(const Float&, const Double&);
-Double operator*(const Double&, const Float&);
-Double operator*(const Float&, const Double&);
-Double operator/(const Double&, const Float&);
-Double operator/(const Float&, const Double&);
-Double operator%(const Double&, const Float&);
-Double operator%(const Float&, const Double&);
+template<>
+inline FloatImpl<double>::precision_type FloatImpl<double>::max_precision() {
+  return 16;
+}
+
+////////// constructors ///////////////////////////////////////////////////////
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( char c ) :
+  value_( static_cast<value_type>( c ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( signed char c ) :
+  value_( static_cast<value_type>( c ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( short n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( int n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( long n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( long long n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( unsigned char c ) :
+  value_( static_cast<value_type>( c ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( unsigned short n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( unsigned int n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( unsigned long n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( float n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( double n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( char const *s ) {
+  parse( s );
+}
+
+template<typename FloatType>
+template<typename FloatType2>
+inline FloatImpl<FloatType>::FloatImpl( FloatImpl<FloatType2> const &f ) :
+  serialization::SerializeBaseClass(),
+  value_( f.value_ ),
+  precision_( max_precision() )
+{
+}
+
+template<typename FloatType>
+inline FloatImpl<FloatType>::FloatImpl( value_type v, precision_type p ) :
+  value_( v ),
+  precision_( p )
+{
+}
+
+////////// assignment operators ///////////////////////////////////////////////
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( char c ) {
+  value_ = static_cast<value_type>( c );
+  precision_ = max_precision(); // TODO: should this be here?
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( signed char c ) {
+  value_ = static_cast<value_type>( c );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( int n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( short n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( long n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( long long n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( unsigned char c ) {
+  value_ = static_cast<value_type>( c );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( unsigned int n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( unsigned short n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( unsigned long n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( unsigned long long n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( float n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( double n ) {
+  value_ = static_cast<value_type>( n );
+  precision_ = max_precision();
+  return *this;
+}
+
+template<typename FloatType>
+template<typename FloatType2>
+inline FloatImpl<FloatType>&
+FloatImpl<FloatType>::operator=( FloatImpl<FloatType2> const &f ) {
+  value_ = f.value_;
+  precision_ = max_precision();
+  return *this;
+}
+
+////////// arithmetic operators ///////////////////////////////////////////////
+
+template<typename T> inline
+FloatImpl<T> operator+( FloatImpl<T> const &f, FloatImpl<T> const &g ) {
+  return FloatImpl<T>( f.getNumber() + g.getNumber() );
+}
+
+template<typename T> inline
+FloatImpl<T> operator-( FloatImpl<T> const &f, FloatImpl<T> const &g ) {
+  return FloatImpl<T>( f.getNumber() - g.getNumber() );
+}
+
+template<typename T> inline
+FloatImpl<T> operator*( FloatImpl<T> const &f, FloatImpl<T> const &g ) {
+  return FloatImpl<T>( f.getNumber() * g.getNumber() );
+}
+
+template<typename T> inline
+FloatImpl<T> operator/( FloatImpl<T> const &f, FloatImpl<T> const &g ) {
+  return FloatImpl<T>( f.getNumber() / g.getNumber() );
+}
+
+template<typename T> inline
+FloatImpl<T> operator%( FloatImpl<T> const &f, FloatImpl<T> const &g ) {
+  return FloatImpl<T>( std::fmod( f.getNumber(), g.getNumber() ) );
+}
+
+template<typename T>
+template<typename U>
+inline FloatImpl<T>& FloatImpl<T>::operator+=( FloatImpl<U> const &f ) {
+  value_ += f.value_;
+  return *this;
+}
+
+template<typename T>
+template<typename U>
+inline FloatImpl<T>& FloatImpl<T>::operator-=( FloatImpl<U> const &f ) {
+  value_ -= f.value_;
+  return *this;
+}
+
+template<typename T>
+template<typename U>
+inline FloatImpl<T>& FloatImpl<T>::operator*=( FloatImpl<U> const &f ) {
+  value_ *= f.value_;
+  return *this;
+}
+
+template<typename T>
+template<typename U>
+inline FloatImpl<T>& FloatImpl<T>::operator/=( FloatImpl<U> const &f ) {
+  value_ /= f.value_;
+  return *this;
+}
+
+template<typename T>
+template<typename U>
+inline FloatImpl<T>& FloatImpl<T>::operator%=( FloatImpl<U> const &f ) {
+  value_ %= f.value_;
+  return *this;
+}
+
+template<typename FloatType>
+inline FloatImpl<FloatType> FloatImpl<FloatType>::operator-() const {
+  return FloatImpl<FloatType>( -value_, precision_ );
+}
+
+inline Double operator+( Double const &d, Float const &f ) {
+  return d.getNumber() + f.getNumber();
+}
+
+inline Double operator+( Float const &f, Double const &d ) {
+  return f.getNumber() + d.getNumber();
+}
+
+inline Double operator-( Double const &d, Float const &f ) {
+  return d.getNumber() - f.getNumber();
+}
+
+inline Double operator-( Float const &f, Double const &d ) {
+  return f.getNumber() - d.getNumber();
+}
+
+inline Double operator*( Double const &d, Float const &f ) {
+  return d.getNumber() * f.getNumber();
+}
+
+inline Double operator*( Float const &f, Double const &d ) {
+  return f.getNumber() * d.getNumber();
+}
+
+inline Double operator/( Double const &d, Float const &f ) {
+  return d.getNumber() / f.getNumber();
+}
+
+inline Double operator/( Float const &f, Double const &d ) {
+  return f.getNumber() / d.getNumber();
+}
+
+inline Double operator%( Double const &d, Float const &f ) {
+  return std::fmod( d.getNumber(), static_cast<double>( f.getNumber() ) );
+}
+
+inline Double operator%( Float const &f, Double const &d ) {
+  return std::fmod( static_cast<double>( f.getNumber() ), d.getNumber() );
+}
+
+////////// relational operators ///////////////////////////////////////////////
+
+template<typename T,typename U>
+inline bool operator==( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+  return f.getNumber() == g.getNumber();
+}
+
+template<typename T,typename U>
+inline bool operator!=( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+  return f.getNumber() != g.getNumber();
+}
+
+template<typename T,typename U>
+inline bool operator<( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+  return f.getNumber() < g.getNumber();
+}
+
+template<typename T,typename U>
+inline bool operator<=( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+  return !f.isNaN() && !g.isNaN() && f.getNumber() <= g.getNumber();
+}
+
+template<typename T,typename U>
+inline bool operator>( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+  return f.getNumber() > g.getNumber();
+}
+
+template<typename T,typename U>
+inline bool operator>=( FloatImpl<T> const &f, FloatImpl<U> const &g ) {
+  return !f.isNaN() && !g.isNaN() && f.getNumber() >= g.getNumber();
+}
+
+template<typename T>
+inline bool operator==( FloatImpl<T> const &f, double d ) {
+  return f.getNumber() == d;
+}
+
+template<typename T>
+inline bool operator==( double d, FloatImpl<T> const &f ) {
+  return d = f.getNumber();
+}
+
+template<typename T>
+inline bool operator!=( FloatImpl<T> const &f, double d ) {
+  return f.getNumber() != d;
+}
+
+template<typename T>
+inline bool operator!=( double d, FloatImpl<T> const &f ) {
+  return f.getNumber() != d;
+}
+
+template<typename T>
+inline bool operator<( FloatImpl<T> const &f, double d ) {
+  return f.getNumber() < d;
+}
+
+template<typename T>
+inline bool operator<( double d, FloatImpl<T> const &f ) {
+  return d < f.getNumber();
+}
+
+template<typename T>
+inline bool operator<=( FloatImpl<T> const &f, double d ) {
+  return !f.isNaN() && d == d && f.getNumber() <= d;
+}
+
+template<typename T>
+inline bool operator<=( double d, FloatImpl<T> const &f ) {
+  return d == d && !f.isNaN() && d <= f.getNumber();
+}
+
+template<typename T>
+inline bool operator>( FloatImpl<T> const &f, double d ) {
+  return f.getNumber() > d;
+}
+
+template<typename T>
+inline bool operator>( double d, FloatImpl<T> const &f ) {
+  return d > f.getNumber();
+}
+
+template<typename T>
+inline bool operator>=( FloatImpl<T> const &f, double d ) {
+  return !f.isNaN() && d == d && f.getNumber() >= d;
+}
+
+template<typename T>
+inline bool operator>=( double d, FloatImpl<T> const &f ) {
+  return d == d && !f.isNaN() && d >= f.getNumber();
+}
+
+////////// math functions /////////////////////////////////////////////////////
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::acosh() const {
+  // formula from www.mathworks.com
+  return std::log( value_ + std::sqrt( value_ * value_ - 1 ) );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::asinh() const {
+  // formula from www.mathworks.com
+  return std::log( value_ + std::sqrt( value_ * value_ + 1 ) );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::atan() const {
+  return std::atan( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::atanh() const {
+  // formula from www.mathworks.com
+  return 0.5 * std::log( (1 + value_) / (1 - value_) );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::atan2( double x ) const {
+  return std::atan2( value_, static_cast<value_type>( x ) );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::atan2( FloatImpl<FloatType> const &x ) const {
+  return atan2( x.value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::ceil() const {
+  return std::ceil( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::cos() const {
+  return std::cos( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::cosh() const {
+  return std::cosh( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::exp() const {
+  return std::exp( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::exp10() const {
+  return std::pow( 10, value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::floor() const {
+  return std::floor( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::fmod( double d ) const {
+  return std::fmod( value_, static_cast<value_type>( d ) );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::fmod( FloatImpl<FloatType> const &f ) const {
+  return fmod( f.value_ );
+}
+
+template<typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::log() const {
+  return value_ < 0 ? nan() : FloatImpl<FloatType>( std::log( value_ ) );
+}
+
+template<typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::log10() const {
+  return value_ < 0 ? nan() : FloatImpl<FloatType>( std::log10( value_ ) );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::pow( int p ) const {
+  return std::pow( value_, p );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::pow( FloatImpl<FloatType> const &p ) const {
+  return p.isNaN() ? value_ : std::pow( value_, p.value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::sin() const {
+  return std::sin( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::sinh() const {
+  return std::sinh( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::sqrt() const {
+  return value_ < 0 ? nan() : FloatImpl( std::sqrt( value_ ) );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::tan() const {
+  return std::tan( value_ );
+}
+
+template<typename FloatType> inline FloatImpl<FloatType>
+FloatImpl<FloatType>::tanh() const {
+  return std::tanh( value_ );
+}
+
+////////// miscellaneous //////////////////////////////////////////////////////
+
+template<typename T>
+template<typename U>
+inline int FloatImpl<T>::compare( FloatImpl<U> const &f ) const {
+  return value_ < f.value_ ? -1 : value_ > f.value_ ? 1 : 0;
+}
+
+template<typename FloatType>
+inline uint32_t FloatImpl<FloatType>::hash() const {
+  return static_cast<uint32_t>( value_ );
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isNeg() const {
+  return value_ < 0;
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isPos() const {
+  return value_ > 0;
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isPosZero() const {
+  return value_ == 0 && !isNegZero();
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isNaN() const {
+  return value_ != value_;
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isNegInf() const {
+ return value_ == -std::numeric_limits<FloatType>::infinity();
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isPosInf() const {
+  return value_ == std::numeric_limits<FloatType>::infinity();
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isFinite() const {
+  return !isNaN() && !isPosInf() && !isNegInf();
+}
+
+template<typename FloatType>
+inline bool FloatImpl<FloatType>::isInteger() const {
+  return isFinite() && ::floor( value_ ) == value_;
+}
+
+template <typename FloatType>
+inline bool FloatImpl<FloatType>::isZero() const {
+  return value_ == 0;
+}
+
+template<typename FloatType> inline
+std::ostream& operator<<( std::ostream &os, FloatImpl<FloatType> const &f ) {
+  return os << f.toString();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

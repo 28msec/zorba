@@ -470,10 +470,12 @@ bool XercesParseUtils::parseXSFloat(
     //textValue = textValue.trim(" \n\r\t",4);
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
-    xs_float n;
-    if (xs_float::parseString(textValue2.c_str(), n))
-    {
+    try {
+      xs_float const n(textValue2.c_str());
       return GENV_ITEMFACTORY->createFloat(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
     }
   }
 
@@ -506,10 +508,12 @@ bool XercesParseUtils::parseXSDouble(
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xs_double n;
-    if (xs_double::parseString(textValue2.c_str(), n))
-    {
+    try {
+      xs_double const n(textValue2.c_str());
       return factory->createDouble(result, n);
+    }
+    catch ( std::exception const& ) {
+      // ignore
     }
   }
 

@@ -188,7 +188,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   {
     const DecimalItem* item = static_cast<const DecimalItem*>(this);
 
-    doubleValue = xs_double::parseDecimal(item->theValue);
+    doubleValue = item->theValue;
 
     const xs_decimal decValue(doubleValue);
 
@@ -204,7 +204,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(this);
 
-    doubleValue = xs_double::parseInteger(item->theValue);
+    doubleValue = item->theValue;
 
     const xs_integer intValue(doubleValue);
 
@@ -216,7 +216,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   {
     const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(this);
 
-    doubleValue = xs_double::parseULong(item->theValue);
+    doubleValue = item->theValue;
 
     xs_unsignedLong ulongValue = static_cast<xs_unsignedLong>(doubleValue.getNumber());
 
@@ -228,7 +228,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   case XS_UNSIGNED_SHORT:
   case XS_UNSIGNED_BYTE:
   {
-    doubleValue = xs_double::parseUInt(getUnsignedIntValue());
+    doubleValue = getUnsignedIntValue();
     lossy = false;
     break;
   }
@@ -237,7 +237,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   {
     const LongItem* item = static_cast<const LongItem*>(this);
 
-    doubleValue = xs_double::parseLong(item->theValue);
+    doubleValue = item->theValue;
 
     xs_long longValue = static_cast<xs_long>(doubleValue.getNumber());
 
@@ -249,7 +249,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   case XS_SHORT:
   case XS_BYTE:
   {
-    doubleValue = xs_double::parseInt(getIntValue());
+    doubleValue = getIntValue();
     lossy = false;
     break;
   }
@@ -432,13 +432,14 @@ bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
-  xs_double doubleValue;
-  if (xs_double::parseString(theValue.c_str(), doubleValue))
-  {
+  try {
+    xs_double const doubleValue(theValue.c_str());
     return GET_FACTORY().createDouble(result, doubleValue);
   }
-  result = NULL;
-  return false;
+  catch ( std::exception const& ) {
+    result = NULL;
+    return false;
+  }
 }
 
 

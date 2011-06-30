@@ -608,14 +608,14 @@ long Duration::getIntSeconds() const
 
 Double Duration::getTotalSeconds() const
 {
-  return (is_negative? Double::parseLong(-1) : Double::parseLong(1))
-      * ((((((((Double::parseLong(data[YEAR_DATA]) * Double::parseLong(12)
-      + Double::parseLong(data[MONTH_DATA])) * Double::parseLong(30))
-      + Double::parseLong(data[DAY_DATA])) * Double::parseLong(24))
-      + Double::parseLong(data[HOUR_DATA])) * Double::parseLong(60))
-      + Double::parseLong(data[MINUTE_DATA])) * Double::parseLong(60))
-      + Double::parseLong(data[SECONDS_DATA])
-      + Double::parseFloatType(double(data[FRACSECONDS_DATA]) / FRAC_SECONDS_UPPER_LIMIT);
+  return (is_negative? Double::neg_one() : Double::one())
+      * ((((((((Double(data[YEAR_DATA]) * Double(12)
+      + Double(data[MONTH_DATA])) * Double(30))
+      + Double(data[DAY_DATA])) * Double(24))
+      + Double(data[HOUR_DATA])) * Double(60))
+      + Double(data[MINUTE_DATA])) * Double(60))
+      + Double(data[SECONDS_DATA])
+      + Double(double(data[FRACSECONDS_DATA]) / FRAC_SECONDS_UPPER_LIMIT);
 }
 
 
@@ -758,7 +758,7 @@ Duration* Duration::operator*(const Double& value) const
 
   seconds = to_xs_int(result.floor());
 
-  result = (result - result.floor()) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+  result = (result - result.floor()) * Double(FRAC_SECONDS_UPPER_LIMIT);
 
   frac_seconds = to_xs_int(result.round());
 
@@ -787,7 +787,7 @@ Duration* Duration::operator/(const Double& value) const
   dSeconds = result.round();
   seconds = to_xs_int(dSeconds.floor());
 
-  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+  result = (result - dSeconds) * Double(FRAC_SECONDS_UPPER_LIMIT);
   frac_seconds = to_xs_int(result.round());
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);

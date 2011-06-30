@@ -136,21 +136,31 @@ T1_TO_T2(str, uA)
 
 T1_TO_T2(str, flt)
 {
-  xs_float n;
-  if (Float::parseString(strval.c_str(), n))
+  try {
+    xs_float const n(strval.c_str());
     return aFactory->createFloat(result, n);
-
-  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::invalid_argument const& ) {
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::range_error const& ) {
+    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( strval ) );
+  }
 }
 
 
 T1_TO_T2(str, dbl)
 {
-  xs_double n;
-  if (Double::parseString(strval.c_str(), n))
+  try {
+    xs_double const n(strval.c_str());
     return aFactory->createDouble(result, n);
-
-  throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::invalid_argument const& ) {
+    throw TYPE_EXCEPTION( err::FORG0001, aErrorInfo );
+  }
+  catch ( std::range_error const& ) {
+    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( strval ) );
+  }
 }
 
 
@@ -627,7 +637,7 @@ T1_TO_T2(flt, str)
 
 T1_TO_T2(flt, dbl)
 {
-  return aFactory->createDouble(result, FloatCommons::parseFloat(aItem->getFloatValue()));
+  return aFactory->createDouble(result, Double(aItem->getFloatValue()));
 }
 
 
@@ -638,7 +648,7 @@ T1_TO_T2(flt, dec)
     xs_decimal const n( aItem->getFloatValue() );
     return aFactory->createDecimal(result, n);
   }
-  catch ( std::exception const& ) 
+  catch ( std::exception const& e ) 
   {
     throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
   }
@@ -682,7 +692,7 @@ T1_TO_T2(dbl, str)
 T1_TO_T2(dbl, flt)
 {
   return aFactory->createFloat(result,
-                               FloatCommons::parseDouble(aItem->getDoubleValue()));
+                               Double(aItem->getDoubleValue()));
 }
 
 
@@ -736,22 +746,19 @@ T1_TO_T2(dec, str)
 
 T1_TO_T2(dec, flt)
 {
-  return aFactory->createFloat(result,
-                               xs_float::parseDecimal(aItem->getDecimalValue()));
+  return aFactory->createFloat(result, xs_float(aItem->getDecimalValue()));
 }
 
 
 T1_TO_T2(dec, dbl)
 {
-  return aFactory->createDouble(result,
-                                xs_double::parseDecimal(aItem->getDecimalValue()));
+  return aFactory->createDouble(result, xs_double(aItem->getDecimalValue()));
 }
 
 
 T1_TO_T2(dec, int)
 {
-  return aFactory->createInteger(result,
-                                 xs_integer(aItem->getDecimalValue()));
+  return aFactory->createInteger(result, xs_integer(aItem->getDecimalValue()));
 }
 
 
@@ -779,14 +786,14 @@ T1_TO_T2(int, str)
 T1_TO_T2(int, flt)
 {
   return aFactory->createFloat(result,
-                               xs_float::parseInteger(aItem->getIntegerValue()));
+                               xs_float(aItem->getIntegerValue()));
 }
 
 
 T1_TO_T2(int, dbl)
 {
   return aFactory->createDouble(result,
-                                xs_double::parseInteger(aItem->getIntegerValue()));
+                                xs_double(aItem->getIntegerValue()));
 }
 
 
@@ -1127,7 +1134,7 @@ T1_TO_T2(bool, str)
 T1_TO_T2(bool, flt)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createFloat(result, xs_float::parseInt(1));
+    return aFactory->createFloat(result, xs_float::one());
   else
     return aFactory->createFloat(result, xs_float::zero());
 }
@@ -1136,7 +1143,7 @@ T1_TO_T2(bool, flt)
 T1_TO_T2(bool, dbl)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createDouble(result, xs_double::parseInt(1));
+    return aFactory->createDouble(result, xs_double::one());
   else
     return aFactory->createDouble(result, xs_double::zero());
 }

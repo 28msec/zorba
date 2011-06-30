@@ -342,7 +342,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
   xs_double d0 = i0->getDoubleValue();
   xs_double d1 = i1->getDoubleValue();
 
-  if ( d1 == Double::parseInt(0) )
+  if ( d1 == Double::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -381,7 +381,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
 {
   xs_float f0 = i0->getFloatValue();
   xs_float f1 = i1->getFloatValue();
-  if ( f1 == xs_float::parseInt(0) )
+  if ( f1 == xs_float::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }

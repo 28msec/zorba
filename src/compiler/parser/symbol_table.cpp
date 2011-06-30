@@ -185,9 +185,13 @@ xs_decimal* symbol_table::decimalval(char const* text, uint32_t length)
 
 xs_double* symbol_table::doubleval(char const* text, uint32_t length)
 {
-  xs_double lDouble;
-  xs_double::parseString(text, lDouble);
-  return new xs_double(lDouble);
+  try {
+    return new xs_double(text);
+  }
+  catch ( std::range_error const& ) {
+    // TODO: pjl: needs error location and correct error code
+    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( text ) );
+  }
 }
 
 xs_integer* symbol_table::integerval(char const* text, uint32_t length, const location& loc)

@@ -540,8 +540,7 @@ void operator&(Archiver &ar, float &obj)
       return;
     ar.check_simple_field(retval, type, "float", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     //+sscanf(value.c_str(), "%e", &obj);
-    FloatImpl<float>  zorba_float;
-    FloatImpl<float>::parseString(value.c_str(), zorba_float);
+    FloatImpl<float> zorba_float(value.c_str());
     obj = zorba_float.getNumber();
 
     ar.register_reference(id, field_treat, &obj);
@@ -578,8 +577,7 @@ void operator&(Archiver &ar, double &obj)
       return;
     ar.check_simple_field(retval, type, "double", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     //+sscanf(value.c_str(), "%le", &obj);
-    FloatImpl<double>  zorba_double;
-    FloatImpl<double>::parseString(value.c_str(), zorba_double);
+    FloatImpl<double> zorba_double(value.c_str());
     obj = zorba_double.getNumber();
 
     ar.register_reference(id, field_treat, &obj);

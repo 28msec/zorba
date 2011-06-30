@@ -1233,7 +1233,7 @@ longmap:
       node2 = node;
       found = insertInMap(key, node2, theMaps[XS_LONG], multikey, false);
 
-      xs_double doubleValue = xs_double::parseLong(longValue);
+      xs_double doubleValue(longValue);
       GET_FACTORY().createDouble(castItem, doubleValue);
 
       if (key == NULL) key = new store::IndexKey(1);
@@ -1282,7 +1282,7 @@ longmap:
 
       if (longValue > theMaxLong || longValue < theMinLong)
       {
-        xs_double doubleValue = xs_double::parseLong(longValue);
+        xs_double doubleValue(longValue);
         GET_FACTORY().createDouble(castItem, doubleValue);
 
         ADD_IN_MAP(XS_DOUBLE, true);
@@ -2118,7 +2118,7 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 
       if (theIndex->theMaps[XS_DOUBLE])
       {
-        xs_double doubleValue = xs_double::parseDecimal(keyItem->getDecimalValue());
+        xs_double doubleValue = keyItem->getDecimalValue();
         GET_FACTORY().createDouble(castItem, doubleValue);
         altKey[0].transfer(castItem);
         probeMap(theIndex->theMaps[XS_DOUBLE], &altKey);
@@ -2145,7 +2145,7 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 
       if (theIndex->theMaps[XS_DOUBLE])
       {
-        xs_double doubleValue = xs_double::parseLong(keyItem->getLongValue());
+        xs_double doubleValue = keyItem->getLongValue();
         GET_FACTORY().createDouble(castItem, doubleValue);
         altKey[0].transfer(castItem);
         probeMap(theIndex->theMaps[XS_DOUBLE], &altKey);

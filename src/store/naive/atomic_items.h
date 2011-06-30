@@ -1011,7 +1011,7 @@ protected:
 public:
   xs_float getFloatValue() const { return theValue; }
 
-  xs_double getDoubleValue() const { return FloatCommons::parseFloat(theValue); }
+  xs_double getDoubleValue() const { return xs_double(theValue); }
 
   bool isNaN() const;
 

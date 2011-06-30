@@ -399,6 +399,30 @@ inline bool split( InputStringType const &in, DelimStringType const &delim,
 ////////// String number parsing ///////////////////////////////////////////////
 
 /**
+ * Parses the given string for a \c double.
+ *
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the \c double value.
+ * @throws invalid_argument if \a s contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+double atod( char const *s );
+
+/**
+ * Parses the given string for a \c float.
+ *
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the \c float value.
+ * @throws invalid_argument if \a s contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+float atof( char const *s );
+
+/**
  * Parses the given string for a <code>long lomg</code>.
  *
  * @param s The null-terminated C string to parse.  Leading and trailing
@@ -465,6 +489,60 @@ aton( char const *s ) {
   if ( result > std::numeric_limits<IntegralType>::max() )
     throw std::range_error( BUILD_STRING( '"', result, "\": number too big" ) );
   return static_cast<IntegralType>( result );
+}
+
+template<typename T>
+struct is_double {
+  static bool const value = false;
+};
+
+template<>
+struct is_double<double> {
+  static bool const value = true;
+};
+
+template<typename T>
+struct is_float {
+  static bool const value = false;
+};
+
+template<>
+struct is_float<float> {
+  static bool const value = true;
+};
+
+/**
+ * Parses the given string for a C++ \c double type.
+ *
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the \c double value.
+ * @throws invalid_argument if \a s contains characters other than those for a
+ * valid \c double value or leading/trailing whitespace, or contains no digits
+ * at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+template<typename NumericType> inline
+typename enable_if<is_double<NumericType>::value,double>::type
+aton( char const *s ) {
+  return atod( s );
+}
+
+/**
+ * Parses the given string for a C++ \c float type.
+ *
+ * @param s The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @return Returns the \c float value.
+ * @throws invalid_argument if \a s contains characters other than those for a
+ * valid \c float value or leading/trailing whitespace, or contains no digits
+ * at all.
+ * @throws range_error if the number overflows/underflows.
+ */
+template<typename NumericType> inline
+typename enable_if<is_float<NumericType>::value,float>::type
+aton( char const *s ) {
+  return atof( s );
 }
 
 ////////// To-string conversion ////////////////////////////////////////////////

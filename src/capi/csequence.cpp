@@ -436,8 +436,7 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
         // de-allocated memory.
         try {
           String const lStringValue = me->theItem.getStringValue();
-          xs_double doublevalue;
-          xs_double::parseString( lStringValue.c_str(), doublevalue );
+          xs_double const doublevalue( lStringValue.c_str() );
           (*value) = static_cast<double> (doublevalue.getNumber());
         }
         catch ( std::exception const& ) {

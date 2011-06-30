@@ -79,13 +79,13 @@ Integer::Integer( Decimal const &d ) {
 Integer::Integer( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( d.theFloating );
+  value_ = ftoi( d.getNumber() );
 }
 
 Integer::Integer( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( f.theFloating );
+  value_ = ftoi( f.getNumber() );
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
@@ -118,14 +118,14 @@ Integer& Integer::operator=( Decimal const &d ) {
 Integer& Integer::operator=( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( d.theFloating );
+  value_ = ftoi( d.getNumber() );
   return *this;
 }
 
 Integer& Integer::operator=( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( f.theFloating );
+  value_ = ftoi( f.getNumber() );
   return *this;
 }
 
