@@ -190,6 +190,27 @@ inline void set_source( ZorbaException &ze, QueryLoc const &loc,
   );
 }
 
+/**
+ * Sets the XQuery source location of the given ZorbaException but only if it's
+ * actually an XQueryException.
+ *
+ * @param to The ZorbaException to set the location of.
+ * @param from The ZorbaException to get the location from but only if it's
+ * actually an XQueryException.
+ * @param overwrite If \c false, sets the location only if the exception
+ * doesn't already have one; if \c true, always sets the location even if the
+ * exception already has one.
+ */
+inline void set_source( ZorbaException &to, ZorbaException const &from,
+                        bool overwrite = true ) {
+  if ( XQueryException const *const xe =
+        dynamic_cast<XQueryException const*>( &from ) ) {
+    set_source(
+      to, xe->source_uri(), xe->source_line(), xe->source_column(), overwrite
+    );
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
