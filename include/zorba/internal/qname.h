@@ -63,8 +63,8 @@ public:
   }
 
   // inherited
-  char const* ns() const { return ztd::c_str( QNameTraits::NAMESPACE ); }
-  char const* prefix() const { return ztd::c_str( QNameTraits::PREFIX ); }
+  char const* ns() const { return ztd::c_str( QNameTraits::_NAMESPACE ); }
+  char const* prefix() const { return ztd::c_str( QNameTraits::_PREFIX ); }
   char const* localname() const { return ztd::c_str( localname_ ); }
 
 private:
@@ -120,8 +120,8 @@ class ZORBA_DLL_PUBLIC ZorbaErrQName :
 {
   typedef FixedQName<ZorbaErrQName,char const*> base_type;
 public:
-  static char const NAMESPACE[];
-  static char const PREFIX[];
+  static char const _NAMESPACE[];
+  static char const _PREFIX[];
 
   /**
    * Constructs a %ZorbaErrQName.
@@ -155,8 +155,8 @@ class ZORBA_DLL_PUBLIC XQueryErrQName :
 {
   typedef FixedQName<XQueryErrQName,char const*> base_type;
 public:
-  static char const NAMESPACE[];
-  static char const PREFIX[];
+  static char const _NAMESPACE[];
+  static char const _PREFIX[];
 
   /**
    * Constructs an %XQueryErrQName.
@@ -190,8 +190,8 @@ class ZORBA_DLL_PUBLIC ZorbaWarningQName :
 {
   typedef FixedQName<ZorbaWarningQName,char const*> base_type;
 public:
-  static char const NAMESPACE[];
-  static char const PREFIX[];
+  static char const _NAMESPACE[];
+  static char const _PREFIX[];
 
   /**
    * Constructs a %ZorbaWarningQName.

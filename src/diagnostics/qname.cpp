@@ -26,8 +26,8 @@ namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const XQueryErrQName::NAMESPACE[] = XQUERY_ERR_NS;
-char const XQueryErrQName::PREFIX[] = "err";
+char const XQueryErrQName::_NAMESPACE[] = XQUERY_ERR_NS;
+char const XQueryErrQName::_PREFIX[] = "err";
 
 zorba::diagnostic::category XQueryErrQName::category() const {
   using namespace zorba::diagnostic;
@@ -65,8 +65,8 @@ zorba::diagnostic::kind XQueryErrQName::kind() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
-char const ZorbaErrQName::PREFIX[] = "zerr";
+char const ZorbaErrQName::_NAMESPACE[] = ZORBA_ERR_NS;
+char const ZorbaErrQName::_PREFIX[] = "zerr";
 
 zorba::diagnostic::category ZorbaErrQName::category() const {
   using namespace zorba::diagnostic;
@@ -91,8 +91,8 @@ zorba::diagnostic::kind ZorbaErrQName::kind() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const ZorbaWarningQName::NAMESPACE[] = ZORBA_WARN_NS;
-char const ZorbaWarningQName::PREFIX[] = "zwarn";
+char const ZorbaWarningQName::_NAMESPACE[] = ZORBA_WARN_NS;
+char const ZorbaWarningQName::_PREFIX[] = "zwarn";
 
 zorba::diagnostic::category ZorbaWarningQName::category() const {
   return zorba::diagnostic::ZORBA_XQP;
