@@ -422,7 +422,7 @@ declare %sequential function xqdoc2html:copy-xhtml-requisites(
       else ();      
       
       (: third - re-copy these files :)
-      xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($imagesPath,   " copy images in :"), ("gif", "svg"));
+      xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($imagesPath,   " copy images in :"), ("gif", "png", "svg"));
       xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($libPath,      " copy scripts in :"), "js");
       xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($cssPath,      " copy stylesheets in :"), "css");
       
