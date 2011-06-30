@@ -152,6 +152,7 @@ typedef __int64 int64_t;
 
 // Zorba parser configuration
 #cmakedefine ZORBA_DEBUG_PARSER 
+#cmakedefine ZORBA_DEBUG_ZSTRING 
 
 // Zorba runtime configuration parameters
 #define ZORBA_BATCHING_TYPE         ${ZORBA_BATCHING_TYPE}

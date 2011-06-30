@@ -93,7 +93,9 @@ public:
    * Destroys this %buf_rep.
    */
   ~buf_rep() {
+#ifdef ZORBA_DEBUG_STRING
     assert( p_ == NULL );
+#endif /* ZORBA_DEBUG_STRING */
   }
 
   // BUF_REP_CONSTRUCT_2CP_A_X
@@ -122,11 +124,11 @@ public:
    * @param a The allocator that was used to create this %buf_rep.
    */
   void dispose( allocator_type const &a ) {
-#ifndef NDEBUG
+#ifdef ZORBA_DEBUG_STRING
     p_ = NULL;
     this->set_capacity( 0 );
     this->set_length( 0 );
-#endif
+#endif /* ZORBA_DEBUG_STRING */
   }
 
   /**

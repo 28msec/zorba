@@ -231,15 +231,15 @@ public:
 private:
   RepType *rep_;
 
-#ifndef NDEBUG
+#ifdef ZORBA_DEBUG_STRING
   const_pointer debug_str_;
-#endif /* NDEBUG */
+#endif /* ZORBA_DEBUG_STRING */
 
   void set_rep( RepType *r ) {
     rep_ = r;
-#ifndef NDEBUG
+#ifdef ZORBA_DEBUG_STRING
     debug_str_ = rep_ ? data() : NULL;
-#endif /* NDEBUG */
+#endif /* ZORBA_DEBUG_STRING */
   }
 
   // forbid these

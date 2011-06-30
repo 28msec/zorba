@@ -1278,9 +1278,9 @@ private:
       void *rep_;
       char storage_[1];
     };
-#ifndef NDEBUG
+#ifdef ZORBA_DEBUG_STRING
     char *debug_str_;
-#endif /* NDEBUG */
+#endif /* ZORBA_DEBUG_STRING */
   };
 
   string_storage_type string_storage_;
