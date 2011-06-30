@@ -184,9 +184,7 @@ Double Integer::pow( Integer const &power ) const {
   value_type const result( value_.pow( power.value_, 15 ) );
   char buf[300];
   result.toFixPtString( buf, 15 );
-  xs_double double_result;
-  xs_double::parseString( buf, double_result );
-  return double_result;
+  return Double( buf );
 #else
   return Double(
     // The casts are needed for disambiguation with MSVC++.
