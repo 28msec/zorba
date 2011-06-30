@@ -458,7 +458,8 @@ unsigned long long atoull( char const *s );
  * @throws range_error if the number overflows/underflows.
  */
 template<typename IntegralType> inline
-typename enable_if<ZORBA_TR1_NS::is_signed<IntegralType>::value,
+typename enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
+                && ZORBA_TR1_NS::is_signed<IntegralType>::value,
                    IntegralType>::type
 aton( char const *s ) {
   long long const result = atoll( s );
@@ -523,7 +524,7 @@ struct is_float<float> {
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
-typename enable_if<is_double<NumericType>::value,double>::type
+typename enable_if<is_double<NumericType>::value,NumericType>::type
 aton( char const *s ) {
   return atod( s );
 }
@@ -540,7 +541,7 @@ aton( char const *s ) {
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
-typename enable_if<is_float<NumericType>::value,float>::type
+typename enable_if<is_float<NumericType>::value,NumericType>::type
 aton( char const *s ) {
   return atof( s );
 }
