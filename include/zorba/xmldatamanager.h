@@ -35,6 +35,65 @@ namespace zorba {
   class ZORBA_DLL_PUBLIC XmlDataManager
   {
   public:
+    /**
+     * \brief The ParseOptions class stores various properties that affect
+     *        how a document is parsed. An instance of this class is passed
+     *        as input to the parseXML function.
+     */
+    class ParseOptions
+    {
+    private:
+      bool              theDtdValidation;
+      bool              theExternalEntityProcessing;
+
+    public:
+      ParseOptions() :
+        theDtdValidation(false),
+        theExternalEntityProcessing(false)
+      {}
+
+      ~ParseOptions() {}
+
+      /**
+       * Set the property enableDtd, which specifies whether the
+       * document should be validated against its associated DTD (if
+       * any).
+       */
+      void setDtdValidation(bool aEnable)
+      {
+        theDtdValidation = aEnable;
+      }
+
+      /**
+       * Returns true if dtd validation is enabled, false otherwise.
+       */
+      bool isDtdValidationEnabled() const
+      {
+        return theDtdValidation;
+      }
+
+      /**
+       * Set the property to enable or disable processing of XML external entities. 
+       * If the option is enabled, the input must conform to the syntax
+       * _extParsedEnt_ (production [78] in XML 1.0); and since there is no DTD,
+       * the content must include no entity references. The result of the
+       * function call is a sequence of nodes.
+       */
+      void setExternalEntityProcessing(bool aEnable)
+      {
+        theExternalEntityProcessing = aEnable;
+      }
+
+      /**
+       * Returns true if external entity processig is enabled,
+       * false otherwise.
+       */
+      bool isExternalEntityProcessingEnabled() const
+      {
+        return theExternalEntityProcessing;
+      }
+    };
+
     virtual DocumentManager*
     getDocumentManager() const = 0;
 
@@ -77,77 +136,23 @@ namespace zorba {
     virtual Item
     parseXML(std::istream& aStream) const = 0;
 
+    /** \brief Parse an XML document and return a sequence of nodes.
+     *
+     * This function parses the given input stream and returns the result
+     * as a sequence of nodes. If external entity processing is disabled
+     * the result will be a singleton sequence consisting of one document
+     * node. Otherwise, the result is the sequence of the external entity
+     * nodes.
+     *
+     * @see ParseOptions
+     */
+    virtual ItemSequence_t
+    parseXML(std::istream& aStream, ParseOptions& aOptions) const = 0;
+
     /** \brief Fetches an resource refered to by the given URI.
      */
     virtual Item
     fetch(const String& aURI) const = 0;
-
-    /**
-     * \brief The LoadProperties class stores various properties that affect
-     *        how a document load is done. An instance of this class is passed
-     *        as input to the setVariableAsDocument and setContextItemAsDocument
-     *        method of the DynamicContext class.
-     */
-    class LoadProperties
-    {
-    private:
-      validation_mode_t theValidationMode;
-      bool              theEnableDtdLoader;
-
-    public:
-      LoadProperties() :
-        theValidationMode(validate_skip),
-        theEnableDtdLoader(false)
-      {}
-
-      ~LoadProperties() {}
-
-      /**
-       * Set the property validationMode, it specifies what validation
-       * mode should be used when loading the document. If it is equal
-       * to validate_skip, no validation is done. Otherwise, the
-       * document will be validated in strict or lax mode using the
-       * in-scope schema definitions that are found in the query's
-       * static context.
-       */
-      void setValidationMode(validation_mode_t aValidationMode)
-      {
-        theValidationMode = aValidationMode;
-      }
-
-      /**
-       * Get the property validationMode, it specifies what validation
-       * mode should be used when loading the document. If it is equal
-       * to validate_skip, no validation is done. Otherwise, the
-       * document will be validated in strict or lax mode using the
-       * in-scope schema definitions that are found in the query's
-       * static context.
-       */
-      validation_mode_t getValidationMode() const
-      {
-        return theValidationMode;
-      }
-
-      /**
-       * Set the property enableDtd, which specifies whether the
-       * document should be validated against its associated DTD (if
-       * any).
-       */
-      void setEnableDtd(bool aEnableDtdLoader)
-      {
-        theEnableDtdLoader = aEnableDtdLoader;
-      }
-
-      /**
-       * Get the property enableDtd, which specifies whether the
-       * document should be validated against its associated DTD (if
-       * any).
-       */
-      bool getEnableDtd() const
-      {
-        return theEnableDtdLoader;
-      }
-    };
 
     /** \brief Register an DiagnosticHandler to which errors occuring during the
      * management of documents and collections are reported.
@@ -161,7 +166,7 @@ namespace zorba {
      *         DiagnosticHandler passed as parameter.
      */
     void
-      registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
     protected:
     /** \brief Destructor

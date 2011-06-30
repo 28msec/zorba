@@ -57,6 +57,7 @@ protected:
   ItemFactory*             theFactory;
   static std::string       theFnNamespace;
   static std::string       theFetchNamespace;
+  static std::string       theXmlNamespace;
 
   // allow for lazy creation 
   mutable DocumentManagerImpl*   theDocManager;
@@ -85,6 +86,9 @@ public:
 
   Item
   parseXML(std::istream& aStream) const;
+
+  ItemSequence_t
+  parseXML(std::istream& aStream, ParseOptions& aOptions) const;
 
   Item
   fetch(const String& aURI) const;

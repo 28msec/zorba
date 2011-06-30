@@ -71,6 +71,9 @@ std::string XmlDataManagerImpl::theFnNamespace =
 std::string XmlDataManagerImpl::theFetchNamespace =
   "http://www.zorba-xquery.com/modules/fetch";
 
+std::string XmlDataManagerImpl::theXmlNamespace =
+  "http://www.zorba-xquery.com/modules/string";
+
 XmlDataManagerImpl::XmlDataManagerImpl()
   : theDocManager(0),
     theColManager(0),
@@ -110,7 +113,8 @@ XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
   lProlog
-    << "import module namespace d = '" << theFetchNamespace << "';";
+    << "import module namespace d = '" << theFetchNamespace << "';"
+    << "import module namespace x = '" << theXmlNamespace << "';";
   theContext->loadProlog(lProlog.str(), lHints);
 }
 
@@ -183,6 +187,36 @@ XmlDataManagerImpl::parseXML(std::istream& aStream) const
     Item lRes;
     lIter->next(lRes);
     return lRes;
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
+
+ItemSequence_t
+XmlDataManagerImpl::parseXML(std::istream& aStream, XmlDataManager::ParseOptions& aOptions) const
+{
+  ZORBA_DM_TRY
+  {
+    Item lQName = theFactory->createQName(theXmlNamespace, "parse-xml-fragment");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createStreamableString(
+            aStream, &XmlDataManagerImpl::destroyStream)));
+
+    std::ostringstream lOptions;
+    lOptions
+      << (aOptions.isDtdValidationEnabled()?"d":"D");
+
+    lOptions
+      << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
+
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createString(lOptions.str()))
+        );
+
+    return theContext->invoke(lQName, lArgs);
   }
   ZORBA_DM_CATCH
   return 0;

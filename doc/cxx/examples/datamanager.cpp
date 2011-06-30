@@ -233,6 +233,36 @@ datamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
   return true;
 }
 
+/*
+ */
+bool
+datamanager_example_5(Zorba* aZorba, XmlDataManager* aDataManager)
+{
+  try {
+    std::stringstream lStream;
+      lStream
+        << "<book><title>XQuery From The Experts</title></book>"
+        << "<book><title>XQuery Kick Start</title></book>"
+        << "<book><title>Querying XML</title></book>";
+
+    XmlDataManager::ParseOptions lOptions;
+    lOptions.setExternalEntityProcessing(true);
+
+    ItemSequence_t lSeq = aDataManager->parseXML(lStream, lOptions);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lItem;
+    while (lIter->next(lItem)) {
+      std::cout << "element " << lItem.getStringValue() << std::endl;
+    }
+
+  } catch (ZorbaException& e) {
+    std::cerr << e << std::endl;
+    return false;
+  }
+  return true;
+}
+
 int 
 datamanager(int argc, char* argv[])
 {
@@ -259,6 +289,11 @@ datamanager(int argc, char* argv[])
   std::cout << "executing example 4" << std::endl;
   res = datamanager_example_4(lZorba, lDataManager);
   if (!res) return 4;
+  std::cout << std::endl;
+
+  std::cout << "executing example 5" << std::endl;
+  res = datamanager_example_5(lZorba, lDataManager);
+  if (!res) return 5;
   std::cout << std::endl;
 
   lZorba->shutdown();

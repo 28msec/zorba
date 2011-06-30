@@ -392,7 +392,16 @@ void set_var(
 
     zorba::XmlDataManager* lXmlMgr =
         zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-    zorba::Item lDoc = lXmlMgr->parseXML(ifile);
+    zorba::XmlDataManager::ParseOptions lOptions;
+    lOptions.setDtdValidation(enableDtd);
+
+    zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, lOptions);
+    zorba::Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    zorba::Item lDoc;
+    lIter->next(lDoc);
+    lIter->close();
+
     assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
     if(name != ".")
     {
