@@ -23,6 +23,17 @@
 
 #ifdef WIN32
 namespace std {
+
+  static float strtof( char const *s, char **end ) {
+    double const result = std::strtod( s, end );
+    if ( !errno ) {
+      if ( result < std::numeric_limits<float>::min() ||
+           result > std::numeric_limits<float>::max() )
+        errno = ERANGE;
+    }
+    return result;
+  }
+
   inline long long strtoll( char const *s, char **end, int base ) {
     return ::_strtoi64( s, end, base );
   }
@@ -30,6 +41,7 @@ namespace std {
   inline unsigned long long strtoull( char const *s, char **end, int base ) {
     return ::_strtoui64( s, end, base );
   }
+
 }
 #endif /* WIN32 */
 
