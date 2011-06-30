@@ -35,7 +35,7 @@ namespace zorba {
 
 // exported for testing only
 template<typename FloatType>
-class ZORBA_DLL_PUBLIC FloatImpl : public serialization::SerializeBaseClass 
+class FloatImpl : public serialization::SerializeBaseClass 
 {
 public:
   typedef FloatType value_type;
@@ -196,8 +196,8 @@ private:
   friend class FloatImpl<double>;
 };
 
-typedef FloatImpl<float> Float;
-typedef FloatImpl<double> Double;
+typedef ZORBA_DLL_PUBLIC FloatImpl<float> Float;
+typedef ZORBA_DLL_PUBLIC FloatImpl<double> Double;
 
 ///////////////////////////////////////////////////////////////////////////////
 
