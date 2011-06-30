@@ -458,6 +458,11 @@ unsigned long long atoull( char const *s );
  * @throws range_error if the number overflows/underflows.
  */
 template<typename IntegralType> inline
+//
+// Note that the is_integral shouldn't be needed since is_signed means "is a
+// signed integral type", but Microsoft's implementation is broken and returns
+// true for floating point types as well.
+//
 typename enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
                 && ZORBA_TR1_NS::is_signed<IntegralType>::value,
                    IntegralType>::type
