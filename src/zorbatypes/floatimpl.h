@@ -274,6 +274,12 @@ FloatImpl<FloatType>::FloatImpl( unsigned long n ) :
 }
 
 template<typename FloatType> inline
+FloatImpl<FloatType>::FloatImpl( unsigned long long n ) :
+  value_( static_cast<value_type>( n ) ), precision_( max_precision() )
+{
+}
+
+template<typename FloatType> inline
 FloatImpl<FloatType>::FloatImpl( float n ) :
   value_( static_cast<value_type>( n ) ), precision_( max_precision() )
 {
