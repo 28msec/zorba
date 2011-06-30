@@ -96,7 +96,11 @@ static zstring computeLibraryName
   lLibraryName << lBranchPath;
 #ifdef WIN32
   if (aUseDebugDir) {
+#ifndef NDEBUG
     lLibraryName << "Debug\\";
+#else
+    lLibraryName << "Release\\";
+#endif
   }
   lLibraryName << lFileName << get_current_lib_suffix()
                << computeVersionInfix(aImportedVersion) << ".dll";
