@@ -80,28 +80,38 @@ void FloatImpl<FloatType>::parse( char const *s ) {
   if ( !parse_etc( s ) ) {
     char const *const first_non_ws = s;
     int trailing_zeros = 0;
+    //
+    // We need got_digit to know that we're potentially parsing a floating
+    // point value comprised of at least one digit -- which means the value
+    // can't be one of the special values of INF, -INF, or NaN.
+    //
+    // We need to know this to prevent aton() from parsing the special values
+    // since it (via strtod() that it uses) allows them regardless of case
+    // whereas XQuery insists on a specific case.
+    //
     bool got_digit = false;
 
     if ( *s == '+' || *s == '-' )
       ++s;
-    while ( ascii::is_digit( *s ) ) {
-      count_significant_digits( *s++, &significant_digits, &trailing_zeros );
+    if ( ascii::is_digit( *s ) ) {
       got_digit = true;
+      do {
+        count_significant_digits( *s, &significant_digits, &trailing_zeros );
+      } while ( ascii::is_digit( *++s ) );
     }
-    if ( *s == '.' ) {
-      ++s;
-      while ( ascii::is_digit( *s ) ) {
-        count_significant_digits( *s++, &significant_digits, &trailing_zeros );
-        got_digit = true;
-      }
+    if ( *s == '.' && ascii::is_digit( *++s ) ) {
+      got_digit = true;
+      do {
+        count_significant_digits( *s, &significant_digits, &trailing_zeros );
+      } while ( ascii::is_digit( *++s ) );
     }
     if ( *s == 'e' || *s == 'E' ) {
       ++s;
       if ( *s == '+' || *s == '-' )
         ++s;
-      while ( ascii::is_digit( *s ) ) {
-        ++s;
+      if ( ascii::is_digit( *s ) ) {
         got_digit = true;
+        while ( ascii::is_digit( *++s ) ) ;
       }
     }
     if ( !got_digit )
