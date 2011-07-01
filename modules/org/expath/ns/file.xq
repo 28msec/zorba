@@ -95,7 +95,7 @@ declare %private %sequential function file:append-text(
  :    parent directory does not exist either.
  : @error FOFL9999 If any other error occurs.
  :)
-declare %sequential function file:copy(
+declare %nondeterministic %sequential function file:copy(
   $source as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -139,7 +139,7 @@ declare %private %sequential function file:copy-file-impl(
  :    parent directory does not exist either.
  : @error FOFL9999 If any other error occurs.
  :)
-declare %private %sequential function file:copy-directory-impl(
+declare %private %nondeterministic %sequential function file:copy-directory-impl(
   $sourceDir as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -178,7 +178,7 @@ declare %private %sequential function file:copy-directory-impl(
  : @error FOFL0003 If <pre>$destination</pre> directory does not exist.
  : @error FOFL9999 If any other error occurs.
  :)
-declare %private %sequential function file:copy-directory-content(
+declare %private %nondeterministic %sequential function file:copy-directory-content(
   $sourceDir as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -219,7 +219,7 @@ declare %sequential function file:create-directory(
  : @error FOFL0001 If the <pre>$path</pre> path does not exist.
  : @error FOFL9999 If any other error occurs.
  :)
-declare %sequential function file:delete(
+declare %nondeterministic %sequential function file:delete(
   $path as xs:string
 ) as empty-sequence()
 {
@@ -253,7 +253,7 @@ declare %private %sequential function file:delete-file-impl(
  : @error FOFL0003 If <pre>$dir</pre> does not point to a directory.
  : @error FOFL9999 If any other error occurs.
  :)
-declare %private %sequential function file:delete-directory-impl(
+declare %private %nondeterministic %sequential function file:delete-directory-impl(
   $dir as xs:string
 ) as empty-sequence()
 {
@@ -348,7 +348,7 @@ declare %nondeterministic function file:read-binary(
  : @error FOFL0004 If <pre>$source</pre> points to a directory.
  : @error FOFL9999 If any other error occurs.
  :)
-declare function file:read-text(
+declare %nondeterministic function file:read-text(
   $file as xs:string
 ) as xs:string
 {
@@ -388,7 +388,7 @@ declare %nondeterministic function file:read-text(
  : @error FOFL0004 If <pre>$source</pre> points to a directory.
  : @error FOFL9999 If any other error occurs.
  :)
-declare function file:read-text-lines(
+declare %nondeterministic function file:read-text-lines(
   $file as xs:string
 ) as xs:string*
 {
@@ -415,7 +415,7 @@ declare function file:read-text-lines(
  : @error FOFL0006 If <pre>$encoding</pre> is not supported.
  : @error FOFL9999 If any other error occurs.
  :)
-declare function file:read-text-lines(
+declare %nondeterministic function file:read-text-lines(
   $file as xs:string,
   $encoding as xs:string
 ) as xs:string*
@@ -433,7 +433,7 @@ declare function file:read-text-lines(
  : @param $destinationDir The existing destination directory.
  : @return The empty sequence.
  :)
-declare %private %sequential function file:copy-directory(
+declare %private %nondeterministic %sequential function file:copy-directory(
   $sourceDir as xs:string,
   $destinationDir as xs:string
 ) as empty-sequence()
@@ -559,7 +559,7 @@ declare %nondeterministic function file:list(
  : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
  : @error FOFL9999 If any other error occurs.
  :)
-declare function file:list(
+declare %nondeterministic function file:list(
   $path as xs:string,
   $recursive as xs:boolean
 ) as xs:string*
@@ -596,7 +596,7 @@ declare function file:list(
  : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
  : @error FOFL9999 If any other error occurs.
  :)
-declare function file:list(
+declare %nondeterministic function file:list(
   $path as xs:string,
   $recursive as xs:boolean,
   $pattern as xs:string

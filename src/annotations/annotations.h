@@ -46,14 +46,11 @@ protected:
   std::vector<AnnotationLiteral_t>   theLiteralList;
 
 public:
-  AnnotationInternal(
-    const store::Item_t& aExpandedQName
-  ); 
+  AnnotationInternal(const store::Item_t& aExpandedQName); 
 
   AnnotationInternal(
     const store::Item_t& aExpandedQName,
-    const std::vector<AnnotationLiteral_t>& aLiteralList
-  ); 
+    const std::vector<AnnotationLiteral_t>& aLiteralList); 
 
 public:
   SERIALIZABLE_CLASS(AnnotationInternal);
@@ -121,22 +118,16 @@ public:
 
   AnnotationInternal* getAnnotation(unsigned int index) const;
 
-  void
-  push_back(
+  void push_back(
       const store::Item_t& aExpQName,
-      const std::vector<rchandle<const_expr> >& aLiterals
-  );
+      const std::vector<rchandle<const_expr> >& aLiterals);
 
-  bool
-  contains(const store::Item_t& aSearchQName) const;
+  bool contains(const store::Item_t& aSearchQName) const;
 
-  void
-  checkConflictingDeclarations(const QueryLoc& loc) const;
+  void checkConflictingDeclarations(const QueryLoc& loc) const;
 
 public:
-  static void
-  createBuiltIn(static_context* aCtx);
-
+  static void createBuiltIn(static_context* aCtx);
 };
 
 

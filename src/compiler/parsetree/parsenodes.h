@@ -1192,8 +1192,7 @@ protected:
 public:
   AnnotationListParsenode(
       const QueryLoc& loc,
-      AnnotationParsenode* annotation
-  );
+      AnnotationParsenode* annotation);
 
   void push_back(AnnotationParsenode* annotation_h);
 
@@ -1227,8 +1226,8 @@ public:
 class AnnotationParsenode : public parsenode
 {
 protected:
-  rchandle<QName>        qname_h;
-  rchandle<AnnotationLiteralListParsenode> literal_list_h;
+  rchandle<QName>                          theQName;
+  rchandle<AnnotationLiteralListParsenode> theLiteralsList;
 
 public:
   AnnotationParsenode(
@@ -1236,51 +1235,51 @@ public:
         QName* qname,
         AnnotationLiteralListParsenode* literal_list);
 
-  rchandle<QName> get_qname() const { return qname_h; }
+  rchandle<QName> get_qname() const { return theQName; }
 
   rchandle<AnnotationLiteralListParsenode> get_literals() const
   {
-    return literal_list_h;
+    return theLiteralsList;
   };
 
   void accept(parsenode_visitor&) const;
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class AnnotationLiteralListParsenode : public parsenode
 {
 protected:
-  std::vector<rchandle<exprnode> > literals_hv;
+  std::vector<rchandle<exprnode> > theLiterals;
 
 public:
-  AnnotationLiteralListParsenode(const QueryLoc& loc_, exprnode* literal);
+  AnnotationLiteralListParsenode(const QueryLoc& loc, exprnode* literal);
 
-  void
-  push_back(rchandle<exprnode> literal_h)
+  void push_back(rchandle<exprnode> literal)
   {
-    literals_hv.push_back(literal_h);
+    theLiterals.push_back(literal);
   }
 
   rchandle<exprnode> operator[](int i) const
   {
-    return literals_hv[i];
+    return theLiterals[i];
   }
 
-  std::vector<rchandle<exprnode> >::const_iterator
-  begin() const
+  std::vector<rchandle<exprnode> >::const_iterator begin() const
   {
-    return literals_hv.begin();
+    return theLiterals.begin();
   }
 
-  std::vector<rchandle<exprnode> >::const_iterator
-  end() const
+  std::vector<rchandle<exprnode> >::const_iterator end() const
   {
-    return literals_hv.end();
+    return theLiterals.end();
   }
 
   std::vector<rchandle<exprnode> >::size_type size() const
   {
-    return literals_hv.size();
+    return theLiterals.size();
   }
 
   void accept(parsenode_visitor&) const;

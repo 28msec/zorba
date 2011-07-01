@@ -38,6 +38,8 @@
 
 #include "util/indent.h"
 
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba
 {
@@ -298,10 +300,24 @@ bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
   {
     if (deterministic)
     {
-      if (node->theUDF->getBody() != NULL) // Body can be NULL when using Plan Serialization. In this case nondeterministic is already computed
+      // Body can be NULL when using Plan Serialization. In this case
+      // nondeterministic is already computed
+      if (node->theUDF->getBody() != NULL)
+      {
         deterministic = !node->theUDF->getBody()->is_nondeterministic();
+      }
       else
+      {
+        assert(false);
         deterministic = node->theUDF->isDeterministic();
+      }
+    }
+
+    if (!deterministic && node->theUDF->isDeterministic())
+    {
+      RAISE_ERROR(zerr::ZXQP0040_MISSING_NONDETERMINISTIC_ANNOTATION,
+                  node->theUDF->getBody()->get_loc(),
+                  ERROR_PARAMS(node->theUDF->getName()->getStringValue()));
     }
 
     node->theUDF->setDeterministic(deterministic);

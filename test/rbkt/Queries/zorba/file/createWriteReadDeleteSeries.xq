@@ -6,7 +6,7 @@ declare variable $testDir := "tmpCreateWriteReadDeleteSeries";
 declare variable $outFile := fn:concat($testDir, file:directory-separator(), "file.xml");
 
 
-declare %sequential function local:main() as xs:string* {
+declare %nondeterministic %sequential function local:main() as xs:string* {
 
 (: ========================= :)
 (: ==== DIRECTORY INIT ===== :)

@@ -97,8 +97,7 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 /*******************************************************************************
 
 ********************************************************************************/
-void
-function::setAnnotations(AnnotationList* annotations)
+void function::setAnnotations(AnnotationList* annotations)
 {
   theAnnotationList = annotations;
 
@@ -107,10 +106,10 @@ function::setAnnotations(AnnotationList* annotations)
 
   static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
 
-  setDeterministic(theAnnotationList->contains(
-        lCtx.lookup_ann("deterministic")));
-  setPrivate(theAnnotationList->contains(
-        lCtx.lookup_ann("private")));
+  if (theAnnotationList->contains(lCtx.lookup_ann("nondeterministic")))
+    setDeterministic(false);
+
+  setPrivate(theAnnotationList->contains(lCtx.lookup_ann("private")));
 
   if (theAnnotationList->contains(lCtx.lookup_ann("sequential")) &&
       theAnnotationList->contains(lCtx.lookup_ann("updating")))

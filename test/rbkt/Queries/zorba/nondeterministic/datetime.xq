@@ -1,6 +1,6 @@
 import module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
 
-declare %sequential function local:index()
+declare %nondeterministic %sequential function local:index()
 { 
   variable $table :=
       for $i in 1 to 10000

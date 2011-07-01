@@ -521,6 +521,9 @@ void IndexBoxGeneralCondition::pushRange(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void IndexBoxGeneralCondition::pushBound(
     store::Item_t& bound,
     bool isLower, 

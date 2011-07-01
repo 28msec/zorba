@@ -832,20 +832,20 @@ void Param::accept(parsenode_visitor& v) const
   AnnotationList ::= Annotation*
 ********************************************************************************/
 AnnotationListParsenode::AnnotationListParsenode(
-    const QueryLoc& loc_,
+    const QueryLoc& loc,
     AnnotationParsenode* annotation)
   :
-  parsenode(loc_)
+  parsenode(loc)
 {
   push_back(annotation);
 }
 
-void AnnotationListParsenode::push_back(AnnotationParsenode* annotation_h)
+void AnnotationListParsenode::push_back(AnnotationParsenode* annotation)
 {
-  theAnnotations.push_back(annotation_h);
+  theAnnotations.push_back(annotation);
 }
 
-void AnnotationListParsenode::accept( parsenode_visitor &v ) const
+void AnnotationListParsenode::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   ACCEPT_SEQ(std::vector<rchandle<AnnotationParsenode> >, theAnnotations);
@@ -862,15 +862,15 @@ AnnotationParsenode::AnnotationParsenode(
     AnnotationLiteralListParsenode* literal_list)
   :
   parsenode(loc),
-  qname_h(qname),
-  literal_list_h(literal_list)
+  theQName(qname),
+  theLiteralsList(literal_list)
 {
 }
 
-void AnnotationParsenode::accept( parsenode_visitor &v ) const
+void AnnotationParsenode::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(literal_list_h);
+  ACCEPT(theLiteralsList);
   END_VISITOR();
 }
 
@@ -884,10 +884,11 @@ AnnotationLiteralListParsenode::AnnotationLiteralListParsenode(
   push_back(literal);
 }
 
-void AnnotationLiteralListParsenode::accept( parsenode_visitor &v ) const
+
+void AnnotationLiteralListParsenode::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT_SEQ(std::vector<rchandle<exprnode> >, literals_hv);
+  ACCEPT_SEQ(std::vector<rchandle<exprnode> >, theLiterals);
   END_VISITOR();
 }
 

@@ -2983,7 +2983,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // least, "declare option" information is not stored in the sctx that is
       // in mod_sctx_map; therefore, when dealing with an already-imported
       // sctx, there's no way to know what version it is. SF bug# 3312333.
-      if (lModVer.is_valid_version()) {
+      if (lModVer.is_valid_version()) 
+      {
         store::Item_t lMajorOpt;
         theSctx->expand_qname(lMajorOpt,
                               zstring(ZORBA_VERSIONING_NS),
@@ -2991,17 +2992,21 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
                               zstring(ZORBA_OPTION_MODULE_VERSION),
                               loc);
         zstring lImportedVersion;
-        if (!moduleRootSctx->lookup_option(lMajorOpt.getp(), lImportedVersion)) {
+        if (!moduleRootSctx->lookup_option(lMajorOpt.getp(), lImportedVersion)) 
+        {
           lImportedVersion = "0.0";
         }
         ModuleVersion lImportedModVer(compURI, lImportedVersion);
-        if (! lImportedModVer.is_valid_version()) {
+        if (! lImportedModVer.is_valid_version()) 
+        {
           RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
-                      ERROR_PARAMS(lImportedVersion));
+          ERROR_PARAMS(lImportedVersion));
         }
-        if (!lImportedModVer.satisfies(lModVer)) {
+
+        if (!lImportedModVer.satisfies(lModVer)) 
+        {
           RAISE_ERROR(zerr::ZXQP0037_INAPPROPRIATE_MODULE_VERSION, loc,
-                      ERROR_PARAMS(lModVer.versioned_uri(), lImportedVersion));
+          ERROR_PARAMS(lModVer.versioned_uri(), lImportedVersion));
         }
       }
 
@@ -3055,8 +3060,10 @@ void* begin_visit(const VFO_DeclList& v)
        it != v.end();
        ++it)
   {
-    const OptionDecl* opt_decl = it->dyn_cast<OptionDecl> ().getp ();
-    if (opt_decl != NULL) {
+    const OptionDecl* opt_decl = it->dyn_cast<OptionDecl>().getp();
+
+    if (opt_decl != NULL) 
+    {
       store::Item_t qnameItem;
       zstring value = opt_decl->get_val().str();
 
@@ -3064,6 +3071,7 @@ void* begin_visit(const VFO_DeclList& v)
 
       if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+
       theSctx->bind_option(qnameItem, value);
     }
   }
@@ -3075,21 +3083,22 @@ void* begin_visit(const VFO_DeclList& v)
   //  (1) the annotations of variable and function declarations
   //  (2) the type declarations for the params and return value of functions
   //  (3) and then creates the udf object and binds it in the sctx.
-  // 2nd pass;  happens when accept() is called on each
-  //  individual FunctionDecl node in the list.
+  // 2nd pass;  happens when accept() is called on each individual FunctionDecl
+  // node in the list.
 
   for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
        it != v.end();
        ++it)
   {
-    const FunctionDecl* func_decl = it->dyn_cast<FunctionDecl> ().getp ();
+    const FunctionDecl* func_decl = it->dyn_cast<FunctionDecl>().getp();
 
     // skip variable and option declarations.
     if (func_decl == NULL)
       continue;
 
     AnnotationListParsenode* lAnns = func_decl->get_annotations();
-    if (lAnns) {
+    if (lAnns) 
+    {
       lAnns->accept(*this);
     }
 
@@ -3158,7 +3167,6 @@ void* begin_visit(const VFO_DeclList& v)
     }
     else if (func_decl->is_updating())
     {
-
       // TODO: should we have a different default?
       // TODO: if returnType is set to something other than ITEM_TYPE_STAR
       // the body of the udf will be wrapped in a treat expr. So, we will
@@ -3175,9 +3183,9 @@ void* begin_visit(const VFO_DeclList& v)
 
     // Create the function signature.
     //
-    bool lIsVariadic = theAnnotations?
-      theAnnotations->contains(theSctx->lookup_ann("variadic")):
-      false;
+    bool lIsVariadic = (theAnnotations ?
+                        theAnnotations->contains(theSctx->lookup_ann("variadic")):
+                        false);
 
     signature sig(qnameItem, paramTypes, returnType, lIsVariadic);
 
@@ -3185,15 +3193,19 @@ void* begin_visit(const VFO_DeclList& v)
     // function declares both updating keyword and updating annotation
     if (theAnnotations &&
         func_decl->is_updating() &&
-        theAnnotations->contains(theSctx->lookup_ann("updating"))) {
+        theAnnotations->contains(theSctx->lookup_ann("updating"))) 
+    {
         throw XQUERY_EXCEPTION(
             err::XQST0106,
             ERROR_PARAMS("updating"),
             ERROR_LOC(loc));
-    } else if (func_decl->is_updating()) {
+    }
+    else if (func_decl->is_updating()) 
+    {
       // translate updating keyword into an annotation
       std::vector<rchandle<const_expr> > lLiterals;
-      if (!theAnnotations) {
+      if (!theAnnotations) 
+      {
         theAnnotations = new AnnotationList();
       }
       theAnnotations->push_back(theSctx->lookup_ann("updating"), lLiterals);
@@ -3641,10 +3653,21 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     }
 
     if (theAnnotations->contains(theSctx->lookup_ann("assignable")))
+    {
       ve->set_mutable(true);
-
-    if (theAnnotations->contains(theSctx->lookup_ann("nonassignable")))
+    }
+    else if (theAnnotations->contains(theSctx->lookup_ann("nonassignable")))
+    {
       ve->set_mutable(false);
+    }
+    else if (v.is_global())
+    {
+      ve->set_mutable(theSctx->xquery_version() > StaticContextConsts::xquery_version_3_0);
+    }
+  }
+  else if (v.is_global())
+  {
+    ve->set_mutable(theSctx->xquery_version() > StaticContextConsts::xquery_version_3_0);
   }
 
   xqtref_t type;
@@ -3703,10 +3726,11 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     push_nodestack(ve.getp());
 
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) {
-      QueryLoc lExpandedLocation = expandQueryLoc(
-        v.get_name()->get_location(),
-        initExpr->get_loc());
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    {
+      QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
+                                                  initExpr->get_loc());
+
       wrap_in_debugger_expr(initExpr, lExpandedLocation, true, true);
     }
 #endif
@@ -3730,12 +3754,11 @@ void* begin_visit(const AnnotationListParsenode& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_PARAMS("functions and variables annotations only available in XQuery 1.1 or later"),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS("functions and variables annotations only available in XQuery 1.1 or later"));
   }
+
+  assert(theAnnotations == NULL);
 
   theAnnotations = new AnnotationList();
 
@@ -3763,16 +3786,14 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   store::Item_t lExpandedQName;
-  expand_function_qname(
-    lExpandedQName,
-    v.get_qname().getp(),
-    loc
-  );
+  expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
 
   std::vector<rchandle<const_expr> > lLiterals;
   if (v.get_literals())
   {
-    for (std::vector<rchandle<exprnode> >::const_iterator lIter = v.get_literals()->begin();
+    std::vector<rchandle<exprnode> >::const_iterator lIter;
+
+    for (lIter = v.get_literals()->begin();
          lIter != v.get_literals()->end();
          ++lIter)
     {
@@ -3780,8 +3801,8 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
       lLiterals.insert(lLiterals.begin(), lLiteral);
     }
   }
-  theAnnotations->push_back(lExpandedQName, lLiterals);
 
+  theAnnotations->push_back(lExpandedQName, lLiterals);
 }
 
 
@@ -5306,14 +5327,12 @@ void end_visit(const AssignExpr& v, void* visit_state)
 
   var_expr_t ve = lookup_var(v.get_name(), loc, err::XPST0008);
 
-  if ((ve->get_kind() != var_expr::local_var
-        &&
-        ve->get_kind() != var_expr::prolog_var)
-      ||
+  if ((ve->get_kind() != var_expr::local_var &&
+       ve->get_kind() != var_expr::prolog_var) ||
       !ve->is_mutable())
   {
     RAISE_ERROR(err::XSST0007, loc,
-      ERROR_PARAMS(ve->get_name()->getStringValue()));
+    ERROR_PARAMS(ve->get_name()->getStringValue()));
   }
 
   xqtref_t varType = ve->get_type();

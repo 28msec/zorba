@@ -73,7 +73,7 @@ declare %nondeterministic function random:uuid() as xs:string external;
  : @return the random between bottom and up, as xs:integer
  : @error XQP0021(errValue) if bottom is bigger than up
 :)
-declare function random:randbetween( $bottom as xs:integer, $up as xs:integer) as xs:integer
+declare %nondeterministic function random:randbetween( $bottom as xs:integer, $up as xs:integer) as xs:integer
 {
   if($bottom = $up) then
     $bottom

@@ -18,7 +18,7 @@ ERROR:
 
 (: ******************************** SIMPLE TESTS ******************************** :)
 
-declare %sequential function commons:testExists($path as xs:string) as xs:string* {
+declare %nondeterministic %sequential function commons:testExists($path as xs:string) as xs:string* {
   if (file:exists($path)) then
     "SUCCESS"
   else
@@ -39,7 +39,7 @@ declare %sequential function commons:testWriteXml($path as xs:string, $xml as it
   "SUCCESS"
 };
 
-declare %sequential function commons:testReadAndCompareXml($path as xs:string, $xml as item()) as xs:string* {
+declare %nondeterministic %sequential function commons:testReadAndCompareXml($path as xs:string, $xml as item()) as xs:string* {
   let $x := fn:parse-xml(file:read-text($path))
   return
     if($x eq $xml) then 
@@ -49,11 +49,11 @@ declare %sequential function commons:testReadAndCompareXml($path as xs:string, $
 ", fn:serialize($xml))
 };
 
-declare %sequential function commons:testReadBinary($path as xs:string) as xs:base64Binary {
+declare %nondeterministic %sequential function commons:testReadBinary($path as xs:string) as xs:base64Binary {
   file:read-binary($path)
 };
 
-declare %sequential function commons:testDelete($path as xs:string) as xs:string* {
+declare %nondeterministic %sequential function commons:testDelete($path as xs:string) as xs:string* {
   try {
     file:delete($path);
     "SUCCESS";
@@ -76,7 +76,7 @@ declare %sequential function commons:testWriteSerializeXml($path as xs:string, $
 
 (: ****************************** COMPOSITE TESTS ******************************* :)
 
-declare %sequential function commons:testInitDir($dir as xs:string) as xs:string* {
+declare %nondeterministic %sequential function commons:testInitDir($dir as xs:string) as xs:string* {
   (: ==================================================================== :)
   (: the test directory must not exist :)
   (: ========= :)
@@ -107,7 +107,7 @@ declare %sequential function commons:testInitDir($dir as xs:string) as xs:string
 };
 
 
-declare %sequential function commons:testUnInitDir($dir as xs:string) as xs:string* 
+declare %nondeterministic %sequential function commons:testUnInitDir($dir as xs:string) as xs:string* 
 {
   (: ==================================================================== :)
   (: delete the directory :)

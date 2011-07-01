@@ -45,22 +45,22 @@ END_SERIALIZABLE_CLASS_VERSIONS(AnnotationList);
 /*******************************************************************************
 
 ********************************************************************************/
-AnnotationInternal::AnnotationInternal(
-  const store::Item_t& aExpandedQName
-)
-  : theQName(aExpandedQName)
+AnnotationInternal::AnnotationInternal(const store::Item_t& aExpandedQName)
+  :
+  theQName(aExpandedQName)
 {
 }
 
 
 AnnotationInternal::AnnotationInternal(
   const store::Item_t& aExpandedQName,
-  const std::vector<AnnotationLiteral_t>& aLiteralList
-)
-  : theQName(aExpandedQName),
-    theLiteralList(aLiteralList)
+  const std::vector<AnnotationLiteral_t>& aLiteralList)
+  :
+  theQName(aExpandedQName),
+  theLiteralList(aLiteralList)
 {
 }
+
 
 void AnnotationInternal::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -81,8 +81,7 @@ unsigned int AnnotationInternal::getNumLiterals() const
 }
 
 
-const AnnotationLiteral*
-AnnotationInternal::getLiteral(unsigned int index) const
+const AnnotationLiteral* AnnotationInternal::getLiteral(unsigned int index) const
 {
   if (index < theLiteralList.size())
     return theLiteralList[index];
@@ -120,6 +119,8 @@ AnnotationInternal* AnnotationList::getAnnotation(unsigned int index) const
     return NULL;
 }
 
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -127,17 +128,33 @@ AnnotationList::AnnotationList()
 {
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 AnnotationList::~AnnotationList()
 {
 }
 
-void
-AnnotationList::push_back(
+
+/*******************************************************************************
+
+********************************************************************************/
+void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theAnnotationList;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AnnotationList::push_back(
     const store::Item_t& aExpQName,
-    const std::vector<rchandle<const_expr> >& aLiterals
-  )
+    const std::vector<rchandle<const_expr> >& aLiterals)
 {
   std::vector<AnnotationLiteral_t> lLiterals;
+
   for (std::vector<rchandle<const_expr> >::const_iterator it = aLiterals.begin();
        it != aLiterals.end();
        ++it)
@@ -148,8 +165,11 @@ AnnotationList::push_back(
   theAnnotationList.push_back(new AnnotationInternal(aExpQName, lLiterals));
 }
 
-bool
-AnnotationList::contains(const store::Item_t& aSearchQName) const
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AnnotationList::contains(const store::Item_t& aSearchQName) const
 {
   // sequential search might not be the most efficient but
   // how many annotations might a function or variable have? 5?
@@ -165,8 +185,11 @@ AnnotationList::contains(const store::Item_t& aSearchQName) const
   return false;
 }
 
-void
-AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
+
+/*******************************************************************************
+  Called from translator::end_visit(const AnnotationListParsenode& v, void*)
+********************************************************************************/
+void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
 {
   bool have_public_or_private = false;
   bool have_determ_or_nondeterm = false;
@@ -250,10 +273,6 @@ AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
   }
 }
 
-void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theAnnotationList;
-}
 
 void AnnotationList::createBuiltIn(static_context* aCtx)
 {

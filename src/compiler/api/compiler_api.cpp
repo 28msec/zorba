@@ -286,9 +286,6 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 ********************************************************************************/
 expr_t XQueryCompiler::optimize(expr_t lExpr)
 {
-  if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
-    return lExpr;
-
   // Build the call-graph among the udfs that are actually used in the query
   // program.
   UDFGraph udfGraph(lExpr.getp());
@@ -297,6 +294,9 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   // are actually non-deterministic and mark them as such. This has to be done
   // before optimization.
   udfGraph.inferDeterminism();
+
+  if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
+    return lExpr;
 
   // Optimize the udfs.
   udfGraph.optimizeUDFs(theCompilerCB);

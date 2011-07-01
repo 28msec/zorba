@@ -3,7 +3,7 @@ declare namespace zorba="http://www.zorba-xquery.com";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://expath.org/ns/file";
 
-declare %sequential function local:get-files($files as xs:string) as xs:string
+declare %nondeterministic %sequential function local:get-files($files as xs:string) as xs:string
 {
   variable $xml-files as xs:string* := tokenize($files,',');
   variable $temp := for $file in $xml-files
@@ -13,7 +13,7 @@ declare %sequential function local:get-files($files as xs:string) as xs:string
 };
 
 
-declare %sequential function local:process-file($file) as xs:string
+declare %nondeterministic %sequential function local:process-file($file) as xs:string
 {
   let $doc := fn:parse-xml(file:read-text($file))/zorba:iterators
   return
