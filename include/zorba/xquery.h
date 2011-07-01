@@ -456,53 +456,56 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   
 #ifdef ZORBA_WITH_DEBUGGER
   /**
-   * \brief Run the query with the debugger server.
+   * \brief Start a debugger server.
    *
-   * This method runs the query with the debugger server.
-   * This method is blocking up until a debugger client connects to the
-   * server and decided to end the server. In order to call this method, the
-   * query has to be compiled.
+   * This method will start a debugger server that will try to connect 
+   * to a DBGP-enabled debugger client on the indicated socket (host and port).
+   * In order to call this method, the query has to be compiled.
    *
-   * @param aPort the port on which the debugger client is listening on.
+   * @param hort the host where the debugger client is listening.
+   * @param port the port on which the debugger client is listening.
+   *
+   * @throw ZorbaException if an error occurs (e.g. the query is closed or has
+   *        not been compiled, the server cannot connect to the client, etc.)
    */
   virtual void
-  debug(unsigned short aPort = 9000) = 0;
-  
-  /** 
-   * \brief Run the query with the debugger server.
+  debug(
+    const std::string& host,
+    unsigned short port) = 0;
+
+  /**
+   * \brief Start a debugger server.
    *
-   * This method runs the query with the debugger server.
-   * This method is blocking up until a debugger client connects to the
-   * server and decided to end the server. In order to call this method, the
-   * query has to be compiled.
+   * This method will start a debugger server that will try to connect 
+   * to a DBGP-enabled debugger client on the indicated socket (host and port).
+   * In order to call this method, the query has to be compiled.
    * You can specify an output stream and serialization options that can be used
    * by the serializer.
    *
-   * @param aOutStream the output stream on which the result is written.
-   * @param aSerOptions an optinal set of serialization options.
-   * @param aPort the port on which the debugger client is listening on.
+   * @param outStream the output stream on which the result is written.
+   * @param serOptions the serialization options.
+   * @param hort the host where the debugger client is listening.
+   * @param port the port on which the debugger client is listening.
    *
    * @throw ZorbaException if an error occurs (e.g. the query is closed or has
-   *        not been compiled)
+   *        not been compiled, the server cannot connect to the client, etc.)
    */
   virtual void
-  debug(std::ostream& aOutStream,
-        Zorba_SerializerOptions& aSerOptions,
-        unsigned short aPort = 9000) = 0;
-  
+  debug(
+    std::ostream& outStream,
+    Zorba_SerializerOptions& serOptions,
+    const std::string& host,
+    unsigned short port) = 0;
+
+
   virtual void
-  debug(std::ostream& aOutStream,
-        Zorba_SerializerOptions& aSerOptions,
-        const std::string& aHost,
-        unsigned short aPort = 9000) = 0;
-  
-  virtual void
-  debug(std::ostream& aOutStream,
-        itemHandler aCallbackFunction,
-        void* aCallbackData,
-        Zorba_SerializerOptions& aSerOptions,
-        const std::string& aHost,
-        unsigned short aPort = 9000) = 0;
+  debug(
+    std::ostream& outStream,
+    itemHandler callbackFunction,
+    void* callbackData,
+    Zorba_SerializerOptions& serOptions,
+    const std::string& host,
+    unsigned short port) = 0;
 #endif
 
   /** \brief Returns a CollectionManager responsible for all collections

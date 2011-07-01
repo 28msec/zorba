@@ -128,6 +128,7 @@ ostream& operator<<( ostream &o, category c ) {
 
     case ZORBA_API           : o << "Zorba API"             ; break;
     case ZORBA_DDF           : o << "Zorba data-definition" ; break;
+    case ZORBA_DEBUGGER      : o << "Zorba debugger"        ; break;
     case ZORBA_OS            : o << "operating system"      ; break;
     case ZORBA_SERIALIZATION : o << "Zorba serialization"   ; break;
     case ZORBA_STORE         : o << "Zorba store"           ; break;

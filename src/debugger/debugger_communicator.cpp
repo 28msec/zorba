@@ -22,16 +22,22 @@
 #include <string>
 #include <sstream>
 
+#include <zorba/error.h>
+#include <zorba/error_list.h>
+
 #include "socket.h"
 #include "zorbautils/synchronous_logger.h"
 
+#include "diagnostics/diagnostic.h"
+#include "diagnostics/zorba_exception.h"
+
+
 #ifndef WIN32
 # include <unistd.h>
-# define msleep(x) usleep(1000*x)
+# define msleep(s) usleep(1000*s);
 #else
-# include <Windows.h>
-# define msleep Sleep
-# define sleep(s) Sleep(1000*s)
+# include <windows.h>
+# define msleep(s) Sleep(s)
 #endif
 
 namespace zorba {
@@ -39,19 +45,44 @@ namespace zorba {
 DebuggerCommunicator::DebuggerCommunicator(
   const std::string&  aHost,
   unsigned short      aPort)
-  : theSocket(0),
+  : theHost(aHost),
+    thePort(aPort),
+    theSocket(0),
     theSocketInStream(0),
     theSocketOutStream(0),
     theCommunicatorInStream(0),
     theCommunicatorOutStream(0),
     theResponseQueue(0)
 {
+}
+
+DebuggerCommunicator::~DebuggerCommunicator()
+{
+  if (theSocket) {
+    // send the termination message to terminate the queue loop/thread
+    theResponseQueue->enqueue("");
+    // wait until the queue thread is done
+    theResponseQueue->join();
+
+    // now we can safely delete all the pointers
+	  delete theResponseQueue;
+	  delete theCommunicatorOutStream;
+	  delete theCommunicatorInStream;
+	  delete theSocketOutStream;
+	  delete theSocketInStream;
+    delete theSocket;
+  }
+}
+
+void
+DebuggerCommunicator::connect()
+{
 	for (int i = 0; i < 3 && !theSocket; i++)
   {
 		try
     {
 			// Connect to the client on the given host and port
-      std::auto_ptr<TCPSocket> lSocket(new TCPSocket(aHost, aPort));
+      std::auto_ptr<TCPSocket> lSocket(new TCPSocket(theHost, thePort));
       theSocket = lSocket.release();
       theSocketInStream = new socket_streambuf(*theSocket);
       theSocketOutStream = new socket_streambuf(*theSocket);
@@ -63,30 +94,27 @@ DebuggerCommunicator::DebuggerCommunicator(
     catch (DebuggerSocketException& /* e */)
     {
       // Wait one second before trying to reconnect
-      sleep(1);
+      msleep(100);
 		}
-  }
-  
-  if (!theSocket) {
-    zorba::cerr << "[Server Thread] Couldn't connect to the debugger client\n";
-	  return;
   }
 }
 
-DebuggerCommunicator::~DebuggerCommunicator()
+bool
+DebuggerCommunicator::isConnected()
 {
-  // send the termination mressage to terminate the queue loop/thread
-  theResponseQueue->enqueue("");
-  // wait until the queue thread is done
-  theResponseQueue->join();
+  return theSocket;
+}
 
-  // now we can safely delete all the pointers
-	delete theSocket;
-	delete theSocketInStream;
-	delete theSocketOutStream;
-	delete theCommunicatorInStream;
-	delete theCommunicatorOutStream;
-	delete theResponseQueue;
+const std::string&
+DebuggerCommunicator::getHost()
+{
+  return theHost;
+}
+
+unsigned short
+DebuggerCommunicator::getPort()
+{
+  return thePort;
 }
 
 void

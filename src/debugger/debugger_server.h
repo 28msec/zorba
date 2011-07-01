@@ -50,8 +50,11 @@ class DebuggerServer {
     virtual ~DebuggerServer();
 
   public:
-    virtual void
+    virtual bool
     run();
+
+    void
+    throwError();
 
   private:
 

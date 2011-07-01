@@ -78,6 +78,7 @@ zorba::diagnostic::category ZorbaErrQName::category() const {
     case 'A': return ZORBA_API;
     case 'C': return ZORBA_SERIALIZATION;
     case 'D': return ZORBA_DDF;
+    case 'G': return ZORBA_DEBUGGER;
     case 'O': return ZORBA_OS;
     case 'S': return ZORBA_STORE;
     case 'X': return ZORBA_XQP;

@@ -316,27 +316,26 @@ public:
   void executeSAX();
 
 #ifdef ZORBA_WITH_DEBUGGER
-  void debug(
-        unsigned short aPort);
+  void
+  debug(
+    const std::string& host,
+    unsigned short port);
 
-  void debug(
-        std::ostream& aOutStream,
-        Zorba_SerializerOptions& aSerOptions,
-        unsigned short aPort);
+  virtual void
+  debug(
+    std::ostream& outStream,
+    Zorba_SerializerOptions& serOptions,
+    const std::string& host,
+    unsigned short port);
 
-  void debug(
-        std::ostream& aOutStream,
-        Zorba_SerializerOptions& aSerOptions,
-        const std::string& aHost,
-        unsigned short aPort);
-
-  void debug(
-        std::ostream& aOutStream,
-        itemHandler aCallbackFunction,
-        void* aCallbackData,
-        Zorba_SerializerOptions& aSerOptions,
-        const std::string& aHost,
-        unsigned short aPort = 9000);
+  void
+  debug(
+    std::ostream& outStream,
+    itemHandler callbackFunction,
+    void* callbackData,
+    Zorba_SerializerOptions& serOptions,
+    const std::string& host,
+    unsigned short port);
 #endif
 
   void close();

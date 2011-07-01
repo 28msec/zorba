@@ -236,6 +236,7 @@ enum category {
   ZORBA_XQP,                            // Zorba XQuery Processor
   ZORBA_API,                            // Zorba API
   ZORBA_DDF,                            // Data Definition Facility
+  ZORBA_DEBUGGER,                       // Zorba Debugger
   ZORBA_OS,                             // Operating System
   ZORBA_SERIALIZATION,
   ZORBA_STORE

@@ -1214,11 +1214,14 @@ PlanWrapper_t XQueryImpl::generateWrapper()
 /*******************************************************************************
 
 ********************************************************************************/
-void XQueryImpl::debug(unsigned short aPort)
+void
+XQueryImpl::debug(
+  const std::string& aHost,
+  unsigned short aPort)
 {
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-  debug(std::cout, lSerOptions, aPort);
+  debug(std::cout, lSerOptions, aHost, aPort);
 }
 
 
@@ -1226,23 +1229,10 @@ void XQueryImpl::debug(unsigned short aPort)
 
 ********************************************************************************/
 void XQueryImpl::debug(
-    std::ostream& aOutStream,
-    Zorba_SerializerOptions& aSerOptions,
-    unsigned short aPort)
-{
-  std::string lHost = "127.0.0.1";
-  debug(aOutStream, aSerOptions, lHost, aPort);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XQueryImpl::debug(
-    std::ostream& aOutStream,
-    Zorba_SerializerOptions& aSerOptions,
-    const std::string& aHost,
-    unsigned short aPort)
+  std::ostream& aOutStream,
+  Zorba_SerializerOptions& aSerOptions,
+  const std::string& aHost,
+  unsigned short aPort)
 {
   debug(aOutStream, 0, 0, aSerOptions, aHost, aPort);
 }
@@ -1257,7 +1247,7 @@ void XQueryImpl::debug(
     void* aCallbackData,
     Zorba_SerializerOptions& aSerOptions,
     const std::string& aHost,
-    unsigned short aPort /*= 9000*/)
+    unsigned short aPort)
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -1278,7 +1268,9 @@ void XQueryImpl::debug(
     DebuggerServer aDebuggerServer(
       this, aSerOptions, aOutStream, aCallbackFunction,
       aCallbackData, aHost, aPort);
-    aDebuggerServer.run();
+    if (!aDebuggerServer.run()) {
+      aDebuggerServer.throwError();
+    }
 
     theExecuting = false;
   }

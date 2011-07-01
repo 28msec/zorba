@@ -41,10 +41,6 @@
 
 #include <zorba/store_manager.h>
 
-#ifdef ZORBA_WITH_DEBUGGER
-#include "debugger_server_runnable.h"
-#endif
-
 #include "error_printer.h"
 #include "util.h"
 #include "module_path.h"
@@ -926,9 +922,6 @@ _tmain(int argc, _TCHAR* argv[])
           return 9;
         }
 
-        std::auto_ptr<zorba::DebuggerServerRunnable> lServer;
-//        std::auto_ptr<DebuggerHandler>               lHandler;
-
         std::string lHost = lProperties.debugHost();
         if (lHost == "") {
           lHost = "127.0.0.1";
@@ -939,32 +932,12 @@ _tmain(int argc, _TCHAR* argv[])
               Zorba_SerializerOptions::SerializerOptionsFromStringParams(
               lProperties.getSerializerParameters());
           createSerializerOptions(lSerOptions, lProperties);
-          lServer.reset(new zorba::DebuggerServerRunnable(
-                            lQuery,
-                            *lOutputStream,
-                            lHost,
-                            lProperties.getDebugPort(),
-                            lSerOptions));
+
           if (!lProperties.hasNoLogo() && !lProperties.debug()) {
             std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
           }
-          lServer->start();
+          lQuery->debug(*lOutputStream, lSerOptions, lHost, lProperties.getDebugPort());
         }
-
-        if (lProperties.debug()) {
-          if (!lProperties.hasNoLogo() ) {
-            std::cout << "Zorba XQuery Debugger\n" << copyright_str << std::endl;
-          }
-        }
-
-//        lHandler.reset(0);
-
-        if (lProperties.debug())
-        {
-          lServer->join();
-          lServer.reset(0);
-        }
-
       }
       catch (zorba::XQueryException const& qe)
       {

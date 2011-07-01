@@ -44,7 +44,8 @@ DebuggerServer::DebuggerServer(
   unsigned short            aPort)
 {
   theCommunicator = new DebuggerCommunicator(aHost, aPort);
-  theRuntime = new DebuggerRuntime(aQuery, aOstream, aSerializerOptions,
+  theRuntime = new DebuggerRuntime(
+    aQuery, aOstream, aSerializerOptions,
     theCommunicator, aHandler, aCallbackData);
 }
 
@@ -56,9 +57,15 @@ DebuggerServer::~DebuggerServer()
 }
 
 
-void
+bool
 DebuggerServer::run()
 {
+  theCommunicator->connect();
+
+  if (!theCommunicator->isConnected()) {
+    return false;
+  }
+
   init();
 
   std::string lCommand;
@@ -79,6 +86,8 @@ DebuggerServer::run()
   theRuntime->terminate();
   theRuntime->resetRuntime();
   theRuntime->join();
+
+  return true;
 }
 
 
@@ -593,6 +602,17 @@ DebuggerServer::buildErrorResponse(
     << "</error></response>";
 
   return lResponse.str();
+}
+
+
+void
+DebuggerServer::throwError()
+{
+  std::stringstream lSs;
+  lSs << theCommunicator->getHost() << ":" << theCommunicator->getPort();
+  throw ZORBA_EXCEPTION(
+    zerr::ZGDB0001_CANNOT_CONNECT_TO_CLIENT, ERROR_PARAMS( lSs.str() )
+  );
 }
 
 } /* namespace zorba */

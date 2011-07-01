@@ -71,10 +71,29 @@ class DebuggerCommunicator {
 
 	public:
 
-    void send(const std::string& aMessage);
-    void receive(std::string& aMessage);
+    bool
+    isConnected();
+
+    const std::string&
+    getHost();
+
+    unsigned short
+    getPort();
+
+    void
+    connect();
+
+    void
+    send(const std::string& aMessage);
+
+    void
+    receive(std::string& aMessage);
 		
 	private:
+
+    const std::string theHost;
+    unsigned short    thePort;
+    
 
     TCPSocket*        theSocket;
     socket_streambuf* theSocketInStream;

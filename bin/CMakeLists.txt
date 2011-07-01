@@ -42,7 +42,6 @@ SET(SRCS
   error_printer.cpp
   util.cpp
   module_path.cpp
-  debugger_server_runnable.cpp
 )
 
 INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")

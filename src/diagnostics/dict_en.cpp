@@ -361,6 +361,14 @@ extern entry const dict_en[] = {
   { "ZDTY0011", "result of some key expression of index $1 does not match its declared type" },
   { "ZDTY0012", "\"$1\": general range index key item has type for which no ordering relationship exists" },
 
+#ifdef ZORBA_WITH_DEBUGGER
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  { "ZGDB0001", "can not connect to the DBGP client on socket: $1" },
+#endif /* ZORBA_WITH_DEBUGGER */
+
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
