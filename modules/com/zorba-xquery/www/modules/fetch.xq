@@ -45,15 +45,3 @@ declare variable $fetch:ResourceDoesNotExist as xs:QName :=
  :        the given location.
  :)
 declare %ann:streamable function fetch:content($uri as xs:string) as xs:string external;
-
-(:~
- : Tries to figure out the media type of the resource refered to by the
- : given URI (see [RFC 2376], [RFC 3023] and/or its successors).
- : 
- : @param $uri the resource 
- : @error fetch:ErrRetrievingResource if an error occured
- :        retrieving the resource.
- : @error fetch:ResourceDoesNotExist if no resource could be found at
- :        the given location.
- :)
-declare function fetch:content-type($uri as xs:string) as xs:string external;
