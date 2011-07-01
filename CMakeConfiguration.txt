@@ -156,6 +156,9 @@ MESSAGE(STATUS "ZORBA_XQUERYX:                        " ${ZORBA_XQUERYX})
 
 SET(ZORBA_TEST_XQUERYX OFF CACHE BOOL "Test only xqueryx (.xqx) tests")
 MESSAGE(STATUS "ZORBA_TEST_XQUERYX:                   " ${ZORBA_TEST_XQUERYX})
+IF(ZORBA_TEST_XQUERYX)
+  SET(ZORBA_XQUERYX ON CACHE BOOL "Activate capability to compile XQueryX code (on/off)" FORCE)
+ENDIF(ZORBA_TEST_XQUERYX)
 
 IF(WIN32)
   SET(CMAKE_SKIP_RPATH ON CACHE BOOL "The rpath information is not added to compiled executables")

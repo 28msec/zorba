@@ -55,7 +55,7 @@ namespace zorba {
       assert(str.size() == length);
 #endif
       theClient->theHandler->parseMessage(str);
-      this->sleep(1000);
+      this->sleep_(1000);
     }
   }
   

@@ -130,7 +130,7 @@ protected:
    * Makes the current thread sleeping for a given
    * number of micro seconds.
    */
-  void sleep(unsigned long useconds);
+  void sleep_(unsigned long useconds);
 
 private:
   static void mutexCleanupHandler(void *);
