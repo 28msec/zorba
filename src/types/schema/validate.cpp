@@ -66,7 +66,7 @@ bool Validator::effectiveValidationValue(
     const store::Item_t& typeName,
     TypeManager* typeManager,
     ParseConstants::validation_mode_t validationMode,
-    static_context* sctx,
+    const static_context* sctx,
     const QueryLoc& loc)
 {
   //cout << "Starting Validation   typeManager: " << typeManager <<
@@ -99,7 +99,7 @@ bool Validator::realValidationValue(
     const store::Item_t& typeName,
     TypeManager* typeManager,
     ParseConstants::validation_mode_t validationMode,
-    static_context* sctx,
+    const static_context* sctx,
     const QueryLoc& loc)
 {
   xqtref_t type;
@@ -292,7 +292,7 @@ bool Validator::realValidationValue(
 
 
 store::Item_t Validator::processElement(
-    static_context* sctx,
+    const static_context* sctx,
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Item* parent,
@@ -392,7 +392,7 @@ void Validator::validateAttributes(
 
 
 void Validator::processAttributes(
-    static_context* sctx,
+    const static_context* sctx,
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Item* parent,
@@ -459,7 +459,7 @@ void Validator::processAttributes(
 
 
 void Validator::processChildren(
-    static_context* sctx,
+    const static_context* sctx,
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Item* parent,
@@ -638,7 +638,7 @@ void Validator::processNamespaces (
 
 
 void Validator::processTextValue(
-    static_context* sctx,
+    const static_context* sctx,
     TypeManager* typeManager,
     store::NsBindings& bindings,
     const store::Item_t& typeQName,

@@ -48,11 +48,11 @@ class Validator
         const store::Item_t& typeName,
         TypeManager* typeManager,
         ParseConstants::validation_mode_t validationMode,
-        static_context* sctx,
+        const static_context* sctx,
         const QueryLoc& loc); 
 
   static void processTextValue(
-        static_context* sctx,
+        const static_context* sctx,
         TypeManager* typeManager, 
         store::NsBindings& bindings,
         const store::Item_t& typeQName,
@@ -106,11 +106,11 @@ private:
         const store::Item_t& typeName,
         TypeManager* typeManager,
         ParseConstants::validation_mode_t validationMode,
-        static_context* sctx,
+        const static_context* sctx,
         const QueryLoc& loc);
 
   static void processChildren(
-        static_context* sctx,
+        const static_context* sctx,
         TypeManager* typeManager,
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
@@ -118,7 +118,7 @@ private:
         const QueryLoc& loc);
 
   static store::Item_t processElement(
-        static_context* sctx,
+        const static_context* sctx,
         TypeManager* typeManager, 
         EventSchemaValidator& schemaValidator,
         store::Item* parent,
@@ -130,7 +130,7 @@ private:
         store::Iterator_t attributes);
 
   static void processAttributes(
-        static_context* sctx,
+        const static_context* sctx,
         TypeManager* typeManager,
         EventSchemaValidator& schemaValidator,
         store::Item* parent,

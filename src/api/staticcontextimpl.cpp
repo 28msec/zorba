@@ -1075,7 +1075,7 @@ bool
 StaticContextImpl::validate(
     const Item& rootElement,
     Item& validatedResult,
-    validation_mode_t validationMode)
+    validation_mode_t validationMode) const
 {
   try
   {
@@ -1112,7 +1112,7 @@ StaticContextImpl::validate(
     const Item& rootElement,
     Item& validatedResult,
     const String& targetNamespace,
-    validation_mode_t validationMode)
+    validation_mode_t validationMode) const
 {
   try
   {
@@ -1150,7 +1150,7 @@ bool
 StaticContextImpl::validateSimpleContent(
     const String& stringValue,
     const Item& typeQName,
-    std::vector<Item>& resultList)
+    std::vector<Item>& resultList) const
 {
   try {
     bool res;

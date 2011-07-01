@@ -31,7 +31,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(namespace_context)
 /*******************************************************************************
 
 ********************************************************************************/
-namespace_context::namespace_context(static_context *sctx, store::NsBindings& bindings)
+namespace_context::namespace_context(const static_context *sctx, store::NsBindings& bindings)
   :
   m_sctx(sctx)
 {
@@ -48,7 +48,8 @@ namespace_context::namespace_context(static_context *sctx, store::NsBindings& bi
 void namespace_context::serialize(::zorba::serialization::Archiver& ar)
 {
   //serialize_baseclass(ar, (SimpleRCObject*)this);
-  ar & m_sctx;
+  static_context * lsc = const_cast<static_context *>(m_sctx);
+  ar & lsc;
   ar & m_parent;
   ar & m_bindings;
 }

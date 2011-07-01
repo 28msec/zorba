@@ -1507,7 +1507,7 @@ void static_context::get_full_module_paths(std::vector<zstring>& paths) const
 bool static_context::validate(
     store::Item* rootElement,
     store::Item* validatedResult,
-    StaticContextConsts::validation_mode_t validationMode)
+    StaticContextConsts::validation_mode_t validationMode) const
 {
   zstring xsTns(XML_SCHEMA_NS);
   return validate(rootElement, validatedResult, xsTns, validationMode);
@@ -1518,7 +1518,7 @@ bool static_context::validate(
     store::Item* rootElement,
     store::Item* validatedResult,
     const zstring& targetNamespace,
-    StaticContextConsts::validation_mode_t validationMode)
+    StaticContextConsts::validation_mode_t validationMode) const
 {
   if ( !rootElement->isNode() ||
        (rootElement->getNodeKind() != store::StoreConsts::documentNode &&
@@ -1563,7 +1563,7 @@ bool static_context::validate(
 bool static_context::validateSimpleContent(
     zstring& stringValue,
     store::Item* typeQName,
-    std::vector<store::Item_t>& resultList)
+    std::vector<store::Item_t>& resultList) const
 {
   store::NsBindings bindings;
   this->get_namespace_bindings(bindings);

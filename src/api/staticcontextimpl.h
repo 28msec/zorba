@@ -243,17 +243,17 @@ public:
 
   virtual bool
   validate(const Item& rootElement, Item& validatedResult,
-           validation_mode_t validationMode = validate_strict);
+           validation_mode_t validationMode = validate_strict) const;
 
   virtual bool
   validate(const Item& rootElement, Item& validatedResult,
            const String& targetNamespace,
-           validation_mode_t validationMode = validate_strict);
+           validation_mode_t validationMode = validate_strict) const;
 
   virtual bool
   validateSimpleContent(const String& stringValue,
           const Item& typeQName,
-          std::vector<Item>& resultList);
+          std::vector<Item>& resultList) const;
 
   ItemSequence_t
   invoke(const Item& aQName,

@@ -696,18 +696,20 @@ public:
   bool validate(
         store::Item* rootElement,
         store::Item* validatedResult,
-        StaticContextConsts::validation_mode_t validationMode = StaticContextConsts::strict_validation);
+        StaticContextConsts::validation_mode_t validationMode =
+            StaticContextConsts::strict_validation) const;
 
   bool validate(
         store::Item* rootElement,
         store::Item* validatedResult,
         const zstring& targetNamespace,
-        StaticContextConsts::validation_mode_t validationMode = StaticContextConsts::strict_validation);
+        StaticContextConsts::validation_mode_t validationMode =
+            StaticContextConsts::strict_validation) const ;
 
   bool validateSimpleContent(
         zstring& textValue,
         store::Item* typeQName,
-        std::vector<store::Item_t>& resultList);
+        std::vector<store::Item_t>& resultList) const;
 
   //
   // Type management
