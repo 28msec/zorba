@@ -134,7 +134,7 @@ public:
 
 void createDynamicContext(
     DriverContext& driverCtx,
-    const zorba::StaticContext_t& sctx,
+    const zorba::StaticContext_t& aBaseCtx,
     zorba::XQuery_t& query,
     bool enableDtd);
 

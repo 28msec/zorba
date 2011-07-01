@@ -1095,9 +1095,12 @@ StaticContextImpl::validate(
         break;
     }
 
-    return theCtx->validate(Unmarshaller::getInternalItem(rootElement),
-                            Unmarshaller::getInternalItem(validatedResult),
+    store::Item_t lRes(Unmarshaller::getInternalItem(validatedResult));
+    bool lResBool = theCtx->validate(Unmarshaller::getInternalItem(rootElement),
+                            lRes,
                             valMode);
+    validatedResult = lRes;
+    return lResBool;
   }
   catch (ZorbaException const& e)
   {
@@ -1132,11 +1135,13 @@ StaticContextImpl::validate(
         break;
     }
 
+    store::Item_t lRes(Unmarshaller::getInternalItem(validatedResult));
     zstring lTns = Unmarshaller::getInternalString(targetNamespace);
-    return theCtx->validate(Unmarshaller::getInternalItem(rootElement),
-                            Unmarshaller::getInternalItem(validatedResult),
-                            lTns,
-                            valMode);
+    bool lResBool = theCtx->validate(
+        Unmarshaller::getInternalItem(rootElement),
+        lRes, lTns, valMode);
+    validatedResult = lRes;
+    return lResBool;
   }
   catch (ZorbaException const& e)
   {

@@ -31,6 +31,7 @@
 static void set_var(
     DriverContext& driverCtx,
     zorba::DynamicContext* dctx,
+    const zorba::StaticContext* sctx,
     bool inlineFile,
     std::string name,
     std::string val,
@@ -39,6 +40,7 @@ static void set_var(
 static void set_vars(
     DriverContext& driverCtx,
     zorba::DynamicContext* dctx,
+    const zorba::StaticContext* sctx,
     bool enableDtd);
 
 
@@ -265,7 +267,7 @@ zorba::Item createItem(DriverContext& driverCtx, std::string strValue)
 ********************************************************************************/
 void createDynamicContext(
     DriverContext& driverCtx,
-    const zorba::StaticContext_t& sctx,
+    const zorba::StaticContext_t& aBaseSctx,
     zorba::XQuery_t& query,
     bool enableDtd)
 {
@@ -298,8 +300,9 @@ void createDynamicContext(
     dctx->setDefaultCollection(lDefaultCollection);
   }
 
+  const zorba::StaticContext* lQuerySctx = query->getStaticContext();
   // Set external vars
-  set_vars(driverCtx, dctx, enableDtd);
+  set_vars(driverCtx, dctx, lQuerySctx, enableDtd);
 
   if (spec.hasInputQuery())
   {
@@ -316,7 +319,7 @@ void createDynamicContext(
     assert(inputquery.is_open());
 
     zorba::XQuery_t inputQuery = engine->compileQuery(inputquery,
-                                                      sctx,
+                                                      aBaseSctx,
                                                       getCompilerHints());
 
     zorba::Iterator_t riter = inputQuery->iterator();
@@ -331,6 +334,7 @@ void createDynamicContext(
 void set_vars(
     DriverContext& driverCtx,
     zorba::DynamicContext* dctx,
+    const zorba::StaticContext* sctx,
     bool enableDtd)
 {
   Specification& spec = *driverCtx.theSpec;
@@ -340,7 +344,7 @@ void set_vars(
   for (lIter = spec.variablesBegin(); lIter != spec.variablesEnd(); ++lIter)
   {
     set_var(driverCtx,
-            dctx,
+            dctx, sctx,
             (*lIter).theInline,
             (*lIter).theVarName,
             (*lIter).theVarValue,
@@ -358,6 +362,7 @@ void set_vars(
 void set_var(
     DriverContext& driverCtx,
     zorba::DynamicContext* dctx,
+    const zorba::StaticContext* sctx,
     bool inlineFile,
     std::string name,
     std::string val,
@@ -403,13 +408,15 @@ void set_var(
     lIter->close();
 
     assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
+    zorba::Item lValidatedDoc;
+    sctx->validate(lDoc, lValidatedDoc, zorba::validate_lax);
     if(name != ".")
     {
-      dctx->setVariable(name, lDoc);
+      dctx->setVariable(name, lValidatedDoc);
     }
     else
     {
-      dctx->setContextItem(lDoc);
+      dctx->setContextItem(lValidatedDoc);
     }
   }
 }

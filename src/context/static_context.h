@@ -695,13 +695,13 @@ public:
   //
   bool validate(
         store::Item* rootElement,
-        store::Item* validatedResult,
+        store::Item_t& validatedResult,
         StaticContextConsts::validation_mode_t validationMode =
             StaticContextConsts::strict_validation) const;
 
   bool validate(
         store::Item* rootElement,
-        store::Item* validatedResult,
+        store::Item_t& validatedResult,
         const zstring& targetNamespace,
         StaticContextConsts::validation_mode_t validationMode =
             StaticContextConsts::strict_validation) const ;

@@ -1506,7 +1506,7 @@ void static_context::get_full_module_paths(std::vector<zstring>& paths) const
 
 bool static_context::validate(
     store::Item* rootElement,
-    store::Item* validatedResult,
+    store::Item_t& validatedResult,
     StaticContextConsts::validation_mode_t validationMode) const
 {
   zstring xsTns(XML_SCHEMA_NS);
@@ -1516,7 +1516,7 @@ bool static_context::validate(
 
 bool static_context::validate(
     store::Item* rootElement,
-    store::Item* validatedResult,
+    store::Item_t& validatedResult,
     const zstring& targetNamespace,
     StaticContextConsts::validation_mode_t validationMode) const
 {
@@ -1545,8 +1545,7 @@ bool static_context::validate(
             ParseConstants::val_strict :
             ParseConstants::val_lax );
 
-    store::Item_t tmp = validatedResult;
-    return Validator::effectiveValidationValue(tmp,
+    return Validator::effectiveValidationValue(validatedResult,
                                                rootElement,
                                                typeName,
                                                tm,

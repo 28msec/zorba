@@ -300,13 +300,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
-# Failing due to missing validation functionality in C++ API.
-EXPECTED_FAILURE(test/rbkt/zorba/schemas/atomic2 3330316)
-EXPECTED_FAILURE(test/rbkt/zorba/schemas/atomic1 3330316)
-EXPECTED_FAILURE(test/rbkt/zorba/schemas/books 3330316)
-EXPECTED_FAILURE(test/rbkt/zorba/schemas/q2 3330316)
-EXPECTED_FAILURE(test/rbkt/zorba/schemas/books1 3330316)
-
 # These tests fail due to integer overflow.
 IF(NOT ZORBA_WITH_BIG_INTEGER AND FOUND_XQTS)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)

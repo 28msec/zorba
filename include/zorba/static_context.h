@@ -484,8 +484,11 @@ namespace zorba {
         * @throw ZorbaException if any validation error occured
         */
       virtual bool
-      validate(const Item& rootElement, Item& validatedResult,
-               validation_mode_t validationMode = validate_strict) const = 0;
+      validate(
+          const Item& rootElement,
+          Item& validatedResult,
+          validation_mode_t validationMode = validate_strict
+        ) const = 0;
 
       /** \brief Validates this Item while loading the schema for targetNamespace
         *  Note: works only on document or element nodes, otherwise returns false.
@@ -497,9 +500,12 @@ namespace zorba {
         * @throw ZorbaException if any validation error occured
         */
       virtual bool 
-      validate(const Item& rootElement, Item& validatedResult, 
-               const String& targetNamespace,
-               validation_mode_t validationMode = validate_strict) const = 0;
+      validate(
+          const Item& rootElement,
+          Item& validatedResult, 
+          const String& targetNamespace,
+          validation_mode_t validationMode = validate_strict
+        ) const = 0;
   
       /** \brief Validates stringValue as XML simple content, i.e. the text value of attributes or 
         * text only element content.
@@ -510,9 +516,11 @@ namespace zorba {
         * @throw ZorbaException if any validation error occured
         */
       virtual bool 
-      validateSimpleContent(const String& stringValue,
+      validateSimpleContent(
+          const String& stringValue,
           const Item& typeQName, 
-          std::vector<Item>& resultList) const = 0;
+          std::vector<Item>& resultList
+        ) const= 0;
 
       /** \brief Invokes the XQuery function with the given name and
        *  the given parameters.
