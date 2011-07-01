@@ -39,8 +39,6 @@ SET(API_SRCS
     storeiteratorimpl.cpp
     vectoriterator.cpp
     iterator_singleton.cpp
-    debugger_event_handlerimpl.cpp
-    default_debugger_event_handlerimpl.cpp
     serialization_callback.cpp
     vector_item_sequence.cpp
     singleton_item_sequence.cpp

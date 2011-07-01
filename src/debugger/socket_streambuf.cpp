@@ -16,6 +16,7 @@
 #include "stdafx.h"
 #include <sstream>
 #include <cstring>
+#include <iostream>
 #include "socket_streambuf.h"
 
 namespace zorba {
@@ -38,6 +39,9 @@ namespace zorba {
   
   int socket_streambuf::sync()
   {
+#if 0
+    std::cout << "sending:" << std::endl << std::string(pbase(), pptr() - pbase()) << std::endl;
+#endif
     theSocket.send(pbase(), pptr() - pbase());
     setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
     return 0;
@@ -53,6 +57,9 @@ namespace zorba {
   
   int socket_streambuf::overflow(int c)
   {
+#if 0
+    std::cout << "sending:" << std::endl << std::string(pbase(), pptr() - pbase()) << std::endl;
+#endif
     theSocket.send(pbase(), pptr() - pbase());
     setp(theOutputBuffer, theOutputBuffer + BUF_SIZE);
     sputc(c);

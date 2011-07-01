@@ -60,7 +60,7 @@ void Mutex::lock()
 { 
 #ifdef ZORBA_HAVE_PTHREAD_H
   int ret= pthread_mutex_lock(&theMutex);
-  ZORBA_FATAL(!ret, "Failed to acquire mutex. Error code = " << ret);
+  ZORBA_FATAL(!ret, "Failed to acquire mutex. Error code = " << ret << " message = " << strerror(ret));
 #elif defined WIN32
   WaitForSingleObject(theMutex, INFINITE);
 #endif

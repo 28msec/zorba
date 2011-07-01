@@ -13,84 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_DEBUGGER_EVENT_HANDLER_H
-#define ZORBA_DEBUGGER_EVENT_HANDLER_H
+#pragma once
 
-#include <list>
-#include <utility>
+#include <string>
 
-#include <zorba/zorba_string.h>
+namespace zorba {
+  class DebuggerEventHandler {
+  public:
+    /**
+     * @brief This method gets called whenever the debugger client
+     *        gets a message from the debug engine.
+     *
+     * When the client gets a message from the debug engine, it reads the
+     * message to a string and calls this method. The message is an XML
+     * document - so the implementation has to parse this node.
+     *
+     * @param aMessage The message recieved from the debug engine.
+     */
+    virtual void parseMessage(const std::string& aMessage) = 0;
 
-
-namespace zorba{
-
-  class QueryLocation;
-
-  /* Cause of the suspension of the engine */
-  enum SuspendedBy { A_USER, A_BREAKPOINT, A_STEP, AN_ERROR }; 
-  
-  /**
-   * DebuggerEventHandler is the base handler for all debugging events.
-   * During debugging, events are sent from the remote query to the client.
-   * Once a client received an event, a callback is made to the debugger event
-   * handler.
-   */
-  class ZORBA_DLL_PUBLIC DebuggerEventHandler
-  {
-    public:
-
-      virtual
-      ~DebuggerEventHandler();
-      
-      /** \brief Signal the query status as being started.
-       *
-       */
-      virtual void
-      started() = 0;
-
-      /** \brief Signal the query status as being idle.
-       *
-       */
-      virtual void
-      idle() = 0;
-
-      /** \brief Signal the query status as being suspended.
-       *
-       * When a suspended event is triggered, this method received the
-       * cause of the suspension (user, breakpoint, step) and the location 
-       * in the query where the debugger suspended.
-       */
-      virtual void
-      suspended( QueryLocation &aLocation, SuspendedBy aCause ) = 0;
-
-
-      /** \brief Signal the query status as being resumed.
-       *
-       */
-      virtual void
-      resumed() = 0;
-
-
-      /** \brief Signal the query status as being terminated.
-       *
-       */      
-      virtual void
-      terminated() = 0;
-
-      /** \brief Signal the result of an XQuery expression.
-       *
-       */
-      virtual void
-      evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes) = 0;
-  
-      /** \brief Signal an Error from an XQuery expression.
-       *
-       * @param String the XQuery expression
-       * @param String the Error description
-       */
-      virtual void
-      evaluated(String &anExpr, String &anError) = 0;
+    /**
+     * @brief Method which gets called if an error occurs.
+     *
+     * This method gets called if an error occurs. This can be either
+     * an error in the client or in the parser.
+     *
+     * @param errcode The error code.
+     * @param msg A UI usable message.
+     */
+    virtual void error(unsigned int errcode, const std::string& msg) = 0;
   };
-}//end of namespace
-#endif
-/* vim:set et sw=2 ts=2: */
+}

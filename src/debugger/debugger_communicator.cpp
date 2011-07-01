@@ -25,9 +25,13 @@
 #include "socket.h"
 #include "zorbautils/synchronous_logger.h"
 
-#ifdef WIN32
-#include <windows.h>
-#define sleep(s) Sleep(1000*s)
+#ifndef WIN32
+# include <unistd.h>
+# define msleep(x) usleep(1000*x)
+#else
+# include <Windows.h>
+# define msleep Sleep
+# define sleep(s) Sleep(1000*s)
 #endif
 
 namespace zorba {
@@ -113,6 +117,7 @@ DebuggerCommunicator::ResponseQueue::~ResponseQueue()
 void
 DebuggerCommunicator::ResponseQueue::run()
 {
+  theMutex.lock();
   while (true)
   {
     // make sure nobody else will go in here in the same time

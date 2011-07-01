@@ -125,6 +125,12 @@ protected:
   virtual void run() = 0; // To be implemented by the user
 
   virtual void finish() = 0; // To be implemented by the user
+  
+  /**
+   * Makes the current thread sleeping for a given
+   * number of micro seconds.
+   */
+  void sleep(unsigned long useconds);
 
 private:
   static void mutexCleanupHandler(void *);

@@ -43,7 +43,6 @@
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger_server_runnable.h"
-#include "debugger_handler.h"
 #endif
 
 #include "error_printer.h"
@@ -928,7 +927,7 @@ _tmain(int argc, _TCHAR* argv[])
         }
 
         std::auto_ptr<zorba::DebuggerServerRunnable> lServer;
-        std::auto_ptr<DebuggerHandler>               lHandler;
+//        std::auto_ptr<DebuggerHandler>               lHandler;
 
         std::string lHost = lProperties.debugHost();
         if (lHost == "") {
@@ -958,7 +957,7 @@ _tmain(int argc, _TCHAR* argv[])
           }
         }
 
-        lHandler.reset(0);
+//        lHandler.reset(0);
 
         if (lProperties.debug())
         {

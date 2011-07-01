@@ -303,6 +303,15 @@ zorba::Runnable::finishImpl()
 }
 
 
+void
+zorba::Runnable::sleep(unsigned long useconds) {
+#ifdef WIN32
+  Sleep(useconds);
+#else
+  usleep(useconds);
+#endif
+}
+
 /*******************************************************************************
 
 ********************************************************************************/

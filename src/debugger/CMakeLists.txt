@@ -13,6 +13,11 @@
 # limitations under the License.
 
 SET(DEBUGGER_SRCS
+  debugger_clientimpl.h
+  debugger_clientimpl.cpp
+  socket_streambuf.h
+  socket_streambuf.cpp
+
   query_locationimpl.cpp
   socket.cpp
   socket_streambuf.cpp

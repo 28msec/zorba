@@ -19,10 +19,11 @@
 #include "zorbautils/mutex.h"
 #include "zorbautils/condition.h"
 #include <cassert>
+#include <iostream>
 #include <time.h>
 #ifndef WIN32
 #include <sys/time.h>
-#include <string.h>
+#include <string>
 #endif
 
 namespace zorba { 
@@ -48,7 +49,11 @@ Condition::~Condition()
 
 void Condition::wait() 
 {
+  //theMutex.lock();
   int ret = pthread_cond_wait(&theCondition, theMutex.getMutex());
+
+  if (ret)
+    std::cerr << "Condition wait error: " << strerror(ret) << std::endl;
 
   ZORBA_FATAL(!ret, "Failed to wait on condition variable. Error code = " << ret);
 }

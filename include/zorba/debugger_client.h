@@ -50,288 +50,471 @@ namespace zorba {
   std::ostream& operator<< (std::ostream& os, const QueryLocation* aQuery); 
 
   /**
-   * zorba::Variable is the debugger representation of a variable on 
-   * from the remote server to the client.
+   * @brief A DBGP client implementation for commands.
+   *
+   * This is the client implementation for sending commands
+   * according to the specification of DBGP. DBGP is used as
+   * the default communication format in the Zorba debugger.
    */
-  class ZORBA_DLL_PUBLIC Variable
-  {
-    private:
-      String theName;
-      String theType;
-      std::list<std::pair<String, String> > theData;
-    public:
-      Variable(String& aName, String& aType, std::list<std::pair<String, String> > data)
-        : theName(aName), theType(aType), theData(data) {}
-      
-      virtual ~Variable(){}
-
-      String getName() const { return theName; }
-
-      String getType() const { return theType; }
-
-      std::list<std::pair<String, String> > getData() const { return theData; }
-  };
-
-  /** 
-   * Client instance of Zorba debugger.
-   * DebuggerClient API provides to send commands to a
-   * remote debugger and to handle events from it.
-   */
-  class ZORBA_DLL_PUBLIC DebuggerClient
-  {
-
-    public:
-
-      virtual ~DebuggerClient() {}
-
-      /** \brief Gets a new instance of Zorba debugger client.
-       *
-       * This factory method create a new instance of the debugger.
-       * The parameters are the network ports for the request and event connection
-       * (by default: 8000 for commands and 9000 for events):
-       * <pre>
-       * DebuggerClient* lClient = DebuggerClient::createClient(8000, 9000);
-       * </pre>
-       *
-       * @param unsigned short aRequestPortno Network port number for debugging commands.
-       * @param unsigned short aEventPortno.
-       * @return DebuggerClient the newly created debugger client instance.
-       */
-      static DebuggerClient*
-      createClient(unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000);
-
-      /** \brief Gets a new instance of Zorba debugger client.
-       *
-       * This factory method create a new instance of the debugger client for remote 
-       * debugging.
-       * You can specify the IP address of the debugger server.
-       * The parameters are the network ports for the request and event connection
-       * (by default: 8000 for commands and 9000 for events).
-       * <pre>
-       * DebuggerClient* lClient = DebuggerClient::createClient("192.168.0.1");
-       * </pre>
-       *
-       * @param std::string aServerAddress the IP address of the debugger server.
-       * @param unsigned short aRequestPortno Network port number for debugging commands.
-       * @param unsigned short aEventPortno.
-       * @return DebuggerClient the newly created debugger client instance.
-       */
-       static DebuggerClient*
-       createClient(std::string aServerAddress, unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000);
-
-
-      /** \brief Register a debugger event handler to which runtime events on the remote 
-       * debugger server are reported.
-       *
-       * @param aDebuggerEventHandler DebuggerEventHandler Handler for runtime events comming
-       * from the remote debugger server.
-       */
-      virtual DebuggerClient*
-      registerEventHandler(DebuggerEventHandler *aDebuggerEventHandler) = 0;
-     
-      /** \brief Indicates if the query is running.
-       *
-       * @return true if the query is running, false otherwise.
-       */
-      virtual bool
-      isQueryRunning() const = 0;
-
-      /** \brief Indicates if the query is idle.
-       *
-       * @return true if the query is idle, false otherwise.
-       */
-      virtual bool
-      isQueryIdle() const = 0;
-
-      /** \brief Indicates if the query is suspended.
-       *
-       * @return true if the query is suspended, false otherwise.
-       */
-      virtual bool
-      isQuerySuspended() const = 0;
-
-      /** \brief Indicates if the query is terminated.
-       *
-       * @return true if the query is terminated, false otherwise.
-       */
-      virtual bool
-      isQueryTerminated() const = 0;
-
-      /** \brief Request the remote query to run.
-       *
-       */
-      virtual bool
-      run() = 0;
-
-      /** \brief Request the remote query to suspend.
-       *
-       */
-      virtual bool
-      suspend() = 0;
-
-      /** \brief Request the remote query to resume.
-       *
-       */
-      virtual bool
-      resume() = 0;
-      
-      /** \brief Request the remote query to terminate.
-       *
-       */
-      virtual bool
-      terminate() = 0;
-
-      /** \brief Detach this client from the debugger server
-       *
-       */
-      virtual void
-      detach() = 0;
-
-      /** \brief Step into the function call.
-       *
-       */
-      virtual bool
-      stepInto() = 0;
-
-      /** \brief Step out the function call.
-       *
-       */
-      virtual bool
-      stepOut() = 0;
-
-      /** \brief Step over the expression
-       *
-       */
-      virtual bool
-      stepOver() = 0;
-
-      /** \brief Set a new breakpoint.
-       *
-       * @param aFileName String Filename of the query or module.
-       * @param aLineNo unsigned int Line number in the file.
-       * @return the location where the breakpoint has been set.
-       */
-      virtual QueryLocation_t
-      addBreakpoint(const String& aFileName, const unsigned int aLineNo) = 0;
-
-      /** \brief Set a new breakpoint in the main query.
-       *
-       * @param aLineNo unsigned int Line number in the main query.
-       * @return the location where the breakpoint has been set.
-       */
-      virtual QueryLocation_t
-      addBreakpoint(const unsigned int aLineNo) = 0;
-
-      /** \brief Set a new watchpoint.
-       * 
-       * A watchpoint suspend the query execution when the return 
-       * value of its XQuery expression is true.
-       *
-       * @param anExpr String XQuery expression to be evaluated.
-       */
-      virtual bool
-      addBreakpoint(const String& anExpr) = 0;
-
-      /** \brief Remove a breakpoint or watchpoint of the given id
-       *
-       * @param anId unsigned int the breakpoint/watchpoint id
-       * @return true if the breakpoint id is correct.
-       */
-      virtual bool
-      clearBreakpoint(unsigned int anId) = 0;
-
-      /** \brief Remove a breakpoint given it's location.
-       *
-       * @param aFileName String Filename of the query or module.
-       * @param aLineNo unsigned int Line number in the file.
-       * @return true if the breakpoint id is correct.
-       */
-      virtual bool
-      clearBreakpoint(const String& aFileName, unsigned int aLineNo) = 0;
-
-      /** \brief Remove a breakpoint or watchpoint of the given collection of ids
-       *
-       * @param Ids std::list<unsigned int> List of the breakpoint/watchpoint ids
-       * @return true if all breakpoint ids are correct.
-       */
-      virtual bool
-      clearBreakpoints(std::list<unsigned int>& Ids) = 0;
-      
-      /** \brief Get all breakpoints set on the remote query.
-       *
-       * @return a map of all breakpoints with their associated id.
-       */
-      virtual std::map<unsigned int, String>
-      getBreakpoints() const = 0;
-
-      /** \brief Remove all breakpoints on the remote query.
-       *
-       */
-      virtual bool
-      clearBreakpoints() = 0;
-
-      /** \brief Get the current location of the remote query.
-       *
-       * return the current location of the query or null is the query didn't start yet.
-       */
-      virtual QueryLocation_t
-      getLocation() const = 0;
-
-      /** \brief Evaluate an XQuery expression on the remote debugger server.
-       *
-       * eval() sends an XQuery expression to the remote debugger server for evaluation.
-       * This expression can use debugee query global and locals variables.
-       * Because eval() can eventually compute very complex expression, the evaluation is
-       * done in a separate thread. Once the expression computed, the server fires an event to
-       * the client with the result or an error description if an error happened during evaluation.
-       */
-      virtual bool
-      eval(String& anExpr) const = 0;
-
-      /** \brief Get all variables that are in scope in the remote query.
-       *
-       * @return a list of all variables that are in scope in the remote query.
-       */
-      virtual std::list<Variable>
-      getAllVariables(bool data = false) const = 0;
-
-      /** \brief Get all local variables that are in scope in the remote query.
-       *
-       * @return a list of all local variables that are in scope in the remote query.
-       */
-      virtual std::list<Variable>
-      getLocalVariables(bool data = false) const = 0;
-
-      /** \brief Get all global variables that are in scope in the remote query.
-       *
-       * @return a list of all global variables that are in scope in the remote query.
-       */
-      virtual std::list<Variable>
-      getGlobalVariables(bool data = false) const = 0;
-
-      /** \brief Get the runtime stack frame.
-       *
-       * @return the runtime stack frame.
-       */
-      virtual std::vector<StackFrame>
-      getStack() const = 0;
-
-      /**
-      * @brief List source code from a given uri.
-      *
-      * @param aUri Is a uri, which is either a file uri, a file path or a 
-      *   module uri. The server will itself try to find the appropriate
-      *   file.
-      * @param aFirstline Gives the possibility to the user to tell the
-      *   server, at which line it should start to read.
-      * @param aLastName Gives the possibility to the user to tell the
-      *   server, at which line it should stop to read. If the value is
-      *   set to 0, the server reads till the end of the file.
-      */
-      virtual std::string listSource(
-        const std::string& aUri,
-        unsigned long aFirstline = 0,
-        unsigned long aLastName = 0) const = 0;
+  class ZORBA_DLL_PUBLIC DebuggerClient {
+  public:
+    /**
+     * @brief creates a new instance of a DebuggerClient implementation.
+     *
+     * @param aHandler The event handler, where answered should get delivered to.
+     * @param aPort The port the client should listen to.
+     * @param aHost the host the client should listen to
+     * @return A DebuggerClient implementation.
+     */
+    static DebuggerClient* createDebuggerClient(DebuggerEventHandler* aHandler,
+                                                unsigned short aPort,
+                                                const std::string& aHost);
+  public:
+    virtual ~DebuggerClient();
+  public: // Types
+    typedef enum {
+      Line,
+      Call,
+      Return,
+      Exception,
+      Conditional,
+      Watch
+    } BreakpointType;
+    typedef enum {
+      BiggerEqual,
+      Equal,
+      Multiple
+    } HitCondition;
+    typedef enum {
+      Stdout,
+      Stderr,
+      Stdin
+    } OutputStream;
+    typedef enum {
+      Disable,
+      CopyData,
+      Redirection
+    } StreamBehaviour;
+  public: // API
+    /**
+     * @brief Waits for a debug engine to attach.
+     *
+     * This method blocks until a debug engine attaches and sends the
+     * init message. After that process, the appropriate method in the
+     * DebugHandler gets called.
+     */
+    virtual void accept() = 0;
+    
+    /**
+     * The status command is a simple way for the IDE to find out from
+     * the debugger engine whether execution may be continued or not. no
+     * body is required on request. If async support has been negotiated
+     * using feature_get/set the status command may be sent while the
+     * debugger engine is in a 'run state'.
+     * 
+     * The status attribute values of the response may be:
+     * 
+     * <ul>
+     *   <li>
+     *     starting:
+     *      State prior to execution of any code
+     *   </li>
+     *   <li>
+     *     stopping:
+     *     State after completion of code execution.
+     *     This typically happens at the end of code execution, allowing
+     *     the IDE to further interact with the debugger engine (for example,
+     *     to collect performance data, or use other extended commands).
+     *   </li>
+     *   <li>
+     *     stopped:
+     *     IDE is detached from process, no further interaction is possible.
+     *   </li>
+     *   <li>
+     *     running:
+     *     code is currently executing. Note that this state would only be
+     *     seen with async support turned on, otherwise the typical state during
+     *     IDE/debugger interaction would be 'break'
+     *   </li>
+     *   <li>
+     *     break:
+     *     code execution is paused, for whatever reason (see below), and the
+     *     IDE/debugger can pass information back and forth.
+     *   </li>
+     * </ul>
+     * The reason attribute value may be:
+     * 
+     * <ul>
+     *   <li>
+     *     ok
+     *   </li>
+     *   <li>
+     *     error
+     *   </li>
+     *   <li>
+     *     aborted
+     *   </li>
+     *   <li>
+     *     exception
+     *   </li>
+     * </ul>
+     *
+     * @return The id of the request.
+     */
+    virtual std::size_t status() = 0;
+    
+    /**
+     * @brief Query the debug engine for supported features.
+     *
+     * @param aFeatureName The name of the feature to query for. values that must be
+     *        supported by the debug engine are:
+     *        <ul>
+     *          <li>
+     *            language_supports_threads
+     *          </li>
+     *          <li>
+     *            language_name
+     *          </li>
+     *          <li>
+     *            language_version
+     *          </li>
+     *          <li>
+     *            encoding
+     *          </li>
+     *          <li>
+     *            protocol_version
+     *          </li>
+     *          <li>
+     *            supports_async
+     *          </li>
+     *          <li>
+     *            data_encoding
+     *          </li>
+     *          <li>
+     *            breakpoint_languages
+     *          </li>
+     *          <li>
+     *            breakpoint_types
+     *          </li>
+     *        </ul>
+     * @return The id of this request
+     */
+    virtual std::size_t feature_get(const std::string& aFeatureName) = 0;
+    
+    /**
+     * @brief Set a specific feature of the engine.
+     *
+     * @param aFeatureName The name of the feature to query for. Values
+     *        that must be supported by the debug engine are:
+     *        <ul>
+     *          <li>
+     *            encoding
+     *          </li>
+     *          <li>
+     *            multiple_sessions
+     *          </li>
+     *          <li>
+     *            max_children
+     *          </li>
+     *          <li>
+     *            max_children
+     *          </li>
+     *          <li>
+     *            max_depth
+     *          </li>
+     *        </ul>
+     * @return The id of this request
+     */
+    virtual std::size_t feature_set(const std::string& aFeatureName,
+                                    const std::string& aValue) = 0;
+    
+    /**
+     * @brief Send the run command to the debug engine.
+     *
+     * Sending this command to the debug engine makes the debug engine
+     * to start if possible. Otherwise it must report an error.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t run() = 0;
+    
+    /**
+     * @brief Send the step into command to the debug engine.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t step_into() = 0;
+    
+    /**
+     * @brief Send the step out command to the debug engine.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t step_out() = 0;
+    
+    /**
+     * @brief Send the step over command to the debug engine.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t step_over() = 0;
+    
+    /**
+     * @brief Send the stop command to the debug engine.
+     *
+     * This command tells the debug engine, that it should
+     * break the execution at the next point possible.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t stop() = 0;
+    
+    /**
+     * @brief Send the detach command to the debug engine.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t detach() = 0;
+    
+    /**
+     * @brief Send a command to the debug engine to set a new breakpoint.
+     *
+     * @param aType The type of the breakpoint (line, call, return etc.).
+     * @param aEnabled Should the breakpoint be enabled?
+     * @param aLinenumber The line number where to set the breakpoint.
+     * @param aFilename The file where a breakpoint should be set.
+     * @param aFunctionName The name of the function where to break (only
+     *                      to be used if aType == Call || aType == Return)
+     * @param aException The name of the exception to break (only to be used
+     *                   if aType == Exception)
+     * @param hit_value A numeric value used together with the hit_condition
+     *                  to determine if the breakpoint should pause execution
+     *                  or be skipped.
+     * @param aCondition The condition used together with 'hit_value' (default
+     *                   is '>=')
+     * @param aIsTemporary Flag to define if breakpoint is temporary. A
+     *                     temporary breakpoint is one that is deleted after
+     *                     its first use. This is useful for features like "Run
+     *                     to Cursor". Once the debugger engine uses a temporary
+     *                     breakpoint, it should automatically remove the
+     *                     breakpoint from it's list of valid breakpoints.
+     * @param aExpression code expression, in the language of the debugger engine.
+     *                    The breakpoint should activate when the evaluated code
+     *                    evaluates to true. (required for conditional breakpoint
+     *                    types)
+     * @return The id of this request
+     */
+    virtual std::size_t breakpoint_set(BreakpointType aType,
+                                       bool aEnabled = true,
+                                       const std::string& aFilename = "",
+                                       int aLinenumber = -1,
+                                       const std::string& aFunctionName = "",
+                                       const std::string& aExceptionName = "",
+                                       unsigned hit_value = 0,
+                                       HitCondition aCondition = BiggerEqual,
+                                       bool aIsTemporary = false,
+                                       const std::string& aExpression = "") = 0;
+    
+    /**
+     * @brief Get information about a breakpoint.
+     *
+     * @param aBreakpointId The id of the breakpoint.
+     * @return The id of this request
+     */
+    virtual std::size_t breakpoint_get(std::size_t aBreakpointId) = 0;
+    
+    /**
+     * @brief Send a command to the debug engine to update a breakpoint.
+     *
+     * @param aBreakpointId The id of the breakpoint.
+     * @param aEnabled Should the breakpoint be enabled?
+     * @param aLinenumber The line number where to set the breakpoint.
+     * @param hit_value A numeric value used together with the hit_condition
+     *                  to determine if the breakpoint should pause execution
+     *                  or be skipped.
+     * @param aCondition The condition used together with 'hit_value' (default
+     *                   is '>=')
+     * @return The id of this request
+     */
+    virtual std::size_t breakpoint_update(std::size_t aBreakpointId,
+                                          bool aEnabled = true,
+                                          int aLinenumber = -1,
+                                          unsigned hit_value = 0,
+                                          HitCondition aCondition = BiggerEqual) = 0;
+    
+    /**
+     * @brief Remove a breakpoint.
+     *
+     * @param aBreakpointId The id of the breakpoint.
+     * @return The id of this request
+     */
+    virtual std::size_t breakpoint_remove(std::size_t aBreakpointId) = 0;
+    
+    /**
+     * @brief Query all breakpoints.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t breakpoint_list() = 0;
+    
+    /**
+     * @brief Get the depth of the stack.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t stack_depth() = 0;
+    
+    /**
+     * @brief Get information about the stack at a given depth.
+     *
+     * @param depth The depth on which to quey (optional)
+     * @return The id of this request
+     */
+    virtual std::size_t stack_get(int depth = -1) = 0;
+    
+    /**
+     * @brief Get the context names at a given stack depth.
+     *
+     * The context names are the names in which variables are
+     * (like global, local etc.).
+     *
+     * @param depth The depth on which to quey (optional)
+     * @return The id of this request
+     */
+    virtual std::size_t context_names(int depth = -1) = 0;
+    
+    /**
+     * @brief Get the context at a given stack depth.
+     *
+     * Returns an array of properties in a given context at a given
+     * stack depth. If the stack depth is omitted, the current stack
+     * depth is used. If the context name is omitted, the context
+     * with an id zero is used (generally the 'locals' context).
+     *
+     * @param depth The depth on which to quey (optional)
+     * @return The id of this request
+     */
+    virtual std::size_t context_get(int depth = -1, int contextId = -1) = 0;
+    
+    /**
+     * @brief Get a mapping of types.
+     *
+     * The IDE calls this command to get information on how to map
+     * language specific type names (as received in the property
+     * element returned by the context_get, and property_* commands).
+     * The debugger engine returns all data types that it supports. There
+     * may be multiple map elements with the same type attribute value,
+     * but the name value must be unique. This allows a language to map
+     * multiple language specific types into one of the common data types
+     * (eg. float and double can both be mapped to float).
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t typemap_get() = 0;
+    
+    /**
+     * @brief Get a property
+     *
+     * @param aPropertyLongName roperty long name (required)
+     * @param aStackDepth stack depth (optional)
+     * @param aContextId The context id for which to query.
+     * @param aMaxDataSize The maximal size of the data sent back
+     *                     from the debug engine.
+     * @return The id of this request
+     */
+    virtual std::size_t property_get(const std::string& aPropertyLongName,
+                                     int aStackDepth = -1,
+                                     int aContextId = -1,
+                                     std::size_t aMaxDataSize = 0,
+                                     int aDatapage = -1,
+                                     const std::string& aPropertyKey = "") = 0;
+    
+    /**
+     * @brief Set a property
+     *
+     * @param aPropertyLongName roperty long name (required)
+     * @param aStackDepth stack depth (optional)
+     * @param aContextId The context id for which to query.
+     * @param aMaxDataSize The maximal size of the data sent back
+     *                     from the debug engine.
+     * @param aPropertyAddress property address as retrieved in a
+     *                         property element (optional).
+     * @return The id of this request
+     */
+    virtual std::size_t property_set(const std::string& aPropertyLongName,
+                                     int aStackDepth = -1,
+                                     int aContextId = -1,
+                                     std::size_t aMaxDataSize = 0,
+                                     const std::string& aPropertyAddress = "") = 0;
+    
+    /**
+     * @brief Get the value of a property
+     *
+     * @param aPropertyLongName roperty long name (required)
+     * @param aStackDepth stack depth (optional)
+     * @param aContextId The context id for which to query.
+     * @param aMaxDataSize The maximal size of the data sent back
+     *                     from the debug engine.
+     * @param aPropertyKey property key as retrieved in a property
+     *                     element (optional)
+     * @param aPropertyAddress property address as retrieved in a
+     *                         property element (optional).
+     * @return The id of this request
+     */
+    virtual std::size_t property_value(const std::string& aPropertyLongName,
+                                       int aStackDepth = -1,
+                                       int aContextId = -1,
+                                       std::size_t aMaxDataSize = 0,
+                                       int aDatapage = -1,
+                                       const std::string& aPropertyKey = "",
+                                       const std::string& aPropertyAddress = "") = 0;
+    
+    /**
+     * @brief List the source code at a given position.
+     *
+     * @param aFile The URI of the file the debug engine should deliver.
+     * @param aBeginLine The starting point on which line the debug engine
+     *        should start to read.
+     * @param aEndLine The line number where the debug engine should stop
+     *                 reading from the file.
+     * @return The id of this request.
+     */
+    virtual std::size_t source(const std::string& aFile, unsigned aBeginLine = 0, unsigned aEndLine = 0) = 0;
+    
+    /**
+     * @brief Setting a stream option.
+     *
+     * This method is used to tell the debug engine how to handle I/O. The debug
+     * engine either reads and writes from/to stdin/stdout or it can also copy it
+     * to the client or it can read/write everything from the client.
+     *
+     * @param aStream Specifies for which stream the option should be changed.
+     * @param aBehaviour Specifies which behaviour the debug client should have
+     *                   for reading/writing.
+     * @return The id of this request
+     */
+    virtual std::size_t stream_option(OutputStream aStream, StreamBehaviour aBehaviour) = 0;
+    
+    /**
+     * @brief Tell the debug engine to stop execution as fast as possible.
+     *
+     * @return The id of this request
+     */
+    virtual std::size_t do_break() = 0;
+    
+    /**
+     * @brief Evaluates an expression.
+     *
+     * @param aExpr The expression to evaluate.
+     * @return The id of this request
+     */
+    virtual std::size_t eval(const std::string& aExpr) = 0;
+    
+    /**
+     * @brief Tells the client to quit. This method blocks until the client quit
+     *        successfully.
+     */
+    virtual void quit() = 0;
   };
 }//end of namespace
 #endif
