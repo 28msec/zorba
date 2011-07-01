@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/oauth/client" 1.0 "client.xq")
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/oauth/error" 1.0 "error.xq")
+DECLARE_ZORBA_MODULE (URI "http://www.zorba-xquery.com/modules/oauth/client" VERSION 1.0 FILE "client.xq")
+DECLARE_ZORBA_MODULE (URI "http://www.zorba-xquery.com/modules/oauth/error" VERSION 1.0 FILE "error.xq")
