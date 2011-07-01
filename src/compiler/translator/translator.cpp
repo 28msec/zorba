@@ -93,6 +93,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
 
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
@@ -104,11 +105,6 @@
 
 #define NODE_SORT_OPT
 
-
-#define RAISE_ERROR(errcode, loc, params)                     \
-  throw XQUERY_EXCEPTION(errcode,                             \
-                         params,                              \
-                         ERROR_LOC(loc));
 
 namespace zorba
 {
@@ -1280,6 +1276,8 @@ fo_expr* create_empty_seq(const QueryLoc& loc)
 ********************************************************************************/
 void normalize_fo(fo_expr* foExpr)
 {
+  const QueryLoc& loc = foExpr->get_loc();
+
   TypeManager* tm = foExpr->get_type_manager();
 
   const signature& sign = foExpr->get_signature();
@@ -1298,16 +1296,12 @@ void normalize_fo(fo_expr* foExpr)
 
     if (qname != NULL)
     {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-                  foExpr->get_loc(),
-                  ERROR_PARAMS(qname->getStringValue()));
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qname->getStringValue()));
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-        ERROR_LOC( foExpr->get_loc() )
-      );
+      RAISE_ERROR_NO_PARAMS(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc);
     }
   }
 
@@ -1354,14 +1348,14 @@ void normalize_fo(fo_expr* foExpr)
       if (TypeOps::is_subtype(tm,
                               *paramType,
                               *theRTM.ANY_ATOMIC_TYPE_STAR,
-                              foExpr->get_loc()))
+                              loc))
       {
         argExpr = wrap_in_atomization(argExpr);
         argExpr = wrap_in_type_promotion(argExpr, paramType);
       }
       else
       {
-        argExpr = wrap_in_type_match(argExpr, paramType);
+        argExpr = wrap_in_type_match(argExpr, paramType, loc);
       }
     }
 
@@ -1397,6 +1391,7 @@ expr_t wrap_in_type_promotion(expr_t e, xqtref_t type, store::Item_t fnQName = N
 expr_t wrap_in_type_match(
     expr_t e,
     xqtref_t type,
+    const QueryLoc& loc,
     const Error& errorCode = err::XPTY0004,
     store::Item_t fnQName = NULL)
 {
@@ -1404,7 +1399,7 @@ expr_t wrap_in_type_match(
 
   // treat_expr should be avoided for updating expressions too,
   // but in that case "type" will be item()* anyway
-  return (TypeOps::is_subtype(tm, *theRTM.ITEM_TYPE_STAR, *type) ?
+  return (TypeOps::is_subtype(tm, *theRTM.ITEM_TYPE_STAR, *type, loc) ?
           e :
           new treat_expr(theRootSctx, e->get_loc(), e, type, errorCode, true, fnQName));
 }
@@ -3456,7 +3451,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
     else
     {
-      body = wrap_in_type_match(body, returnType, err::XPTY0004, udf->getName());
+      body = wrap_in_type_match(body, returnType, loc, err::XPTY0004, udf->getName());
     }
 
     udf->setBody(body);
@@ -4078,7 +4073,7 @@ void* begin_visit(const AST_IndexDecl& v)
   if (qnameItem->getNamespace() != theModuleNamespace)
   {
     RAISE_ERROR(zerr::ZDST0036_INDEX_DECL_IN_FOREIGN_MODULE, loc,
-    ERROR_PARAMS(qname->get_qname()))
+    ERROR_PARAMS(qname->get_qname()));
   }
 
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
@@ -4129,11 +4124,12 @@ void* begin_visit(const IndexKeyList& v)
   if (!domainExpr->is_simple())
   {
     RAISE_ERROR(zerr::ZDST0033_INDEX_NON_SIMPLE_EXPR, domainExpr->get_loc(),
-    ERROR_PARAMS(index->getName()->getStringValue()))
+    ERROR_PARAMS(index->getName()->getStringValue()));
   }
 
   domainExpr = wrap_in_type_match(domainExpr,
                                   theRTM.ANY_NODE_TYPE_STAR,
+                                  loc,
                                   zerr::ZDTY0010_INDEX_DOMAIN_TYPE_ERROR);
 
   // For general indexes, the domain expression must not return duplicate nodes.
@@ -4259,8 +4255,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       }
 
       if (!index->isGeneral() &&
-          (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
-           TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE)))
+          (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE, kloc) ||
+           TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE, kloc)))
       {
         RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
         ERROR_PARAMS(index->getName()->getStringValue()));
@@ -4290,7 +4286,10 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
         ERROR_PARAMS(index->getName()->getStringValue()));
       }
 
-      keyExpr = wrap_in_type_match(keyExpr, type, zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR);
+      keyExpr = wrap_in_type_match(keyExpr,
+                                   type,
+                                   loc, 
+                                   zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR);
 
       keyTypes[i] = ptype->getBaseBuiltinType();
     }
@@ -7754,10 +7753,10 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
 {
   TypeManager* tm = CTX_TM;
 
-  if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+  if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
+      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
   {
     RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
   }
@@ -7769,7 +7768,8 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
     if (ce != NULL &&
         TypeOps::is_equal(tm,
                           *tm->create_value_type(ce->get_val()),
-                          *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+                          *GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                          loc))
     {
       store::Item_t castLiteral;
       try
@@ -9806,8 +9806,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   if (type != NULL)
   {
     if (numArgs != 1 ||
-        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
-        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
+        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
     {
       RAISE_ERROR(err::XPST0017, loc,
       ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
@@ -9867,7 +9867,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       const xqtref_t& resultType = f->getSignature().returnType();
 
-      resultExpr = wrap_in_type_match(foExpr.getp(), resultType);
+      resultExpr = wrap_in_type_match(foExpr.getp(), resultType, loc);
     }
 
     // Some further normalization is required for certain builtin functions
@@ -10369,7 +10369,7 @@ void end_visit(const InlineFunction& v, void* aState)
   }
   else
   {
-    body = wrap_in_type_match(body, returnType);
+    body = wrap_in_type_match(body, returnType, loc);
   }
 
   // Make the body be the return expr of the flwor that binds the function params.

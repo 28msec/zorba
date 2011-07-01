@@ -531,7 +531,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
     }
 
-    if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
+    if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
     {
       xqtref_t valueType = tm->create_value_type(result);
 
@@ -560,7 +560,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     do
     {
-      if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
+      if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
       {
         xqtref_t valueType = tm->create_value_type(result);
 

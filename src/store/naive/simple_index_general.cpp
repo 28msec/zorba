@@ -2167,6 +2167,41 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
         probeMap(theIndex->theMaps[XS_STRING], &altKey);
       }
 
+      // cast to xs:anyURI
+      if (theIndex->theMaps[XS_ANY_URI] && untypedItem->castToUri(castItem))
+      {
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_ANY_URI], &altKey);
+      }
+
+      // try casting to xs:datetime
+      if (theIndex->theMaps[XS_DATETIME] && untypedItem->castToDateTime(castItem))
+      {
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_DATETIME], &altKey);
+      }
+
+      // try casting to xs:date
+      else if (theIndex->theMaps[XS_DATE] && untypedItem->castToDate(castItem))
+      {
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_DATE], &altKey);
+      }
+
+      // try casting to xs:time
+      else if (theIndex->theMaps[XS_TIME] && untypedItem->castToTime(castItem))
+      {
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_TIME], &altKey);
+      }
+
+      // try casting to xs:duration
+      else if (theIndex->theMaps[XS_DURATION] && untypedItem->castToDuration(castItem))
+      {
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_DURATION], &altKey);
+      }
+
       break;
     }
 
@@ -2178,6 +2213,14 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
   }
   else
   {
+    for (ulong i = 0; i < XS_LAST; ++i)
+    {
+      if (theIndex->theMaps[i] == NULL)
+        continue;
+
+      theMapBegins.push_back(theIndex->theMaps[i]->begin());
+      theMapEnds.push_back(theIndex->theMaps[i]->end());
+    }
   }
 }
 

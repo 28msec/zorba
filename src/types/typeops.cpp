@@ -435,10 +435,11 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
 bool TypeOps::is_equal(
     const TypeManager* tm,
     const XQType& type1,
-    const XQType& type2)
+    const XQType& type2,
+    const QueryLoc& loc)
 {
-  CHECK_IN_SCOPE(tm, type1, QueryLoc::null);
-  CHECK_IN_SCOPE(tm, type2, QueryLoc::null);
+  CHECK_IN_SCOPE(tm, type1, loc);
+  CHECK_IN_SCOPE(tm, type2, loc);
 
   if (&type1 == &type2)
     return true;
@@ -544,7 +545,7 @@ bool TypeOps::is_subtype(
         const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
         const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
 
-        return n1.is_subtype(tm, n2);
+        return n1.is_subtype(tm, n2, loc);
       }
       case XQType::EMPTY_KIND:
       {
@@ -617,7 +618,9 @@ bool TypeOps::is_subtype(
 
       case XQType::USER_DEFINED_KIND:
       {
-        const UserDefinedXQType& udSubType = static_cast<const UserDefinedXQType&>(subtype);
+        const UserDefinedXQType& udSubType = 
+        static_cast<const UserDefinedXQType&>(subtype);
+
         return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
       }
 
@@ -704,6 +707,183 @@ bool TypeOps::is_subtype(
 
 
 /*******************************************************************************
+  Returns true iff the type of "subitem" is a subtype of "supertype".
+********************************************************************************/
+bool TypeOps::is_subtype(
+    const TypeManager* tm,
+    const store::Item* subitem,
+    const XQType& supertype,
+    const QueryLoc& loc)
+{
+  CHECK_IN_SCOPE(tm, supertype, loc);
+
+  switch(supertype.type_kind()) 
+  {
+    case XQType::ATOMIC_TYPE_KIND:
+    {
+      if (!subitem->isAtomic())
+        return false;
+
+      const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
+
+      if (a2.get_type_code() == TypeConstants::XS_ANY_ATOMIC)
+        return true;
+
+      xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
+                                                      TypeConstants::QUANT_ONE,
+                                                      loc,
+                                                      err::XPTY0004);
+      switch(subtype->type_kind()) 
+      {
+      case XQType::ATOMIC_TYPE_KIND:
+      {
+        const AtomicXQType& a1 = static_cast<const AtomicXQType&>(*subtype);
+
+        return RootTypeManager::ATOMIC_SUBTYPE_MATRIX[a1.get_type_code()][a2.get_type_code()];
+      }
+      case XQType::USER_DEFINED_KIND:
+      {
+        const UserDefinedXQType& udSubtype = 
+        static_cast<const UserDefinedXQType&>(*subtype);
+
+        return udSubtype.isSubTypeOf(tm, supertype);
+      }
+      case XQType::EMPTY_KIND:
+      {
+        assert(false);
+        return true;
+      }
+      default:
+      {
+        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED
+        return false;
+      }
+      }
+      break;
+    }
+
+    case XQType::NODE_TYPE_KIND:
+    {
+      if (!subitem->isNode())
+        return false;
+
+      const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
+
+      return n2.is_supertype(tm, subitem, loc);
+
+      break;
+    }
+
+    case XQType::ITEM_KIND:
+    case XQType::ANY_TYPE_KIND:
+    {
+      return true;
+      break;
+    }
+
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+    {
+      if (!subitem->isAtomic())
+        return false;
+
+      xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
+                                                      TypeConstants::QUANT_ONE,
+                                                      loc,
+                                                      err::XPTY0004);
+      switch (subtype->type_kind())
+      {
+      case XQType::ATOMIC_TYPE_KIND:
+      case XQType::ANY_SIMPLE_TYPE_KIND:
+      case XQType::EMPTY_KIND:
+          return true;
+
+      case XQType::USER_DEFINED_KIND:
+      {
+        const UserDefinedXQType& udSubType = 
+        static_cast<const UserDefinedXQType&>(*subtype);
+
+        return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
+      }
+
+      default:
+        // ANY, UNTYPED, ITEM, NODE
+        return false;
+      }
+      break;
+    }
+
+    case XQType::FUNCTION_TYPE_KIND:
+    {
+      if (!subitem->isFunction())
+        return false;
+
+      xqtref_t subtype = tm->create_value_type(subitem, loc);
+
+      switch (subtype->type_kind())
+      {
+      case XQType::ANY_FUNCTION_TYPE_KIND:
+      case XQType::FUNCTION_TYPE_KIND:
+      {
+        const FunctionXQType& f1 = static_cast<const FunctionXQType&>(*subtype);
+        const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
+        return f1.is_subtype(tm, f2);
+      }
+      default:
+        return false;
+      }
+    }
+
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+    {
+      if (subitem->isFunction())
+        return true;
+
+      return false;
+    }
+
+    case XQType::UNTYPED_KIND:
+    {
+      // We shouldn't be here because xs:untyped is not a sequence type
+      ZORBA_ASSERT(false);
+
+      if (!subitem->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME))
+        return false;
+
+      return true;
+    }
+
+    case XQType::EMPTY_KIND:
+    case XQType::NONE_KIND:
+    {
+      return false;
+    }
+
+    case XQType::USER_DEFINED_KIND:
+    {
+      // The supertype must be a sequence type, and the only way that a user-
+      // defined type may be a sequence type, is if it is an atomic type.
+      if (!subitem->isAtomic())
+        return false;
+
+      xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
+                                                      TypeConstants::QUANT_ONE,
+                                                      loc,
+                                                      err::XPTY0004);
+      const UserDefinedXQType& udSuperType = 
+      static_cast<const UserDefinedXQType&>(supertype);
+
+      return udSuperType.isSuperTypeOf(tm, *subtype);
+    }
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
   
 ********************************************************************************/
 bool TypeOps::is_treatable(
@@ -712,7 +892,8 @@ bool TypeOps::is_treatable(
     const XQType& targetType,
     const QueryLoc& loc)
 {
-  return is_subtype(tm, *tm->create_value_type(item.getp(), loc), targetType, loc);
+  // return is_subtype(tm, *tm->create_value_type(item.getp(), loc), targetType, loc);
+  return is_subtype(tm, item.getp(), targetType, loc);
 }
 
 

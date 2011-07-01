@@ -147,7 +147,7 @@ xqtref_t ValueOpComparison::getReturnType(
 
   for (int i = 0; i < 2; i++)
   {
-    if (TypeOps::is_equal(tm, *empty, *arg_types [i]))
+    if (TypeOps::is_equal(tm, *empty, *arg_types[i], QueryLoc::null))
       return empty;
 
     TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);

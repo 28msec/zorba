@@ -243,8 +243,8 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     }
 
     if ( !udt &&
-         !TypeOps::is_equal(tm, *bodyType, *declaredType) &&
-         TypeOps::is_subtype(tm, *bodyType, *declaredType))
+         !TypeOps::is_equal(tm, *bodyType, *declaredType, body->get_loc()) &&
+         TypeOps::is_subtype(tm, *bodyType, *declaredType, body->get_loc()))
     {
       udf->getSignature().returnType() = bodyType;
       if (!udf->isLeaf())

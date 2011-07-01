@@ -290,6 +290,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   xqtref_t primeInnerType = TypeOps::prime_type(tm, *innerType);
   TypeConstants::quantifier_t outerQuant = TypeOps::quantifier(*outerType);
   TypeConstants::quantifier_t innerQuant = TypeOps::quantifier(*innerType);
+  const QueryLoc& innerLoc = predInfo.theInnerOp->get_loc();
+  const QueryLoc& outerLoc = predInfo.theOuterOp->get_loc();
 
   if (!predInfo.theIsGeneral)
   {
@@ -309,17 +311,17 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
     // The type of the outer/inner operands in the join predicate must not be
     // xs:untypedAtomic or xs:anyAtomic.
-    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) ||
-        TypeOps::is_equal(tm, *primeInnerType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.UNTYPED_ATOMIC_TYPE_ONE, outerLoc) ||
+        TypeOps::is_equal(tm, *primeInnerType, *rtm.UNTYPED_ATOMIC_TYPE_ONE, innerLoc))
       return false;
 
-    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.ANY_ATOMIC_TYPE_ONE) ||
-        TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.ANY_ATOMIC_TYPE_ONE, outerLoc) ||
+        TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE, innerLoc))
       return false;
 
     // The prime type of the outer operand in the join predicate must be a
     // subtype of the prime type of the inner operand.
-    if (!TypeOps::is_subtype(tm, *primeOuterType, *primeInnerType))
+    if (!TypeOps::is_subtype(tm, *primeOuterType, *primeInnerType, outerLoc))
       return false;
   }
   else
@@ -327,7 +329,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     // TODO: allow domain exprs that return atomic items?
     if (! TypeOps::is_subtype(tm,
                               *innerDomainExpr->get_return_type(),
-                              *rtm.ANY_NODE_TYPE_STAR))
+                              *rtm.ANY_NODE_TYPE_STAR,
+                              innerDomainExpr->get_loc()))
       return false;
 
     if (innerDomainExpr->getProducesDistinctNodes() != ANNOTATION_TRUE &&

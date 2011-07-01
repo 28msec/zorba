@@ -311,6 +311,17 @@ NodeXQType::NodeXQType(
 }
 
 
+void NodeXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+  SERIALIZE_ENUM(store::StoreConsts::NodeKind, m_node_kind);
+  ar & m_node_name;
+  ar & m_content_type;
+  ar & m_nillable;
+  ar & m_schema_test;
+}
+
+
 bool NodeXQType::is_untyped() const
 {
   return m_content_type == GENV_TYPESYSTEM.UNTYPED_TYPE;
@@ -349,10 +360,26 @@ bool NodeXQType::is_equal(const TypeManager* tm, const NodeXQType& other) const
 }
 
 
-bool NodeXQType::is_subtype(const TypeManager* tm, const NodeXQType& supertype) const
+bool NodeXQType::is_subtype(
+    const TypeManager* tm, 
+    const NodeXQType& supertype,
+    const QueryLoc& loc) const
 {
   if (supertype.m_node_kind == store::StoreConsts::anyNode)
+  {
+    assert(supertype.m_content_type == NULL ||
+           supertype.m_content_type->type_kind() == XQType::UNTYPED_KIND ||
+           supertype.m_content_type->type_kind() == XQType::ANY_TYPE_KIND);
+
+    if (supertype.m_content_type != NULL &&
+        supertype.m_content_type->type_kind() == XQType::UNTYPED_KIND)
+    {
+      return (m_content_type != NULL &&
+              m_content_type->type_kind() == XQType::UNTYPED_KIND);
+    }
+
     return true;
+  }
 
   if (supertype.m_node_kind != m_node_kind)
     return false;
@@ -398,14 +425,6 @@ bool NodeXQType::is_subtype(const TypeManager* tm, const NodeXQType& supertype) 
   if (m_content_type == supertype.m_content_type)
     return true;
 
-  if (supertype.m_node_kind == store::StoreConsts::anyNode &&
-      supertype.m_content_type != NULL &&
-      supertype.m_content_type->type_kind() == XQType::UNTYPED_KIND)
-  {
-    return (m_content_type != NULL &&
-            m_content_type->type_kind() == XQType::UNTYPED_KIND);
-  }
-
   if (m_content_type != NULL && supertype.m_content_type != NULL)
   {
     return TypeOps::is_subtype(tm, *m_content_type, *supertype.m_content_type);
@@ -420,6 +439,69 @@ bool NodeXQType::is_subtype(const TypeManager* tm, const NodeXQType& supertype) 
   }
 
   return false;
+}
+
+
+bool NodeXQType::is_supertype(
+    const TypeManager* tm, 
+    const store::Item* subitem,
+    const QueryLoc& loc) const
+{
+  if (m_node_kind == store::StoreConsts::anyNode)
+    return true;
+
+  if (m_node_kind != subitem->getNodeKind())
+    return false;
+
+  if (m_node_name != NULL)
+  {
+    if (!subitem->getNodeName()->equals(m_node_name))
+    {
+      if (m_schema_test)
+      {
+        Schema* schema = m_manager->getSchema();
+        ZORBA_ASSERT(schema != NULL);
+
+        store::Item_t headName;
+
+#ifndef ZORBA_NO_XMLSCHEMA
+        schema->getSubstitutionHeadForElement(subitem->getNodeName(), headName);
+
+        while (headName != NULL)
+        {
+          if (headName->equals(m_node_name))
+          {
+            break;
+          }
+
+          schema->getSubstitutionHeadForElement(headName.getp(), headName);
+        }
+#endif // ZORBA_NO_XMLSCHEMA
+
+        if (headName == NULL)
+          return false;
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
+
+  if (m_node_kind != store::StoreConsts::elementNode && 
+      m_node_kind != store::StoreConsts::attributeNode)
+    return true;
+
+  if (m_content_type == NULL ||
+      m_content_type->type_kind() == XQType::ANY_TYPE_KIND)
+    return true;
+
+  xqtref_t subContentType = tm->create_named_type(subitem->getType(),
+                                                  TypeConstants::QUANT_ONE,
+                                                  loc,
+                                                  err::XPTY0004);
+
+  return TypeOps::is_subtype(tm, *subContentType, *m_content_type);
 }
 
 

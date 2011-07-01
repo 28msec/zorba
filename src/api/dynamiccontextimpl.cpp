@@ -50,7 +50,9 @@
 #include "util/xml_util.h"
 
 #include "util/string_util.h"
+
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 
 namespace zorba {
@@ -418,16 +420,15 @@ bool DynamicContextImpl::setCurrentDateTime(const Item& aDateTimeItem)
     xqtref_t lItemType = tm->create_named_type(lItem->getType(),
                                                TypeConstants::QUANT_ONE);
 
-    if (!TypeOps::is_subtype(tm, *lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
+    if (!TypeOps::is_subtype(tm,
+                             *lItemType,
+                             *GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
+                             QueryLoc::null))
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZAPI0014_INVALID_ARGUMENT,
-        ERROR_PARAMS(
-          lItemType->toString(),
-          ZED( TypeIsNotSubtype ),
-          GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString()
-        )
-      );
+      RAISE_ERROR_NO_LOC(zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS(lItemType->toString(),
+                   ZED(TypeIsNotSubtype),
+                   GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString()));
     }
 
     theCtx->set_current_date_time(lItem);

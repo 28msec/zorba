@@ -525,7 +525,10 @@ static bool safe_to_fold_single_use(
           // domain expr will indeed be equal to the empty sequence.
           xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(var);
 
-          if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+          if (TypeOps::is_equal(tm,
+                                *type,
+                                *GENV_TYPESYSTEM.EMPTY_TYPE,
+                                fc.get_expr()->get_loc()))
           {
             referencingExpr = fc.get_expr();
             break;
@@ -601,7 +604,10 @@ static bool safe_to_fold_single_use(
       xqtref_t type = 
       flwor.get_return_expr()->get_return_type_with_empty_input(var);
 
-      if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+      if (TypeOps::is_equal(tm,
+                            *type,
+                            *GENV_TYPESYSTEM.EMPTY_TYPE,
+                            flwor.get_return_expr()->get_loc()))
         referencingExpr = flwor.get_return_expr();
     }
     else
@@ -851,6 +857,7 @@ static bool is_subseq_pred(
   static_context* sctx = condExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  const QueryLoc& posLoc = posExpr->get_loc();
 
   const fo_expr* fo = dynamic_cast<const fo_expr*>(condExpr);
 
@@ -878,10 +885,10 @@ static bool is_subseq_pred(
         const store::Item* val = posConstExpr->get_val();
         xqtref_t valType = tm->create_named_type(val->getType(),
                                                  TypeConstants::QUANT_ONE,
-                                                 posConstExpr->get_loc(),
+                                                 posLoc,
                                                  err::XPTY0004);
 
-        if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE) &&
+        if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
             val->getIntegerValue() >= xs_integer::one())
         {
           return true;
@@ -891,7 +898,7 @@ static bool is_subseq_pred(
       {
         xqtref_t posExprType = posExpr->get_return_type();
 
-        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_ONE))
+        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_ONE, posLoc))
         {
           VarIdMap varidMap;
           ulong numFlworVars = 0;

@@ -1227,22 +1227,31 @@ struct wincond_var_iters
 
 bool nativeColumnSort(expr* colExpr)
 {
+  const QueryLoc& loc = colExpr->get_loc();
   TypeManager* tm = colExpr->get_type_manager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t colType = colExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *colType, *rtm.STRING_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.DOUBLE_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.FLOAT_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.LONG_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.UNSIGNED_LONG_TYPE_STAR) ||
-      TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *colType), *rtm.DECIMAL_TYPE_ONE) ||
-      TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *colType), *rtm.INTEGER_TYPE_ONE) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.DATE_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.TIME_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, *colType, *rtm.DATETIME_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *colType, *rtm.STRING_TYPE_STAR, loc) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.DOUBLE_TYPE_STAR, loc) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.FLOAT_TYPE_STAR, loc) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.LONG_TYPE_STAR, loc) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.UNSIGNED_LONG_TYPE_STAR, loc) ||
+      TypeOps::is_equal(tm,
+                        *TypeOps::prime_type(tm, *colType),
+                        *rtm.DECIMAL_TYPE_ONE,
+                        loc) ||
+      TypeOps::is_equal(tm,
+                        *TypeOps::prime_type(tm, *colType),
+                        *rtm.INTEGER_TYPE_ONE,
+                        loc) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.DATE_TYPE_STAR, loc) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.TIME_TYPE_STAR, loc) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.DATETIME_TYPE_STAR, loc))
+  {
     return true;
+  }
 
   return false;
 }
@@ -1995,6 +2004,7 @@ bool begin_visit(insert_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
   TypeManager* tm = v.get_type_manager();
 
   store::UpdateConsts::InsertType kind  = v.getType();
@@ -2004,7 +2014,7 @@ bool begin_visit(insert_expr& v)
   xqtref_t targetType = targetExpr->get_return_type();
   xqtref_t sourceType = sourceExpr->get_return_type();
 
-  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  if (TypeOps::is_equal(tm, *targetType, *rtm.EMPTY_TYPE, qloc))
     throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
 #if XQUF_STATIC_TYPING_SAFE
@@ -2013,21 +2023,21 @@ bool begin_visit(insert_expr& v)
       kind == store::UpdateConsts::AS_FIRST_INTO ||
       kind == store::UpdateConsts::AS_LAST_INTO)
   {
-    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
-        TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    if (TypeOps::is_subtype(tm, *targetType, *rtm.DOCUMENT_TYPE_STAR, qloc) &&
+        TypeOps::is_subtype(tm, *sourceType, *rtm.ATTRIBUTE_TYPE_STAR, qloc))
     {
       throw XQUERY_EXCEPTION(err::XUTY0022, ERROR_LOC(qloc));
     }
 
-    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+    if (TypeOps::is_subtype(tm, *targetType, *rtm.ANY_SIMPLE_TYPE, qloc))
     {
       throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
     }
 
-    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR) ||
-        TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) ||
-        TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) ||
-        TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
+    if (TypeOps::is_subtype(tm, *targetType, *rtm.ATTRIBUTE_TYPE_STAR, qloc) ||
+        TypeOps::is_subtype(tm, *targetType, *rtm.TEXT_TYPE_STAR, qloc) ||
+        TypeOps::is_subtype(tm, *targetType, *rtm.COMMENT_TYPE_STAR, qloc) ||
+        TypeOps::is_subtype(tm, *targetType, *rtm.PI_TYPE_STAR, qloc))
     {
       throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
     }
@@ -2042,8 +2052,8 @@ bool begin_visit(insert_expr& v)
       kind == store::UpdateConsts::AS_FIRST_INTO ||
       kind == store::UpdateConsts::AS_LAST_INTO)
   {
-    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
-        TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    if (TypeOps::is_subtype(tm, *targetType, *rtm.DOCUMENT_TYPE_STAR) &&
+        TypeOps::is_subtype(tm, *sourceType, *rtm.ATTRIBUTE_TYPE_STAR))
     {
       throw XQUERY_EXCEPTION(err::XUTY0022, ERROR_LOC(qloc));
     }
@@ -2307,19 +2317,20 @@ bool begin_visit(name_cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
   TypeManager* tm = v.get_type_manager();
 
   expr* targetExpr = v.get_input();
   xqtref_t targetType = targetExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.QNAME_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) ||
-      TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.NCNAME_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.NCNAME_TYPE_ONE) ||
-      TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.STRING_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+  if (TypeOps::is_subtype(tm, *rtm.UNTYPED_ATOMIC_TYPE_ONE, *targetType, qloc) ||
+      TypeOps::is_subtype(tm, *targetType, *rtm.UNTYPED_ATOMIC_TYPE_ONE, qloc) ||
+      TypeOps::is_subtype(tm, *rtm.QNAME_TYPE_ONE, *targetType, qloc) ||
+      TypeOps::is_subtype(tm, *targetType, *rtm.QNAME_TYPE_ONE, qloc) ||
+      TypeOps::is_subtype(tm, *rtm.NCNAME_TYPE_ONE, *targetType, qloc) ||
+      TypeOps::is_subtype(tm, *targetType, *rtm.NCNAME_TYPE_ONE, qloc) ||
+      TypeOps::is_subtype(tm, *rtm.STRING_TYPE_ONE, *targetType, qloc) ||
+      TypeOps::is_subtype(tm, *targetType, *rtm.STRING_TYPE_ONE, qloc))
     return true;
 
   throw XQUERY_EXCEPTION(
@@ -2998,7 +3009,7 @@ bool begin_visit(replace_expr& v)
   expr* targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->get_return_type();
 
-  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE, qloc))
     throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
   return true;
@@ -3028,7 +3039,7 @@ bool begin_visit(rename_expr& v)
   expr* targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->get_return_type();
 
-  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE, qloc))
     throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
   return true;
@@ -3077,7 +3088,7 @@ bool begin_visit(transform_expr& v)
     expr_t sourceExpr = (*lIter)->getExpr();
     xqtref_t sourceType = sourceExpr->get_return_type();
 
-    if (TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+    if (TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE, qloc))
       throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(qloc));
 
     uint64_t k = (uint64_t) &*var;

@@ -80,10 +80,13 @@ class Validator
    has no sub-elements). Again this flag is a function of the element's type only; not of
    the actual content of an element instance.
    */
-  static bool typeHasTypedValue(const TypeManager* tm, xqtref_t t)
+  static bool typeHasTypedValue(
+      const TypeManager* tm, 
+      const xqtref_t& t,
+      const QueryLoc& loc)
   {
     return (t->content_kind() == XQType::SIMPLE_CONTENT_KIND &&
-            !TypeOps::is_equal(tm, *t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE));
+            !TypeOps::is_equal(tm, *t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, loc));
   }
   
   /**

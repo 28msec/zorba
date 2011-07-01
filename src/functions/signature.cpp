@@ -248,7 +248,10 @@ bool signature::equals(const TypeManager* tm, const signature& s) const
   assert (s.theTypes.size() == theTypes.size() || theIsVariadic );
   for (size_t i = 0; i < s.theTypes.size(); ++i)
   {
-    if (!TypeOps::is_equal(tm, *theTypes[i].getp(), *s.theTypes[i].getp()))
+    if (!TypeOps::is_equal(tm,
+                           *theTypes[i].getp(),
+                           *s.theTypes[i].getp(), 
+                           QueryLoc::null))
     {
       return false;
     }

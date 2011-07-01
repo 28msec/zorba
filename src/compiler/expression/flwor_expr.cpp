@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 #include "system/globalenv.h"
 
@@ -162,37 +163,32 @@ for_clause::for_clause(
 
   if (varExpr != NULL && sctx != NULL)
   {
+    RootTypeManager& rtm = GENV_TYPESYSTEM;
     TypeManager* tm = sctx->get_typemanager();
 
     xqtref_t declaredType = varExpr->get_type();
     if (declaredType != NULL)
     {
       if (TypeOps::is_empty(tm, *declaredType))
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( BadType_23o ), "empty-sequence" ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(BadType_23o), "empty-sequence"));
 
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType))
+      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
       {
         declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_STAR);
 
-        if (!TypeOps::is_subtype(tm, *domainType, *declaredType))
+        if (!TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
         {
           xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
-          if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
+          if (TypeOps::is_equal(tm, *varType, *rtm.NONE_TYPE, loc))
           {
-            throw XQUERY_EXCEPTION(
-              err::XPTY0004,
-              ERROR_PARAMS(
-                ZED( BadType_23o ), *domainType,
-                ZED( NoTreatAs_4 ), *declaredType
-              ),
-              ERROR_LOC( get_loc() )
-            );
+            RAISE_ERROR(err::XPTY0004, loc,
+            ERROR_PARAMS(ZED(BadType_23o),
+                         *domainType,
+                         ZED(NoTreatAs_4),
+                         *declaredType));
           }
 
           domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
@@ -304,6 +300,7 @@ let_clause::let_clause(
 
   if (varExpr != NULL && sctx != NULL)
   {
+    RootTypeManager& rtm = GENV_TYPESYSTEM;
     TypeManager* tm = sctx->get_typemanager();
 
     xqtref_t declaredType = varExpr->get_type();
@@ -311,20 +308,14 @@ let_clause::let_clause(
     {
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType) &&
-          !TypeOps::is_subtype(tm, *domainType, *declaredType))
+      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc) &&
+          !TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
       {
         xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
-        if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
+        if (TypeOps::is_equal(tm, *varType, *rtm.NONE_TYPE, loc))
         {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS(
-              ZED( BadType_23o ), *domainType,
-              ZED( NoTreatAs_4 ), *declaredType
-            ),
-            ERROR_LOC( get_loc() )
-          );
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(BadType_23o), *domainType, ZED(NoTreatAs_4), *declaredType));
         }
 
         domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
@@ -414,6 +405,7 @@ window_clause::window_clause(
 
   if (varExpr != NULL && sctx != NULL)
   {
+    RootTypeManager& rtm = GENV_TYPESYSTEM;
     TypeManager* tm = sctx->get_typemanager();
 
     xqtref_t varType = varExpr->get_type();
@@ -421,8 +413,8 @@ window_clause::window_clause(
     {
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.ITEM_TYPE_STAR, *varType) &&
-          !TypeOps::is_subtype(tm, *domainType, *varType))
+      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
+          !TypeOps::is_subtype(tm, *domainType, *varType, loc))
       {
         domainExpr = new treat_expr(sctx, loc, domainExpr, varType, err::XPTY0004);
 
@@ -519,7 +511,10 @@ flwor_wincond::flwor_wincond(
 
     xqtref_t condType = theCondExpr->get_return_type();
 
-    if(!TypeOps::is_equal(tm, *condType, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+    if(!TypeOps::is_equal(tm,
+                          *condType,
+                          *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+                          theCondExpr->get_loc()))
     {
       theCondExpr = new fo_expr(theCondExpr->get_sctx(),
                                 theCondExpr->get_loc(),

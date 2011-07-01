@@ -241,6 +241,7 @@ return <open_auction>{$id}</open_auction>,
 Probing the untyped AuctionDates2 sorted general index
 -------------------------------------------------------
 
+probe 1:
 ",
 
 try
@@ -254,6 +255,7 @@ catch * ($code, $desc)
 
 "
 
+probe 2:
 ",
 
 try
@@ -267,9 +269,8 @@ catch * ($code, $desc)
 
 "
 
+probe 3:
 ",
-
-
 
 for $id in index_dml:probe-index-point-general($auctions:AuctionDates2, 
                                                (xs:date("2000-12-04"),
@@ -279,6 +280,7 @@ return <open_auction>{$id}</open_auction>,
 
 "
 
+probe 4:
 ",
 
 for $id in index_dml:probe-index-point-general($auctions:AuctionDates2, 
@@ -291,6 +293,7 @@ return <open_auction>{$id}</open_auction>,
 
 "
 
+probe 5:
 ",
 
 for $id in index_dml:probe-index-range-general($auctions:AuctionDates2, 
@@ -304,6 +307,8 @@ for $id in index_dml:probe-index-range-general($auctions:AuctionDates2,
 return <open_auction>{$id}</open_auction>,
 
 "
+
+probe 6:
 ",
 
 for $id in index_dml:probe-index-range-general($auctions:AuctionDates2, 
@@ -314,6 +319,36 @@ for $id in index_dml:probe-index-range-general($auctions:AuctionDates2,
                                                fn:false(),
                                                fn:true())/@id
 return <open_auction>{$id}</open_auction>,
+
+"
+
+probe 7:
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates2, 
+                                               (xs:untypedAtomic("2001-12-13"),
+                                                xs:untypedAtomic("2001-11-11")),
+                                               (),
+                                               fn:true(),
+                                               fn:false(),
+                                               fn:false(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
+Full Probe:
+",
+
+for $id in index_dml:probe-index-range-general($auctions:AuctionDates2, 
+                                               (),
+                                               (),
+                                               fn:false(),
+                                               fn:false(),
+                                               fn:true(),
+                                               fn:true())/@id
+return <open_auction>{$id}</open_auction>,
+
 "
 "
 

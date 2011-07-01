@@ -224,7 +224,7 @@ void SchemaValidatorImpl::processElement(
   if ( isNewType )
   {
     bool tHasValue      = Validator::typeHasValue(newType);
-    bool tHasTypedValue = Validator::typeHasTypedValue(typeManager, newType);
+    bool tHasTypedValue = Validator::typeHasTypedValue(typeManager, newType, loc);
     bool tHasEmptyValue = Validator::typeHasEmptyValue(newType);
 
     if ( noOfChildren==0 )

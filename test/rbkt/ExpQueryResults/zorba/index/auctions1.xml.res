@@ -143,13 +143,26 @@ Full Probe
 Probing the untyped AuctionDates2 sorted general index
 -------------------------------------------------------
 
+probe 1:
 <exception>err:XPTY0004 : node with more than one key value found during probe on index "auctions:AuctionDates2"</exception>
 
+probe 2:
 <exception>err:XPTY0004 : node with more than one key value found during probe on index "auctions:AuctionDates2"</exception>
 
+probe 3:
 <open_auction id="open_auction2"/><open_auction id="open_auction3"/>
 
+probe 4:
 <open_auction id="open_auction2"/><open_auction id="open_auction3"/>
 
+probe 5:
 <open_auction id="open_auction1"/><open_auction id="open_auction9"/>
+
+probe 6:
  
+
+probe 7:
+<open_auction id="open_auction1"/><open_auction id="open_auction9"/>
+
+Full Probe:
+<open_auction id="open_auction0"/><open_auction id="open_auction1"/><open_auction id="open_auction2"/><open_auction id="open_auction3"/><open_auction id="open_auction4"/><open_auction id="open_auction5"/><open_auction id="open_auction6"/><open_auction id="open_auction7"/><open_auction id="open_auction8"/><open_auction id="open_auction9"/><open_auction id="open_auction10"/><open_auction id="open_auction11"/>

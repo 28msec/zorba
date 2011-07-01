@@ -55,7 +55,7 @@ xqtref_t fn_data::getReturnType(
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  if (TypeOps::is_subtype(tm, *arg_types[0], *RTM.ANY_ATOMIC_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *arg_types[0], *RTM.ANY_ATOMIC_TYPE_STAR, QueryLoc::null))
     return arg_types[0];  // includes () case
 
   const XQType& argType = *arg_types[0];
@@ -92,7 +92,7 @@ xqtref_t fn_data::getReturnType(
       {
         return tm->create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
-      else if (TypeOps::is_subtype(tm, *cType, *RTM.ANY_ATOMIC_TYPE_STAR))
+      else if (TypeOps::is_subtype(tm, *cType, *RTM.ANY_ATOMIC_TYPE_STAR, QueryLoc::null))
       {
         return tm->create_type(*cType, q);
       }

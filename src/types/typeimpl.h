@@ -353,150 +353,48 @@ protected:
 
 
 /***************************************************************************//**
-  Class AtomicXQType represents all the sequence types whose ItemType is one
-  of the 45 XQDM builtin atomic types.
+
 ********************************************************************************/
-class AtomicXQType : public XQType
+class NoneXQType : public XQType
 {
 public:
-   static const char* ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+  NoneXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE, builtin)
+  {
+  }
 
-private:
-   TypeConstants::atomic_type_code_t m_type_code;
-
-public:
-  SERIALIZABLE_CLASS(AtomicXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AtomicXQType, XQType)
+  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+ public:
+  SERIALIZABLE_CLASS(NoneXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NoneXQType, XQType)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (XQType*)this);
-    SERIALIZE_ENUM(TypeConstants::atomic_type_code_t, m_type_code);
   }
-
-public:
-   AtomicXQType(
-        const TypeManager *manager,
-        TypeConstants::atomic_type_code_t type_code,
-        TypeConstants::quantifier_t quantifier,
-        bool builtin = false)
-     :
-     XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
-     m_type_code(type_code)
-   {
-   }
-
-  TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
-
-  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
-
-  store::Item_t get_qname() const;
-
-  virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 
 /***************************************************************************//**
-  Class NodeXQType represents all the sequence types whose ItemType is a
-  KindTest.
+  Represents the empty sequence
 ********************************************************************************/
-class NodeXQType : public XQType
+class EmptyXQType : public XQType
 {
-private:
-  store::StoreConsts::NodeKind  m_node_kind;
-  store::Item_t                 m_node_name;
-  xqtref_t                      m_content_type;
-  bool                          m_nillable;
-  bool                          m_schema_test;
-
 public:
-  SERIALIZABLE_CLASS(NodeXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(NodeXQType, XQType)
+  EmptyXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION, builtin)
+  {
+  }
+
+  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
+ public:
+  SERIALIZABLE_CLASS(EmptyXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(EmptyXQType, XQType)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (XQType*)this);
-    SERIALIZE_ENUM(store::StoreConsts::NodeKind, m_node_kind);
-    ar & m_node_name;
-    ar & m_content_type;
-    ar & m_nillable;
-    ar & m_schema_test;
   }
-
-public:
-  NodeXQType(
-        const TypeManager* manager,
-        store::StoreConsts::NodeKind nodeKind,
-        const store::Item_t& nodeName,
-        xqtref_t contentType,
-        TypeConstants::quantifier_t quantifier,
-        bool nillable,
-        bool schematest,
-        bool builtin = false);
-
-  NodeXQType(
-        const NodeXQType& source,
-        TypeConstants::quantifier_t quantifier);
-
-  store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
-
-  store::Item* get_node_name() const { return m_node_name.getp(); }
-
-  bool is_schema_test() const { return m_schema_test; }
-
-  xqtref_t get_content_type() const { return m_content_type; }
-
-  bool get_nillable() const { return m_nillable; }
-
-  bool is_untyped() const;
-
-  content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
-
-  bool is_equal(const TypeManager* tm, const NodeXQType& supertype) const;
-
-  bool is_subtype(const TypeManager* tm, const NodeXQType& supertype) const;
-
-  virtual std::ostream& serialize_ostream(std::ostream& os) const;
-};
-
-
-/***************************************************************************//**
-  Class FunctionXQType represents all the sequence types whose ItemType is a
-  FunctionType.
-********************************************************************************/
-class FunctionXQType : public XQType
-{
-private:
-  std::vector<xqtref_t>         m_param_types;
-  xqtref_t                      m_return_type;
-
-public:
-  SERIALIZABLE_CLASS(FunctionXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(FunctionXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar);
-
-public:
-  FunctionXQType(
-        const TypeManager* manager,
-        const std::vector<xqtref_t>& aParamTypes,
-        const xqtref_t& aReturnType,
-        TypeConstants::quantifier_t quantifier,
-        bool builtin = false);
-
-  const std::vector<xqtref_t>&
-  get_param_types() const { return m_param_types; }
-
-  const xqtref_t&
-  operator[](size_t i) const { return m_param_types[i]; }
-
-  size_t
-  get_number_params() const { return m_param_types.size(); }
-
-  xqtref_t get_return_type() const { return m_return_type; }
-
-  bool is_equal(const TypeManager* tm, const FunctionXQType& supertype) const;
-
-  bool is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const;
-
-  virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 
@@ -572,6 +470,136 @@ public:
 };
 
 
+/***************************************************************************//**
+  Class AtomicXQType represents all the sequence types whose ItemType is one
+  of the 45 XQDM builtin atomic types.
+********************************************************************************/
+class AtomicXQType : public XQType
+{
+public:
+   static const char* ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+
+private:
+   TypeConstants::atomic_type_code_t m_type_code;
+
+public:
+  SERIALIZABLE_CLASS(AtomicXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AtomicXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+    SERIALIZE_ENUM(TypeConstants::atomic_type_code_t, m_type_code);
+  }
+
+public:
+   AtomicXQType(
+        const TypeManager *manager,
+        TypeConstants::atomic_type_code_t type_code,
+        TypeConstants::quantifier_t quantifier,
+        bool builtin = false)
+     :
+     XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
+     m_type_code(type_code)
+   {
+   }
+
+  TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+
+  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
+
+  store::Item_t get_qname() const;
+
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
+};
+
+
+/***************************************************************************//**
+  Class NodeXQType represents all the sequence types whose ItemType is a
+  KindTest.
+********************************************************************************/
+class NodeXQType : public XQType
+{
+private:
+  store::StoreConsts::NodeKind  m_node_kind;
+  store::Item_t                 m_node_name;
+  xqtref_t                      m_content_type;
+  bool                          m_nillable;
+  bool                          m_schema_test;
+
+public:
+  SERIALIZABLE_CLASS(NodeXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NodeXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  NodeXQType(
+        const TypeManager* manager,
+        store::StoreConsts::NodeKind nodeKind,
+        const store::Item_t& nodeName,
+        xqtref_t contentType,
+        TypeConstants::quantifier_t quantifier,
+        bool nillable,
+        bool schematest,
+        bool builtin = false);
+
+  NodeXQType(
+        const NodeXQType& source,
+        TypeConstants::quantifier_t quantifier);
+
+  store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
+
+  store::Item* get_node_name() const { return m_node_name.getp(); }
+
+  bool is_schema_test() const { return m_schema_test; }
+
+  xqtref_t get_content_type() const { return m_content_type; }
+
+  bool get_nillable() const { return m_nillable; }
+
+  bool is_untyped() const;
+
+  content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
+
+  bool is_equal(const TypeManager* tm, const NodeXQType& supertype) const;
+
+  bool is_subtype(
+      const TypeManager* tm,
+      const NodeXQType& supertype,
+      const QueryLoc& loc) const;
+
+  bool is_supertype(
+      const TypeManager* tm,
+      const store::Item* subitem,
+      const QueryLoc& loc) const;
+
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
+};
+
+
+/***************************************************************************//**
+  xs:untyped
+********************************************************************************/
+class UntypedXQType : public XQType
+{
+public:
+  UntypedXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  store::Item_t get_qname() const;
+
+ public:
+  SERIALIZABLE_CLASS(UntypedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
+};
+
+
 /******************************************************************************
   function(*)
 *******************************************************************************/
@@ -604,71 +632,44 @@ public:
 
 
 /***************************************************************************//**
-  xs:untyped
+  Class FunctionXQType represents all the sequence types whose ItemType is a
+  FunctionType.
 ********************************************************************************/
-class UntypedXQType : public XQType
+class FunctionXQType : public XQType
 {
+private:
+  std::vector<xqtref_t>         m_param_types;
+  xqtref_t                      m_return_type;
+
 public:
-  UntypedXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
+  SERIALIZABLE_CLASS(FunctionXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(FunctionXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
 
-  store::Item_t get_qname() const;
- public:
-  SERIALIZABLE_CLASS(UntypedXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
-};
-
-
-/***************************************************************************//**
-  Represents the empty sequence
-********************************************************************************/
-class EmptyXQType : public XQType
-{
 public:
-  EmptyXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION, builtin)
-  {
-  }
+  FunctionXQType(
+        const TypeManager* manager,
+        const std::vector<xqtref_t>& aParamTypes,
+        const xqtref_t& aReturnType,
+        TypeConstants::quantifier_t quantifier,
+        bool builtin = false);
 
-  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
- public:
-  SERIALIZABLE_CLASS(EmptyXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(EmptyXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
-};
+  const std::vector<xqtref_t>&
+  get_param_types() const { return m_param_types; }
 
+  const xqtref_t&
+  operator[](size_t i) const { return m_param_types[i]; }
 
-/***************************************************************************//**
+  size_t
+  get_number_params() const { return m_param_types.size(); }
 
-********************************************************************************/
-class NoneXQType : public XQType
-{
-public:
-  NoneXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE, builtin)
-  {
-  }
+  xqtref_t get_return_type() const { return m_return_type; }
 
-  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
- public:
-  SERIALIZABLE_CLASS(NoneXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(NoneXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-  }
+  bool is_equal(const TypeManager* tm, const FunctionXQType& supertype) const;
+
+  bool is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const;
+
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 

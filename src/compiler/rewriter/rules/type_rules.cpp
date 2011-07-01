@@ -74,7 +74,7 @@ RULE_REWRITE_POST(InferUDFTypes)
   xqtref_t declaredType = udf->getSignature().return_type();
 
   if (!TypeOps::is_equal(*bodyType, *declaredType) &&
-      TypeOps::is_subtype(tm, *bodyType, *declaredType))
+      TypeOps::is_subtype(tm, *bodyType, *declaredType, bodyExpr->get_loc()))
   {
     udf->getSignature().return_type() = bodyType;
     return node;
@@ -91,6 +91,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 {
   static_context* sctx = node->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   if (node->get_expr_kind() == fo_expr_kind) 
   {
@@ -100,7 +101,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       expr_t arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
-      if (TypeOps::is_subtype(tm, *arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *arg_type, *rtm.BOOLEAN_TYPE_ONE, arg->get_loc()))
         return arg;
       else
         return NULL;
@@ -110,7 +111,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       expr_t arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
-      if (TypeOps::is_subtype(tm, *arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+      if (TypeOps::is_subtype(tm, *arg_type, *rtm.ANY_ATOMIC_TYPE_STAR, arg->get_loc()))
         return arg;
       else
         return NULL;
@@ -138,9 +139,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     // If arg type is subtype of target type, we can eliminate treat and promote
     // (because they are noops in this case), but not cast (which will actually
     // create a new item with the target type).
-    if (TypeOps::is_equal(tm, *arg_type, *target_type) ||
+    if (TypeOps::is_equal(tm, *arg_type, *target_type, arg->get_loc()) ||
         (node->get_expr_kind() != cast_expr_kind &&
-         TypeOps::is_subtype(tm, *arg_type, *target_type)))
+         TypeOps::is_subtype(tm, *arg_type, *target_type, arg->get_loc())))
       return arg;
     
     xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
@@ -151,7 +152,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     // arg is the correct one. This we can do by turning cast to a treat expr
     // that just chacks the cardinality.
     if (node->get_expr_kind() == cast_expr_kind &&
-        TypeOps::is_equal(tm, *arg_ptype, *target_ptype))
+        TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
     {
       return new treat_expr(sctx,
                             node->get_loc(),
@@ -165,7 +166,8 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       treat_expr* te = static_cast<treat_expr *> (pe);
 
-      if (te->get_check_prime() && TypeOps::is_subtype(tm, *arg_ptype, *target_ptype))
+      if (te->get_check_prime() && 
+          TypeOps::is_subtype(tm, *arg_ptype, *target_ptype, arg->get_loc()))
       {
         te->set_check_prime(false);
         return node;
@@ -225,7 +227,10 @@ RULE_REWRITE_POST(SpecializeOperations)
       {
         fo->set_func(replacement);
 
-        if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+        if (TypeOps::is_subtype(tm,
+                                *argType,
+                                *rtm.UNTYPED_ATOMIC_TYPE_STAR,
+                                argExpr->get_loc()))
         {
           expr_t promoteExpr = new promote_expr(argExpr->get_sctx(),
                                                 argExpr->get_loc(),
@@ -263,6 +268,7 @@ RULE_REWRITE_POST(SpecializeOperations)
         posExpr = promoteExpr->get_input();
       }
 
+      const QueryLoc& posLoc = posExpr->get_loc();
       xqtref_t posType = posExpr->get_return_type();
 
       if (fo->num_args() == 3)
@@ -275,16 +281,17 @@ RULE_REWRITE_POST(SpecializeOperations)
         }
 
         xqtref_t lenType = lenExpr->get_return_type();
+        const QueryLoc& lenLoc = lenExpr->get_loc();
 
-        if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE) &&
-            TypeOps::is_subtype(tm, *lenType, *rtm.INTEGER_TYPE_ONE))
+        if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE, posLoc) &&
+            TypeOps::is_subtype(tm, *lenType, *rtm.INTEGER_TYPE_ONE, lenLoc))
         {
           fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3));
           fo->set_arg(1, posExpr);
           fo->set_arg(1, lenExpr);
         }
       }
-      else if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE))
+      else if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE, posLoc))
       {
         fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2));
         fo->set_arg(1, posExpr);
@@ -334,15 +341,16 @@ RULE_REWRITE_POST(SpecializeOperations)
           {
             expr* arg = (i == 0 ? arg0 : arg1);
             xqtref_t type = (i == 0 ? t0 : t1);
+            const QueryLoc& loc = arg->get_loc();
 
-            if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
+            if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc)) 
             {
               nargs[i] = new cast_expr(arg->get_sctx(),
                                        arg->get_loc(),
                                        arg,
                                        string_type);
             }
-            else if (! TypeOps::is_subtype(tm, *type, *string_type)) 
+            else if (! TypeOps::is_subtype(tm, *type, *string_type, loc)) 
             {
               string_cmp = false;
               break;
@@ -374,8 +382,9 @@ RULE_REWRITE_POST(SpecializeOperations)
             {
               if (TypeOps::is_equal(tm,
                                     *TypeOps::prime_type(tm, *aType),
-                                    *rtm.DECIMAL_TYPE_ONE) &&
-                  TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE))
+                                    *rtm.DECIMAL_TYPE_ONE,
+                                    fo->get_loc()) &&
+                  TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE, fo->get_loc()))
               {
                 expr_t tmp = fo->get_arg(0);
                 fo->set_arg(0, fo->get_arg(1));
@@ -410,9 +419,10 @@ RULE_REWRITE_POST(SpecializeOperations)
         {
           expr* colExpr = obc->get_column_expr(j);
           xqtref_t colType = colExpr->get_return_type();
+          const QueryLoc& colLoc = colExpr->get_loc();
 
-          if (!TypeOps::is_equal(tm, *colType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
-              TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+          if (!TypeOps::is_equal(tm, *colType, *rtm.EMPTY_TYPE, colLoc) &&
+              TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, colLoc))
           {
             expr_t castExpr = new cast_expr(colExpr->get_sctx(),
                                             colExpr->get_loc(),
@@ -484,14 +494,17 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
 {
   TypeManager* tm = arg->get_type_manager();
 
-  if (TypeOps::is_subtype(tm, *oldt, *t))
+  if (TypeOps::is_subtype(tm, *oldt, *t, arg->get_loc()))
     return NULL;
 
   if (arg->get_expr_kind() == promote_expr_kind && TypeOps::type_max_cnt(tm, *t) <= 1)
   {
     promote_expr* pe = static_cast<promote_expr*>(arg);
     xqtref_t peType = pe->get_target_type();
-    if (TypeOps::is_equal(tm, *peType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+    if (TypeOps::is_equal(tm,
+                          *peType,
+                          *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+                          arg->get_loc()))
       arg = pe->get_input();
   }
 

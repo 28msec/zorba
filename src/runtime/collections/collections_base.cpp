@@ -67,7 +67,7 @@ void checkNodeType(
 
   const TypeManager* tm = sctx->get_typemanager();
 
-  if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType())))
+  if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType()), loc))
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE,

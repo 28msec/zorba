@@ -146,7 +146,10 @@ FunctionConsts::AnnotationValue function::producesDistinctNodes() const
   TypeManager* tm = rt->get_manager();
 
   if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
-      TypeOps::is_subtype(tm, *rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+      TypeOps::is_subtype(tm,
+                          *rt,
+                          *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+                          QueryLoc::null))
   {
     return FunctionConsts::YES;
   }
@@ -166,7 +169,10 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
   TypeManager* tm = rt->get_manager();
 
   if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
-      TypeOps::is_subtype(tm, *rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+      TypeOps::is_subtype(tm,
+                          *rt, 
+                          *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+                          QueryLoc::null))
   {
     return FunctionConsts::YES;
   }

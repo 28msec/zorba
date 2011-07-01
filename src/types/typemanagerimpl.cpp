@@ -341,9 +341,7 @@ xqtref_t TypeManagerImpl::create_named_type(
         {
 					throw XQUERY_EXCEPTION_VAR(
 						error,
-						ERROR_PARAMS(
-							qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
-						),
+						ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
 						ERROR_LOC( loc )
 					);
         }
@@ -363,10 +361,8 @@ xqtref_t TypeManagerImpl::create_named_type(
     {
 			throw XQUERY_EXCEPTION_VAR(
 				error,
-				ERROR_PARAMS(
-					qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes )
-				),
-				ERROR_LOC( loc )
+				ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
+				ERROR_LOC(loc)
 			);
     }
     else
@@ -374,6 +370,18 @@ xqtref_t TypeManagerImpl::create_named_type(
       return NULL;
     }
   }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+xqtref_t TypeManagerImpl::create_function_type(
+        const std::vector<xqtref_t>& paramTypes,
+        const xqtref_t& returnType,
+        TypeConstants::quantifier_t quant) const
+{
+  return new FunctionXQType(this, paramTypes, returnType, quant);
 }
 
 
@@ -485,18 +493,6 @@ xqtref_t TypeManagerImpl::create_node_type(
     ZORBA_ASSERT(false);
     return RTM.NONE_TYPE;
   }
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-xqtref_t TypeManagerImpl::create_function_type(
-        const std::vector<xqtref_t>& paramTypes,
-        const xqtref_t& returnType,
-        TypeConstants::quantifier_t quant) const
-{
-  return new FunctionXQType(this, paramTypes, returnType, quant);
 }
 
 
@@ -720,7 +716,7 @@ xqtref_t TypeManagerImpl::create_value_type(
     }
 
     return new FunctionXQType(this, lParamTypes, lRetType, quant);
-  } // else if (item->isFunction())
+  }
 
   else
   {

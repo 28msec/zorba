@@ -1159,7 +1159,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
   bool haveUpper = false;
   bool inclLower = false;
   bool inclUpper = false;
-  bool inclBound;
+  bool inclBound = false;
   xqtref_t keyType;
   bool status;
 
@@ -1270,6 +1270,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
          state->theSearchItemsIte != state->theSearchItemsEnd;
          ++state->theSearchItemsIte)
     {
+      cond->clear();
       cond->pushBound(*state->theSearchItemsIte, true, inclLower);
       
       state->theIterator->init(cond);
@@ -1303,6 +1304,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
          state->theSearchItemsIte != state->theSearchItemsEnd;
          ++state->theSearchItemsIte)
     {
+      cond->clear();
       cond->pushBound(*state->theSearchItemsIte, false, inclUpper);
 
       state->theIterator->init(cond);
@@ -1335,6 +1337,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
          state->theSearchItemsIte != state->theSearchItemsEnd;
          ++state->theSearchItemsIte)
     {
+      cond->clear();
       cond->pushBound(*state->theSearchItemsIte, haveLower, inclBound);
       
       state->theIterator->init(cond);
@@ -1382,6 +1385,7 @@ bool ProbeIndexRangeGeneralIterator::getSearchItems(
   long cmp;
 
   TypeManager* tm = theSctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   ulong childIdx = (haveLower ? 1 : 2);
 
@@ -1412,18 +1416,21 @@ bool ProbeIndexRangeGeneralIterator::getSearchItems(
       xqtref_t minmaxItemType = tm->create_value_type(minmaxItem, loc);
       xqtref_t searchItemType = tm->create_value_type(searchItem, loc);
 
-      if (TypeOps::is_subtype(tm, *searchItemType, *minmaxItemType))
+      if (!TypeOps::is_equal(tm, *searchItemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
+          TypeOps::is_subtype(tm, *searchItemType, *minmaxItemType))
       {
         cmp = minmaxItem->compare(searchItem, state->theTimezone, state->theCollator);
         
         if ((haveLower && cmp > 0) || (haveUpper && cmp < 0))
+        {
           minmaxItem.transfer(searchItem);
+          continue;
+        }
       }
-      else
-      {
-        state->theSearchItems.push_back(NULL);
-        state->theSearchItems.back().transfer(minmaxItem);
-      }
+
+      state->theSearchItems.push_back(NULL);
+      state->theSearchItems.back().transfer(minmaxItem);
+      minmaxItem = searchItem;
     }
   }
 

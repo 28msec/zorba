@@ -485,12 +485,12 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type strlen, DateTime
   
   if (str[pos] == '-')
   {
-    temp.append(str + pos, 8);
+    temp.append(str + pos, (8 < strlen - pos ? 8 : strlen - pos));
     ++pos;
   }
   else
   {
-    temp.append(str + pos, 7);
+    temp.append(str + pos, (7 < strlen - pos ? 7 : strlen - pos));
   }
 
   temp += "-01";

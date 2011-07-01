@@ -366,7 +366,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
     
-    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE) &&
+    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()) &&
         (targetQuant == TypeConstants::QUANT_QUESTION ||
          targetQuant == TypeConstants::QUANT_STAR))
     {
@@ -390,10 +390,10 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
-      TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
-                               TypeOps::quantifier(*e->theTargetType));
+    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
+                             TypeOps::quantifier(*e->theTargetType));
 
-    if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype)) 
+    if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype, get_loc())) 
     {
       newType = tm->create_type(*input_ptype, q);
     }
@@ -416,7 +416,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     TypeOps::intersect_quant(TypeOps::quantifier(*in_type),
                              TypeOps::quantifier(*e->theTargetType));
 
-    if (TypeOps::is_subtype(tm, *in_ptype, *target_ptype))
+    if (TypeOps::is_subtype(tm, *in_ptype, *target_ptype, get_loc()))
     {
       newType = tm->create_type(*in_ptype, q);
     }
@@ -765,7 +765,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   assert(newType != NULL);
 
   if (modified != NULL && 
-      (theType == NULL || !TypeOps::is_equal(tm, *newType, *theType)))
+      (theType == NULL || !TypeOps::is_equal(tm, *newType, *theType, get_loc())))
   {
     *modified = true;
   }

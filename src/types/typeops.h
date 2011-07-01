@@ -155,7 +155,8 @@ public:
   static bool is_equal(
         const TypeManager* tm,
         const XQType& type1,
-        const XQType& type2);
+        const XQType& type2,
+        const QueryLoc& loc = QueryLoc::null);
 
   /*
    * Returns true if _subtype_ is a subtype of _supertype_, false otherwise.
@@ -167,13 +168,23 @@ public:
         const QueryLoc& loc = QueryLoc::null);
 
   /*
+   * Returns true if the data type of the given item is a subtype of the
+   * given supertype; otherwise, returns false.
+   */
+  static bool is_subtype(
+      const TypeManager* tm,
+      const store::Item* subitem,
+      const XQType& supertype,
+      const QueryLoc& loc);
+
+  /*
    * Returns true if _item_ is treatable as _type_, false otherwise.
    */
   static bool is_treatable(
         const TypeManager* tm,
         const store::Item_t& item,
         const XQType& type,
-        const QueryLoc& loc = QueryLoc::null);
+        const QueryLoc& loc);
 
   /**
    * Returns the castability fron the source ItemType to the target ItemType. It
