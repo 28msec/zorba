@@ -19,6 +19,8 @@
 
 #include <cassert>
 
+#include <zorba/config.h>
+
 namespace zorba {
 namespace rstring_classes {
 

@@ -20,6 +20,8 @@
 #include <cassert>
 #include <stdexcept>
 
+#include <zorba/config.h>
+
 #include "rep_base.h"
 #include "rep_proxy.h"
 #include "util/void_int.h"
