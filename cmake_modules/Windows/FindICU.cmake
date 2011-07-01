@@ -33,9 +33,12 @@ FIND_PACKAGE_WIN32 (ICU ICU_FOUND icu)
 
 IF (ICU_FOUND)
 
+  # first delete the cache entry for DLL to make sure the correct one is chosen
+  UNSET (ICU_INFO_EXE CACHE)
+
   # find ICU version
-  FIND_FILE (
-    ICU_INFO_EXE
+  FIND_PATH (
+    ICU_INFO_EXE_PATH
     icuinfo.exe
     PATHS "${FOUND_LOCATION}"
     # add more suffixes if necessary
@@ -43,27 +46,35 @@ IF (ICU_FOUND)
     NO_DEFAULT_PATH
   )
 
-  EXECUTE_PROCESS (COMMAND "${ICU_INFO_EXE}" OUTPUT_VARIABLE INFO)
-  STRING (REGEX REPLACE "\n" ";" LINES ${INFO})
-  FOREACH (LINE ${LINES})
-    IF (LINE MATCHES "Runtime-Version: ")
-      STRING (REPLACE "Runtime-Version: " "" VERSION ${LINE})
-    ENDIF (LINE MATCHES "Runtime-Version: ")
-  ENDFOREACH (LINE)
+  IF (NOT ICU_INFO_EXE_PATH)
 
-  STRING (REPLACE "." ";" PARTS ${VERSION})
+    MESSAGE (WARNING "icuinfo.exe was not found in: ${FOUND_LOCATION}. This is needed in order to retrieve the ICU version and to find the ICU DLLs. Zorba will not run unless you have the ICU DLLs in the path.")
 
-  LIST (GET PARTS 0 MAJOR_VERSION)
-  LIST (GET PARTS 1 MINOR_VERSION)
-  SET (DLL_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
+  ELSE (NOT ICU_INFO_EXE_PATH)
 
-  SET (DLL_NAMES
-    "icudt${DLL_VERSION}.dll"
-    "icuin${DLL_VERSION}.dll"
-    "icuuc${DLL_VERSION}.dll"
-  )
+    EXECUTE_PROCESS (COMMAND "${ICU_INFO_EXE_PATH}/icuinfo.exe" OUTPUT_VARIABLE INFO)
+    STRING (REGEX REPLACE "\n" ";" LINES ${INFO})
+    FOREACH (LINE ${LINES})
+      IF (LINE MATCHES "Runtime-Version: ")
+        STRING (REPLACE "Runtime-Version: " "" VERSION ${LINE})
+      ENDIF (LINE MATCHES "Runtime-Version: ")
+    ENDFOREACH (LINE)
+  
+    STRING (REPLACE "." ";" PARTS ${VERSION})
+  
+    LIST (GET PARTS 0 MAJOR_VERSION)
+    LIST (GET PARTS 1 MINOR_VERSION)
+    SET (DLL_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
+  
+    SET (DLL_NAMES
+      "icudt${DLL_VERSION}.dll"
+      "icuin${DLL_VERSION}.dll"
+      "icuuc${DLL_VERSION}.dll"
+    )
+  
+    # find the needed DLL's
+    FIND_PACKAGE_DLLS_WIN32 (${ICU_INFO_EXE_PATH} "${DLL_NAMES}")
 
-  # find the needed DLL's
-  FIND_PACKAGE_DLLS_WIN32 (${FOUND_LOCATION} "${DLL_NAMES}")
+  ENDIF (NOT ICU_INFO_EXE_PATH)
 
 ENDIF (ICU_FOUND)
