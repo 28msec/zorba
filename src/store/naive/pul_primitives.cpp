@@ -1572,8 +1572,12 @@ void UpdInsertIntoHashMap::apply()
     }
 
     store::IndexKey* lKeyPtr = lKey.get();
-    lImpl->insert(lKeyPtr, lValue, lKey->size() > 1);
-    lKey.release();
+    if (!lImpl->insert(lKeyPtr, lValue, lKey->size() > 1))
+    {
+      // the index took the ownership over the key if the index
+      // did _not_ already contain an entry with the same key
+      lKey.release();
+    }
   }
 }
 
