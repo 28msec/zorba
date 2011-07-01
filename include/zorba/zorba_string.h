@@ -483,7 +483,7 @@ public:
    * @param n The number of characters to compare.
    * @param s The string to compare to.
    * @param s_pos The starting position within \a s.
-   * @param s_n The number of characters of \s to compare.
+   * @param s_n The number of characters of \a s to compare.
    * @return -1 only if this string \< \a s,
    * 0 only if this string == \a s,
    * or +1 only if this string \> \a s.
@@ -498,7 +498,7 @@ public:
    * @param n The number of characters to compare.
    * @param s The string to compare to.
    * @param s_pos The starting position within \a s.
-   * @param s_n The number of characters of \s to compare.
+   * @param s_n The number of characters of \a s to compare.
    * @return -1 only if this string \< \a s,
    * 0 only if this string == \a s,
    * or +1 only if this string \> \a s.
@@ -512,7 +512,7 @@ public:
    * @param pos The starting position within this string.
    * @param n The number of characters to compare.
    * @param s The C string to compare to.
-   * @param s_n The number of characters of \s to compare.
+   * @param s_n The number of characters of \a s to compare.
    * @return -1 only if this string \< \a s,
    * 0 only if this string == \a s,
    * or +1 only if this string \> \a s.
@@ -640,7 +640,7 @@ public:
    *
    * @param s The set of characters to search for.
    * @param pos The starting position within this string.
-   * @param s_n The number of characters of \s to consider.
+   * @param s_n The number of characters of \a s to consider.
    * @return the offset of a matching character or \c npos if not found.
    */
   size_type find_first_of( const_pointer s, size_type pos,
@@ -692,7 +692,7 @@ public:
    *
    * @param s The set of characters not to search for.
    * @param pos The starting position within this string.
-   * @param s_n The number of characters of \s to consider.
+   * @param s_n The number of characters of \a s to consider.
    * @return the offset of a non-matching character or \c npos if not found.
    */
   size_type find_first_not_of( const_pointer s, size_type pos,
@@ -744,7 +744,7 @@ public:
    *
    * @param s The set of characters to search for.
    * @param pos The starting position within this string.
-   * @param s_n The number of characters of \s to consider.
+   * @param s_n The number of characters of \a s to consider.
    * @return the offset of a matching character or \c npos if not found.
    */
   size_type find_last_of( const_pointer s, size_type pos, size_type s_n ) const;
@@ -795,7 +795,7 @@ public:
    *
    * @param s The set of characters to not search for.
    * @param pos The starting position within this string.
-   * @param s_n The number of characters of \s to consider.
+   * @param s_n The number of characters of \a s to consider.
    * @return the offset of a matching character or \c npos if not found.
    */
   size_type find_last_not_of( const_pointer s, size_type pos,
