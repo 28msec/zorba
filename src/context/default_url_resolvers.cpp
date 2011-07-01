@@ -75,7 +75,7 @@ FileURLResolver::resolveURL
     return NULL;
   }
   zstring lPath = fs::get_normalized_path(aUrl);
-  if (fs::get_type(lPath) != fs::non_existent) {
+  if (fs::get_type(lPath) == fs::file) {
     std::auto_ptr<std::ifstream> lStream(new std::ifstream());
     lStream->open(lPath.c_str());
     return new StreamResource

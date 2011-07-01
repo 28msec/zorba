@@ -12,24 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Build and install any test modules
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 2.3
-  "ver2.xq")
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ver" 1.4
-  "${CMAKE_CURRENT_SOURCE_DIR}/ver.xq")
+# Build and install any test modules.  (Parameters are scrambled about
+# as a test for DECLARE_ZORBA_MODULE parsing them.)
+DECLARE_ZORBA_MODULE(FILE "ver2.xq"
+  URI "http://www.zorba-xquery.com/modules/ver" VERSION 2.3)
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/ver" VERSION 1.4
+  FILE "${CMAKE_CURRENT_SOURCE_DIR}/ver.xq")
 
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/bad-ver" 1.4
-  "bad-ver.xq")
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/bad-ver"
+  FILE "bad-ver.xq" VERSION 1.4)
 
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/A" 1.0
-  "module-A.xq")
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/B" 1.0
-  "${CMAKE_CURRENT_SOURCE_DIR}/module-B.xq")
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/A" VERSION 1.0
+  FILE "module-A.xq")
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/B" VERSION 1.0
+  FILE "${CMAKE_CURRENT_SOURCE_DIR}/module-B.xq")
 
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 2.0 "ext2.xq")
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/ext" 1.0 "ext.xq")
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/ext"
+  VERSION 2.0 FILE "ext2.xq")
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/ext"
+  VERSION 1.0 FILE "ext.xq")
 
 ADD_SUBDIRECTORY(ourlib)
 
-DECLARE_ZORBA_MODULE("http://www.zorba-xquery.com/modules/link" 1.0
-  "link.xq" "ourlib")
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/link" VERSION 1.0
+  LINK_LIBRARIES "ourlib" FILE "link.xq")
+
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/modules/theschema"
+  FILE "schema.xsd")
+DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/myschema"
+  VERSION 1.0 FILE "schema.xq")

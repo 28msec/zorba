@@ -1,26 +1,105 @@
 # Copyright 2006-2010 The FLWOR Foundation.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Utility macro to parse CMake-style argument lists
+MACRO(PARSE_ARGUMENTS prefix arg_names onearg_names option_names)
+  SET(DEFAULT_ARGS)
+  FOREACH(arg_name ${arg_names})
+    SET(${prefix}_${arg_name})
+  ENDFOREACH(arg_name)
+  FOREACH(option ${option_names})
+    SET(${prefix}_${option} FALSE)
+  ENDFOREACH(option)
+
+  SET(current_arg_name DEFAULT_ARGS)
+  SET(current_arg_list)
+  SET(current_arg_is_singular)
+  SET(larg_names ${arg_names})
+  SET(lonearg_names ${onearg_names})
+  SET(loption_names ${option_names})
+  FOREACH(arg ${ARGN})
+    LIST(FIND larg_names "${arg}" is_arg_name)
+    LIST(FIND lonearg_names "${arg}" is_onearg_name)
+    IF (is_arg_name GREATER -1 OR is_onearg_name GREATER -1)
+      SET(${prefix}_${current_arg_name} ${current_arg_list})
+      SET(current_arg_name ${arg})
+      SET(current_arg_list)
+      IF (is_arg_name GREATER -1)
+        SET(current_arg_is_singular)
+      ELSE (is_arg_name GREATER -1)
+        SET(current_arg_is_singular 1)
+      ENDIF (is_arg_name GREATER -1)
+    ELSE (is_arg_name GREATER -1 OR is_onearg_name GREATER -1)
+      LIST(FIND loption_names "${arg}" is_option)
+      IF (is_option GREATER -1)
+        SET(${prefix}_${arg} TRUE)
+      ELSE (is_option GREATER -1)
+        SET(current_arg_list ${current_arg_list} ${arg})
+        IF (current_arg_is_singular)
+          LIST(LENGTH current_arg_list current_list_len)
+          IF (current_list_len GREATER 1)
+            MESSAGE (FATAL_ERROR "Argument ${current_arg_name} may only have one value")
+          ENDIF (current_list_len GREATER 1)
+        ENDIF (current_arg_is_singular)
+      ENDIF (is_option GREATER -1)
+    ENDIF (is_arg_name GREATER -1 OR is_onearg_name GREATER -1)
+  ENDFOREACH(arg)
+  SET(${prefix}_${current_arg_name} ${current_arg_list})
+ENDMACRO(PARSE_ARGUMENTS)
+
+# Utility macro to angle a URI into Zorba's filesystem form - namely:
+# 1. Drop the scheme: (and // if present)
+# 2. Reverse the authority (host) on dots, then split on dots into subdirs
+# 3. If the final component ends in /, append "index.EXT"; else if it
+#    doesn't end in .EXT, append ".EXT"
+#
+# Parameters:
+#   URI - URI to mangle
+#   EXT - extension to ensure URI ends with
+#   DIR_VAR - variable to set with the directory part of the mangled path
+#   FILE_VAR - variable to set with the file part of the mangled path
+MACRO (MANGLE_URI URI EXT DIR_VAR FILE_VAR)
+  STRING (REGEX REPLACE "^[^:]+:(//)?" "" mangled_path "${URI}")
+  STRING (REPLACE "/" ";" mangled_path ${mangled_path})
+  LIST (GET mangled_path 0 authority)
+  LIST (REMOVE_AT mangled_path 0)
+  STRING (REPLACE "." ";" authority "${authority}")
+  LIST (REVERSE authority)
+  LIST (INSERT mangled_path 0 ${authority})
+  LIST (GET mangled_path -1 final_comp)
+  LIST (REMOVE_AT mangled_path -1)
+  IF (NOT final_comp)
+    SET (${FILE_VAR} "index.${EXT}")
+  ELSE (NOT final_comp)
+    IF ("${final_comp}" MATCHES "\\.${EXT}$")
+      SET (${FILE_VAR} "${final_comp}")
+    ELSE ("${final_comp}" MATCHES "\\.${EXT}$")
+      SET (${FILE_VAR} "${final_comp}.${EXT}")
+    ENDIF ("${final_comp}" MATCHES "\\.${EXT}$")
+  ENDIF (NOT final_comp)
+  STRING (REPLACE ";" "/" ${DIR_VAR} "${mangled_path}")
+ENDMACRO (MANGLE_URI)
+
 # Macro which declares a module. This sets up the installation of the
 # module, including creating the correct paths for module versioning.
 #
-# Args: MODULE_URI - the namespace URI of the module
-#       MODULE_VERSION - the version of the module, major.minor[.patch]
-#       MODULE_FILE - path to .xq file (if not absolute, will be resolved
-#                     relative to CMAKE_CURRENT_SOURCE_DIR)
+# Args: URI - the namespace URI of the module
+#       VERSION - the version of the module, major.minor[.patch]
+#       FILE - path to .xq file (if not absolute, will be resolved
+#              relative to CMAKE_CURRENT_SOURCE_DIR)
 #       LINK_LIBRARIES - (optional) List of libraries to link external
-#                        function library against
+#              function library against
 #
 # QQQ this currently doesn't support modules with multiple component
 # .xq files. (Neither does Zorba's automatic loading mechanism, so
@@ -28,15 +107,9 @@
 #
 # QQQ might it be possible / reasonable to attempt to parse the source
 # file enough to deduce the URI and version?
-MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
-  # CMake macro ARGN parameter is... weird.
-  SET (argn ${ARGN})
-  # Optional LINK_LIBRARIES argument
-  SET (link_libraries)
-  LIST (LENGTH argn num_opt_args)
-  IF (num_opt_args GREATER 0)
-    LIST (GET argn 0 link_libraries)
-  ENDIF (num_opt_args GREATER 0)
+MACRO (DECLARE_ZORBA_MODULE)
+  # Parse and validate arguments
+  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES" "URI;FILE;VERSION" "" ${ARGN})
   IF (NOT IS_ABSOLUTE "${MODULE_FILE}")
     SET (SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FILE}")
     SET (module_name "${MODULE_FILE}")
@@ -45,33 +118,22 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
     GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
   ENDIF (NOT IS_ABSOLUTE "${MODULE_FILE}")
 
-  # Mangle the module URI into Zorba's filesystem form - namely:
-  # 1. Drop the scheme: (and // if present)
-  # 2. Reverse the authority (host) on dots, then split on dots into subdirs
-  # 3. If the final component ends in /, append "index.xq"; else if it
-  #    doesn't end in .xq, append ".xq"
-  STRING (REGEX REPLACE "^[^:]+:(//)?" "" module_path ${MODULE_URI})
-  STRING (REPLACE "/" ";" module_path ${module_path})
-  LIST (GET module_path 0 authority)
-  LIST (REMOVE_AT module_path 0)
-  STRING (REPLACE "." ";" authority "${authority}")
-  LIST (REVERSE authority)
-  LIST (INSERT module_path 0 ${authority})
-  LIST (GET module_path -1 final_comp)
-  LIST (REMOVE_AT module_path -1)
-  IF (NOT final_comp)
-    SET (module_filename "index.xq")
-  ELSE (NOT final_comp)
-    IF ("${final_comp}" MATCHES "\\.xq$")
-      SET (module_filename "${final_comp}")
-    ELSE ("${final_comp}" MATCHES "\\.xq$")
-      SET (module_filename "${final_comp}.xq")
-    ENDIF ("${final_comp}" MATCHES "\\.xq$")
-  ENDIF (NOT final_comp)
-  STRING (REPLACE ";" "/" module_path "${module_path}")
- 
-  STRING(REPLACE "/" "_" ZORBA_MODULE_PREFIX "${module_path}")
-  
+  # Determine which module this is, numerically. This number will be
+  # used to generate unique target names for the external library (if
+  # any) and the target to copy files into MODULE_PATH. I wish I could
+  # name these targets after the URI rather than an int to avoid any
+  # possibility of conflicts, but when you do that you quickly run up
+  # against Windows' pathetic 260-character path limitation.
+  GET_PROPERTY (num_mod_targets GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT)
+  IF (NOT num_mod_targets)
+    SET (num_mod_targets 0)
+  ENDIF (NOT num_mod_targets)
+  MATH (EXPR num_mod_targets "${num_mod_targets} + 1")
+  SET_PROPERTY (GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT ${num_mod_targets})
+
+
+  MANGLE_URI (${MODULE_URI} "xq" module_path module_filename)
+
   # Compute a CMake-symbol-safe version of the target URI, for storing
   # things in CMake properties and declaring CMake targets.
   STRING (REGEX REPLACE "[/ ]" "_" uri_sym "${module_path}/${module_filename}")
@@ -117,14 +179,14 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
     SET (SRC_FILES)
     FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
       "${SOURCE_FILE}.src/*.cpp")
-    
+
     MESSAGE(STATUS "Add library " ${module_name})
     SET(SUFFIX)
     # simplestore executable doesn't need an extension
     IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
       SET(SUFFIX "_${ZORBA_STORE_NAME}")
     ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-  
+
 #    IF(WIN32)
 #      # configure_file doesn't replace variable with parameters; they
 #      # have to be defined in the macro
@@ -133,8 +195,8 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
 #      # set the rc file for the windows dll version
 #      CONFIGURE_FILE("${Zorba_CMAKE_MODULES_DIR}/Windows/WindowsDLLVersion.rc.in"
 #                      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc"
-#                      @ONLY)                        
-#      LIST(APPEND SRC_FILES 
+#                      @ONLY)
+#      LIST(APPEND SRC_FILES
 #        "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src/version.rc")
 #    ENDIF(WIN32)
 
@@ -148,8 +210,8 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
 
     # Add the library target. Ensure that the output name is based on
     # the module *URI*'s final component.
-    SET(MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${module_name}${SUFFIX}")
-    ADD_LIBRARY(${MODULE_LIB_NAME} SHARED ${SRC_FILES})
+    SET(module_lib_target "modlib_${num_mod_targets}")
+    ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
     # It seems like it would be nice to set the VERSION and/or
     # SOVERSION target properties here. However: On Windows, it
@@ -159,39 +221,13 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
     # "libext.so.2.0", which is difficult to transmogrify into the
     # target filename we actually want later. So in either case, the
     # target property isn't desirable.
-    SET_TARGET_PROPERTIES(${MODULE_LIB_NAME} PROPERTIES 
+    SET_TARGET_PROPERTIES(${module_lib_target} PROPERTIES
       OUTPUT_NAME "${module_filewe}${SUFFIX}"
       ${target_type}_OUTPUT_DIRECTORY
-      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.xq.src")
-    TARGET_LINK_LIBRARIES(${MODULE_LIB_NAME}
-      zorba_${ZORBA_STORE_NAME} ${ARGN})
+      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src")
+    TARGET_LINK_LIBRARIES(${module_lib_target}
+      zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
 
-#    IF (WIN32 AND MSVC_IDE)
-#      # in VS, the dll's are generated in the $(ConfigurationName)
-#      # directory, so we have to copy these dll's one level up in the
-#      # ${CMAKE_CURRENT_BINARY_DIR} the commands below use VS macro
-#      # expansions $(...)
-
-#      # if we change something in the project generating this target, make
-#      # sure we don't have a zombie DLL hanging around from an older build
-#      #left in for ctest need to change testing macro to be able to remove this
-#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
-#        if exist "\"$(ProjectDir)\\$(TargetFileName)\"" del "\"$(ProjectDir)\\$(TargetFileName)\"")
-#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
-#        copy "\"$(TargetPath)\"" "\"$(ProjectDir)\"")
-#      #Copy file to the corresponding module path inside the build  
-#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
-#        if exist "\"${output_dir}\\$(TargetFileName)\"" del "\"${output_dir}\\$(TargetFileName)\"")
-#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
-#        copy "\"$(TargetPath)\"" "\"${output_dir}\"")
-#      #Copy a versioned file to the corresponding module path inside the build
-#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} PRE_BUILD COMMAND
-#        if exist "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"" del "\"${output_dir}\\$(TargetFileName).${MODULE_VERSION}\"")  
-#      ADD_CUSTOM_COMMAND(TARGET ${MODULE_LIB_NAME} POST_BUILD COMMAND
-#        copy "\"${output_dir}\\$(TargetFileName)\""  "\"${output_dir}\\${MODULE_NAME}.${MODULE_VERSION}.dll\"")                   
-#    ENDIF (WIN32 AND MSVC_IDE)
-#      
-   
   ENDIF(EXISTS "${SOURCE_FILE}.src/")
 
 
@@ -209,52 +245,64 @@ MACRO (DECLARE_ZORBA_MODULE MODULE_URI MODULE_VERSION MODULE_FILE)
     ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}/${module_filename}"
       "${version_infix}" "${SOURCE_FILE}")
   ENDFOREACH (version_infix)
-    
+
   # Also copy the dynamic library from the location it was built.
   # Because the dynamic library is only loaded after the .xq file, the
   # exact module version is known; thus only one copy needs to be
   # made.
-  IF (MODULE_LIB_NAME)
-    GET_TARGET_PROPERTY (lib_location "${MODULE_LIB_NAME}" LOCATION)
+  IF (module_lib_target)
+    GET_TARGET_PROPERTY (lib_location "${module_lib_target}" LOCATION)
     GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
     ADD_COPY_RULE ("${lib_location}" "${output_dir}/${lib_filename}"
-      "${MODULE_VERSION}" "${MODULE_LIB_NAME}")
-  ENDIF (MODULE_LIB_NAME)
+      "${MODULE_VERSION}" "${module_lib_target}")
+  ENDIF (module_lib_target)
 
   # Associate these custom commands with the "all" target via a custom
   # target. (I couldn't find any neater way to do this in CMake; you
-  # can't directly add a dependency to "all".) Target needs to be
-  # named uniquely, and cannot have slashes, so...
-  ADD_CUSTOM_TARGET ("check_${uri_sym}_${MODULE_VERSION}" ALL
-    DEPENDS ${output_files})
+  # can't directly add a dependency to "all", nor is it possible to
+  # add additional file dependencies to an already-created target.)
+  ADD_CUSTOM_TARGET ("chkmod_${num_mod_targets}" ALL DEPENDS ${output_files})
 
-   STRING(REPLACE "/" "_" ZORBA_OUTPUT_INSTALLED "${output_dir}_installed")
-   GET_PROPERTY (is_installed GLOBAL PROPERTY ${ZORBA_OUTPUT_INSTALLED})
-   IF(NOT is_installed)
-   
-    #Copy .xsd files in directory
-    FILE(GLOB XSD_FILES "*.xsd")
-    FOREACH(XSD_FILE ${XSD_FILES})
-     CONFIGURE_FILE(${XSD_FILE} ${output_dir} COPYONLY)
-    ENDFOREACH(XSD_FILE ${XSD_FILES})
-   
+  # Ensure there exactly one INSTALL() directive for the module path.
+  GET_PROPERTY (is_installed GLOBAL PROPERTY ZORBA_MODULE_PATH_INSTALLED)
+  IF(NOT is_installed)
     INSTALL(DIRECTORY "${PROJECT_BINARY_DIR}/MODULE_PATH/."
-            DESTINATION "include/zorba/modules/")
-    #INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/modules
-    #    DESTINATION "include/zorba/"
-    #    FILES_MATCHING
-    #    PATTERN "*.vc*" EXCLUDE
-    #    PATTERN "*.cmake" EXCLUDE
-    #    PATTERN "CMakeFiles" EXCLUDE
-    #    PATTERN "*.dir" EXCLUDE
-    #    PATTERN "Debug" EXCLUDE
-    #    PATTERN "Release" EXCLUDE
-    #    PATTERN "*")
-    SET_PROPERTY(GLOBAL PROPERTY ${ZORBA_OUTPUT_INSTALLED} 1)
-   ENDIF(NOT is_installed)
-    
+      DESTINATION "include/zorba/modules/")
+    SET_PROPERTY(GLOBAL PROPERTY ZORBA_MODULE_PATH_INSTALLED 1)
+  ENDIF(NOT is_installed)
+
 ENDMACRO (DECLARE_ZORBA_MODULE)
 
+# Macro which declares a schema. This sets up the installation of the
+# schema into the URI_PATH folder so it will be found at runtime.
+#
+# Args: URI - the namespace URI of the schema
+#       FILE - path to .xsd file (if not absolute, will be resolved
+#              relative to CMAKE_CURRENT_SOURCE_DIR)
+MACRO (DECLARE_ZORBA_SCHEMA)
+  PARSE_ARGUMENTS(SCHEMA "" "URI;FILE" "" ${ARGN})
+  IF (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
+    SET (SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${SCHEMA_FILE}")
+  ELSE (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
+    SET (SOURCE_FILE "${SCHEMA_FILE}")
+  ENDIF (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
+  MANGLE_URI (${SCHEMA_URI} "xsd" schema_path schema_filename)
+
+  SET (output_dir "${CMAKE_BINARY_DIR}/MODULE_PATH/${schema_path}")
+  FILE (MAKE_DIRECTORY "${output_dir}")
+  ADD_CUSTOM_COMMAND (OUTPUT "${output_dir}/${schema_filename}"
+    COMMAND "${CMAKE_COMMAND}" -E copy
+    "${SOURCE_FILE}" "${output_dir}/${schema_filename}"
+    COMMENT "Copying ${SOURCE_FILE} to URI path" VERBATIM)
+  GET_PROPERTY (num_schema_targets GLOBAL PROPERTY ZORBA_SCHEMA_TARGET_COUNT)
+  IF (NOT num_schema_targets)
+    SET (num_schema_targets 0)
+  ENDIF (NOT num_schema_targets)
+  MATH (EXPR num_schema_targets "${num_schema_targets} + 1")
+  ADD_CUSTOM_TARGET ("chkschema_${num_schema_targets}" ALL
+    DEPENDS "${output_dir}/${schema_filename}")
+  SET_PROPERTY (GLOBAL PROPERTY ZORBA_SCHEMA_TARGET_COUNT ${num_schema_targets})
+ENDMACRO (DECLARE_ZORBA_SCHEMA)
 
 # Utility macro for setting up a build rule to copy a file to a particular
 # versioned name.
@@ -270,7 +318,7 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET)
   ELSE (NOT "${VERSION_ARG}" STREQUAL "")
     SET (_output_file "${OUTPUT_FILE}")
   ENDIF (NOT "${VERSION_ARG}" STREQUAL "")
-  
+
   # We maintain a global CMake property named after the target URI
   # which remembers all known output source files. If the output
   # file we just computed is already on that list, that means that a
@@ -281,10 +329,10 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET)
   IF (file_found EQUAL -1)
     LIST (APPEND output_files "${_output_file}")
     ADD_CUSTOM_COMMAND (OUTPUT "${_output_file}"
-      COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+      COMMAND "${CMAKE_COMMAND}" -E copy
       "${INPUT_FILE}" "${_output_file}"
       DEPENDS "${DEPEND_TARGET}"
-      COMMENT "Copying ${INPUT_FILE} to module directories" VERBATIM)
+      COMMENT "Copying ${INPUT_FILE} to URI path" VERBATIM)
     SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-output-files"
       "${_output_file}")
   ENDIF (file_found EQUAL -1)
@@ -350,7 +398,7 @@ MACRO (GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
 
   SET (MODULE_LIB_NAME "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}${SUFFIX}")
   ADD_LIBRARY (${MODULE_LIB_NAME} SHARED ${SRC_FILES})
-  SET_TARGET_PROPERTIES (${MODULE_LIB_NAME} PROPERTIES 
+  SET_TARGET_PROPERTIES (${MODULE_LIB_NAME} PROPERTIES
     OUTPUT_NAME "${MODULE_NAME}${SUFFIX}")
   TARGET_LINK_LIBRARIES (${MODULE_LIB_NAME}
     zorba_${ZORBA_STORE_NAME} ${LINK_LIBRARIES})
@@ -399,8 +447,8 @@ MACRO (GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
     INSTALL(TARGETS "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}"
             LIBRARY
             DESTINATION "include/zorba/modules/${ZORBA_MODULE_RELPATH}")
-  ENDIF (WIN32)                     
-  
+  ENDIF (WIN32)
+
 ENDMACRO(GENERATE_MODULE_LIBRARY)
 
 # Initialize output file when first included
@@ -444,7 +492,7 @@ ENDMACRO(expected_failure)
 # Convenience macro for adding tests in a standard format. QQQ doc!
 MACRO(ADD_TEST_DIRECTORY TEST_DIR)
   # QQQ error-check: Queries directory exists, some tests found...
-  FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS 
+  FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
     RELATIVE "${TEST_DIR}/Queries" "${TEST_DIR}/Queries/*.xq")
   SET(TESTCOUNTER 0)
   FOREACH(TESTFILE ${TESTFILES})
@@ -459,7 +507,7 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
       "--rbkt-src" "${TEST_DIR}"
       "--module-path" "${PROJECT_SOURCE_DIR}/src/${PATH_SEP}${PROJECT_BINARY_DIR}/src/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
       "${TESTFILE}")
-      
+
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
     MATH(EXPR TESTMOD "${TESTCOUNTER}%100")
     IF (${TESTMOD} EQUAL 0)
@@ -481,20 +529,20 @@ MACRO(CREATE_MODULE_CONFIG name src_dir bin_dir)
     "${MODULE_BINARY_DIR}/${name}Config.cmake" @ONLY)
 ENDMACRO(CREATE_MODULE_CONFIG)
 
-# This macro easies the process of adding test for store dependent executables 
-# (e.g. if the rbkt tests must be added for the executables testdriver and testdriver_firststore). 
-# It adds one test for each store registered. It has the same naming convection for the target as 
-# the macro that is used to generated store dependent executables (thus, 
+# This macro easies the process of adding test for store dependent executables
+# (e.g. if the rbkt tests must be added for the executables testdriver and testdriver_firststore).
+# It adds one test for each store registered. It has the same naming convection for the target as
+# the macro that is used to generated store dependent executables (thus,
 # 'testdriver' must be passed as TARGET if the test should be executed with the executables
 # testdriver and testdriver_firststore).
 #
 # Syntax:
 #
-#   ZORBA_ADD_TEST_SIMPLE(NAME TARGET ...) 
-#   
+#   ZORBA_ADD_TEST_SIMPLE(NAME TARGET ...)
+#
 #     NAME - the name of the added test
-#     TARGET - target that will be executed when the test is run. For each registered store, 
-#              a suffix will be added to the target 
+#     TARGET - target that will be executed when the test is run. For each registered store,
+#              a suffix will be added to the target
 #              (similar convention than in ZORBA_GENERATE_EXE)
 #     ... - arguments that will be passed to the target
 #
@@ -527,8 +575,8 @@ ENDMACRO(ZORBA_ADD_TEST)
 #
 # Syntax:
 #
-#   ZORBA_SET_TEST_PROPERTY(NAME PROPERTY VALUE) 
-#   
+#   ZORBA_SET_TEST_PROPERTY(NAME PROPERTY VALUE)
+#
 #     PROPERTY - property
 #     VALUE - value of property
 #
@@ -552,12 +600,12 @@ ENDMACRO(ZORBA_SET_TEST_PROPERTY)
 # ZORBA_XHTML_REQUISITES_PATH - points to the dir containing the html requisites (images, lib, styles, templates dirs)
 # ZORBA_EXE_SCRIPT - points to zorba.exe (or zorba.bat)
 MACRO (ADD_XQDOC_TARGETS)
-  
+
   MESSAGE(STATUS "ADD_XQDOC_TARGETS for project ${PROJECT_NAME}")
 
   # Add the xqdoc command for which a working zorba cmd is required.
   SET(ZORBA_EXE_SCRIPT  ${Zorba_DIR}/bin/zorba CACHE PATH "Path to installed zorba.exe")
- 
+
   FILE(GLOB_RECURSE LOCAL_MODULES  ${PROJECT_SOURCE_DIR}/src/*.xq)
   SET(ZORBA_XQDOC_MAIN_EXTMODULES_XML_XQ  ${Zorba_DIR}/xqdoc/generator/xqdoc-main-extmodules-xml.xq CACHE PATH "The xqdoc xml generator for external modules")
   SET(ZORBA_XQDOC_MAIN_EXTMODULES_HTML_XQ  ${Zorba_DIR}/xqdoc/generator/xqdoc-main-extmodules-html.xq CACHE PATH "The xqdoc html generator for external modules")
