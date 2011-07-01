@@ -270,22 +270,22 @@ MESSAGE(STATUS "")
 #
 # SWIG
 #
-IF(ZORBA_USE_SWIG)
-  FIND_PACKAGE(SWIG)
+IF (NOT ZORBA_SUPPRESS_SWIG)
+  FIND_PACKAGE (SWIG)
   IF (SWIG_FOUND)
     # this will be used both in swig and doc sub-directories
 
     #
     # PHP5
     #
-    FIND_PACKAGE(PHP5)
+    FIND_PACKAGE (PHP5)
   ELSE (SWIG_FOUND)
-    MESSAGE(FATAL_ERROR "SWIG was requested but not found. Remove ZORBA_USE_SWIG in the cache or set it to OFF.")
+    MESSAGE (STATUS "SWIG not found => no language bindings are generated.")  
   ENDIF (SWIG_FOUND)
-ELSE(ZORBA_USE_SWIG)
-  MESSAGE(STATUS "SWIG is disabled => no language bindings are generated.")  
-ENDIF(ZORBA_USE_SWIG)
-MESSAGE(STATUS "")
+ELSE (NOT ZORBA_SUPPRESS_SWIG)
+  MESSAGE (STATUS "SWIG is disabled => no language bindings are generated.")  
+ENDIF (NOT ZORBA_SUPPRESS_SWIG)
+MESSAGE (STATUS "")
 
 
 LIST(APPEND requiredlibs ${requiredlibs-store})
