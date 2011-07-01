@@ -6,11 +6,7 @@ This is a list of issues that we are aware of but are not fixed in this version:
 
 * Floating-point precision problems.
   For details, see the following bugs:
-  - 2210842 <https://sourceforge.net/tracker2/?func=detail&aid=2210842&group_id=226244&atid=1067586>
-  - 2210787 <https://sourceforge.net/tracker2/?func=detail&aid=2210787&group_id=226244&atid=1067586>
-  - 2210779 <https://sourceforge.net/tracker2/?func=detail&aid=2210779&group_id=226244&atid=1067586>
   - 2204089 <https://sourceforge.net/tracker2/?func=detail&aid=2204089&group_id=226244&atid=1067586>
-  - 2210786 <https://sourceforge.net/tracker2/?func=detail&aid=2210786&group_id=226244&atid=1067586>
   - 2205034 <https://sourceforge.net/tracker2/?func=detail&aid=2205034&group_id=226244&atid=1067586>
   - 2210851 <https://sourceforge.net/tracker2/?func=detail&aid=2210851&group_id=226244&atid=1067586>
 
@@ -26,18 +22,18 @@ This is a list of issues that we are aware of but are not fixed in this version:
 
 * If you link against ICU <= 3.8.1, you can get wrong results when using \s to
   match a white space character.
-  For details please, see following bug:
+  For details, see following bug:
   - 3155900 <https://sourceforge.net/tracker/?func=detail&aid=3155900&group_id=226244&atid=1067586>
 
 * A known bug in Xerces < 3.0, when an .xsd contains an any wildcard with
   namespace #others and the instance contains an element without a namespace,
   there should still be an error.  See "Definitive XMLSchema" by Priscilla
   Wamsley, p. 279. This was fixed in Xerses > 3.0.
-  For details please, see following bug:
+  For details, see following bug:
   - 3137594 <https://sourceforge.net/tracker/index.php?func=detail&aid=3137594&group_id=226244&atid=1067586>
 
 * XQuery Full-Text is mostly, but not completely, implemented.
-  For details please, see following bugs:
+  For details, see following bugs:
   - 3187470 <https://sourceforge.net/tracker/?func=detail&aid=3187470&group_id=226244&atid=1067586>
   - 3187462 <https://sourceforge.net/tracker/?func=detail&aid=3187462&group_id=226244&atid=1067586>
 
