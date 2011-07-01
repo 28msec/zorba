@@ -40,3 +40,6 @@ This is a list of issues that we are aware of but are not fixed in this version:
   For details please, see following bugs:
   - 3187470 <https://sourceforge.net/tracker/?func=detail&aid=3187470&group_id=226244&atid=1067586>
   - 3187462 <https://sourceforge.net/tracker/?func=detail&aid=3187462&group_id=226244&atid=1067586>
+
+* The serializer currently doesn't implement character maps as specified
+  (http://www.w3.org/TR/xslt-xquery-serialization/#character-maps)
