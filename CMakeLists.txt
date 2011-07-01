@@ -221,24 +221,6 @@ ENDIF(LIBXML2_FOUND)
 MESSAGE(STATUS "")
 
 #
-#  LibXslt
-#
-IF(ZORBA_XQUERYX)
-  MESSAGE(STATUS "Looking for LibXslt")
-  FIND_PACKAGE(LibXslt)
-  IF(LIBXSLT_FOUND)
-    MESSAGE(STATUS "Found LIBXSLT library -- " ${LIBXSLT_LIBRARIES})
-
-    INCLUDE_DIRECTORIES(${LIBXSLT_INCLUDE_DIR})
-    SET(requiredlibs ${requiredlibs} ${LIBXSLT_LIBRARIES})
-    SET(CXXFLAGS ${CXXFLAGS} ${LIBXSLT_DEFINITONS})
-  ELSE(LIBXSLT_FOUND)
-    MESSAGE(FATAL_ERROR "The libxslt library is required in order to build zorba with xqueryx capabilities.")
-  ENDIF(LIBXSLT_FOUND)
-  MESSAGE(STATUS "")
-ENDIF(ZORBA_XQUERYX)
-
-#
 # Pthreads
 #
 IF(ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
@@ -314,6 +296,24 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 # it sets variables based on whether packages have been found or not.
 INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
+
+#
+#  LibXslt
+#
+IF(ZORBA_XQUERYX)
+  MESSAGE(STATUS "Looking for LibXslt")
+  FIND_PACKAGE(LibXslt)
+  IF(LIBXSLT_FOUND)
+    MESSAGE(STATUS "Found LIBXSLT library -- " ${LIBXSLT_LIBRARIES})
+
+    INCLUDE_DIRECTORIES(${LIBXSLT_INCLUDE_DIR})
+    SET(requiredlibs ${requiredlibs} ${LIBXSLT_LIBRARIES})
+    SET(CXXFLAGS ${CXXFLAGS} ${LIBXSLT_DEFINITONS})
+  ELSE(LIBXSLT_FOUND)
+    MESSAGE(FATAL_ERROR "The libxslt library is required in order to build zorba with xqueryx capabilities.")
+  ENDIF(LIBXSLT_FOUND)
+  MESSAGE(STATUS "")
+ENDIF(ZORBA_XQUERYX)
 
 
 #
