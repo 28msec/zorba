@@ -41,7 +41,7 @@
   
   <b><a href="../../cxx/html/index.html">C++ API</a></b> 
  
-  <b>Language Bindinds</b>
+  <b>Language Bindings</b>
   <ul>
     <li><a class="el" href="../../c/html/index.html">C API</a>
     <li><a class="el" href="../../java/html/index.html">Java API</a>
@@ -58,6 +58,8 @@
     <li><a href="#">W3C XQuery 3.0</a>  (<a href="#">Partial support</a>)</li>
     <li><a href="#">W3C XML Schema</a></li>
     <li><a href="#">W3C XSL Transformations (XSLT) 1.0</a></li>
+    <li><a href="#">W3C XML Syntax for XQuery 1.0 (XQueryX) (Second Edition)</a></li>
+    <li><a href="#">W3C XSLT 2.0 and XQuery 1.0 Serialization (Second Edition)</a></li>
     <li><a href="#">XQuery Scripting Extension</a></li>
   </ul>
    */
