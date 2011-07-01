@@ -32,6 +32,7 @@
 #include <zorbatypes/duration.h>
 #include <zorbatypes/timezone.h>
 #include <zorbatypes/zorbatypes_decl.h>
+#include <zorbatypes/zstring.h>
 
 #include "zorbatypes/datetime/parse.h"
 #include "util/ascii_util.h"
@@ -475,7 +476,7 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type strlen, DateTime
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
-  std::string temp;
+  zstring temp;
 
   // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
   
@@ -526,7 +527,7 @@ int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
-  std::string temp;
+  zstring temp;
 
   // GYear of form: '-'? yyyy zzzzzz?
   
@@ -538,12 +539,12 @@ int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
 
   if (str[pos] == '-')
   {
-    temp.append(str + pos, 5);
+    temp.append(str + pos, (5 < strlen - pos ? 5 : strlen - pos));
     ++pos;
   }
   else
   {
-    temp.append(str + pos, 4);
+    temp.append(str + pos, (4 < strlen - pos ? 4 : strlen - pos));
   }
 
   temp += "-01-01";
@@ -579,7 +580,7 @@ int DateTime::parseGMonth(const char* str, ascii::size_type strlen, DateTime& dt
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
-  std::string temp;
+  zstring temp;
 
   // GMonth of form: --MM zzzzzz?
   // preceding - is not allowed.
@@ -627,7 +628,7 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type strlen, DateTime&
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
-  std::string temp;
+  zstring temp;
 
   // GMonthDay of form: --MM-DD zzzzzz?
   // preceding - is not allowed.
@@ -676,7 +677,7 @@ int DateTime::parseGDay(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
-  std::string temp;
+  zstring temp;
 
   // GDay of form: ---DD zzzzzz?
   // preceding - is not allowed.
