@@ -672,6 +672,7 @@ extern entry const dict_en[] = {
   { "~ZeroLenURI", "zero-length URI (and no base URI given)" },
   { "~Zorba API error", "Zorba API error" },
   { "~Zorba data-definition error", "Zorba data-definition error" },
+  { "~Zorba debugger error", "Zorba debugger error" },
   { "~Zorba dynamic error", "Zorba dynamic error" },
   { "~Zorba dynamic warning", "Zorba dynamic warning" },
   { "~Zorba error", "Zorba error" },
