@@ -306,7 +306,7 @@ static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS
 
 const zstring
 static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS
-  = static_context::ZORBA_NS_PREFIX + "modules/store/dynamic/documents";
+  = static_context::ZORBA_NS_PREFIX + "modules/store/documents/dynamic";
 
 const zstring
 static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS

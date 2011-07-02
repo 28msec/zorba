@@ -21,9 +21,9 @@
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/dynamic
+ : @project store/documents
  :)
-module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+module namespace doc = "http://www.zorba-xquery.com/modules/store/documents/dynamic";
 
 (:~
  : Adds a document to the store. The document is bound to the URI

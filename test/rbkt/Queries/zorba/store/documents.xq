@@ -1,4 +1,4 @@
-import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+import module namespace doc = "http://www.zorba-xquery.com/modules/store/documents/dynamic";
 
 declare base-uri "http://www.zorba-xquery.com/";
 

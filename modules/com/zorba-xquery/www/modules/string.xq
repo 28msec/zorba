@@ -18,6 +18,7 @@
  : This module provides string related functions.
  :
  : @author Matthias Brantner
+ : @project XDM/atomic
  :
  :)
 module namespace string = "http://www.zorba-xquery.com/modules/string";

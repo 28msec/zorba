@@ -1004,94 +1004,89 @@ declare %sequential function xqdoc2html:configure-xhtml (
   $xhtml)
 {
   (: replace the function type description with images :)  
-  let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
+  let $xquSpec := "http://xquery-scripting.ethz.ch/spec.html",
       $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
       $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
-      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
+      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function",
+      $xqNonDeterministic := "http://www.w3.org/TR/2011/WD-xpath-functions-30-20110614/#dt-nondeterministic"
   let $imagesPath := "images/"
   for $typeTd in $xhtml//*:td
   where $typeTd/@class eq "type"
   let $type := $typeTd/text()
   return {
-    if (contains($type, "updating ")) then
-      replace node $typeTd/text() with
-        <span class="no_underline">
-          <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>
-          {if(contains($type, " external")) then
-           <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-           else ()}
-        </span>          
-    else if (contains($type, "sequential ")) then
-      replace node $typeTd/text() with
-        <span class="no_underline">
-          <a href="{$xquSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
-          {if(contains($type, " external")) then
-           <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-           else ()}
-        </span>
-    else if (contains($type, "nondeterministic ")) then
-      replace node $typeTd/text() with
-        <span class="no_underline">
-          <a href="{$xquSpec}" title="%nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
-          {if(contains($type, " external")) then
-           <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-           else ()}
-        </span>
-    else if (contains($type, " external")) then
-      replace node $typeTd/text() with
-        <span class="no_underline">
-          <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-        </span> 
-    else ()
+  replace node $typeTd/text() with
+    <span class="no_underline">
+      {if(contains($type, "updating")) then
+        <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "Updating.gif")}" /></a>  
+       else ()}
+       {if(contains($type, "sequential")) then
+        <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" /></a>  
+       else ()}
+       {if(contains($type, "nondeterministic ")) then
+        <a href="{$xqNonDeterministic}" title="%nondeterministic" target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>  
+       else ()}
+       {if(contains($type, "variadic")) then
+        <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments." 
+              target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>  
+       else ()}
+       {if(contains($type, "streamable")) then
+        <a title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is 
+        a function that may return an xs:string item whose content is streamed. Such a string is called a streamable string. 
+        Such strings have the advantage that their contents doesn't need to be materialized in memory. 
+        If a function consuming such a string is able to process the string in a streaming fashion, 
+        this allows for processing of strings with a virtually infinite length. 
+        However, the disadvantage is that a streamable string can only be consumed exactly once. 
+        If a streamable string is consumed more than once, an error is raised. 
+        In order to enable multiple consumers of a streamable string, the string:materialize function can be used 
+        to materialize the entire contents in an (regular) xs:string item." target="_blank"><img src="{concat($imagesPath, "Streamable.gif")}" /></a>  
+       else ()}
+       {if(contains($type, "external")) then
+        <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "External.gif")}" /></a>  
+       else ()}
+    </span>
   };
   
-  (: replace the function names description with images+name of the functions :)
- 
-  let $xquSpec :=  "http://www.w3.org/TR/xquery-update-10/",
+  (: replace the function names description with images+name of the functions :) 
+  let $xquSpec :=  "http://xquery-scripting.ethz.ch/spec.html",
       $xqsSpec :=  "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
       $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
-      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
+      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function",
+      $xqNonDeterministic := "http://www.w3.org/TR/2011/WD-xpath-functions-30-20110614/#dt-nondeterministic"
   let $imagesPath := "images/"
   for $func in $xhtml//*:div
   where $func/@class eq "subsection"
   let $funcName := $func/text()
-  return {
-    if (starts-with($funcName, "updating")) then
-      replace node $func/text() with
-        <span class="no_underline">
-          <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>
-          {if(contains($funcName, " external ")) then
-            <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-          else ()}          
-          {text {fn:replace(fn:replace($funcName,"external "," "),"updating ","")}}
-        </span>
-        
-    else if (starts-with($funcName, "sequential")) then
-      replace node $func/text() with
-        <span class="no_underline">
-          <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
-          {if(contains($funcName, " external ")) then
-            <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-          else ()}          
-          {text {fn:replace(fn:replace($funcName,"external "," "),"sequential ","")}}
-        </span>
-        
-    else if (starts-with($funcName, "nondeterministic")) then
-      replace node $func/text() with
-        <span class="no_underline">
-          <a href="{$xq11Spec}" title="%nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
-          {if(contains($funcName, " external ")) then
-            <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
-          else ()}          
-          {text {fn:replace(fn:replace($funcName,"external "," "),"nondeterministic ","")}}
-        </span>
-    else if(contains($funcName, "external ")) then
-      replace node $func/text() with
-        <span class="no_underline">          
-          <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>          
-          {text {fn:replace($funcName,"external "," ")}}
-        </span>
-    else ()
+  return {    
+    replace node $func/text() with
+    <span class="no_underline">
+      {if(contains($funcName, "updating ")) then
+        <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "Updating.gif")}" /></a>  
+       else ()}
+       {if(contains($funcName, "sequential ")) then
+        <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" /></a>  
+       else ()}
+       {if(contains($funcName, "nondeterministic ")) then
+        <a href="{$xqNonDeterministic}" title="%nondeterministic" target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>  
+       else ()}
+       {if(contains($funcName, "variadic ")) then
+        <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments." 
+              target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>  
+       else ()}
+       {if(contains($funcName, "streamable ")) then
+        <a title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is a function that may return 
+ an xs:string item whose content is streamed. Such a string is called a streamable string. Such strings have the advantage that their
+ contents doesn't need to be materialized in memory. If a function consuming such a string is able to process the string
+ in a streaming fashion, this allows for processing of strings with a virtually infinite length. However, the disadvantage is that 
+ a streamable string can only be consumed exactly once. If a streamable string is consumed more than once, an error is raised.
+ In order to enable multiple consumers of a streamable string, the string:materialize function can be used
+ to materialize the entire contents in an (regular) xs:string item."
+        target="_blank"><img src="{concat($imagesPath, "Streamable.gif")}" /></a>  
+       else ()}
+       {if(contains($funcName, "external ")) then
+        <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "External.gif")}" /></a>  
+       else ()}    
+       {text {replace(replace(replace(replace(replace($funcName,"updating ",""),"sequential ",""),"nondeterministic ",""),"variadic ",""),"external ","")}}
+    </span>   
   };
   
   $xhtml
@@ -1431,7 +1426,7 @@ declare function xqdoc2html:module-function-summary($functions)
                                fn:concat(fn:substring-before($description,"."),".") else ""
       order by $name, $param-number 
       return
-        let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
+        let $type := replace(normalize-space(substring-after(substring-before($signature, "function"), "declare")),"\%",""),
             $isExternal := ends-with($signature, "external"),    
             $paramsAndReturn := substring-after($signature,concat(':',$name)),
             $external := if(ends-with($signature,"external")) then "external" else ""
@@ -1561,14 +1556,27 @@ declare %private function xqdoc2html:module-function-link($name as xs:string, $s
 let $lcSignature := fn:lower-case($signature)
 let $lname := if(ends-with($signature, 'external')) then concat('external ',$name) else $name
 return
+(
   if(contains($lcSignature, 'updating')) then
-    concat('updating ',$lname)
-  else if(contains($lcSignature, 'sequential')) then
-    concat('sequential ',$lname)
-  else if(contains($lcSignature, 'nondeterministic')) then
-    concat('nondeterministic ',$lname)
-  else 
-    $lname
+    'updating ' else (),
+    
+  if(contains($lcSignature, 'sequential')) then
+    'sequential ' else (),
+    
+  if(contains($lcSignature, 'nondeterministic')) then
+    'nondeterministic ' else (),
+    
+  if(contains($lcSignature, 'non-deterministic')) then
+    'nondeterministic ' else (),
+    
+  if(contains($lcSignature, 'variadic')) then
+    'variadic ' else (),
+  
+  if(contains($lcSignature, 'streamable')) then
+    'streamable ' else (),
+    
+  $lname
+)
 };
 
 (:~
