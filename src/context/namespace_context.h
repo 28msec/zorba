@@ -39,7 +39,7 @@ typedef rchandle<namespace_context> NamespaceContext_t;
 class namespace_context : public SimpleRCObject 
 {
 private:
-  const static_context        * m_sctx;
+  static_context              * m_sctx;
   rchandle<namespace_context>   m_parent;
   store::NsBindings             m_bindings;
 
@@ -49,7 +49,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  namespace_context(const static_context* sctx) : m_sctx(sctx) { }
+  namespace_context(const static_context* sctx) : m_sctx(const_cast<static_context*>(sctx)) { }
 
   namespace_context(const static_context* sctx, store::NsBindings& bindings);
 
