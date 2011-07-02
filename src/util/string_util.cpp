@@ -45,7 +45,7 @@ namespace std {
     return ::_strtoui64( s, end, base );
   }
 
-}
+} // namespace std
 #endif /* WIN32 */
 
 using namespace std;
