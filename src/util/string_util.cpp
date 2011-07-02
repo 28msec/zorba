@@ -60,10 +60,7 @@ static void check_parse_number( char const *s, char *end,  T *result ) {
   if ( errno == ERANGE ) {
     if ( result ) {
 #if ENABLE_CLIPPING
-      char const *t = s;
-      while ( ascii::is_space( *t ) )
-        ++t;
-      if ( *t == '-' )
+      if ( *ascii::trim_start_whitespace( s ) == '-' )
         *result = numeric_limits<T>::min();
       else
         *result = numeric_limits<T>::max();
@@ -104,6 +101,14 @@ long long atoll( char const *s ) {
 }
 
 unsigned long long atoull( char const *s ) {
+  //
+  // We have to check for '-' ourselves since strtoull(3) allows it (oddly).
+  //
+  s = ascii::trim_start_whitespace( s );
+  if ( *s == '-' )
+    throw std::invalid_argument(
+      "\"-\": invalid character for unsigned integer"
+    );
   char *end;
   unsigned long long const result = std::strtoull( s, &end, 10 );
   check_parse_number( s, end, static_cast<unsigned long long*>( nullptr ) );
