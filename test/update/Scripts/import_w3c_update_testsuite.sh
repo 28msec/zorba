@@ -108,20 +108,20 @@ string-join (
     (
       concat("State: ", $state/query/@name),
 
-      concat("Args:", 
+      concat("Args:",
              string-join(for $infile in $state/input-file 
                          let $source := //source[@ID eq $infile/text()]
-                         return concat("\n -x \n",
+                         return concat(" -x ",
                                        $infile/@variable,
                                        "=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",
-                                       $source/@FileName, "\n") ,
+                                       $source/@FileName, "") ,
                          ""),
              string-join(for $inuri in $state/input-URI 
                          let $source := //source[@ID eq $inuri/text()]
-                         return concat("\n -x \n",
+                         return concat("-x ",
                                        $inuri/@variable,
                                        ":=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",
-                                       $source/@FileName, "\n") ,
+                                       $source/@FileName, "") ,
                          ""),
              if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
 
