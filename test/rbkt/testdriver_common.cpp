@@ -376,47 +376,56 @@ void set_var(
   if (!inlineFile)
   {
     zorba::Item lItem = createItem(driverCtx, val);
-		if(name != ".")
-			dctx->setVariable(name, lItem);
-		else
-			dctx->setContextItem(lItem);
+    if(name != ".")
+      dctx->setVariable(name, lItem);
+    else
+      dctx->setContextItem(lItem);
   }
   else
   {
 #ifdef MY_D_WIN32
     std::cout << "Load xml " << val << std::endl;
 #endif
-    const char *val_fname = val.c_str ();
-    std::ifstream ifile(val_fname);
-    if (! ifile || !ifile.is_open() )
-    {
-      std::cerr << "Could not open file `" << val_fname << "' for variable `"
-                << name << "'" << std::endl;
-      assert (false);
-    }
 
     zorba::XmlDataManager* lXmlMgr =
         zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-    zorba::XmlDataManager::ParseOptions lOptions;
-    lOptions.setDtdValidation(enableDtd);
-
-    zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, lOptions);
-    zorba::Iterator_t lIter = lSeq->getIterator();
-    lIter->open();
+    zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
     zorba::Item lDoc;
-    lIter->next(lDoc);
-    lIter->close();
+    if (lDocMgr->isAvailableDocument(val)) {
+        lDoc = lDocMgr->document(val);
+    }
+    else {
+      const char *val_fname = val.c_str ();
+      std::ifstream ifile(val_fname);
+      if (! ifile || !ifile.is_open() )
+      {
+        std::cerr << "Could not open file `" << val_fname << "' for variable `"
+                  << name << "'" << std::endl;
+        assert (false);
+      }
+      zorba::XmlDataManager::ParseOptions lOptions;
+      lOptions.setDtdValidation(enableDtd);
 
-    assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
-    zorba::Item lValidatedDoc;
-    sctx->validate(lDoc, lValidatedDoc, zorba::validate_lax);
+      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, lOptions);
+      zorba::Iterator_t lIter = lSeq->getIterator();
+      lIter->open();
+      lIter->next(lDoc);
+      lIter->close();
+
+      assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
+      zorba::Item lValidatedDoc;
+      sctx->validate(lDoc, lValidatedDoc, zorba::validate_lax);
+
+      lDocMgr->add(val, lValidatedDoc);
+      lDoc = lDocMgr->document(val);
+    }
     if(name != ".")
     {
-      dctx->setVariable(name, lValidatedDoc);
+      dctx->setVariable(name, lDoc);
     }
     else
     {
-      dctx->setContextItem(lValidatedDoc);
+      dctx->setContextItem(lDoc);
     }
   }
 }
