@@ -25,6 +25,8 @@
 #ifdef WIN32
 namespace std {
 
+  // Windows doesn't have these functions -- add them ourselves.
+
   static float strtof( char const *s, char **end ) {
     double const result = std::strtod( s, end );
     if ( !errno ) {
@@ -32,7 +34,7 @@ namespace std {
            result > std::numeric_limits<float>::max() )
         errno = ERANGE;
     }
-    return result;
+    return static_cast<float>( result );
   }
 
   inline long long strtoll( char const *s, char **end, int base ) {
