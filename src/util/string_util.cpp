@@ -19,6 +19,7 @@
 #include <cstdlib>
 
 #include "ascii_util.h"
+#include "cxx_util.h"
 #include "string_util.h"
 
 #ifdef WIN32
@@ -52,13 +53,13 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define ENABLE_FLOAT_CLIPPING 0
+#define ENABLE_CLIPPING 0
 
 template<typename T>
 static void check_parse_number( char const *s, char *end,  T *result ) {
   if ( errno == ERANGE ) {
     if ( result ) {
-#if ENABLE_FLOAT_CLIPPING
+#if ENABLE_CLIPPING
       char const *t = s;
       while ( ascii::is_space( *t ) )
         ++t;
@@ -66,7 +67,7 @@ static void check_parse_number( char const *s, char *end,  T *result ) {
         *result = numeric_limits<T>::min();
       else
         *result = numeric_limits<T>::max();
-#endif /* ENABLE_FLOAT_CLIPPING */
+#endif /* ENABLE_CLIPPING */
     } else
       throw std::range_error(
         BUILD_STRING( '"', s, "\": number too big/small" )
@@ -98,14 +99,14 @@ float atof( char const *s ) {
 long long atoll( char const *s ) {
   char *end;
   long long const result = std::strtoll( s, &end, 10 );
-  check_parse_number( s, end, static_cast<float*>( 0 ) );
+  check_parse_number( s, end, static_cast<long long*>( nullptr ) );
   return result;
 }
 
 unsigned long long atoull( char const *s ) {
   char *end;
   unsigned long long const result = std::strtoull( s, &end, 10 );
-  check_parse_number( s, end, static_cast<float*>( 0 ) );
+  check_parse_number( s, end, static_cast<unsigned long long*>( nullptr ) );
   return result;
 }
 
