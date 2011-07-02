@@ -50,7 +50,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function. 
  :)
-declare %non-deterministic %ann:variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
+declare %nondeterministic %ann:variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
 
 (:~
  : invoke-updating()
@@ -58,7 +58,7 @@ declare %non-deterministic %ann:variadic function reflection:invoke-simple($name
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function.
  :)
-declare %ann:variadic updating function reflection:invoke-updating($name as xs:QName) external;
+declare %nondeterministic %ann:variadic updating function reflection:invoke-updating($name as xs:QName) external;
 
 (:~
  : invoke-sequential()
@@ -66,7 +66,7 @@ declare %ann:variadic updating function reflection:invoke-updating($name as xs:Q
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function.
  :)
-declare %ann:variadic %sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
+declare %nondeterministic %ann:variadic %sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
 
 
 (:~
@@ -76,7 +76,7 @@ declare %ann:variadic %sequential function reflection:invoke-sequential($name as
  : @return the result of evaluating the query (the result is not supposed to
  :         contain any PUL).
  :)
-declare function reflection:eval-simple(
+declare %nondeterministic function reflection:eval-simple(
     $query as xs:string
 ) as item()* external;
 
@@ -87,7 +87,7 @@ declare function reflection:eval-simple(
  : @param $query the query string to be evaluated.
  : @return the PUL resulting from evaluating the query
  :)
-declare updating function reflection:eval-updating(
+declare %nondeterministic updating function reflection:eval-updating(
     $query as xs:string
 ) external;
 
@@ -99,7 +99,7 @@ declare updating function reflection:eval-updating(
  : @return the result of evaluating the query (the result is not supposed to
  :         contain any PUL).
  :)
-declare %sequential function reflection:eval-sequential(
+declare %nondeterministic %sequential function reflection:eval-sequential(
     $query as xs:string
 ) as item()* external;
 
