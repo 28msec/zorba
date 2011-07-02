@@ -23,9 +23,10 @@ import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
  :)
 import module namespace err="http://www.zorba-xquery.com/modules/oauth/error";
 
+(:
 declare namespace op = "http://www.zorba-xquery.org/options";
-
 declare option op:trace "disable";
+:)
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
