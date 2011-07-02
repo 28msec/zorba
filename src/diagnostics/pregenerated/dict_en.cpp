@@ -1,5 +1,5 @@
-/*
- * Copyright 2006-2008 The FLWOR Foundation.
+/**
+ * Copyright 2006-2011 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "stdafx.h"
+ 
+ /*
+  * THIS FILE IS GENERATED.
+  * PLEASE DO NOT EDIT.
+  */
+ 
 
-#include "dict_impl.h"
+#include "diagnostics/dict_impl.h"
 
 namespace zorba {
 namespace diagnostic {
 namespace dict {
 
-///////////////////////////////////////////////////////////////////////////////
-
 extern entry const dict_en[] = {
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "FOAR0001", "division by zero" },
   { "FOAR0002", "numeric operation overflow/underflow${: 1}" },
   { "FOCA0001", "\"$1\": value too large for decimal" },
@@ -63,7 +61,7 @@ extern entry const dict_en[] = {
   { "FORG0004", "fn:one-or-more() called with a sequence containing no items" },
   { "FORG0005", "fn:exactly-one() called with a sequence containing zero or more than one item" },
   { "FORG0006", "$1" },
-  { "FORG0008", "\"$1\" & \"$2\": two arguments to fn:dateTime() have inconsistent timezones" },
+  { "FORG0008", "\"$1\" and \"$2\": two arguments to fn:dateTime() have inconsistent timezones" },
   { "FORG0009", "error resolving a relative URI against a base URI in fn:resolve-uri()${: 1}" },
   { "FORX0001", "'$1': invalid regular expression flag" },
   { "FORX0002", "\"$1\": invalid regular expression${: 2}" },
@@ -75,12 +73,6 @@ extern entry const dict_en[] = {
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#ifndef ZORBA_NO_FULL_TEXT
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
   { "FTDY0017", "mild-not contains StringExclude" },
   { "FTDY0020", "${\"1\": }invalid wildcard syntax${: 2}" },
@@ -88,12 +80,6 @@ extern entry const dict_en[] = {
   { "FTST0009", "\"$1\": unsupported language" },
   { "FTST0018", "\"$1\": unknown thesaurus" },
   { "FTST0019", "\"$1\": match option specified more than once" },
-#endif /* ZORBA_NO_FULL_TEXT */
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -109,11 +95,6 @@ extern entry const dict_en[] = {
   { "SESU0007", "\"$1\": unsupported encoding" },
   { "SESU0011", "\"$1\": unsupported normalization form" },
   { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "XPDY0002", "\"$1\": $2" },
   { "XPDY0050", "invalid treat expression type" },
   { "XPST0001", "${\"1\": }undefined value${: 2}" },
@@ -187,13 +168,6 @@ extern entry const dict_en[] = {
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
   { "XQTY0030", "validate argument must be exactly one document or element node" },
   { "XQTY0086", "typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve" },
-
-  ////////////////////////////////////////////////
-  //                                            //
-  // XQuery Scripting Errors                    //
-  //                                            //
-  ////////////////////////////////////////////////
-
   { "XSST0001", "\"$1\": function cannot be declared as both updating and sequential" },
   { "XSST0002", "\"$1\": function declared sequential but has updating body" },
   { "XSST0003", "\"$1\": function declared updating but has sequential body" },
@@ -202,23 +176,9 @@ extern entry const dict_en[] = {
   { "XSST0006", "sequential expression not allowed here" },
   { "XSST0007", "\"$1\": variable not assignable" },
   { "XSST0008", "\"while\" expression with non-sequential body" },
-
-  // XSLT Errors
-
   { "XTDE1310", "\"$1\": picture string does not satisfy format-number() function rules" },
   { "XTDE1340", "\"$1\": invalid picture string for date/time" },
   { "XTDE1350", "component specifier not available" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  ////////////////////////////////////////////////
-  //                                            //
-  // XQuery Update Errors                       //
-  //                                            //
-  ////////////////////////////////////////////////
-
   { "XUDY0009", "node has no parent in \"replace\" expression (without \"value of\")" },
   { "XUDY0014", "\"modify\" can not modify node not created by \"copy\"" },
   { "XUDY0015", "node is target of multiple \"rename\" expressions in same query" },
@@ -226,7 +186,7 @@ extern entry const dict_en[] = {
   { "XUDY0017", "node is target of multiple \"replace value of\" expressions in same query" },
   { "XUDY0018", "\"$1\": function declared external, non-updating returns non-empty pending update list" },
   { "XUDY0019", "\"$1\": function declated external, updating returns non-empty data model instance" },
-  { "XUDY0021", "updates violate constraint${ 1}" },
+  { "XUDY0021", "updates violate constraint" },
   { "XUDY0023", "\"$1\": namespace binding conflicts with $2=$3" },
   { "XUDY0024", "\"$1\": namespace binding conflicts with $2=$3" },
   { "XUDY0027", "target expression is empty sequence" },
@@ -247,11 +207,6 @@ extern entry const dict_en[] = {
   { "XUTY0012", "multiple elements, attributes, or processing-instruction nodes returned" },
   { "XUTY0013", "source expression of \"copy\" clause must return a single node" },
   { "XUTY0022", "insertion of attribute node into document node" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "ZAPI0002", "XQuery compilation failed${: 1}" },
   { "ZAPI0003", "XQuery not compiled" },
   { "ZAPI0004", "XQuery already compiled" },
@@ -272,11 +227,6 @@ extern entry const dict_en[] = {
   { "ZAPI0041", "iterator is already open" },
   { "ZAPI0042", "iterator is closed" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "ZCSE0001", "\"$1\": nonexistent input field" },
   { "ZCSE0002", "\"$1\": incompatible input field${: type=2}${, class=3}" },
   { "ZCSE0003", "\"$1\": unrecognized class field" },
@@ -294,11 +244,6 @@ extern entry const dict_en[] = {
   { "ZCSE0015", "cannot load execution plan: incompatible between 32/64 bits or little/big-endian" },
   { "ZCSE0016", "cannot load execution plan saved from release mode Zorba into debug mode Zorba" },
   { "ZCSE0017", "cannot load execution plan saved from debug mode Zorba into release mode Zorba" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "ZDDY0001", "\"$1\": collection not declared" },
   { "ZDDY0002", "\"$1\": collection already exists" },
   { "ZDDY0003", "\"$1\": collection does not exist" },
@@ -360,28 +305,11 @@ extern entry const dict_en[] = {
   { "ZDTY0010", "\"$1\": index domain expression yields a non-node item" },
   { "ZDTY0011", "result of some key expression of index $1 does not match its declared type" },
   { "ZDTY0012", "\"$1\": general range index key item has type for which no ordering relationship exists" },
-
-#ifdef ZORBA_WITH_DEBUGGER
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  { "ZGDB0001", "can not connect to the DBGP client on socket: $1" },
-#endif /* ZORBA_WITH_DEBUGGER */
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+  { "ZGDB0001", "" },
   { "ZOSE0001", "\"$1\": error loading dynamic library${: 2}" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
   { "ZOSE0004", "${\"1\": }I/O error${: 2}" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "ZSTR0001", "\"$1\": index already exists" },
   { "ZSTR0002", "\"$1\": index does not exist" },
   { "ZSTR0003", "\"$1\": partial key insertion into index \"$2\"" },
@@ -404,17 +332,6 @@ extern entry const dict_en[] = {
   { "ZSTR0045", "duplicate node found in sequence" },
   { "ZSTR0050", "\"$1\" not implemented for item type \"$2\"" },
   { "ZSTR0055", "streamable string has already been consumed" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  { "ZWST0001", "\"$1\": variable declared but not used" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQP0000", "no error" },
@@ -442,22 +359,10 @@ extern entry const dict_en[] = {
   { "ZXQP0037", "\"$1\": loaded module version \"$2\" does not match import version specification" },
   { "ZXQP0038", "Query requires Zorba version \"$1\"; you are running Zorba \"$2\"" },
   { "ZXQP0039", "\"$1\": invalid version specification" },
-  { "ZXQP0040", "\"$1\": function not annotated as nondeterministic" },
-
-#ifndef ZORBA_NO_FULL_TEXT
+  { "ZXQP0040", "" },
   { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
   { "ZXQP8402", "thesaurus data endianness does not match CPU" },
   { "ZXQP8403", "thesaurus data error${: 1}" },
-#endif /* ZORBA_NO_FULL_TEXT */
-
-  /////////////////////////////////////////////////////////////////////////////
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  // Note: parameter numbers for sub-messages start with at LEAST $2.
-
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
@@ -465,7 +370,7 @@ extern entry const dict_en[] = {
   { "~AtomizationOfGroupByMakesMoreThanOneItem", "atomization of groupby variable produces more than one item" },
   { "~AttributeName", "attribute name" },
   { "~AttributeNode", "attribute node" },
-  { "~BackRef0Illegal", "\"\\0\": illegal backreference" },
+  { "~BackRef0Illegal", "\"0\": illegal backreference" },
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
   { "~BadAnyURI", "invalid xs:anyURI" },
   { "~BadArgTypeForFn_2o34o", "${\"2\": }invalid argument type for function $3()${: 4}" },
@@ -519,7 +424,7 @@ extern entry const dict_en[] = {
   { "~EmptySeqNoSearchItem", "empty sequence not allowed as search item of fn:index-of()" },
   { "~EmptySeqNotAsFunctionResult_23", "empty sequence not allowed as result of function $2() that returns \"$3\"" },
   { "~EmptySequence", "empty sequence" },
-  { "~ErrorCodeMessage_12", "error $1: $2" },
+  { "~ErrorCodeMessage_12", "error $2: $3" },
   { "~Eval11", "\"eval\" only available in XQuery 1.1 or later" },
   { "~ExpectedNumericOrDurationType", "expected numeric or duration type" },
   { "~ExpectedNumericType", "expected numeric type" },
@@ -532,8 +437,8 @@ extern entry const dict_en[] = {
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
-  { "~FunctionFailedErrorCodeMessage_123", "$1 failed (error $2): $3" },
-  { "~FunctionFailed_12o", "$1 failed${: 2}" },
+  { "~FunctionFailedErrorCodeMessage_123", "$2 failed (error $3): $4" },
+  { "~FunctionFailed_12o", "$2 failed${: 3}" },
   { "~FunctionUndeclared_3", "function with arity $3 not declared" },
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary" },
@@ -591,10 +496,10 @@ extern entry const dict_en[] = {
   { "~NoUntypedKeyNodeValue_2", "node with untyped key value found during probe on index \"$2\"" },
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
-  { "~NonClosedBackRef_3", "\"\\$3\": non-closed backreference" },
+  { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
-  { "~NonexistentBackRef_3", "\"\\$3\": non-existent backreference" },
+  { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
   { "~NotDefInDynamicCtx", "not defined in dynamic context" },
@@ -632,7 +537,6 @@ extern entry const dict_en[] = {
   { "~TwoDecimalFormatsSameName_2", "\"$2\": two decimal formats with this name" },
   { "~TwoDefaultDecimalFormats", "two default decimal formats" },
   { "~TypeIsNotSubtype", "item type is not a subtype of \"$3\"" },
-  { "~TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },
   { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
   { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
   { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
@@ -663,17 +567,16 @@ extern entry const dict_en[] = {
   { "~WindowClause11", "\"window\" clause only available in XQuery 1.1 or later" },
   { "~XMLSchema", "XML schema" },
   { "~XQueryVersionAtLeast10_2", "\"$2\": XQuery version must be at least 1.0" },
-  { "~XUDY0021_AppliedAt", "applied at <$2>" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },
   { "~XUST0001_IF", "conditional expression with updating and non-updating branch" },
   { "~XUST0001_UDF_2", "\"$2\": function declared simple but body is updating" },
   { "~XUST0002_Transform", "transform expression witn non-updating or vacuous modify clause" },
   { "~XUST0002_UDF_2", "\"$2\": function declared updating but body is not updating or vacuous" },
+  { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },
   { "~ZeroLenURI", "zero-length URI (and no base URI given)" },
   { "~Zorba API error", "Zorba API error" },
   { "~Zorba data-definition error", "Zorba data-definition error" },
-  { "~Zorba debugger error", "Zorba debugger error" },
   { "~Zorba dynamic error", "Zorba dynamic error" },
   { "~Zorba dynamic warning", "Zorba dynamic warning" },
   { "~Zorba error", "Zorba error" },
@@ -726,9 +629,11 @@ extern entry const dict_en[] = {
 };
 DEF_DICT_END(en);
 
-///////////////////////////////////////////////////////////////////////////////
-
 } // namespace dict
 } // namespace diagnostic
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

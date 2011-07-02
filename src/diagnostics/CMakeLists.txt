@@ -28,6 +28,27 @@ SET(DIAGNOSTICS_SRCS
    warning_list.cpp
    )
 
+ZORBA_DIAGNOSTIC_GENERATOR(
+    "${CMAKE_SOURCE_DIR}/src/diagnostics/error_list_h.xq"
+    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
+    "diagnostic_en.xml"
+    ""
+    "${CMAKE_BINARY_DIR}/include/zorba/error_list.h")
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+    "${CMAKE_SOURCE_DIR}/src/diagnostics/error_list_cpp.xq"
+    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
+    "diagnostic_en.xml"
+    "${CMAKE_BINARY_DIR}/include/zorba/error_list.h"
+    "${CMAKE_BINARY_DIR}/src/diagnostics/error_list.cpp")
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+    "${CMAKE_SOURCE_DIR}/src/diagnostics/dict_XX_cpp.xq"
+    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
+    "diagnostic_en.xml"
+    ""
+    "${CMAKE_BINARY_DIR}/src/diagnostics/dict_en.cpp")
+
 IF (WIN32)
   SET(DIAGNOSTICS_SRCS ${DIAGNOSTICS_SRCS} StackWalker.cpp)
 ENDIF (WIN32)

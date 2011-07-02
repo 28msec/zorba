@@ -22,5 +22,7 @@ INSTALL(DIRECTORY zorba DESTINATION include
 
 INSTALL(FILES xqc.h DESTINATION include) 
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h DESTINATION
-include/zorba)
+INSTALL(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h
+  ${CMAKE_CURRENT_BINARY_DIR}/zorba/error_list.h
+  DESTINATION include/zorba)

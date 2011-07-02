@@ -203,7 +203,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   {
     throw ZORBA_EXCEPTION(
       zerr::ZXQP0004_NOT_IMPLEMENTED,
-      ERROR_PARAMS( ZED( TypeOps_is_in_scope_ForFunctionItemTypes ) )
+      ERROR_PARAMS( ZED( ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes ) )
     );
   }
   else
