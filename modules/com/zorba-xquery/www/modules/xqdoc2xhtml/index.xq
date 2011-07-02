@@ -233,7 +233,7 @@ declare function xqdoc2html:value-union (
  :    E.g. ("cpp", "h", "xml")
  : @return The empty sequence.
  :)
-declare %private %sequential function xqdoc2html:gather-and-copy(
+declare %private %nondeterministic %sequential function xqdoc2html:gather-and-copy(
   $sourcePath       as xs:string,
   $destinationPath  as xs:string, 
   $extensions       as xs:string+)
@@ -296,7 +296,7 @@ declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs
  : @param $extensions The sequence of file types to copy (e.g. ("cpp", "h", "xml")).
  : @return The empty sequence.
  :)
-declare %private %sequential function xqdoc2html:copy-files(
+declare %private %nondeterministic %sequential function xqdoc2html:copy-files(
   $sourcePath       as xs:string,
   $destinationPath  as xs:string, 
   $extensions       as xs:string+)
@@ -314,7 +314,7 @@ declare %private %sequential function xqdoc2html:copy-files(
  : @return empty string 
  :
  :)
-declare %private %sequential function xqdoc2html:copy-xqsrc-folders(
+declare %private %nondeterministic %sequential function xqdoc2html:copy-xqsrc-folders(
   $xqPath as xs:string,
   $xqSrcPath as xs:string,
   $moduleURI as xs:string)
@@ -338,7 +338,7 @@ declare %private %sequential function xqdoc2html:copy-xqsrc-folders(
  : @param $schemasPath the path where the schema files should be copied.
  : @return empty sequence
  :)
-declare %private %sequential function xqdoc2html:gather-schemas(
+declare %private %nondeterministic %sequential function xqdoc2html:gather-schemas(
   $xqdocBuildPath as xs:string,
   $schemasPath as xs:string,
   $zorbaModulesPath as xs:string) 
@@ -396,7 +396,7 @@ declare %private %sequential function xqdoc2html:gather-schemas(
  : @param $xqdocBuildPath where to generate the XQDoc XML documents.
  : @return Empty sequence.
  :)
-declare %sequential function xqdoc2html:copy-xhtml-requisites(
+declare %nondeterministic %sequential function xqdoc2html:copy-xhtml-requisites(
   $modulePaths          as xs:string,
   $xhtmlRequisitesPath  as xs:string,
   $xqdocBuildPath       as xs:string,
@@ -447,7 +447,7 @@ declare %private %sequential function xqdoc2html:create-general-menu($moduleUri 
   }
 };
 
-declare %sequential function xqdoc2html:create-collection-categories (
+declare %nondeterministic %sequential function xqdoc2html:create-collection-categories (
 $collectionName as xs:QName,
 $xqdocXmlPath as xs:string)
 {
@@ -472,7 +472,7 @@ $xqdocXmlPath as xs:string)
  : @param $zorbaVersion Zorba version.
  : @return Empty sequence.
  :)
-declare %sequential function xqdoc2html:main(
+declare %nondeterministic %sequential function xqdoc2html:main(
   $modulePath     as xs:string , 
   $xqdocBuildPath as xs:string,
   $indexHtmlPath  as xs:string,
@@ -565,7 +565,7 @@ declare %private function xqdoc2html:get-examples-path(
  : @param $zorbaPath path to zorba source dir
  : @return A string sequence with a status message for each processed module.
  :)
-declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
+declare %nondeterministic %sequential function xqdoc2html:generate-xqdoc-xhtml(
   (:$generalLeftMenu, :)
   $xhtmlRequisitesPath  as xs:string,
   $xqdocXhtmlPath       as xs:string,
@@ -655,7 +655,7 @@ declare %sequential function xqdoc2html:generate-xqdoc-xhtml(
  : @param $xqdocXhtmlPath where to generate the XQDoc XHTML documents.
  : @return the processed $xhtml.
  :)
-declare %private %sequential function xqdoc2html:configure-xml (
+declare %private %nondeterministic %sequential function xqdoc2html:configure-xml (
   $xqdoc,
   $examplePath as xs:string,
   $xqdocXhtmlPath as xs:string)
@@ -681,7 +681,7 @@ declare %private %sequential function xqdoc2html:configure-xml (
  : @param $examplePath string with the paths where the examples are kept separated by ; .
  : @return The created XHTML page.
  :)
-declare %sequential function xqdoc2html:copy-examples(
+declare %nondeterministic %sequential function xqdoc2html:copy-examples(
   $xqdoc, 
   $examplesFolderDestination as xs:string,
   $examplePath as xs:string)
@@ -722,7 +722,7 @@ declare %sequential function xqdoc2html:copy-examples(
  :        separated by <pre>;</pre>.
  : @return The full path of the file to be resolved.
  :)
-declare %private %sequential function xqdoc2html:resolve-file-path(
+declare %private %nondeterministic %sequential function xqdoc2html:resolve-file-path(
   $relativeFilePath as xs:string,
   $directoryPath as xs:string
 ) as xs:string
@@ -740,7 +740,7 @@ declare %private %sequential function xqdoc2html:resolve-file-path(
     fn:error($err:UE010, fn:concat("The path <", $directoryPath, "> must point to an existing directory:"))
 };
 
-declare %private %sequential function xqdoc2html:copy-example(
+declare %private %nondeterministic %sequential function xqdoc2html:copy-example(
   $exampleSource as xs:string,
   $exampleDestination as xs:string,
   $examplePath as xs:string)
@@ -877,7 +877,7 @@ Expected output:
         }
 };
 
-declare %private %sequential function xqdoc2html:parse-spec-args(
+declare %private %nondeterministic %sequential function xqdoc2html:parse-spec-args(
   $exampleSource as xs:string,
   $specLines as xs:string*) as xs:string
 {
@@ -918,7 +918,7 @@ Example input xml for variable $", $var_name, ":
 
 };
 
-declare %private %sequential function xqdoc2html:load-expected-results(
+declare %private %nondeterministic %sequential function xqdoc2html:load-expected-results(
   $result_split as xs:string*) as xs:string
 {
   if(fn:empty($result_split)) then
@@ -939,7 +939,7 @@ $nonlast_result,
  xqdoc2html:load-expected-results(fn:subsequence($result_split, 2)))
 };
 
-declare %private %sequential function xqdoc2html:parse-spec-results(
+declare %private %nondeterministic %sequential function xqdoc2html:parse-spec-results(
   $exampleSource as xs:string,
   $specLines as xs:string*) as xs:string
 {
@@ -1107,7 +1107,7 @@ declare %sequential function xqdoc2html:configure-xhtml (
  : @param $examplePath string with the paths where the examples are kept separated by ; .
  : @return The created XHTML page.
  :)
-declare %private %sequential function xqdoc2html:add-left-menu(
+declare %private %nondeterministic %sequential function xqdoc2html:add-left-menu(
   $moduleUri as xs:string, 
   $menu,
   $templatePath as xs:string,
@@ -1131,7 +1131,7 @@ declare %private %sequential function xqdoc2html:add-left-menu(
  : @param $examplePath string with the paths where the examples are kept separated by ; .
  : @return The created XHTML page.
  :)
-declare %sequential function xqdoc2html:doc(
+declare %nondeterministic %sequential function xqdoc2html:doc(
   $xqdoc, 
   $menu,
   $templatePath as xs:string,
@@ -1177,7 +1177,7 @@ declare %private function xqdoc2html:module-uri($xqdoc) as xs:string
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
  : @return The 'body' of the XHTML.
  :)
-declare function xqdoc2html:body(
+declare %nondeterministic function xqdoc2html:body(
   $xqdoc, 
   $xqdocXhtmlPath as xs:string)
 {
@@ -1271,7 +1271,7 @@ declare %private function xqdoc2html:annotations-module($comment) {
  : @param $indexCollector the modules names part of the left menu.
  : @return the XHTML for the 'Module Resources'.
  :)
-declare function xqdoc2html:module-resources(
+declare %nondeterministic function xqdoc2html:module-resources(
   $xqdocXhtmlPath as xs:string,
   $moduleUri as xs:string) 
 {
@@ -1508,7 +1508,7 @@ declare function xqdoc2html:split-function-signature($signature as xs:string) {
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
  : @return the XHTML for the function details.
  :)
-declare function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
+declare %nondeterministic function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
     if(count($functions)) then (
       <div class="section"><span id="functions">Functions</span></div>,
       for $function in $functions
@@ -1698,7 +1698,7 @@ declare function xqdoc2html:annotations-see($comment) {
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
  : @return the XHTML for the function 'example' annotations.
  :)
-declare function xqdoc2html:annotations-example($comment, $xqdocXhtmlPath) {
+declare %nondeterministic function xqdoc2html:annotations-example($comment, $xqdocXhtmlPath) {
   let $example := $comment//xqdoc:custom[@tag="example"]
   return
     if (count($example) = 0) then ()
@@ -1800,7 +1800,7 @@ declare function xqdoc2html:generate-function-index()
  : @param $templatePath the path to the main.html template.
  : @return The content of the function index page.
  :)
-declare %sequential function xqdoc2html:generate-function-index-xhtml(
+declare %nondeterministic %sequential function xqdoc2html:generate-function-index-xhtml(
   $indexFunctionLeft,
   $templatePath as xs:string,
   $functionIndexPath as xs:string
@@ -2044,7 +2044,7 @@ declare %private %sequential function xqdoc2html:create-specialized-left-menu(
  : @param $zorbaVersion Zorba version.
  : @return The content of the new index.html.
  :)
-declare %private %sequential function xqdoc2html:generate-index-html(
+declare %private %nondeterministic %sequential function xqdoc2html:generate-index-html(
   $templatePath as xs:string, 
   $menu, 
   $modules,
@@ -2081,7 +2081,7 @@ declare %private %sequential function xqdoc2html:generate-index-html(
  : @param $zorbaVersion Zorba version.
  : @return The content of the Search page.
  :)
-declare %sequential function xqdoc2html:generate-search-xhtml(
+declare %nondeterministic %sequential function xqdoc2html:generate-search-xhtml(
   $indexFunctionLeft,
   $templatePath as xs:string,
   $zorbaVersion as xs:string

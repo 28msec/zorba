@@ -46,7 +46,7 @@ declare variable $pxqdoc:serParamXml :=
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %sequential function pxqdoc:delete-XML-dir(
+declare %nondeterministic %sequential function pxqdoc:delete-XML-dir(
   $xqdocPath as xs:string)
 {
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
@@ -67,7 +67,7 @@ declare %sequential function pxqdoc:delete-XML-dir(
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %sequential function pxqdoc:generate-xqdoc-XML(
+declare %nondeterministic %sequential function pxqdoc:generate-xqdoc-XML(
   $modulesPath as xs:string,
   $xqdocPath as xs:string,
   $isInsideZorbaCore as xs:boolean) as element()*
