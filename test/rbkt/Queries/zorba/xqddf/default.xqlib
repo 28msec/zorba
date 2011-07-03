@@ -5,6 +5,8 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare collection def:user as node()*;
 
 declare variable $def:user := xs:QName("def:user");
@@ -16,7 +18,7 @@ declare automatically maintained unique value equality index def:user-by-uid
 declare variable $def:user-by-uid := xs:QName("def:user-by-uid");
 
 
-declare %sequential function def:init()
+declare %ann:sequential function def:init()
 {
   ddl:create-collection($def:user);
 

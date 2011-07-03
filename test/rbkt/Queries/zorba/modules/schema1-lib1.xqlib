@@ -8,7 +8,9 @@ The following import should NOT be required in order to make the example working
 import schema namespace foo = "http://expath.org/ns/http-client";
 :)
 
-declare %sequential function f:test($e)
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential function f:test($e)
 {
   lib:test($e)
 };

@@ -4947,7 +4947,7 @@ case 253:
 /* rule 253 can match eol */
 YY_RULE_SETUP
 #line 725 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN(ANNOTATION_EQNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
+{ TRY_SVAL_TOKEN(ANNOTATION_EQNAME_SVAL, put_qname(yytext+1, yyleng-1, false, false, true), yytext+1); /* skip the % sign */ }
 	YY_BREAK
 case 254:
 YY_RULE_SETUP

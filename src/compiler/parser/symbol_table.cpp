@@ -110,7 +110,7 @@ off_t symbol_table::put_ncname(char const* text, uint32_t length)
 	return heap.put(text, 0, length);
 }
 
-off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_start, bool do_trim_end)
+off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_start, bool do_trim_end, bool is_eqname)
 {
   if (do_trim_start)
   {
@@ -124,21 +124,39 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
     length = ascii::trim_end(text, length, whitespace);
   }
 
-	return heap.put(text, 0, length);
+  if (!is_eqname)
+    return heap.put(text, 0, length);
+  else
+  {
+    string name;
+    string prefix = text;
+    string::size_type pos = prefix.rfind(':');
+    name = prefix.substr(pos+1);
+    prefix = prefix.substr(0, pos);
+
+    off_t uri = put_uri(prefix.c_str(), prefix.size());
+    name = get(uri) + ":" + name;
+
+    return heap.put(name.c_str(), 0, name.size());
+  }
 }
 
 off_t symbol_table::put_uri(char const* text, uint32_t length)
 {
+  // trim start
   char const* temp = ascii::trim_start(text, length, whitespace);
   length -= (temp-text);
   text = temp;
 
+  // trim end
   length = ascii::trim_end(text, length, whitespace);
 
+  // normalize whitespace
   string result;
   if (! decode_string (text, length, &result))
     return -1;
   ascii::normalize_whitespace( result );
+
   return heap.put (result.c_str (), 0, result.length ());
 }
 

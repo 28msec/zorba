@@ -26,6 +26,7 @@
  :
  :)
 module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -36,7 +37,7 @@ declare option ver:module-version "2.0";
  :
  : @return the non-stable datetime value
  :)
-declare %nondeterministic function datetime:current-dateTime ( ) as xs:dateTime external;
+declare %ann:nondeterministic function datetime:current-dateTime ( ) as xs:dateTime external;
 
 (:~
  : Return the current time value.
@@ -45,7 +46,7 @@ declare %nondeterministic function datetime:current-dateTime ( ) as xs:dateTime 
  :
  : @return the non-stable time value
  :)
-declare %nondeterministic function datetime:current-time ( ) as xs:time external;
+declare %ann:nondeterministic function datetime:current-time ( ) as xs:time external;
 
 (:~
  : Return the current date value.
@@ -54,11 +55,11 @@ declare %nondeterministic function datetime:current-time ( ) as xs:time external
  :
  : @return the non-stable date value
  :)
-declare %nondeterministic function datetime:current-date ( ) as xs:date external;
+declare %ann:nondeterministic function datetime:current-date ( ) as xs:date external;
 
 (:~
  : Return the the number of milliseconds since the Epoch.
  :
  : @return the said number of milliseconds.
  :)
-declare %nondeterministic function datetime:timestamp ( ) as xs:long external;
+declare %ann:nondeterministic function datetime:timestamp ( ) as xs:long external;

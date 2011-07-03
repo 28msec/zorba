@@ -3,7 +3,9 @@ xquery version "3.0";
 (: Name and arity of a user-defined function :)
 (: Author - Michael Kay, Saxonica :)
 
-declare %sequential function local:scramble(
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential function local:scramble(
     $x as function(xs:string) as xs:string,
     $y as xs:string) as xs:string 
 {

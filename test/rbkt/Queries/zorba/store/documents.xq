@@ -1,13 +1,15 @@
 import module namespace doc = "http://www.zorba-xquery.com/modules/store/documents/dynamic";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare base-uri "http://www.zorba-xquery.com/";
 
-declare %sequential function local:add()
+declare %ann:sequential function local:add()
 {
   doc:add("foo", document { <foo>bar</foo> });
 };
 
-declare %sequential function local:add-twice()
+declare %ann:sequential function local:add-twice()
 {
   try {
     doc:add("foo", document { <foo>bar</foo> });
@@ -16,12 +18,12 @@ declare %sequential function local:add-twice()
   }
 };
 
-declare %sequential function local:remove()
+declare %ann:sequential function local:remove()
 {
   doc:remove("foo");
 };
 
-declare %sequential function local:remove-twice()
+declare %ann:sequential function local:remove-twice()
 {
   try {
     doc:remove("foo");

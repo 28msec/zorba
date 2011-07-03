@@ -1,5 +1,6 @@
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare %nondeterministic function local:public()
+declare %ann:nondeterministic function local:public()
 {
   1
 };

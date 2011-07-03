@@ -6,7 +6,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic
 
 declare variable $col := xs:QName("myCollection");
 
-declare %updating function local:test3()
+declare updating function local:test3()
 {
   for $x in dml:collection($col)
   return

@@ -1,11 +1,12 @@
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare %sequential function local:searchFor($obj as xs:string) 
+declare %ann:sequential function local:searchFor($obj as xs:string) 
 {
   $obj
 };
 
 
-declare %sequential function local:trick($object as xs:string) 
+declare %ann:sequential function local:trick($object as xs:string) 
 {
   let $s := local:searchFor($object)
   return
@@ -15,7 +16,7 @@ declare %sequential function local:trick($object as xs:string)
 };
 
 
-declare %sequential function local:magician() 
+declare %ann:sequential function local:magician() 
 {
   let $s := local:trick("rabbit")
   return

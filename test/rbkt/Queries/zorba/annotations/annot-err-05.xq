@@ -1,7 +1,8 @@
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare namespace random = "http://www.zorba-xquery.com/modules/random";
 
-declare %deterministic %deterministic function random:random() as xs:integer external;
+declare %ann:deterministic %ann:deterministic function random:random() as xs:integer external;
 
 
 random:random()

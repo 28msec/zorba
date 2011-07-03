@@ -307,7 +307,7 @@
        <code>http://www.w3.org/2001/XMLSchema-instance</code>,
        <code>http://www.w3.org/2005/xpath-functions</code>.
       </comment>
-      <value>"$1": invalid function namespace</value>
+      <value>"$1": invalid function or annotation namespace</value>
     </diagnostic>
  
     <diagnostic code="XQST0046">

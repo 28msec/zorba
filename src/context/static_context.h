@@ -431,6 +431,11 @@ public:
   static const zstring ZORBA_NS_PREFIX;
 
   //
+  // W3C namespaces
+  //
+  static const zstring W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
+
+  //
   // http://www.w3.org/2005/xpath-functions
   //
   static const zstring W3C_FN_NS;
@@ -473,6 +478,12 @@ public:
   //
   static const zstring XQUERY_OP_NS;
   static const zstring ZORBA_OP_NS;
+
+  //
+  // The namespace of Zorba annotations
+  //
+  static const zstring ZORBA_ANNOTATIONS_NS;
+
 
 protected:
   static_context                        * theParent;

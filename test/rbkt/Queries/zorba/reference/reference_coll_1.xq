@@ -4,7 +4,9 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 
 import module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
 
-declare %sequential function local:test()
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential function local:test()
 {
   ddl:create-collection(xs:QName("ns:test"));
   dml:insert-nodes-last(xs:QName("ns:test"), (<a/>,<b><z/></b>,<c/>));

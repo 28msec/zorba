@@ -1,4 +1,6 @@
-declare %sequential function local:foo() 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential function local:foo() 
 {
   1
 };

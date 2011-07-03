@@ -25,7 +25,6 @@
  :)
 module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
-
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 

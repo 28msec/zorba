@@ -1,7 +1,9 @@
+(: The purpose of the query is to the parsing of annotations
+   literals. The value will be ignored :)
 
-declare %custom(123, "string literal", 456, "just random") function local:func()
-{
-  1
-};
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential(123, "string literal", 456, "just random") function
+local:func() {   1 };
 
 local:func()

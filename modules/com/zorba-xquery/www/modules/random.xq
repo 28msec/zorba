@@ -23,6 +23,9 @@
  :
  :)
 module namespace random = "http://www.zorba-xquery.com/modules/random";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -43,7 +46,7 @@ declare variable $random:errValue as xs:QName := fn:QName($random:randomNS, "ran
  :
  : @return a pseudo-random integer
  :)
-declare %nondeterministic function random:random() as xs:integer external;
+declare %ann:nondeterministic function random:random() as xs:integer external;
 
 (:~
  : This function returns a pseudo-random integer
@@ -55,7 +58,7 @@ declare %nondeterministic function random:random() as xs:integer external;
  : @param $seed the seed value for this pseudo-random integer sequence
  : @return a pseudo-random integer
  :)
-declare %nondeterministic function random:random($seed as xs:integer) as xs:integer external;
+declare %ann:nondeterministic function random:random($seed as xs:integer) as xs:integer external;
 
 (:~
  :  This function returns a uuid. Note, that the function is not stable,
@@ -63,7 +66,7 @@ declare %nondeterministic function random:random($seed as xs:integer) as xs:inte
  :
  : @return the generated UUID
  :)
-declare %nondeterministic function random:uuid() as xs:string external;
+declare %ann:nondeterministic function random:uuid() as xs:string external;
 
 (:~
  : Returns a random integer number between the numbers you specify.
@@ -75,7 +78,7 @@ declare %nondeterministic function random:uuid() as xs:string external;
  : @return the random between bottom and up, as xs:integer
  : @error XQP0021(errValue) if bottom is bigger than up
 :)
-declare %nondeterministic function random:randbetween( $bottom as xs:integer, $up as xs:integer) as xs:integer
+declare %ann:nondeterministic function random:randbetween( $bottom as xs:integer, $up as xs:integer) as xs:integer
 {
   if($bottom = $up) then
     $bottom

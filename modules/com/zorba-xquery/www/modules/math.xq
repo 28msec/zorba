@@ -1811,7 +1811,7 @@ declare function zorba-math:stdevpa($numbers as xs:double+) as xs:double
  :       <dt>11 or 111</dt> <dd> VARP</dd></dl>
  :       
  :       In this implementation there is no difference between x and 10x.<br/>
- : @param %numbers the sequence of numbers.
+ : @param $numbers the sequence of numbers.
  :     The sequence can be of any length.
  : @return The function result, as numeric type
  : @error ** depends on the function called

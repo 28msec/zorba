@@ -2983,7 +2983,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // least, "declare option" information is not stored in the sctx that is
       // in mod_sctx_map; therefore, when dealing with an already-imported
       // sctx, there's no way to know what version it is. SF bug# 3312333.
-      if (lModVer.is_valid_version()) 
+      if (lModVer.is_valid_version())
       {
         store::Item_t lMajorOpt;
         theSctx->expand_qname(lMajorOpt,
@@ -2992,18 +2992,18 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
                               zstring(ZORBA_OPTION_MODULE_VERSION),
                               loc);
         zstring lImportedVersion;
-        if (!moduleRootSctx->lookup_option(lMajorOpt.getp(), lImportedVersion)) 
+        if (!moduleRootSctx->lookup_option(lMajorOpt.getp(), lImportedVersion))
         {
           lImportedVersion = "0.0";
         }
         ModuleVersion lImportedModVer(compURI, lImportedVersion);
-        if (! lImportedModVer.is_valid_version()) 
+        if (! lImportedModVer.is_valid_version())
         {
           RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
           ERROR_PARAMS(lImportedVersion));
         }
 
-        if (!lImportedModVer.satisfies(lModVer)) 
+        if (!lImportedModVer.satisfies(lModVer))
         {
           RAISE_ERROR(zerr::ZXQP0037_INAPPROPRIATE_MODULE_VERSION, loc,
           ERROR_PARAMS(lModVer.versioned_uri(), lImportedVersion));
@@ -3062,7 +3062,7 @@ void* begin_visit(const VFO_DeclList& v)
   {
     const OptionDecl* opt_decl = it->dyn_cast<OptionDecl>().getp();
 
-    if (opt_decl != NULL) 
+    if (opt_decl != NULL)
     {
       store::Item_t qnameItem;
       zstring value = opt_decl->get_val().str();
@@ -3097,7 +3097,7 @@ void* begin_visit(const VFO_DeclList& v)
       continue;
 
     AnnotationListParsenode* lAnns = func_decl->get_annotations();
-    if (lAnns) 
+    if (lAnns)
     {
       lAnns->accept(*this);
     }
@@ -3189,37 +3189,37 @@ void* begin_visit(const VFO_DeclList& v)
 
     signature sig(qnameItem, paramTypes, returnType, lIsVariadic);
 
+    /*
+    // TODO: this can no longer happen since the %updating annotation is not allowed
     // special case
     // function declares both updating keyword and updating annotation
     if (theAnnotations &&
         func_decl->is_updating() &&
-        theAnnotations->contains(theSctx->lookup_ann("updating"))) 
+        theAnnotations->contains(theSctx->lookup_ann("updating")))
     {
         throw XQUERY_EXCEPTION(
             err::XQST0106,
             ERROR_PARAMS("updating"),
             ERROR_LOC(loc));
     }
-    else if (func_decl->is_updating()) 
+    else if (func_decl->is_updating())
     {
       // translate updating keyword into an annotation
       std::vector<rchandle<const_expr> > lLiterals;
-      if (!theAnnotations) 
+      if (!theAnnotations)
       {
         theAnnotations = new AnnotationList();
       }
       theAnnotations->push_back(theSctx->lookup_ann("updating"), lLiterals);
     }
+    */
 
     // Get the scripting kind of the function
     expr_script_kind_t scriptKind = SIMPLE_EXPR;
-    if (theAnnotations)
-    {
-      if (theAnnotations->contains(theSctx->lookup_ann("updating")))
-        scriptKind = UPDATING_EXPR;
-      else if (theAnnotations->contains(theSctx->lookup_ann("sequential")))
-        scriptKind = SEQUENTIAL_EXPR;
-    }
+    if (func_decl->is_updating())
+      scriptKind = UPDATING_EXPR;
+    else if (theAnnotations && theAnnotations->contains(theSctx->lookup_ann("sequential")))
+      scriptKind = SEQUENTIAL_EXPR;
 
     // create the function object
     function_t f;
@@ -3726,7 +3726,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     push_nodestack(ve.getp());
 
 #ifdef ZORBA_WITH_DEBUGGER
-    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL) 
+    if (initExpr != NULL && theCCB->theDebuggerCommons != NULL)
     {
       QueryLoc lExpandedLocation = expandQueryLoc(v.get_name()->get_location(),
                                                   initExpr->get_loc());
@@ -3787,6 +3787,38 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
+
+  store::Item_t sctx_ann = theSctx->lookup_ann(lExpandedQName->getLocalName().c_str());
+
+  /*
+  std::cout << "--> annotation: " << lExpandedQName->show() << std::endl;
+  if (sctx_ann.getp() != NULL)
+    std::cout << "               sctx annot: " << sctx_ann->show() << std::endl;
+  */
+
+  if ((lExpandedQName->getNamespace() == static_context::W3C_XML_NS ||
+      lExpandedQName->getNamespace() == XML_SCHEMA_NS ||
+      lExpandedQName->getNamespace() == XSI_NS ||
+      lExpandedQName->getNamespace() == static_context::W3C_FN_NS ||
+      lExpandedQName->getNamespace() == XQUERY_MATH_FN_NS ||
+      lExpandedQName->getNamespace() == static_context::ZORBA_ANNOTATIONS_NS)
+      &&
+      (sctx_ann.getp() == NULL
+        ||
+        (sctx_ann.getp() != NULL
+        &&
+        lExpandedQName->getNamespace() != sctx_ann->getNamespace())))
+  {
+    throw XQUERY_EXCEPTION(err::XQST0045, ERROR_PARAMS(
+          (lExpandedQName->getPrefix().empty() ? "\'" + lExpandedQName->getNamespace() + "\'"
+                                               : lExpandedQName->getPrefix())
+          + ":" + lExpandedQName->getLocalName()), ERROR_LOC(loc));
+  }
+  else
+  {
+    // throw warning
+  }
+
 
   std::vector<rchandle<const_expr> > lLiterals;
   if (v.get_literals())
@@ -4309,7 +4341,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
       keyExpr = wrap_in_type_match(keyExpr,
                                    type,
-                                   loc, 
+                                   loc,
                                    zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR);
 
       keyTypes[i] = ptype->getBaseBuiltinType();

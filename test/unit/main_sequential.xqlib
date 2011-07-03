@@ -1,5 +1,6 @@
 module namespace main = "http://nonamespace.com";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations"; 
 declare namespace https = "blubb";
 
 declare function main:check-params($a, $b, $c) 
@@ -7,4 +8,4 @@ declare function main:check-params($a, $b, $c)
   if ($a = $b) then 1 else 2
 };
 
-declare %sequential function main:bar($a, $b, $c) as item() external;
+declare %ann:sequential function main:bar($a, $b, $c) as item() external;

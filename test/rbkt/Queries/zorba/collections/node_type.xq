@@ -3,6 +3,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.xsd";
 import module namespace ns = "http://example.org/datamodule/" at "node_type.xqdata";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare function local:create-person($name as xs:string) as schema-element(s:person) 
 {
@@ -10,13 +11,13 @@ declare function local:create-person($name as xs:string) as schema-element(s:per
 };
 
 
-declare %sequential function local:ddl() 
+declare %ann:sequential function local:ddl() 
 {
   ddl:create-collection($ns:collection, local:create-person("default"));
 };
 
 
-declare %sequential function local:testa_1() 
+declare %ann:sequential function local:testa_1() 
 {
   try {
     {
@@ -28,13 +29,13 @@ declare %sequential function local:testa_1()
 };
 
 
-declare %sequential function local:testa_2() 
+declare %ann:sequential function local:testa_2() 
 {
   dml:insert-nodes-first($ns:collection, local:create-person("aaa"));
 };
 
 
-declare %sequential function local:testb_1() 
+declare %ann:sequential function local:testb_1() 
 {
   try {
     {
@@ -46,13 +47,13 @@ declare %sequential function local:testb_1()
 };
 
 
-declare %sequential function local:testb_2() 
+declare %ann:sequential function local:testb_2() 
 {
   dml:insert-nodes-last($ns:collection, local:create-person("bbb"));
 };
 
 
-declare %sequential function local:testc_1() 
+declare %ann:sequential function local:testc_1() 
 {
   try {
     {
@@ -66,7 +67,7 @@ declare %sequential function local:testc_1()
 };
 
 
-declare %sequential function local:testc_2() 
+declare %ann:sequential function local:testc_2() 
 {
 
   let $x as schema-element(s:person) := dml:collection($ns:collection)[2]
@@ -75,7 +76,7 @@ declare %sequential function local:testc_2()
 };
 
 
-declare %sequential function local:testd_1() 
+declare %ann:sequential function local:testd_1() 
 {
   try {
     {
@@ -89,7 +90,7 @@ declare %sequential function local:testd_1()
 };
 
 
-declare %sequential function local:testd_2() 
+declare %ann:sequential function local:testd_2() 
 {
   let $x as schema-element(s:person) := dml:collection($ns:collection)[3]
   return
@@ -97,7 +98,7 @@ declare %sequential function local:testd_2()
 };
 
 
-declare %sequential function local:testf_1() 
+declare %ann:sequential function local:testf_1() 
 {
   try {
     {
@@ -111,7 +112,7 @@ declare %sequential function local:testf_1()
 };
 
 
-declare %sequential function local:testf_2() 
+declare %ann:sequential function local:testf_2() 
 {
   let $x as schema-element(s:person) := dml:collection($ns:collection)[4]
   return
@@ -119,7 +120,7 @@ declare %sequential function local:testf_2()
 };
 
 
-declare %sequential function local:main() 
+declare %ann:sequential function local:main() 
 {
   local:ddl();
   (

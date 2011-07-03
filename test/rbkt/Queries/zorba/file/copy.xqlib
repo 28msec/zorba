@@ -2,7 +2,9 @@ module namespace fct = "http://www.zorba-xquery.com/tests/file_copy_test";
 
 import module namespace file = "http://expath.org/ns/file";
 
-declare %nondeterministic %sequential function fct:test-copy($rbktPath as xs:string, $file as xs:string) {
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:nondeterministic %ann:sequential function fct:test-copy($rbktPath as xs:string, $file as xs:string) {
 
   variable $fileSrc := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file);
   variable $fileDest := fn:concat($rbktPath, "/Queries/zorba/file/copy_files/", $file, ".out");

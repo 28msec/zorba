@@ -4,6 +4,9 @@ import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+
 declare function commons:error($messages as xs:string*) as xs:string* {
   "
 ************************************************************************
@@ -18,14 +21,14 @@ ERROR:
 
 (: ******************************** SIMPLE TESTS ******************************** :)
 
-declare %nondeterministic %sequential function commons:testExists($path as xs:string) as xs:string* {
+declare %ann:nondeterministic %ann:sequential function commons:testExists($path as xs:string) as xs:string* {
   if (file:exists($path)) then
     "SUCCESS"
   else
     ("testExists failed for path:", $path)
 };
 
-declare %sequential function commons:testCreateDirectory($path as xs:string) as xs:string* {
+declare %ann:sequential function commons:testCreateDirectory($path as xs:string) as xs:string* {
   try {
     file:create-directory($path);
     exit returning "SUCCESS";
@@ -34,12 +37,12 @@ declare %sequential function commons:testCreateDirectory($path as xs:string) as 
   }
 };
 
-declare %sequential function commons:testWriteXml($path as xs:string, $xml as item()) as xs:string* {
+declare %ann:sequential function commons:testWriteXml($path as xs:string, $xml as item()) as xs:string* {
   file:write($path, $xml, ());
   "SUCCESS"
 };
 
-declare %nondeterministic %sequential function commons:testReadAndCompareXml($path as xs:string, $xml as item()) as xs:string* {
+declare %ann:nondeterministic %ann:sequential function commons:testReadAndCompareXml($path as xs:string, $xml as item()) as xs:string* {
   let $x := fn:parse-xml(file:read-text($path))
   return
     if($x eq $xml) then 
@@ -49,11 +52,11 @@ declare %nondeterministic %sequential function commons:testReadAndCompareXml($pa
 ", fn:serialize($xml))
 };
 
-declare %nondeterministic %sequential function commons:testReadBinary($path as xs:string) as xs:base64Binary {
+declare %ann:nondeterministic %ann:sequential function commons:testReadBinary($path as xs:string) as xs:base64Binary {
   file:read-binary($path)
 };
 
-declare %nondeterministic %sequential function commons:testDelete($path as xs:string) as xs:string* {
+declare %ann:nondeterministic %ann:sequential function commons:testDelete($path as xs:string) as xs:string* {
   try {
     file:delete($path);
     "SUCCESS";
@@ -62,7 +65,7 @@ declare %nondeterministic %sequential function commons:testDelete($path as xs:st
   }
 };
 
-declare %sequential function commons:testWriteSerializeXml($path as xs:string, $xml as item()) as xs:string* {
+declare %ann:sequential function commons:testWriteSerializeXml($path as xs:string, $xml as item()) as xs:string* {
   file:write(
     $path,
     $xml,
@@ -76,7 +79,7 @@ declare %sequential function commons:testWriteSerializeXml($path as xs:string, $
 
 (: ****************************** COMPOSITE TESTS ******************************* :)
 
-declare %nondeterministic %sequential function commons:testInitDir($dir as xs:string) as xs:string* {
+declare %ann:nondeterministic %ann:sequential function commons:testInitDir($dir as xs:string) as xs:string* {
   (: ==================================================================== :)
   (: the test directory must not exist :)
   (: ========= :)
@@ -107,7 +110,7 @@ declare %nondeterministic %sequential function commons:testInitDir($dir as xs:st
 };
 
 
-declare %nondeterministic %sequential function commons:testUnInitDir($dir as xs:string) as xs:string* 
+declare %ann:nondeterministic %ann:sequential function commons:testUnInitDir($dir as xs:string) as xs:string* 
 {
   (: ==================================================================== :)
   (: delete the directory :)

@@ -1,5 +1,6 @@
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare %sequential function local:test() 
+declare %ann:sequential function local:test() 
 {
   let $indexHtmlDoc := <doc/>
   return 

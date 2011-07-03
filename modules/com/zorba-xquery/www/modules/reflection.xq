@@ -53,7 +53,7 @@ declare option ver:module-version "2.0";
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function. 
  :)
-declare %nondeterministic %ann:variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
+declare %ann:nondeterministic %ann:variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
 
 (:~
  : invoke-updating()
@@ -61,7 +61,7 @@ declare %nondeterministic %ann:variadic function reflection:invoke-simple($name 
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function.
  :)
-declare %nondeterministic %ann:variadic updating function reflection:invoke-updating($name as xs:QName) external;
+declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-updating($name as xs:QName) external;
 
 (:~
  : invoke-sequential()
@@ -69,7 +69,7 @@ declare %nondeterministic %ann:variadic updating function reflection:invoke-upda
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function.
  :)
-declare %nondeterministic %ann:variadic %sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
+declare %ann:nondeterministic %ann:variadic %ann:sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
 
 
 (:~
@@ -79,7 +79,7 @@ declare %nondeterministic %ann:variadic %sequential function reflection:invoke-s
  : @return the result of evaluating the query (the result is not supposed to
  :         contain any PUL).
  :)
-declare %nondeterministic function reflection:eval-simple(
+declare %ann:nondeterministic function reflection:eval-simple(
     $query as xs:string
 ) as item()* external;
 
@@ -90,7 +90,7 @@ declare %nondeterministic function reflection:eval-simple(
  : @param $query the query string to be evaluated.
  : @return the PUL resulting from evaluating the query
  :)
-declare %nondeterministic updating function reflection:eval-updating(
+declare %ann:nondeterministic updating function reflection:eval-updating(
     $query as xs:string
 ) external;
 
@@ -102,7 +102,7 @@ declare %nondeterministic updating function reflection:eval-updating(
  : @return the result of evaluating the query (the result is not supposed to
  :         contain any PUL).
  :)
-declare %nondeterministic %sequential function reflection:eval-sequential(
+declare %ann:nondeterministic %ann:sequential function reflection:eval-sequential(
     $query as xs:string
 ) as item()* external;
 

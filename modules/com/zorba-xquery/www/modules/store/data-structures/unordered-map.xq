@@ -56,7 +56,7 @@ declare option ver:module-version "2.0";
  :        xs:anyAtomicType.
  : @error zerr:ZSTR0001 if a map with the given name already exists.
  :)
-declare %ann:variadic %sequential function map:create(
+declare %ann:variadic %ann:sequential function map:create(
   $name as xs:QName,
   $key-type as xs:QName) as empty-sequence() external;
 
@@ -70,7 +70,7 @@ declare %ann:variadic %sequential function map:create(
  :
  : @error zerr:ZDDY0023 if a map with the given name does not exist.
  :)
-declare %sequential function map:destroy(
+declare %ann:sequential function map:destroy(
   $name as xs:QName) as empty-sequence() external;
 
 (:~
@@ -100,7 +100,7 @@ declare %sequential function map:destroy(
  : @see map:create
  :
  :)
-declare %ann:variadic %sequential function map:insert(
+declare %ann:variadic %ann:sequential function map:insert(
   $name as xs:QName,
   $value as item()*,
   $key as xs:anyAtomicType?) as empty-sequence() external;
@@ -151,7 +151,7 @@ declare %ann:variadic function map:get(
  : @see map:create
  :
  :)
-declare %ann:variadic %sequential function map:remove(
+declare %ann:variadic %ann:sequential function map:remove(
   $name as xs:QName,
   $key as xs:anyAtomicType?) as empty-sequence() external;
 

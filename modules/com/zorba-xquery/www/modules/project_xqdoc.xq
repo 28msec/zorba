@@ -31,6 +31,8 @@ import module namespace file = "http://expath.org/ns/file";
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -49,7 +51,7 @@ declare variable $pxqdoc:serParamXml :=
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %nondeterministic %sequential function pxqdoc:delete-XML-dir(
+declare %ann:nondeterministic %ann:sequential function pxqdoc:delete-XML-dir(
   $xqdocPath as xs:string)
 {
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
@@ -70,7 +72,7 @@ declare %nondeterministic %sequential function pxqdoc:delete-XML-dir(
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %nondeterministic %sequential function pxqdoc:generate-xqdoc-XML(
+declare %ann:nondeterministic %ann:sequential function pxqdoc:generate-xqdoc-XML(
   $modulesPath as xs:string,
   $xqdocPath as xs:string,
   $isInsideZorbaCore as xs:boolean) as element()*

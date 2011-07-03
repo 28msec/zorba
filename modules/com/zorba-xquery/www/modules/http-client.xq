@@ -110,6 +110,8 @@ import module namespace err = "http://expath.org/ns/error";
 
 import schema namespace https = "http://expath.org/ns/http-client";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -143,7 +145,7 @@ declare option ver:module-version "2.0";
  :  If there is one (or several, in case of multipart) response body, the response bodies
  :  are the next items in the sequence.
  :)
-declare %sequential function http:send-request(
+declare %ann:sequential function http:send-request(
   $request as element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ 
@@ -235,7 +237,7 @@ declare function http:options($href as xs:string) as xs:string* {
  : @return The first element of the result is the metadata (like
  :         headers, status etc), the next elements are the response
  :)
-declare %sequential function http:put($href as xs:string, $body as item()) as item()+
+declare %ann:sequential function http:put($href as xs:string, $body as item()) as item()+
 {
   variable $media-type as xs:string+ :=
     typeswitch($body)
@@ -259,7 +261,7 @@ declare %sequential function http:put($href as xs:string, $body as item()) as it
  : @return The first element of the result is the metadata (like
  :         headers, status etc), the next elements are the response
  :)
-declare %sequential function http:delete($href as xs:string) as item()+
+declare %ann:sequential function http:delete($href as xs:string) as item()+
 {
   http:http-nondeterministic-impl(
     validate {
@@ -288,7 +290,7 @@ declare %sequential function http:delete($href as xs:string) as item()+
  : @return The first element of the result is the metadata (like
  :         headers, status etc), the next elements are the response
  :)
-declare %sequential function http:post($href as xs:string, $body as item()) as item()+
+declare %ann:sequential function http:post($href as xs:string, $body as item()) as item()+
 {
   variable $media-type as xs:string+ :=
     typeswitch($body)
@@ -306,13 +308,13 @@ declare %sequential function http:post($href as xs:string, $body as item()) as i
 };
 
 
-declare %private %sequential function http:http-sequential-impl(
+declare %private %ann:sequential function http:http-sequential-impl(
   $request as schema-element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ external;
 
 
-declare %private %nondeterministic function http:http-nondeterministic-impl(
+declare %private %ann:nondeterministic function http:http-nondeterministic-impl(
   $request as schema-element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ external;

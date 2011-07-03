@@ -2,7 +2,9 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
 
-declare %sequential function local:ddl() {
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential function local:ddl() {
   (
     ddl:create-collection($ns:coll_1, (<a/>,<b/>)),
     ddl:create-collection($ns:coll_2, (<a/>,<b/>)),
@@ -11,7 +13,7 @@ declare %sequential function local:ddl() {
 };
 
 
-declare %sequential function local:testa_1() 
+declare %ann:sequential function local:testa_1() 
 {
   try {
     {
@@ -23,7 +25,7 @@ declare %sequential function local:testa_1()
 };
 
 
-declare %sequential function local:testa_2() 
+declare %ann:sequential function local:testa_2() 
 {
   try {
     {
@@ -35,7 +37,7 @@ declare %sequential function local:testa_2()
 };
 
 
-declare %sequential function local:testa_3() 
+declare %ann:sequential function local:testa_3() 
 {
   try {
     {
@@ -47,13 +49,13 @@ declare %sequential function local:testa_3()
 };
 
 
-declare %sequential function local:testa_4() 
+declare %ann:sequential function local:testa_4() 
 {
   dml:delete-nodes-first($ns:coll_3, 2 cast as xs:unsignedLong);
 };
 
 
-declare %sequential function local:main() {
+declare %ann:sequential function local:main() {
   local:ddl();
   (
     local:testa_1(),

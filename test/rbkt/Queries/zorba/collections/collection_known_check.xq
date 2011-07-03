@@ -1,11 +1,13 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare namespace ns = "http://www.unknown.com/";
 
 declare variable $name as xs:QName := xs:QName("ns:name");
 
-declare %sequential function local:testa() {
+declare %ann:sequential function local:testa() {
   try {
     {
       ddl:is-available-collection($name)
@@ -15,7 +17,7 @@ declare %sequential function local:testa() {
   }
 };
 
-declare %sequential function local:testb() {
+declare %ann:sequential function local:testb() {
   try {
     {
       dml:collection($name)
@@ -25,7 +27,7 @@ declare %sequential function local:testb() {
   }
 };
 
-declare %sequential function local:testc() {
+declare %ann:sequential function local:testc() {
   try {
     {
       dml:index-of(<a/>)
@@ -35,7 +37,7 @@ declare %sequential function local:testc() {
   }
 };
 
-declare %sequential function local:testd() {
+declare %ann:sequential function local:testd() {
   try {
     {
       ddl:create-collection($name);
@@ -45,7 +47,7 @@ declare %sequential function local:testd() {
   }
 };
 
-declare %sequential function local:teste() {
+declare %ann:sequential function local:teste() {
   try {
     {
       ddl:delete-collection($name);
@@ -55,7 +57,7 @@ declare %sequential function local:teste() {
   }
 };
 
-declare %sequential function local:testf() {
+declare %ann:sequential function local:testf() {
   try {
     {
       dml:insert-nodes-first($name, <a/>);
@@ -65,7 +67,7 @@ declare %sequential function local:testf() {
   }
 };
 
-declare %sequential function local:testg() {
+declare %ann:sequential function local:testg() {
   try {
     {
       dml:insert-nodes-last($name, <a/>);
@@ -75,7 +77,7 @@ declare %sequential function local:testg() {
   }
 };
 
-declare %sequential function local:testh() {
+declare %ann:sequential function local:testh() {
   try {
     {
       dml:insert-nodes-before($name, <a/>, <a/>);
@@ -85,7 +87,7 @@ declare %sequential function local:testh() {
   }
 };
 
-declare %sequential function local:testi() {
+declare %ann:sequential function local:testi() {
   try {
     {
       dml:insert-nodes-after($name, <a/>, <a/>);
@@ -95,7 +97,7 @@ declare %sequential function local:testi() {
   }
 };
 
-declare %sequential function local:testk() {
+declare %ann:sequential function local:testk() {
   try {
     {
       dml:delete-nodes(<a/>);
@@ -105,7 +107,7 @@ declare %sequential function local:testk() {
   }
 };
 
-declare %sequential function local:main() {
+declare %ann:sequential function local:main() {
   (
     local:testa(),
     local:testb(),

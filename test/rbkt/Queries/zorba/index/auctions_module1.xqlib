@@ -6,6 +6,8 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $auctions:auctions := xs:QName("auctions:auctions");
 declare variable $auctions:PersonId := xs:QName("auctions:PersonId");
 declare variable $auctions:PersonCity := xs:QName("auctions:PersonCity");
@@ -78,7 +80,7 @@ by (for $x in ./bidder/date return $x);
   Create and populate the collection, and then create the indexes
 :)
 
-declare %sequential function auctions:create-db()
+declare %ann:sequential function auctions:create-db()
 {
   ddl:create-collection($auctions:auctions);
 

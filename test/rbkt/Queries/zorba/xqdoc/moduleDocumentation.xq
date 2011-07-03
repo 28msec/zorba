@@ -3,6 +3,8 @@ import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare copy-namespaces preserve, inherit;
 
 
@@ -19,7 +21,7 @@ declare variable $modulesPath as xs:string external;
  :
  : @param $modulePath where to search for modules recursively.
  :)
-declare %nondeterministic %sequential function local:testXQDoc($modulesPath as xs:string)
+declare %ann:nondeterministic %ann:sequential function local:testXQDoc($modulesPath as xs:string)
 {
   for $file in file:list($modulesPath, fn:true(), "*.xq")
   let $filePath := fn:concat($modulesPath, "/", $file)

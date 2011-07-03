@@ -58,6 +58,7 @@
  :
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -72,7 +73,7 @@ declare option ver:module-version "2.0";
  : @error An error is thrown if no module is located at the
  :        given URL or the module could not be parsed.
  :)
-declare %nondeterministic function xqd:xqdoc(
+declare %ann:nondeterministic function xqd:xqdoc(
   $module-url as xs:string
 ) as element() external;
 

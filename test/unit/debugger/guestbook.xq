@@ -1,10 +1,12 @@
 module namespace guestbook = "http://www.28msec.com/template/guestbook/guestbook";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations"; 
+
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 declare ordered collection guestbook:entries as node()*;
 declare variable $guestbook:entries as xs:QName := xs:QName('guestbook:entries');
 
-declare %sequential function guestbook:add()
+declare %ann:sequential function guestbook:add()
 {
   dml:insert-nodes-last(
       $guestbook:entries,
@@ -15,7 +17,7 @@ declare %sequential function guestbook:add()
   exit returning guestbook:list();
 };
 
-declare %sequential function guestbook:list() 
+declare %ann:sequential function guestbook:list() 
 {  
   let $entries := dml:collection($guestbook:entries)
   let $num_entries := fn:count($entries)

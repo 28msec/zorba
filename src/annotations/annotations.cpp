@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -171,6 +171,9 @@ void AnnotationList::push_back(
 ********************************************************************************/
 bool AnnotationList::contains(const store::Item_t& aSearchQName) const
 {
+  if (aSearchQName.getp() == NULL)
+    return false;
+
   // sequential search might not be the most efficient but
   // how many annotations might a function or variable have? 5?
   for (ListConstIter_t lIter = theAnnotationList.begin();
@@ -178,10 +181,9 @@ bool AnnotationList::contains(const store::Item_t& aSearchQName) const
        ++lIter)
   {
     if ((*lIter)->getQName()->equals(aSearchQName))
-    {
       return true;
-    }
   }
+
   return false;
 }
 
@@ -195,7 +197,6 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
   bool have_determ_or_nondeterm = false;
   bool have_assignable = false;
   bool have_sequential = false;
-  bool have_updating = false;
 
   static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
 
@@ -207,8 +208,6 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
   store::Item_t lNonAssignable = lCtx.lookup_ann("nonassignable");
   store::Item_t lSequential = lCtx.lookup_ann("sequential");
   store::Item_t lNonSequential = lCtx.lookup_ann("nonsequential");
-  store::Item_t lUpdating = lCtx.lookup_ann("updating");
-  store::Item_t lNonUpdating = lCtx.lookup_ann("nonupdating");
 
   for (ListConstIter_t lIter = theAnnotationList.begin();
        lIter != theAnnotationList.end();
@@ -259,17 +258,6 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
 
       have_sequential = true;
     }
-    else if (lQName->equals(lUpdating) ||
-             lQName->equals(lNonUpdating))
-    {
-      if (have_updating)
-        throw XQUERY_EXCEPTION(
-            err::XQST0106,
-            ERROR_PARAMS(lQName->getStringValue()),
-            ERROR_LOC(loc));
-
-      have_updating = true;
-    }
   }
 }
 
@@ -278,64 +266,46 @@ void AnnotationList::createBuiltIn(static_context* aCtx)
 {
   store::Item_t lTmp;
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "public");
+  //
+  // W3C annotations
+  //
+  GENV_ITEMFACTORY->createQName(lTmp, static_context::W3C_FN_NS, "fn", "public");
   aCtx->add_ann("public", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "private");
+  GENV_ITEMFACTORY->createQName(lTmp, static_context::W3C_FN_NS, "fn", "private");
   aCtx->add_ann("private", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "deterministic");
+  //
+  // Zorba annotations - deterministic/nondeterministic
+  //
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "deterministic");
   aCtx->add_ann("deterministic", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "nondeterministic");
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "nondeterministic");
   aCtx->add_ann("nondeterministic", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "assignable");
+  //
+  // Zorba annotations - xquery scripting
+  //
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "assignable");
   aCtx->add_ann("assignable", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "nonassignable");
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "nonassignable");
   aCtx->add_ann("nonassignable", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "sequential");
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "sequential");
   aCtx->add_ann("sequential", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "nonsequential");
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "nonsequential");
   aCtx->add_ann("nonsequential", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "updating");
-  aCtx->add_ann("updating", lTmp);
-
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "nonupdating");
-  aCtx->add_ann("nonupdating", lTmp);
-
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "nonupdating");
-  aCtx->add_ann("nonupdating", lTmp);
-
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "assignable");
-  aCtx->add_ann("assignable", lTmp);
-
-  GENV_ITEMFACTORY->createQName(
-      lTmp, static_context::W3C_FN_NS, "fn", "nonassignable");
-  aCtx->add_ann("nonassignable", lTmp);
-
-  GENV_ITEMFACTORY->createQName(
-      lTmp, "http://www.zorba-xquery.com/annotations", "", "variadic");
+  //
+  // Zorba annotations - misc
+  //
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "variadic");
   aCtx->add_ann("variadic", lTmp);
 
-  GENV_ITEMFACTORY->createQName(
-      lTmp, "http://www.zorba-xquery.com/annotations", "", "streamable");
+  GENV_ITEMFACTORY->createQName(lTmp, "http://www.zorba-xquery.com/annotations", "", "streamable");
   aCtx->add_ann("streamable", lTmp);
 }
 

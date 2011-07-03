@@ -264,6 +264,9 @@ const zstring
 static_context::W3C_FN_NS = W3C_NS_PREFIX + "2005/xpath-functions";
 
 const zstring
+static_context::W3C_XML_NS = W3C_NS_PREFIX + "XML/1998/namespace";
+
+const zstring
 static_context::ZORBA_MATH_FN_NS = NS_PRE + "modules/math";
 
 const zstring
@@ -353,6 +356,12 @@ static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
 
 const zstring
 static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
+
+/********************************************************************************
+  The namespace of Zorba annotations
+********************************************************************************/
+const zstring
+static_context::ZORBA_ANNOTATIONS_NS = ZORBA_NS_PREFIX + "annotations";
 
 
 /***************************************************************************//**
@@ -619,9 +628,7 @@ static_context::~static_context()
   }
 
   if (theAnnotationMap)
-  {
     delete theAnnotationMap;
-  }
 
   if (theW3CCollectionMap)
     delete theW3CCollectionMap;

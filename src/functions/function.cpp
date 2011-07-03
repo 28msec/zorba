@@ -111,8 +111,9 @@ void function::setAnnotations(AnnotationList* annotations)
 
   setPrivate(theAnnotationList->contains(lCtx.lookup_ann("private")));
 
-  if (theAnnotationList->contains(lCtx.lookup_ann("sequential")) &&
-      theAnnotationList->contains(lCtx.lookup_ann("updating")))
+  if (isUpdating()
+      &&
+      theAnnotationList->contains(lCtx.lookup_ann("sequential")))
   {
     throw XQUERY_EXCEPTION(err::XSST0001,
                            ERROR_PARAMS(getName()->getStringValue()));
@@ -169,7 +170,7 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
 
   if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
       TypeOps::is_subtype(tm,
-                          *rt, 
+                          *rt,
                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
                           QueryLoc::null))
   {

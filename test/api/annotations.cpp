@@ -37,7 +37,8 @@ local:public()  \
 ";
 
 const char query_2[] = "\
-declare %custom(123, \"string literal\", 456, \"just random\") function local:func() \
+declare namespace test = \"test\"; \
+declare %test:custom(123, \"string literal\", 456, \"just random\") function local:func() \
 {     \
   1   \
 };    \
@@ -86,8 +87,8 @@ test_annotations_2(Zorba* aZorba)
     result += " ";
     result += annotations[0]->getLiteral(i).getStringValue().c_str();
   }
-
-  if (result != "custom 123 string literal 456 just random")
+  
+  if (result != "test:custom 123 string literal 456 just random")
     return false;
 
   return true;

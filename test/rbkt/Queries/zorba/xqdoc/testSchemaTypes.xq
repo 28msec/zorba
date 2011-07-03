@@ -1,7 +1,9 @@
 (: test if prefixes declared by schema imports can be used in type constructors :)
 import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
-declare %sequential function local:remove-date($xqdoc)
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential function local:remove-date($xqdoc)
 {
   let $date := $xqdoc//*:date[1]
   return

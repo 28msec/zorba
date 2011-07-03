@@ -1,8 +1,10 @@
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $x := 5;
 
 declare variable $result := ();
 
-declare %sequential function local:f($n) 
+declare %ann:sequential function local:f($n) 
 {
   variable $x := 42, $y := $n;
 
@@ -33,7 +35,7 @@ declare variable $x := 5;
 
 declare variable $result := ();
 
-declare sequential function local:f($n) 
+declare %ann:sequential function local:f($n) 
 {
   declare $x := 42, $y := $n;
 

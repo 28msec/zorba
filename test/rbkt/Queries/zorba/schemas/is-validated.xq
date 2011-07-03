@@ -2,6 +2,8 @@ import schema namespace s = "http://www.zorba-xquery.org/schema" at "simple2.xsd
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $var := ();
 
 declare function local:simple()
@@ -32,7 +34,7 @@ declare function local:nested()
   return schema:is-validated($x/s:name)
 };
 
-declare %sequential function local:update()
+declare %ann:sequential function local:update()
 {
   $var := validate strict { 
                  <s:person>

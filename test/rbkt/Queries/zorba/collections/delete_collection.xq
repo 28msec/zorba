@@ -2,8 +2,9 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare %sequential function local:create() 
+declare %ann:sequential function local:create() 
 {
   ddl:create-collection(xs:QName("ns:test1"));
   ddl:create-collection(xs:QName("ns:test2"), for $i in 1 to 10 return <a> { $i } </a> );
@@ -11,7 +12,7 @@ declare %sequential function local:create()
 };
 
 
-declare %sequential function local:delete() 
+declare %ann:sequential function local:delete() 
 {
   ddl:delete-collection(xs:QName("ns:test1"));
   ddl:delete-collection(xs:QName("ns:test2"));

@@ -1,8 +1,10 @@
 module namespace foo = "foo:bar";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $foo:foo external;
 
-declare %sequential function foo:bar()
+declare %ann:sequential function foo:bar()
 {
   variable $blub as xs:string := fn:concat("a", "b");
   $blub

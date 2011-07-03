@@ -1,9 +1,10 @@
 module namespace lib = "http://www.example.com/lib";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare namespace foo = "http://expath.org/ns/http-client";
 
-
-declare %sequential function lib:test($p as element(foo:request))
+declare %ann:sequential function lib:test($p as element(foo:request))
 {
   $p
 };

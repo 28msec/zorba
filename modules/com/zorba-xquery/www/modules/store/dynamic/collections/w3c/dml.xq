@@ -37,6 +37,8 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic
 
 import module namespace qdml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -145,7 +147,7 @@ declare updating function dml:insert-nodes-after($name as xs:string,
  : @see dml:insert-nodes-first
  :
  :)
-declare %sequential function dml:apply-insert-nodes-first(
+declare %ann:sequential function dml:apply-insert-nodes-first(
   $name as xs:string,
   $content as node()*) as node()*
 {
@@ -168,7 +170,7 @@ declare %sequential function dml:apply-insert-nodes-first(
  : @see dml:insert-nodes-last
  :
  :)
-declare %sequential function dml:apply-insert-nodes-last(
+declare %ann:sequential function dml:apply-insert-nodes-last(
   $name as xs:string,
   $content as node()*) as node()*
 {
@@ -193,7 +195,7 @@ declare %sequential function dml:apply-insert-nodes-last(
  : @see dml:insert-nodes-before
  :
  :)
-declare %sequential function dml:apply-insert-nodes-before(
+declare %ann:sequential function dml:apply-insert-nodes-before(
   $name as xs:string,
   $target as node(),
   $content as node()*) as node()*
@@ -219,7 +221,7 @@ declare %sequential function dml:apply-insert-nodes-before(
  : @see dml:insert-nodes-after
  :
  :)
-declare %sequential function dml:apply-insert-nodes-after(
+declare %ann:sequential function dml:apply-insert-nodes-after(
   $name as xs:string,
   $pos as node(),
   $content as node()*) as node()*

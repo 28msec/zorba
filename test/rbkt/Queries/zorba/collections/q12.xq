@@ -2,7 +2,9 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
-declare %sequential function local:foo($collName as xs:QName) {
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:sequential function local:foo($collName as xs:QName) {
   ddl:create-collection($collName,<a/>);
   let $a := dml:collection($collName)
   return dml:insert-nodes-last($collName, <b/>);

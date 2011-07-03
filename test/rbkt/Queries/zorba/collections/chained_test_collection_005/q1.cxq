@@ -1,9 +1,11 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $input-context1 external;
 
-declare %sequential function local:foo() {
+declare %ann:sequential function local:foo() {
   ddl:create-collection(xs:QName('ns:http'), fn:doc($input-context1)//*);
   exit returning ();
 };

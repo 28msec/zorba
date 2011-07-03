@@ -136,7 +136,7 @@ extern entry const dict_en[] = {
   { "XQST0038", "multiple default collation declarations" },
   { "XQST0039", "\"$1\": duplicate parameter name" },
   { "XQST0040", "\"$1\": non-distinct expanded attribute QName" },
-  { "XQST0045", "\"$1\": invalid function namespace" },
+  { "XQST0045", "\"$1\": invalid function or annotation namespace" },
   { "XQST0046", "${\"1\": }invalid URI literal${: 2}" },
   { "XQST0047", "\"$1\": duplicate target namespace" },
   { "XQST0048", "\"$1\": not in library namespace" },

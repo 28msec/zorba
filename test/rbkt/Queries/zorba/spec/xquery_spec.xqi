@@ -9,6 +9,8 @@ import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $util:xquery_version_1_0 := "1.0";
 declare variable $util:xquery_version_3_0 := "3.0";
 
@@ -18,7 +20,7 @@ opened bug #3152386
 :)
 (: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
 (:
-declare %sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
+declare %ann:sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
   let $serParams := 
     <output:serialization-parameters>
         <output:method value="xml"/>
@@ -39,7 +41,7 @@ declare %sequential function util:download-and-write-spec($specVersion as xs:str
       file:write($docPath, http-expath:send-request($req, ())[2], $serParams)
 };
 :)
-declare %sequential function util:create-spec-function-arity-sequence(
+declare %ann:sequential function util:create-spec-function-arity-sequence(
   $docPath as xs:string,
   $xquery_version as xs:string)
 as xs:string* {

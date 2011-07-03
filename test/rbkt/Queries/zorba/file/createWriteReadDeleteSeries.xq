@@ -1,12 +1,14 @@
 import module namespace file = "http://expath.org/ns/file";
 import module namespace commons = "http://expath.org/ns/file/tests/commons" at "common.xqlib";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $xml := <elem>value</elem>;
 declare variable $testDir := "tmpCreateWriteReadDeleteSeries";
 declare variable $outFile := fn:concat($testDir, file:directory-separator(), "file.xml");
 
 
-declare %nondeterministic %sequential function local:main() as xs:string* {
+declare %ann:nondeterministic %ann:sequential function local:main() as xs:string* {
 
 (: ========================= :)
 (: ==== DIRECTORY INIT ===== :)

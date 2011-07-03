@@ -1,7 +1,5 @@
 
-
-
-declare %updating function local:foo()
+declare updating function local:foo()
 {
    variable $x := <a/>;
 

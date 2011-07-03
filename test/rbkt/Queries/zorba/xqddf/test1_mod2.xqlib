@@ -5,18 +5,20 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 
 import module namespace module1 = "http://www.zorba-xquery.com/module1" at "test1_mod1.xqlib";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare collection module2:coll as node()*;
 
 declare variable $module2:coll as xs:QName := xs:QName("module2:coll");
 
 
-declare %sequential function module2:init()
+declare %ann:sequential function module2:init()
 {
   ddl:create-collection(xs:QName("module2:coll"), (<a><test/></a>, <b><test/></b>));
 };
 
 
-declare %sequential function module2:do()
+declare %ann:sequential function module2:do()
 {
   let $a := dml:collection($module2:coll)[1]
   return module1:update($a, <b/>);
