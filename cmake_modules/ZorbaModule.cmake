@@ -77,7 +77,6 @@ MACRO (MANGLE_URI URI EXT DIR_VAR FILE_VAR)
   # Pop off authority part and reverse on dots
   LIST (GET mangled_path 0 authority)
   LIST (REMOVE_AT mangled_path 0)
-  message (STATUS "After remove: ${mangled_path}")
   STRING (REPLACE "." ";" authority "${authority}")
   LIST (REVERSE authority)
 
@@ -102,7 +101,6 @@ MACRO (MANGLE_URI URI EXT DIR_VAR FILE_VAR)
   # Stick the reversed authority back on the front of the path: done!
   LIST (INSERT mangled_path 0 ${authority})
   STRING (REPLACE ";" "/" ${DIR_VAR} "${mangled_path}")
-  message (STATUS "uri: ${URI} dir: ${${DIR_VAR}} file: ${${FILE_VAR}}")
 ENDMACRO (MANGLE_URI)
 
 # Macro which declares a module. This sets up the installation of the
