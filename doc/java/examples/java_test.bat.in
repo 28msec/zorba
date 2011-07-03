@@ -1,0 +1,14 @@
+@echo off
+set JAVA_LOAD_PATH=@Java_Load_Path@/@CMAKE_BUILD_TYPE@
+set PATH=%PATH%;%JAVA_LOAD_PATH%
+
+md build
+
+echo "java_test.bat: Compile Zorba API ..."
+"@Java_JAVAC_EXECUTABLE@" -d build %JAVA_LOAD_PATH%/*.java
+
+echo "java_test.bat: Compile Test_Zorba ..."
+"@Java_JAVAC_EXECUTABLE@" -cp build -d build *.java
+
+echo "java_test.bat: Java Execute Test_Zorba ..."
+"@Java_JAVA_EXECUTABLE@" -cp build %1
