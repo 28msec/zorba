@@ -88,7 +88,12 @@ Zorba_CompilerHints getCompilerHints()
 // inlineFile specifies whether the given parameter is a file and it's value should
 // be inlined or not
 void
-set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
+set_var (
+    bool inlineFile,
+    std::string name,
+    std::string val,
+    const zorba::StaticContext* sctx,
+    zorba::DynamicContext* dctx)
 {
   zorba::ascii::replace_all(val, "$UPDATE_SRC_DIR", zorba::UPDATE_SRC_DIR);
 
@@ -112,8 +117,19 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
     assert (is);
     zorba::XmlDataManager* lXmlMgr =
         zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-    zorba::Item lDoc = lXmlMgr->parseXML(is);
-    assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
+    zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
+        
+    zorba::Item lDoc;
+    if (lDocMgr->isAvailableDocument(name))
+    {
+      lDoc = lDocMgr->document(name);
+    }
+    else
+    {
+      lDoc = lXmlMgr->parseXML(is);
+      sctx->validate(lDoc, lDoc, zorba::validate_lax);
+      lDocMgr->add(name, lDoc);
+    }
     if(name != ".")
     {
       dctx->setVariable(name, lDoc);
@@ -341,7 +357,12 @@ main(int argc, char** argv)
       for(; lVarIter != lVarEnd; ++lVarIter) 
       {
         Variable* lVar = *lVarIter;  
-        set_var(lVar->theInline, lVar->theName, lVar->theValue, lDynCtx);
+        set_var(
+            lVar->theInline,
+            lVar->theName,
+            lVar->theValue,
+            lQueries.back()->getStaticContext(),
+            lDynCtx);
       }
     }
     catch (zorba::ZorbaException &e) 
