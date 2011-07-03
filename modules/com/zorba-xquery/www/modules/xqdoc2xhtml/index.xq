@@ -52,6 +52,12 @@ declare collection xqdoc2html:collectionConfig as node()*;
 
 declare variable $xqdoc2html:menuEntries := <entries/>;
 
+declare variable $xqdoc2html:level1Weight as xs:string* := 
+("www.w3.org",  "XDM",  "store",  "introspection",  "reflection",
+ "external", "xqdoc", "data processing", "excel", "security", 
+ "geo","image","web-services-wrappers","expath.org","www.functx.com",
+ "xml","communication");
+
 (:~
  : This variable contains all the schemas imported by the modules
  :)
@@ -82,29 +88,10 @@ declare variable $xqdoc2html:serParamText :=
   </output:serialization-parameters>;
 
 (:~
- : This variable contains the links appearing in the first part of the left menu
- : of every XHTML page
- :)
- declare variable $xqdoc2html:externalLinks := 
-  <links>
-    <a href="http://www.zorba-xquery.com/index.php/tutorials/" 
-       title="Tutorials" target="_blank">Tutorials</a>
-    <a href="http://experimental.zorba-xquery.org/" 
-       title="Get started with XQuery using Zorba"
-       target="_blank">Experiment XQuery with Zorba</a>
-    <a href="images/modules.svg" 
-       title="Module dependencies SVG graph">Module dependencies SVG graph</a>
-  </links>;
-  
-(:~
  : This is the name of the function index XHTML page.
  :)
 declare variable $xqdoc2html:functionIndexPageName as xs:string := "function_index.html";
 
-(:~
- : This is the name of the search XHTML page.
- :)
-declare variable $xqdoc2html:searchPageName as xs:string := "search.html";
 (:_____________________________________________________________________________________________________:)
 
 (:~
@@ -525,15 +512,7 @@ declare %nondeterministic %sequential function xqdoc2html:main(
                                    $zorbaVersion);
   file:write(fn:concat($xqdocXhtmlPath, file:directory-separator(), "index.html"),
              $doc, 
-             $xqdoc2html:serParamXhtml);
-             
-   variable $leftMenuSearch := xqdoc2html:create-general-menu($xqdoc2html:searchPageName);
-   variable $search := xqdoc2html:generate-search-xhtml($leftMenuSearch, $indexHtmlPath, $zorbaVersion);
-   
-   file:write(fn:concat($xqdocXhtmlPath, file:directory-separator(), $xqdoc2html:searchPageName),
-             $search, 
-             $xqdoc2html:serParamXhtml);
-                                             
+             $xqdoc2html:serParamXhtml);                                          
                          
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));                           
   ddl:delete-collection(xs:QName("xqdoc2html:collection"));
@@ -1007,8 +986,8 @@ declare %sequential function xqdoc2html:configure-xhtml (
   $xhtml)
 {
   (: replace the function type description with images :)  
-  let $xquSpec := "http://xquery-scripting.ethz.ch/spec.html",
-      $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
+  let $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
+      $xqsSpec := "http://xquery-scripting.ethz.ch/spec.html",
       $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
       $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function",
       $xqNonDeterministic := "http://www.w3.org/TR/2011/WD-xpath-functions-30-20110614/#dt-nondeterministic"
@@ -1050,8 +1029,8 @@ declare %sequential function xqdoc2html:configure-xhtml (
   };
   
   (: replace the function names description with images+name of the functions :) 
-  let $xquSpec :=  "http://xquery-scripting.ethz.ch/spec.html",
-      $xqsSpec :=  "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
+  let $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
+      $xqsSpec := "http://xquery-scripting.ethz.ch/spec.html",
       $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
       $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function",
       $xqNonDeterministic := "http://www.w3.org/TR/2011/WD-xpath-functions-30-20110614/#dt-nondeterministic"
@@ -1191,7 +1170,7 @@ declare %nondeterministic function xqdoc2html:body(
   substring-before($xqdoc/xqdoc:variables/xqdoc:variable[1]/xqdoc:uri/text(),':') else
   "modNS"
   return
-  (<h1>{if ($isZorbaCore) then <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup> else () }{$moduleUri}</h1>,
+  (<h1>{$moduleUri}{if ($isZorbaCore) then <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup> else () }</h1>,
     xqdoc2html:module-description($moduleUri, $modulePrefix, $xqdoc/xqdoc:module),
     xqdoc2html:module-resources($xqdocXhtmlPath, xqdoc2html:module-uri($xqdoc)),
     xqdoc2html:module-dependencies($xqdoc),
@@ -1212,8 +1191,7 @@ declare function xqdoc2html:module-description($moduleUri as xs:string, $moduleP
     ( <div class="section"><span id="module_description">Module Description</span></div>,
       <span>Before using any of the functions below please remember to import the module namespace:
       <pre class="brush: xquery;">import module namespace {$modulePrefix} = "{$moduleUri}";</pre>
-      Also check out the examples that show the parameters( if any) that have to be passed to each function.
-      </span>,<br />,
+      </span>,
      xqdoc2html:description($module/xqdoc:comment),
      xqdoc2html:annotations-module($module/xqdoc:comment))
 };
@@ -1793,7 +1771,7 @@ declare function xqdoc2html:generate-function-index()
                       <del><a href="{$file}#{$functionName}-{$arity}">{$functionName}</a></del>
                     else
                       <a href="{$file}#{$functionName}-{$arity}">{$functionName}</a>
-                  }{$paramsAndReturn}<br /><span class="padding">Module Namespace: {$moduleUri}</span></tt></div>
+                  }{$paramsAndReturn}<br /><span class="padding">Module Namespace: <a href="{$file}">{$moduleUri}</a></span></tt></div>
                 </td>
               </tr>
           }
@@ -1901,17 +1879,17 @@ declare %private %sequential function xqdoc2html:create-module-helper(
       where ($entry/@structure eq $currentCategory)
       return
         <li>
-          {
-            if($isZorbaCore) then
-              <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>
-            else ()
-          }
           <a href="{data($entry/@href)}.html" title="{data($entry/@moduleURI)}">{data($entry/@name)}</a>
           {
             if(xs:boolean(data($entry/@pureXQuery))) then ()
             else
-              <span class="superscript"><a href="http://www.w3.org/TR/xquery-30/#dt-external-function" 
-              target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a></span>
+              <sup><span class="superscript"><a href="http://www.w3.org/TR/xquery-30/#dt-external-function" 
+              target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a></span></sup>
+          }
+          {
+            if($isZorbaCore) then
+              <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>
+            else ()
           }          
         </li>
     }    
@@ -1940,16 +1918,38 @@ declare %private %sequential function xqdoc2html:create-module-table-rec(
   $level1 as xs:string*,
   $leveln as xs:string*,
   $curentCat as xs:string,
-  $table) {
+  $table,
+  $mustOrder as xs:boolean) {
   if(empty($leveln)) then ()
   else
-    for $cat in $leveln
-    order by lower-case($cat)
-    return {
-      variable $lCurentCat := if($curentCat eq "") then $cat else concat($curentCat,'/',$cat);
-      xqdoc2html:create-module-helper($table, $cat, $lCurentCat);
-      xqdoc2html:create-module-table-rec($level1, xqdoc2html:get-distinct-children($level1,$lCurentCat), $lCurentCat,$table/li[fn:last()]/ul)
-    }
+    if($mustOrder) then
+      for $cat in $leveln
+      order by lower-case($cat)
+      return {
+        variable $lCurentCat := if($curentCat eq "") then $cat else concat($curentCat,'/',$cat);
+        xqdoc2html:create-module-helper($table, $cat, $lCurentCat);
+        xqdoc2html:create-module-table-rec($level1, xqdoc2html:get-distinct-children($level1,$lCurentCat), $lCurentCat,$table/li[fn:last()]/ul, fn:true())
+      }
+    else
+      for $cat in $leveln
+      return {
+        variable $lCurentCat := if($curentCat eq "") then $cat else concat($curentCat,'/',$cat);
+        xqdoc2html:create-module-helper($table, $cat, $lCurentCat);
+        xqdoc2html:create-module-table-rec($level1, xqdoc2html:get-distinct-children($level1,$lCurentCat), $lCurentCat,$table/li[fn:last()]/ul, fn:true())
+      }
+};
+
+
+declare %private function xqdoc2html:order-level1-entries
+($entries as xs:string*) as xs:string*
+{
+ (: show first the items in the $xqdoc2html:level1Weight that were also found in the modules :)
+ let $defined := for $str in $xqdoc2html:level1Weight return xqdoc2html:value-intersect($str, $entries)
+ 
+ (: if there are any other level 1 items found in the modules, show them also ordered alphabetically:)
+ let $undefined := xqdoc2html:value-except($entries, $defined)
+ 
+ return ($defined, for $str in $undefined order by $str return $str)
 };
 
 (:~
@@ -1967,7 +1967,7 @@ declare %private %sequential function xqdoc2html:create-module-table(
   {
     variable $leveln := distinct-values(for $str in $level1 return tokenize($str,'/')[1]);
     
-    xqdoc2html:create-module-table-rec($level1, $leveln, "", $root);
+    xqdoc2html:create-module-table-rec($level1, xqdoc2html:order-level1-entries($leveln), "", $root, fn:false());
       
     $root
   }
@@ -1987,27 +1987,15 @@ declare %private function xqdoc2html:create-left-menu($moduleUri as xs:string)
     {
     (   
       if($moduleUri = $xqdoc2html:functionIndexPageName) then
-        (
-        <span><a href="index.html">XQuery Modules Documentation</a></span>,    
-        <li><span class="leftmenu_active">Function Index</span></li>,
-        <li><a href="{$xqdoc2html:searchPageName}">Search page</a></li>)
+        (<span><a href="index.html">XQuery Modules Documentation</a></span>,    
+         <li><span class="leftmenu_active">Function Index</span></li>)
       else if($moduleUri = "index.html") then
         (<span class="leftmenu_active">XQuery Modules Documentation</span>,
-         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>,
-         <li><a href="{$xqdoc2html:searchPageName}">Search page</a></li>)
-      else if($moduleUri = $xqdoc2html:searchPageName) then
-        (<span><a href="index.html">XQuery Modules Documentation</a></span>,
-         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>,
-         <li><span class="leftmenu_active">Search page</span></li>)
+         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>)
       else
-         (<span><a href="index.html">XQuery Modules Documentation</a></span>,
-         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>,
-         <li><a href="{$xqdoc2html:searchPageName}">Search page</a></li>),
-      
-      for $link in $xqdoc2html:externalLinks//a
-      return
-        <li>{$link}</li>
-    )
+        (<span><a href="index.html">XQuery Modules Documentation</a></span>,
+         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>)
+     )
     }
    </ul>
 };
@@ -2029,18 +2017,18 @@ declare %private %sequential function xqdoc2html:create-specialized-left-menu(
     return   
     replace node $node with
       <li>
-      {
-        if($isZorbaCore) then
-          <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>
-        else ()
-      }
       <span class="leftmenu_active">{$node/a/text()}
       {
         if($lPureXquery) then ()
         else
-          <span class="superscript"><a href="http://www.w3.org/TR/xquery-30/#dt-external-function" 
-          target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a></span>
-      }</span></li>;      
+          <sup><span class="superscript"><a href="http://www.w3.org/TR/xquery-30/#dt-external-function" 
+          target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a></span></sup>
+      }</span>
+      {
+        if($isZorbaCore) then
+          <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>
+        else ()
+      }</li>;      
   }
  
   $generalLeftMenu
@@ -2085,53 +2073,3 @@ declare %private %nondeterministic %sequential function xqdoc2html:generate-inde
     }
 };
 
-(:~
- : This function generates the Search page XHTML.
- : @param $indexFunctionLeft the menu containing the links to the generated Xhtml files.
- : @param $templatePath the path to the main.html template.
- : @param $zorbaVersion Zorba version.
- : @return The content of the Search page.
- :)
-declare %nondeterministic %sequential function xqdoc2html:generate-search-xhtml(
-  $indexFunctionLeft,
-  $templatePath as xs:string,
-  $zorbaVersion as xs:string
-) as document-node() {
-
-  let $searchDoc := fn:parse-xml(file:read-text($templatePath))
-  return {
-      insert node <title>Search</title>
-      as first into $searchDoc/*:html/*:head;
-
-      insert nodes $indexFunctionLeft
-      as last into $searchDoc/*:html/*:body/*:div[@id='main']/*:div[@id='leftMenu'];
-
-      insert nodes
-           (<script src="http://www.google.com/jsapi" type="text/javascript"></script>,
-            <script type="text/javascript">
-            google.load('search', '1', &#123; language : 'en'&#125;);
-            google.setOnLoadCallback(function() &#123;
-              var customSearchControl = new google.search.CustomSearchControl('001923125976056611009:rghy-r4to5y');
-              customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
-              var options = new google.search.DrawOptions();
-              options.setSearchFormRoot('searchbox');
-              customSearchControl.draw('searchresults', options);
-            &#125;, true);</script>,
-            <link rel="stylesheet" href="http://www.google.com/cse/style/look/minimalist.css" type="text/css" />)
-      as first into $searchDoc/*:html/*:body;
-
-      let $right_content := $searchDoc/*:html/*:body/*:div[@id='main']/*:div[@id='rightcontent']
-      return
-        if ($right_content)
-        then
-          insert nodes
-            (<div class="section"><span id="search">Zorba XQuery Processor {$zorbaVersion} search page</span></div>,
-             <div id="searchbox"></div>,
-             <div id="searchresults"></div>)
-          as last into $right_content;
-        else
-          ();
-
-    $searchDoc
-  }
-};
