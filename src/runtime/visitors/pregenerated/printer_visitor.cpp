@@ -53,6 +53,7 @@
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/nodes.h"
 #include "runtime/numerics/numerics.h"
+#include "runtime/parsing_and_serializing/parse_fragment.h"
 #include "runtime/parsing_and_serializing/parsing_and_serializing.h"
 #include "runtime/qnames/qnames.h"
 #include "runtime/random/random.h"
@@ -2376,20 +2377,6 @@ void PrinterVisitor::endVisit ( const FormatIntegerIterator& ) {
 // </FormatIntegerIterator>
 
 
-// <FnParseXmlIterator>
-void PrinterVisitor::beginVisit ( const FnParseXmlIterator& a) {
-  thePrinter.startBeginVisit("FnParseXmlIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FnParseXmlIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FnParseXmlIterator>
-
-
 // <FnParseXmlFragmentIterator>
 void PrinterVisitor::beginVisit ( const FnParseXmlFragmentIterator& a) {
   thePrinter.startBeginVisit("FnParseXmlFragmentIterator", ++theId);
@@ -2402,6 +2389,20 @@ void PrinterVisitor::endVisit ( const FnParseXmlFragmentIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnParseXmlFragmentIterator>
+
+
+// <FnParseXmlIterator>
+void PrinterVisitor::beginVisit ( const FnParseXmlIterator& a) {
+  thePrinter.startBeginVisit("FnParseXmlIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnParseXmlIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnParseXmlIterator>
 
 
 // <FnSerializeIterator>

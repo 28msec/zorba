@@ -41,16 +41,6 @@ PlanIter_t fn_parse_xml_3_0::codegen(
   return new FnParseXmlIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_string_parse_xml_fragment_3_0::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnParseXmlFragmentIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_serialize_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -82,21 +72,8 @@ void populate_context_parsing_and_serializing(static_context* sctx)
         (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
         FunctionConsts::FN_PARSE_XML_2);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_string_parse_xml_fragment_3_0,
-        (createQName("http://www.zorba-xquery.com/modules/string","","parse-xml-fragment"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_STRING_PARSE_XML_FRAGMENT_2);
 
   }
 

@@ -840,7 +840,7 @@
       <comment>
        Code point not valid.
       </comment>
-      <value>"$1": invalid code-point for XML 1.0</value>
+      <value>"$1": invalid code point</value>
     </diagnostic>
  
     <diagnostic code="FOCH0002">

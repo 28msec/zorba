@@ -58,8 +58,8 @@ public:			// table interface
 	uint32_t size() const;
 
 	xs_decimal* decimalval(char const* text, uint32_t length);
-	xs_double* doubleval(char const* text, uint32_t length);
-  xs_integer* integerval(char const* text, uint32_t length, const location& loc);
+  xs_double* doubleval(char const* text, uint32_t length);   // Will return NULL if std::range_error is raised
+  xs_integer* integerval(char const* text, uint32_t length); // Will return NULL if std::range_error is raised
 
 };
 

@@ -1856,7 +1856,7 @@ GroupSpecList::GroupSpecList(const QueryLoc& loc)
 }
 
 
-void GroupSpecList::push_back(rchandle<GroupSpec> spec) 
+void GroupSpecList::push_back(rchandle<GroupSpec> spec)
 {
   vector<rchandle<GroupSpec> >::const_iterator ite = theSpecs.begin();
   vector<rchandle<GroupSpec> >::const_iterator end = theSpecs.end();
@@ -1870,7 +1870,7 @@ void GroupSpecList::push_back(rchandle<GroupSpec> spec)
   }
 
   if (ite == end)
-    theSpecs.push_back(spec); 
+    theSpecs.push_back(spec);
 }
 
 
@@ -1879,7 +1879,7 @@ void GroupSpecList::accept(parsenode_visitor& v) const
   BEGIN_VISITOR();
 
   vector<rchandle<GroupSpec> >::const_iterator it = theSpecs.begin();
-  for (; it != theSpecs.end(); ++it) 
+  for (; it != theSpecs.end(); ++it)
   {
     const GroupSpec* e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -5327,7 +5327,10 @@ FTStopWords::FTStopWords(
   uri_( uri )
 {
   if ( stop_words )
+  {
     stop_words_.swap( *stop_words );
+    delete stop_words;
+  }
 }
 
 

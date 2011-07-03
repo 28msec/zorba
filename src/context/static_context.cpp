@@ -342,6 +342,9 @@ static_context::ZORBA_FETCH_FN_NS = NS_PRE + "modules/fetch";
 const zstring
 static_context::ZORBA_NODE_FN_NS = NS_PRE + "modules/node";
 
+const zstring
+static_context::ZORBA_XML_FN_NS = NS_PRE + "modules/xml";
+
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
 ********************************************************************************/
@@ -381,7 +384,8 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
-            ns == ZORBA_NODE_FN_NS);
+            ns == ZORBA_NODE_FN_NS ||
+            ns == ZORBA_XML_FN_NS);
   }
 
   return false;

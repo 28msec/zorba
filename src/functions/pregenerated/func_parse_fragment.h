@@ -22,8 +22,8 @@
 // ******************************************
 
 
-#ifndef ZORBA_FUNCTIONS_PARSING_AND_SERIALIZING_H
-#define ZORBA_FUNCTIONS_PARSING_AND_SERIALIZING_H
+#ifndef ZORBA_FUNCTIONS_PARSE_FRAGMENT_H
+#define ZORBA_FUNCTIONS_PARSE_FRAGMENT_H
 
 
 #include "common/shared_types.h"
@@ -33,40 +33,21 @@
 namespace zorba {
 
 
-void populate_context_parsing_and_serializing(static_context* sctx);
+void populate_context_parse_fragment(static_context* sctx);
 
 
 
 
-//fn:parse-xml
-class fn_parse_xml_3_0 : public function
+//fn-zorba-xml:parse-xml-fragment
+class fn_zorba_xml_parse_xml_fragment : public function
 {
 public:
-  fn_parse_xml_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xml_parse_xml_fragment(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+
 }
 
   bool accessesDynCtx() const { return true; }
-
-  bool isSource() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:serialize
-class fn_serialize_3_0 : public function
-{
-public:
-  fn_serialize_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-}
-
-  bool accessesDynCtx() const { return true; }
-
-  bool isSource() const { return true; }
 
   CODEGEN_DECL();
 };

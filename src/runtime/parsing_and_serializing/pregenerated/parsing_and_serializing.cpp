@@ -60,34 +60,6 @@ FnParseXmlIterator::~FnParseXmlIterator() {}
 // </FnParseXmlIterator>
 
 
-// <FnParseXmlFragmentIterator>
-const char* FnParseXmlFragmentIterator::class_name_str = "FnParseXmlFragmentIterator";
-FnParseXmlFragmentIterator::class_factory<FnParseXmlFragmentIterator>
-FnParseXmlFragmentIterator::g_class_factory;
-
-const serialization::ClassVersion 
-FnParseXmlFragmentIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnParseXmlFragmentIterator::class_versions_count =
-sizeof(FnParseXmlFragmentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-FnParseXmlFragmentIterator::~FnParseXmlFragmentIterator() {}
-
-// </FnParseXmlFragmentIterator>
-
-
 // <FnSerializeIterator>
 const char* FnSerializeIterator::class_name_str = "FnSerializeIterator";
 FnSerializeIterator::class_factory<FnSerializeIterator>

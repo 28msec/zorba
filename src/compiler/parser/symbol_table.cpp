@@ -183,24 +183,25 @@ xs_decimal* symbol_table::decimalval(char const* text, uint32_t length)
   return new xs_decimal(text);
 }
 
+// Will return NULL if std::range_error is raised
 xs_double* symbol_table::doubleval(char const* text, uint32_t length)
 {
   try {
     return new xs_double(text);
   }
   catch ( std::range_error const& ) {
-    // TODO: pjl: needs error location and correct error code
-    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( text ) );
+    return NULL;
   }
 }
 
-xs_integer* symbol_table::integerval(char const* text, uint32_t length, const location& loc)
+// Will return NULL if std::range_error is raised
+xs_integer* symbol_table::integerval(char const* text, uint32_t length)
 {
   try {
     return new xs_integer(text);
   }
   catch ( std::range_error const& ) {
-    throw XQUERY_EXCEPTION( err::FOAR0002, ERROR_PARAMS( text ), ERROR_LOC(xquery_driver::createQueryLocStatic(loc)) );
+    return NULL;
   }
 }
 

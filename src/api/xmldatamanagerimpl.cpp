@@ -65,15 +65,6 @@ namespace zorba {
     ZorbaImpl::notifyError(theDiagnosticHandler);              \
   }
 
-std::string XmlDataManagerImpl::theFnNamespace =
-  "http://www.w3.org/2005/xpath-functions";
-
-std::string XmlDataManagerImpl::theFetchNamespace =
-  "http://www.zorba-xquery.com/modules/fetch";
-
-std::string XmlDataManagerImpl::theXmlNamespace =
-  "http://www.zorba-xquery.com/modules/string";
-
 XmlDataManagerImpl::XmlDataManagerImpl()
   : theDocManager(0),
     theColManager(0),
@@ -113,8 +104,8 @@ XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
   lProlog
-    << "import module namespace d = '" << theFetchNamespace << "';"
-    << "import module namespace x = '" << theXmlNamespace << "';";
+    << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';"
+    << "import module namespace x = '" << static_context::ZORBA_XML_FN_NS << "';";
   theContext->loadProlog(lProlog.str(), lHints);
 }
 
@@ -173,7 +164,7 @@ XmlDataManagerImpl::parseXML(std::istream& aStream) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(theFnNamespace, "parse-xml");
+    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(), "parse-xml");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -197,7 +188,7 @@ XmlDataManagerImpl::parseXML(std::istream& aStream, XmlDataManager::ParseOptions
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(theXmlNamespace, "parse-xml-fragment");
+    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(), "parse-xml-fragment");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -227,7 +218,7 @@ XmlDataManagerImpl::fetch(const String& aURI) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(theFetchNamespace, "content");
+    Item lQName = theFactory->createQName(static_context::ZORBA_FETCH_FN_NS.c_str(), "content");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;

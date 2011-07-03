@@ -34,7 +34,7 @@ extern entry const dict_en[] = {
   { "FOCA0003", "\"$1\": value too large for integer" },
   { "FOCA0005", "NaN supplied as float/double value" },
   { "FOCA0006", "\"$1\": string to be cast to decimal has too many digits of precision" },
-  { "FOCH0001", "\"$1\": invalid code-point for XML 1.0" },
+  { "FOCH0001", "\"$1\": invalid code point" },
   { "FOCH0002", "\"$1\": unsuported collation${: 2}" },
   { "FOCH0003", "\"$1\": unsupported normalization form" },
   { "FOCH0004", "\"$1\": collation does not support collation units" },

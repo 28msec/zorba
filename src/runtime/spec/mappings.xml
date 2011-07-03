@@ -109,6 +109,10 @@
 		<zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
                      define="ZORBA_NODE_FN_NS" 
                      prefix="fn-zorba-node"/>
+                     
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xml"
+                     define="ZORBA_XML_FN_NS" 
+                     prefix="fn-zorba-xml"/>                     
 
     <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
                      define="XQUERY_OP_NS"

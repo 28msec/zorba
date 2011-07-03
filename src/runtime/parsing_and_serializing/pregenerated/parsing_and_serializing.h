@@ -68,40 +68,6 @@ public:
 
 
 /**
- * fn-zorba-string:parse-xml-fragment
- * Author: Zorba Team
- */
-class FnParseXmlFragmentIterator : public NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(FnParseXmlFragmentIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseXmlFragmentIterator,
-    NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>*)this);
-  }
-
-  FnParseXmlFragmentIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~FnParseXmlFragmentIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
  * fn:serialize
  * Author: Zorba Team
  */

@@ -48,6 +48,7 @@
 #include "functions/func_numerics.h"
 #include "functions/func_numerics_impl.h"
 #include "functions/func_parsing_and_serializing.h"
+#include "functions/func_parse_fragment.h"
 #include "functions/func_qnames.h"
 #include "functions/func_random.h"
 #include "functions/func_schema.h"
@@ -110,6 +111,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_numerics(sctx);
   populate_context_other_diagnostics(sctx);
   populate_context_parsing_and_serializing(sctx);
+  populate_context_parse_fragment(sctx);
   populate_context_qnames(sctx);
   populate_context_random(sctx);
   populate_context_schema(sctx);

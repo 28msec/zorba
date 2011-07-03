@@ -92,8 +92,8 @@ DynamicContextImpl::~DynamicContextImpl()
   Utility function: Given a single-string var name, which may be either a lexical
   qname (eg. "ns:foo") or a Clark-style universal name (eg., "{nsuri}:foo"),
   return the var_expr node that represents this variable within the expression
-  tree. The var_expr can be found within the static context that the variable 
-  belongs to. In the case of a lexical QName, this method will only attempt to 
+  tree. The var_expr can be found within the static context that the variable
+  belongs to. In the case of a lexical QName, this method will only attempt to
   look up the namespace prefix in the main module's static context. For a clark
   name, it will call to the other form of get_var_expr().
 ********************************************************************************/
@@ -101,7 +101,7 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
 {
   // First check for universal name.
   zstring nsUri;
-  if (xml::clark_uri(inVarName, &nsUri)) 
+  if (xml::clark_uri(inVarName, &nsUri))
   {
     // Looks like it is a universal name; jump over to other form.
     zstring localname;
@@ -148,11 +148,11 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
   and localname), return the var_expr node that represents this variable within
   the expression tree. The var_expr can be found within the static context that
   the variable  belongs to. This method will search through all static contexts,
-  including library modules, for a matching variable 
+  including library modules, for a matching variable
   declaration.
 ********************************************************************************/
 var_expr* DynamicContextImpl::get_var_expr(
-    const zstring& inVarUri, 
+    const zstring& inVarUri,
     const zstring& inVarLocalName) const
 {
   var_expr* var = NULL;
@@ -164,7 +164,7 @@ var_expr* DynamicContextImpl::get_var_expr(
   {
     std::map<short, static_context_t>& lMap = theQuery->theCompilerCB->theSctxMap;
     std::map<short, static_context_t>::const_iterator ite;
-    for (ite = lMap.begin(); ite != lMap.end(); ++ite) 
+    for (ite = lMap.begin(); ite != lMap.end(); ++ite)
     {
       var = ite->second->lookup_var(qname, QueryLoc::null, zerr::ZXQP0000_NO_ERROR);
 
@@ -272,7 +272,7 @@ bool DynamicContextImpl::setVariable(
     }
 
     ulong varId = var->get_unique_id();
-    
+
     theCtx->add_variable(varId, value);
 
     return true;
@@ -298,6 +298,20 @@ bool DynamicContextImpl::setVariable(
     store::Item_t value(Unmarshaller::getInternalItem(inValue));
     ZorbaImpl::checkItem(value);
     var_expr* var;
+
+    // For string items, check that the value is a valid Unicode codepoint sequence
+    const char* invalid_char;
+    TypeManager* tm = theStaticContext->get_typemanager();
+    xqtref_t itemType = tm->create_value_type(value);
+    if (value->isStreamable() == false
+        &&
+        TypeOps::is_equal(tm, *itemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE, QueryLoc::null)
+        &&
+        (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
+    {
+      throw XQUERY_EXCEPTION(err::FOCH0001, ERROR_PARAMS( "#x"
+          + BUILD_STRING(std::uppercase << std::hex << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+    }
 
     try
     {

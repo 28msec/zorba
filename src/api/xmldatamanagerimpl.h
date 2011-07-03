@@ -55,11 +55,8 @@ protected:
 
   StaticContext_t          theContext;
   ItemFactory*             theFactory;
-  static std::string       theFnNamespace;
-  static std::string       theFetchNamespace;
-  static std::string       theXmlNamespace;
 
-  // allow for lazy creation 
+  // allow for lazy creation
   mutable DocumentManagerImpl*   theDocManager;
   mutable CollectionManagerImpl* theColManager;
   mutable CollectionManagerImpl* theW3CColManager;

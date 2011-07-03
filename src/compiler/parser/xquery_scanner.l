@@ -683,8 +683,14 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |______________________________________________________________________*/
 
 {IntegerLiteral}  {
-  yylval->ival = getDriver()->symtab.integerval(yytext, yyleng, *yylloc);
-  return token::INTEGER_LITERAL;
+  yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
+  if (yylval->ival == NULL)
+  {
+    yylval->err = getDriver()->parserErr(yytext, *yylloc, err::FOAR0002);
+    return token::UNRECOGNIZED;
+  }
+  else
+    return token::INTEGER_LITERAL;
 }
 
 {DecimalLiteral}  {
@@ -694,7 +700,14 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 {DoubleLiteral}   {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
-  return token::DOUBLE_LITERAL;
+  if (yylval->dval == NULL)
+  {
+    // TODO: pjl: needs correct error code
+    yylval->err = getDriver()->parserErr(yytext, *yylloc, err::FOAR0002);
+    return token::UNRECOGNIZED;
+  }
+  else
+    return token::DOUBLE_LITERAL;
 }
 
 {IntegerLiteral}[a-zA-Z_][0-9a-zA-Z_]* {
