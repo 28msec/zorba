@@ -11,6 +11,6 @@ namespace zorba {
 
 static std::string RBKT_SRC_DIR = "@CMAKE_CURRENT_SOURCE_DIR@";
 static std::string RBKT_BINARY_DIR = "@CMAKE_CURRENT_BINARY_DIR@";
-
+static std::string CMAKE_BINARY_DIR = "@CMAKE_BINARY_DIR@";
 }
 #endif

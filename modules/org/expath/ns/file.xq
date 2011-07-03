@@ -23,6 +23,8 @@
 module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
 
 (:~
  : Appends a sequence of items to a file. If the file pointed by <pre>$file</pre>

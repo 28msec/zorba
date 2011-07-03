@@ -33,6 +33,9 @@ module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collec
 
 import module namespace qddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : Function used for internal purposes only. It converts a URI
  : given as string into a reserved QName. This QName is used

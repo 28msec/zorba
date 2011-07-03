@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2011 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Nothing to do in this directory.
+# QQQ Note: this file was originally the 1998 version of xml.xsd. It should
+# probably be replaced with a later revision.
+DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2001/xml.xsd" FILE xml.xsd)
 
-IF(ZORBA_WITH_FILE_ACCESS)
-  DECLARE_ZORBA_MODULE(FILE file.xq VERSION 2.0
-    URI "http://expath.org/ns/file")
-ENDIF(ZORBA_WITH_FILE_ACCESS)
+DECLARE_ZORBA_SCHEMA(URI "http://www.w3.org/2010/xslt-xquery-serialization"
+  FILE xslt-xquery-serialization.xsd)
+

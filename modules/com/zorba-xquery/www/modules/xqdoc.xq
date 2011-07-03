@@ -58,6 +58,8 @@
  :
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
 
 (:~
  : Generated an XQDoc XML document for the module located

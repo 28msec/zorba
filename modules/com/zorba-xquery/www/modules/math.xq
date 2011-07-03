@@ -27,6 +27,9 @@ module namespace zorba-math = "http://www.zorba-xquery.com/modules/math";
 :)
 declare namespace math="http://www.w3.org/2005/xpath-functions/math";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : Errors namespace URI.
 :)

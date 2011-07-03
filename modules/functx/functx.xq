@@ -27,7 +27,7 @@
  : @see     http://www.xqueryfunctions.com
  :) 
 module namespace  functx = "http://www.functx.com/" ;
- 
+
 (:~
  : Adds attributes to XML elements 
  :

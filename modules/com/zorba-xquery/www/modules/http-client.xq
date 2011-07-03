@@ -108,8 +108,10 @@ module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 import module namespace err = "http://expath.org/ns/error";
 
-
 import schema namespace https = "http://expath.org/ns/http-client";
+
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
 
 
 (:~

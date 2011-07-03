@@ -42,6 +42,9 @@
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The insert-nodes-first function is an updating function that inserts copies of the
  : given nodes at the beginning of the collection.

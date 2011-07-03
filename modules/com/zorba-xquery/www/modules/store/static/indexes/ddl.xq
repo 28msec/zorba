@@ -29,6 +29,9 @@
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The function returns true if an index with the given QName is available.
  : (i.e. has been created).

@@ -28,6 +28,9 @@
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The function returns true if an integrity constraints with the given
  : QName is activated.

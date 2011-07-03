@@ -23,6 +23,9 @@
  :)
 module namespace err = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : Error namespace URI.
  :)

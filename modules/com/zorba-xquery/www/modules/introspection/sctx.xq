@@ -26,6 +26,9 @@
 
 module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The function returns a list of known statically known namespaces as prefixes
  : (fn, xml, xs, xsi, etc).

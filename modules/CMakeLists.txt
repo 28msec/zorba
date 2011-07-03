@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-MESSAGE(STATUS "Add com")
 ADD_SUBDIRECTORY(com)
-MESSAGE(STATUS "Add org")
 ADD_SUBDIRECTORY(org)
+ADD_SUBDIRECTORY(functx)
+ADD_SUBDIRECTORY(w3c)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source

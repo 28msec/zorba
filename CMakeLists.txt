@@ -27,13 +27,15 @@ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 2.6)
 IF(CMAKE_VERSION STREQUAL "2.6.3")
   MESSAGE(FATAL_ERROR "You are running a buggy CMake version (2.6.3). Please install a different CMake version and execute CMake again.")
 ENDIF(CMAKE_VERSION STREQUAL "2.6.3")
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
   cmake_policy(SET CMP0002 OLD)
+  # We want CMake to correctly count empty list elements.
+  cmake_policy(SET CMP0007 NEW)
 ENDIF(COMMAND cmake_policy)
 
 IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
@@ -432,6 +434,7 @@ ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(doc)
+ADD_SUBDIRECTORY(schemas)
 ADD_SUBDIRECTORY(modules)
 
 ADD_DEFINITIONS(-Dzorba_EXPORTS)

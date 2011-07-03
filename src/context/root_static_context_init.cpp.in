@@ -21,16 +21,8 @@
 namespace zorba {
 
   const char* root_static_context::theBuiltInModulePaths[] = { 
-    // QQQ this should be eliminated after module-authoring work complete
-    "@CMAKE_BINARY_DIR@/modules/",
-    // QQQ this should be eliminated after module-authoring work complete
-    "@CMAKE_SOURCE_DIR@/modules/",
-    "@CMAKE_BINARY_DIR@/MODULE_PATH/",
-#ifndef WIN32
+    "@CMAKE_BINARY_DIR@/URI_PATH/",
     "@CMAKE_INSTALL_PREFIX@/include/modules/",
-#else
-    "C:/Program Files/Zorba XQuery Processor @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@.@ZORBA_PATCH_NUMBER@/include/zorba/modules/",
-#endif
     0 };
 
 } /* namespace zorba */

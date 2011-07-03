@@ -37,6 +37,9 @@ import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serializati
 
 declare copy-namespaces preserve, inherit;
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 declare variable $xqdoc2html:xqFolderName as xs:string := "external_functions_impl";
 declare variable $xqdoc2html:moduleFolderName as xs:string := "modules";
 declare variable $xqdoc2html:exampleFolderName as xs:string := "examples";

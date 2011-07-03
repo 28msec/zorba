@@ -22,6 +22,8 @@
  :
  :)
 module namespace string = "http://www.zorba-xquery.com/modules/string";
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
 
 (:~
  : This function materializes a streamable string.

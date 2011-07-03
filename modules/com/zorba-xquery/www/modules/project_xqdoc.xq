@@ -31,6 +31,9 @@ import module namespace file = "http://expath.org/ns/file";
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The serialization parameters for XML serialization.
  :)

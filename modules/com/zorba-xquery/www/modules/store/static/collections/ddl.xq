@@ -31,6 +31,9 @@
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The function returns true if a collection with the given QName is available
  : (i.e. has been created).

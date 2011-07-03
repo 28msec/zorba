@@ -29,6 +29,9 @@ module namespace dml = "http://www.zorba-xquery.com/modules/store/static/indexes
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The probe function retrieves the domain nodes associated with a particular
  : search condition, which is presented as a single key tuple. This function 

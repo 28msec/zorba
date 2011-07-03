@@ -37,6 +37,9 @@
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The insert-nodes function is an updating function that inserts copies of the
  : given nodes into a collection. 

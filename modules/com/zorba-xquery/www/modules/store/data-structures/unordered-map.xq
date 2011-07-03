@@ -35,6 +35,9 @@ module namespace map = "http://www.zorba-xquery.com/modules/store/data-structure
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : Create a map with a given name and a set of types for
  : each key attribute. Note that the function is variadic

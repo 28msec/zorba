@@ -23,3 +23,4 @@ SET (CTEST_CUSTOM_WARNING_EXCEPTION
     "Warning: using repository file.*"
     "Warning: urning: GNU Flex.*")
 SET (CTEST_COMPRESS_SUBMISSION ON)
+SET (VALGRIND_COMMAND_OPTIONS "--tool=memcheck --leak-check=full --track-fds=yes --num-callers=50 --track-origins=yes")

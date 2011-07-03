@@ -27,6 +27,9 @@
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : The check-integrity-constraint function checks if the constraints
  : specified by the expanded QName $name is valid in the database.

@@ -507,5 +507,9 @@ void setModulePaths
     lModulePaths.push_back(lPath);
   }
   lModulePaths.push_back(paths);
+
+  // Add the default path for test modules.
+  zorba::String lDefPath = zorba::CMAKE_BINARY_DIR + "/TEST_URI_PATH";
+  lModulePaths.push_back(lDefPath);
   sctx->setModulePaths(lModulePaths);
 }
