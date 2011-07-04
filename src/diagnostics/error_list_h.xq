@@ -61,6 +61,7 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
     switch ( data( $namespace/@prefix ) )
     case "err" return "XQueryErrorCode"
     case "zerr" return "ZorbaErrorCode"
+    case "zwarn" return "ZorbaWarningCode"
     default return error()
   return
     string-join(
@@ -97,6 +98,7 @@ string-join(
     '',
     '#include &lt;zorba/config.h>',
     '#include &lt;zorba/error.h>',
+    '#include &lt;zorba/xquery_warning.h>',
     '',
     'namespace zorba {',
     '',

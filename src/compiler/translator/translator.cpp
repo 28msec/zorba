@@ -3792,35 +3792,40 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   store::Item_t sctx_ann = theSctx->lookup_ann(lExpandedQName->getLocalName().c_str());
 
-  /*
-  std::cout << "--> annotation: " << lExpandedQName->show() << std::endl;
-  if (sctx_ann.getp() != NULL)
-    std::cout << "               sctx annot: " << sctx_ann->show() << std::endl;
-  */
-
-  if ((lExpandedQName->getNamespace() == static_context::W3C_XML_NS ||
+  if (lExpandedQName->getNamespace() == static_context::W3C_XML_NS ||
       lExpandedQName->getNamespace() == XML_SCHEMA_NS ||
       lExpandedQName->getNamespace() == XSI_NS ||
       lExpandedQName->getNamespace() == static_context::W3C_FN_NS ||
       lExpandedQName->getNamespace() == XQUERY_MATH_FN_NS ||
       lExpandedQName->getNamespace() == static_context::ZORBA_ANNOTATIONS_NS)
-      &&
-      (sctx_ann.getp() == NULL
-        ||
-        (sctx_ann.getp() != NULL
-        &&
-        lExpandedQName->getNamespace() != sctx_ann->getNamespace())))
   {
-    throw XQUERY_EXCEPTION(err::XQST0045, ERROR_PARAMS(
-          (lExpandedQName->getPrefix().empty() ? "\'" + lExpandedQName->getNamespace() + "\'"
-                                               : lExpandedQName->getPrefix())
-          + ":" + lExpandedQName->getLocalName()), ERROR_LOC(loc));
+      if (sctx_ann.getp() == NULL
+          ||
+          (sctx_ann.getp() != NULL
+          &&
+          lExpandedQName->getNamespace() != sctx_ann->getNamespace()))
+      {
+        throw XQUERY_EXCEPTION(
+            err::XQST0045,
+            ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
+                          "\'" + lExpandedQName->getNamespace() + "\'"
+                          : lExpandedQName->getPrefix())
+                          + ":" + lExpandedQName->getLocalName()),
+            ERROR_LOC(loc));
+      }
   }
   else
   {
-    // throw warning
+    // annotation in unknown namespace -- generate a warning
+    theCCB->theXQueryDiagnostics->add_warning(
+      NEW_XQUERY_WARNING(
+        zwarn::ZWST0002_UNKNOWN_ANNOTATION,
+        WARN_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
+                      "\'" + lExpandedQName->getNamespace() + "\'"
+                      : lExpandedQName->getPrefix())
+                      + ":" + lExpandedQName->getLocalName()),
+        WARN_LOC(loc)));
   }
-
 
   std::vector<rchandle<const_expr> > lLiterals;
   if (v.get_literals())

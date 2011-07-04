@@ -24,6 +24,7 @@
 
 #include <zorba/config.h>
 #include <zorba/error.h>
+#include <zorba/xquery_warning.h>
 
 namespace zorba {
 
@@ -711,6 +712,13 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITE
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZSTR0055_STREAMABLE_STRING_CONSUMED;
 
 } // namespace zerr
+
+namespace zwarn {
+extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0001_UNUSED_VARIABLE;
+
+extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION;
+
+} // namespace zwarn
 } // namespace zorba
 #endif
 /*

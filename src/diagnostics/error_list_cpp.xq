@@ -7,27 +7,31 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
     switch ( data( $namespace/@prefix ) )
     case "err" return "XQueryErrorCode"
     case "zerr" return "ZorbaErrorCode"
+    case "zwarn" return "ZorbaWarningCode"
     default return error()
   return
-    string-join(
-      (
-        concat( $util:newline, "namespace ", $namespace/@prefix, " {" ),
-        for $diagnostic in $namespace/diagnostic
-        return 
-          concat (
-             util:begin_guard( $diagnostic ),
-             $class, " ", $diagnostic/@code,
-             if ( $diagnostic/@name )
-             then concat( "_", $diagnostic/@name )
-             else "",
-             '( "', $diagnostic/@code, '" );',
-             $util:newline,
-             util:end_guard( $diagnostic )
-          ),
-        concat( "} // namespace ", $namespace/@prefix )
-      ),
-      concat( $util:newline, $util:newline )
-    )
+    if ($class eq "ZorbaWarningCode")
+    then ()
+    else
+      string-join(
+        (
+          concat( $util:newline, "namespace ", $namespace/@prefix, " {" ),
+          for $diagnostic in $namespace/diagnostic
+          return 
+            concat (
+               util:begin_guard( $diagnostic ),
+               $class, " ", $diagnostic/@code,
+               if ( $diagnostic/@name )
+               then concat( "_", $diagnostic/@name )
+               else "",
+               '( "', $diagnostic/@code, '" );',
+               $util:newline,
+               util:end_guard( $diagnostic )
+            ),
+          concat( "} // namespace ", $namespace/@prefix )
+        ),
+        concat( $util:newline, $util:newline )
+      )
 };
 
 

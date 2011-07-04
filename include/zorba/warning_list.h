@@ -32,6 +32,11 @@ namespace zwarn {
  */
 ZORBA_DEC_WARNING( ZWST0001_UNUSED_VARIABLE );
 
+/**
+ * An annotation is unknown or unsupported
+ */
+ZORBA_DEC_WARNING( ZWST0002_UNKNOWN_ANNOTATION );
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #undef ZORBA_DEC_WARNING

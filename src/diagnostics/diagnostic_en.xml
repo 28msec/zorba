@@ -2191,8 +2191,24 @@
 
   </namespace>
 
-  <subvalues>
+  
+  <!-- ////////// Zorba Warnings ///////////////////////////////////////////////////////-->
+  
+  <namespace prefix="zwarn">
+  
+    <diagnostic code="ZWST0001" name="UNUSED_VARIABLE">
+      <value>"$1": variable declared but not used</value>
+    </diagnostic>    
+  
+    <diagnostic code="ZWST0002" name="UNKNOWN_ANNOTATION">
+      <value>"$1": unknown or unsupported annotation</value>
+    </diagnostic>
+    
+  </namespace>
 
+
+  <subvalues>
+  
     <entry key="AllMatchesHasExcludes">
       <value>AllMatches contains StringExclude</value>
     </entry>

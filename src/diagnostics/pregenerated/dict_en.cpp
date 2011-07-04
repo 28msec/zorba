@@ -332,6 +332,8 @@ extern entry const dict_en[] = {
   { "ZSTR0045", "duplicate node found in sequence" },
   { "ZSTR0050", "\"$1\" not implemented for item type \"$2\"" },
   { "ZSTR0055", "streamable string has already been consumed" },
+  { "ZWST0001", "\"$1\": variable declared but not used" },
+  { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQP0000", "no error" },
