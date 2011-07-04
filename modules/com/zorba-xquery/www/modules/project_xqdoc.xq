@@ -15,7 +15,7 @@
 :)
 
 (:~
- : Function library provides functions for generatring the XQDoc XML's for a project.
+ : Function library provides functions for generating the XQDoc XML's for a project.
  :
  : @author Sorin Nasoi
  : @project xqdoc

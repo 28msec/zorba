@@ -28,7 +28,7 @@
  : </p>
  : 
  : <p>
- : Generating a user friendly eresentation of the documentation is
+ : Generating a user friendly presentation of the documentation is
  : accomplished in the following steps:
  : <ol>
  :  <li>Module-, variable-, and function declarations need to be commented

@@ -19,7 +19,7 @@
  :
  : @author Matthias Brantner
  :
- : @project data processing/data convertors
+ : @project data processing/data converters
  :)
 module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
 

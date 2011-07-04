@@ -459,7 +459,7 @@ $xqdocXmlPath as xs:string)
  : @param $modulePath where to search for .xq modules recursively.
  : @param $xqdocBuildPath where to output the XQDoc XMLs and XHTMLs.
  : @param $indexHtmlPath where to load the template for the index.html.
- : @param $zorbaPath path to zorba dir, usefull to compute absolute path of examples 
+ : @param $zorbaPath path to zorba dir, useful to compute absolute path of examples 
  :        from internal modules
  : @param $zorbaVersion Zorba version.
  : @return Empty sequence.
@@ -491,7 +491,7 @@ declare %ann:nondeterministic %ann:sequential function xqdoc2html:main(
   trace(xs:string(1)," collect-menu-entries");
   xqdoc2html:collect-menu-entries();
   
-  (: test if it's better to create the node once and copy it after raplacing the value we need :)
+  (: test if it's better to create the node once and copy it after replacing the value we need :)
   (:variable $generalLeftMenu := xqdoc2html:create-general-menu(); :)
                                           
   xqdoc2html:generate-xqdoc-xhtml((:$generalLeftMenu, :) $xhtmlRequisitesPath, $xqdocXhtmlPath, $zorbaPath); 
