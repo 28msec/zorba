@@ -39,7 +39,7 @@ declare option ver:module-version "2.0";
 declare function sctx:statically-known-namespaces() as xs:string* external;
 
 (:~
- : For any statically know namespace prefix, the bound URI can be retreived
+ : For any statically know namespace prefix, the bound URI can be retrieved
  : with the statically-known-namespace-bindings() function.
  :
  : @param $prefix The prefix of the known namespace, for which the bound URI
@@ -251,7 +251,7 @@ declare function sctx:ordering-mode() as xs:string external;
 declare function sctx:default-order() as xs:string external;
 
 (:~
- : The function returns the static context component which contrls the
+ : The function returns the static context component which controls the
  : processing of boundary whitespace by direct element constructors.
  :
  : @return Either "preserve" or "strip", as strings.

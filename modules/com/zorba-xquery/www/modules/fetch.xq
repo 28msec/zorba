@@ -37,10 +37,10 @@ declare variable $fetch:ResourceDoesNotExist as xs:QName :=
            "fetch:ResourceDoesNotExist");
 
 (:~
- : Tries to fetch the resource refered to by the given URI.
+ : Tries to fetch the resource referred to by the given URI.
  : 
  : @param $uri the resource to fetch to
- : @error fetch:ErrRetrievingResource if an error occured
+ : @error fetch:ErrRetrievingResource if an error occurred
  :        retrieving the resource.
  : @error fetch:ResourceDoesNotExist if no resource could be found at
  :        the given location.

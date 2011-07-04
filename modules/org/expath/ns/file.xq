@@ -274,7 +274,7 @@ declare %private %ann:nondeterministic %ann:sequential function file:delete-dire
 (:~
  : Tests if a path/URI is already used in the file system.
  :
- : @param $path The path/URI to test for existance.
+ : @param $path The path/URI to test for existence.
  : @return true if the path/URI points to an existing file system item.
  :)
 declare %ann:nondeterministic function file:exists(
@@ -306,7 +306,7 @@ declare %ann:nondeterministic function file:is-file(
  : Moves a file or directory given a source and a destination paths/URIs.
  :
  : @param $source The path/URI of the file to move.
- : @param $destination The detination path/URI.
+ : @param $destination The destination path/URI.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0002 If <pre>$source</pre> points to a directory and
@@ -618,7 +618,7 @@ declare %ann:nondeterministic function file:list(
  : pattern translation.
  : 
  : @param $pattern The glob pattern.
- : @return A regex pattern coresponding to the glob pattern provided.
+ : @return A regex pattern corresponding to the glob pattern provided.
  :)
 declare function file:glob-to-regex(
   $pattern as xs:string
