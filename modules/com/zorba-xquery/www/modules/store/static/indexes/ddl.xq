@@ -79,7 +79,7 @@ declare updating function ddl:create-index(
  :         update list which, once applied, deletes the index with the given name.
  :
  : @error XDDY0009 If available indexes does not provide a mapping for
- :        the expaned QName $name.
+ :        the expanded QName $name.
  :
  :)
 declare updating function ddl:delete-index(

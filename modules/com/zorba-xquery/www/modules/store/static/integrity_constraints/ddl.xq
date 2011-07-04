@@ -55,7 +55,7 @@ declare function ddl:activated-integrity-constraints() as xs:QName*  external;
 
 (:~
  : The activate-integrity-constraint function is an updating function
- : that activates the integrity constraint indentified by the expanded QName
+ : that activates the integrity constraint identified by the expanded QName
  : $name in the dynamic context.
  :
  : @param $name The QName of the integrity constraint to activate.

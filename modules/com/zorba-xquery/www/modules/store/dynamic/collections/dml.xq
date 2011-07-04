@@ -105,7 +105,7 @@ declare updating function dml:insert-nodes-before(
 
 (:~
  : The insert-nodes-after function is an updating function that inserts
- : copies of the given nodes into a collection at the position directlry following the
+ : copies of the given nodes into a collection at the position directly following the
  : given target node.
  :
  : @param $name The name of the collection to which the nodes should be added.
