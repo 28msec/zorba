@@ -1,32 +1,26 @@
-/*! \mainpage The Zorba XQuery Processor
-
-  Zorba is a general purpose XQuery processor implementing in C++ the W3C family of specifications. It is 
-  not an XML database. The query processor has been designed to be embeddable in a variety of environments 
-  such as other programming languages extended with XML processing capabilities, browsers, database servers, 
-  XML message dispatchers, or smartphones. Its architecture employes a modular design, which allows customizing 
-  the Zorba query processor to the environment’s needs. In particular the architecture of the query processor 
-  allows a pluggable XML store (e.g. main memory, DOM stores, persistent disk-based large stores, S3 stores). 
-  Zorba runs on most platforms and is available under the Apache license v2.
+/*! \mainpage Zorba Documentation
 
   <b>\ref build
   &amp; <b>\ref installation
 
-  <b><a href="http://xqdt.org" target="_blank">IDE</a></b>
- 
-  <b><a href="/modules/index">Rich Module Library</a></b>
+  <b>\ref commandline
+  
+  <b><a href="http://xqdt.org" target="_blank">XQuery Development Toolkit (XQDT)</a></b>
 
-  <b><a href="#">Data Lifecycle</a></b>
-  <ul>
-    <li><a href="#">Zorba Store</a></li>
-    <li><a href="#">Loading Data</a></li>
-    <li><a href="#">Manipulating Data</a></li>
-  </ul>
+  <b><a href="/modules/index">Rich Module Library</a></b>
 
   <b><a href="#">Module Lifecycle</a></b>
   <ul>  
     <li><a href="#">Importing a Module</a></li>
     <li><a href="#">Packaging &amp; Versionning</a></li>  
     <li><a href="#">Creating a Module</a></li>
+  </ul>
+
+  <b><a href="#">Data Lifecycle</a></b>
+  <ul>
+    <li><a href="#">Zorba Store</a></li>
+    <li><a href="#">Loading Data</a></li>
+    <li><a href="#">Manipulating Data</a></li>
   </ul>
    
   <b><a href="#">Schema Lifecycle</a></b>
@@ -37,9 +31,13 @@
 
   <b><a href="#">Zorba Specific Annotations and Options</a></b>
 
+  <b><a href="#">Controling Memory Consumption and Performance</a></b>
+
   <b><a href="#">Implementation Dependent Features</a></b>
   
   <b><a href="../../cxx/html/index.html">C++ API</a></b> 
+
+  <b><a href="#">XQuery Errors and Warnings</a>
  
   <b>Language Bindings</b>
   <ul>
@@ -50,16 +48,18 @@
     <li><a class="el" href="../../php/html/index.html">PHP API</a>
   </ul>
 
+  <b><a href="#">Plugable Components</a></b>
+  
   <b>Specifications</b>
   <ul>
-    <li><a href="#">W3C XQuery 1.0</a>  (<a href="#">Conformance</a>)</li>
-    <li><a href="#">W3C XQuery Update Facility 1.0</a>  (<a href="#">Conformance</a>)</li>
-    <li><a href="#">W3C XQuery and XPath Full Text 1.0</a>  (<a href="#">Conformance</a>)</li>
-    <li><a href="#">W3C XQuery 3.0</a>  (<a href="#">Partial support</a>)</li>
-    <li><a href="#">W3C XML Schema</a></li>
-    <li><a href="#">W3C XSL Transformations (XSLT) 1.0</a></li>
-    <li><a href="#">W3C XML Syntax for XQuery 1.0 (XQueryX) (Second Edition)</a></li>
-    <li><a href="#">W3C XSLT 2.0 and XQuery 1.0 Serialization (Second Edition)</a></li>
+    <li><a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a>  (<a href="#">Conformance</a>)</li>
+    <li><a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a>  (<a href="#">Conformance</a>)</li>
+    <li><a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a>  (<a href="#">Conformance</a>)</li>
+    <li><a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a>  (<a href="#">Partial support</a>)</li>
+    <li><a href="http://www.w3.org/XML/Schema">W3C XML Schema</a></li>
+    <li><a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a></li>
+    <li><a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX) (Second Edition)</a></li>
+    <li><a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization (Second Edition)</a></li>
     <li><a href="#">XQuery Scripting Extension</a></li>
   </ul>
    */
