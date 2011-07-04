@@ -309,5 +309,5 @@ public:
 
   void destroy();
   Iterator iterator();
-  DynamicContext getDynamicContext();
+  DynamicContext getDynamicContext();  // it should be called getNewDynamicContext
 }; // class XQuery
