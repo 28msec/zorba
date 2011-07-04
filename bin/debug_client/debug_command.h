@@ -22,6 +22,7 @@
 #include <map>
 #include <sstream>
 #include <memory>
+#include <typeinfo>
 #include "debug_client/tuple.h"
 
 namespace zorba { namespace debugclient {
@@ -294,7 +295,6 @@ namespace zorba { namespace debugclient {
   parseArguments(const std::vector<std::string>& args,
                  const std::map<std::string, CommandArg<Tuple>* >& aCommandArgs)
   {
-    Tuple t;
     typedef std::vector<std::string> ArgType;
     typedef std::map<std::string, CommandArg<Tuple>* > CArgType;
     ArgType::size_type size = args.size();
@@ -322,7 +322,6 @@ namespace zorba { namespace debugclient {
     for (typename CArgType::const_iterator i = aCommandArgs.begin();
          i != aCommandArgs.end(); ++i)
     {
-      ZORBA_TR1_NS::tuple<> t;
       if (i->second->isRequired() && !i->second->isSet(theTuple)) {
         std::cerr << "Error: Argument " << i->second->get_name() << " not set" << std::endl;
         allSet = false;
