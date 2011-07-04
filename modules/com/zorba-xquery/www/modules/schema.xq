@@ -18,7 +18,7 @@
  : This module provides function that are related to XML Schema support
  : in Zorba.
  :
- : @author Matthias Brantner
+ : @author Cezar Andrei, Matthias Brantner 
  : @project XDM/item
  :
  :)

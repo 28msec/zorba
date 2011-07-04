@@ -36,22 +36,22 @@ declare option ver:module-version "2.0";
 declare variable $zorba-math:errNS as xs:string := "http://www.zorba-xquery.com/modules/math";
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name 'zorba-math:Value" 
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "zorba-math:Value" 
 :)
 declare variable $zorba-math:errValue as xs:QName := fn:QName($zorba-math:errNS, "zorba-math:Value");
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name 'zorba-math:Num"
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "zorba-math:Num"
 :)
 declare variable $zorba-math:errNum as xs:QName := fn:QName($zorba-math:errNS, "zorba-math:Num");
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name 'zorba-math:Div0"
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "zorba-math:Div0"
 :)
 declare variable $zorba-math:errDiv0 as xs:QName := fn:QName($zorba-math:errNS, "zorba-math:Div0");
 
 (:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name 'zorba-math:NA"
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "zorba-math:NA"
 :)
 declare variable $zorba-math:errNA as xs:QName := fn:QName($zorba-math:errNS, "zorba-math:NA");
 
@@ -314,7 +314,7 @@ declare %private function zorba-math:fact-integer($intnum as xs:integer) as xs:i
  : Returns the factorial of a number.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052090841033.aspx
- : @param $number The nonnegative number you want the factorial of.
+ : @param $number The non-negative number you want the factorial of.
  : @return Returns the factorial of a number. The factorial of a number is equal to 1*2*3*...* number.
  : @error XQP0021(errNum) if the number is smaller than zero
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_fact1.xq
@@ -472,7 +472,7 @@ declare %private function zorba-math:product-internal($numbers as xs:double*) as
  : Multiplies all the numbers given as arguments and returns the product.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092231033.aspx
- : @param $numbers The sequence of arguments convertable to numeric types.
+ : @param $numbers The sequence of arguments convertible to numeric types.
  :        The sequence can be of any length.
  : @return The multiplication result as numeric type.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_product1.xq
@@ -494,7 +494,7 @@ declare function zorba-math:product($numbers as xs:double*) as xs:double
  : Returns the integer portion of a division.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092271033.aspx
- : @param $numerator The divident.
+ : @param $numerator The divider.
  : @param $denominator The divisor. It cannot be zero.
  : @return The result value as numeric type.
  : @error XQP0021(div0) if denominator casted as numeric type has value zero.
@@ -770,23 +770,23 @@ declare %private function zorba-math:min-without-zero($numbers as xs:integer+) a
  : Borrowed from excel module.<br/>
  : Function for computing GCD.
  : This function should not be used outside this module.
- : Checks if all integer numbers from a sequence divide exactly to a divident.
+ : Checks if all integer numbers from a sequence divide exactly to a divider.
  :
  : @param $numbers The positive integers.
- : @param $divident The divident to be tried.
+ : @param $divider The divider to be tried.
  : @return true if the numbers divide exactly.
 :)
 declare %private function zorba-math:try-exact-divide(
   $numbers as xs:integer*,
-  $divident as xs:integer) as xs:boolean
+  $divider as xs:integer) as xs:boolean
 {
   if (fn:empty($numbers)) then
     fn:true()
   else
-    if ($numbers[1] mod $divident ne 0) then
+    if ($numbers[1] mod $divider ne 0) then
       fn:false()
     else
-      zorba-math:try-exact-divide(fn:subsequence($numbers, 2), $divident)
+      zorba-math:try-exact-divide(fn:subsequence($numbers, 2), $divider)
 };
 
 (:~
@@ -922,8 +922,8 @@ declare function zorba-math:mround(
 
 (:~
  : Borrowed from excel module.<br/>
- : Converts an arabic numeral to roman, as text.
- : Only the clasic format is supported (out of all formats Excel requires).<br/>
+ : Converts an Arabic numeral to roman, as text.
+ : Only the classic format is supported (out of all formats Excel requires).<br/>
  : M is the largest digit, it represents 1000.
  : Numbers bigger than 2000 will be represented by a sequence of "M".<br/>
  : D = 500, C = 100, L = 50, X = 10, V = 5, I = 1.
@@ -1529,7 +1529,7 @@ declare %private function zorba-math:sum-prob($prob_range as xs:double*) as xs:d
  : Adds all probabilities corresponding to values between range_lower_limit and upper_limit.
  :
  : @param $x_range The sequence of x values.
- : @param $prob_range The sequence of probabilies associated to x values.
+ : @param $prob_range The sequence of probabilities associated to x values.
  : @param $range_lower_limit The lower limit of the range to compute the probability.
  : @param $upper_limit The upper limit of the range to compute the probability.
  : @return The sum of probabilities.

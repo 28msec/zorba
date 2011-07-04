@@ -31,7 +31,7 @@ declare option ver:module-version "2.0";
  : be consumed once. That is, only one function can access the value
  : of a streamable string item.
  :
- : In order to remedy this situtation, this function can be used to 
+ : In order to remedy this situation, this function can be used to 
  : convert a streamable string into its non-streamable counterpart. As a
  : result, the string returned by this function has the same value as its
  : input but is materialized and, hence, can be consumed multiple times.

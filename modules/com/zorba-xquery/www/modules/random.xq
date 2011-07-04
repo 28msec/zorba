@@ -18,7 +18,7 @@
  : A module that provides several functions for generating (pseudo-)random
  : numbers and strings.
  :
- : @author Matthias Brantner
+ : @author Matthias Brantner, Sorin Nasoi
  : @project XDM/atomic
  :
  :)
