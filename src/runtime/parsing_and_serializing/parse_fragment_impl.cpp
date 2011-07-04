@@ -190,7 +190,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
                         theSctx,
                         this->loc);
         }
-        catch (ZorbaException& e)
+        catch (ZorbaException& /*e*/)
         {
           if (parseOptions.enableFatelErrorProcessing)
             throw;
