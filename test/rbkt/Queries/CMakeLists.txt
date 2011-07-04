@@ -202,8 +202,8 @@ IF (FOUND_XQTS)
   IF(ZORBA_TEST_XQUERYX)
     IF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
       #double utf-8 encoding in the xml xqueryx
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/EncodeURIfunc/K-EncodeURIfunc-4 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/EscapeHTMLURIFunc/K-EscapeHTMLURIFunc-5 PROPERTIES WILL_FAIL TRUE)
+      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/GeneralStringFunc/EncodeURIfunc/K-EncodeURIfunc-4 PROPERTIES WILL_FAIL TRUE)
+      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/GeneralStringFunc/EscapeHTMLURIFunc/K-EscapeHTMLURIFunc-5 PROPERTIES WILL_FAIL TRUE)
 
       #difference in dealing whitespaces: new line in xml xqueryx is converted to &#xA;
       SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemAttr/Constr-attr-ws-1 PROPERTIES WILL_FAIL TRUE)
@@ -229,25 +229,20 @@ IF (FOUND_XQTS)
       SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-4 PROPERTIES WILL_FAIL TRUE)
       SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-5 PROPERTIES WILL_FAIL TRUE)
     
-      #test result is correct; version encoding is specified in a comment and ignored
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/K-VersionProlog-3 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/K-VersionProlog-4 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/version_declaration-010 PROPERTIES WILL_FAIL TRUE)
-
-      #test seems to be correct, only that it slightly differs from the original xquery test
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCast/K2-SeqExprCast-2 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCastable/K-SeqExprCastable-21 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCastable/K-SeqExprCastable-36 PROPERTIES WILL_FAIL TRUE)
+        #test seems to be correct, only that it slightly differs from the original xquery test
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/exprSeqTypes/SeqExprCast/K2-SeqExprCast-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/exprSeqTypes/SeqExprCastable/K-SeqExprCastable-21 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/exprSeqTypes/SeqExprCastable/K-SeqExprCastable-36 PROPERTIES WILL_FAIL TRUE)
   
-      #double utf-8 encoding in the xml xqueryx
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/fn-string-to-codepoints1args-4 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EncodeURIfunc/fn-encode-for-uri1args-2 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EscapeHTMLURIFunc/fn-escape-html-uri1args-2 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/IRIToURIfunc/fn-iri-to-uri1args-2 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-12 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-19 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-20 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-21 PROPERTIES WILL_FAIL TRUE)
+        #double utf-8 encoding in the xml xqueryx
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/fn-string-to-codepoints1args-4 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EncodeURIfunc/fn-encode-for-uri1args-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EscapeHTMLURIFunc/fn-escape-html-uri1args-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/IRIToURIfunc/fn-iri-to-uri1args-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/K-StringToCodepointFunc-12 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/K-StringToCodepointFunc-19 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/K-StringToCodepointFunc-20 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/K-StringToCodepointFunc-21 PROPERTIES WILL_FAIL TRUE)
 
     ENDIF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   ENDIF(ZORBA_TEST_XQUERYX)

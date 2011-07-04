@@ -692,8 +692,10 @@ TranslatorImpl(
 }
 
 ~TranslatorImpl() {
+#ifndef ZORBA_NO_FULL_TEXT
   while ( !theFTNodeStack.empty() )
     delete ztd::pop_stack( theFTNodeStack );
+#endif
 }
 
 

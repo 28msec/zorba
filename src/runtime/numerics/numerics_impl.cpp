@@ -902,10 +902,11 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (!consumeNext(result, theChildren[0].getp(), planState ))
   {
-    // Got void, returning void
-    STACK_PUSH(false, state);
+    // Got void, assume NaN, return "NaN"
+    xs_double nanvalue = xs_double::nan();
+    GENV_ITEMFACTORY->createDouble(result, nanvalue);
   }
-  else
+
   {
     info.loc = loc;
     if (!isAllowedType(result->getType()))
@@ -978,7 +979,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     formatNumber(resultString, result, info, theSctx->get_typemanager(), loc);
 
     STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
-  } // if (!consumeNext(result, theChildren[0].getp(), planState ))
+  }
 
   STACK_END (state);
 }
