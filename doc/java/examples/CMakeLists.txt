@@ -11,24 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# install path determined from where Python lives 
 
-SET(JAVA_SRCS
-  Test_Zorba.java)
+SET (JAVA_SRCS Test_Zorba.java)
 
-FIND_PACKAGE(Java)
+FIND_PACKAGE (Java)
 
-STRING(COMPARE NOTEQUAL ${JAVA_RUNTIME} "JAVA_RUNTIME-NOTFOUND" JAVA_FOUND) 
-IF(JAVA_FOUND)
-  SET(Java_Load_Path ${CMAKE_BINARY_DIR}/swig/java)
-  MESSAGE(STATUS "Seting path for java tests ${Java_Load_Path}")
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Test_Zorba.java ${CMAKE_CURRENT_BINARY_DIR}/Test_Zorba.java COPYONLY)
-  IF(WIN32)
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/java_test.bat.in ${CMAKE_CURRENT_BINARY_DIR}/java_test.bat)
-    ADD_TEST("java" java_test.bat Test_Zorba)
-  ELSEIF(WIN32)
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/java_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/java_test.sh)
-    ADD_TEST("java" java_test.sh Test_Zorba)
-  ENDIF(WIN32)
-
-ENDIF(JAVA_FOUND)
+IF (JAVA_RUNTIME)
+  SET (Java_Load_Path ${CMAKE_BINARY_DIR}/swig/java)
+  MESSAGE (STATUS "Seting path for java tests ${Java_Load_Path}")
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/Test_Zorba.java ${CMAKE_CURRENT_BINARY_DIR}/Test_Zorba.java COPYONLY)
+  IF (WIN32)
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/java_test.bat.in ${CMAKE_CURRENT_BINARY_DIR}/java_test.bat)
+    ADD_TEST ("java" java_test.bat Test_Zorba)
+  ELSEIF (WIN32)
+    CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/java_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/java_test.sh)
+    ADD_TEST ("java" java_test.sh Test_Zorba)
+  ENDIF (WIN32)
+ENDIF (JAVA_RUNTIME)

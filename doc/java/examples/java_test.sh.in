@@ -1,4 +1,5 @@
 #!/bin/sh
+
 JAVA_LOAD_PATH=@Java_Load_Path@
 export LD_LIBRARY_PATH=$JAVA_LOAD_PATH
 # The following for Mac OS X
@@ -16,5 +17,3 @@ echo "\njava_test.sh: Compile Test_Zorba ..."
 
 echo "\njava_test.sh: Java Execute Test_Zorba ..."
 /usr/bin/java -cp build $1
-
-
