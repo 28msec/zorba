@@ -54,7 +54,7 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   uriString = uriItem->getStringValue();
 
-#if 0
+#if 1
   resolvedUriString = theSctx->resolve_relative_uri(uriString, false);
 
   GENV_ITEMFACTORY->createAnyURI(resolvedUriItem, resolvedUriString);

@@ -118,7 +118,7 @@ string-join (
                          ""),
              string-join(for $inuri in $state/input-URI 
                          let $source := //source[@ID eq $inuri/text()]
-                         return concat("-x ",
+                         return concat(" -x ",
                                        $inuri/@variable,
                                        ":=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",
                                        $source/@FileName, "") ,

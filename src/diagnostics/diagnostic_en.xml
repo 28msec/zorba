@@ -1633,6 +1633,7 @@
     </diagnostic>
  
     <diagnostic code="ZXQP0040" name="MISSING_NONDETERMINISTIC_ANNOTATION">
+      <value>"$1": function missing nondeterministic annotation</value>
     </diagnostic>
 
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"

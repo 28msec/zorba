@@ -359,7 +359,7 @@ extern entry const dict_en[] = {
   { "ZXQP0037", "\"$1\": loaded module version \"$2\" does not match import version specification" },
   { "ZXQP0038", "Query requires Zorba version \"$1\"; you are running Zorba \"$2\"" },
   { "ZXQP0039", "\"$1\": invalid version specification" },
-  { "ZXQP0040", "" },
+  { "ZXQP0040", "\"$1\": function missing nondeterministic annotation" },
   { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
   { "ZXQP8402", "thesaurus data endianness does not match CPU" },
   { "ZXQP8403", "thesaurus data error${: 1}" },

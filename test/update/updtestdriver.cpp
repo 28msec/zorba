@@ -116,7 +116,8 @@ set_var (
     
     assert (is);
     zorba::XmlDataManager* lXmlMgr =
-        zorba::Zorba::getInstance(NULL)->getXmlDataManager();
+    zorba::Zorba::getInstance(NULL)->getXmlDataManager();
+
     zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
         
     zorba::Item lDoc;
@@ -130,6 +131,7 @@ set_var (
       sctx->validate(lDoc, lDoc, zorba::validate_lax);
       lDocMgr->add(name, lDoc);
     }
+
     if(name != ".")
     {
       dctx->setVariable(name, lDoc);
@@ -259,6 +261,8 @@ main(int argc, char** argv)
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
+  std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
+
   std::vector<zorba::XQuery_t> lQueries;
 
   ulong numQueries = (ulong)lSpec.theStates.size();
@@ -290,7 +294,6 @@ main(int argc, char** argv)
       zorba::StaticContext_t lContext = engine->createStaticContext();
       std::string path = lQueryFile.get_path();
 
-      std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
       if (path.find("w3c_update_testsuite") != std::string::npos) 
       {
         lContext->setXQueryVersion(zorba::xquery_version_1_0);
