@@ -7,7 +7,7 @@
  : specifics of <a href="http://oauth.net/" target="_blank">OAuth</a> to use this module.
  : @author Stephanie Russell
  : @see <a href="http://oauth.net/" target="_blank">OAuth</a>
- : @project web-services-wrappers/oauth
+ : @project OAuth
  :
  :)
 

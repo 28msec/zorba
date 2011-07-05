@@ -18,7 +18,7 @@
  : Module that defines the errors raised in Oauth modules.
  :
  : @author Stephanie Russell
- : @project web-services-wrappers/oauth
+ : @project OAuth
  :
  :)
 module namespace  err = "http://www.zorba-xquery.com/modules/oauth/error";
