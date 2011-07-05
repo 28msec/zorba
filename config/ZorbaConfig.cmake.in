@@ -27,6 +27,7 @@
 # Pass through some variables from main Zorba CMake configuration.
 SET(ZORBA_STORE_NAMES "@ZORBA_STORE_NAMES@")
 SET(ZORBA_VERSION "@ZORBA_VERSION@")
+SET(ZORBA_STORE_NAME "@ZORBA_STORE_NAME@")
 
 # Tell the user project where to find our headers, libraries, and
 # CMake modules
