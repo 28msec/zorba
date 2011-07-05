@@ -319,10 +319,11 @@ bool isKeyword(std::string& str) {
     tokenize(lContent.str(), lines, "\n");
     theEnableDtd = false;
 
+    std::string one_space(" ");
     for(it = lines.begin(); it != lines.end(); ++it)
     {
       // Replace $RBKT_SRC_DIR and $RBKT_BINARY_DIR
-      zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);
+      zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", one_space + rbkt_src_dir);
       zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
 
       std::vector<std::string> tokens;
