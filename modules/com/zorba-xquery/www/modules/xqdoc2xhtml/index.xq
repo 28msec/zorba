@@ -55,10 +55,10 @@ declare collection xqdoc2html:collectionConfig as node()*;
 declare variable $xqdoc2html:menuEntries := <entries/>;
 
 declare variable $xqdoc2html:level1Weight as xs:string* := 
-("www.w3.org",  "XDM",  "store",  "introspection",  "reflection",
- "external", "xqdoc", "data processing", "excel", "security", 
- "geo","image","web-services-wrappers","expath.org","www.functx.com",
- "xml","communication");
+("www.w3.org", "XDM", "store", "introspection", "reflection",
+ "external", "xqdoc","data processing", "programming languages", "excel", 
+ "cryptography", "geo", "image", "OAuth", "expath.org",
+ "www.functx.com", "communication");
 
 (:~
  : This variable contains all the schemas imported by the modules

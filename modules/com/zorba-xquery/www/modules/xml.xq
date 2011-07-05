@@ -20,7 +20,7 @@
  : </p>
  : 
  : @author Nicolae Brinza
- : @project xml
+ : @project data processing/data converters
  :
  :)
 module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
