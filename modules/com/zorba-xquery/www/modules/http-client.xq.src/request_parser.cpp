@@ -86,7 +86,7 @@ namespace zorba { namespace http_client {
     String lAuthMethod;
     bool lSendAuthorization = false;
     String lOverrideContentType;
-    bool lFollowRedirect = false;
+    bool lFollowRedirect = true;
     int lTimeout = -1;
 
     Iterator_t lIter = aItem.getAttributes();
