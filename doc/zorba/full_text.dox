@@ -407,6 +407,13 @@ These relationships are:
   </table>
 </center>
 
+\subsection ft_wordnet_levels WordNet Levels
+
+In no levels are specified in a query,
+Zorba defaults the WordNet implementation to be 2 levels.
+The rationale can be found
+<a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444">here</a>.
+
 \section ft_unimplemented Unimplemented Full Text Features
 
 The full text specification is mostly,
