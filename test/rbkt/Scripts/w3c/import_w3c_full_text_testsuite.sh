@@ -1,22 +1,24 @@
 #!/bin/bash
 
+WORK_DEFAULT=/tmp
+XQTSURL_DEFAULT=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_4.zip
+
 die() {
   echo
   echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>]'
   echo '           [--xqtsurl <xqtsurl>]'
   echo '           <zorba_repository>'
   echo '<zorba_repository> is the top-level SVN working copy.'
-  echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp).'
+  echo "<workdir> is a temp directory to download and unzip XQTS (default: $WORK_DEFAULT)."
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
-  echo '<xqtsurl> is the URL where the XQTS archived version can be found'
-  echo '          (default: http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_4.zip)'
+  echo "<xqtsurl> is the URL where the XQTS archived version can be found"
+  echo "          (default: $XQTSURL_DEFAULT)"
   exit 1
 }
 
-WORK=/tmp
-XQTSURL=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_4.zip
-
+WORK=$WORK_DEFAULT
+XQTSURL=$XQTSURL_DEFAULT
 while [ $# -gt 1 ]
 do
   # --workdir to specify a working directory to download/unzip XQTS
@@ -47,9 +49,8 @@ if test ! -d "$BUILD"; then
   exit 1
 fi
 
-#this could be a problem problem because if the version posted on the W3C site as XQTS_current.zip changes, the new version will not be downloaded by the import script.
-#Removing the previous downloaded version first would solve the problem but that would mean that each time the script is run it would download a fresh XQTS_current.zip and this is a problem with the niglies tests.
-ZIP="$WORK/XQFTTS_current.zip"
+zipname=`basename $ZIP`
+ZIP="$WORK/$ZIP"
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
 

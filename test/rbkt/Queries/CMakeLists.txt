@@ -186,9 +186,6 @@ FOREACH(TESTFILE ${TESTFILES})
 
 ENDFOREACH(TESTFILE)
 
-SET(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS ON CACHE BOOL "Bool var that says if w3c testing results are to be submited to w3c, or just for internal testing. If they are for internal testing then we can mark some failing tests as expected results.")
-MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
-
 IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
     IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/w3c_testsuite")
   MESSAGE (STATUS "Adding multi-threaded XQTS test")
@@ -197,28 +194,52 @@ IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
 ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
   IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/w3c_testsuite")
 
-IF (FOUND_XQTS)
+
+SET(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS OFF CACHE BOOL "Bool var that says if w3c testing results are to be submited to w3c, or just for internal testing. If they are for internal testing then we can mark some failing tests as expected results.")
+MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
+
+####
+#### Place any known W3C failures here, to be sure that they are picked
+#### up correctly but do not mess up our submissions to the W3C:
+####
+IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
+
+  IF(NOT ZORBA_WITH_BIG_INTEGER)
+    # These tests fail due to integer overflow.
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
+
+    # These tests fail due to bad casting from negative numbers to unsignedLong.
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-83 3349269)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-428 3349269)
+
+    # These tests fail due to missing document/base-uri functionality
+    # on parse-xml
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/BaseURIFunc/K2-BaseURIFunc-21 3349272)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-dash-4 3349272)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-doubledash-4 3349272)
+
+  ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
 
   IF(ZORBA_TEST_XQUERYX)
-    IF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
-      #w3c bug
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Construct/ComputeCon/ComputeConAttr/K2-ComputeConAttr-35 PROPERTIES WILL_FAIL TRUE)
+    #w3c bug
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Construct/ComputeCon/ComputeConAttr/K2-ComputeConAttr-35 3355019)
 
-      #w3c bug
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes011 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes012 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes013 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes014 PROPERTIES WILL_FAIL TRUE)
-      SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes015 PROPERTIES WILL_FAIL TRUE)
-
-    ENDIF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
+    #w3c bug
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes011 3355019)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes012 3355019)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes013 3355019)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes014 3355019)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes015 3355019)
   ENDIF(ZORBA_TEST_XQUERYX)
 
-ENDIF (FOUND_XQTS)
+ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
 # The dirname_basename test depends on the system module
 #IF (NOT zorba_system_module_BINARY_DIR)
-#  SET_TESTS_PROPERTIES (test/rbkt/zorba/file/dirname_basename PROPERTIES WILL_FAIL TRUE)
+#  EXPECTED_FAILURE (test/rbkt/zorba/file/dirname_basename ????need bugnum???)
 #ENDIF ()
 
 
@@ -260,22 +281,5 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
-IF(NOT ZORBA_WITH_BIG_INTEGER AND FOUND_XQTS)
-  # These tests fail due to integer overflow.
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-1 3323548)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
-
-  # These tests fail due to bad casting from negative numbers to unsignedLong.
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-83 3349269)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-428 3349269)
-
-  # These tests fail due to missing document/base-uri functionality on parse-xml
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/BaseURIFunc/K2-BaseURIFunc-21 3349272)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-dash-4 3349272)
-  EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-doubledash-4 3349272)
-
-ENDIF(NOT ZORBA_WITH_BIG_INTEGER AND FOUND_XQTS)
 
 # vim:set et sw=2 ts=2:

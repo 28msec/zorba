@@ -1,25 +1,25 @@
 #!/bin/bash
 
+WORK_DEFAULT=/tmp
+XQTSURL_DEFAULT=http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_1_0_3.zip
+
 die() {
   echo
   echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] [--xqtsurl <xqtsurl>] <zorba_repository>'
   echo '<zorba_repository> is the top-level SVN working copy'
-  echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp)'
+  echo "<workdir> is a temp directory to download and unzip XQTS (default: $WORK_DEFAULT)"
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
   echo '<xqtsurl> is the URL where the XQTS archived version can be found'
-  echo '          (default: http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_1_0_3.zip)'
+  echo "          (default: $XQTSURL_DEFAULT)"
   echo '          (you can use for instance http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)'
   exit 1
 }
 
-WORK=/tmp
-XQTSURL=http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_1_0_3.zip
-XQTSVERSION=1_0_3
-
+WORK=$WORK_DEFAULT
+XQTSURL=$XQTSURL_DEFAULT
 while [ $# -gt 1 ]
 do
-  echo "blub $1"
   # --workdir to specify a working directory to download/unzip XQTS
   test "$1" = "--workdir" && { WORK="$2"; shift; shift; }
 
@@ -27,7 +27,6 @@ do
   test "$1" = "--builddir" && { BUILD="$2"; shift; shift; }
 
   # xqtsurl to specify the URL where XQTS can be found
-  # default value: http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip
   test "$1" = "--xqtsurl" && { XQTSURL="$2"; shift; shift; }
 done
 
@@ -50,11 +49,8 @@ if test ! -d "$BUILD"; then
   exit 1
 fi
 
-#this could be a problem problem because if the version posted on the W3C site as XQTS_current.zip changes, the new version will not be downloaded by the import script.
-#Removing the previous downloaded version first would solve the problem but that would mean that each time the script is run it would download a fresh XQTS_current.zip and this is a problem with the niglies tests.
-ZIP="$WORK/XQTS_$XQTSVERSION.zip"
-
-echo "blub"
+zipname=`basename $XQTSURL`
+ZIP="$WORK/$zipname"
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
 
@@ -67,7 +63,7 @@ BUILD=$(cd "$BUILD" && pwd)
 echo Build dir is at $BUILD
 
 echo Unzipping test suite...
-unzip_dir=`mktemp -d "$WORK/xqts_$XQTSVERSION.XXXXXX"`
+unzip_dir=`mktemp -d "$WORK/$zipfile.XXXXXX"`
 cd "$unzip_dir"
 unzip $ZIP &>/dev/null
 
@@ -77,7 +73,7 @@ rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3
 mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
 mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/cat"
 
-echo Importing XQTS_$XQTSVERSION ...
+echo Importing $zipfile ...
 q=`mktemp "$WORK/xq.XXXXXX"`
 cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";

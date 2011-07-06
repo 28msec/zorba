@@ -1,22 +1,23 @@
 #!/bin/bash
 
+WORK_DEFAULT=/tmp
+XQUTSURL_DEFAULT=http://zorbatest.lambda.nu:8080/~spungi/XQUTS_070611.zip
+
 die() {
   echo
   echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] [--xqutsurl <xqutsurl>] <zorba_repository>'
   echo '<zorba_repository> is the top-level SVN working copy'
-  echo '<workdir> is a temp directory to download and unzip XQUTS (default: /tmp)'
+  echo "<workdir> is a temp directory to download and unzip XQUTS (default: $WORK_DEFAULT)"
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
   echo '<xqutsurl> is the URL where the XQUTS archived version can be found'
-  echo '          (default: http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_1.zip)'
+  echo "          (default: $XQUTSURL_DEFAULT)"
   echo '          (you can use for instance http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_0.zip)'
   exit 1
 }
 
-WORK=/tmp
-XQUTSURL=http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_1.zip
-XQUTSVERSION=1_0_1
-
+WORK=$WORK_DEFAULT
+XQUTSURL=$XQUTSURL_DEFAULT
 while [ $# -gt 1 ]
 do
   # --workdir to specify a working directory to download/unzip XQUTS
@@ -47,7 +48,8 @@ if test ! -d "$BUILD"; then
   exit 1
 fi
 
-ZIP=/tmp/XQUTS_$XQUTSVERSION.zip
+zipname=`basename $XQUTSURL`
+ZIP="$WORK/$zipname"
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQUTSURL
 
@@ -60,14 +62,14 @@ BUILD=$(cd "$BUILD" && pwd)
 echo Build dir is at $BUILD
 
 echo Unzipping test suite...
-unzip_dir=`mktemp -d "$WORK/xquts_$XQUTSVERSION.XXXXXX"`
+unzip_dir=`mktemp -d "$WORK/$zipname.XXXXXX"`
 cd "$unzip_dir"
 unzip $ZIP &>/dev/null
 
 echo Cleaning up previous data...
 rm -rf "$SRC/test/update/Queries/w3c_update_testsuite" "$SRC/test/update/ExpectedTestResults/w3c_update_testsuite"
 
-echo Importing XQUTS_$XQUTSVERSION ...
+echo Importing $zipname ...
 mv Queries "$SRC/test/update/Queries/w3c_update_testsuite"
 mv ExpectedTestResults "$SRC/test/update/ExpectedTestResults/w3c_update_testsuite"
 mv TestSources "$SRC/test/update/Queries/w3c_update_testsuite"
