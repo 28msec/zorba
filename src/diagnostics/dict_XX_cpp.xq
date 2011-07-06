@@ -36,6 +36,7 @@ let $lang := $input/diagnostic-list/@lang
 return string-join(
   ( util:copyright(), 
     '',
+    '#include "stdafx.h"',
     '#include "diagnostics/dict_impl.h"',
     '',
     'namespace zorba {',

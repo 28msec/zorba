@@ -411,14 +411,6 @@ ENDIF(APPLE)
 #                                                                              #
 ################################################################################
 
-# we can only build the command line client, apitests, and other if we build the simplestore
-SET (BUILDING_SIMPLESTORE)
-IF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
-  SET(BUILDING_SIMPLESTORE "ON")
-ELSE (ZORBA_STORE_DIRS MATCHES "src/store/naive")
-  SET(BUILDING_SIMPLESTORE "OFF")
-ENDIF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
-
 SET (ZORBA_MODULES_DIR "${CMAKE_SOURCE_DIR}/../zorba_modules"
   CACHE PATH "Path to directory (outside of Zorba svn root) containing external modules to add to the build")
 
@@ -441,9 +433,9 @@ ADD_DEFINITIONS(-Dzorba_EXPORTS)
 ADD_SUBDIRECTORY(src)
 REMOVE_DEFINITIONS(-Dzorba_EXPORTS)
 
-IF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
+IF(ZORBA_USE_SWIG)
   ADD_SUBDIRECTORY(swig)
-ENDIF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
+ENDIF(ZORBA_USE_SWIG)
 
 ADD_SUBDIRECTORY(bin)
 
