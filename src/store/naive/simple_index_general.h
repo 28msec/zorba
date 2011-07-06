@@ -39,6 +39,7 @@ public:
   struct NodeInfo
   {
     store::Item_t theNode;
+    bool          theUntyped;
   };
 
   typedef std::vector<NodeInfo>::const_iterator const_iterator;
@@ -155,6 +156,8 @@ protected:
 
   rchandle<IndexPointCondition>              theCondition;
   store::IndexCondition::Kind                theProbeKind;
+
+  bool                                       theIsUntypedProbe;
 
   std::vector<GeneralIndexValue*>            theResultSets;
   std::vector<GeneralIndexValue*>::iterator  theResultSetsIte;
@@ -283,6 +286,7 @@ protected:
   store::IndexCondition::Kind                 theProbeKind;
   rchandle<IndexPointCondition>               thePointCondition;
   rchandle<IndexBoxGeneralCondition>          theBoxGeneralCondition;
+  bool                                        theIsUntypedProbe;
 
   ResultSets                                  theResultSets;
   ResultSets::const_iterator                  theResultSetsIte;

@@ -45,7 +45,7 @@ void GeneralIndexValue::addNode(store::Item_t& node, bool multikey, bool untyped
   theNodes.resize(numNodes + 1);
   theNodes[numNodes].theNode.transfer(node);
   //theNodes[numNodes].theMultiKey = multikey;
-  //theNodes[numNodes].theUntyped = untyped;
+  theNodes[numNodes].theUntyped = untyped;
 }
 
 
@@ -552,6 +552,7 @@ bool GeneralHashIndex::remove(
 ProbeGeneralHashIndexIterator::ProbeGeneralHashIndexIterator(
     const store::Index_t& index) 
   :
+  theIsUntypedProbe(false),
   theResultSets(1)
 {
   theIndex = static_cast<GeneralHashIndex*>(index.getp());
@@ -807,6 +808,8 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
 
     case XS_UNTYPED_ATOMIC:
     {
+      theIsUntypedProbe = true;
+
       store::ItemHandle<UntypedAtomicItem> untypedItem = 
       static_cast<UntypedAtomicItem*>(keyItem);
 
@@ -1038,6 +1041,12 @@ bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
   {
     while (theIte != theEnd)
     {
+      if (theIsUntypedProbe && (*theIte).theUntyped)
+      {
+        ++theIte;
+        continue;
+      }
+
       result = (*theIte).theNode;
       ++theIte;
       return true;
@@ -1449,6 +1458,7 @@ store::Index::KeyIterator_t GeneralTreeIndex::keys() const
 ProbeGeneralTreeIndexIterator::ProbeGeneralTreeIndexIterator(
     const store::Index_t& index) 
   :
+  theIsUntypedProbe(false),
   theResultSets(1)
 {
   theIndex = static_cast<GeneralTreeIndex*>(index.getp());
@@ -1704,6 +1714,8 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
     case XS_UNTYPED_ATOMIC:
     {
+      theIsUntypedProbe = true;
+
       store::ItemHandle<UntypedAtomicItem> untypedItem = 
       static_cast<UntypedAtomicItem*>(keyItem);
 
@@ -2139,8 +2151,10 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 
       if (theIndex->theMaps[XS_DECIMAL])
       {
-        altKey[0] = keyItem;
-        probeMap(theIndex->theMaps[XS_DECIMAL], key);
+        xs_decimal decimalValue = keyItem->getLongValue();
+        GET_FACTORY().createDecimal(castItem, decimalValue);
+        altKey[0].transfer(castItem);
+        probeMap(theIndex->theMaps[XS_DECIMAL], &altKey);
       }
 
       if (theIndex->theMaps[XS_DOUBLE])
@@ -2156,6 +2170,8 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 
     case XS_UNTYPED_ATOMIC:
     {
+      theIsUntypedProbe = true;
+
       store::ItemHandle<UntypedAtomicItem> untypedItem = 
       static_cast<UntypedAtomicItem*>(keyItem);
 
@@ -2174,8 +2190,55 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
         probeMap(theIndex->theMaps[XS_ANY_URI], &altKey);
       }
 
+      // try casting to xs:long
+      if ((theIndex->theMaps[XS_LONG] ||
+           theIndex->theMaps[XS_DOUBLE] ||
+           theIndex->theMaps[XS_DECIMAL]) &&
+          untypedItem->castToLong(castItem), castItem != NULL)
+      {
+        store::ItemHandle<LongItem> longItem = 
+        static_cast<LongItem*>(castItem.getp());
+
+        if (theIndex->theMaps[XS_LONG])
+        {
+          altKey[0].transfer(castItem);
+          probeMap(theIndex->theMaps[XS_LONG], &altKey);
+        }
+
+        if (theIndex->theMaps[XS_DOUBLE])
+        {
+          xs_double doubleValue = longItem->getLongValue();
+          GET_FACTORY().createDouble(castItem, doubleValue);
+          altKey[0].transfer(castItem);
+          probeMap(theIndex->theMaps[XS_DOUBLE], &altKey);
+        }
+
+        if (theIndex->theMaps[XS_DECIMAL])
+        {
+          xs_decimal decimalValue = longItem->getLongValue();
+          GET_FACTORY().createDecimal(castItem, decimalValue);
+          altKey[0].transfer(castItem);
+          probeMap(theIndex->theMaps[XS_DECIMAL], &altKey);
+        }
+      }
+
+      // try casting to xs:decimal
+      else if ((theIndex->theMaps[XS_LONG] ||
+                theIndex->theMaps[XS_DOUBLE] ||
+                theIndex->theMaps[XS_DECIMAL]) &&
+               untypedItem->castToDecimal(castItem), castItem != NULL)
+      {
+      }
+
+      // try casting to xs:double
+      else if ((theIndex->theMaps[XS_LONG] ||
+               theIndex->theMaps[XS_DOUBLE]) &&
+               untypedItem->castToDouble(castItem), castItem != NULL)
+      {
+      }
+
       // try casting to xs:datetime
-      if (theIndex->theMaps[XS_DATETIME] && untypedItem->castToDateTime(castItem))
+      else if (theIndex->theMaps[XS_DATETIME] && untypedItem->castToDateTime(castItem))
       {
         altKey[0].transfer(castItem);
         probeMap(theIndex->theMaps[XS_DATETIME], &altKey);
@@ -2297,6 +2360,12 @@ bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
     {
       while (theIte != theEnd)
       {
+        if (theIsUntypedProbe && (*theIte).theUntyped)
+        {
+          ++theIte;
+          continue;
+        }
+
         result = (*theIte).theNode;
         
         ++theIte;
@@ -2320,6 +2389,12 @@ bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
       {
         while (theIte != theEnd)
         {
+          if (theIsUntypedProbe && (*theIte).theUntyped)
+          {
+            ++theIte;
+            continue;
+          }
+
           result = (*theIte).theNode;
           
           ++theIte;

@@ -164,14 +164,21 @@ typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
   Let M be the number of key columns. Then, an M-dimensional box is defined as
   a conjuction of M range conditions on columns 0 to M-1. Each range condition
   specifies a range of acceptable values for some key column. Specifically, a
-  range is defined as the set of all values X such that
+  range is defined as the set of all key values K such that
 
-  lower_bound <? X <? upper_bound, where <? is either the lt or the le operator.
+  lower_bound <? K <? upper_bound, where <? is either the lt or the le operator.
 
   The lower bound may be -INFINITY and the upper bound may be +INFINTY.
 
   BOX_GENERAL :
   -------------
+
+  It represents the following condition:
+
+  bound op? K, where 
+
+  (a) op? is one of <, <=, >, or >=, (b) K is a key value, and (c) bound is either
+  an atomic item or -INFINITY or +INFINITY.
 
 ********************************************************************************/
 class IndexCondition : public SimpleRCObject
