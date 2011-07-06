@@ -49,7 +49,7 @@ void Integer::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
-  value_ = ztd::atoll( s );
+  value_ = ztd::aton<value_type>( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
