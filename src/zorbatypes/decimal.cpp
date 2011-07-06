@@ -39,8 +39,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
     throw std::invalid_argument( "empty string" );
 
-  while ( ascii::is_space( *s ) )
-    ++s;
+  s = ascii::trim_start_whitespace( s );
   char const *const first_non_ws = s;
   if ( *s == '+' || *s == '-' )
     ++s;
