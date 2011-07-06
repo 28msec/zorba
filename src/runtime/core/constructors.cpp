@@ -417,7 +417,14 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         assert(child->getNodeKind() != store::StoreConsts::documentNode);
 
         if (child->getNodeKind() != store::StoreConsts::attributeNode)
-          break;
+        {
+          // Remove empty text nodes, as per 3.8.3.1 Computed Element Constructors
+          // http://www.w3.org/TR/xquery-30/#id-computedElements
+          if (child->getNodeKind() == store::StoreConsts::textNode && child->getStringValue().empty())
+            continue;
+          else
+            break;
+        }
 
         if (child->getParent() != result.getp())
           child->copy(result, copymode);
