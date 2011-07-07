@@ -24,18 +24,23 @@
 #include <zorba/config.h>
 
 #include "common/common.h"
-#include "zorbaserialization/class_serializer.h"
 
 #include "schema_types.h"
 #include "zorbatypes_decl.h"
 
 namespace zorba {
 
+template<typename FloatType>
+class FloatImpl;
+namespace serialization{
+  template<typename FloatType>
+  void operator&(Archiver &ar, FloatImpl<FloatType> &obj);
+}
 ///////////////////////////////////////////////////////////////////////////////
 
 // exported for testing only
 template<typename FloatType>
-class FloatImpl : public serialization::SerializeBaseClass 
+class FloatImpl
 {
 public:
   typedef FloatType value_type;
@@ -172,9 +177,8 @@ public:
 
   /////////////////////////////////////////////////////////////////////////////
 
-  SERIALIZABLE_TEMPLATE_CLASS(FloatImpl)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(FloatImpl)
-  void serialize( serialization::Archiver& );
+  template<typename FloatType2>
+  friend void serialization::operator&(serialization::Archiver &ar, FloatImpl<FloatType2> &obj);
 
 private:
   typedef unsigned short precision_type;
@@ -299,7 +303,6 @@ FloatImpl<FloatType>::FloatImpl( char const *s ) {
 template<typename FloatType>
 template<typename FloatType2>
 inline FloatImpl<FloatType>::FloatImpl( FloatImpl<FloatType2> const &f ) :
-  serialization::SerializeBaseClass(),
   value_( f.value_ ),
   precision_( max_precision() )
 {

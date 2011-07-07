@@ -956,6 +956,11 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       set_source(e, loc);
       throw;
     }
+    //catch (std::exception const&e)
+    //{
+    //  //ZXQP0003_INTERNAL_ERROR
+    //  throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(e.what()), ERROR_LOC(loc));
+    //}
     STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
   
   }

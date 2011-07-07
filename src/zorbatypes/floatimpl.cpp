@@ -48,12 +48,6 @@ zstring const& neg_inf_str() {
   return value;
 }
 
-SERIALIZABLE_TEMPLATE_VERSIONS(FloatImpl)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(FloatImpl)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<float>, 1)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<double>, 2)
-
 ////////////////////////////////////////////////////////////////////////////////
 
 static void count_significant_digits( char digit, int *significant_digits,
@@ -419,12 +413,6 @@ FloatImpl<FloatType> const& FloatImpl<FloatType>::zero() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-template<typename FloatType>
-void FloatImpl<FloatType>::serialize( serialization::Archiver &ar ) {
-  ar & value_;
-  ar & precision_;
-}
 
 template class FloatImpl<double>;
 template class FloatImpl<float>;

@@ -21,6 +21,7 @@
 #include <zorba/xquery_exception.h>
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/m_apm.h"
+#include "zorbatypes/floatimpl.h"
 #include "zorbautils/checked_vector.h"
 
 #include "zorbaserialization/class_serializer.h"
@@ -555,6 +556,13 @@ void operator&(Archiver &ar, zorba::internal::VariableQName<StringType> &obj)
     ar & obj.localname_;
     ar.read_end_current_level();
   }
+}
+
+template<typename FloatType>
+void operator&(Archiver &ar, FloatImpl<FloatType> &obj)
+{
+  ar & obj.value_;
+  ar & obj.precision_;
 }
 
 } // namespace serialization
