@@ -35,15 +35,11 @@ IF (JAVA_INCLUDE_PATH)
 
   SET( CMAKE_SWIG_FLAGS -package org.zorbaxquery.api)
 
+  SWIG_ADD_MODULE( libzorba_api java zorba_api.i )
+  SWIG_LINK_LIBRARIES( libzorba_api zorba_simplestore ${JAVA_LIBRARY} )
   IF(WIN32)
-    SWIG_ADD_MODULE( libzorba_api java zorba_api.i )
-    SWIG_LINK_LIBRARIES( libzorba_api zorba_simplestore ${JAVA_LIBRARY} )
     set_target_properties( libzorba_api PROPERTIES OUTPUT_NAME "zorba_api" )
-  ELSEIF(WIN32)
-    SWIG_ADD_MODULE( libzorba_api java zorba_api.i )
-    SWIG_LINK_LIBRARIES( libzorba_api zorba_simplestore ${JAVA_LIBRARY} )
   ENDIF(WIN32)
-  
   IF ( APPLE )
     set_target_properties( libzorba_api PROPERTIES SUFFIX .jnilib )
   ENDIF ( APPLE )
