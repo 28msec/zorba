@@ -211,10 +211,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
 
-    # These tests fail due to bad casting from negative numbers to unsignedLong.
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-83 3349269)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-428 3349269)
-
     # These tests fail due to missing document/base-uri functionality
     # on parse-xml
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/BaseURIFunc/K2-BaseURIFunc-21 3349272)
