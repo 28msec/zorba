@@ -843,6 +843,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theModulePaths;
 
+  // Options must be serialized BEFORE external modules
+  ar & theOptionMap;
   ar & theExternalModulesMap;
 
   SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
@@ -878,7 +880,6 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theCollationMap;
   ar & theDefaultCollation;
 
-  ar & theOptionMap;
 #ifndef ZORBA_NO_FULL_TEXT
   ar & theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */

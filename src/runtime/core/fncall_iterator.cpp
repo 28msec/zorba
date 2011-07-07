@@ -515,6 +515,7 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     ar.set_is_temp_field(true);
     ar & lTmp;
     ar.set_is_temp_field(false);
+    ar & theModuleSctx;
   }
   else
   {
@@ -526,17 +527,18 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     ar & lLocalname;
     ar.set_is_temp_field(false);
 
+    ar & theModuleSctx;
     if (!theNamespace.empty())
     {
-      theFunction = theSctx->lookup_external_function(theNamespace, lLocalname);
+      theFunction = theModuleSctx->lookup_external_function(theNamespace, lLocalname);
       if (!theFunction)
       {
         throw ZORBA_EXCEPTION(
           zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(
-						ZED( NoExternalFunction ),
-						BUILD_STRING( '{', theNamespace, '}', lLocalname )
-					)
+                ZED( NoExternalFunction ),
+                BUILD_STRING( '{', theNamespace, '}', lLocalname )
+                )
         );
       }
     }
@@ -547,7 +549,6 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   }
 
   ar & theIsUpdating;
-  ar & theModuleSctx;
 }
 
 
