@@ -468,3 +468,7 @@ ENDIF (APPLE AND UNIVERSAL)
 IF (WIN32)
   ZORBA_GENERATE_EXE_SCRIPTS_WIN32 ()
 ENDIF (WIN32)
+
+# This must be done last! Create the one top-level target which
+# depends on all generated (copied) module/schema files.
+DONE_DECLARING_ZORBA_URIS()

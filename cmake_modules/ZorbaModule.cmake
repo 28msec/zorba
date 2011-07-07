@@ -126,30 +126,16 @@ MACRO (DECLARE_ZORBA_MODULE)
     "" ${ARGN})
   IF (NOT IS_ABSOLUTE "${MODULE_FILE}")
     SET (SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FILE}")
-    SET (module_name "${MODULE_FILE}")
   ELSE (NOT IS_ABSOLUTE "${MODULE_FILE}")
     SET (SOURCE_FILE "${MODULE_FILE}")
-    GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
   ENDIF (NOT IS_ABSOLUTE "${MODULE_FILE}")
-
-  # Determine which module this is, numerically. This number will be
-  # used to generate unique target names for the external library (if
-  # any) and the target to copy files into URI_PATH. I wish I could
-  # name these targets after the URI rather than an int to avoid any
-  # possibility of conflicts, but when you do that you quickly run up
-  # against Windows' pathetic 260-character path limitation.
-  GET_PROPERTY (num_mod_targets GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT)
-  IF (NOT num_mod_targets)
-    SET (num_mod_targets 0)
-  ENDIF (NOT num_mod_targets)
-  MATH (EXPR num_mod_targets "${num_mod_targets} + 1")
-  SET_PROPERTY (GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT ${num_mod_targets})
+  GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
 
 
   MANGLE_URI (${MODULE_URI} "xq" module_path module_filename)
 
   # Compute a CMake-symbol-safe version of the target URI, for storing
-  # things in CMake properties and declaring CMake targets.
+  # things in CMake properties.
   STRING (REGEX REPLACE "[/ ]" "_" uri_sym "${module_path}/${module_filename}")
 
   # Compute the version numbers, if any provided.
@@ -225,9 +211,22 @@ MACRO (DECLARE_ZORBA_MODULE)
       SET (target_type LIBRARY)
     ENDIF (WIN32)
 
+    # Determine which module this is, numerically. This number will be
+    # used to generate unique target names for the external library
+    # (if any). I wish I could name these targets after the URI rather
+    # than an int to avoid any possibility of conflicts, but when you
+    # do that you quickly run up against Windows' pathetic
+    # 260-character path limitation.
+    GET_PROPERTY (num_mod_targets GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT)
+    IF (NOT num_mod_targets)
+      SET (num_mod_targets 0)
+    ENDIF (NOT num_mod_targets)
+    MATH (EXPR num_mod_targets "${num_mod_targets} + 1")
+    SET_PROPERTY (GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT ${num_mod_targets})
+
     # Add the library target. Ensure that the output name is based on
     # the module *URI*'s final component.
-    SET(module_lib_target "modlib_${num_mod_targets}")
+    SET(module_lib_target "modlib${num_mod_targets}_${module_name}")
     ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
     # It seems like it would be nice to set the VERSION and/or
@@ -241,16 +240,17 @@ MACRO (DECLARE_ZORBA_MODULE)
     SET_TARGET_PROPERTIES(${module_lib_target} PROPERTIES
       OUTPUT_NAME "${module_filewe}${SUFFIX}"
       ${target_type}_OUTPUT_DIRECTORY
-      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src")
+      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src"
+      FOLDER "ModuleLibs")
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
 
   ENDIF(EXISTS "${SOURCE_FILE}.src/")
 
 
-  # Done dealing with C++. Now, set up CMake custom commands which
-  # will copy the module source file and dynamic library to each
-  # target filename in the output directory.
+  # Done dealing with C++. Now, set up rules which will copy the
+  # module source file and dynamic library to each target filename in
+  # the output directory.
 
   IF (MODULE_OUTPUT_DIRECTORY)
     SET (output_dir "${MODULE_OUTPUT_DIRECTORY}/${module_path}")
@@ -267,7 +267,7 @@ MACRO (DECLARE_ZORBA_MODULE)
   ENDIF (MODULE_VERSION)
   FOREACH (version_infix "" ${version_infixes})
     ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}/${module_filename}"
-      "${version_infix}" "${SOURCE_FILE}")
+      "${version_infix}" "")
   ENDFOREACH (version_infix)
 
   # Also copy the dynamic library from the location it was built.
@@ -280,12 +280,6 @@ MACRO (DECLARE_ZORBA_MODULE)
     ADD_COPY_RULE ("${lib_location}" "${output_dir}/${lib_filename}"
       "${MODULE_VERSION}" "${module_lib_target}")
   ENDIF (module_lib_target)
-
-  # Associate these custom commands with the "all" target via a custom
-  # target. (I couldn't find any neater way to do this in CMake; you
-  # can't directly add a dependency to "all", nor is it possible to
-  # add additional file dependencies to an already-created target.)
-  ADD_CUSTOM_TARGET ("chkmod_${num_mod_targets}" ALL DEPENDS ${output_files})
 
   ENSURE_URI_PATH_INSTALLED()
 
@@ -305,6 +299,7 @@ MACRO (DECLARE_ZORBA_SCHEMA)
   ELSE (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
     SET (SOURCE_FILE "${SCHEMA_FILE}")
   ENDIF (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
+  GET_FILENAME_COMPONENT (schema_name "${SCHEMA_FILE}" NAME)
   MANGLE_URI (${SCHEMA_URI} "xsd" schema_path schema_filename)
 
   IF (SCHEMA_OUTPUT_DIRECTORY)
@@ -312,24 +307,15 @@ MACRO (DECLARE_ZORBA_SCHEMA)
   ELSE (SCHEMA_OUTPUT_DIRECTORY)
     SET (output_dir "${CMAKE_BINARY_DIR}/URI_PATH/${schema_path}")
   ENDIF (SCHEMA_OUTPUT_DIRECTORY)
-  ADD_CUSTOM_COMMAND (OUTPUT "${output_dir}/${schema_filename}"
-    COMMAND "${CMAKE_COMMAND}" -E copy
-    "${SOURCE_FILE}" "${output_dir}/${schema_filename}"
-    COMMENT "Copying ${SOURCE_FILE} to URI path" VERBATIM)
-  GET_PROPERTY (num_schema_targets GLOBAL PROPERTY ZORBA_SCHEMA_TARGET_COUNT)
-  IF (NOT num_schema_targets)
-    SET (num_schema_targets 0)
-  ENDIF (NOT num_schema_targets)
-  MATH (EXPR num_schema_targets "${num_schema_targets} + 1")
-  ADD_CUSTOM_TARGET ("chkschema_${num_schema_targets}" ALL
-    DEPENDS "${output_dir}/${schema_filename}")
-  SET_PROPERTY (GLOBAL PROPERTY ZORBA_SCHEMA_TARGET_COUNT ${num_schema_targets})
+
+  ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}/${schema_filename}" "" "")
 
   ENSURE_URI_PATH_INSTALLED()
 ENDMACRO (DECLARE_ZORBA_SCHEMA)
 
-# Utility macro for setting up a build rule to copy a file to a particular
-# versioned name.
+# Utility macro for setting up a build rule to copy a file to a
+# particular versioned name if such a name has not already been
+# output.
 MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET)
   # Compute the modified output filename by inserting VERSION_ARG (if
   # non-empty) in front of its extension.
@@ -343,27 +329,57 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET)
     SET (_output_file "${OUTPUT_FILE}")
   ENDIF (NOT "${VERSION_ARG}" STREQUAL "")
 
-  # We maintain a global CMake property named after the target URI
-  # which remembers all known output source files. If the output
-  # file we just computed is already on that list, that means that a
-  # module with the same URI but a higher version number has already
-  # declared that output file, so we skip it now.
-  GET_PROPERTY (target_files GLOBAL PROPERTY "${uri_sym}-output-files")
+  # We maintain a global CMake property named after the output
+  # directory which remembers all known output source files. If the
+  # output file we just computed is already on that list, that means
+  # that a module with the same URI but a higher version number has
+  # already declared that output file, so we skip it now.
+  STRING (REGEX REPLACE "[/ ]" "_" _dir_sym "${_output_dir}")
+  GET_PROPERTY (target_files GLOBAL PROPERTY "${_dir_sym}-output-files")
   LIST (FIND target_files "${_output_file}" file_found)
   IF (file_found EQUAL -1)
-    LIST (APPEND output_files "${_output_file}")
-    ADD_CUSTOM_COMMAND (OUTPUT "${_output_file}"
-      COMMAND "${CMAKE_COMMAND}" -E copy
-      "${INPUT_FILE}" "${_output_file}"
-      DEPENDS "${DEPEND_TARGET}"
-      COMMENT "Copying ${INPUT_FILE} to URI path" VERBATIM)
-    SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-output-files"
+    SET_PROPERTY (GLOBAL APPEND PROPERTY "${_dir_sym}-output-files"
       "${_output_file}")
+    # Save the input file, output file, and any library dependency
+    # target for this rule in a global property
+    SET_PROPERTY (GLOBAL APPEND PROPERTY ZORBA_URI_FILES
+      "${INPUT_FILE}" "${_output_file}" "${DEPEND_TARGET}")    
   ENDIF (file_found EQUAL -1)
 ENDMACRO (ADD_COPY_RULE)
 
+# Macro which states the project is done calling
+# DECLARE_ZORBA_MODULE() and DECLARE_ZORBA_SCHEMA(). Causes a single
+# target to be declared which will copy all declared module/schema
+# files to their corresponding output directories, with appropriate
+# dependencies. This macro will only have any effect when called by
+# the top-level project in a build.
+MACRO (DONE_DECLARING_ZORBA_URIS)
+  IF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    MESSAGE (STATUS "Creating check_uris target")
+    GET_PROPERTY (copy_rules GLOBAL PROPERTY ZORBA_URI_FILES)
+    SET (_output_files)
+    WHILE (copy_rules)
+      # Pop three items off the list, and set up the corresponding
+      # rule
+      LIST (GET copy_rules 0 _input_file)
+      LIST (GET copy_rules 1 _output_file)
+      LIST (GET copy_rules 2 _depend_target)
+      LIST (REMOVE_AT copy_rules 0 1 2)
+      ADD_CUSTOM_COMMAND (OUTPUT "${_output_file}"
+        COMMAND "${CMAKE_COMMAND}" -E copy
+        "${_input_file}" "${_output_file}"
+        DEPENDS "${_depend_target}"
+        COMMENT "Copying ${_input_file} to URI path" VERBATIM)
+      LIST (APPEND _output_files "${_output_file}")
+    ENDWHILE (copy_rules)
+    ADD_CUSTOM_TARGET ("check_uris" ALL DEPENDS ${_output_files} VERBATIM)
+    SET_PROPERTY (GLOBAL PROPERTY ZORBA_URI_FILES)
+  ENDIF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+ENDMACRO (DONE_DECLARING_ZORBA_URIS)
+
+# Utility macro which ensures there exactly one INSTALL() directive
+# for the URI path.
 MACRO (ENSURE_URI_PATH_INSTALLED)
-  # Ensure there exactly one INSTALL() directive for the URI path.
   GET_PROPERTY (is_installed GLOBAL PROPERTY ZORBA_URI_PATH_INSTALLED)
   IF(NOT is_installed)
     INSTALL(DIRECTORY "${PROJECT_BINARY_DIR}/URI_PATH/."
@@ -372,7 +388,7 @@ MACRO (ENSURE_URI_PATH_INSTALLED)
   ENDIF(NOT is_installed)
 ENDMACRO (ENSURE_URI_PATH_INSTALLED)
 
-# Initialize output file when first included
+# Initialize expected failures output file when first included
 set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
 GET_PROPERTY (is_init GLOBAL PROPERTY expected_failures_initialized)
 IF (NOT is_init)
