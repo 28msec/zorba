@@ -17,11 +17,12 @@
 (: It tweaks the CTest-generated Test.xml to pass tests which crashed    :)
 (: but are marked as EXPECTED_FAILURE().                                 :)
 declare namespace l = "http://zorba-xquery.com";
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare variable $exps as document-node() external;
 declare variable $tests as document-node() external;
 
-declare %sequential function l:xform($a) {
+declare %ann:sequential function l:xform($a) {
   for $exp in $exps/ExpectedFailures/Test
   for $segfault in
      $a/Site/Testing/Test/Results/NamedMeasurement/Value[text() eq "SEGFAULT" or text() eq "OTHER_FAULT"]
