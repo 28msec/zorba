@@ -83,6 +83,7 @@ static void check_parse_number( char const *s, char *end,  T *result ) {
 
 double atod( char const *s ) {
   char *end;
+  errno = 0;
   double result = std::strtod( s, &end );
   check_parse_number( s, end, &result );
   return result;
@@ -90,6 +91,7 @@ double atod( char const *s ) {
 
 float atof( char const *s ) {
   char *end;
+  errno = 0;
   float result = std::strtof( s, &end );
   check_parse_number( s, end, &result );
   return result;
@@ -97,6 +99,7 @@ float atof( char const *s ) {
 
 long long atoll( char const *s ) {
   char *end;
+  errno = 0;
   long long const result = std::strtoll( s, &end, 10 );
   check_parse_number( s, end, static_cast<long long*>( nullptr ) );
   return result;
@@ -112,6 +115,7 @@ unsigned long long atoull( char const *s ) {
       "\"-\": invalid character for unsigned integer"
     );
   char *end;
+  errno = 0;
   unsigned long long const result = std::strtoull( s, &end, 10 );
   check_parse_number( s, end, static_cast<unsigned long long*>( nullptr ) );
   return result;
