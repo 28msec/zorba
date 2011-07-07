@@ -60,6 +60,6 @@
     <li><a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a></li>
     <li><a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX) (Second Edition)</a></li>
     <li><a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization (Second Edition)</a></li>
-    <li><a href="#">XQuery Scripting Extension</a></li>
+    <li><a href="http://xquery-scripting.ethz.ch/spec.html">XQuery Scripting Extension</a> (<a href="http://xquery-scripting.ethz.ch/tutorial.html">tutorial</a>)</li>
   </ul>
    */
