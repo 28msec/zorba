@@ -224,8 +224,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
   ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
 
   IF(ZORBA_TEST_XQUERYX)
-    #w3c bug
-    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Construct/ComputeCon/ComputeConAttr/K2-ComputeConAttr-35 3355019)
 
     #w3c bug
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes011 3355019)

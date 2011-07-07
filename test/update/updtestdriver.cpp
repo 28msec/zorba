@@ -424,6 +424,7 @@ main(int argc, char** argv)
           // xml canonical comparison
           if (lRes) 
           {
+            std::cout << std::endl;
             std::cout << "updtestdriver: success (non-canonical result matches)"
                       << std::endl;
             anyMatch = true;
@@ -431,6 +432,7 @@ main(int argc, char** argv)
           } 
           else 
           {
+            std::cout << std::endl;
             std::cout << "Actual and Reference results are not identical"
                       << std::endl << std::endl
                       << "Actual Result " << lResultFile.get_path() << ": "
@@ -466,11 +468,13 @@ main(int argc, char** argv)
       }
       else if (lState->hasErrors && curQuery == numQueries-1) 
       {
+        std::cout << std::endl;
         std::cout << "Query must throw an error!" << std::endl;
         return 5; 
       }
       else 
       {
+        std::cout << std::endl;
         std::cout << "Query returns result but no expected result defined!"
                   << std::endl;
       }
@@ -479,17 +483,20 @@ main(int argc, char** argv)
     {
       if (isErrorExpected(e, lState))
       {
+        std::cout << std::endl;
         std::cout << "Expected execution error:\n" << e << std::endl;
         continue;
       }
       else
       {
+        std::cout << std::endl;
         std::cout << "Unexpected execution error:\n" << e << std::endl;
         return 6;
       }
     }
   } // for each query described in the spec file
   
+  std::cout << std::endl;
   std::cout << "updtestdriver: success" << std::endl;
   return 0;
 }

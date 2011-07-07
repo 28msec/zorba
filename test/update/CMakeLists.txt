@@ -52,12 +52,7 @@ FOREACH(TESTFILE ${TESTFILES})
 
  IF (NOT TESTFILE MATCHES ".*XQueryX.*" OR ZORBA_TEST_XQUERYX )
 
-   #add prefix if xqueryx test
-   IF (TESTFILE MATCHES ".*XQueryX.*")
-     SET(TESTNAME "xqueryx_test/update/${TESTNAME}")
-   ELSE (TESTFILE MATCHES ".*XQueryX.*")
-     SET(TESTNAME "test/update/${TESTNAME}")
-   ENDIF (TESTFILE MATCHES ".*XQueryX.*")
+   SET(TESTNAME "test/update/${TESTNAME}")
 
    ZORBA_ADD_TEST("${TESTNAME}" updtestdriver ${TESTFILE})
 
@@ -110,4 +105,47 @@ IF (FOUND_XQUTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
   # These are actually bugs
   EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQuery/ValTrans/revalidate-valtrans-ins-003 3354998)
+
+  IF(ZORBA_TEST_XQUERYX)
+
+    #copied from above, the expected failures for XQuery Update
+    # We "don't care" that these fail
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-005-fail 3354993)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-004-fail 3354993)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-003-fail 3354993)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Put/fn-put-006-fail 3354993)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Prolog/RevalidationDeclaration/revalidation-declaration-01-fail 3354993)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Prolog/RevalidationDeclaration/revalidation-declaration-03-fail 3354993)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/Prolog/RevalidationDeclaration/revalidation-declaration-05-fail 3354993)
+
+    # We don't support the Update Static Typing feature
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-node-04 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-node-06 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-into-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-value-of-node-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-01 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-node-07 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-node-05 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-node-03 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-transform-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-into-04 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-delete-01 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-node-01 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-rename-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-transform-01 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-rename-03 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-rename-01 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-delete-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-value-of-node-01 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-after-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-after-03 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-replace-node-02 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-after-01 3354995)
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-into-01 3354995)
+
+    # These are actually bugs
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/ValTrans/revalidate-valtrans-ins-003 3354998)
+  ENDIF(ZORBA_TEST_XQUERYX)
+
 ENDIF (FOUND_XQUTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
