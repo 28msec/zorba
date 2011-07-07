@@ -956,11 +956,11 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       set_source(e, loc);
       throw;
     }
-    //catch (std::exception const&e)
-    //{
-    //  //ZXQP0003_INTERNAL_ERROR
-    //  throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS(e.what()), ERROR_LOC(loc));
-    //}
+    catch (std::range_error const&re)
+    {
+      //"FOCA0003", "\"$1\": value too large for integer"
+      throw XQUERY_EXCEPTION(err::FOCA0003, ERROR_PARAMS(re.what()), ERROR_LOC(loc));
+    }
     STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
   
   }
