@@ -144,7 +144,7 @@ set_var (
 }
 
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
-int save_load_plan(zorba::Zorba* engine, zorba::XQuery_t &lQuery, std::string lQueryFileString)
+int save_load_plan(zorba::Zorba* engine, zorba::XQuery_t &lQuery, zorba::URIMapper* smapper, std::string lQueryFileString)
 {
   try
   {
@@ -185,7 +185,11 @@ int save_load_plan(zorba::Zorba* engine, zorba::XQuery_t &lQuery, std::string lQ
       return 15;
     }
     bool load_ret;
-    load_ret = lQuery->loadExecutionPlan(ifbinary);
+    std::vector<zorba::URIMapper*> my_uri_mappers;
+    my_uri_mappers.push_back(smapper);
+    std::vector<zorba::URLResolver*> my_url_resolvers;
+    zorba::TestSerializationCallback  serl_callback(my_uri_mappers, my_url_resolvers);
+    load_ret = lQuery->loadExecutionPlan(ifbinary, &serl_callback);
 
     if(!load_ret)
     {
@@ -318,7 +322,7 @@ main(int argc, char** argv)
 
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
       int save_retval;
-      if((save_retval = save_load_plan(engine, lQuery, lResultFile.get_path())))
+      if((save_retval = save_load_plan(engine, lQuery, smapper.get(), lResultFile.get_path())))
       {
         return save_retval;
       }
