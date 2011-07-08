@@ -51,7 +51,7 @@ follow these steps:
   -# Un-gzip and untar the files.
      This will result in a directory dict containing the database files.
   -# Move the dict directory somewhere of your choosing,
-     e.g., \c /usr/local/wordnet-3.0/dict.
+     e.g., <code>/usr/local/wordnet-3.0/dict</code>.
   -# Compile the \c dict directory into a Zorba-compatible binary thesaurus
      as described below.
 
@@ -228,6 +228,7 @@ of "meal."
 Note that you can specify relationships
 either by their abbreviation
 or their meaning.
+Relationships are case-insensitive.
 The above query is equivalent to:
 
 \code
@@ -259,21 +260,21 @@ These relationships are:
       <td>
         A word that is related to another,
         e.g., for "varnished" (furniture)
-        one should also see "finished."
+        one should <em>also see</em> "finished."
       </td>
     </tr>
     <tr>
       <td>antonym</td>
       <td>
         A word opposite in meaning to another,
-        e.g., "light" is an antonym for "heavy."
+        e.g., "light" is an \e antonym for "heavy."
       </td>
     </tr>
     <tr>
       <td>attribute</td>
       <td>
         A noun for which adjectives express values,
-        e.g., "weight" is an attribute
+        e.g., "weight" is an \e attribute
         for which the adjectives "light" and "heavy"
         express values.
       </td>
@@ -282,104 +283,105 @@ These relationships are:
       <td>cause</td>
       <td>
         A verb that causes another,
-        e.g., "show" causes "see."
+        e.g., "show" is a \e cause of "see."
       </td>
     </tr>
     <tr>
       <td>derivationally&nbsp;related&nbsp;form</td>
       <td>
         A word that is derived from a root word,
-        e.g., "metric" is a derivationally related form of "meter."
+        e.g., "metric" is a <em>derivationally related form</em> of "meter."
       </td>
     </tr>
     <tr>
       <td>derived&nbsp;from&nbsp;adjective</td>
       <td>
         An adverb that is derived from an adjective,
-        e.g., "correctly" is derived from the adjective "correct."
+        e.g., "correctly" is <em>derived from the adjective</em> "correct."
       </td>
     </tr>
     <tr>
       <td>entailment</td>
       <td>
         A verb that presupposes another,
-        e.g., "snoring" entails "sleeping."
+        e.g., "snoring" \e entails "sleeping."
       </td>
     </tr>
     <tr>
       <td>hypernym</td>
       <td>
         A word with a broad meaning that more specific words fall under,
-        e.g., "meal" is a hypernym of "breakfast."
+        e.g., "meal" is a \e hypernym of "breakfast."
       </td>
     </tr>
     <tr>
       <td>hyponym</td>
       <td>
         A word of more specific meaning than a general term applicable to it,
-        e.g., "breakfast" is a hyponym of "meal."
+        e.g., "breakfast" is a \e hyponym of "meal."
       </td>
     </tr>
     <tr>
       <td>instance&nbsp;hypernym</td>
       <td>
         A word that denotes a category of some specific instance,
-        e.g., "author" is an instance hypernym of "Asimov."
+        e.g., "author" is an <em>instance hypernym</em> of "Asimov."
       </td>
     </tr>
     <tr>
       <td>instance&nbsp;hyponym</td>
       <td>
         A term that donotes a specific instance of some general category,
-        e.g., "Asimov" is an instance hyponym of "author."
+        e.g., "Asimov" is an <em>instance hyponym</em> of "author."
       </td>
     </tr>
     <tr>
       <td>member&nbsp;holonym</td>
       <td>
         A word that denotes a collection of individuals,
-        e.g., "faculty" is a member holonym of "professor."
+        e.g., "faculty" is a <em>member holonym</em> of "professor."
       </td>
     </tr>
     <tr>
       <td>member&nbsp;meronym</td>
       <td>
         A word that denotes a member of a larger group,
-        e.g., a "person" is a member meronym of a "crowd."
+        e.g., a "person" is a <em>member meronym</em> of a "crowd."
       </td>
     </tr>
     <tr>
       <td>part&nbsp;holonym</td>
       <td>
         A word that denotes a larger whole comprised of some part,
-        e.g., "car" is a part holonym of "engine."
+        e.g., "car" is a <em>part holonym</em> of "engine."
       </td>
     </tr>
     <tr>
       <td>part&nbsp;meronym</td>
       <td>
         A word that denotes a part of a larger whole,
-        e.g., an "engine" is part meronym of a "car."
+        e.g., an "engine" is <em>part meronym</em> of a "car."
       </td>
     </tr>
     <tr>
       <td>participle&nbsp;of&nbsp;verb</td>
       <td>
         An adjective that is the participle of some verb,
-        e.g., "breaking" is the participle of the verb "break."
+        e.g., "breaking" is the <em>participle of the verb</em> "break."
       </td>
     </tr>
     <tr>
       <td>pertainym</td>
       <td>
-        An adjective that classifies its noun, e.g., "musical instrument."
+        An adjective that classifies its noun,
+        e.g., "musical" is a \e pertainym in "musical instrument."
       </td>
     </tr>
     <tr>
       <td>similar&nbsp;to</td>
       <td>
         Similar, though not necessarily interchangeable, adjectives.
-        For example, "shiny" is similar to "bright",
+        For example, "shiny" is <em>similar to</em> "bright",
         but they have subtle differences.
       </td>
     </tr>
@@ -387,21 +389,22 @@ These relationships are:
       <td>substance&nbsp;holonym</td>
       <td>
         A word that denotes a larger whole containing some constituent
-        substance, e.g., "bread" is a substance holonym of "flour."
+        substance, e.g., "bread" is a <em>substance holonym</em> of "flour."
       </td>
     </tr>
     <tr>
       <td>substance&nbsp;meronym</td>
       <td>
         A word that denotes a constituant substance of some larger whole,
-        e.g., "flour" is a substance meronym of "bread."
+        e.g., "flour" is a <em>substance meronym</em> of "bread."
       </td>
     </tr>
     <tr>
       <td>verb&nbsp;group</td>
       <td>
         A verb that is a member of a group of similar verbs,
-        e.g., "live" is in the verb group of "dwell", "live", "inhabit", etc.
+        e.g., "live" is in the <em>verb group</em>
+        of "dwell", "live", "inhabit", etc.
       </td>
     </tr>
   </table>
