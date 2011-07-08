@@ -42,7 +42,10 @@ Turkish.
 
 Using the Zorba C++ API,
 you can provide your own stemmer
-by deriving from two classes.
+by deriving from two classes:
+\c Stemmer
+and
+\c StemmerProvider.
 
 \subsection ft_class_stemmer The Stemmer Class
 
