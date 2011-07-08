@@ -74,7 +74,6 @@ namespace http_client {
     std::istream* theStream;
     HttpResponseParser* theResponseParser;
     curl_slist* theHeaderList;
-    void destroyStream();
   };
 
   class HttpResponseHandler : public RequestHandler {
