@@ -25,6 +25,7 @@
 #include <string>
 
 #include <zorba/internal/ztd.h>
+#include "cxx_util.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -218,13 +219,13 @@ bool split( char const *in, char delim, OutputStringType1 *out1,
 // Allows out1 to be NULL.
 template<class OutputStringType2> inline
 bool split( char const *in, char delim, void*, OutputStringType2 *out2 ) {
-  return split( in, delim, static_cast<OutputStringType2*>(0), out2 );
+  return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be NULL.
 template<class OutputStringType1> inline
 bool split( char const *in, char delim, OutputStringType1 *out1, void* ) {
-  return split( in, delim, out1, static_cast<OutputStringType1*>(0) );
+  return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
 /**
@@ -252,14 +253,14 @@ inline bool split( InputStringType const &in, char delim,
 template<class InputStringType,class OutputStringType2> inline
 bool split( InputStringType const &in, char delim, void*,
             OutputStringType2 *out2 ) {
-  return split( in, delim, static_cast<OutputStringType2*>(0), out2 );
+  return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be NULL.
 template<class InputStringType,class OutputStringType1> inline
 bool split( InputStringType const &in, char delim, OutputStringType1 *out1,
             void* ) {
-  return split( in, delim, out1, static_cast<OutputStringType1*>(0) );
+  return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
 /**
@@ -294,14 +295,14 @@ bool split( char const *in, char const *delim, OutputStringType1 *out1,
 template<class OutputStringType2> inline
 bool split( char const *in, char const *delim, void*,
             OutputStringType2 *out2 ) {
-  return split( in, delim, static_cast<OutputStringType2*>(0), out2 );
+  return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be NULL.
 template<class OutputStringType1> inline
 bool split( char const *in, char const *delim, OutputStringType1 *out1,
             void* ) {
-  return split( in, delim, out1, static_cast<OutputStringType1*>(0) );
+  return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
 /**
@@ -329,14 +330,14 @@ inline bool split( InputStringType const &in, char const *delim,
 template<class InputStringType,class OutputStringType2> inline
 bool split( InputStringType const &in, char const *delim, void*,
             OutputStringType2 *out2 ) {
-  return split( in, delim, static_cast<OutputStringType2*>(0), out2 );
+  return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be NULL.
 template<class InputStringType,class OutputStringType1> inline
 bool split( InputStringType const &in, char const *delim,
             OutputStringType1 *out1, void* ) {
-  return split( in, delim, out1, static_cast<OutputStringType1*>(0) );
+  return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
 /**
@@ -382,7 +383,7 @@ template<
 >
 inline bool split( InputStringType const &in, DelimStringType const &delim,
                    void*, OutputStringType2 *out2 ) {
-  return split( in, delim, static_cast<OutputStringType2*>(0), out2 );
+  return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be NULL.
@@ -393,7 +394,7 @@ template<
 >
 inline bool split( InputStringType const &in, DelimStringType const &delim,
                    OutputStringType1 *out1, void* ) {
-  return split( in, delim, out1, static_cast<OutputStringType1*>(0) );
+  return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
 ////////// String number parsing ///////////////////////////////////////////////
