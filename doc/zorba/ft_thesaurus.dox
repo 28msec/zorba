@@ -124,7 +124,7 @@ use one or more –thesaurus options:
 zorba --thesaurus default:=/usr/local/zorba/thesauri/wordnet-en.zth ...
 \endcode
 
-\section ft_thesaurus_relationships Thesaurus Relationships
+\section ft_thesaurus_rels Thesaurus Relationships
 
 Using the WordNet database,
 Zorba supports all of the thesaurus relationships
@@ -138,7 +138,7 @@ and "X SN" (see scope note for).
 These relationships are:
 
 <center>
-  <table class="fulltext_relationships">
+  <table class="ft_rels">
     <tr>
       <th>Rel.</th>
       <th>Meaning</th>
@@ -250,7 +250,7 @@ Zorba also supports all of the relationships offered by WordNet.
 These relationships are:
 
 <center>
-  <table class="fulltext_relationships">
+  <table class="ft_rels">
     <tr>
       <th>Relationship</th>
       <th>Meaning</th>

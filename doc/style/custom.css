@@ -1,20 +1,17 @@
-table.fulltext_relationships {
+table.ft_rels {
   border-collapse: collapse;
 }
-table.fulltext_relationships td {
+table.ft_rels td {
   border-width: 1px;
   border-color: #CCCCCC;
   border-style: solid;
   padding: 2px;
   vertical-align: top;
 }
-table.fulltext_relationships th {
+table.ft_rels th {
   border-width: 1px;
   border-color: #CCCCCC;
   border-style: solid;
   padding: 2px;
   text-align: left;
 }
-
-
-
