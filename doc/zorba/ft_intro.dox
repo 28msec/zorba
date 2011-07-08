@@ -1,0 +1,27 @@
+/** \page ft_top Full Text
+
+\section ft_intro Introduction
+
+The Zorba XQuery engine implements the
+<a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
+specification.
+The documentation of some full-text features includes:
+
+  - \ref ft_stemmer
+  - \ref ft_thesaurus
+
+\section ft_unimplemented Unimplemented Features
+
+The full text specification is mostly,
+but not completely,
+implemented.
+The features that are not (completely) implemented are:
+
+  - The <a href="http://www.w3.org/TR/xpath-full-text-10/#ftignoreoption">Ignore Option</a>
+    (bug <a href="https://sourceforge.net/tracker/?func=detail&aid=3187470&group_id=226244&atid=1067586">3187470</a>).
+  - <a href="http://www.w3.org/TR/xpath-full-text-10/#section-score-variables">Score Variables</a>
+    and <a href="http://www.w3.org/TR/xpath-full-text-10/#section-using-weights">Using Weights Within a Scored FTContainsExpr</a>
+    (bug <a href="https://sourceforge.net/tracker/?func=detail&aid=3187462&group_id=226244&atid=1067586">3187462</a>).
+
+*/
+/* vim:set et sw=2 ts=2: */

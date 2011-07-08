@@ -25,9 +25,13 @@
    
   <b><a href="#">Schema Lifecycle</a></b>
 
-  <b>\ref uriresolvers
+  <b>\ref uriresolvers</b>
   
-  <b>\ref full_text
+  <b>\ref ft_top</b>
+  <ul>
+    <li>\ref ft_stemmer
+    <li>\ref ft_thesaurus
+  </ul>
 
   <b><a href="#">Zorba Specific Annotations and Options</a></b>
 

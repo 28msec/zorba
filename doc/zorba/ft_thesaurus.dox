@@ -1,6 +1,6 @@
-/** \page full_text Full Text
+/** \page ft_thesaurus Full Text Thesaurus
 
-\section ft_introduction Introduction
+\section ft_thesaurus_intro Introduction
 
 The Zorba XQuery engine implements the
 <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
@@ -39,7 +39,7 @@ The only caveat of the binary format is that it is
 i.e., a binary file created on a computer having a little-endian CPU
 won't work on a computer having a big-endian CPU.
 
-\section ft_download_install_wordnet Downloading & Installing the WordNet Database
+\section ft_thesaurus_download_install_wordnet Downloading & Installing the WordNet Database
 
 To download and install the WordNet database on a Unix-like system,
 follow these steps:
@@ -80,7 +80,7 @@ zt-wn-compile -v /usr/local/wordnet-3.0/dict
 
 Move the \c wordnet-en.zth file to a location of your choosing.
 
-\section ft_mappings Thesauri Mappings
+\section ft_thesaurus_mappings Thesauri Mappings
 
 In order to use thesauri,
 you need to specify where they are to the Zorba engine
@@ -115,7 +115,7 @@ the \e from_uri can be \c default or \c ##default
 to allow for specifying the default thesaurus
 as was done for the first example on this page.
 
-\section ft_mappings_to_zorba Specifying Thesauri Mappings to Zorba
+\section ft_thesaurus_mappings_to_zorba Specifying Thesauri Mappings to Zorba
 
 To specify the location of the thesaurus to Zorba from the command-line,
 use one or more –thesaurus options:
@@ -124,7 +124,7 @@ use one or more –thesaurus options:
 zorba --thesaurus default:=/usr/local/zorba/thesauri/wordnet-en.zth ...
 \endcode
 
-\section ft_relationships Thesaurus Relationships
+\section ft_thesaurus_relationships Thesaurus Relationships
 
 Using the WordNet database,
 Zorba supports all of the thesaurus relationships
@@ -133,7 +133,7 @@ and [ANSI/NISO Z39.19-2005]
 with the exceptions of "HN" (history note)
 and "X SN" (see scope note for).
 
-\subsection ft_iso_rels ISO 2788 and ANSI/NISO Z39.19-2005 Relationships
+\subsection ft_thesaurus_iso_rels ISO 2788 and ANSI/NISO Z39.19-2005 Relationships
 
 These relationships are:
 
@@ -243,7 +243,7 @@ the [ISO 2788] relationships map to WordNet relationships
 that are shown in the "WordNet Rel." column.
 WordNet relationships are explained in the next section.
 
-\subsection ft_wordnet_rels WordNet Relationships
+\subsection ft_thesaurus_wordnet_rels WordNet Relationships
 
 In addition to the [ISO 2788] and [ANSI/NISO Z39.19-2005] relationships,
 Zorba also supports all of the relationships offered by WordNet.
@@ -410,25 +410,12 @@ These relationships are:
   </table>
 </center>
 
-\subsection ft_wordnet_levels WordNet Levels
+\subsection ft_thesaurus_wordnet_levels WordNet Levels
 
 In no levels are specified in a query,
 Zorba defaults the WordNet implementation to be 2 levels.
 The rationale can be found
 <a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444">here</a>.
-
-\section ft_unimplemented Unimplemented Full Text Features
-
-The full text specification is mostly,
-but not completely,
-implemented.
-The features that are not (completely) implemented are:
-
-  - The <a href="http://www.w3.org/TR/xpath-full-text-10/#ftignoreoption">Ignore Option</a>
-    (bug <a href="https://sourceforge.net/tracker/?func=detail&aid=3187470&group_id=226244&atid=1067586">3187470</a>).
-  - <a href="http://www.w3.org/TR/xpath-full-text-10/#section-score-variables">Score Variables</a>
-    and <a href="http://www.w3.org/TR/xpath-full-text-10/#section-using-weights">Using Weights Within a Scored FTContainsExpr</a>
-    (bug <a href="https://sourceforge.net/tracker/?func=detail&aid=3187462&group_id=226244&atid=1067586">3187462</a>).
 
 */
 /* vim:set et sw=2 ts=2: */
