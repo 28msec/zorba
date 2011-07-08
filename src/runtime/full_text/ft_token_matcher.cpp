@@ -77,7 +77,7 @@ void ft_token_matcher::match_stemmer::
 operator()( string_t const &word, iso639_1::type lang,
             string_t *result ) const {
   if ( core::Stemmer const *const stemmer = sctx_.get_stemmer( lang ) )
-    stemmer->stem( word, result );
+    stemmer->stem( word, lang, result );
   else
     *result = word;
 }

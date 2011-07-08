@@ -39,9 +39,11 @@ public:
    * Stems the given word.
    *
    * @param word The word to stem.
+   * @param lang The language of the word.
    * @param result The stemmed word.
    */
-  virtual void stem( String const &word, String *result ) const = 0;
+  virtual void stem( String const &word, locale::iso639_1::type lang,
+                     String *result ) const = 0;
 };
 
 /**

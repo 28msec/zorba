@@ -41,9 +41,11 @@ public:
    * Gets the stem of the given word.
    *
    * @param word The word to stem.
+   * @param lang The language of the word.
    * @param result A pointer to the result string.
    */
-  virtual void stem( zstring const &word, zstring *result ) const = 0;
+  virtual void stem( zstring const &word, locale::iso639_1::type lang,
+                     zstring *result ) const = 0;
 };
 
 /**

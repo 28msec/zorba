@@ -36,10 +36,11 @@ StemmerWrapper::StemmerWrapper( zorba::Stemmer const *s ) :
   ZORBA_ASSERT( api_stemmer_ );
 }
 
-void StemmerWrapper::stem( zstring const &word, zstring *result ) const {
+void StemmerWrapper::stem( zstring const &word, iso639_1::type lang,
+                           zstring *result ) const {
   String const api_word( Unmarshaller::newString( word ) );
   String api_result( Unmarshaller::newString( *result ) );
-  api_stemmer_->stem( api_word, &api_result );
+  api_stemmer_->stem( api_word, lang, &api_result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

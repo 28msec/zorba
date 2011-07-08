@@ -67,7 +67,8 @@ SnowballStemmer const* SnowballStemmer::create( iso639_1::type lang ) {
   return is_lang_supported( lang ) ? new SnowballStemmer( lang ) : NULL;
 }
 
-void SnowballStemmer::stem( zstring const &word, zstring *result ) const {
+void SnowballStemmer::stem( zstring const &word, iso639_1::type lang,
+                            zstring *result ) const {
   //
   // We need a mutex since the libstemmer library is not thread-safe.
   //

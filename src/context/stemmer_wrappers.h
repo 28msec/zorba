@@ -30,7 +30,8 @@ namespace core {
 class StemmerWrapper : public Stemmer {
 public:
   StemmerWrapper( zorba::Stemmer const *api_stemmer );
-  void stem( zstring const &word, zstring *result ) const;
+  void stem( zstring const &word, locale::iso639_1::type lang,
+             zstring *result ) const;
 private:
   zorba::Stemmer const *const api_stemmer_;
 };

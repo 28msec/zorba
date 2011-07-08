@@ -32,10 +32,11 @@ using namespace zorba::locale;
 
 class TestStemmer : public Stemmer {
 public:
-  void stem( String const &word, String *result ) const;
+  void stem( String const &word, iso639_1::type lang, String *result ) const;
 };
 
-void TestStemmer::stem( String const &word, String *result ) const {
+void TestStemmer::stem( String const &word, iso639_1::type lang,
+                        String *result ) const {
   if ( word == "foobar" )
     *result = "foo";
   else
