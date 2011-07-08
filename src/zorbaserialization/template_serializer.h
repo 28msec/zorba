@@ -25,6 +25,7 @@
 #include <zorba/error_list.h>
 
 #include "util/string_util.h"
+#include "util/array_auto_ptr.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zstring.h"
 
@@ -48,27 +49,65 @@ namespace serialization
 template<class RepType>
 void operator&(Archiver &ar, zorba::rstring<RepType> &obj)
 {
+  bool is_normal_str = true;
   if(ar.is_serializing_out())
   {
-    ar.add_simple_field("rstring", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    if(obj.size() != strlen(obj.c_str()))
+      is_normal_str = false;
+  }
+  ar.set_is_temp_field(true);
+  ar & is_normal_str;
+  ar.set_is_temp_field(false);
+
+  if(is_normal_str)
+  {
+    if(ar.is_serializing_out())
+    {
+      ar.add_simple_field("rstring", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    }
+    else
+    {
+      char  *type;
+      std::string value;
+      int   id;
+      int   version;
+      bool  is_simple = true;
+      bool  is_class = false;
+      enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
+      int   referencing;
+      bool  retval;
+      retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+      if(!retval && ar.get_read_optional_field())
+        return;
+      ar.check_simple_field(retval, type, "rstring", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+      obj = value;
+      ar.register_reference(id, field_treat, &obj);
+    }
   }
   else
-  {
-    char  *type;
-    std::string value;
-    int   id;
-    int   version;
-    bool  is_simple = true;
-    bool  is_class = false;
-    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
-      return;
-    ar.check_simple_field(retval, type, "rstring", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    obj = value;
-    ar.register_reference(id, field_treat, &obj);
+  {//for strings which contain '\0' inside
+    if(ar.is_serializing_out())
+    {
+      const char *cstr = obj.c_str();
+      zorba::zstring::size_type s = obj.size();
+
+      ar.set_is_temp_field(true);
+      ar & s;
+      serialize_array(ar, (unsigned char*)cstr, s);
+      ar.set_is_temp_field(false);
+    }
+    else
+    {
+      array_auto_ptr<unsigned char> cstr;
+      zorba::zstring::size_type s;
+
+      ar.set_is_temp_field(true);
+      ar & s;
+      cstr.reset(new unsigned char[s]);
+      serialize_array(ar, (unsigned char*)cstr.get(), s);
+      obj.assign((const char*)cstr.get(), s);
+      ar.set_is_temp_field(false);
+    }
   }
 }
 

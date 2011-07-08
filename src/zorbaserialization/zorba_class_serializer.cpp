@@ -507,7 +507,7 @@ void operator&(Archiver &ar, store::Item* &obj)
         SERIALIZE_FIELD(zstring, local, getLocalName());
         FINALIZE_SERIALIZE(createQName, (result, ns, prefix, local));
       }
-      else if(name_of_type == "notation")
+      else if(name_of_type == "NOTATION")
       {
         SERIALIZE_FIELD(zstring, value, getStringValue());
         FINALIZE_SERIALIZE(createNOTATION, (result, value));
