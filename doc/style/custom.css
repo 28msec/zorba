@@ -1,0 +1,20 @@
+table.fulltext_relationships {
+  border-collapse: collapse;
+}
+table.fulltext_relationships td {
+  border-width: 1px;
+  border-color: #CCCCCC;
+  border-style: solid;
+  padding: 2px;
+  vertical-align: top;
+}
+table.fulltext_relationships th {
+  border-width: 1px;
+  border-color: #CCCCCC;
+  border-style: solid;
+  padding: 2px;
+  text-align: left;
+}
+
+
+
