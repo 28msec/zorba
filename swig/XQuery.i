@@ -134,6 +134,9 @@ public:
 
   bool isPosOrNegInf () const
   { return theItem.isPosOrNegInf(); }
+  
+  int getNodeKind () const
+  { return theItem.getNodeKind(); }
 
 }; // class Item
 
@@ -280,6 +283,8 @@ public:
   std::string getPrefix () const;
   Item getType () const;
   unsigned int getUnsignedIntValue () const;
+
+  int getNodeKind() const;
   bool isAtomic () const;
   bool isNaN () const;
   bool isNode () const;
@@ -309,5 +314,5 @@ public:
 
   void destroy();
   Iterator iterator();
-  DynamicContext getDynamicContext();  // it should be called getNewDynamicContext
+  DynamicContext getDynamicContext();
 }; // class XQuery
