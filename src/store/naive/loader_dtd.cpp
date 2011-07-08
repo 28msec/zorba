@@ -76,12 +76,14 @@ namespace zorba { namespace simplestore {
 DtdXmlLoader::DtdXmlLoader(
     BasicItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
-    bool dataguide)
+    bool dataguide,
+    bool parseExtParsedEntity)
   :
   XmlLoader(factory, xqueryDiagnostics, dataguide),
   theTree(NULL),
   theRootNode(NULL),
-  theNodeStack(2048)
+  theNodeStack(2048),
+  theParseExtParsedEntity(parseExtParsedEntity)
 {
   theOrdPath.init();
 
@@ -243,6 +245,71 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
 }
 
 
+bool DtdXmlLoader::loadDtdXml()
+{
+  /****** new *******/
+  int options = XML_PARSE_COMPACT;
+  options |= XML_PARSE_DTDVALID;
+  options |= XML_PARSE_DTDLOAD;
+    //options |= XML_PARSE_SAX1;
+    //xmlSAXDefaultVersion(1);
+  xmlLoadExtDtdDefaultValue |= XML_DETECT_IDS;
+  xmlLoadExtDtdDefaultValue |= XML_COMPLETE_ATTRS;
+
+  xmlCtxtUseOptions(ctxt, options);
+
+  if ( xmlParseDocument(ctxt)==-1 )
+  {
+    // std::cout << "  xmlParseDocument: Error: Unable to create tree: " << ctxt->lastError.message << std::endl;
+    theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,ERROR_PARAMS( ZED( ParserNoCreateTree ) )));
+    abortload();
+    return false;
+  }
+
+  /****************/
+  /*
+  while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
+  {
+    xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
+
+    if (!theXQueryDiagnostics->errors().empty())
+    {
+      delete[] theBuffer;
+      abortload();
+      return NULL;
+    }
+  }
+
+  if (numChars < 0)
+  {
+    theXQueryDiagnostics->add_error(
+                                    NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
+                                   );
+    delete[] theBuffer;
+    abortload();
+    return NULL;
+  }
+
+  xmlParseChunk(ctxt, theBuffer, 0, 1);
+  */
+
+  return true;
+}
+
+bool DtdXmlLoader::loadXmlFragment()
+{
+  if (xmlParseExtParsedEnt(ctxt)==-1)
+  {
+    // std::cout << "  xmlParseDocument: Error: Unable to create tree: " << ctxt->lastError.message << std::endl;
+
+    theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,ERROR_PARAMS( ZED( ParserNoCreateTree ) )));
+    abortload();
+    return false;
+  }
+
+  return true;
+}
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -273,44 +340,36 @@ store::Item_t DtdXmlLoader::loadXml(
   theTree->setDocUri(theDocUri);
   theTree->setBaseUri(baseUri);
 
-  char *theBuffer = NULL;
   try
   {
     stream.seekg(0, std::ios::end);
     std::streamoff fileSize = stream.tellg();
     stream.seekg(0, std::ios::beg);
 
-    theBuffer = new char[static_cast<unsigned int>(fileSize+1)];
+    // theBuffer = new char[static_cast<unsigned int>(fileSize+1)];
+    theBuffer.resize(static_cast<unsigned int>(fileSize+1));
     theBuffer[fileSize] = 0;
 
-    std::streamsize numChars = readPacket(stream, theBuffer, fileSize);
+    std::streamsize numChars = readPacket(stream, static_cast<char*>(&theBuffer[0]), fileSize);
 
     if (numChars < 0)
     {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
-      );
+      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
       abortload();
-      delete[] theBuffer;
       return NULL;
     }
     else if (numChars == 0)
     {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( ZED( NoInputData ) )
-        )
-      );
-      delete[] theBuffer;
+      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS(ZED(NoInputData))));
       abortload();
       return NULL;
     }
 
-    ctxt = xmlCreatePushParserCtxt( NULL, //&theSaxHandler,
+    ctxt = xmlCreatePushParserCtxt(NULL, //&theSaxHandler,
                                    this,
-                                   theBuffer,
+                                   static_cast<char*>(&theBuffer[0]),
                                    static_cast<int>(numChars),
-                                   docUri.c_str());
+                                   theDocUri.c_str());
 
     if (ctxt == NULL)
     {
@@ -320,65 +379,17 @@ store::Item_t DtdXmlLoader::loadXml(
           ERROR_PARAMS( ZED( ParserInitFailed ) )
         )
       );
-      delete[] theBuffer;
       abortload();
       return NULL;
     }
 
-    /****** new *******/
-    int options = XML_PARSE_COMPACT;
-    options |= XML_PARSE_DTDVALID;
-    options |= XML_PARSE_DTDLOAD;
-    //options |= XML_PARSE_SAX1;
-    //xmlSAXDefaultVersion(1);
-    xmlLoadExtDtdDefaultValue |= XML_DETECT_IDS;
-    xmlLoadExtDtdDefaultValue |= XML_COMPLETE_ATTRS;
 
-    xmlCtxtUseOptions(ctxt, options);
-
-    if ( xmlParseDocument(ctxt)==-1 )
-    {
-      std::cout << "  xmlParseDocument: Error: Unable to create tree: " <<
-          ctxt->lastError.message << std::endl;
-      theXQueryDiagnostics->add_error(
-        NEW_ZORBA_EXCEPTION(
-          zerr::ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS( ZED( ParserNoCreateTree ) )
-        )
-      );
-      delete[] theBuffer;
-      abortload();
+    bool load_result = theParseExtParsedEntity ? loadXmlFragment() : loadDtdXml();
+    if (!load_result)
       return NULL;
-    }
-    /****************/
-    while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
-    {
-      xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
-
-      if (!theXQueryDiagnostics->errors().empty())
-      {
-        delete[] theBuffer;
-        abortload();
-        return NULL;
-      }
-    }
-
-    if (numChars < 0)
-    {
-      theXQueryDiagnostics->add_error(
-      	NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR )
-      );
-      delete[] theBuffer;
-      abortload();
-      return NULL;
-    }
-
-    xmlParseChunk(ctxt, theBuffer, 0, 1);
-    delete[] theBuffer;
   }
   catch(...)
   {
-    delete[] theBuffer;
     abortload();
     thePathStack.clear();
     return NULL;
@@ -419,8 +430,10 @@ store::Item_t DtdXmlLoader::loadXml(
   }
   else if ( ctxt->lastError.code != XML_ERR_OK )
   {
+    /*
     std::cout << "-- LastErrorCode: " << ctxt->lastError.code << " " <<
         ctxt->lastError.message << " wellformed:" << ok << std::endl; std::cout.flush();
+    */
 
     if ( ctxt->lastError.code == XML_NS_ERR_UNDEFINED_NAMESPACE ||
         ctxt->lastError.code != XML_ERR_NO_DTD )
@@ -1133,7 +1146,7 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     textNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-#ifndef NDEBUG  
+#ifndef NDEBUG
     std::stringstream lSs;
     lSs << "Text Node = " << textNode << " content = "
         << std::string(charp, len) << std::endl
@@ -1186,7 +1199,7 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     cdataNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-#ifndef NDEBUG  
+#ifndef NDEBUG
     std::stringstream lSs;
     lSs << "CDATA Node = " << cdataNode << " content = "
         << std::string(charp, len) << std::endl

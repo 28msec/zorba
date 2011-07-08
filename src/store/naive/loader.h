@@ -55,7 +55,8 @@ class NsBindingsContext;
   theSaxHandler   : The struct containing the callback functions defined by the
                     XmlLoader and given as input to the libxml SAX parser.
 
-  theBuffer       : A buffer to read chunks of the source stream in.
+  theBuffer       : A buffer to read chunks of the source stream in -- declared
+                    in the derived classes.
 
   theFactory      : The item factory of the store.
   theXQueryDiagnostics :
@@ -75,8 +76,6 @@ protected:
   xmlParserCtxtPtr                 ctxt;
 
   xmlSAXHandler                    theSaxHandler;
-
-  char                             theBuffer[INPUT_CHUNK_SIZE];
 
   BasicItemFactory               * theFactory;
 
@@ -138,8 +137,7 @@ class FastXmlLoader : public XmlLoader
   };
 
 protected:
-  bool                             theParseExtParsedEntity;
-
+  char                             theBuffer[INPUT_CHUNK_SIZE];
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 
@@ -156,8 +154,7 @@ public:
   FastXmlLoader(
         BasicItemFactory* factory,
         XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide,
-        bool parseExtParsedEntity = false);
+        bool dataguide);
 
   ~FastXmlLoader();
 
@@ -262,6 +259,7 @@ class DtdXmlLoader : public XmlLoader
   };
 
 protected:
+  std::vector<char>                theBuffer;
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 
@@ -269,6 +267,8 @@ protected:
   zorba::Stack<XmlNode*>           theNodeStack;
   zorba::Stack<PathStepInfo>       thePathStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
+
+  bool                             theParseExtParsedEntity;
 
 #ifdef DATAGUIDE
   zorba::Stack<ElementGuideNode*>  theGuideStack;
@@ -278,7 +278,8 @@ public:
   DtdXmlLoader(
         BasicItemFactory* factory,
         XQueryDiagnostics* xqueryDiagnostics,
-        bool dataguide);
+        bool dataguide,
+        bool parseExtParsedEntity);
 
   ~DtdXmlLoader();
 
@@ -298,6 +299,9 @@ protected:
 
   void loadDocument(xmlDoc *doc);
   void loadNode(xmlNode *node);
+
+  bool loadDtdXml();
+  bool loadXmlFragment();
 
 public:
   static void	startDocument(void * ctx);

@@ -443,15 +443,15 @@ ulong SimpleStore::createTreeId()
 XmlLoader* SimpleStore::getXmlLoader(XQueryDiagnostics* aXQueryDiagnostics,
     const store::LoadProperties& loadProperties)
 {
-  if (loadProperties.getEnableDtd())
+  if (loadProperties.getEnableDtd() || loadProperties.getEnableExtParsedEntity())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
-                            store::Properties::instance()->buildDataguide());
+                            store::Properties::instance()->buildDataguide(),
+                            loadProperties.getEnableExtParsedEntity());
   else
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
-                             store::Properties::instance()->buildDataguide(),
-                             loadProperties.getEnableExtParsedEntity());
+                             store::Properties::instance()->buildDataguide());
 }
 
 

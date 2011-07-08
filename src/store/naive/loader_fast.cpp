@@ -76,12 +76,9 @@ namespace simplestore {
 FastXmlLoader::FastXmlLoader(
     BasicItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
-    bool dataguide,
-    bool parseExtParsedEntity
-    )
+    bool dataguide)
   :
   XmlLoader(factory, xqueryDiagnostics, dataguide),
-  theParseExtParsedEntity(parseExtParsedEntity),
   theTree(NULL),
   theRootNode(NULL),
   theNodeStack(2048)
@@ -312,44 +309,29 @@ store::Item_t FastXmlLoader::loadXml(
 			return NULL;
     }
 
-    if (theParseExtParsedEntity)
+    while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
     {
-      if (xmlParseExtParsedEnt(ctxt)==-1)
+      xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
+
+      if (!theXQueryDiagnostics->errors().empty())
       {
-        theXQueryDiagnostics->add_error(
-          NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParserNoCreateTree ))) );
         abortload();
         return NULL;
       }
     }
-    else
+
+    if (numChars < 0)
     {
-      while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
-      {
-        xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
+      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR ));
+      abortload();
+      return NULL;
+    }
 
-        if (!theXQueryDiagnostics->errors().empty())
-        {
-          abortload();
-          return NULL;
-        }
-      }
-
-      if (numChars < 0)
-      {
-        theXQueryDiagnostics->add_error(
-      	 NEW_ZORBA_EXCEPTION( zerr::ZSTR0020_LOADER_IO_ERROR ));
-        abortload();
-        return NULL;
-      }
-
-      xmlParseChunk(ctxt, theBuffer, 0, 1);
-    } // else
+    xmlParseChunk(ctxt, theBuffer, 0, 1);
   }
   catch(...)
   {
     abortload();
-    thePathStack.clear();
     return NULL;
   }
 
