@@ -463,6 +463,11 @@ DWORD WINAPI thread_main(LPVOID param)
       addURIMapper(driverContext, sctx, cmapper.get());
 
       sctx->setXQueryVersion(zorba::xquery_version_1_0);
+
+      zorba::Item lEnable
+        = zorba->getItemFactory()->createQName(
+              "http://www.zorba-xquery.com/options", "", "enable-feature");
+      sctx->declareOption(lEnable, "hof");
       sctx->setTraceStream(queries->theOutput);
     }
 

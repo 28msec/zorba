@@ -3,6 +3,9 @@ xquery version "3.0";
 (: Name and arity of an inline function :)
 (: Author - Michael Kay, Saxonica :)
 
+declare namespace o = "http://www.zorba-xquery.com/options";
+declare option o:enable-feature "hof";
+
 let $f := function($x as xs:string) as xs:string { upper-case($x) }
 
 let $n := function-name($f)

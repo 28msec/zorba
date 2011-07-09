@@ -5,6 +5,9 @@ xquery version "3.0";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
+declare namespace o = "http://www.zorba-xquery.com/options";
+declare option o:enable-feature "hof";
+
 declare %ann:sequential function local:scramble(
     $x as function(xs:string) as xs:string,
     $y as xs:string) as xs:string 

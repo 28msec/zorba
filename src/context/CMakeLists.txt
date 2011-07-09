@@ -29,6 +29,7 @@ SET(CONTEXT_SRCS
     uri_resolver.cpp
     default_url_resolvers.cpp
     default_uri_mappers.cpp
+    features.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

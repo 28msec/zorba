@@ -3,6 +3,9 @@ xquery version "3.0";
 (: instance-of tests on user-defined function, varying the result types :)
 (: Author - Michael Kay, Saxonica :)
 
+declare namespace o = "http://www.zorba-xquery.com/options";
+declare option o:enable-feature "hof";
+
 declare function local:f($x as xs:long, $y as xs:NCName) as element(e)? {
   <e x="{$x}" y="{$y}"/>
 };

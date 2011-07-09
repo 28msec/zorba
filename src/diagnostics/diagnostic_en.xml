@@ -679,7 +679,7 @@
       </comment>
       <value>multiple annotations with the same or conflicting names</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0111">
       <comment>
        It is a static error for a query prolog to contain two decimal formats with
@@ -2055,6 +2055,19 @@
       <value>"$1": integrity constraint declaration in foreign module</value>
     </diagnostic>
 
+    <diagnostic code="ZDST0060" name="FEATURE_NOT_SUPPORTED">
+      <value>"$1": feature not supported; $2</value>
+      <entry key="unknown_namespace">
+        <value>unknown namespace ($3)</value>
+      </entry>
+      <entry key="unknown_localname">
+        <value>unknown localname ($3)</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="ZDST0061" name="FEATURE_NOT_AVAILABLE">
+      <value>"$1": feature not available</value>
+    </diagnostic>
     
     <diagnostic code="ZDTY0001" name="COLLECTION_INVALID_NODE_TYPE">
       <value>"$1": invalid node type in collection "$2"</value>

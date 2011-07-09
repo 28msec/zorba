@@ -193,6 +193,11 @@ main(int argc, char** argv)
 
       // the w3c testsuite always uses xquery 1.0
       lContext->setXQueryVersion( zorba::xquery_version_1_0 );
+
+      zorba::Item lEnable
+        = engine->getItemFactory()->createQName(
+            "http://www.zorba-xquery.com/options", "", "enable-feature");
+      lContext->declareOption(lEnable, "hof");
     }
 
     // Form the full pathname for the files that will receive the result or the

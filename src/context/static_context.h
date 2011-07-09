@@ -35,7 +35,7 @@
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
 #include "context/uri_resolver.h"
-#include "compiler/parser/xquery_driver.h"
+#include "context/features.h"
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/stemmer.h"
@@ -374,6 +374,12 @@ public:
   SerializationCallback class. The latter also yields for ExternalModules and
   the TraceStream.
 
+  theFeatures:
+  ------------
+  Feature flags that are used when a particular feature (e.g. scripting
+  or ddl) is enabled. The definition of the features is located in
+  context/featueres.h.
+
 ********************************************************************************/
 
 class static_context : public SimpleRCObject
@@ -577,6 +583,8 @@ protected:
   bool                                       theAllWarningsDisabled;
 
   std::vector<store::Item_t>                 theWarningsAreErrors;
+
+  uint32_t                                   theFeatures;
 
 public:
   static bool is_builtin_module(const zstring& ns);
@@ -898,10 +906,20 @@ public:
   //
   // Options
   //
-  void bind_option(const store::Item* qname, const zstring& option);
+  void bind_option(
+      const store::Item* qname,
+      const zstring& option,
+      const QueryLoc& loc);
 
   bool lookup_option(const store::Item* qname, zstring& option) const;
 
+protected:
+  void process_feature_option(
+    const zstring& value,
+    bool  enable,
+    const QueryLoc& loc);
+
+public:
 
   //
   // Auditing
@@ -1012,6 +1030,23 @@ private:
     impl::Resource::EntityType aEntityType,
     std::auto_ptr<impl::Resource>& oResource,
     zstring& oErrorMessage) const;
+
+public:
+  bool is_feature_set( feature::kind k ) const
+  {
+    return theFeatures & k;
+  }
+
+  void set_feature( feature::kind k )
+  {
+    theFeatures |= k;
+  }
+
+  void unset_feature( feature::kind k )
+  {
+    theFeatures &= ~k;
+  }
+
 };
 
 

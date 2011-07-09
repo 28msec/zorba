@@ -936,7 +936,7 @@ StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
   {
     const store::Item* lQName = Unmarshaller::getInternalItem(aQName);
     const zstring& lOptionValue = Unmarshaller::getInternalString(aOptionValue);
-    theCtx->bind_option(lQName, lOptionValue);
+    theCtx->bind_option(lQName, lOptionValue, QueryLoc::null);
   }
   catch (ZorbaException const& e)
   {

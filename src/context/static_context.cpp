@@ -489,7 +489,8 @@ static_context::static_context()
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
-  theAllWarningsDisabled(false)
+  theAllWarningsDisabled(false),
+  theFeatures(0)
 {
 }
 
@@ -533,7 +534,10 @@ static_context::static_context(static_context* parent)
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
-  theAllWarningsDisabled(false)
+  theAllWarningsDisabled(false),
+  // we copy features from the parent such that it's
+  // easy to set and unset them
+  theFeatures(parent->theFeatures)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
@@ -580,7 +584,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
-  theAllWarningsDisabled(false)
+  theAllWarningsDisabled(false),
+  theFeatures(0)
 {
 }
 
@@ -901,6 +906,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theAllWarningsDisabled;
 
   ar & theWarningsAreErrors;
+
+  ar & theFeatures;
 }
 
 
@@ -2993,7 +3000,8 @@ void static_context::get_collations(std::vector<std::string>& collations) const
 ********************************************************************************/
 void static_context::bind_option(
     const store::Item* qname,
-    const zstring& value)
+    const zstring& value,
+    const QueryLoc& loc)
 {
   if (theOptionMap == NULL)
   {
@@ -3008,8 +3016,91 @@ void static_context::bind_option(
   {
     theOptionMap->insert(qname2, option);
   }
+
+  // translate options for requiring or prohibiting features
+  // into feature::kind for efficiency
+  root_static_context* lCtx
+    = static_cast<root_static_context*>(&GENV_ROOT_STATIC_CONTEXT);
+
+  if ( qname2->equals(lCtx->theEnableFeatureOption) ||
+       qname2->equals(lCtx->theDisableFeatureOption) )
+  {
+    zstring lVal1 = value;
+    zstring lVal2;
+    bool lCommaFound = false;
+    while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+    {
+      process_feature_option(
+        lVal1,
+        qname2->equals(lCtx->theEnableFeatureOption),
+        loc);
+      lCommaFound = true;
+    }
+    process_feature_option(
+      lCommaFound?lVal2:lVal1, 
+      qname2->equals(lCtx->theEnableFeatureOption),
+      loc);
+  }
 }
 
+void
+static_context::process_feature_option(
+  const zstring& value,
+  bool  enable,
+  const QueryLoc& loc)
+{
+  zstring lPrefix;
+  zstring lLocalName;
+
+  zstring::size_type n = value.rfind(':');
+
+  if ( n == zstring::npos )
+  {
+    lLocalName = value;
+  }
+  else
+  {
+    lPrefix = value.substr( 0, n );
+    lLocalName = value.substr( n+1 );
+  }
+
+  store::Item_t lQName;
+  expand_qname( lQName, ZORBA_OPTIONS_NS, lPrefix, lLocalName, loc );
+    
+  if ( lQName->getNamespace() != ZORBA_OPTIONS_NS )
+  {
+    throw XQUERY_EXCEPTION(
+        zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
+        ERROR_PARAMS (
+          lQName->getStringValue(),
+          ZED( ZDST0060_unknown_namespace ),
+          lQName->getNamespace()
+        ), 
+        ERROR_LOC( loc )
+    );
+  }
+
+  feature::kind k;
+  if ( feature::kind_for(lQName->getLocalName().c_str(), k) )
+  {
+    if ( enable )
+      set_feature( k );
+    else
+      unset_feature( k );
+  }
+  else
+  {
+    throw XQUERY_EXCEPTION(
+        zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
+        ERROR_PARAMS (
+          lQName->getStringValue(),
+          ZED( ZDST0060_unknown_localname ),
+          lQName->getLocalName()
+        ), 
+        ERROR_LOC( loc )
+    );
+  }
+}
 
 /***************************************************************************//**
 

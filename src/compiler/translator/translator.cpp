@@ -3074,7 +3074,7 @@ void* begin_visit(const VFO_DeclList& v)
       if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
-      theSctx->bind_option(qnameItem, value);
+      theSctx->bind_option( qnameItem, value, opt_decl->get_location() );
     }
   }
 
@@ -3986,6 +3986,15 @@ void* begin_visit(const CollectionDecl& v)
 {
   TRACE_VISIT();
 
+  if ( !theSctx->is_feature_set(feature::ddl) )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      ERROR_PARAMS( "data-definition (ddl)" ),
+      ERROR_LOC( v.get_location() )
+    );
+  }
+
   return no_state;
 }
 
@@ -4117,6 +4126,15 @@ void end_visit(const NodeModifier& v, void* /*visit_state*/)
 void* begin_visit(const AST_IndexDecl& v)
 {
   TRACE_VISIT();
+
+  if ( !theSctx->is_feature_set(feature::ddl) )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      ERROR_PARAMS( "data-definition (ddl)" ),
+      ERROR_LOC( v.get_location() )
+    );
+  }
 
   const QName* qname = v.getName();
 
@@ -4452,6 +4470,15 @@ void end_visit(const IndexKeySpec& v, void* /*visit_state*/)
 void* begin_visit(const IntegrityConstraintDecl& v)
 {
   TRACE_VISIT();
+
+  if ( !theSctx->is_feature_set(feature::ddl) )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      ERROR_PARAMS( "data-definition (ddl)" ),
+      ERROR_LOC( v.get_location() )
+    );
+  }
 
   if (!inLibraryModule())
   {
@@ -5216,6 +5243,14 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
 void* begin_visit(const BlockBody& v)
 {
   TRACE_VISIT();
+
+  if ( !theSctx->is_feature_set(feature::scripting) )
+  {
+    throw XQUERY_EXCEPTION(
+      err::XPST0003,
+      ERROR_LOC( v.get_location() )
+    );
+  }
 
   if (v.size() == 0)
   {
@@ -10226,6 +10261,14 @@ void end_visit(const ArgList& v, void* /*visit_state*/)
 void* begin_visit(const DynamicFunctionInvocation& v)
 {
   TRACE_VISIT();
+  if ( !theSctx->is_feature_set(feature::hof) )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      ERROR_PARAMS( "higher-order functions (hof)" ),
+      ERROR_LOC( v.get_location() )
+    );
+  }
   return no_state;
 }
 
@@ -10263,6 +10306,15 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 void* begin_visit(const LiteralFunctionItem& v)
 {
   TRACE_VISIT();
+
+  if ( !theSctx->is_feature_set(feature::hof) )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      ERROR_PARAMS( "higher-order functions (hof)" ),
+      ERROR_LOC( v.get_location() )
+    );
+  }
   return no_state;
 }
 
@@ -10330,6 +10382,15 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 void* begin_visit(const InlineFunction& v)
 {
   TRACE_VISIT();
+
+  if ( !theSctx->is_feature_set(feature::hof) )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      ERROR_PARAMS( "higher-order functions (hof)" ),
+      ERROR_LOC( v.get_location() )
+    );
+  }
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
