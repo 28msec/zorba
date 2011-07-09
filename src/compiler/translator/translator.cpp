@@ -3664,12 +3664,12 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     }
     else if (v.is_global())
     {
-      ve->set_mutable(theSctx->xquery_version() > StaticContextConsts::xquery_version_3_0);
+      ve->set_mutable(theSctx->is_feature_set(feature::scripting));
     }
   }
   else if (v.is_global())
   {
-    ve->set_mutable(theSctx->xquery_version() > StaticContextConsts::xquery_version_3_0);
+    ve->set_mutable(theSctx->is_feature_set(feature::scripting));
   }
 
   xqtref_t type;
@@ -5244,6 +5244,12 @@ void* begin_visit(const BlockBody& v)
 {
   TRACE_VISIT();
 
+  if (v.size() == 0)
+  {
+    push_nodestack(create_empty_seq(loc));
+    return NULL;
+  }
+
   if ( !theSctx->is_feature_set(feature::scripting) )
   {
     throw XQUERY_EXCEPTION(
@@ -5251,15 +5257,6 @@ void* begin_visit(const BlockBody& v)
       ERROR_LOC( v.get_location() )
     );
   }
-
-  if (v.size() == 0)
-  {
-    push_nodestack(create_empty_seq(loc));
-    return NULL;
-  }
-
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
   bool topLevel = v.isTopLevel();
   bool inEval = theCCB->theIsEval;
@@ -5389,9 +5386,13 @@ void* begin_visit(const AssignExpr& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
-
+  if ( !theSctx->is_feature_set(feature::scripting) )
+  {
+    throw XQUERY_EXCEPTION(
+      err::XPST0003,
+      ERROR_LOC( v.get_location() )
+    );
+  }
   return no_state;
 }
 
@@ -5433,9 +5434,6 @@ void* begin_visit(const ApplyExpr& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
-
   return no_state;
 }
 
@@ -5458,9 +5456,6 @@ void end_visit(const ApplyExpr& v, void* visit_state)
 void* begin_visit(const ExitExpr& v)
 {
   TRACE_VISIT();
-
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
   return no_state;
 }
@@ -5506,9 +5501,6 @@ void* begin_visit(const WhileExpr& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
-
   return no_state;
 }
 
@@ -5545,9 +5537,6 @@ void end_visit(const WhileExpr& v, void* visit_state)
 void* begin_visit(const FlowCtlStatement& v)
 {
   TRACE_VISIT();
-
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_3_0)
-    throw XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
 
   return no_state;
 }

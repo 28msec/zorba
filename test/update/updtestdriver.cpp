@@ -305,6 +305,15 @@ main(int argc, char** argv)
         std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
         smapper.reset(new zorba::TestSchemaURIMapper( uri_map_file.c_str() ));
         lContext->registerURIMapper( smapper.get() );
+
+        zorba::Item lEnable
+          = engine->getItemFactory()->createQName(
+              "http://www.zorba-xquery.com/options", "", "enable-feature");
+        zorba::Item lDisable
+          = engine->getItemFactory()->createQName(
+              "http://www.zorba-xquery.com/options", "", "disable-feature");
+        lContext->declareOption(lEnable, "hof");
+        lContext->declareOption(lDisable, "scripting");
 #if 1
         if (path.find("Val") != std::string::npos)
           lContext->setBoundarySpacePolicy(zorba::preserve_space);

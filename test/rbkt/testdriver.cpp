@@ -197,7 +197,11 @@ main(int argc, char** argv)
       zorba::Item lEnable
         = engine->getItemFactory()->createQName(
             "http://www.zorba-xquery.com/options", "", "enable-feature");
+      zorba::Item lDisable
+        = engine->getItemFactory()->createQName(
+            "http://www.zorba-xquery.com/options", "", "disable-feature");
       lContext->declareOption(lEnable, "hof");
+      lContext->declareOption(lDisable, "scripting");
     }
 
     // Form the full pathname for the files that will receive the result or the
