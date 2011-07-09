@@ -124,6 +124,12 @@ MACRO (DECLARE_ZORBA_MODULE)
   # Parse and validate arguments
   PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES" "URI;FILE;VERSION;OUTPUT_DIRECTORY"
     "" ${ARGN})
+  IF (NOT MODULE_FILE)
+    MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_MODULE()")
+  ENDIF (NOT MODULE_FILE)
+  IF (NOT MODULE_URI)
+    MESSAGE (FATAL_ERROR "'URI' argument is required for ZORBA_DECLARE_MODULE()")
+  ENDIF (NOT MODULE_URI)
   IF (NOT IS_ABSOLUTE "${MODULE_FILE}")
     SET (SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FILE}")
   ELSE (NOT IS_ABSOLUTE "${MODULE_FILE}")
@@ -294,6 +300,12 @@ ENDMACRO (DECLARE_ZORBA_MODULE)
 #       OUTPUT_DIRECTORY - (optional) Base path to produce output in
 MACRO (DECLARE_ZORBA_SCHEMA)
   PARSE_ARGUMENTS(SCHEMA "" "URI;FILE;OUTPUT_DIRECTORY" "" ${ARGN})
+  IF (NOT SCHEMA_FILE)
+    MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_SCHEMA()")
+  ENDIF (NOT SCHEMA_FILE)
+  IF (NOT SCHEMA_URI)
+    MESSAGE (FATAL_ERROR "'URI' argument is required for ZORBA_DECLARE_SCHEMA()")
+  ENDIF (NOT SCHEMA_URI)
   IF (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
     SET (SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${SCHEMA_FILE}")
   ELSE (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
@@ -368,7 +380,7 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
       ADD_CUSTOM_COMMAND (OUTPUT "${_output_file}"
         COMMAND "${CMAKE_COMMAND}" -E copy
         "${_input_file}" "${_output_file}"
-        DEPENDS "${_depend_target}"
+        DEPENDS "${_input_file}" "${_depend_target}"
         COMMENT "Copying ${_input_file} to URI path" VERBATIM)
       LIST (APPEND _output_files "${_output_file}")
     ENDWHILE (copy_rules)
