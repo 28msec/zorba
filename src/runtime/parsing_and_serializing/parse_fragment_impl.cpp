@@ -126,8 +126,8 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
   ParseXmlFragmentOptions parseOptions;
   bool validated = true;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  FnParseXmlFragmentIteratorState* state;
+  DEFAULT_STACK_INIT(FnParseXmlFragmentIteratorState, state, planState);
 
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -208,8 +208,19 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
       {
         // TODO: whitespace stripping
       }
-
-      STACK_PUSH(validated, state);
+      
+      if (result != NULL && parseOptions.enableExternalEntitiesProcessing)
+      {
+        // push the children of the document node
+        state->theDocument = result;
+        state->theChildren = state->theDocument->getChildren();
+        while (true)
+          STACK_PUSH(state->theChildren->next(result), state); 
+      }
+      else  
+      {
+        STACK_PUSH(validated, state);
+      }
     }
   }
   STACK_END (state);

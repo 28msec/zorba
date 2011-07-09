@@ -37,18 +37,32 @@ namespace zorba {
  * fn-zorba-xml:parse-xml-fragment
  * Author: Zorba Team
  */
-class FnParseXmlFragmentIterator : public NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>
+class FnParseXmlFragmentIteratorState : public PlanIteratorState
+{
+public:
+  store::Item_t theDocument; //the parsed document
+  store::Iterator_t theChildren; //the children of the document ndoe
+
+  FnParseXmlFragmentIteratorState();
+
+  ~FnParseXmlFragmentIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnParseXmlFragmentIterator : public NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(FnParseXmlFragmentIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseXmlFragmentIterator,
-    NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>);
+    NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>*)this);
   }
 
   FnParseXmlFragmentIterator(
@@ -56,7 +70,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnParseXmlFragmentIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>(sctx, loc, children)
   {}
 
   virtual ~FnParseXmlFragmentIterator();

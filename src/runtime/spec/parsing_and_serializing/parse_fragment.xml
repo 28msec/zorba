@@ -29,11 +29,17 @@
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
+                     
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
     </zorba:function>
     
+    <zorba:state>
+      <zorba:member type="store::Item_t" name="theDocument" brief="the parsed document"/>
+      <zorba:member type="store::Iterator_t" name="theChildren" brief="the children of the document ndoe"/>
+    </zorba:state>
+      
   </zorba:iterator>
   
   
