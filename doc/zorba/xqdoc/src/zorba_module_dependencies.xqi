@@ -4,7 +4,7 @@
 
 module namespace z = "http://www.zorba-xquery.com/module-dependencies";
 
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace file = "http://expath.org/ns/file";
 import module namespace dot = "http://www.zorba-xquery.com/modules/image/graphviz";
 import module namespace xqdoc2html = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
 import module namespace functx = "http://www.functx.com/";
@@ -64,7 +64,7 @@ declare variable $z:XQueryOnly  as xs:integer := 2;
 declare variable $z:colors      as xs:string* := ('red'         , 'green');
 declare variable $z:moduleTypes as xs:string* := ('Zorba-XQuery', 'XQuery only');
 
-declare %private sequential function z:collect-module (
+declare %private %ann:sequential function z:collect-module (
   $moduleURI as xs:string, 
   $relativeFileName as xs:string,
   $type as xs:integer) 
@@ -75,7 +75,7 @@ declare %private sequential function z:collect-module (
   as last into $z:indexCollector;
 };
 
-declare %private sequential function z:collect-node (
+declare %private %ann:sequential function z:collect-node (
   $moduleURI as xs:string, 
   $name as xs:string,
   $catUri as xs:string,
@@ -88,7 +88,7 @@ declare %private sequential function z:collect-node (
   as last into $z:nodesCollector;
 };
 
-declare %private sequential function z:collect-edge (
+declare %private %ann:sequential function z:collect-edge (
   $catUri as xs:string,
   $nameFrom as xs:string,
   $uriFrom as xs:string,  
@@ -156,7 +156,7 @@ declare function z:get_module_type($moduleUri as xs:string) as xs:integer
 (:~
  : Fill the $z:indexCollector with all the available modules.
  :)
-declare sequential function z:fill_indexCollector($xqdocXMLPath as xs:string) 
+declare %ann:sequential function z:fill_indexCollector($xqdocXMLPath as xs:string) 
 {
   for $file in file:files($xqdocXMLPath, "\.xml$", fn:true())
   let $link := fn:concat($xqdocXMLPath, file:path-separator(), $file)
@@ -170,7 +170,7 @@ declare sequential function z:fill_indexCollector($xqdocXMLPath as xs:string)
 (:~
  : Fill the $z:indexCollector with all the available modules.
  :)
-declare sequential function z:fill_nodesCollector() 
+declare %ann:sequential function z:fill_nodesCollector() 
 {
   for $category in  $z:categories//*:category
   return
@@ -268,7 +268,7 @@ declare function z:nodes_external_libraries() as xs:string
 (:~
  : Fill $z:edgesCollector with all the edges (the links between the nodes) for both modules and eternal library dependencies.
  :)
-declare sequential function z:fill_edgesCollector($xqdocXMLPath as xs:string)
+declare %ann:sequential function z:fill_edgesCollector($xqdocXMLPath as xs:string)
 {  
   for $file in file:files($xqdocXMLPath, "\.xml$", fn:true())
   let $xqdoc := file:read-xml(fn:concat($xqdocXMLPath, file:path-separator(), $file))/xqdoc:xqdoc
