@@ -122,8 +122,8 @@ ENDMACRO (MANGLE_URI)
 # file enough to deduce the URI and version?
 MACRO (DECLARE_ZORBA_MODULE)
   # Parse and validate arguments
-  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES" "URI;FILE;VERSION;OUTPUT_DIRECTORY"
-    "" ${ARGN})
+  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES"
+    "URI;FILE;VERSION;OUTPUT_DIRECTORY" "" ${ARGN})
   IF (NOT MODULE_FILE)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_MODULE()")
   ENDIF (NOT MODULE_FILE)
@@ -182,12 +182,19 @@ MACRO (DECLARE_ZORBA_MODULE)
 
   # Now, deal with associated C++ source for external functions.
 
-  IF(EXISTS "${SOURCE_FILE}.src/")
-    # all the cpp files found in the ${module_name}.xq.src
-    # directory are added to the sources list
+  IF(MODULE_EXTRA_SOURCES OR EXISTS "${SOURCE_FILE}.src/")
+    # all the cpp files found in the ${module_name}.xq.src directory
+    # are added to the sources list, as are any cpp files found in any
+    # directory in EXTRA_SOURCES
     SET (SRC_FILES)
-    FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-      "${SOURCE_FILE}.src/*.cpp")
+    FOREACH (_src_dir "${SOURCE_FILE}.src" ${MODULE_EXTRA_SOURCES})
+      IF (NOT IS_ABSOLUTE "${_src_dir}")
+        SET (_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/${_src_dir}")
+      ENDIF (NOT IS_ABSOLUTE "${_src_dir}")
+      FILE(GLOB_RECURSE _srcs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
+        "${_src_dir}/*.cpp")
+      LIST (APPEND SRC_FILES ${_srcs})
+    ENDFOREACH (_src_dir)
 
     MESSAGE(STATUS "Add library " ${module_name})
     SET(SUFFIX)
@@ -251,8 +258,7 @@ MACRO (DECLARE_ZORBA_MODULE)
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
 
-  ENDIF(EXISTS "${SOURCE_FILE}.src/")
-
+  ENDIF(MODULE_EXTRA_SOURCES OR EXISTS "${SOURCE_FILE}.src/")
 
   # Done dealing with C++. Now, set up rules which will copy the
   # module source file and dynamic library to each target filename in
