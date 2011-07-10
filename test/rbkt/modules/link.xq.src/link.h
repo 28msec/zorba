@@ -33,6 +33,8 @@ public:
 
   virtual ~LinkModule();
 
+  virtual void destroy();
+
   virtual zorba::ExternalFunction*
   getExternalFunction(const zorba::String& aLocalname);
 

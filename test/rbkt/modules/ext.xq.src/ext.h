@@ -31,6 +31,8 @@ class ExtModule : public ExternalModule
 
     virtual ~ExtModule();
 
+    virtual void destroy();
+
     virtual zorba::ExternalFunction*
     getExternalFunction(const zorba::String& aLocalname);
 

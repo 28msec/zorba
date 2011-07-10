@@ -29,6 +29,12 @@ ExtModule::~ExtModule()
   delete theFunc;
 }
 
+void
+ExtModule::destroy()
+{
+  delete this;
+}
+
 zorba::ExternalFunction*
 ExtModule::getExternalFunction(const zorba::String& aLocalname)
 {

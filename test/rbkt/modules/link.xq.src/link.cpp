@@ -36,6 +36,12 @@ LinkModule::~LinkModule()
   delete theOurFunc;
 }
 
+void
+LinkModule::destroy()
+{
+  delete this;
+}
+
 zorba::ExternalFunction*
 LinkModule::getExternalFunction(const zorba::String& aLocalname)
 {
