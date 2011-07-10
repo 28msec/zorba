@@ -1303,54 +1303,39 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 {
   std::ostringstream stream;
 
- #ifdef TEXT_ORDPATH
-
   const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
+  stream << "zorba:"
+         << n->getCollectionId() << "."
+         << n->getTreeId() << "."
+         << n->getTree()->getPosition() + 1;
+
+#ifdef TEXT_ORDPATH
 
   if (n->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    stream << "zorba://node_reference/"
-           << n->getCollectionId() << "/"
-           << n->getTreeId() << "/"
-           << n->getTree()->getPosition() + 1 << "/a/"
-           << n->getOrdPath().serialize();
+    stream <<  ".a."
   }
   else
   {
-    stream << "zorba://node_reference/"
-           << n->getCollectionId() << "/"
-           << n->getTreeId() << "/"
-           << n->getTree()->getPosition() + 1 << "/c/"
-           << n->getOrdPath().serialize();
+    stream <<  ".c."
   }
+  stream << n->getOrdPath().serialize();
 
 #else
 
-  const XmlNode* n = static_cast<const XmlNode*>(node);
-
   if (n->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    stream << "zorba://node_reference/"
-           << n->getCollectionId() << "/"
-           << n->getTreeId() << "/"
-           << n->getTree()->getPosition() + 1 << "/a/"
+    stream << ".a."
            << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
   }
   else if (n->getNodeKind() == store::StoreConsts::textNode)
   {
-    stream << "zorba://node_reference/"
-           << n->getCollectionId() << "/"
-           << n->getTreeId() << "/"
-           << n->getTree()->getPosition() + 1 << "/a/"
-           << static_cast<const OrdPathNode*>(n->getParent())->getOrdPath().serialize()
-           << n;
+    stream << ".a."
+           << static_cast<const OrdPathNode*>(n->getParent())->getOrdPath().serialize();
   }
   else
   {
-    stream << "zorba://node_reference/"
-           << n->getCollectionId() << "/"
-           << n->getTreeId() << "/"
-           << n->getTree()->getPosition() + 1 << "/c/"
+    stream << ".c."
            << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
   }
 #endif
@@ -1371,9 +1356,9 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 {
   const zstring& str = uri->getString();
 
-  ulong prefixlen = (ulong)strlen("zorba://node_reference/");
+  ulong prefixlen = (ulong)strlen("zorba:");
 
-  if (strncmp(str.c_str(), "zorba://node_reference/", prefixlen))
+  if (strncmp(str.c_str(), "zorba:", prefixlen))
     throw ZORBA_EXCEPTION(
       zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
     );
@@ -1396,7 +1381,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
   start = next;
 
-  if (*start != '/')
+  if (*start != '.')
     throw ZORBA_EXCEPTION(
       zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
     );
@@ -1417,7 +1402,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
   start = next;
 
-  if (*start != '/')
+  if (*start != '.')
     throw ZORBA_EXCEPTION(
       zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
     );
@@ -1438,7 +1423,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
   start = next;
 
-  if (*start != '/')
+  if (*start != '.')
     throw ZORBA_EXCEPTION(
       zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
     );
@@ -1462,7 +1447,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     );
 
   ++start;
-  if (*start != '/')
+  if (*start != '.')
     throw ZORBA_EXCEPTION(
       zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
     );

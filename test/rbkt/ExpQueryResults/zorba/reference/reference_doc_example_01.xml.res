@@ -1,1 +1,1 @@
-zorba://node_reference/0/1/1/c/5a
+zorba:0.1.1.c.5a
