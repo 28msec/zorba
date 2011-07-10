@@ -26,6 +26,7 @@
 #include "store/api/store.h"
 
 #include "util/string_util.h"
+#include "util/uri_util.h"
 #include "zorbautils/string_util.h"
 
 using namespace std;
@@ -335,16 +336,22 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if(theChildren.size())
   {
     {
-      zstring uri_string = "";
+      zstring uri_string, lRes;
       if(consumeNext(item, theChildren[0].getp(), planState))
       {
         store::Item_t   item_uri;
         if(GENV_STORE.getReference(item_uri, item.getp()))
         {
           uri_string = item_uri->getStringValue();
+          // need to convert the opaque uri into a valid ncname
+          // e.g. z0.1.1.c.50
+#ifndef NDEBUG
+          ZORBA_ASSERT( uri_string.find_first_of("zorba:") == 0 );
+#endif
+          lRes = "z" + uri_string.substr(uri_string.find_first_of(":") + 1);
         }
       }
-      retval = GENV_ITEMFACTORY->createString(result, uri_string);
+      retval = GENV_ITEMFACTORY->createString(result, lRes);
     }
     STACK_PUSH(retval, state);
   }
