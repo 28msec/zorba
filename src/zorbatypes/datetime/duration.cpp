@@ -609,11 +609,11 @@ long Duration::getIntSeconds() const
 xs_double Duration::getTotalSeconds() const
 {
   return (is_negative ? xs_double::neg_one() : xs_double::one())
-      * ((((((((xs_double(data[YEAR_DATA]) * xs_double(12)
-      + xs_double(data[MONTH_DATA])) * xs_double(30))
-      + xs_double(data[DAY_DATA])) * xs_double(24))
-      + xs_double(data[HOUR_DATA])) * xs_double(60))
-      + xs_double(data[MINUTE_DATA])) * xs_double(60))
+      * ((((((((xs_double(data[YEAR_DATA]) * 12
+      + xs_double(data[MONTH_DATA])) * 30)
+      + xs_double(data[DAY_DATA])) * 24)
+      + xs_double(data[HOUR_DATA])) * 60)
+      + xs_double(data[MINUTE_DATA])) * 60)
       + xs_double(data[SECONDS_DATA])
       + xs_double(double(data[FRACSECONDS_DATA]) / FRAC_SECONDS_UPPER_LIMIT);
 }
@@ -758,7 +758,7 @@ Duration* Duration::operator*(const xs_double& value) const
 
   seconds = to_xs_int(result.floor());
 
-  result = (result - result.floor()) * xs_double(FRAC_SECONDS_UPPER_LIMIT);
+  result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
 
   frac_seconds = to_xs_int(result.round());
 
@@ -787,7 +787,7 @@ Duration* Duration::operator/(const xs_double& value) const
   dSeconds = result.round();
   seconds = to_xs_int(dSeconds.floor());
 
-  result = (result - dSeconds) * xs_double(FRAC_SECONDS_UPPER_LIMIT);
+  result = (result - dSeconds) * FRAC_SECONDS_UPPER_LIMIT;
   frac_seconds = to_xs_int(result.round());
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);

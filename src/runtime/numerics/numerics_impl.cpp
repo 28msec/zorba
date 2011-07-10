@@ -831,9 +831,9 @@ static void formatNumber(
   xs_double adjusted = doubleItem->getDoubleValue();
 
   if (sub_picture.str.find(info.percent) != zstring::npos)
-    adjusted *= xs_double(100);
+    adjusted *= 100;
   else if (sub_picture.str.find(info.per_mille) != zstring::npos)
-    adjusted *= xs_double(1000);
+    adjusted *= 1000;
 
   adjusted = adjusted.roundHalfToEven(Integer(sub_picture.fractional_part.maximum_size));
 
@@ -903,8 +903,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (!consumeNext(result, theChildren[0].getp(), planState ))
   {
     // Got void, assume NaN, return "NaN"
-    xs_double nanvalue = xs_double::nan();
-    GENV_ITEMFACTORY->createDouble(result, nanvalue);
+    GENV_ITEMFACTORY->createDouble(result, xs_double::nan());
   }
 
   {

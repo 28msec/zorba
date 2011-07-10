@@ -784,15 +784,13 @@ T1_TO_T2(int, str)
 
 T1_TO_T2(int, flt)
 {
-  return aFactory->createFloat(result,
-                               xs_float(aItem->getIntegerValue()));
+  return aFactory->createFloat(result, xs_float(aItem->getIntegerValue()));
 }
 
 
 T1_TO_T2(int, dbl)
 {
-  return aFactory->createDouble(result,
-                                xs_double(aItem->getIntegerValue()));
+  return aFactory->createDouble(result, xs_double(aItem->getIntegerValue()));
 }
 
 
