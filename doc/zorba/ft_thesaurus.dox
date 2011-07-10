@@ -80,6 +80,12 @@ zt-wn-compile -v /usr/local/wordnet-3.0/dict
 
 Move the \c wordnet-en.zth file to a location of your choosing.
 
+\subsection ft_thesaurus_precompiled Downloading a Precompiled WordNet Database
+
+Alternatively,
+you can download a precompiled WordNet database from
+<a href="http://www.zorba-xquery.com/WordNet-3.0/wordnet-en.zip">here</a>.
+
 \section ft_thesaurus_mappings Thesauri Mappings
 
 In order to use thesauri,
