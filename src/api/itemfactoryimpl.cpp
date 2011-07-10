@@ -358,7 +358,7 @@ Item ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
 Item ItemFactoryImpl::createDouble ( double aValue )
 {
   store::Item_t lItem;
-  Double const lDouble(aValue);
+  xs_double const lDouble(aValue);
   theItemFactory->createDouble(lItem, lDouble);
   return &*lItem;
 }
@@ -370,7 +370,7 @@ Item ItemFactoryImpl::createDouble ( const String& aValue )
 
   store::Item_t lItem;
   try {
-    Double const lDouble(lString.c_str());
+    xs_double const lDouble(lString.c_str());
     theItemFactory->createDouble(lItem, lDouble);
   }
   catch ( std::exception const& ) {
@@ -413,7 +413,7 @@ Item ItemFactoryImpl::createFloat ( const String& aValue )
   zstring const &lString = Unmarshaller::getInternalString( aValue );
   store::Item_t lItem;
   try {
-    Float const lFloat(lString.c_str());
+    xs_float const lFloat(lString.c_str());
     theItemFactory->createFloat(lItem, lFloat);
   } 
   catch ( std::exception const& ) {
@@ -426,7 +426,7 @@ Item ItemFactoryImpl::createFloat ( const String& aValue )
 Item ItemFactoryImpl::createFloat ( float aValue )
 {
   store::Item_t lItem;
-  Float const lFloat(aValue);
+  xs_float const lFloat(aValue);
   theItemFactory->createFloat(lItem, lFloat);
   return &*lItem;
 }

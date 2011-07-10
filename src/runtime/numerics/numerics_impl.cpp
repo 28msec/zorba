@@ -831,9 +831,9 @@ static void formatNumber(
   xs_double adjusted = doubleItem->getDoubleValue();
 
   if (sub_picture.str.find(info.percent) != zstring::npos)
-    adjusted = adjusted * Double(100);
+    adjusted *= xs_double(100);
   else if (sub_picture.str.find(info.per_mille) != zstring::npos)
-    adjusted = adjusted * Double(1000);
+    adjusted *= xs_double(1000);
 
   adjusted = adjusted.roundHalfToEven(Integer(sub_picture.fractional_part.maximum_size));
 

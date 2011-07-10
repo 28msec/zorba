@@ -637,7 +637,7 @@ T1_TO_T2(flt, str)
 
 T1_TO_T2(flt, dbl)
 {
-  return aFactory->createDouble(result, Double(aItem->getFloatValue()));
+  return aFactory->createDouble(result, xs_double(aItem->getFloatValue()));
 }
 
 
@@ -691,8 +691,7 @@ T1_TO_T2(dbl, str)
 
 T1_TO_T2(dbl, flt)
 {
-  return aFactory->createFloat(result,
-                               Double(aItem->getDoubleValue()));
+  return aFactory->createFloat(result, xs_double(aItem->getDoubleValue()));
 }
 
 

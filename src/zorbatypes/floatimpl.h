@@ -36,12 +36,11 @@ namespace serialization{
   template<typename FloatType>
   void operator&(Archiver &ar, FloatImpl<FloatType> &obj);
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
-// exported for testing only
 template<typename FloatType>
-class FloatImpl
-{
+class FloatImpl {
 public:
   typedef FloatType value_type;
 
@@ -63,6 +62,16 @@ public:
   FloatImpl( Decimal const &d );
   FloatImpl( Integer const &i );
 
+  /**
+   * Constructs a %FloatImpl from a C string.
+   *
+   * @param s The null-terminated C string to parse.  Leading and trailing
+   * whitespace is ignored.
+   * @throw std::invalid_argument if \a s does not contain a valid floating
+   * point number.
+   * @throw std::range_error if \a s contains a number that either underflows
+   * or overflows the smallest or largest representable floating point number.
+   */
   FloatImpl( char const *s );
 
   template<typename FloatType2>

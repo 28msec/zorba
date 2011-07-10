@@ -170,9 +170,9 @@ public:
 
   Duration* operator-(const Duration& d) const;
 
-  Duration* operator*(const Double& value) const;
+  Duration* operator*(const xs_double& value) const;
 
-  Duration* operator/(const Double& value) const;
+  Duration* operator/(const xs_double& value) const;
 
   Decimal operator/(const Duration& d) const;
 
@@ -196,7 +196,7 @@ public:
 
   virtual long getIntSeconds() const;
 
-  Double getTotalSeconds() const;
+  xs_double getTotalSeconds() const;
 
   long getTotalMilliseconds() const;
 
