@@ -46,7 +46,7 @@
 #define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 #define ZORBA_ERR_NS            ZORBA_NS
 #define ZORBA_OPTIONS_NS        "http://www.zorba-xquery.com/options"
-#define ZORBA_WARN_NS           ZORBA_NS "warnings"
+#define ZORBA_WARN_NS           ZORBA_OPTIONS_NS "/warning"
 #define ZORBA_VERSIONING_NS     ZORBA_OPTIONS_NS "/versioning"
 
 // TODO these probably should not be in "ns_consts"

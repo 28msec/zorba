@@ -1661,6 +1661,17 @@
       <value>"$1": function missing nondeterministic annotation</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0050" name="FEATURE_NOT_AVAILABLE">
+      <value>"$1": feature not available</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0060" name="OPTION_NOT_KNOWN">
+      <value>"$1": unkown option${; 2}.</value>
+      <entry key="available_options">
+        <value>known options: $3</value>
+      </entry>
+    </diagnostic>
+
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
       disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
@@ -2088,10 +2099,6 @@
       <entry key="unknown_localname">
         <value>unknown localname ($3)</value>
       </entry>
-    </diagnostic>
-
-    <diagnostic code="ZDST0061" name="FEATURE_NOT_AVAILABLE">
-      <value>"$1": feature not available</value>
     </diagnostic>
 
     <diagnostic code="ZDTY0001" name="COLLECTION_INVALID_NODE_TYPE">

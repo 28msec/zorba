@@ -3916,43 +3916,10 @@ void* begin_visit(const OptionDecl& v)
 
   // TODO probably we should have some kind of option-callback mechanism,
   // rather than processing all built-in Zorba options here
-  store::Item_t qnameItem;
-  zstring value = v.get_val().str();
+  //store::Item_t qnameItem;
+  //zstring value = v.get_val().str();
 
-  expand_no_default_qname(qnameItem, v.get_qname(), loc);
-
-  // process zorba-version option
-  if (qnameItem->getNamespace() == ZORBA_VERSIONING_NS &&
-      qnameItem->getLocalName() == ZORBA_OPTION_ZORBA_VERSION)
-  {
-    // Re-use "ModuleVersion" class since it does 98% of the work for us;
-    // just use a fake URI
-    ModuleVersion lOptVersion(ZORBA_VERSIONING_NS "/corezorba", value);
-    if (! lOptVersion.is_valid_version()) {
-      RAISE_ERROR(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION, loc,
-                  ERROR_PARAMS(value));
-    }
-    ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS "/corezorba",
-                                ZORBA_VERSION);
-    if ( ! lZorbaVersion.satisfies(lOptVersion)) {
-      RAISE_ERROR(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION, loc,
-                  ERROR_PARAMS(value, ZORBA_VERSION));
-    }
-  }
-
-  // process warning options
-  else if (qnameItem->getNamespace() == ZORBA_WARN_NS)
-  {
-    if (value == "error")
-      theSctx->setWarningAsError(qnameItem);
-    else if (value == "disable")
-    {
-      if (qnameItem->getLocalName() == "all")
-        theSctx->disableAllWarnings();
-      else
-        theSctx->disableWarning(qnameItem);
-    }
-  }
+  //expand_no_default_qname(qnameItem, v.get_qname(), loc);
 
   return no_state;
 }
@@ -3982,7 +3949,7 @@ void* begin_visit(const CollectionDecl& v)
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
       ERROR_PARAMS( "data-definition (ddl)" ),
       ERROR_LOC( v.get_location() )
     );
@@ -4123,7 +4090,7 @@ void* begin_visit(const AST_IndexDecl& v)
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
       ERROR_PARAMS( "data-definition (ddl)" ),
       ERROR_LOC( v.get_location() )
     );
@@ -4467,7 +4434,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
       ERROR_PARAMS( "data-definition (ddl)" ),
       ERROR_LOC( v.get_location() )
     );
@@ -10246,7 +10213,7 @@ void* begin_visit(const DynamicFunctionInvocation& v)
   if ( !theSctx->is_feature_set(feature::hof) )
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
       ERROR_PARAMS( "higher-order functions (hof)" ),
       ERROR_LOC( v.get_location() )
     );
@@ -10292,7 +10259,7 @@ void* begin_visit(const LiteralFunctionItem& v)
   if ( !theSctx->is_feature_set(feature::hof) )
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
       ERROR_PARAMS( "higher-order functions (hof)" ),
       ERROR_LOC( v.get_location() )
     );
@@ -10368,7 +10335,7 @@ void* begin_visit(const InlineFunction& v)
   if ( !theSctx->is_feature_set(feature::hof) )
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZDST0061_FEATURE_NOT_AVAILABLE,
+      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
       ERROR_PARAMS( "higher-order functions (hof)" ),
       ERROR_LOC( v.get_location() )
     );

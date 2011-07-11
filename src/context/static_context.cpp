@@ -67,6 +67,8 @@
 #include "functions/library.h"
 #include "functions/signature.h"
 
+#include "compiler/translator/module_version.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
@@ -3035,11 +3037,6 @@ void static_context::bind_option(
 
   store::Item* qname2 = option.theName.getp();
 
-  if (!theOptionMap->update(qname2, option))
-  {
-    theOptionMap->insert(qname2, option);
-  }
-
   // translate options for requiring or prohibiting features
   // into feature::kind for efficiency
   root_static_context* lCtx
@@ -3063,7 +3060,88 @@ void static_context::bind_option(
       lCommaFound?lVal2:lVal1, 
       qname2->equals(lCtx->theEnableFeatureOption),
       loc);
+  } else if ( qname2->getNamespace() == ZORBA_WARN_NS )
+  {
+    if (value == "error")
+      setWarningAsError(qname2);
+    else if (value == "disable")
+    {
+      if (qname2->getLocalName() == "all")
+        disableAllWarnings();
+      else
+        disableWarning(qname2);
+    }
+    else
+    {
+      throw XQUERY_EXCEPTION(
+          zerr::ZXQP0060_OPTION_NOT_KNOWN,
+          ERROR_PARAMS (
+            ZORBA_WARN_NS + zstring(":") + qname2->getLocalName(),
+            ZED( ZXQP0060_available_options ),
+            "error, disable"
+          ), 
+          ERROR_LOC( loc )
+      );
+    }
   }
+
+  // process zorba-version option
+  else if (qname2->getNamespace() == ZORBA_VERSIONING_NS)
+  {
+    if ( qname2->getLocalName() != ZORBA_OPTION_ZORBA_VERSION && 
+         qname2->getLocalName() != ZORBA_OPTION_MODULE_VERSION )
+    {
+      throw XQUERY_EXCEPTION(
+          zerr::ZXQP0060_OPTION_NOT_KNOWN,
+          ERROR_PARAMS (
+            qname2->getNamespace() + ":" + qname2->getLocalName(),
+            ZED( ZXQP0060_available_options ),
+            "zorba-version, module-version"
+          ), 
+          ERROR_LOC( loc )
+      );
+    }
+
+    if ( qname2->getLocalName() == ZORBA_OPTION_ZORBA_VERSION )
+    {
+      // Re-use "ModuleVersion" class since it does 98% of the work for us;
+      // just use a fake URI
+      ModuleVersion lOptVersion(ZORBA_VERSIONING_NS "/corezorba", value);
+      if (! lOptVersion.is_valid_version()) {
+        throw XQUERY_EXCEPTION(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION,
+                    ERROR_PARAMS(value), ERROR_LOC( loc ));
+      }
+      ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS "/corezorba",
+                                  ZORBA_VERSION);
+      if ( ! lZorbaVersion.satisfies(lOptVersion)) {
+        throw XQUERY_EXCEPTION(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION,
+                    ERROR_PARAMS(value, ZORBA_VERSION),
+                    ERROR_LOC( loc ));
+      }
+    }
+  }
+
+  else if ( qname2->getNamespace() == ZORBA_OPTIONS_NS &&
+            qname2->getLocalName() == "enable-dtd" )
+  {
+    // nothing needs to be done here
+  }
+
+  // if the option is in Zorba's own namespace but not known, we raise an error
+  else if ( qname2->getNamespace().find(ZORBA_OPTIONS_NS) == 0 )
+  {
+    throw XQUERY_EXCEPTION(
+       zerr::ZXQP0060_OPTION_NOT_KNOWN,
+       ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
+       ERROR_LOC( loc )
+     );
+  }
+
+  if (!theOptionMap->update(qname2, option))
+  {
+    theOptionMap->insert(qname2, option);
+  }
+
 }
 
 void
