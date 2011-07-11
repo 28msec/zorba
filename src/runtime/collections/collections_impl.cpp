@@ -110,6 +110,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   store::Item_t lURI, resolvedURIItem;
   store::Collection_t coll;
   std::auto_ptr<impl::Resource> lResource;
+  impl::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;
 
@@ -145,10 +146,9 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
       );
   }
 
-  lResource = theSctx->resolve_uri( resolvedURIString, impl::Resource::COLLECTION, lErrorMessage );
-
-  if ( lResource.get() == 0 ||
-       !(coll = static_cast<impl::CollectionResource*>(lResource.get())->getCollection()) ) 
+  lResource = theSctx->resolve_uri( resolvedURIString, impl::EntityData::COLLECTION, lErrorMessage );
+  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+  if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
   {
     throw XQUERY_EXCEPTION(
       err::FODC0004,

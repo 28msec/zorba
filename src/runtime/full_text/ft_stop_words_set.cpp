@@ -128,13 +128,14 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
 
       zstring error_msg;
       std::auto_ptr<impl::Resource> rsrc =
-          sctx.resolve_uri(uri, impl::Resource::STOP_WORDS, error_msg);
-      if (rsrc.get() == NULL || rsrc->getKind() != impl::Resource::STREAM) {
+          sctx.resolve_uri(uri, impl::EntityData::STOP_WORDS, error_msg);
+      impl::StreamResource* stream_rsrc =
+          dynamic_cast<impl::StreamResource*>(rsrc.get());
+      if (stream_rsrc == NULL) {
         // Technically this should be thrown during static analysis.
         throw ZORBA_EXCEPTION(err::FTST0008, ERROR_PARAMS(uri));
       }
-      std::auto_ptr<std::istream> stream_ptr =
-          static_cast<impl::StreamResource*>(rsrc.get())->getStream();
+      std::auto_ptr<std::istream> stream_ptr = stream_rsrc->getStream();
       std::istream* stream = stream_ptr.get();
 
       bool in_word = false;

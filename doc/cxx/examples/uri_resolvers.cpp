@@ -34,10 +34,10 @@ class MySchemaURIMapper: public URIMapper
   virtual ~MySchemaURIMapper() {}
 
   virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     std::vector<zorba::String>& oUris) throw ()
   {
-    if (aEntityType != Resource::SCHEMA) {
+    if (aEntityData->getKind() != EntityData::SCHEMA) {
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
@@ -56,9 +56,9 @@ class MyModuleURLResolver2 : public URLResolver
 
   virtual Resource* resolveURL(
         const String& aUrl,
-        Resource::EntityType aEntityType)
+        EntityData const* aEntityData)
   {
-    if (aEntityType == Resource::MODULE &&
+    if (aEntityData->getKind() == EntityData::MODULE &&
       aUrl == "http://www.zorba-xquery.com/mymodule") 
     {
       // we have only one module

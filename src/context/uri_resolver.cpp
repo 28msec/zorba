@@ -38,21 +38,15 @@ namespace impl {
  * Implementation of the Resource class hierarchy.
  *************/
 
-  Resource::Resource(Resource::Kind aKind)
-    : theKind(aKind)
+  Resource::Resource()
   {}
 
   Resource::~Resource()
   {}
 
-  Resource::Kind Resource::getKind() throw ()
-  {
-    return theKind;
-  }
-
   StreamResource::StreamResource
   (std::auto_ptr<std::istream> aStream, zstring aStreamUrl /* = "" */)
-    : Resource(Resource::STREAM),
+    : Resource(),
       theStream(aStream),
       theStreamUrl(aStreamUrl),
       theHttpStream(0)
@@ -60,7 +54,7 @@ namespace impl {
   
   StreamResource::StreamResource
   (HttpStream* aHttpStream, const zstring& aUrl)
-  : Resource(Resource::STREAM),
+  : Resource(),
   theStream(0),
   theStreamUrl(aUrl),
   theHttpStream(aHttpStream)
@@ -97,7 +91,7 @@ namespace impl {
 
   CollectionResource::CollectionResource
   (const store::Collection_t& aCollection)
-    : Resource(Resource::COLLECTION_T),
+    : Resource(),
       theCollection(aCollection)
   {}
 
@@ -123,6 +117,15 @@ namespace impl {
 
   URLResolver::~URLResolver()
   {}
+
+  /*************
+   * EntityData is an abstract class, but we have to define its vtbl
+   * and base destructor somewhere.
+   *************/
+
+  EntityData::~EntityData()
+  {}
+
 
 } /* namespace zorba::impl */
 

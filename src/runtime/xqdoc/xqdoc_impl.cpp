@@ -78,7 +78,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lSctx = theSctx;
   lItem->getStringValue2(strval);
   lURI = lSctx->resolve_relative_uri(strval);
-  lResource = lSctx->resolve_uri(lURI, impl::Resource::MODULE, lErrorMessage);
+  lResource = lSctx->resolve_uri(lURI, impl::EntityData::MODULE, lErrorMessage);
   lStream = static_cast<impl::StreamResource*>(lResource.get());
   // We take ownership of the stream
   lFile = lStream->getStream();

@@ -108,7 +108,7 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &in_uri,
   // QQQ For now, we use a component URI mapper to return the mapping string.
   // I believe we can eliminate the need for this string, and hence we should
   // be able to call the normal resolve_uri() here in future.
-  sctx.get_component_uris(in_uri, impl::Resource::THESAURUS, components);
+  sctx.get_component_uris(in_uri, impl::EntityData::THESAURUS, components);
   if (components.size() != 1) {
     throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( in_uri ) );
   }

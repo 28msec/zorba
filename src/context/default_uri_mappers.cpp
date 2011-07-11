@@ -35,16 +35,17 @@ namespace impl {
 
 void
 FileizeURIMapper::mapURI
-(zstring const& aUri, Resource::EntityType aEntityType,
+(zstring const& aUri, EntityData const* aEntityData,
   static_context const& aSctx, std::vector<zstring>& oUris) throw()
 {
   // File-izing is only for schemas and modules.
-  if (aEntityType != Resource::SCHEMA && aEntityType != Resource::MODULE) {
+  EntityData::Kind lKind = aEntityData->getKind();
+  if (lKind != EntityData::SCHEMA && lKind != EntityData::MODULE) {
     return;
   }
 
   // Append extension / filename as necessary
-  zstring lExtension(aEntityType == Resource::SCHEMA ? ".xsd": ".xq");
+  zstring lExtension(lKind == EntityData::SCHEMA ? ".xsd": ".xq");
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
@@ -77,10 +78,10 @@ FileizeURIMapper::mapURI
 
 void
 ModuleVersioningURIMapper::mapURI
-(zstring const& aUri, Resource::EntityType aEntityType,
+(zstring const& aUri, EntityData const* aEntityData,
   static_context const& aSctx, std::vector<zstring>& oUris) throw()
 {
-  if (aEntityType != Resource::MODULE) {
+  if (aEntityData->getKind() != EntityData::MODULE) {
     return;
   }
 
@@ -124,11 +125,12 @@ ModuleVersioningURIMapper::mapURI
 
 void
 AutoFSURIMapper::mapURI
-(zstring const& aUri, Resource::EntityType aEntityType,
+(zstring const& aUri, EntityData const* aEntityData,
   static_context const& aSctx, std::vector<zstring>& oUris) throw()
 {
   // Automatic resolution is (currently?) only for schemas and modules
-  if (aEntityType != Resource::SCHEMA && aEntityType != Resource::MODULE) {
+  EntityData::Kind lKind = aEntityData->getKind();
+  if (lKind != EntityData::SCHEMA && lKind != EntityData::MODULE) {
     return;
   }
   // Automatic resolution is for NON-file: URIs
@@ -185,10 +187,10 @@ ZorbaCollectionURIMapper::mapperKind() throw ()
 
 void
 ZorbaCollectionURIMapper::mapURI
-(zstring const& aUri, Resource::EntityType aEntityType,
+(zstring const& aUri, EntityData const* aEntityData,
   static_context const& aSctx, std::vector<zstring>& oUris) throw()
 {
-  if (aEntityType != Resource::COLLECTION) {
+  if (aEntityData->getKind() != EntityData::COLLECTION) {
     return;
   }
 

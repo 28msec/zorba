@@ -21,6 +21,42 @@
 namespace zorba
 {
 
+  class EntityDataWrapper : public EntityData
+  {
+  public:
+    static EntityDataWrapper const* create(impl::EntityData::Kind aKind) {
+      // More ugly: Create a public-API EntityData with the same Entity Kind,
+      // but only if it's one of the publicly-supported kinds
+      switch (aKind) {
+      case impl::EntityData::MODULE:
+        return new EntityDataWrapper(EntityData::MODULE);
+      case impl::EntityData::SCHEMA:
+        return new EntityDataWrapper(EntityData::SCHEMA);
+      case impl::EntityData::THESAURUS:
+        return new EntityDataWrapper(EntityData::THESAURUS);
+      case impl::EntityData::STOP_WORDS:
+        return new EntityDataWrapper(EntityData::STOP_WORDS);
+      case impl::EntityData::COLLECTION:
+        return new EntityDataWrapper(EntityData::COLLECTION);
+      case impl::EntityData::DOCUMENT:
+        return new EntityDataWrapper(EntityData::DOCUMENT);
+      default:
+        return NULL;
+      }
+    }
+
+    virtual EntityData::Kind getKind() const throw() {
+      return theKind;
+    }
+
+  private:
+    EntityDataWrapper(EntityData::Kind aKind)
+      : theKind(aKind)
+    {}
+
+    EntityData::Kind const theKind;
+  };
+
   URIMapperWrapper::URIMapperWrapper(zorba::URIMapper& aUserMapper)
     : theUserMapper(aUserMapper)
   {}
@@ -31,15 +67,20 @@ namespace zorba
   void
   URIMapperWrapper::mapURI
   (const zstring& aUri,
-    impl::Resource::EntityType aEntityType,
+    impl::EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris) throw ()
   {
+    std::auto_ptr<const EntityDataWrapper> lDataWrap
+        (EntityDataWrapper::create(aEntityData->getKind()));
+    if (lDataWrap.get() == NULL) {
+      return;
+    }
+
     std::vector<zorba::String> lUserUris;
     // QQQ should public API have a StaticContext on it?
     theUserMapper.mapURI(zorba::String(aUri.c_str()),
-      static_cast<Resource::EntityType>(aEntityType),
-      lUserUris);
+      lDataWrap.get(), lUserUris);
     std::vector<zorba::String>::iterator iter;
     for (iter = lUserUris.begin(); iter != lUserUris.end(); iter++) {
       oUris.push_back(Unmarshaller::getInternalString(*iter));
@@ -73,21 +114,26 @@ namespace zorba
   impl::Resource*
   URLResolverWrapper::resolveURL
   (const zstring& aUrl,
-    impl::Resource::EntityType aEntityType)
+    impl::EntityData const* aEntityData)
   {
+    std::auto_ptr<const EntityDataWrapper> lDataWrap
+        (EntityDataWrapper::create(aEntityData->getKind()));
+    if (lDataWrap.get() == NULL) {
+      return NULL;
+    }
+
     // Take memory ownership of the user's Resource
-    std::auto_ptr<Resource> lUserResourcePtr
-      (theUserResolver.resolveURL(zorba::String(aUrl.c_str()),
-        static_cast<Resource::EntityType>(aEntityType)));
-    Resource* lUserResource = lUserResourcePtr.get();
-    if (lUserResource != NULL) {
-      // This is just so ugly.
-      switch (lUserResource->getKind()) {
-        case Resource::STREAM:
-          return new impl::StreamResource
-            (static_cast<StreamResource*>(lUserResource)->getStream());
-        default:
-          assert(false);
+    std::auto_ptr<Resource> lUserPtr
+      (theUserResolver.resolveURL(zorba::String(aUrl.c_str()), lDataWrap.get()));
+    if (lUserPtr.get() != NULL) {
+      // This will get a bit more complicated when we publicly support more than
+      // one kind of Resource subclass.
+      StreamResource* lUserStream = dynamic_cast<StreamResource*>(lUserPtr.get());
+      if (lUserStream != NULL) {
+        return new impl::StreamResource(lUserStream->getStream());
+      }
+      else {
+        assert(false);
       }
     }
     return NULL;

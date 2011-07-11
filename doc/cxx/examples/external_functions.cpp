@@ -622,9 +622,9 @@ public:
 
   virtual Resource* resolveURL(
         const String& aUrl,
-        Resource::EntityType aEntityType)
+        EntityData const* aEntityData)
   {
-    if (aEntityType == Resource::MODULE &&
+    if (aEntityData->getKind() == EntityData::MODULE &&
       aUrl == "http://www.zorba-xquery.com/mymodule") 
     {
       // we have only one module

@@ -1991,20 +1991,22 @@ void* import_schema(
   try
   {
     std::auto_ptr<impl::Resource> lSchema;
+    impl::StreamResource* lStream = NULL;
     zstring lErrorMessage;
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
          lIter != lCandidates.end();
          ++lIter)
     {
-      lSchema = theSctx->resolve_uri(*lIter, impl::Resource::SCHEMA, lErrorMessage);
-      if (lSchema.get() != NULL &&
-          lSchema->getKind() == impl::Resource::STREAM)
+      lSchema = theSctx->resolve_uri(*lIter, impl::EntityData::SCHEMA,
+                                     lErrorMessage);
+      lStream = dynamic_cast<impl::StreamResource*>(lSchema.get());
+      if (lStream != NULL)
       {
         break;
       }
     }
 
-    if ( lSchema.get() == NULL ) {
+    if ( lStream == NULL ) {
       throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(lNsURI, lErrorMessage));
     }
 
@@ -2018,8 +2020,6 @@ void* import_schema(
 
     // Make Xerxes load and parse the xsd file and create a Xerces
     // representaton of it.
-    impl::StreamResource* lStream =
-      static_cast<impl::StreamResource*>(lSchema.get());
     schema_p->registerXSD(lNsURI.c_str(), theSctx, lStream, loc);
 
   }
@@ -2803,7 +2803,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // Note the use of versioned_uri() here, so that the namespace with any
     // version fragment will be passed through to the mappers.
     theSctx->get_component_uris(lModVer.versioned_uri(),
-                                impl::Resource::MODULE, compURIs);
+                                impl::EntityData::MODULE, compURIs);
   }
   else
   {
@@ -2880,15 +2880,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       zstring lErrorMessage;
       std::auto_ptr<impl::Resource> lResource =
         theSctx->resolve_uri(lCompModVer.versioned_uri(),
-                             impl::Resource::MODULE,
+                             impl::EntityData::MODULE,
                              lErrorMessage);
 
-      if (lResource.get() != NULL &&
-          lResource->getKind() == impl::Resource::STREAM)
+      impl::StreamResource* lStreamResource =
+          dynamic_cast<impl::StreamResource*> (lResource.get());
+      if (lStreamResource != NULL)
       {
-        impl::StreamResource* lStreamResource =
-          static_cast<impl::StreamResource*>(lResource.get());
-
         modfile = lStreamResource->getStream();
         compURL = lStreamResource->getStreamUrl();
       }

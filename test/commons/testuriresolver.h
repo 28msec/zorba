@@ -36,7 +36,7 @@ public:
 
   virtual ~TestSchemeURIMapper();
 
-  virtual void mapURI(const String aURI, Resource::EntityType aEntityType,
+  virtual void mapURI(const String aURI, EntityData const* aEntityData,
     std::vector<String>& oUris) throw ();
 
 private:
@@ -50,8 +50,7 @@ class TestURLResolver : public URLResolver
 {
 public:
   virtual Resource*
-  resolveURL(const zorba::String &aUrl,
-             Resource::EntityType aEntityType);
+  resolveURL(const zorba::String &aUrl, EntityData const* aEntityData);
 };
 
 /******************************************************************************
@@ -69,7 +68,7 @@ public:
 
   virtual ~TestSchemaURIMapper();
 
-  virtual void mapURI(const String aURI, Resource::EntityType aEntityType,
+  virtual void mapURI(const String aURI, EntityData const* aEntityData,
     std::vector<String>& oUris) throw ();
 
 private:
@@ -107,7 +106,7 @@ public :
 
   virtual URIMapper::Kind mapperKind() throw() { return URIMapper::COMPONENT; }
 
-  virtual void mapURI(const String aURI, Resource::EntityType aEntityType,
+  virtual void mapURI(const String aURI, EntityData const* aEntityData,
     std::vector<String>& oUris) throw ();
 
 private:
@@ -146,7 +145,7 @@ public:
   virtual void
   mapURI(
       const String aURI,
-      Resource::EntityType aEntityType,
+      EntityData const* aEntityData,
       std::vector<String>& oUris) throw ();
 };
 

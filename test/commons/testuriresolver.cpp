@@ -48,7 +48,7 @@ TestSchemeURIMapper::~TestSchemeURIMapper()
 }
 
 void
-TestSchemeURIMapper::mapURI(const String aURI, Resource::EntityType aEntityType,
+TestSchemeURIMapper::mapURI(const String aURI, EntityData const* aEntityData,
                             std::vector<String>& oUris) throw()
 {
   if (ascii::begins_with(aURI, "test://")) {
@@ -64,8 +64,11 @@ TestSchemeURIMapper::mapURI(const String aURI, Resource::EntityType aEntityType,
  ******************************************************************************/
 Resource*
 TestURLResolver::resolveURL(const zorba::String &aUrl,
-                            Resource::EntityType aEntityType)
+                            EntityData const* aEntityData)
 {
+  if (aEntityData->getKind() != EntityData::DOCUMENT) {
+    return NULL;
+  }
   if (aUrl != "http://www.zorba-xquery.com/testuriresolver.cpp/hello.xml") {
     return NULL;
   }
@@ -121,10 +124,10 @@ void TestSchemaURIMapper::initialize()
 
 void
 TestSchemaURIMapper::mapURI
-(const String aURI, Resource::EntityType aEntityType,
+(const String aURI, EntityData const* aEntityData,
   std::vector<String>& oUris) throw ()
 {
-  if (aEntityType != Resource::SCHEMA) {
+  if (aEntityData->getKind() != EntityData::SCHEMA) {
     return;
   }
 
@@ -239,10 +242,10 @@ void TestModuleURIMapper::initialize()
 }
 
 void TestModuleURIMapper::mapURI
-(const String aURI, Resource::EntityType aEntityType,
+(const String aURI, EntityData const* aEntityData,
   std::vector<String>& oUris) throw ()
 {
-  if (aEntityType != Resource::MODULE)
+  if (aEntityData->getKind() != EntityData::MODULE)
   {
     return;
   }
@@ -347,9 +350,13 @@ void TestCollectionURIMapper::initialize()
 void
 TestCollectionURIMapper::mapURI(
     const String aURI,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     std::vector<String>& oUris) throw ()
 {
+  if (aEntityData->getKind() != EntityData::COLLECTION)
+  {
+    return;
+  }
   if ( theMap.empty () ) 
   {
     initialize ();

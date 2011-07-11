@@ -37,8 +37,6 @@
  */
 
 namespace zorba {
-  
-class HttpStream;
 
 /**
  * @brief The class representing the result of URL resolution.
@@ -48,43 +46,11 @@ class HttpStream;
  */
 class ZORBA_DLL_PUBLIC Resource
 {
-  public:
-  /**
-   * @brief enum listing the types of entities that may be represented
-   * by URIs, and hence may be looked up via the URI resolution
-   * mechanism.
-   */
-  enum EntityType {
-    SCHEMA,
-    MODULE,
-    THESAURUS,
-    STOP_WORDS
-  };
-
-  /**
-   * @brief enum listing the concrete subclasses of Resource that
-   * exist (so far only one).
-   */
-  enum Kind {
-    STREAM
-  };
-
-  /**
-   * @brief Return the Kind of Resource this is, ie., which concrete
-   * subclass this object is actually an instance of.  (This is to
-   * avoid the requirement of RTTI.)
-   */
-  Kind getKind() throw ();
-
+public:
   virtual ~Resource() = 0;
 
-  protected:
-
-  Resource(Kind aKind);
-
-  private:
-
-  Kind theKind;
+protected:
+  Resource();
 };
 
 /**
@@ -121,6 +87,40 @@ private:
 };
 
 /**
+ * @brief The class containing data which may be of use to URIMappers
+ * and URLResolvers when mapping/resolving a URI.
+ *
+ * This base class specifies the kind of entity for which this URI is being
+ * resolved - for instance, a schema URI or a module URI. In the future,
+ * there may be kind-specific subclasses containing additional information;
+ * as yet however there are none.
+ */
+class ZORBA_DLL_PUBLIC EntityData
+{
+public:
+  /**
+   * @brief enum listing the kinds of entities that may be represented
+   * by URIs, and hence may be looked up via the URI resolution
+   * mechanism.
+   */
+  enum Kind {
+    SCHEMA,
+    MODULE,
+    THESAURUS,
+    STOP_WORDS,
+    COLLECTION,
+    DOCUMENT
+  };
+
+  /**
+   * @brief Return the Kind of Entity for which this URI is being resolved.
+   */
+  virtual Kind getKind() const throw () = 0;
+
+  virtual ~EntityData() = 0;
+};
+
+/**
  * @brief Interface for URL resolving.
  *
  * Subclass this to provide a URL resolver to the method
@@ -136,11 +136,11 @@ class ZORBA_DLL_PUBLIC URLResolver
   /**
    * @brief Transforms an input URL into a Resource.
    *
-   * The "aEntityType" parameter informs the URLResolver what type of
+   * The "aEntityData" parameter informs the URLResolver what kind of
    * entity is being referenced by the URL. URLResolvers may choose to
    * make use of this information to alter their behaviour.
    * URLResolvers must ensure that they return a concrete subclass of
-   * Resource which is compatible with the entity type being resolved.
+   * Resource which is compatible with the entity kind being resolved.
    *
    * Implementers of this method should do nothing if they do not know
    * how to resolve the URL.  They should create and return a Resource
@@ -163,7 +163,7 @@ class ZORBA_DLL_PUBLIC URLResolver
    * needed.
    */
   virtual Resource* resolveURL(const zorba::String& aUrl,
-    Resource::EntityType aEntityType) = 0;
+    EntityData const* aEntityData) = 0;
 };
 
 /**
@@ -182,7 +182,7 @@ class ZORBA_DLL_PUBLIC URIMapper
   /**
    * @brief Transform an input URI into a set of output URIs.
    *
-   * The "aEntityType" parameter informs the URIMapper what type of
+   * The "aEntityData" parameter informs the URIMapper what kind of
    * entity is being referenced by URI. URIMappers may choose to make
    * use of this information to alter their behaviour.
    *
@@ -195,7 +195,7 @@ class ZORBA_DLL_PUBLIC URIMapper
    * this case, Zorba will continue with the original, unmapped URI.
    */
   virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType, std::vector<zorba::String>& oUris) 
+    EntityData const* aEntityData, std::vector<zorba::String>& oUris)
     throw () = 0;
 
   /**
@@ -245,18 +245,18 @@ class ZORBA_DLL_PUBLIC URIMapper
 
 /**
  * Convenience implementation of a mapper that maps URIs to other
- * single URIs. Will only map for one specific EntityType.
+ * single URIs. Will only map for one specific Entity Kind.
  */
 class ZORBA_DLL_PUBLIC OneToOneURIMapper : public URIMapper {
 
 public:
 
   /**
-   * Constructor. Specify the EntityType you wish to map. Optionally,
+   * Constructor. Specify the Entity Kind you wish to map. Optionally,
    * specify whether this should be a CANDIDATE or COMPONENT mapper;
    * default is CANDIDATE.
    */
-  OneToOneURIMapper(Resource::EntityType aEntityType,
+  OneToOneURIMapper(EntityData::Kind aEntityKind,
                     URIMapper::Kind aMapperKind = URIMapper::CANDIDATE);
 
   /**
@@ -268,12 +268,12 @@ public:
   virtual Kind mapperKind() throw ();
 
   virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType, std::vector<zorba::String>& oUris)
+    EntityData const* aEntityData, std::vector<zorba::String>& oUris)
     throw ();
 
 private:
 
-  Resource::EntityType const theEntityType;
+  EntityData::Kind const theEntityKind;
   URIMapper::Kind const theMapperKind;
   typedef std::map<String, String> Mapping_t;
   typedef Mapping_t::const_iterator          MappingIter_t;

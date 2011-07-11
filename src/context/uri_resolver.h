@@ -50,38 +50,7 @@ namespace impl {
  */
 class Resource
 {
-  public:
-  /**
-   * @brief enum listing the types of entities that may be represented
-   * by URIs, and hence may be looked up via the URI resolution
-   * mechanism.
-   */
-  enum EntityType {
-    SCHEMA,
-    MODULE,
-    THESAURUS,
-    STOP_WORDS,
-    COLLECTION,
-    DOCUMENT,
-    SOME_CONTENT
-  };
-
-  /**
-   * @brief enum listing the concrete subclasses of Resource that
-   * exist.
-   */
-  enum Kind {
-    STREAM,
-    COLLECTION_T
-  };
-
-  /**
-   * @brief Return the Kind of Resource this is, ie., which concrete
-   * subclass this object is actually an instance of.  (This is to
-   * avoid the requirement of RTTI.)
-   */
-  Kind getKind() throw ();
-
+public:
   /**
    * @brief Return the URL used to load this Resource.
    */
@@ -91,7 +60,7 @@ class Resource
 
   protected:
 
-  Resource(Kind aKind);
+  Resource();
 
   private:
 
@@ -101,7 +70,6 @@ class Resource
   friend class zorba::static_context;
   void setUrl(zstring aUrl) { theUrl = aUrl; }
 
-  Kind theKind;
   zstring theUrl;
 };
 
@@ -174,6 +142,41 @@ class CollectionResource : public Resource
 };
 
 /**
+ * @brief The class containing data which may be of use to URIMappers
+ * and URLResolvers when mapping/resolving a URI.
+ *
+ * This base class specifies the kind of entity for which this URI is being
+ * resolved - for instance, a schema URI or a module URI. In the future,
+ * there may be kind-specific subclasses containing additional information;
+ * as yet however there are none.
+ */
+class EntityData
+{
+public:
+  /**
+   * @brief enum listing the kinds of entities that may be represented
+   * by URIs, and hence may be looked up via the URI resolution
+   * mechanism.
+   */
+  enum Kind {
+    SCHEMA,
+    MODULE,
+    THESAURUS,
+    STOP_WORDS,
+    COLLECTION,
+    DOCUMENT,
+    SOME_CONTENT
+  };
+
+  /**
+   * @brief Return the Kind of Entity for which this URI is being resolved.
+   */
+  virtual Kind getKind() const throw () = 0;
+
+  virtual ~EntityData() = 0;
+};
+
+/**
  * @brief Interface for URL resolving.
  *
  * Subclass this to provide a URL resolver to the method
@@ -188,11 +191,11 @@ class URLResolver
   /**
    * @brief Transforms an input URL into a Resource.
    *
-   * The "aEntityType" parameter informs the URLResolver what type of
+   * The "aEntityData" parameter informs the URLResolver what kind of
    * entity is being referenced by the URL. URLResolvers may choose to
    * make use of this information to alter their behaviour.
    * URLResolvers must ensure that they return a concrete subclass of
-   * Resource which is compatible with the entity type being resolved.
+   * Resource which is compatible with the entity kind being resolved.
    *
    * Implementers of this method should do nothing if they do not know
    * how to resolve the URL.  They should create and return a Resource
@@ -215,7 +218,7 @@ class URLResolver
    * needed.
    */
   virtual Resource* resolveURL(zstring const& aUrl,
-    Resource::EntityType aEntityType) = 0;
+                               EntityData const* aEntityData) = 0;
 };
 
 /**
@@ -230,7 +233,7 @@ class URIMapper
   /**
    * @brief Transform an input URI into a set of output URIs.
    *
-   * The "aEntityType" parameter informs the URIMapper what type of
+   * The "aEntityKind" parameter informs the URIMapper what kind of
    * entity is being referenced by URI. URIMappers may choose to make
    * use of this information to alter their behaviour.
    *
@@ -242,7 +245,7 @@ class URIMapper
    * given input URI, they should simply do nothing and return.
    */
   virtual void mapURI(zstring const& aUri,
-    Resource::EntityType aEntityType, static_context const& aSctx,
+    EntityData const* aEntityData, static_context const& aSctx,
     std::vector<zstring>& oUris)
     throw () = 0;
 

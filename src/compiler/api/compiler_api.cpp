@@ -342,7 +342,7 @@ public:
   {}
 
   virtual impl::Resource* resolveURL
-  (zstring const& aUrl, impl::Resource::EntityType aEntityType)
+  (zstring const& aUrl, impl::EntityData const* aEntityData)
   {
     if (aUrl != theLibraryModuleNamespace) {
       return NULL;

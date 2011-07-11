@@ -23,21 +23,14 @@ namespace zorba {
  * Implementation of the Resource class hierarchy.
  *************/
 
-  Resource::Resource(Resource::Kind aKind)
-    : theKind(aKind)
+  Resource::Resource()
   {}
 
   Resource::~Resource()
   {}
 
-  Resource::Kind Resource::getKind() throw ()
-  {
-    return theKind;
-  }
-
   StreamResource::StreamResource(std::auto_ptr<std::istream> aStream)
-    : Resource(Resource::STREAM),
-      theStream(aStream)
+    : theStream(aStream)
   {}
 
   std::auto_ptr<std::istream>
@@ -68,12 +61,20 @@ namespace zorba {
   URLResolver::~URLResolver()
   {}
 
-/************
- * Implementation of OneToOneURIMapper.
- ************/
-  OneToOneURIMapper::OneToOneURIMapper(Resource::EntityType aEntityType,
+  /*************
+   * EntityData is an abstract class, but we have to define its vtbl
+   * and base destructor somewhere.
+   *************/
+
+  EntityData::~EntityData()
+  {}
+
+  /************
+   * Implementation of OneToOneURIMapper.
+   ************/
+  OneToOneURIMapper::OneToOneURIMapper(EntityData::Kind aEntityKind,
                                        URIMapper::Kind aMapperKind)
-    : theEntityType(aEntityType),
+    : theEntityKind(aEntityKind),
       theMapperKind(aMapperKind)
   {
   }
@@ -81,10 +82,10 @@ namespace zorba {
   void
   OneToOneURIMapper::mapURI(
     const String aURI,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     std::vector<String>& oUris) throw ()
   {
-    if (aEntityType != theEntityType) {
+    if (aEntityData->getKind() != theEntityKind) {
       return;
     }
     MappingIter_t lIter = theMappings.find(aURI);

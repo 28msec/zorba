@@ -30,10 +30,10 @@ class FileModuleDisallow : public URIMapper
 {
 public:
   virtual void mapURI(const zorba::String aUri,
-                      Resource::EntityType aEntityType,
+                      EntityData const* aEntityData,
                       std::vector<zorba::String>& oUris) throw ()
   {
-    if (aEntityType != Resource::MODULE) {
+    if (aEntityData->getKind() != EntityData::MODULE) {
       return;
     }
     if (aUri == "http://www.zorba-xquery.com/modules/file") {

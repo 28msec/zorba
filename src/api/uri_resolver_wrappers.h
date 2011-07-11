@@ -46,7 +46,7 @@ class URIMapperWrapper : public zorba::impl::URIMapper
   virtual ~URIMapperWrapper();
 
   virtual void mapURI(const zstring& aUri,
-    zorba::impl::Resource::EntityType aEntityType,
+    zorba::impl::EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris) throw ();
 
@@ -66,7 +66,7 @@ class URLResolverWrapper : public zorba::impl::URLResolver
   virtual ~URLResolverWrapper();
 
   virtual zorba::impl::Resource* resolveURL(const zstring& aUrl,
-    zorba::impl::Resource::EntityType aEntityType);
+    zorba::impl::EntityData const* aEntityData);
 
   private:
 

@@ -39,7 +39,7 @@ namespace impl {
 
 Resource*
 HTTPURLResolver::resolveURL
-(zstring const& aUrl, Resource::EntityType aEntityType)
+(zstring const& aUrl, EntityData const* aEntityData)
 {
   uri::scheme lScheme = uri::get_scheme(aUrl);
   switch (lScheme) {
@@ -68,7 +68,7 @@ HTTPURLResolver::resolveURL
 
 Resource*
 FileURLResolver::resolveURL
-(zstring const& aUrl, Resource::EntityType aEntityType)
+(zstring const& aUrl, EntityData const* aEntityData)
 {
   uri::scheme lScheme = uri::get_scheme(aUrl);
   if (lScheme != uri::file) {
@@ -94,9 +94,9 @@ ZorbaCollectionURLResolver::~ZorbaCollectionURLResolver()
 
 Resource*
 ZorbaCollectionURLResolver::resolveURL
-(zstring const& aUrl, Resource::EntityType aEntityType)
+(zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityType != impl::Resource::COLLECTION)
+  if (aEntityData->getKind() != impl::EntityData::COLLECTION)
     return NULL;
 
   store::Item_t lName;

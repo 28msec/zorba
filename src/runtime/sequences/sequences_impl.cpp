@@ -1822,13 +1822,14 @@ static void loadDocument(
   // Resolve URI to a stream
   zstring lErrorMessage;
   std::auto_ptr<impl::Resource> lResource = aSctx->resolve_uri
-      (lNormUri, impl::Resource::DOCUMENT, lErrorMessage);
-  if (!lResource.get() || lResource->getKind() != impl::Resource::STREAM) {
+      (lNormUri, impl::EntityData::DOCUMENT, lErrorMessage);
+  impl::StreamResource* lStreamResource =
+      dynamic_cast<impl::StreamResource*>(lResource.get());
+  if (lStreamResource == NULL) {
     throw XQUERY_EXCEPTION
         (err::FODC0002, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
   }
-  std::auto_ptr<std::istream> lStream
-      (static_cast<impl::StreamResource*>(lResource.get())->getStream());
+  std::auto_ptr<std::istream> lStream = lStreamResource->getStream();
   if (lStream.get() == NULL) {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }

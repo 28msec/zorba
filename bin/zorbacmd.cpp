@@ -69,8 +69,8 @@ const char *copyright_str =
 #define PATH_SEP (zorba::filesystem_path::get_directory_separator ())
 
 #ifndef ZORBA_NO_FULL_TEXT
-OneToOneURIMapper theStopWordsMapper(Resource::STOP_WORDS);
-OneToOneURIMapper theThesaurusMapper(Resource::THESAURUS, URIMapper::COMPONENT);
+OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
+OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS, URIMapper::COMPONENT);
 #endif
 
 bool

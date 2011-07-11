@@ -41,7 +41,7 @@ class HTTPURLResolver : public impl::URLResolver
 public:
 
   virtual Resource* resolveURL(zstring const& aUrl,
-    Resource::EntityType aEntityType);
+    EntityData const* aEntityData);
 };
 
 /**
@@ -52,7 +52,7 @@ class FileURLResolver : public impl::URLResolver
 public:
 
   virtual Resource* resolveURL(zstring const& aUrl,
-    Resource::EntityType aEntityType);
+    EntityData const* aEntityData);
 };
 
 /**
@@ -64,7 +64,7 @@ public:
   virtual ~ZorbaCollectionURLResolver();
 
   virtual Resource* resolveURL(zstring const& aUrl,
-    Resource::EntityType aEntityType);
+    EntityData const* aEntityData);
 };
 
 } /* namespace zorba::impl */

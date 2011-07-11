@@ -1340,25 +1340,48 @@ void static_context::add_url_resolver(impl::URLResolver* aResolver) throw ()
   theURLResolvers.push_back(std::auto_ptr<impl::URLResolver>(aResolver));
 }
 
+// Helper class for resolve_uri()
+class SimpleEntityData : public impl::EntityData
+{
+public:
+  SimpleEntityData(impl::EntityData::Kind aKind)
+    : theKind(aKind)
+  {
+  }
+  virtual impl::EntityData::Kind getKind() const throw()
+  {
+    return theKind;
+  }
+private:
+  impl::EntityData::Kind const theKind;
+};
+
 std::auto_ptr<impl::Resource>
 static_context::resolve_uri
-(zstring const& aUri, impl::Resource::EntityType aEntityType, zstring& oErrorMessage) const
+(zstring const& aUri, impl::EntityData::Kind aEntityKind,
+ zstring& oErrorMessage) const
 {
+  // Create a simple EntityData that just reports the specified Kind
+  SimpleEntityData const lData(aEntityKind);
+
   std::vector<zstring> lUris;
-  apply_uri_mappers(aUri, aEntityType, impl::URIMapper::CANDIDATE, lUris);
+  apply_uri_mappers(aUri, &lData, impl::URIMapper::CANDIDATE, lUris);
 
   std::auto_ptr<impl::Resource> lRetval;
-  apply_url_resolvers(lUris, aEntityType, lRetval, oErrorMessage);
+  apply_url_resolvers(lUris, &lData, lRetval, oErrorMessage);
 
   return lRetval;
 }
 
 void
 static_context::get_component_uris
-(zstring const& aUri, impl::Resource::EntityType aEntityType,
+(zstring const& aUri, impl::EntityData::Kind aEntityKind,
   std::vector<zstring>& oComponents) const
 {
-  apply_uri_mappers(aUri, aEntityType, impl::URIMapper::COMPONENT, oComponents);
+  // Create a simple EntityData that just reports the specified Kind
+  SimpleEntityData const lData(aEntityKind);
+
+  apply_uri_mappers(aUri, &lData, impl::URIMapper::COMPONENT, oComponents);
   if (oComponents.size() == 0) {
     oComponents.push_back(aUri);
   }
@@ -1366,7 +1389,7 @@ static_context::get_component_uris
 
 void
 static_context::apply_uri_mappers
-(zstring const& aUri, impl::Resource::EntityType aEntityType,
+(zstring const& aUri, impl::EntityData const* aEntityData,
   impl::URIMapper::Kind aMapperKind, std::vector<zstring>& oUris) const
 {
   // Initialize list with the one input URI.
@@ -1395,7 +1418,7 @@ static_context::apply_uri_mappers
       {
         // And call the current mapper with the current URI.
         size_t const lPreNumResultUris = lResultUris.size();
-        (*mapper)->mapURI(*uri, aEntityType, *this, lResultUris);
+        (*mapper)->mapURI(*uri, aEntityData, *this, lResultUris);
         size_t const lPostNumResultUris = lResultUris.size();
         if (lPreNumResultUris == lPostNumResultUris) {
           // Mapper didn't map this URI to anything new, therefore add
@@ -1422,7 +1445,7 @@ static_context::apply_uri_mappers
 
 void
 static_context::apply_url_resolvers
-(std::vector<zstring>& aUrls, impl::Resource::EntityType aEntityType,
+(std::vector<zstring>& aUrls, impl::EntityData const* aEntityData,
   std::auto_ptr<impl::Resource>& oResource, zstring& oErrorMessage) const
 {
   oErrorMessage = "";
@@ -1442,7 +1465,7 @@ static_context::apply_url_resolvers
       {
         try {
           // Take ownership of returned Resource (if any)
-          oResource.reset((*resolver)->resolveURL(*url, aEntityType));
+          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
           if (oResource.get() != NULL) {
             // Populate the URL used to load this Resource
             oResource->setUrl(*url);

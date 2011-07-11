@@ -56,8 +56,8 @@ public:
       theUseIndent(false),
       theEnableDtd(false),
       theEnableUriTestResolver(false),
-      theStopWordsMapper(zorba::Resource::STOP_WORDS),
-      theThesaurusMapper(zorba::Resource::THESAURUS, zorba::URIMapper::COMPONENT)
+      theStopWordsMapper(zorba::EntityData::STOP_WORDS),
+      theThesaurusMapper(zorba::EntityData::THESAURUS, zorba::URIMapper::COMPONENT)
   {}
 
 private:

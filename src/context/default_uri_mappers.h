@@ -43,7 +43,7 @@ class FileizeURIMapper : public impl::URIMapper
 public:
 
   virtual void mapURI(zstring const& aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris) throw ();
 };
@@ -57,7 +57,7 @@ class AutoFSURIMapper : public impl::URIMapper
 public:
 
   virtual void mapURI(zstring const& aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris) throw ();
 };
@@ -75,7 +75,7 @@ public:
   virtual impl::URIMapper::Kind mapperKind() throw ();
 
   virtual void mapURI(zstring const& aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris) throw ();
 };
@@ -89,7 +89,7 @@ class ModuleVersioningURIMapper : public impl::URIMapper
 public:
 
   virtual void mapURI(zstring const& aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUrls) throw ();
 };

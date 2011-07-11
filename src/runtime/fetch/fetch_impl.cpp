@@ -56,7 +56,7 @@ FetchContentIterator::nextImpl(
     // me a resource of type SOME_CONTENT
     lRes.reset(theSctx->resolve_uri(
       lUri->getStringValue(),
-      impl::Resource::SOME_CONTENT, 
+      impl::EntityData::SOME_CONTENT,
       lErrorMessage).release());
 
   } catch (ZorbaException const& e) {

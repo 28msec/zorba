@@ -679,10 +679,10 @@ public:
 
   /**
    * Given a URI, return a Resource for that URI.
-   * aEntityType the expected kind of entity expected at this aUri
+   * @param aEntityKind the expected kind of entity expected at this aUri
    */
   std::auto_ptr<impl::Resource> resolve_uri
-  (zstring const& aUri, impl::Resource::EntityType aEntityType, zstring& oErrorMessage) const;
+  (zstring const& aUri, impl::EntityData::Kind aEntityKind, zstring& oErrorMessage) const;
 
   /**
    * Given a URI, populate a vector with a list of component URIs.  If
@@ -690,7 +690,7 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
-  (zstring const& aUri, impl::Resource::EntityType aEntityType,
+  (zstring const& aUri, impl::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1022,12 +1022,12 @@ protected:
 private:
 
   void apply_uri_mappers(zstring const& aUri,
-    impl::Resource::EntityType aEntityType,
+    impl::EntityData const* aEntityData,
     impl::URIMapper::Kind aMapperKind,
     std::vector<zstring>& oUris) const;
 
   void apply_url_resolvers(std::vector<zstring>& aUrls,
-    impl::Resource::EntityType aEntityType,
+    impl::EntityData const* aEntityData,
     std::auto_ptr<impl::Resource>& oResource,
     zstring& oErrorMessage) const;
 

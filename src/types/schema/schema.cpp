@@ -218,14 +218,11 @@ public:
       {
         TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved);
         zstring lErrorMessage;
-        lResource = theSctx->resolve_uri(lResolved, impl::Resource::SCHEMA, lErrorMessage);
-        
-        if (lResource.get() != NULL &&
-            lResource->getKind() == impl::Resource::STREAM)
+        lResource = theSctx->resolve_uri(lResolved, impl::EntityData::SCHEMA, lErrorMessage);
+        impl::StreamResource* lStream =
+            dynamic_cast<impl::StreamResource*>(lResource.get());
+        if (lStream != NULL)
         {
-          impl::StreamResource* lStream =
-            static_cast<impl::StreamResource*>(lResource.get());
-            
           std::auto_ptr<std::istream> lIStream = lStream->getStream();
           InputSource* lRetval = new IstreamInputSource(lIStream);
           

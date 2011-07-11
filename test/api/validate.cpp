@@ -34,10 +34,10 @@ class ValidationTestSchemaURIMapper: public URIMapper
 public:
 
   virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     std::vector<zorba::String>& oUris) throw ()
   {
-    if (aEntityType != Resource::SCHEMA) {
+    if (aEntityData->getKind() != EntityData::SCHEMA) {
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {

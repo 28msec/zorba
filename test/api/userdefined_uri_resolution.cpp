@@ -33,10 +33,10 @@ class MySchemaURIMapper : public URIMapper
   virtual ~MySchemaURIMapper() {}
 
   virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     std::vector<zorba::String>& oUris) throw ()
   {
-    if (aEntityType != Resource::SCHEMA) {
+    if (aEntityData->getKind() != EntityData::SCHEMA) {
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
@@ -54,10 +54,10 @@ class MyModuleURIMapper : public URIMapper
   virtual URIMapper::Kind mapperKind() throw() { return URIMapper::COMPONENT; }
 
   virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     std::vector<zorba::String>& oUris) throw ()
   {
-    if (aEntityType != Resource::MODULE) {
+    if (aEntityData->getKind() != EntityData::MODULE) {
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/mymodule") {
@@ -74,7 +74,7 @@ class DenyAccessURIMapper : public URIMapper
   virtual ~DenyAccessURIMapper() {}
 
   virtual void mapURI(const zorba::String aUri,
-    Resource::EntityType aEntityType,
+    EntityData const* aEntityData,
     std::vector<zorba::String>& oUris) throw ()
   {
     if(aUri == "http://www.zorba-xquery.com/to-be-denied") {
@@ -90,7 +90,7 @@ class MyModuleURLResolver : public URLResolver
 
   virtual Resource* resolveURL(
         const String& aUrl,
-        Resource::EntityType aEntityType)
+        EntityData const* aEntityData)
   {
     static char mod1[] =
       "module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
@@ -101,7 +101,7 @@ class MyModuleURLResolver : public URLResolver
 
     // we have two library modules with the same namespace, that can
     // work together as components of a full module
-    if (aEntityType != Resource::MODULE) {
+    if (aEntityData->getKind() != EntityData::MODULE) {
       return NULL;
     }
 
@@ -126,10 +126,10 @@ class FoobarModuleURLResolver : public URLResolver
 
   virtual Resource* resolveURL(
         const String& aUrl,
-        Resource::EntityType aEntityType)
+        EntityData const* aEntityData)
   {
     // we have only one module
-    if (aEntityType == Resource::MODULE &&
+    if (aEntityData->getKind() == EntityData::MODULE &&
       aUrl == "http://www.zorba-xquery.com/foobar") 
     {
       return new StreamResource
