@@ -3055,9 +3055,18 @@ void* begin_visit(const VFO_DeclList& v)
 
   TypeManager* tm = CTX_TM;
 
-  // We need to bind all options before doing this first pass of function
-  // declarations, so that the module version is available when we try to
-  // load external function libraries.
+  // Function declaration translation must be done in two passes because of
+  // mutually recursive functions and also because the defining expr of a declared
+  // var may reference a function that is declared after the var. So, here's the
+  // 1st pass; it translates
+  //  (1) the annotations of variable and function declarations
+  //  (2) the type declarations for the params and return value of functions
+  //  (3) and then creates the udf object and binds it in the sctx.
+  // The 1st pass also binds all options, so that the module version information
+  // is available if we try to load external function libraries.
+  // 2nd pass;  happens when accept() is called on each individual FunctionDecl
+  // node in the list.
+
   for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
        it != v.end();
        ++it)
@@ -3075,23 +3084,9 @@ void* begin_visit(const VFO_DeclList& v)
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
       theSctx->bind_option( qnameItem, value, opt_decl->get_location() );
+      continue;
     }
-  }
 
-  // Function declaration translation must be done in two passes because of
-  // mutually recursive functions and also because the defining expr of a declared
-  // var may reference a function that is declared after the var. So, here's the
-  // 1st pass; it translates
-  //  (1) the annotations of variable and function declarations
-  //  (2) the type declarations for the params and return value of functions
-  //  (3) and then creates the udf object and binds it in the sctx.
-  // 2nd pass;  happens when accept() is called on each individual FunctionDecl
-  // node in the list.
-
-  for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
-       it != v.end();
-       ++it)
-  {
     const FunctionDecl* func_decl = it->dyn_cast<FunctionDecl>().getp();
 
     // skip variable and option declarations.
