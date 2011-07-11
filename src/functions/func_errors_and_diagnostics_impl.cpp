@@ -19,6 +19,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "zorbamisc/ns_consts.h"
 
 #include "functions/func_errors_and_diagnostics.h"
 
@@ -57,9 +58,7 @@ PlanIter_t fn_trace::codegen(
   zstring lOption;
   store::Item_t optionName;
   GENV_ITEMFACTORY->createQName(optionName,
-                                "http://www.zorba-xquery.org/options",
-                                "",
-                                "trace");
+    ZORBA_OPTIONS_NS, "", "trace");
   bool lOptionFound = sctx->lookup_option(optionName, lOption);
 
   if (!lOptionFound || (lOptionFound && lOption != "disable"))

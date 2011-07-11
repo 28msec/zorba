@@ -3122,7 +3122,8 @@ void static_context::bind_option(
   }
 
   else if ( qname2->getNamespace() == ZORBA_OPTIONS_NS &&
-            qname2->getLocalName() == "enable-dtd" )
+            ( qname2->getLocalName() == "enable-dtd" ||
+              qname2->getLocalName() == "trace" ) )
   {
     // nothing needs to be done here
   }
