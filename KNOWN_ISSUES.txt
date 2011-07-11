@@ -34,6 +34,7 @@ This is a list of issues that we are aware of but are not fixed in this version:
 
 * XQuery Full-Text is mostly, but not completely, implemented.
   For details, see following bugs:
+  - 3172383 <https://sourceforge.net/tracker/?func=detail&aid=3172383&group_id=226244&atid=1067586>
   - 3187470 <https://sourceforge.net/tracker/?func=detail&aid=3187470&group_id=226244&atid=1067586>
   - 3187462 <https://sourceforge.net/tracker/?func=detail&aid=3187462&group_id=226244&atid=1067586>
 
