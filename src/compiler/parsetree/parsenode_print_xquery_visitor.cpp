@@ -1146,7 +1146,10 @@ DEFAULT_END_VISIT (ReverseAxis);
           os << '*';
           break;
         case ParseConstants::wild_elem:
-          os << n.getPrefix() << ":*";
+          if (n.isEQnameMatch())
+            os << "\"" << n.getNsOrPrefix() << "\":*";
+          else
+            os << n.getNsOrPrefix() << ":*";
           break;
          case ParseConstants::wild_prefix:
           os << "*:" << n.getLocalName();

@@ -3298,8 +3298,6 @@ NameTest::NameTest(const QueryLoc& loc, rchandle<Wildcard> wild)
 {}
 
 
-
-
 void NameTest::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -3314,14 +3312,16 @@ void NameTest::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 Wildcard::Wildcard(
   const QueryLoc& loc,
-  const zstring& prefix,
+  const zstring& nsOrPrefix,
   const zstring& lname,
-  enum ParseConstants::wildcard_t kind)
+  enum ParseConstants::wildcard_t kind,
+  bool isEQnameMatch)
   :
   parsenode(loc),
   theKind(kind),
-  thePrefix(prefix),
-  theLocalName(lname)
+  theNsOrPrefix(nsOrPrefix),
+  theLocalName(lname),
+  theIsEQnameMatch(isEQnameMatch)
 {
 }
 

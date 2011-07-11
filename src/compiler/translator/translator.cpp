@@ -8913,28 +8913,28 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       case ParseConstants::wild_elem:
       {
         matchExpr->setWildKind(match_name_wild);
-        matchExpr->setWildName(wildcard->getPrefix());
+        matchExpr->setWildName(wildcard->getNsOrPrefix());
 
         zstring localname(":wildcard");
-
         store::Item_t qnItem;
+        zstring ns;
+        zstring prefix = wildcard->getNsOrPrefix();
 
-        if (axisExpr->getAxis() == axis_kind_attribute)
+        if (axisExpr->getAxis() != axis_kind_attribute)
         {
-          theSctx->expand_qname(qnItem,
-                                zstring(),
-                                wildcard->getPrefix(),
-                                localname,
-                                wildcard->get_location());
+          ns = theSctx->default_elem_type_ns();
+          if (wildcard->isEQnameMatch())
+          {
+            ns = prefix;
+            prefix = zstring();
+          }
         }
-        else
-        {
-          theSctx->expand_qname(qnItem,
-                                theSctx->default_elem_type_ns(),
-                                wildcard->getPrefix(),
-                                localname,
-                                wildcard->get_location());
-        }
+
+        theSctx->expand_qname(qnItem,
+            ns,
+            prefix,
+            localname,
+            wildcard->get_location());
 
         matchExpr->setQName(qnItem);
 
@@ -8979,7 +8979,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
           store::Item_t qnItem;
           theSctx->expand_qname(qnItem,
                                 theSctx->default_elem_type_ns(),
-                                wildcard->getPrefix(),
+                                wildcard->getNsOrPrefix(),
                                 localname,
                                 wildcard->get_location());
           cc->add_nametest_h(new NodeNameTest(qnItem->getNamespace(), zstring()));

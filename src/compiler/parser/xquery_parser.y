@@ -183,6 +183,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> CHAR_REF_LITERAL              "'&#charref;'"
 %token <sval> ELEMENT_CONTENT               "'element content'"
 %token <sval> ELEM_WILDCARD                 "'pref:*'"
+%token <sval> ELEM_EQNAME_WILDCARD          "'ns:*'"
 %token <sval> ENTITY_REF                    "'&entity;'"
 %token <sval> EXPR_COMMENT_LITERAL          "'comment literal'"
 
@@ -4307,15 +4308,19 @@ NameTest :
 Wildcard :
     STAR
     {
-      $$ = new Wildcard(LOC(@$), "", "", ParseConstants::wild_all);
+      $$ = new Wildcard(LOC(@$), "", "", ParseConstants::wild_all, false);
     }
   | ELEM_WILDCARD
     {
-      $$ = new Wildcard(LOC(@$), SYMTAB($1), "", ParseConstants::wild_elem);
+      $$ = new Wildcard(LOC(@$), SYMTAB($1), "", ParseConstants::wild_elem, false);
+    }
+  | ELEM_EQNAME_WILDCARD
+    {
+      $$ = new Wildcard(LOC(@$), SYMTAB($1), "", ParseConstants::wild_elem, true);
     }
   | PREFIX_WILDCARD   /* ws: explicitXQ */
     {
-      $$ = new Wildcard(LOC(@$), "", SYMTAB($1), ParseConstants::wild_prefix);
+      $$ = new Wildcard(LOC(@$), "", SYMTAB($1), ParseConstants::wild_prefix, false);
     }
 ;
 

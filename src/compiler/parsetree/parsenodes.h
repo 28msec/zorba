@@ -3867,21 +3867,26 @@ class Wildcard : public parsenode
 {
 protected:
   ParseConstants::wildcard_t theKind;
-  zstring const              thePrefix;
+  zstring const              theNsOrPrefix;
   zstring const              theLocalName;
+  bool                       theIsEQnameMatch; // If true, then theNsOrPrefix holds a namespace instead of a prefix.
+                                               // This is used for EQName-style element wildcard matches.
 
 public:
   Wildcard(
     const QueryLoc& loc_,
-    const zstring& prefix,
+    const zstring& nsOrPrefix,
     const zstring& lname,
-    enum ParseConstants::wildcard_t type);
+    enum ParseConstants::wildcard_t type,
+    bool isEQnameMatch);
 
   ParseConstants::wildcard_t getKind() const { return theKind; }
 
-  const zstring& getPrefix() const { return thePrefix; }
+  const zstring& getNsOrPrefix() const { return theNsOrPrefix; }
 
   const zstring& getLocalName() const { return theLocalName; }
+
+  bool isEQnameMatch() const { return theIsEQnameMatch; }
 
   void accept(parsenode_visitor&) const;
 };
