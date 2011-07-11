@@ -90,7 +90,7 @@ extern entry const dict_en[] = {
   { "SERE0005", "invalid NCName character" },
   { "SERE0006", "\"$1\": invalid character for XML version $2" },
   { "SERE0008", "\"$1\": can not encode character as character reference here" },
-  { "SERE0012", "the value of the normalization-form parameter is fully-normalized and any relevant construct of the result begins with a combining character" },
+  { "SERE0012", "normalization-form parameter value is fully-normalized and any relevant construct of the result begins with a combining character" },
   { "SERE0014", "\"#$1\": character not allowed for HTML output method" },
   { "SERE0015", "can not use '>' within processing instruction for HTML output method" },
   { "SESU0007", "\"$1\": unsupported encoding" },

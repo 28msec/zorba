@@ -1,17 +1,17 @@
 <!--
- *  Copyright 2006-2008 The FLWOR Foundation.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ !  Copyright 2006-2008 The FLWOR Foundation.
+ !
+ !  Licensed under the Apache License, Version 2.0 (the "License");
+ !  you may not use this file except in compliance with the License.
+ !  You may obtain a copy of the License at
+ !
+ !  http://www.apache.org/licenses/LICENSE-2.0
+ !
+ !  Unless required by applicable law or agreed to in writing, software
+ !  distributed under the License is distributed on an "AS IS" BASIS,
+ !  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ !  See the License for the specific language governing permissions and
+ !  limitations under the License.
  -->
 
 <diagnostic-list lang="en">
@@ -20,20 +20,20 @@
 
     <diagnostic code="XPST0001">
       <comment>
-       It is a static error if analysis of an expression relies on some component
-       of the static context that has not been assigned a value.
+       It is a static error if analysis of an expression relies on some
+       component of the static context that has not been assigned a value.
       </comment>
       <value>${"1": }undefined value${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="XPDY0002">
       <comment>
-       It is a dynamic error if evaluation of an expression relies on some part of
-       the dynamic context that has not been assigned a value.
+       It is a dynamic error if evaluation of an expression relies on some part
+       of the dynamic context that has not been assigned a value.
       </comment>
       <value>"$1": $2</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0003">
       <comment>
        It is a static error if an expression is not a valid instance of the
@@ -41,72 +41,72 @@
       </comment>
       <value>invalid expression${: 1}</value>
     </diagnostic>
- 
+
     <diagnostic code="XPTY0004">
       <comment>
-       It is a type error if, during the static analysis phase, an expression is
-       found to have a static type that is not appropriate for the context in which
-       the expression occurs, or during the dynamic evaluation phase, the dynamic
-       type of a value does not match a required type as specified by the matching
-       rules in 2.5.4 SequenceType Matching.
+       It is a type error if, during the static analysis phase, an expression
+       is found to have a static type that is not appropriate for the context
+       in which the expression occurs, or during the dynamic evaluation phase,
+       the dynamic type of a value does not match a required type as specified
+       by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
       <value>$1</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0005">
       <comment>
-       During the analysis phase, it is a static error if the static type assigned
-       to an expression other than the expression \c () or \c data(()) is
-       \c empty-sequence().
+       During the analysis phase, it is a static error if the static type
+       assigned to an expression other than the expression \c () or \c data(())
+       is \c empty-sequence().
       </comment>
       <value>static type must not be empty-sequence()</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0008">
       <comment>
-       It is a static error if an expression refers to an element name, attribute
-       name, schema type name, namespace prefix, or variable name that is not
-       defined in the static context, except for an ElementName in an ElementTest
-       or an AttributeName in an AttributeTest.
+       It is a static error if an expression refers to an element name,
+       attribute name, schema type name, namespace prefix, or variable name
+       that is not defined in the static context, except for an ElementName in
+       an ElementTest or an AttributeName in an AttributeTest.
       </comment>
       <value>"$1": undefined $2</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0009">
       <comment>
-       An implementation that does not support the Schema Import Feature must raise
-       a static error if a Prolog contains a schema import.
+       An implementation that does not support the Schema Import Feature must
+       raise a static error if a Prolog contains a schema import.
       </comment>
       <value>schema import not supported</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0012">
       <comment>
        It is a static error if the set of definitions contained in all schemas
        imported by a Prolog do not satisfy the conditions for schema validity
-       specified in Sections 3 and 5 of [XML Schema] Part 1--i.e., each definition
-       must be valid, complete, and unique.
+       specified in Sections 3 and 5 of [XML Schema] Part 1--i.e., each
+       definition must be valid, complete, and unique.
       </comment>
       <value>invalid schema definitions</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0013">
       <comment>
-       It is a static error if an implementation recognizes a pragma but determines
-       that its content is invalid.
+       It is a static error if an implementation recognizes a pragma but
+       determines that its content is invalid.
       </comment>
       <value>invalid pragma content</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0017">
       <comment>
        It is a static error if the expanded QName and number of arguments in a
-       function call do not match the name and arity of a function signature in the
-       static context.
+       function call do not match the name and arity of a function signature in
+       the static context.
       </comment>
       <value>"$1": $2</value>
     </diagnostic>
- 
+
     <diagnostic code="XPTY0018">
       <comment>
        It is a type error if the result of the last step in a path expression
@@ -114,7 +114,7 @@
       </comment>
       <value>path expression last step must not have nodes and atomic values</value>
     </diagnostic>
- 
+
     <diagnostic code="XPTY0019">
       <comment>
        It is a type error if the result of a step (other than the last step) in a
@@ -122,14 +122,14 @@
       </comment>
       <value>path expression non-last step must not be an atomic value</value>
     </diagnostic>
- 
+
     <diagnostic code="XPTY0020">
       <comment>
        It is a type error if, in an axis step, the context item is not a node.
       </comment>
       <value>axis step context item is not a node</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0022">
       <comment>
        It is a static error if the value of a namespace declaration attribute is
@@ -137,7 +137,7 @@
       </comment>
       <value>namespace declaration attribute is not a URI literal</value>
     </diagnostic>
- 
+
     <diagnostic code="XQTY0024">
       <comment>
        It is a type error if the content sequence in an element constructor
@@ -145,24 +145,24 @@
       </comment>
       <value>element constructor content sequence must not have an attribute node following a non-attribute node</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0025">
       <comment>
        It is a dynamic error if any attribute of a constructed element does not
-       have a name that is distinct from the names of all other attributes of the
-       constructed element.
+       have a name that is distinct from the names of all other attributes of
+       the constructed element.
       </comment>
       <value>"$1": duplicate attribute name</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0026">
       <comment>
-       It is a dynamic error if the result of the content expression of a computed
-       processing instruction constructor contains the string "?>".
+       It is a dynamic error if the result of the content expression of a
+       computed processing instruction constructor contains the string "?>".
       </comment>
       <value>computed processing instrucion must not contain "?&gt;"</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0027">
       <comment>
        In a validate expression, it is a dynamic error if the root element
@@ -172,7 +172,7 @@
       </comment>
       <value>"$1": unexpected validity property${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="XQTY0030">
       <comment>
        It is a type error if the argument of a validate expression does not
@@ -180,7 +180,7 @@
       </comment>
       <value>validate argument must be exactly one document or element node</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0031">
       <comment>
        It is a static error if the version number specified in a version
@@ -188,7 +188,7 @@
       </comment>
       <value>"$1": $2</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0032">
       <comment>
        A static error is raised if a Prolog contains more than one base URI
@@ -196,7 +196,7 @@
       </comment>
       <value>multiple base URI declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0033">
       <comment>
        It is a static error if a module contains multiple bindings for the same
@@ -204,16 +204,16 @@
       </comment>
       <value>"$1": namespace prefix already bound to "$2"</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0034">
       <comment>
-       It is a static error if multiple functions declared or imported by a module
-       have the same number of arguments and their expanded QNames are equal (as
-       defined by the eq operator).
+       It is a static error if multiple functions declared or imported by a
+       module have the same number of arguments and their expanded QNames are
+       equal (as defined by the eq operator).
       </comment>
       <value>"$1": duplicate function declaration</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0035">
       <comment>
        It is a static error to import two schema components that both define the
@@ -221,35 +221,36 @@
       </comment>
       <value>"$1": name previosly imported</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0036">
       <comment>
-       It is a static error to import a module if the in-scope schema definitions
-       of the importing module do not include all of the following:
-    *
+       It is a static error to import a module if the in-scope schema
+       definitions of the importing module do not include all of the following:
+    
        -# An in-scope schema type for each type-name that appears:
-          - in the type of a variable that is declared in the imported module and
-            referenced in the importing module, OR
+          - in the type of a variable that is declared in the imported module
+            and referenced in the importing module, OR
           - in a parameter-type or result-type of a function that is declared in
             the imported module and referenced in the importing module.
        -# An in-scope element declaration for each element-name \c EN such that:
-          - \c schema-element(EN) appears in the declared type of a variable in the
-            imported module, and that variable is referenced in the importing
-            module, OR
-          - \c schema-element(EN) appears in a parameter-type or result-type of a
-            function declared in the imported module, and that function is
+          - \c schema-element(EN) appears in the declared type of a variable in
+            the imported module, and that variable is referenced in the
+            importing module, OR
+          - \c schema-element(EN) appears in a parameter-type or result-type
+            of a function declared in the imported module, and that function is
             referenced in the importing module.
-       -# An in-scope attribute declaration for each attribute-name \c AN such that:
-          - \c schema-attribute(AN) appears in the declared type of a variable in
-            the imported module, and that variable is referenced in the importing
-            module, OR
-          - \c schema-attribute(AN) appears in a parameter-type or result-type of a
-            function declared in the imported module, and that function is
+       -# An in-scope attribute declaration for each attribute-name \c AN such
+          that:
+          - \c schema-attribute(AN) appears in the declared type of a variable
+            in the imported module, and that variable is referenced in the
+            importing module, OR
+          - \c schema-attribute(AN) appears in a parameter-type or result-type
+            of a function declared in the imported module, and that function is
             referenced in the importing module.
       </comment>
       <value>$1</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0038">
       <comment>
        It is a static error if a Prolog contains more than one default collation
@@ -258,7 +259,7 @@
       </comment>
       <value>multiple default collation declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0039">
       <comment>
        It is a static error for a function declaration to have more than one
@@ -266,7 +267,7 @@
       </comment>
       <value>"$1": duplicate parameter name</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0040">
       <comment>
        It is a static error if the attributes specified by a direct element
@@ -274,15 +275,16 @@
       </comment>
       <value>"$1": non-distinct expanded attribute QName</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0041">
       <comment>
        It is a dynamic error if the value of the name expression in a computed
-       processing instruction constructor cannot be cast to the type \c xs:NCName.
+       processing instruction constructor cannot be cast to the type
+       \c xs:NCName.
       </comment>
       <value>can not cast to xs:NCName</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0044">
       <comment>
        It is a static error the node-name of a node constructed by a computed
@@ -297,7 +299,7 @@
       </comment>
       <value>"$1": invalid attibute node-name</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0045">
       <comment>
        It is a static error if the function name in a function declaration is in
@@ -309,31 +311,31 @@
       </comment>
       <value>"$1": invalid function or annotation namespace</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0046">
       <comment>
-       An implementation MAY raise a static error if the value of a URILiteral is
-       of nonzero length and is not in the lexical space of \c xs:anyURI.
+       An implementation MAY raise a static error if the value of a URILiteral
+       is of nonzero length and is not in the lexical space of \c xs:anyURI.
       </comment>
       <value>${"1": }invalid URI literal${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0047">
       <comment>
-       It is a static error if multiple module imports in the same Prolog specify
-       the same target namespace.
+       It is a static error if multiple module imports in the same Prolog
+       specify the same target namespace.
       </comment>
       <value>"$1": duplicate target namespace</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0048">
       <comment>
-       It is a static error if a function or variable declared in a library module
-       is not in the target namespace of the library module.
+       It is a static error if a function or variable declared in a library
+       module is not in the target namespace of the library module.
       </comment>
       <value>"$1": not in library namespace</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0049">
       <comment>
        It is a static error if two or more variables declared or imported by a
@@ -341,36 +343,37 @@
       </comment>
       <value>"$1": duplicate variable declaration</value>
     </diagnostic>
- 
+
     <diagnostic code="XPDY0050">
       <comment>
        It is a dynamic error if the dynamic type of the operand of a treat
        expression does not match the sequence type specified by the treat
-       expression. This error might also be raised by a path expression beginning
-       with "<code>/</code>" or "<code>//</code>" if the context node is not in a
-       tree that is rooted at a document node. This is because a leading
-       "<code>/</code>" or "<code>//</code>" in a path expression is an
+       expression. This error might also be raised by a path expression
+       beginning with "<code>/</code>" or "<code>//</code>" if the context node
+       is not in a tree that is rooted at a document node. This is because a
+       leading "<code>/</code>" or "<code>//</code>" in a path expression is an
        abbreviation for an initial step that includes the clause \c treat as \c
        document-node().
       </comment>
       <value>invalid treat expression type</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0051">
       <comment>
        It is a static error if a QName that is used as an AtomicType in a
-       SequenceType is not defined in the in-scope schema types as an atomic type.
+       SequenceType is not defined in the in-scope schema types as an atomic
+       type.
       </comment>
       <value>"$1": not defined as atomic type${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0054">
       <comment>
        It is a static error if a variable depends on itself.
       </comment>
       <value>${"1": }variable must not depend on itself</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0055">
       <comment>
        It is a static error if a Prolog contains more than one copy-namespaces
@@ -378,7 +381,7 @@
       </comment>
       <value>multiple copy-namespaces declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0057">
       <comment>
        It is a static error if a schema import binds a namespace prefix but does
@@ -386,7 +389,7 @@
       </comment>
       <value>empty target namespace</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0058">
       <comment>
        It is a static error if multiple schema imports specify the same target
@@ -394,42 +397,42 @@
       </comment>
       <value>"$1": duplicate target namespace</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0059">
       <comment>
-       It is a static error if an implementation is unable to process a schema or
-       module import by finding a schema or module with the specified target
+       It is a static error if an implementation is unable to process a schema
+       or module import by finding a schema or module with the specified target
        namespace.
       </comment>
       <value>"$1": target namespace not found for schema/module${ 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0060">
       <comment>
-       It is a static error if the name of a function in a function declaration is
-       not in a namespace (expanded QName has a null namespace URI).
+       It is a static error if the name of a function in a function declaration
+       is not in a namespace (expanded QName has a null namespace URI).
       </comment>
       <value>"$1": function name has a null namespace URI</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0061">
       <comment>
-       It is a dynamic error if the operand of a validate expression is a document
-       node whose children do not consist of exactly one element node and zero or
-       more comment and processing instruction nodes, in any order.
+       It is a dynamic error if the operand of a validate expression is a
+       document node whose children do not consist of exactly one element node
+       and zero or more comment and processing instruction nodes, in any order.
       </comment>
       <value>invalid validate expression operand${: 1}</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0064">
       <comment>
        It is a dynamic error if the value of the name expression in a computed
-       processing instruction constructor is equal to "XML" (in any combination of
-       upper and lower case).
+       processing instruction constructor is equal to "XML" (in any combination
+       of upper and lower case).
       </comment>
       <value>"XML": invalid name expression</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0065">
       <comment>
        A static error is raised if a Prolog contains more than one ordering mode
@@ -437,7 +440,7 @@
       </comment>
       <value>multiple ordering mode declaraions</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0066">
       <comment>
        A static error is raised if a Prolog contains more than one default
@@ -446,7 +449,7 @@
       </comment>
       <value>multiple element/type/function namespace declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0067">
       <comment>
        A static error is raised if a Prolog contains more than one construction
@@ -454,15 +457,15 @@
       </comment>
       <value>multiple construction declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0068">
       <comment>
-       A static error is raised if a Prolog contains more than one boundary-space
-       declaration.
+       A static error is raised if a Prolog contains more than one
+       boundary-space declaration.
       </comment>
       <value>multiple boundary-space declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0069">
       <comment>
        A static error is raised if a Prolog contains more than one empty order
@@ -470,7 +473,7 @@
       </comment>
       <value>multiple empty order declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0070">
       <comment>
        A static error is raised if one of the predefined prefixes \c xml or \c
@@ -486,51 +489,52 @@
       </comment>
       <value>"$1": $2</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0071">
       <comment>
-       A static error is raised if the namespace declaration attributes of a direct
-       element constructor do not have distinct names.
+       A static error is raised if the namespace declaration attributes of a
+       direct element constructor do not have distinct names.
       </comment>
       <value>"$1": duplicate namespace declaration attribute</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0072">
       <comment>
-       It is a dynamic error if the result of the content expression of a computed
-       comment constructor contains two adjacent hyphens or ends with a hyphen.
+       It is a dynamic error if the result of the content expression of a
+       computed comment constructor contains two adjacent hyphens or ends with
+       a hyphen.
       </comment>
       <value>comment must not contain "--" or end with "-"</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0074">
       <comment>
        It is a dynamic error if the value of the name expression in a computed
-       element or attribute constructor cannot be converted to an expanded QName
-       (for example, because it contains a namespace prefix not found in statically
-       known namespaces).
+       element or attribute constructor cannot be converted to an expanded
+       QName (for example, because it contains a namespace prefix not found in
+       statically known namespaces).
       </comment>
       <value>${"1": }can not convert to expanded QName${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0076">
       <comment>
-       It is a static error if a \c collation subclause in an order by clause of a
-       FLWOR expression does not identify a collation that is present in statically
-       known collations.
+       It is a static error if a \c collation subclause in an order by clause
+       of a FLWOR expression does not identify a collation that is present in
+       statically known collations.
       </comment>
       <value>"$1": unknown collation</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0079">
       <comment>
-       It is a static error if an extension expression contains neither a pragma
-       that is recognized by the implementation nor an expression enclosed in curly
-       braces.
+       It is a static error if an extension expression contains neither a
+       pragma that is recognized by the implementation nor an expression
+       enclosed in curly braces.
       </comment>
       <value>unknown pragma or empty expression</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0080">
       <comment>
        It is a static error if the target type of a \c cast or \c castable
@@ -538,26 +542,26 @@
       </comment>
       <value>"$1": invalid type for "cast" or "castable" exression</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0081">
       <comment>
-       It is a static error if a QName used in a query contains a namespace prefix
-       that cannot be expanded into a namespace URI by using the statically known
-       namespaces.
+       It is a static error if a QName used in a query contains a namespace
+       prefix that cannot be expanded into a namespace URI by using the
+       statically known namespaces.
       </comment>
       <value>"$1": can not expand namespace prefix to URI</value>
     </diagnostic>
- 
+
     <diagnostic code="XPST0083">
       <comment>
        It is a static error if the target type of a \c cast expression or
-       constructor function is \c xs:QName or a type derived from \c xs:QName or \c
-       xs:NOTATION, and the argument of the cast expression or constructor function
-       is not a string literal.
+       constructor function is \c xs:QName or a type derived from \c xs:QName
+       or \c xs:NOTATION, and the argument of the cast expression or
+       constructor function is not a string literal.
       </comment>
       <value>"$1": not a string literal</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0084">
       <comment>
        It is a dynamic error if the element validated by a \c validate statement
@@ -566,50 +570,50 @@
       </comment>
       <value>validated element does not have a top-level element declaration in the in-scope element declarations${: 1}</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0085">
       <comment>
        It is a static error if the namespace URI in a namespace declaration
-       attribute is a zero-length string, and the implementation does not support
-       [XML Names 1.1].
+       attribute is a zero-length string, and the implementation does not
+       support [XML Names 1.1].
       </comment>
       <value>namespace URI is empty</value>
     </diagnostic>
- 
+
     <diagnostic code="XQTY0086">
       <comment>
-       It is a type error if the typed value of a copied element or attribute node
-       is namespace-sensitive when construction mode is \c preserve and
+       It is a type error if the typed value of a copied element or attribute
+       node is namespace-sensitive when construction mode is \c preserve and
        copy-namespaces mode is \c no-preserve.
       </comment>
       <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0087">
       <comment>
-       It is a static error if the encoding specified in a Version Declaration does
-       not conform to the definition of \c EncName specified in [XML 1.0]
+       It is a static error if the encoding specified in a Version Declaration
+       does not conform to the definition of \c EncName specified in [XML 1.0]
       </comment>
       <value>"$1": invalid encoding</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0088">
       <comment>
-       It is a static error if the literal that specifies the target namespace in a
-       module import or a module declaration is of zero length.
+       It is a static error if the literal that specifies the target namespace
+       in a module import or a module declaration is of zero length.
       </comment>
       <value>empty target namespace literal</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0089">
       <comment>
-       It is a static error if a variable bound in a \c for or \c window clause of
-       a FLWOR expression, and its associated positional variable, do not have
-       distinct names (expanded QNames).
+       It is a static error if a variable bound in a \c for or \c window clause
+       of a FLWOR expression, and its associated positional variable, do not
+       have distinct names (expanded QNames).
       </comment>
       <value>"$1": duplicate variable name</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0090">
       <comment>
        It is a static error if a character reference does not identify a valid
@@ -617,7 +621,7 @@
       </comment>
       <value>"$1": invalid character reference in XML $2</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0091">
       <comment>
        An implementation MAY raise a dynamic error if an \c xml:id error, as
@@ -626,25 +630,25 @@
       </comment>
       <value>"xml:id" encountered</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0092">
       <comment>
-       An implementation MAY raise a dynamic error if a constructed attribute named
-       \c xml:space has a value other than \c preserve or \c default.
+       An implementation MAY raise a dynamic error if a constructed attribute
+       named \c xml:space has a value other than \c preserve or \c default.
       </comment>
       <value>"$1": must be either "preserve" or "default"</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0093">
       <comment>
        It is a static error to import a module M1 if there exists a sequence of
-       modules M1 ... Mi ... M1 such that each module directly depends on the next
-       module in the sequence (informally, if M1 depends on itself through some
-       chain of module dependencies.)
+       modules M1 ... Mi ... M1 such that each module directly depends on the
+       next module in the sequence (informally, if M1 depends on itself through
+       some chain of module dependencies.)
       </comment>
       <value>"$1": module must not depend on itself</value>
     </diagnostic>
- 
+
     <diagnostic code="XQDY0096">
       <comment>
        It is a dynamic error the node-name of a node constructed by a computed
@@ -658,18 +662,18 @@
       </comment>
       <value>"$1": invalid node-name</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0098">
       <comment>
        It is a static error if, for any named or unnamed decimal format, the
-       properties representing characters used in a picture string do not each have
-       distinct values. These properties are decimal-separator-sign,
-       grouping-separator, percent-sign, per-mille-sign, zero-digit, digit-sign,
-       and pattern-separator-sign.
+       properties representing characters used in a picture string do not each
+       have distinct values. These properties are decimal-separator-sign,
+       grouping-separator, percent-sign, per-mille-sign, zero-digit,
+       digit-sign, and pattern-separator-sign.
       </comment>
       <value>properties "$1" and "$2", representing characters used in picture string, do not have distinct values</value>
     </diagnostic>
- 
+
     <diagnostic code="XQST0106">
       <comment>
        It is a static error if a function's annotations contain more than one
@@ -682,20 +686,20 @@
 
     <diagnostic code="XQST0111">
       <comment>
-       It is a static error for a query prolog to contain two decimal formats with
-       the same name, or to contain two default decimal formats.
+       It is a static error for a query prolog to contain two decimal formats
+       with the same name, or to contain two default decimal formats.
       </comment>
       <value>$1</value>
     </diagnostic>
- 
+
     <diagnostic code="XTDE1310">
       <comment>
-       It is a non-recoverable dynamic error if the picture string does not satisfy
-       the format-number function rules.
+       It is a non-recoverable dynamic error if the picture string does not
+       satisfy the format-number function rules.
       </comment>
       <value>"$1": picture string does not satisfy format-number() function rules</value>
     </diagnostic>
- 
+
     <diagnostic code="XTDE1340">
       <comment>
        It is a non-recoverable dynamic error if the syntax of the picture is
@@ -703,7 +707,7 @@
       </comment>
       <value>"$1": invalid picture string for date/time</value>
     </diagnostic>
- 
+
     <diagnostic code="XTDE1350">
       <comment>
        It is a non-recoverable dynamic error if a component specifier within the
@@ -712,63 +716,64 @@
       </comment>
       <value>component specifier not available</value>
     </diagnostic>
- 
-    <!--////////// XQuery Full-Text Errors ////////////////////////////////////////////-->
- 
+
+    <!--////////// XQuery Full-Text Errors /////////////////////////////////-->
+
     <diagnostic code="FTST0008" disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
        It is a static error if, during the static analysis phase, the query is
-       found to contain a stop word option that refers to a stop word list that is
-       not found in the statically known stop word lists.
+       found to contain a stop word option that refers to a stop word list that
+       is not found in the statically known stop word lists.
       </comment>
       <value>"$1": unknown stop-word list</value>
     </diagnostic>
- 
+
     <diagnostic code="FTST0009" disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
-       It may be a static error if, during the static analysis phase, the query is
-       found to contain a language identifier in a language option that the
-       implementation does not support. The implementation may choose not to raise
-       this error and instead provide some other implementation-defined behavior.
+       It may be a static error if, during the static analysis phase, the query
+       is found to contain a language identifier in a language option that the
+       implementation does not support. The implementation may choose not to
+       raise this error and instead provide some other implementation-defined
+       behavior.
       </comment>
       <value>"$1": unsupported language</value>
     </diagnostic>
- 
+
     <diagnostic code="FTDY0016" disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
-       It is a dynamic error if a weight value is not within the required range of
-       values; it is also a dynamic error if an implementation that does not
+       It is a dynamic error if a weight value is not within the required range
+       of values; it is also a dynamic error if an implementation that does not
        support negative weights encounters a negative weight value.
       </comment>
       <value>"$1": invalid weight: absolute value must be in [0,1000]</value>
     </diagnostic>
- 
+
     <diagnostic code="FTDY0017" disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
-       It is a dynamic error if an implementation encounters a mild not selection,
-       one of whose operands evaluates to an AllMatches that contains a
-       StringExclude.
+       It is a dynamic error if an implementation encounters a mild not
+       selection, one of whose operands evaluates to an AllMatches that
+       contains a StringExclude.
       </comment>
       <value>mild-not contains StringExclude</value>
     </diagnostic>
- 
+
     <diagnostic code="FTST0018" disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
        It is a static error if, during the static analysis phase, the query is
-       found to contain a thesaurus option that refers to a thesaurus that is not
-       found in the statically known thesauri.
+       found to contain a thesaurus option that refers to a thesaurus that is
+       not found in the statically known thesauri.
       </comment>
       <value>"$1": unknown thesaurus</value>
     </diagnostic>
- 
+
     <diagnostic code="FTST0019" disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
-       It is a static error if, within a single FTMatchOptions, there is more than
-       one match option of any given match option group.
+       It is a static error if, within a single FTMatchOptions, there is more
+       than one match option of any given match option group.
       </comment>
       <value>"$1": match option specified more than once</value>
     </diagnostic>
- 
+
     <diagnostic code="FTDY0020" disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
        It is a dynamic error if, when "wildcards" is in effect, a query string
@@ -776,220 +781,219 @@
       </comment>
       <value>${"1": }invalid wildcard syntax${: 2}</value>
     </diagnostic>
- 
- 
-   <!--////////// XQuery Functions and Operators Errors ////////////////////////////////-->
- 
+
+   <!--////////// XQuery Functions and Operators Errors ////////////////////-->
+
     <diagnostic code="FOER0000">
       <comment>
        Unidentified error.
       </comment>
       <value>unidentifier error</value>
     </diagnostic>
- 
+
     <diagnostic code="FOAR0001">
       <comment>
        Division by zero.
       </comment>
       <value>division by zero</value>
     </diagnostic>
- 
+
     <diagnostic code="FOAR0002">
       <comment>
        Numeric operation overflow/underflow.
       </comment>
       <value>numeric operation overflow/underflow${: 1}</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCA0001">
       <comment>
        Input value too large for decimal.
       </comment>
       <value>"$1": value too large for decimal</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCA0002">
       <comment>
        Invalid lexical value.
       </comment>
       <value>"$1": invalid lexical value${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCA0003">
       <comment>
        Input value too large for integer.
       </comment>
       <value>"$1": value too large for integer</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCA0005">
       <comment>
        NaN supplied as float/double value.
       </comment>
       <value>NaN supplied as float/double value</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCA0006">
       <comment>
        String to be cast to decimal has too many digits of precision.
       </comment>
       <value>"$1": string to be cast to decimal has too many digits of precision</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCH0001">
       <comment>
        Code point not valid.
       </comment>
       <value>"$1": invalid code point</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCH0002">
       <comment>
        Unsupported collation.
       </comment>
       <value>"$1": unsuported collation${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCH0003">
       <comment>
        Unsupported normalization form.
       </comment>
       <value>"$1": unsupported normalization form</value>
     </diagnostic>
- 
+
     <diagnostic code="FOCH0004">
       <comment>
        Collation does not support collation units.
       </comment>
       <value>"$1": collation does not support collation units</value>
     </diagnostic>
- 
+
     <diagnostic code="FODC0001">
       <comment>
        No context document.
       </comment>
       <value>no context document for $1() function</value>
     </diagnostic>
- 
+
     <diagnostic code="FODC0002">
       <comment>
        Error retrieving resource.
       </comment>
       <value>"$1": error retrieving resource${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FODC0003">
       <comment>
        Function stability not defined.
       </comment>
       <value>function stability not defined</value>
     </diagnostic>
- 
+
     <diagnostic code="FODC0004">
       <comment>
        Invalid argument to \c fn:collection().
       </comment>
       <value>"$1": invalid argument to fn:collection()${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FODC0005">
       <comment>
        Invalid argument to \c fn:doc() or \c fn:doc-available().
       </comment>
       <value>"$1": invalid argument to fn:doc() or fn:doc-available()</value>
     </diagnostic>
- 
+
     <diagnostic code="FODC0006">
       <comment>
        Invalid content passed to \c fn:parse().
       </comment>
       <value>invalid content passed to fn:parse-xml(): $1</value>
     </diagnostic>
- 
+
     <diagnostic code="FODC0007">
       <comment>
        Base URI passed to \c fn:parse() is not a valid absolute URI.
       </comment>
       <value>"$1": base URI passed to fn:parse() is not a valid absolute URI</value>
     </diagnostic>
- 
+
     <diagnostic code="FODF1280">
       <comment>
        Invalid decimal format name supplied to \c fn:format-number().
       </comment>
       <value>"$1": invalid decimal format name for fn:format-number()</value>
     </diagnostic>
- 
+
     <diagnostic code="FODF1310">
       <comment>
        Invalid \c fn:format-number() picture string.
       </comment>
       <value>"$1": invalid fn:format-number() picture string</value>
     </diagnostic>
- 
+
     <diagnostic code="FODT0001">
       <comment>
        Overflow/underflow in date/time operation.
       </comment>
       <value>overflow/underflow in date/time operation</value>
     </diagnostic>
- 
+
     <diagnostic code="FODT0002">
       <comment>
        Overflow/underflow in duration operation.
       </comment>
       <value>overflow/underflow in duration operation</value>
     </diagnostic>
- 
+
     <diagnostic code="FODT0003">
       <comment>
        Invalid timezone value.
       </comment>
       <value>"$1": invalid timezone value</value>
     </diagnostic>
- 
+
     <diagnostic code="FOFI0001">
       <comment>
        format-integer: Cannot cast $language to \c xs:language.
       </comment>
       <value>"$1": not castable to xs:language</value>
     </diagnostic>
- 
+
     <diagnostic code="FOFI0002">
       <comment>
        format-integer: invalid parameter.
       </comment>
       <value>invalid argument in format-integer: $1</value>
     </diagnostic>
- 
+
     <diagnostic code="FONS0004">
       <comment>
        No namespace found for prefix.
       </comment>
       <value>"$1": no namespace found for prefix</value>
     </diagnostic>
- 
+
     <diagnostic code="FONS0005">
       <comment>
        Base-URI not defined in static context.
       </comment>
       <value>base-URI not defined in the static context</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0001">
       <comment>
        Invalid value for cast/constructor.
       </comment>
       <value>${"1": }invalid value for cast/constructor${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0002">
       <comment>
        Invalid argument to \c fn:resolve-uri().
       </comment>
       <value>"$1": invalid argument to fn:resolve-uri()${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0003">
       <comment>
        \c fn:zero-or-one() called with a sequence containing more than one
@@ -997,14 +1001,14 @@
       </comment>
       <value>fn:zero-or-one() called with a sequnce containing more than one item</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0004">
       <comment>
        \c fn:one-or-more() called with a sequence containing no items.
       </comment>
       <value>fn:one-or-more() called with a sequence containing no items</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0005">
       <comment>
        \c fn:exactly-one() called with a sequence containing zero or more
@@ -1012,63 +1016,64 @@
       </comment>
       <value>fn:exactly-one() called with a sequence containing zero or more than one item</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0006">
       <comment>
        Invalid argument type.
       </comment>
       <value>$1</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0008">
       <comment>
        The two arguments to fn:dateTime() have inconsistent timezones.
       </comment>
       <value>"$1" and "$2": two arguments to fn:dateTime() have inconsistent timezones</value>
     </diagnostic>
- 
+
     <diagnostic code="FORG0009">
       <comment>
-       Error in resolving a relative URI against a base URI in \c fn:resolve-uri().
+       Error in resolving a relative URI against a base URI in
+       \c fn:resolve-uri().
       </comment>
       <value>error resolving a relative URI against a base URI in fn:resolve-uri()${: 1}</value>
     </diagnostic>
- 
+
     <diagnostic code="FORX0001">
       <comment>
        Invalid regular expression flags.
       </comment>
       <value>'$1': invalid regular expression flag</value>
     </diagnostic>
- 
+
     <diagnostic code="FORX0002">
       <comment>
        Invalid regular expression.
       </comment>
       <value>"$1": invalid regular expression${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FORX0003">
       <comment>
        Regular expression matches zero-length string.
       </comment>
       <value>"$1": regular expression matches zero-length string</value>
     </diagnostic>
- 
+
     <diagnostic code="FORX0004">
       <comment>
        Invalid replacement string.
       </comment>
       <value>"$1": invalid replacement string${: 2}</value>
     </diagnostic>
- 
+
     <diagnostic code="FOTY0012">
       <comment>
        Argument node does not have a typed value.
       </comment>
       <value>"$1": element node of type $2 does not have a typed value</value>
     </diagnostic>
- 
+
     <diagnostic code="FOTY0013">
       <comment>
        An argument to \c fn:data() contains a node that does not have a typed
@@ -1076,23 +1081,23 @@
       </comment>
       <value>"$1": argument to fn:data() is function item</value>
     </diagnostic>
- 
+
     <diagnostic code="FOTY0014">
       <comment>
        The argument to \c fn:string() is a function item.
       </comment>
       <value>"$1": argument to fn:string() is a function item</value>
     </diagnostic>
- 
+
     <diagnostic code="FOTY0015">
       <comment>
        An argument to \c fn:deep-equal() contains a function item.
       </comment>
       <value>"$1": argument to fn:deep-equal() contains a function item</value>
     </diagnostic>
- 
-    <!--////////// XQuery Scripting ///////////////////////////////////////////////////-->
- 
+
+    <!--////////// XQuery Scripting ////////////////////////////////////////-->
+
     <diagnostic code="XSST0001">
       <value>"$1": function cannot be declared as both updating and sequential</value>
     </diagnostic>
@@ -1117,21 +1122,21 @@
     <diagnostic code="XSST0008">
       <value>"while" expression with non-sequential body</value>
     </diagnostic>
- 
-    <!--////////// XQuery Update Facility /////////////////////////////////////////////-->
- 
+
+    <!--////////// XQuery Update Facility //////////////////////////////////-->
+
     <diagnostic code="XUST0001">
       <comment>
-       It is a static error if an updating expression is used in any position other
-       than one of the following:
+       It is a static error if an updating expression is used in any position
+       other than one of the following:
        - The topmost expression in the body of a query.
        - The \c modify clause of a transform expression.
        - The \c return clause of a FLWOR expression.
-       - The \c return clauses of a typeswitch expression in which every \c return
-         clause contains an updating expression or a vacuous expression.
-       - The \c then and \c else clauses of a conditional statement in which both
-         the \c then and \c else clauses contain either an updating expression or a
-         vacuous expression.
+       - The \c return clauses of a typeswitch expression in which every \c
+         return clause contains an updating expression or a vacuous expression.
+       - The \c then and \c else clauses of a conditional statement in which
+         both the \c then and \c else clauses contain either an updating
+         expression or a vacuous expression.
        - An operand of a comma expression in which each operand is either an
          updating expression or a vacuous expression.
        - The content of a parenthesized expression.
@@ -1140,18 +1145,18 @@
       </comment>
       <value>$1</value>
     </diagnostic>
- 
+
     <diagnostic code="XUST0002">
       <comment>
-       It is a static error if a simple expression that is not a vacuous expression
-       is used in one of the following positions:
+       It is a static error if a simple expression that is not a vacuous
+       expression is used in one of the following positions:
        - The \c modify clause of a transform expression.
-       - The top-level expression in the body of a function declaration in which
-         the keyword \c updating is specified.
+       - The top-level expression in the body of a function declaration in
+         which the keyword \c updating is specified.
       </comment>
       <value>simple expression not allowed here</value>
     </diagnostic>
- 
+
     <diagnostic code="XUST0003">
       <comment>
        It is a static error if a Prolog contains more than one revalidation
@@ -1159,96 +1164,98 @@
       </comment>
       <value>multiple revalidation declarations</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0004">
       <comment>
        It is a type error if the insertion sequence of an insert expression
-       contains an attribute node following a node that is not an attribute node.
+       contains an attribute node following a node that is not an attribute
+       node.
       </comment>
       <value>attribute node follows non-attribute node</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0005">
       <comment>
-       In an insert expression where <code>into</code>, <code>as first into</code>,
-       or <code>as last into</code> is specified, it is a type error if the target
-       expression returns a non-empty result that does not consist of a single
-       element or document node.
+       In an insert expression where <code>into</code>, <code>as first
+       into</code>, or <code>as last into</code> is specified, it is a type
+       error if the target expression returns a non-empty result that does not
+       consist of a single element or document node.
       </comment>
       <value>target expression not a single element or document node</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0006">
       <comment>
-       In an insert expression where \c before or \c after is specified, it is a
-       type error if the target expression returns a non-empty result that does not
-       consist of a single element, text, comment, or processing instruction node.
+       In an insert expression where \c before or \c after is specified, it is
+       a type error if the target expression returns a non-empty result that
+       does not consist of a single element, text, comment, or processing
+       instruction node.
       </comment>
       <value>target expression not a single element, text, comment, or processing instruction node</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0007">
       <comment>
-       It is a type error if the target expression of a delete expression does not
-       return a sequence of zero or more nodes.
+       It is a type error if the target expression of a delete expression does
+       not return a sequence of zero or more nodes.
       </comment>
       <value>target expression does not return a sequence of zero or more nodes</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0008">
       <comment>
-       In a replace expression, it is a type error if the target expression returns
-       a non-empty result that does not consist of a single element, attribute,
-       text, comment, or processing instruction node.
+       In a replace expression, it is a type error if the target expression
+       returns a non-empty result that does not consist of a single element,
+       attribute, text, comment, or processing instruction node.
       </comment>
       <value>target expression not a single element, attribute, text, comment, or processing instruction node</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0009">
       <comment>
-       In a replace expression where <code>value of</code> is not specified, it is
-       a dynamic error if the node returned by the target expression does not have
-       a parent.
+       In a replace expression where <code>value of</code> is not specified, it
+       is a dynamic error if the node returned by the target expression does
+       not have a parent.
       </comment>
       <value>node has no parent in "replace" expression (without "value of")</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0010">
       <comment>
-       In a replace expression where <code>value of</code> is not specified and the
-       target is an element, text, comment, or processing instruction node, it is a
-       type error if the replacement sequence does not consist of zero or more
-       element, text, comment, or processing instruction nodes.
+       In a replace expression where <code>value of</code> is not specified and
+       the target is an element, text, comment, or processing instruction node,
+       it is a type error if the replacement sequence does not consist of zero
+       or more element, text, comment, or processing instruction nodes.
       </comment>
       <value>replacement sequence does not consist of zero or more element, text, comment, or processing instruction nodes</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0011">
       <comment>
-       In a replace expression where <code>value of</code> is not specified and the
-       target is an attribute node, it is a type error if the replacement sequence
-       does not consist of zero or more attribute nodes.
+       In a replace expression where <code>value of</code> is not specified and
+       the target is an attribute node, it is a type error if the replacement
+       sequence does not consist of zero or more attribute nodes.
       </comment>
       <value>replacement sequence does not consist of zero or more attribute nodes</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0012">
       <comment>
-       In a rename expression, it is a type error if the target expression returns
-       a non-empty result that does not consist of a single element, attribute, or
-       processing instruction node.
+       In a rename expression, it is a type error if the target expression
+       returns a non-empty result that does not consist of a single element,
+       attribute, or processing instruction node.
       </comment>
       <value>multiple elements, attributes, or processing-instruction nodes returned</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0013">
       <comment>
-       In a transform expression, it is a type error if a source expression in the
-       \c copy clause does not return a single node.
+       In a transform expression, it is a type error if a source expression in
+       the \c copy clause does not return a single node.
       </comment>
       <value>source expression of "copy" clause must return a single node</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0014">
       <comment>
        In a transform expression, it is a dynamic error if the \c modify clause
@@ -1256,24 +1263,24 @@
       </comment>
       <value>"modify" can not modify node not created by "copy"</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0015">
       <comment>
-       It is a dynamic error if any node is the target of more than one \c rename
-       expression within the same query.
+       It is a dynamic error if any node is the target of more than one \c
+       rename expression within the same query.
       </comment>
       <value>node is target of multiple "rename" expressions in same query</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0016">
       <comment>
-       It is a dynamic error if any node is the target of more than one \c replace
-       expression (without <code>value of</code> being specified) within the same
-       query.
+       It is a dynamic error if any node is the target of more than one \c
+       replace expression (without <code>value of</code> being specified)
+       within the same query.
       </comment>
       <value>node is target of multiple "replace" expressions (without "value of") in same query</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0017">
       <comment>
        It is a dynamic error if any node is the target of more than one
@@ -1281,33 +1288,33 @@
       </comment>
       <value>node is target of multiple "replace value of" expressions in same query</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0018">
       <comment>
-       It is a dynamic error if a function that was declared to be \c external but
-       not \c updating returns a non-empty pending update list.
+       It is a dynamic error if a function that was declared to be \c external
+       but not \c updating returns a non-empty pending update list.
       </comment>
       <value>"$1": function declared external, non-updating returns non-empty pending update list</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0019">
       <comment>
-       It is a dynamic error if a function that was declared to be both \c external
-       and \c updating returns a non-empty data model instance.
+       It is a dynamic error if a function that was declared to be both \c
+       external and \c updating returns a non-empty data model instance.
       </comment>
       <value>"$1": function declated external, updating returns non-empty data model instance</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0021">
       <comment>
-       It is a dynamic error if the XDM instance that would result from applying
-       all the updates in a query violates any constraint specified in [XQuery 1.0
-       and XPath 2.0 Data Model]. In this case, none of the updates in the query
-       are made effective.
+       It is a dynamic error if the XDM instance that would result from
+       applying all the updates in a query violates any constraint specified in
+       [XQuery 1.0 and XPath 2.0 Data Model]. In this case, none of the updates
+       in the query are made effective.
       </comment>
       <value>updates violate constraint</value>
     </diagnostic>
- 
+
     <diagnostic code="XUTY0022">
       <comment>
        It is a type error if an insert expression specifies the insertion of an
@@ -1315,24 +1322,24 @@
       </comment>
       <value>insertion of attribute node into document node</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0023">
       <comment>
-       It is a dynamic error if an insert, replace, or rename expression affects an
-       element node by introducing a new namespace binding that conflicts with one
-       of its existing namespace bindings.
+       It is a dynamic error if an insert, replace, or rename expression
+       affects an element node by introducing a new namespace binding that
+       conflicts with one of its existing namespace bindings.
       </comment>
       <value>"$1": namespace binding conflicts with $2=$3</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0024">
       <comment>
-       It is a dynamic error if the effect of a set of updating expressions is to
-       introduce conflicting namespace bindings into an element node.
+       It is a dynamic error if the effect of a set of updating expressions is
+       to introduce conflicting namespace bindings into an element node.
       </comment>
       <value>"$1": namespace binding conflicts with $2=$3</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0027">
       <comment>
        It is a dynamic error if the target expression of an insert, replace, or
@@ -1340,7 +1347,7 @@
       </comment>
       <value>target expression is empty sequence</value>
     </diagnostic>
- 
+
     <diagnostic code="XUST0028">
       <comment>
        It is a static error if a function declaration specifies both \c updating
@@ -1348,40 +1355,40 @@
       </comment>
       <value>"$1": function can not be updating with a return type</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0029">
       <comment>
-       In an insert expression where \c before or \c after is specified, it is a
-       dynamic error if the node returned by the target expression does not have a
-       parent.
+       In an insert expression where \c before or \c after is specified, it is
+       a dynamic error if the node returned by the target expression does not
+       have a parent.
       </comment>
       <value>node has no parent in "insert" expression (with "before" or "after")</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0030">
       <comment>
-       It is a dynamic error if an insert expression specifies the insertion of an
-       attribute node before or after a child of a document node.
+       It is a dynamic error if an insert expression specifies the insertion of
+       an attribute node before or after a child of a document node.
       </comment>
       <value>insertion of attrhbute node before or after document node child</value>
     </diagnostic>
- 
+
     <diagnostic code="XUDY0031">
       <comment>
-       It is a dynamic error if multiple calls to \c fn:put() in the same snapshot
-       specify the same URI (after resolution of relative URIs).
+       It is a dynamic error if multiple calls to \c fn:put() in the same
+       snapshot specify the same URI (after resolution of relative URIs).
       </comment>
       <value>"$1": same URI used in multiple calls to fn:put() in same snapshot</value>
     </diagnostic>
- 
+
     <diagnostic code="FOUP0001">
       <comment>
-       It is a dynamic error if the first operand of \c fn:put() is not a node of a
-       supported kind.
+       It is a dynamic error if the first operand of \c fn:put() is not a node
+       of a supported kind.
       </comment>
       <value>first operand of fn:put() is not a node of a supported kind</value>
     </diagnostic>
- 
+
     <diagnostic code="FOUP0002">
       <comment>
        It is a dynamic error if the second operand of \c fn:put() is not a valid
@@ -1389,9 +1396,9 @@
       </comment>
       <value>second operand of fn:put() is not a valid lexical representation of the xs:anyURI type</value>
     </diagnostic>
- 
-    <!--////////// Serialization //////////////////////////////////////////////////////-->
- 
+
+    <!--////////// Serialization ///////////////////////////////////////////-->
+
     <diagnostic code="SENR0001">
       <comment>
        It is an error if an item in S6 in sequence normalization is an attribute
@@ -1399,36 +1406,36 @@
       </comment>
       <value>"$1": can not serialize $2</value>
     </diagnostic>
- 
+
     <diagnostic code="SERE0003">
       <comment>
-       It is an error if the serializer is unable to satisfy the rules for either a
-       well-formed XML document entity or a well-formed XML external general parsed
-       entity, or both, except for content modified by the character expansion
-       phase of serialization.
+       It is an error if the serializer is unable to satisfy the rules for
+       either a well-formed XML document entity or a well-formed XML external
+       general parsed entity, or both, except for content modified by the
+       character expansion phase of serialization.
       </comment>
       <value>serializer can't satisfy the rules for either a well-formed XML document entity or a well-formed XML external general parsed entity</value>
     </diagnostic>
- 
+
     <diagnostic code="SEPM0004">
       <comment>
-       It is an error to specify the doctype-system parameter, or to specify the
-       standalone parameter with a value other than omit, if the instance of the
-       data model contains text nodes or multiple element nodes as children of the
-       root node.
+       It is an error to specify the doctype-system parameter, or to specify
+       the standalone parameter with a value other than omit, if the instance
+       of the data model contains text nodes or multiple element nodes as
+       children of the root node.
       </comment>
       <value>doctype-system parameter, or standalone parameter with a value other than "omit", specified</value>
     </diagnostic>
- 
+
     <diagnostic code="SERE0005">
       <comment>
-       It is an error if the serialized result would contain an NCName Names that
-       contains a character that is not permitted by the version of Namespaces in
-       XML specified by the version parameter.
+       It is an error if the serialized result would contain an NCName Names
+       that contains a character that is not permitted by the version of
+       Namespaces in XML specified by the version parameter.
       </comment>
       <value>invalid NCName character</value>
     </diagnostic>
- 
+
     <diagnostic code="SERE0006">
       <comment>
        It is an error if the serialized result would contain a character that is
@@ -1436,78 +1443,78 @@
       </comment>
       <value>"$1": invalid character for XML version $2</value>
     </diagnostic>
- 
+
     <diagnostic code="SESU0007">
       <comment>
-       It is an error if an output encoding other than UTF-8 or UTF-16 is requested
-       and the serializer does not support that encoding.
+       It is an error if an output encoding other than UTF-8 or UTF-16 is
+       requested and the serializer does not support that encoding.
       </comment>
       <value>"$1": unsupported encoding</value>
     </diagnostic>
- 
+
     <diagnostic code="SERE0008">
       <comment>
        It is an error if a character that cannot be represented in the encoding
-       that the serializer is using for output appears in a context where character
-       references are not allowed (for example if the character occurs in the name
-       of an element).
+       that the serializer is using for output appears in a context where
+       character references are not allowed (for example if the character
+       occurs in the name of an element).
       </comment>
       <value>"$1": can not encode character as character reference here</value>
     </diagnostic>
- 
+
     <diagnostic code="SEPM0009">
       <comment>
-       It is an error if the omit-xml-declaration parameter has the value yes, and
-       the standalone attribute has a value other than omit; or the version
+       It is an error if the omit-xml-declaration parameter has the value yes,
+       and the standalone attribute has a value other than omit; or the version
        parameter has a value other than 1.0 and the doctype-system parameter is
        specified.
       </comment>
       <value>omit-xml-declaration parameter is "yes" and $1</value>
     </diagnostic>
- 
+
     <diagnostic code="SEPM0010">
       <comment>
        It is an error if the output method is xml, the value of the
-       undeclare-prefixes parameter is yes, and the value of the version parameter
-       is 1.0.
+       undeclare-prefixes parameter is yes, and the value of the version
+       parameter is 1.0.
       </comment>
       <value>the output method is "xml", the value of the undeclare-prefixes parameter is "yes", and the value of the version parameter is "1.0"</value>
     </diagnostic>
- 
+
     <diagnostic code="SESU0011">
       <comment>
-       It is an error if the value of the normalization-form parameter specifies a
-       normalization form that is not supported by the serializer.
+       It is an error if the value of the normalization-form parameter
+       specifies a normalization form that is not supported by the serializer.
       </comment>
       <value>"$1": unsupported normalization form</value>
     </diagnostic>
- 
+
     <diagnostic code="SERE0012">
       <comment>
        It is an error if the value of the normalization-form parameter is
        fully-normalized and any relevant construct of the result begins with a
        combining character.
       </comment>
-      <value>the value of the normalization-form parameter is fully-normalized and any relevant construct of the result begins with a combining character</value>
+      <value>normalization-form parameter value is fully-normalized and any relevant construct of the result begins with a combining character</value>
     </diagnostic>
- 
+
     <diagnostic code="SESU0013">
       <comment>
-       It is an error if the serializer does not support the version of XML or HTML
-       specified by the version parameter.
+       It is an error if the serializer does not support the version of XML or
+       HTML specified by the version parameter.
       </comment>
       <value>"$1": unsupported $2 version; supported versions are: $3</value>
     </diagnostic>
- 
+
     <diagnostic code="SERE0014">
       <comment>
-       It is an error to use the HTML output method when characters which are legal
-       in XML but not in HTML, specifically the control characters #x7F-#x9F,
-       appear in the instance of the data model.
+       It is an error to use the HTML output method when characters which are
+       legal in XML but not in HTML, specifically the control characters
+       #x7F-#x9F, appear in the instance of the data model.
       </comment>
       <value>"#$1": character not allowed for HTML output method</value>
     </diagnostic>
- 
+
     <diagnostic code="SERE0015">
       <comment>
        It is an error to use the HTML output method when \c > appears within a
@@ -1515,47 +1522,47 @@
       </comment>
       <value>can not use '&gt;' within processing instruction for HTML output method</value>
     </diagnostic>
- 
+
     <diagnostic code="SEPM0016">
       <comment>
        It is a an error if a parameter value is invalid for the defined domain.
       </comment>
       <value>"$1": value for parameter "$2" invalid${; $3}</value>
     </diagnostic>
- 
+
    </namespace>
- 
-   <!--////////// Zorba XQuery Processor Errors //////////////////////////////////////-->
- 
+
+   <!--////////// Zorba XQuery Processor Errors ////////////////////////////-->
+
    <namespace prefix="zerr">
- 
+
     <diagnostic code="ZXQP0000" name="NO_ERROR">
       <comment>
        An "error" constant for "no error."
       </comment>
       <value>no error</value>
     </diagnostic>
- 
+
     <diagnostic code="ZXQP0001" name="DYNAMIC_RUNTIME_ERROR">
       <value>dynamic runtime error${: 1}</value>
     </diagnostic>
- 
+
     <diagnostic code="ZXQP0002" name="ASSERT_FAILED">
       <comment>
-       A Zorba programming assertion failed.  If this error occurs, it is a bug and
-       should be reported.
+       A Zorba programming assertion failed.  If this error occurs, it is a bug
+       and should be reported.
       </comment>
       <value>"$1": assertion failed</value>
     </diagnostic>
- 
+
     <diagnostic code="ZXQP0003" name="INTERNAL_ERROR">
       <comment>
-       Something unexpected occurred in Zorba.  If this error occurs, it is a bug
-       and should be reported.
+       Something unexpected occurred in Zorba.  If this error occurs, it is a
+       bug and should be reported.
       </comment>
       <value>internal error${: 1}</value>
     </diagnostic>
- 
+
     <diagnostic code="ZXQP0004" name="NOT_IMPLEMENTED">
       <comment>
        A particular XQuery feature has not been implemented by Zorba.
@@ -1565,73 +1572,91 @@
         <value>TypeOps::is_in_scope() for function-item types</value>
       </entry>
     </diagnostic>
- 
+
     <diagnostic code="ZXQP0005" name="NOT_ENABLED">
       <comment>
-       A particular XQuery feature has been implemented by Zorba, but the feature
-       has not been enabled in the current build.
+       A particular XQuery feature has been implemented by Zorba, but the
+       feature has not been enabled in the current build.
       </comment>
       <value>"$1": feature not enabled</value>
     </diagnostic>
- 
+
     <diagnostic code="ZXQP0007" name="FUNCTION_SIGNATURE_NOT_EQUAL">
       <value>"$1": function signature does not match declaration</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0008" name="FUNCTION_IMPL_NOT_FOUND">
       <value>"$1": function implementation not found</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0009" name="FUNCTION_LOCALNAME_MISMATCH">
       <value>"$1": function referred to by this local-name has the local-name "$2" instead</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0013" name="FXCHARHEAP_EXCEPTION">
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0016" name="RESERVED_MODULE_TARGET_NAMESPACE">
       <value>"$1": reserved module target namespace</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0017" name="FILE_ACCESS_DISABLED">
       <value>file access disabled</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0020" name="INVALID_URI">
       <value>"$1": invalid URI${: 2}</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0021" name="USER_ERROR">
       <value>user error</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0024" name="XML_DOES_NOT_MATCH_SCHEMA">
       <value>XML does not match schema${: "1"}${ 2}</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0025" name="ITEM_CREATION_FAILED">
       <value>item creation failed</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0028" name="TARGET_NAMESPACE_NOT_PROVIDED">
       <value>"$1": target namespace not provided by module from $2</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0029" name="URI_ACCESS_DENIED">
       <value>"$1": module import not allowed</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0030" name="DEADLOCK">
       <value>deadlock</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0031" name="MALFORMED_XQUERYX_INPUT">
       <value>malformed XQueryX XML input${: 1}</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0032" name="ERROR_TRANSFORMING_XQUERYX_TO_XQUERY">
       <value>error transforming XQueryX to XQuery${: 1}</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0036" name="BREAKITERATOR_CREATION_FAILED">
       <value>BreakIterator creation failed</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0037" name="INAPPROPRIATE_MODULE_VERSION">
       <value>"$1": loaded module version "$2" does not match import version specification</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0038" name="INAPPROPRIATE_ZORBA_VERSION">
       <value>Query requires Zorba version "$1"; you are running Zorba "$2"</value>
     </diagnostic>
+
     <diagnostic code="ZXQP0039" name="INVALID_VERSION_SPECIFICATION">
       <value>"$1": invalid version specification</value>
     </diagnostic>
- 
+
     <diagnostic code="ZXQP0040" name="MISSING_NONDETERMINISTIC_ANNOTATION">
       <value>"$1": function missing nondeterministic annotation</value>
     </diagnostic>
@@ -1643,7 +1668,7 @@
       </comment>
      <value>"$1": wrong WordNet file version; should be "$2"</value>
     </diagnostic>
-    
+
     <diagnostic code="ZXQP8402" name="THESAURUS_ENDIANNESS_MISMATCH"
       disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
@@ -1651,7 +1676,7 @@
      <value>thesaurus data endianness does not match CPU</value>
        The thesaurus data file's endianness does not match that of the CPU.
     </diagnostic>
-    
+
     <diagnostic code="ZXQP8403" name="THESAURUS_DATA_ERROR"
       disable_if="ZORBA_NO_FULL_TEXT">
       <comment>
@@ -1659,7 +1684,7 @@
       </comment>
      <value>thesaurus data error${: 1}</value>
     </diagnostic>
-    
+
     <diagnostic code="ZXQD0001" name="PREFIX_NOT_DECLARED"
       disable_if="ZORBA_NO_FULL_TEXT">
       <value>"$1": prefix not declared when calling function "$2" from $3</value>
@@ -1669,9 +1694,9 @@
       disable_if="ZORBA_NO_FULL_TEXT">
       <value>"$1": $2</value>
     </diagnostic>
-    
-    <!-- ////////// Zorba API Errors ///////////////////////////////////////////////////-->
-    
+
+    <!--////////// Zorba API Errors ////////////////////////////////////////-->
+
     <diagnostic code="ZAPI0002" name="XQUERY_COMPILATION_FAILED">
       <value>XQuery compilation failed${: 1}</value>
     </diagnostic>
@@ -1752,9 +1777,9 @@
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
 
-    
-    <!-- ////////// Zorba Class Serialization Errors ///////////////////////////////////-->
-    
+
+    <!--////////// Zorba Class Serialization Errors ////////////////////////-->
+
     <diagnostic code="ZCSE0001" name="NONEXISTENT_INPUT_FIELD">
       <value>"$1": nonexistent input field</value>
     </diagnostic>
@@ -1823,9 +1848,9 @@
       <value>cannot load execution plan saved from debug mode Zorba into release mode Zorba</value>
     </diagnostic>
 
-    
-    <!-- ////////// Zorba Data Definition Facility Errors //////////////////////////////-->
-    
+
+    <!-- ////////// Zorba Data Definition Facility Errors //////////////////-->
+
     <diagnostic code="ZDDY0001" name="COLLECTION_NOT_DECLARED">
       <value>"$1": collection not declared</value>
     </diagnostic>
@@ -1954,7 +1979,7 @@
       <value>"$1": integrity constraint not met for collection "$2"</value>
     </diagnostic>
 
-    
+
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>
@@ -2068,7 +2093,7 @@
     <diagnostic code="ZDST0061" name="FEATURE_NOT_AVAILABLE">
       <value>"$1": feature not available</value>
     </diagnostic>
-    
+
     <diagnostic code="ZDTY0001" name="COLLECTION_INVALID_NODE_TYPE">
       <value>"$1": invalid node type in collection "$2"</value>
     </diagnostic>
@@ -2085,16 +2110,14 @@
       <value>"$1": general range index key item has type for which no ordering relationship exists</value>
     </diagnostic>
 
-    
-    <!-- ////////// Zorba Debugger Errors //////////////////////////////////////////////-->
-    
+    <!--////////// Zorba Debugger Errors ///////////////////////////////////-->
+
     <diagnostic code="ZGDB0001" name="CANNOT_CONNECT_TO_CLIENT"
       enable_if="ZORBA_WITH_DEBUGGER">
     </diagnostic>
 
-    
-    <!-- ////////// Zorba Operating System Errors //////////////////////////////////////-->
-    
+    <!--////////// Zorba Operating System Errors ///////////////////////////-->
+
     <diagnostic code="ZOSE0001" name="FILE_NOT_FOUND">
       <value>"$1": error loading dynamic library${: 2}</value>
     </diagnostic>
@@ -2111,9 +2134,8 @@
       <value>${"1": }I/O error${: 2}</value>
     </diagnostic>
 
-    
-    <!-- ////////// Zorba Store Errors /////////////////////////////////////////////////-->
-    
+    <!--////////// Zorba Store Errors //////////////////////////////////////-->
+
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
       <value>"$1": index already exists</value>
     </diagnostic>
@@ -2204,24 +2226,24 @@
 
   </namespace>
 
-  
-  <!-- ////////// Zorba Warnings ///////////////////////////////////////////////////////-->
-  
+  <!--////////// Zorba Warnings ////////////////////////////////////////////-->
+
   <namespace prefix="zwarn">
-  
+
     <diagnostic code="ZWST0001" name="UNUSED_VARIABLE">
       <value>"$1": variable declared but not used</value>
-    </diagnostic>    
-  
+    </diagnostic>
+
     <diagnostic code="ZWST0002" name="UNKNOWN_ANNOTATION">
       <value>"$1": unknown or unsupported annotation</value>
     </diagnostic>
-    
+
   </namespace>
 
+  <!--////////// Subvalues /////////////////////////////////////////////////-->
 
   <subvalues>
-  
+
     <entry key="AllMatchesHasExcludes">
       <value>AllMatches contains StringExclude</value>
     </entry>
@@ -3265,4 +3287,4 @@
   </subvalues>
 
 </diagnostic-list>
-
+<!-- vim:set et sw=2 ts=2: -->

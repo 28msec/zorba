@@ -113,8 +113,8 @@ bool operator==( QName const &q1, char const *q2 ) {
 
 ostream& operator<<( ostream &o, category c ) {
   //
-  // It's OK for these to be only in English: they're looked-up in the error
-  // dictionary later.
+  // It's OK for these to be only in English: they're looked-up in the
+  // diagnostic dictionary later.
   //
   switch ( c ) {
     case UNKNOWN_CATEGORY    : o << "unknown"               ; break;
@@ -141,8 +141,8 @@ ostream& operator<<( ostream &o, category c ) {
 
 ostream& operator<<( ostream &o, kind k ) {
   //
-  // It's OK for these to be only in English: they're looked-up in the error
-  // dictionary later.
+  // It's OK for these to be only in English: they're looked-up in the
+  // diagnostic dictionary later.
   //
   switch ( k ) {
     case UNKNOWN_KIND  : o << "unknown"; break;
