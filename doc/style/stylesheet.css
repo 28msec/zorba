@@ -538,3 +538,37 @@ DIV.navpath
 #searchli , #MSearchClose, #MSearchSelectWindow, #MSearchSelectWindow {
   display: none;
 }
+
+/* Zorba Custom CSS  */
+table.ft_rels {
+  border-collapse: collapse;
+}
+
+table.ft_rels td {
+  border-width: 1px;
+  border-color: #CCCCCC;
+  border-style: solid;
+  padding: 2px;
+  vertical-align: top;
+}
+
+table.ft_rels th {
+  border-width: 1px;
+  border-color: #CCCCCC;
+  border-style: solid;
+  padding: 2px;
+  text-align: left;
+}
+
+#page {
+ padding: 10px;
+}
+
+#page p {
+  padding: 0px;
+}
+
+/* If the website stylesheet is not present, we don't display the header and footer. */
+#header, #featuring, #footer {
+  display: none;
+}
