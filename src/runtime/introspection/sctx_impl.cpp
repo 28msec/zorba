@@ -1038,7 +1038,16 @@ FunctionAnnotationsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSt
   consumeNext(lName, theChildren[0].getp(), aPlanState);
   consumeNext(lArity, theChildren[1].getp(), aPlanState);
 
-  arity = to_xs_int(lArity->getIntegerValue());
+  try {
+    arity = to_xs_int(lArity->getIntegerValue());
+  } catch ( std::range_error const& ) {
+    throw XQUERY_EXCEPTION(
+              err::XPTY0004,
+              ERROR_PARAMS( ZED( NoCastToCInt_2 ), lArity->getIntegerValue() ),
+              ERROR_LOC( loc )
+          );
+  }
+
   lState->theFunction = theSctx->lookup_fn(lName.getp(), arity);
   lState->thePosition = 0;
   if (lState->theFunction != NULL && lState->theFunction->getAnnotationList() == NULL)   // no annotations

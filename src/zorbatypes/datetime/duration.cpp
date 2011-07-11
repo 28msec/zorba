@@ -24,6 +24,8 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
 
+#include "diagnostics/xquery_diagnostics.h"
+
 #include "util/ascii_util.h"
 
 namespace zorba
@@ -752,15 +754,15 @@ Duration* Duration::operator*(const xs_double& value) const
 
   Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
 
-  result = getTotalSeconds() * value;
-
-  result = result.round(significants);
-
-  seconds = to_xs_int(result.floor());
-
-  result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
-
-  frac_seconds = to_xs_int(result.round());
+  try {
+    result = getTotalSeconds() * value;
+    result = result.round(significants);
+    seconds = to_xs_int(result.floor());
+    result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
+    frac_seconds = to_xs_int(result.round());
+  } catch ( std::range_error const& ) {
+    throw XQUERY_EXCEPTION(err::FODT0002);
+  }
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
@@ -782,13 +784,16 @@ Duration* Duration::operator/(const xs_double& value) const
 
   Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
 
-  result = getTotalSeconds() / value;
-  result = result.round(significants);
-  dSeconds = result.round();
-  seconds = to_xs_int(dSeconds.floor());
-
-  result = (result - dSeconds) * FRAC_SECONDS_UPPER_LIMIT;
-  frac_seconds = to_xs_int(result.round());
+  try {
+    result = getTotalSeconds() / value;
+    result = result.round(significants);
+    dSeconds = result.round();
+    seconds = to_xs_int(dSeconds.floor());
+    result = (result - dSeconds) * FRAC_SECONDS_UPPER_LIMIT;
+    frac_seconds = to_xs_int(result.round());
+  } catch ( std::range_error const& ) {
+    throw XQUERY_EXCEPTION(err::FODT0002);
+  }
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
