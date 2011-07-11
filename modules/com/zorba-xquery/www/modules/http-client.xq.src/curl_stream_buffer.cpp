@@ -95,9 +95,6 @@ throw exception( #expr, "", code##__LINE__ );   \
         ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, data ) );
         ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, fn ) );
         
-        // Tells cURL to fail silently if the HTTP code returned >= 400.
-        ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FAILONERROR, 1 ) );
-        
         // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
         // thus cURL will do an infinite number of redirects.
         ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 ) );
@@ -176,8 +173,6 @@ throw exception( #expr, "", code##__LINE__ );   \
       ZORBA_CURL_ASSERT( curl_easy_setopt( aCurl, CURLOPT_WRITEDATA, this ) );
       ZORBA_CURL_ASSERT( curl_easy_setopt( aCurl, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
       
-      // Tells cURL to fail silently if the HTTP code returned >= 400.
-      ZORBA_CURL_ASSERT( curl_easy_setopt( aCurl, CURLOPT_FAILONERROR, 1 ) );
       init_curlm();
     }
     

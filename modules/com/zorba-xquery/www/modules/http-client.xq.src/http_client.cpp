@@ -191,6 +191,7 @@ namespace zorba {
         curl_easy_setopt(lCURL, CURLOPT_URL, lHref.getStringValue().c_str());
       }
       curl_easy_setopt(lCURL, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+      //curl_easy_setopt(lCURL, CURLOPT_PROXY, "localhost:8888");
 #ifdef WIN32
       std::string caCertPath;
       set_cacert(lCURL, caCertPath);

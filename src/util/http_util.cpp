@@ -15,11 +15,14 @@
  */
 #include "stdafx.h"
 #include <vector>
+#include <iostream>
+#include <sstream>
+
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/empty_sequence.h>
 #include "http_util.h"
+#include "error_util.h"
 
-#include <iostream>
 
 namespace zorba {
   
@@ -65,6 +68,25 @@ namespace zorba {
     theIterator->open();
     Item lItem;
     theIterator->next(lItem);
+    Iterator_t lIter = lItem.getAttributes();
+    lIter->open();
+    Item lAttr;
+    bool succeed = true;
+    while (lIter->next(lAttr)) {
+      Item lName;
+      lAttr.getNodeName(lName);
+      String lNameString = lName.getStringValue();
+      if (lNameString == "status") {
+        std::stringstream lStream(lAttr.getStringValue().c_str());
+        int status;
+        lStream >> status;
+        succeed = status < 400;
+        break;
+      }
+    }
+    lIter->close();
+    if (!succeed)
+      throw os_error::exception("", theUri.c_str(), "Could not create stream resource");
     theIterator->next(theStreamableString);
   }
   
