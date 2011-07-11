@@ -13,7 +13,7 @@
 
 module namespace oauth = 'http://www.zorba-xquery.com/modules/oauth/client';
 import module namespace ra = "http://www.zorba-xquery.com/modules/random";
-import module namespace hmac = "http://www.zorba-xquery.com/modules/security/hmac";
+import module namespace hmac = "http://www.zorba-xquery.com/modules/cryptography/hmac";
 import module namespace http-client = "http://expath.org/ns/http-client";
 import schema namespace http = "http://expath.org/ns/http-client";
 import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
@@ -21,16 +21,13 @@ import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
 (:~
  : Use err module functions for throwing errors.
  :)
-import module namespace err="http://www.zorba-xquery.com/modules/oauth/error";
-
-(:
-declare namespace op = "http://www.zorba-xquery.org/options";
-declare option op:trace "disable";
-:)
+import module namespace oerr="http://www.zorba-xquery.com/modules/oauth/error";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
-
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace op = "http://www.zorba-xquery.org/options";
+
+declare option op:trace "disable";
 declare option ver:module-version "1.0";
 
 (:~
@@ -39,7 +36,7 @@ declare option ver:module-version "1.0";
  : @see http://tools.ietf.org/html/rfc5849#section-3.3
  : @return integer time in seconds since Unix epoch
  :)
-declare function oauth:timestamp() as xs:decimal
+declare %ann:nondeterministic function oauth:timestamp() as xs:decimal
 {
   let $current-dateTime := fn:adjust-dateTime-to-timezone(date:current-dateTime(), xs:dayTimeDuration('PT0H'))
   let $duration := $current-dateTime - xs:dateTime("1970-01-01T00:00:00Z")
@@ -68,7 +65,7 @@ declare function oauth:key($oauth-consumer-secret as xs:string, $oauth-token-sec
  : @see http://tools.ietf.org/html/rfc5849#section-3.3
  : @return random string
  :)
-declare function oauth:nonce() as xs:string
+declare %ann:nondeterministic function oauth:nonce() as xs:string
 {
   ra:uuid()
 };
@@ -153,14 +150,14 @@ declare function oauth:signature($base-string as xs:string, $oauth-signature-met
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.3  
    :)
   else if($oauth-signature-method = "RSA-SHA1")
-  then error($err:OC001, concat("Method not implemented yet: ", $oauth-signature-method))
+  then error($oerr:OC001, concat("Method not implemented yet: ", $oauth-signature-method))
   (:
    : PLAINTEXT
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.4 
    :)
   else if($oauth-signature-method = "PLAINTEXT")
   then $key
-  else error($err:OC001, concat("Unsupported signing method: ", $oauth-signature-method))
+  else error(xs:QName("oerr:OC001"), concat("Unsupported signing method: ", $oauth-signature-method))
 };
 
 (:~
@@ -241,10 +238,43 @@ declare %ann:sequential function oauth:http-request(
  : @param $url Target URL
  : @param $additional-parameters Parameters specific to a certain step (request-token, authorize, access-token, protected-resource) of the OAuth authorization
  : @return correctly parsed parameters, or an error if http response status is not 200 OK
- : @error XQP0021(err:OC003) if we receive http 401 error from the server.
- : @error XQP0021(err:OC004) if we receive http 500 error from the server.
+ : @error XQP0021(oerr:OC003) if we receive http 401 error from the server.
+ : @error XQP0021(oerr:OC004) if we receive http 500 error from the server.
  :)
-declare %ann:sequential function oauth:format-request(
+declare %private %ann:sequential %ann:nondeterministic function oauth:format-request(
+    $consumer-key as xs:string,
+    $consumer-secret as xs:string,
+    $method as xs:string,
+    $oauth-token as xs:string?,
+    $oauth-token-secret as xs:string?,
+    $realm as xs:string?,
+    $signature-method as xs:string,
+    $url as xs:string,
+    $additional-parameters as xs:string,
+    $format-params as xs:boolean) (:as element()+:)
+{
+  let $version := "1.0"
+  let $base-params := concat("&amp;oauth_consumer_key=",$consumer-key,"&amp;oauth_nonce=",trace(oauth:nonce(),"nonce"),
+"&amp;oauth_signature_method=",$signature-method,"&amp;oauth_timestamp=",oauth:timestamp(),"&amp;oauth_version=",$version)
+  let $params := oauth:parse-parameters(concat($additional-parameters,$base-params))
+  let $response := trace(oauth:http-request($consumer-secret,$method,$oauth-token-secret,$params,$realm,$signature-method,$url), "response")
+  return 
+    if($response[1]/@status = 200)
+    then 
+      if ($format-params) then
+        oauth:parse-parameters($response[2])
+      else 
+        $response[2]
+    (:originally, this next line was it.:)
+    (:else $response[2]:)
+    else if ($response[1]/@status = 401)
+    then error(xs:QName("oerr:OC003"), concat("Authorization header unauthorized: ", $response[2]//error/data(.)))
+    else if ($response[1]/@status = 500)
+    then error($oerr:OC004, concat("Internal server error", $response[2]))
+    else $response[2]
+};
+
+declare %private %ann:sequential %ann:nondeterministic function oauth:format-request(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $method as xs:string,
@@ -255,21 +285,7 @@ declare %ann:sequential function oauth:format-request(
     $url as xs:string,
     $additional-parameters as xs:string) (:as element()+:)
 {
-  let $version := "1.0"
-  let $base-params := concat("&amp;oauth_consumer_key=",$consumer-key,"&amp;oauth_nonce=",trace(oauth:nonce(),"nonce"),
-"&amp;oauth_signature_method=",$signature-method,"&amp;oauth_timestamp=",oauth:timestamp(),"&amp;oauth_version=",$version)
-  let $params := oauth:parse-parameters(concat($additional-parameters,$base-params))
-  let $response := oauth:http-request($consumer-secret,$method,$oauth-token-secret,$params,$realm,$signature-method,$url)
-  return 
-    if($response[1]/@status = 200)
-    then oauth:parse-parameters($response[2])
-    (:originally, this next line was it.:)
-    (:else $response[2]:)
-    else if ($response[1]/@status = 401)
-    then error($err:OC003, concat("Authorization header unauthorized: ", $response[2]//error/data(.)))
-    else if ($response[1]/@status = 500)
-    then error($err:OC004, concat("Internal server error", $response[2]))
-    else $response[2]
+  oauth:format-request($consumer-key, $consumer-secret, $method, $oauth-token, $oauth-token-secret, $realm, $signature-method, $url, $additional-parameters, true())
 };
 
 (:~
@@ -309,7 +325,7 @@ declare function oauth:additional-parameters($request as element()+) as element(
  : @param $request request element containing the client's request
  : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential function oauth:request-token($request as element(request)+) as element()+
+declare %ann:sequential %ann:nondeterministic function oauth:request-token($request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
   let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
@@ -343,7 +359,7 @@ declare %ann:sequential function oauth:request-token($request as element(request
  : @param $request request element containing the client's request
  : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential function oauth:access-token($request as element(request)+) as element()+
+declare %ann:sequential %ann:nondeterministic function oauth:access-token($request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
   let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
@@ -384,7 +400,7 @@ declare %ann:sequential function oauth:access-token($request as element(request)
  : @param $request request element containing the client's request
  : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential function oauth:protected-resource($protected-resource as element(http:request),$request as element(request)+) as element()+
+declare %ann:sequential %ann:nondeterministic function oauth:protected-resource($protected-resource as element(http:request),$request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
   let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
@@ -426,7 +442,7 @@ declare %ann:sequential function oauth:protected-resource($protected-resource as
  : @param $additional-parameters Parameters specific to a certain step (request-token) of the OAuth authorization
  : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential function oauth:request-token(
+declare %ann:sequential %ann:nondeterministic function oauth:request-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -456,7 +472,7 @@ declare %ann:sequential function oauth:request-token(
  : @param $additional-parameters Parameters specific to a certain step (access-token) of the OAuth authorization
  : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential function oauth:access-token(
+declare %ann:sequential %ann:nondeterministic function oauth:access-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -487,7 +503,7 @@ declare %ann:sequential function oauth:access-token(
  : @param $additional-parameters Parameters specific to a certain step (protected-resource) of the OAuth authorization
  : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare %ann:sequential function oauth:protected-resource(
+declare %ann:sequential %ann:nondeterministic function oauth:protected-resource(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -503,5 +519,5 @@ declare %ann:sequential function oauth:protected-resource(
     if ($addition eq "&amp;")
     then concat("oauth_token=",$oauth-token,$additional-parameters)
     else concat("oauth_token=",$oauth-token,$additional-parameters, $addition)
-  return oauth:format-request($consumer-key,$consumer-secret,$method,$oauth-token,$oauth-token-secret,$realm,$signature-method,$url,$add)
+  return oauth:format-request($consumer-key,$consumer-secret,$method,$oauth-token,$oauth-token-secret,$realm,$signature-method,$url,$add, false())
 };

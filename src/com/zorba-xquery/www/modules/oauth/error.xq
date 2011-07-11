@@ -21,7 +21,7 @@
  : @project OAuth
  :
  :)
-module namespace  err = "http://www.zorba-xquery.com/modules/oauth/error";
+module namespace  oerr = "http://www.zorba-xquery.com/modules/oauth/error";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
@@ -29,24 +29,24 @@ declare option ver:module-version "1.0";
 (:~
  : Errors namespace URI.
  :)
-declare variable $err:errNS as xs:string := "http://www.zorba-xquery.com/modules/oauth/errors";
+declare variable $oerr:errNS as xs:string := "http://www.zorba-xquery.com/modules/oauth/errors";
 
 (:~
  : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC001'. This signing method is not implemented yet.
 :)
-declare variable $err:OC001 as xs:QName := fn:QName($err:errNS, "err:OC001");
+declare variable $oerr:OC001 as xs:QName := xs:QName("oerr:OC001");
 
 (:~
  : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC002'. This signing method is not supported.
 :)
-declare variable $err:OC002 as xs:QName := fn:QName($err:errNS, "err:OC002");
+declare variable $oerr:OC002 as xs:QName := xs:QName("oerr:OC002");
 
 (:~
  : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC003'. Http 401 error.
 :)
-declare variable $err:OC003 as xs:QName := fn:QName($err:errNS, "err:OC003");
+declare variable $oerr:OC003 as xs:QName := xs:QName("oerr:OC003");
 
 (:~
  : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/oauth/errors" and local name 'err:OC004'. Http 500 error.
 :)
-declare variable $err:OC004 as xs:QName := fn:QName($err:errNS, "err:OC004");
+declare variable $oerr:OC004 as xs:QName := xs:QName("oerr:OC004");
