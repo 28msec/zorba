@@ -25,7 +25,7 @@
 #include <zorba/error_list.h>
 
 #include "util/string_util.h"
-#include "util/array_auto_ptr.h"
+#include "util/stl_util.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/zstring.h"
 
@@ -98,7 +98,7 @@ void operator&(Archiver &ar, zorba::rstring<RepType> &obj)
     }
     else
     {
-      array_auto_ptr<unsigned char> cstr;
+      ztd::auto_vec<unsigned char> cstr;
       zorba::zstring::size_type s;
 
       ar.set_is_temp_field(true);
