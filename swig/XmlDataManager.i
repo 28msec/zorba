@@ -41,6 +41,11 @@ public:
   {
     return theManager->document(aName);
   }
+
+  bool isAvailableDocument(const std::string& aName)
+  {
+    return theManager->isAvailableDocument(aName);
+  }
 };
 
 class XmlDataManager
@@ -78,6 +83,8 @@ public:
   void remove(const std::string& aName);
 
   Item document(const std::string& aName);
+
+  bool isAvailableDocument(const std::string& aName);
 };
 
 
