@@ -29,7 +29,7 @@ private:
   std::auto_ptr<Rewriter> m_defaultOptimizer;
 
 public:
-  ~XQueryCompilerSubsystemImpl() throw ();
+  ~XQueryCompilerSubsystemImpl();
 
   Rewriter *getDefaultOptimizingRewriter();
 

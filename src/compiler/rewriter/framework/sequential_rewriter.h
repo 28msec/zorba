@@ -44,7 +44,7 @@ public:
 protected:
   SequentialRewriter();
 
-  ~SequentialRewriter() throw();
+  ~SequentialRewriter();
 };
 
 }

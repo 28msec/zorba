@@ -29,7 +29,7 @@ class DefaultOptimizer : public SequentialRewriter
 public:
   DefaultOptimizer();
 
-  ~DefaultOptimizer() throw ();
+  ~DefaultOptimizer();
 
   bool rewrite(RewriterContext& rCtx);
 };

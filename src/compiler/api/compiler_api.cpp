@@ -413,7 +413,7 @@ XQueryCompilerSubsystem::XQueryCompilerSubsystem()
 }
 
 
-XQueryCompilerSubsystem::~XQueryCompilerSubsystem() throw ()
+XQueryCompilerSubsystem::~XQueryCompilerSubsystem()
 {
 }
 

@@ -43,7 +43,7 @@ namespace zorbac {
       free(XQC_Expression* expr);
 
       CExpression(XQuery_t query, XQC_ErrorHandler* handler);
-      ~CExpression() throw ();
+      ~CExpression();
 
       static CExpression*
       get(const XQC_Expression* expr);

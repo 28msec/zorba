@@ -45,7 +45,7 @@ namespace zorba
       }
     }
 
-    virtual EntityData::Kind getKind() const throw() {
+    virtual EntityData::Kind getKind() const {
       return theKind;
     }
 
@@ -69,7 +69,7 @@ namespace zorba
   (const zstring& aUri,
     impl::EntityData const* aEntityData,
     static_context const& aSctx,
-    std::vector<zstring>& oUris) throw ()
+    std::vector<zstring>& oUris)
   {
     std::auto_ptr<const EntityDataWrapper> lDataWrap
         (EntityDataWrapper::create(aEntityData->getKind()));
@@ -88,7 +88,7 @@ namespace zorba
   }
 
   impl::URIMapper::Kind
-  URIMapperWrapper::mapperKind() throw ()
+  URIMapperWrapper::mapperKind()
   {
     // Still so ugly.
     switch (theUserMapper.mapperKind()) {

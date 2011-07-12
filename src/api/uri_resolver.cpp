@@ -34,7 +34,7 @@ namespace zorba {
   {}
 
   std::auto_ptr<std::istream>
-  StreamResource::getStream() throw ()
+  StreamResource::getStream()
   {
     return theStream;
   }
@@ -83,7 +83,7 @@ namespace zorba {
   OneToOneURIMapper::mapURI(
     const String aURI,
     EntityData const* aEntityData,
-    std::vector<String>& oUris) throw ()
+    std::vector<String>& oUris)
   {
     if (aEntityData->getKind() != theEntityKind) {
       return;
@@ -95,14 +95,14 @@ namespace zorba {
   }
 
   URIMapper::Kind
-  OneToOneURIMapper::mapperKind() throw()
+  OneToOneURIMapper::mapperKind()
   {
     return theMapperKind;
   }
 
   void
   OneToOneURIMapper::addMapping(
-    const String& aURI, const String& aValue) throw ()
+    const String& aURI, const String& aValue)
   {
     theMappings[aURI] = aValue;
   }

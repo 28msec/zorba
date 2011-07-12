@@ -26,7 +26,7 @@ SequentialRewriter::SequentialRewriter()
 }
 
 
-SequentialRewriter::~SequentialRewriter() throw ()
+SequentialRewriter::~SequentialRewriter()
 {
 }
 

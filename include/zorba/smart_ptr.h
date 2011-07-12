@@ -77,7 +77,7 @@ public:
     init();
   }
 
-  ~SmartPtr() throw () {
+  ~SmartPtr() {
     if (p)
       p->removeReference();
     p = 0;

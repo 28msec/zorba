@@ -48,7 +48,7 @@ public:
 
   void reset() {}
 
-  void close() throw() {}
+  void close() {}
 };
 
 } /* namespace zorba */

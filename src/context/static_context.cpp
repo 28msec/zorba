@@ -1332,12 +1332,12 @@ static_context::resolve_relative_uri(
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-void static_context::add_uri_mapper(impl::URIMapper* aMapper) throw ()
+void static_context::add_uri_mapper(impl::URIMapper* aMapper)
 {
   theURIMappers.push_back(std::auto_ptr<impl::URIMapper>(aMapper));
 }
 
-void static_context::add_url_resolver(impl::URLResolver* aResolver) throw ()
+void static_context::add_url_resolver(impl::URLResolver* aResolver)
 {
   theURLResolvers.push_back(std::auto_ptr<impl::URLResolver>(aResolver));
 }
@@ -1350,7 +1350,7 @@ public:
     : theKind(aKind)
   {
   }
-  virtual impl::EntityData::Kind getKind() const throw()
+  virtual impl::EntityData::Kind getKind() const
   {
     return theKind;
   }

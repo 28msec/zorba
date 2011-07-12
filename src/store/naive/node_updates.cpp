@@ -330,7 +330,7 @@ void XmlNode::attach(InternalNode* parent, csize pos)
   new tree will be XDM consistent. On the other hand, T may become inconsistent
   (eg, text nodes may become adjacent, but are not merged).
 ********************************************************************************/
-void XmlNode::detach() throw()
+void XmlNode::detach()
 {
   try
   {

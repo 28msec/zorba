@@ -63,7 +63,7 @@ public:
   virtual ulong numChildren() const { return 0; }
   virtual ulong numAttributes() const { return 0; }
 
-  void deleteTree() throw();
+  void deleteTree();
 
   virtual void getPathInfo(
         std::vector<const store::Item*>& ctxPath,

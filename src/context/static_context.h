@@ -669,13 +669,13 @@ public:
    * Add a URIMapper to be used by this static context when resolving
    * URIs to resources.
    */
-  void add_uri_mapper(impl::URIMapper* aMapper) throw ();
+  void add_uri_mapper(impl::URIMapper* aMapper);
 
   /**
    * Add a URLResolver to be used by this static context when
    * resolving URIs to resources.
    */
-  void add_url_resolver(impl::URLResolver* aResolver) throw ();
+  void add_url_resolver(impl::URLResolver* aResolver);
 
   /**
    * Given a URI, return a Resource for that URI.

@@ -36,7 +36,7 @@ namespace impl {
 void
 FileizeURIMapper::mapURI
 (zstring const& aUri, EntityData const* aEntityData,
-  static_context const& aSctx, std::vector<zstring>& oUris) throw()
+  static_context const& aSctx, std::vector<zstring>& oUris)
 {
   // File-izing is only for schemas and modules.
   EntityData::Kind lKind = aEntityData->getKind();
@@ -79,7 +79,7 @@ FileizeURIMapper::mapURI
 void
 ModuleVersioningURIMapper::mapURI
 (zstring const& aUri, EntityData const* aEntityData,
-  static_context const& aSctx, std::vector<zstring>& oUris) throw()
+  static_context const& aSctx, std::vector<zstring>& oUris)
 {
   if (aEntityData->getKind() != EntityData::MODULE) {
     return;
@@ -126,7 +126,7 @@ ModuleVersioningURIMapper::mapURI
 void
 AutoFSURIMapper::mapURI
 (zstring const& aUri, EntityData const* aEntityData,
-  static_context const& aSctx, std::vector<zstring>& oUris) throw()
+  static_context const& aSctx, std::vector<zstring>& oUris)
 {
   // Automatic resolution is (currently?) only for schemas and modules
   EntityData::Kind lKind = aEntityData->getKind();
@@ -180,7 +180,7 @@ ZorbaCollectionURIMapper::~ZorbaCollectionURIMapper()
 }
 
 URIMapper::Kind
-ZorbaCollectionURIMapper::mapperKind() throw ()
+ZorbaCollectionURIMapper::mapperKind()
 {
   return URIMapper::CANDIDATE;
 }
@@ -188,7 +188,7 @@ ZorbaCollectionURIMapper::mapperKind() throw ()
 void
 ZorbaCollectionURIMapper::mapURI
 (zstring const& aUri, EntityData const* aEntityData,
-  static_context const& aSctx, std::vector<zstring>& oUris) throw()
+  static_context const& aSctx, std::vector<zstring>& oUris)
 {
   if (aEntityData->getKind() != EntityData::COLLECTION) {
     return;

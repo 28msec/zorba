@@ -26,7 +26,7 @@ class Phase1Rewriter : public SequentialRewriter
 {
 public:
   Phase1Rewriter();
-  ~Phase1Rewriter() throw ();
+  ~Phase1Rewriter();
 };
 
 }

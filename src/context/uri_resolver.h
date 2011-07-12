@@ -54,7 +54,7 @@ public:
   /**
    * @brief Return the URL used to load this Resource.
    */
-  zstring getUrl() throw () { return theUrl; }
+  zstring getUrl() { return theUrl; }
 
   virtual ~Resource() = 0;
 
@@ -108,13 +108,13 @@ public:
   /**
    * @brief Retrieve the istream associated with this Resource.
    */
-  std::auto_ptr<std::istream> getStream() throw ();
+  std::auto_ptr<std::istream> getStream();
 
   /**
    * @brief Retrieve the URL that the stream was actually loaded from.
    * By default this will be the same as getUrl().
    */
-  zstring getStreamUrl() throw ();
+  zstring getStreamUrl();
 
 private:
 
@@ -135,7 +135,7 @@ class CollectionResource : public Resource
   /**
    */
   store::Collection_t
-  getCollection() throw ();
+  getCollection();
 
   private:
   store::Collection_t theCollection;
@@ -171,7 +171,7 @@ public:
   /**
    * @brief Return the Kind of Entity for which this URI is being resolved.
    */
-  virtual Kind getKind() const throw () = 0;
+  virtual Kind getKind() const = 0;
 
   virtual ~EntityData() = 0;
 };
@@ -247,7 +247,7 @@ class URIMapper
   virtual void mapURI(zstring const& aUri,
     EntityData const* aEntityData, static_context const& aSctx,
     std::vector<zstring>& oUris)
-    throw () = 0;
+    = 0;
 
   /**
    * @brief enum defining legal return values for mapperKind().
@@ -279,7 +279,7 @@ class URIMapper
    *
    * If you do not override this method, the default is "candidate".
    */
-  virtual Kind mapperKind() throw () { return CANDIDATE; }
+  virtual Kind mapperKind() { return CANDIDATE; }
 
   /**
    * @brief Constant indicating that Zorba should deny access to the

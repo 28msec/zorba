@@ -374,27 +374,27 @@ public:
 namespace RCHelper 
 {
   template<class T> 
-  static void addReference(T *t) throw()
+  static void addReference(T *t)
   {
     t->addReference(t->getSharedRefCounter()
                     SYNC_PARAM2(t->getRCLock()));
   }
 
   template<class T> 
-  static void removeReference(T *t) throw()
+  static void removeReference(T *t)
   {
     t->removeReference(t->getSharedRefCounter()
                        SYNC_PARAM2(t->getRCLock()));
   }
 
   template<class T> 
-  static void addReference(rchandle<T> &t) throw()
+  static void addReference(rchandle<T> &t)
   {
     addReference(t.getp());
   }
   
   template<class T> 
-  static void removeReference(rchandle<T> &t) throw()
+  static void removeReference(rchandle<T> &t)
   {
     removeReference(t.getp());
   }

@@ -29,7 +29,7 @@ namespace simplestore
 /*******************************************************************************
 
 ********************************************************************************/
-void GuideNode::deleteTree() throw()
+void GuideNode::deleteTree()
 {
   assert(theParent == NULL);
 

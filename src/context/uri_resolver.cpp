@@ -68,7 +68,7 @@ namespace impl {
   }
   
   std::auto_ptr<std::istream>
-  StreamResource::getStream() throw ()
+  StreamResource::getStream()
   {
     if (theStream.get())
       return theStream;
@@ -79,7 +79,7 @@ namespace impl {
   }
 
   zstring
-  StreamResource::getStreamUrl() throw ()
+  StreamResource::getStreamUrl()
   {
     if (theStreamUrl == "") {
       return getUrl();
@@ -96,7 +96,7 @@ namespace impl {
   {}
 
   store::Collection_t
-  CollectionResource::getCollection() throw ()
+  CollectionResource::getCollection()
   {
     return theCollection;
   }

@@ -48,9 +48,9 @@ class URIMapperWrapper : public zorba::impl::URIMapper
   virtual void mapURI(const zstring& aUri,
     zorba::impl::EntityData const* aEntityData,
     static_context const& aSctx,
-    std::vector<zstring>& oUris) throw ();
+    std::vector<zstring>& oUris);
 
-  virtual zorba::impl::URIMapper::Kind mapperKind() throw ();
+  virtual zorba::impl::URIMapper::Kind mapperKind();
 
   private:
 

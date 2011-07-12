@@ -25,7 +25,7 @@ Phase1Rewriter::Phase1Rewriter()
   ADD_SINGLETON_DRIVER(ExpandBuildIndex);
 }
 
-Phase1Rewriter::~Phase1Rewriter() throw ()
+Phase1Rewriter::~Phase1Rewriter()
 {
 }
 

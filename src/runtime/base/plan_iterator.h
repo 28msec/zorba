@@ -383,7 +383,7 @@ public:
    *
    * @param planState
    */
-  virtual void close(PlanState& planState) throw() = 0;
+  virtual void close(PlanState& planState) = 0;
   
 
 #if ZORBA_BATCHING_TYPE == 1
@@ -555,7 +555,7 @@ public:
     static_cast<const IterType*>(this)->resetImpl(planState);
   }
 
-  void close(PlanState& planState) throw()
+  void close(PlanState& planState)
   {
 #ifndef NDEBUG
     PlanIteratorState* lState = 

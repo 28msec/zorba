@@ -54,7 +54,7 @@ DefaultOptimizer::DefaultOptimizer()
 }
 
 
-DefaultOptimizer::~DefaultOptimizer() throw ()
+DefaultOptimizer::~DefaultOptimizer()
 {
 }
 

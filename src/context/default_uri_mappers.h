@@ -45,7 +45,7 @@ public:
   virtual void mapURI(zstring const& aUri,
     EntityData const* aEntityData,
     static_context const& aSctx,
-    std::vector<zstring>& oUris) throw ();
+    std::vector<zstring>& oUris);
 };
 
 /**
@@ -59,7 +59,7 @@ public:
   virtual void mapURI(zstring const& aUri,
     EntityData const* aEntityData,
     static_context const& aSctx,
-    std::vector<zstring>& oUris) throw ();
+    std::vector<zstring>& oUris);
 };
 
 /**
@@ -72,12 +72,12 @@ public:
 
   virtual ~ZorbaCollectionURIMapper();
 
-  virtual impl::URIMapper::Kind mapperKind() throw ();
+  virtual impl::URIMapper::Kind mapperKind();
 
   virtual void mapURI(zstring const& aUri,
     EntityData const* aEntityData,
     static_context const& aSctx,
-    std::vector<zstring>& oUris) throw ();
+    std::vector<zstring>& oUris);
 };
 
 
@@ -91,7 +91,7 @@ public:
   virtual void mapURI(zstring const& aUri,
     EntityData const* aEntityData,
     static_context const& aSctx,
-    std::vector<zstring>& oUrls) throw ();
+    std::vector<zstring>& oUrls);
 };
 
 } /* namespace zorba::impl */

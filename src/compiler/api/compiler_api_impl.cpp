@@ -29,7 +29,7 @@ XQueryCompilerSubsystemImpl::XQueryCompilerSubsystemImpl()
 }
 
 
-XQueryCompilerSubsystemImpl::~XQueryCompilerSubsystemImpl() throw ()
+XQueryCompilerSubsystemImpl::~XQueryCompilerSubsystemImpl()
 {
 }
 

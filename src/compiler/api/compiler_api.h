@@ -88,7 +88,7 @@ class XQueryCompilerSubsystem
  public:
   XQueryCompilerSubsystem();
 
-  virtual ~XQueryCompilerSubsystem() throw ();
+  virtual ~XQueryCompilerSubsystem();
 
   virtual Rewriter* getDefaultOptimizingRewriter() = 0;
 

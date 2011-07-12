@@ -79,7 +79,7 @@ public:
    * @brief Retrieve the istream associated with this Resource, and
    * take memory ownership of it.
    */
-  std::auto_ptr<std::istream> getStream() throw ();
+  std::auto_ptr<std::istream> getStream();
 
 private:
 
@@ -115,7 +115,7 @@ public:
   /**
    * @brief Return the Kind of Entity for which this URI is being resolved.
    */
-  virtual Kind getKind() const throw () = 0;
+  virtual Kind getKind() const = 0;
 
   virtual ~EntityData() = 0;
 };
@@ -196,7 +196,7 @@ class ZORBA_DLL_PUBLIC URIMapper
    */
   virtual void mapURI(const zorba::String aUri,
     EntityData const* aEntityData, std::vector<zorba::String>& oUris)
-    throw () = 0;
+    = 0;
 
   /**
    * @brief enum defining legal return values for mapperKind().
@@ -228,7 +228,7 @@ class ZORBA_DLL_PUBLIC URIMapper
    *
    * If you do not override this method, the default is "candidate".
    */
-  virtual Kind mapperKind() throw () { return CANDIDATE; }
+  virtual Kind mapperKind() { return CANDIDATE; }
 
   /**
    * @brief Constant indicating that Zorba should deny access to the
@@ -263,13 +263,12 @@ public:
    * Add a mapping from a given URI to another URI.
    */
   void
-  addMapping(const String& aUri, const String& aMappedUri) throw ();
+  addMapping(const String& aUri, const String& aMappedUri);
 
-  virtual Kind mapperKind() throw ();
+  virtual Kind mapperKind();
 
   virtual void mapURI(const zorba::String aUri,
-    EntityData const* aEntityData, std::vector<zorba::String>& oUris)
-    throw ();
+    EntityData const* aEntityData, std::vector<zorba::String>& oUris);
 
 private:
 

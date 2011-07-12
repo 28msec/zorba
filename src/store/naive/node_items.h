@@ -206,7 +206,7 @@ public:
 
   ~XmlTree() { theRootNode = 0; }
 
-  void free() throw();
+  void free();
 
   long getRefCount() const { return theRefCount; }
 
@@ -503,13 +503,13 @@ protected:
 
   void attach(InternalNode* parent, csize pos);
 
-  void detach() throw();
+  void detach();
 
-  void destroy(bool removeType) throw();
+  void destroy(bool removeType);
 
-  bool disconnect(csize& pos) throw();
+  bool disconnect(csize& pos);
 
-  void connect(InternalNode* node, csize pos) throw();
+  void connect(InternalNode* node, csize pos);
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void tokenize( XmlNodeTokenizerCallback& );
@@ -522,7 +522,7 @@ private:
   long compareInSameTree(const XmlNode* n1, const XmlNode* n2) const;
 #endif
 
-  void destroyInternal(bool removeType) throw();
+  void destroyInternal(bool removeType);
 };
 
 

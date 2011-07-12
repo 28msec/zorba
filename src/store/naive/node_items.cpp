@@ -127,7 +127,7 @@ ulong XmlTree::getCollectionId() const
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::free() throw()
+void XmlTree::free()
 {
   // std::cout << "Deleting Xml Tree: " << this << std::endl;
 
@@ -583,7 +583,7 @@ store::Item* XmlNode::copy(
 /*******************************************************************************
   Connect "this" to the given parent at the given position.
 ********************************************************************************/
-void XmlNode::connect(InternalNode* parent, csize pos) throw()
+void XmlNode::connect(InternalNode* parent, csize pos)
 {
   ZORBA_FATAL(theParent == NULL, "");
 
@@ -601,7 +601,7 @@ void XmlNode::connect(InternalNode* parent, csize pos) throw()
 /*******************************************************************************
   Disconnect "this" node from its parent, if any.
 ********************************************************************************/
-bool XmlNode::disconnect(csize& pos) throw()
+bool XmlNode::disconnect(csize& pos)
 {
   if (theParent == NULL)
     return false;
@@ -633,7 +633,7 @@ bool XmlNode::disconnect(csize& pos) throw()
 /*******************************************************************************
   Deallocate all nodes in the subtree rooted at "this".
 ********************************************************************************/
-void XmlNode::destroy(bool removeType) throw()
+void XmlNode::destroy(bool removeType)
 {
   try
   {
@@ -649,7 +649,7 @@ void XmlNode::destroy(bool removeType) throw()
 }
 
 
-void XmlNode::destroyInternal(bool removeType) throw()
+void XmlNode::destroyInternal(bool removeType)
 {
   store::StoreConsts::NodeKind kind = getNodeKind();
 

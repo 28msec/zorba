@@ -46,7 +46,7 @@ namespace zorbac {
     theXQCExpr.free                  = CExpression::free;
   }
 
-  CExpression::~CExpression() throw ()
+  CExpression::~CExpression()
   {
   }
 
