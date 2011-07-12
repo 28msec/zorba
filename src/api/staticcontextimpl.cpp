@@ -1347,50 +1347,5 @@ StaticContextImpl::getAuditEvent()
   return theCtx->get_audit_event();
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-void StaticContextImpl::disableWarning(const Item& qname)
-{
-  store::Item* lQName = Unmarshaller::getInternalItem(qname);
-  theCtx->disableWarning(lQName);
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-void StaticContextImpl::disableAllWarnings()
-{
-  theCtx->disableAllWarnings();
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-void StaticContextImpl::setWarningAsError(const Item& qname)
-{
-  store::Item* lQName = Unmarshaller::getInternalItem(qname);
-  theCtx->setWarningAsError(lQName);
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-bool StaticContextImpl::isWarningDisabled(const Item& qname)
-{
-  store::Item* lQName = Unmarshaller::getInternalItem(qname);
-  return theCtx->isWarningDisabled(lQName->getNamespace().c_str(), lQName->getLocalName().c_str());
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-bool StaticContextImpl::isWarningAnError(const Item& qname)
-{
-  store::Item* lQName = Unmarshaller::getInternalItem(qname);
-  return theCtx->isWarningAnError(lQName->getNamespace().c_str(), lQName->getLocalName().c_str());
-}
-
-
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

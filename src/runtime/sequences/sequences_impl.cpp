@@ -1812,12 +1812,7 @@ static void loadDocument(
   // Prepare a LoadProperties for loading the stream into the store
   store::LoadProperties lLoadProperties;
   lLoadProperties.setStoreDocument(true);
-  zstring lEnableDtdOptionValue;
-  store::Item_t lEnDtdQName;
-  GENV.getItemFactory()->createQName(lEnDtdQName, ZORBA_OPTIONS_NS, "",
-                                       ZORBA_OPTION_ENABLE_DTD);
-  aSctx->lookup_option(lEnDtdQName, lEnableDtdOptionValue);
-  lLoadProperties.setEnableDtd( lEnableDtdOptionValue.compare("true")==0 );
+  lLoadProperties.setEnableDtd( aSctx->is_feature_set( feature::dtd ) );
 
   // Resolve URI to a stream
   zstring lErrorMessage;

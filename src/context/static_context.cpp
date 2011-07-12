@@ -359,12 +359,6 @@ static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
 const zstring
 static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
 
-/********************************************************************************
-  The namespace of Zorba annotations
-********************************************************************************/
-const zstring
-static_context::ZORBA_ANNOTATIONS_NS = ZORBA_NS_PREFIX + "annotations";
-
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
@@ -492,6 +486,7 @@ static_context::static_context()
   theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
+  theAllWarningsErrors(false),
   theFeatures(0)
 {
 }
@@ -537,6 +532,7 @@ static_context::static_context(static_context* parent)
   theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
+  theAllWarningsErrors(false),
   // we copy features from the parent such that it's
   // easy to set and unset them
   theFeatures(parent->theFeatures)
@@ -587,6 +583,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
   theAllWarningsDisabled(false),
+  theAllWarningsErrors(false),
   theFeatures(0)
 {
 }
@@ -908,6 +905,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theAllWarningsDisabled;
 
   ar & theWarningsAreErrors;
+
+  ar & theAllWarningsErrors;
 
   ar & theFeatures;
 }
@@ -3036,96 +3035,76 @@ void static_context::bind_option(
   PrologOption option(qname, value);
 
   store::Item* qname2 = option.theName.getp();
+  
+  zstring lNamespace = qname2->getNamespace();
 
-  // translate options for requiring or prohibiting features
-  // into feature::kind for efficiency
-  root_static_context* lCtx
-    = static_cast<root_static_context*>(&GENV_ROOT_STATIC_CONTEXT);
 
-  if ( qname2->equals(lCtx->theEnableFeatureOption) ||
-       qname2->equals(lCtx->theDisableFeatureOption) )
+  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 ) // starts with zorba options namespace
   {
-    zstring lVal1 = value;
-    zstring lVal2;
-    bool lCommaFound = false;
-    while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+    zstring lLocalName = qname2->getLocalName();
+
+    if ( lNamespace == ZORBA_OPTION_FEATURE_NS &&
+         ( lLocalName == "enable" || lLocalName == "disable" ) )
     {
+      zstring lVal1 = value;
+      zstring lVal2;
+      bool lCommaFound = false;
+      while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+      {
+        process_feature_option(lVal1, lLocalName == "enable", loc);
+        lCommaFound = true;
+      }
       process_feature_option(
-        lVal1,
-        qname2->equals(lCtx->theEnableFeatureOption),
+        lCommaFound?lVal2:lVal1, 
+        lLocalName == "enable",
         loc);
-      lCommaFound = true;
     }
-    process_feature_option(
-      lCommaFound?lVal2:lVal1, 
-      qname2->equals(lCtx->theEnableFeatureOption),
-      loc);
-  } else if ( qname2->getNamespace() == ZORBA_WARN_NS )
-  {
-    if (value == "error")
-      setWarningAsError(qname2);
-    else if (value == "disable")
+    else if ( lNamespace == ZORBA_OPTION_WARN_NS &&
+              ( lLocalName == "enable" || lLocalName == "disable" || lLocalName == "error" ) )
     {
-      if (qname2->getLocalName() == "all")
-        disableAllWarnings();
-      else
-        disableWarning(qname2);
-    }
-    else
-    {
-      throw XQUERY_EXCEPTION(
-          zerr::ZXQP0060_OPTION_NOT_KNOWN,
-          ERROR_PARAMS (
-            ZORBA_WARN_NS + zstring(":") + qname2->getLocalName(),
-            ZED( ZXQP0060_available_options ),
-            "error, disable"
-          ), 
-          ERROR_LOC( loc )
-      );
-    }
-  }
-
-  // process zorba-version option
-  else if (qname2->getNamespace() == ZORBA_VERSIONING_NS)
-  {
-    if ( qname2->getLocalName() != ZORBA_OPTION_ZORBA_VERSION && 
-         qname2->getLocalName() != ZORBA_OPTION_MODULE_VERSION )
-    {
-      throw XQUERY_EXCEPTION(
-          zerr::ZXQP0060_OPTION_NOT_KNOWN,
-          ERROR_PARAMS (
-            qname2->getNamespace() + ":" + qname2->getLocalName(),
-            ZED( ZXQP0060_available_options ),
-            "zorba-version, module-version"
-          ), 
-          ERROR_LOC( loc )
-      );
-    }
-
-    if ( qname2->getLocalName() == ZORBA_OPTION_ZORBA_VERSION )
-    {
-      // Re-use "ModuleVersion" class since it does 98% of the work for us;
-      // just use a fake URI
-      ModuleVersion lOptVersion(ZORBA_VERSIONING_NS "/corezorba", value);
-      if (! lOptVersion.is_valid_version()) {
-        throw XQUERY_EXCEPTION(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION,
-                    ERROR_PARAMS(value), ERROR_LOC( loc ));
+      zstring lVal1 = value;
+      zstring lVal2;
+      bool lCommaFound = false;
+      while (ztd::split (lVal1, ",", &lVal1, &lVal2))
+      {
+        process_warning_option(lVal1, lLocalName, loc);
+        lCommaFound = true;
       }
-      ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS "/corezorba",
-                                  ZORBA_VERSION);
-      if ( ! lZorbaVersion.satisfies(lOptVersion)) {
-        throw XQUERY_EXCEPTION(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION,
-                    ERROR_PARAMS(value, ZORBA_VERSION),
-                    ERROR_LOC( loc ));
+      process_warning_option( lCommaFound?lVal2:lVal1, lLocalName, loc);
+    }
+
+    // process zorba-version option
+    else if (qname2->getNamespace() == ZORBA_VERSIONING_NS &&
+             ( lLocalName == ZORBA_OPTION_MODULE_VERSION ||
+               lLocalName == ZORBA_OPTION_ZORBA_VERSION ) )
+    {
+      if ( qname2->getLocalName() == ZORBA_OPTION_ZORBA_VERSION )
+      {
+        // Re-use "ModuleVersion" class since it does 98% of the work for us;
+        // just use a fake URI
+        ModuleVersion lOptVersion(ZORBA_VERSIONING_NS "/corezorba", value);
+        if (! lOptVersion.is_valid_version()) {
+          throw XQUERY_EXCEPTION(zerr::ZXQP0039_INVALID_VERSION_SPECIFICATION,
+                      ERROR_PARAMS(value), ERROR_LOC( loc ));
+        }
+        ModuleVersion lZorbaVersion(ZORBA_VERSIONING_NS "/corezorba",
+                                    ZORBA_VERSION);
+        if ( ! lZorbaVersion.satisfies(lOptVersion)) {
+          throw XQUERY_EXCEPTION(zerr::ZXQP0038_INAPPROPRIATE_ZORBA_VERSION,
+                      ERROR_PARAMS(value, ZORBA_VERSION),
+                      ERROR_LOC( loc ));
+        }
       }
     }
-  }
-
-  else if ( qname2->getNamespace() == ZORBA_OPTIONS_NS &&
-            ( qname2->getLocalName() == "enable-dtd" ||
-              qname2->getLocalName() == "trace" ) )
-  {
-    // nothing needs to be done here
+    // if the option is in (starts-with) Zorba's own namespace but not known, we raise an error
+    else 
+    {
+      throw XQUERY_EXCEPTION(
+         zerr::ZXQP0060_OPTION_NOT_KNOWN,
+         ERROR_PARAMS( qname2->getNamespace() + ":" + qname2->getLocalName() ),
+         ERROR_LOC( loc )
+       );
+    }
   }
 
   // if the option is in Zorba's own namespace but not known, we raise an error
@@ -3138,6 +3117,8 @@ void static_context::bind_option(
      );
   }
 
+  // in any case, we bind the option in the static context such that
+  // external functions can also access them
   if (!theOptionMap->update(qname2, option))
   {
     theOptionMap->insert(qname2, option);
@@ -3145,11 +3126,11 @@ void static_context::bind_option(
 
 }
 
-void
-static_context::process_feature_option(
-  const zstring& value,
-  bool  enable,
-  const QueryLoc& loc)
+store::Item_t
+static_context::parse_and_expand_qname(
+    const zstring& value,
+    const char* default_ns,
+    const QueryLoc& loc) const
 {
   zstring lPrefix;
   zstring lLocalName;
@@ -3165,11 +3146,77 @@ static_context::process_feature_option(
     lPrefix = value.substr( 0, n );
     lLocalName = value.substr( n+1 );
   }
-
   store::Item_t lQName;
-  expand_qname( lQName, ZORBA_OPTIONS_NS, lPrefix, lLocalName, loc );
-    
-  if ( lQName->getNamespace() != ZORBA_OPTIONS_NS )
+  expand_qname( lQName, default_ns, lPrefix, lLocalName, loc );
+
+  return lQName;
+}
+
+void
+static_context::process_warning_option(
+  const zstring& value,
+  const zstring& name,
+  const QueryLoc& loc)
+{
+  store::Item_t lQName = parse_and_expand_qname( value, ZORBA_WARN_NS, loc ); 
+
+  std::vector<store::Item_t>::iterator lIter;
+
+  if ( name == "error" )
+  {
+    if ( lQName->getLocalName() == "all" )
+    {
+      theAllWarningsErrors = true;
+      return;
+    }
+    for ( lIter = theWarningsAreErrors.begin();
+          lIter != theWarningsAreErrors.end();
+          ++lIter )
+    {
+      if ( lQName->equals( (*lIter) ) )
+      {
+        return;
+      }
+    }
+    theWarningsAreErrors.push_back( lQName );
+  }
+  else if ( name == "disable" )
+  {
+    if ( lQName->getLocalName() == "all" )
+    {
+      theAllWarningsDisabled = true;
+      return;
+    }
+    for ( lIter = theDisabledWarnings.begin();
+          lIter != theDisabledWarnings.end();
+          ++lIter )
+    {
+      if ( lQName->equals( (*lIter) ) )
+      {
+        return;
+      }
+    }
+    theDisabledWarnings.push_back( lQName );
+  }
+  else if ( name == "enable" )
+  {
+    if ( lQName->getLocalName() == "all" )
+    {
+      theAllWarningsDisabled = false;
+      return;
+    }
+  }
+}
+
+void
+static_context::process_feature_option(
+  const zstring& value,
+  bool  enable,
+  const QueryLoc& loc)
+{
+  store::Item_t lQName = parse_and_expand_qname( value, ZORBA_FEATURES_NS, loc );
+
+  if ( lQName->getNamespace() != ZORBA_FEATURES_NS )
   {
     throw XQUERY_EXCEPTION(
         zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
@@ -3650,12 +3697,17 @@ void static_context::setWarningAsError(store::Item_t qname)
 ********************************************************************************/
 bool static_context::isWarningDisabled(const char* ns, const char* localname)
 {
-  if (theAllWarningsDisabled)
-    return true;
-
   for (unsigned int i=0; i<theDisabledWarnings.size(); i++)
-    if (theDisabledWarnings[i]->getNamespace() == ns && theDisabledWarnings[i]->getLocalName() == localname)
+  {
+    if ( theDisabledWarnings[i]->getNamespace() == ns &&
+         theDisabledWarnings[i]->getLocalName() == localname )
       return true;
+  }
+
+  if (theAllWarningsDisabled)
+  {
+    return true;
+  }
 
   return (theParent == NULL ? false : theParent->isWarningDisabled(ns, localname));
 }
@@ -3666,8 +3718,15 @@ bool static_context::isWarningDisabled(const char* ns, const char* localname)
 bool static_context::isWarningAnError(const char* ns, const char* localname)
 {
   for (unsigned int i=0; i<theWarningsAreErrors.size(); i++)
-    if (theWarningsAreErrors[i]->getNamespace() == ns && theWarningsAreErrors[i]->getLocalName() == localname)
+  {
+    if (theWarningsAreErrors[i]->getNamespace() == ns &&
+        theWarningsAreErrors[i]->getLocalName() == localname)
       return true;
+  }
+  if ( theAllWarningsErrors )
+  {
+    return true;
+  }
 
   return (theParent == NULL ? false : theParent->isWarningAnError(ns, localname));
 }

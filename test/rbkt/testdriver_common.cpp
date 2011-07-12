@@ -22,7 +22,6 @@
 #include <zorba/store_consts.h>
 #include <util/string_util.h>
 #include <util/ascii_util.h>
-#include <zorbamisc/ns_consts.h>
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
@@ -447,10 +446,13 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
     sctx->declareOption(lQName, lValue);
   }
   
-  zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
-    createQName(ZORBA_OPTIONS_NS, "", ZORBA_OPTION_ENABLE_DTD);
-  std::string lValue = spec.getEnableDtd() ? "true" : "false";
-  sctx->declareOption(lQName, lValue);
+  if ( spec.getEnableDtd() )
+  {
+    zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
+      createQName(
+          "http://www.zorba-xquery.com/options/features", "", "enable");
+    sctx->declareOption(lQName, "dtd");
+  }
 }
 
 /**

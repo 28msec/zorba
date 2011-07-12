@@ -3,8 +3,8 @@ xquery version "1.1";
 (: inline function literal, user-defined function :)
 (: Author - Michael Kay, Saxonica :)
 
-declare namespace o = "http://www.zorba-xquery.com/options";
-declare option o:enable-feature "hof";
+declare namespace o = "http://www.zorba-xquery.com/options/features";
+declare option o:enable "hof";
 
 declare function local:f($x as xs:integer) as xs:integer {
   $x + 1

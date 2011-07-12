@@ -32,9 +32,6 @@ protected:
 protected:
   zstring theImplementationBaseUri;
 
-  store::Item_t theEnableFeatureOption;
-  store::Item_t theDisableFeatureOption;
-
 private:
   root_static_context();
 

@@ -54,14 +54,8 @@ PlanIter_t fn_trace::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder &ann) const
 {
-  // tracing can be disabled  using declare option exq:trace "disable";
-  zstring lOption;
-  store::Item_t optionName;
-  GENV_ITEMFACTORY->createQName(optionName,
-    ZORBA_OPTIONS_NS, "", "trace");
-  bool lOptionFound = sctx->lookup_option(optionName, lOption);
-
-  if (!lOptionFound || (lOptionFound && lOption != "disable"))
+  // tracing can be disabled using declare option op:disable-feature "trace";
+  if ( sctx->is_feature_set( feature::trace ) )
   {
     return new TraceIterator( sctx, loc, argv );
   }

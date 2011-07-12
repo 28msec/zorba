@@ -135,24 +135,15 @@ void root_static_context::init()
   }
   set_module_paths(lRootModulePaths);
 
-  GENV_ITEMFACTORY->createQName(
-      theEnableFeatureOption,
-      ZORBA_OPTIONS_NS, "", "enable-feature"
-  );
-  GENV_ITEMFACTORY->createQName(
-      theDisableFeatureOption,
-      ZORBA_OPTIONS_NS, "", "disable-feature"
-  );
-  // enabled by default
+  // by default enabled features 
   set_feature( feature::ddl );
   set_feature( feature::scripting );
+  set_feature( feature::trace );
 } 
 
 
 root_static_context::~root_static_context()
 {
-  theEnableFeatureOption = NULL;
-  theDisableFeatureOption = NULL;
 }
 
 }

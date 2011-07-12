@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/:ZDST0032
+Error: http://www.zorba-xquery.com/errors:ZDST0032

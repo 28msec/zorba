@@ -1425,11 +1425,15 @@ void XQueryImpl::notifyAllWarnings() const
   XQueryDiagnostics::warnings_type warnings = theXQueryDiagnostics->warnings();
   for (unsigned int i = 0; i<warnings.size(); i++)
   {
-    if (theStaticContext->isWarningAnError(warnings[i]->diagnostic().qname().ns(), warnings[i]->diagnostic().qname().localname()))
+    if ( theStaticContext->isWarningAnError(
+          warnings[i]->diagnostic().qname().ns(),
+          warnings[i]->diagnostic().qname().localname()) )
     {
       ZorbaImpl::notifyError(theDiagnosticHandler, *warnings[i]);
     }
-    else if ( ! theStaticContext->isWarningDisabled(warnings[i]->diagnostic().qname().ns(), warnings[i]->diagnostic().qname().localname()))
+    else if ( ! theStaticContext->isWarningDisabled(
+                  warnings[i]->diagnostic().qname().ns(),
+                  warnings[i]->diagnostic().qname().localname()))
     {
       ZorbaImpl::notifyWarning(theDiagnosticHandler, *warnings[i]);
     }

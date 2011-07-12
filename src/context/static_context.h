@@ -485,11 +485,6 @@ public:
   static const zstring XQUERY_OP_NS;
   static const zstring ZORBA_OP_NS;
 
-  //
-  // The namespace of Zorba annotations
-  //
-  static const zstring ZORBA_ANNOTATIONS_NS;
-
 
 protected:
   static_context                        * theParent;
@@ -578,11 +573,13 @@ protected:
 
   std::vector<DecimalFormat_t>             * theDecimalFormats;
 
-  std::vector<store::Item_t>                 theDisabledWarnings;
-
   bool                                       theAllWarningsDisabled;
 
+  bool                                       theAllWarningsErrors;
+
   std::vector<store::Item_t>                 theWarningsAreErrors;
+
+  std::vector<store::Item_t>                 theDisabledWarnings;
 
   uint32_t                                   theFeatures;
 
@@ -918,6 +915,18 @@ protected:
     const zstring& value,
     bool  enable,
     const QueryLoc& loc);
+
+  void process_warning_option(
+    const zstring& value,
+    const zstring& name,
+    const QueryLoc& loc);
+
+  store::Item_t
+  parse_and_expand_qname(
+      const zstring& value,
+      const char* default_ns,
+      const QueryLoc& loc
+    ) const;
 
 public:
 

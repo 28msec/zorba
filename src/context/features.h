@@ -28,7 +28,9 @@ namespace zorba {
     enum kind {
       ddl         = 1,
       scripting   = 4,
-      hof         = 8
+      hof         = 8,
+      trace       = 16,
+      dtd         = 32
     };
 
     bool kind_for( char const*, kind& );

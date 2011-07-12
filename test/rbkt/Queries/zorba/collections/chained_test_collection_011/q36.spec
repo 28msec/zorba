@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/:ZAPI0006 
+Error: http://www.zorba-xquery.com/errors:ZAPI0006 

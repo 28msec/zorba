@@ -3,8 +3,8 @@ xquery version "3.0";
 (: Name and arity of a system function :)
 (: Author - Michael Kay, Saxonica :)
 
-declare namespace o = "http://www.zorba-xquery.com/options";
-declare option o:enable-feature "hof";
+declare namespace o = "http://www.zorba-xquery.com/options/features";
+declare option o:enable "hof";
 
 let $f := fn:function-name#1 
 let $n := function-name($f)

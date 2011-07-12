@@ -132,6 +132,33 @@ error_example_5(Zorba* aZorba)
 	return false;
 }
 
+bool
+error_example_6(Zorba* aZorba)
+{
+  try {
+    Item lQName = aZorba->getItemFactory()->createQName(
+        "http://www.zorba-xquery.com/options/warnings", "", "error");
+
+    // make sure that the warning zwarn::ZWST0002 is turned
+    // into an error
+    StaticContext_t lCtx = aZorba->createStaticContext();
+    lCtx->declareOption(lQName, "ZWST0002");
+
+    std::ostringstream s;
+    s << "declare namespace unknown = 'unknown-annotation';" << std::endl
+      << "declare %unknown:test variable $var := 3;" << std::endl
+      << "$var" << std::endl;
+    XQuery_t lQuery = aZorba->compileQuery(s.str(), lCtx); 
+
+    std::cout << lQuery << std::endl;
+  } catch (XQueryException const& e) {
+    return true;
+  } catch (ZorbaException const& ze) {
+    std::cerr << ze << std::endl;
+    return false;
+  }
+	return false;
+}
 
 int 
 errors(int argc, char* argv[])
@@ -162,6 +189,11 @@ errors(int argc, char* argv[])
 
   std::cout << "executing example 5" << std::endl;
   res = error_example_5(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+
+  std::cout << "executing example 6" << std::endl;
+  res = error_example_6(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 

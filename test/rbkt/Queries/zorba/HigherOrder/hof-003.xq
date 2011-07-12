@@ -5,7 +5,7 @@ xquery version "3.0";
 
 import module namespace m="http://example.com/hof-003" at "hof-003.lib";
 
-declare namespace o = "http://www.zorba-xquery.com/options";
-declare option o:enable-feature "hof";
+declare namespace o = "http://www.zorba-xquery.com/options/features";
+declare option o:enable "hof";
 
 let $f := m:f#1 return $f(17)

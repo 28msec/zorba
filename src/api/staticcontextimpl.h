@@ -268,20 +268,6 @@ public:
   virtual audit::Event*
   getAuditEvent();
 
-  //
-  // Warnings
-  //
-  virtual void disableWarning(const Item& qname);
-
-  virtual void disableAllWarnings();
-
-  virtual void setWarningAsError(const Item& qname);
-
-  virtual bool isWarningDisabled(const Item& qname);
-
-  virtual bool isWarningAnError(const Item& qname);
-
-
 protected:
   String
   createInvokeQuery(const Function_t&, size_t aArity) const;

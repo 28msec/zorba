@@ -42,11 +42,17 @@
 
 #define ZORBA_NS                "http://www.zorba-xquery.com/"
 
-#define ZORBA_COLLATION_NS_BASE ZORBA_NS "zorba/collations/"
 #define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
-#define ZORBA_ERR_NS            ZORBA_NS
-#define ZORBA_OPTIONS_NS        "http://www.zorba-xquery.com/options"
-#define ZORBA_WARN_NS           ZORBA_OPTIONS_NS "/warning"
+
+#define ZORBA_ERR_NS            ZORBA_NS "errors"
+#define ZORBA_WARN_NS           ZORBA_NS "warnings"
+#define ZORBA_OPTIONS_NS        ZORBA_NS "options"
+#define ZORBA_FEATURES_NS       ZORBA_NS "features"
+#define ZORBA_ANNOTATIONS_NS    ZORBA_NS "annotations"
+#define ZORBA_COLLATION_NS_BASE ZORBA_NS "collations/"
+
+#define ZORBA_OPTION_WARN_NS    ZORBA_OPTIONS_NS "/warnings"
+#define ZORBA_OPTION_FEATURE_NS ZORBA_OPTIONS_NS "/features"
 #define ZORBA_VERSIONING_NS     ZORBA_OPTIONS_NS "/versioning"
 
 // TODO these probably should not be in "ns_consts"

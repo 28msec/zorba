@@ -3791,7 +3791,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
       lExpandedQName->getNamespace() == XSI_NS ||
       lExpandedQName->getNamespace() == static_context::W3C_FN_NS ||
       lExpandedQName->getNamespace() == XQUERY_MATH_FN_NS ||
-      lExpandedQName->getNamespace() == static_context::ZORBA_ANNOTATIONS_NS)
+      lExpandedQName->getNamespace() == ZORBA_ANNOTATIONS_NS)
   {
       if (sctx_ann.getp() == NULL
           ||

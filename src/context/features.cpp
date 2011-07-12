@@ -39,6 +39,16 @@ namespace zorba {
         res = hof;
         return true;
       }
+      else if ( ztd::equals(s, "trace") )
+      {
+        res = trace;
+        return true;
+      }
+      else if ( ztd::equals(s, "dtd") )
+      {
+        res = dtd;
+        return true;
+      }
       return false;
     }
   }
