@@ -55,6 +55,20 @@ void populate_context_parse_fragment(static_context* sctx)
 
   }
 
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_xml_parse_xml_fragment,
+        (createQName("http://www.zorba-xquery.com/modules/xml","","parse-xml-fragment"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_XML_PARSE_XML_FRAGMENT_3);
+
+  }
+
 }
 
 

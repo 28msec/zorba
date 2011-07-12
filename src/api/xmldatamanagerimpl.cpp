@@ -183,6 +183,34 @@ XmlDataManagerImpl::parseXML(std::istream& aStream) const
   return 0;
 }
 
+Item
+XmlDataManagerImpl::parseXML(
+    std::istream& aStream,
+    const String& aBaseURI) const
+{
+  ZORBA_DM_TRY
+  {
+    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(), "parse-xml");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createStreamableString(
+            aStream, &XmlDataManagerImpl::destroyStream)));
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createString(aBaseURI)));
+
+    ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
+    Iterator_t lIter = lSeq->getIterator();
+    lIter->open();
+    Item lRes;
+    lIter->next(lRes);
+    return lRes;
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
+
 ItemSequence_t
 XmlDataManagerImpl::parseXML(std::istream& aStream, XmlDataManager::ParseOptions& aOptions) const
 {
@@ -195,6 +223,42 @@ XmlDataManagerImpl::parseXML(std::istream& aStream, XmlDataManager::ParseOptions
     lArgs.push_back(new SingletonItemSequence(
           theFactory->createStreamableString(
             aStream, &XmlDataManagerImpl::destroyStream)));
+
+    std::ostringstream lOptions;
+    lOptions
+      << (aOptions.isDtdValidationEnabled()?"d":"D");
+
+    lOptions
+      << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
+
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createString(lOptions.str()))
+        );
+
+    return theContext->invoke(lQName, lArgs);
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
+
+ItemSequence_t
+XmlDataManagerImpl::parseXML(
+    std::istream& aStream,
+    const String& aBaseURI,
+    ParseOptions& aOptions) const
+{
+  ZORBA_DM_TRY
+  {
+    Item lQName = theFactory->createQName(
+        static_context::ZORBA_XML_FN_NS.c_str(), "parse-xml-fragment");
+
+    // create a streamable string item
+    std::vector<ItemSequence_t> lArgs;
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createStreamableString(
+            aStream, &XmlDataManagerImpl::destroyStream)));
+    lArgs.push_back(new SingletonItemSequence(
+          theFactory->createString(aBaseURI)));
 
     std::ostringstream lOptions;
     lOptions

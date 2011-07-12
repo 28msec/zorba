@@ -403,10 +403,12 @@ void set_var(
                   << name << "'" << std::endl;
         assert (false);
       }
+
       zorba::XmlDataManager::ParseOptions lOptions;
       lOptions.setDtdValidation(enableDtd);
 
-      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, lOptions);
+      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(
+          ifile, "file://" + val, lOptions);
       zorba::Iterator_t lIter = lSeq->getIterator();
       lIter->open();
       lIter->next(lDoc);

@@ -84,8 +84,17 @@ public:
   Item
   parseXML(std::istream& aStream) const;
 
+  Item
+  parseXML(std::istream& aStream, const String& aBaseURI) const;
+
   ItemSequence_t
   parseXML(std::istream& aStream, ParseOptions& aOptions) const;
+
+  ItemSequence_t
+  parseXML(
+      std::istream& aStream,
+      const String& aBaseURI,
+      ParseOptions& aOptions) const;
 
   Item
   fetch(const String& aURI) const;

@@ -92,4 +92,22 @@ declare option ver:module-version "2.0";
  : @return The parsed XML as a document node or a list of nodes, or an empty
  :         sequence
  :)
-declare function parse-xml:parse-xml-fragment($xml-string as xs:string?, $options as xs:string) as node()* external;
+declare function parse-xml:parse-xml-fragment(
+  $xml-string as xs:string?,
+  $options as xs:string) as node()* external;
+
+(:~
+ : A function to parse XML files and fragments. The behavior is the
+ : same as the parse-xml-fragment with two arguments.
+ : @param $xml-string The string that holds the XML to be parse. If empty,
+ :                    the function will return an empty sequence
+ : @param $base-uri The baseURI that will be used as the baseURI for every
+ :                    node returned by this function.
+ : @param $options The options for the parsing (see parse-xml-fragment#2)
+ : @return The parsed XML as a document node or a list of nodes, or an empty
+ :         sequence
+ :)
+declare function parse-xml:parse-xml-fragment(
+  $xml-string as xs:string?,
+  $base-uri as xs:string,
+  $options as xs:string) as node()* external;

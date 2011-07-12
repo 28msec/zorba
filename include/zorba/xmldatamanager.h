@@ -136,6 +136,18 @@ namespace zorba {
     virtual Item
     parseXML(std::istream& aStream) const = 0;
 
+    /** \brief Parse an XML document and return an Item.
+     *
+     * @param aStream the input stream whose content should be parsed
+     * @param aBaseURI the base URI which will be used as the base URI
+     *                 of the document. This serves both as the base URI
+     *                 used by the XML parser to resolve relative entity
+     *                 references within the document, and as the base URI
+     *                 of the document node that is returned.
+     */
+    virtual Item
+    parseXML(std::istream& aStream, const String& aBaseURI) const = 0;
+
     /** \brief Parse an XML document and return a sequence of nodes.
      *
      * This function parses the given input stream and returns the result
@@ -144,10 +156,35 @@ namespace zorba {
      * node. Otherwise, the result is the sequence of the external entity
      * nodes.
      *
+     * @param aStream the input stream whose content should be parsed
+     * @param aOptions @see ParseOptions
      * @see ParseOptions
      */
     virtual ItemSequence_t
     parseXML(std::istream& aStream, ParseOptions& aOptions) const = 0;
+
+    /** \brief Parse an XML document and return a sequence of nodes.
+     *
+     * This function parses the given input stream and returns the result
+     * as a sequence of nodes. If external entity processing is disabled
+     * the result will be a singleton sequence consisting of one document
+     * node. Otherwise, the result is the sequence of the external entity
+     * nodes.
+     *
+     * @param aStream the input stream whose content should be parsed
+     * @param aBaseURI the base URI which will be used as the base URI
+     *                 of the document. This serves both as the base URI
+     *                 used by the XML parser to resolve relative entity
+     *                 references within the document, and as the base URI
+     *                 of the document node that is returned.
+     * @param aOptions @see ParseOptions
+     * @see ParseOptions
+     */
+    virtual ItemSequence_t
+    parseXML(
+        std::istream& aStream,
+        const String& aBaseURI,
+        ParseOptions& aOptions) const = 0;
 
     /** \brief Fetches an resource refered to by the given URI.
      */

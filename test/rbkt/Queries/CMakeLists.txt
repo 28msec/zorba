@@ -210,13 +210,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 3323548)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-1 3323548)
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericLT/K2-NumericLT-2 3323548)
-
-    # These tests fail due to missing document/base-uri functionality
-    # on parse-xml
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/BaseURIFunc/K2-BaseURIFunc-21 3349272)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-dash-4 3349272)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-doubledash-4 3349272)
-
   ENDIF(NOT ZORBA_WITH_BIG_INTEGER)
 
   IF(ZORBA_TEST_XQUERYX)

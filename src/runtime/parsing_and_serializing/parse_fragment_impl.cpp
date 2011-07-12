@@ -19,6 +19,7 @@
 
 #include <iostream>
 
+#include "zorbatypes/URI.h"
 #include "context/static_context.h"
 
 #include "store/api/store.h"
@@ -119,6 +120,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
   store::Store& lStore = GENV.getStore();
   zstring docString;
   zstring baseUri;
+  URI lValidatedBaseUri;
   zstring docUri;
   std::auto_ptr<std::istringstream> iss;
   std::istream *is;
@@ -148,9 +150,48 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
       is = iss.get();
     }
 
-    // read options
-    consumeNext(tempItem, theChildren[1].getp(), planState);
-    parseOptions = ParseXmlFragmentOptions::parseOptions(tempItem->getStringValue(), loc);
+    // optional base URI argument
+    if (theChildren.size() == 3)
+    {
+      consumeNext(result, theChildren[1].getp(), planState);
+      ZORBA_ASSERT(result);
+
+      try {
+        lValidatedBaseUri = URI(result->getStringValue());
+      } catch (ZorbaException const& /* e */) {
+        throw XQUERY_EXCEPTION(
+          err::FODC0007,
+          ERROR_PARAMS( result->getStringValue() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      if (!lValidatedBaseUri.is_absolute()) {
+        throw XQUERY_EXCEPTION(
+          err::FODC0007,
+          ERROR_PARAMS( lValidatedBaseUri.toString() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      result->getStringValue2(baseUri);
+
+      // read options
+      consumeNext(tempItem, theChildren[2].getp(), planState);
+      parseOptions = ParseXmlFragmentOptions::parseOptions(tempItem->getStringValue(), loc);
+
+    } else {
+      // read options
+      consumeNext(tempItem, theChildren[1].getp(), planState);
+      parseOptions = ParseXmlFragmentOptions::parseOptions(tempItem->getStringValue(), loc);
+
+      baseUri = theSctx->get_base_uri();
+    }
+
+    // baseURI serves both as the base URI used by the XML parser
+    // to resolve relative entity references within the document,
+    // and as the base URI of the document node that is returned.
+    docUri = baseUri;
 
     try
     {

@@ -3268,7 +3268,8 @@ void* begin_visit(const VFO_DeclList& v)
         ERROR_PARAMS(BUILD_STRING('{',
                                   qnameItem->getNamespace(),
                                   '}',
-                                  qnameItem->getLocalName())));
+                                  qnameItem->getLocalName(),
+                                  lIsVariadic?"variadic":"#", numParams)));
       }
       else
       {

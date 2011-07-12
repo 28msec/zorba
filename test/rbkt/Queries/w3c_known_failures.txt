@@ -58,8 +58,6 @@ test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-028
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7
-test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-doubledash-4
-test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-dash-4
 test/rbkt/w3c_testsuite/XQuery/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0003-1
 test/rbkt/w3c_testsuite/XQuery/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0001-1
 test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-007
@@ -108,7 +106,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-005
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-001
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-008
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/MapPairs/map-pairs-902
-test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/BaseURIFunc/K2-BaseURIFunc-21
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-28
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02

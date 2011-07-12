@@ -23,12 +23,19 @@
     <zorba:description author="Zorba Team">fn-zorba-xml:parse-xml-fragment</zorba:description>
     
     <zorba:function>
+
       <zorba:signature localname="parse-xml-fragment" prefix="fn-zorba-xml">
         <zorba:param>xs:string?</zorba:param> <!-- string to parse -->
         <zorba:param>xs:string</zorba:param>  <!-- parse-xml options -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
 
+      <zorba:signature localname="parse-xml-fragment" prefix="fn-zorba-xml">
+        <zorba:param>xs:string?</zorba:param> <!-- string to parse -->
+        <zorba:param>xs:string</zorba:param>  <!-- baseURI -->
+        <zorba:param>xs:string</zorba:param>  <!-- parse-xml options -->
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
                      
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
