@@ -1034,7 +1034,7 @@ private:
 public:
   bool is_feature_set( feature::kind k ) const
   {
-    return theFeatures & k;
+    return (theFeatures & k) != 0;
   }
 
   void set_feature( feature::kind k )

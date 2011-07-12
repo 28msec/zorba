@@ -117,7 +117,7 @@ IF(WIN32)
   SET(ZORBA_EXE_SCRIPT "${ZORBA_EXE_SCRIPT}.bat")
 ENDIF(WIN32)
 SET(ZORBA_EXE_SCRIPT ${ZORBA_EXE_SCRIPT} CACHE STRING "executable used for generating the runtime")
-MESSAGE(STATUS "ZORBA_EXE_SCRIPT:                      " ${ZORBA_EXE_SCRIPT})
+MESSAGE(STATUS "ZORBA_EXE_SCRIPT:                     " ${ZORBA_EXE_SCRIPT})
 
 # flags for debugging the parser
 SET(ZORBA_DEBUG_PARSER OFF CACHE BOOL "debug the parser")
@@ -142,6 +142,12 @@ MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA:                   " ${ZORBA_NO_XMLSCHEMA})
 
 SET(ZORBA_WITH_BIG_INTEGER OFF CACHE BOOL "enable arbitrary precision integers")
 MESSAGE(STATUS "ZORBA_WITH_BIG_INTEGER:               " ${ZORBA_WITH_BIG_INTEGER})
+
+# cleatr the cache of SWIG variables if SWIG is not wanted
+IF (ZORBA_SUPPRESS_SWIG)
+  UNSET (SWIG_FOUND CACHE)
+  UNSET (ZORBA_USE_SWIG CACHE)  
+ENDIF (ZORBA_SUPPRESS_SWIG)
 
 IF (SWIG_FOUND)
   SET (use_swig ON)

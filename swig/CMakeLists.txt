@@ -14,33 +14,33 @@
 
 IF (ZORBA_USE_SWIG)
   IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    SET ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing" )
-    SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing" )
+    SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing")
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
   ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  INCLUDE(${SWIG_USE_FILE})
+
+  INCLUDE (${SWIG_USE_FILE})
 
   # Adding all *.i files of the current directory to swig dependencies
   # Important: This can done here for all modules because all modules have the same name (zorba_api or libzorba_api)
-  FILE(GLOB SWIG_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.i")
-  SET(SWIG_MODULE_zorba_api_EXTRA_DEPS ${SWIG_FILES})
-  SET(SWIG_MODULE_libzorba_api_EXTRA_DEPS ${SWIG_FILES})
+  FILE (GLOB SWIG_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.i")
+  SET (SWIG_MODULE_zorba_api_EXTRA_DEPS ${SWIG_FILES})
+  SET (SWIG_MODULE_libzorba_api_EXTRA_DEPS ${SWIG_FILES})
 
   # on apple and cmake 2.8, the generated swig libraries are prefixed with "lib"
-  SET(ZORBA_SWIG_LIB_PREFIX)
+  SET (ZORBA_SWIG_LIB_PREFIX)
   IF (APPLE AND CMAKE_MINOR_VERSION GREATER 6)
-    SET(ZORBA_SWIG_LIB_PREFIX "lib")
+    SET (ZORBA_SWIG_LIB_PREFIX "lib")
   ENDIF (APPLE AND CMAKE_MINOR_VERSION GREATER 6)
 
-  ADD_SUBDIRECTORY(python)
-  ADD_SUBDIRECTORY(php)
-  ADD_SUBDIRECTORY(java)
-  #ADD_SUBDIRECTORY(perl)
-    IF (APPLE AND UNIVERSAL )
-      MESSAGE ( STATUS "Ruby module can't be built Universal" )
-    ELSE( APPLE AND UNIVERSAL )
-      MESSAGE ( STATUS "Ruby module being built non-Universal" )
-      ADD_SUBDIRECTORY(ruby)
-    ENDIF ( APPLE AND UNIVERSAL )
+  ADD_SUBDIRECTORY (python)
+  ADD_SUBDIRECTORY (php)
+  ADD_SUBDIRECTORY (java)
 
+  IF (APPLE AND UNIVERSAL)
+    MESSAGE (STATUS "Ruby module can't be built Universal")
+  ELSE(APPLE AND UNIVERSAL)
+    MESSAGE (STATUS "Ruby module being built non-Universal")
+    ADD_SUBDIRECTORY (ruby)
+  ENDIF (APPLE AND UNIVERSAL)
 
 ENDIF (ZORBA_USE_SWIG)

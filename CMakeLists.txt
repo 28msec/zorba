@@ -52,28 +52,28 @@ IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   MESSAGE(FATAL_ERROR "Please create a separate build directory and call CMake again")
 ENDIF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
-IF (MSVC)
+IF (MSVC_IDE)
   IF (CMAKE_BUILD_TYPE)
     MESSAGE (STATUS "You provided CMAKE_BUILD_TYPE but the Visual Studio generator cannot make use of it. So I'd better clear it now! Sorry! :(")
     SET (CMAKE_BUILD_TYPE)
   ELSE (CMAKE_BUILD_TYPE)
     MESSAGE (STATUS "No CMAKE_BUILD_TYPE was provided, which is exactly what the Visual Studio generator expects from you. Very good! Weiter machen! :)")
-  ENDIF(CMAKE_BUILD_TYPE)
-ELSE(MSVC)
+  ENDIF (CMAKE_BUILD_TYPE)
+ELSE (MSVC_IDE)
   # set the default build type to release
   # NOTE: the "NMake Makefiles" generator will always set the default build type to "Debug"
-  IF(NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE Release CACHE STRING
-        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-        FORCE)
-  ENDIF(NOT CMAKE_BUILD_TYPE)
-ENDIF(MSVC)
+  IF (NOT CMAKE_BUILD_TYPE)
+    SET (CMAKE_BUILD_TYPE Release CACHE STRING
+         "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+         FORCE)
+  ENDIF (NOT CMAKE_BUILD_TYPE)
+ENDIF (MSVC_IDE)
 
 # set the default installation directory to "dist" in the build directory
 IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist CACHE STRING
-      "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
-ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  SET (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist CACHE STRING
+       "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
+ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 
 ###############################################################################
@@ -265,15 +265,17 @@ MESSAGE(STATUS "")
 #
 # Xerces-C part 1 - finding in default locations
 #
-MESSAGE(STATUS "Looking for Xerces-C")
-FIND_PACKAGE(XercesC)
-MESSAGE(STATUS "")
+MESSAGE (STATUS "Looking for Xerces-C")
+FIND_PACKAGE (XercesC)
+MESSAGE (STATUS "")
 
 #
 # SWIG
 #
 IF (NOT ZORBA_SUPPRESS_SWIG)
   FIND_PACKAGE (SWIG)
+  MESSAGE (STATUS "")
+
   IF (SWIG_FOUND)
     # this will be used both in swig and doc sub-directories
 
@@ -281,13 +283,22 @@ IF (NOT ZORBA_SUPPRESS_SWIG)
     # PHP5
     #
     FIND_PACKAGE (PHP5)
+    MESSAGE (STATUS "")
+
+    #
+    # Python
+    #
+    FIND_PACKAGE (PythonInterp)
+    MESSAGE (STATUS "")
+    FIND_PACKAGE (PythonLibs)
+    MESSAGE (STATUS "")
+    
   ELSE (SWIG_FOUND)
     MESSAGE (STATUS "SWIG not found => no language bindings are generated.")  
   ENDIF (SWIG_FOUND)
 ELSE (NOT ZORBA_SUPPRESS_SWIG)
   MESSAGE (STATUS "SWIG is disabled => no language bindings are generated.")  
 ENDIF (NOT ZORBA_SUPPRESS_SWIG)
-MESSAGE (STATUS "")
 
 
 LIST(APPEND requiredlibs ${requiredlibs-store})

@@ -12,18 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# - Try to find the SWIG library on Windows
+# - Try to find the Python interpreter on Windows
 #
-# This is a proxy module that calls the FindSWIG.cmake module.
-# But before we try to guess where SWIG might be on the user's machine.
-# The user should provide ZORBA_THIRD_PARTY_REQUIREMENTS which is a path where
-# the SWIG directory can be found. The SWIG directory must have "swig"
-# (case insensitive) in its name.
+# This is a proxy module that calls the FindPythonInterp.cmake module shipped with
+# CMake. But before we try to guess where Python interpreter might be on the user's
+# machine, the user should provide ZORBA_THIRD_PARTY_REQUIREMENTS which is a list
+# of paths where the Python interpreter directory can be found. The Python
+# interpreter directory must have "python" (case insensitive) in its name.
 #
 # This module helps the Windows user to avoid providing the following two
 # variables when building Zorba:
-# -D SWIG_EXECUTABLE="path_to_3rd_party_dir\*swig*\include"
+# -D PYTHON_EXECUTABLE="path_to_3rd_party_dir\*python*\python.exe"
 #
-# See the FindSWIG.cmake module shipped with Zorba for more information.
+# See the FindPythonInterp.cmake module shipped with CMake for more information.
 
-FIND_PACKAGE_WIN32(SWIG SWIG_FOUND swig)
+FIND_PACKAGE_WIN32 (PythonInterp PYTHONINTERP_FOUND python)

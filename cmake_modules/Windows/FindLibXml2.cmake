@@ -15,8 +15,8 @@
 # - Try to find the LibXml2 xml processing library on Windows
 #
 # This is a proxy module that calls the FindLibXml2.cmake module shipped with
-# CMake. But before we try to guess where LibXml2 might be on the user's machine.
-# The user should provide ZORBA_THIRD_PARTY_REQUIREMENTS which is a path where
+# CMake. But before we try to guess where LibXml2 might be on the user's machine,
+# the user should provide ZORBA_THIRD_PARTY_REQUIREMENTS which is a path where
 # the LibXml2 directory can be found. The LibXml2 directory must have "libxml"
 # (case insensitive) in its name.
 #

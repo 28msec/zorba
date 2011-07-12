@@ -11,30 +11,33 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# install path determined from where Python lives 
-FIND_PACKAGE(PythonInterp)
 
-IF(PYTHONINTERP_FOUND)
-  SET(pythonPath ${CMAKE_BINARY_DIR}/swig/python)
-  MESSAGE(STATUS "Adding Python test")
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/python_test.py.in ${CMAKE_CURRENT_BINARY_DIR}/python_test.py)
-  ADD_TEST("python" ${PYTHON_EXECUTABLE} python_test.py)
+IF (PYTHONINTERP_FOUND)
+
+  SET (pythonPath ${CMAKE_BINARY_DIR}/swig/python)
+  MESSAGE (STATUS "Adding Python test")
+  CONFIGURE_FILE (
+    ${CMAKE_CURRENT_SOURCE_DIR}/python_test.py.in
+    ${CMAKE_CURRENT_BINARY_DIR}/python_test.py
+  )
+  ADD_TEST ("python" ${PYTHON_EXECUTABLE} python_test.py)
   
-  # IF(WIN32)
-    # EXPECTED_FAILURE(python 3284891)
-  # ENDIF(WIN32)
-
-  FILE(GLOB XQ_FILES "*.xq")
+  FILE (GLOB XQ_FILES "*.xq")
   FOREACH (XQ_FILE ${XQ_FILES})
-    CONFIGURE_FILE(${XQ_FILE} ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+    CONFIGURE_FILE (
+      ${XQ_FILE}
+      ${CMAKE_CURRENT_BINARY_DIR}
+      COPYONLY
+    )
   ENDFOREACH (XQ_FILE ${XQ_FILES})
   
-  INSTALL(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/python_test.py
+  INSTALL (
+    FILES
+      ${CMAKE_CURRENT_BINARY_DIR}/python_test.py
     DESTINATION
-    share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/python/examples)
+      share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/python/examples
+  )
   
-ELSE(PYTHONINTERP_FOUND)
-    MESSAGE(STATUS "Python test not added because Python Interpreter not found.")
-ENDIF(PYTHONINTERP_FOUND)
-
+ELSE (PYTHONINTERP_FOUND)
+  MESSAGE (STATUS "Python test not added because Python Interpreter not found.")
+ENDIF (PYTHONINTERP_FOUND)

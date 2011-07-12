@@ -62,7 +62,22 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
     MAIN_DEPENDENCY ${GEN_QUERY}
     DEPENDS ${ABSOLUTE_SPEC_FILES} ${EXTRA_DEPS}
     ${GEN_SCRIPT} ${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
-  ADD_TEST("RuntimeGeneratorTest-${TEST_NAME}" "${CMAKE_COMMAND}"
+#MESSAGE(STATUS  "     ADD_CUSTOM_COMMAND(OUTPUT \"${OUTPUT}\" ")
+#MESSAGE(STATUS  "       COMMAND \"${CMAKE_COMMAND}\" ")
+#MESSAGE(STATUS  "       -D \"source_dir=${CMAKE_SOURCE_DIR}\" ")
+#MESSAGE(STATUS  "       -D \"binary_dir=${CMAKE_BINARY_DIR}\" ")
+#MESSAGE(STATUS  "       -D \"ZORBA_EXE=${ZORBA_EXE_SCRIPT}\"  ")
+#MESSAGE(STATUS  "       -D \"query=${GEN_QUERY}\"  ")
+#MESSAGE(STATUS  "       -D \"gen_file=${OUTPUT}\" ")
+#MESSAGE(STATUS  "       -D \"extvars:STRING=${EXTVARS}\" ")
+#MESSAGE(STATUS  "       -D \"files:STRING=${SPEC_FILES}\" ")
+#MESSAGE(STATUS  "       -P \"${GEN_SCRIPT}\" ")
+#MESSAGE(STATUS  "       MAIN_DEPENDENCY ${GEN_QUERY} ")
+#MESSAGE(STATUS  "       DEPENDS ${ABSOLUTE_SPEC_FILES} ${EXTRA_DEPS} ")
+#MESSAGE(STATUS  "       ${GEN_SCRIPT} ${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake) ")
+#MESSAGE(STATUS  "***************************************************************************************** ")
+
+ADD_TEST("RuntimeGeneratorTest-${TEST_NAME}" "${CMAKE_COMMAND}"
     -D "source_dir=${CMAKE_SOURCE_DIR}"
     -D "binary_dir=${CMAKE_BINARY_DIR}"
     -D "ZORBA_EXE=${ZORBA_EXE_SCRIPT}"

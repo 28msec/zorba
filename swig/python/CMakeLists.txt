@@ -12,41 +12,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# install path determined from where Python lives 
-FIND_PACKAGE(PythonInterp)
-FIND_PACKAGE(PythonLibs)
-
-# STRING(COMPARE EQUAL ${PYTHON_LIBRARIES} "PYTHON_LIBRARY-NOTFOUND" PYTHON_LIBS_NOT_FOUND)
-# STRING(COMPARE EQUAL ${PYTHON_INCLUDE_PATH} "PYTHON_INCLUDE_PATH-NOTFOUND" PYTHON_INCL_NOT_FOUND) 
-
-
 IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
-  MESSAGE(STATUS "SWIG Python: generating Python API")
-  SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
-  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
-  SWIG_ADD_MODULE(zorba_api_python python zorba_api.i)
-  SWIG_LINK_LIBRARIES(zorba_api_python zorba_simplestore ${PYTHON_LIBRARIES})
-  SET_TARGET_PROPERTIES( _zorba_api_python PROPERTIES OUTPUT_NAME "_zorba_api" )
+  MESSAGE (STATUS "SWIG Python: generating Python API")
 
-  EXECUTE_PROCESS ( COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig;print sysconfig.get_python_lib(0)"
+  SET_SOURCE_FILES_PROPERTIES (zorba_api.i PROPERTIES CPLUSPLUS ON)
+  INCLUDE_DIRECTORIES (${PYTHON_INCLUDE_PATH})
+  SWIG_ADD_MODULE (zorba_api_python python zorba_api.i)
+  SWIG_LINK_LIBRARIES (zorba_api_python zorba_simplestore ${PYTHON_LIBRARIES})
+  SET_TARGET_PROPERTIES (_zorba_api_python PROPERTIES OUTPUT_NAME "_zorba_api")
+
+  EXECUTE_PROCESS (
+    COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig;print sysconfig.get_python_lib(0)"
     OUTPUT_VARIABLE PYTHON_INSTALL_PATH
-    OUTPUT_STRIP_TRAILING_WHITESPACE )
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
    
-  SET(PYTHON_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/lib/python")
-  MESSAGE(STATUS "SWIG Python: Python module install path: " ${PYTHON_INSTALL_PATH})
+  SET (PYTHON_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/lib/python")
+  MESSAGE (STATUS "SWIG Python: Python module install path: " ${PYTHON_INSTALL_PATH})
 
-  IF(NOT WIN32)   
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.py
-      ${CMAKE_CURRENT_BINARY_DIR}/_zorba_api.so
-      DESTINATION ${PYTHON_INSTALL_PATH} )
+  IF (NOT WIN32)   
+    INSTALL (
+      FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.py
+        ${CMAKE_CURRENT_BINARY_DIR}/_zorba_api.so
+      DESTINATION ${PYTHON_INSTALL_PATH}
+    )
   ELSE(NOT WIN32)
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.py
-      ${CMAKE_CURRENT_BINARY_DIR}/_zorba_api.pyd
-      DESTINATION bin/python )
+    INSTALL (
+      FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.py
+        ${CMAKE_CURRENT_BINARY_DIR}/_zorba_api.pyd
+      DESTINATION bin/python
+    )
   ENDIF(NOT WIN32)
   
-  add_subdirectory(tests)
+  ADD_SUBDIRECTORY (tests)
   
 ELSE (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
-  MESSAGE(STATUS "SWIG Python: binding not generated because library and include files are not installed.")
+  MESSAGE (STATUS "SWIG Python: binding not generated because library and include files are not installed.")
 ENDIF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
