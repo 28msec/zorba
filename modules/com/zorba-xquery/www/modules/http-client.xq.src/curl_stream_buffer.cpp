@@ -18,6 +18,8 @@
 
 #include <cstdlib>
 #include <cstring>                      /* for memcpy(3) */
+#include <iostream>
+#include <cassert>
 #ifndef WIN32
 #include <sys/time.h>
 #endif /* WIN32 */
@@ -146,10 +148,22 @@ throw exception( #expr, "", code##__LINE__ );   \
     ///////////////////////////////////////////////////////////////////////////////
     
     streambuf::streambuf() : theInformer(0) {
+#ifdef WIN32
+      theDummySocket = socket(AF_INET, SOCK_DGRAM, 0);
+      if (theDummySocket == CURL_SOCKET_BAD || theDummySocket == INVALID_SOCKET) {
+        std::cerr << "creating the socket failed" << std::endl;
+      }
+#endif
       init();
     }
     
     streambuf::streambuf( char const *uri ) : theInformer(0) {
+#ifdef WIN32
+      theDummySocket = socket(AF_INET, SOCK_DGRAM, 0);
+      if (theDummySocket == CURL_SOCKET_BAD || theDummySocket == INVALID_SOCKET) {
+        std::cerr << "creating the socket failed" << std::endl;
+      }
+#endif
       init();
       open( uri );
     }
@@ -168,6 +182,12 @@ throw exception( #expr, "", code##__LINE__ );   \
     }
     
     streambuf::streambuf( CURL* aCurl) : theInformer(0) {
+#ifdef WIN32
+      theDummySocket = socket(AF_INET, SOCK_DGRAM, 0);
+      if (theDummySocket == CURL_SOCKET_BAD || theDummySocket == INVALID_SOCKET) {
+        std::cerr << "creating the socket failed" << std::endl;
+      }
+#endif
       init();
       curl_ = aCurl;
       ZORBA_CURL_ASSERT( curl_easy_setopt( aCurl, CURLOPT_WRITEDATA, this ) );
@@ -179,6 +199,9 @@ throw exception( #expr, "", code##__LINE__ );   \
     streambuf::~streambuf() {
       free( buf_ );
       close();
+#ifdef WIN32
+      closesocket(theDummySocket);
+#endif
     }
     
     void streambuf::close() {
@@ -201,6 +224,11 @@ throw exception( #expr, "", code##__LINE__ );   \
         FD_ZERO( &fd_write );
         FD_ZERO( &fd_except );
         int max_fd = -1;
+#ifdef WIN32
+        // Windows does not like a call to select where all arguments are 0. So
+        // we just add a dummy socket to make the call to select happy.
+        FD_SET (theDummySocket, &fd_read);
+#endif
         ZORBA_CURLM_ASSERT(
                            curl_multi_fdset( curlm_, &fd_read, &fd_write, &fd_except, &max_fd )
                            );
@@ -212,7 +240,7 @@ throw exception( #expr, "", code##__LINE__ );   \
         timeval timeout;
         long curl_timeout_ms;
         ZORBA_CURLM_ASSERT( curl_multi_timeout( curlm_, &curl_timeout_ms ) );
-        if ( curl_timeout_ms >= 0 ) {
+        if ( curl_timeout_ms > 0 ) {
           timeout.tv_sec  = curl_timeout_ms / 1000;
           timeout.tv_usec = curl_timeout_ms % 1000 * 1000;
         } else {
@@ -232,6 +260,9 @@ throw exception( #expr, "", code##__LINE__ );   \
         
         switch ( select( max_fd + 1, &fd_read, &fd_write, &fd_except, &timeout ) ) {
           case -1:                          // select error
+#ifdef WIN32
+            std::cout << "Error = " << WSAGetLastError() << std::endl;
+#endif
             throw exception( "select()", "" );
           case 0:                           // timeout
             // no break;
@@ -253,13 +284,13 @@ throw exception( #expr, "", code##__LINE__ );   \
       size *= nmemb;
       streambuf *const that = static_cast<streambuf*>( data );
       
-      size_t const buf_free = that->buf_capacity_ - that->buf_len_;
+      std::streamoff buf_free = that->buf_capacity_ - that->buf_len_;
       if (that->theInformer) {
         that->theInformer->beforeRead();
       }
       if ( size > buf_free ) {
-        size_t const new_capacity = that->buf_capacity_ + size - buf_free;
-        if ( void *const new_buf = realloc( that->buf_, new_capacity ) ) {
+        std::streamoff new_capacity = that->buf_capacity_ + size - buf_free;
+        if ( void *const new_buf = realloc( that->buf_, static_cast<size_t>(new_capacity) ) ) {
           that->buf_ = static_cast<char*>( new_buf );
           that->buf_capacity_ = new_capacity;
         } else

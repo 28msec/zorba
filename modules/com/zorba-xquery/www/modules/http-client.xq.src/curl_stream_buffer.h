@@ -150,30 +150,10 @@ namespace zorba {
       // forbid
       streambuf( streambuf const& );
       streambuf& operator=( streambuf const& );
+#ifdef WIN32
+      SOCKET theDummySocket;
+#endif
     };
-    
-    ////////// istream ////////////////////////////////////////////////////////////
-    
-    /**
-     * A curl::istream is-a std::istream for streaming the contents of a URI using
-     * cURL.  However, do not use this class directly.  Use uri::istream instead.
-     */
-    class istream : private streambuf, public std::istream {
-      //
-      // We use private inheritance from steambuf rather than have a streambuf data
-      // member because we want the streambuf to be constructed before passing it
-      // to istream's constructor.
-      //
-    public:
-      istream() : std::istream( this ) { }
-      istream( char const *uri ) : streambuf( uri ), std::istream( this ) { }
-      
-      using streambuf::open;
-      using streambuf::is_open;
-      using streambuf::close;
-    };
-    
-    ///////////////////////////////////////////////////////////////////////////////
     
   } // namespace curl
 } // namespace zorba
