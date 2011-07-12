@@ -383,10 +383,14 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
       LIST (GET copy_rules 1 _output_file)
       LIST (GET copy_rules 2 _depend_target)
       LIST (REMOVE_AT copy_rules 0 1 2)
+      SET (_depends "${_input_file}")
+      IF (_depend_target)
+        LIST (APPEND _depends "${_depend_target}")
+      ENDIF (_depend_target)
       ADD_CUSTOM_COMMAND (OUTPUT "${_output_file}"
         COMMAND "${CMAKE_COMMAND}" -E copy
         "${_input_file}" "${_output_file}"
-        DEPENDS "${_input_file}" "${_depend_target}"
+        DEPENDS ${_depends}
         COMMENT "Copying ${_input_file} to URI path" VERBATIM)
       LIST (APPEND _output_files "${_output_file}")
     ENDWHILE (copy_rules)
