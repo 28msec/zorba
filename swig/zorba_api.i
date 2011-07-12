@@ -36,19 +36,6 @@
 
 %{  // Implementations
 
-#if defined( _MSC_VER ) 
-#if (_MSC_VER >= 1600)
-  #define PHP_COMPILER_ID "VC10"
-#elif (_MSC_VER >= 1500)
-  #define PHP_COMPILER_ID "VC9"
-#elif (_MSC_VER >= 1400)
-  #define PHP_COMPILER_ID "VC8"
-#elif (_MSC_VER >= 1300)
-  #define PHP_COMPILER_ID "VC7"
-#elif (_MSC_VER >= 1200)
-  #define PHP_COMPILER_ID "VC6"
-#endif
-#endif
 
 #include <string>
 #include <sstream>

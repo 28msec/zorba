@@ -34,16 +34,13 @@ IF (ZORBA_USE_SWIG)
   ADD_SUBDIRECTORY(python)
   ADD_SUBDIRECTORY(php)
   ADD_SUBDIRECTORY(java)
-
-  IF(NOT WIN32 OR CYGWIN)
-    # ruby module on Mac OS doesn't link because cmake is generating
-    # -framework ruby instead of -framework Ruby
+  #ADD_SUBDIRECTORY(perl)
     IF (APPLE AND UNIVERSAL )
       MESSAGE ( STATUS "Ruby module can't be built Universal" )
     ELSE( APPLE AND UNIVERSAL )
       MESSAGE ( STATUS "Ruby module being built non-Universal" )
       ADD_SUBDIRECTORY(ruby)
     ENDIF ( APPLE AND UNIVERSAL )
-  ENDIF(NOT WIN32 OR CYGWIN)
+
 
 ENDIF (ZORBA_USE_SWIG)
