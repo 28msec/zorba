@@ -143,18 +143,12 @@ MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA:                   " ${ZORBA_NO_XMLSCHEMA})
 SET(ZORBA_WITH_BIG_INTEGER OFF CACHE BOOL "enable arbitrary precision integers")
 MESSAGE(STATUS "ZORBA_WITH_BIG_INTEGER:               " ${ZORBA_WITH_BIG_INTEGER})
 
-# cleatr the cache of SWIG variables if SWIG is not wanted
-IF (ZORBA_SUPPRESS_SWIG)
-  UNSET (SWIG_FOUND CACHE)
-  UNSET (ZORBA_USE_SWIG CACHE)  
-ENDIF (ZORBA_SUPPRESS_SWIG)
-
 IF (SWIG_FOUND)
   SET (use_swig ON)
 ELSE (SWIG_FOUND)
   SET (use_swig OFF)
 ENDIF (SWIG_FOUND)
-SET(ZORBA_USE_SWIG ${use_swig} CACHE BOOL "use Swig to generate api for Python, Php and Ruby")
+SET(ZORBA_USE_SWIG ${use_swig} CACHE BOOL "use Swig to generate api for Python, Php and Ruby" FORCE)
 MESSAGE(STATUS "ZORBA_USE_SWIG:                       " ${ZORBA_USE_SWIG})
 
 SET(ZORBA_XQUERYX OFF CACHE BOOL "Activate capability to compile XQueryX code (on/off)")

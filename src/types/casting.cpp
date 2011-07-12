@@ -648,7 +648,7 @@ T1_TO_T2(flt, dec)
     xs_decimal const n( aItem->getFloatValue() );
     return aFactory->createDecimal(result, n);
   }
-  catch ( std::exception const& e ) 
+  catch ( std::exception const& /*e*/ ) 
   {
     throw TYPE_EXCEPTION( err::FOCA0002, aErrorInfo );
   }
