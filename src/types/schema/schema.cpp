@@ -431,15 +431,15 @@ void Schema::registerXSD(const char* xsdURL,
   }
   catch (const OutOfMemoryException&)
   {
-    ZORBA_ERROR_LOC_DESC(err::XQST0059, loc,
-			 std::string("OutOfMemoryException during parsing ") +
-			 std::string(xsdURL));
+    throw XQUERY_EXCEPTION( err::XQST0059,
+        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaOutOfMemory )),
+        ERROR_LOC( loc ) );
   }
   catch (const XMLException& e)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(err::XQST0059, loc,
-			     "Error during parsing: " << xsdURL << " "
-			     << StrX(e.getMessage()));
+    throw XQUERY_EXCEPTION( err::XQST0059,
+        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaParseError ), StrX(e.getMessage())),
+        ERROR_LOC( loc ) );
   }
   catch (const ZorbaException& /* e */)
   {
@@ -447,9 +447,9 @@ void Schema::registerXSD(const char* xsdURL,
   }
   catch (...)
   {
-    ZORBA_ERROR_LOC_DESC(err::XQST0059, loc,
-			 std::string("Unexpected exception during parsing: ") +
-			 std::string(xsdURL));
+    throw XQUERY_EXCEPTION( err::XQST0059,
+        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaUnexpected )),
+        ERROR_LOC( loc ) );
   }
 
 #ifdef DO_PRINT_SCHEMA_INFO

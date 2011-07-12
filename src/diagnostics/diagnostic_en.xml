@@ -2882,6 +2882,18 @@
     <entry key="SchemaElementName">
       <value>schema-element name</value>
     </entry>
+ 
+    <entry key="SchemaOutOfMemory">
+      <value>OutOfMemoryException during parsing</value>
+    </entry>
+ 
+    <entry key="SchemaParseError">
+      <value>error during parsing</value>
+    </entry>
+ 
+    <entry key="SchemaUnexpected">
+      <value>unexpected exception during parsing</value>
+    </entry>
 
     <entry key="SearchKeyTypeMismatch_234">
       <value>"$2": search key type for index "$3" does not match expected type "$4"</value>

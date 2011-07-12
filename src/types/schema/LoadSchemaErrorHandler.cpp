@@ -64,16 +64,17 @@ if ( e.getSystemId() != NULL )
   os << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
-  ZORBA_ERROR_LOC_DESC( err::XQST0059, theQueryLoc, os.str());
+
+  throw XQUERY_EXCEPTION( err::XQST0059, ERROR_PARAMS(os.str()), ERROR_LOC(theQueryLoc) );
 }
 
 void LoadSchemaErrorHandler::fatalError(const XERCES_CPP_NAMESPACE::SAXParseException& e)
 {
   theSawErrors = true;
   std::ostringstream os;
-  os << "Error in schema ";
+  os << "Fatal error in schema ";
 
-if ( e.getSystemId() != NULL )
+  if ( e.getSystemId() != NULL )
     os << "with system id " << StrX(e.getSystemId());
   else if ( e.getPublicId() != NULL )
     os << "with public id " << StrX(e.getPublicId());
@@ -83,7 +84,8 @@ if ( e.getSystemId() != NULL )
   os << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
-  ZORBA_ERROR_LOC_DESC( err::XQST0059, theQueryLoc, os.str());
+
+  throw XQUERY_EXCEPTION( err::XQST0059, ERROR_PARAMS(os.str()), ERROR_LOC(theQueryLoc) );
 }
 
 void LoadSchemaErrorHandler::warning(const XERCES_CPP_NAMESPACE::SAXParseException& e)
