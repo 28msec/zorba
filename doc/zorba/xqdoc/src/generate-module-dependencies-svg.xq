@@ -7,8 +7,8 @@ import module namespace dot="http://www.zorba-xquery.com/modules/image/graphviz"
 declare variable $xqdocXMLPath as xs:string external;
 
 (
-z:fill_indexCollector($xqdocXMLPath)
-,z:fill_nodesCollector()
-,z:fill_edgesCollector($xqdocXMLPath)
-, dot:dot(z:create_graph(),())
+z:create-collections($xqdocXMLPath)
+, dot:dot(z:create_graph(),()) 
+(:, z:create_graph():)
+,z:delete-collections()
 )

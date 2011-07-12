@@ -4,47 +4,18 @@
 
 module namespace z = "http://www.zorba-xquery.com/module-dependencies";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 import module namespace file = "http://expath.org/ns/file";
 import module namespace dot = "http://www.zorba-xquery.com/modules/image/graphviz";
 import module namespace xqdoc2html = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
 import module namespace functx = "http://www.functx.com/";
 
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
-
-declare variable $z:categories :=
-    <menu title="XQuery Modules Documentation">
-      <category name="http://expath.org/ns" uri="http://expath.org/ns" color="mediumvioletred" ui="1"/>
-      <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules" color="lightsteelblue" ui="2">
-        <category name="convertors" uri="http://www.zorba-xquery.com/modules/convertors" color="sienna" ui="3"/>
-        <category name="data-cleaning" uri="http://www.zorba-xquery.com/modules/data-cleaning" color="dimgray" ui="4"/>
-        <category name="email" uri="http://www.zorba-xquery.com/modules/email" color="slategray" ui="5"/>
-        <category name="excel" uri="http://www.zorba-xquery.com/modules/excel" color="Gold" ui="6"/>
-        <category name="image" uri="http://www.zorba-xquery.com/modules/image" color="moccasin" ui="7"/>
-        <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" color="tan" ui="8"/>
-        <category name="security" uri="http://www.zorba-xquery.com/modules/security" color="RosyBrown" ui="9"/>
-        <category name="store" uri="http://www.zorba-xquery.com/modules/store" color="tan" ui="17">
-          <category name="dynamic" uri="http://www.zorba-xquery.com/modules/store/dynamic" color="tan" ui="18">
-            <category name="documents" uri="http://www.zorba-xquery.com/modules/store/dynamic/documents" color="tan" ui="19"/>
-            <category name="collections" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections" color="tan" ui="20">
-              <category name="ddl" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl" color="tan" ui="21"/>
-              <category name="dml" uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml" color="tan" ui="22"/>
-            </category>
-          </category>
-        </category>
-        <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" color="wheat" ui="10"/>
-        <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" color="LightGreen" ui="11">
-          <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" color="forestgreen" ui="12"/>
-          <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" color="olivedrab" ui="13"/>
-        </category>
-        <category name="xqdoc2xhtml" uri="http://www.zorba-xquery.com/modules/xqdoc2xhtml/" color="darkkhaki" ui="14"/>
-      </category>
-      <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" color="cornflowerblue" ui="15"/>
-      <category name="www.functx.com" uri="http://www.functx.com/" color="yellow" ui="16"/>
-    </menu>;
-    
-declare variable $z:indexCollector := <modules/>;
-
+  
 declare variable $z:nodesCollector := <modules/>;
 
 declare variable $z:edgesCollector := <edges/>;
@@ -53,225 +24,122 @@ declare variable $z:typeModule          := 'module';
 declare variable $z:typeExternalLibrary := 'library';
 declare variable $z:typeSchema          := 'schema';
 
-(: these will be used to highlite a nodule label smth. like $z:colors($z:pureZorba) :)
+declare variable $z:colors      as xs:string* := ('red'       , 'green');
+declare variable $z:moduleTypes as xs:string* := ('Zorba-core', 'External module');
 
-(: There are external functions declared in the current module :)
-declare variable $z:ZorbaXQuery as xs:integer := 1;
+(:=========================================================================================================:)
+declare variable $z:level1Weight as xs:string* := 
+("www.w3.org", "XDM", "store", "introspection", "reflection",
+ "external", "xqdoc","data processing", "programming languages", "excel", 
+ "cryptography", "geo", "image", "OAuth", "expath.org",
+ "www.functx.com", "communication");
+ 
+declare variable $z:level1Colors as xs:string* := 
+("mediumvioletred", "lightsteelblue", "sienna", "dimgray", "slategray",
+ "Gold", "moccasin","tan", "RosyBrown", "wheat", 
+ "LightGreen", "forestgreen", "olivedrab", "darkkhaki", "cornflowerblue",
+ "yellow", "Chartreuse");
+ 
 
-(: All the functions of the  current module are written 100% in XQuery, independently of what it imports. :)
-declare variable $z:XQueryOnly  as xs:integer := 2;
+declare variable $z:collectionConfig as xs:QName := xs:QName("z:collectionConfig");
+declare collection z:collectionConfig as node()*;
 
-declare variable $z:colors      as xs:string* := ('red'         , 'green');
-declare variable $z:moduleTypes as xs:string* := ('Zorba-XQuery', 'XQuery only');
+declare variable $z:collection as xs:QName := xs:QName("z:collection");
+declare collection z:collection as node()*;
 
-declare %private %ann:sequential function z:collect-module (
-  $moduleURI as xs:string, 
-  $relativeFileName as xs:string,
-  $type as xs:integer) 
+declare %ann:nondeterministic %ann:sequential function z:create-collection-categories (
+$collectionName as xs:QName,
+$xqdocXmlPath as xs:string)
 {
-  insert node <module uri="{$moduleURI}" 
-                      file="{$relativeFileName}" 
-                      type="{$type}" /> 
-  as last into $z:indexCollector;
+  ddl:create-collection($collectionName);
+  
+  (: gather all the XQDoc XML's :)
+  for $xqdocRelPath in file:list($xqdocXmlPath, fn:false(), "*.xml")
+  let $path := fn:concat($xqdocXmlPath, file:directory-separator(), $xqdocRelPath )
+  let $xqdoc := fn:parse-xml(file:read-text($path))
+  return dml:apply-insert-nodes($collectionName, $xqdoc);
+};
+
+declare %ann:nondeterministic %ann:sequential function z:create-collections($xqdocXMLPath as xs:string) 
+{ 
+  variable $xqdocBuildPath as xs:string := 
+  fn:substring-before($xqdocXMLPath, fn:concat(file:directory-separator(),"xml"));
+  
+  variable $xqdocXmlConfigPath as xs:string := 
+  fn:concat($xqdocBuildPath, file:directory-separator(), "config");
+  
+  z:create-collection-categories (xs:QName("z:collectionConfig"), $xqdocXmlConfigPath);
+  
+  z:create-collection-categories (xs:QName("z:collection"), $xqdocXMLPath);
+  
+  z:fill-nodesCollector();
+  
+  z:fill_edgesCollector();
+};
+
+declare %ann:sequential function z:delete-collections()
+{
+  dml:delete-nodes(dml:collection(xs:QName("z:collectionConfig")));                           
+  ddl:delete-collection(xs:QName("z:collectionConfig"));
+  
+  dml:delete-nodes(dml:collection(xs:QName("z:collection")));                           
+  ddl:delete-collection(xs:QName("z:collection"));
+};
+ 
+(:~
+ : Fill the $z:nodesCollector with all the available modules.
+ :)
+declare %ann:sequential function z:fill-nodesCollector() as xs:string*
+{
+
+  for $category in $z:level1Weight
+  return
+    for $docNode in dml:collection(xs:QName("z:collection"))
+    let $xqdoc := $docNode/xqdoc:xqdoc
+    let $lModuleUri := data($xqdoc/xqdoc:module/xqdoc:uri)
+    let $lModuleProject := if(exists($xqdoc/xqdoc:module/xqdoc:custom[@tag="project"])) 
+                                then $xqdoc/xqdoc:module/xqdoc:custom[@tag="project"]/text() 
+                                else data($xqdoc/xqdoc:module/xqdoc:uri)
+    let $tok := tokenize($lModuleProject,"/")[1]
+    let $subProject as xs:string? := replace(replace(substring-after($lModuleProject,concat($tok,"/")),"/","_")," ","_")
+    let $subProjectFinal := if(not(contains($subProject,"2005")) 
+                               and ($subProject ne "") 
+                               and not($lModuleProject = $lModuleUri)) 
+                            then concat($subProject,"_") 
+                            else ()
+    let $lName := concat($subProjectFinal,fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_"))
+    where (fn:starts-with($lModuleProject, $category) or
+           fn:contains($lModuleProject, $category))
+    return
+    if(exists($lName)) then
+      z:collect-node ($lModuleUri, 
+                      $lName, 
+                      $category, 
+                      fn:string(index-of($z:level1Weight,$category))
+                      )
+    else () 
 };
 
 declare %private %ann:sequential function z:collect-node (
   $moduleURI as xs:string, 
   $name as xs:string,
-  $catUri as xs:string,
+  $lModuleProject as xs:string,
   $catUi as xs:string) 
 {
   insert node <module uri="{$moduleURI}" 
                       name="{$name}" 
-                      catUri="{$catUri}" 
+                      moduleProject="{$lModuleProject}" 
                       catUi="{$catUi}" /> 
   as last into $z:nodesCollector;
-};
-
-declare %private %ann:sequential function z:collect-edge (
-  $catUri as xs:string,
-  $nameFrom as xs:string,
-  $uriFrom as xs:string,  
-  $nameTo as xs:string,
-  $uriTo as xs:string,
-  $type as xs:string) 
-{
-  insert node <edge catUri="{$catUri}" 
-                    nameFrom="{$nameFrom}"
-                    uriFrom="{$uriFrom}"
-                    nameTo="{$nameTo}"
-                    uriTo="{$uriTo}"
-                    type="{$type}" /> 
-  as last into $z:edgesCollector;
-};
-
-(:~
- : This function returns the module type (see $z:moduleType)
- : based only on the existance of the externals functions withing the module: 
- : it does NOT take into account the imported modules.
- :)
-declare function z:get_temp_module_type($xqdoc) as xs:integer
-{
-  (: does it contain external functions? :)
-  let $ext := count(for $sig in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:signature
-                    return
-                      if(ends-with($sig/text(),'external')) then $sig
-                      else ())
-  (: does it contain functions? :)
-  let $func := count ($xqdoc/xqdoc:functions/xqdoc:function/xqdoc:signature)
-  return
-    if(($func gt 0) and ($ext gt 0) and ($func ne $ext) or
-       ($func gt 0) and ($ext gt 0) and ($func eq $ext)) then
-      $z:ZorbaXQuery
-    else
-      $z:XQueryOnly
-};
-
-(:~
- : This function returns the module type (see $z:moduleType)
- : based on the existance of the externals functions withing the module and also
- : it takes into account the imported modules.
- :)
-declare function z:get_module_type($moduleUri as xs:string) as xs:integer
-{
-(:
-  let $tmpType := xs:integer($z:indexCollector//module[@uri eq $moduleUri]/@type)
-  let $importedModulesType as xs:integer* := distinct-values(
-                          for $edge in $z:edgesCollector//edge
-                          where (data($edge/@uriFrom) eq $moduleUri) and  data($edge/@type) eq $z:typeModule
-                          return xs:integer($z:indexCollector//module[@uri eq data($edge/@uriTo)]/@type))
-  return
-    if( ($tmpType eq $z:StandardXQuery) and
-        (functx:is-value-in-sequence($z:ZorbaXQuery,    $importedModulesType))) then 
-      $z:ZorbaXQuery
-    else 
-      $tmpType
-      :)
-  if( $moduleUri eq "http://www.w3.org/2005/xpath-functions") then
-    $z:XQueryOnly
-  else
-    xs:integer($z:indexCollector//module[@uri eq $moduleUri]/@type)
-};
-
-(:~
- : Fill the $z:indexCollector with all the available modules.
- :)
-declare %ann:sequential function z:fill_indexCollector($xqdocXMLPath as xs:string) 
-{
-  for $file in file:files($xqdocXMLPath, "\.xml$", fn:true())
-  let $link := fn:concat($xqdocXMLPath, file:path-separator(), $file)
-  let $xqdoc := file:read-xml($link)/xqdoc:xqdoc
-  return
-    z:collect-module($xqdoc/xqdoc:module/xqdoc:uri,
-                     replace($file,'xml','html'),
-                     z:get_temp_module_type($xqdoc))
-};
-
-(:~
- : Fill the $z:indexCollector with all the available modules.
- :)
-declare %ann:sequential function z:fill_nodesCollector() 
-{
-  for $category in  $z:categories//*:category
-  return
-    for $module in $z:indexCollector/module
-      let $lModuleUri := data($module/@uri)
-      let $lCatUri := data($category/@uri)
-      let $lName := z:get_shape_name($lModuleUri, $lCatUri)
-      where fn:starts-with($lModuleUri,$lCatUri)
-      return
-      if(exists($lName)) then
-        z:collect-node ($lModuleUri, $lName, $lCatUri, data($category/@ui))
-      else ()
-};
-
-(:~
- : Based on a module URI and the category URI create a UNIQUE name for a module.
- :)
-declare function z:get_shape_name(
-  $ModuleUri as xs:string,
-  $CatUri as xs:string) as xs:string?
-{
-  if(fn:starts-with($ModuleUri, $CatUri)
-     and fn:not(fn:contains (fn:substring-after($ModuleUri,fn:concat($CatUri,'/')),'/'))) then
-  (
-    let $uri := if(fn:substring-after($ModuleUri, $CatUri) = "") then
-                  "index"
-                else if (fn:ends-with($CatUri,"/")) then
-                  fn:substring-after($ModuleUri, $CatUri)
-                else
-                  fn:substring-after($ModuleUri, fn:concat($CatUri,"/"))
-    return
-      replace($uri,'-','_')        
-   )
-   else ()
-};
-
-(:~
- : Format the properties of a module dot shape (link to a file, tooltip, color of the text showing the module name).
- :)
-declare function z:get_shape_properties( 
-  $ModuleUri as xs:string,
-  $lLabel as xs:string,
-  $nodeName as xs:string) as xs:string
-{
-  let $file := $z:indexCollector//module[@uri eq $ModuleUri]/@file
-  let $type := z:get_module_type($ModuleUri)
-  return
-    fn:concat('[URL="../',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')
-};
-
-(:~
- : Get the nodes that represent modules based on a provided category URI.
- :)
-declare function z:nodes_modules(
-  $category) as xs:string 
-{
-  let $nodes :=
-  string-join(
-  for $node in $z:nodesCollector//module
-    let $lModuleUri := data($node/@uri)
-    let $lLabel := data($node/@name)
-    let $lName := concat($lLabel,'_', data($node/@catUi),z:get_shape_properties($lModuleUri, $lLabel, concat($lLabel,'_', data($node/@catUi))))
-    where $node[@catUri=data($category/@uri)]
-    order by $lModuleUri
-    return
-      $lName,";
-    ")
-  return
-    if($nodes eq '') then ''
-    else concat($nodes,';')
-};
-
-(:~
- : Get the nodes that represent external library dependencies.
- :)
-declare function z:nodes_external_libraries() as xs:string 
-{
-  let $nodes :=
-  string-join(
-  for $edge in $z:edgesCollector//edge
-  let $tok := tokenize(data($edge/@nameTo),'\|')
-  let $nodeLabel := replace(tokenize($tok[1],' ')[1],'\+','')
-  let $link := $tok[2]
-  let $node := data($edge/@nameTo)
-  let $lName := concat($nodeLabel,'[URL="',$link,'" tooltip="', $tok[1],'" label="',$nodeLabel,'"]')
-  where data($edge/@type) eq $z:typeExternalLibrary
-    return
-      $lName,";
-    ")
-  return
-    if($nodes eq '') then ''
-    else concat($nodes,';')
 };
 
 (:~
  : Fill $z:edgesCollector with all the edges (the links between the nodes) for both modules and eternal library dependencies.
  :)
-declare %ann:sequential function z:fill_edgesCollector($xqdocXMLPath as xs:string)
+declare %ann:nondeterministic %ann:sequential function z:fill_edgesCollector()
 {  
-  for $file in file:files($xqdocXMLPath, "\.xml$", fn:true())
-  let $xqdoc := file:read-xml(fn:concat($xqdocXMLPath, file:path-separator(), $file))/xqdoc:xqdoc
+  for $docNode in dml:collection(xs:QName("z:collection"))
+  let $xqdoc := $docNode/xqdoc:xqdoc
   return
     (
     (: add imported modules :)
@@ -280,12 +148,12 @@ declare %ann:sequential function z:fill_edgesCollector($xqdocXMLPath as xs:strin
       let $from := $z:nodesCollector//module[@uri=data($xqdoc/xqdoc:module/xqdoc:uri)]
       let $to := $z:nodesCollector//module[@uri=string($import/xqdoc:uri/text())]
       return
-        z:collect-edge(data($z:nodesCollector//module[@uri eq data($xqdoc/xqdoc:module/xqdoc:uri)]/@catUri),
+        z:collect-edge(data($z:nodesCollector//module[@uri = data($xqdoc/xqdoc:module/xqdoc:uri)]/@catUri),
                        concat(data($from/@name),'_',data($from/@catUi)),
                        data($xqdoc/xqdoc:module/xqdoc:uri),
                        concat(data($to/@name),'_',data($to/@catUi)),
                        string($import/xqdoc:uri/text()),
-                       $z:typeModule)
+                       $z:typeModule)                      
     else
       (),
     (: add externall c++ libraries dependencies :)                   
@@ -302,6 +170,109 @@ declare %ann:sequential function z:fill_edgesCollector($xqdocXMLPath as xs:strin
                        $z:typeExternalLibrary)
     else
       ())
+};
+
+declare %private %ann:sequential function z:collect-edge (
+  $catUri as xs:string?,
+  $nameFrom as xs:string?,
+  $uriFrom as xs:string?,  
+  $nameTo as xs:string?,
+  $uriTo as xs:string?,
+  $type as xs:string?) 
+{
+  insert node <edge catUri  ="{$catUri}" 
+                    nameFrom="{$nameFrom}"
+                    uriFrom ="{$uriFrom}"
+                    nameTo  ="{$nameTo}"
+                    uriTo   ="{$uriTo}"
+                    type    ="{$type}" /> 
+  as last into $z:edgesCollector;
+};
+
+declare function z:test()
+{
+(:
+  string-join(
+  for $edge in $z:edgesCollector//edge
+  return fn:concat($edge/@catUri,"|", $edge/@nameFrom, "|",  $edge/@uriFrom, "|", $edge/@nameTo),"
+")
+ 
+  string-join(
+  for $module in $z:nodesCollector//module
+  return fn:concat($module/@uri,"|", $module/@name, "|",  $module/@moduleProject, "|", $module/@catUi),"
+")
+:)
+};
+
+(:~
+ : This function returns the module type (see $z:moduleType)
+ : based on the existance of the externals functions withing the module and also
+ : it takes into account the imported modules.
+ :)
+declare function z:get_module_type($moduleUri as xs:string) as xs:integer
+{
+  if(dml:collection(xs:QName("z:collectionConfig"))/module[@moduleURI = $moduleUri]/@isCore = "true") 
+  then xs:integer(1)
+  else xs:integer(2)
+};
+
+(:~
+ : Format the properties of a module dot shape (link to a file, tooltip, color of the text showing the module name).
+ :)
+declare function z:get_shape_properties( 
+  $ModuleUri as xs:string,
+  $lLabel as xs:string) as xs:string
+{
+  let $file as xs:string := concat(xqdoc2html:get-filename($ModuleUri),".html")
+  let $type := z:get_module_type($ModuleUri)
+  return
+    fn:concat('[URL="../',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')
+};
+
+(:~
+ : Get the nodes that represent modules based on a provided category URI.
+ :)
+declare function z:nodes_modules(
+  $category as xs:string) as xs:string 
+{             
+  let $nodes :=
+  string-join(
+  for $node in $z:nodesCollector//module
+    let $lModuleUri := data($node/@uri)
+    let $lLabel := data($node/@name)
+    let $lName := concat($lLabel,'_', data($node/@catUi),z:get_shape_properties($lModuleUri, $lLabel))
+    where $node[@moduleProject = $category]
+    order by $lModuleUri
+    return
+      $lName,";
+    ")
+  return
+    if($nodes eq '') then ''
+    else concat($nodes,';')
+    
+};
+
+(:~
+ : Get the nodes that represent external library dependencies.
+ :)
+declare function z:nodes_external_libraries() as xs:string 
+{
+  let $nodes :=
+  string-join(
+  for $edge in $z:edgesCollector//edge
+  let $tok := tokenize(data($edge/@nameTo),'\|')
+  let $nodeLabel := replace(tokenize($tok[1],' ')[1],'\+','')
+  let $link := $tok[2]
+  let $node := data($edge/@nameTo)
+  let $lName := concat($nodeLabel,'[URL="',$link,'" tooltip="', $tok[1],'" label="',$nodeLabel,'"]')
+  where data($edge/@type) eq $z:typeExternalLibrary
+  group by $nodeLabel
+    return
+      $lName,";
+    ")
+  return
+    if($nodes eq '') then ''
+    else concat($nodes,';')
 };
 
 (:~
@@ -364,10 +335,12 @@ return
 declare function z:create_subgraph_libraries() as xs:string
 {
   concat('
+  
     subgraph clusterExternalCPPLibs  { style=filled; color=darksalmon; node [shape=box3d, color=red];
     ',
     z:nodes_external_libraries(),'
-    ',
+
+',
     z:edges_libraries(),'
     label="External C++ Library dependencies"; }')
 };
@@ -376,23 +349,17 @@ declare function z:create_subgraph_libraries() as xs:string
  : Generate the cluster for a specific category.
  :)
 declare function z:create_subgraph(
-  $category) as xs:string
+  $category as xs:string) as xs:string
 {
 concat('
     subgraph cluster',
-        data($category/@ui),
+        index-of($z:level1Weight,$category),
         (:   '{ node [style=filled];  color=',data($category/@color),';   :)
-        ' { style=filled; color=',data($category/@color),'; node [style=filled, color=white];
+        ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [style=filled, color=white];
     ',
 z:nodes_modules($category),'
 ',
-'    label="',
-      data($category/@name),
-      '";',
-      fn:string-join(for $cat1 in  $category/category
-                     return z:create_subgraph($cat1), '
-'),
-        '}')
+'    label="',$category,'";','}')
 };
 
 (:~
@@ -402,13 +369,14 @@ declare function z:create_graph() as xs:string
 {
     concat("digraph G { ",
             string-join(
-              for $cat1 in  $z:categories/category
+              for $cat1 in  $z:level1Weight
               return z:create_subgraph($cat1)
               ,('
   ')), z:create_subgraph_libraries()
     ,"
   
-  ",
+",
   z:edges_modules(),"
-  }")
+  }"
+  )
 };
