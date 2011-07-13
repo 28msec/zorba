@@ -39,6 +39,8 @@ public:
    * An %iterator is used to iterate over lookup results.
    */
   struct iterator {
+    virtual ~iterator();
+
     /**
      * Gets the next synonym.
      *
