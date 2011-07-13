@@ -208,12 +208,14 @@ data.
 
 </ol>
 
-When resolving a URI, Zorba will start by passing it to the first
-registered URI Mapper. If that Mapper returns any candidate URIs, then
-Zorba will pass <i>each</i> such URI to the next registered URI
-Mapper, and so on. If any Mapper does not return any candidate URIs
-for a given input URI, Zorba will simply pass the input URI unchanged
-to the next Mapper.
+The general algorithm used by Zorba when resolving a URI is as follows:
+
+Zorba will start by passing the original URI to the first registered
+URI Mapper. If that Mapper returns any candidate URIs, then Zorba will
+pass <i>each</i> such URI to the next registered URI Mapper, and so
+on. If any Mapper does not return any candidate URIs for a given input
+URI, Zorba will simply pass the input URI unchanged to the next
+Mapper.
 
 After all Mappers have been invoked, Zorba will have a set of
 candidate URIs. It will then pass each candidate URI, in order, to
@@ -268,7 +270,7 @@ candidate URIs you provide. That means that if you want Zorba to
 consider the original URI <i>in addition to</i> the alternative URIs
 you provide, you must push the original URI onto the vector as well.
 
-The <code>mapURI</code> method should not throw any exceptions.
+The <code>mapURI()</code> method should not throw any exceptions.
 
 As a limited but functional example, here is a full class which will
 change the URI of a specific schema to an alternative URI. You could
