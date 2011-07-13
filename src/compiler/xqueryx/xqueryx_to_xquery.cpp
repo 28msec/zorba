@@ -35,22 +35,12 @@ XQueryXConvertor::XQueryXConvertor()
 {
   xqueryx_xslt = NULL;
   inited = false;
-
-  //setup libxml
-  xmlSubstituteEntitiesDefault(1);
-  xmlLoadExtDtdDefaultValue = 1;
-
-  xmlSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
-  xsltSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
 }
 
 XQueryXConvertor::~XQueryXConvertor()
 {
-  //reset the error handlers for libxml2 and libxslt
-  initGenericErrorDefaultFunc(NULL);
-  xsltSetGenericErrorFunc(NULL, NULL);
-
-  xsltFreeStylesheet((xsltStylesheetPtr)xqueryx_xslt);
+  if(xqueryx_xslt)
+    xsltFreeStylesheet((xsltStylesheetPtr)xqueryx_xslt);
   //free xslt
   xsltCleanupGlobals();
 
@@ -73,17 +63,19 @@ void XQueryXConvertor::XQueryX_init()
 
 void XQueryXConvertor::zorba_xslt_error_handler(void *ctx, const char *msg, ...)
 {
+  if(!ctx)
+    return;
   va_list args;
   va_start( args, msg );
   int     len;
   std::string  *errstr = (std::string  *)ctx;
   char    *buffer = NULL;
 
-  len = vsnprintf( buffer, 0, msg, args ) + 1;
+  len = 2000;//vsnprintf( buffer, 0, msg, args ) + 1;
     
   buffer = (char*)malloc( len * sizeof(char) );
 
-  vsprintf( buffer, msg, args );
+  vsnprintf( buffer, len, msg, args );
   *errstr = buffer;
   free(buffer);
 }
@@ -94,8 +86,15 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
 
   xmlDocPtr doc, res;
 
+  //setup libxml
+  xmlSubstituteEntitiesDefault(1);
+  xmlLoadExtDtdDefaultValue = 1;
+  xmlSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
+  xsltSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
+
   doc = xmlParseDoc((xmlChar*)xqueryx);
 
+  try{
   if(!doc)
     throw ZORBA_EXCEPTION(zerr::ZXQP0031_MALFORMED_XQUERYX_INPUT, ERROR_PARAMS(errstr));
 
@@ -133,7 +132,19 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
     throw ZORBA_EXCEPTION( zerr::ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, ERROR_PARAMS(ZED(xqueryx_empty_content) ));
   }
 
+  //reset the error handlers for libxml2 and libxslt
+  xmlSetGenericErrorFunc(NULL, NULL);
+  xsltSetGenericErrorFunc(NULL, NULL);
+
   return xquery;
+  }
+  catch(...)
+  {
+    //reset the error handlers for libxml2 and libxslt
+    xmlSetGenericErrorFunc(NULL, NULL);
+    xsltSetGenericErrorFunc(NULL, NULL);
+    throw;
+  }
 }
 
 void XQueryXConvertor::freeResult(char *result_str)
