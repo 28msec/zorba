@@ -31,21 +31,25 @@ pre {
 
 #main {
   font-size: 90%;
-  width: 1300px;
+  max-width: 1260px;
+  min-width: 480px;
+  padding-bottom: 0px;
+  padding-top: 0px;
 }
 
-#main > div {
-  padding: 10px;
-}
 
 #leftMenu {
-  width: 290px;
-  float: left; 
+  max-width: 210px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  float: left;
 }
 
 #rightcontent {
-  float: left;
-  width: 900px;
+  padding-left: 220px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 #main a {
@@ -218,7 +222,7 @@ td.parameter {
 
 body {
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
-  color: #666;
+  color: #333333;
   background-image: url(images/noisepattern.png);
   padding: 0px;
   margin: 0px;
@@ -259,7 +263,7 @@ body {
   padding: 10px;
   width: 900px;
   margin: auto;
-  /* TODO: IE box shadow and radius ? */
+
   -webkit-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
   -moz-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
   -moz-border-radius-topleft: 5px;
@@ -398,11 +402,11 @@ li.none {
 
 #leftMenu ul li{
   list-style: none;
-  padding-left: 5px;
+  padding-left: 16px;
 }
 
 #leftMenu ul li{
-  padding: 0px 5px 0px 5px;
+  padding: 0px 5px 0px 16px;
 }
 
 
