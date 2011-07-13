@@ -182,6 +182,7 @@ MACRO (DECLARE_ZORBA_MODULE)
 
   # Now, deal with associated C++ source for external functions.
 
+  SET (module_lib_target)
   IF(MODULE_EXTRA_SOURCES OR EXISTS "${SOURCE_FILE}.src/")
     # all the cpp files found in the ${module_name}.xq.src directory
     # are added to the sources list, as are any cpp files found in any
