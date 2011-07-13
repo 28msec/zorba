@@ -132,11 +132,10 @@ namespace iso2788 {
 
   /**
    * Gets the "direction" of a relationship, i.e., whether a relationship leads
-   * to a more specific, neutral, or more general term.
+   * to a narrower, neutral, or broader term.
    *
    * @param rel_type The relationship type to get the direction of.
-   * @return Returns -1, 0, or +1 if \a rel_type leads to a more specific,
-   * neutral, or more general lemma, respectively.
+   * @return Returns \c narrower, \c neutral, or \c broader, respectively.
    */
   rel_dir get_dir( rel_type t );
 
