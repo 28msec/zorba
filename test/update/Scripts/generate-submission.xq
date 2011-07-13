@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.5 (svn rev. 8827)'
+         version='2.0 (svn rev. 11228)'
          anonymous-result-column="false">
   
          <organization
@@ -65,13 +65,13 @@ else
             
        </implementation>
 
-       <syntax>XQueryX</syntax>
+       <syntax>XQuery</syntax>
 
-       <test-run dateRun="2010-10-16">
+       <test-run dateRun="2011-07-13">
           <test-suite version="current"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
-          <otherComments><p>XQUTS version taken from CVS as of 13 Sept.</p></otherComments>
+          <otherComments><p>XQUTS version taken from CVS as of July 13th 2011.</p></otherComments>
        </test-run>
 
        {

@@ -49,8 +49,8 @@ if test ! -d "$BUILD"; then
   exit 1
 fi
 
-zipname=`basename $ZIP`
-ZIP="$WORK/$ZIP"
+zipname=`basename $XQTSURL`
+ZIP="$WORK/$zipname"
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
 

@@ -12,7 +12,7 @@ die() {
   echo '           (default: <zorba_repository>/build)'
   echo '<xqtsurl> is the URL where the XQTS archived version can be found'
   echo "          (default: $XQTSURL_DEFAULT)"
-  echo '          (you can use for instance http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)'
+  echo '          (you can use for instance http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_1_0_3.zip)'
   exit 1
 }
 
