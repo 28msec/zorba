@@ -21,7 +21,7 @@
 #include <string.h>
 
 #include <zorba/zorba.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
 #include <zorbamisc/ns_consts.h>

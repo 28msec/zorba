@@ -25,7 +25,7 @@
 #include <zorba/static_context.h>
 #include <zorba/options.h>
 #include <zorba/item_factory.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "api/collectionmanagerimpl.h"
 #include "api/item_sequence_chainer.h"

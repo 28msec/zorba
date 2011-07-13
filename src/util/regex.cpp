@@ -20,7 +20,7 @@
 #include <cstring>
 #include <vector>
 
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 #include "diagnostics/xquery_exception.h"
 
 #include "diagnostics/assert.h"

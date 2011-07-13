@@ -10,9 +10,6 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
     case "zwarn" return "ZorbaWarningCode"
     default return error()
   return
-    if ($class eq "ZorbaWarningCode")
-    then ()
-    else
       string-join(
         (
           concat( $util:newline, "namespace ", $namespace/@prefix, " {" ),
@@ -41,7 +38,7 @@ string-join(
   ( util:copyright(), 
     '',
     '#include "stdafx.h"',
-    '#include &lt;zorba/error_list.h>',
+    '#include &lt;zorba/diagnostic_list.h>',
     '',
     'namespace zorba {',
     '',

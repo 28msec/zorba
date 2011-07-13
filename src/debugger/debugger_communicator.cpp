@@ -23,7 +23,7 @@
 #include <sstream>
 
 #include <zorba/error.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "socket.h"
 #include "zorbautils/synchronous_logger.h"

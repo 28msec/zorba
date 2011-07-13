@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/error.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "functions/function.h"
 #include "store/api/item.h"

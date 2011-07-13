@@ -24,7 +24,7 @@
 
 #include <zorba/diagnostic_handler.h>
 #include <zorba/error.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/sax2.h>
 #include <zorba/audit_scoped.h>
 

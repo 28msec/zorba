@@ -27,7 +27,7 @@
 #include <zorba/empty_sequence.h>
 #include <zorba/vector_item_sequence.h>
 #include <zorba/xquery_exception.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "system/properties.h"
 

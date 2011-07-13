@@ -22,7 +22,7 @@
 #include <map>
 #include <stdio.h>
 
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "util/string_util.h"
 #include "util/stl_util.h"

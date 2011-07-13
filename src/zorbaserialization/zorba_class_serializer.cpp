@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/error.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/internal/qname.h>
 #include <zorba/item.h>
 #include <zorba/user_exception.h>

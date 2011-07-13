@@ -22,7 +22,7 @@
 #include <bitset>
 
 #include <zorba/config.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 
 #include "common/common.h"

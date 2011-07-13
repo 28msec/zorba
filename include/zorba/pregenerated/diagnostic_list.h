@@ -19,8 +19,8 @@
   * PLEASE DO NOT EDIT.
   */
  
-#ifndef ZORBA_ERROR_LIST_API_H
-#define ZORBA_ERROR_LIST_API_H
+#ifndef ZORBA_DIAGNOSTIC_LIST_API_H
+#define ZORBA_DIAGNOSTIC_LIST_API_H
 
 #include <zorba/config.h>
 #include <zorba/error.h>

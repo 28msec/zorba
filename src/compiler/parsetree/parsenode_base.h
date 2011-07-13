@@ -18,7 +18,7 @@
 #define ZORBA_PARSENODE_BASE_H
 
 #include <zorba/config.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"

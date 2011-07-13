@@ -23,7 +23,7 @@
 #endif /* ZORBA_HAVE_EXECINFO_H */
 #include <iostream>
 
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "diagnostic.h"
 #include "zorba_exception.h"

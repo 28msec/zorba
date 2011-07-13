@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 

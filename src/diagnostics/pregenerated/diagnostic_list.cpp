@@ -21,7 +21,7 @@
  
 
 #include "stdafx.h"
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 namespace zorba {
 
@@ -1056,6 +1056,16 @@ ZorbaErrorCode ZSTR0055_STREAMABLE_STRING_CONSUMED( "ZSTR0055" );
 
 
 } // namespace zerr
+
+namespace zwarn {
+
+ZorbaWarningCode ZWST0001_UNUSED_VARIABLE( "ZWST0001" );
+
+
+ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION( "ZWST0002" );
+
+
+} // namespace zwarn
 
 } // namespace zorba
 /*

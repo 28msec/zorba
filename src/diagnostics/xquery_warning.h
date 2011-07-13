@@ -19,7 +19,7 @@
 #define ZORBA_XQUERY_WARNING_H
 
 #include <zorba/xquery_warning.h>
-#include <zorba/warning_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "xquery_exception.h"
 

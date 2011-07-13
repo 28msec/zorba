@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include <zorba/empty_sequence.h>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/file.h>
 #include <zorba/serializer.h>
 #include <zorba/store_consts.h>

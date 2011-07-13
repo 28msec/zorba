@@ -24,5 +24,5 @@ INSTALL(FILES xqc.h DESTINATION include)
 
 INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h
-  ${CMAKE_CURRENT_BINARY_DIR}/zorba/error_list.h
+  ${CMAKE_CURRENT_BINARY_DIR}/zorba/diagnostic_list.h
   DESTINATION include/zorba)

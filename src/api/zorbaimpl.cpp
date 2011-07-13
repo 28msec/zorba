@@ -18,7 +18,7 @@
 #include "api/zorbaimpl.h"
 
 #include <istream>
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 //#include <zorba/function.h>
 #include <zorba/store_manager.h>
 #include <zorba/query_location.h>

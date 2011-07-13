@@ -93,8 +93,8 @@ declare variable $input external;
 
 string-join(
   ( util:copyright(), 
-    '#ifndef ZORBA_ERROR_LIST_API_H',
-    '#define ZORBA_ERROR_LIST_API_H',
+    '#ifndef ZORBA_DIAGNOSTIC_LIST_API_H',
+    '#define ZORBA_DIAGNOSTIC_LIST_API_H',
     '',
     '#include &lt;zorba/config.h>',
     '#include &lt;zorba/error.h>',

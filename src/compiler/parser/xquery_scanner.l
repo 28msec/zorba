@@ -20,7 +20,7 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "zorbatypes/schema_types.h"
 #include "common/common.h"

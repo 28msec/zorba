@@ -24,7 +24,7 @@
 #include <zorba/config.h>
 
 // TODO: this #include is temporary
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "util/error_util.h"
 

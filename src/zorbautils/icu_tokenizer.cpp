@@ -24,7 +24,7 @@
 #include <iostream>
 #endif
 
-#include <zorba/error_list.h>
+#include <zorba/diagnostic_list.h>
 
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
