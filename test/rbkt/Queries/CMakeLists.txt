@@ -111,6 +111,14 @@ IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
   SET(ZORBA_WORDNET_FOUND 1)
 ENDIF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
 
+IF(ZORBA_SUPPRESS_CURL)
+  MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
+ELSE(ZORBA_SUPPRESS_CURL)
+  MESSAGE(STATUS "Looking for cURL")
+  FIND_PACKAGE(CURL)
+ENDIF(ZORBA_SUPPRESS_CURL)
+
+
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
   # the test name.
@@ -120,18 +128,8 @@ FOREACH(TESTFILE ${TESTFILES})
   # Skip tests that we don't have the pre-requisites for.
   # This seems like an error-prone manual way to do this...
   SET(SKIP_TEST 0)
-  IF(NOT ZORBA_WITH_REST)
-    # These tests require rest 
-    STRING(REGEX MATCH "aleXis/q(10|8)" NEEDS_TIDY_AND_REST "${TESTNAME}")
-    STRING(REGEX MATCH "http_client" HTTP_CLIENT "${TESTNAME}")
-    IF(NEEDS_REST OR NEEDS_TIDY_AND_REST OR HTTP_CLIENT)
-      SET(SKIP_TEST 1)
-    ENDIF(NEEDS_REST OR NEEDS_TIDY_AND_REST OR HTTP_CLIENT)
-  ENDIF(NOT ZORBA_WITH_REST)
-  #at the moment we do not check for ZORBA_WITH_REST cmake param
-  #also we check for libtidy also because is it is not present HTTP module is not build
-  IF (NOT CURL_FOUND)
-    STRING(REGEX MATCH "http_client|oauth|webservices" HTTP_CLIENT "${TESTNAME}")
+  IF(NOT CURL_FOUND)
+    STRING(REGEX MATCH "http_client|oauth" HTTP_CLIENT "${TESTNAME}")
     IF(HTTP_CLIENT)
       SET(SKIP_TEST 1)
     ENDIF(HTTP_CLIENT)

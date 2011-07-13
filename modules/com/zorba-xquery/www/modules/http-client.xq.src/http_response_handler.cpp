@@ -146,7 +146,7 @@ namespace zorba { namespace http_client {
     String lLocalName = "response";
     Item lNodeName = theFactory->createQName(theNamespace, lLocalName);
     theResponse = theFactory->createElementNode(lNullParent, lNodeName,
-      theUntypedQName, false, false, std::vector<std::pair<String, String> >());
+      theUntypedQName, true, false, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(theResponse,
       theFactory->createQName("", "status"), lNullType,
       theFactory->createInteger(aStatus));
@@ -184,7 +184,7 @@ namespace zorba { namespace http_client {
     Item lParent = theIsInsideMultipart ? theMultipart : theResponse;
     Item lNullType;
     Item lElem = theFactory->createElementNode(lParent,
-      theFactory->createQName(theNamespace, "header"), theUntypedQName, false,
+      theFactory->createQName(theNamespace, "header"), theUntypedQName, true,
       true, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(lElem, theFactory->createQName("", "name"),
       lNullType, theFactory->createString(aName));
@@ -199,7 +199,7 @@ namespace zorba { namespace http_client {
     Item lParent = theIsInsideMultipart ? theMultipart : theResponse;
     Item lNullType;
     Item lElem = theFactory->createElementNode(lParent,
-      theFactory->createQName(theNamespace, "body"), theUntypedQName, false,
+      theFactory->createQName(theNamespace, "body"), theUntypedQName, true,
       true, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(lElem,
       theFactory->createQName("", "media-type"),
@@ -220,7 +220,7 @@ namespace zorba { namespace http_client {
     theIsInsideMultipart = true;
     Item lNullType;
     Item lElem = theFactory->createElementNode(theResponse,
-      theFactory->createQName(theNamespace, "body"), theUntypedQName, false,
+      theFactory->createQName(theNamespace, "body"), theUntypedQName, true,
       true, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(lElem,
       theFactory->createQName("", "content-type"),
