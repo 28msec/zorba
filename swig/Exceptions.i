@@ -30,7 +30,7 @@ class ZorbaException
   ZorbaException(const zorba::ZorbaException *en)
   { theException = en; } 
 
-  friend class DiagnosticHandler;
+  //friend class DiagnosticHandler;
  public:
   virtual std::string getDescription() const 
   { return std::string(theException->what()); }
@@ -58,7 +58,7 @@ class XQueryException : public ZorbaException
   XQueryException() {}
   XQueryException(const zorba::XQueryException *qe) : ZorbaException(qe) {}
 
-  friend class DiagnosticHandler;
+  //friend class DiagnosticHandler;
  private:
   const zorba::XQueryException* getQEx() const
   { return dynamic_cast<const zorba::XQueryException*>(theException); }
@@ -73,7 +73,7 @@ class XQueryException : public ZorbaException
 
 class UserException : public XQueryException 
 {
-  friend class DiagnosticHandler;
+  //friend class DiagnosticHandler;
 
  protected:
   UserException (const zorba::UserException *se) : 

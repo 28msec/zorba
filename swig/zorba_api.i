@@ -48,7 +48,7 @@
 #include <zorba/serializer.h>
 
   class CompilerHints;
-  class DiagnosticHandler;
+  //class DiagnosticHandler;
   class Item;
   class Iterator;
   class XQuery;
@@ -73,7 +73,7 @@
 %include "Store.i"
 %include "XmlDataManager.i"
 %include "Exceptions.i"
-%include "DiagnosticHandler.i"
+//%include "DiagnosticHandler.i"
 %include "CompilerHints.i"
 %include "StaticContext.i"
 %include "Zorba.i"

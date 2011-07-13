@@ -53,13 +53,6 @@ IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 ENDIF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
 IF (MSVC_IDE)
-  IF (CMAKE_BUILD_TYPE)
-    MESSAGE (STATUS "You provided CMAKE_BUILD_TYPE but the Visual Studio generator cannot make use of it. So I'd better clear it now! Sorry! :(")
-    SET (CMAKE_BUILD_TYPE)
-  ELSE (CMAKE_BUILD_TYPE)
-    MESSAGE (STATUS "No CMAKE_BUILD_TYPE was provided, which is exactly what the Visual Studio generator expects from you. Very good! Weiter machen! :)")
-  ENDIF (CMAKE_BUILD_TYPE)
-ELSE (MSVC_IDE)
   # set the default build type to release
   # NOTE: the "NMake Makefiles" generator will always set the default build type to "Debug"
   IF (NOT CMAKE_BUILD_TYPE)

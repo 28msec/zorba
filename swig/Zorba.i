@@ -16,11 +16,17 @@ public:
     return Zorba(zorba::Zorba::getInstance(aStore.getStore()));
   }
   
+  StaticContext createStaticContext()
+  {
+    return StaticContext(theZorba->createStaticContext());
+  }
+  
   XQuery compileQuery(const std::string& aStr) 
   {
     return XQuery(theZorba->compileQuery(aStr));
   }
-  
+/*
+  //--->> DiagnosticHandler implementations are postponed
   XQuery compileQuery(
     const std::string& aStr,
     DiagnosticHandler* aDiagnosticHandler
@@ -28,7 +34,6 @@ public:
   {
     return XQuery(theZorba->compileQuery(aStr, aDiagnosticHandler));
   }
-
   XQuery compileQuery(
     const std::string& aStr,
     StaticContext &aStaticContext, 
@@ -56,6 +61,7 @@ public:
       )
     );
   }
+*/
 
   XmlDataManager getXmlDataManager()
   {
@@ -78,12 +84,15 @@ class Zorba
 {
  public:
   static Zorba getInstance(const Store&);
+  StaticContext createStaticContext();
   XQuery compileQuery(const std::string& aStr);
+  /*
   XQuery compileQuery(const std::string& aStr, DiagnosticHandler* aDiagnosticHandler);
   XQuery compileQuery(const std::string& aStr, StaticContext &aStaticContext, 
                       DiagnosticHandler* aDiagnosticHandler);
   XQuery compileQuery(const std::string& aStr, CompilerHints &aCompilerHints, 
                       DiagnosticHandler* aDiagnosticHandler);
+  */
   XmlDataManager getXmlDataManager();
   void shutdown();
 
