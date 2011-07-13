@@ -406,8 +406,13 @@ void set_var(
       zorba::XmlDataManager::ParseOptions lOptions;
       lOptions.setDtdValidation(enableDtd);
 
+#ifndef WIN32
+      std::string file_scheme = "file://";
+#else
+      std::string file_scheme = "file:///";
+#endif
       zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(
-          ifile, "file://" + val, lOptions);
+          ifile, file_scheme + val, lOptions);
       zorba::Iterator_t lIter = lSeq->getIterator();
       lIter->open();
       lIter->next(lDoc);
