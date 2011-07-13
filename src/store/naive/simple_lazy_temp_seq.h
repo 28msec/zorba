@@ -18,6 +18,9 @@
 
 #include <vector>
 
+#include "diagnostics/zorba_exception.h"
+#include "zorba/diagnostic_list.h"
+#include "diagnostics/diagnostic.h"
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/copymode.h"
@@ -129,7 +132,18 @@ class SimpleLazyTempSeqIter : public store::Iterator
 ********************************************************************************/
 inline void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
 {
-  ulong lPos = to_xs_long( position );
+  ulong lPos;
+  try {
+    lPos = to_xs_unsignedLong(position);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("access out of bounds " << e.what() << ")")
+        )
+      );
+  }
   if ( this->containsItem ( lPos ) ) 
   {
     result = theItems[lPos - thePurgedUpTo - 1];
@@ -163,7 +177,18 @@ inline void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& resul
 ********************************************************************************/
 inline bool SimpleLazyTempSeq::containsItem(xs_integer position) 
 {
-  ulong lPos = to_xs_long(position);
+  ulong lPos;
+  try {
+    lPos = to_xs_unsignedLong(position);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("access out of bounds " << e.what() << ")")
+        )
+      );
+  }
   assert(lPos > thePurgedUpTo);
 
   ulong numItemsToBuffer = lPos - thePurgedUpTo;

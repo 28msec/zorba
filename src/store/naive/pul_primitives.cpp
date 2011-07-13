@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <exception>
+
 #include "store/naive/shared_types.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
@@ -804,7 +806,20 @@ void UpdDeleteCollection::apply()
       ERROR_LOC( theLoc )
     );
 
-  ulong size = to_xs_long(collection->size());
+  ulong size;
+  try {
+    size = to_xs_unsignedLong(collection->size());
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("collection too big ("
+            << e.what() << "; " << theName << ")")
+        )
+      );
+  }
+
   for (ulong i = 0; i < size; ++i)
   {
     XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
@@ -854,7 +869,19 @@ void UpdInsertIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  ulong lastPos = to_xs_long(lColl->size()) - 1;
+  ulong lastPos;
+  try {
+    lastPos = to_xs_unsignedLong(lColl->size()) - 1;
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("collection too big ("
+            << e.what() << "; " << theName << ")")
+        )
+      );
+  }
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
@@ -928,7 +955,19 @@ void UpdInsertLastIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  ulong lastPos = to_xs_long(lColl->size()) - 1;
+  ulong lastPos;
+  try {
+    lastPos = to_xs_unsignedLong(lColl->size()) - 1;
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("collection too big ("
+            << e.what() << "; " << theName << ")")
+        )
+      );
+  }
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
@@ -1011,7 +1050,19 @@ void UpdDeleteNodesFromCollection::apply()
 
   theIsApplied = true;
 
-  ulong size = to_xs_long(lColl->size());
+  ulong size;
+  try {
+    size = to_xs_unsignedLong(lColl->size());
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("collection too big ("
+            << e.what() << "; " << theName << ")")
+        )
+      );
+  }
 
   size_t numNodes = theNodes.size();
 

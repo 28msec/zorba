@@ -111,7 +111,18 @@ void SimpleLazyTempSeq::purge()
 ********************************************************************************/
 void SimpleLazyTempSeq::purgeUpTo(xs_integer upTo)
 {
-  ulong lUpTo = to_xs_long(upTo);
+  ulong lUpTo;
+  try {
+    lUpTo = to_xs_unsignedLong(upTo);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("sequence too big (" << e.what() << ")")
+        )
+      );
+  }
   ZORBA_ASSERT(lUpTo >= thePurgedUpTo);
   ZORBA_ASSERT(lUpTo - thePurgedUpTo <= theItems.size());
 
@@ -193,12 +204,21 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
     SimpleLazyTempSeq_t aTempSeq,
     xs_integer aStartPos,
     xs_integer aEndPos)
-  :
-  theTempSeq(aTempSeq),
-  theCurPos(to_xs_long(aStartPos) - 1),
-  theStartPos(to_xs_long(aStartPos)),
-  theEndPos(to_xs_long(aEndPos))
+  : theTempSeq(aTempSeq)
 {
+  try {
+    theCurPos = to_xs_unsignedLong(aStartPos) - 1;
+    theStartPos = to_xs_unsignedLong(aStartPos);
+    theEndPos = to_xs_unsignedLong(aEndPos);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("sequence too big (" << e.what() << ")")
+        )
+      );
+  }
 }
 
 

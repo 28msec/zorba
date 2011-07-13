@@ -2228,6 +2228,10 @@
       <value>streamable string has already been consumed</value>
     </diagnostic>
 
+    <diagnostic code="ZSTR0060" name="RANGE_EXCEPTION">
+      <value>out of range: $1</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->

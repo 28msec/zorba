@@ -15,6 +15,9 @@
  */
 #include "stdafx.h"
 
+#include "diagnostics/zorba_exception.h"
+#include "zorba/diagnostic_list.h"
+#include "diagnostics/diagnostic.h"
 #include "store/api/item.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/api/copymode.h"
@@ -52,7 +55,18 @@ bool SimpleTempSeq::empty()
 ********************************************************************************/
 store::Item_t SimpleTempSeq::operator[](xs_integer aIndex) 
 {
-  ulong lIndex = to_xs_long(aIndex);
+  ulong lIndex;
+  try {
+    lIndex = to_xs_unsignedLong(aIndex);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("access out of bounds " << e.what() << ")")
+        )
+      );
+  }
   return theItems[lIndex];
 }
 
@@ -71,7 +85,18 @@ xs_integer SimpleTempSeq::getSize()
 ********************************************************************************/
 void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 {
-  ulong lPos = to_xs_long(position);
+  ulong lPos;
+  try {
+    lPos = to_xs_unsignedLong(position);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("access out of bounds " << e.what() << ")")
+        )
+      );
+  }
   if (containsItem(lPos))
 	{
     res = theItems[lPos - 1];
@@ -88,7 +113,18 @@ void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 ********************************************************************************/
 bool SimpleTempSeq::containsItem(xs_integer position)
 {
-  ulong lPos = to_xs_long(position);
+  ulong lPos;
+  try {
+    lPos = to_xs_unsignedLong(position);
+  } catch (std::range_error& e)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZSTR0060_RANGE_EXCEPTION,
+        ERROR_PARAMS(
+          BUILD_STRING("access out of bounds " << e.what() << ")")
+        )
+      );
+  }
   return theItems.size() >= lPos;
 }
 
