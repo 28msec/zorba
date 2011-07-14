@@ -284,12 +284,13 @@ bool NamespaceUriForPrefixIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
-  {
-    resNs = theSctx->default_elem_type_ns();
-    found = true;
-  }
-  else 
+//  According to W3C bug #11590 comment #9
+//  http://www.w3.org/Bugs/Public/show_bug.cgi?id=11590#c9
+//  namespace-uri-for-prefix('', <a/>)
+//  and
+//  namespace-uri-for-prefix((), <a/>)
+//  should return the empty sequence
+  if(consumeNext(itemPrefix, theChildren[0].getp(), planState )) 
   {
     if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
     {
@@ -314,11 +315,6 @@ bool NamespaceUriForPrefixIterator::nextImpl(
           found = true;
           break;
         }
-      }
-      if(!found && itemPrefix != NULL && itemPrefix->getStringValue().empty())
-      {
-        resNs = theSctx->default_elem_type_ns();
-        found = true;
       }
     }
   }
