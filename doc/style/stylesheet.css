@@ -147,7 +147,7 @@ DIV.groupText {
 }
 BODY {
     background: white;
-    color: black;
+    color: #333333;
     margin-right: 20px;
     margin-left: 20px;
 }
@@ -568,7 +568,20 @@ table.ft_rels th {
   padding: 0px;
 }
 
+.contents {
+  padding: 5px;
+  margin: 5px;
+}
+
+.contents p {
+  margin: 14px 0;
+}
+
+.textblock p {
+  margin: 14px 0;
+}
+
 /* If the website stylesheet is not present, we don't display the header and footer. */
 #header, #featuring, #footer {
-  display: none;
+  display: block;
 }

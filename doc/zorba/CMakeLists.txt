@@ -35,15 +35,15 @@ IF (DOXYGEN_FOUND)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/uri_resolver.png
                   ${CMAKE_CURRENT_BINARY_DIR}/html/uri_resolver.png COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/download.png
-  ${CMAKE_CURRENT_BINARY_DIR}/html/download.png COPYONLY)
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/download.png COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/modules.png
-  ${CMAKE_CURRENT_BINARY_DIR}/html/modules.png COPYONLY)
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/modules.png COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/terminal.png
-  ${CMAKE_CURRENT_BINARY_DIR}/html/terminal.png COPYONLY)
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/terminal.png COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/documentation.png
-  ${CMAKE_CURRENT_BINARY_DIR}/html/documentation.png COPYONLY)
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/documentation.png COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/noisepattern.png
-  ${CMAKE_CURRENT_BINARY_DIR}/html/noisepattern.png COPYONLY)
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/noisepattern.png COPYONLY)
 ENDIF (DOXYGEN_FOUND)
 
 # adding the subdirectory responsible for adding the

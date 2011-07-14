@@ -7,10 +7,14 @@ tt, pre, code {
 }
 
 pre {
-  background-color: black;
+  /*background-color: black;
   opacity: 0.5;
   color: white;
-  padding: 5px;
+  padding: 5px;*/
+    background-color: #F5F5F5;
+    border: 1px solid #CCCCCC;
+    margin: 4px 8px 4px 2px;
+    padding: 4px 6px;
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
