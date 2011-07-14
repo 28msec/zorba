@@ -1096,33 +1096,6 @@
       <value>"$1": argument to fn:deep-equal() contains a function item</value>
     </diagnostic>
 
-    <!--////////// XQuery Scripting ////////////////////////////////////////-->
-
-    <diagnostic code="XSST0001">
-      <value>"$1": function cannot be declared as both updating and sequential</value>
-    </diagnostic>
-    <diagnostic code="XSST0002">
-      <value>"$1": function declared sequential but has updating body</value>
-    </diagnostic>
-    <diagnostic code="XSST0003">
-      <value>"$1": function declared updating but has sequential body</value>
-    </diagnostic>
-    <diagnostic code="XSST0004">
-      <value>"$1": function declared simple but has sequential body</value>
-    </diagnostic>
-    <diagnostic code="XSST0005">
-      <value>expression cannot be both updating and sequential</value>
-    </diagnostic>
-    <diagnostic code="XSST0006">
-      <value>sequential expression not allowed here</value>
-    </diagnostic>
-    <diagnostic code="XSST0007">
-      <value>"$1": variable not assignable</value>
-    </diagnostic>
-    <diagnostic code="XSST0008">
-      <value>"while" expression with non-sequential body</value>
-    </diagnostic>
-
     <!--////////// XQuery Update Facility //////////////////////////////////-->
 
     <diagnostic code="XUST0001">
@@ -2228,6 +2201,33 @@
 
     <diagnostic code="ZSTR0060" name="RANGE_EXCEPTION">
       <value>out of range: $1</value>
+    </diagnostic>
+
+    <!--////////// XQuery Scripting ////////////////////////////////////////-->
+
+    <diagnostic code="XSST0001">
+      <value>"$1": function cannot be declared as both updating and sequential</value>
+    </diagnostic>
+    <diagnostic code="XSST0002">
+      <value>"$1": function declared sequential but has updating body</value>
+    </diagnostic>
+    <diagnostic code="XSST0003">
+      <value>"$1": function declared updating but has sequential body</value>
+    </diagnostic>
+    <diagnostic code="XSST0004">
+      <value>"$1": function declared simple but has sequential body</value>
+    </diagnostic>
+    <diagnostic code="XSST0005">
+      <value>expression cannot be both updating and sequential</value>
+    </diagnostic>
+    <diagnostic code="XSST0006">
+      <value>sequential expression not allowed here</value>
+    </diagnostic>
+    <diagnostic code="XSST0007">
+      <value>"$1": variable not assignable</value>
+    </diagnostic>
+    <diagnostic code="XSST0008">
+      <value>"while" expression with non-sequential body</value>
     </diagnostic>
 
   </namespace>

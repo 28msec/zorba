@@ -115,7 +115,7 @@ void function::setAnnotations(AnnotationList* annotations)
       &&
       theAnnotationList->contains(lCtx.lookup_ann("sequential")))
   {
-    throw XQUERY_EXCEPTION(err::XSST0001,
+    throw XQUERY_EXCEPTION(zerr::XSST0001,
                            ERROR_PARAMS(getName()->getStringValue()));
   }
 }

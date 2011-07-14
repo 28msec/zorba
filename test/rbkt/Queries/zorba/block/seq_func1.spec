@@ -1,1 +1,1 @@
-Error: http://www.w3.org/2005/xqt-errors:XSST0002
+Error: http://www.zorba-xquery.com/errors:XSST0002

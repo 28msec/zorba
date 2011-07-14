@@ -286,22 +286,6 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode FOTY0014;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FOTY0015;
 
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0001;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0002;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0003;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0004;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0005;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0006;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0007;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XSST0008;
-
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XUST0001;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XUST0002;
@@ -718,6 +702,22 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITE
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZSTR0055_STREAMABLE_STRING_CONSUMED;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZSTR0060_RANGE_EXCEPTION;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0001;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0002;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0003;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0004;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0005;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0006;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0007;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0008;
 
 } // namespace zerr
 

@@ -442,7 +442,7 @@ void while_expr::compute_scripting_kind()
 
   if (!seqExpr->is_sequential() && !seqExpr->is_vacuous())
   {
-    throw XQUERY_EXCEPTION(err::XSST0008, ERROR_LOC(get_loc()));
+    throw XQUERY_EXCEPTION(zerr::XSST0008, ERROR_LOC(get_loc()));
   }
 
   theScriptingKind = theBody->get_scripting_detail();

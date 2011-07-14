@@ -3395,14 +3395,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     {
       if (body->is_updating() || theHaveUpdatingExitExprs)
       {
-        RAISE_ERROR(err::XSST0002, loc, ERROR_PARAMS(fname));
+        RAISE_ERROR(zerr::XSST0002, loc, ERROR_PARAMS(fname));
       }
     }
     else if (udf->isUpdating())
     {
       if (body->is_sequential() || theHaveSequentialExitExprs)
       {
-        RAISE_ERROR(err::XSST0003, loc, ERROR_PARAMS(fname));
+        RAISE_ERROR(zerr::XSST0003, loc, ERROR_PARAMS(fname));
       }
 
       if (!body->is_updating_or_vacuous())
@@ -3412,7 +3412,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
     else if (body->is_sequential() || theHaveSequentialExitExprs)
     {
-      RAISE_ERROR(err::XSST0004, loc, ERROR_PARAMS(fname));
+      RAISE_ERROR(zerr::XSST0004, loc, ERROR_PARAMS(fname));
     }
     else if (body->is_updating() || theHaveUpdatingExitExprs)
     {
@@ -5367,7 +5367,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
        ve->get_kind() != var_expr::prolog_var) ||
       !ve->is_mutable())
   {
-    RAISE_ERROR(err::XSST0007, loc,
+    RAISE_ERROR(zerr::XSST0007, loc,
     ERROR_PARAMS(ve->get_name()->getStringValue()));
   }
 

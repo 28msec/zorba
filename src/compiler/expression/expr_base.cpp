@@ -102,7 +102,7 @@ void expr::checkSimpleExpr(const expr* e)
 
   if (e != 0 && e->is_sequential())
   {
-    throw XQUERY_EXCEPTION(err::XSST0006, ERROR_LOC(e->get_loc()));
+    throw XQUERY_EXCEPTION(zerr::XSST0006, ERROR_LOC(e->get_loc()));
   }
 }
 
@@ -231,7 +231,7 @@ void expr::checkScriptingKind() const
 {
   if (is_updating() && is_sequential())
   {
-    throw XQUERY_EXCEPTION(err::XSST0005,  ERROR_LOC(get_loc()));
+    throw XQUERY_EXCEPTION(zerr::XSST0005,  ERROR_LOC(get_loc()));
   }
 
 #ifndef NDEBUG

@@ -411,30 +411,6 @@ XQueryErrorCode FOTY0014( "FOTY0014" );
 XQueryErrorCode FOTY0015( "FOTY0015" );
 
 
-XQueryErrorCode XSST0001( "XSST0001" );
-
-
-XQueryErrorCode XSST0002( "XSST0002" );
-
-
-XQueryErrorCode XSST0003( "XSST0003" );
-
-
-XQueryErrorCode XSST0004( "XSST0004" );
-
-
-XQueryErrorCode XSST0005( "XSST0005" );
-
-
-XQueryErrorCode XSST0006( "XSST0006" );
-
-
-XQueryErrorCode XSST0007( "XSST0007" );
-
-
-XQueryErrorCode XSST0008( "XSST0008" );
-
-
 XQueryErrorCode XUST0001( "XUST0001" );
 
 
@@ -1056,6 +1032,30 @@ ZorbaErrorCode ZSTR0055_STREAMABLE_STRING_CONSUMED( "ZSTR0055" );
 
 
 ZorbaErrorCode ZSTR0060_RANGE_EXCEPTION( "ZSTR0060" );
+
+
+ZorbaErrorCode XSST0001( "XSST0001" );
+
+
+ZorbaErrorCode XSST0002( "XSST0002" );
+
+
+ZorbaErrorCode XSST0003( "XSST0003" );
+
+
+ZorbaErrorCode XSST0004( "XSST0004" );
+
+
+ZorbaErrorCode XSST0005( "XSST0005" );
+
+
+ZorbaErrorCode XSST0006( "XSST0006" );
+
+
+ZorbaErrorCode XSST0007( "XSST0007" );
+
+
+ZorbaErrorCode XSST0008( "XSST0008" );
 
 
 } // namespace zerr
