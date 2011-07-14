@@ -7,10 +7,10 @@ import module namespace sys ="http://www.zorba-xquery.com/modules/system";
 import module namespace http="http://expath.org/ns/http-client";
 
 declare namespace pdash = "http://www.28msec.com/pdash";
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 
-
-declare %sequential function local:getPlatform()
+declare %ann:sequential function local:getPlatform()
 {    
     <pdash:platform site-osname="Ubuntu" os-version="11.04" os-platform="Linux" 
         hostname="28msec.dyndns.org" is-64bits="true" vendor-id="Cezar" vendor-label="i7" 
@@ -20,7 +20,7 @@ declare %sequential function local:getPlatform()
 }; 
 
 
-declare %sequential function local:makeDir($svnDir as xs:string)
+declare %ann:sequential %ann:nondeterministic function local:makeDir($svnDir as xs:string)
 {    
     if( fn:not( file:exists($svnDir) ) )
     then
@@ -39,7 +39,7 @@ declare %sequential function local:makeDir($svnDir as xs:string)
 };
 
 
-declare %sequential function local:svnCo($svnCmd as xs:string, 
+declare %ann:sequential function local:svnCo($svnCmd as xs:string, 
     $svnDir as xs:string, $svnRev as xs:integer)
 {
     variable $svnCo := fn:concat($svnCmd, " co -r ", $svnRev, 
@@ -63,7 +63,7 @@ declare %sequential function local:svnCo($svnCmd as xs:string,
 };
 
 
-declare %sequential function local:makeSvnDir($svnCmd as xs:string, 
+declare %ann:sequential %ann:nondeterministic function local:makeSvnDir($svnCmd as xs:string, 
     $svnDir as xs:string, $svnRev as xs:integer)
 {    
     if ( file:exists(fn:concat($svnDir, file:directory-separator(), "AUTHORS.txt")) and 
@@ -82,7 +82,7 @@ declare %sequential function local:makeSvnDir($svnCmd as xs:string,
 };
 
 
-declare %sequential function local:update($svnCmd as xs:string, 
+declare %ann:sequential function local:update($svnCmd as xs:string, 
     $svnDir as xs:string, $svnRev as xs:integer)
 {   
     fn:trace("", fn:concat("--- Svn update @rev", $svnRev)); 
@@ -129,7 +129,7 @@ declare %sequential function local:update($svnCmd as xs:string,
 };
 
 
-declare %sequential function local:build( $buildDir as xs:string, 
+declare %ann:sequential %ann:nondeterministic function local:build( $buildDir as xs:string, 
     $clean as xs:boolean, $cmakeCmd as xs:string,
     $makeCmd as xs:string, $makeThreads as xs:int)
 {
@@ -207,7 +207,7 @@ declare %sequential function local:build( $buildDir as xs:string,
 };
 
 
-declare %sequential function local:runXMarkTestSuits($zorbaCmd as xs:string, $xmarkDir as xs:string, 
+declare %ann:sequential function local:runXMarkTestSuits($zorbaCmd as xs:string, $xmarkDir as xs:string, 
     $initialNoOfRuns as xs:int, $revision as xs:integer, $revDate as xs:dateTime)
 {   
     fn:trace("---", "--- Running xmark tests ... ");
@@ -231,7 +231,7 @@ declare %sequential function local:runXMarkTestSuits($zorbaCmd as xs:string, $xm
 };
 
 
-declare %sequential function local:runXMarkTests($zorbaCmd as xs:string, $xmarkDir as xs:string, 
+declare %ann:sequential function local:runXMarkTests($zorbaCmd as xs:string, $xmarkDir as xs:string, 
     $noOfRuns as xs:integer, $inputCtx as xs:string)
 {   
     fn:trace("---", fn:concat(" -- xmark tests ", $noOfRuns, " ", $inputCtx));
@@ -268,8 +268,9 @@ declare %sequential function local:runXMarkTests($zorbaCmd as xs:string, $xmarkD
                       <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
                       <error>
                       {   
-                        fn:concat("  - Test ", $testName, " failed: erorcode=", $ecode, "  desc=", $desc, 
-                        " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
+                        fn:concat("  - Test ", $testName, " failed: erorcode=", $ecode, 
+                            "  desc=", $desc, " exit-code=", fn:data($res/exit-code), 
+                            " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
                       }
                       </error>
                     </pdash:test>                        
@@ -295,8 +296,9 @@ declare %sequential function local:runXMarkTests($zorbaCmd as xs:string, $xmarkD
                   <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
                   <error>
                   {   
-                    fn:concat("  - Test ", $testName, " failed: " 
-                    " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
+                    fn:concat("  - Test ", $testName, " failed: ", 
+                        " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), 
+                        " stderr=", fn:data($res/stderr) )
                   }
                   </error>
                 </pdash:test>                        
@@ -306,7 +308,7 @@ declare %sequential function local:runXMarkTests($zorbaCmd as xs:string, $xmarkD
 };
 
 
-declare %sequential function local:publishResults($allResults, $platform, $buildName as xs:string)
+declare %ann:sequential function local:publishResults($allResults, $platform, $buildName as xs:string)
 {   
     fn:trace(fn:count($allResults), "--- Publish results ...");
     
@@ -321,7 +323,7 @@ declare %sequential function local:publishResults($allResults, $platform, $build
 };
 
 
-declare %sequential function local:makeMessage($suite, $platform, $revision as xs:string, 
+declare %ann:sequential function local:makeMessage($suite, $platform, $revision as xs:string, 
     $revDate as xs:string, $buildName as xs:string)
 {   
     fn:trace("", "  - makeMessage");
@@ -337,7 +339,7 @@ declare %sequential function local:makeMessage($suite, $platform, $revision as x
     </pdash:submission>
 };
 
-declare %sequential function local:submitMessage($msg)
+declare %ann:sequential function local:submitMessage($msg)
 {   
     fn:trace(fn:serialize($msg), "  - submitMessage");
     
@@ -354,7 +356,7 @@ declare %sequential function local:submitMessage($msg)
 };
 
 
-declare %sequential function local:runXRayTestSuits($zorbaCmd as xs:string, 
+declare %ann:sequential function local:runXRayTestSuits($zorbaCmd as xs:string, 
     $xrayDir as xs:string, $initialNoOfRuns as xs:int, $revision as xs:integer, 
     $revDate as xs:dateTime)
 {   
@@ -378,7 +380,7 @@ declare %sequential function local:runXRayTestSuits($zorbaCmd as xs:string,
 };
 
 
-declare %sequential function local:runXRayTests($zorbaCmd as xs:string, 
+declare %ann:sequential function local:runXRayTests($zorbaCmd as xs:string, 
     $xrayDir as xs:string, $noOfRuns as xs:integer)
 {   
     fn:trace("---", fn:concat(" -- xray test  ", $noOfRuns, "x"));
@@ -470,11 +472,7 @@ let $makeCmd := xs:string("/usr/bin/make")
                   10916 )  
 let $svnRevs := ( 9500, 9600, 9650, 9700, 9750, 9800, 9850, 9900,
                   10100, 10133, 10166, 10200) :) 
-let $svnRevs := (8709, 8852, 9023, 9252, 
-                9496,   
-                9745, 9938, 10069,  
-                10237, 
-                10431, 10742)
+let $svnRevs := (11238)
 
 let $buildName := "ztest2"
 let $initialNoOfRuns := xs:int(100)
@@ -495,9 +493,8 @@ return
         variable $resXRay := local:runXRayTestSuits($zorbaCmd, $xrayDir, xs:int(3), $i, $revDate);
         local:publishResults($resXRay, $platform, $buildName);
 
-        (:
         variable $resXMark := local:runXMarkTestSuits($zorbaCmd, $xmarkDir, $initialNoOfRuns, $i, $revDate);
-        local:publishResults($resXMark, $platform, $buildName); :)        
+        local:publishResults($resXMark, $platform, $buildName);         
         
     }
     
