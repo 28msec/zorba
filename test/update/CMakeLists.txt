@@ -141,6 +141,8 @@ IF (FOUND_XQUTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-after-01 3354995)
     EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/StaticTypingFeature/stf-insert-into-01 3354995)
 
+    # W3C bug http://www.w3.org/Bugs/Public/show_bug.cgi?id=13259
+    EXPECTED_FAILURE(test/update/w3c_update_testsuite/XQueryX/ValTrans/revalidate-valtrans-ins-003  0)
   ENDIF(ZORBA_TEST_XQUERYX)
 
 ENDIF (FOUND_XQUTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
