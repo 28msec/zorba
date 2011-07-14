@@ -22,12 +22,13 @@
 #include "mutex.h"
 #include "stemmer.h"
 #include "stemmer/sb_stemmer.h"
+#include "util/cxx_util.h"
 
 using namespace std;
 using namespace zorba::locale;
 
 namespace zorba {
-namespace core {
+namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -57,13 +58,13 @@ Stemmer const* StemmerProvider::get_stemmer( iso639_1::type lang ) const {
     if ( Stemmer const *const stemmer = SnowballStemmer::create( lang ) )
       ptr_ref.reset( stemmer );
     else
-      return NULL;
+      return nullptr;
   }
   return ptr_ref.get();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace core
+} // namespace internal
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

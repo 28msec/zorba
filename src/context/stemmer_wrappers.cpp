@@ -26,7 +26,7 @@
 using namespace zorba::locale;
 
 namespace zorba {
-namespace core {
+namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -60,7 +60,7 @@ StemmerProviderWrapper::get_stemmer( iso639_1::type lang ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace core
+} // namespace internal
 } // namespace zorba
 
 #endif /* ZORBA_NO_FULL_TEXT */

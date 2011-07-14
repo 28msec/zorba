@@ -22,7 +22,7 @@
 #include "zorbautils/mutex.h"
 
 namespace zorba {
-namespace core {
+namespace internal {
 
 /**
  * A %SnowballStemmer is-a Stemmer that uses the C-from-Snowball code found at
@@ -56,7 +56,7 @@ private:
   SnowballStemmer& operator=( SnowballStemmer const& );
 };
 
-} // namespace core
+} // namespace internal
 } // namespace zorba
 #endif  /* ZORBA_SNOWBALL_STEMMER_H */
 /* vim:set et sw=2 ts=2: */

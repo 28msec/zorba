@@ -504,7 +504,7 @@ protected:
   ztd::auto_vector<impl::URLResolver>     theURLResolvers;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  typedef std::deque<core::StemmerProvider const*> stemmer_providers_t;
+  typedef std::deque<internal::StemmerProvider const*> stemmer_providers_t;
   stemmer_providers_t                     theStemmerProviders;
 #endif
 
@@ -691,13 +691,13 @@ public:
     std::vector<zstring>& oComponents) const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  void add_stemmer_provider( core::StemmerProvider const *p ) {
+  void add_stemmer_provider( internal::StemmerProvider const *p ) {
     theStemmerProviders.push_front( p );
   }
 
-  core::Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
+  internal::Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
 
-  void remove_stemmer_provider( core::StemmerProvider const *p );
+  void remove_stemmer_provider( internal::StemmerProvider const *p );
 #endif
 
   void set_module_paths(const std::vector<zstring>& aModulePaths);

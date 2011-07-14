@@ -26,7 +26,7 @@
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
-namespace core {
+namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +74,7 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace core
+} // namespace internal
 } // namespace zorba
 #endif  /* ZORBA_NO_FULL_TEXT */
 #endif  /* ZORBA_STEMMER_H */

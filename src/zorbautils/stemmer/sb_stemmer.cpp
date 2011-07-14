@@ -26,7 +26,7 @@ using namespace std;
 using namespace zorba::locale;
 
 namespace zorba {
-namespace core {
+namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -83,6 +83,6 @@ void SnowballStemmer::stem( zstring const &word, iso639_1::type lang,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace core
+} // namespace internal
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

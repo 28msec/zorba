@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_STEMER_WRAPPERS_H
-#define ZORBA_STEMER_WRAPPERS_H
+#ifndef ZORBA_STEMMER_WRAPPERS_H
+#define ZORBA_STEMMER_WRAPPERS_H
 
 #include <zorba/config.h>
 
@@ -25,7 +25,9 @@
 #include "zorbautils/stemmer.h"
 
 namespace zorba {
-namespace core {
+namespace internal {
+
+///////////////////////////////////////////////////////////////////////////////
 
 class StemmerWrapper : public Stemmer {
 public:
@@ -44,11 +46,13 @@ private:
   zorba::StemmerProvider const *const api_stemmer_provider_;
 };
 
-} // namespace core
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace internal
 } // namespace zorba
 
 #endif /* ZORBA_NO_FULL_TEXT */
-#endif /* ZORBA_STEMER_WRAPPERS_H */
+#endif /* ZORBA_STEMMER_WRAPPERS_H */
 /*
  * Local variables:
  * mode: c++
