@@ -74,3 +74,8 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba
         DESTINATION
         share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/cxx/examples RENAME Makefile)
 
+INSTALL(DIRECTORY commandline
+        DESTINATION
+        share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/cxx/examples
+        PATTERN ".svn" EXCLUDE)
+
