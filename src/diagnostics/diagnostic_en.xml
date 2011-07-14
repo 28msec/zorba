@@ -1693,13 +1693,11 @@
      <value>thesaurus data error${: 1}</value>
     </diagnostic>
 
-    <diagnostic code="ZXQD0001" name="PREFIX_NOT_DECLARED"
-      disable_if="ZORBA_NO_FULL_TEXT">
+    <diagnostic code="ZXQD0001" name="PREFIX_NOT_DECLARED">
       <value>"$1": prefix not declared when calling function "$2" from $3</value>
     </diagnostic>
 
-    <diagnostic code="ZXQD0002" name="DOCUMENT_NOT_VALID"
-      disable_if="ZORBA_NO_FULL_TEXT">
+    <diagnostic code="ZXQD0002" name="DOCUMENT_NOT_VALID">
       <value>"$1": $2</value>
     </diagnostic>
 

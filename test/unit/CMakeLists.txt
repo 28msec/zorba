@@ -67,6 +67,10 @@ SET(UNIT_TESTS_SRCS
   xquery_functions.cpp
 )
 
+IF(ZORBA_NO_FULL_TEXT)
+  LIST(REMOVE_ITEM UNIT_TESTS_SRCS "stemmer_provider.cpp")
+ENDIF(ZORBA_NO_FULL_TEXT)
+
 # multithread_simple.cpp
 # multithread_stress_test.cpp
 

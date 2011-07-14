@@ -55,9 +55,12 @@ public:
       theSerializationMethod("XML"),
       theUseIndent(false),
       theEnableDtd(false),
-      theEnableUriTestResolver(false),
+      theEnableUriTestResolver(false)
+#ifndef ZORBA_NO_FULL_TEXT
+      ,
       theStopWordsMapper(zorba::EntityData::STOP_WORDS),
       theThesaurusMapper(zorba::EntityData::THESAURUS, zorba::URIMapper::COMPONENT)
+#endif /* ZORBA_NO_FULL_TEXT */
   {}
 
 private:
@@ -80,7 +83,7 @@ private:
 #ifndef ZORBA_NO_FULL_TEXT
   zorba::OneToOneURIMapper theStopWordsMapper;
   zorba::OneToOneURIMapper theThesaurusMapper;
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
   void setInline(bool inl) {
     theInline = inl;

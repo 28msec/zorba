@@ -242,7 +242,7 @@ bool to_string( wchar_t const *in, size_type in_len, string *out );
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( wchar_t const *in, string *out ) {
-  return to_string( in, (size_type)std::wcslen( in ), out );
+  return to_string( in, static_cast<size_type>( std::wcslen( in ) ), out );
 }
 
 /**
@@ -255,7 +255,7 @@ inline bool to_string( wchar_t const *in, string *out ) {
  */
 template<class StringType>
 inline bool to_string( StringType const &in, string *out ) {
-  return to_string( in.data(), zorba::unicode::size_type(in.size()), out );
+  return to_string( in.data(), static_cast<size_type>( in.size() ), out );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -264,7 +264,6 @@ inline bool to_string( StringType const &in, string *out ) {
 } // namespace zorba
 
 #endif /* ZORBA_NO_UNICODE */
-
 #endif /* ZORBA_UNICODE_UTIL_H */
 /*
  * Local variables:
