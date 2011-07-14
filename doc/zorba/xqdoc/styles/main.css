@@ -220,7 +220,7 @@ td.parameter {
 
 /* Zorba */
 
-body {
+/*body {
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
   color: #333333;
   background-image: url(images/noisepattern.png);
@@ -257,31 +257,7 @@ body {
   background: gradient(linear, left bottom, right top, from(#888787), to(#666));
 }
 
-/*
-#main {
-  color: #666;
-  padding: 10px;
-  width: 900px;
-  margin: auto;
 
-  -webkit-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
-  -moz-border-radius-topleft: 5px;
-  -webkit-border-top-left-radius: 5px;
-  -moz-border-radius-topright: 5px;
-  -webkit-border-top-right-radius: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  margin-bottom: 20px;
-  background-color: white;
-};
-*/
 
 .wrapper {
   width: 900px;
@@ -348,7 +324,7 @@ body {
   background-color: white;
   -webkit-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
   -moz-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
-  /* TODO: box shadow in IE: http://ole-laursen.blogspot.com/2009/08/using-css3-box-shadow-with-ie.html */
+  
 }
 
 #featuring > ul {
@@ -393,7 +369,259 @@ body {
   background-repeat:no-repeat;
   padding-top: 50px;
   float: left;
+}*/
+
+body {
+  font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
+  color: #333333;
+  background-image: url(images/noisepattern.png);
+  padding: 0px;
+  margin: 0px;
 }
+
+.text-left{
+  text-align: left;
+}
+.text-right{
+  text-align: right;
+}
+.left{
+  float: left;
+}
+.right{
+  float: right;
+}
+#header, #footer {
+  display: block;
+}
+
+#header {
+	height: 114px;
+	text-align: center;
+  border-top: 6px solid #6B91B4;
+    margin: 0;
+    padding: 0;
+}
+
+#header a:hover {
+  background-color: none;
+}
+
+#logo_container{
+  position: relative;
+  top: 0;
+  left: -20px;
+  width: 270px !important;
+  overflow: hidden;
+}
+
+.innerheader{
+  color: #404040;
+  width: 900px;
+  padding: 0px 10px;
+  margin: auto;
+  position: relative;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  white-space: nowrap;
+}
+.innerheader div{
+  float: left;
+  position: relative;
+  white-space: nowrap;
+}
+.innerheader h1 {
+  text-align: left;
+  font-size: 42px;
+  padding-top: 28px;
+  padding-left: 66px;
+  font-weight: bolder;
+}
+
+.innerheader a {
+  color: #404040;
+  text-align: left;
+  font-weight: bolder;
+  text-decoration: none;
+}
+
+.innerheader p {
+  font-size: 13px;
+  padding-top: 5px;
+  padding-left: 66px;
+}
+
+.innerheader img {
+  float:left;
+  border-top: 5px solid white;
+  padding-left: 5px;
+}
+
+#innermenu {
+  list-style: none;
+  text-align: center;
+  padding-top: 10px;
+  width: 600px;
+  position: relative;
+  top: 0;
+  left: 20px;
+    margin: 10px 0;
+    padding: 0;
+}
+
+#innermenu ul {
+  width: 600px;
+  display: block;
+  clear: both;
+    padding: 0;
+}
+
+#innermenu li {
+  float: left;
+  padding: 0;
+  position: relative;
+  width: 83px;
+  display: block;
+  text-align: center;
+  color: black;
+  font-weight: bolder;
+  font-size:12px;
+}
+
+#innermenu li.selected a {
+  color: white;
+  text-decoration: none;
+  text-shadow: black -1px -1px 0px;
+}
+
+#innermenu ul a{
+  background-position: center top;
+  background-repeat:no-repeat;
+  color: #666;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  padding-top: 55px;
+  padding-bottom: 2px;
+}
+
+#innermenu ul a:hover{
+  background-color: #cbe5f7;
+}
+
+.documentation {
+  background-image:url('../images/documentation.png');
+}
+
+.tryzorba {
+  background-image:url('../images/terminal.png');
+}
+
+.modules {
+  background-image:url('../images/modules.png');
+}
+
+.download {
+  background-image:url('../images/download.png');
+}
+
+.tools {
+  background-image:url('../images/tools.png');
+}
+
+.blog {
+  background-image:url('../images/blog.png');
+}
+
+.open {
+  background-image:url('../images/open.png');
+}
+
+#footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  bottom: 0px;
+  text-align: center;
+}
+
+#innerfooter{
+  width: 900px;
+  margin: auto;
+  position: relative;  
+}
+
+#innerfooter p {
+  height: 40px;
+  width: 900px;
+  color: #111;
+  font-size: 12px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.box {
+  /* TODO: IE box shadow and radius ? */
+  -webkit-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.33) 0 3px 5px;
+  -moz-border-radius-topleft: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  margin: 20px auto;
+  padding: 5px;
+  background-color: white;
+  color: #666;
+}
+
+.box p {
+  padding: 5px;
+}
+
+/*html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	/ *padding: 0;* /
+	/ *border: 0;
+	font-size: 100%;* /
+	/ *font: inherit;* /
+	/ *vertical-align: baseline;* /
+}*/
+
+h1, h2, h3, h4, h5, h6, p {
+	margin: 0;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+body {
+	/*line-height: 1;*/
+}
+
 
 /* Left Menu */
 li.none {
