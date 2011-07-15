@@ -32,27 +32,27 @@
 
 #ifndef ZORBA_NO_UNICODE
 # include <unicode/uversion.h>
+U_NAMESPACE_USE
+
+# ifndef U_ICU_VERSION_MAJOR_NUM
+#   error "U_ICU_VERSION_MAJOR_NUM not defined"
+# endif /* U_ICU_VERSION_MAJOR_NUM */
+# if U_ICU_VERSION_MAJOR_NUM < 4
+    //
+    // UREGEX_LITERAL is only in ICU since 4.0.  For earlier versions, we
+    // define it ourselves.  Of course it won't have any effect since it's not
+    // implemented in ICU, but we implement it ourselves anyway since, even
+    // though the constant is defined in 4.0, it's not actually implemented as
+    // of 4.4.
+    //
+#   define UREGEX_LITERAL 16
+# endif /* U_ICU_VERSION_MAJOR_NUM */
 #endif /* ZORBA_NO_UNICODE */
 
 using namespace std;
-U_NAMESPACE_USE
 
 #define bs_c "\\p{L}\\d.:\\p{M}-"       /* \c equivalent contents */
 #define bs_i "\\p{L}_:"                 /* \i equivalent contents */
-
-#ifndef U_ICU_VERSION_MAJOR_NUM
-# error "U_ICU_VERSION_MAJOR_NUM not defined"
-#endif /* U_ICU_VERSION_MAJOR_NUM */
-
-#if U_ICU_VERSION_MAJOR_NUM < 4
-//
-// UREGEX_LITERAL is only in ICU since 4.0.  For earlier versions, we define it
-// ourselves.  Of course it won't have any effect since it's not implemented in
-// ICU, but we implement it ourselves anyway since, even though the constant is
-// defined in 4.0, it's not actually implemented as of 4.4.
-//
-# define UREGEX_LITERAL 16
-#endif /* U_ICU_VERSION_MAJOR_NUM */
 
 namespace zorba {
 
@@ -371,50 +371,40 @@ bool regex::replace_all( char const *in, char const *replacement,
           replace_all( u_in, u_replacement, out );
 }
 
-
-
-void regex::set_string(const char* in, size_type len, size_type *utf8len)
-{
+void regex::set_string( char const *in, size_type len ) {
   ZORBA_ASSERT( matcher_ );
-  to_string( in, len, &s_in );
-  if(utf8len)
-    *utf8len = s_in.length();
-  matcher_->reset( s_in );
+  to_string( in, len, &s_in_ );
+  matcher_->reset( s_in_ );
 }
 
-bool regex::find_next_match(bool *reachedEnd)
-{
+bool regex::find_next_match( bool *reachedEnd ) {
   ZORBA_ASSERT( matcher_ );
   UBool retfind = matcher_->find();
-  if(reachedEnd)
-  {
+  if ( reachedEnd ) {
 #if U_ICU_VERSION_MAJOR_NUM >= 4
-  *reachedEnd = matcher_->hitEnd() != 0;
+    *reachedEnd = matcher_->hitEnd() != 0;
 #else
-  *reachedEnd = true;
+    *reachedEnd = true;
 #endif
   }
-return retfind != 0;
+  return retfind != 0;
 }
 
-int regex::get_pattern_group_count()
-{
+int regex::get_pattern_group_count() {
   ZORBA_ASSERT( matcher_ );
   return matcher_->groupCount();
 }
 
-int regex::get_match_start(int groupId)
-{
-  UErrorCode  errcode = U_ZERO_ERROR;
+int regex::get_match_start( int groupId ) {
   ZORBA_ASSERT( matcher_ );
-  return matcher_->start(groupId, errcode);
+  UErrorCode status = U_ZERO_ERROR;
+  return matcher_->start( groupId, status );
 }
 
-int regex::get_match_end(int groupId)
-{
-  UErrorCode  errcode = U_ZERO_ERROR;
+int regex::get_match_end( int groupId ) {
   ZORBA_ASSERT( matcher_ );
-  return matcher_->end(groupId, errcode);
+  UErrorCode status = U_ZERO_ERROR;
+  return matcher_->end( groupId, status );
 }
 
 } // namespace unicode

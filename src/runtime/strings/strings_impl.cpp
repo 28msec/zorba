@@ -1875,8 +1875,7 @@ bool FnAnalyzeStringIterator::nextImpl(
 
     //see if regex can match empty strings
     bool   reachedEnd = false;
-    unicode::size_type   utf8len;
-    rx.set_string("", 0, &utf8len);
+    rx.set_string("", 0);
     if(rx.find_next_match(&reachedEnd))
     {
       throw XQUERY_EXCEPTION(
@@ -1903,7 +1902,7 @@ bool FnAnalyzeStringIterator::nextImpl(
       const char *instr;
       if(!is_input_stream)
       {
-        rx.set_string(input.c_str(), input.size(), &utf8len);
+        rx.set_string(input.data(), input.size());
         instr = input.c_str();
         streambuf_read = input.size();
       }
@@ -1925,7 +1924,7 @@ bool FnAnalyzeStringIterator::nextImpl(
           if(reducebytes == (maxbytes+1))
             reducebytes = 0;
         }
-        rx.set_string(streambuf.ptr, streambuf_read-reducebytes, &utf8len);
+        rx.set_string(streambuf.ptr, streambuf_read-reducebytes);
         instr = streambuf.ptr;
       }
       //zstring_p zinstr(instr);

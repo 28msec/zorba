@@ -427,9 +427,9 @@ public:
    *
    * @param in The UTF-8 input string.
    * @param len the size in bytes.
-   * @param utf8len returns the size in chars.
    */
-  void set_string(const char* in, size_type len, size_type *utf8len);
+  void set_string( const char* in, size_type len );
+
   /**
    * Find the next match in string set by set_string().
    * After finding a match, call get_match_start() and get_match_end() to get the position in the string.
@@ -437,14 +437,16 @@ public:
    * @param reachedEnd returns true if the end of string was reached while doing the match.
    *    This works only for ICU greater than 4.0. For smaller versions, reachedEnd is always true.
    */
-  bool find_next_match(bool *reachedEnd);
+  bool find_next_match( bool *reachedEnd );
+
   /**
    * Get the number of parenthesized groups in the regular expression.
    * This number depends only on regular expression, and not on the working string.
    *
    * @return the number of parenthesized groups in the regular expression
    */
-  int  get_pattern_group_count();
+  int get_pattern_group_count();
+
   /**
    * Get the start position of the matched group.
    * If groupId is zero, then the start position of the whole match is returned.
@@ -455,7 +457,8 @@ public:
    *  or [1 .. group_count] for that specific group
    * @return the start position, zero based, or -1 if that group didn't match
    */
-  int  get_match_start(int groupId = 0);
+  int get_match_start( int groupId = 0 );
+
   /**
    * Get the end position of the matched group.
    * If groupId is zero, then the end position of the whole match is returned.
@@ -466,11 +469,11 @@ public:
    *  or [1 .. group_count] for that specific group
    * @return the end position, zero based, or -1 if that group didn't match
    */
-  int  get_match_end(int groupId = 0);
+  int get_match_end( int groupId = 0 );
 
 private:
   U_NAMESPACE_QUALIFIER RegexMatcher *matcher_;
-  string                              s_in;
+  string s_in_;
 
   enum re_type_t {
     re_is_match,                        // RE specifies what to match
