@@ -37,6 +37,7 @@ namespace zorba
 /*******************************************************************************
   14.9.1 fn-zorba-xml:parse-xml-fragment
 ********************************************************************************/
+
 class ParseXmlFragmentOptions
 {
 public:
@@ -57,6 +58,16 @@ public:
     enableWhitespaceStripping(false),
     enableFatelErrorProcessing(true)   // only enableFatelErrorProcessing is set to true
   {
+  }
+
+  void reset()
+  {
+    enableExternalEntitiesProcessing = false;
+    enableDTDValidation = false;
+    enableStrictSchemaValidation = false;
+    enableLaxSchemaValidation = false;
+    enableWhitespaceStripping = false;
+    enableFatelErrorProcessing = true;    // only enableFatelErrorProcessing is set to true
   }
 
   static ParseXmlFragmentOptions parseOptions(const zstring& options, const QueryLoc& loc)
@@ -115,15 +126,32 @@ public:
   }
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
+
+void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theFragmentStream.reset();
+  theProperties.setEnableDtd(false);
+  theProperties.setEnableExtParsedEntity(false);
+  theProperties.setStoreDocument(false);
+  baseUri = "";
+  docUri = "";
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+
 bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
   zstring docString;
-  zstring baseUri;
   URI lValidatedBaseUri;
-  zstring docUri;
-  std::auto_ptr<std::istringstream> iss;
-  std::istream *is;
   store::Item_t tempItem;
   ParseXmlFragmentOptions parseOptions;
   bool validated = true;
@@ -135,19 +163,13 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
   {
     if (result->isStreamable())
     {
-      // The "iss" auto_ptr can NOT be used since it will delete the stream that,
-      // in this case, is a data member inside another object and not dynamically
-      // allocated.
-      //
-      // We can't replace "iss" with "is" since we still need the auto_ptr for
-      // the case when the result is not streamable.
-      is = &result->getStream();
+      state->theFragmentStream.theStream = &result->getStream();
     }
     else
     {
       result->getStringValue2(docString);
-      iss.reset (new std::istringstream(docString.c_str()));
-      is = iss.get();
+      state->theFragmentStream.theIss = new std::istringstream(docString.c_str());
+      state->theFragmentStream.theStream = state->theFragmentStream.theIss;
     }
 
     // optional base URI argument
@@ -174,7 +196,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
         );
       }
 
-      result->getStringValue2(baseUri);
+      result->getStringValue2(state->baseUri);
 
       // read options
       consumeNext(tempItem, theChildren[2].getp(), planState);
@@ -185,87 +207,98 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
       consumeNext(tempItem, theChildren[1].getp(), planState);
       parseOptions = ParseXmlFragmentOptions::parseOptions(tempItem->getStringValue(), loc);
 
-      baseUri = theSctx->get_base_uri();
+      state->baseUri = theSctx->get_base_uri();
     }
 
     // baseURI serves both as the base URI used by the XML parser
     // to resolve relative entity references within the document,
     // and as the base URI of the document node that is returned.
-    docUri = baseUri;
+    state->docUri = state->baseUri;
 
-    try
+    // The DTD and ExternalEntitiesProcessing options/props cannot both be true at the same time
+    if (parseOptions.enableDTDValidation)
+      state->theProperties.setEnableDtd(true);
+    if (parseOptions.enableExternalEntitiesProcessing)
+      state->theProperties.setEnableExtParsedEntity(true);
+    state->theProperties.setStoreDocument(false);
+
+    if (state->theProperties.getEnableExtParsedEntity())
     {
-      store::LoadProperties loadProps;
-
-      // These options/props cannot both be true at the same time
-      if (parseOptions.enableDTDValidation)
-        loadProps.setEnableDtd(true);
-      if (parseOptions.enableExternalEntitiesProcessing)
-        loadProps.setEnableExtParsedEntity(true);
-
-      loadProps.setStoreDocument(false);
-      result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
-    }
-    catch (ZorbaException const& e)
-    {
-      if (parseOptions.enableFatelErrorProcessing)
-        throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc ));
-      else
-        result = NULL;
-    }
-
-    if (result != NULL)
-    {
-#ifndef ZORBA_NO_XMLSCHEMA
-      if (parseOptions.enableStrictSchemaValidation || parseOptions.enableLaxSchemaValidation)
+      while (state->theFragmentStream.theBuffer == NULL
+             ||
+             state->theFragmentStream.current_offset < state->theFragmentStream.buffer_size)
       {
-        try
-        {
-          tempItem = NULL; // used as the effectiveValidationValue()'s typeName
-          validated = Validator::effectiveValidationValue(
-                        result,
-                        result,
-                        tempItem,
-                        theSctx->get_typemanager(),
-                        parseOptions.enableLaxSchemaValidation ? ParseConstants::val_lax : ParseConstants::val_strict,
-                        theSctx,
-                        this->loc);
-        }
-        catch (ZorbaException& /*e*/)
-        {
+        try {
+          result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
+        } catch (ZorbaException const& e) {
           if (parseOptions.enableFatelErrorProcessing)
-            throw;
+            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc ));
           else
-          {
             result = NULL;
-            validated = false;
+        }
+
+        if (result != NULL)
+        {
+          result->getChildren()->next(result);
+          STACK_PUSH(true, state);
+        }
+      }
+    }
+    else  // if (state->theProperties.getEnableExtParsedEntity())
+    {
+      try {
+        result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
+      } catch (ZorbaException const& e) {
+        if (parseOptions.enableFatelErrorProcessing)
+          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc ));
+        else
+          result = NULL;
+      }
+
+      if (result != NULL)
+      {
+#ifndef ZORBA_NO_XMLSCHEMA
+        if (parseOptions.enableStrictSchemaValidation || parseOptions.enableLaxSchemaValidation)
+        {
+          try
+          {
+            tempItem = NULL; // used as the effectiveValidationValue()'s typeName
+            validated = Validator::effectiveValidationValue(
+                          result,
+                          result,
+                          tempItem,
+                          theSctx->get_typemanager(),
+                          parseOptions.enableLaxSchemaValidation ? ParseConstants::val_lax : ParseConstants::val_strict,
+                          theSctx,
+                          this->loc);
+          }
+          catch (ZorbaException& /*e*/)
+          {
+            if (parseOptions.enableFatelErrorProcessing)
+              throw;
+            else
+            {
+              result = NULL;
+              validated = false;
+            }
           }
         }
-      }
 #endif
-      // Ignore the schema validation options if Zorba is built without schema support
+        // Ignore the schema validation options if Zorba is built without schema support
 
-      if (result != NULL && validated && parseOptions.enableWhitespaceStripping)
-      {
-        // TODO: whitespace stripping
-      }
-      
-      if (result != NULL && parseOptions.enableExternalEntitiesProcessing)
-      {
-        // push the children of the document node
-        state->theDocument = result;
-        state->theChildren = state->theDocument->getChildren();
-        while (true)
-          STACK_PUSH(state->theChildren->next(result), state); 
-      }
-      else  
-      {
+        if (result != NULL && validated && parseOptions.enableWhitespaceStripping)
+        {
+          // TODO: whitespace stripping
+        }
+
         STACK_PUSH(validated, state);
-      }
-    }
-  }
-  STACK_END (state);
+      } // if (result != NULL)
+    } // if (state->theProperties.getEnableExtParsedEntity())
+  } // if (consumeNext(result, theChildren[0].getp(), planState))
+
+  STACK_END(state);
 }
+
 
 
 } /* namespace zorba */

@@ -83,6 +83,7 @@ FastXmlLoader::FastXmlLoader(
   theRootNode(NULL),
   theNodeStack(2048)
 {
+  theBuffer = new char[INPUT_CHUNK_SIZE];
   theOrdPath.init();
 
   theTraceLevel = GET_STORE().getTraceLevel();
@@ -111,6 +112,7 @@ FastXmlLoader::FastXmlLoader(
 ********************************************************************************/
 FastXmlLoader::~FastXmlLoader()
 {
+  delete[] theBuffer;
 }
 
 

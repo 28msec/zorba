@@ -65,10 +65,6 @@ FnParseXmlFragmentIteratorState::~FnParseXmlFragmentIteratorState() {}
 void FnParseXmlFragmentIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
-
-void FnParseXmlFragmentIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </FnParseXmlFragmentIterator>
 
 

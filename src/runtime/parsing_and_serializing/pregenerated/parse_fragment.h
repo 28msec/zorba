@@ -29,6 +29,8 @@
 
 
 #include "runtime/base/narybase.h"
+#include "runtime/parsing_and_serializing/fragment_istream.h"
+#include "store/api/store.h"
 
 
 namespace zorba {
@@ -40,8 +42,10 @@ namespace zorba {
 class FnParseXmlFragmentIteratorState : public PlanIteratorState
 {
 public:
-  store::Item_t theDocument; //the parsed document
-  store::Iterator_t theChildren; //the children of the document ndoe
+  FragmentIStream theFragmentStream; //the input fragment
+  store::LoadProperties theProperties; //loader properties
+  zstring baseUri; //
+  zstring docUri; //
 
   FnParseXmlFragmentIteratorState();
 

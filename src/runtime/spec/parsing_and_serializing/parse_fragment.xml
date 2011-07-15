@@ -12,6 +12,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
+<zorba:header>
+  <zorba:include form="Quoted">runtime/parsing_and_serializing/fragment_istream.h</zorba:include>
+  <zorba:include form="Quoted">store/api/store.h</zorba:include>
+</zorba:header>
 
 <!--
 /*******************************************************************************
@@ -23,7 +27,6 @@
     <zorba:description author="Zorba Team">fn-zorba-xml:parse-xml-fragment</zorba:description>
     
     <zorba:function>
-
       <zorba:signature localname="parse-xml-fragment" prefix="fn-zorba-xml">
         <zorba:param>xs:string?</zorba:param> <!-- string to parse -->
         <zorba:param>xs:string</zorba:param>  <!-- parse-xml options -->
@@ -42,9 +45,11 @@
       </zorba:methods>
     </zorba:function>
     
-    <zorba:state>
-      <zorba:member type="store::Item_t" name="theDocument" brief="the parsed document"/>
-      <zorba:member type="store::Iterator_t" name="theChildren" brief="the children of the document ndoe"/>
+    <zorba:state generateReset="false">
+      <zorba:member type="FragmentIStream" name="theFragmentStream" brief="the input fragment"/>
+      <zorba:member type="store::LoadProperties" name="theProperties" brief="loader properties"/>
+      <zorba:member type="zstring" name="baseUri"/>
+      <zorba:member type="zstring" name="docUri"/>
     </zorba:state>
       
   </zorba:iterator>

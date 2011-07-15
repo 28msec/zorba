@@ -25,6 +25,7 @@
 #include "store/naive/ordpath.h"
 
 #include "zorbautils/stack.h"
+#include "runtime/parsing_and_serializing/fragment_istream.h"
 
 
 namespace zorba
@@ -123,6 +124,7 @@ public:
 ********************************************************************************/
 class FastXmlLoader : public XmlLoader
 {
+protected:
   struct PathStepInfo
   {
     ElementNode    * theNode;
@@ -137,7 +139,7 @@ class FastXmlLoader : public XmlLoader
   };
 
 protected:
-  char                             theBuffer[INPUT_CHUNK_SIZE];
+  char                           * theBuffer;
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 
@@ -234,6 +236,67 @@ public:
         xmlChar *content);
 };
 
+/*******************************************************************************
+  FragmentXmlLoader
+*******************************************************************************/
+class FragmentXmlLoader : public FastXmlLoader
+{
+public:
+  FragmentXmlLoader(
+        BasicItemFactory* factory,
+        XQueryDiagnostics* xqueryDiagnostics,
+        bool dataguide);
+
+  ~FragmentXmlLoader();
+
+  store::Item_t loadXml(
+        const zstring& baseUri,
+        const zstring& uri,
+        std::istream& xmlStream);
+
+protected:
+  static void checkStopParsing(void* ctx);
+
+  static void startElement(
+        void * ctx,
+        const xmlChar * localname,
+        const xmlChar * prefix,
+        const xmlChar * URI,
+        int nb_namespaces,
+        const xmlChar ** namespaces,
+        int nb_attributes,
+        int nb_defaulted,
+        const xmlChar ** attributes);
+
+  static void endElement(
+        void * ctx,
+        const xmlChar * localname,
+        const xmlChar * prefix,
+        const xmlChar * URI);
+
+  static void characters(
+        void * ctx,
+        const xmlChar * ch,
+        int len);
+
+  static void comment(
+        void * ctx,
+        const xmlChar * value);
+
+  static void cdataBlock(
+        void * ctx,
+        const xmlChar * value,
+        int len);
+
+  static void processingInstruction(
+        void * ctx,
+        const xmlChar * target,
+        const xmlChar * data);
+
+protected:
+  FragmentIStream* theFragmentStream;
+  int element_depth;
+};
 
 /*******************************************************************************
 
@@ -299,9 +362,6 @@ protected:
 
   void loadDocument(xmlDoc *doc);
   void loadNode(xmlNode *node);
-
-  bool loadDtdXml();
-  bool loadXmlFragment();
 
 public:
   static void	startDocument(void * ctx);
