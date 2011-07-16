@@ -33,16 +33,18 @@ declare option ver:module-version "2.0";
  : entities). The functions takes two arguments: the first one is the string
  : to be parsed. The second argument is a string (eEdDsSlLwWfF]*(;[\p{L}]*)?) 
  : defining the following options.
- : <p/>
- :
+ : <br/>
+ : <br/>
+ : 
  : The convention for the standard flags is that a lower-case letter enables 
  : an option, and the corresponding upper-case letter disables it; specifying 
  : both is an error; specifying neither leaves it implementation-defined 
  : whether the option is enabled or disabled. Specifying the same option twice 
  : is not an error, but specifying inconsistent options (for example "eE") is 
  : a dynamic error. The options defined are:
- : <p/>
- :
+ : 
+ : <ul>
+ : <li>
  : eE - enables or disables processing of XML external entities. If the option 
  : is enabled, the input must conform to the syntax _extParsedEnt_ (production 
  : [78] in XML 1.0, see <a href="http://www.w3.org/TR/xml/#wf-entities">XML 1.0</a>)
@@ -54,8 +56,9 @@ declare option ver:module-version "2.0";
  : none of the options d, s, or, l  may be enabled. If the option is disabled, 
  : the input must be a well-formed XML document conforming to the syntax 
  : document_ (production [1] in XML 1.0).
- : <p/>
+ : </li>
  :
+ : <li>
  : dD - enables or disables DTD-based validation. If this option is enabled and
  : the input references a DTD, then the input must be a well-formed and 
  : DTD-valid XML document. If the option is enabled and the input does not 
@@ -63,35 +66,40 @@ declare option ver:module-version "2.0";
  : input is not required to reference a DTD and if it does reference a DTD then 
  : the DTD is ignored for validation purposes (though it will still be read for 
  : purposes such as expanding entity references and identifying ID attributes).
- : <p/>
+ : </li>
  :
+ : <li>
  : sS - enables or disables strict XSD-based validation. If this option is 
  : enabled, the result is equivalent to processing the input with the option 
  : disabled, and then copying the result using the XQuery "validate strict" 
  : expression, or the XSLT xsl:copy-of instruction with validation="strict".
- : <p/>
+ : </li>
  :
+ : <li>
  : lL - enables or disables lax XSD-based validation. If this option is enabled, 
  : the result is equivalent to processing the input with the option disabled, 
  : and then copying the result using the XQuery "validate lax " expression, or 
  : the XSLT xsl:copy-of instruction with validation="lax".
- : <p/>
+ : </li>
  :
+ : <li>
  : wW - enables or disables whitespace stripping. If the option is enabled, 
  : any whitespace-only text nodes that remain after any DTD-based or XSD-based 
  : processing are stripped from the input; if it is disabled, such 
  : whitespace-only text nodes are retained. (In XSLT, if the option is not 
  : specified, the provisions of the xsl:strip-space and xsl:preserve-space 
  : declarations apply.)
- : <p/>
+ : </li>
  :
+ : <li>
  : fF - enables or disables fatal error processing. If fatal error processing 
  : is enabled, then any failure to parse the input in the manner requested 
  : results in a dynamic error. If fatal error processing is disabled, then any 
  : failure to parse the input (and also, in the case of fn:doc, a failure to 
  : obtain the input by dereferencing the supplied URI) results in the function 
  : returning an empty sequence and raising no error. 
- : <p/>
+ : </li>
+ : </ul>
  :
  : @param $xml-string The string that holds the XML to be parse. If empty,
  :                    the function will return an empty sequence
