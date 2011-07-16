@@ -30,6 +30,7 @@ class FragmentIStream : public std::istream
 public:
   FragmentIStream()
     :
+    std::istream(NULL),
     theIss(NULL),
     theStream(NULL),
     theBuffer(NULL),
