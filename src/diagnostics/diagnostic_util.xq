@@ -31,37 +31,18 @@ declare function util:copyright() as xs:string
 
 declare function util:begin_guard( $diagnostic ) as xs:string
 {
-  concat(
-    if ( $diagnostic/@enable_if and
-         not($diagnostic/preceding-sibling::diagnostic[1]/@enable_if ) )
-    then
-     concat( "#ifdef ", data($diagnostic/@enable_if), $util:newline )
-    else
-      "",
-    if ( $diagnostic/@disable_if and
-         not($diagnostic/preceding-sibling::diagnostic[1]/@disable_if ) )
-    then
-     concat( "#ifndef ", data($diagnostic/@disable_if), $util:newline )
-    else
-      ""
-  )
+  if ( $diagnostic/@if and
+        not( $diagnostic/preceding-sibling::diagnostic[1]/@if ) )
+  then concat( "#if ", data($diagnostic/@if), $util:newline )
+  else ""
 };
 
 declare function util:end_guard( $diagnostic ) as xs:string
 {
-  concat(
-    if ( $diagnostic/@enable_if and
-         not($diagnostic/following-sibling::diagnostic[1]/@enable_if ) )
-    then
-      concat( "#endif", $util:newline )
-    else
-      "",
-    if ( $diagnostic/@disable_if and
-         not($diagnostic/following-sibling::diagnostic[1]/@disable_if ) )
-    then
-      concat( "#endif", $util:newline )
-    else
-      ""
-  )
+  if ( $diagnostic/@if and
+        not( $diagnostic/following-sibling::diagnostic[1]/@if ) )
+  then concat( "#endif", $util:newline )
+  else ""
 };
 
+(: vim:set syntax=xquery et sw=2 ts=2: :)

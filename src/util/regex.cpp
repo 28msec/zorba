@@ -202,7 +202,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             *icu_re += '\\';
           else {
             if ( !open_cap_subs )
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
+              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ')' );
             cap_sub[ --cur_cap_sub ] = false;
           }
           break;

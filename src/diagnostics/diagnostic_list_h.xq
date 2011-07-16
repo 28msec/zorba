@@ -66,7 +66,7 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
   return
     string-join(
       (
-        concat( $util:newline, "namespace ", $namespace/@prefix, " {" ),
+        concat( $util:newline, "namespace ", $namespace/@prefix, " {", $util:newline ),
         for $diagnostic in $namespace/diagnostic
         return 
           concat (
@@ -101,10 +101,9 @@ string-join(
     '#include &lt;zorba/xquery_warning.h>',
     '',
     'namespace zorba {',
-    '',
     local:declare-diagnostics( $input ),
     '} // namespace zorba',
-    '#endif',
+    '#endif /* ZORBA_DIAGNOSTIC_LIST_API_H */',
     '/*',
     ' * Local variables:',
     ' * mode: c++',
@@ -116,4 +115,3 @@ string-join(
 $util:newline
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)
-

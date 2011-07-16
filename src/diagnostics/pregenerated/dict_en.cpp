@@ -19,7 +19,6 @@
   * PLEASE DO NOT EDIT.
   */
  
-
 #include "stdafx.h"
 #include "diagnostics/dict_impl.h"
 
@@ -74,13 +73,27 @@ extern entry const dict_en[] = {
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0017", "mild-not contains StringExclude" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "FTDY0020", "${\"1\": }invalid wildcard syntax${: 2}" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0008", "\"$1\": unknown stop-word list" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0009", "\"$1\": unsupported language" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0018", "\"$1\": unknown thesaurus" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
+#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -307,7 +320,9 @@ extern entry const dict_en[] = {
   { "ZDTY0010", "\"$1\": index domain expression yields a non-node item" },
   { "ZDTY0011", "result of some key expression of index $1 does not match its declared type" },
   { "ZDTY0012", "\"$1\": general range index key item has type for which no ordering relationship exists" },
+#if defined(ZORBA_WITH_DEBUGGER)
   { "ZGDB0001", "" },
+#endif
   { "ZOSE0001", "\"$1\": error loading dynamic library${: 2}" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
@@ -367,9 +382,15 @@ extern entry const dict_en[] = {
   { "ZXQP0040", "\"$1\": function missing nondeterministic annotation" },
   { "ZXQP0050", "\"$1\": feature not available" },
   { "ZXQP0060", "\"$1\": unkown option" },
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8402", "thesaurus data endianness does not match CPU" },
+#endif
+#if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8403", "thesaurus data error${: 1}" },
+#endif
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
@@ -547,28 +568,68 @@ extern entry const dict_en[] = {
   { "~TwoDecimalFormatsSameName_2", "\"$2\": two decimal formats with this name" },
   { "~TwoDefaultDecimalFormats", "two default decimal formats" },
   { "~TypeIsNotSubtype", "item type is not a subtype of \"$3\"" },
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_INVALID_BACK_REF", "backreference to a non-existent capture group" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_INVALID_FLAG", "invalid value for match mode flags" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_INVALID_RANGE", "in character range [x-y], x is greater than y" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_INVALID_STATE", "RegexMatcher in invalid state for requested operation" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_LOOK_BEHIND_LIMIT", "look-behind pattern matches must have a bounded maximum length" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_MISSING_CLOSE_BRACKET", "missing ']'" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_NUMBER_TOO_BIG", "decimal number is too large" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_OCTAL_TOO_BIG", "octal character constants must be <= 0377" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_PROPERTY_SYNTAX", "incorrect Unicode property" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_RULE_SYNTAX", "syntax error" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_SET_CONTAINS_STRING", "can not have UnicodeSets containing strings" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_STACK_OVERFLOW", "backtrack stack overflow" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_STOPPED_BY_CALLER", "matching operation aborted by user callback fn" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_TIME_OUT", "maximum allowed match time exceeded" },
+#endif
+#if !defined(ZORBA_NO_UNICODE)
   { "~U_REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
+#endif
   { "~UnaryArithOp", "unary arithmetic operator" },
-  { "~UnbalancedChar", "missing '$3'" },
+  { "~UnbalancedChar_3", "missing '$3'" },
   { "~UnexpectedElement", "unexpected element" },
   { "~VarValMustBeSingleItem_2", "\"$2\": variable value must be single item" },
   { "~Variable", "variable" },
@@ -636,8 +697,6 @@ extern entry const dict_en[] = {
   { "~user-defined warning", "user-defined warning" },
   { "~warning", "warning" },
   { "~xqueryx_empty_content", "xqueryx content is empty" },
-
-  // PLEASE LEAVE THE BLANK LINE ABOVE
 };
 DEF_DICT_END(en);
 

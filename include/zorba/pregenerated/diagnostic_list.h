@@ -28,8 +28,8 @@
 
 namespace zorba {
 
-
 namespace err {
+
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XPST0001;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XPDY0002;
@@ -182,7 +182,7 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XTDE1340;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XTDE1350;
 
-#ifndef ZORBA_NO_FULL_TEXT
+#if !defined(ZORBA_NO_FULL_TEXT)
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FTST0008;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FTST0009;
@@ -379,6 +379,7 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode SEPM0016;
 } // namespace err
 
 namespace zerr {
+
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZXQP0000_NO_ERROR;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZXQP0001_DYNAMIC_RUNTIME_ERROR;
@@ -435,7 +436,7 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZXQP0050_FEATURE_NOT_AVAILABLE;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZXQP0060_OPTION_NOT_KNOWN;
 
-#ifndef ZORBA_NO_FULL_TEXT
+#if !defined(ZORBA_NO_FULL_TEXT)
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZXQP8401_THESAURUS_VERSION_MISMATCH;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZXQP8402_THESAURUS_ENDIANNESS_MISMATCH;
@@ -645,7 +646,7 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZDTY0011_INDEX_KEY_TYPE_ERROR;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZDTY0012_INDEX_KEY_TYPE_ERROR;
 
-#ifdef ZORBA_WITH_DEBUGGER
+#if defined(ZORBA_WITH_DEBUGGER)
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZGDB0001_CANNOT_CONNECT_TO_CLIENT;
 #endif
 
@@ -722,13 +723,14 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0008;
 } // namespace zerr
 
 namespace zwarn {
+
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0001_UNUSED_VARIABLE;
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION;
 
 } // namespace zwarn
 } // namespace zorba
-#endif
+#endif /* ZORBA_DIAGNOSTIC_LIST_API_H */
 /*
  * Local variables:
  * mode: c++

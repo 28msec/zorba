@@ -56,5 +56,3 @@ string-join(
 $util:newline
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)
-
-

@@ -385,7 +385,7 @@ next:
 
   if ( in_brace )
     throw XQUERY_EXCEPTION(
-      err::FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar ), '}' )
+      err::FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar_3 ), '}' )
     );
   t.send( payload, callback );
 }
