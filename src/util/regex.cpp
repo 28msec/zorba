@@ -36,8 +36,7 @@ U_NAMESPACE_USE
 
 # ifndef U_ICU_VERSION_MAJOR_NUM
 #   error "U_ICU_VERSION_MAJOR_NUM not defined"
-# endif /* U_ICU_VERSION_MAJOR_NUM */
-# if U_ICU_VERSION_MAJOR_NUM < 4
+# elif U_ICU_VERSION_MAJOR_NUM < 4
     //
     // UREGEX_LITERAL is only in ICU since 4.0.  For earlier versions, we
     // define it ourselves.  Of course it won't have any effect since it's not
