@@ -410,12 +410,16 @@ main(int argc, char** argv)
 
     // Create dynamic context and set in it the external variables, the current
     // date & time, and the timezone.
-    createDynamicContext(driverContext, lContext, lQuery, lSpec.getEnableDtd());
+    createDynamicContext(driverContext, lContext, lQuery, lSpec.getEnableDtd(),
+                         errHandler);
 
-
-    errors = -1;
-    {
-      { // serialize xml/txt
+    if (errHandler.errors()) {
+      errors = analyzeError (lSpec, errHandler);
+    }
+    else {
+      errors = -1;
+      {
+        // serialize xml/txt
         std::ofstream lResFileStream(lResultFile.get_path().c_str());
         assert (lResFileStream.good());
         Zorba_SerializerOptions lSerOptions;

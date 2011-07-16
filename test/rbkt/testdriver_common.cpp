@@ -268,61 +268,67 @@ void createDynamicContext(
     DriverContext& driverCtx,
     const zorba::StaticContext_t& aBaseSctx,
     zorba::XQuery_t& query,
-    bool enableDtd)
+    bool enableDtd,
+    zorba::DiagnosticHandler& errHandler)
 {
-  zorba::Zorba* engine = driverCtx.theEngine;
-  Specification& spec = *driverCtx.theSpec;
-  zorba::ItemFactory& factory = *engine->getItemFactory();
+  try {
+    zorba::Zorba* engine = driverCtx.theEngine;
+    Specification& spec = *driverCtx.theSpec;
+    zorba::ItemFactory& factory = *engine->getItemFactory();
 
-  zorba::DynamicContext* dctx = query->getDynamicContext();
+    zorba::DynamicContext* dctx = query->getDynamicContext();
 
-  // Set the current date time such that tests that use fn:current-time
-  // behave deterministically
-  if (spec.hasDateSet())
-  {
-    zorba::Item lDateTimeItem = factory.createDateTime(spec.getDate());
+    // Set the current date time such that tests that use fn:current-time
+    // behave deterministically
+    if (spec.hasDateSet())
+    {
+      zorba::Item lDateTimeItem = factory.createDateTime(spec.getDate());
 
-    dctx->setCurrentDateTime(lDateTimeItem);
-  }
+      dctx->setCurrentDateTime(lDateTimeItem);
+    }
 
-  if (spec.hasTimezoneSet())
-  {
-    int lTimezone = atoi(spec.getTimezone().c_str());
+    if (spec.hasTimezoneSet())
+    {
+      int lTimezone = atoi(spec.getTimezone().c_str());
 
-    std::cerr << "timezone " << lTimezone << std::endl;
-    dctx->setImplicitTimezone(lTimezone);
-  }
+      std::cerr << "timezone " << lTimezone << std::endl;
+      dctx->setImplicitTimezone(lTimezone);
+    }
 
-  if (spec.getDefaultCollection().size() != 0)
-  {
-    zorba::Item lDefaultCollection = factory.createAnyURI(spec.getDefaultCollection());
-    dctx->setDefaultCollection(lDefaultCollection);
-  }
+    if (spec.getDefaultCollection().size() != 0)
+    {
+      zorba::Item lDefaultCollection = factory.createAnyURI(spec.getDefaultCollection());
+      dctx->setDefaultCollection(lDefaultCollection);
+    }
 
-  const zorba::StaticContext* lQuerySctx = query->getStaticContext();
-  // Set external vars
-  set_vars(driverCtx, dctx, lQuerySctx, enableDtd);
+    const zorba::StaticContext* lQuerySctx = query->getStaticContext();
+    // Set external vars
+    set_vars(driverCtx, dctx, lQuerySctx, enableDtd);
 
-  if (spec.hasInputQuery())
-  {
-    std::string inputqueryfile = spec.getInputQueryFile ();
+    if (spec.hasInputQuery())
+    {
+      std::string inputqueryfile = spec.getInputQueryFile ();
 #ifdef MY_D_WIN32
-    zorba::ascii::replace_all(inputqueryfile, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
+      zorba::ascii::replace_all(inputqueryfile, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
 #endif
 
-    std::ifstream inputquery ( inputqueryfile.c_str() );
+      std::ifstream inputquery ( inputqueryfile.c_str() );
 
-    if (!inputquery.is_open())
-      std::cerr << "Could not open input query file: " << inputqueryfile.c_str() << std::endl;
+      if (!inputquery.is_open())
+        std::cerr << "Could not open input query file: " << inputqueryfile.c_str() << std::endl;
 
-    assert(inputquery.is_open());
+      assert(inputquery.is_open());
 
-    zorba::XQuery_t inputQuery = engine->compileQuery(inputquery,
-                                                      aBaseSctx,
-                                                      getCompilerHints());
+      zorba::XQuery_t inputQuery = engine->compileQuery(inputquery,
+                                                        aBaseSctx,
+                                                        getCompilerHints());
 
-    zorba::Iterator_t riter = inputQuery->iterator();
-    dctx->setVariable(zorba::String("x"), riter);
+      zorba::Iterator_t riter = inputQuery->iterator();
+      dctx->setVariable(zorba::String("x"), riter);
+    }
+  }
+  catch (zorba::ZorbaException const& e) {
+    errHandler.error(e);
   }
 }
 

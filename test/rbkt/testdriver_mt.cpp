@@ -566,15 +566,17 @@ DWORD WINAPI thread_main(LPVOID param)
     //
     try
     {
-      createDynamicContext(driverContext, sctx, query, querySpec.getEnableDtd());
-      
-      Zorba_SerializerOptions lSerOptions;
-      lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-      lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-      lSerOptions.indent = ZORBA_INDENT_NO;
+      createDynamicContext(driverContext, sctx, query, querySpec.getEnableDtd(),
+                           errHandler);
+      if (!errHandler.errors()) {
+        Zorba_SerializerOptions lSerOptions;
+        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+        lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+        lSerOptions.indent = ZORBA_INDENT_NO;
 
-      query->execute(resFileStream, &lSerOptions);
-      resFileStream.close();
+        query->execute(resFileStream, &lSerOptions);
+        resFileStream.close();
+      }
     }
     catch(...)
     {
