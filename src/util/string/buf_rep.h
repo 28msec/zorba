@@ -97,7 +97,7 @@ public:
    */
   ~buf_rep() {
 #ifdef ZORBA_DEBUG_STRING
-    assert( p_ == nullptr );
+    assert( !p_ );
 #endif /* ZORBA_DEBUG_STRING */
   }
 
