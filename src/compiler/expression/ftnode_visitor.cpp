@@ -15,9 +15,11 @@
  */
 #include "stdafx.h"
 
-#include "compiler/expression/expr_visitor.h"
-#include "compiler/expression/ftnode.h"
-#include "compiler/expression/ftnode_visitor.h"
+#include "util/cxx_util.h"
+
+#include "expr_visitor.h"
+#include "ftnode.h"
+#include "ftnode_visitor.h"
 
 using namespace std;
 
@@ -32,7 +34,7 @@ ftnode_visitor::~ftnode_visitor() {
 ///////////////////////////////////////////////////////////////////////////////
 
 expr_visitor* FTNodeExprCollector::get_expr_visitor() {
-  return NULL;
+  return nullptr;
 }
 
 #define V FTNodeExprCollector

@@ -19,9 +19,11 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 
-#include "stemmer_wrappers.h"
 #include "api/unmarshaller.h"
 #include "diagnostics/assert.h"
+#include "util/cxx_util.h"
+
+#include "stemmer_wrappers.h"
 
 using namespace zorba::locale;
 
@@ -55,7 +57,7 @@ StemmerProviderWrapper( zorba::StemmerProvider const *p ) :
 Stemmer const*
 StemmerProviderWrapper::get_stemmer( iso639_1::type lang ) const {
   zorba::Stemmer const *const s = api_stemmer_provider_->getStemmer( lang );
-  return s ? new StemmerWrapper( s ) : 0;
+  return s ? new StemmerWrapper( s ) : nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

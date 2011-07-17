@@ -26,15 +26,17 @@
 
 #include <zorba/diagnostic_list.h>
 
-#include "util/stl_util.h"
-#include "util/unicode_util.h"
-#include "util/utf8_util.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/zorba_exception.h"
-#include "zorbautils/icu_tokenizer.h"
-#include "zorbautils/locale.h"
-#include "zorbautils/mutex.h"
+#include "util/cxx_util.h"
+#include "util/stl_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_util.h"
+
+#include "icu_tokenizer.h"
+#include "locale.h"
+#include "mutex.h"
 
 using namespace std;
 U_NAMESPACE_USE
@@ -111,7 +113,7 @@ static Locale const& get_icu_locale_for( iso639_1::type lang ) {
 
   iso3166_1::type const country_code = get_host_country();
   char const *const country = country_code != iso3166_1::unknown ?
-    iso3166_1::string_of[ country_code ] : NULL;
+    iso3166_1::string_of[ country_code ] : nullptr;
   Locale &icu_locale = locale_cache[ lang ];
   icu_locale = Locale( iso639_1::string_of[ lang ], country );
   return icu_locale;

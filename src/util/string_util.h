@@ -141,10 +141,10 @@ inline std::ostream& operator<<( std::ostream &o, string_builder const &sb ) {
 ////////// String equality /////////////////////////////////////////////////////
 
 /**
- * Equals that works even when either argument is the \c NULL pointer.
+ * Equals that works even when either argument is the \c nullptr.
  *
- * @param s1 The first NULL-terminated C string or the \c NULL pointer.
- * @param s2 The second NULL-terminated C string or the \c NULL pointer.
+ * @param s1 The first NULL-terminated C string or the \c nullptr.
+ * @param s2 The second NULL-terminated C string or the \c nullptr.
  * @return Returns \c true only if \a s1 \c == \a s2.
  */
 inline bool equals( char const *s1, char const *s2 ) {
@@ -196,9 +196,9 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
  * @tparam OutputStringType2 The second output string type.
  * @param in The string to split.
  * @param delim The delimiter.
- * @param out1 If not \c NULL, a pointer to the output string to receive the
+ * @param out1 If not \c nullptr, a pointer to the output string to receive the
  * substring to the left of \a delim.
- * @param out2 If not \c NULL, a pointer to the output string to receive the
+ * @param out2 If not \c nullptr, a pointer to the output string to receive the
  * substring to the right of \a delim.
  * @return Returns \c true only if the string was split (the delimiter was
  * present in \a in).
@@ -216,13 +216,13 @@ bool split( char const *in, char delim, OutputStringType1 *out1,
   return false;
 }
 
-// Allows out1 to be NULL.
+// Allows out1 to be nullptr.
 template<class OutputStringType2> inline
 bool split( char const *in, char delim, void*, OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
-// Allows out2 to be NULL.
+// Allows out2 to be nullptr.
 template<class OutputStringType1> inline
 bool split( char const *in, char delim, OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
@@ -236,9 +236,9 @@ bool split( char const *in, char delim, OutputStringType1 *out1, void* ) {
  * @tparam OutputStringType2 The second output string type.
  * @param in The string to split.
  * @param delim The delimiter.
- * @param out1 If not \c NULL, a pointer to the output string to receive the
+ * @param out1 If not \c nullptr, a pointer to the output string to receive the
  * substring to the left of \a delim.
- * @param out2 If not \c NULL, a pointer to the output string to receive the
+ * @param out2 If not \c nullptr, a pointer to the output string to receive the
  * substring to the right of \a delim.
  * @return Returns \c true only if the string was split (the delimiter was
  * present in \a in).
@@ -249,14 +249,14 @@ inline bool split( InputStringType const &in, char delim,
   return split( in.c_str(), delim, out1, out2 );
 }
 
-// Allows out1 to be NULL.
+// Allows out1 to be nullptr.
 template<class InputStringType,class OutputStringType2> inline
 bool split( InputStringType const &in, char delim, void*,
             OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
-// Allows out2 to be NULL.
+// Allows out2 to be nullptr.
 template<class InputStringType,class OutputStringType1> inline
 bool split( InputStringType const &in, char delim, OutputStringType1 *out1,
             void* ) {
@@ -270,9 +270,9 @@ bool split( InputStringType const &in, char delim, OutputStringType1 *out1,
  * @tparam OutputStringType2 The second output string type.
  * @param in The string to split.
  * @param delim The delimiter.
- * @param out1 If not \c NULL, a pointer to the output string to receive the
+ * @param out1 If not \c nullptr, a pointer to the output string to receive the
  * substring to the left of \a delim.
- * @param out2 If not \c NULL, a pointer to the output string to receive the
+ * @param out2 If not \c nullptr, a pointer to the output string to receive the
  * substring to the right of \a delim.
  * @return Returns \c true only if the string was split (the delimiter was
  * present in \a in).
@@ -291,14 +291,14 @@ bool split( char const *in, char const *delim, OutputStringType1 *out1,
   return false;
 }
 
-// Allows out1 to be NULL.
+// Allows out1 to be nullptr.
 template<class OutputStringType2> inline
 bool split( char const *in, char const *delim, void*,
             OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
-// Allows out2 to be NULL.
+// Allows out2 to be nullptr.
 template<class OutputStringType1> inline
 bool split( char const *in, char const *delim, OutputStringType1 *out1,
             void* ) {
@@ -313,9 +313,9 @@ bool split( char const *in, char const *delim, OutputStringType1 *out1,
  * @tparam OutputStringType2 The second output string type.
  * @param in The string to split.
  * @param delim The delimiter.
- * @param out1 If not \c NULL, a pointer to the output string to receive the
+ * @param out1 If not \c nullptr, a pointer to the output string to receive the
  * substring to the left of \a delim.
- * @param out2 If not \c NULL, a pointer to the output string to receive the
+ * @param out2 If not \c nullptr, a pointer to the output string to receive the
  * substring to the right of \a delim.
  * @return Returns \c true only if the string was split (the delimiter was
  * present in \a in).
@@ -326,14 +326,14 @@ inline bool split( InputStringType const &in, char const *delim,
   return split( in.c_str(), delim, out1, out2 );
 }
 
-// Allows out1 to be NULL.
+// Allows out1 to be nullptr.
 template<class InputStringType,class OutputStringType2> inline
 bool split( InputStringType const &in, char const *delim, void*,
             OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
-// Allows out2 to be NULL.
+// Allows out2 to be nullptr.
 template<class InputStringType,class OutputStringType1> inline
 bool split( InputStringType const &in, char const *delim,
             OutputStringType1 *out1, void* ) {
@@ -349,9 +349,9 @@ bool split( InputStringType const &in, char const *delim,
  * @tparam OutputStringType2 The second output string type.
  * @param in The string to split.
  * @param delim The delimiter.
- * @param out1 If not \c NULL, a pointer to the output string to receive the
+ * @param out1 If not \c nullptr, a pointer to the output string to receive the
  * substring to the left of \a delim.
- * @param out2 If not \c NULL, a pointer to the output string to receive the
+ * @param out2 If not \c nullptr, a pointer to the output string to receive the
  * substring to the right of \a delim.
  * @return Returns \c true only if the string was split (the delimiter was
  * present in \a in).
@@ -375,7 +375,7 @@ bool split( InputStringType const &in, DelimStringType const &delim,
   return false;
 }
 
-// Allows out1 to be NULL.
+// Allows out1 to be nullptr.
 template<
   class InputStringType,
   class DelimStringType,
@@ -386,7 +386,7 @@ inline bool split( InputStringType const &in, DelimStringType const &delim,
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
-// Allows out2 to be NULL.
+// Allows out2 to be nullptr.
 template<
   class InputStringType,
   class DelimStringType,
@@ -777,8 +777,8 @@ to_string( T const &t, OutputStringType *out ) {
  * @tparam T The pointer type.
  * @tparam OutputStringType The output string type.
  * @param p The pointer.
- * @param out The output string.  If \a p is not \c NULL, sets \c *out to the
- * result of \c to_string(*p); otherwise \c "<null>".
+ * @param out The output string.  If \a p is not \c nullptr, sets \c *out to
+ * the result of \c to_string(*p); otherwise \c "<null>".
  */
 template<typename T,class OutputStringType> inline
 typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type

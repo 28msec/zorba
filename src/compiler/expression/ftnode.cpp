@@ -17,11 +17,12 @@
 
 #include <zorba/error.h>
 
+#include "diagnostics/xquery_diagnostics.h"
 #include "types/casting.h"
 #include "util/ascii_util.h"
+#include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
-#include "diagnostics/xquery_diagnostics.h"
 #include "zorbautils/locale.h"
 
 #include "expr_visitor.h"
@@ -586,9 +587,9 @@ ftprimary_with_options::ftprimary_with_options(
   QueryLoc const &loc
 ) :
   ftnode( loc ),
-  primary_( NULL ),
+  primary_( nullptr ),
   match_options_( new ftmatch_options( loc ) ),
-  weight_( NULL )
+  weight_( nullptr )
 {
 }
 

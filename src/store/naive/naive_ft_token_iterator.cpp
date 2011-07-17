@@ -15,8 +15,10 @@
  */
 #include "stdafx.h"
 
-#include "store/naive/naive_ft_token_iterator.h"
 #include "diagnostics/assert.h"
+#include "util/cxx_util.h"
+
+#include "naive_ft_token_iterator.h"
 
 using namespace std;
 
@@ -62,7 +64,7 @@ void NaiveFTTokenIterator::init() {
 }
 
 FTToken const* NaiveFTTokenIterator::next() {
-  return pos_ < end_ ? &(*tokens_)[ pos_++ ] : NULL;
+  return pos_ < end_ ? &(*tokens_)[ pos_++ ] : nullptr;
 }
 
 FTTokenIterator::Mark_t NaiveFTTokenIterator::pos() const {

@@ -36,8 +36,8 @@ public:
    * Creates a %SnowballStemmer.
    *
    * @param lang The language to create a stemmer for.
-   * @return Returns a stemmer for the given language or \c NULL if no stemmer
-   * for the given language is available.
+   * @return Returns a stemmer for the given language or \c nullptr if no
+   * stemmer for the given language is available.
    */
   static SnowballStemmer const* create( locale::iso639_1::type lang );
 

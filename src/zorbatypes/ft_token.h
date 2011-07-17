@@ -137,10 +137,10 @@ public:
   /**
    * Gets the Item this token came from.
    *
-   * @return Returns said Item or \c NULL for query tokens.
+   * @return Returns said Item or \c nullptr for query tokens.
    */
   store::Item const* item() const {
-    return is_query_token() ? NULL : dt_.item_;
+    return is_query_token() ? nullptr : dt_.item_;
   }
 
   /**

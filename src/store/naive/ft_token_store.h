@@ -21,6 +21,7 @@
 #include <utility>                      /* for pair */
 #include <vector>
 
+#include "util/cxx_util.h"
 #include "zorbatypes/ft_token.h"
 
 namespace zorba { 
@@ -88,11 +89,12 @@ public:
    * Gets the attribute tokens for the given key.
    *
    * @param key The key to get the tokens for.
-   * @return Returns said tokens or \c NULL if \a key has no associated tokens.
+   * @return Returns said tokens or \c nullptr if \a key has no associated
+   * tokens.
    */
   container_type const* getAttr( key_type key ) const {
     att_map_type::const_iterator const i = att_map_.find( key );
-    return i != att_map_.end() ? &i->second : 0;
+    return i != att_map_.end() ? &i->second : nullptr;
   }
 
   /**

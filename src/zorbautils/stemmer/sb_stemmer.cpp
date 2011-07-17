@@ -17,6 +17,7 @@
 
 #include <memory>
 
+#include "util/cxx_util.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/locale.h"
 
@@ -54,7 +55,7 @@ static bool is_lang_supported( iso639_1::type lang ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 SnowballStemmer::SnowballStemmer( iso639_1::type lang ) :
-  stemmer_( sb_stemmer_new( iso639_1::string_of[ lang ], NULL ) )
+  stemmer_( sb_stemmer_new( iso639_1::string_of[ lang ], nullptr ) )
 {
   ZORBA_FATAL( stemmer_, "out of memory" );
 }
@@ -64,7 +65,7 @@ SnowballStemmer::~SnowballStemmer() {
 }
 
 SnowballStemmer const* SnowballStemmer::create( iso639_1::type lang ) {
-  return is_lang_supported( lang ) ? new SnowballStemmer( lang ) : NULL;
+  return is_lang_supported( lang ) ? new SnowballStemmer( lang ) : nullptr;
 }
 
 void SnowballStemmer::stem( zstring const &word, iso639_1::type lang,

@@ -174,7 +174,7 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the match.
    * @param match A pointer to the string that is to be set to the substring
-   * matching the pattern or NULL if the substring is not needed.
+   * matching the pattern or \c nullptr if the substring is not needed.
    * @return Returns \c true only if there is a match.
    */
   bool next_match( string const &s, size_type *pos, string *match ) {
@@ -190,7 +190,7 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the match.
    * @param match A pointer to the string that is to be set to the substring
-   * matching the pattern or NULL if the substring is not needed.
+   * matching the pattern or \c nullptr if the substring is not needed.
    * @return Returns \c true only if there is a match.
    */
   bool next_match( char const *s, size_type *pos, string *match ) {
@@ -208,7 +208,7 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the match.
    * @param match A pointer to the string that is to be set to the substring
-   * matching the pattern or NULL if the substring is not needed.
+   * matching the pattern or \c nullptr if the substring is not needed.
    * @return Returns \c true only if there is a match.
    */
   bool next_match( char const *s, size_type s_len, size_type *pos,
@@ -227,7 +227,7 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the match.
    * @param match A pointer to the string that is to be set to the substring
-   * matching the pattern or NULL if the substring is not needed.
+   * matching the pattern or \c nullptr if the substring is not needed.
    * @return Returns \c true only if there is a match.
    */
   template<class StringType>
@@ -245,11 +245,11 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or \c NULL if the substring is not needed.
+   * separated by the pattern or \c nullptr if the substring is not needed.
    * @param matched A pointer to a \c bool to indicate whether the pattern
-   * matched for the token or \c NULL if this is not needed.  If not \c NULL,
-   * it is set to \c false either if there is no token or the token is the
-   * final token after the last separator; it is set to \c true only for
+   * matched for the token or \c nullptr if this is not needed.  If not \c
+   * nullptr, it is set to \c false either if there is no token or the token is
+   * the final token after the last separator; it is set to \c true only for
    * non-last tokens.
    * @return Returns \c true only if there is a token.
    */
@@ -267,11 +267,11 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or \c NULL if the substring is not needed.
+   * separated by the pattern or \c nullptr if the substring is not needed.
    * @param matched A pointer to a \c bool to indicate whether the pattern
-   * matched for the token or \c NULL if this is not needed.  If not \c NULL,
-   * it is set to \c false either if there is no token or the token is the
-   * final token after the last separator; it is set to \c true only for
+   * matched for the token or \c nullptr if this is not needed.  If not \c
+   * nullptr, it is set to \c false either if there is no token or the token is
+   * the final token after the last separator; it is set to \c true only for
    * non-last tokens.
    * @return Returns \c true only if there is a token.
    */
@@ -291,11 +291,11 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or \c NULL if the substring is not needed.
+   * separated by the pattern or \c nullptr if the substring is not needed.
    * @param matched A pointer to a \c bool to indicate whether the pattern
-   * matched for the token or \c NULL if this is not needed.  If not \c NULL,
-   * it is set to \c false either if there is no token or the token is the
-   * final token after the last separator; it is set to \c true only for
+   * matched for the token or \c nullptr if this is not needed.  If not \c
+   * nullptr, it is set to \c false either if there is no token or the token is
+   * the final token after the last separator; it is set to \c true only for
    * non-last tokens.
    * @return Returns \c true only if there is a token.
    */
@@ -316,7 +316,7 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or \c NULL if the substring is not needed.
+   * separated by the pattern or \c nullptr if the substring is not needed.
    * @return Returns \c true only if there is a token.
    */
   template<class StringType>

@@ -291,7 +291,7 @@ inline bool is_valid_byte( storage_type b, bool check_start_byte ) {
  * Checks an entire UTF-8 string for validity.
  *
  * @param s The null-terminated UTF-8 string to validate.
- * @return Returns \c NULL if the string is valid or a pointer to the first
+ * @return Returns \c nullptr if the string is valid or a pointer to the first
  * invalid byte if invalid.
  */
 ZORBA_DLL_PUBLIC
@@ -302,7 +302,7 @@ storage_type const* validate( storage_type const *s );
  *
  * @param s The UTF-8 string to validate.
  * @param s_size The number of bytes (not characters) to check.
- * @return Returns \c NULL if the string is valid or a pointer to the first
+ * @return Returns \c nullptr if the string is valid or a pointer to the first
  * invalid byte if invalid.
  */
 ZORBA_DLL_PUBLIC

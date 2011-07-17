@@ -56,8 +56,8 @@ public:
    * any.
    * @param path The full path of the file or directory involved in the
    * failure, if any.
-   * @param err_string If not \c NULL, the error string to use instead of the
-   * operating system error string; if empty, no error string is used.
+   * @param err_string If not \c nullptr, the error string to use instead of
+   * the operating system error string; if empty, no error string is used.
    */
   exception( char const *function, char const *path,
              char const *err_string = nullptr ) :
@@ -102,7 +102,7 @@ protected:
 /**
  * Formats an error string.
  *
- * @param function The function that failed or \c NULL.
+ * @param function The function that failed or \c nullptr.
  * @param err_string The error string.
  * @return Returns said error string.
  */
@@ -111,7 +111,7 @@ std::string format_err_string( char const *function, char const *err_string );
 /**
  * Formats an error string.
  *
- * @param function The function that failed or \c NULL.
+ * @param function The function that failed or \c nullptr.
  * @param code The operating system error code.
  * @param err_string The error string.
  * @return Returns said error string.
@@ -135,7 +135,7 @@ inline code_type get_err_code() {
 /**
  * Gets the error string for the given operating system error code.
  *
- * @param function The function that failed or \c NULL.
+ * @param function The function that failed or \c nullptr.
  * @param code The operating system error code.
  * @return Returns said error string.
  */

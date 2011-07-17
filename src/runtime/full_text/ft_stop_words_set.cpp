@@ -131,7 +131,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
           sctx.resolve_uri(uri, impl::EntityData::STOP_WORDS, error_msg);
       impl::StreamResource* stream_rsrc =
           dynamic_cast<impl::StreamResource*>(rsrc.get());
-      if (stream_rsrc == NULL) {
+      if ( !stream_rsrc ) {
         // Technically this should be thrown during static analysis.
         throw ZORBA_EXCEPTION(err::FTST0008, ERROR_PARAMS(uri));
       }

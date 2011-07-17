@@ -239,7 +239,7 @@ public:
    *
    * @param s The string to wrap.  Ownership is taken: the string will be
    * deleted when the %utf8_string is destroyed.
-   * @throws std::logic_error if \a s is NULL.
+   * @throws std::logic_error if \a s is \c nullptr.
    */
   explicit utf8_string( StringType *s ) : s_( s ), delete_( true ) {
     if ( !s )

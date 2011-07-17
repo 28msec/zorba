@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <cstring>
 
+#include "util/cxx_util.h"
 #include "util/less.h"
 #include "util/stl_util.h"
 
@@ -62,7 +63,7 @@ inline int find_index( char const *const *begin, char const *const *end,
  *
  * @param constant The constant specifying which piece of locale information to
  * get.
- * @return Returns said information or <code>NULL</code>.
+ * @return Returns said information or \c nullptr.
  */
 static char* get_win32_locale_info( int constant ) {
   int bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, NULL, 0 );
@@ -79,19 +80,19 @@ static char* get_win32_locale_info( int constant ) {
  * Checks for and filters-out "useless" locales.
  *
  * @param loc The locale to check.
- * @return If the locale is either useless or <code>NULL</code>, returns
- * <code>NULL</code>; otherwise returns the locale.
+ * @return If the locale is either useless or \c nullptr, returns \c nullptr;
+ * otherwise returns the locale.
  */
 inline char const* filter_useless_locale( char const *loc ) {
   if ( loc && (::strcmp( loc, "C" ) == 0 || ::strcmp( loc, "POSIX" ) == 0) )
-    return NULL;
+    return nullptr;
   return loc;
 }
 
 /**
  * Gets the environment's locale.
  *
- * @return Returns said locale, e.g., "en_US.UTF-8" or <code>NULL</code>.
+ * @return Returns said locale, e.g., "en_US.UTF-8" or \c nullptr.
  */
 static char* get_unix_locale() {
   //
@@ -104,7 +105,7 @@ static char* get_unix_locale() {
     //
     loc = filter_useless_locale( ::getenv( "LANG" ) );
   }
-  return loc ? ztd::new_strdup( loc ) : NULL;
+  return loc ? ztd::new_strdup( loc ) : nullptr;
 }
 
 #endif /* WIN32 */

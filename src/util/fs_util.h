@@ -361,7 +361,7 @@ private:
  *
  * @param path The full path to check.
  * @param size A pointer to a receive the size of the file in bytes.  The size
- * is set only if it's not \c NULL and the file's type is \c file.
+ * is set only if it's not \c nullptr and the file's type is \c file.
  * @return Returns said type.
  */
 type get_type( char const *path, size_type *size = nullptr );
@@ -372,7 +372,7 @@ type get_type( char const *path, size_type *size = nullptr );
  * @tparam PathStringType The \a path string type.
  * @param path The full path to check.
  * @param size A pointer to a receive the size of the file in bytes.  The size
- * is set only if it's not \c NULL and the file's type is \c file.
+ * is set only if it's not \c nullptr and the file's type is \c file.
  * @return Returns said type.
  */
 template<class PathStringType> inline

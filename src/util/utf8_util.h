@@ -315,8 +315,8 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
  * @param in_len The number of unicode characters (not bytes) to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of bytes (not characters) of the
- * UTF-8 string are put here.
+ * @param out_len If not \c nullptr, the number of bytes (not characters) of
+ * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 ZORBA_DLL_PUBLIC
@@ -329,8 +329,8 @@ bool to_string( unicode::char_type const *in, unicode::size_type in_len,
  * @param in The Unicode characters to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of bytes (not characters) of the
- * UTF-8 string are put here.
+ * @param out_len If not \c nullptr, the number of bytes (not characters) of
+ * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( unicode::char_type const *in, storage_type **out,
@@ -344,8 +344,8 @@ inline bool to_string( unicode::char_type const *in, storage_type **out,
  * @param in The unicode::string to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of bytes (not characters) of the
- * UTF-8 string are put here.
+ * @param out_len If not \c nullptr, the number of bytes (not characters) of
+ * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( unicode::string const &in, storage_type **out,
@@ -402,8 +402,8 @@ bool to_string( unicode::string const &in, StringType *out ) {
  * @param in_len The length of the unicode::string.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of bytes (not characters) of the
- * UTF-8 string are put here.
+ * @param out_len If not \c nullptr, the number of bytes (not characters) of
+ * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 ZORBA_DLL_PUBLIC
@@ -416,8 +416,8 @@ bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
  * @param in The wide-character string to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of bytes (not characters) of the
- * UTF-8 string are put here.
+ * @param out_len If not \c nullptr, the number of bytes (not characters) of
+ * the UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( wchar_t const *in, storage_type **out,
@@ -472,8 +472,8 @@ bool to_string( std::wstring const &in, StringType *out ) {
  * @param in_len The number of bytes (not characters) of \a in.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of characters (not bytes) of the
- * wchar_t string are put here.
+ * @param out_len If not \c nullptr, the number of characters (not bytes) of
+ * the wchar_t string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 ZORBA_DLL_PUBLIC
@@ -486,8 +486,8 @@ bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
  * @param in The UTF-8 encoded string to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of characters (not bytes) of the
- * wchar_t string are put here.
+ * @param out_len If not \c nullptr, the number of characters (not bytes) of
+ * the \c wchar_t string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_wchar_t( storage_type const *in, wchar_t **out,
@@ -502,8 +502,8 @@ inline bool to_wchar_t( storage_type const *in, wchar_t **out,
  * @param in The UTF-8 encoded string to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len If not NULL, the number of characters (not bytes) of the
- * wchar_t string are put here.
+ * @param out_len If not \c nullptr, the number of characters (not bytes) of
+ * the \c wchar_t string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType> inline

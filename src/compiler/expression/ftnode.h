@@ -22,10 +22,11 @@
 #include "common/shared_types.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/ftnode_classes.h"
-#include "compiler/parser/parse_constants.h"
 #include "compiler/parser/ft_types.h"
+#include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "runtime/base/plan_iterator.h"
+#include "util/cxx_util.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
@@ -253,7 +254,7 @@ public:
     QueryLoc const&,
     zstring const &uri,
     zstring const &relationship = "",
-    ftrange *levels = NULL
+    ftrange *levels = nullptr
   );
   ~ftthesaurus_id();
 
@@ -344,10 +345,10 @@ public:
     { return diacritics_option_.getp(); }
 
   ftextension_option_list_t* get_extension_options()
-    { return extension_options_.empty() ? NULL : &extension_options_; }
+    { return extension_options_.empty() ? nullptr : &extension_options_; }
 
   ftextension_option_list_t const* get_extension_options() const
-    { return extension_options_.empty() ? NULL : &extension_options_; }
+    { return extension_options_.empty() ? nullptr : &extension_options_; }
 
   ftlanguage_option const* get_language_option() const
     { return language_option_.getp(); }
@@ -550,7 +551,7 @@ public:
   ftwords_times(
     QueryLoc const&,
     ftwords*,
-    ftrange* = NULL
+    ftrange *times = nullptr
   );
   ~ftwords_times();
 
@@ -763,7 +764,7 @@ public:
     QueryLoc const&,
     ft_range_mode::type,
     expr_t const &expr1,
-    expr_t expr2 = NULL
+    expr_t expr2 = 0
   );
 
   ft_visit_result::type accept( ftnode_visitor& );

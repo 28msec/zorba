@@ -17,11 +17,12 @@
 
 #include <string>
 
+#include "diagnostics/assert.h"
 #include "runtime/full_text/ft_wildcard.h"
+#include "util/cxx_util.h"
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
-#include "diagnostics/assert.h"
 #include "zorbautils/locale.h"
 #include "zorbautils/stemmer.h"
 
@@ -108,12 +109,12 @@ void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para,
   sent_ = sent;
   if ( is_query_token() ) {
     qt_.selector_ = original;
-    qt_.wildcard_ = NULL;
+    qt_.wildcard_ = nullptr;
   } else {
     dt_.para_ = para;
     dt_.item_ = item;
   }
-  mod_values_ = NULL;
+  mod_values_ = nullptr;
 }
 
 FTToken::string_t const& FTToken::value( Stemmer const &stemmer,
@@ -162,7 +163,7 @@ ft_wildcard const& FTToken::wildcard( int selector ) const {
   ZORBA_ASSERT( is_query_token() );
   if ( selector != qt_.selector_ ) {
     delete qt_.wildcard_;
-    qt_.wildcard_ = NULL;
+    qt_.wildcard_ = nullptr;
   }
   if ( !qt_.wildcard_ ) {
     qt_.wildcard_ = new ft_wildcard( value( selector ) );

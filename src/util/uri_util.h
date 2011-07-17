@@ -52,8 +52,8 @@ inline std::ostream& operator<<( std::ostream &o, scheme s ) {
  * Gets the scheme of the URI.
  *
  * @param uri The URI to get the scheme of.
- * @param colon If not \c NULL, this pointer is set to the position of the ':'
- * (if any) that follows the scheme name.
+ * @param colon If not \c nullptr, this pointer is set to the position of the
+ * ':' (if any) that follows the scheme name.
  * @return Returns the URI's scheme, or scheme::none if none, or
  * scheme::unknown if unknown.
  */
@@ -64,7 +64,7 @@ scheme get_scheme( char const *uri, char const **colon = nullptr );
  *
  * @tparam StringType The string type.
  * @param uri The URI to get the scheme of.
- * @param sname If not \c NULL and the scheme is known, this is set to the
+ * @param sname If not \c nullptr and the scheme is known, this is set to the
  * scheme's name.
  * @return Returns the URI's scheme, or scheme::none if none, or
  * scheme::unknown if unknown.
@@ -200,8 +200,8 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
  * @tparam PathStringType The path's string type.
  * @param uri The URI specifying the resouce.
  * @param path On return, contains the path of the fetched resource.
- * @param is_temp If not \c NULL, on return this is set to \c true if the local
- * file is a nrely created temporary file; \c false otherwise.
+ * @param is_temp If not \c nullptr, on return this is set to \c true if the
+ * local file is a created temporary file; \c false otherwise.
  */
 template<class PathStringType> inline
 void fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
@@ -217,8 +217,8 @@ void fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
  * @tparam PathStringType The path's string type.
  * @param uri The URI specifying the resouce.
  * @param path On return, contains the path of the fetched resource.
- * @param is_temp If not \c NULL, on return this is set to \c true if the local
- * file is a nrely created temporary file; \c false otherwise.
+ * @param is_temp If not \c nullptr, on return this is set to \c true if the
+ * local file is a created temporary file; \c false otherwise.
  */
 template<class URIStringType,class PathStringType> inline
 void fetch( URIStringType const &uri, PathStringType *file,

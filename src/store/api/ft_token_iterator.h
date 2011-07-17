@@ -67,7 +67,7 @@ public:
   /**
    * Obtains the next token and advances the iterator.
    *
-   * @return Returns the next token or \c NULL if there is no next token.
+   * @return Returns the next token or \c nullptr if there is no next token.
    */
   virtual FTToken const* next() = 0;
 

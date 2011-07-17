@@ -66,8 +66,8 @@ public:
    * Gets an instance of a Stemmer for the given language.
    *
    * @param lang The language for the stemmer.
-   * @return Returns said Stemmer or \c NULL if no stemmer is availabe for the
-   * given language.
+   * @return Returns said Stemmer or \c nullptr if no stemmer is availabe for
+   * the given language.
    */
   virtual Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
 };
