@@ -28,6 +28,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "ascii_util.h"
+#include "cxx_util.h"
 #include "fs_util.h"
 #include "string_util.h"
 #include "uri_util.h"
@@ -55,7 +56,7 @@ namespace win32 {
 
 #ifdef ZORBA_WITH_FILE_ACCESS
 
-static type get_type( LPCWSTR wpath, size_type *size = 0 ) {
+static type get_type( LPCWSTR wpath, size_type *size = nullptr ) {
   WIN32_FILE_ATTRIBUTE_DATA data;
   if ( ::GetFileAttributesEx( wpath, GetFileExInfoStandard, (void*)&data ) ) {
     if ( data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )

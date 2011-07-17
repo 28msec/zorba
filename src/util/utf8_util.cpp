@@ -19,6 +19,7 @@
 #include <unicode/ustring.h>
 #endif /* ZORBA_NO_UNICODE */
 
+#include "cxx_util.h"
 #include "utf8_util.h"
 
 #ifndef ZORBA_NO_UNICODE
@@ -160,14 +161,14 @@ bool to_string( unicode::char_type const *in, unicode::size_type in_len,
   UErrorCode err = U_ZERO_ERROR;
   unicode::size_type utf8_len;
   u_strToUTF8WithSub(                   // pre-flight to get utf8_len
-    NULL, 0, &utf8_len, in, in_len, SubChar, NULL, &err
+    nullptr, 0, &utf8_len, in, in_len, SubChar, nullptr, &err
   );
   // must not check "err" here since ICU always returns "buffer overflow"
 
   storage_type *const utf8_buf = new storage_type[ utf8_len ];
   err = U_ZERO_ERROR;
   u_strToUTF8WithSub(
-    utf8_buf, utf8_len, NULL, in, in_len, SubChar, NULL, &err
+    utf8_buf, utf8_len, nullptr, in, in_len, SubChar, nullptr, &err
   );
   if ( U_FAILURE( err ) ) {
     delete[] utf8_buf;
@@ -199,11 +200,11 @@ bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
 
   unicode::size_type w_len;
   UErrorCode err = U_ZERO_ERROR;
-  u_strToWCS( NULL, 0, &w_len, in_buf, u_len, &err );
+  u_strToWCS( nullptr, 0, &w_len, in_buf, u_len, &err );
   if ( err == U_BUFFER_OVERFLOW_ERROR ) {
     *out = new wchar_t[ ++w_len ];
     err = U_ZERO_ERROR;
-    u_strToWCS( *out, w_len, NULL, in_buf, u_len, &err );
+    u_strToWCS( *out, w_len, nullptr, in_buf, u_len, &err );
   }
   u_in.releaseBuffer();
   if ( U_FAILURE( err ) ) {
@@ -228,7 +229,7 @@ storage_type const* validate( storage_type const *s ) {
     }
     ++s;
   }
-  return NULL;
+  return nullptr;
 }
 
 storage_type const* validate( storage_type const *s, size_type s_size ) {
@@ -245,7 +246,7 @@ storage_type const* validate( storage_type const *s, size_type s_size ) {
     ++s;
     --s_size;
   }
-  return NULL;
+  return nullptr;
 }
 
 } // namespace utf8

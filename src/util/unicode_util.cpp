@@ -25,6 +25,7 @@
 #include <unicode/normlzr.h>
 #include <unicode/ustring.h>
 
+#include "cxx_util.h"
 #include "unicode_util.h"
 #include "utf8_util.h"
 
@@ -2224,7 +2225,7 @@ bool normalize( string const &in, normalization::type n, string *out ) {
 bool to_char( char const *in, char_type *out ) {
   UErrorCode status = U_ZERO_ERROR;
   u_strFromUTF8WithSub(
-    out, 1, NULL, in, utf8::char_length( *in ), SubChar, NULL, &status
+    out, 1, nullptr, in, utf8::char_length( *in ), SubChar, nullptr, &status
   );
   return U_SUCCESS( status ) == TRUE;
 }
@@ -2234,14 +2235,14 @@ bool to_string( char const *in, size_type in_len, char_type **out,
   size_type utf16_len;
   UErrorCode status = U_ZERO_ERROR;
   u_strFromUTF8WithSub(                 // pre-flight to get utf16_len
-    NULL, 0, &utf16_len, in, in_len, SubChar, NULL, &status
+    nullptr, 0, &utf16_len, in, in_len, SubChar, nullptr, &status
   );
   // must not check "status" here since ICU always returns "buffer overflow"
 
   char_type *const utf16_buf = new char_type[ utf16_len ];
   status = U_ZERO_ERROR;
   u_strFromUTF8WithSub(
-    utf16_buf, utf16_len, NULL, in, in_len, SubChar, NULL, &status
+    utf16_buf, utf16_len, nullptr, in, in_len, SubChar, nullptr, &status
   );
   if ( U_FAILURE( status ) ) {
     delete[] utf16_buf;

@@ -27,6 +27,7 @@
 # include <windows.h>
 #endif /* WIN32 */
 
+#include "cxx_util.h"
 #include "string_util.h"
 
 namespace zorba {
@@ -59,7 +60,7 @@ public:
    * operating system error string; if empty, no error string is used.
    */
   exception( char const *function, char const *path,
-             char const *err_string = 0 ) :
+             char const *err_string = nullptr ) :
     std::runtime_error( make_what( function, path, err_string ) ),
     function_( function ), path_( path )
   {
@@ -90,7 +91,7 @@ public:
 
 protected:
   static std::string make_what( char const *function, char const *path,
-                                char const *err_string = 0 );
+                                char const *err_string = nullptr );
 
   std::string function_;
   std::string path_;
@@ -165,7 +166,7 @@ get_err_string( StringType const &function, code_type code = get_err_code() ) {
  * @return Returns said error string.
  */
 inline std::string get_err_string( code_type code = get_err_code() ) {
-  return get_err_string( NULL, code );
+  return get_err_string( nullptr, code );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

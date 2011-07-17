@@ -21,6 +21,8 @@
 
 #include <zorba/config.h>
 
+#include "util/cxx_util.h"
+
 namespace zorba {
 namespace rstring_classes {
 
@@ -240,7 +242,7 @@ private:
   void set_rep( RepType *r ) {
     rep_ = r;
 #ifdef ZORBA_DEBUG_STRING
-    debug_str_ = rep_ ? data() : NULL;
+    debug_str_ = rep_ ? data() : nullptr;
 #endif /* ZORBA_DEBUG_STRING */
   }
 

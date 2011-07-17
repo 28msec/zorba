@@ -21,6 +21,7 @@
 #include <unicode/regex.h>
 #endif
 
+#include "cxx_util.h"
 #include "unicode_util.h"
 #include "zorbatypes/zstring.h"
 
@@ -51,7 +52,7 @@ public:
   /**
    * Constructs a %regex.
    */
-  regex() : matcher_( 0 ) { }
+  regex() : matcher_( nullptr ) { }
 
   /**
    * Destroys a %regex.
@@ -177,7 +178,7 @@ public:
    * @return Returns \c true only if there is a match.
    */
   bool next_match( string const &s, size_type *pos, string *match ) {
-    return next( re_is_match, s, pos, match, NULL );
+    return next( re_is_match, s, pos, match, nullptr );
   }
 
   /**
@@ -253,7 +254,7 @@ public:
    * @return Returns \c true only if there is a token.
    */
   bool next_token( string const &s, size_type *pos, string *token,
-                   bool *matched = NULL ) {
+                   bool *matched = nullptr ) {
     return next( re_is_separator, s, pos, token, matched );
   }
 
@@ -275,7 +276,7 @@ public:
    * @return Returns \c true only if there is a token.
    */
   bool next_token( char const *s, size_type *pos, string *token,
-                   bool *matched = NULL ) {
+                   bool *matched = nullptr ) {
     string u_s;
     return to_string( s, &u_s ) && next_token( u_s, pos, token, matched );
   }
@@ -299,7 +300,7 @@ public:
    * @return Returns \c true only if there is a token.
    */
   bool next_token( char const *s, size_type s_len, size_type *pos,
-                   string *token, bool *matched = NULL ) {
+                   string *token, bool *matched = nullptr ) {
     string u_s;
     return  to_string( s, s_len, &u_s ) &&
             next_token( u_s, pos, token, matched );
@@ -320,7 +321,7 @@ public:
    */
   template<class StringType>
   bool next_token( StringType const &s, size_type *pos, string *token,
-                   bool *matched = NULL ) {
+                   bool *matched = nullptr ) {
     string u_s;
     return to_string( s, &u_s ) && next_token( u_s, pos, token, matched );
   }

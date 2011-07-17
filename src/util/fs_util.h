@@ -27,6 +27,7 @@
 #endif /* WIN32 */
 
 #include "ascii_util.h"
+#include "cxx_util.h"
 #include "error_util.h"
 #include "zorbatypes/zstring.h"
 
@@ -363,7 +364,7 @@ private:
  * is set only if it's not \c NULL and the file's type is \c file.
  * @return Returns said type.
  */
-type get_type( char const *path, size_type *size = 0 );
+type get_type( char const *path, size_type *size = nullptr );
 
 /**
  * Gets the type of the given file.
@@ -375,7 +376,7 @@ type get_type( char const *path, size_type *size = 0 );
  * @return Returns said type.
  */
 template<class PathStringType> inline
-type get_type( PathStringType const &path, size_type *size = 0 ) {
+type get_type( PathStringType const &path, size_type *size = nullptr ) {
   return get_type( path.c_str(), size );
 }
 
@@ -475,7 +476,7 @@ void rename( FromStringType const &from, ToStringType const &to ) {
  * @param base The base path, if any.
  * @return Returns the normalized path.
  */
-zstring get_normalized_path( char const *path, char const *base = 0 );
+zstring get_normalized_path( char const *path, char const *base = nullptr );
 
 /**
  * Gets the normalized path of the given path.

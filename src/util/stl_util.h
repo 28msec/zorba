@@ -27,6 +27,8 @@
 #include <zorba/config.h>
 #include <zorba/internal/ztd.h>
 
+#include "cxx_util.h"
+
 namespace zorba {
 namespace ztd {
 
@@ -58,7 +60,7 @@ template<typename T> class auto_vec {
 public:
   typedef T element_type;
 
-  explicit auto_vec( element_type *p = 0 ) throw() : p_( p ) {
+  explicit auto_vec( element_type *p = nullptr ) throw() : p_( p ) {
   }
 
   auto_vec( auto_vec &a ) throw() : p_( a.release() ) {
@@ -89,11 +91,11 @@ public:
 
   element_type* release() throw() {
     element_type *const tmp = p_;
-    p_ = 0;
+    p_ = nullptr;
     return tmp;
   }
 
-  void reset( element_type *p = 0 ) throw() {
+  void reset( element_type *p = nullptr ) throw() {
     if ( p != p_ ) {
       delete[] p_;
       p_ = p;

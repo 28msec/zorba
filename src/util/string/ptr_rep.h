@@ -201,7 +201,7 @@ protected:
    * @param cap The capacity.
    */
   ptr_rep( size_type cap = 0 ) :
-    base_type( cap ), p_( 0 ), dispose_data_using_delete_( false )
+    base_type( cap ), p_( nullptr ), dispose_data_using_delete_( false )
   {
   }
 

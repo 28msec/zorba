@@ -24,6 +24,7 @@
 
 #include "rep_base.h"
 #include "rep_proxy.h"
+#include "util/cxx_util.h"
 #include "util/void_int.h"
 
 namespace zorba {
@@ -87,7 +88,7 @@ public:
   /**
    * Constructs a %buf_rep.
    */
-  buf_rep() : base_type( 0 ), p_( NULL ) {
+  buf_rep() : base_type( 0 ), p_( nullptr ) {
     this->set_length( 0 );
   }
 
@@ -96,7 +97,7 @@ public:
    */
   ~buf_rep() {
 #ifdef ZORBA_DEBUG_STRING
-    assert( p_ == NULL );
+    assert( p_ == nullptr );
 #endif /* ZORBA_DEBUG_STRING */
   }
 
@@ -127,7 +128,7 @@ public:
    */
   void dispose( allocator_type const &a ) {
 #ifdef ZORBA_DEBUG_STRING
-    p_ = NULL;
+    p_ = nullptr;
     this->set_capacity( 0 );
     this->set_length( 0 );
 #endif /* ZORBA_DEBUG_STRING */

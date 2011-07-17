@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include "cxx_util.h"
 #include "error_util.h"
 #include "fs_util.h"
 #include "stl_util.h"
@@ -56,7 +57,7 @@ inline std::ostream& operator<<( std::ostream &o, scheme s ) {
  * @return Returns the URI's scheme, or scheme::none if none, or
  * scheme::unknown if unknown.
  */
-scheme get_scheme( char const *uri, char const **colon = 0 );
+scheme get_scheme( char const *uri, char const **colon = nullptr );
 
 /**
  * Gets the scheme of the URI.
@@ -69,7 +70,7 @@ scheme get_scheme( char const *uri, char const **colon = 0 );
  * scheme::unknown if unknown.
  */
 template<class StringType> inline
-scheme get_scheme( StringType const &uri, StringType *sname = 0 ) {
+scheme get_scheme( StringType const &uri, StringType *sname = nullptr ) {
   char const *colon;
   scheme const s = get_scheme( uri.c_str(), &colon );
   if ( sname && s )
@@ -189,6 +190,7 @@ void encode( StringType &s, bool encode_slash = true ) {
 }
   
 ////////// Fetching ///////////////////////////////////////////////////////////
+
 // Internal use only!
 void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
   
@@ -202,7 +204,7 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
  * file is a nrely created temporary file; \c false otherwise.
  */
 template<class PathStringType> inline
-void fetch( char const *uri, PathStringType *path, bool *is_temp = 0 ) {
+void fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
   char path_buf[ MAX_PATH ];
   fetch_to_path_impl( uri, path_buf, is_temp );
   *path = path_buf;
@@ -220,10 +222,11 @@ void fetch( char const *uri, PathStringType *path, bool *is_temp = 0 ) {
  */
 template<class URIStringType,class PathStringType> inline
 void fetch( URIStringType const &uri, PathStringType *file,
-           bool *is_temp = 0 ) {
+            bool *is_temp = nullptr ) {
   fetch( uri.c_str(), file, is_temp );
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace uri
 } // namespace zorba

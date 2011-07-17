@@ -24,6 +24,7 @@
 #include <zorba/config.h>
 
 #include "ascii_util.h"
+#include "cxx_util.h"
 #include "unicode_util.h"
 #include "utf8_string.h"
 #include "utf8_util_base.h"
@@ -320,7 +321,7 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
  */
 ZORBA_DLL_PUBLIC
 bool to_string( unicode::char_type const *in, unicode::size_type in_len,
-                storage_type **out, size_type *out_len = 0 );
+                storage_type **out, size_type *out_len = nullptr );
 
 /**
  * Converts a unicode::char_type array into a UTF-8 encoded string.
@@ -333,7 +334,7 @@ bool to_string( unicode::char_type const *in, unicode::size_type in_len,
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( unicode::char_type const *in, storage_type **out,
-                       size_type *out_len = 0 ) {
+                       size_type *out_len = nullptr ) {
   return to_string( in, u_strlen( in ), out, out_len );
 }
 
@@ -348,7 +349,7 @@ inline bool to_string( unicode::char_type const *in, storage_type **out,
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( unicode::string const &in, storage_type **out,
-                       size_type *out_len = 0 ) {
+                       size_type *out_len = nullptr ) {
   return to_string( in.getBuffer(), in.length(), out, out_len );
 }
 
@@ -407,7 +408,7 @@ bool to_string( unicode::string const &in, StringType *out ) {
  */
 ZORBA_DLL_PUBLIC
 bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
-                size_type *out_len = 0 );
+                size_type *out_len = nullptr );
 
 /**
  * Converts a wide-character string into a UTF-8 encoded string.
@@ -420,7 +421,7 @@ bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( wchar_t const *in, storage_type **out,
-                       size_type *out_len = 0 ) {
+                       size_type *out_len = nullptr ) {
   return to_string( in, std::wcslen( in ), out, out_len );
 }
 

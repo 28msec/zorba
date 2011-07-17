@@ -22,7 +22,8 @@
 # include <unistd.h>                    /* for close(2) */
 #endif /* WIN32 */
 
-#include "util/error_util.h"
+#include "cxx_util.h"
+#include "error_util.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "mmap_file.h"
@@ -55,7 +56,7 @@ void mmap_file::init() {
   fd_ = INVALID_HANDLE_VALUE;
 #endif /* WIN32 */
   size_ = 0;
-  addr_ = 0;
+  addr_ = nullptr;
 }
 
 void mmap_file::open( char const *path, ios::openmode mode ) {
@@ -84,8 +85,9 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
   if ( (fd_ = ::open( path, flags )) == -1 )
     throw ZORBA_IO_EXCEPTION( "open()", path_ );
 
-  if ( (addr_ = ::mmap( 0, size_, prot, MAP_SHARED, fd_, 0 )) == MAP_FAILED ) {
-    addr_ = 0;
+  addr_ = ::mmap( nullptr, size_, prot, MAP_SHARED, fd_, 0 );
+  if ( addr_ == MAP_FAILED ) {
+    addr_ = nullptr;
     throw ZORBA_IO_EXCEPTION( "mmap()", path_ );
   }
 
