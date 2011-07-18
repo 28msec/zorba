@@ -233,7 +233,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DOCUMENT                         "'document'"
 %token DOCUMENT_NODE                    "'document-node'"
 %token ELEMENT                          "'element'"
-%token EVAL                             "'eval'"
 %token FOR                              "'for'"
 %token FUNCTION                         "'function'"
 %token IF                               "'if'"
@@ -6709,7 +6708,6 @@ FUNCTION_NAME :
     |   CONTINUE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("continue"))); }
     |   TRY                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("try"))); }
     |   CATCH                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("catch"))); }
-    |   EVAL                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("eval"))); }
     |   USING                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("using"))); }
     |   SET                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("set"))); }
     |   INDEX                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("index"))); }
