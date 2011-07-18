@@ -1467,12 +1467,16 @@ static_context::apply_url_resolvers
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
         try {
-          // Take ownership of returned Resource (if any)
-          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
-          if (oResource.get() != NULL) {
-            // Populate the URL used to load this Resource
-            oResource->setUrl(*url);
-            return;
+          // if the http-client module is not available, we must not search
+          // for it by calling the http-client...
+          if (*url != "http://www.zorba-xquery.com/modules/http-client") {
+            // Take ownership of returned Resource (if any)
+            oResource.reset((*resolver)->resolveURL(*url, aEntityData));
+            if (oResource.get() != NULL) {
+              // Populate the URL used to load this Resource
+              oResource->setUrl(*url);
+              return;
+            }
           }
         }
         catch (const std::exception& e) {

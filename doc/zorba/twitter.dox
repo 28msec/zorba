@@ -455,6 +455,7 @@ content:
   
   ADD_SUBDIRECTORY("src")
   SETUP_EXTERNAL_MODULE()
+  DONE_DECLARING_ZORBA_URIS()
 \endcode
 
 In the "src" directory we include another CMakeLists.txt file with the following content:

@@ -11,8 +11,8 @@ declare %private variable $client:oauth-token as xs:string := "";
 declare %private variable $client:oauth-token-secret as xs:string := "";
 declare %private variable $client:screen-name as xs:string := "";
 declare %private variable $client:token-file as xs:string := "token.txt";
-declare %private variable $client:consumer-key as xs:string := "YOUR_CONSUMER_KEY";
-declare %private variable $client:consumer-secret as xs:string := "YOUR_CONSUMER_SECRET";
+declare %private variable $client:consumer-key as xs:string := "jRWlInVlgSdSO4pI8NVRIw";
+declare %private variable $client:consumer-secret as xs:string := "C2p7pY0XWM8RGUBBACTqpN62ap65kcQIp1eayDoA";
 
 declare %ann:sequential %ann:nondeterministic function client:tweets()
 {
