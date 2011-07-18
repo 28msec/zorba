@@ -461,6 +461,12 @@ public:
 
   void appendStringValue(zstring& buf) const;
 
+  const zstring& getNamespace() const { return theQName->getNamespace(); }
+
+  const zstring& getPrefix() const { return theQName->getPrefix(); }
+
+  const zstring& getLocalName() const { return theQName->getLocalName(); }
+
   zstring show() const;
 
   virtual SchemaTypeCode getTypeCode() const { return XS_NOTATION; }

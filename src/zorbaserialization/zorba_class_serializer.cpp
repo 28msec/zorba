@@ -509,10 +509,11 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "NOTATION")
       {
-        SERIALIZE_FIELD(zstring, value, getStringValue());
-        FINALIZE_SERIALIZE(createNOTATION, (result, value));
+        SERIALIZE_FIELD(zstring, ns, getNamespace());
+        SERIALIZE_FIELD(zstring, prefix, getPrefix());
+        SERIALIZE_FIELD(zstring, local, getLocalName());
+        FINALIZE_SERIALIZE(createNOTATION, (result, ns, prefix, local));
       }
-         
       else if(name_of_type == "ID")
       {
         SERIALIZE_FIELD(zstring, value, getStringValue());

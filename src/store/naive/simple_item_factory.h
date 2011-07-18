@@ -212,6 +212,12 @@ public:
 
   bool createNOTATION (store::Item_t& result,  zstring& value );
 
+  bool createNOTATION(
+      store::Item_t& result,
+      zstring& ns,
+      zstring& prefix,
+      zstring& local);
+
   bool createNOTATION (store::Item_t& result,  store::Item_t& qname );
 
   bool createName (store::Item_t& result,  zstring& value );

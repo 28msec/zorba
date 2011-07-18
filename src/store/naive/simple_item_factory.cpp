@@ -928,8 +928,19 @@ bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary valu
   return true;
 }
 
+bool BasicItemFactory::createNOTATION(
+    store::Item_t& result,
+    zstring& ns,
+    zstring& prefix,
+    zstring& local)
+{
+  result = new NotationItem(ns, prefix, local);
+  return true;
+}
 
-bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
+bool BasicItemFactory::createNOTATION(
+    store::Item_t& result,
+    zstring& str)
 {
   zstring nsuri;
   zstring prefix;

@@ -169,7 +169,7 @@ public:
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#NOTATION]
-   * @param value string representation of the value
+   * @param value string representation of the value (uri:localname)
    */
   virtual bool createNOTATION(Item_t& result, zstring& value) = 0;
 
@@ -178,6 +178,18 @@ public:
    * @param qname the QName representation of the value
    */
   virtual bool createNOTATION(Item_t& result, Item_t& qname) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#NOTATION]
+   * @param ns the namespace of the notation
+   * @param prefix the prefix of the notation
+   * @param local the localname of the notation
+   */
+  virtual bool createNOTATION(
+      store::Item_t& result,
+      zstring& ns,
+      zstring& prefix,
+      zstring& local) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
