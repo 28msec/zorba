@@ -20,6 +20,11 @@ IF (ZORBA_USE_SWIG)
 
   INCLUDE (${SWIG_USE_FILE})
 
+  COMPARE_VERSION_STRINGS("${SWIG_VERSION}" "1.3.40" result)
+  IF(result LESS 0)
+    MESSAGE(FATAL_ERROR "You need at least SWIG version 1.3.40")
+  ENDIF(result LESS 0)
+
   # Adding all *.i files of the current directory to swig dependencies
   # Important: This can done here for all modules because all modules have the same name (zorba_api or libzorba_api)
   FILE (GLOB SWIG_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.i")
