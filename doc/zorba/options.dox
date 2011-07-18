@@ -1,46 +1,289 @@
-/** \page options Using Option Declarations
+/** \page options_and_annotations Zorba Specific Options and Annotations
 
-\section option_introduction Introduction
 
-Option declarations provide a way to affect the behavior of a particular XQuery implementation. 
-Hence, the availability and semantics of particular options vary for different XQuery processor.
-However, the syntax for declaring options in the prolog of XQuery modules is designed so that all options can be parsed by all XQuery implementations.
+In XQuery, <a href="http://www.w3.org/TR/xquery-30/#id-option-declaration">options</a> and <a href="http://www.w3.org/TR/xquery-30/#id-annotations">annotations</a> can both be used to change the behavior of a particular implementation.
+Options provide a way to affect the behavior of modules.
+Annotations can be used to declare properties associated with functions and variables.
+In the following, we present the Zorba specific options and annotations.
+Also, we describe how they can be dealt with using the C++ API and the introspection module.
 
-For example, an option to declare the SMTP password for sending emails, which is available in the Email module of Zorba, could be used as follows:
+\section option_introduction Options
+
+Options provide a way to affect the behavior of a particular XQuery module. 
+They can be interpreted either by the XQuery processor itself or by the implementation of a particular module (i.e. an external function).
+
+The syntax for declaring options in the prolog of an XQuery module is 
 
 \code
-  declare namespace op = "http://www.zorba-xquery.org/options";
-
-  declare option op:smtppwd "mypasswd";
+  OptionDecl     ::=    "declare" "option" QName StringLiteral
 \endcode
 
-The option declaration consists of a QName (which must resolve to a namespace URI and local name, using the statically known namespaces) and a string literal.
+where QName is the name of the option and StringLiteral is the value that is assigned to this name.
 
-\subsection options_zorba Options for Customizing Zorba
-The namespaces for options which are recognized by Zorba all start with the namespace URI <tt>http://www.zorba-xquery.org/options</tt>.
-Options which are not recognized by Zorba are ignored, i.e. no error will be raised.
+For example, the following declaration disables scripting support in the module that contains the option declaration.
 
-Currently, the following options are recognized:
+\code
+  declare namespace op = "http://www.zorba-xquery.org/options/features";
+
+  declare option op:disable "scripting";
+\endcode
+
+
+\subsection options_zorba Available Options
+
+Zorba provides a number of options which can be used to determine the behavior of a module.
+The namespace for all such options starts with <tt>http://www.zorba-xquery.com/options</tt>.
+An error is raised (zerr:ZXQP0060) if a module declares an option with a namespace that is equal to or starts with this namespace but the local name refers to an option that is not known to Zorba.
+
+In the following, we describe the set of options available in Zorba.
+
+\subsubsection options_features Enabling or Disabling Features
+
+Zorba provides a couple of extensions to XQuery.
+For example, the scripting extension and the data definition facility are both features not defined by the W3C but available in Zorba.
+The user can enable or disable any of these extensions using an option declaration, respectively.
+The URI of the names of these options is <tt>http://www.zorba-xquery.com/options/features</tt>.
+The local name to enable a feature is <tt>enable</tt> and to disable a feature is <tt>disable</tt>, respectively.
+As a value, any of these options allows a comma separated list of feature names (QNames).
+
+For example, to disable the scripting and data definition facility feature, the following option declaration may be used:
+
+\code
+  declare namespace op = "http://www.zorba-xquery.com/options/features";
+  declare namespace f = "http://www.zorba-xquery.com/features";
+
+  declare option op:disable "f:scripting, f:ddl";
+\endcode
+
+If a given feature doesn't specify a prefix, the name is resolved against the default feature namespace <tt>http://www.zorba-xquery.com/features</tt>.
+All Zorba specific features presented in the following are declared in this namespace.
 
 <ul>
-  <li> Options for configuring the SMTP module (see \ref email).
-  <li> Options for enabling and disabling the fn:trace function (see \ref trace).
+  <li><b>scripting:</b> This local name can be used to enable or disable the Zorba Scripting Extension. Per default, the feature is enabled.</li>
+  <li><b>xqddf:</b> The <tt>xqddf</tt> local name refers to the Zorba specific XQuery Data Definition Facility. The feature is enabled by default.</li>
+  <li><b>trace:</b> The <a href="http://www.w3.org/TR/xpath-functions-30/#func-trace">fn:trace</a> function can be used to retrieve an execution trace of a query. The local name <tt>trace</tt> can be used to disable execution trace printing, i.e. calls to fn:trace are eliminated. Per default, the feature is enabled.</li>
+  <li><b>hof:</b> Higher-order functions will be introduced in the upcoming XQuery 3.0 recommendation. This feature is only partially implemented in Zorba. Hence, it is disabled by default. However, the local name <tt>hof</tt> can be used to enable the feature if requested.</li>
+  <li><b>dtd:</b> The local name <tt>dtd</tt> can be used to enable or disable DTD validation when parsing resources retrieved by <a href="http://www.w3.org/TR/xpath-functions-30/#func-doc">fn:doc</a>. DTD validation is disabled by default.</li>
 </ul>
 
-\subsection options_custom Options in Host Languages and External Functions
 
-Besides their use to affect the behavior of Zorba, options can also be used to affect the behavior of an application implemented in a host language (e.g. C or C++). 
-Moreover, options are a useful way to customize  the behavior of external functions.
+\subsubsection options_warning Warnings in Zorba
 
-Therefore, options can be declared or retrieved in the static context. 
-For example, Zorba's C++ API provides the following two functions to retrieve the value of an option declared in a query and declare options to be used in a query, respectively.
+Warnings are diagnostic messages that report constructions which are not inherently erroneous but which are risky or suggest there may have been an error.
+Analogous to errors, warnings are identified by QNames.
+Using options, the user can control whether a particular warning (or all warnings) is (are) enabled, disabled, or treated as an error.
+
+For example, given the following prolog, all warnings are treated as errors:
+
+\code
+  declare namespace op = "http://www.zorba-xquery.com/options/warnings";
+  declare namespace w = "http://www.zorba-xquery.com/warnings";
+
+  declare option op:error "w:all";
+\endcode
+
+If a given warning doesn't specify a prefix, the name is resolved against the default warning namespace <tt>http://www.zorba-xquery.com/warnings</tt>.
+All Zorba specific warnings are defined in this namespace.
+A comprehensive list of warnings is contained at the end of the C++ header file diagnostic_list.h.
+
+The following snippet causes the warning <tt>ZWST0002</tt> (warn for unknown annotations) to be suppressed:
+
+\code
+  declare namespace op = "http://www.zorba-xquery.com/options/warnings";
+
+  declare option op:disable "ZWST0002";
+\endcode
+
+
+\subsubsection options_versioning Zorba Module Versioning
+
+Zorba provides a way that allows the developer of a module to specify a version of his module without changing the target namespace.
+An importing module can specify restriction on the version of a module it wants to use.
+This allows developers to easily declare dependencies between particular versions of a module.
+In addition, a module can specify on which version of Zorba it depends.
+Details about module versioning can be found at \ref modules_page.
+
+The options to declare the module and zorba version are listed here for completeness.
+
+To declare version 2.0 of a module that depends on version 2.0 of Zorba, the following option declaration may be used.
+\code
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+declare option ver:zorba-version "2.0";
+\endcode
+
+\subsection options_introspection Introspecting Options in XQuery
+
+In a module, the introspection module of Zorba can be used to get the value of an option that is declared.
+
+Specifically, the following function retrieves the value of an option that is declared in the prolog of
+the module.
+The function returns the empty sequence if the option is not contained in the static context.
+
+\code
+declare function sctx:option($name as xs:QName) as xs:string? external;
+\endcode
+
+\subsection options_available Options in Host Languages and External Functions
+
+Besides declaring an option in the prolog of a module, options can also be declared or retrieved using the StaticContext representation in any of the language bindings (i.e. C++, C, PHP, Ruby, Python, or Java).
+
+For instance, the C++ API provides the following two functions to retrieve the value of an option declared in a query and declare options to be used in a query, respectively.
 
 <ul>
   <li> bool StaticContext::getOption( const Item& aQName, String& aOptionValue) const;
   <li> void StaticContext::declareOption( const Item& aQName, const String& aOptionValue);
 </ul>
 
-In an external function, the static context of the particular module is also available.
-This way, the programmer of an external function can retrieve the value of an option and can customize the behavior of his function.
+For example, the following code snippet depicts how the higher-order function feature can be enabled for all modules compiled with the given static context.
+
+
+\code
+zorba::StaticContext_t lContext = zorba->createStaticContext();
+
+zorba::Item lEnable = zorba->getItemFactory()->createQName(
+  "http://www.zorba-xquery.com/options/features", "", "enable");
+
+lContext->declareOption(lEnable, "hof");
+
+zorba::XQuery_t lQuery = zorba->compileQuery("1+1", lContext);
+\endcode
+
+Declaring and retrieving the value of an option is particularly useful in external functions.
+The developer of an external function can retrieve the value of an option (from the static context passed to the function).
+This way, she can customize the behavior of her function.
+
+\section annotation_introduction Annotations
+
+In XQuery (starting version 3.0) <a href="http://www.w3.org/TR/xquery-30/#id-annotations">annotations</a> may be used to properties associated with functions and variables.
+Annotations are <tt>(QName, value)</tt> pairs.
+The prefix of the QName is resolved using the statically known namespaces.
+If no prefix is present, the name is the default function namespace.
+
+\subsection annotations_available Available Annotations
+
+\subsubsection xquery_annotations XQuery 3.0 Annotation
+XQuery 3.0 itself defines two annotations: <tt>%fn:public</tt> and <tt>%fn:private</tt>.
+Those annotations allow the user to declare a function or a variable as public or private, respectively.
+A private variable or function is hidden from a module import.
+That is, it can not be used in the importing module.
+
+For example, a function declared a module as follows, can not be used in a module which imports the <tt>mymodule</tt> module:
+
+\code
+declare %private function mymodule:foo() { "foo" };
+\endcode
+
+\subsubsection zorba_annotations Zorba Specific Annotations
+
+Zorba provides a couple of annotations that allow the user to define the semantics
+of functions or variables.
+All these annotations have the namespace <tt>http://www.zorba-xquery.com/annotations</tt>.
+
+\paragraph deterministic_annotation Deterministic and Nondeterministic Functions
+A deterministic function is a function that always evaluates to the same result if it is invoked multiple times with the same arguments during the evaluation of a query.
+In general, all functions defined by XQuery are deterministic.
+However, a module developer might develop a function (in a host language) which does not guarantee to be deterministic.
+For example, a function generating random numbers is clearly not deterministic.
+Knowing about this property is crucial for the query optimizer to retain the semantics.
+
+For this reason, Zorba provides two annotations (<tt>nondeterministic</tt> and <tt>deterministic</tt>) that allow a developer to declare whether a function is deterministic or not.
+
+As an example, the following snippet declares a nondeterministic random function.
+
+\code
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:nondeterministic function random:random() as xs:integer external;
+\endcode
+
+If not specified otherwise, all functions are being treated as deterministic.
+If some function invokes a nondeterministic function, the invoking function itself must also be declared as nondeterministc, otherwise zerr::ZXQP0040 is raised.
+
+\paragraph sequential_annotation Sequential Functions
+In XQuery 3.0, an expression never has any side effects other than constructing new nodes (not even updating expressions, which merely produce a pending update list).
+Zorba Scripting programs may have side effects.
+Side effects can be made with statements.
+An expression is sequential if it contains statements that have side effects (updating some XML, assigning a variable in scope outside of the expression) or that affect the control flow (break, continue, exit returning), or if it invokes a sequential function.
+Analogously to nondeterministic functions, the compiler needs to be able to infer if an expression is sequential.
+In order to do so, Zorba provides the <tt>%ann:sequential</tt> annotation which must be used to declare (external) functions that have side effects.
+If a function invokes a sequential function but is itself not declared sequential, a error is raised (zerr:XSST0004).
+
+For example, the <tt>http:post</tt> function of the http-client module is declared as sequential because invoking it might cause a side effect (e.g. a payment with paypal).
+
+\code
+declare %ann:sequential function http:post(
+  $href as xs:string,
+  $body as item(),
+  $content-type as xs:string) as item()+ { ... }
+\endcode
+
+\paragraph assignable_annotation Assignable and Nonassignale Variables
+In plain XQuery without scripting, global variables (i.e. those declared in the prolog of a module) can not be assigned a value.
+In scripting (i.e. if the scripting feature is enabled), however, values can be assigned to a variable.
+
+In order to allow the developer to prevent variable assignments (even with scripting), Zorba provides the <tt>%ann:nonassignable</tt> annotation.
+
+For example, preventing a variable from being assigned in scripting mode could be done as follows:
+
+\code
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:nonassignable variable $var := 3;
+\endcode
+
+If a value is assigned to a nonassignable variable, the error <tt>XSST0007</tt> in the Zorba error namespace is raised.
+
+\paragraph variadic_annotation Variadic Functions
+A function annotated with the <tt>ann:variadic</tt> annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments.  
+
+For example, the function to create an unordered map with an arbitrary number of key types (see module http://www.zorba-xquery.com/modules/store/data-structures/unordered-map) is declared as follow:
+
+\code
+declare %ann:variadic %ann:sequential function map:create(
+  $name as xs:QName,
+  $key-type as xs:QName) as empty-sequence() external;
+\endcode
+
+\paragraph streamable_annotation Streamable Strings
+A function annotated with the <tt>streamable</tt> annotation is a function that may return an xs:string item whose content is streamed.
+Such a string is called a streamable string.
+They have the advantage that their contents does not need to be materialized in memory.
+If a function consuming such a string is able to process the string in a streaming fashion, this allows for processing of strings with a virtually infinite length.
+
+For example, the following XQuery code, reads a file from disk and returns the contents to the standard output of the calling process.
+Because the file:read-text function is annotated using the <tt>streamable</tt> annotation, the file does not have to be materialized in memory.
+
+\code
+import module namespace file = "http://expath.org/ns/file";
+
+file:read-text("big_file.txt")
+\endcode
+
+However, the disadvantage is that a streamable string can only be consumed exactly once.
+If a streamable string is consumed more than once, an error is raised.
+In order to enable multiple consumers of a streamable string, the materialize function of the string module (http://www.zorba-xquery.com/modules/string) should be used to materialize the entire contents in an (regular) xs:string item.
+
+\code
+import module namespace file = "http://expath.org/ns/file";
+import module namespace string = "http://www.zorba-xquery.com/modules/string";
+
+let $x := string:materialize(file:read-text("myfile.txt")))
+return ($x, $x)
+\endcode
+
+In this example, the <tt>file:read-text</tt> function returns a streamable string whose contents is used twice in the query.
+In order to be able to use the value twice, the <tt>string:materialize</tt> function must be used to materialize the entire contents of the file <tt>myfile.txt</tt> in memory.
+Otherwise, the error zerr:ZSTR0055 is raised.
+
+\subsection annotations_introspection
+
+Analog to options, the introspection module of that comes with Zorba allows you to retrieve all annotations declared for a particular function.
+
+\code
+declare function sctx:function-annotations(
+  $name as xs:QName,
+  $arity as xs:integer) as xs:QName* external;
+\endcode
 
 */
