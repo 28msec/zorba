@@ -30,10 +30,11 @@ namespace zorba {
 #define REGEX_ASCII_DOTALL              2
 #define REGEX_ASCII_MULTILINE           4
 #define REGEX_ASCII_COMMENTS            8
+#define REGEX_ASCII_LITERAL             16
 
 class CRegexAscii_regex;
 
-class ZORBA_DLL_PUBLIC IRegexMatcher
+class IRegexMatcher
 {
 public:
   CRegexAscii_regex *regex_intern;
@@ -44,7 +45,7 @@ public:
   virtual bool match(const char *source, int *matched_len) = 0;
 };
 
-class ZORBA_DLL_PUBLIC IRegexAtom : public IRegexMatcher
+class IRegexAtom : public IRegexMatcher
 {
 public:
   IRegexAtom(CRegexAscii_regex* regex) : IRegexMatcher(regex) {}
@@ -56,35 +57,44 @@ class CRegexAscii_piece;
 class CRegexAscii_chargroup;
 class CRegexAscii_parser;
 
-class ZORBA_DLL_PUBLIC CRegexAscii_regex : public IRegexAtom
+class CRegexAscii_regex : public IRegexAtom
 {
   friend class CRegexAscii_parser;
+  friend class CRegexAscii_branch;
+  friend class CRegexAscii_piece;
+  friend class CRegexAscii_chargroup;
+  friend class CRegexAscii_negchargroup;
+  friend class CRegexAscii_wildchar;
+  friend class CRegexAscii_backref;
 public:
   CRegexAscii_regex(CRegexAscii_regex *);
   virtual ~CRegexAscii_regex();
 
-  bool match_anywhere(const char *source, int flags, int *match_pos, int *matched_len);
-  bool match_from(const char *source, int flags, int *match_pos, int *matched_len);
+  bool match_anywhere(const char *source, unsigned int flags, int *match_pos, int *matched_len);
+  bool match_from(const char *source, unsigned int flags, int *match_pos, int *matched_len);
   virtual bool match(const char *source, int *matched_len);
 
   //for replace $1, $2 ...
   bool  get_indexed_match(int index, const char **matched_source, int *matched_len);
-  int get_indexed_regex_count();
-public:
-  int flags;
+  unsigned int get_indexed_regex_count();
+
+  bool get_reachedEnd() {return reachedEnd;}
+  bool set_align_begin(bool align_begin);
 private:
+  void add_branch(CRegexAscii_branch *branch);
+private:
+  unsigned int flags;
   std::list<CRegexAscii_branch*>   branch_list;
   bool  align_begin;
 
   const char  *matched_source;
   int         matched_len;
-  std::vector<CRegexAscii_regex*>    subregex;
-private:
-  void set_align_begin(bool align_begin);
-  void add_branch(CRegexAscii_branch *branch);
+  std::vector<CRegexAscii_regex*>    subregex;//for grouping
+
+  bool        reachedEnd;
 };
 
-class ZORBA_DLL_PUBLIC CRegexAscii_branch : public IRegexMatcher
+class CRegexAscii_branch : public IRegexMatcher
 {
   friend class CRegexAscii_parser;
 public:
@@ -103,7 +113,7 @@ private:
                         const char *source, int *matched_len);
 };
 
-class ZORBA_DLL_PUBLIC CRegexAscii_piece //: public IRegexMatcher
+class CRegexAscii_piece //: public IRegexMatcher
 {
   friend class CRegexAscii_parser;
 public:
@@ -133,7 +143,7 @@ public:
 #define   CHARGROUP_FLAGS_MULTICHAR   1
 #define   CHARGROUP_FLAGS_ENDLINE     2
 
-class ZORBA_DLL_PUBLIC CRegexAscii_chargroup : public IRegexAtom
+class CRegexAscii_chargroup : public IRegexAtom
 {
   friend class CRegexAscii_parser;
 public:
@@ -157,7 +167,7 @@ public:
   virtual bool match(const char *source, int *matched_len);
 };
 
-class ZORBA_DLL_PUBLIC CRegexAscii_negchargroup : public CRegexAscii_chargroup
+class CRegexAscii_negchargroup : public CRegexAscii_chargroup
 {
 public:
   CRegexAscii_negchargroup(CRegexAscii_regex* regex);
@@ -166,7 +176,7 @@ public:
   virtual bool match(const char *source, int *matched_len);
 };
 
-class ZORBA_DLL_PUBLIC CRegexAscii_wildchar : public IRegexAtom
+class CRegexAscii_wildchar : public IRegexAtom
 {
 public:
   CRegexAscii_wildchar(CRegexAscii_regex* regex);
@@ -175,14 +185,25 @@ public:
   virtual bool match(const char *source, int *matched_len);
 };
 
-class ZORBA_DLL_PUBLIC CRegexAscii_parser
+class CRegexAscii_backref : public IRegexAtom
+{
+public:
+  CRegexAscii_backref(CRegexAscii_regex* regex, unsigned int backref);
+  virtual ~CRegexAscii_backref();
+
+  virtual bool match(const char *source, int *matched_len);
+private:
+  unsigned int backref;
+};
+
+class CRegexAscii_parser
 {
 public:
   CRegexAscii_parser();
   ~CRegexAscii_parser();
 
 public:
-  CRegexAscii_regex* parse(const char *pattern);
+  CRegexAscii_regex* parse(const char *pattern, unsigned int flags);
 
 protected:
   CRegexAscii_regex* parse_regexp(const char *pattern, int *regex_len);
@@ -198,6 +219,7 @@ protected:
 private:
   CRegexAscii_regex   *current_regex;
   int   regex_depth;
+  unsigned int flags;
 };
 
 }}//end namespace zorba::regex_ascii

@@ -30,6 +30,10 @@
 #include "cxx_util.h"
 #include "stl_util.h"
 
+#define INVALID_RE_EXCEPTION(...) \
+  XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
+
+
 #ifndef ZORBA_NO_UNICODE
 # include <unicode/uversion.h>
 U_NAMESPACE_USE
@@ -46,7 +50,6 @@ U_NAMESPACE_USE
     //
 #   define UREGEX_LITERAL 16
 # endif /* U_ICU_VERSION_MAJOR_NUM */
-#endif /* ZORBA_NO_UNICODE */
 
 using namespace std;
 
@@ -87,9 +90,6 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
   }
   return icu_flags;
 }
-
-#define INVALID_RE_EXCEPTION(...) \
-  XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
@@ -264,7 +264,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_NO_UNICODE
 
 namespace unicode {
 
@@ -408,9 +407,259 @@ int regex::get_match_end( int groupId ) {
 
 } // namespace unicode
 
+}//namespace zorba
+
+
+#else /* ZORBA_NO_UNICODE */
+
+#include "zorbatypes/zstring.h"
+
+namespace zorba {
+//no convertion
+void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
+                        char const *flags)
+{
+  *lib_re = xq_re;
+}
+
+namespace unicode {
+
+uint32_t regex::parse_regex_flags(const char* flag_cstr) 
+{
+  uint32_t flags = 0;
+  for (const char* p = flag_cstr; *p != '\0'; ++p) 
+  {
+    switch (*p) 
+    {
+    case 'i': flags |= REGEX_ASCII_CASE_INSENSITIVE; break;
+    case 's': flags |= REGEX_ASCII_DOTALL; break;
+    case 'm': flags |= REGEX_ASCII_MULTILINE; break;
+    case 'x': flags |= REGEX_ASCII_COMMENTS; break;
+    case 'q': flags |= REGEX_ASCII_LITERAL; break;
+    default:
+      throw XQUERY_EXCEPTION( err::FORX0001, ERROR_PARAMS( *p ) );
+      break;
+    }
+  }
+  return flags;
+}
+
+void regex::compile( char const *pattern, char const *flags)
+{
+  parsed_flags = parse_regex_flags(flags);
+  regex_matcher = regex_parser.parse(pattern, parsed_flags);
+  if(!regex_matcher)
+    throw INVALID_RE_EXCEPTION(pattern);
+}
+
+bool regex::match_part( char const *s )
+{
+  bool  retval;
+  int   match_pos;
+  int   matched_len;
+
+  retval = regex_matcher->match_anywhere(s, parsed_flags, &match_pos, &matched_len);
+
+  return retval;
+}
+
+bool regex::next_match( char const *s, size_type *pos, zstring *match )
+{
+  bool  retval;
+  int   match_pos;
+  int   matched_len;
+
+  retval = regex_matcher->match_anywhere(s+*pos, parsed_flags, &match_pos, &matched_len);
+  if(retval)
+  {
+    match->assign(s+*pos+match_pos, matched_len);
+    *pos += match_pos + matched_len;
+  }
+  return retval;
+}
+
+bool regex::next_token( char const *s, size_type *pos, zstring *token,
+                  bool *matched)
+{
+  bool  retval;
+  int   match_pos;
+  int   matched_len;
+
+  retval = regex_matcher->match_anywhere(s+*pos, parsed_flags, &match_pos, &matched_len);
+  if(retval)
+  {
+    if(token)
+      token->assign(s+*pos, match_pos);
+    *pos += match_pos + matched_len;
+    if(matched)
+      if(match_pos)
+        *matched = true;
+      else
+        *matched = false;
+    if(match_pos)
+      return true;
+    else
+      return false;
+  }
+  else
+  {
+    if(token)
+      token->assign(s+*pos);
+    *pos += strlen(s+*pos);
+    if(matched)
+      *matched = false;
+    return s[*pos] != 0;
+  }
+}
+
+bool regex::match_whole( char const *s )
+{
+  bool  retval;
+  int   matched_pos;
+  int   matched_len;
+
+  bool prev_align = regex_matcher->set_align_begin(true);
+  retval = regex_matcher->match_from(s, parsed_flags, &matched_pos, &matched_len);
+  regex_matcher->set_align_begin(prev_align);
+  if(!retval)
+    return false;
+  if(matched_len != strlen(s))
+    return false;
+  return true;
+}
+
+bool regex::replace_all( char const *in, char const *replacement, zstring *result )
+{
+  int   match_pos;
+  int   matched_len;
+
+  const char  *start_str = in;
+  int  subregex_count = regex_matcher->get_indexed_regex_count();
+  bool retval = false;
+
+  while(regex_matcher->match_anywhere(start_str, parsed_flags, &match_pos, &matched_len))
+  {
+    if(match_pos)
+      result->append(start_str , match_pos);
+    retval = true;
+    const char *temprepl = replacement;
+    const char *submatched_source;
+    int   submatched_len;
+    int index;
+    while(*temprepl)
+    {
+      //look for dollars
+      if(*temprepl == '\\')
+      {
+        temprepl++;
+        if(!*temprepl || (*temprepl != '\\') || (*temprepl != '$'))//Invalid replacement string.
+          throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
+        result->append(1, *temprepl);
+        temprepl++;
+        continue;
+      }
+      if(*temprepl == '$')
+      {
+        temprepl++;
+        index = 0;
+        int   nr_digits = 0;
+        while(isdigit(*temprepl))
+        {
+          if(nr_digits && ((index*10 + (*temprepl)-'0') > subregex_count))
+            break;
+          index = index*10 + (*temprepl)-'0';
+          temprepl++;
+          nr_digits++;
+        }
+        if(!nr_digits)//Invalid replacement string.
+          throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
+        else if(!index)
+        {
+          result->append(start_str+match_pos, matched_len);
+        }
+        else if(regex_matcher->get_indexed_match(index, &submatched_source, &submatched_len))
+        {
+          if(submatched_source && submatched_len)
+            result->append(submatched_source, submatched_len);
+        }
+      }
+      else
+      {
+        result->append(1, *temprepl);
+        temprepl++;
+      }
+    }
+    start_str += match_pos + matched_len;
+  }
+  result->append(start_str);
+
+  return retval;
+}
+
+void regex::set_string( const char* in, size_type len )
+{
+  s_in_.assign(in, len);
+  m_pos = 0;
+  m_match_pos = 0;
+  m_matched_len = 0;
+}
+
+bool regex::find_next_match( bool *reachedEnd )
+{
+  bool  retval;
+
+  retval = regex_matcher->match_anywhere(s_in_.c_str()+m_pos, parsed_flags, &m_match_pos, &m_matched_len);
+  if(retval)
+  {
+    m_match_pos += m_pos;
+    m_pos = m_match_pos = m_matched_len;
+  }
+  else
+  {
+    m_pos = s_in_.length();
+    m_match_pos = 0;
+    m_matched_len = 0;
+  }
+  if(reachedEnd)
+    *reachedEnd = regex_matcher->get_reachedEnd();
+  return retval;
+}
+
+int regex::get_pattern_group_count()
+{
+  return (int)regex_matcher->get_indexed_regex_count();
+}
+
+int regex::get_match_start( int groupId )
+{
+  if(groupId == 0)
+    return m_match_pos;
+  if(groupId > (int)regex_matcher->get_indexed_regex_count())
+    return -1;
+  const char *submatched_source;
+  int   submatched_len;
+  if(!regex_matcher->get_indexed_match(groupId, &submatched_source, &submatched_len))
+    return -1;
+  return submatched_source - s_in_.c_str();
+}
+
+int regex::get_match_end( int groupId )
+{
+  if(groupId == 0)
+    return m_match_pos + m_matched_len;
+  if(groupId > (int)regex_matcher->get_indexed_regex_count())
+    return -1;
+  const char *submatched_source;
+  int   submatched_len;
+  if(!regex_matcher->get_indexed_match(groupId, &submatched_source, &submatched_len))
+    return -1;
+  return submatched_source - s_in_.c_str() + submatched_len;
+}
+
+} // namespace unicode
+} // namespace zorba
 #endif /* ZORBA_NO_UNICODE */
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace zorba
 /* vim:set et sw=2 ts=2: */

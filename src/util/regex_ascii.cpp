@@ -19,8 +19,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "regex_ascii.h"
-#include "string.h"
-#include "chartype.h"
+#include <string.h>
+#include "zorbatypes/chartype.h"
 
 namespace zorba {
   namespace regex_ascii{
@@ -31,14 +31,15 @@ namespace zorba {
 ~regExp    ::=    branch ( '|' branch )*  
 ~branch    ::=    piece* 
 ~piece     ::=    atom quantifier? 
-~quantifier    ::=    [?*+] | ( '{' quantity '}' ) 
+~quantifier    ::=    ( [?*+] | ( '{' quantity '}' ) ) '?'? 
 ~quantity    ::=    quantRange | quantMin | QuantExact 
 ~quantRange    ::=    QuantExact ',' QuantExact 
 ~quantMin    ::=    QuantExact ',' 
 ~QuantExact    ::=    [0-9]+ 
-~atom    ::=    Char | charClass | ( '(' regExp ')' ) 
-~Char    ::=    [^.\?*+()|#x5B#x5D] 
-~charClass    ::=    charClassEsc | charClassExpr | WildcardEsc 
+~atom    ::=    Char | charClass | ( '(' '?:'? regExp ')' ) | backReference
+backReference ::= "\" [1-9][0-9]*
+~Char    ::=    [^.\?*+{}()|^$#x5B#x5D] 
+~charClass    ::=    charClassEsc | charClassExpr | WildcardEsc | "^" | "$"
 ~charClassExpr    ::=    '[' charGroup ']' 
 ~charGroup    ::=    posCharGroup | negCharGroup | charClassSub 
 ~posCharGroup    ::=    ( charRange | charClassEsc )+  
@@ -50,7 +51,7 @@ namespace zorba {
 ~XmlChar    ::=    [^\#x2D#x5B#x5D] 
 ~XmlCharIncDash    ::=    [^\#x5B#x5D] 
 ~charClassEsc    ::=    ( SingleCharEsc | MultiCharEsc | catEsc | complEsc )  
-~SingleCharEsc    ::=    '\' [nrt\|.?*+(){}#x2D#x5B#x5D#x5E] 
+~SingleCharEsc    ::=    '\' [nrt\|.?*+(){}$#x2D#x5B#x5D#x5E]
 ~catEsc    ::=    '\p{' charProp '}' 
 ~complEsc    ::=    '\P{' charProp '}' 
 charProp    ::=    IsCategory | IsBlock 
@@ -65,11 +66,12 @@ charProp    ::=    IsCategory | IsBlock
 ////Regular expression parsing and building of the tree
 ////////////////////////////////////
 
-CRegexAscii_regex* CRegexAscii_parser::parse(const char *pattern)
+CRegexAscii_regex* CRegexAscii_parser::parse(const char *pattern, unsigned int flags)
 {
+  this->flags = flags;
   bool align_begin = false;
   
-  if(pattern[0] == '^')
+  if(!(flags & REGEX_ASCII_LITERAL) && (pattern[0] == '^'))
     align_begin = true;
 
   int   regex_len;
@@ -91,8 +93,14 @@ CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern,
   CRegexAscii_regex *regex = new CRegexAscii_regex(current_regex);
   if(!current_regex)
     current_regex = regex;
-  if(regex_depth == 2)
-    current_regex->subregex.push_back(regex);
+  if(regex_depth >= 2)
+  {
+    //mark this as group if it does not start with ?:
+    if(pattern[0] != '?' || pattern[1] != ':')
+      current_regex->subregex.push_back(regex);
+    else
+      *regex_len = 2;
+  }
   CRegexAscii_branch  *branch;
   while(pattern[*regex_len] && (pattern[*regex_len] != ')'))
   {
@@ -106,9 +114,13 @@ CRegexAscii_regex* CRegexAscii_parser::parse_regexp(const char *pattern,
     regex->add_branch(branch);
     *regex_len += branch_len;
   }
+  if((current_regex == regex) && (pattern[*regex_len] == ')'))
+  {
+    throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(U_REGEX_MISMATCHED_PAREN)) );
+  }
   if(pattern[*regex_len])
     (*regex_len)++;
-
+  regex->flags = 0;//finished initialization
   regex_depth--;
   return regex;
 }
@@ -143,8 +155,8 @@ CRegexAscii_piece* CRegexAscii_parser::parse_piece(const char *pattern, int *pie
   IRegexAtom  *atom;
   *piece_len = 0;
 
-  int   atom_len;
-  int   quantif_len;
+  int   atom_len = 0;
+  int   quantif_len = 0;
   atom = read_atom(pattern, &atom_len);
   if(!atom)
   {
@@ -152,7 +164,8 @@ CRegexAscii_piece* CRegexAscii_parser::parse_piece(const char *pattern, int *pie
     return NULL;
   }
   piece->set_atom(atom);
-  read_quantifier(piece, pattern+atom_len, &quantif_len);
+  if(!(flags & REGEX_ASCII_LITERAL))
+    read_quantifier(piece, pattern+atom_len, &quantif_len);
 
   *piece_len += atom_len + quantif_len;
 
@@ -214,7 +227,6 @@ char CRegexAscii_parser::readChar(const char *pattern, int *char_len, bool *is_m
       {
         while(pattern[*char_len] != '}')
           (*char_len)++;
-
       }
       break;
       //multiCharEsc
@@ -261,38 +273,91 @@ IRegexAtom* CRegexAscii_parser::read_atom(const char *pattern, int *atom_len)
   char  c;
   bool is_end_line = false;
   c = pattern[*atom_len];
+  if((!(flags & REGEX_ASCII_LITERAL)) && (c == '\\'))
+  {
+    //check for back reference
+    if(myisdigit(pattern[(*atom_len)+1]))
+    {
+      (*atom_len)++;
+      if(pattern[*atom_len] == '0')
+      {
+        throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(U_REGEX_INVALID_BACK_REF)) );
+      }
+      unsigned int backref = pattern[*atom_len] - '0';
+      if((backref > current_regex->subregex.size()) ||
+        (current_regex->subregex.at(backref-1)->flags != 0))
+      {
+        throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(U_REGEX_INVALID_BACK_REF)) );
+      }
+      while(current_regex->subregex.size() >= backref*10)
+      {
+        if(myisdigit(pattern[(*atom_len)+1]))
+        {
+          if(((backref*10+pattern[(*atom_len)+1]-'0') <= current_regex->subregex.size()) &&
+            (current_regex->subregex.at(backref*10+pattern[(*atom_len)+1]-'0'-1)->flags == 0))
+          {
+            (*atom_len)++;
+            backref = backref*10 + pattern[*atom_len]-'0';
+          }
+          else
+            break;
+        }
+      }
+      return new CRegexAscii_backref(current_regex, backref);
+    }
+  }
   switch(c)
   {
   case '[':
   {
-    (*atom_len)++;
-    CRegexAscii_chargroup *chargroup = NULL;
-    int chargroup_len;
-    chargroup = readchargroup(pattern+*atom_len, &chargroup_len);
-    *atom_len += chargroup_len;
-    return chargroup;
+    if(!(flags & REGEX_ASCII_LITERAL))
+    {
+      (*atom_len)++;
+      CRegexAscii_chargroup *chargroup = NULL;
+      int chargroup_len;
+      chargroup = readchargroup(pattern+*atom_len, &chargroup_len);
+      *atom_len += chargroup_len;
+      return chargroup;
+    }
   }
   case '.'://WildCharEsc
   {
-    CRegexAscii_wildchar  *wildchar = new CRegexAscii_wildchar(current_regex);
-    (*atom_len)++;
-    return wildchar;
+    if(!(flags & REGEX_ASCII_LITERAL))
+    {
+      CRegexAscii_wildchar  *wildchar = new CRegexAscii_wildchar(current_regex);
+      (*atom_len)++;
+      return wildchar;
+    }
   }
   case '('://begin an embedded reg exp
-  {  (*atom_len)++;
-    CRegexAscii_regex *emb_regex = NULL;
-    int   regex_len;
-    emb_regex = parse_regexp(pattern + *atom_len, &regex_len);
-    *atom_len += regex_len;
-    return emb_regex;
+  {  
+    if(!(flags & REGEX_ASCII_LITERAL))
+    {
+      (*atom_len)++;
+      CRegexAscii_regex *emb_regex = NULL;
+      int   regex_len;
+      emb_regex = parse_regexp(pattern + *atom_len, &regex_len);
+      *atom_len += regex_len;
+      return emb_regex;
+    }
   }
   case '$'://end line
-    is_end_line = true;
+    if(!(flags & REGEX_ASCII_LITERAL))
+    {
+      is_end_line = true;
+    }
   default:
-  {  char  c;
+  {  
+    char  c;
     int   c_len;
-    bool  is_multichar;
-    c = readChar(pattern+*atom_len, &c_len, &is_multichar);
+    bool  is_multichar = false;
+    if(!(flags & REGEX_ASCII_LITERAL))
+      c = readChar(pattern+*atom_len, &c_len, &is_multichar);
+    else
+    {
+      c = pattern[*atom_len];
+      c_len = 1;
+    }
     CRegexAscii_chargroup *chargroup = new CRegexAscii_chargroup(current_regex);
     if(is_multichar)
       chargroup->addMultiChar(c);
@@ -463,6 +528,7 @@ CRegexAscii_regex::CRegexAscii_regex(CRegexAscii_regex *topregex) : IRegexAtom(t
 {
   matched_source = NULL;
   matched_len = 0;
+  flags = 128;//set to 0 after initialization
 }
 
 CRegexAscii_regex::~CRegexAscii_regex()
@@ -482,9 +548,11 @@ CRegexAscii_regex::~CRegexAscii_regex()
 */
 }
 
-void CRegexAscii_regex::set_align_begin(bool align_begin)
+bool CRegexAscii_regex::set_align_begin(bool align_begin)
 {
+  bool prev_align = this->align_begin;
   this->align_begin = align_begin;
+  return prev_align;
 }
 
 void CRegexAscii_regex::add_branch(CRegexAscii_branch *branch)
@@ -500,11 +568,13 @@ bool  CRegexAscii_regex::get_indexed_match(int index,
     return false;
   CRegexAscii_regex *subr = subregex[index-1];
   *matched_source = subr->matched_source;
+  if(!*matched_source)
+    return false;
   *matched_len = subr->matched_len;
   return true;
 }
 
-int CRegexAscii_regex::get_indexed_regex_count()
+unsigned int CRegexAscii_regex::get_indexed_regex_count()
 {
   return subregex.size();
 }
@@ -626,6 +696,16 @@ CRegexAscii_wildchar::~CRegexAscii_wildchar()
 {
 }
 
+CRegexAscii_backref::CRegexAscii_backref(CRegexAscii_regex* regex, unsigned int backref_) :
+      IRegexAtom(regex),
+      backref(backref_)
+{
+}
+
+CRegexAscii_backref::~CRegexAscii_backref()
+{
+}
+
 CRegexAscii_parser::CRegexAscii_parser()
 {
   current_regex = NULL;
@@ -642,18 +722,25 @@ CRegexAscii_parser::~CRegexAscii_parser()
 /////////////////////////////////////////
 
 //try every position in source to match the pattern
-bool CRegexAscii_regex::match_anywhere(const char *source, int flags,
+bool CRegexAscii_regex::match_anywhere(const char *source, unsigned int flags,
                                        int *match_pos, int *matched_len)
 {
   *match_pos = 0;
+  reachedEnd = false;
   return match_from(source, flags, match_pos, matched_len);
 }
 
-bool CRegexAscii_regex::match_from(const char *source, int flags,
+bool CRegexAscii_regex::match_from(const char *source, unsigned int flags,
                                        int *match_pos, int *matched_len)
 {
   this->flags = flags;
+  reachedEnd = false;
 
+  std::vector<CRegexAscii_regex*>::iterator regex_it;
+  for(regex_it = subregex.begin(); regex_it != subregex.end(); regex_it++)
+  {
+    (*regex_it)->matched_source = NULL;
+  }
 //  if(!source[0])
 //  {
 //    if(branch_list.empty())
@@ -709,6 +796,7 @@ bool CRegexAscii_regex::match_from(const char *source, int flags,
 //match any of the branches
 bool CRegexAscii_regex::match(const char *source, int *matched_len)
 {
+  reachedEnd = false;
   std::list<CRegexAscii_branch*>::iterator  branch_it;
 
   for(branch_it = branch_list.begin(); branch_it != branch_list.end(); branch_it++)
@@ -859,7 +947,10 @@ bool CRegexAscii_piece::match_piece_times(const char *source,
       return false;
     *piecelen += atomlen;
     if(!atomlen && !source[*piecelen])
+    {
+      atom->regex_intern->reachedEnd = true;
       break;
+    }
   }
   if(match_lens)
     match_lens->push_back(*piecelen);
@@ -875,6 +966,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
 
   if(!source[0])
   {
+    regex_intern->reachedEnd = true;
     if(chargroup_list.empty())
       return true;
     else if((chargroup_list.size() == 1) && (chargroup_list.begin()->flags == CHARGROUP_FLAGS_ENDLINE))
@@ -919,6 +1011,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
           switch(source[0])
           {
           case 0:
+            regex_intern->reachedEnd = true;
           case '\t':
           case '\r':
           case '\n':
@@ -1007,7 +1100,10 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
 bool CRegexAscii_negchargroup::match(const char *source, int *matched_len)
 {
   if(!source[0])
+  {
+    regex_intern->reachedEnd = true;
     return false;
+  }
   if(!CRegexAscii_chargroup::match(source, matched_len))
   {
     *matched_len = 1;
@@ -1018,18 +1114,43 @@ bool CRegexAscii_negchargroup::match(const char *source, int *matched_len)
 
 bool CRegexAscii_wildchar::match(const char *source, int *matched_len)
 {
-  if(source[0] && (source[0] != '\n') && (source[0] != '\r'))
+  *matched_len = 0;
+  if(source[0])
   {
-    *matched_len = 1;
-    return true;
+    if((regex_intern->flags & REGEX_ASCII_DOTALL) || 
+      (source[0] != '\n') && (source[0] != '\r'))
+    {
+      *matched_len = 1;
+      return true;
+    }
+    else
+      return false;
   }
   else
   {
+    if(!source[0])
+      regex_intern->reachedEnd = true;
     *matched_len = 0;
     return false;
   }
 }
 
+bool CRegexAscii_backref::match(const char *source, int *matched_len)
+{
+  const char *submatch = regex_intern->subregex.at(backref-1)->matched_source;
+  if(!submatch)
+  {
+    *matched_len = 0;
+    return true;
+  }
+  *matched_len = regex_intern->subregex.at(backref-1)->matched_len;
+  if(!strncmp(source, submatch, *matched_len))
+  {
+    return true;
+  }
+  *matched_len = 0;
+  return false;
+}
 
   }//end namespace regex_ascii
 }//end namespace zorba

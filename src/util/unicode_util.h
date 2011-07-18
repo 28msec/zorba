@@ -263,7 +263,13 @@ inline bool to_string( StringType const &in, string *out ) {
 } // namespace unicode
 } // namespace zorba
 
+#else
 #endif /* ZORBA_NO_UNICODE */
+namespace zorba{
+namespace unicode{
+typedef int32_t size_type;
+} // namespace unicode
+} // namespace zorba
 #endif /* ZORBA_UNICODE_UTIL_H */
 /*
  * Local variables:
