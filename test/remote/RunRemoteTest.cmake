@@ -64,6 +64,11 @@ string (REPLACE ":" "-" datetime "${datetime}")
 set (workdir "${CMAKE_ZORBA_BUILD_DIR}/remotequeue/changes-${datetime}")
 svn_package ("${srcdir}" "${workdir}" "${changelist}" "${workdir}/zorba.tgz")
 
+# Save the local "svn info" so the remote queue easily knows what branch
+# we're working in
+execute_process (COMMAND "${svn}" info --xml
+  WORKING_DIRECTORY "${srcdir}" OUTPUT_FILE "${workdir}/zorba-info.xml")
+
 # Extract ZORBA_MODULE_DIR. This seems like a kludgy approach, but
 # unfortunately load_cache() can't be called in CMake scripts.
 set (cache_regex "^ZORBA_MODULES_DIR:PATH=(.*)$")
