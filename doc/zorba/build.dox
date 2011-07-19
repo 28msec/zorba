@@ -311,7 +311,6 @@ Now you are ready to call <tt>nmake</tt> from the <tt>[ZORBABUILD]</tt> director
 
 \subsection https_support HTTPS support
 - In order to have SSL support in Zorba you have to use the CURL library that has SSL support. 
-- To use CURL+SSL you have to set ZORBA_WITH_REST and ZORBA_WITH_SSL to ON in cmake.
 - There is one more thing: in order to validate the server's certificate, CURL+SSL needs to know
 about the root Certificates of Authenticity (CA), this is a set of public keys freely available on the internet. 
 - On Windows, Zorba expects this file to be called "cacert.pem" and searches for it in current dir and system paths. 

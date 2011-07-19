@@ -76,7 +76,7 @@ Check out the \ref build page, section \ref packages for more details.
 
 \subsection ZORBA_VERIFY_PEER_SSL_CERTIFICATE ZORBA_VERIFY_PEER_SSL_CERTIFICATE
 Default OFF
-External dependency: curl with ssl and CA certifs file
+External dependency: curl with ssl and CA certificates file
 
 In order to use a more reliable SSL connection for data transfer, CURL library
 can verify the certificate of the peer against the list of CA certificates in
@@ -107,20 +107,6 @@ Default ON
 External dependency: libxml2
 
 ..to be completed
-
-\subsection ZORBA_WITH_REST ZORBA_WITH_REST
-Default ON
-External dependency: cURL 7.12 or higher (http://curl.haxx.se/)
-
-This option activates the access to the internet through CURL library, either
-downloading documents from http:// or accessing webservices through REST.
-
-\subsection ZORBA_WITH_SSL ZORBA_WITH_SSL
-Default ON
-External dependency: cURL with SSL
-
-If you don't have or don't use CURL library with SSL built in, then you can use
-this option to disable SSL access.
 
 \subsection ZORBA_XQUERYX ZORBA_XQUERYX
 Default OFF
