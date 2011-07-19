@@ -290,7 +290,12 @@ bool NamespaceUriForPrefixIterator::nextImpl(
 //  and
 //  namespace-uri-for-prefix((), <a/>)
 //  should return the empty sequence
-  if(consumeNext(itemPrefix, theChildren[0].getp(), planState )) 
+  if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
+  {
+    resNs = theSctx->default_elem_type_ns();
+    found = true;
+  }
+  else
   {
     if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
     {
