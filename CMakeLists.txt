@@ -267,7 +267,12 @@ MESSAGE (STATUS "")
 #
 IF (NOT ZORBA_SUPPRESS_SWIG)
   FIND_PACKAGE (SWIG)
-  MESSAGE (STATUS "")
+
+  COMPARE_VERSION_STRINGS("${SWIG_VERSION}" "1.3.40" result)
+  IF(result LESS 0)
+    MESSAGE(FATAL_ERROR "You need at least SWIG version 1.3.40")
+  ENDIF(result LESS 0)
+
 
   IF (SWIG_FOUND)
     # this will be used both in swig and doc sub-directories
@@ -276,15 +281,12 @@ IF (NOT ZORBA_SUPPRESS_SWIG)
     # PHP5
     #
     FIND_PACKAGE (PHP5)
-    MESSAGE (STATUS "")
 
     #
     # Python
     #
     FIND_PACKAGE (PythonInterp)
-    MESSAGE (STATUS "")
     FIND_PACKAGE (PythonLibs)
-    MESSAGE (STATUS "")
     
   ELSE (SWIG_FOUND)
     MESSAGE (STATUS "SWIG not found => no language bindings are generated.")  
