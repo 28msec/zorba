@@ -23,7 +23,7 @@ where QName is the name of the option and StringLiteral is the value that is ass
 For example, the following declaration disables scripting support in the module that contains the option declaration.
 
 \code
-  declare namespace op = "http://www.zorba-xquery.org/options/features";
+  declare namespace op = "http://www.zorba-xquery.com/options/features";
 
   declare option op:disable "scripting";
 \endcode
