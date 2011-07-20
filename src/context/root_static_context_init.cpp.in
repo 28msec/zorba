@@ -21,8 +21,8 @@
 namespace zorba {
 
   const char* root_static_context::theBuiltInModulePaths[] = { 
-    "@CMAKE_BINARY_DIR@/URI_PATH/",
     "@CMAKE_INSTALL_PREFIX@/share/modules/",
+    "@CMAKE_BINARY_DIR@/URI_PATH/",
     0 };
 
 } /* namespace zorba */

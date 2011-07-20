@@ -251,13 +251,17 @@ MACRO (DECLARE_ZORBA_MODULE)
     # "libext.so.2.0", which is difficult to transmogrify into the
     # target filename we actually want later. So in either case, the
     # target property isn't desirable.
+    # FOLDER is to (try to) make Visual Studio projects a bit less
+    # cluttered.
     SET_TARGET_PROPERTIES(${module_lib_target} PROPERTIES
-      OUTPUT_NAME "${module_filewe}${SUFFIX}"
+      OUTPUT_NAME "${module_filewe}_${MODULE_VERSION}${SUFFIX}"
       ${target_type}_OUTPUT_DIRECTORY
       "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src"
       FOLDER "ModuleLibs")
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
+    INSTALL(TARGETS ${module_lib_target}
+      ${target_type} DESTINATION share/modules/${module_path})
 
   ENDIF(MODULE_EXTRA_SOURCES OR EXISTS "${SOURCE_FILE}.src/")
 
@@ -266,9 +270,9 @@ MACRO (DECLARE_ZORBA_MODULE)
   # the output directory.
 
   IF (MODULE_OUTPUT_DIRECTORY)
-    SET (output_dir "${MODULE_OUTPUT_DIRECTORY}/${module_path}")
+    SET (output_dir "${MODULE_OUTPUT_DIRECTORY}")
   ELSE (MODULE_OUTPUT_DIRECTORY)
-    SET (output_dir "${CMAKE_BINARY_DIR}/URI_PATH/${module_path}")
+    SET (output_dir "${CMAKE_BINARY_DIR}/URI_PATH")
   ENDIF (MODULE_OUTPUT_DIRECTORY)
   SET (output_files)
   SET (version_infixes)
@@ -279,22 +283,18 @@ MACRO (DECLARE_ZORBA_MODULE)
     ENDIF (patch_ver)
   ENDIF (MODULE_VERSION)
   FOREACH (version_infix "" ${version_infixes})
-    ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}/${module_filename}"
-      "${version_infix}" "")
+    ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}"
+      "${module_path}/${module_filename}" "${version_infix}" "")
   ENDFOREACH (version_infix)
 
   # Also copy the dynamic library from the location it was built.
-  # Because the dynamic library is only loaded after the .xq file, the
-  # exact module version is known; thus only one copy needs to be
-  # made.
   IF (module_lib_target)
     GET_TARGET_PROPERTY (lib_location "${module_lib_target}" LOCATION)
     GET_FILENAME_COMPONENT (lib_filename "${lib_location}" NAME)
-    ADD_COPY_RULE ("${lib_location}" "${output_dir}/${lib_filename}"
-      "${MODULE_VERSION}" "${module_lib_target}")
+    ADD_COPY_RULE ("${lib_location}" "${output_dir}"
+      "${module_path}/${lib_filename}"
+      "" "${module_lib_target}")
   ENDIF (module_lib_target)
-
-  ENSURE_URI_PATH_INSTALLED()
 
 ENDMACRO (DECLARE_ZORBA_MODULE)
 
@@ -322,38 +322,45 @@ MACRO (DECLARE_ZORBA_SCHEMA)
   MANGLE_URI (${SCHEMA_URI} "xsd" schema_path schema_filename)
 
   IF (SCHEMA_OUTPUT_DIRECTORY)
-    SET (output_dir "${SCHEMA_OUTPUT_DIRECTORY}/${schema_path}")
+    SET (output_dir "${SCHEMA_OUTPUT_DIRECTORY}")
   ELSE (SCHEMA_OUTPUT_DIRECTORY)
-    SET (output_dir "${CMAKE_BINARY_DIR}/URI_PATH/${schema_path}")
+    SET (output_dir "${CMAKE_BINARY_DIR}/URI_PATH")
   ENDIF (SCHEMA_OUTPUT_DIRECTORY)
 
-  ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}/${schema_filename}" "" "")
+  ADD_COPY_RULE ("${SOURCE_FILE}" "${output_dir}"
+    "${schema_path}/${schema_filename}" "" "")
 
-  ENSURE_URI_PATH_INSTALLED()
 ENDMACRO (DECLARE_ZORBA_SCHEMA)
 
 # Utility macro for setting up a build rule to copy a file to a
 # particular versioned name if such a name has not already been
 # output.
-MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET)
+# INPUT_FILE: Absolute path to file to copy.
+# OUTPUT_DIR: Absolute path to root of directory to copy into.
+# OUTPUT_FILE: Relative path to output file (relative to OUTPUT_DIR).
+# VERSION_ARG: Version; may be "" for non-versioned files.
+# DEPEND_TARGET: A CMake target name upon which the copy rule should depend;
+#    may be "".
+MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_DIR OUTPUT_FILE VERSION_ARG DEPEND_TARGET)
   # Compute the modified output filename by inserting VERSION_ARG (if
   # non-empty) in front of its extension.
   GET_FILENAME_COMPONENT (_output_dir "${OUTPUT_FILE}" PATH)
   GET_FILENAME_COMPONENT (_output_filename "${OUTPUT_FILE}" NAME_WE)
   GET_FILENAME_COMPONENT (_output_ext "${OUTPUT_FILE}" EXT)
+  message (STATUS "${OUTPUT_FILE}...${_output_dir}...${_output_filename}...${_output_ext}")
   IF (NOT "${VERSION_ARG}" STREQUAL "")
-    SET (_output_file
-      "${_output_dir}/${_output_filename}_${VERSION_ARG}${_output_ext}")
+    SET (_output_filename "${_output_filename}_${VERSION_ARG}${_output_ext}")
   ELSE (NOT "${VERSION_ARG}" STREQUAL "")
-    SET (_output_file "${OUTPUT_FILE}")
+    SET (_output_filename "${_output_filename}${_output_ext}")
   ENDIF (NOT "${VERSION_ARG}" STREQUAL "")
+  SET (_output_file "${OUTPUT_DIR}/${_output_dir}/${_output_filename}")
 
   # We maintain a global CMake property named after the output
   # directory which remembers all known output source files. If the
   # output file we just computed is already on that list, that means
   # that a module with the same URI but a higher version number has
   # already declared that output file, so we skip it now.
-  STRING (REGEX REPLACE "[/ ]" "_" _dir_sym "${_output_dir}")
+  STRING (REGEX REPLACE "[/ ]" "_" _dir_sym "${OUTPUT_DIR}/${_output_dir}")
   GET_PROPERTY (target_files GLOBAL PROPERTY "${_dir_sym}-output-files")
   LIST (FIND target_files "${_output_file}" file_found)
   IF (file_found EQUAL -1)
@@ -362,7 +369,14 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET)
     # Save the input file, output file, and any library dependency
     # target for this rule in a global property
     SET_PROPERTY (GLOBAL APPEND PROPERTY ZORBA_URI_FILES
-      "${INPUT_FILE}" "${_output_file}" "${DEPEND_TARGET}")    
+      "${INPUT_FILE}" "${_output_file}" "${DEPEND_TARGET}")
+
+    # For .xq and .xsd files, also set up an INSTALL rule.
+    IF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
+      INSTALL (FILES "${INPUT_FILE}"
+               DESTINATION "share/modules/${_output_dir}"
+               RENAME "${_output_filename}")
+    ENDIF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
   ENDIF (file_found EQUAL -1)
 ENDMACRO (ADD_COPY_RULE)
 
@@ -399,17 +413,6 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
     SET_PROPERTY (GLOBAL PROPERTY ZORBA_URI_FILES)
   ENDIF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
-
-# Utility macro which ensures there exactly one INSTALL() directive
-# for the URI path.
-MACRO (ENSURE_URI_PATH_INSTALLED)
-  GET_PROPERTY (is_installed GLOBAL PROPERTY ZORBA_URI_PATH_INSTALLED)
-  IF(NOT is_installed)
-    INSTALL(DIRECTORY "${PROJECT_BINARY_DIR}/URI_PATH/."
-      DESTINATION "share/modules/")
-    SET_PROPERTY(GLOBAL PROPERTY ZORBA_URI_PATH_INSTALLED 1)
-  ENDIF(NOT is_installed)
-ENDMACRO (ENSURE_URI_PATH_INSTALLED)
 
 # Initialize expected failures output file when first included
 set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
