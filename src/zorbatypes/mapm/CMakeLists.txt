@@ -55,7 +55,11 @@ SET(MAPM_SRCS
 # disable warning "assuming signed overflow does not occur when assuming that (X + c) < X is always false."
 # no signed overflow may occur in these parts of mapm
 IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  FOREACH(MAPM_SRC ${MAPM_SRCS})
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/zorbatypes/mapm/${MAPM_SRC} PROPERTIES COMPILE_FLAGS "-Wstrict-overflow=0")
-  ENDFOREACH(MAPM_SRC)
+  INCLUDE (CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG (-Wstrict-overflow _works)
+  IF (_works)
+    FOREACH(MAPM_SRC ${MAPM_SRCS})
+      SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/zorbatypes/mapm/${MAPM_SRC} PROPERTIES COMPILE_FLAGS "-Wstrict-overflow=0")
+    ENDFOREACH(MAPM_SRC)
+  ENDIF (_works)
 ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

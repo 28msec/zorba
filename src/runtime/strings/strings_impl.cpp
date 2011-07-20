@@ -1838,7 +1838,9 @@ bool FnAnalyzeStringIterator::nextImpl(
       streambuf_read = (unsigned int)instream->gcount();
       if(streambuf_read == STREAMBUF_CHUNK_SIZE)
       {
-        zstring::const_reverse_iterator xqit = xquery_pattern.rbegin();
+	// Note: const_reverse_iterator would work here, but does not
+	// compile with gcc 4.0.1 (which is the version in Xcode on MacOS 10.5).
+        zstring::reverse_iterator xqit = xquery_pattern.rbegin();
         if((xqit != xquery_pattern.rend()) && (flags.find('m') == std::string::npos))
         {
           if(*xqit == '$')

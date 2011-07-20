@@ -309,7 +309,7 @@ bool DynamicContextImpl::setVariable(
         &&
         (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001, ERROR_PARAMS( "#x"
+      throw XQUERY_EXCEPTION(err::FOCH0001, ERROR_PARAMS( zstring("#x")
           + BUILD_STRING(std::uppercase << std::hex << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
     }
 
