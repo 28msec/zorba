@@ -7,26 +7,28 @@
   
   <b><a href="http://xqdt.org" target="_blank">XQuery Development Toolkit (XQDT)</a></b>
 
-  <b><a href="/modules/index">Rich Module Library</a></b>
+  <b><a href="../xqdoc/xhtml/index.html">Rich Module Library</a></b>
 
-  <b><a href="#">Module Lifecycle</a></b>
+  <b>\ref module_lifecycle</b>
   <ul>  
-    <li><a href="#">Importing a Module</a></li>
-    <li><a href="#">Packaging &amp; Versionning</a></li>  
-    <li><a href="#">Creating a Module</a></li>
+    <li>\ref ml_importing_module</li>
+    <li>\ref ml_packs_versioning</li>  
+    <li>\ref ml_creating_module</li>
   </ul>
 
-  <b><a href="#">Data Lifecycle</a></b>
+  <b>\ref data_lifecycle</b>
   <ul>
-    <li><a href="#">Zorba Store</a></li>
-    <li><a href="#">Loading Data</a></li>
-    <li><a href="#">Manipulating Data</a></li>
+    <li>\ref dl_zorba_store</li>
+    <li>\ref dl_loading_data</li>
+    <li>\ref dl_manipulating_data</li>
   </ul>
    
-  <b><a href="#">Schema Lifecycle</a></b>
+  <b>\ref schema_lifecycle</b>
 
   <b>\ref uriresolvers</b>
   
+  <b>\ref data_converters</b>
+
   <b>\ref ft_top</b>
   <ul>
     <li>\ref ft_stemmer
@@ -35,13 +37,13 @@
 
   <b>\ref options_and_annotations</b>
 
-  <b><a href="#">Controling Memory Consumption and Performance</a></b>
+  <b>\ref controling_memory</b>
 
-  <b><a href="#">Implementation Dependent Features</a></b>
+  <b>\ref impl_dep_features</b>
   
   <b><a href="../../cxx/html/index.html">C++ API</a></b> 
 
-  <b><a href="#">XQuery Errors and Warnings</a>
+  <b>\ref errors_warnings</b>
  
   <b>Language Bindings</b>
   <ul>
@@ -52,9 +54,9 @@
     <li><a class="el" href="../../php/html/index.html">PHP API</a>
   </ul>
 
-  <b><a href="#">Plugable Components</a></b>
+  <b>\ref plugable_components</b>
   
-  <b>Specifications</b>
+  <b>W3C Specifications</b>
   <ul>
     <li><a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a>  (<a href="#">Conformance</a>)</li>
     <li><a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a>  (<a href="#">Conformance</a>)</li>
@@ -64,6 +66,12 @@
     <li><a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a></li>
     <li><a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX) (Second Edition)</a></li>
     <li><a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization (Second Edition)</a></li>
+  </ul>
+
+  <b>Zorba Proprietary Specifications</b>
+  <ul>
     <li><a href="http://xquery-scripting.ethz.ch/spec.html">XQuery Scripting Extension</a> (\ref scripting_tutorial)</li>
+    <li>\ref xqddf</li>
+    <li>\ref extensions_update</li>
   </ul>
    */

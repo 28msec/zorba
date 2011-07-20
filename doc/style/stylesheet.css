@@ -332,6 +332,7 @@ TD.tiny {
 }
 a {
     color: #1A41A8;
+    text-decoration:  none;
 }
 a:visited {
     color: #2A3798;
@@ -581,7 +582,13 @@ table.ft_rels th {
   margin: 14px 0;
 }
 
+
 /* If the website stylesheet is not present, we don't display the header and footer. */
 #header, #featuring, #footer {
   display: block;
+}
+
+.header
+{
+  clear: left;
 }
