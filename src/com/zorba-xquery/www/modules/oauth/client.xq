@@ -25,9 +25,10 @@ import module namespace oerr="http://www.zorba-xquery.com/modules/oauth/error";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare namespace op = "http://www.zorba-xquery.org/options";
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
 
-declare option op:trace "disable";
+declare option op:disable "f:trace";
 declare option ver:module-version "1.0";
 
 (:~
