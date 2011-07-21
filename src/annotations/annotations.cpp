@@ -360,7 +360,7 @@ void AnnotationList::createBuiltIn(static_context* aCtx)
 
   // create a set of rules to detect conflicts between annotations
 #define ZANN(a) \
-  ( static_cast<uint64_t>(StaticContextConsts:: a) ? 2<<static_cast<uint64_t>(StaticContextConsts:: a) - 1: 1) 
+  ( 1 << static_cast<uint64_t>(StaticContextConsts:: a) )
   theRuleSet.push_back(
        ZANN(zann_unique) |
        ZANN(zann_nonunique)
