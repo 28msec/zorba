@@ -430,17 +430,21 @@ body {
   overflow: visible;
   white-space: nowrap;
 }
+
 .innerheader div{
   float: left;
   position: relative;
   white-space: nowrap;
+  line-height: 1;
 }
+
 .innerheader h1 {
   text-align: left;
   font-size: 42px;
   padding-top: 28px;
   padding-left: 66px;
   font-weight: bolder;
+  font-family: 'Lucida Grande',Helvetica,Arial,sans-serif;
 }
 
 .innerheader a {
@@ -448,12 +452,14 @@ body {
   text-align: left;
   font-weight: bolder;
   text-decoration: none;
+  font-family: 'Lucida Grande',Helvetica,Arial,sans-serif;
 }
 
 .innerheader p {
   font-size: 13px;
   padding-top: 5px;
   padding-left: 66px;
+  font-family: 'Lucida Grande',Helvetica,Arial,sans-serif;
 }
 
 .innerheader img {
