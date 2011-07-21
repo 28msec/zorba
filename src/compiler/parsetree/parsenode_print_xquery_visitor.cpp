@@ -433,7 +433,19 @@ void* begin_visit(const FunctionDecl& n)
         }
       }
 
-      os << "%" << lAnn->get_qname()->get_localname();
+      os << "%";
+      if(lAnn->get_qname()->is_eqname())
+      {
+        os << '"' << lAnn->get_qname()->get_namespace() << '"' << ":";
+      }
+      else
+      {
+        if(!lAnn->get_qname()->get_prefix().empty())
+        {
+          os << lAnn->get_qname()->get_prefix() << ":";
+        }
+      }
+      os << lAnn->get_qname()->get_localname();
       if (!lAttrValue.str().empty())
       {
         os << "(" << lAttrValue.str() << ")";

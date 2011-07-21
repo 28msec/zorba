@@ -1461,7 +1461,7 @@ declare function xqdoc2html:split-function-signature($signature as xs:string) {
       ""
   let $after := substring-after($signature, concat($params, ")"))
   let $parts := fn:tokenize($line1,' ')
-  let $line11 := fn:string-join(for $part in $parts return if(fn:contains($part,":")) then () else $part, ' ')
+  let $line11 := fn:string-join(for $part in $parts return $part, ' ')
   let $line12 := fn:substring-after($line1, normalize-space($line11))
   return (
     $line11,<span class="functName">{$line12}</span>," (&#0010;",
