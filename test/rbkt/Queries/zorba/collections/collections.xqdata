@@ -1,16 +1,18 @@
 module namespace ns = "http://example.org/datamodule/";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $ns:collection_1 as xs:QName := xs:QName("ns:collection_1");
-declare ordered collection ns:collection_1 as node()*;
+declare %ann:ordered collection ns:collection_1 as node()*;
 
 declare variable $ns:collection_2 as xs:QName := xs:QName("ns:collection_2");
 declare collection ns:collection_2 as node()*;
 
 declare variable $ns:http as xs:QName := xs:QName("ns:http");
-declare ordered collection ns:http as node()*;
+declare %ann:ordered collection ns:http as node()*;
 
 declare variable $ns:test1 as xs:QName := xs:QName("ns:test1");
-declare ordered collection ns:test1 as node()*;
+declare %ann:ordered collection ns:test1 as node()*;
 
 declare variable $ns:test2 as xs:QName := xs:QName("ns:test2");
 declare collection ns:test2 as node()*;

@@ -11,7 +11,7 @@ declare collection def:user as node()*;
 
 declare variable $def:user := xs:QName("def:user");
  
-declare automatically maintained unique value equality index def:user-by-uid
+declare %ann:automatic %ann:unique %ann:value-equality index def:user-by-uid
   on nodes dml:collection(xs:QName("def:user"))
   by xs:string(@uid) as xs:string;
 

@@ -1,4 +1,6 @@
 module namespace ns = "http://example.org/datamodule/";
 
-declare ordered unordered collection ns:collection_1;
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:ordered %ann:unordered collection ns:collection_1;
 

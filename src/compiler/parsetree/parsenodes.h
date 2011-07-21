@@ -76,7 +76,6 @@ class CompTextConstructor;
 class ConstructionDecl;
 class ContextItemExpr;
 class CopyNamespacesDecl;
-class DeclProperty;
 class DefaultCollationDecl;
 class DefaultNamespaceDecl;
 class DeleteExpr;
@@ -836,53 +835,6 @@ public:
 
 
 /*******************************************************************************
-  [*] DeclPropertyList ::= DeclProperty*
-********************************************************************************/
-class DeclPropertyList : public parsenode
-{
-protected:
-  std::vector<rchandle<DeclProperty> > theProperties;
-
-public:
-  DeclPropertyList(const QueryLoc& aLoc) : parsenode(aLoc) { }
-
-  void addProperty(DeclProperty* aProp) { theProperties.push_back(aProp); }
-
-  size_t size() const { return theProperties.size(); }
-
-  const DeclProperty* getProperty(size_t i) const { return theProperties[i].getp(); }
-
-  void accept(parsenode_visitor&) const {}
-};
-
-
-/*******************************************************************************
-  [*] DeclProperty ::= ("const" | "append-only" | "queue" | "mutable" |
-                        "ordered" | "unordered" |
-                        "unique" | "non" "unique" |
-                        "value" "range" | "value" "equality" |
-                        "automatically" "maintained" | "manually" "maintained")
-********************************************************************************/
-class DeclProperty : public parsenode
-{
-protected:
-  StaticContextConsts::declaration_property_t theProperty;
-
-public:
-  DeclProperty(const QueryLoc& loc, StaticContextConsts::declaration_property_t p)
-    :
-    parsenode(loc),
-    theProperty(p)
-  {
-  }
-
-  StaticContextConsts::declaration_property_t getProperty() const { return theProperty; }
-
-  void accept(parsenode_visitor&) const {}
-};
-
-
-/*******************************************************************************
   [13] OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
 ********************************************************************************/
 class OptionDecl : public parsenode
@@ -1304,31 +1256,21 @@ protected:
   rchandle<QName>                             theName;
   rchandle<NodeModifier>                      theNodeModifier;
   rchandle<SequenceType>                      theTypeDecl;
-  StaticContextConsts::declaration_property_t theOrderMode;
-  StaticContextConsts::declaration_property_t theUpdateMode;
+  rchandle<AnnotationListParsenode>           theAnnotations;
 
 public:
   CollectionDecl(
         const QueryLoc& aLoc,
         QName* aName,
-        DeclPropertyList* aPropertyList,
+        rchandle<AnnotationListParsenode>,
         NodeModifier* aNodeModifier,
         SequenceType* aTypeDecl);
 
-  // The function returns an XQuery error if the validation fails,
-  // and XQ_NO_ERROR otherwise
-  static Error const& validatePropertyList(DeclPropertyList* props);
-
   const QName* getName() const { return theName.getp(); }
 
-  StaticContextConsts::declaration_property_t getUpdateMode() const
+  AnnotationListParsenode* get_annotations() const
   {
-    return theUpdateMode;
-  }
-
-  StaticContextConsts::declaration_property_t getOrderMode() const
-  {
-    return theOrderMode;
+    return theAnnotations.getp();
   }
 
   const NodeModifier* getNodeModifier() const
@@ -1387,14 +1329,10 @@ public:
 class AST_IndexDecl : public parsenode
 {
 protected:
-  rchandle<QName>        theName;
-  rchandle<exprnode>     theDomainExpr;
-  rchandle<IndexKeyList> theKey;
-
-  bool                   theIsGeneral;
-  bool                   theIsUnique;
-  bool                   theIsOrdered;
-  bool                   theIsAutomatic;
+  rchandle<QName>                   theName;
+  rchandle<exprnode>                theDomainExpr;
+  rchandle<IndexKeyList>            theKey;
+  rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
   AST_IndexDecl(
@@ -1402,23 +1340,16 @@ public:
         QName* name,
         exprnode* domainExpr,
         IndexKeyList* key,
-        DeclPropertyList* props);
-
-  // The function returns an XQuery error if the validation fails,
-  // and XQ_NO_ERROR otherwise
-  static Error const& validatePropertyList(DeclPropertyList* props);
+        rchandle<AnnotationListParsenode>);
 
   const QName* getName() const { return theName.getp(); }
 
+  AnnotationListParsenode* get_annotations() const
+  {
+    return theAnnotations.getp();
+  }
+
   const exprnode* getDomainExpr() const { return theDomainExpr; }
-
-  bool isGeneral() const { return theIsGeneral; }
-
-  bool isUnique() const { return theIsUnique; }
-
-  bool isOrdered() const { return theIsOrdered; }
-
-  bool isAutomatic() const { return theIsAutomatic; }
 
   void accept(parsenode_visitor&) const;
 };

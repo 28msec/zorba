@@ -2,9 +2,10 @@ module namespace test3="www.test3.com";
 
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare collection test3:foo as node()*;
 
-declare manually maintained value equality index test3:idx 
+declare %ann:manual %ann:value-equality index test3:idx 
 on nodes dml:collection(xs:QName("test3:foo"))//node 
 by (if (./@dval) then xs:decimal(./@dval) else xs:long(./@lval)) as xs:decimal;

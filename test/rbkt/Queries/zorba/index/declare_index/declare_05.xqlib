@@ -1,7 +1,9 @@
 module namespace decl = "http://www.test.com/";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare collection decl:coll1;
 
-declare unique manually maintained value range index decl:coll1_index
+declare %ann:unique %ann:manual %ann:value-range index decl:coll1_index
 on nodes collection()
 by (fn:data(./@d)) as xs:double;

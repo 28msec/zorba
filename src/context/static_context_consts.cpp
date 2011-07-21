@@ -75,6 +75,7 @@ std::string toString(declaration_property_t prop)
   default:
     return "??";
   }
+
 }
 
 } // namespace StaticContextConsts

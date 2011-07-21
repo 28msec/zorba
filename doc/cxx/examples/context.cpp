@@ -367,17 +367,13 @@ public:
       (*lQuery)
         << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
         << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl
+        << "declare namespace ann = 'http://www.zorba-xquery.com/annotations';" << std::endl
         << "declare variable $mymodule:var  := 'myvar';" << std::endl
         << "declare collection mymodule:collection;" << std::endl
-        << "declare automatically maintained value equality index mymodule:index" << std::endl
+        << "declare %ann:automatic %ann:value-equality index mymodule:index" << std::endl
         << "  on nodes dml:collection(xs:QName('mymodule:collection'))" << std::endl
         << "  by ./foo as xs:string;" << std::endl;
       return new StreamResource(std::auto_ptr<std::istream>(lQuery));
-        // (std::auto_ptr<std::istream>(
-        //   new std::istringstream
-        //   ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
-        //     "declare function lm:foo() { 'foo' }; "
-        //     "declare function lm:ext() external;")));
     }
     else {
       return NULL;

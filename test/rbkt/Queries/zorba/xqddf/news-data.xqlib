@@ -5,23 +5,24 @@ import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd
 import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
 import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare collection news-data:employees
   as schema-element(news:employee)*;
 
 declare collection news-data:articles as node()*;
 
-declare const ordered collection news-data:months
+declare %ann:const %ann:ordered collection news-data:months
   as schema-element(news:month)* 
   with read-only nodes;
 
 
-declare automatically maintained value equality index news-data:CityEmp
+declare %ann:automatic %value-equality index news-data:CityEmp
   on nodes manip:collection(xs:QName("news-data:employees"))
   by .//news:station/news:city as xs:string;
 
 
-declare manually maintained value range index news-data:ArtCountEmp
+declare %ann:manual %ann:value-range index news-data:ArtCountEmp
   on nodes manip:collection(xs:QName("news-data:employees"))[./news:position/@kind eq "journalist"]
   by count(for $art in manip:collection(xs:QName("news-data:articles"))
            where $art/empid = ./@id

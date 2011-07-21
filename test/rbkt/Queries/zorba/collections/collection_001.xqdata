@@ -1,17 +1,19 @@
 module namespace ns = "http://www.example.com/example";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare collection ns:collection as node()*;
 
 declare collection ns:collection1 as node()*;
 
-declare ordered collection ns:collection2;
+declare %ann:ordered collection ns:collection2;
 
-declare const collection ns:collection_const as node()*;
+declare %ann:const collection ns:collection_const as node()*;
 
-declare ordered append-only collection ns:collection_append_only as node()*;
+declare %ann:ordered %ann:append-only collection ns:collection_append_only as node()*;
 
-declare ordered queue collection ns:collection_queue as node()*;
+declare %ann:ordered %ann:queue collection ns:collection_queue as node()*;
 
-declare unordered collection ns:collection_unordered as node()*;
+declare %ann:unordered collection ns:collection_unordered as node()*;
 
 declare function ns:test() { () };

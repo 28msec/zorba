@@ -18,6 +18,7 @@
 #define ZORBA_API_ANNOTATIONS_H
 
 #include <vector>
+#include <bitset>
 #include "common/shared_types.h"
 #include "compiler/parsetree/parsenodes.h"
 
@@ -103,6 +104,9 @@ public:
 
 protected:
   List_t theAnnotationList;
+
+  typedef std::bitset<StaticContextConsts::zann_end + 1> RuleBitSet;
+  static std::vector<RuleBitSet> theRuleSet;
 
 public:
   SERIALIZABLE_CLASS(AnnotationList);

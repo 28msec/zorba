@@ -776,8 +776,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* collection-reladed */
 %type <node> CollectionDecl
-%type <node> DeclProperty
-%type <node> DeclPropertyList
 %type <node> CollectionTypeDecl
 %type <node> NodeModifier
 
@@ -872,7 +870,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -965,49 +963,6 @@ template<typename T> inline void release_hack( T *ref ) {
 
 #undef yylex
 #define yylex driver.lexer->lex
-
-/*
- *  Functions to validate lists of properties
- */
-// Returns false if validation fails and the parser should call YYERROR, true otherwise
-bool validate_collection_properties(
-    parsenode* props,
-    location& loc,
-    parsenode* qname,
-    xquery_driver& driver)
-{
-  Error const &error = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
-  if (error != zorba::zerr::ZXQP0000_NO_ERROR)
-  {
-    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
-                                       error,
-                                       static_cast<QName*>(qname)->get_qname(),
-                                       true));
-    return false;
-  }
-  return true;
-}
-
-// Returns false if validation fails and the parser should call YYERROR, true otherwise
-bool validate_index_properties(
-    parsenode* props,
-    location& loc,
-    parsenode* qname,
-    xquery_driver& driver)
-{
-  Error const &error =
-  AST_IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
-
-  if (error != zorba::zerr::ZXQP0000_NO_ERROR)
-  {
-    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
-                                       error,
-                                       static_cast<QName*>(qname)->get_qname(),
-                                       true));
-    return false;
-  }
-  return true;
-}
 
 %}
 
@@ -1910,97 +1865,6 @@ Param :
 ;
 
 
-DeclPropertyList :
-    DeclProperty
-    {
-      DeclPropertyList *dpl = new DeclPropertyList( LOC(@$) );
-      dpl->addProperty(dynamic_cast<DeclProperty*>($1));
-      $$ = dpl;
-    }
-  | DeclPropertyList DeclProperty
-    {
-      DeclPropertyList *dpl = dynamic_cast<DeclPropertyList*>($1);
-      dpl->addProperty( static_cast<DeclProperty*>($2) );
-      $$ = $1;
-    }
-  ;
-
-
-DeclProperty :
-        CONSTOPT
-        {
-            $$ = new DeclProperty( LOC(@$), StaticContextConsts::decl_const );
-        }
-    |   APPEND_ONLY
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_append_only
-            );
-        }
-    |   QUEUE
-        {
-            $$ = new DeclProperty( LOC(@$), StaticContextConsts::decl_queue );
-        }
-    |   MUTABLE
-        {
-            $$ = new DeclProperty( LOC(@$), StaticContextConsts::decl_mutable );
-        }
-    |   ORDERED
-        {
-            $$ = new DeclProperty( LOC(@$), StaticContextConsts::decl_ordered );
-        }
-    |   UNORDERED
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_unordered
-            );
-        }
-    |   VALUE EQUALITY
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_value_equality
-            );
-        }
-    |   VALUE RANGE
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_value_range
-            );
-        }
-    |   GENERAL EQUALITY
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_general_equality
-            );
-        }
-    |   GENERAL RANGE
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_general_range
-            );
-        }
-    |   UNIQUE
-        {
-            $$ = new DeclProperty( LOC(@$), StaticContextConsts::decl_unique );
-        }
-    |   NON UNIQUE
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_non_unique
-            );
-        }
-    |   AUTOMATICALLY MAINTAINED
-        {
-            $$ = new DeclProperty(
-                LOC(@$), StaticContextConsts::decl_automatic
-            );
-        }
-    |   MANUALLY MAINTAINED
-        {
-            $$ = new DeclProperty( LOC(@$), StaticContextConsts::decl_manual );
-        }
-    ;
-
 CollectionDecl :
     DECLARE COLLECTION QNAME
     {
@@ -2034,59 +1898,36 @@ CollectionDecl :
                               static_cast<NodeModifier*>($6),
                               static_cast<SequenceType*>($5));
     }
-  | DECLARE DeclPropertyList COLLECTION QNAME
+  | DECLARE AnnotationList COLLECTION QNAME
     {
-      if (!validate_collection_properties($2, @$, $4, driver)) {
-        delete $2; delete $4; // these need to be deleted explicitly, as bison does not free them
-        YYERROR;
-      }
-
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
-                               static_cast<DeclPropertyList*>($2), 0, 0);
-      delete $2;
+                               static_cast<AnnotationListParsenode*>($2),
+                               0, 0);
     }
-  | DECLARE DeclPropertyList COLLECTION QNAME NodeModifier
+  | DECLARE AnnotationList COLLECTION QNAME NodeModifier
     {
-      if (!validate_collection_properties($2, @$, $4, driver )) {
-        delete $2; delete $4;  delete $5; // these need to be deleted explicitly, as bison does not free them
-        YYERROR;
-      }
-
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
-                               static_cast<DeclPropertyList*>($2),
+                               static_cast<AnnotationListParsenode*>($2),
                                static_cast<NodeModifier*>($5),
                                NULL);
-      delete $2;
     }
-  | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl
+  | DECLARE AnnotationList COLLECTION QNAME AS CollectionTypeDecl
     {
-      if (!validate_collection_properties($2, @$, $4, driver)) {
-        delete $2; delete $4; delete $6; // these need to be deleted explicitly, as bison does not free them
-        YYERROR;
-      }
-
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
-                               static_cast<DeclPropertyList*>($2),
+                               static_cast<AnnotationListParsenode*>($2),
                                NULL,
                                static_cast<SequenceType*>($6));
-      delete $2;
     }
-  | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl NodeModifier
+  | DECLARE AnnotationList COLLECTION QNAME AS CollectionTypeDecl NodeModifier
     {
-      if (!validate_collection_properties($2, @$, $4, driver)) {
-        delete $2; delete $4; delete $6; delete $7; // these need to be deleted explicitly, as bison does not free them
-        YYERROR;
-      }
-
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
-                               static_cast<DeclPropertyList*>($2),
+                               static_cast<AnnotationListParsenode*>($2),
                                static_cast<NodeModifier*>($7),
                                static_cast<SequenceType*>($6));
-      delete $2;
     }
   ;
 
@@ -2123,20 +1964,13 @@ IndexDecl :
                              dynamic_cast<IndexKeyList*>($8),
                              NULL);
     }
-  | DECLARE DeclPropertyList INDEX QNAME ON NODES PathExpr BY IndexKeyList
+  | DECLARE AnnotationList INDEX QNAME ON NODES PathExpr BY IndexKeyList
     {
-      if (!validate_index_properties($2, @$, $4, driver))
-      {
-        delete $2; delete $4; delete $7; delete $9; // these need to be deleted explicitly, as bison does not free them
-        YYERROR;
-      }
-
       $$ = new AST_IndexDecl(LOC(@$),
                              static_cast<QName*>($4),
                              $7,
                              dynamic_cast<IndexKeyList*>($9),
-                             dynamic_cast<DeclPropertyList*>($2));
-      delete $2;
+                             static_cast<AnnotationListParsenode*>($2));
     }
   ;
 

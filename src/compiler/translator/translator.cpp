@@ -3094,6 +3094,12 @@ void* begin_visit(const VFO_DeclList& v)
     AnnotationListParsenode* lAnns = func_decl->get_annotations();
     if (lAnns)
     {
+      if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+      {
+        RAISE_ERROR(err::XPST0003, loc,
+        ERROR_PARAMS("functions and variables annotations only available in XQuery 1.1 or later"));
+      }
+
       lAnns->accept(*this);
     }
 
@@ -3178,42 +3184,19 @@ void* begin_visit(const VFO_DeclList& v)
 
     // Create the function signature.
     //
-    bool lIsVariadic = (theAnnotations ?
-                        theAnnotations->contains(theSctx->lookup_ann("variadic")):
-                        false);
+    bool lIsVariadic =
+      (theAnnotations ?
+       theAnnotations->contains(theSctx->lookup_ann(StaticContextConsts::zann_variadic)):
+       false);
 
     signature sig(qnameItem, paramTypes, returnType, lIsVariadic);
-
-    /*
-    // TODO: this can no longer happen since the %updating annotation is not allowed
-    // special case
-    // function declares both updating keyword and updating annotation
-    if (theAnnotations &&
-        func_decl->is_updating() &&
-        theAnnotations->contains(theSctx->lookup_ann("updating")))
-    {
-        throw XQUERY_EXCEPTION(
-            err::XQST0106,
-            ERROR_PARAMS("updating"),
-            ERROR_LOC(loc));
-    }
-    else if (func_decl->is_updating())
-    {
-      // translate updating keyword into an annotation
-      std::vector<rchandle<const_expr> > lLiterals;
-      if (!theAnnotations)
-      {
-        theAnnotations = new AnnotationList();
-      }
-      theAnnotations->push_back(theSctx->lookup_ann("updating"), lLiterals);
-    }
-    */
 
     // Get the scripting kind of the function
     expr_script_kind_t scriptKind = SIMPLE_EXPR;
     if (func_decl->is_updating())
       scriptKind = UPDATING_EXPR;
-    else if (theAnnotations && theAnnotations->contains(theSctx->lookup_ann("sequential")))
+    else if (theAnnotations && theAnnotations->contains(
+          theSctx->lookup_ann(StaticContextConsts::zann_sequential)))
       scriptKind = SEQUENTIAL_EXPR;
 
     // create the function object
@@ -3644,15 +3627,18 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   {
     if (v.is_global())
     {
-      if (theAnnotations->contains(theSctx->lookup_ann("private")))
+      if (theAnnotations->contains(
+            theSctx->lookup_ann(StaticContextConsts::fn_private)))
         ve->set_private(true);
     }
 
-    if (theAnnotations->contains(theSctx->lookup_ann("assignable")))
+    if (theAnnotations->contains(
+          theSctx->lookup_ann(StaticContextConsts::zann_assignable)))
     {
       ve->set_mutable(true);
     }
-    else if (theAnnotations->contains(theSctx->lookup_ann("nonassignable")))
+    else if (theAnnotations->contains(
+          theSctx->lookup_ann(StaticContextConsts::zann_nonassignable)))
     {
       ve->set_mutable(false);
     }
@@ -3748,12 +3734,6 @@ void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
 
-  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-  {
-    RAISE_ERROR(err::XPST0003, loc,
-    ERROR_PARAMS("functions and variables annotations only available in XQuery 1.1 or later"));
-  }
-
   assert(theAnnotations == NULL);
 
   theAnnotations = new AnnotationList();
@@ -3766,6 +3746,7 @@ void end_visit(const AnnotationListParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  // detect duplicates and conflicting declarations
   theAnnotations->checkConflictingDeclarations(loc);
 }
 
@@ -3784,8 +3765,6 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, v.get_qname().getp(), loc);
 
-  store::Item_t sctx_ann = theSctx->lookup_ann(lExpandedQName->getLocalName().c_str());
-
   if (lExpandedQName->getNamespace() == static_context::W3C_XML_NS ||
       lExpandedQName->getNamespace() == XML_SCHEMA_NS ||
       lExpandedQName->getNamespace() == XSI_NS ||
@@ -3793,20 +3772,16 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
       lExpandedQName->getNamespace() == XQUERY_MATH_FN_NS ||
       lExpandedQName->getNamespace() == ZORBA_ANNOTATIONS_NS)
   {
-      if (sctx_ann.getp() == NULL
-          ||
-          (sctx_ann.getp() != NULL
-          &&
-          lExpandedQName->getNamespace() != sctx_ann->getNamespace()))
-      {
-        throw XQUERY_EXCEPTION(
-            err::XQST0045,
-            ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
-                          "\'" + lExpandedQName->getNamespace() + "\'"
-                          : lExpandedQName->getPrefix())
-                          + ":" + lExpandedQName->getLocalName()),
-            ERROR_LOC(loc));
-      }
+    if ( theSctx->lookup_ann(lExpandedQName) ==  StaticContextConsts::zann_end)
+    {
+      throw XQUERY_EXCEPTION(
+          err::XQST0045,
+          ERROR_PARAMS( "%" + (lExpandedQName->getPrefix().empty() ?
+                        "\'" + lExpandedQName->getNamespace() + "\'"
+                        : lExpandedQName->getPrefix())
+                        + ":" + lExpandedQName->getLocalName()),
+          ERROR_LOC(loc));
+    }
   }
   else
   {
@@ -4006,20 +3981,46 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     quant = lCollectionType->get_quantifier();
   }
 
-  // Get the order and update properties of the collection
-  StaticContextConsts::declaration_property_t lUpdateMode = v.getUpdateMode();
-  StaticContextConsts::declaration_property_t lOrderMode = v.getOrderMode();
+  StaticContextConsts::declaration_property_t lUpdateMode =
+    StaticContextConsts::decl_mutable;
 
-  if (lOrderMode == StaticContextConsts::decl_unordered &&
-      (lUpdateMode == StaticContextConsts::decl_queue ||
-       lUpdateMode == StaticContextConsts::decl_append_only))
+  StaticContextConsts::declaration_property_t lOrderMode
+    = StaticContextConsts::decl_unordered;
+
+  AnnotationListParsenode* lAnns = v.get_annotations();
+  if (lAnns)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0005_COLLECTION_PROPERTIES_CONFLICT,
-      ERROR_PARAMS( lName->get_qname() ),
-      ERROR_LOC( loc )
-    );
+    lAnns->accept(*this);
   }
+
+#define ZANN_CONTAINS( ann ) \
+  theAnnotations->contains (theSctx->lookup_ann ( StaticContextConsts:: ann ) )
+
+  if ( theAnnotations )
+  {
+    if ( ZANN_CONTAINS (zann_queue) )
+    {
+      lUpdateMode = StaticContextConsts::decl_queue;
+    }
+    if ( ZANN_CONTAINS ( zann_append_only) )
+    {
+      lUpdateMode = StaticContextConsts::decl_append_only;
+    }
+    if ( ZANN_CONTAINS ( zann_const ) )
+    {
+      lUpdateMode = StaticContextConsts::decl_const;
+    }
+    if ( ZANN_CONTAINS ( zann_ordered) )
+    {
+      lOrderMode = StaticContextConsts::decl_ordered;
+    }
+    if ( ZANN_CONTAINS ( zann_unordered) )
+    {
+      lOrderMode = StaticContextConsts::decl_unordered;
+    }
+  }
+#undef ZANN_CONTAINS
+  theAnnotations = NULL; // important to reset
 
   // Get the node modifier
   StaticContextConsts::node_modifier_t lNodeModifier =
@@ -4116,11 +4117,42 @@ void* begin_visit(const AST_IndexDecl& v)
   }
 
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
-  index->setGeneral(v.isGeneral());
-  index->setUnique(v.isUnique());
-  index->setMethod(v.isOrdered() ? IndexDecl::TREE : IndexDecl::HASH);
-  if (v.isAutomatic())
-    index->setMaintenanceMode(IndexDecl::REBUILD);
+  index->setGeneral ( false );
+  index->setUnique ( false );
+  index->setMethod ( IndexDecl::HASH );
+  index->setMaintenanceMode ( IndexDecl::MANUAL );
+
+  AnnotationListParsenode* lAnns = v.get_annotations();
+  if (lAnns)
+  {
+    lAnns->accept(*this);
+  }
+
+  if ( theAnnotations )
+  {
+#define ZANN_CONTAINS( ann ) \
+  theAnnotations->contains (theSctx->lookup_ann ( StaticContextConsts:: ann ) )
+    if ( ZANN_CONTAINS ( zann_general_equality ) ||
+         ZANN_CONTAINS ( zann_general_range ) ) 
+    {
+      index->setGeneral( true );
+    }
+    if ( ZANN_CONTAINS ( zann_general_range ) ||
+         ZANN_CONTAINS ( zann_value_range ) ) 
+    {
+      index->setMethod( IndexDecl::TREE );
+    }
+    if ( ZANN_CONTAINS ( zann_unique ) )
+    {
+      index->setUnique( true );
+    }
+    if ( ZANN_CONTAINS ( zann_automatic ) )
+    {
+      index->setMaintenanceMode(IndexDecl::REBUILD);
+    }
+#undef ZANN_CONTAINS
+  }
+  theAnnotations = NULL;
 
   theIndexDecl = index;
   theIsInIndexDomain = true;

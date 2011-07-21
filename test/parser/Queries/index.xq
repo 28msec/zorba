@@ -1,3 +1,4 @@
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 (: --------------------------------------------------------------------- :)
 
@@ -5,37 +6,37 @@ declare index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 (: --------------------------------------------------------------------- :)
-declare unique index foo:bar on nodes xqddf:collection(coll:foo)
+declare %ann:unique index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 
 (: --------------------------------------------------------------------- :)
-declare non unique index foo:bar on nodes xqddf:collection(coll:foo)
+declare %ann:nonunique index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 
 (: --------------------------------------------------------------------- :)
-declare value range index foo:bar on nodes xqddf:collection(coll:foo)
+declare %ann:value-range index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 
 (: --------------------------------------------------------------------- :)
-declare value equality index foo:bar on nodes xqddf:collection(coll:foo)
+declare %ann:value-equality index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 
 (: --------------------------------------------------------------------- :)
-declare automatically maintained index foo:bar on nodes xqddf:collection(coll:foo)
+declare %ann:automatic index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 
 (: --------------------------------------------------------------------- :)
-declare manually maintained index foo:bar on nodes xqddf:collection(coll:foo)
+declare %ann:manual index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 
 (: --------------------------------------------------------------------- :)
-declare unique value range automatically maintained index foo:bar on nodes xqddf:collection(coll:foo)
+declare %ann:unique %ann:value-range %automatic index foo:bar on nodes xqddf:collection(coll:foo)
   by ./@id as xs:string;
 
 

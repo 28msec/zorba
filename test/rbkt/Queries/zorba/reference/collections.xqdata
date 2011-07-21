@@ -1,3 +1,5 @@
 module namespace ns = "http://example.org/datamodule/";
 
-declare ordered collection ns:test as node()*;
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:ordered collection ns:test as node()*;

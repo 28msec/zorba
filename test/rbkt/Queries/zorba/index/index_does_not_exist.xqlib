@@ -5,9 +5,11 @@ import schema namespace news-schemas = "http://www.news.org/schemas" at "news-sc
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare ordered collection news-data:employees as schema-element(news-schemas:employee)*;
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare automatically maintained value equality index news-data:CityEmp
+declare %ann:ordered collection news-data:employees as schema-element(news-schemas:employee)*;
+
+declare %ann:automatic %ann:value-equality index news-data:CityEmp
 on nodes dml:collection(xs:QName("news-data:employees"))/employee
 by .//station/city as xs:string;
 

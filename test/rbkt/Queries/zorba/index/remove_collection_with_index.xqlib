@@ -2,8 +2,10 @@ module namespace decl = "http://www.test.com/";
 
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare collection decl:coll1;
 
-declare unique manually maintained value range index decl:coll1_index
+declare %ann:unique %ann:manual %ann:value-range index decl:coll1_index
 on nodes dml:collection(xs:QName("decl:coll1"))/a/b/c
 by (fn:data(./@d)) as xs:double;

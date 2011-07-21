@@ -119,6 +119,38 @@ namespace StaticContextConsts
     decl_automatic,    
     decl_manual
   };
+
+  enum annotations_t
+  {
+    fn_public = 0,
+    fn_private,
+    zann_deterministic,
+    zann_nondeterministic,
+    zann_assignable,
+    zann_nonassignable,
+    zann_sequential,
+    zann_nonsequential,
+    zann_variadic,
+    zann_streamable,
+    zann_unique,
+    zann_nonunique,
+    zann_value_equality,
+    zann_general_equality,
+    zann_value_range,
+    zann_general_range,
+    zann_automatic,
+    zann_manual,
+    zann_mutable,
+    zann_queue,
+    zann_append_only,
+    zann_const,
+    zann_ordered,
+    zann_unordered,
+
+    // must be at the end
+    zann_end
+
+  };
   
   enum node_modifier_t
   {

@@ -2538,24 +2538,41 @@ ExternalFunction* static_context::lookup_external_function(
 /////////////////////////////////////////////////////////////////////////////////
 void
 static_context::add_ann(
-    const std::string& aName,
+    StaticContextConsts::annotations_t aAnnotation,
     const store::Item_t& aQName)
 {
   if (!theAnnotationMap) {
     theAnnotationMap = new AnnotationMap();
   }
-  (*theAnnotationMap)[aName] = aQName;
+  (*theAnnotationMap)[static_cast<uint64_t>(aAnnotation)] = aQName;
 }
 
 store::Item_t
-static_context::lookup_ann(const std::string& aName) const
+static_context::lookup_ann(StaticContextConsts::annotations_t aAnnotation) const
 {
-  std::map<std::string, store::Item_t>::const_iterator lIter;
+  std::map<uint64_t, store::Item_t>::const_iterator lIter;
   if (!theAnnotationMap ||
-      (lIter = theAnnotationMap->find(aName)) == theAnnotationMap->end()) {
-    return theParent?theParent->lookup_ann(aName):NULL;
+      (lIter = theAnnotationMap->find(static_cast<uint64_t>(aAnnotation))) == theAnnotationMap->end()) {
+    return theParent?theParent->lookup_ann(aAnnotation):NULL;
   }
   return lIter->second;
+}
+
+StaticContextConsts::annotations_t
+static_context::lookup_ann(const store::Item_t& aQName) const
+{
+  if ( theAnnotationMap )
+  {
+    std::map<uint64_t, store::Item_t>::const_iterator lIter;
+    for (lIter = theAnnotationMap->begin(); lIter != theAnnotationMap->end(); ++lIter)
+    {
+      if (aQName->equals(lIter->second))
+      {
+        return static_cast<StaticContextConsts::annotations_t>(lIter->first);
+      }
+    }
+  }
+  return theParent?theParent->lookup_ann(aQName):StaticContextConsts::zann_end;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

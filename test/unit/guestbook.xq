@@ -5,7 +5,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations"; 
 
-declare ordered collection guestbook:entries as node()*;
+declare %ann:ordered collection guestbook:entries as node()*;
 declare variable $guestbook:entries as xs:QName := xs:QName("guestbook:entries");
 
 declare %ann:sequential function guestbook:list() 

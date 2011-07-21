@@ -316,9 +316,9 @@ public:
 
   theAnnotations:
   --------------
-  string -> store::Item_t map that contains a list of built-in annotations
-  Those annotations are used in the translator to check if a function or
-  variable declares any of these annotations.
+  annotations_t -> store::Item_t map that contains a list of built-in annotations
+  Those annotations are used in the translator to check if a function,
+  variable, index, or collection declares any of these annotations.
 
 
   theCollectionMap :
@@ -406,7 +406,7 @@ class static_context : public SimpleRCObject
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
-  typedef std::map<std::string, store::Item_t> AnnotationMap;
+  typedef std::map<uint64_t, store::Item_t> AnnotationMap;
 
 public:
 
@@ -828,9 +828,11 @@ public:
   //
   // Annotation
   //
-  void add_ann(const std::string& aName, const store::Item_t& aQName);
+  void add_ann(StaticContextConsts::annotations_t ann, const store::Item_t& aQName);
 
-  store::Item_t lookup_ann(const std::string& aName) const;
+  store::Item_t lookup_ann(StaticContextConsts::annotations_t ann) const;
+
+  StaticContextConsts::annotations_t lookup_ann(const store::Item_t& aQName) const;
 
 
   //

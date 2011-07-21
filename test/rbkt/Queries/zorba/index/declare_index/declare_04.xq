@@ -1,5 +1,5 @@
 import module namespace decl = "http://www.test.com/" at "declare_04.xqlib";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
-init:is-declared-index(xs:QName("decl:coll1_index"))
+ddl:is-declared-index(xs:QName("decl:coll1_index"))

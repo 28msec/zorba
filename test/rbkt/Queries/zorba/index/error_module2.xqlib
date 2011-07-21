@@ -4,6 +4,8 @@
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
 
-declare value range index idx:foo 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:value-range index idx:foo 
 on nodes ./site/people/person
 by fn:data(./@id) as xs:string;

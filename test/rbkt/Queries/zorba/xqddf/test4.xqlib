@@ -10,7 +10,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare collection n:foo as node();
 
-declare automatically maintained non unique value equality index n:index
+declare %ann:automatic %ann:nonunique %ann:value-equality index n:index
   on nodes dml:collection(xs:QName("n:foo"))
   by (if (fn:data(d:userrecord/d:company)) then d:userrecord/d:company else "none") as xs:string;
 

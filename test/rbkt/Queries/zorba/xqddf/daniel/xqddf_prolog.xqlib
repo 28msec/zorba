@@ -3,21 +3,23 @@ module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test";
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare collection xqddf-test:white-collection as node()*;
 
 declare collection xqddf-test:blue-collection as node()*;
 
-declare ordered collection xqddf-test:ordered-collection as node()*;
+declare %ann:ordered collection xqddf-test:ordered-collection as node()*;
 
 declare variable $xqddf-test:white-collection := xs:QName("xqddf-test:white-collection");
 declare variable $xqddf-test:blue-collection := xs:QName("xqddf-test:blue-collection");
 declare variable $xqddf-test:ordered-collection := xs:QName("xqddf-test:ordered-collection");
 
-declare automatically maintained value equality index xqddf-test:index1
+declare %ann:automatic %ann:value-equality index xqddf-test:index1
 on nodes dml:collection(xs:QName("xqddf-test:white-collection"))
 by fn:string(./location) as xs:string;
 
-declare manually maintained value range index xqddf-test:index2
+declare %ann:manual %ann:value-range index xqddf-test:index2
 on nodes dml:collection(xs:QName("xqddf-test:white-collection"))
 by fn:count(.//incategory) as xs:integer;
 

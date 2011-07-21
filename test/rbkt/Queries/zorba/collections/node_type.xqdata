@@ -1,7 +1,10 @@
 module namespace ns = "http://example.org/datamodule/";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.xsd";
 
 declare variable $ns:collection as xs:QName := xs:QName("ns:collection");
 
-declare ordered collection ns:collection as schema-element(s:person)*;
+declare %ann:ordered collection ns:collection as schema-element(s:person)*;
+

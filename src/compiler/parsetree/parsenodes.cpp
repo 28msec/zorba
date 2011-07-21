@@ -908,7 +908,7 @@ void AnnotationLiteralListParsenode::accept(parsenode_visitor& v) const
 CollectionDecl::CollectionDecl(
     const QueryLoc& aLoc,
     QName* aName,
-    DeclPropertyList* aPropertyList,
+    rchandle<AnnotationListParsenode> aAnnotations,
     NodeModifier*  aNodeModifier,
     SequenceType* aTypeDecl)
   :
@@ -916,77 +916,8 @@ CollectionDecl::CollectionDecl(
   theName(aName),
   theNodeModifier(aNodeModifier),
   theTypeDecl(aTypeDecl),
-  theOrderMode(StaticContextConsts::decl_unordered),
-  theUpdateMode(StaticContextConsts::decl_mutable)
+  theAnnotations(aAnnotations)
 {
-  // Note: the DeclPropertyList is validated
-
-  if (aPropertyList == NULL)
-    return;
-
-  ulong numProperties = (ulong)aPropertyList->size();
-  for (ulong i = 0; i < numProperties; ++i)
-  {
-    const DeclProperty* property = aPropertyList->getProperty(i);
-    StaticContextConsts::declaration_property_t prop = property->getProperty();
-
-    switch (prop)
-    {
-    case StaticContextConsts::decl_ordered:
-    case StaticContextConsts::decl_unordered:
-      theOrderMode = prop;
-      break;
-
-      case StaticContextConsts::decl_mutable:
-    case StaticContextConsts::decl_queue:
-    case StaticContextConsts::decl_append_only:
-    case StaticContextConsts::decl_const:
-      theUpdateMode = prop;
-      break;
-
-    default: /* do nothing */ ;
-    } // switch
-  } // for
-}
-
-Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
-{
-  if (props == NULL)
-    return zerr::ZXQP0000_NO_ERROR;
-
-  bool setUpdateMode = false;
-  bool setOrderMode = false;
-
-  for (ulong i = 0; i < props->size(); ++i)
-  {
-    switch (props->getProperty(i)->getProperty())
-    {
-    case StaticContextConsts::decl_ordered:
-    case StaticContextConsts::decl_unordered:
-    {
-      if (setOrderMode)
-        return zerr::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
-
-      setOrderMode = true;
-      break;
-    }
-    case StaticContextConsts::decl_mutable:
-    case StaticContextConsts::decl_queue:
-    case StaticContextConsts::decl_append_only:
-    case StaticContextConsts::decl_const:
-    {
-      if (setUpdateMode)
-        return zerr::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
-
-      setUpdateMode = true;
-      break;
-    }
-    default:
-      return zerr::ZDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
-    } // switch
-  }
-
-  return zerr::ZXQP0000_NO_ERROR;
 }
 
 void CollectionDecl::accept( parsenode_visitor &v ) const
@@ -1031,17 +962,15 @@ AST_IndexDecl::AST_IndexDecl(
     QName* name,
     exprnode* domainExpr,
     IndexKeyList* key,
-    DeclPropertyList* properties)
+    rchandle<AnnotationListParsenode> aAnnotations)
   :
   parsenode(loc),
   theName(name),
   theDomainExpr(domainExpr),
   theKey(key),
-  theIsGeneral(false),
-  theIsUnique(false),
-  theIsOrdered(false),
-  theIsAutomatic(true)
+  theAnnotations(aAnnotations)
 {
+#if 0
   // Note: the DeclPropertyList has bee validated already by the parser
 
   if (properties == NULL)
@@ -1079,9 +1008,11 @@ AST_IndexDecl::AST_IndexDecl(
     default: /* do nothing */ ;
     } // switch
   } // for
+#endif
 }
 
 
+#if 0
 Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
@@ -1131,6 +1062,7 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
 
   return zerr::ZXQP0000_NO_ERROR;
 }
+#endif
 
 void AST_IndexDecl::accept( parsenode_visitor &v ) const
 {

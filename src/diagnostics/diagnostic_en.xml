@@ -681,7 +681,13 @@
        function's annotations contain more than one annotation named \c
        deterministic or \c nondeterministic.
       </comment>
-      <value>multiple annotations with the same or conflicting names</value>
+      <entry key="THE_SAME">
+        <value>the same</value>
+      </entry>
+      <entry key="CONFLICTING">
+        <value>conflicting</value>
+      </entry>
+      <value>$1: multiple annotations with $2 names</value>
     </diagnostic>
 
     <diagnostic code="XQST0111">
@@ -1973,10 +1979,6 @@
 
     <diagnostic code="ZDST0004" name="COLLECTION_MULTIPLE_PROPERTY_VALUES">
       <value>collection multiple property values</value>
-    </diagnostic>
-
-    <diagnostic code="ZDST0005" name="COLLECTION_PROPERTIES_CONFLICT">
-      <value>"$1": collection properties conflict</value>
     </diagnostic>
 
     <diagnostic code="ZDST0006" name="COLLECTION_INVALID_PROPERTY_VALUE">

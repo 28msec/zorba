@@ -23,7 +23,7 @@ declare collection auctions:auctions as node()*;
   The PersonId index maps each id to the person with that id.
 :)
 
-declare unique value range manually maintained index auctions:PersonId
+declare %ann:unique %ann:value-range %ann:manual index auctions:PersonId
 on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by xs:string(fn:data(./@id)) as xs:string;
 
@@ -33,7 +33,7 @@ by xs:string(fn:data(./@id)) as xs:string;
   The PersonCity index contains some NULL keys because not all persons have a city 
 :)
 
-declare value range automatically maintained index auctions:PersonCity
+declare %ann:value-range %ann:automatic index auctions:PersonCity
 on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by xs:string(.//city) as xs:string;
 
@@ -42,7 +42,7 @@ by xs:string(.//city) as xs:string;
   The PersonWatches index maps each open auction to the persons who watch that auction.
 :)
 
-declare general equality manually maintained index auctions:PersonWatches
+declare %ann:general-equality %ann:manual index auctions:PersonWatches
 on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by (for $x in ./watches/watch/@open_auction return xs:string($x)) as xs:string*;
 
@@ -51,7 +51,7 @@ by (for $x in ./watches/watch/@open_auction return xs:string($x)) as xs:string*;
   The PersonWatches2 is the same as the PersonWatches except that its key is untyped.
 :)
 
-declare general equality manually maintained index auctions:PersonWatches2
+declare %ann:general-equality %ann:manual index auctions:PersonWatches2
 on nodes dml:collection(xs:QName("auctions:auctions"))/site/people/person
 by (for $x in ./watches/watch/@open_auction return $x);
 
@@ -61,7 +61,7 @@ by (for $x in ./watches/watch/@open_auction return $x);
   associated date.
 :)
 
-declare general range manually maintained index auctions:AuctionDates
+declare %ann:general-range %ann:manual index auctions:AuctionDates
 on nodes dml:collection(xs:QName("auctions:auctions"))//open_auction
 by (for $x in ./bidder/date return xs:date($x)) as xs:date*;
 
@@ -71,7 +71,7 @@ by (for $x in ./bidder/date return xs:date($x)) as xs:date*;
   expression produces untyped items.
 :)
 
-declare general range manually maintained index auctions:AuctionDates2
+declare %ann:general-range %ann:manual index auctions:AuctionDates2
 on nodes dml:collection(xs:QName("auctions:auctions"))//open_auction
 by (for $x in ./bidder/date return $x);
 

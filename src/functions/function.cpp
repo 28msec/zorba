@@ -106,14 +106,17 @@ void function::setAnnotations(AnnotationList* annotations)
 
   static_context& lCtx = GENV_ROOT_STATIC_CONTEXT;
 
-  if (theAnnotationList->contains(lCtx.lookup_ann("nondeterministic")))
+  if (theAnnotationList->contains(
+        lCtx.lookup_ann(StaticContextConsts::zann_nondeterministic)))
     setDeterministic(false);
 
-  setPrivate(theAnnotationList->contains(lCtx.lookup_ann("private")));
+  setPrivate(theAnnotationList->contains(
+        lCtx.lookup_ann(StaticContextConsts::fn_private)));
 
   if (isUpdating()
       &&
-      theAnnotationList->contains(lCtx.lookup_ann("sequential")))
+      theAnnotationList->contains(
+        lCtx.lookup_ann(StaticContextConsts::zann_sequential)))
   {
     throw XQUERY_EXCEPTION(zerr::XSST0001,
                            ERROR_PARAMS(getName()->getStringValue()));
