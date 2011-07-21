@@ -347,7 +347,6 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_DIR OUTPUT_FILE VERSION_ARG DEPEND_TARGET
   GET_FILENAME_COMPONENT (_output_dir "${OUTPUT_FILE}" PATH)
   GET_FILENAME_COMPONENT (_output_filename "${OUTPUT_FILE}" NAME_WE)
   GET_FILENAME_COMPONENT (_output_ext "${OUTPUT_FILE}" EXT)
-  message (STATUS "${OUTPUT_FILE}...${_output_dir}...${_output_filename}...${_output_ext}")
   IF (NOT "${VERSION_ARG}" STREQUAL "")
     SET (_output_filename "${_output_filename}_${VERSION_ARG}${_output_ext}")
   ELSE (NOT "${VERSION_ARG}" STREQUAL "")
