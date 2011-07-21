@@ -206,7 +206,7 @@ declare %private function  xqdoc2html:value-intersect(
  : @param $arg2 second sequence.
  : @return $arg1 union $arg2.
  :)
-declare function xqdoc2html:value-union (
+declare %private function xqdoc2html:value-union (
   $arg1 as xs:anyAtomicType*,
   $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* 
 {
@@ -439,7 +439,7 @@ declare %private %ann:sequential function xqdoc2html:create-general-menu($module
   }
 };
 
-declare %ann:nondeterministic %ann:sequential function xqdoc2html:create-collection-categories (
+declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:create-collection-categories (
 $collectionName as xs:QName,
 $xqdocXmlPath as xs:string)
 {
@@ -549,7 +549,7 @@ declare %private function xqdoc2html:get-examples-path(
  : @param $zorbaPath path to zorba source dir
  : @return A string sequence with a status message for each processed module.
  :)
-declare %ann:nondeterministic %ann:sequential function xqdoc2html:generate-xqdoc-xhtml(
+declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:generate-xqdoc-xhtml(
   (:$generalLeftMenu, :)
   $xhtmlRequisitesPath  as xs:string,
   $xqdocXhtmlPath       as xs:string,
@@ -665,7 +665,7 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:confi
  : @param $examplePath string with the paths where the examples are kept separated by ; .
  : @return The created XHTML page.
  :)
-declare %ann:nondeterministic %ann:sequential function xqdoc2html:copy-examples(
+declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:copy-examples(
   $xqdoc, 
   $examplesFolderDestination as xs:string,
   $examplePath as xs:string)
@@ -984,7 +984,7 @@ declare  %private function xqdoc2html:get-example-filename-link($examplePath as 
  : @param $xhtml the node containing the XHTML file.
  : @return the processed $xhtml.
  :)
-declare %ann:sequential function xqdoc2html:configure-xhtml (
+declare %private %ann:sequential function xqdoc2html:configure-xhtml (
   $xhtml)
 {
   (: replace the function type description with images :)  
@@ -1110,7 +1110,7 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:add-l
  : @param $examplePath string with the paths where the examples are kept separated by ; .
  : @return The created XHTML page.
  :)
-declare %ann:nondeterministic %ann:sequential function xqdoc2html:doc(
+declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:doc(
   $xqdoc, 
   $menu,
   $templatePath as xs:string,
@@ -1156,7 +1156,7 @@ declare %private function xqdoc2html:module-uri($xqdoc) as xs:string
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
  : @return The 'body' of the XHTML.
  :)
-declare %ann:nondeterministic function xqdoc2html:body(
+declare %private %ann:nondeterministic function xqdoc2html:body(
   $xqdoc, 
   $xqdocXhtmlPath as xs:string)
 {
@@ -1189,11 +1189,15 @@ declare %ann:nondeterministic function xqdoc2html:body(
  : @param $module the node containing the XQDoc XML module.
  : @return the XHTML for the module description and module annotations.
  :)
-declare function xqdoc2html:module-description($moduleUri as xs:string, $modulePrefix as xs:string, $module) {
+declare %private function xqdoc2html:module-description($moduleUri as xs:string, $modulePrefix as xs:string, $module) {
     ( <div class="section"><span id="module_description">Module Description</span></div>,
       <span>Before using any of the functions below please remember to import the module namespace:
       <pre class="brush: xquery;">import module namespace {$modulePrefix} = "{$moduleUri}";</pre>
       </span>,
+      {
+        if(xs:boolean(dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@isCore)) then () else
+        (<span>Please note that this module does not belong to the core of the Zorba XQuery engine. Please check <a href="http://www.zorba-xquery.com/site2/doc/latest/zorba/html/module_lifecycle.html" target="_blank">this</a> resource about this module import.</span>,<br />,<br />)
+      },
      xqdoc2html:description($module/xqdoc:comment),
      xqdoc2html:annotations-module($module/xqdoc:comment))
 };
@@ -1205,7 +1209,7 @@ declare function xqdoc2html:module-description($moduleUri as xs:string, $moduleP
  : @param $comment the part of the XQDoc file holding the annotations.
  : @return the XHTML for the description annotations.
  :)
-declare function xqdoc2html:description($comment) {
+declare %private function xqdoc2html:description($comment) {
    <p>{if ($comment/xqdoc:description) then
          $comment/xqdoc:description/node()
        else
@@ -1249,7 +1253,7 @@ declare %private function xqdoc2html:annotations-module($comment) {
  : @param $indexCollector the modules names part of the left menu.
  : @return the XHTML for the 'Module Resources'.
  :)
-declare %ann:nondeterministic function xqdoc2html:module-resources(
+declare %private %ann:nondeterministic function xqdoc2html:module-resources(
   $xqdocXhtmlPath as xs:string,
   $moduleUri as xs:string) 
 {
@@ -1272,7 +1276,7 @@ declare %ann:nondeterministic function xqdoc2html:module-resources(
  : @param $xqdoc the node containing the XQDoc XML.
  : @return the XHTML for the 'Module Dependencies'.
  :)
-declare function xqdoc2html:module-dependencies(
+declare %private function xqdoc2html:module-dependencies(
     $xqdoc) {
   if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0 or
       fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
@@ -1342,7 +1346,7 @@ declare %private function xqdoc2html:imports(
  : @param $module the node containing the XQDoc XML module.
  : @return the XHTML for the 'Related Specifications'.
  :)
-declare function xqdoc2html:module-external-specifications($module) {
+declare %private function xqdoc2html:module-external-specifications($module) {
   if(fn:count($module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]) >0) then
     (<div class="section"><span id="external_specifications">Related Specifications</span></div>,
     <p>For more details please check out these resources:<ul>
@@ -1368,7 +1372,7 @@ declare function xqdoc2html:module-external-specifications($module) {
  : @param $variables the node containing the XQDoc XML variables.
  : @return the XHTML for the module variables.
  :)
-declare function xqdoc2html:module-variables($variables)
+declare %private function xqdoc2html:module-variables($variables)
 {
   if($variables/xqdoc:variable) then
     (<div class="section"><span id="variables">Variables</span></div>,
@@ -1394,7 +1398,7 @@ declare function xqdoc2html:module-variables($variables)
  : @param $functions the node containing the XQDoc XML functions.
  : @return the XHTML for the module function summary.
  :)
-declare function xqdoc2html:module-function-summary($functions)
+declare %private function xqdoc2html:module-function-summary($functions)
 {
   <div class="section"><span id="function_summary">Function Summary</span></div>,
   if(count($functions)) then
@@ -1437,7 +1441,7 @@ declare function xqdoc2html:module-function-summary($functions)
  : @param $signature the function signature.
  : @return the XHTML for the function signature after reformatting was done.
  :)
-declare function xqdoc2html:split-function-signature($signature as xs:string) {
+declare %private function xqdoc2html:split-function-signature($signature as xs:string) {
   let $line1 := substring-before($signature, "(")
   let $rest := substring-after($signature, "(")
   let $params :=
@@ -1486,7 +1490,7 @@ declare function xqdoc2html:split-function-signature($signature as xs:string) {
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
  : @return the XHTML for the function details.
  :)
-declare %ann:nondeterministic function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
+declare %private %ann:nondeterministic function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
     if(count($functions)) then (
       <div class="section"><span id="functions">Functions</span></div>,
       for $function in $functions
@@ -1518,6 +1522,7 @@ declare %ann:nondeterministic function xqdoc2html:functions($functions, $xqdocXh
         xqdoc2html:function-return($comment),
         xqdoc2html:errors($comment),
         xqdoc2html:annotations($comment),
+        xqdoc2html:annotations-author($comment),        
         xqdoc2html:annotations-see($comment),
         xqdoc2html:annotations-example($comment, $xqdocXhtmlPath),
         <div id="allignright"><a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a></div>,  
@@ -1568,7 +1573,7 @@ return
  : @param $comment the part of the XQDoc file holding the function parameters.
  : @return the XHTML for the function parameters.
  :)
-declare function xqdoc2html:function-parameters($comment) {
+declare %private function xqdoc2html:function-parameters($comment) {
   let $params := $comment/xqdoc:param
   return
     if (exists($params)) then (
@@ -1596,7 +1601,7 @@ declare function xqdoc2html:function-parameters($comment) {
  : @param $comment the part of the XQDoc file holding the function annotations.
  : @return the XHTML for the function return values.
  :)
-declare function xqdoc2html:function-return($comment) {
+declare %private function xqdoc2html:function-return($comment) {
   let $return := $comment/xqdoc:return
   return
     if (exists($return)) then (
@@ -1611,7 +1616,7 @@ declare function xqdoc2html:function-return($comment) {
  : @param $comment the part of the XQDoc file holding the function errors.
  : @return the XHTML for the function errors.
  :)
-declare function xqdoc2html:errors($comment) {
+declare %private function xqdoc2html:errors($comment) {
   let $errors := $comment/xqdoc:error
   return
     if (exists($errors)) then (
@@ -1623,6 +1628,15 @@ declare function xqdoc2html:errors($comment) {
             <td class="parameter">{$error/node()}</td>
           </tr>
         </table> 
+    ) else ()
+};
+
+declare %private function xqdoc2html:annotations-author($comment) {
+  let $authors := $comment/xqdoc:*[(local-name(.) = ("author"))]
+  return
+  if (exists($authors)) then (
+      <div class="subsubsection">Author:</div>,
+      <p class="annotationText">{string-join(for $author in $authors return $author/node(),', ')}</p>
     ) else ()
 };
 
@@ -1641,8 +1655,8 @@ declare function xqdoc2html:errors($comment) {
  : @param $comment the part of the XQDoc file holding the function annotations.
  : @return the XHTML for the function annotations.
  :)
-declare function xqdoc2html:annotations($comment) {
-  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see", "custom")))]
+declare %private function xqdoc2html:annotations($comment) {
+  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see", "custom", "author")))]
   return
     for $annotation in $annotations
     let $annName := local-name($annotation)
@@ -1661,7 +1675,7 @@ declare function xqdoc2html:annotations($comment) {
  : @param $comment the part of the XQDoc file holding the function annotations.
  : @return the XHTML for the function 'see' annotations.
  :)
-declare function xqdoc2html:annotations-see($comment) {
+declare %private function xqdoc2html:annotations-see($comment) {
   let $see := $comment/xqdoc:*[local-name(.) = ("see")]
   return
     if (count($see) = 0) then ()
@@ -1689,7 +1703,7 @@ declare function xqdoc2html:annotations-see($comment) {
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
  : @return the XHTML for the function 'example' annotations.
  :)
-declare %ann:nondeterministic function xqdoc2html:annotations-example($comment, $xqdocXhtmlPath) {
+declare %private %ann:nondeterministic function xqdoc2html:annotations-example($comment, $xqdocXhtmlPath) {
   let $example := $comment//xqdoc:custom[@tag="example"]
   return
     if (count($example) = 0) then ()
@@ -1714,7 +1728,7 @@ declare %private function xqdoc2html:function-is-not-private($function)
  : This function generates the XQDoc function index.
  : @return Xhtml section with the function index content.
  :)
-declare function xqdoc2html:generate-function-index()
+declare %private function xqdoc2html:generate-function-index()
 {
 <div id="level1"><span class="index">
 {
@@ -1791,7 +1805,7 @@ declare function xqdoc2html:generate-function-index()
  : @param $templatePath the path to the main.html template.
  : @return The content of the function index page.
  :)
-declare %ann:nondeterministic %ann:sequential function xqdoc2html:generate-function-index-xhtml(
+declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:generate-function-index-xhtml(
   $indexFunctionLeft,
   $templatePath as xs:string,
   $functionIndexPath as xs:string
