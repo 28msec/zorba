@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF (ZORBA_USE_SWIG)
+IF (SWIG_FOUND)
   IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing")
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
@@ -43,4 +43,4 @@ IF (ZORBA_USE_SWIG)
     ADD_SUBDIRECTORY (ruby)
   ENDIF (APPLE AND UNIVERSAL)
 
-ENDIF (ZORBA_USE_SWIG)
+ENDIF (SWIG_FOUND)
