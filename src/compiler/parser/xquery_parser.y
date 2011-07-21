@@ -777,7 +777,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* collection-reladed */
 %type <node> CollectionDecl
 %type <node> CollectionTypeDecl
-%type <node> NodeModifier
 
 /* index-related     */
 /* ----------------- */
@@ -870,7 +869,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -1871,31 +1870,13 @@ CollectionDecl :
       $$ = new CollectionDecl( LOC(@$),
                               static_cast<QName*>($3),
                               NULL,
-                              NULL,
-                              NULL);
-    }
-  | DECLARE COLLECTION QNAME NodeModifier
-    {
-      $$ = new CollectionDecl( LOC(@$),
-                              static_cast<QName*>($3),
-                              NULL,
-                              static_cast<NodeModifier*>($4),
                               NULL);
     }
   | DECLARE COLLECTION QNAME AS CollectionTypeDecl
     {
       $$ = new CollectionDecl( LOC(@$),
                               static_cast<QName*>($3),
-                              NULL,
-                              NULL,
-                              static_cast<SequenceType*>($5));
-    }
-  | DECLARE COLLECTION QNAME AS CollectionTypeDecl NodeModifier
-    {
-      $$ = new CollectionDecl( LOC(@$),
-                              static_cast<QName*>($3),
-                              NULL,
-                              static_cast<NodeModifier*>($6),
+                              0,
                               static_cast<SequenceType*>($5));
     }
   | DECLARE AnnotationList COLLECTION QNAME
@@ -1903,33 +1884,16 @@ CollectionDecl :
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<AnnotationListParsenode*>($2),
-                               0, 0);
-    }
-  | DECLARE AnnotationList COLLECTION QNAME NodeModifier
-    {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($4),
-                               static_cast<AnnotationListParsenode*>($2),
-                               static_cast<NodeModifier*>($5),
-                               NULL);
+                               0);
     }
   | DECLARE AnnotationList COLLECTION QNAME AS CollectionTypeDecl
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<AnnotationListParsenode*>($2),
-                               NULL,
                                static_cast<SequenceType*>($6));
     }
-  | DECLARE AnnotationList COLLECTION QNAME AS CollectionTypeDecl NodeModifier
-    {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($4),
-                               static_cast<AnnotationListParsenode*>($2),
-                               static_cast<NodeModifier*>($7),
-                               static_cast<SequenceType*>($6));
-    }
-  ;
+;
 
 CollectionTypeDecl :
     KindTest
@@ -1944,16 +1908,6 @@ CollectionTypeDecl :
     }
 ;
 
-NodeModifier :
-    WITH READ_ONLY NODES
-    {
-      $$ = new NodeModifier(LOC(@$), StaticContextConsts::read_only);
-    }
-  | WITH MUTABLE NODES
-    {
-      $$ = new NodeModifier(LOC(@$), StaticContextConsts::mutable_node);
-    }
-  ;
 
 IndexDecl :
     DECLARE INDEX QNAME ON NODES PathExpr BY IndexKeyList

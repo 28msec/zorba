@@ -352,6 +352,12 @@ void AnnotationList::createBuiltIn(static_context* aCtx)
   GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "unordered");
   aCtx->add_ann(StaticContextConsts::zann_unordered, lTmp);
 
+  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "read-only-nodes");
+  aCtx->add_ann(StaticContextConsts::zann_read_only_nodes, lTmp);
+
+  GENV_ITEMFACTORY->createQName(lTmp, ZORBA_ANNOTATIONS_NS, "", "mutable-nodes");
+  aCtx->add_ann(StaticContextConsts::zann_mutable_nodes, lTmp);
+
   // create a set of rules to detect conflicts between annotations
 #define ZANN(a) \
   ( static_cast<uint64_t>(StaticContextConsts:: a) ? 2<<static_cast<uint64_t>(StaticContextConsts:: a) - 1: 1) 
@@ -406,6 +412,10 @@ void AnnotationList::createBuiltIn(static_context* aCtx)
   theRuleSet.push_back(
       ZANN(zann_queue) |
       ZANN(zann_append_only)
+    );
+  theRuleSet.push_back(
+      ZANN(zann_read_only_nodes) |
+      ZANN(zann_mutable_nodes)
     );
 #undef ZANN
 }

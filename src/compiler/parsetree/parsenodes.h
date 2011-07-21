@@ -1239,14 +1239,8 @@ public:
 
 
 /*******************************************************************************
-  [*] CollectionDecl ::= "declare" CollProperties "collection" QName
+  [*] CollectionDecl ::= "declare" %annotations "collection" QName
                          ("as" CollectionTypeDecl)?
-                         ("with" NodeModifier "nodes")?
-
-  [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
-                          "ordered" | "unordered")*
-
-  [*] NodeModifier ::= ("read-only" | "mutable")
 
   [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
@@ -1254,7 +1248,6 @@ class CollectionDecl : public parsenode
 {
 protected:
   rchandle<QName>                             theName;
-  rchandle<NodeModifier>                      theNodeModifier;
   rchandle<SequenceType>                      theTypeDecl;
   rchandle<AnnotationListParsenode>           theAnnotations;
 
@@ -1263,7 +1256,6 @@ public:
         const QueryLoc& aLoc,
         QName* aName,
         rchandle<AnnotationListParsenode>,
-        NodeModifier* aNodeModifier,
         SequenceType* aTypeDecl);
 
   const QName* getName() const { return theName.getp(); }
@@ -1273,39 +1265,10 @@ public:
     return theAnnotations.getp();
   }
 
-  const NodeModifier* getNodeModifier() const
-  {
-    return theNodeModifier.getp();
-  }
-
   const SequenceType* getType() const { return theTypeDecl.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
-
-
-/*******************************************************************************
-  [*] NodeModifier   ::=   ("read-only" | "mutable " )
-********************************************************************************/
-class NodeModifier : public parsenode
-{
-protected:
-  StaticContextConsts::node_modifier_t theModifier;
-
-public:
-  NodeModifier(
-        const QueryLoc&                      aLoc,
-        StaticContextConsts::node_modifier_t aModifier)
-    :
-    parsenode(aLoc),
-    theModifier(aModifier)
-  {}
-
-  StaticContextConsts::node_modifier_t getModifier() const { return theModifier; }
-
-  void accept(parsenode_visitor&) const;
-};
-
 
 /**************************************************************************//**
   IndexDecl ::= "declare" IndexPropertyList "index" QName

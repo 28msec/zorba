@@ -1,6 +1,8 @@
 module namespace ns = "http://example.org/datamodule/";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $ns:coll_1 as xs:QName := xs:QName("ns:coll_1");
 
-declare collection ns:coll_1 as node()* with read-only nodes;
+declare %ann:read-only-nodes collection ns:coll_1 as node()*;
 

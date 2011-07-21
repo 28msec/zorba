@@ -12,9 +12,8 @@ declare collection news-data:employees
 
 declare collection news-data:articles as node()*;
 
-declare %ann:const %ann:ordered collection news-data:months
-  as schema-element(news:month)* 
-  with read-only nodes;
+declare %ann:read-only-nodes %ann:const %ann:ordered collection news-data:months
+  as schema-element(news:month)*;
 
 
 declare %ann:automatic %value-equality index news-data:CityEmp

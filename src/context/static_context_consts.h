@@ -146,6 +146,8 @@ namespace StaticContextConsts
     zann_const,
     zann_ordered,
     zann_unordered,
+    zann_read_only_nodes,
+    zann_mutable_nodes,
 
     // must be at the end
     zann_end

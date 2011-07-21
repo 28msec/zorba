@@ -3984,8 +3984,11 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   StaticContextConsts::declaration_property_t lUpdateMode =
     StaticContextConsts::decl_mutable;
 
-  StaticContextConsts::declaration_property_t lOrderMode
-    = StaticContextConsts::decl_unordered;
+  StaticContextConsts::declaration_property_t lOrderMode =
+    StaticContextConsts::decl_unordered;
+
+  StaticContextConsts::node_modifier_t lNodeModifier =
+    StaticContextConsts::mutable_node;
 
   AnnotationListParsenode* lAnns = v.get_annotations();
   if (lAnns)
@@ -4018,15 +4021,13 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     {
       lOrderMode = StaticContextConsts::decl_unordered;
     }
+    if ( ZANN_CONTAINS ( zann_read_only_nodes) )
+    {
+      lNodeModifier = StaticContextConsts::read_only;
+    }
   }
 #undef ZANN_CONTAINS
   theAnnotations = NULL; // important to reset
-
-  // Get the node modifier
-  StaticContextConsts::node_modifier_t lNodeModifier =
-    (v.getNodeModifier() == 0 ?
-     StaticContextConsts::mutable_node :
-     v.getNodeModifier()->getModifier());
 
   // Create the collection object and register it in the static context
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
@@ -4048,21 +4049,6 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   {
     // TODO
   }
-}
-
-
-/***************************************************************************//**
-  NodeModifier ::=  ("read-only" | "mutable " )
-********************************************************************************/
-void* begin_visit(const NodeModifier& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const NodeModifier& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
 }
 
 

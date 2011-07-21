@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/mbrantner/zorba/vanilla/core/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -70,7 +70,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 74 "/home/mbrantner/zorba/vanilla/build/src/compiler/parser/xquery_parser.hpp"
+#line 74 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -84,7 +84,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/home/mbrantner/zorba/vanilla/build/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -94,7 +94,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 98 "/home/mbrantner/zorba/vanilla/build/src/compiler/parser/xquery_parser.hpp"
+#line 98 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -142,7 +142,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 146 "/home/mbrantner/zorba/vanilla/build/src/compiler/parser/xquery_parser.hpp"
+#line 146 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -154,7 +154,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 139 "/home/mbrantner/zorba/vanilla/core/src/compiler/parser/xquery_parser.y"
+#line 139 "/home/mbrantner/zorba/trunk/core/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -178,7 +178,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 182 "/home/mbrantner/zorba/vanilla/build/src/compiler/parser/xquery_parser.hpp"
+#line 182 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -683,7 +683,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 687 "/home/mbrantner/zorba/vanilla/build/src/compiler/parser/xquery_parser.hpp"
+#line 687 "/home/mbrantner/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

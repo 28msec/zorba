@@ -894,14 +894,8 @@ void AnnotationLiteralListParsenode::accept(parsenode_visitor& v) const
 
 
 /*******************************************************************************
-  [*] CollectionDecl ::= "declare" CollProperties "collection" QName
+  [*] CollectionDecl ::= "declare" %annotations "collection" QName
                          ("as" CollectionTypeDecl)?
-                         ("with" NodeModifier "nodes")?
-
-  [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
-                          "ordered" | "unordered")*
-
-  [*] NodeModifier ::= ("read-only" | "mutable")
 
   [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
@@ -909,12 +903,10 @@ CollectionDecl::CollectionDecl(
     const QueryLoc& aLoc,
     QName* aName,
     rchandle<AnnotationListParsenode> aAnnotations,
-    NodeModifier*  aNodeModifier,
     SequenceType* aTypeDecl)
   :
   parsenode(aLoc),
   theName(aName),
-  theNodeModifier(aNodeModifier),
   theTypeDecl(aTypeDecl),
   theAnnotations(aAnnotations)
 {
@@ -924,17 +916,6 @@ void CollectionDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theTypeDecl);
-  ACCEPT(theNodeModifier);
-  END_VISITOR();
-}
-
-
-/*******************************************************************************
-  [*] NodeModifier   ::=   ("read-only" | "mutable " )
-********************************************************************************/
-void NodeModifier::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
   END_VISITOR();
 }
 
