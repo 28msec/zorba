@@ -28,7 +28,7 @@ COMMENT "Building Zorba documentation...")
 
 SET_TARGET_PROPERTIES(doc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 
-# generate xqdoc documentation
+# generate Zorba Doxygen documentation and XQDoc documentation for Zorba modules
 ADD_SUBDIRECTORY(zorba)
 
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/zorba/html)
