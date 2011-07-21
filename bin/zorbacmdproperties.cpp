@@ -116,6 +116,9 @@ std::string ZorbaCMDProperties::check_args () {
     std::string lURI   = lIter->substr(0, lEQual);
     std::string lValue = lIter->substr(lEQual + 2);
 
+    if ( lURI == "default" )
+      lURI = "##default";
+
     FullTextMapping lMapping;
     lMapping.uri   = lURI;
     lMapping.value = lValue;
