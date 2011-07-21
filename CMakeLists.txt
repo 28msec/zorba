@@ -270,7 +270,7 @@ IF (NOT ZORBA_SUPPRESS_SWIG)
 
   COMPARE_VERSION_STRINGS("${SWIG_VERSION}" "1.3.40" result)
   IF(result LESS 0)
-    MESSAGE(FATAL_ERROR "You need at least SWIG version 1.3.40")
+    MESSAGE(WARNING "You need at least SWIG version 1.3.40")
   ENDIF(result LESS 0)
 
 
