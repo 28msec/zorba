@@ -107,10 +107,10 @@ namespace zorba { namespace http_client {
   
   std::map<std::istream*, HttpResponseIterator*> HttpResponseIterator::theStreams;
   
-  void HttpResponseIterator::streamDestroyer(std::istream& aStream)
+  void HttpResponseIterator::streamReleaser(std::istream* aStream)
   {
     std::map<std::istream*, HttpResponseIterator*>::iterator lIter;
-    lIter = theStreams.find(&aStream);
+    lIter = theStreams.find(aStream);
     if (lIter != theStreams.end())
       theStreams.erase(lIter);
   }

@@ -26,6 +26,11 @@
 
 using namespace zorba;
 
+static void streamReleaser(std::istream* aStream)
+{
+  delete aStream;
+}
+
 class MySchemaURIMapper : public URIMapper
 {
   public:
@@ -106,12 +111,12 @@ class MyModuleURLResolver : public URLResolver
     }
 
     if (aUrl == "http://www.zorba-xquery.com/mymodule/mod1") {
-      return new StreamResource
-        (std::auto_ptr<std::istream>(new std::istringstream(mod1)));
+      return StreamResource::create(new std::istringstream(mod1),
+                                    &streamReleaser);
     }
     else if (aUrl == "http://www.zorba-xquery.com/mymodule/mod2") {
-      return new StreamResource
-        (std::auto_ptr<std::istream>(new std::istringstream(mod2)));
+      return StreamResource::create(new std::istringstream(mod2),
+                                    &streamReleaser);
     }
     else {
       return NULL;
@@ -132,11 +137,10 @@ class FoobarModuleURLResolver : public URLResolver
     if (aEntityData->getKind() == EntityData::MODULE &&
       aUrl == "http://www.zorba-xquery.com/foobar") 
     {
-      return new StreamResource
-        (std::auto_ptr<std::istream>(
-          new std::istringstream
-          ("module namespace lm = 'http://www.zorba-xquery.com/foobar'; "
-            "declare function lm:foo() { 'foo' };")));
+      return StreamResource::create
+          (new std::istringstream
+           ("module namespace lm = 'http://www.zorba-xquery.com/foobar'; "
+            "declare function lm:foo() { 'foo' };"), &streamReleaser);
     }
     else {
       return NULL;

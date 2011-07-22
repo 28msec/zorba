@@ -67,7 +67,7 @@ namespace http_client {
     }
     
   public:
-    static void streamDestroyer(std::istream& aStream);
+    static void streamReleaser(std::istream* aStream);
     
   private:
     static std::map<std::istream*, HttpResponseIterator*> theStreams;

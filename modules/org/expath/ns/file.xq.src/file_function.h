@@ -143,9 +143,9 @@ namespace zorba { namespace filemodule {
           : theStream(new std::ifstream()) {}
 
         static void
-        streamDestroyer(std::istream& stream)
+        streamReleaser(std::istream* stream)
         {
-          delete &stream;
+          delete stream;
         }
 
         Iterator_t  getIterator()

@@ -207,7 +207,7 @@ ReadTextFunction::evaluate(
   lFile->openInputStream(*lSeq->theStream, false, true);
 
   lSeq->theItem = theModule->getItemFactory()->createStreamableString(
-      *lSeq->theStream, &StreamableItemSequence::streamDestroyer);
+      *lSeq->theStream, &StreamableItemSequence::streamReleaser);
 
   return ItemSequence_t(lSeq.release());
 }

@@ -615,6 +615,12 @@ ExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname
 /***************************************************************************//**
 
 ********************************************************************************/
+static void
+releaseStream(std::istream* aStream)
+{
+  delete aStream;
+}
+
 class MyModuleURLResolver : public URLResolver
 {
 public:
@@ -628,12 +634,12 @@ public:
       aUrl == "http://www.zorba-xquery.com/mymodule") 
     {
       // we have only one module
-      return new StreamResource
-        (std::auto_ptr<std::istream>(
-          new std::istringstream
-          ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
+      std::auto_ptr<std::istream> lQuery
+          (new std::istringstream
+           ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
             "declare function lm:foo() { 'foo' }; "
-            "declare function lm:ext() external;")));
+            "declare function lm:ext() external;"));
+      return StreamResource::create(lQuery.release(), &releaseStream);
     }
     else {
       return NULL;

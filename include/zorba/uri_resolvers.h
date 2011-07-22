@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2011 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@
 #include <istream>
 #include <vector>
 #include <map>
-#include <memory>
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
+#include <zorba/streams.h>
 
 /**
  * @file uri_resolvers.h
@@ -48,13 +48,10 @@ class ZORBA_DLL_PUBLIC Resource
 {
 public:
   virtual ~Resource() = 0;
-
-protected:
-  Resource();
 };
 
 /**
- * @ brief Concrete Resource subclass representing access to an entity
+ * @brief Concrete Resource subclass representing access to an entity
  * via a stream.
  */
 class ZORBA_DLL_PUBLIC StreamResource : public Resource
@@ -62,28 +59,30 @@ class ZORBA_DLL_PUBLIC StreamResource : public Resource
 public:
 
   /**
-   * @brief Public constructor from istream.
+   * @brief Public factory method from istream.
    *
-   * Due to the auto_ptr<>, the Resource object will take memory
-   * ownership of the istream, and Zorba will free it when it is no
-   * longer required.
-   *
-   * Please note that, while istreams are normally stack objects (ie,
-   * local variables, not allocated with "new"), you must not
-   * construct a Resource with a pointer to a stack object! Always
-   * create your istreams with "new" before passing to this constructor.
+   * The Resource object will take memory ownership of the istream. Zorba will
+   * pass it to aStreamReleaser when it is no longer needed, so that the
+   * original client may delete it.
+   * @param aStream An istream whence to read the string's content.
+   * @param aStreamReleaser A function pointer which is invoked once
+   *        the StreamResource is destroyed. Normally this function will delete
+   *        the std::istream object passed to it.
    */
-  StreamResource(std::auto_ptr<std::istream> aStream);
+  static StreamResource* create(std::istream* aStream,
+                                StreamReleaser aStreamReleaser);
   
   /**
-   * @brief Retrieve the istream associated with this Resource, and
-   * take memory ownership of it.
+   * @brief Retrieve the istream associated with this Resource.
    */
-  std::auto_ptr<std::istream> getStream();
+  virtual std::istream* getStream() = 0;
 
-private:
+  /**
+   * @brief Retrieve the stream-releaser function.
+   */
+  virtual StreamReleaser getStreamReleaser() = 0;
 
-  std::auto_ptr<std::istream> theStream;
+  virtual ~StreamResource() = 0;
 };
 
 /**

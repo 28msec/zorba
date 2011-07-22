@@ -218,7 +218,7 @@ namespace zorba { namespace http_client {
   {
     theResponseIterator.setStream(aStream);
     ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
-    return lFactory->createStreamableString(*aStream, &HttpResponseIterator::streamDestroyer, false);
+    return lFactory->createStreamableString(*aStream, &HttpResponseIterator::streamReleaser, false);
   }
 
   zorba::Item HttpResponseParser::createBase64Item( std::istream& aStream )

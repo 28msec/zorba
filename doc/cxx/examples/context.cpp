@@ -349,6 +349,11 @@ context_example_10(Zorba* aZorba)
 	return false;
 }
 
+static void
+releaseStream(std::istream* aStream)
+{
+  delete aStream;
+}
 
 class PrologModuleURLResolver : public URLResolver
 {
@@ -373,7 +378,7 @@ public:
         << "declare %ann:automatic %ann:value-equality index mymodule:index" << std::endl
         << "  on nodes dml:collection(xs:QName('mymodule:collection'))" << std::endl
         << "  by ./foo as xs:string;" << std::endl;
-      return new StreamResource(std::auto_ptr<std::istream>(lQuery));
+      return StreamResource::create(lQuery.release(), &releaseStream);
     }
     else {
       return NULL;

@@ -47,6 +47,12 @@ class MySchemaURIMapper: public URIMapper
 };
 
 
+static void
+releaseStream(std::istream* aStream)
+{
+  delete aStream;
+}
+
 // Call this MyModuleURLResolver2 to avoid conflicts with
 // MyModuleURLResolver in external_functions.cpp
 class MyModuleURLResolver2 : public URLResolver
@@ -62,11 +68,11 @@ class MyModuleURLResolver2 : public URLResolver
       aUrl == "http://www.zorba-xquery.com/mymodule") 
     {
       // we have only one module
-      return new StreamResource
-        (std::auto_ptr<std::istream>(
-          new std::istringstream
-          ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
-            "declare function lm:foo() { 'foo' };")));
+      std::auto_ptr<std::istream> lModule
+          (new std::istringstream
+           ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
+            "declare function lm:foo() { 'foo' };"));
+      return StreamResource::create(lModule.release(), &releaseStream);
     }
     else {
       return NULL;

@@ -62,6 +62,12 @@ TestSchemeURIMapper::mapURI(const String aURI, EntityData const* aEntityData,
   Mostly pointless URLResolver; really only here to check plan serialization
   of URLResolvers.
  ******************************************************************************/
+static void
+releaseStream(std::istream* aStream)
+{
+  delete aStream;
+}
+
 Resource*
 TestURLResolver::resolveURL(const zorba::String &aUrl,
                             EntityData const* aEntityData)
@@ -74,7 +80,7 @@ TestURLResolver::resolveURL(const zorba::String &aUrl,
   }
   std::stringstream* ss = new std::stringstream();
   *ss << "<a>Hello, world</a>";
-  return new StreamResource(std::auto_ptr<std::istream>(ss));
+  return StreamResource::create(ss, &releaseStream);
 }
 
 

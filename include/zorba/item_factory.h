@@ -22,6 +22,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/streams.h>
 
 namespace zorba {
 
@@ -53,14 +54,14 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#string]
        *
        * @param stream An istream whence to read the string's content.
-       * @param streamDestroyer A function pointer which is invoked once
-       *        the StreamableStringItem is destroyed. It is supposed to destroy
-       *        the std::istream object passed to the function.
+       * @param streamReleaser A function pointer which is invoked once
+       *        the StreamableStringItem is destroyed. Normally this function
+       *        will delete the std::istream object passed to it.
        * @return The streamable String Item
        */
       virtual Item
       createStreamableString( std::istream &stream,
-                              void (*streamDestroyer)( std::istream & stream ),
+                              StreamReleaser streamReleaser,
                               bool seekable = false ) = 0;
 
       /** \brief Creates an AnyURI Item
