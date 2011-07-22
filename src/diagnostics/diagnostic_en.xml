@@ -1637,7 +1637,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0040" name="MISSING_NONDETERMINISTIC_ANNOTATION">
-      <value>"$1": function missing nondeterministic annotation</value>
+      <value>"$1": function invokes a nondeterministic function but is missing the nondeterministic annotation</value>
     </diagnostic>
 
     <diagnostic code="ZXQP0050" name="FEATURE_NOT_AVAILABLE">
