@@ -2,17 +2,20 @@
 by Cezar Andrei,
 May 13th, 2011
 
-<strong>Initial setup</strong>
+\section initial_setup Initial setup
 
-These steps were checked on Ubuntu 10.10, with the Zorba SVN 10380 from Tue, 10 May 2011. Send us email with the results you had on diffrent platforms.
+These steps were checked on Ubuntu 10.10. Send us email with the results you had on diffrent platforms.
 
-<strong>Install Apache HTTP Server
-</strong>
+\section install_apache_http Install Apache HTTP Server
+
 \code
 $ sudo apt-get install apache2
 \endcode
 
-<strong>Install PHP5</strong>
+Once the web server installation is done, PHP5 needs intalled also.
+
+\section install_php5 Install PHP5
+
 \code
 $ sudo apt-get install php5 php5-dev libapache2-mod-php5 php5-curl php5-gd \
 php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ps \
@@ -27,7 +30,7 @@ $ sudo pico /var/www/test.php
 Add this code to the file:
 \code
 <?php
-phpinfo();
+    phpinfo();
 ?>
 \endcode
 
@@ -40,8 +43,9 @@ Now using a web browser point it to: http://localhost/test.php
 
 Check if php works corectly.
 
-<strong>Install Zorba</strong>
-Get Zorba sources and follow the <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/build.html">build instructions</a>.
+\section install_zorba Install Zorba
+
+Get Zorba sources and follow \ref build.
 
 Check Zorba is working.
 
@@ -57,11 +61,13 @@ Check php test is working.
 $ ctest -R php
 Start processing tests
 Test project /tmp/zorba-1.2.0/build
-1188/1188 Testing php                              Passed
+1188/1188 Testing php                             Passed
 100% tests passed, 0 tests failed out of 1
 \endcode
 
-<strong>Enable Zorba extension in PHP</strong>
+Passing the php test means that PHP5 is instlled corectly and there is a succesfull build that includes the PHP swig binding.
+
+\section enable_zorba_extension Enable Zorba extension in PHP
 
 Copy Zorba extension library files to /usr/local/lib/php/.
 
@@ -86,7 +92,8 @@ Refresh browser: http://localhost/test.php
 
 Check if zorba_api is in the list of php known extensions.
 
-<strong>Verify it works</strong>
+\section verify_it_works Verify it works
+
 Add the following content to /var/www/zorba.php:
 
 \code
@@ -94,27 +101,27 @@ Add the following content to /var/www/zorba.php:
 <title>Zorba test</title>
 <body>
 <?php
-// include Zorba API
-require_once 'zorba_api_wrapper.php';
-// create Zorba instance in memory
-$ms = InMemoryStore::getInstance();
-$zorba = Zorba::getInstance($ms);
+    // include Zorba API
+    require_once 'zorba_api_wrapper.php';
+    // create Zorba instance in memory
+    $ms = InMemoryStore::getInstance();
+    $zorba = Zorba::getInstance($ms);
 
-try {
-// create and compile query string<
-$queryStr = '1+2';
-$query = $zorba->compileQuery($queryStr);
+    try {
+        // create and compile query string<
+        $queryStr = '1+2';
+        $query = $zorba->compileQuery($queryStr);
 
-// execute query and display result
-$result = $query->execute();
-echo $result;
-// clean up
-$query->destroy();
-$zorba->shutdown();
-InMemoryStore::shutdown($ms);
-} catch (Exception $e) {
-die('ERROR:' . $e->getMessage());
-}
+        // execute query and display result
+        $result = $query->execute();
+        echo $result;
+        // clean up
+        $query->destroy();
+        $zorba->shutdown();
+        InMemoryStore::shutdown($ms);
+    } catch (Exception $e) {
+        die('ERROR:' . $e->getMessage());
+    }
 ?>
 </body>
 </html>
@@ -123,13 +130,15 @@ die('ERROR:' . $e->getMessage());
 
 Point your browser to http://localhost/zorba.php and see the result.
 
-<strong>Further reading</strong>
+\section further_reading Further reading
 
 For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-#N1018E">Building XQuery-powered applications with PHP and Zorba</a> article by Vikram Vaswani.
 
-<strong>Useful links</strong>
+\section useful_links Useful links
 
 <a href="http://www.giantflyingsaucer.com/blog/?p=1826">Install PHP 5, Apache 2 and MongoDB on Ubuntu 10.10</a>
+
 <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-"> Building XQuery-powered applications with PHP and Zorba</a>
+
 <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/build.html"> Zorba build instructions</a>
 */

@@ -2,13 +2,13 @@
 by Rodolfo Ochoa,
 May 24th, 2011
 
-These steps were checked on Windows 7, PHP 5.3.5 and Apache 2.2.17 with the Zorba SVN 10490 from May 23, 2011. It should work fine with any PHP 5.X version and any other W32 platform.
+These steps were checked on Windows 7. It should work fine with any PHP 5.X version and any other W32 platform.
 
-<strong>Install Apache HTTP Server</strong>
+\section apache_httpd_install Install Apache HTTP Server
 
 Download and install Apache Server from <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a> for VC6. For apache compiled with VC9 download it from <a href="http://apachelounge.com/">http://apachelounge.com/</a>.
 
-<strong>Install PHP5</strong>
+\section php5_install Install PHP5
 
 Download and install PHP5 from <a href="http://windows.php.net/download/">http://windows.php.net/download/</a>. Remember to download and install according your VC version.
 
@@ -19,36 +19,37 @@ You can verify your install by adding a file in your htdocs directory with the f
 \code
 <strong>info.php</strong>
 <?php
-phpinfo();
+    phpinfo();
 ?>
 \endcode
 
-<strong>Install Zorba</strong>
+\section zorba_install Install Zorba
 
-Get Zorba sources and follow the <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/build.html">build instructions</a>.
+Get Zorba sources and follow \ref build.
 
-<strong>Compiling the Zorba PHP Extension</strong>
+\section compile_zorba_php Compiling the Zorba PHP Extension
 
 In order to compile the PHP Wrapper you need first to follow the steps to compile Zorba, but before compiling, you need to add three variables to the CMAKE command line:
 
--D PHP5_BINARY_DIR=...   Specify the directory where php.exe is located, i.e. “C:\php”
+-D PHP5_BINARY_DIR=...   Specify the directory where php.exe is located, i.e. C:\php”
 
--D PHP5_INCLUDE_DIR=... Specify the directory where the php source is located, i.e. “C:\php-5.3.5”
+-D PHP5_INCLUDE_DIR=...  Specify the directory where the php source is located, i.e. C:\php-5.3.5”
 
 -D PHP5_LIBRARY=... Specify with normal slash the path where the php5ts.lib is located, this file is usually located in dev directory from the binary php installation, i.e. "C:/php/dev/php5ts.lib"
 
 After adding those lines CMAKE will add automatically the PHP Wrapper project and you will be able to get zorba_api.dll, which is the extension you can use in your php binary installation.
 
-<strong>Verify Zorba</strong>
+\section verify_zorba Verify Zorba
 
 Check Zorba is working by command line:
 
-<code><strong>C:\zorba.exe -q '2+1'</strong>
+\code
+C:\zorba.exe -q '2+1'
 <?xml version="1.0" encoding="UTF-8"?>
 3
-</code>
+\endcode
 
-<strong>Enable Zorba extension in PHP</strong>
+\section php_enable_zorba_extension Enable Zorba extension in PHP
 
 Copy Zorba extension zorba_api.dll file into your php extensions directory, i.e. C:\php\ext\
 
@@ -66,39 +67,40 @@ In your Zorba directory, locate the file zorba_api_wrapper.php and copy it to an
 include_path = ".;C:\php\include"
 Restart Apache Http server
 </code>
+
 Refresh your browser with previous info file: http://localhost/info.php
 
 Check if zorba_api is in the list of php known extensions.
 
-<strong>Verify it works</strong>
+\section verify_it_works Verify it works
 
 Add the following content in to a file on your htdocs directory:
 
-\code
 <strong>test.php</strong>
+\code
 <html>
 <title>Zorba test</title>
 <body>
 <?php
-// include Zorba API
-require_once 'zorba_api_wrapper.php';
-// create Zorba instance in memory
-$ms = InMemoryStore::getInstance();
-$zorba = Zorba::getInstance($ms);
-try {
-// create and compile query string<
-$queryStr = '1+2';
-$query = $zorba->compileQuery($queryStr);
-// execute query and display result
-$result = $query->execute();
-echo $result;
-// clean up
-$query->destroy();
-$zorba->shutdown();
-InMemoryStore::shutdown($ms);
-} catch (Exception $e) {
-die('ERROR:' . $e->getMessage());
-}
+    // include Zorba API
+    require_once 'zorba_api_wrapper.php';
+    // create Zorba instance in memory
+    $ms = InMemoryStore::getInstance();
+    $zorba = Zorba::getInstance($ms);
+    try {
+        // create and compile query string<
+        $queryStr = '1+2';
+        $query = $zorba->compileQuery($queryStr);
+        // execute query and display result
+        $result = $query->execute();
+        echo $result;
+        // clean up
+        $query->destroy();
+        $zorba->shutdown();
+        InMemoryStore::shutdown($ms);
+    } catch (Exception $e) {
+        die('ERROR:' . $e->getMessage());
+    }
 ?>
 </body>
 </html>
@@ -107,13 +109,14 @@ die('ERROR:' . $e->getMessage());
 
 Point your browser to http://localhost/test.php and see the result.
 
-<strong>Further reading</strong>
+\section further_reading Further reading
 
 For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-#N1018E">Building XQuery-powered applications with PHP and Zorba</a> article by Vikram Vaswani.
 
-<strong>Useful links</strong>
+\section useful_links Useful links
 
 <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-">Building XQuery-powered applications with PHP and Zorba</a>
+
 <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/build.html"> Zorba build instructions</a>
 
 */
