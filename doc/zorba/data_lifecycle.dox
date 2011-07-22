@@ -1,5 +1,6 @@
 /** \page data_lifecycle Data Lifecycle
 
+\image html store_concepts.png
 Info to be added.
 
 \section dl_zorba_store  Zorba Store
