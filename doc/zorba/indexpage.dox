@@ -1,13 +1,13 @@
 /*! \mainpage Zorba Documentation
 
   <b>\ref installation</b>
+
+  <b>\ref build</b>
   <ul>
     <li>\ref php_ubuntu_tutorial</li>
     <li>\ref php_windows_tutorial</li>
     <li>\ref python_windows_tutorial</li>
   </ul>
-
-  <b>\ref build</b>
 
   <b>\ref commandline</b>
   
@@ -43,7 +43,7 @@
 
   <b>\ref options_and_annotations</b>
 
-  <b>\ref controlling_memory</b>
+  <b style="display:none;">\re controlling_memory</b>
 
   <b>\ref impl_dep_features</b>
   
@@ -60,7 +60,7 @@
     <li><a class="el" href="../../php/html/index.html">PHP API</a>
   </ul>
 
-  <b>\ref plugable_components</b>
+  <b style="display:none;">\re plugable_components</b>
   
 
   <b>W3C Specifications</b>
