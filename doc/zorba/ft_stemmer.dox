@@ -128,8 +128,8 @@ public:
 Stemmer const* MyStemmerProvider::getStemmer( locale::iso639_1::type lang ) const {
   static MyStemmer stemmer;
   switch ( lang ) {
-    case iso639_1::en:
-    case iso639_1::unknown: // Handle "unknown" language since, in many cases, the language is not known.
+    case locale::iso639_1::en:
+    case locale::iso639_1::unknown: // Handle "unknown" language since, in many cases, the language is not known.
       return &stemmer;
     default: 
       //
