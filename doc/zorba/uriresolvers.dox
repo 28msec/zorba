@@ -106,9 +106,10 @@ Zorba will now attempt to find the named file relative to each
 directory in the "module path". By default, the only entry on the
 module path is the directory
 <code>/usr/share/zorba-2.0.0/modules/</code> (on Unix and MacOS X) or
-<code>C:\\Program Files\\Zorba 2.0.0\\modules</code> (on Windows). So,
-to complete this example, assuming Zorba is installed on a Unix system
-in the default location, Zorba will attempt to resolve the module
+<code>C:\\Program Files\\Zorba
+2.0.0\\share\\zorba-2.0.0\\modules</code> (on Windows). So, to
+complete this example, assuming Zorba is installed on a Unix system in
+the default location, Zorba will attempt to resolve the module
 namespace URI <code>http://www.example.com/modules/utils</code> to the
 file
 

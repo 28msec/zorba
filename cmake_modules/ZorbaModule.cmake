@@ -261,7 +261,7 @@ MACRO (DECLARE_ZORBA_MODULE)
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
     INSTALL(TARGETS ${module_lib_target}
-      ${target_type} DESTINATION share/modules/${module_path})
+      ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path})
 
   ENDIF(MODULE_EXTRA_SOURCES OR EXISTS "${SOURCE_FILE}.src/")
 
@@ -373,7 +373,7 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_DIR OUTPUT_FILE VERSION_ARG DEPEND_TARGET
     # For .xq and .xsd files, also set up an INSTALL rule.
     IF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
       INSTALL (FILES "${INPUT_FILE}"
-               DESTINATION "share/modules/${_output_dir}"
+               DESTINATION "${ZORBA_MODULES_INSTALL_DIR}/${_output_dir}"
                RENAME "${_output_filename}")
     ENDIF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
   ENDIF (file_found EQUAL -1)

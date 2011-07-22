@@ -121,9 +121,11 @@ void root_static_context::init()
     if(last_slash)
     {
       last_slash[1] = 0;
+      zstring moddir(ZORBA_MODULES_INSTALL_DIR);
+      ascii::replace_all(moddir, '/', '\\');
       zstring fileURL;
       fileURL = dll_path;
-      fileURL = fileURL.append("..\\include\\zorba\\modules\\");
+      fileURL = fileURL.append(moddir);
       lRootModulePaths.push_back(fileURL);
     }
   }
