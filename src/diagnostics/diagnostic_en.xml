@@ -2111,6 +2111,10 @@
       <value>${"1": }I/O error${: 2}</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0005" name="DLL_LOAD_FAILED">
+      <value>"$1": error loading dynamic library${: 2}</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">

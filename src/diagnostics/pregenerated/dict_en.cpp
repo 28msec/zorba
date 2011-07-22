@@ -326,6 +326,7 @@ extern entry const dict_en[] = {
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
   { "ZOSE0004", "${\"1\": }I/O error${: 2}" },
+  { "ZOSE0005", "\"$1\": error loading dynamic library${: 2}" },
   { "ZSTR0001", "\"$1\": index already exists" },
   { "ZSTR0002", "\"$1\": index does not exist" },
   { "ZSTR0003", "\"$1\": partial key insertion into index \"$2\"" },

@@ -335,4 +335,21 @@ As a last piece of advice, if the parser complains while you are writing a scrip
 
 XQuery is very powerful and expressive. As in C++, modularizing your programs in small functions will dramatically reduce development time while improving readability.
 
+\subsection scripting_option Disabling Scripting Support 
+
+By default, Zorba comes with support for scripting.
+However, it might make sense to disable this feature.
+For example, if you want to make sure that a module does not need any scripting features because it would not be compatible with other XQuery processors.
+
+The following prolog option can be used to disable the scripting feature.
+
+\code
+  declare namespace op = "http://www.zorba-xquery.com/options/features";
+
+  declare option op:disable "scripting";
+\endcode
+
+Please find more details regarding options to enable or disable particular features in the documentation about \ref options_and_annotations.
+
+
 */
