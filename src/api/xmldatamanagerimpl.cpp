@@ -153,8 +153,8 @@ XmlDataManagerImpl::getW3CCollectionManager() const
   return theW3CColManager;
 }
 
-void
-XmlDataManagerImpl::destroyStream(std::istream& stream)
+static void
+streamReleaser(std::istream* stream)
 {
   // it's the user's responsibility to manage the lifetime
 }
@@ -170,7 +170,7 @@ XmlDataManagerImpl::parseXML(std::istream& aStream) const
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(
           theFactory->createStreamableString(
-            aStream, &XmlDataManagerImpl::destroyStream)));
+            aStream, &streamReleaser)));
 
     ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
     Iterator_t lIter = lSeq->getIterator();
@@ -195,8 +195,7 @@ XmlDataManagerImpl::parseXML(
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(
-          theFactory->createStreamableString(
-            aStream, &XmlDataManagerImpl::destroyStream)));
+          theFactory->createStreamableString(aStream, &streamReleaser)));
     lArgs.push_back(new SingletonItemSequence(
           theFactory->createString(aBaseURI)));
 
@@ -221,8 +220,7 @@ XmlDataManagerImpl::parseXML(std::istream& aStream, XmlDataManager::ParseOptions
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(
-          theFactory->createStreamableString(
-            aStream, &XmlDataManagerImpl::destroyStream)));
+          theFactory->createStreamableString(aStream, &streamReleaser)));
 
     std::ostringstream lOptions;
     lOptions
@@ -255,8 +253,7 @@ XmlDataManagerImpl::parseXML(
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(
-          theFactory->createStreamableString(
-            aStream, &XmlDataManagerImpl::destroyStream)));
+          theFactory->createStreamableString(aStream, &streamReleaser)));
     lArgs.push_back(new SingletonItemSequence(
           theFactory->createString(aBaseURI)));
 

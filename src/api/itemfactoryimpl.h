@@ -41,7 +41,7 @@ namespace zorba {
 
       virtual Item
       createStreamableString( std::istream&,
-                              void (*streamDestroyer)( std::istream & stream ),
+                              StreamReleaser,
                               bool seekable = false );
 
       virtual Item

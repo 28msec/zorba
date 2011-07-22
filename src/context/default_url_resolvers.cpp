@@ -66,6 +66,11 @@ HTTPURLResolver::resolveURL
  * file: URL resolver.
  ******/
 
+static void fileStreamReleaser(std::istream* aStream)
+{
+  delete aStream;
+}
+
 Resource*
 FileURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
@@ -76,10 +81,8 @@ FileURLResolver::resolveURL
   }
   zstring lPath = fs::get_normalized_path(aUrl);
   if (fs::get_type(lPath) == fs::file) {
-    std::auto_ptr<std::ifstream> lStream(new std::ifstream());
-    lStream->open(lPath.c_str());
-    return new StreamResource
-      (static_cast<std::auto_ptr<std::istream> >(lStream));
+    std::ifstream* lStream = new std::ifstream(lPath.c_str());
+    return new StreamResource(lStream, &fileStreamReleaser);
   }
   return NULL;
 }

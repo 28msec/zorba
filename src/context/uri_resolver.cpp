@@ -45,9 +45,11 @@ namespace impl {
   {}
 
   StreamResource::StreamResource
-  (std::auto_ptr<std::istream> aStream, zstring aStreamUrl /* = "" */)
+  (std::istream* aStream, StreamReleaser aStreamReleaser,
+   zstring aStreamUrl /* = "" */)
     : Resource(),
       theStream(aStream),
+      theStreamReleaser(aStreamReleaser),
       theStreamUrl(aStreamUrl),
       theHttpStream(0)
   {}
@@ -55,9 +57,10 @@ namespace impl {
   StreamResource::StreamResource
   (HttpStream* aHttpStream, const zstring& aUrl)
   : Resource(),
-  theStream(0),
-  theStreamUrl(aUrl),
-  theHttpStream(aHttpStream)
+    theStream(nullptr),
+    theStreamReleaser(nullptr),
+    theStreamUrl(aUrl),
+    theHttpStream(aHttpStream)
   {
   }
 
@@ -65,17 +68,32 @@ namespace impl {
   {
     if (theHttpStream)
       delete theHttpStream;
+    if (theStreamReleaser)
+      theStreamReleaser(theStream);
   }
   
-  std::auto_ptr<std::istream>
+  std::istream*
   StreamResource::getStream()
   {
-    if (theStream.get())
+    if (theStream)
       return theStream;
     else {
-      std::auto_ptr<std::istream> res(new std::istream(theHttpStream->getStream().rdbuf()));
-      return res;
+      return &theHttpStream->getStream();
     }
+  }
+
+  StreamReleaser
+  StreamResource::getStreamReleaser()
+  {
+    // This will be nullptr if we were constructed from an HttpStream,
+    // which is OK.
+    return theStreamReleaser;
+  }
+
+  void
+  StreamResource::setStreamReleaser(StreamReleaser aStreamReleaser)
+  {
+    theStreamReleaser = aStreamReleaser;
   }
 
   zstring

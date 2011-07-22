@@ -135,8 +135,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
         // Technically this should be thrown during static analysis.
         throw ZORBA_EXCEPTION(err::FTST0008, ERROR_PARAMS(uri));
       }
-      std::auto_ptr<std::istream> stream_ptr = stream_rsrc->getStream();
-      std::istream* stream = stream_ptr.get();
+      std::istream* stream = stream_rsrc->getStream();
 
       bool in_word = false;
       zstring cur_word;

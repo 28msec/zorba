@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "uri_resolver_wrappers.h"
+#include "uriresolverimpl.h"
 #include "unmarshaller.h"
 
 namespace zorba
@@ -122,21 +123,31 @@ namespace zorba
       return NULL;
     }
 
-    // Take memory ownership of the user's Resource
+    impl::StreamResource* lRetval = nullptr;
+    // Get the user's Resource. It's OK to use an auto_ptr here for safety,
+    // because the Resource will have been created by a factory method inside
+    // libzorba (no cross-DLL memory allocation issue).
     std::auto_ptr<Resource> lUserPtr
-      (theUserResolver.resolveURL(zorba::String(aUrl.c_str()), lDataWrap.get()));
+      (theUserResolver.resolveURL(zorba::String(aUrl.c_str()),
+                                  lDataWrap.get()));
     if (lUserPtr.get() != NULL) {
       // This will get a bit more complicated when we publicly support more than
       // one kind of Resource subclass.
-      StreamResource* lUserStream = dynamic_cast<StreamResource*>(lUserPtr.get());
+      StreamResourceImpl* lUserStream =
+          dynamic_cast<StreamResourceImpl*>(lUserPtr.get());
       if (lUserStream != NULL) {
-        return new impl::StreamResource(lUserStream->getStream());
+        // Here we pass memory ownership of the std::istream to the internal
+        // StreamResource, by passing the StreamReleaser to it and setting the
+        // user's StreamResource's StreamReleaser to nullptr.
+        lRetval = new impl::StreamResource(lUserStream->getStream(),
+                                           lUserStream->getStreamReleaser());
+        lUserStream->setStreamReleaser(nullptr);
       }
       else {
         assert(false);
       }
     }
-    return NULL;
+    return lRetval;
   }
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

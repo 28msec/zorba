@@ -132,18 +132,27 @@ private:
 class IstreamInputSource : public XERCES_CPP_NAMESPACE::InputSource
 {
 public:
-  IstreamInputSource(std::auto_ptr<std::istream> aStream)
-    : theStream(aStream)
+  IstreamInputSource(std::istream* aStream, StreamReleaser aStreamReleaser)
+    : theStream(aStream),
+      theStreamReleaser(aStreamReleaser)
   {
+  }
+
+  ~IstreamInputSource()
+  {
+    if (theStreamReleaser) {
+      theStreamReleaser(theStream);
+    }
   }
 
   virtual XERCES_CPP_NAMESPACE::BinInputStream* makeStream() const
   {
-    return new IstreamBinInputStream(theStream.get());
+    return new IstreamBinInputStream(theStream);
   }
 
 private:
-  std::auto_ptr<std::istream> theStream;
+  std::istream* theStream;
+  StreamReleaser theStreamReleaser;
 };
 
 /**
@@ -165,8 +174,9 @@ public:
     if (XMLString::compareString(systemId, theLogicalURI) == 0)
     {
       TRACE("logiUri: " << StrX(theLogicalURI) << " physicalUri: " << StrX(thePhysicalURI));
-      InputSource* lRetval = new IstreamInputSource(theStream);
-      theStream.release();
+      // Pass memory ownership of the istream to the IstreamInputSource
+      InputSource* lRetval = new IstreamInputSource(theStream, theStreamReleaser);
+      theStreamReleaser = nullptr;
       
       lRetval->setSystemId(thePhysicalURI);
       return lRetval;
@@ -223,8 +233,10 @@ public:
             dynamic_cast<impl::StreamResource*>(lResource.get());
         if (lStream != NULL)
         {
-          std::auto_ptr<std::istream> lIStream = lStream->getStream();
-          InputSource* lRetval = new IstreamInputSource(lIStream);
+          // Pass memory ownership of this istream to the new IstreamInputSource
+          InputSource* lRetval = new IstreamInputSource
+              (lStream->getStream(), lStream->getStreamReleaser());
+          lStream->setStreamReleaser(nullptr);
           
           if (isSystemId)
             lRetval->setSystemId(thePhysicalURI);
@@ -256,8 +268,10 @@ public:
     impl::StreamResource* aStreamResource)
     : theLogicalURI(aLogicalURI), theSctx(aSctx)
   {
-    // Take memory ownership of the istream here
+    // Take memory ownership of the istream
     theStream = aStreamResource->getStream();
+    theStreamReleaser = aStreamResource->getStreamReleaser();
+    aStreamResource->setStreamReleaser(nullptr);
     // Take memory ownership of the translated system ID
     thePhysicalURI = XERCES_CPP_NAMESPACE::XMLString::transcode
       (aStreamResource->getStreamUrl().c_str());
@@ -266,12 +280,16 @@ public:
   ~StaticContextEntityResolver()
   {
     XERCES_CPP_NAMESPACE::XMLString::release(&thePhysicalURI);
+    if (theStreamReleaser) {
+      theStreamReleaser(theStream);
+    }
   }
 
 private:
   const XMLCh * theLogicalURI;
   static_context * theSctx;
-  std::auto_ptr<std::istream> theStream;
+  std::istream* theStream;
+  StreamReleaser theStreamReleaser;
   XMLCh * thePhysicalURI;
 };
 

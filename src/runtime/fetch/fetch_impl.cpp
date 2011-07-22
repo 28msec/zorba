@@ -44,7 +44,7 @@ FetchContentIterator::nextImpl(
   store::Item_t lUri;
   zstring lErrorMessage;
   std::auto_ptr<impl::Resource> lRes;
-  std::auto_ptr<std::istream> lStream;
+  impl::StreamResource* lStreamRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -54,10 +54,10 @@ FetchContentIterator::nextImpl(
   try {
     // ask the uri mappers and resolvers to give
     // me a resource of type SOME_CONTENT
-    lRes.reset(theSctx->resolve_uri(
+    lRes = theSctx->resolve_uri(
       lUri->getStringValue(),
       impl::EntityData::SOME_CONTENT,
-      lErrorMessage).release());
+      lErrorMessage);
 
   } catch (ZorbaException const& e) {
     throw XQUERY_EXCEPTION(
@@ -67,7 +67,8 @@ FetchContentIterator::nextImpl(
     );
   }
 
-  if ( !lRes.get() ) {
+  lStreamRes = dynamic_cast<impl::StreamResource*>(lRes.get());
+  if ( !lStreamRes ) {
     throw XQUERY_EXCEPTION(
       zerr::ZXQP0025_ITEM_CREATION_FAILED,
       ERROR_PARAMS( "Resource not available." ),
@@ -75,17 +76,15 @@ FetchContentIterator::nextImpl(
     );
   }
 
-
-  // return the resource in a streamable string
-  lStream.reset(
-    static_cast<impl::StreamResource*>(
-      lRes.get())->getStream().release());
-
+  // return the resource in a streamable string. This transfers memory
+  // ownership of the istream (via its StreamReleaser) to the StreamableString
+  // object, so we then remove the StreamReleaser from the StreamResource.
   GENV_ITEMFACTORY->createStreamableString(
-    result,
-    *lStream.release(), // transfer ownership
-    &FetchContentIterator::destroyStream
+        result,
+        *lStreamRes->getStream(),
+        lStreamRes->getStreamReleaser()
   );
+  lStreamRes->setStreamReleaser(nullptr);
 
   STACK_PUSH(result != NULL, state);
 

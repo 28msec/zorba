@@ -56,11 +56,11 @@ Item ItemFactoryImpl::createString(const String& aString)
 
 Item ItemFactoryImpl::createStreamableString(
     std::istream &stream,
-    void (*streamDestroyer)( std::istream & stream ),
+    StreamReleaser streamReleaser,
     bool seekable)
 {
   store::Item_t lItem;
-  theItemFactory->createStreamableString(lItem, stream, streamDestroyer, seekable);
+  theItemFactory->createStreamableString(lItem, stream, streamReleaser, seekable);
   return &*lItem;
 }
 

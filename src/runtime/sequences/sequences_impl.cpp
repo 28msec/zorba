@@ -1824,8 +1824,8 @@ static void loadDocument(
     throw XQUERY_EXCEPTION
         (err::FODC0002, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
   }
-  std::auto_ptr<std::istream> lStream = lStreamResource->getStream();
-  if (lStream.get() == NULL) {
+  std::istream* lStream = lStreamResource->getStream();
+  if (lStream == NULL) {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }
 
@@ -1838,8 +1838,7 @@ static void loadDocument(
   try {
     store::Store& lStore = GENV.getStore();
     zstring lBaseUri = aSctx->get_base_uri();
-    oResult = lStore.loadDocument(lBaseUri, lNormUri,
-                                  lStream.release(), lLoadProperties);
+    oResult = lStore.loadDocument(lBaseUri, lNormUri, *lStream, lLoadProperties);
     fillTime(t0, t0user, aPlanState);
   }
   catch (ZorbaException& e) {

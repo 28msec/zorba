@@ -116,9 +116,9 @@ bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 bool BasicItemFactory::createStreamableString(
     store::Item_t& result,
     std::istream &stream,
-    void (*streamDestroyer)(std::istream& stream),
+    StreamReleaser streamReleaser,
     bool seekable) {
-  result = new StreamableStringItem( stream, streamDestroyer, seekable );
+  result = new StreamableStringItem( stream, streamReleaser, seekable );
   return true;
 }
 

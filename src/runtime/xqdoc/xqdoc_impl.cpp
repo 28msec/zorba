@@ -54,7 +54,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   static_context* lSctx;
   std::auto_ptr<impl::Resource> lResource;
   impl::StreamResource* lStream;
-  std::auto_ptr<std::istream> lFile;
+  std::istream* lFile;
   zstring lErrorMessage;
 
   // setup a new CompilerCB and a new XQueryCompiler 
@@ -80,16 +80,15 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lURI = lSctx->resolve_relative_uri(strval);
   lResource = lSctx->resolve_uri(lURI, impl::EntityData::MODULE, lErrorMessage);
   lStream = static_cast<impl::StreamResource*>(lResource.get());
-  // We take ownership of the stream
   lFile = lStream->getStream();
 
   // now, do the real work
-  if (lFile.get() && lFile->good())
+  if (lFile && lFile->good())
   {
     try 
     {
       // retrieve the xqdoc elements 
-      lCompiler.xqdoc(*lFile.get(),
+      lCompiler.xqdoc(*lFile,
                       lFileName,
                       result,
                       planState.theLocalDynCtx->get_current_date_time());

@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/uri_resolvers.h>
+#include "uriresolverimpl.h"
 
 namespace zorba {
 
@@ -23,20 +24,48 @@ namespace zorba {
  * Implementation of the Resource class hierarchy.
  *************/
 
-  Resource::Resource()
-  {}
-
   Resource::~Resource()
   {}
 
-  StreamResource::StreamResource(std::auto_ptr<std::istream> aStream)
-    : theStream(aStream)
+  StreamResource::~StreamResource()
   {}
 
-  std::auto_ptr<std::istream>
-  StreamResource::getStream()
+  StreamResourceImpl::~StreamResourceImpl()
+  {
+    if (theStreamReleaser) {
+      theStreamReleaser(theStream);
+    }
+  }
+
+  StreamResource* StreamResource::create(std::istream* aStream,
+                                         StreamReleaser aStreamReleaser)
+  {
+    return new StreamResourceImpl(aStream, aStreamReleaser);
+  }
+
+  StreamResourceImpl::StreamResourceImpl(std::istream* aStream,
+                                         StreamReleaser aStreamReleaser)
+    : theStream(aStream),
+      theStreamReleaser(aStreamReleaser)
+  {
+  }
+
+  std::istream*
+  StreamResourceImpl::getStream()
   {
     return theStream;
+  }
+
+  StreamReleaser
+  StreamResourceImpl::getStreamReleaser()
+  {
+    return theStreamReleaser;
+  }
+
+  void
+  StreamResourceImpl::setStreamReleaser(StreamReleaser aStreamReleaser)
+  {
+    theStreamReleaser = aStreamReleaser;
   }
 
 /*************

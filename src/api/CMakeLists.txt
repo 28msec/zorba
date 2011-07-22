@@ -49,10 +49,10 @@ SET(API_SRCS
     serializerimpl.cpp
     base64impl.cpp
     uriimpl.cpp
-    uri_resolver.cpp
+    uriresolverimpl.cpp
     uri_resolver_wrappers.cpp
-		xquery_functions.cpp
-		zorba_functions.cpp
+    xquery_functions.cpp
+    zorba_functions.cpp
     annotationimpl.cpp
     auditimpl.cpp
     )

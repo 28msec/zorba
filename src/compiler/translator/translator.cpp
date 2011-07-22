@@ -2869,10 +2869,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // We are importing a module for the 1st time.
     else
     {
-      // Open the file containing the imported module. We get the ownership of
-      // the input stream.
+      // Open the file containing the imported module.
       zstring compURL;
-      std::auto_ptr<std::istream> modfile;
+      std::istream* modfile;
 
       // Resolve the URI. Again, note the use of versioned_uri() here,
       // rather than using compURI directly, because we want the version

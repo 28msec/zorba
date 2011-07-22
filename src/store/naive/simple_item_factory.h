@@ -85,7 +85,7 @@ public:
   bool createStreamableString(
       store::Item_t& result,
       std::istream&,
-      void (*streamDestroyer)(std::istream& stream),
+      StreamReleaser,
       bool seekable = false);
 
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);

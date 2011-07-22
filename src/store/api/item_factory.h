@@ -21,6 +21,7 @@
 
 #include <zorba/config.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/streams.h>
 
 #include "store/api/shared_types.h"
 #include "zorbatypes/schema_types.h"
@@ -92,7 +93,7 @@ public:
   virtual bool createStreamableString(
       Item_t& result,
       std::istream&,
-      void (*streamDestroyer)(std::istream& stream),
+      StreamReleaser,
       bool seekable = false) = 0;
 
   /**

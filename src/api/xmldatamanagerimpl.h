@@ -68,9 +68,6 @@ protected:
   void
   initializeItemFactory();
 
-  static void
-  destroyStream(std::istream& stream);
-
 public:
   DocumentManager*
   getDocumentManager() const;

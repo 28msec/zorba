@@ -348,10 +348,11 @@ public:
       return NULL;
     }
     assert (theStream.good());
-    // QQQ We can remove this second argument when we can compile modules individually
-    return new impl::StreamResource
-      (std::auto_ptr<std::istream>(new std::istream(theStream.rdbuf())),
-        theLibraryModuleFilename);
+    // Pass a nullptr StreamReleaser; memory ownership of the istream remains
+    // with the caller of this method.
+    // QQQ We can remove this third argument when we can compile modules individually
+    return new impl::StreamResource(&theStream, nullptr,
+                                    theLibraryModuleFilename);
   }
 
 private:

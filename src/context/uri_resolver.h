@@ -84,22 +84,22 @@ public:
   /**
    * @brief Public constructor from istream.
    *
-   * Due to the auto_ptr<>, the Resource object will take memory
-   * ownership of the istream, and Zorba will free it when it is no
-   * longer required.
-   *
-   * Please note that, while istreams are normally stack objects (ie,
-   * local variables, not allocated with "new"), you must not
-   * construct a Resource with a pointer to a stack object! Always
-   * create your istreams with "new" before passing to this constructor.
-   *
+   * The Resource object will take memory ownership of the istream. Zorba will
+   * pass it to aStreamReleaser when it is no longer needed, so that the
+   * original client may delete it.
+   * @param aStream An istream whence to read the string's content.
+   * @param aStreamReleaser A function pointer which is invoked once
+   *        the StreamResource is destroyed. Normally this function will delete
+   *        the std::istream object passed to it.
    * @param aStreamUrl Normally this StreamResource represents the
    * contents of the URL which was used to resolve it. However, there
    * are certain unusual circumstances where a URLResolver may wish to
    * return a stream over some other URL than the one passed to it. In
    * that case, the URLResolver may pass the true URL here.
    */
-  StreamResource(std::auto_ptr<std::istream> aStream, zstring aStreamUrl = "");
+  StreamResource(std::istream* aStream,
+                 StreamReleaser aStreamReleaser,
+                 zstring aStreamUrl = "");
   
   StreamResource(HttpStream* aHttpStream, const zstring& aUrl = "");
   
@@ -108,7 +108,19 @@ public:
   /**
    * @brief Retrieve the istream associated with this Resource.
    */
-  std::auto_ptr<std::istream> getStream();
+  std::istream* getStream();
+
+  /**
+   * @brief Retrieve the StreamReleaser.
+   */
+  StreamReleaser getStreamReleaser();
+
+  /**
+   * @brief Assign the StreamReleaser. Generally you should only use this
+   * to set the StreamReleaser to "nullptr" if you are taking memory
+   * ownership of the istream.
+   */
+  void setStreamReleaser(StreamReleaser aStreamReleaser);
 
   /**
    * @brief Retrieve the URL that the stream was actually loaded from.
@@ -118,7 +130,8 @@ public:
 
 private:
 
-  std::auto_ptr<std::istream> theStream;
+  std::istream* theStream;
+  StreamReleaser theStreamReleaser;
   zstring theStreamUrl;
   HttpStream* theHttpStream;
 };

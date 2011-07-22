@@ -21,6 +21,7 @@
 #include <iostream>
 #include <vector>
 
+#include <zorba/streams.h>
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
 #include "store/naive/store_defs.h"
@@ -596,7 +597,7 @@ protected:
   bool theIsConsumed;
   bool theIsSeekable;
 
-  void (*theStreamDestroyer)( std::istream & stream );
+  StreamReleaser theStreamReleaser;
 
 public:
   bool equals(
@@ -631,20 +632,22 @@ public:
 
   ~StreamableStringItem()
   {
-    (theStreamDestroyer(theIstream));
+    if (theStreamReleaser) {
+      theStreamReleaser(&theIstream);
+    }
   }
 
 protected:
   StreamableStringItem(
       std::istream& aStream,
-      void (*streamDestroyer)( std::istream & stream ),
+      StreamReleaser streamReleaser,
       bool seekable = false)
     :
     theIstream(aStream),
     theIsMaterialized(false),
     theIsConsumed(false),
     theIsSeekable(seekable),
-    theStreamDestroyer(streamDestroyer)
+    theStreamReleaser(streamReleaser)
   {
   }
 
