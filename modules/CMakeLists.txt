@@ -99,24 +99,4 @@ FOREACH (module_dir ${module_dirs})
     "${CMAKE_BINARY_DIR}/zorba_modules/zorba_${module_dir}_module")
 ENDFOREACH (module_dir)
 
-# QQQ This install logic should be part of a more fully-feature macro
-# that is used for ALL modules (whether or not they have C++ code);
-# merge with GENERATE_MODULE_LIBRARY()
-IF (CMAKE_MINOR_VERSION STREQUAL "4")
-  INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-          DESTINATION include/zorba
-          PATTERN "*.svn" EXCLUDE
-          PATTERN "*.xq.src" EXCLUDE
-          PATTERN "*.xsd"
-          PATTERN "*.xq")
-ELSE (CMAKE_MINOR_VERSION STREQUAL "4")
-  INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-          DESTINATION include/zorba
-          FILES_MATCHING
-          PATTERN "*.svn" EXCLUDE
-          PATTERN "*.xq.src" EXCLUDE
-          PATTERN "*.xsd"
-          PATTERN "*.xq")
-ENDIF (CMAKE_MINOR_VERSION STREQUAL "4")
-
 MESSAGE(STATUS "End modules")
