@@ -214,7 +214,7 @@ void EvalIterator::copyOuterVariables(
   dynamic_context* outerDctx = evalDctx->getParent();
 
   std::vector<var_expr_t> globalVars;
-  outerSctx->get_parent()->getVariables(globalVars, true);
+  outerSctx->get_parent()->getVariables(globalVars, true, true);
   
   FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
   {

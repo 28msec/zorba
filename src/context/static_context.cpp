@@ -462,6 +462,7 @@ static_context::static_context()
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
   theVariablesMap(NULL),
+  theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theAnnotationMap(NULL),
@@ -508,6 +509,7 @@ static_context::static_context(static_context* parent)
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
   theVariablesMap(NULL),
+  theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theAnnotationMap(NULL),
@@ -559,6 +561,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theHaveDefaultElementNamespace(false),
   theHaveDefaultFunctionNamespace(false),
   theVariablesMap(NULL),
+  theImportedPrivateVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theAnnotationMap(NULL),
@@ -617,6 +620,9 @@ static_context::~static_context()
 
   if (theVariablesMap)
     delete theVariablesMap;
+    
+  if (theImportedPrivateVariablesMap)
+    delete theImportedPrivateVariablesMap;
 
   if (theFunctionMap)
     delete theFunctionMap;
@@ -864,6 +870,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theCtxItemType;
 
   ar & theVariablesMap;
+  ar & theImportedPrivateVariablesMap;     
 
   ar.set_serialize_only_for_eval(true);
   ar & theFunctionMap;
@@ -1961,7 +1968,8 @@ var_expr* static_context::lookup_var(
 ********************************************************************************/
 void static_context::getVariables(
   std::vector<var_expr_t>& vars,
-  bool aLocalsOnly) const
+  bool aLocalsOnly,
+  bool returnPrivateVars) const
 {
   const static_context* sctx = this;
 
@@ -1971,6 +1979,26 @@ void static_context::getVariables(
     {
       VariableMap::iterator ite = sctx->theVariablesMap->begin();
       VariableMap::iterator end = sctx->theVariablesMap->end();
+
+      for (; ite != end; ++ite)
+      {
+        ulong numVars = (ulong)vars.size();
+        ulong i = 0;
+        for (; i < numVars; ++i)
+        {
+          if (vars[i]->get_name()->equals((*ite).first))
+            break;
+        }
+
+        if (i == numVars)
+          vars.push_back((*ite).second);
+      }
+    }
+    
+    if (returnPrivateVars && sctx->theImportedPrivateVariablesMap != NULL)
+    {
+      VariableMap::iterator ite = sctx->theImportedPrivateVariablesMap->begin();
+      VariableMap::iterator end = sctx->theImportedPrivateVariablesMap->end();
 
       for (; ite != end; ++ite)
       {
@@ -3784,7 +3812,21 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       var_expr_t ve = ite.getValue();
       if (!ve->is_private())
+      {
         bind_var(ve, loc, err::XQST0049);
+      }
+      else
+      {
+        if (theImportedPrivateVariablesMap == NULL)
+        {
+          theImportedPrivateVariablesMap = new VariableMap(0, NULL, 8, false);
+        }
+        
+        if (!theImportedPrivateVariablesMap->insert(ve->get_name(), ve))
+        {
+          throw XQUERY_EXCEPTION_VAR(err::XQST0049, ERROR_PARAMS( ve->get_name()->getStringValue() ), ERROR_LOC( loc ));
+        }            
+      }
     }
   }
 

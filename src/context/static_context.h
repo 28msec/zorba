@@ -296,6 +296,9 @@ public:
 
   theVariablesMap :
   -----------------
+  
+  theImportedPrivateVariablesMap :
+  --------------------------------
 
   theFunctionMap :
   ----------------
@@ -525,6 +528,8 @@ protected:
   xqtref_t                                theCtxItemType;
 
   VariableMap                           * theVariablesMap;
+  
+  VariableMap                           * theImportedPrivateVariablesMap;
 
   FunctionMap                           * theFunctionMap;
   FunctionArityMap                      * theFunctionArityMap;
@@ -784,7 +789,8 @@ public:
 
   void getVariables(
     std::vector<var_expr_t>& variableList,
-    bool localsOnly = false) const;
+    bool localsOnly = false,
+    bool returnPrivateVars = false) const;
 
   void set_context_item_type(xqtref_t& t);
 
