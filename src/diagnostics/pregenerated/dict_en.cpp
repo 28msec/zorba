@@ -322,7 +322,7 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_WITH_DEBUGGER)
   { "ZGDB0001", "" },
 #endif
-  { "ZOSE0001", "\"$1\": error loading dynamic library${: 2}" },
+  { "ZOSE0001", "\"$1\": file not found" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
   { "ZOSE0004", "${\"1\": }I/O error${: 2}" },

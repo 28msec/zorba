@@ -2096,7 +2096,7 @@
     <!--////////// Zorba Operating System Errors ///////////////////////////-->
 
     <diagnostic code="ZOSE0001" name="FILE_NOT_FOUND">
-      <value>"$1": error loading dynamic library${: 2}</value>
+      <value>"$1": file not found</value>
     </diagnostic>
 
     <diagnostic code="ZOSE0002" name="NOT_PLAIN_FILE">
