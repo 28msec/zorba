@@ -3,7 +3,7 @@
 
 In XQuery, <a href="http://www.w3.org/TR/xquery-30/#id-option-declaration">options</a> and <a href="http://www.w3.org/TR/xquery-30/#id-annotations">annotations</a> can both be used to change the behavior of a particular implementation.
 Options provide a way to affect the behavior of modules.
-Annotations can be used to declare properties associated with functions and variables.
+Annotations can be used to declare properties associated with functions, variables, collections, and indexes.
 In the following, we present the Zorba specific options and annotations.
 Also, we describe how they can be dealt with using the C++ API and the introspection module.
 
@@ -156,6 +156,7 @@ This way, she can customize the behavior of her function.
 \section annotation_introduction Annotations
 
 In XQuery (starting version 3.0) <a href="http://www.w3.org/TR/xquery-30/#id-annotations">annotations</a> may be used to properties associated with functions and variables.
+Zorba also uses annotations for collections and indexes.
 Annotations are <tt>(QName, value)</tt> pairs.
 The prefix of the QName is resolved using the statically known namespaces.
 If no prefix is present, the name is the default function namespace.
@@ -176,8 +177,7 @@ declare %private function mymodule:foo() { "foo" };
 
 \subsubsection zorba_annotations Zorba Specific Annotations
 
-Zorba provides a couple of annotations that allow the user to define the semantics
-of functions or variables.
+Zorba provides a couple of annotations that allow the user to define the semantics of functions, variables, collections, and indexes.
 All these annotations have the namespace <tt>http://www.zorba-xquery.com/annotations</tt>.
 
 \paragraph deterministic_annotation Deterministic and Nondeterministic Functions
@@ -276,7 +276,31 @@ In this example, the <tt>file:read-text</tt> function returns a streamable strin
 In order to be able to use the value twice, the <tt>string:materialize</tt> function must be used to materialize the entire contents of the file <tt>myfile.txt</tt> in memory.
 Otherwise, the error zerr:ZSTR0055 is raised.
 
-\subsection annotations_introspection
+\paragraph collection_index_annotations Annotations on Collections and Indexes
+
+The XQuery Data Definition Facility uses annotations to assign properties to collections and indexes.
+For example, annotations can be used to specify that a collection is unordered or that an index is a value equality index.
+
+The semantics of each of the annotations is given in the documentation about the XQuery Data Definition Facility.
+However, for completeness, we also list all of the annotations here.
+
+<ul>
+  <li><b>mutable, queue, append-only, const</b> Determines whether a collection is mutable, queue (FIFO), append-only, or const (not mutable). The default annotation is mutable. </li>
+
+  <li><b>ordered, unordered</b>  Annotations to specify whether the order of nodes in a collection must be preserved. The default is ordered.</li>
+
+  <li><b>read-only-nodes, mutable-nodes</b> If a collection is annotated with read-only-nodes, the nodes in the collection can not be modified using the XQuery Update Facility. The default is mutable-nodes.</li>
+
+  <li><b>unique, nonunique</b> Unique indexes make sure that the relationship between index keys and values is one-to-one. The default is nonunique.</li>
+
+  <li><b>value-equality, value-range</b> Determine whether the index is a value equality or value range index. The default is value-equality.</li>
+
+  <li><b>automatic, manual</b> If an index is declared as automatic, Zorba guarantees that the index is maintained automatically. The default is manual.</li>
+
+</ul>
+
+
+\subsection annotations_introspection Introspecting Function Annotations
 
 Analog to options, the introspection module of that comes with Zorba allows you to retrieve all annotations declared for a particular function.
 
