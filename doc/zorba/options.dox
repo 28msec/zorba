@@ -278,7 +278,7 @@ Otherwise, the error zerr:ZSTR0055 is raised.
 
 \paragraph collection_index_annotations Annotations on Collections and Indexes
 
-The XQuery Data Definition Facility uses annotations to assign properties to collections and indexes.
+The \ref xqddf uses annotations to assign properties to collections and indexes.
 For example, annotations can be used to specify that a collection is unordered or that an index is a value equality index.
 
 The semantics of each of the annotations is given in the documentation about the XQuery Data Definition Facility.
