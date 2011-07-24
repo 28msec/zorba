@@ -75,7 +75,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    *
    * @param aTarget the node in the collection before which the
    *        sequence should be inserted.
-   * @param $content The sequences of nodes whose copies should
+   * @param aNodes The sequences of nodes whose copies should
    *        be added to the collection.
    *
    * @throw XDDY0011 if any nodes in the sequence is not a member of a collection
@@ -86,7 +86,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
   insertNodesBefore(
       const Item& aTarget,
       const ItemSequence_t& aNodes) = 0;
-  
+
   /**
    * This function inserts copies of the given
    * nodes into a collection at the position directly following the
@@ -94,7 +94,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    *
    * @param aTarget the node in the collection after which the
    *        sequence should be inserted.
-   * @param $content The sequences of nodes whose copies should
+   * @param aNodes The sequences of nodes whose copies should
    *        be added to the collection.
    *
    * @throw XDDY0011 if any nodes in the sequence is not a member of a collection
