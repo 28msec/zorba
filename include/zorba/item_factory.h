@@ -57,6 +57,7 @@ namespace zorba {
        * @param streamReleaser A function pointer which is invoked once
        *        the StreamableStringItem is destroyed. Normally this function
        *        will delete the std::istream object passed to it.
+       * @param seekable
        * @return The streamable String Item
        */
       virtual Item
@@ -567,7 +568,7 @@ namespace zorba {
       * @param aHasEmptyValue True if the typed value of the node is the empty
       *                       sequence. This is the case if the element has a
       *                       complex type with empty content.
-      * @param aLocalBindings A set of namespace bindings. The namespaces property
+      * @param aNsBindings    A set of namespace bindings. The namespaces property
       *                       of N will be the union of this set and the namespaces
       *                       property of P.
       * @return               The new node N created by this method

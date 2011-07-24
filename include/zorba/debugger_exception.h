@@ -31,7 +31,7 @@ public:
   /**
    *   Construct a SocketException with a explanatory message.
    *   @param message explanatory message
-   *   @param incSysMsg true if system message (from strerror(errno))
+   *   @param inclSysMsg true if system message (from strerror(errno))
    *   should be postfixed to the user provided message
    */
   DebuggerSocketException(const std::string &message, bool inclSysMsg = false) throw();

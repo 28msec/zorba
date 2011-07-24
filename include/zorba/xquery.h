@@ -126,6 +126,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    * @param aCallbackFunction a call back function which is called every time,
    *        before the serialization of an item.
    * @param aCallbackData data which is passed to the call back function.
+   * @param aSerOptions Serializer options.
    * @throw ZorbaException if an error occurs (e.g. the query is closed or
    *        has not been compiled)
    */

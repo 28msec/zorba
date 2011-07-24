@@ -31,11 +31,13 @@ Get Zorba sources and follow \ref build.
 
 In order to compile the PHP Wrapper you need first to follow the steps to compile Zorba, but before compiling, you need to add three variables to the CMAKE command line:
 
--D PHP5_BINARY_DIR=...   Specify the directory where php.exe is located, i.e. C:\php”
+\code
+-D PHP5_BINARY_DIR=...   Specify the directory where php.exe is located, i.e. "C:\php"
 
--D PHP5_INCLUDE_DIR=...  Specify the directory where the php source is located, i.e. C:\php-5.3.5”
+-D PHP5_INCLUDE_DIR=...  Specify the directory where the php source is located, i.e. "C:\php-5.3.5"
 
 -D PHP5_LIBRARY=... Specify with normal slash the path where the php5ts.lib is located, this file is usually located in dev directory from the binary php installation, i.e. "C:/php/dev/php5ts.lib"
+\endcode
 
 After adding those lines CMAKE will add automatically the PHP Wrapper project and you will be able to get zorba_api.dll, which is the extension you can use in your php binary installation.
 
@@ -51,7 +53,10 @@ C:\zorba.exe -q '2+1'
 
 \section php_enable_zorba_extension Enable Zorba extension in PHP
 
-Copy Zorba extension zorba_api.dll file into your php extensions directory, i.e. C:\php\ext\
+Copy Zorba extension zorba_api.dll file into your php extensions directory, i.e.
+\code
+C:\php\ext\
+\endcode
 
 Modify your php.ini
 

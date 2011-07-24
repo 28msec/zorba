@@ -33,7 +33,7 @@ namespace zorba {
      *
      * @param aName The name of the collection to create.
      *
-     * @error XDDY0002 if a collection with the given name already exists.
+     * @throw XDDY0002 if a collection with the given name already exists.
      *
      */
     virtual void
@@ -44,8 +44,9 @@ namespace zorba {
      * Moreover, it adds copies of the sequence aContents to the new collection.
      *
      * @param aName The name of the collection to create.
+     * @param aContents The sequence of items.
      *
-     * @error XDDY0002 if a collection with the given name already exists.
+     * @throw XDDY0002 if a collection with the given name already exists.
      *
      */
     virtual void
@@ -58,7 +59,7 @@ namespace zorba {
      *
      * @param aName The name of the collection to delete.
      *
-     * @error XDDY0003 if the collection does not exist.
+     * @throw XDDY0003 if the collection does not exist.
      */
     virtual void
     deleteCollection(const Item& aName) = 0;
@@ -70,7 +71,7 @@ namespace zorba {
      *
      * @param aName The name of the collection to retrieve.
      *
-     * @error XDDY0003 if the collection does not exist.
+     * @throw XDDY0003 if the collection does not exist.
      */
     virtual Collection_t
     getCollection(const Item& aName) const = 0;

@@ -232,6 +232,7 @@ ZORBA_DLL_PUBLIC void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* se
 
 /** \brief Helper function to set an option in a Zorba_SerializerOptions_t structure
  *
+ * \param serializerOptions serializer options
  * \param parameter the serializer parameter to be configured
  * \param value the value to which the parameter should be set
  * \retval Zorba_CompilerHints_t with default member values

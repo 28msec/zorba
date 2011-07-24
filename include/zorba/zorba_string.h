@@ -329,7 +329,7 @@ public:
   /**
    * Appends the given character to this string.
    *
-   * @param s The character to append.
+   * @param c The character to append.
    * @return this string.
    */
   String& operator+=( value_type c ) {
@@ -622,7 +622,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_first_of( std::string const&, size_type pos = 0 ) const;
+  size_type find_first_of( std::string const&s, size_type pos = 0 ) const;
 
   /**
    * Searches this string for any one of the characters in \a s starting at the
@@ -674,7 +674,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a non-matching character or \c npos if not found.
    */
-  size_type find_first_not_of( std::string const&, size_type pos = 0 ) const;
+  size_type find_first_not_of( std::string const&s, size_type pos = 0 ) const;
 
   /**
    * Searches this string for any one of the characters not in \a s starting at
@@ -726,7 +726,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_of( std::string const&, size_type pos = npos ) const;
+  size_type find_last_of( std::string const&s, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the characters in \a s
@@ -777,7 +777,7 @@ public:
    * @param pos The starting position within this string.
    * @return the offset of a matching character or \c npos if not found.
    */
-  size_type find_last_not_of( std::string const&, size_type pos = npos ) const;
+  size_type find_last_not_of( std::string const&s, size_type pos = npos ) const;
 
   /**
    * Searches this string backwards for any one of the characters not in \a s
@@ -943,7 +943,7 @@ public:
    *
    * @param pos The iterator marking the position within this string to insert
    * at.
-   * @param The character to insert.
+   * @param c The character to insert.
    * @return Returns an iterator positioned at the newly inserted character.
    */ 
   iterator insert( iterator pos, value_type c );
@@ -1096,7 +1096,7 @@ public:
    *
    * @param i The iterator marking the first character of the range.
    * @param j The iterator marking one past the last character of the range.
-   * @param c_n The number of copies of \c to replace with.
+   * @param n The number of copies of \c to replace with.
    * @param c The character to replace with.
    * @return Returns this string.
    */

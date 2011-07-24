@@ -101,7 +101,7 @@ Zorba provides a way that allows the developer of a module to specify a version 
 An importing module can specify restriction on the version of a module it wants to use.
 This allows developers to easily declare dependencies between particular versions of a module.
 In addition, a module can specify on which version of Zorba it depends.
-Details about module versioning can be found at \ref modules_page.
+Details about module versioning can be found at \ref ml_packs_versioning.
 
 The options to declare the module and zorba version are listed here for completeness.
 

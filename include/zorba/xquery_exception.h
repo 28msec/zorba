@@ -61,9 +61,9 @@ public:
   /**
    * Sets the XQuery source-code URI name, line, and column numbers.
    *
-   * @param URI The source-code URI name.
+   * @param uri The source-code URI name.
    * @param line The source-code URI line number.
-   * @param col The source-code URI column number.
+   * @param column The source-code URI column number.
    */
   void set_source( char const *uri, line_type line, column_type column = 0 );
 

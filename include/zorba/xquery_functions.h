@@ -55,7 +55,7 @@ public:
    * Copy constructs a %Sequence.
    *
    * @param s The %Sequence to copy from.  Note that it is a destructive copy
-   * in that the sequence of \a s is \i moved.
+   * in that the sequence of \a s is 'i' moved.
    */
   Sequence( Sequence const &s ) : i_( s.i_ ) { }
 

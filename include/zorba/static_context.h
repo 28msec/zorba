@@ -436,7 +436,7 @@ namespace zorba {
       /** \brief Get an option that was declared using the declare option syntax
        *
        * @param aQName The QName of the option to get.
-       * @return aOptionValue The value of the option if found.
+       * @param aOptionValue The value of the option if found.
        * @return true if the option was found, false otherwise.
        */
       virtual bool
@@ -469,7 +469,7 @@ namespace zorba {
 
       /** \brief Resolves the given relative URI against the absolute base URI.
        *
-       * @param aRelativeURI The relative URI to be resolved.
+       * @param aRelativeUri The relative URI to be resolved.
        * @param aBaseUri The absolute URI against which the resolving is performed.
        */
       virtual String
@@ -478,9 +478,10 @@ namespace zorba {
       /** \brief Validates this Item.
         *  Note: works only on document and element nodes, otherwise returns false.
         * 
-        * @param rootElement the root of the tree beeing validated 
+        * @param rootElement the root of the tree beeing validated
+        * @param validatedResult the result of the validation
+        * @param validationMode Validation mode: default value is validate_strict
         * @return true if validation is correct, false if validation is disabled, throws errors if validation fails
-        * @return validatedResult the result of the validation
         * @throw ZorbaException if any validation error occured
         */
       virtual bool
@@ -492,10 +493,11 @@ namespace zorba {
 
       /** \brief Validates this Item while loading the schema for targetNamespace
         *  Note: works only on document or element nodes, otherwise returns false.
-        * 
+        *
         * @param rootElement the root of the tree beeing validated 
-        * @return validatedResult the result of the validation
+        * @param validatedResult the result of the validation
         * @param targetNamespace the expected namespace of root of the tree beeing validated ???
+        * @param validationMode Validation mode: default value is validate_strict
         * @return true if validation is correct, false if validation is disabled, throws errors if validation fails
         * @throw ZorbaException if any validation error occured
         */
@@ -511,8 +513,9 @@ namespace zorba {
         * text only element content.
         * 
         * @param stringValue the value to be validated
+        * @param typeQName
+        * @param resultList the result of the validation, a vector of atomic Items
         * @return true if validation is correct, false if validation is disabled, throws errors if validation fails
-        * @return resultList the result of the validation, a vector of atomic Items
         * @throw ZorbaException if any validation error occured
         */
       virtual bool 

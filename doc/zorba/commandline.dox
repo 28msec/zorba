@@ -212,8 +212,8 @@ comandline_doc_example_2-test.xq :
 zorba -e input-context=works-mod.xml -f -q comandline_doc_example_2.xq -q comandline_doc_example_2-test.xq
 \endverbatim
 
-\Note Make sure you give the correct path to the works-mod.xml, comandline_doc_example_2.xq and comandline_doc_example_2-test.xq files.
- 
+Note: Make sure you give the correct path to the works-mod.xml, comandline_doc_example_2.xq and comandline_doc_example_2-test.xq files.
+
 Expected result:
 \include comandline_doc_example_2.xml
 

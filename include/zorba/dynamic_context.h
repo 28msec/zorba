@@ -227,7 +227,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *         of external functions (see NonePureStatelessExternalFunction).
    *
    * @param aName the name of the parameter to retrieve
-   * @return aValue the value matching the given name if true is returned.
+   * @param aValue the value matching the given name if true is returned.
    * @return returns true if an entry with the given name was found,
    *         false otherwise.
    */

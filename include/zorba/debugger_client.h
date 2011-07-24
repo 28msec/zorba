@@ -223,6 +223,7 @@ namespace zorba {
      *            max_depth
      *          </li>
      *        </ul>
+     * @param aValue The value of the feature
      * @return The id of this request
      */
     virtual std::size_t feature_set(const std::string& aFeatureName,
@@ -285,7 +286,7 @@ namespace zorba {
      * @param aFilename The file where a breakpoint should be set.
      * @param aFunctionName The name of the function where to break (only
      *                      to be used if aType == Call || aType == Return)
-     * @param aException The name of the exception to break (only to be used
+     * @param aExceptionName The name of the exception to break (only to be used
      *                   if aType == Exception)
      * @param hit_value A numeric value used together with the hit_condition
      *                  to determine if the breakpoint should pause execution
@@ -392,6 +393,7 @@ namespace zorba {
      * with an id zero is used (generally the 'locals' context).
      *
      * @param depth The depth on which to quey (optional)
+     * @param contextId The contextId (optional)
      * @return The id of this request
      */
     virtual std::size_t context_get(int depth = -1, int contextId = -1) = 0;
@@ -420,6 +422,8 @@ namespace zorba {
      * @param aContextId The context id for which to query.
      * @param aMaxDataSize The maximal size of the data sent back
      *                     from the debug engine.
+     * @param aDatapage
+     * @param aPropertyKey
      * @return The id of this request
      */
     virtual std::size_t property_get(const std::string& aPropertyLongName,
@@ -455,6 +459,7 @@ namespace zorba {
      * @param aContextId The context id for which to query.
      * @param aMaxDataSize The maximal size of the data sent back
      *                     from the debug engine.
+     * @param aDatapage
      * @param aPropertyKey property key as retrieved in a property
      *                     element (optional)
      * @param aPropertyAddress property address as retrieved in a

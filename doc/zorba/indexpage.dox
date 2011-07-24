@@ -1,71 +1,72 @@
 /*! \mainpage Zorba Documentation
 
-  <b>\ref installation</b>
+  <b>\ref installation </b>
 
-  <b>\ref build</b>
+  <b>\ref build </b>
   <ul>
-    <li>\ref php_ubuntu_tutorial</li>
-    <li>\ref php_windows_tutorial</li>
-    <li>\ref python_windows_tutorial</li>
+    <li>\ref php_ubuntu_tutorial </li>
+    <li>\ref php_windows_tutorial </li>
+    <li>\ref python_windows_tutorial </li>
   </ul>
 
-  <b>\ref commandline</b>
-  
+  <b>\ref commandline </b>
+
   <b><a href="http://xqdt.org" target="_blank">XQuery Development Toolkit (XQDT)</a></b>
 
   <b><a href="../xqdoc/xhtml/index.html">XQuery Module Library</a></b>
 
-  <b>\ref module_lifecycle</b>
-  <ul>  
-    <li>\ref ml_importing_module</li>
-    <li>\ref ml_packs_versioning</li>  
-    <li>\ref ml_creating_module</li>
-  </ul>
-
-  <b>\ref data_lifecycle</b>
+  <b>\ref module_lifecycle </b>
   <ul>
-    <li>\ref dl_zorba_store</li>
-    <li>\ref dl_loading_data</li>
-    <li>\ref dl_manipulating_data</li>
+    <li>\ref ml_importing_module </li>
+    <li>\ref ml_packs_versioning </li>
+    <li>\ref ml_creating_module </li>
   </ul>
-   
-  <b>\ref schema_lifecycle</b>
 
-  <b>\ref uriresolvers</b>
-  
-  <b>\ref data_converters</b>
-
-  <b>\ref ft_top</b>
+  <b>\ref data_lifecycle </b>
   <ul>
-    <li>\ref ft_stemmer
-    <li>\ref ft_thesaurus
+    <li>\ref dl_zorba_store </li>
+    <li>\ref dl_loading_data </li>
+    <li>\ref dl_manipulating_data </li>
   </ul>
 
-  <b>\ref options_and_annotations</b>
+  <b>\ref schema_lifecycle </b>
 
-  <b style="display:none;">\re controlling_memory</b>
+  <b>\ref uriresolvers </b>
 
-  <b>\ref impl_dep_features</b>
-  
+  <b>\ref data_converters </b>
+
+  <b>\ref ft_top </b>
+  <ul>
+    <li>\ref ft_stemmer </li>
+    <li>\ref ft_thesaurus </li>
+  </ul>
+
+  <b>\ref options_and_annotations </b>
+
+  <b style="display:none;">\ref controlling_memory </b>
+
+  <b>\ref impl_dep_features </b>
+
   <b><a href="../../cxx/html/index.html">C++ API</a></b> 
 
-  <b>\ref errors_warnings</b>
- 
+  <b>\ref errors_warnings </b>
+
   <b>Language Bindings</b>
   <ul>
-    <li><a class="el" href="../../c/html/index.html">C API</a>
-    <li><a class="el" href="../../java/html/index.html">Java API</a>
-    <li><a class="el" href="../../python/html/index.html">Python API</a>
-    <li><a class="el" href="../../ruby/html/index.html">Ruby API</a>
-    <li><a class="el" href="../../php/html/index.html">PHP API</a>
+    <li><a class="el" href="../../c/html/index.html">C API</a></li>
+    <li><a class="el" href="../../java/html/index.html">Java API</a></li>
+    <li><a class="el" href="../../python/html/index.html">Python API</a></li>
+    <li><a class="el" href="../../ruby/html/index.html">Ruby API</a></li>
+    <li><a class="el" href="../../php/html/index.html">PHP API</a></li>
   </ul>
 
-  <b style="display:none;">\re plugable_components</b>
-  
+  <b style="display:none;">\ref plugable_components </b>
+
+  <b>\ref overview </b>
 
   <b>W3C Specifications</b>
   <ul>
-    <li>\ref overview</li>
+    <li>\ref overview </li>
     <li><b><a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a></b>  (\ref conformance)</li>
     <li><b><a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a></b>  (\ref conformance)</li>
     <li><b><a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a></b>  (\ref conformance)</li>
@@ -78,8 +79,8 @@
 
   <b>Zorba Proprietary Specifications</b>
   <ul>
-    <li><b><a href="http://xquery-scripting.ethz.ch/spec.html">XQuery Scripting Extension</a></b> (\ref scripting_tutorial "Tutorial")</li>
-    <li>\ref xqddf</li>
-    <li>\ref extensions_update</li>
+    <li><b><a href="http://xquery-scripting.ethz.ch/spec.html">XQuery Scripting Extension</a></b>  (\ref scripting_tutorial "Tutorial")</li>
+    <li>\ref xqddf </li>
+    <li>\ref extensions_update </li>
   </ul>
    */
