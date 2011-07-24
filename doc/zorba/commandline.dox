@@ -29,7 +29,7 @@ Print timing information. In case of multiple queries the timing information is 
 Write the result to the given file.
 
 --serialization-parameter, -z
-Set serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes).
+Set serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).
 
 --serialize-html
 Serialize the result as HTML.
@@ -42,7 +42,7 @@ Indent output.
 
 --print-query
 Print the queries.
-                                                                                                                                                             
+
 --print-errors-as-xml, -x
 Print the errors as XML.
 
@@ -97,23 +97,17 @@ Only compile (don't execute)
 --no-serializer
 Do not serialize (discard) result.
 
---debug-ports, -p
-Specify the ports for zorba debugger. The format is requestPort:eventPort.
-
 --debug, -d
-Launch the Zorba command line debugger.
+Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.
 
---debug-server
-Launch the Zorba debugger server and wait for incomming client connections.
+--debug-host, -p
+The host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1
 
---debug-server-host
-Set the host, on which the debugger server is run
-
---no-colors
-Use no colors in the debugger client.
+--debug-port, -p
+The port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028
 
 --no-logo
-Print no logo when starting the debugger client or server.
+Print no logo when starting.
 
 --timeout
 Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.
@@ -126,6 +120,12 @@ Set an XQuery option in the static context. The QName of the option is passed as
 
 --trailing-nl
 Output a trailing newline after the result of the query.
+
+--stop-words
+Mapping specifying a stop-words URI to another.
+
+--thesaurus
+Mapping specifying a thesaurus URI to another.
 \endverbatim
 
 \section commandlineexamples Examples
@@ -145,24 +145,38 @@ Query number 1 :
 <?xml version="1.0" encoding="UTF-8"?>
 2
 Number of executions = 1
-Compilation time: 31 milliseconds
-First Execution time: 0 milliseconds (i.e. parsing the document is included)
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 3.035 (user: 3.011) milliseconds
+Average Execution Time  : 0.154 (user: 0.148) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 23.080 (user: 9.798) milliseconds
+Average Total Time      : 31.791 (user: 18.433) milliseconds
 
 Query number 2 :
 fn:concat('un', 'grateful')
 <?xml version="1.0" encoding="UTF-8"?>
 ungrateful
 Number of executions = 1
-Compilation time: 9 milliseconds
-First Execution time: 0 milliseconds (i.e. parsing the document is included)
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 3.971 (user: 3.932) milliseconds
+Average Execution Time  : 0.217 (user: 0.212) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 27.641 (user: 14.319) milliseconds
+Average Total Time      : 37.364 (user: 23.946) milliseconds
 
 Query number 3 :
 fn:matches('abracadabra', '^a.*a$')
 <?xml version="1.0" encoding="UTF-8"?>
 true
 Number of executions = 1
-Compilation time: 8 milliseconds
-First Execution time: 0 milliseconds (i.e. parsing the document is included)
+Engine Startup Time     : 36.205 (user: 35.949) milliseconds
+Average Compilation Time: 93.269 (user: 11.609) milliseconds
+Average Execution Time  : 0.396 (user: 0.375) milliseconds
+Average Loading Time    : 0.000 (user: 0.000) milliseconds
+Average Unloading Time  : 32.478 (user: 19.128) milliseconds
+Average Total Time      : 131.699 (user: 36.610) milliseconds
+
+Engine Shutdown Time     : 0.007 (user: 0.007) milliseconds
 \endverbatim
 
 \subsection cmdlineExample2 Execute update queries
