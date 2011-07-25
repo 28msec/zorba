@@ -73,8 +73,8 @@
     <li><b><a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a></b>  (\ref partial_support "Patial Support")</li>
     <li><b><a href="http://www.w3.org/XML/Schema">W3C XML Schema</a></b></li>
     <li><b><a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a></b></li>
-    <li><b><a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX)</a><b/></li>
-    <li><b><a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization</a><b/></li>
+    <li><b><a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX)</a></b></li>
+    <li><b><a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization</a></b></li>
   </ul>
 
   <b>Zorba Proprietary Specifications</b>

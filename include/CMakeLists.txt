@@ -18,7 +18,8 @@ MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake -->$
 INSTALL(DIRECTORY zorba DESTINATION include
  PATTERN "*.svn" EXCLUDE
  PATTERN "*.txt" EXCLUDE
- PATTERN "*.cmake" EXCLUDE)
+ PATTERN "*.cmake" EXCLUDE
+ PATTERN "pregenerated" EXCLUDE)
 
 INSTALL(FILES xqc.h DESTINATION include) 
 
