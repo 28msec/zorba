@@ -1,7 +1,24 @@
 /** \page data_converters Data Converters
 
-Info to be added.
+XQuery is primarily an XML processing language.
+However, the semi-structured data on the Web comes in various other formats, not only XML.
+XQuery can successfully be used to process many other Web data formats: JSON, CSV, HTML, and others.
+
+Zorba can be used to process many other data formats, not only XML, and inter-operate with applications that might use or produce such formats.
+This is easily done by first converting the other data formats into XML (via parse() functions). 
+At the end of the processing, the XML data can be converted into the desired data format again (via serialize() functions).
 
 \image html data-in-out.png
+
+Please take a look at the various data converter modules for more information.
+
+<ul>
+  <li>CSV: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_csv.html">http://www.zorba-xquery.com/modules/converters/csv</a></li>
+  <li>HTML: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_html.html">http://www.zorba-xquery.com/modules/converters/html</a></li>
+  <li>JSON: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_json.html">http://www.zorba-xquery.com/modules/converters/json</a></li>
+  <li>XML: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_xml.html">http://www.zorba-xquery.com/modules/converters/xml</a></li>
+</ul>
+
+Also, please <a href="mailto:zorba-users@zorba-xquery.com">send us</a> a message if there is a particular data format that you would like to see supported by Zorba, and we will try to help.
 
 */
