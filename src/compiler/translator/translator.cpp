@@ -2089,7 +2089,7 @@ import_schema_auto_prefix(
   return no_state;
 
 #else
-  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(loc));
+  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(aLoc));
 #endif
 }
 

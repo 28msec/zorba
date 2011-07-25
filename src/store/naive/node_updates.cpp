@@ -1280,6 +1280,7 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
   if (upd.theNewChild == NULL || upd.theNewChild->getStringValue().empty())
     return;
 
+#ifndef ZORBA_NO_XMLSCHEMA
   if ( upd.thePul->getValidator()->isPossibleSimpleContentRevalidation(getType()) )
   {
     std::vector<store::Item_t> result;
@@ -1290,6 +1291,7 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
     GENV_ITEMFACTORY->createTextNode(upd.theNewChild, this, result);
   }
   else
+#endif
   {
     TextNode* newChild = TEXT_NODE(upd.theNewChild);
     
@@ -1409,6 +1411,7 @@ void AttributeNode::replaceValue(UpdReplaceAttrValue& upd)
 {
   upd.theOldValue.transfer(theTypedValue);
 
+#ifndef ZORBA_NO_XMLSCHEMA
   if ( upd.thePul->getValidator()->isPossibleSimpleContentRevalidation(getType()) )
   {
     std::vector<store::Item_t> result;
@@ -1424,6 +1427,7 @@ void AttributeNode::replaceValue(UpdReplaceAttrValue& upd)
     }
   }
   else
+#endif
   {
     store::Item_t newValue;
     GET_STORE().getItemFactory()->createUntypedAtomic(newValue, upd.theNewValue);
@@ -1533,6 +1537,7 @@ void TextNode::replaceValue(UpdReplaceTextValue& upd)
 {
   InternalNode* parent = theParent;
 
+#ifndef ZORBA_NO_XMLSCHEMA
   if ( upd.thePul->getValidator()->isPossibleSimpleContentRevalidation(getType()) )
   {
     if (isTyped())
@@ -1557,6 +1562,7 @@ void TextNode::replaceValue(UpdReplaceTextValue& upd)
       setValue( new ItemVector(result) );
   }
   else
+#endif
   {
     if (parent)
       parent->removeType(upd);

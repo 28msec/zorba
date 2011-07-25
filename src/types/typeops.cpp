@@ -181,6 +181,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
       if (schema == NULL)
         return false;
 
+#ifndef ZORBA_NO_XMLSCHEMA
       if (ntype.get_node_kind() == store::StoreConsts::elementNode)
       {
         return (schema->createXQTypeFromElementName(tm,
@@ -195,6 +196,9 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
                                                       false,
                                                       QueryLoc::null) != NULL);
       }
+#else
+      throw ZORBA_EXCEPTION(err::XQST0009);
+#endif
     }
 
     return true;

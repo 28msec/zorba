@@ -1624,6 +1624,7 @@ bool static_context::validateSimpleContent(
   this->get_namespace_bindings(bindings);
   store::Item_t lTypeQName(typeQName);
 
+#ifndef ZORBA_NO_XMLSCHEMA
   Validator::processTextValue(
       this,
       this->get_typemanager(),
@@ -1634,6 +1635,10 @@ bool static_context::validateSimpleContent(
       QueryLoc::null);
 
   return true;
+#else
+  throw ZORBA_EXCEPTION(err::XQST0009);
+  return false;
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////
