@@ -484,7 +484,8 @@ body {
   width: 600px;
   display: block;
   clear: both;
-    padding: 0;
+  padding: 0;
+  margin: 0;
 }
 
 #innermenu li {

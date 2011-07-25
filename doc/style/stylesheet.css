@@ -572,6 +572,7 @@ table.ft_rels th {
 .contents {
   padding: 5px;
   margin: 5px;
+  line-height: 1.4;
 }
 
 .contents p {
@@ -591,4 +592,34 @@ table.ft_rels th {
 .header
 {
   clear: left;
+}
+
+#main {
+  text-align: left;
+  line-height: 1.4;
+  margin: 10px;
+}
+
+/* Fulltext tables */
+table.ft_rels {
+    border-collapse: collapse;
+}
+table.ft_rels td {
+    border-width: 1px;
+    border-color: #CCCCCC;
+    border-style: solid;
+    padding: 2px;
+    vertical-align: top;
+}
+table.ft_rels th {
+    border-width: 1px;
+    border-color: #CCCCCC;
+    border-style: solid;
+    padding: 2px;
+    text-align: left;
+}
+
+/* Doxygen table */
+.doxtable {
+    border-collapse: collapse;
 }
