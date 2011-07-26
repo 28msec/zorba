@@ -33,7 +33,10 @@ namespace zorba {
   
   HttpStream::~HttpStream()
   {
-    theIterator->close();
+    if (theIterator)
+    {
+      theIterator->close();
+    }
   }
   
   void HttpStream::init()
@@ -48,7 +51,7 @@ namespace zorba {
     Item lRequestElement = lFactory->createElementNode(lEmptyItem, lNodeName,
                                                        lFactory->createQName("http://www.w3.org/2001/XMLSchema",
                                                                              "xs", "untyped"),
-                                                       false, false, nsPairs);
+                                                       true, false, nsPairs);
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "method"), Item(), lFactory->createString("GET"));
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "href"), Item(), lFactory->createString(theUri.c_str()));
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "override-media-type"), Item(), lFactory->createString("text/plain"));

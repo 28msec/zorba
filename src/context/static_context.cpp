@@ -393,6 +393,10 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_XML_FN_NS);
+  } 
+  else if (ns == W3C_FN_NS)
+  {
+    return true;
   }
 
   return false;
@@ -409,6 +413,10 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
   {
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
+  }
+  else if (ns == W3C_FN_NS)
+  {
+    return true;
   }
 
   return false;

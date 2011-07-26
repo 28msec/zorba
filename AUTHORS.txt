@@ -36,4 +36,5 @@ The primary authors are:
   * Markus Pilman
   * Sam Rehman
   * Daniel Turcanu
+  * Till Westmann
   * Markos Zaharioudakis
