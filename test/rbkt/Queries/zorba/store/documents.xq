@@ -1,4 +1,4 @@
-import module namespace doc = "http://www.zorba-xquery.com/modules/store/documents/dynamic";
+import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 

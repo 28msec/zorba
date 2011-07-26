@@ -23,7 +23,7 @@
  :
  : @project store/documents
  :)
-module namespace doc = "http://www.zorba-xquery.com/modules/store/documents/dynamic";
+module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
 (:~
  : Adds a document to the store. The document is bound to the URI

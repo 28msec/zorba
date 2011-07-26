@@ -69,7 +69,7 @@
       prefix="zorba-store-dynamic-collections-dml"/>
     
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/documents/dynamic"
+      uri="http://www.zorba-xquery.com/modules/store/dynamic/documents"
       define="ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS"
       prefix="zorba-store-documents"/>
 
