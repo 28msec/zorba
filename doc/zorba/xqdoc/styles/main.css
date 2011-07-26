@@ -419,6 +419,10 @@ body {
   overflow: hidden;
 }
 
+#logo_container h1,p {
+  margin: 0;
+}
+
 .innerheader{
   color: #404040;
   width: 900px;
@@ -620,7 +624,7 @@ time, mark, audio, video {
 }*/
 
 h1, h2, h3, h4, h5, h6, p {
-	margin: 0;
+	/*margin: 0;*/
 }
 
 /* HTML5 display-role reset for older browsers */
