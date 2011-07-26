@@ -17,4 +17,4 @@ DECLARE_ZORBA_SCHEMA (FILE xpath-functions.xsd
 
 # Unversioned module (not owned by Zorba team)
 DECLARE_ZORBA_MODULE (FILE xpath_functions.xq
-  URI "http://www.w3.org/2005/xpath_functions")
+  URI "http://www.w3.org/2005/xpath-functions")
