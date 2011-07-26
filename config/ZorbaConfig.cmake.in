@@ -19,22 +19,23 @@
 #  Zorba_LIBRARIES    - libraries to link against QQQ
 #  Zorba_EXECUTABLE   - the Zorba executable QQQ
 #  Zorba_TESTDRIVER   - the Zorba testdriver executable
-#  ZORBA_STORE_NAMES  - all available store implementations
+#  ZORBA_STORE_NAME   - the name of the store in this installation
 #  Zorba_USE_FILE     - file which projects depending on Zorba should INCLUDE()
 #  Zorba_EXTERNALMODULECONFIG_FILE - file which modules should use to
 #    export their module paths for dependent modules
 
 # Pass through some variables from main Zorba CMake configuration.
-SET(ZORBA_STORE_NAMES "@ZORBA_STORE_NAMES@")
-SET(ZORBA_VERSION "@ZORBA_VERSION@")
-SET(ZORBA_STORE_NAME "@ZORBA_STORE_NAME@")
+SET(ZORBA_VERSION "@ZORBA_VERSION@" CACHE STRING "Zorba's version")
+SET(ZORBA_STORE_NAME "@ZORBA_STORE_NAME@" CACHE STRING
+  "Name of the store implementation this Zorba was built with")
 
 # Tell the user project where to find our headers, libraries, and
 # CMake modules
 SET(Zorba_INCLUDE_DIRS "@Zorba_INCLUDE_DIRS@")
 SET(Zorba_LIBRARY_DIRS "@Zorba_LIBRARY_DIRS@")
 SET(Zorba_CMAKE_MODULES_DIR "@Zorba_CMAKE_MODULES_DIR@")
-SET(Zorba_TESTDRIVER "@Zorba_TESTDRIVER@")
+SET(Zorba_TESTDRIVER "@Zorba_TESTDRIVER@" CACHE PATH
+  "Path to Zorba's testdriver")
 
 
 # Tell the user project where to find the "USE" file.
@@ -46,7 +47,7 @@ SET(Zorba_USE_FILE "@Zorba_USE_FILE@")
 SET(Zorba_EXTERNALMODULECONFIG_FILE "@Zorba_EXTERNALMODULECONFIG_FILE@")
 
 IF(NOT Zorba_FIND_QUIETLY)
-  MESSAGE(STATUS "Found Zorba @ZORBA_VERSION@ (stores: ${ZORBA_STORE_NAMES})")
+  MESSAGE(STATUS "Found Zorba @ZORBA_VERSION@ (store: ${ZORBA_STORE_NAME})")
   MESSAGE(STATUS " - Include dirs: ${Zorba_INCLUDE_DIRS}")
   MESSAGE(STATUS " - Library dirs: ${Zorba_LIBRARY_DIRS}")
 ENDIF(NOT Zorba_FIND_QUIETLY)

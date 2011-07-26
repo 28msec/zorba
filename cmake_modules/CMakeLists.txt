@@ -16,6 +16,8 @@ INSTALL(FILES ZorbaModule.cmake
   DESTINATION share/zorba-${ZORBA_VERSION}/cmake)
 
 # Install Windows/ProxyFindModule.cmake for use of Module
-INSTALL(FILES
-  "${CMAKE_CURRENT_SOURCE_DIR}/Windows/ProxyFindModule.cmake" 
-  DESTINATION share/zorba-${ZORBA_VERSION}/cmake/Windows)
+IF(WIN32)
+  INSTALL(FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/Windows/ProxyFindModule.cmake" 
+    DESTINATION share/zorba-${ZORBA_VERSION}/cmake/Windows)
+ENDIF(WIN32)

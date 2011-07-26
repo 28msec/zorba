@@ -465,7 +465,7 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
     ELSE(WIN32)
       SET(PATH_SEP ":")
     ENDIF(WIN32)
-    ZORBA_ADD_TEST(${TESTNAME} testdriver
+    ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
       "--rbkt-src" "${TEST_DIR}"
       "--module-path" "${PROJECT_SOURCE_DIR}/src/${PATH_SEP}${PROJECT_BINARY_DIR}/src/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
       "${TESTFILE}")
@@ -491,19 +491,18 @@ MACRO(CREATE_MODULE_CONFIG name src_dir bin_dir)
     "${MODULE_BINARY_DIR}/${name}Config.cmake" @ONLY)
 ENDMACRO(CREATE_MODULE_CONFIG)
 
-# This macro easies the process of adding test for store dependent executables
-# (e.g. if the rbkt tests must be added for the executables testdriver and testdriver_firststore).
-# It adds one test for each store registered. It has the same naming convection for the target as
-# the macro that is used to generated store dependent executables (thus,
-# 'testdriver' must be passed as TARGET if the test should be executed with the executables
-# testdriver and testdriver_firststore).
+# This macro easies the process of adding test for store dependent
+# executables. It has the same naming convection for the target as the
+# macro that is used to generated store dependent executables (thus,
+# 'testdriver' must be passed as TARGET if the test should be executed
+# with the executable testdriver or testdriver_firststore).
 #
 # Syntax:
 #
-#   ZORBA_ADD_TEST_SIMPLE(NAME TARGET ...)
+#   ZORBA_ADD_TEST(NAME TARGET ...)
 #
 #     NAME - the name of the added test
-#     TARGET - target that will be executed when the test is run. For each registered store,
+#     TARGET - target that will be executed when the test is run. For the registered store,
 #              a suffix will be added to the target
 #              (similar convention than in ZORBA_GENERATE_EXE)
 #     ... - arguments that will be passed to the target

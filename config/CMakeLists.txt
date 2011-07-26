@@ -14,28 +14,27 @@
 
 
 # Subdir of the installed "share" directory for CMake files, relative
-# to CMAKE_INSTALL_PREFIX. QQQ probably should be set in top-level
-# CMakeLists.
-SET(CURRENCY_SYMBOL "$")
-
-SET(ZORBA_SHARE_DIR "share/zorba-${ZORBA_VERSION}/cmake")
-
+# to CMAKE_INSTALL_PREFIX.
+IF (WIN32)
+  SET(ZORBA_CMAKE_DIR "cmake")
+ELSE (WIN32)
+  SET(ZORBA_CMAKE_DIR "share/zorba-${ZORBA_VERSION}/cmake")
+ENDIF (WIN32)
 
 # Create ZorbaConfig.cmake file for projects that wish to build
 # against the installed Zorba project
-
- 
-SET(Zorba_INCLUDE_DIRS "${CURRENCY_SYMBOL}{Zorba_DIR}/include")
-SET(Zorba_LIBRARY_DIRS "${CURRENCY_SYMBOL}{Zorba_DIR}/lib")
-SET(Zorba_USE_FILE "${CURRENCY_SYMBOL}{Zorba_DIR}/${ZORBA_SHARE_DIR}/ZorbaUse.cmake")
-SET(Zorba_CMAKE_MODULES_DIR "${CURRENCY_SYMBOL}{Zorba_DIR}/${ZORBA_SHARE_DIR}")
-SET(Zorba_TESTDRIVER "${CURRENCY_SYMBOL}{Zorba_DIR}/bin/testdriver")
+SET(Zorba_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
+SET(Zorba_LIBRARY_DIRS "${CMAKE_INSTALL_PREFIX}/lib")
+SET(Zorba_USE_FILE "${CMAKE_INSTALL_PREFIX}/${ZORBA_CMAKE_DIR}/ZorbaUse.cmake")
+SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_INSTALL_PREFIX}/${ZORBA_CMAKE_DIR}")
+SET(Zorba_TESTDRIVER "${CMAKE_INSTALL_PREFIX}/bin/testdriver")
 SET(Zorba_EXTERNALMODULECONFIG_FILE
-  "${CURRENCY_SYMBOL}{Zorba_DIR}/${ZORBA_SHARE_DIR}/ExternalModuleConfig.cmake.in")
+  "${CMAKE_INSTALL_PREFIX}/${ZORBA_CMAKE_DIR}/ExternalModuleConfig.cmake.in")
   
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
-INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake" DESTINATION .)
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake"
+ DESTINATION ${ZORBA_CMAKE_DIR})
 
 # Create ZorbaConfig.cmake file for projects that wish to build
 # against this Zorba source installation.
@@ -62,21 +61,21 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfigVersion.cmake.in"
   "${CMAKE_BINARY_DIR}/ZorbaConfigVersion.cmake" @ONLY)
 INSTALL(FILES
   "${CMAKE_BINARY_DIR}/ZorbaConfigVersion.cmake"
-  DESTINATION ${ZORBA_SHARE_DIR})
+  DESTINATION ${ZORBA_CMAKE_DIR})
 
 
 # Install ZorbaUse.cmake file for sharing build settings and macros
 # with dependent projects.
 INSTALL(FILES
   "${CMAKE_CURRENT_SOURCE_DIR}/ZorbaUse.cmake"
-  DESTINATION ${ZORBA_SHARE_DIR})
+  DESTINATION ${ZORBA_CMAKE_DIR})
 
 
 # Install ExternalModuleConfig.cmake.in as-is (will be configured by
 # the modules themselves)
 INSTALL(FILES
   "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in"
-  DESTINATION ${ZORBA_SHARE_DIR})
+  DESTINATION ${ZORBA_CMAKE_DIR})
 
 
 ADD_SUBDIRECTORY(fedora)
