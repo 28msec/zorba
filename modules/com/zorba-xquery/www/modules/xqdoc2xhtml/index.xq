@@ -1576,11 +1576,12 @@ return
 declare %private function xqdoc2html:function-parameters($comment) {
   let $params := $comment/xqdoc:param
   return
-    if (exists($params)) then (
-      <div class="subsubsection">Parameters:</div>,
-      for $param in $params
+    if (exists($params)) then
+      (<div class="subsubsection">Parameters:</div>,
+      {for $param in $params  
       let $text := string($param/node()[1])
       return
+        ({
         if (starts-with($text, "$")) then
           let $name := substring-before($text, " ")
           let $description := (substring-after($text, " "), subsequence($param/node(), 2))
@@ -1591,8 +1592,9 @@ declare %private function xqdoc2html:function-parameters($comment) {
               <td class="parameter">{$description}</td></tr>
             </table> 
         else
-            ()
-    ) else ()
+            ()})
+      }) 
+    else ()
 };
 
 (:~
@@ -1606,7 +1608,7 @@ declare %private function xqdoc2html:function-return($comment) {
   return
     if (exists($return)) then (
       <div class="subsubsection">Returns:</div>,
-      <p class="annotationText">{$return/node()}</p>
+      <ul><li>{$return/node()}</li></ul>
     ) else ()
 };
 
@@ -1619,16 +1621,12 @@ declare %private function xqdoc2html:function-return($comment) {
 declare %private function xqdoc2html:errors($comment) {
   let $errors := $comment/xqdoc:error
   return
-    if (exists($errors)) then (
-      <div class="subsubsection">Errors</div>,
-      for $error in $errors
-      return
-        <table class="parameter">
-          <tr>
-            <td class="parameter">{$error/node()}</td>
-          </tr>
-        </table> 
-    ) else ()
+    if (exists($errors)) then
+      (<div class="subsubsection">Errors:</div>, 
+      <ul>
+      {for $error in $errors return <li>{data($error)}</li>}
+      </ul>) 
+    else ()
 };
 
 declare %private function xqdoc2html:annotations-author($comment) {
