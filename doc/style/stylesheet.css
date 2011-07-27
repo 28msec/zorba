@@ -622,4 +622,15 @@ table.ft_rels th {
 /* Doxygen table */
 .doxtable {
     border-collapse: collapse;
+    border-style:none;
+}
+
+.doxtable tr,td {
+    border-style: none;
+}
+
+#main p, li, h1, h2, h3
+{
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
 }

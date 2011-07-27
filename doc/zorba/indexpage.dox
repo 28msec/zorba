@@ -68,7 +68,7 @@
     <li><b><a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a></b>  (\ref conformance)</li>
     <li><b><a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a></b>  (\ref conformance)</li>
     <li><b><a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a></b>  (\ref conformance)</li>
-    <li><b><a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a></b>  (\ref partial_support "Patial Support")</li>
+    <li><b><a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a></b>  (\ref partial_support "Partial Support")</li>
     <li><b><a href="http://www.w3.org/XML/Schema">W3C XML Schema</a></b></li>
     <li><b><a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a></b></li>
     <li><b><a href="http://www.w3.org/TR/xqueryx/">W3C XML Syntax for XQuery 1.0 (XQueryX)</a></b></li>
@@ -79,6 +79,6 @@
   <ul>
     <li><b><a href="http://xquery-scripting.ethz.ch/spec.html">XQuery Scripting Extension</a></b>  (\ref scripting_tutorial "Tutorial")</li>
     <li>\ref xqddf </li>
-    <li>\ref extensions_update </li>
+    <!--li>\ref extensions_update </li-->
   </ul>
    */
