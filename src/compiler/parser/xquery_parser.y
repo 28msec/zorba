@@ -29,7 +29,7 @@
 %error-verbose
 
 // Expect shift/reduce conflicts
-%expect 64
+%expect 63
 
 
 %code requires {
@@ -263,6 +263,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token TYPESWITCH                       "'typeswitch'"
 %token UPDATING                         "'updating'"
 %token VALIDATE                         "'validate'"
+%token TYPE                             "'type'"
 %token WHEN                             "'when'"
 %token WORD                             "'word'"
 
@@ -3753,7 +3754,7 @@ ValidateExpr :
         {
             $$ = new ValidateExpr( LOC(@$), "strict", $4 );
         }
-    |   VALIDATE AS TypeName LBRACE StatementsAndExpr RBRACE
+    |   VALIDATE TYPE TypeName LBRACE StatementsAndExpr RBRACE
         {
             $$ = new ValidateExpr(
                 LOC(@$), dynamic_cast<TypeName*>($3)->get_name(), $5
@@ -6424,6 +6425,7 @@ FUNCTION_NAME :
     |   INTERSECT               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("intersect"))); }
     |   EXCEPT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("except"))); }
     |   VALIDATE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("validate"))); }
+    |   TYPE                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("type"))); }
     |   CAST                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("cast"))); }
     |   TREAT                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("treat"))); }
     |   IS                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("is"))); }

@@ -6,7 +6,7 @@ import schema namespace
   at "simple.xsd";
 
 (:
-  let $x := validate as s:ProductType
+  let $x := validate type s:ProductType
   {
     <produ xmlns='simple.xsd'>
     	<s:name>p1</s:name>
@@ -19,7 +19,7 @@ import schema namespace
 :)
 
 (
-  let $x := validate as s:ProductType
+  let $x := validate type s:ProductType
   {
     <produ xmlns='http://www.zorba-xquery.com/simple.xsd'>
     	<s:name>p1</s:name>
@@ -33,7 +33,7 @@ import schema namespace
      fn-zorba-util:schema-type( $x/s:name )
     )
 ,
-  let $x := validate as s:ProductType
+  let $x := validate type s:ProductType
   {
     <product xmlns='http://www.zorba-xquery.com/simple.xsd'>
     	<s:name>p1</s:name>

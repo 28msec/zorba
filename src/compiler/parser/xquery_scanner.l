@@ -436,6 +436,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "while" { return token::WHILE; }
 "set" { return token::SET; }
 "validate" { return token::VALIDATE; }
+"type" { return token::TYPE; }
 "switch" { return token::SWITCH; }
 "typeswitch" { return token::TYPESWITCH; }
 "document" { return token::DOCUMENT; }
