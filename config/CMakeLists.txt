@@ -13,24 +13,28 @@
 # limitations under the License.
 
 
-# Subdir of the installed "share" directory for CMake files, relative
-# to CMAKE_INSTALL_PREFIX.
+# Calculate ZORBA_ROOT, which is the base dir of the Zorba installation.
+# Zorba_DIR will be set to the directory containing ZorbaConfig.cmake,
+# which is in a different place on Windows than Unix, so work from there.
 IF (WIN32)
-  SET(ZORBA_CMAKE_DIR "cmake")
+  # ZORBA_ROOT/cmake/ZorbaConfig.cmake
+  SET (ZORBA_ROOT "\${Zorba_DIR}/..")
 ELSE (WIN32)
-  SET(ZORBA_CMAKE_DIR "share/zorba-${ZORBA_VERSION}/cmake")
+  # ZORBA_ROOT/share/zorba-VERSION/cmake/ZorbaConfig.cmake
+  SET (ZORBA_ROOT "\${Zorba_DIR}/../../..")
 ENDIF (WIN32)
 
 # Create ZorbaConfig.cmake file for projects that wish to build
-# against the installed Zorba project
-SET(Zorba_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
-SET(Zorba_LIBRARY_DIRS "${CMAKE_INSTALL_PREFIX}/lib")
-SET(Zorba_USE_FILE "${CMAKE_INSTALL_PREFIX}/${ZORBA_CMAKE_DIR}/ZorbaUse.cmake")
-SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_INSTALL_PREFIX}/${ZORBA_CMAKE_DIR}")
-SET(Zorba_TESTDRIVER "${CMAKE_INSTALL_PREFIX}/bin/testdriver")
+# against the installed Zorba project.
+SET(Zorba_INCLUDE_DIRS "${ZORBA_ROOT}/include")
+SET(Zorba_LIBRARY_DIRS "${ZORBA_ROOT}/lib")
+SET(Zorba_USE_FILE "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}/ZorbaUse.cmake")
+SET(Zorba_CMAKE_MODULES_DIR "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}")
+SET(Zorba_TESTDRIVER "${ZORBA_ROOT}/bin/testdriver")
 SET(Zorba_EXTERNALMODULECONFIG_FILE
-  "${CMAKE_INSTALL_PREFIX}/${ZORBA_CMAKE_DIR}/ExternalModuleConfig.cmake.in")
-  
+  "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}/ExternalModuleConfig.cmake.in")
+SET(Zorba_MODULES_INSTALL_DIR "${ZORBA_ROOT}/${ZORBA_MODULES_INSTALL_DIR}")
+
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
 INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/ZorbaConfig.cmake"
@@ -52,6 +56,9 @@ SET(Zorba_EXTERNALMODULECONFIG_FILE
   PARENT_SCOPE)
 SET(Zorba_EXTERNALMODULECONFIG_FILE
   "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModuleConfig.cmake.in")
+# Note: This value doesn't really make much sense, but neither does any
+# other value
+SET(Zorba_MODULES_INSTALL_DIR "${CMAKE_BINARY_DIR}/URI_PATH")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
 

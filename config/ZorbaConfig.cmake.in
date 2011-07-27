@@ -24,27 +24,41 @@
 #  Zorba_EXTERNALMODULECONFIG_FILE - file which modules should use to
 #    export their module paths for dependent modules
 
+MACRO (SET_NORMALIZED VARNAME VALUE)
+  SET (_tmp)
+  FOREACH (_path ${VALUE})
+    GET_FILENAME_COMPONENT (_abspath ${_path} ABSOLUTE)
+    LIST (APPEND _tmp ${_abspath})
+  ENDFOREACH (_path)
+  SET (${VARNAME} ${_tmp} ${ARGN})
+ENDMACRO (SET_NORMALIZED)
+
 # Pass through some variables from main Zorba CMake configuration.
-SET(ZORBA_VERSION "@ZORBA_VERSION@" CACHE STRING "Zorba's version")
-SET(ZORBA_STORE_NAME "@ZORBA_STORE_NAME@" CACHE STRING
+SET (ZORBA_VERSION "@ZORBA_VERSION@" CACHE STRING "Zorba's version")
+SET (ZORBA_STORE_NAME "@ZORBA_STORE_NAME@" CACHE STRING
   "Name of the store implementation this Zorba was built with")
 
 # Tell the user project where to find our headers, libraries, and
 # CMake modules
-SET(Zorba_INCLUDE_DIRS "@Zorba_INCLUDE_DIRS@")
-SET(Zorba_LIBRARY_DIRS "@Zorba_LIBRARY_DIRS@")
-SET(Zorba_CMAKE_MODULES_DIR "@Zorba_CMAKE_MODULES_DIR@")
-SET(Zorba_TESTDRIVER "@Zorba_TESTDRIVER@" CACHE PATH
+SET_NORMALIZED (Zorba_INCLUDE_DIRS "@Zorba_INCLUDE_DIRS@")
+SET_NORMALIZED (Zorba_LIBRARY_DIRS "@Zorba_LIBRARY_DIRS@")
+SET_NORMALIZED (Zorba_CMAKE_MODULES_DIR "@Zorba_CMAKE_MODULES_DIR@")
+SET_NORMALIZED (Zorba_TESTDRIVER "@Zorba_TESTDRIVER@" CACHE PATH
   "Path to Zorba's testdriver")
 
+# Tell the user project where modules are installed. Note: This variable
+# is all-uppercase because it is also used internally by Zorba's build.
+SET_NORMALIZED (ZORBA_MODULES_INSTALL_DIR "@Zorba_MODULES_INSTALL_DIR@"
+  CACHE STRING "Path to Zorba modules in this Zorba installation")
 
 # Tell the user project where to find the "USE" file.
 # This file uses the above settings to configure the user project.
-SET(Zorba_USE_FILE "@Zorba_USE_FILE@")
+SET_NORMALIZED (Zorba_USE_FILE "@Zorba_USE_FILE@")
 
 # Set the path to ExternalModuleConfig.cmake.in, used by module
 # projects to export their module paths.
-SET(Zorba_EXTERNALMODULECONFIG_FILE "@Zorba_EXTERNALMODULECONFIG_FILE@")
+SET_NORMALIZED (Zorba_EXTERNALMODULECONFIG_FILE
+  "@Zorba_EXTERNALMODULECONFIG_FILE@")
 
 IF(NOT Zorba_FIND_QUIETLY)
   MESSAGE(STATUS "Found Zorba @ZORBA_VERSION@ (store: ${ZORBA_STORE_NAME})")

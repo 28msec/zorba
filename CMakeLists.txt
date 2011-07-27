@@ -414,14 +414,24 @@ IF(APPLE)
 ENDIF(APPLE)
 
 
+SET (ZORBA_MODULES_DIR "${CMAKE_SOURCE_DIR}/../zorba_modules"
+  CACHE PATH "Path to directory (outside of Zorba svn root) containing external modules to add to the build")
+
+# Subdir of the installation directory for CMake files, relative to
+# CMAKE_INSTALL_PREFIX.
+IF (WIN32)
+  SET(ZORBA_CMAKE_DIR "cmake" CACHE STRING
+    "Relative path to CMake files in Zorba installation")
+ELSE (WIN32)
+  SET(ZORBA_CMAKE_DIR "share/zorba-${ZORBA_VERSION}/cmake" CACHE STRING
+    "Relative path to CMake files in Zorba installation")
+ENDIF (WIN32)
+
 ################################################################################
 #                                                                              #
 # Tell CMake to process the sub-directories                                    #
 #                                                                              #
 ################################################################################
-
-SET (ZORBA_MODULES_DIR "${CMAKE_SOURCE_DIR}/../zorba_modules"
-  CACHE PATH "Path to directory (outside of Zorba svn root) containing external modules to add to the build")
 
 ADD_SUBDIRECTORY(scripts)
 ADD_SUBDIRECTORY(cmake_modules)

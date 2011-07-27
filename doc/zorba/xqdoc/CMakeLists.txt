@@ -94,6 +94,6 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
   )
   SET_TARGET_PROPERTIES(modules_svg PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
   
-  ADD_DEPENDENCIES(modules_svg xqdoc-xml xqdoc)
+  ADD_DEPENDENCIES(doc "modules_svg")
 
 ENDIF(NOT ZORBA_WITH_FILE_ACCESS)

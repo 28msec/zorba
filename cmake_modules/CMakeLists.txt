@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-INSTALL(FILES ZorbaModule.cmake
-  DESTINATION share/zorba-${ZORBA_VERSION}/cmake)
+INSTALL(FILES ZorbaModule.cmake DESTINATION "${ZORBA_CMAKE_DIR}")
 
 # Install Windows/ProxyFindModule.cmake for use of Module
 IF(WIN32)
   INSTALL(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/Windows/ProxyFindModule.cmake" 
-    DESTINATION share/zorba-${ZORBA_VERSION}/cmake/Windows)
+    DESTINATION "${ZORBA_CMAKE_DIR}/Windows")
 ENDIF(WIN32)
