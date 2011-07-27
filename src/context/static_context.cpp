@@ -309,7 +309,7 @@ static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS
 
 const zstring
 static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS
-  = NS_PRE + "modules/store/static/tegrity_constraints/dml";
+  = NS_PRE + "modules/store/static/integrity_constraints/dml";
 
 const zstring
 static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS
@@ -394,7 +394,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_XML_FN_NS);
   } 
-  else if (ns == W3C_FN_NS)
+  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
   }
@@ -414,7 +414,7 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
   }
-  else if (ns == W3C_FN_NS)
+  else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
   }
