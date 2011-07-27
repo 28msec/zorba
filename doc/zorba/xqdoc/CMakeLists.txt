@@ -81,7 +81,7 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
       )
 
   EXPECTED_FAILURE(doc/stress_tests/make_xqdoc 3330316)
-  
+
   # Add the modules_svg command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(modules_svg
     ${ZORBA_EXE_SCRIPT}
@@ -93,7 +93,7 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
       COMMENT "Building module dependencies SVG..."
   )
   SET_TARGET_PROPERTIES(modules_svg PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
-  
-  ADD_DEPENDENCIES(doc "modules_svg")
+
+  ADD_DEPENDENCIES(modules_svg xqdoc-xml xqdoc)
 
 ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
