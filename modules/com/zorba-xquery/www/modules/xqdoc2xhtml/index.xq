@@ -573,6 +573,7 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:gener
   try 
   {
     if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
+       ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
        ($moduleUri = "http://www.functx.com/")) then
     {
       (:these modules never change, they have no tests, no external functions, and so on:)
@@ -1577,23 +1578,10 @@ declare %private function xqdoc2html:function-parameters($comment) {
   let $params := $comment/xqdoc:param
   return
     if (exists($params)) then
-      (<div class="subsubsection">Parameters:</div>,
-      {for $param in $params  
-      let $text := string($param/node()[1])
-      return
-        ({
-        if (starts-with($text, "$")) then
-          let $name := substring-before($text, " ")
-          let $description := (substring-after($text, " "), subsequence($param/node(), 2))
-          return
-            <table class="parameter"><tr>
-              <td class="parameter"><code>{$name}</code></td>
-              <td class="parameter"> - </td>
-              <td class="parameter">{$description}</td></tr>
-            </table> 
-        else
-            ()})
-      }) 
+      (<div class="subsubsection">Parameters:</div>, 
+      <ul>
+      {for $param in $params return <li>{data($param)}</li>}
+      </ul>) 
     else ()
 };
 

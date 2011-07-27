@@ -1,0 +1,697 @@
+<html>
+  <head>
+    <title>Documentation for http://www.w3.org/2005/xpath-functions/math</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta content="public" http-equiv="CACHE-CONTROL" />
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/jquery.treeview.css" />
+    <script src="lib/jquery.js" type="text/javascript"></script>
+    <script src="lib/jquery.cookie.js" type="text/javascript"></script>
+    <script src="lib/jquery.treeview.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(function() {
+        $("#documentation").treeview({
+            animated: "fast",
+            collapsed: true,
+            unique: false,
+            persist: "cookie"
+        });
+      })
+    </script>
+    <!-- This is for Syntax highlighting (XQuery, XML) -->
+    <script type="text/javascript" src="lib/shCore.js"></script>
+    <script type="text/javascript" src="lib/shBrushXQuery.js"></script>
+    <script type="text/javascript" src="lib/shBrushXml.js"></script>
+    <link type="text/css" rel="stylesheet" href="styles/shCore.css" />
+    <link type="text/css" rel="stylesheet" href="styles/shThemeDefault.css" />
+    <link type="text/css" rel="stylesheet" href="styles/shThemeXQuery.css" />
+    <script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script>
+  </head>
+  <body>
+    <div id="header">
+      <div class="innerheader text-left">
+        <div id="logo_container">
+          <a href="../../../../../html/index.html">
+            <img src="images/zorba_logo.png" alt="Zorba C++ XQuery Processor" />
+          </a>
+          <h1>
+            <a href="../../../../../html/index.html">Zorba</a>
+          </h1>
+          <p>
+            <a href="../../../../../html/index.html">Open Source XQuery Processor</a>
+          </p>
+        </div>
+        <div id="innermenu" class="box">
+          <ul>
+            <li style="width:102px !important;">
+              <a href="../../../zorba/html/index.html" class="documentation">Documentation</a>
+            </li>
+            <li>
+              <a href="http://try.zorba-xquery.com" target="_blank" class="tryzorba">Live Demo</a>
+            </li>
+            <li>
+              <a href="../../../../../html/modules.html" class="modules">Modules</a>
+            </li>
+            <li>
+              <a href="../../../../../html/downloads.html" class="download">Download</a>
+            </li>
+            <li>
+              <a href="../../../../../html/tools.html" class="tools">Tools</a>
+            </li>
+            <li>
+              <a href="../../../../../html/blog.html" class="blog">Blog</a>
+            </li>
+            <li>
+              <a href="../../../../../html/code.html" class="open">Code</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="main">
+      <div id="leftMenu" />
+      <div id="rightcontent">
+        <h1>http://www.w3.org/2005/xpath-functions/math<sup>
+            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+          </sup>
+        </h1>
+        <div class="section">
+          <span id="module_description">Module Description</span>
+        </div>
+        <span>Before using any of the functions below please remember to import the module namespace:
+      <pre class="brush: xquery;">import module namespace math = "http://www.w3.org/2005/xpath-functions/math";</pre>
+        </span>
+        <p> This module contains all the functions part of the
+ W3C XPath and XQuery Functions and Operators 3.0
+ section "4.7 Trigonometric and exponential functions".
+</p>
+        <div class="subsubsection">Author:</div>
+        <p class="annotationText">www.w3c.org</p>
+        <div class="section">
+          <span id="module_resources">Module Resources</span>
+        </div>
+        <ul>
+          <li>the XQuery module can be found <a href="modules/www.w3.org_2005_xpath-functions_math.xq" target="_blank">here</a>.</li>
+        </ul>
+        <div class="section">
+          <span id="external_specifications">Related Specifications</span>
+        </div>
+        <p>For more details please check out these resources:<ul>
+            <li>
+              <a href="http://www.w3.org/TR/xpath-functions-30/#trigonometry" target="_blank">http://www.w3.org/TR/xpath-functions-30/#trigonometry</a>
+            </li>
+          </ul>
+        </p>
+        <div class="section">
+          <span id="function_summary">Function Summary</span>
+        </div>
+        <table class="funclist">
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#acos-1" title="">acos</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#asin-1" title="">asin</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#atan-1" title="">atan</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#atan2-2" title="">atan2</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $y</span> as xs:double, 
+<span class="funcParam">            $x</span> as xs:double 
+ ) as xs:double external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#cos-1" title="">cos</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $θ</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#exp-1" title="">exp</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#exp10-1" title="">exp10</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#log-1" title="">log</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#log10-1" title="">log10</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#pi-0" title="">pi</a>
+                </span>
+                <span class="functName"></span> (
+ ) as xs:double external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#pow-2" title="">pow</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $x</span> as xs:double?, 
+<span class="funcParam">            $y</span> as numeric 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#sin-1" title="">sin</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $θ</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#sqrt-1" title="">sqrt</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+                  <img src="images/External.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#tan-1" title="">tan</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $θ</span> as xs:double? 
+ ) as xs:double? external<br />
+                <span class="padding"></span>
+              </tt>
+            </td>
+          </tr>
+        </table>
+        <div class="section">
+          <span id="functions">Functions</span>
+        </div>
+        <div class="subsection" id="acos-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>acos</span>
+        </div>
+        <pre class="signature">declare function math:acos<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-acos">math:acos</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="asin-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>asin</span>
+        </div>
+        <pre class="signature">declare function math:asin<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-asin">math:asin</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="atan-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>atan</span>
+        </div>
+        <pre class="signature">declare function math:atan<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-atan">math:atan</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="atan2-2">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>atan2</span>
+        </div>
+        <pre class="signature">declare function math:atan2<span class="functName"></span> (
+<span class="funcParam">            $y</span> as xs:double, 
+<span class="funcParam">            $x</span> as xs:double 
+ ) as xs:double external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-atan2">math:atan2</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="cos-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>cos</span>
+        </div>
+        <pre class="signature">declare function math:cos<span class="functName"></span> (
+<span class="funcParam">            $θ</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-cos">math:cos</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="exp-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>exp</span>
+        </div>
+        <pre class="signature">declare function math:exp<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-exp">math:exp</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="exp10-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>exp10</span>
+        </div>
+        <pre class="signature">declare function math:exp10<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-exp10">math:exp10</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="log-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>log</span>
+        </div>
+        <pre class="signature">declare function math:log<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-log">math:log</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="log10-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>log10</span>
+        </div>
+        <pre class="signature">declare function math:log10<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-log10">math:log10</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="pi-0">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>pi</span>
+        </div>
+        <pre class="signature">declare function math:pi<span class="functName"></span> (
+ ) as xs:double external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-pi">math:pi</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="pow-2">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>pow</span>
+        </div>
+        <pre class="signature">declare function math:pow<span class="functName"></span> (
+<span class="funcParam">            $x</span> as xs:double?, 
+<span class="funcParam">            $y</span> as numeric 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-pow">math:pow</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="sin-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>sin</span>
+        </div>
+        <pre class="signature">declare function math:sin<span class="functName"></span> (
+<span class="funcParam">            $θ</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-sin">math:sin</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="sqrt-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>sqrt</span>
+        </div>
+        <pre class="signature">declare function math:sqrt<span class="functName"></span> (
+<span class="funcParam">            $arg</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-sqrt">math:sqrt</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+        <div class="subsection" id="tan-1">
+          <span class="no_underline">
+            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
+              <img src="images/External.gif" />
+            </a>tan</span>
+        </div>
+        <pre class="signature">declare function math:tan<span class="functName"></span> (
+<span class="funcParam">            $θ</span> as xs:double? 
+ ) as xs:double? external</pre>
+        <p>No description available.</p>
+        <div class="subsubsection">See:</div>
+        <ul>
+          <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-tan">math:tan</a>
+          </li>
+        </ul>
+        <div id="allignright">
+          <a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a>
+        </div>
+        <hr />
+      </div>
+    </div>
+    <div style="clear:both;margin-left:310px">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+    var disqus_developer = 1;
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'zorba'; // required: replace example with your forum shortname
+    var self = location.href;
+    // The following are highly recommended additional parameters. Remove the slashes in front to use.
+    var disqus_identifier = self;
+    var disqus_url = self;
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </noscript>
+      <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span>
+      </a>
+    </div>
+    <div id="footer">
+      <div id="innerfooter">
+        <p>Zorba is supported by the 
+          <a href="http://flworfound.org/" target="_blank">FLWOR Foundation</a> 
+          and distributed under
+          <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache Licence, Version 2.0</a>.</p>
+      </div>
+    </div>
+  </body>
+</html>

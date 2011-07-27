@@ -276,7 +276,6 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theFactory(GENV_ITEMFACTORY)
 {
   theNamespaces["fn"] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaces["math"] = "http://www.w3.org/2005/xpath-functions/math";
   theNamespaces[""] = "http://www.w3.org/2005/xpath-functions";
   theNamespaces["xs"] = "http://www.w3.org/2001/XMLSchema";
   theNamespaces["local"] = "http://www.w3.org/2005/xquery-local-functions";
@@ -836,6 +835,17 @@ void end_visit(const SchemaImport& n, void*)
   theNamespaces[lPrefix] = n.get_uri();
 }
 
+XQDOC_NO_BEGIN_TAG (NamespaceDecl)
+
+void end_visit(const NamespaceDecl& n, void*)
+{
+  // collect prefix -> uri mappings for properly
+  // reporting function invocations (see FunctionCall)
+  theNamespaces[n.get_prefix()] = n.get_uri();
+}
+
+
+
 XQDOC_NO_BEGIN_END_TAG (AdditiveExpr)
 XQDOC_NO_BEGIN_END_TAG (AndExpr)
 XQDOC_NO_BEGIN_END_TAG (AnnotationParsenode)
@@ -954,7 +964,6 @@ XQDOC_NO_BEGIN_END_TAG (LetClause)
 XQDOC_NO_BEGIN_END_TAG (LibraryModule)
 XQDOC_NO_BEGIN_END_TAG (Literal)
 XQDOC_NO_BEGIN_END_TAG (MultiplicativeExpr)
-XQDOC_NO_BEGIN_END_TAG (NamespaceDecl)
 XQDOC_NO_BEGIN_END_TAG (NameTest)
 XQDOC_NO_BEGIN_END_TAG (NodeComp)
 XQDOC_NO_BEGIN_END_TAG (NodeModifier)
