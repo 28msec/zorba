@@ -5,7 +5,7 @@ However, the semi-structured data on the Web comes in various other formats, not
 XQuery can successfully be used to process many other Web data formats: JSON, CSV, HTML, and others.
 
 Zorba can be used to process many other data formats, not only XML, and inter-operate with applications that might use or produce such formats.
-This is easily done by first converting the other data formats into XML (via parse() functions). 
+This is easily done by first converting the other data formats into an XDM instance (via parse() functions). At the end of the processing, the resulting XDM instance can be converted back into the desired data format (via serialize() functions).
 At the end of the processing, the XML data can be converted into the desired data format again (via serialize() functions).
 
 \image html data-in-out.png

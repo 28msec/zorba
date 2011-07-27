@@ -989,11 +989,11 @@ declare %private %ann:sequential function xqdoc2html:configure-xhtml (
   $xhtml)
 {
   (: replace the function type description with images :)  
-  let $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
+  let $ZorbaOptAndAnn := "../../html/options_and_annotations.html",
+      $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
       $xqsSpec := "http://xquery-scripting.ethz.ch/spec.html",
       $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
-      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function",
-      $xqNonDeterministic := "http://www.w3.org/TR/2011/WD-xpath-functions-30-20110614/#dt-nondeterministic"
+      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
   let $imagesPath := "images/"
   for $typeTd in $xhtml//*:td
   where $typeTd/@class eq "type"
@@ -1002,20 +1002,27 @@ declare %private %ann:sequential function xqdoc2html:configure-xhtml (
   replace node $typeTd/text() with
     <span class="no_underline">
       {if(contains($type, "updating")) then
-        <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "Updating.gif")}" /></a>  
+        <a  href="{$xquSpec}" 
+            title="updating" 
+            target="_blank"><img src="{concat($imagesPath, "Updating.gif")}" /></a>  
        else ()}
        {if(contains($type, "sequential")) then
-        <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" /></a>  
+        <a  href="{$xqsSpec}" 
+            title="sequential" 
+            target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" /></a>  
        else ()}
        {if(contains($type, "nondeterministic ")) then
-        <a href="{$xqNonDeterministic}" title="%ann:nondeterministic" target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>  
+        <a  href="{$ZorbaOptAndAnn}" 
+            title="%ann:nondeterministic" 
+            target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>  
        else ()}
        {if(contains($type, "variadic")) then
-        <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments." 
-              target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>  
+        <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments."
+            href="{$ZorbaOptAndAnn}"
+            target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>  
        else ()}
        {if(contains($type, "streamable")) then
-        <a title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is 
+        <a  href="{$ZorbaOptAndAnn}" title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is 
         a function that may return an xs:string item whose content is streamed. Such a string is called a streamable string. 
         Such strings have the advantage that their contents doesn't need to be materialized in memory. 
         If a function consuming such a string is able to process the string in a streaming fashion, 
@@ -1032,11 +1039,11 @@ declare %private %ann:sequential function xqdoc2html:configure-xhtml (
   };
   
   (: replace the function names description with images+name of the functions :) 
-  let $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
+  let $ZorbaOptAndAnn := "../../html/options_and_annotations.html",
+      $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
       $xqsSpec := "http://xquery-scripting.ethz.ch/spec.html",
       $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
-      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function",
-      $xqNonDeterministic := "http://www.w3.org/TR/2011/WD-xpath-functions-30-20110614/#dt-nondeterministic"
+      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
   let $imagesPath := "images/"
   for $func in $xhtml//*:div
   where $func/@class eq "subsection"
@@ -1051,14 +1058,15 @@ declare %private %ann:sequential function xqdoc2html:configure-xhtml (
         <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" /></a>  
        else ()}
        {if(contains($funcName, "nondeterministic ")) then
-        <a href="{$xqNonDeterministic}" title="%ann:nondeterministic" target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>  
+        <a href="{$ZorbaOptAndAnn}" title="%ann:nondeterministic" target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>  
        else ()}
        {if(contains($funcName, "variadic ")) then
-        <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments." 
-              target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>  
+        <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments."
+            href="{$ZorbaOptAndAnn}"
+            target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>  
        else ()}
        {if(contains($funcName, "streamable ")) then
-        <a title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is a function that may return 
+        <a href="{$ZorbaOptAndAnn}" title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is a function that may return 
  an xs:string item whose content is streamed. Such a string is called a streamable string. Such strings have the advantage that their
  contents doesn't need to be materialized in memory. If a function consuming such a string is able to process the string
  in a streaming fashion, this allows for processing of strings with a virtually infinite length. However, the disadvantage is that 
