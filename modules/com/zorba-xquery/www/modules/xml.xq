@@ -106,6 +106,12 @@ declare option ver:module-version "2.0";
  : @param $options The options for the parsing
  : @return The parsed XML as a document node or a list of nodes, or an empty
  :         sequence
+ :
+ : @error err:FODC0006 This error will be raised if the options to the function
+ :                     are inconsistent, or if the input document is not a valid
+ :                     XML document, or if DTD or schema validation has been 
+ :                     enabled and the input document has not passed it.
+ :
  :)
 declare function parse-xml:parse-xml-fragment(
   $xml-string as xs:string?,
@@ -121,6 +127,10 @@ declare function parse-xml:parse-xml-fragment(
  : @param $options The options for the parsing (see parse-xml-fragment#2)
  : @return The parsed XML as a document node or a list of nodes, or an empty
  :         sequence
+ :
+ : @error err:FODC0007 This error will be raised if $base-uri parameter passed
+ :                     to the function is not a valid absolute URI.
+ :
  :)
 declare function parse-xml:parse-xml-fragment(
   $xml-string as xs:string?,
