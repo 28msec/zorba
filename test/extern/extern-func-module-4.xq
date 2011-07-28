@@ -9,7 +9,7 @@ declare namespace ns2 = 'myns';
 
 declare function extern:test() as xs:string
 {
-  refl:eval-simple("
+  refl:eval("
     declare function extern:bar() external;
     extern:bar()"
   )

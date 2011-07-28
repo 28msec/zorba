@@ -8,7 +8,7 @@ declare function evaltest:test1($x)
   $x + 3
 };
 
-util:eval-simple
+util:eval
 (
 '
 import module namespace evaltest="www.zorba-xquery.com/Test/eval" at "evallib.xqlib";

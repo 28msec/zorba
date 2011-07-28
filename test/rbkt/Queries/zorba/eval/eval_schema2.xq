@@ -5,7 +5,7 @@ import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 import schema namespace any = "http://ns.example.com/any-zorba" at 
                               "$RBKT_SRC_DIR/Queries/zorba/schemas/any.xsd";
 
-refl:eval-simple
+refl:eval
 (
 '
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";

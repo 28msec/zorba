@@ -12,7 +12,7 @@ return <survey year="{$year}">
        let $unitid := $j/@unitid,
            $control := xs:integer($j/@control),
            $rControl := for $cond in doc("gary_control.xml")//condition[@year eq $year]
-                        return util:eval-simple($cond/@expression)
+                        return util:eval($cond/@expression)
        return <inst unitid="{$unitid}" control="{$control}" rControl="{$rControl}" />
        }
        </survey>

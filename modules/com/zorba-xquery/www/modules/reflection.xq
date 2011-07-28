@@ -15,8 +15,11 @@
 :)
 
 (:~
- : Reflection Module for Zorba.
- :
+ : This module provides functions to dynamically invoke functions or main modules,
+ : respectively. Each of the functions (invoke or eval) come in four variants depending
+ : whether the expression being invoked is simple, nondeterministic, updating,
+ : or sequential.
+
  : @author Nicolae Brinza
  : @project reflection
  :
@@ -29,80 +32,174 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
-
 (:~
  : The invoke function allows to dynamically call a function given its QName
- : and parameters. It is possible to invoke a function who's name is not known
+ : and parameters. It is possible to invoke a function whose name is not known
  : at compilation time -- it can be computed, passed through an external 
  : variable, taken from a file, etc. The first parameter must always be a 
- : QName identifying a known function. The rest of the parameters will be
- : passed to the function that is called.
+ : QName identifying a known function.
  :
- : invoke comes in three flavours:
- : invoke-simple() - for the invocation of functions that are non-updating and
- :                   non-side effecting 
- : invoke-updating() - for the invocation of updating functions
- : invoke-sequential() - for the invocation of sequential functions 
+ : The function is declared with the %ann:variadic annotation. Hence, it allows
+ : for an arbitrary number of parameters. All of these parameters (except the
+ : first one) will be passed to the function that is called.
  :
  : <br/>
- : Example usage : <pre> reflection:invoke-simple ( xs:QName("fn:max"), 
- :                                                  (1,2,3) ) </pre>
+ : Example usage : <pre> reflection:invoke ( xs:QName("fn:max"), (1,2,3) ) </pre>
  : <br/>
- : Returns : <pre> 3 </pre>
+ : Returns <pre> 3 </pre>.
  :
- : @param $name the QName of the function that is to be called.
- : @return the result that is returned by the invoked function. 
+ : @param $name the QName of the function that is to be invoked
+ :
+ : @error whatever error the invoked function may return
+ :
+ : @return the result that is returned by the invoked function
+ :
+ : @example test/rbkt/Queries/zorba/reflection/reflection-invoke-01.xq
+ : @example test/rbkt/Queries/zorba/reflection/reflection-invoke-92.xq
  :)
-declare %ann:nondeterministic %ann:variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
+declare %ann:variadic function reflection:invoke(
+  $name as xs:QName
+) as item()* external;
 
 (:~
- : invoke-updating()
+ : See documentation for reflection:invoke except the function that
+ : is to be invoked may be nondeterministic.
  :
- : @param $name the QName of the function that is to be called.
- : @return the result that is returned by the invoked function.
+ : @param $name the QName of the function that is to be invoked
+ :
+ : @error whatever error the invoked function may return
+
+ : @return the result that is returned by the invoked function
+ :
+ : @see reflection:invoke()
  :)
-declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-updating($name as xs:QName) external;
+declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-n(
+  $name as xs:QName
+) as item()* external;
 
 (:~
- : invoke-sequential()
+ : See documentation for reflection:invoke-n except the function that
+ : is to be invoked may be updating, i.e. return a pending update list.
  :
- : @param $name the QName of the function that is to be called.
- : @return the result that is returned by the invoked function.
+ : @param $name the QName of the function that is to be invoked
+ :
+ : @error whatever error the invoked function may return
+ :
+ : @return the result that is returned by the invoked function
+ :
+ : @see reflection:invoke-n()
  :)
-declare %ann:nondeterministic %ann:variadic %ann:sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
+declare %ann:nondeterministic %ann:variadic updating function reflection:invoke-u(
+  $name as xs:QName
+) external;
+
+(:~
+ : See documentation for reflection:invoke except the function that
+ : is to be invoked may be sequential, i.e. may have side-effects.
+ :
+ : @param $name the QName of the function that is to be invoked
+ :
+ : @error whatever error the invoked function may return
+ :
+ : @return the result that is returned by the invoked function
+ :
+ : @see reflection:invoke()
+ :)
+declare %ann:variadic %ann:sequential function reflection:invoke-s(
+  $name as xs:QName
+) as item()* external;
 
 
 (:~
- : Eval
+ : The purpose of this function is to (dynamically) execute an XQuery program
+ : from inside another XQuery program. The XQuery program that invokes the
+ : eval function will be referred to as the "outer" program and the XQuery
+ : program that is executed by the eval invocation will be referred to as
+ : the "inner" program. The function is given as a string argument.
+ : Typically, the outer program constructs this string dynamically,
+ : e.g., based on data extracted from documents and/or the values of
+ : external variables. The eval function treats this string as 
+ : an XQuery main module. That is, it parses the string, compiles the 
+ : resulting parse tree, executes the resulting execution plan, and finally 
+ : returns the result or error (if any) to the outer program.
  :
- : @param $query the query string to be evaluated.
- : @return the result of evaluating the query (the result is not supposed to
- :         contain any PUL).
+ : The inner program "inherits" the static and dynamic context of the outer
+ : program. Specifically, evaluation of the inner program is done in static and 
+ : dynamic contextes that are initialized as copies of the static and dynamic 
+ : contextes of the outer program at the place where the eval invocation appears 
+ : at. This means that, for example, all variables that are in-scope at the place 
+ : where the eval function is invoked from, are also in-scope inside the inner
+ : program and can be referenced there without having to be re-declared. On the other
+ : hand, declarations that appear in the prolog of the inner main module or are
+ : imported by the inner main module from library modules, hide their corresponding
+ : inherited declarations. For example, if the inner main module declares 
+ : a variable or function with the same name as an inherited variable or function, 
+ : the inner variable/function hides the inherited one. 
+ :
+ : If the inner program declares an external variable with the same name as an 
+ : inherited variable, the value of the inherited variable is used to initialize 
+ : the inner external variable. If, however, an inner external variable has no 
+ : default initializer and no corresponding inherited variable, it will remain 
+ : uninitialized, causing the inner program to raise an error when executed.  
+ : 
+ : @param $query the query string to be evaluated
+ :
+ : @error whatever error the evaluated XQuery may return
+ :
+ : @return the result of evaluating the query
+ :
+ : @example test/rbkt/Queries/zorba/eval/eval1.xq
+ : @example test/rbkt/Queries/zorba/eval/eval2.xq
  :)
-declare %ann:nondeterministic function reflection:eval-simple(
+declare function reflection:eval(
+    $query as xs:string
+) as item()* external;
+
+(:~
+ : See documentation of reflection:eval() except the main module that is to
+ : be executed may be nondeterministc.
+ :
+ : @param $query the query string to be evaluated
+ :
+ : @error whatever error the evaluated XQuery may return
+ :
+ : @return the result of evaluating the query
+ :)
+declare %ann:nondeterministic function reflection:eval-n(
     $query as xs:string
 ) as item()* external;
 
 
 (:~
- : Eval
+ : See documentation of reflection:eval() except the main module that is to
+ : be executed may be updating, i.e. return a pending update list.
  :
- : @param $query the query string to be evaluated.
+ : @param $query the query string to be evaluated
+ :
+ : @error whatever error the evaluated XQuery may return
+ :
  : @return the PUL resulting from evaluating the query
+ :
+ : @see reflection:eval()
  :)
-declare %ann:nondeterministic updating function reflection:eval-updating(
+declare %ann:nondeterministic updating function reflection:eval-u(
     $query as xs:string
 ) external;
 
 
 (:~
- : Eval
+ : See documentation of reflection:eval() except the main module that is to
+ : be executed may be sequential, i.e. may have side-effects.
  :
- : @param $query the query string to be evaluated.
+ : @param $query the query string to be evaluated
+ :
+ : @error whatever error the evaluated XQuery may return
+ :
  : @return the result of evaluating the query (the result is not supposed to
  :         contain any PUL).
+ :
+ : @see reflection:eval()
  :)
-declare %ann:nondeterministic %ann:sequential function reflection:eval-sequential(
+declare %ann:sequential function reflection:eval-s(
     $query as xs:string
 ) as item()* external;
-

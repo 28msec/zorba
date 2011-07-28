@@ -8,7 +8,7 @@ declare function local:f1($a) { $g + $a };
 
 let $x := 10 
 return
-  util:eval-simple
+  util:eval
   ( 
     "
     declare function local:f2() { $g + $x };

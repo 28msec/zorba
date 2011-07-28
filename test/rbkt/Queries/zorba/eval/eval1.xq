@@ -7,7 +7,7 @@ declare variable $myns:g := 42;
 let $y := 1
 let $myns:x := $myns:g 
 return 
-  refl:eval-simple 
+  refl:eval
   (
     "declare namespace myns1='a';
 

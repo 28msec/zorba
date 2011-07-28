@@ -13,6 +13,6 @@ declare function evaltest:test1($x)
 
 declare function evaltest:test2($x)
 {
-  refl:eval-simple("evaltest:test1($x)")
+  refl:eval("evaltest:test1($x)")
 };
 

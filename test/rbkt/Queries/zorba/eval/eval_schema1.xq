@@ -3,7 +3,7 @@ import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
 
 import schema namespace any = "http://ns.example.com/any-zorba" at "../schemas/any.xsd";
 
-util:eval-simple
+util:eval
 (
 '
 import schema namespace any = "http://ns.example.com/any-zorba" at "../schemas/any.xsd";

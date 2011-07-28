@@ -6,4 +6,4 @@ declare function local:plus($param as xs:integer) as xs:integer
 
 };
 
-ref:invoke-simple(xs:QName("local:plus"), "text")
+ref:invoke(xs:QName("local:plus"), "text")

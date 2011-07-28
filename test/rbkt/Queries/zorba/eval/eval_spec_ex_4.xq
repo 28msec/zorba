@@ -8,7 +8,7 @@ declare variable $ns1:x := 1;
 
 declare variable $ns1:y := 40;
 
-util:eval-simple 
+util:eval
 ( '
 declare namespace ns2 = "myns";
 declare variable $ns2:x := 2;

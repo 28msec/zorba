@@ -12,7 +12,7 @@ declare %sequential function local:calc-one ($s as xs:string) as xs:boolean
   if (string-length ($s) = 0) then
     exit returning false ();
   else {
-    zorba:print (("Result: ", refl:eval-simple($s), $nl));
+    zorba:print (("Result: ", refl:eval($s), $nl));
     exit returning true();
   }
 };

@@ -2,4 +2,4 @@
 
 import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
 
-util:eval-simple(1 to 2)
+util:eval(1 to 2)

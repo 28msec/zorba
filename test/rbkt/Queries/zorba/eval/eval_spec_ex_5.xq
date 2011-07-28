@@ -2,4 +2,4 @@
 
 import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
 
-let $x := 42 return util:eval-simple("$x")
+let $x := 42 return util:eval("$x")

@@ -4,4 +4,4 @@ declare variable $s :=
 'module namespace math = "http://example.org/math-functions";
  declare variable $math:pi := 3.14;';
 
-refl:eval-simple($s)
+refl:eval($s)

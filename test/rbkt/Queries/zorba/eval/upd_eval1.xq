@@ -19,7 +19,7 @@ declare variable $doc := <root><a id="1"/><a id="2"/><a id="3"/><a id="4"/></roo
 
 {
   for $node in $doc/a
-  return util:eval-updating("local:delete($node, fn:true())");
+  return util:eval-u("local:delete($node, fn:true())");
 
   $doc
 }

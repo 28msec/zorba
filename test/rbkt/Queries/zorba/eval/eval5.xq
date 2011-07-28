@@ -4,7 +4,7 @@ import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 declare function local:eval($query as xs:string, $someparam as xs:integer) 
 {
   let $x := $someparam 
-  return refl:eval-simple($query)
+  return refl:eval($query)
 };
 
 

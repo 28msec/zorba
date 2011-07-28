@@ -9,7 +9,7 @@ declare variable $ns1:y := 40;
 
 <result xmlns:ns3 = "NS3">
 {
-util:eval-simple 
+util:eval
 ( 
 '
 declare namespace ns2 = "NS1";

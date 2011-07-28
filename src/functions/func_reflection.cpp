@@ -24,12 +24,12 @@
 namespace zorba{
 
 
-class fn_zorba_invoke_simple : public function
+class fn_zorba_invoke : public function
 {
 public:
-  fn_zorba_invoke_simple(const signature& sig)
+  fn_zorba_invoke(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N)
+    function(sig, FunctionConsts::FN_ZORBA_INVOKE_N)
   {
   }
 
@@ -38,13 +38,29 @@ public:
   CODEGEN_DECL();
 };
 
-
-class fn_zorba_invoke_updating : public function
+class fn_zorba_invoke_n : public function
 {
 public:
-  fn_zorba_invoke_updating(const signature& sig)
+  fn_zorba_invoke_n(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N)
+    function(sig, FunctionConsts::FN_ZORBA_INVOKE_N_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isDeterministic() const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+class fn_zorba_invoke_u : public function
+{
+public:
+  fn_zorba_invoke_u(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INVOKE_U_N)
   {
   }
 
@@ -56,12 +72,12 @@ public:
 };
 
 
-class fn_zorba_invoke_sequential : public function
+class fn_zorba_invoke_s : public function
 {
 public:
-  fn_zorba_invoke_sequential(const signature& sig)
+  fn_zorba_invoke_s(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N)
+    function(sig, FunctionConsts::FN_ZORBA_INVOKE_S_N)
   {
   }
 
@@ -75,8 +91,18 @@ public:
   CODEGEN_DECL();
 };
 
+PlanIter_t fn_zorba_invoke::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  ZORBA_ASSERT(false);
+  return NULL;
+}
 
-PlanIter_t fn_zorba_invoke_simple::codegen(
+PlanIter_t fn_zorba_invoke_n::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -88,7 +114,7 @@ PlanIter_t fn_zorba_invoke_simple::codegen(
 }
 
 
-PlanIter_t fn_zorba_invoke_updating::codegen(
+PlanIter_t fn_zorba_invoke_u::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -100,7 +126,7 @@ PlanIter_t fn_zorba_invoke_updating::codegen(
 }
 
 
-PlanIter_t fn_zorba_invoke_sequential::codegen(
+PlanIter_t fn_zorba_invoke_s::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -114,20 +140,26 @@ PlanIter_t fn_zorba_invoke_sequential::codegen(
 
 void populate_context_reflection(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_invoke_simple,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-simple"),
+  DECL(sctx, fn_zorba_invoke,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-  DECL(sctx, fn_zorba_invoke_updating,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-updating"),
+  DECL(sctx, fn_zorba_invoke_n,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-n"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        true,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+  DECL(sctx, fn_zorba_invoke_u,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-u"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
-  DECL(sctx, fn_zorba_invoke_sequential,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-sequential"),
+  DECL(sctx, fn_zorba_invoke_s,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "invoke-s"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));

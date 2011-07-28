@@ -5,7 +5,7 @@ declare namespace extern = "urn:extern";
 declare namespace ns2 = 'myns';
 
 
-refl:eval-simple("
+refl:eval("
   declare function extern:bar() external;
   extern:bar()
 ")

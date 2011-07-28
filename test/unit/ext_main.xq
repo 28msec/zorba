@@ -5,4 +5,4 @@ import module namespace ext = "http://www.zorba-xquery.com/m" at "file:///${CMAK
 
 declare variable $local:foo external;
 
-refl:eval-simple(concat("ext:", $local:foo, "()"))
+refl:eval(concat("ext:", $local:foo, "()"))

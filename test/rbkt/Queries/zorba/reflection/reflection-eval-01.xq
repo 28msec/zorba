@@ -1,4 +1,4 @@
 import module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
 import module namespace client = "http://pilman.ch/ns/blubb" at "client.xqlib";
 
-reflection:eval-sequential("client:tweets1()")
+reflection:eval-s("client:tweets1()")

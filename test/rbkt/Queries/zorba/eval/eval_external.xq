@@ -5,7 +5,7 @@ declare variable $y := 20;
 
 let $x := 10
 return 
-    util:eval-simple
+    util:eval
     (
       "declare variable $x external := 11;
        declare variable $y external;

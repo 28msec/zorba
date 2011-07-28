@@ -9,4 +9,4 @@ declare function local:recursive($param as xs:integer) as xs:integer
     local:recursive($param - 1)
 };
 
-ref:invoke-simple(xs:QName("local:recursive"), 10)
+ref:invoke(xs:QName("local:recursive"), 10)

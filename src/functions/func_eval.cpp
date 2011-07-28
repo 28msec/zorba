@@ -24,12 +24,12 @@
 namespace zorba{
 
 
-class fn_zorba_eval_simple : public function
+class fn_zorba_eval : public function
 {
 public:
-  fn_zorba_eval_simple(const signature& sig)
+  fn_zorba_eval(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1)
+    function(sig, FunctionConsts::FN_ZORBA_EVAL_1)
   {
   }
 
@@ -39,12 +39,29 @@ public:
 };
 
 
-class fn_zorba_eval_updating : public function
+class fn_zorba_eval_n : public function
 {
 public:
-  fn_zorba_eval_updating(const signature& sig)
+  fn_zorba_eval_n(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_EVAL_UPDATING_1)
+    function(sig, FunctionConsts::FN_ZORBA_EVAL_N_1)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isDeterministic() const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+class fn_zorba_eval_u : public function
+{
+public:
+  fn_zorba_eval_u(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_EVAL_U_1)
   {
   }
 
@@ -52,16 +69,18 @@ public:
 
   short getScriptingKind() const { return UPDATING_EXPR; }
 
+  bool isDeterministic() const { return false; }
+
   CODEGEN_DECL();
 };
 
 
-class fn_zorba_eval_sequential : public function
+class fn_zorba_eval_s : public function
 {
 public:
-  fn_zorba_eval_sequential(const signature& sig)
+  fn_zorba_eval_s(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_EVAL_SEQUENTIAL_1)
+    function(sig, FunctionConsts::FN_ZORBA_EVAL_S_1)
   {
   }
 
@@ -75,8 +94,18 @@ public:
   CODEGEN_DECL();
 };
 
+PlanIter_t fn_zorba_eval::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  ZORBA_ASSERT(false);
+  return NULL;
+}
 
-PlanIter_t fn_zorba_eval_simple::codegen(
+PlanIter_t fn_zorba_eval_n::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -88,7 +117,7 @@ PlanIter_t fn_zorba_eval_simple::codegen(
 }
 
 
-PlanIter_t fn_zorba_eval_updating::codegen(
+PlanIter_t fn_zorba_eval_u::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -100,7 +129,7 @@ PlanIter_t fn_zorba_eval_updating::codegen(
 }
 
 
-PlanIter_t fn_zorba_eval_sequential::codegen(
+PlanIter_t fn_zorba_eval_s::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -114,24 +143,28 @@ PlanIter_t fn_zorba_eval_sequential::codegen(
 
 void populate_context_eval(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_eval_simple,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-simple"),
+  DECL(sctx, fn_zorba_eval,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-  DECL(sctx, fn_zorba_eval_updating,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-updating"),
+  DECL(sctx, fn_zorba_eval_n,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-n"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+  DECL(sctx, fn_zorba_eval_u,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-u"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
-  DECL(sctx, fn_zorba_eval_sequential,
-       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-sequential"),
+  DECL(sctx, fn_zorba_eval_s,
+       (createQName(static_context::ZORBA_REFLECTION_FN_NS.c_str(), "", "eval-s"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
 
 }
-
 
 /* vim:set et sw=2 ts=2: */

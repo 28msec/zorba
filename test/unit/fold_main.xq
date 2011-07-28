@@ -4,4 +4,4 @@ import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 
 declare variable $local:foo external;
 
-refl:eval-simple(concat("mod1:", $local:foo, "()"))
+refl:eval(concat("mod1:", $local:foo, "()"))

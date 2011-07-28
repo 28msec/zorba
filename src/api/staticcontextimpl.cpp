@@ -1211,14 +1211,14 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
   // body
 
   // call updating, sequential, or simple invoke function
-  lOut << "ref:invoke-";
+  lOut << "ref:invoke";
 
   if (aFunc->isUpdating())
-    lOut << "updating";
+    lOut << "-u";
   else if (aFunc->isSequential())
-    lOut << "sequential";
-  else
-    lOut << "simple";
+    lOut << "-s";
+  else if (!aFunc->isDeterministic())
+    lOut << "-n";
 
   // args
   lOut << "($xxx-func-name";

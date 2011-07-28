@@ -18,4 +18,4 @@ declare function local:f()
 for $y in 1 to 10
 let $x := $var
 where $y mod 2 eq 0
-return refl:eval-simple(local:getQuery())
+return refl:eval(local:getQuery())

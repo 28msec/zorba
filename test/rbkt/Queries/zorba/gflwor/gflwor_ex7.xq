@@ -18,7 +18,7 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
   return
     try
     {
-      util:eval-simple 
+      util:eval
       (
         concat(
           'import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";',

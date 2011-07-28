@@ -1329,9 +1329,10 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N)
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_S_N)
     {
       if (i == 0)
         paramType = sign[i];
@@ -9975,17 +9976,19 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         break;
       }
-      case FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1:
-      case FunctionConsts::FN_ZORBA_EVAL_UPDATING_1:
-      case FunctionConsts::FN_ZORBA_EVAL_SEQUENTIAL_1:
+      case FunctionConsts::FN_ZORBA_EVAL_1:
+      case FunctionConsts::FN_ZORBA_EVAL_N_1:
+      case FunctionConsts::FN_ZORBA_EVAL_U_1:
+      case FunctionConsts::FN_ZORBA_EVAL_S_1:
       {
         expr_script_kind_t scriptingKind;
 
-        if (lKind == FunctionConsts::FN_ZORBA_EVAL_SIMPLE_1)
+        if (lKind == FunctionConsts::FN_ZORBA_EVAL_1 ||
+            lKind == FunctionConsts::FN_ZORBA_EVAL_N_1)
         {
           scriptingKind = SIMPLE_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_EVAL_UPDATING_1)
+        else if (lKind == FunctionConsts::FN_ZORBA_EVAL_U_1)
         {
           scriptingKind = UPDATING_EXPR;
         }
@@ -10025,9 +10028,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         break;
       }
-      case FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N:
-      case FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N:
-      case FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_N_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_U_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_S_N:
       {
         /*
            invoke(qnameExpr, arg1Expr, ...., argNExpr)
@@ -10050,15 +10054,16 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         zstring query_params;
         std::vector<var_expr_t> temp_vars;
 
-        if (lKind == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N)
+        if (lKind == FunctionConsts::FN_ZORBA_INVOKE_N ||
+            lKind == FunctionConsts::FN_ZORBA_INVOKE_N_N)
         {
           scriptingKind = SIMPLE_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N)
+        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_U_N)
         {
           scriptingKind = UPDATING_EXPR;
         }
-        else
+        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
         {
           scriptingKind = SEQUENTIAL_EXPR;
         }
