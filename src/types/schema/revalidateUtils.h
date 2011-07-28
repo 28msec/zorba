@@ -78,13 +78,13 @@ public:
   {
   }
 
-  bool isPossibleSimpleContentRevalidation()
+  bool isPossibleSimpleContentRevalidation(store::Item *typeQName)
   { 
     return false;
   }
 
   void validateSimpleContent(
-      const xqtref_t& targetType, 
+      store::Item *typeQName, 
       zstring newValue, 
       std::vector<store::Item_t>& resultList)
   {

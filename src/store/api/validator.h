@@ -40,22 +40,12 @@ public:
 
   virtual void validate(const std::set<Item*>& nodes, PUL& pul) = 0;
   
-#ifndef ZORBA_NO_XMLSCHEMA
   virtual bool isPossibleSimpleContentRevalidation(store::Item *typeQName) = 0;
   
   virtual void validateSimpleContent(store::Item *typeQName, 
                              zstring newValue, 
                              std::vector<store::Item_t> &resultList) = 0;
-#else
-  virtual bool isPossibleSimpleContentRevalidation() { return false; }
 
-  void validateSimpleContent(
-      const xqtref_t& targetType, 
-      zstring newValue, 
-      std::vector<store::Item_t>& resultList)
-  {
-  }
-#endif
 };
 
 
