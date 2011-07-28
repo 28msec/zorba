@@ -1,4 +1,4 @@
-												/** \page build Build Instructions
+/** \page build Build Instructions
 
   <ul>
     <li> Table of Contents
@@ -45,28 +45,29 @@
 
 \subsection buildsystem Build System
 
-In order to build Zorba, you need the Cross-Platform Make CMake 2.6 or
-higher (excepting CMake 2.6.3 which has a serious bug preventing Zorba
-build. You can download CMake from http://www.cmake.org/.
+In order to build Zorba, you need the Cross-Platform Make CMake 2.6 or later
+(except CMake 2.6.3 that has a serious bug preventing Zorba from building).
+You can download CMake from http://www.cmake.org/.
 
 \subsection compilers Compilers
 Zorba is tested with the following compilers:
 - GNU Compiler: GCC 3.4.x (32-bit & 64-bit) and GCC 4.x.x
 - Microsoft Compiler: MS VC++ 2008, and MS VC++ 2010
 
-
 \subsection required Required Packages
 In order to build Zorba, you need the following libraries and development headers to be installed:
-- Libxml2 2.2.16 or higher (http://xmlsoft.org/ )
-  - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
-- ICU4C 3.6 or higher (http://www.icu-project.org/)
-- Xerces-C 2.8.0, 3.0.0 or higher (http://xerces.apache.org/xerces-c/)
+- Libxml2 2.2.16 or later (http://xmlsoft.org/)
+- Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
+- ICU4C 3.6 or later (http://www.icu-project.org/)
+- Xerces-C 2.8.0, 3.0.0 or later (http://xerces.apache.org/xerces-c/)
   - used for schema support
-  - <strong>required only if</strong> the <tt>ZORBA_NO_XMLSCHEMA</tt> build flag is not switched to <tt>OFF</tt>. Default is <tt>ON</tt>.
+  - <strong>required only if</strong> the \c ZORBA_NO_XMLSCHEMA build flag
+    is not switched to \c OFF.
+    Default is \c ON.
 
 \subsection optional Optional Packages
 - for REST and HTTP support:
-  - CURL 7.12 or higher (http://curl.haxx.se/)
+  - CURL 7.12 or later (http://curl.haxx.se/)
 - for HTML tidy support:
   - Tidy (http://tidy.sourceforge.net)
 - for compiling XQueryX code:
@@ -76,50 +77,98 @@ In order to build Zorba, you need the following libraries and development header
 - if the FOP library is needed:
   - Java (http://java.sun.com/javase/downloads/index.jsp)
   - Apache FOP (http://xmlgraphics.apache.org/fop/download.html)
-- for <strong>language bindings</strong>:
-  - Swig (http://www.swig.org/download.html) (Note: Swig 1.3.36 is known to have a bug not implemeting the %begin sections, use version 1.3.40 or newer.)
-  - Java (http://java.sun.com/javase/downloads/index.jsp) for the Java language binding
-  - Ruby (http://www.ruby-lang.org/en/downloads/) for the Ruby language binding
-  - PHP (http://www.php.net/downloads.php) for the PHP language binding
-  - Python (http://www.python.org/download/) for the Python language binding
+- for language bindings:
+  - Swig (http://www.swig.org/download.html)
+    (Note: Swig 1.3.36 does not implement \c %begin sections
+    Use version 1.3.40 or later.)
+  - Java (http://java.sun.com/javase/downloads/index.jsp)
+  - Ruby (http://www.ruby-lang.org/en/downloads/)
+  - PHP (http://www.php.net/downloads.php)
+  - Python (http://www.python.org/download/)
 - if you want to build the scanner and parser
-  - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
-  - Bison 2.4 or higher (http://www.gnu.org/software/bison/)
+  - Flex 2.5.33 or later (http://flex.sourceforge.net/)
+  - Bison 2.4 or later (http://www.gnu.org/software/bison/)
 - for image manipulation support
   - ImageMagick (http://www.imagemagick.org)
   
-
 \subsection buildingzorba Building Zorba
--# Install the Zorba source distribution (see \ref installation). The directory in which the Zorba
-           sources are installed is referred to as <tt>[ZORBA]</tt> in the following.
--# Change the working directory into <tt>[ZORBA]</tt>.
--# The recommended way to build Zorba is by creating an <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">out-of-source build</a>. We suggest to create the directory <tt>[ZORBA]/build</tt> and refer to this directory as <tt>[ZORBABUILD]</tt> in the following.
--# Change the working directory into the <tt>[ZORBABUILD]</tt> directory and execute cmake as follows: <tt>cmake [ZORBA]</tt>. In case the <tt>[ZORBABUILD]</tt> is located directly within the <tt>[ZORBA]</tt> directory just type <tt>cmake ..</tt> . This command should configure Zorba and prepare for the build. CMake will tell you if your installation is missing some of the required libraries or development headers.
--# If CMake was executed successfully, you should be able to run <tt>make</tt>. Running make will take some time. If make finished successfully, you're ready to install and run Zorba (see \ref installation).
+-# Install the Zorba source distribution (see \ref installation).
+  The directory in which the Zorba sources are installed
+  is referred to as \c [ZORBA] in the following.
+-# Change the working directory into \c [ZORBA].
+-# The recommended way to build Zorba is by creating an
+   <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">out-of-source build</a>.
+   We suggest to create the directory \c [ZORBA]/build
+   and refer to this directory as \c [ZORBABUILD] in the following.
+-# Change the working directory into the \c [ZORBABUILD] directory
+   and execute cmake as follows:
+   <tt>cmake [ZORBA]</tt>.
+   In case the \c [ZORBABUILD]
+   is located directly within the \c [ZORBA] directory,
+   just type <tt>cmake ..</tt> .
+   This command should configure Zorba and prepare for the build.
+   CMake will tell you if your installation is missing
+   some of the required libraries or development headers.
+-# If CMake executed successfully,
+   you should be able to run \c make.
+   Running make will take some time.
+   If \c make finishes successfully,
+   you're ready to install and run Zorba
+   (see \ref installation).
 
 \subsection buildoptions Build Options
-- CMake is a meta build system, meaning it is able to generate native makefiles (e.g. GNU Make or NMake) and workspaces (e.g. KDevelop or Visual Studio Projects). For example, you can create
-  a KDevelop Project by executing the following command in the <tt>[ZORBA]</tt> directory: <tt>cmake -G KDevelop3 [ZORBABUILD]</tt>.
-- CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
-- Zorba has other options as well. You can tweak the performance and library footprint by enabling or disabling various features from Zorba. Details here \ref zorba_options.
+
+- CMake is a meta build system,
+  meaning that it is able to generate native makefiles
+  (e.g. GNU Make or NMake)
+  and workspaces
+  (e.g. KDevelop or Visual Studio Projects).
+  For example,
+  you can create a KDevelop Project by executing the following command
+  in the \c [ZORBA] directory:
+  <tt>cmake -G KDevelop3 [ZORBABUILD]</tt>.
+- CMake supports multiple build configurations
+  (e.g. Debug, Release, or MinSizeRel).
+  By default,
+  Zorba is built in the Release configuration.
+  To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel),
+  you can pass an additional parameter to CMake, e.g.,
+  <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
+- Zorba has other options as well.
+  You can tweak the performance and library footprint
+  by enabling or disabling various features from Zorba.
+  Details here \ref zorba_options.
 
 \section buildcclient Building IMAP CClient
 
 Zorba provides email support using the CClient library part of the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.
 
-\subsection cclientunix Unix/Linux/Mac OS
+\subsection cclientunix Unix/Linux/Mac OS X
 Notes:
-- There are some known issues with the CClient packages that come with diffrent Linux distributions.
-- On x32 bit OpenSuse and also on x64 bit Ubuntu we noticed that the CClient shared library is broken (undefined symbol: mm_dlog).
-- Due to that fact that Mark Crispin (the creator of CClient library) does not support CClient as a shared library but only as a static library (see <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html#6.3" target="_blank">FAQs shared library</a>), we strongly suggest you want to get the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and compile it yourself.
-- On Linux 64-bit, you might discover a problem with the optional package cclient. E.g. on Ubuntu 64-bit, you might discover the following:
+- There are some known issues with the CClient packages
+  that come with diffrent Linux distributions.
+- On x32 bit OpenSuse and also on x64 bit Ubuntu,
+  we noticed that the CClient shared library is broken
+  (undefined symbol: mm_dlog).
+- Due to that fact that Mark Crispin
+  (the creator of CClient library)
+  does not support CClient as a shared library but only as a static library
+  (see <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html#6.3" target="_blank">FAQs shared library</a>),
+  we strongly suggest you want to get the
+  <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>
+  and compile it yourself.
+- On Linux 64-bit,
+  you might discover a problem with the optional package cclient.
+  E.g. on Ubuntu 64-bit, you might discover the following:
   \code
 Linking CXX shared library libsmtp.so
 /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a(osdep.o): relocation R_X86_64_32 against
   `server_input_wait' can not be used when making a shared object; recompile with -fPIC
 /usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a: could not read symbols: Bad value
   \endcode
-  To fix this, you need to compile CClient yourself. The commands to compile CClient correctly are:
+  To fix this,
+  you need to compile CClient yourself.
+  The commands to compile CClient correctly are:
   \code
 cd <some_directory>
 wget ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
@@ -128,8 +177,15 @@ cd imap-2007e
 make slx EXTRACFLAGS="-I/usr/include/openssl -fPIC"
   \endcode
 
-- Also please keep in mind that if SSL/TLS authentication is required by the SMTP server, then you first need to install <a href="http://www.openssl.org/" target="_blank">OpenSSL</a> and configure CClient to use it.
-- Make sure the name of the library is prefixed by 'lib' and suffixed with '.a' (for example libc-client.a on Linux/Unix or libc-client4.a on Mac OS).
+- Also please keep in mind that if SSL/TLS authentication is required
+  by the SMTP server,
+  then you first need to install
+  <a href="http://www.openssl.org/" target="_blank">OpenSSL</a>
+  and configure CClient to use it.
+- Make sure the name of the library is prefixed by \c lib
+  and suffixed with \c .a
+  (for example \c libc-client.a on Linux/Unix
+  or \c libc-client4.a on Mac OS X).
 
 Use the following extra CMake arguments when building Zorba:
 \verbatim
@@ -141,122 +197,152 @@ Here are some quick suggestions to build CClient on Linux:
 - x32-bit Linux: <tt>make lnp</tt>
 - x64-bit Linux: <tt>make lnp  EXTRACFLAGS="-I/usr/include/openssl -fPIC" EXTRAAUTHENTICATORS=gss</tt> in order to build with SSL and Kerberos support.<br /></ul>
 
-For more detailed build instructions please check out the <a href="http://www.washington.edu/imap/documentation" target="_blank">UW IMAP toolkit "Server Documentation"</a> and the <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html" target="_blank">UW IMAP FAQs.</a>
+For more detailed build instructions,
+please see the
+<a href="http://www.washington.edu/imap/documentation" target="_blank">UW IMAP toolkit "Server Documentation"</a>
+and the <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html" target="_blank">UW IMAP FAQs</a>.
 
 \subsection cclientwindows Windows
-You must build the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.
+
+You must build the
+<a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.
 
 Use the following extra CMake arguments when building Zorba:
-\verbatim
+\code
 -D "CCLIENT_INCLUDE=path_to_imap-2007e\c-client"
 -D "CCLIENT_LIBRARY=path_to_imap-2007e\c-client\release\cclient.lib"
-\endverbatim
+\endcode
 
 \section buildjansson Building Jansson
 
-Zorba provides Json manipulation support using the Jansson Library (http://www.digip.org/jansson/)
+Zorba provides Json manipulation support
+using the Jansson Library (http://www.digip.org/jansson/).
 
-\subsection janssonunix Unix/Linux/Mac OSX
+\subsection janssonunix Unix/Linux/Mac OS X
 
-For Linux/Unix systems, just download the Jansson library from http://www.digip.org/jansson/releases/. \n
-Then follow the instructions from http://www.digip.org/jansson/doc/2.0/gettingstarted.html#compiling-and-installing-jansson.
+For Linux/Unix systems,
+download the Jansson library from http://www.digip.org/jansson/releases/.
+Then follow the instructions from
+http://www.digip.org/jansson/doc/2.0/gettingstarted.html#compiling-and-installing-jansson.
 
-The source use GNU Autotools (autoconf, automake, libtool), so compiling and installing is extremely simple:
-\verbatim
+The source use GNU Autotools
+(autoconf, automake, libtool),
+so compiling and installing is extremely simple:
+\code
 ./configure
 make
 make check
 make install
-\endverbatim
+\endcode
 
-On Fedora, starting with version 12 Jansson is also available as a package, so (as root) you can simply run: 
-\verbatim
+On Fedora starting with version 12, Jansson is also available as a package,
+so (as root) you can simply run: 
+\code
 yum install -y jansson-devel
-\endverbatim
+\endcode
 
-Ubuntu packages are available from PPA of https://launchpad.net/~petri/+archive/ppa
+Ubuntu packages are available from PPA of
+https://launchpad.net/~petri/+archive/ppa
 
 \subsection janssonwindows Windows
 
 For Windows please follow these steps:
 - download Jansson from https://github.com/akheron/jansson/zipball/master
 - rename src/jansson_config.h.win32 to src/jansson_config.h
-- replace 'snprintf' with '_snprintf' in src/dump.c lines 188 and 202 and load.c lines 96 and 108
-- replace 'json_strtoint' with 'strtol' in load.c line 481
+- replace \c snprintf with \c _snprintf in \c src/dump.c lines 188 and 202
+  and \c load.c lines 96 and 108
+- replace \c json_strtoint with \c strtol in \c load.c line 481
 - add all headers and source files in src folder and create a static library
 
-There will be a new Jansson 2.0.1 release that will include the fixed described above.
+There will be a new Jansson 2.0.1 release
+that will include the fixed described above.
 
 \section buildimagemagick Building ImageMagick
 
-Zorba provides image manipulation support using the ImageMagick Library (http://www.imagemagick.org)
+Zorba provides image manipulation support
+using the ImageMagick Library (http://www.imagemagick.org).
 
-\subsection imagemagickunix Unix/Linux/Mac OSX
+\subsection imagemagickunix Unix/Linux/Mac OS X
 
-For Linux/Unix systems, just use the package manager to install the magick++, magickwand, magickcore packets including the developer versions of these packets (which inlcude the header files).
+For Linux/Unix systems,
+just use the package manager to install the
+magick++, magickwand, magickcore packages
+including the developer versions of these packages
+(that inlcude the header files).
 
 On OSX, use macports to install imagemagick.
 
 \subsection imagemagickwindows Windows
 
+For Windows,
+just download the ImageMagick windows binary (Q8-windows-dll) and install it.
 
-For Windows, just download the ImageMagick windows binary (Q8-windows-dll) and install it.
-
-
-\section mac Note for Mac OS Users 
+\section mac Note for Mac OS X Users 
 
 The easiest way to install the required packages (like CMake or Xerces-C) is
 to use Macports (http://macports.org/).
 
-Once all the required packages are installed you can execute CMake. By default
-CMake on Mac OS X uses the Makefile generator. Alternatively, you could specify
-different generators (e.g. Xcode) by starting CMake using the -G option (e.g. -G Xcode). 
+Once all the required packages are installed you can execute CMake.
+By default,
+CMake on Mac OS X uses the Makefile generator.
+Alternatively,
+you can specify different generators (e.g., Xcode)
+by starting CMake using the -G option (e.g., -G Xcode). 
 
 \subsection swig Swig Version
-Due to a bug in older swig version, Zorba with SWIG support requires SWIG 
-version 1.3.40 or newer.
+Due to a bug in older swig version,
+Zorba with SWIG support requires SWIG 
+version 1.3.40 or later.
 
-To do this, the swig package from macports should be installed and point cmake 
-to use the new version:
+To do this,
+the swig package from macports should be installed
+and point cmake to use the new version:
 
-@verbatim
+\code
 sudo port install swig
 cmake -DCMAKE_PREFIX_PATH=/opt/local ..
-@endverbatim
+\endcode
 
-\subsection universal Building as Universal binaries
+\subsection universal Building as Universal Binaries
 
-To build zorba as a universal binary one must also build the required
-external libraries as universal.  In most cases this is as easy as
-building them non-universal.   Following are instructions on how to do so.
+To build zorba as a universal binary,
+one must also build the required external libraries as universal.
+In most cases
+this is as easy as building them non-universal.
+Following are instructions on how to do so.
 
-For  Xerces-C the 
-<a href="http://developer.apple.com/documentation/Porting/Conceptual/PortingUnix/compiling/chapter_4_section_3.html">
+For Xerces-C, the 
+<a href="http://developer.apple.com/documentation/Porting/Conceptual/PortingUnix/compiling/chapter_4_section_3.html">instructions given by Apple</a>
+almost just work.
+One should change the \c CFLAGS to \c CXXFLAGS
+because Xerces is written in C++.
+Zorba developers prefer a variation on those instructions like this:
 
-instructions given by Apple </a> almost just work.  One should change
-the CFLAGS to CXXFLAGS because Xerces is written in C++.  Zorba
-developers prefer a variation on those instructions like this ...
-
-@verbatim
+\code
 ./configure CXXFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.5.sdk" \
 -disable-dependency-tracking LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk \
 -arch i386 -arch ppc"
-@endverbatim
+\endcode
 
-Since libxml2 is written in C, change CXXFLAGS to CFLAGS in the above.
-As noted by Apple, dependency generation by gcc doesn't work when
-building universal, thus it is turned off with the above command.
+Since \c libxml2 is written in C,
+change \c CXXFLAGS to \c CFLAGS in the above.
+As noted by Apple,
+dependency generation by gcc doesn't work when building universal,
+thus it is turned off with the above command.
 
-
-For ICU, one must build the libraries seperately on PPC and Intel
-platforms then combine the them into a Universal library.  The reason
-for this is that ICU tests for endianess at configure time (i.e. before
-compiling), thus the compiled code will only have endianess correct
-for one platform.  The script <em> zorba/scripts/makefat.sh </em>
+For ICU,
+one must build the libraries seperately on PowerPC and Intel platforms
+then combine the them into a Universal library.
+The reason for this is that ICU tests for endianess at configure time
+(i.e., before compiling),
+thus the compiled code will only have endianess correct
+for one platform.
+The script \c zorba/scripts/makefat.sh
 shows one how to do the combining.
 
-Once all the external libraries are built and installed Universal, one
-can build zorba Universal setting the CMake variable UNIVERSAL on like this
+Once all the external libraries are built and installed Universal,
+one can build zorba Universal setting the CMake variable \c UNIVERSAL
+on like this:
 
 \verbatim
 cmake -D UNIVERSAL=1 ..
@@ -264,47 +350,75 @@ cmake -D UNIVERSAL=1 ..
 
 \subsection mac_installer Building Mac OS X Installer
 
-In order to build an installer package, one should run cmake with an
-extra flag as follows...
+In order to build an installer package,
+one should run cmake with an extra flag as follows:
 
-@verbatim
-> cmake -DCMAKE_SKIP_BUILD_RPATH=1 .. 
-@endverbatim
+\code
+cmake -DCMAKE_SKIP_BUILD_RPATH=1 .. 
+\endcode
 
-This will remove the build path from the installed executables and
-libraries.  It will also add some symbolic links to the libraries.
+This will remove the build path from the installed executables and libraries.
+It will also add some symbolic links to the libraries.
 
 \section windows Notes for Windows Users
-- In order to compile Zorba on Windows, you need a working Visual Studio (Express) installation (2008, 2010).
-- If you want to compile Zorba using Visual Studio 2008 you will need to install the <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7&displaylang=en" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
-- Make sure that the libraries required for Zorba are built with the same version of Visual Studio that you use.
-- the Windows version of some required packages are distributed by other web sites (all of them are pointed to from the main package web sites indicated in the \ref required section):
+- In order to compile Zorba on Windows,
+  you need a working Visual Studio (Express) installation (2008, 2010).
+- If you want to compile Zorba using Visual Studio 2008,
+  you will need to install the
+  <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7&displaylang=en" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
+- Make sure that the libraries required for Zorba
+  are built with the same version of Visual Studio that you use.
+- The Windows version of some required packages
+  are distributed by other web sites
+  (all of them are pointed to from the main package web sites
+  indicated in the \ref required section):
   - Libxml2 and Iconv: http://www.zlatkovic.com/libxml.en.html
   - CURL: http://curl.haxx.se/download.html
   - Tidy: http://dev.int64.org/tidy.html
   - Libxslt: http://www.zlatkovic.com/pub/libxml/
   - IMAP CClient: http://www.washington.edu/imap/
-- Zorba has in place an automatic DLL detection mechanism. This will try to automatically gather all the DLLs from the third party librbaries and install them with Zorba when you do "name install" or you build the Visual Studio INSTALL project. Zorba will search for the third party libraries in order in:
-  - all the directories pointed by the ZORBA_THIRD_PARTY_REQUIREMENTS cmake variable
-    - e.g. if you have Xerces in "C:\tools" and IConv in "D:\tools", you must build with -D ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool and Zorba will find all it needs from Xerces and Iconv. (The directory names must contain "xerces" and "iconv" respectively, case insensitive)
+- Zorba has in place an automatic DLL detection mechanism.
+  This will try to automatically gather all the DLLs
+  from the third party librbaries
+  and install them with Zorba when you do "name install"
+  or you build the Visual Studio INSTALL project.
+  Zorba will search for the third party libraries in order in:
+  - all the directories pointed by the \c ZORBA_THIRD_PARTY_REQUIREMENTS
+    cmake variable
+    - e.g. if you have Xerces in "C:\tools" and IConv in "D:\tools",
+      you must build with -D ZORBA_THIRD_PARTY_REQUIREMENTS=C:\tools;D:\tool
+      and Zorba will find all it needs from Xerces and Iconv.
+      (The directory names must contain "xerces" and "iconv" respectively, case insensitive)
   - in the program files directory on your system
-    - e.g. if you have cURL installed in "C:\Program Files\*cURL*", Zorba will find all it needs from cURL. (The directory must contain "curl" case insensitive)
-  - all the paths in the PATH variable
-    - e.g. if you have "C:\tools\*ICU*\bin" in your path, Zorba will find all it needs from ICU. (The directory must only contain "icu")
-- Note, you can also use CMake's graphical interface. This can usually be found in Start menu. This eases up setup and makes it more intuitive.
+    - e.g. if you have cURL installed in "C:\Program Files\*cURL*",
+      Zorba will find all it needs from cURL.
+      (The directory must contain "curl" case insensitive.)
+  - all the paths in the \c PATH variable
+    - e.g. if you have "C:\tools\*ICU*\bin" in your path,
+      Zorba will find all it needs from ICU.
+      (The directory must only contain "icu".)
+- Note: you can also use CMake's graphical interface.
+  This can usually be found in the \e Start menu.
+  This eases the setup and makes it more intuitive.
 
 \subsection nmake Building Zorba using a NMake Project
--# Start a Visual Studio Command Line
--# Change the current working directory to the <tt>[ZORBA]</tt> directory.
--# It is not allowed to have <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">in-source builds</a>. So you must create a build directory (e.q. <tt>[ZORBA]/build</tt>). We refer to this directory as <tt>[ZORBABUILD]</tt> in the following steps.
--# Change the current working directory to the <tt>[ZORBABUILD]</tt> directory.
--# Execute CMake as follows <tt>cmake -G "NMake Makefiles" [ZORBA]</tt>. CMake will try to find the necessary packages in the program files directory on your system and in the <tt>PATH</tt> environment variable. If one of the required dependencies were not found, CMake will stop with an error. See the next step only if this step did not find the required third party dependencies on your system.
+-# Start a Visual Studio Command Line.
+-# Change the current working directory to the \c [ZORBA] directory.
+-# It is not allowed to have
+   <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">in-source builds</a>.
+   So you must create a build directory (e.g., <tt>[ZORBA]/build</tt>).
+   We refer to this directory as \c [ZORBABUILD] in the following steps.
+-# Change the current working directory to the \c [ZORBABUILD] directory.
+-# Execute CMake as follows <tt>cmake -G "NMake Makefiles" [ZORBA]</tt>.
+   CMake will try to find the necessary packages
+   in the program files directory
+   on your system and in the \c PATH environment variable. If one of the required dependencies were not found, CMake will stop with an error. See the next step only if this step did not find the required third party dependencies on your system.
 -# If the command above fails or if you see that some optional packages were not found, you can help CMake a little by providing the lists of path where it should look for the libraries you need. In this case the CMake command should look like:
 \code
 "cmake" -G "NMake Makefiles" -D ZORBA_THIRD_PARTY_REQUIREMENTS=path\to\dir1;path\to\dir2;...
 \endcode
 
-But you can also manually set the paths to individual libraries and include directory by directly providing the variables set by each find package module (in the <tt>cmake_modules</tt> directory).
+But you can also manually set the paths to individual libraries and include directory by directly providing the variables set by each find package module (in the \c cmake_modules directory).
 
 In order to add XQueryX support you have to add ZORBA_XQUERYX=ON and add the paths to libxslt
 \code
@@ -313,23 +427,39 @@ In order to add XQueryX support you have to add ZORBA_XQUERYX=ON and add the pat
 -D LIBXSLT_LIBRARIES="path_to_libxslt\lib\libxslt.lib"
 \endcode
 
-Now you are ready to call <tt>nmake</tt> from the <tt>[ZORBABUILD]</tt> directory.
+Now you are ready to call \c nmake from the \c [ZORBABUILD] directory.
 
 \subsection visualstudio Building Visual Studio Project
 -# Start Visual Studio Command Line
--# Change the current working directory into the <tt>[ZORBA]</tt> directory.
--# Execute CMake as described above but with the appropriate CMake Visual Studio generator (<tt>-G "Visual Studio ..."</tt> instead of <tt>-G "NMake Makefiles"</tt>.
--# Start Visual Studio, open the generated <tt>zorba.sln</tt> project file, and start compilation.
+-# Change the current working directory into the \c [ZORBA] directory.
+-# Execute CMake as described above
+   but with the appropriate CMake Visual Studio generator
+   (<tt>-G "Visual Studio ..."</tt> instead of <tt>-G "NMake Makefiles"</tt>.
+-# Start Visual Studio,
+   open the generated \c zorba.sln project file,
+   and start compilation.
 
 \subsection https_support HTTPS support
-- In order to have SSL support in Zorba you have to use the CURL library that has SSL support. 
-- There is one more thing: in order to validate the server's certificate, CURL+SSL needs to know
-about the root Certificates of Authenticity (CA), this is a set of public keys freely available on the internet. 
-- On Windows, Zorba expects this file to be called "cacert.pem" and searches for it in current dir and system paths. 
-- This "cacert.pem" file can be found on curl page: http://curl.haxx.se/docs/caextract.html .
-- In order to disable the validation of server certificate, the ZORBA_VERIFY_PEER_SSL_CERTIFICATE can be set to OFF in cmake 
-(and actually this is the default value). Set it to ON to validate server certificate chain on every access to https:// .
-- More read about CURL+SSL : http://curl.haxx.se/docs/sslcerts.html .
-- As a https test page we used for example the rss feed fn:doc('https://www.npr.org/rss/rss.php?id=1001') .
+- In order to have SSL support in Zorba,
+  you have to use the CURL library that has SSL support. 
+- There is one more thing:
+  in order to validate the server's certificate,
+  CURL+SSL needs to know about the root Certificates of Authenticity (CA):
+  a set of public keys freely available on the internet. 
+- On Windows,
+  Zorba expects this file to be called \c cacert.pem
+  and searches for it in current directory and system paths. 
+- This \c cacert.pem file can be found on the curl page:
+  http://curl.haxx.se/docs/caextract.html .
+- In order to disable the validation of server certificate,
+  the \c ZORBA_VERIFY_PEER_SSL_CERTIFICATE can be set to \c OFF
+  in cmake 
+  (and actually this is the default value).
+  Set it to \c ON to validate server certificate chain
+  on every access to \c https:// .
+- To read more about CURL+SSL: http://curl.haxx.se/docs/sslcerts.html .
+- As an \c https test page,
+  we used for example the rss feed
+  fn:doc('https://www.npr.org/rss/rss.php?id=1001') .
 
 */
