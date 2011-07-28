@@ -91,7 +91,6 @@ declare %ann:sequential function z:delete-collections()
  :)
 declare %ann:sequential function z:fill-nodesCollector() as xs:string*
 {
-
   for $category in $z:level1Weight
   return
     for $docNode in dml:collection(xs:QName("z:collection"))
@@ -107,7 +106,9 @@ declare %ann:sequential function z:fill-nodesCollector() as xs:string*
                                and not($lModuleProject = $lModuleUri)) 
                             then concat($subProject,"_") 
                             else ()
-    let $lName := concat($subProjectFinal,fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_"))
+    let $lName := if(($subProjectFinal = "data_converters_") or 
+                     ($subProjectFinal = "data_cleaning_")) then fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_")
+                  else concat($subProjectFinal,fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_"))
     where (fn:starts-with($lModuleProject, $category) or
            fn:contains($lModuleProject, $category))
     return
@@ -355,7 +356,7 @@ concat('
     subgraph cluster',
         index-of($z:level1Weight,$category),
         (:   '{ node [style=filled];  color=',data($category/@color),';   :)
-        ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [style=filled, color=white];
+        ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [shape="box", style="rounded,filled", color=white];
     ',
 z:nodes_modules($category),'
 ',
@@ -367,7 +368,8 @@ z:nodes_modules($category),'
  :)
 declare function z:create_graph() as xs:string
 {
-    concat("digraph G { ",
+    concat('digraph G {
+' ,
             string-join(
               for $cat1 in  $z:level1Weight
               return z:create_subgraph($cat1)
