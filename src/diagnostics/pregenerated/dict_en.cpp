@@ -185,7 +185,7 @@ extern entry const dict_en[] = {
   { "XSST0001", "\"$1\": function cannot be declared as both updating and sequential" },
   { "XSST0002", "\"$1\": function declared sequential but has updating body" },
   { "XSST0003", "\"$1\": function declared updating but has sequential body" },
-  { "XSST0004", "\"$1\": function declared simple but has sequential body" },
+  { "XSST0004", "\"$1\": function declared nonsequential but has sequential body" },
   { "XSST0005", "expression cannot be both updating and sequential" },
   { "XSST0006", "sequential expression not allowed here" },
   { "XSST0007", "\"$1\": variable not assignable" },

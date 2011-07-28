@@ -206,8 +206,10 @@ Zorba Scripting programs may have side effects.
 Side effects can be made with statements.
 An expression is sequential if it contains statements that have side effects (updating some XML, assigning a variable in scope outside of the expression) or that affect the control flow (break, continue, exit returning), or if it invokes a sequential function.
 Analogously to nondeterministic functions, the compiler needs to be able to infer if an expression is sequential.
-In order to do so, Zorba provides the <tt>%ann:sequential</tt> annotation which must be used to declare (external) functions that have side effects.
-If a function invokes a sequential function but is itself not declared sequential, a error is raised (zerr:XSST0004).
+In order to do so, Zorba provides the <tt>%ann:sequential</tt> and <tt>%ann:nonsequential</tt> annotations.
+The <tt>%ann:sequential</tt> annotation must be used to declare (external) functions that have side effects.
+If non of these annotations is present, the default for a function is to be annotated as <tt>%ann:nonsequential</tt>.
+If a function invokes a sequential function but is itself not declared sequential (i.e. no annotation or <tt>%ann:nonsequential</tt>), an error is raised (zerr:XSST0004).
 
 For example, the <tt>http:post</tt> function of the http-client module is declared as sequential because invoking it might cause a side effect (e.g. a payment with paypal).
 

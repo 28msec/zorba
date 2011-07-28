@@ -2221,7 +2221,7 @@
       <value>"$1": function declared updating but has sequential body</value>
     </diagnostic>
     <diagnostic code="XSST0004">
-      <value>"$1": function declared simple but has sequential body</value>
+      <value>"$1": function declared nonsequential but has sequential body</value>
     </diagnostic>
     <diagnostic code="XSST0005">
       <value>expression cannot be both updating and sequential</value>
