@@ -414,7 +414,7 @@ declare %ann:nondeterministic %ann:sequential function xqdoc2html:copy-xhtml-req
       else ();      
       
       (: third - re-copy these files :)
-      xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($imagesPath,   " copy images in :"), ("gif", "png", "svg", "jpg"));
+      xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($imagesPath,   " copy images in :"), ("gif", "png", "svg"));
       xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($libPath,      " copy scripts in :"), "js");
       xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($cssPath,      " copy stylesheets in :"), "css");
       
@@ -1534,7 +1534,7 @@ declare %private %ann:nondeterministic function xqdoc2html:functions($functions,
         xqdoc2html:annotations-author($comment),        
         xqdoc2html:annotations-see($comment),
         xqdoc2html:annotations-example($comment, $xqdocXhtmlPath),
-        <div id="allignright"><a href="#function_summary"><img src="images/up.jpg" alt="back to 'Function Summary'" title="back to 'Function Summary'"/></a></div>,  
+        <div id="allignright"><a href="#function_summary"><img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'"/></a></div>,  
         <hr />)                
        )
     else ()

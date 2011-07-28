@@ -107,7 +107,11 @@ declare %ann:sequential function z:fill-nodesCollector() as xs:string*
                             then concat($subProject,"_") 
                             else ()
     let $lName := if(($subProjectFinal = "data_converters_") or 
-                     ($subProjectFinal = "data_cleaning_")) then fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_")
+                     ($subProjectFinal = "data_cleaning_") or 
+                     ($subProjectFinal = "data_formatting_") or
+                     ($subProjectFinal = "atomic_") or
+                     ($subProjectFinal = "item_") or
+                     ($subProjectFinal = "node_")) then fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_")
                   else concat($subProjectFinal,fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_"))
     where (fn:starts-with($lModuleProject, $category) or
            fn:contains($lModuleProject, $category))
@@ -356,7 +360,7 @@ concat('
     subgraph cluster',
         index-of($z:level1Weight,$category),
         (:   '{ node [style=filled];  color=',data($category/@color),';   :)
-        ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [shape="box", style="rounded,filled", color=white];
+        ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [style="filled", color=white];
     ',
 z:nodes_modules($category),'
 ',
