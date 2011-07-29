@@ -64,8 +64,12 @@ namespace zorba {
           if (aIndent) aOut << std::endl << "        ";
           aOut << "<location ";
           aOut << "fileName=\"" << lFileName << "\" ";
-          aOut << "line=\"" << it->getLine() << "\" ";  
-          aOut << "column=\"" << it->getColumn() << "\" ";  
+          aOut << "lineStart=\"" << it->getLine() << "\" "
+            << "columnStart=\"" << it->getColumn() << "\" ";
+          if (it->getLineEnd())
+            aOut << "lineEnd=\"" << it->getLineEnd() << "\" ";
+          if (it->getColumnEnd())
+            aOut << "lineEnd=\"" << it->getColumnEnd() << "\" ";
           aOut << "/>";
           if (aIndent) aOut << std::endl << "      ";
           aOut << "</call>"; 
@@ -105,8 +109,13 @@ namespace zorba {
         if (aIndent) aOut << std::endl << "    ";
         //location
         aOut << "<location module='" << aException.source_uri();
-        aOut << "' line='" << aException.source_line();
-        aOut << "' column='" << aException.source_column() << "'/>";
+        aOut << "' lineStart='" << aException.source_line();
+        aOut << "' columnStart='" << aException.source_column() << "'";
+        if (aException.source_line_end())
+          aOut << " lineEnd='" << aException.source_line_end() << "'";
+        if (aException.source_column_end())
+          aOut << " columnEnd='" << aException.source_column_end() << "'";
+        aOut << "/>";
         if (aIndent) aOut << std::endl << "    ";
         //description
         aOut << "<description>" << aException.what() << "</description>";

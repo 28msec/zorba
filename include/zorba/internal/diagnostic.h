@@ -64,19 +64,30 @@ public:
   /**
    * Constructs a default (empty) %location.
    */
-  location() : line_( 0 ), column_( 0 ) {
+  location() : line_( 0 ), column_( 0 ), line_end_( 0 ), column_end_( 0 ) {
   }
 
   /**
    * Constructs a %location.
    *
    * @param file The name of the file where the error occurred.
-   * @param line The line number of the file where the error occurred.
-   * @param column The column number, if any, of the file where the error
-   * occurred.
+   * @param line The line number of the file where the expression that
+   *  raises the error begins.
+   * @param column The column number, if any, of the file where the expression
+   *  that raises the error begins.
+   * @param line_end The end line number, if any, of the file where the expression
+   *  causing the error ends.
+   * @param column_end The end column number, if any, of the file where 
+   *  the xpression causing the error ends.
    */
-  location( char const *file, line_type line, column_type column = 0 ) :
-    file_( file ), line_( line ), column_( column )
+  location(
+      char const *file,
+      line_type line,
+      column_type column = 0,
+      line_type line_end = 0,
+      column_type column_end = 0) :
+    file_( file ), line_( line ), column_( column ),
+    line_end_( line_end ), column_end_( column_end )
   {
   }
 
@@ -86,12 +97,21 @@ public:
    * @tparam StringType The string type for \a file.
    * @param file The name of the file where the error occurred.
    * @param line The line number of the file where the error occurred.
-   * @param column The column number, if any, of the file where the error
-   * occurred.
+   * @param column The column number, if any, of the file where the error occurred.
+   * @param line_end The end line number, if any, of the file where the expression
+   *  causing the error ends.
+   * @param column_end The end column number, if any, of the file where 
+   *  the xpression causing the error ends.
    */
   template<class StringType>
-  location( StringType const &file, line_type line, column_type column = 0 ) :
-    file_( file.c_str() ), line_( line ), column_( column )
+  location(
+      StringType const &file,
+      line_type line,
+      column_type column = 0,
+      line_type line_end = 0,
+      column_type column_end = 0) :
+    file_( file.c_str() ), line_( line ), column_( column ),
+    line_end_( line_end ), column_end_( column_end )
   {
   }
 
@@ -123,6 +143,24 @@ public:
   }
 
   /**
+   * Gets the ending line number, if any.
+   *
+   * @return Returns the line number or 0 if unset.
+   */
+  line_type line_end() const {
+    return line_end_;
+  }
+
+  /**
+   * Gets the ending column number, if any.
+   *
+   * @return Returns the column number or 0 if unset.
+   */
+  column_type column_end() const {
+    return column_end_;
+  }
+
+  /**
    * Conversion to \c bool for testing whether this %location has been set.
    *
    * @return Returns \c true only if this %location has been set.
@@ -148,16 +186,25 @@ public:
    * @param column The column number, if any, of the file where the error
    * occurred.
    */
-  void set( char const *file, line_type line, column_type column = 0 ) {
+  void set(
+      char const *file,
+      line_type line,
+      column_type column = 0,
+      line_type line_end = 0,
+      column_type column_end = 0) {
     file_ = file;
     line_ = line;
     column_ = column;
+    line_end_ = line_end;
+    column_end_ = column_end;
   }
 
 private:
   std::string file_;
   line_type line_;
   column_type column_;
+  line_type line_end_;
+  column_type column_end_;
 
   // for plan serialization
   friend void serialization::operator&( serialization::Archiver&, location& );

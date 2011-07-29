@@ -64,8 +64,15 @@ public:
    * @param uri The source-code URI name.
    * @param line The source-code URI line number.
    * @param column The source-code URI column number.
+   * @param line_end The source-code URI end line number.
+   * @param column_end The source-code URI end column number.
    */
-  void set_source( char const *uri, line_type line, column_type column = 0 );
+  void set_source(
+      char const *uri,
+      line_type line,
+      column_type column = 0,
+      line_type line_end = 0,
+      column_type column_end = 0 );
 
   /**
    * Checks whether the XQuery source location has been set.
@@ -101,6 +108,24 @@ public:
    */
   column_type source_column() const throw() {
     return source_loc_.column();
+  }
+
+  /**
+   * Gets the XQuery source-code end line number containing the error.
+   *
+   * @return Returns said line number or 0 if unset.
+   */
+  line_type source_line_end() const throw() {
+    return source_loc_.line_end();
+  }
+
+  /**
+   * Gets the XQuery source-code end column number containing the error.
+   *
+   * @return Returns said column number or 0 if unset.
+   */
+  column_type source_column_end() const throw() {
+    return source_loc_.column_end();
   }
 
   /**
@@ -159,7 +184,7 @@ private:
   );
 
   friend void set_source( ZorbaException&, char const*, line_type, column_type,
-                          bool );
+                          line_type, column_type, bool );
 
   friend class UserException;
 

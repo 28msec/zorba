@@ -29,9 +29,12 @@ namespace zorba {
 XQueryStackTrace::Entry::Entry( fn_name_type const &fn_name,
                                 fn_arity_type fn_arity,
                                 char const *file_name,
-                                line_type line, column_type column ) :
+                                line_type line,
+                                column_type column,
+                                line_type line_end,
+                                column_type column_end ) :
   fn_name_( fn_name ), fn_arity_( fn_arity ), filename_( file_name ),
-  line_( line ), col_( column )
+  line_( line ), col_( column ), line_end_ ( line_end ), col_end_( column_end )
 {
 }
 
@@ -73,7 +76,9 @@ void recordStackTrace( QueryLoc const &loc, QueryLoc const &call_loc,
         fn_arity,
         call_loc.getFilename().c_str(),
         call_loc.getLineBegin(),
-        call_loc.getColumnBegin()
+        call_loc.getColumnBegin(),
+        call_loc.getLineEnd(),
+        call_loc.getColumnEnd()
       )
     );
   }

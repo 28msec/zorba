@@ -27,7 +27,8 @@ public:
   class Entry {
   public:
     Entry( fn_name_type const &fn_name, fn_arity_type fn_arity,
-           char const *file_name, line_type line, column_type column );
+           char const *file_name, line_type line, column_type column,
+           line_type line_end, column_type column_end);
 
     fn_name_type const& getFnName() const {
       return fn_name_;
@@ -49,7 +50,13 @@ public:
       return col_;
     }
 
+    line_type getLineEnd() const {
+      return line_end_;
+    }
 
+    column_type getColumnEnd() const {
+      return col_end_;
+    }
 
     fn_name_type& getFnNameRef()  {
       return fn_name_;
@@ -71,12 +78,22 @@ public:
       return col_;
     }
 
+    line_type& getLineEndRef() {
+      return line_end_;
+    }
+
+    column_type& getColumnEndRef() {
+      return col_end_;
+    }
+
   private:
     fn_name_type fn_name_;
     fn_arity_type fn_arity_;
     std::string filename_;
     line_type line_;
     column_type col_;
+    line_type line_end_;
+    column_type col_end_;
   public:
     // for plan serialization
     Entry();

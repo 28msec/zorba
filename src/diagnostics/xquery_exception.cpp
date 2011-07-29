@@ -72,9 +72,12 @@ auto_ptr<ZorbaException> XQueryException::clone() const {
   return auto_ptr<ZorbaException>( new XQueryException( *this ) );
 }
 
-void XQueryException::set_source( char const *uri, line_type line,
-                                  column_type col ) {
-  source_loc_.set( uri, line, col );
+void XQueryException::set_source( char const *uri,
+                                  line_type line,
+                                  column_type col,
+                                  line_type line_end,
+                                  column_type col_end) {
+  source_loc_.set( uri, line, col, line_end, col_end );
 }
 
 void XQueryException::polymorphic_throw() const {
@@ -127,7 +130,12 @@ make_xquery_exception( char const *raise_file,
   params.substitute( &message );
   XQueryException xe( diagnostic, raise_file, raise_line, message.c_str() );
   if ( loc )
-    xe.set_source( loc.file(), loc.line(), loc.column() );
+    xe.set_source(
+        loc.file(),
+        loc.line(),
+        loc.column(),
+        loc.line_end(),
+        loc.column_end() );
   return xe;
 }
 
@@ -142,22 +150,29 @@ new_xquery_exception( char const *raise_file,
   XQueryException *const xe =
     new XQueryException( diagnostic, raise_file, raise_line, message.c_str() );
   if ( loc )
-    xe->set_source( loc.file(), loc.line(), loc.column() );
+    xe->set_source(
+        loc.file(),
+        loc.line(),
+        loc.column(),
+        loc.line_end(),
+        loc.column_end() );
   return xe;
 }
 
 void set_source( ZorbaException &ze, char const *file,
                  XQueryException::line_type line,
                  XQueryException::column_type col,
+                 XQueryException::line_type line_end,
+                 XQueryException::column_type col_end,
                  bool overwrite ) {
   if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) ) {
     if ( !xe->has_source() || overwrite )
-      xe->set_source( file, line, col );
+      xe->set_source( file, line, col, line_end, col_end );
   } else {
     XQueryException new_xe(
       ze.diagnostic(), ze.raise_file(), ze.raise_line(), ze.what()
     );
-    new_xe.set_source( file, line, col );
+    new_xe.set_source( file, line, col, line_end, col_end );
     throw new_xe;
   }
 }

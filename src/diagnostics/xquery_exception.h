@@ -144,6 +144,8 @@ new_xquery_exception( char const *raise_file,
  * @param file The XQuery file name.
  * @param line The line number.
  * @param col The column number.
+ * @param line_end The end line number.
+ * @param col_end The end column number.
  * @param overwrite If \c false, sets the location only if the exception
  * doesn't already have one; if \c true, always sets the location even if the
  * exception already has one.
@@ -151,6 +153,8 @@ new_xquery_exception( char const *raise_file,
 void set_source( ZorbaException &ze, char const *file,
                  XQueryException::line_type line,
                  XQueryException::column_type col,
+                 XQueryException::line_type line_end,
+                 XQueryException::column_type col_end,
                  bool overwrite = true );
 
 /**
@@ -162,6 +166,8 @@ void set_source( ZorbaException &ze, char const *file,
  * @param file The XQuery file name.
  * @param line The line number.
  * @param col The column number.
+ * @param line_end The end line number.
+ * @param col_end The end column number.
  * @param overwrite If \c false, sets the location only if the exception
  * doesn't already have one; if \c true, always sets the location even if the
  * exception already has one.
@@ -169,8 +175,11 @@ void set_source( ZorbaException &ze, char const *file,
 template<class StringType> inline
 void set_source( ZorbaException &ze, StringType const &file,
                  XQueryException::line_type line,
-                 XQueryException::column_type col, bool overwrite = true ) {
-  set_source( ze, file.c_str(), line, col, overwrite );
+                 XQueryException::column_type col,
+                 XQueryException::line_type line_end,
+                 XQueryException::column_type col_end,
+                 bool overwrite = true ) {
+  set_source( ze, file.c_str(), line, col, line_end, col_end, overwrite );
 }
 
 /**
@@ -186,7 +195,13 @@ void set_source( ZorbaException &ze, StringType const &file,
 inline void set_source( ZorbaException &ze, QueryLoc const &loc,
                         bool overwrite = true ) {
   set_source(
-    ze, loc.getFilename(), loc.getLineno(), loc.getColumnBegin(), overwrite
+    ze,
+    loc.getFilename(),
+    loc.getLineBegin(),
+    loc.getColumnBegin(),
+    loc.getLineEnd(),
+    loc.getColumnEnd(),
+    overwrite
   );
 }
 
@@ -206,7 +221,13 @@ inline void set_source( ZorbaException &to, ZorbaException const &from,
   if ( XQueryException const *const xe =
         dynamic_cast<XQueryException const*>( &from ) ) {
     set_source(
-      to, xe->source_uri(), xe->source_line(), xe->source_column(), overwrite
+      to,
+      xe->source_uri(),
+      xe->source_line(),
+      xe->source_column(),
+      xe->source_line_end(),
+      xe->source_column_end(),
+      overwrite
     );
   }
 }

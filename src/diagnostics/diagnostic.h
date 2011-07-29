@@ -108,7 +108,11 @@ make_location( StringType const &file,
  */
 inline internal::diagnostic::location make_location( QueryLoc const &loc ) {
   return internal::diagnostic::location(
-    loc.getFilename(), loc.getLineno(), loc.getColumnBegin()
+    loc.getFilename(),
+    loc.getLineBegin(),
+    loc.getColumnBegin(),
+    loc.getLineEnd(),
+    loc.getColumnEnd()
   );
 }
 

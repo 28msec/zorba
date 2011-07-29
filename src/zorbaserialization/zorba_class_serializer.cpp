@@ -1225,6 +1225,8 @@ void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj)
       ar & obj.file_;
       ar & obj.line_;
       ar & obj.column_;
+      ar & obj.line_end_;
+      ar & obj.column_end_;
       ar.add_end_compound_field();
     }
     else
@@ -1251,6 +1253,8 @@ void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj)
     ar & obj.file_;
     ar & obj.line_;
     ar & obj.column_;
+    ar & obj.line_end_;
+    ar & obj.column_end_;
     ar.read_end_current_level();
   }
 }
@@ -1342,6 +1346,8 @@ void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj)
       ar & obj.getFileNameRef();
       ar & obj.getLineRef();
       ar & obj.getColumnRef();
+      ar & obj.getLineEndRef();
+      ar & obj.getColumnEndRef();
       ar.add_end_compound_field();
     }
     else
@@ -1370,6 +1376,8 @@ void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj)
     ar & obj.getFileNameRef();
     ar & obj.getLineRef();
     ar & obj.getColumnRef();
+    ar & obj.getLineEndRef();
+    ar & obj.getColumnEndRef();
     ar.read_end_current_level();
   }
 }
