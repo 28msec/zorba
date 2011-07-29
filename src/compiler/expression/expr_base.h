@@ -164,6 +164,8 @@ protected:
   ulong              theFlags1;
 
 public:
+  static bool is_sequential(short theScriptingKind);
+
   static void checkSimpleExpr(const expr* e);
 
   static void checkNonUpdating(const expr* e);

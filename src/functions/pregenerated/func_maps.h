@@ -47,7 +47,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -64,7 +64,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -96,7 +96,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -113,7 +113,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 

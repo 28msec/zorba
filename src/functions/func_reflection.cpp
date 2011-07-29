@@ -83,10 +83,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  short getScriptingKind() const 
-  {
-    return (SEQUENTIAL_FUNC_EXPR | SEQUENTIAL_EXPR); 
-  }
+  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   CODEGEN_DECL();
 };

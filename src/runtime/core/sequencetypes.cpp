@@ -461,17 +461,30 @@ TreatIterator::TreatIterator(
     const QueryLoc& aLoc,
     PlanIter_t& aChild,
     const xqtref_t& aTreatType,
-    bool check_prime_,
-    Error const &aErrorCode,
+    bool check_prime,
+    const Error& aErrorCode,
     store::Item_t fnQName)
   :
   UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, aLoc, aChild),
-  check_prime(check_prime_),
+  theCheckPrime(check_prime),
   theErrorCode(&aErrorCode),
   theFnQName(fnQName)
 {
   theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *aTreatType);
   theQuantifier = TypeOps::quantifier(*aTreatType);
+}
+
+
+void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<TreatIterator, PlanIteratorState>*)this);
+
+  ar & theTreatType;
+  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  ar & theCheckPrime;
+  ar & theErrorCode;
+  ar & theFnQName;
 }
 
 
@@ -531,7 +544,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
     }
 
-    if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
+    if (theCheckPrime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
     {
       xqtref_t valueType = tm->create_value_type(result);
 
@@ -560,7 +573,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     do
     {
-      if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
+      if (theCheckPrime && !TypeOps::is_treatable(tm, result, *theTreatType, loc))
       {
         xqtref_t valueType = tm->create_value_type(result);
 

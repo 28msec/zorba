@@ -2125,7 +2125,7 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
       if (theIndex->theMaps[XS_LONG])
       {
         altKey[0] = keyItem;
-        probeMap(theIndex->theMaps[XS_LONG], key);
+        probeMap(theIndex->theMaps[XS_LONG], &altKey);
       }
 
       if (theIndex->theMaps[XS_DOUBLE])
@@ -2228,6 +2228,28 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
                 theIndex->theMaps[XS_DECIMAL]) &&
                untypedItem->castToDecimal(castItem), castItem != NULL)
       {
+        store::ItemHandle<DecimalItem> decimalItem = 
+        static_cast<DecimalItem*>(castItem.getp());
+
+        if (theIndex->theMaps[XS_DECIMAL])
+        {
+          altKey[0].transfer(castItem);
+          probeMap(theIndex->theMaps[XS_DECIMAL], &altKey);
+
+          if (theIndex->theMaps[XS_LONG])
+          {
+            altKey[0] = decimalItem;
+            probeMap(theIndex->theMaps[XS_LONG], &altKey);
+          }
+
+          if (theIndex->theMaps[XS_DOUBLE])
+          {
+            xs_double doubleValue = decimalItem->getDecimalValue();
+            GET_FACTORY().createDouble(castItem, doubleValue);
+            altKey[0].transfer(castItem);
+            probeMap(theIndex->theMaps[XS_DOUBLE], &altKey);
+          }
+        }
       }
 
       // try casting to xs:double
@@ -2235,6 +2257,25 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
                theIndex->theMaps[XS_DOUBLE]) &&
                untypedItem->castToDouble(castItem), castItem != NULL)
       {
+        store::ItemHandle<DoubleItem> doubleItem = 
+        static_cast<DoubleItem*>(castItem.getp());
+
+        if (theIndex->theMaps[XS_DOUBLE])
+        {
+          altKey[0].transfer(castItem);
+          probeMap(theIndex->theMaps[XS_DOUBLE], &altKey);
+        }
+
+        if (theIndex->theMaps[XS_LONG])
+        {
+          doubleToLongProbe(doubleItem.getp(), castItem);
+
+          if (castItem)
+          {
+            altKey[0].transfer(castItem);
+            probeMap(theIndex->theMaps[XS_LONG], &altKey);
+          }
+        }
       }
 
       // try casting to xs:datetime

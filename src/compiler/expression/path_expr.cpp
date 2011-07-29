@@ -82,7 +82,7 @@ void relpath_expr::add_back(expr_t step)
   if (theScriptingKind & VACUOUS_EXPR)
     theScriptingKind &= ~VACUOUS_EXPR;
 
-  if (theScriptingKind & SEQUENTIAL_EXPR)
+  if (is_sequential(theScriptingKind))
     theScriptingKind &= ~SIMPLE_EXPR;
 
   checkScriptingKind();
@@ -111,7 +111,7 @@ void relpath_expr::compute_scripting_kind()
 
   theScriptingKind &= ~VACUOUS_EXPR;
 
-  if (theScriptingKind & SEQUENTIAL_EXPR)
+  if (is_sequential(theScriptingKind))
     theScriptingKind &= ~SIMPLE_EXPR;
 
   checkScriptingKind();

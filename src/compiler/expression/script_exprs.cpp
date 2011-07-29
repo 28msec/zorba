@@ -168,7 +168,7 @@ void block_expr::compute_scripting_kind2(
   if (hasAssignedVars)
   {
     if (!(*assignedVars).empty())
-      theScriptingKind |= (VAR_SETTING_EXPR | SEQUENTIAL_EXPR);
+      theScriptingKind |= VAR_SETTING_EXPR;
     else
       theScriptingKind &= ~VAR_SETTING_EXPR;
   }
@@ -176,7 +176,7 @@ void block_expr::compute_scripting_kind2(
   if (theScriptingKind & UPDATING_EXPR)
     theScriptingKind &= ~SIMPLE_EXPR;
 
-  if (theScriptingKind & SEQUENTIAL_EXPR)
+  if (expr::is_sequential(theScriptingKind))
     theScriptingKind &= ~SIMPLE_EXPR;
 
   if (allowLastUpdating &&
@@ -229,7 +229,7 @@ void apply_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void apply_expr::compute_scripting_kind()
 {
-  theScriptingKind = (APPLYING_EXPR | SEQUENTIAL_EXPR);
+  theScriptingKind = APPLYING_EXPR;
 }
 
 
@@ -276,13 +276,11 @@ void var_decl_expr::compute_scripting_kind()
 
   if (theInitExpr == NULL)
   {
-    theScriptingKind = SEQUENTIAL_EXPR;
+    theScriptingKind = SIMPLE_EXPR;
   }
   else
   {
-    theScriptingKind = (SEQUENTIAL_EXPR | theInitExpr->get_scripting_detail());
-    theScriptingKind &= ~SIMPLE_EXPR;
-    theScriptingKind &= ~VACUOUS_EXPR;
+    theScriptingKind = theInitExpr->get_scripting_detail();
   }
 }
 
@@ -326,7 +324,7 @@ void exit_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void exit_expr::compute_scripting_kind()
 {
-  theScriptingKind = (EXITING_EXPR | SEQUENTIAL_EXPR);
+  theScriptingKind = EXITING_EXPR;
 }
 
 
@@ -398,7 +396,7 @@ void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void flowctl_expr::compute_scripting_kind()
 {
-  theScriptingKind = (BREAKING_EXPR | SEQUENTIAL_EXPR);
+  theScriptingKind = BREAKING_EXPR;
 }
 
 

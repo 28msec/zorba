@@ -80,6 +80,16 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
+bool expr::is_sequential(short theScriptingKind)
+{
+  return theScriptingKind & (VAR_SETTING_EXPR |
+                             APPLYING_EXPR |
+                             EXITING_EXPR |
+                             BREAKING_EXPR | 
+                             SEQUENTIAL_FUNC_EXPR);
+}
+
+
 void expr::checkNonUpdating(const expr* e)
 {
   if (e != 0 && e->is_updating())
@@ -173,7 +183,7 @@ bool expr::is_sequential() const
 {
   assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return (theScriptingKind & SEQUENTIAL_EXPR) != 0;
+  return is_sequential(theScriptingKind);
 }
 
 
@@ -199,27 +209,16 @@ bool expr::is_updating_or_vacuous() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void expr::set_not_exiting()
 {
   theScriptingKind &= ~EXITING_EXPR;
-  adjustSequential();
-}
 
-
-void expr::adjustSequential()
-{
-  checkScriptingKind();
-
-  if (theScriptingKind & SEQUENTIAL_EXPR &&
-      ! (theScriptingKind & (EXITING_EXPR |
-                             APPLYING_EXPR |
-                             BREAKING_EXPR |
-                             SEQUENTIAL_FUNC_EXPR |
-                             VAR_SETTING_EXPR)))
+  if (theScriptingKind == UNKNOWN_SCRIPTING_KIND)
   {
     theScriptingKind = SIMPLE_EXPR;
-
-    checkScriptingKind();
   }
 }
 
@@ -245,21 +244,6 @@ void expr::checkScriptingKind() const
 
   if (theScriptingKind & UPDATING_EXPR)
     assert(theScriptingKind == UPDATING_EXPR);
-
-  if (theScriptingKind & VAR_SETTING_EXPR)
-    assert(theScriptingKind & SEQUENTIAL_EXPR);
-
-  if (theScriptingKind & APPLYING_EXPR)
-    assert(theScriptingKind & SEQUENTIAL_EXPR);
-
-  if (theScriptingKind & BREAKING_EXPR)
-    assert(theScriptingKind & SEQUENTIAL_EXPR);
-
-  if (theScriptingKind & EXITING_EXPR)
-    assert(theScriptingKind & SEQUENTIAL_EXPR);
-
-  if (theScriptingKind & SEQUENTIAL_FUNC_EXPR)
-    assert(theScriptingKind & SEQUENTIAL_EXPR);
 #endif
 }
 
@@ -276,9 +260,7 @@ expr_t expr::clone() const
 
 expr_t expr::clone(substitution_t& subst) const
 {
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC( get_loc() )
-  );
+  throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
 
 

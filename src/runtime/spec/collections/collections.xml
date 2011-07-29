@@ -535,7 +535,7 @@
       -->
 
       <zorba:methods>
-        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
+        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
     </zorba:function>
@@ -579,7 +579,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
+        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -624,7 +624,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
+        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -671,7 +671,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
+        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -717,7 +717,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
+        <zorba:getScriptingKind returnValue="APPLYING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 

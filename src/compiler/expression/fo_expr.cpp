@@ -197,7 +197,7 @@ void fo_expr::compute_scripting_kind()
     if (theScriptingKind & UPDATING_EXPR)
       theScriptingKind &= ~SIMPLE_EXPR;
 
-    if (theScriptingKind & SEQUENTIAL_EXPR)
+    if (is_sequential(theScriptingKind))
       theScriptingKind &= ~SIMPLE_EXPR;
 
     checkScriptingKind();
@@ -208,7 +208,7 @@ void fo_expr::compute_scripting_kind()
 
     expr* valueExpr = theArgs[1];
 
-    theScriptingKind = (VAR_SETTING_EXPR | SEQUENTIAL_EXPR);
+    theScriptingKind = VAR_SETTING_EXPR;
     theScriptingKind |= valueExpr->get_scripting_detail();
     theScriptingKind &= ~VACUOUS_EXPR;
     theScriptingKind &= ~SIMPLE_EXPR;
@@ -251,7 +251,7 @@ void fo_expr::compute_scripting_kind()
     if (theScriptingKind & UPDATING_EXPR)
       theScriptingKind &= ~SIMPLE_EXPR;
 
-    if (theScriptingKind & SEQUENTIAL_EXPR)
+    if (is_sequential(theScriptingKind))
       theScriptingKind &= ~SIMPLE_EXPR;
 
     checkScriptingKind();

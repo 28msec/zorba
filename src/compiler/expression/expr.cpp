@@ -1317,7 +1317,7 @@ void trycatch_expr::compute_scripting_kind()
   if (theScriptingKind & UPDATING_EXPR)
     theScriptingKind &= ~SIMPLE_EXPR;
 
-  if (theScriptingKind & SEQUENTIAL_EXPR)
+  if (is_sequential(theScriptingKind))
     theScriptingKind &= ~SIMPLE_EXPR;
 
   checkScriptingKind();
@@ -1425,9 +1425,6 @@ void eval_expr::compute_scripting_kind()
   checkNonUpdating(theExpr);
 
   theScriptingKind = theInnerScriptingKind;
-
-  if (theScriptingKind == SEQUENTIAL_EXPR)
-    theScriptingKind |= SEQUENTIAL_FUNC_EXPR;
 
   if (theExpr->is_sequential())
   {

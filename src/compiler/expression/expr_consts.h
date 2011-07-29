@@ -91,10 +91,8 @@ enum expr_script_kind_t
                                  // and the the while or flwor expr being
                                  // broken or continued contains E.
 
-  SEQUENTIAL_FUNC_EXPR   = 128,  // An expr during the evaluation of which a
+  SEQUENTIAL_FUNC_EXPR   = 128   // An expr during the evaluation of which a
                                  // sequential function may be called.
-
-  SEQUENTIAL_EXPR        = 256   // The logical OR of the previous 5 categories.
 };
 
 

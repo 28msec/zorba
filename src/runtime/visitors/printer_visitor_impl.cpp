@@ -186,9 +186,10 @@ void PrinterVisitor::endVisit(const SelfAxisIterator&)
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
+void PrinterVisitor::beginVisit ( const TreatIterator& a ) 
+{
   thePrinter.startBeginVisit("TreatIterator", ++theId);
-  if (a.check_prime)
+  if (a.theCheckPrime)
     thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
   thePrinter.addAttribute("quant", TypeOps::decode_quantifier
       (a.theQuantifier));
@@ -196,22 +197,26 @@ void PrinterVisitor::beginVisit ( const TreatIterator& a ) {
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit ( const TreatIterator& ) {
+void PrinterVisitor::endVisit ( const TreatIterator& ) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a ) {
+void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a ) 
+{
   thePrinter.startBeginVisit("NumArithIterator_AddOperation", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
+
 void PrinterVisitor::beginVisit ( const NumArithIterator<SubtractOperation>& a )
 {
   thePrinter.startBeginVisit("NumArithIterator_SubtractOperation", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
+
 void PrinterVisitor::beginVisit ( const NumArithIterator<MultiplyOperation>& a )
 {
   thePrinter.startBeginVisit("NumArithIterator_MultiplyOperation", ++theId);

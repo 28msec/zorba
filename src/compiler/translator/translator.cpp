@@ -123,6 +123,9 @@ static expr_t translate_aux(
     StaticContextConsts::xquery_version_t maxLibModuleVersion =
       StaticContextConsts::xquery_version_unknown);
 
+/*******************************************************************************
+
+********************************************************************************/
 #ifndef NDEBUG
 
 #define TRACE_VISIT()                                                   \
@@ -155,10 +158,10 @@ static expr_t translate_aux(
 
 
 /*******************************************************************************
-  Set/get chached pointers to function objs for certain commonly-used function
-  and operators (to avoid looking them up in the sctx all the time).
+
 ********************************************************************************/
-#define CACHED( cache, val ) ((cache == NULL) ? (cache = val) : cache)
+#define ZANN_CONTAINS( ann ) \
+  theAnnotations->contains(theSctx->lookup_ann(StaticContextConsts:: ann))
 
 
 /*******************************************************************************
@@ -3183,21 +3186,23 @@ void* begin_visit(const VFO_DeclList& v)
     }
 
     // Create the function signature.
-    //
-    bool lIsVariadic =
-      (theAnnotations ?
-       theAnnotations->contains(theSctx->lookup_ann(StaticContextConsts::zann_variadic)):
-       false);
+    bool isVariadic = (theAnnotations ?
+                       ZANN_CONTAINS(zann_variadic):
+                       false);
 
-    signature sig(qnameItem, paramTypes, returnType, lIsVariadic);
+    signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
+    bool isSequential = (theAnnotations ? 
+                         ZANN_CONTAINS(zann_sequential) :
+                         false);
+
     expr_script_kind_t scriptKind = SIMPLE_EXPR;
+
     if (func_decl->is_updating())
       scriptKind = UPDATING_EXPR;
-    else if (theAnnotations && theAnnotations->contains(
-          theSctx->lookup_ann(StaticContextConsts::zann_sequential)))
-      scriptKind = SEQUENTIAL_EXPR;
+    else if (isSequential)
+      scriptKind = SEQUENTIAL_FUNC_EXPR;
 
     // create the function object
     function_t f;
@@ -3215,6 +3220,15 @@ void* begin_visit(const VFO_DeclList& v)
         if (!sig.equals(tm, s))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
+          ERROR_PARAMS(BUILD_STRING('{',
+                                    qnameItem->getNamespace(),
+                                    '}',
+                                    qnameItem->getLocalName())));
+        }
+
+        if (isSequential && !f->isSequential())
+        {
+          RAISE_ERROR(zerr::ZXQP0010_FUNCTION_NOT_SEQUENTIAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
                                     qnameItem->getNamespace(),
                                     '}',
@@ -3252,7 +3266,7 @@ void* begin_visit(const VFO_DeclList& v)
                                   qnameItem->getNamespace(),
                                   '}',
                                   qnameItem->getLocalName(),
-                                  lIsVariadic?"variadic":"#", numParams)));
+                                  isVariadic?"variadic":"#", numParams)));
       }
       else
       {
@@ -3996,9 +4010,6 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     lAnns->accept(*this);
   }
 
-#define ZANN_CONTAINS( ann ) \
-  theAnnotations->contains (theSctx->lookup_ann ( StaticContextConsts:: ann ) )
-
   if ( theAnnotations )
   {
     if ( ZANN_CONTAINS (zann_queue) )
@@ -4026,7 +4037,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
       lNodeModifier = StaticContextConsts::read_only;
     }
   }
-#undef ZANN_CONTAINS
+
   theAnnotations = NULL; // important to reset
 
   // Create the collection object and register it in the static context
@@ -4116,8 +4127,6 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if ( theAnnotations )
   {
-#define ZANN_CONTAINS( ann ) \
-  theAnnotations->contains (theSctx->lookup_ann ( StaticContextConsts:: ann ) )
     if ( ZANN_CONTAINS ( zann_general_equality ) ||
          ZANN_CONTAINS ( zann_general_range ) ) 
     {
@@ -4136,7 +4145,6 @@ void* begin_visit(const AST_IndexDecl& v)
     {
       index->setMaintenanceMode(IndexDecl::REBUILD);
     }
-#undef ZANN_CONTAINS
   }
   theAnnotations = NULL;
 
@@ -9994,7 +10002,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
         else
         {
-          scriptingKind = SEQUENTIAL_EXPR;
+          scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
 
         rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
@@ -10065,7 +10073,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
         else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
         {
-          scriptingKind = SEQUENTIAL_EXPR;
+          scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
 
         if (numArgs == 0)

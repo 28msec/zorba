@@ -148,15 +148,15 @@ public:
       resetFlag(FunctionConsts::isDeterministic);
   }
 
-  bool isUpdating() const { return (getScriptingKind() & UPDATING_EXPR) != 0; }
-
-  bool isSequential() const { return (getScriptingKind() & SEQUENTIAL_EXPR) != 0; }
-
   void setAnnotations(AnnotationList* annotations);
 
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 
 	bool validate_args(std::vector<PlanIter_t>& argv) const;
+
+  bool isUpdating() const { return (getScriptingKind() & UPDATING_EXPR) != 0; }
+
+  bool isSequential() const;
 
   virtual short getScriptingKind() const { return SIMPLE_EXPR; }
 

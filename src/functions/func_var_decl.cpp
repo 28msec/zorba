@@ -52,7 +52,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  short getScriptingKind() const { return (VAR_SETTING_EXPR | SEQUENTIAL_EXPR); }
+  short getScriptingKind() const { return VAR_SETTING_EXPR; }
 
   CODEGEN_DECL();
 };

@@ -1572,6 +1572,10 @@
       <value>"$1": function referred to by this local-name has the local-name "$2" instead</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0010" name="FUNCTION_NOT_SEQUENTIAL">
+      <value>"$1": builtin sequential function not implemented as sequential</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0013" name="FXCHARHEAP_EXCEPTION">
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>

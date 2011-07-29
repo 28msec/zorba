@@ -225,7 +225,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
+  short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -242,7 +242,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
+  short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -259,7 +259,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
+  short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -276,7 +276,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
+  short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -293,7 +293,7 @@ public:
 
 }
 
-  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
+  short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 

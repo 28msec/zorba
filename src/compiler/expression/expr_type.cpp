@@ -697,8 +697,10 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     for (i = 0; i < numExitExprs; ++i)
     {
+      exit_expr* e = static_cast<exit_expr*>(exitExprs[i]);
+
       newType = TypeOps::union_type(*newType.getp(),
-                                    *exitExprs[i]->get_return_type(),
+                                    *e->get_value()->get_return_type(),
                                     tm);
     }
 

@@ -405,7 +405,9 @@ bool static_context::is_builtin_module(const zstring& ns)
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
-  builtin virtual module.
+  builtin virtual module. Virtual builtin modules do not actually exist (that's
+  why they are called virtual), but they still have to be imported in order
+  to make the functions in them visible to the importing module.
 ********************************************************************************/
 bool static_context::is_builtin_virtual_module(const zstring& ns)
 {

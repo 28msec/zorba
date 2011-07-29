@@ -48,7 +48,6 @@ public:
   short getScriptingKind() const 
   { 
     return SIMPLE_EXPR;
-    //return (EXITING_EXPR | SEQUENTIAL_EXPR); 
   }
 
   bool accessesDynCtx() const 

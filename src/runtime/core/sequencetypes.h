@@ -224,7 +224,7 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator,
 private:
   xqtref_t                    theTreatType;
   TypeConstants::quantifier_t theQuantifier;
-  bool                        check_prime;
+  bool                        theCheckPrime;
   const Error               * theErrorCode;
   store::Item_t								theFnQName;
 
@@ -235,17 +235,7 @@ public:
   TreatIterator,
   UnaryBaseIterator<TreatIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<TreatIterator, PlanIteratorState>*)this);
-
-    ar & theTreatType;
-    SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-    ar & check_prime;
-    ar & theErrorCode;
-    ar & theFnQName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   TreatIterator(

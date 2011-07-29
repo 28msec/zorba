@@ -125,6 +125,15 @@ void function::setAnnotations(AnnotationList* annotations)
 
 
 /*******************************************************************************
+
+********************************************************************************/
+bool function::isSequential() const 
+{
+  return expr::is_sequential(getScriptingKind());
+}
+
+
+/*******************************************************************************
   Check whether this function is a map with respect to the given input
 ********************************************************************************/
 bool function::isMap(ulong input) const

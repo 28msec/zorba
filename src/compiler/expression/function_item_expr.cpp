@@ -53,9 +53,7 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
   // TODO ????
   theScriptingKind = SIMPLE_EXPR;
 #if 0
-  theScriptingKind = (APPLYING_EXPR |
-                      SEQUENTIAL_FUNC_EXPR |
-                      SEQUENTIAL_EXPR);
+  theScriptingKind = (APPLYING_EXPR | SEQUENTIAL_FUNC_EXPR)
 #endif
 }
 

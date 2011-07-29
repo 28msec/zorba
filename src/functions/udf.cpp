@@ -173,9 +173,6 @@ short user_function::getScriptingKind() const
 {
   if (theBodyExpr == NULL)
   {
-    if (theScriptingKind == SEQUENTIAL_EXPR)
-      return (SEQUENTIAL_FUNC_EXPR | SEQUENTIAL_EXPR);
-
     return theScriptingKind;
   }
 
