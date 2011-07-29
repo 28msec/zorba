@@ -449,7 +449,7 @@ extern entry const dict_en[] = {
   { "~EmptySeqNoCastToQName", "empty sequence can not be cast to QName" },
   { "~EmptySeqNoCastToTypeWithQuantOne", "empty sequence can not be cast to type with quantifier '1'" },
   { "~EmptySeqNoFnRemoveArg", "empty sequence not allowed as 2nd argument of fn:remove()" },
-  { "~EmptySeqNoPromoteTo", "empty sequence can not be promoted to type \"$3\"" },
+  { "~EmptySeqNoPromoteTo", "empty sequence can not be promoted to type \"$2\"" },
   { "~EmptySeqNoSearchItem", "empty sequence not allowed as search item of fn:index-of()" },
   { "~EmptySeqNotAsFunctionResult_23", "empty sequence not allowed as result of function $2() that returns \"$3\"" },
   { "~EmptySequence", "empty sequence" },

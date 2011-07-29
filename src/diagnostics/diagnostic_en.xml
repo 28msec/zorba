@@ -2489,7 +2489,7 @@
     </entry>
 
     <entry key="EmptySeqNoPromoteTo">
-      <value>empty sequence can not be promoted to type "$3"</value>
+      <value>empty sequence can not be promoted to type "$2"</value>
     </entry>
 
     <entry key="EmptySeqNoSearchItem">
