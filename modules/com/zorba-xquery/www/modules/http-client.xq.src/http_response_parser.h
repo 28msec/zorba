@@ -39,7 +39,6 @@ namespace http_client {
     RequestHandler& theHandler;
     CURL* theCurl;
     ErrorThrower& theErrorThrower;
-    HttpResponseIterator& theResponseIterator;
     std::string theCurrentContentType;
     std::vector<std::pair<std::string, std::string> > theHeaders;
     int theStatus;
@@ -51,16 +50,26 @@ namespace http_client {
     std::map<std::string, std::string> theCodeMap;
     std::string theOverridenContentType;
     bool theStatusOnly;
+    bool theSelfContained;
   public:
     HttpResponseParser(
       RequestHandler& aHandler,
       CURL* aCurl,
       ErrorThrower& aErrorThrower,
-      HttpResponseIterator& aResponseIterator,
       std::string aOverridenContentType = "",
       bool aStatusOnly = false);
     virtual ~HttpResponseParser();
     int parse();
+    /**
+     * After calling parse(), it is possible that HttpResponseParser will have
+     * created some long-lived objects that depend on it. In that case, it will
+     * also have arranged for itself to be de-allocated at some future time
+     * when it is appropriate to do so. Therefore, in this case, the code which
+     * created the HttpResponseParser should NOT free it. HttpResponseParser
+     * refers to itself as "not self-contained" in this case, and this method
+     * will return false.
+     */
+    bool selfContained() { return theSelfContained; }
     virtual void beforeRead();
     virtual void afterRead();
   private:

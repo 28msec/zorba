@@ -31,7 +31,7 @@ namespace zorba { namespace http_client {
   const char* theNamespace = "http://expath.org/ns/http-client";
 
   HttpResponseIterator::HttpResponseIterator(curl_slist* aHeaderList)
-    : theResponseSet(false), theStream(0), theResponseParser(0), theHeaderList(aHeaderList)
+    : theResponseSet(false), theHeaderList(aHeaderList)
   {
     // Set an empty item as the response item
     theItems.push_back(Item());
@@ -39,10 +39,6 @@ namespace zorba { namespace http_client {
 
   HttpResponseIterator::~HttpResponseIterator()
   {
-    if (theStream)
-      delete theStream;
-    if (theResponseParser)
-      delete theResponseParser;
     if (theHeaderList)
       curl_slist_free_all(theHeaderList);
   }
@@ -98,23 +94,7 @@ namespace zorba { namespace http_client {
     theItems[0] = aItem;
     theResponseSet = true;
   }
-  
-  void HttpResponseIterator::setStream(std::istream *aStream)
-  {
-    theStreams.insert(std::make_pair(aStream, this));
-    theStream = aStream;
-  }
-  
-  std::map<std::istream*, HttpResponseIterator*> HttpResponseIterator::theStreams;
-  
-  void HttpResponseIterator::streamReleaser(std::istream* aStream)
-  {
-    std::map<std::istream*, HttpResponseIterator*>::iterator lIter;
-    lIter = theStreams.find(aStream);
-    if (lIter != theStreams.end())
-      theStreams.erase(lIter);
-  }
-  
+        
   //////////////////////////////////////////////////////////////////////////
   // HttpResponseHandler
   //////////////////////////////////////////////////////////////////////////

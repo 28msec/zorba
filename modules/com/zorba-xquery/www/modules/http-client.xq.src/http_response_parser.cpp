@@ -35,14 +35,12 @@ namespace zorba { namespace http_client {
   
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
                                          ErrorThrower& aErrorThrower,
-                                         HttpResponseIterator& aResponseIterator,
                                          std::string aOverridenContentType, bool aStatusOnly)
   : 
   theHandler(aHandler), theCurl(aCurl), theErrorThrower(aErrorThrower),
-  theResponseIterator(aResponseIterator),
   theStatus(-1), theStreamBuffer(0), theInsideRead(false),
   theOverridenContentType(aOverridenContentType),
-  theStatusOnly(aStatusOnly)
+  theStatusOnly(aStatusOnly), theSelfContained(true)
   {
     registerHandler();
     theStreamBuffer = new zorba::curl::streambuf(theCurl);
@@ -214,11 +212,34 @@ namespace zorba { namespace http_client {
     }
   }
 
+  static void streamReleaser(std::istream* aStream)
+  {
+    // This istream contains our curl stream buffer, so we have to delete it too
+    delete aStream->rdbuf();
+    delete aStream;
+  }
+
   zorba::Item HttpResponseParser::createTextItem(std::istream* aStream)
   {
-    theResponseIterator.setStream(aStream);
     ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
-    return lFactory->createStreamableString(*aStream, &HttpResponseIterator::streamReleaser, false);
+
+    // When we create a StreamableString, memory ownership gets very convoluted
+    // because the StreamableString object has a longer lifecycle than the
+    // iterator which creates it. The StreamableString object depends on its
+    // istream, which in turn depends on its read buffer. For us, the read
+    // buffer in turn depends on the HttpResponseParser (this object) because
+    // it is registered as the "informer" (callback object) for
+    // theStreamBuffer. Therefore, this HttpResponseParser object is no longer
+    // "self-contained". We delegate ownership of ourself to theStreamBuffer
+    // and mark ourselves as no longer being self-contained.
+    theStreamBuffer->setOwnInformer(true);
+    theSelfContained = false;
+
+    // The ownership of theStreamBuffer, in turn, is delegated to the
+    // StreamableString object (via streamReleaser, which will free the
+    // istream's rdbuf).
+    theStreamBuffer = NULL;
+    return lFactory->createStreamableString(*aStream, &streamReleaser, false);
   }
 
   zorba::Item HttpResponseParser::createBase64Item( std::istream& aStream )

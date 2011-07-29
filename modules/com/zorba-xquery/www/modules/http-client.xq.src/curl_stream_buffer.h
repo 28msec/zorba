@@ -122,7 +122,18 @@ namespace zorba {
        */
       void close();
       
+      /**
+       * Provide a InformDataRead that will get callbacks about read events.
+       */
       void setInformer(::zorba::http_client::InformDataRead* aInformer) { theInformer = aInformer; }
+
+      /**
+       * Specify whether this streambuf has memory ownership over the
+       * InformDataRead it has been passed. You can use this if, for example,
+       * the lifetime of the streambuf will extend past the lifetime of the
+       * object which created the InformDataRead.
+       */
+      void setOwnInformer(bool aOwnInformer) { theOwnInformer = aOwnInformer; }
       
       int multi_perform();
       
@@ -146,6 +157,7 @@ namespace zorba {
       CURLM *curlm_;
       int curl_running_;
       ::zorba::http_client::InformDataRead* theInformer;
+      bool theOwnInformer;
       
       // forbid
       streambuf( streambuf const& );

@@ -59,20 +59,11 @@ namespace http_client {
   public: //Implementation specific functions
     void addItem(const Item& aItem);
     void setResponseItem(const Item& aItem);
-    void setStream(std::istream* aStream);
-    HttpResponseIterator* setResponseParser(HttpResponseParser* aResponseParser)
-    {
-      theResponseParser = aResponseParser;
-      return this;
-    }
     
   public:
     static void streamReleaser(std::istream* aStream);
     
   private:
-    static std::map<std::istream*, HttpResponseIterator*> theStreams;
-    std::istream* theStream;
-    HttpResponseParser* theResponseParser;
     curl_slist* theHeaderList;
   };
 

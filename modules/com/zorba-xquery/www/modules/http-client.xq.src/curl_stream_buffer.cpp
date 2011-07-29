@@ -147,7 +147,7 @@ throw exception( #expr, "", code##__LINE__ );   \
     
     ///////////////////////////////////////////////////////////////////////////////
     
-    streambuf::streambuf() : theInformer(0) {
+    streambuf::streambuf() : theInformer(0), theOwnInformer(false) {
 #ifdef WIN32
       theDummySocket = socket(AF_INET, SOCK_DGRAM, 0);
       if (theDummySocket == CURL_SOCKET_BAD || theDummySocket == INVALID_SOCKET) {
@@ -157,7 +157,7 @@ throw exception( #expr, "", code##__LINE__ );   \
       init();
     }
     
-    streambuf::streambuf( char const *uri ) : theInformer(0) {
+    streambuf::streambuf( char const *uri ) : theInformer(0), theOwnInformer(false) {
 #ifdef WIN32
       theDummySocket = socket(AF_INET, SOCK_DGRAM, 0);
       if (theDummySocket == CURL_SOCKET_BAD || theDummySocket == INVALID_SOCKET) {
@@ -181,7 +181,7 @@ throw exception( #expr, "", code##__LINE__ );   \
       return error;
     }
     
-    streambuf::streambuf( CURL* aCurl) : theInformer(0) {
+    streambuf::streambuf( CURL* aCurl) : theInformer(0), theOwnInformer(false) {
 #ifdef WIN32
       theDummySocket = socket(AF_INET, SOCK_DGRAM, 0);
       if (theDummySocket == CURL_SOCKET_BAD || theDummySocket == INVALID_SOCKET) {
@@ -202,6 +202,9 @@ throw exception( #expr, "", code##__LINE__ );   \
 #ifdef WIN32
       closesocket(theDummySocket);
 #endif
+      // If we have been assigned memory ownership of theInformer, delete it now.
+      if (theOwnInformer)
+        delete theInformer;
     }
     
     void streambuf::close() {

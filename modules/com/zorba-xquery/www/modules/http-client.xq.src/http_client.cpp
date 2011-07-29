@@ -197,13 +197,13 @@ namespace zorba {
       set_cacert(lCURL, caCertPath);
 #endif
       HttpResponseHandler lRespHandler(aFactory, lHeaderList);
-      //This gives the ownership of lCurl to the HttpResponseParser
       String lOverrideContentType;
       if (lHandler.get())
         lHandler->getOverrideContentType(lOverrideContentType);
       bool lStatusOnly =
           lHandler.get() == NULL ? false : (lHandler->isStatusOnly() || lHandler->isHeadRequest());
-      std::auto_ptr<HttpResponseParser> lRespParser(new HttpResponseParser(lRespHandler, lCURL, thrower, *lRespHandler.getResult(),
+      // This gives the ownership of lCurl to the HttpResponseParser
+      std::auto_ptr<HttpResponseParser> lRespParser(new HttpResponseParser(lRespHandler, lCURL, thrower,
         lOverrideContentType.c_str(), lStatusOnly));
       int lRetCode = lRespParser->parse();
 
@@ -211,7 +211,16 @@ namespace zorba {
         thrower.raiseException("http://expath.org/ns/error", "HC001", "An HTTP error occurred");
       }
 
-      return ItemSequence_t(lRespHandler.releaseResult()->setResponseParser(lRespParser.release()));
+      // If the Parser is "self contained", that means it didn't create any
+      // objects with a lifecycle longer than itself; therefore we should free
+      // it (by letting auto_ptr delete it). If the Parser is not self contained,
+      // then it will have arranged for some other memory manager to free it
+      // later when appropriate; therefore we should NOT let auto_ptr delete it
+      // now.
+      if ( ! lRespParser->selfContained()) {
+        lRespParser.release();
+      }
+      return ItemSequence_t(lRespHandler.releaseResult());
     }
 
     ItemSequence_t 
