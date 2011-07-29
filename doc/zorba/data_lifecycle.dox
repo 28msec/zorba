@@ -1,13 +1,251 @@
-/** \page data_lifecycle Data Lifecycle
+/** \page storing_manipulating_data Storing and Manipulating Data
 
+Zorba provides several ways in which data (mostly nodes) can be stored.
+By storing we mean associating a name (URI or QName) with a container (document, collection, or other data structures) that contains the data.
+This name-container-binding is registered in the Zorba Store.
+Once the data is stored, it can be retrieved and manipulated within the same or a different XQuery program.
+
+In general, there are two different categories of storage containers (see image below).
+
+<b>Static Containers</b> which have to be declared (statically) in the prolog of a module.
+For example,
+
+\code
+  declare collection news-data:articles as node()*;
+\endcode
+
+Having them declared in the prolog allows the processor to reason about them when the XQuery program is compiled.
+For example, it allows indexes on data in a particular collection to be automatically maintained when the underlying data is updated.
+An extensive documentation about the static containers can be found in the documentation of what we call the \ref xqddf.
+
+<b>Dynamic containers</b> which the user can arbitrarily create during runtime (without the need to statically declare them in the prolog).
+For example, the user can associate a document or collection with a URI or QName using a simple function call.
+
+\code
+declare variable $coll := xs:QName("ddl:coll1");
+
+ddl:create-collection($coll);
+\endcode
+  
 \image html store_concepts.png
-Info to be added.
 
-\section dl_zorba_store  Zorba Store
+As already mentioned (and is depicted in the image above), Zorba provides three data containers:
 
-\section dl_loading_data   Loading Data
+<ul>
+  <li> <b>Collections</b> are sequences of nodes. They can either be static or dynamic.
+  <li> <b>Documents</b> are dynamic.
+  <li> <b>Unordered Maps</b> is a dynamic container that allows to map a set of (atomic) keys to a sequence of items.
+</ul>
 
-\section dl_manipulating_data   Manipulating Data
+In addition to those three data containers, there exist two other static containers, i.e. indexes and integrity constraints.
+In contrast to collections, documents, and maps, those containers do not contain items themselves.
+Instead indexes  and integrity constraints can be used to provide efficient access to and define constraints on data stored in a (static) collection, respectively.
 
+All of the (dynamic and static) containers can be created or modified using functions from various modules.
+
+The following tables give an overview over the various modules that exist to 
+(1) manage the life-cycle of a container (data definition) and
+(2) retrieve and manipulate the data stored in a container (data manipulation).
+
+<table>
+  <tr>
+    <td colspan="3">
+    <b>Static Containers</b>
+    </td>
+  </tr>
+  <tr>
+    <td><b>Container Type</b></td>
+    <td><b>Definition (DDL) / Manipulation (DML)</b></td>
+    <td><b>Module Namespace</b></td>
+  </tr>
+  <tr>
+    <td>Collections</td>
+    <td>DDL</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a></td>
+  </tr>
+  <tr>
+    <td>Collections</td>
+    <td>DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a></td>
+  </tr>
+  <tr>
+    <td>Indexes</td>
+    <td>DDL</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a></td>
+  </tr>
+  <tr>
+    <td>Indexes</td>
+    <td>DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a></td>
+  </tr>
+  <tr>
+    <td>Integrity Constraints</td>
+    <td>DDL</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a></td>
+  </tr>
+  <tr>
+    <td>Integrity Constraints</td>
+    <td>DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a></td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <td colspan="3">
+    <b>Dynamic Containers</b>
+    </td>
+  </tr>
+  <tr>
+    <td><b>Container Type</b></td>
+    <td><b>Definition (DDL) / Manipulation (DML)</b></td>
+    <td><b>Module Namespace</b></td>
+  </tr>
+  <tr>
+    <td>Collections</td>
+    <td>DDL</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</a></td>
+  </tr>
+  <tr>
+    <td>Collections</td>
+    <td>DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/dml</a></td>
+  </tr>
+  <tr>
+    <td>W3C Collections</td>
+    <td>DDL</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a></td>
+  </tr>
+  <tr>
+    <td>W3C Collections</td>
+    <td>DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a></td>
+  </tr>
+  <tr>
+    <td>Documents</td>
+    <td>DDL / DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html">http://www.zorba-xquery.com/modules/store/dynamic/documents</a></td>
+  </tr>
+  <tr>
+    <td>Unordered Maps</td>
+    <td>DDL / DML</td>
+    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/static/data-structures/unordered-map</a></td>
+  </tr>
+</table>
+
+\section dl_examples Examples
+
+In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers.
+This section does not aim to be complete.
+Specifically, it doesn't give examples for static collections, indexes, or integrity constraints.
+For a complete reference, please see the documentation for the \ref xqddf (static containers) and the modules listed above.
+
+\subsection dl_retrieve_store_doc Retrieving and Storing a Document
+This examples demonstrates three things:
+
+<ul>
+  <li>how the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_http-client.html">http-client</a> can be used to retrieve a document from the web,</li>
+  <li>how this document can be stored, and</li>
+  <li>how the document stored document can be retrieved.</li>
+</ul>
+
+\code
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
+
+import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+
+let $mydoc := http:get-node("http://zorba-xquery.com/rest-tests/doc.html")[2]
+return
+  {
+    doc:add("mydoc.xml", $mydoc); (: add the document with name mydoc.xml :)
+    doc:document("mydoc.xml")
+  }
+\endcode
+
+It is important to note that the examples uses the <a href="../../zorba/html/scripting_tutorial.html">XQuery Scripting Extension</a> to apply the update primitive created by the doc:add() function.
+Doing so allow the subsequent function call to doc:document() to retrieve the document.
+
+\subsection dl_create_collection Creating and Manipulating a Collection
+
+This section gives an examples that shows how a collection can be created and populated.
+
+\code
+import module namespace cddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace cdml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+
+variable $coll-name := xs:QName("local:mycol");
+
+cddl:create-collection($coll-name);
+
+for $i in 1 to 10
+return
+    cdml:insert-nodes-last(
+      $coll-name,
+      <mynode id="{$i}"/>
+    );
+
+cdml:collection($coll-name)
+\endcode
+
+The examples uses a dynamic collection to store nodes.
+This collection is created using the <tt>create-collection</tt> function from the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">dynamic collection ddl module</a>.
+After the collection has been created, the <tt>insert-nodes-last</tt> function is used to add nodes to the collection.
+At the end, the contents of the collection is returned.
+
+\subsection dl_modify_document Modifying a Document
+
+Previous examples in this section have shown how data can be added to the store.
+Functions of the various data manipulation (dml) modules can be used to add or remove data from containers.
+For example, we have seen how to add a document to the store or add nodes to a collection that is bound in the store.
+However, all those functions don't allow you do update the actual nodes that are stored in those containers.
+The following example shows how the <a href="http://www.w3.org/TR/xquery-update-10">XQuery Update Facility</a> can be used to modify the contents of a document.
+
+\code
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
+
+import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+
+declare namespace xhtml = "http://www.w3.org/1999/xhtml";
+
+let $mydoc := http:get-node("http://zorba-xquery.com/rest-tests/doc.html")[2]
+return
+  {
+    doc:add("mydoc.xml", $mydoc); (: add the document with name mydoc.xml :)
+
+    replace value of node
+      doc:document("mydoc.xml")//xhtml:title
+    with
+      "Excel Functions";
+
+    doc:document("mydoc.xml")//xhtml:title/text()
+  }
+\endcode
+
+The example is an extension to the example shown in \ref dl_retrieve_store_doc.
+After the document has been added to the store, the <tt>replace</tt> expression is used to update the contents of the title element.
+At the end, the updated title is returned.
+
+\section dl_zorba_store  Zorba Stores
+
+Zorba defines a Store API that allows developers to seamlessly process XML data stored in different places.
+Essentially, the Store API is a C++ interface for
+<ul>
+  <li><a href="http://www.w3.org/TR/xpath-datamodel/">XQuery and XPath Data Model (XDM)</a>,</li>
+  <li>PULs defined by the <a href="http://www.w3.org/TR/xquery-update-10/">XQuery Update Facility</a>,</li>
+  <li>PULs defined by the \ref xqddf, and</li>
+  <li>an XDM extension for <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery Full Text</a>.</li>
+</ul>
+
+Implementing this API allows, for example, XML processing of data stored in main memory, on mobile devices, in browsers, or disk- and cloud-based environments.
+
+It is important to understand that each store implementation may define its own semantics regarding persistence and transactional semantics.
+For example, a mobile device store can safely assume that only a single request at a time is processed whereas a store backed by a relational database might provide full-fledged ACID behavior.
+Analogously, a main memory store does not provide persistence of data across process boundaries.
+
+The Zorba source distribution as well as the packages provided by <a href="http://www.zorba-xquery.com/">http://www.zorba-xquery.com/</a> come with a main memory based store.
+The life-cycle of the data in this store is bounded by the life-time of the process in which it is running.
+For example, a document added to the store can be accessed by XQuery programs in the same process.
+As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the document is destroyed and changes to the data are not propagated to any persistence storage.
 
 */

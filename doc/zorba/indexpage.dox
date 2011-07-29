@@ -22,11 +22,10 @@
   <li>\ref ml_creating_module</li>
 </ul>
 
-<b>\ref data_lifecycle</b>
+<b>\ref storing_manipulating_data</b>
 <ul>
+  <li>\ref dl_examples</li>
   <li>\ref dl_zorba_store</li>
-  <li>\ref dl_loading_data</li>
-  <li>\ref dl_manipulating_data</li>
 </ul>
 
 <b>\ref schema_lifecycle</b>
