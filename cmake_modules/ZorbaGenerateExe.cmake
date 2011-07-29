@@ -66,7 +66,9 @@ MACRO(ZORBA_GENERATE_EXE EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
       SET (ZORBA_EXE_NAME "${EXE_NAME}${SUFFIX}")
     ENDIF (NOT ${NEW_NAME} STREQUAL "")
 
-    SET (ENV{ZORBA_EXE_SCRIPT_LIST} "$ENV{ZORBA_EXE_SCRIPT_LIST}${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_EXE_NAME}.bat;")
+    SET (ZORBA_EXE_SCRIPT_LIST "${ZORBA_EXE_SCRIPT_LIST}${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_EXE_NAME}.bat;"
+      CACHE STRING "List of Windows batch scripts to be generated, one for each executable" FORCE
+    )
   ENDIF (WIN32)
   
   # generating initial property file for each executable in visual studio
@@ -111,7 +113,7 @@ MACRO (ZORBA_GENERATE_EXE_SCRIPTS_WIN32)
     MESSAGE (FATAL_ERROR "This macro is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
 
-  FOREACH (SCRIPT $ENV{ZORBA_EXE_SCRIPT_LIST})
+  FOREACH (SCRIPT ${ZORBA_EXE_SCRIPT_LIST})
 
     MESSAGE (STATUS "Adding exe script: ${SCRIPT}")
 
@@ -121,11 +123,10 @@ MACRO (ZORBA_GENERATE_EXE_SCRIPTS_WIN32)
     ENDIF (MSVC_IDE)
     # used to know where zorba_simplestore.dll is
     FILE (TO_NATIVE_PATH "${CMAKE_BINARY_DIR}" CMAKE_BINARY_DIR_NATIVE)
-    # used to populate the path when running the executable from the script
-    SET (ZORBA_REQUIRED_DLL_PATHS "$ENV{ZORBA_REQUIRED_DLL_PATHS}")
     # used to find out the original executable name
     FILE (TO_NATIVE_PATH "${SCRIPT}" SCRIPT_NATIVE)
 
+    # ZORBA_REQUIRED_DLL_PATHS is also needed and picked from the CACHE
     CONFIGURE_FILE ("${CMAKE_SOURCE_DIR}/scripts/win_exec.bat.in" ${SCRIPT} @ONLY)
 
   ENDFOREACH (SCRIPT)

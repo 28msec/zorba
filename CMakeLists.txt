@@ -137,6 +137,34 @@ IF(WIN32)
 ENDIF(WIN32)
 LIST (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules")
 
+
+################################################################################
+# This section is used for batch script generation. Each executable
+# on Windows needs a bat script in order to set the PATH to the required DLLs.
+# For this we use CACHE variables to gather all the information generated
+# throughout the cmake execution (required DLLs, list of scripts to generate).
+# The generation occurs only at the end of CMake execution (through the macro
+# ZORBA_GENERATE_EXE_SCRIPTS_WIN32) when ALL the requirements have been found.
+# E.g. zorba.exe needs in PATH all the DLLs of all external modules, etc.
+IF (WIN32)
+  # Clear all the variables because they are used only for this build.
+  SET (ZORBA_REQUIRED_DLLS ""
+    CACHE STRING "List of DLLs that must be installed" FORCE
+  )
+  SET (ZORBA_REQUIRED_DLL_PATHS ""
+    CACHE STRING "List of paths executable require in order to find the required DLLs" FORCE
+  )
+  SET (ZORBA_EXE_SCRIPT_LIST ""
+    CACHE STRING "List of Windows batch scripts to be generated, one for each executable" FORCE
+  )
+  # Moreover, mark it as advanced since the CMake GUI user should not see this.
+  MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLLS)
+  MARK_AS_ADVANCED (FORCE ZORBA_REQUIRED_DLL_PATHS)
+  MARK_AS_ADVANCED (FORCE ZORBA_EXE_SCRIPT_LIST)
+ENDIF (WIN32)
+################################################################################
+
+
 # ZorbaModule includes a number of generally-useful utility functions,
 # including expected_failure().  Include it now (very early) to ensure
 # the "expected_failure()" function is available to anyone who might
