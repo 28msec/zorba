@@ -1,17 +1,23 @@
-Zorba XQuery Processor
-Copyright 2006-2008 The FLWOR Foundation
+  ------------------------
+  FLWOR Foundation - Zorba
+  ------------------------
+
+Copyright 2006-2011 The FLWOR Foundation
 
    See LICENSE.txt for license information.
 
+  ------------------------
    This product includes software developed at
    The FLWOR Foundation (http://www.flworfound.org/).
 
+  ------------------------
    Portions of this software were developed at the Systems
    Group of the ETH Zurich, Switzerland.
 
-The file src/zorbatypes/m_apm.h and the directory src/zorbatypes/mapm/
-are copyright 1999-2007 Michael C. Ring. The original distribution
-contains the following notice:
+  ------------------------
+   The file src/zorbatypes/m_apm.h and the directory src/zorbatypes/mapm/
+   are copyright 1999-2007 Michael C. Ring. The original distribution
+   contains the following notice:
 
    This software is Freeware.                                              
                                                                            
@@ -32,8 +38,9 @@ contains the following notice:
    This software is provided "as is" without express or implied warranty.  
 
 
-The file src/common/config/stdint.h is copyright 2006 Alexander Chemeris and
-contains the following notice:
+  ------------------------
+  The file src/common/config/stdint.h is copyright 2006 Alexander Chemeris and
+  contains the following notice:
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
@@ -60,8 +67,9 @@ contains the following notice:
    ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-The files in src/runtime/full_text/stemmer is copyright 2001 Dr. Martin Porter
-and contains the following notice:
+  ------------------------
+  The files in src/runtime/full_text/stemmer is copyright 2001 Dr. Martin Porter
+  and contains the following notice:
 
    All the software given out on this Snowball site is covered by the BSD
    License (see http://www.opensource.org/licenses/bsd-license.html), with
@@ -79,9 +87,10 @@ and contains the following notice:
    the Snowball software.
 
 
-The file src/util/less.h is copyright 1998 Paul J. Lucas and contains the
-following notice:
-
+  ------------------------
+  The file src/util/less.h is copyright 1998 Paul J. Lucas and contains the
+  following notice:
+  
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
    
@@ -108,9 +117,10 @@ following notice:
    POSSIBILITY OF SUCH DAMAGE.
 
 
-The file src/util/auto_vector.h is slightly modified from code
-originally copyright 2003 Reliable Software which contains the
-following notice:
+  ------------------------
+  The file src/util/auto_vector.h is slightly modified from code
+  originally copyright 2003 Reliable Software which contains the
+  following notice:
 
    Any use, commercial or noncommercial of this code
    is hereby granted, under the condition
@@ -123,23 +133,22 @@ Furthermore, this software depends / makes use of:
 
      * ICU4C 3.6 or higher (http://www.icu-project.org/)
 
-     * BOOST 1.32 or higher (http://www.boost.org/)
-       * boost_program_options
-       * boost_date_time
-       * boost_filesystem
+     * Loki C++ Library (see http://loki-lib.sourceforge.net/index.php?n=Main.HomePage)
 
-     * XERCES 2.7.0 or higher (http://xerces.apache.org/xerces-c/)
+     * CURL 7.12 (http://curl.haxx.se/)
 
      * ICONV 1.12 (used by LIBXML2; http://www.gnu.org/software/libiconv/)
 
-     * MAPM 4.9.5 (by Michael C. Ring; http://www.tc.umn.edu/~ringx004/mapm-main.html)
-
-     * Loki C++ Library (see http://loki-lib.sourceforge.net/index.php?n=Main.HomePage)
-
 Optional:
+     * BOOST 1.32 or higher (http://www.boost.org/)
+       * boost_filesystem
+
+     * XERCES 2.8.0 or higher (http://xerces.apache.org/xerces-c/)
 
      * FLEX 2.5.33 (http://flex.sourceforge.net/)
 
      * BISON 2.4 or higher (http://www.gnu.org/software/bison/)
 
-     * CURL 7.12 (http://curl.haxx.se/)
+     * MAPM 4.9.5 (by Michael C. Ring; http://www.tc.umn.edu/~ringx004/mapm-main.html)
+
+     * LIBXSLT (http://xmlsoft.org/XSLT/)

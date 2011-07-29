@@ -1,8 +1,11 @@
-  ----------------------------
-  FLWOR Foundation - Zorba 2.0
-  ----------------------------
+  ------------------------
+  FLWOR Foundation - Zorba
+  ------------------------
 
-This is a list of issues that we are aware of but are not fixed in this version:
+This is a list of issues that we are aware of but are not imlemeneted or fixed:
+
+Zorba Version 2.0
+-----------------
 
 * Floating-point precision problems.
   For details, see the following bugs:
@@ -15,14 +18,12 @@ This is a list of issues that we are aware of but are not fixed in this version:
   For details, see the following bug:
   - 3323548 <https://sourceforge.net/tracker/?func=detail&aid=3323548&group_id=226244&atid=1067586>
 
-* Zorba uses ICU for regular expressions that does not support range
-  subtraction.
+* Zorba uses ICU for regular expressions that does not support range subtraction.
   For details, see the following bug:
   - 3150856 <https://sourceforge.net/tracker/?func=detail&aid=3150856&group_id=226244&atid=1067586>
 
 * If you link against ICU <= 3.8.1, you can get wrong results when using \s to
-  match a white space character.
-  For details, see following bug:
+  match a white space character. For details, see following bug:
   - 3155900 <https://sourceforge.net/tracker/?func=detail&aid=3155900&group_id=226244&atid=1067586>
 
 * A known bug in Xerces < 3.0, when an .xsd contains an any wildcard with
@@ -40,3 +41,5 @@ This is a list of issues that we are aware of but are not fixed in this version:
 
 * The serializer currently doesn't implement character maps as specified
   (http://www.w3.org/TR/xslt-xquery-serialization/#character-maps)
+
+* In the 2.0 release, setting the CMake variables ZORBA_NO_UNICODE to ON is not supported.

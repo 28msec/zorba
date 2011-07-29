@@ -1,27 +1,22 @@
 Zorba - The XQuery Processor
 
 version 2.0
-  * Removed the --install-path zorba command line argument. This functionality was duplicating
-    the existing --module-path argument
-  * zorba executable deletes the output file (if one is provided) in case the execution fails
-  * changed the error codes returned by the zorba executable (using different codes for
-    different locations where the execution might fail)
-  * Removed the XQuery 1.1 "outer for" construct, and replaced it with "allowing empty"
-  * Added the XQuery 1.1 functions and variables annotations. Removed the "deterministic" 
-    and "nondeterministic" keywords, which were replaced by the "%deterministic" and 
-    "%nondeterministic" annotations.
-  * Changed the singature of ExternalModule::getExternalFunction. The const modified was removed
-    to allow for lazy instantiation of the function objects. Also, the localname is passed as
-    as a const reference.
-  * renamed the fn:parse function (XQuery Functions and Operators 1.1) to fn:parse-xml
-    (XQuery Functions and Operators 3.0)
-  * added the fn:serialize function (XQuery Functions and Operators 3.0)
-  * removed the serialize module (http://www.zorba-xquery.com/modules/serialize) since this
-    functionality is now covered by the built-in function fn:serialize
-  * updated the file module to the new http://expath.org/ file module specification. The new module is now in the http://expath.org/ns/file namespace
-  * the XML Schema atomic types are now serialized including the "xs" prefix (used in sax2 serialization,
- debuger, etc.)
-  * zorba uses now DBGP as the debugger protocol
+  * Zorba 2.0 is a major rewrite of previous versions. It doesn't claim to preserve
+    backwards compatibility with any 1.X version.
+    Host language API changes have been made to the following components:
+    - External functions API
+    - XmlDataManager
+    - Error reporting
+    - Debugger API
+    XQuery language and API changes have been made to the following components:
+    - XQuery Scripting Extension
+    - Function APIs
+    - XQuery Data Definition Facility
+    - XQuery modules and module versioning
+    - Changes to conform with the latest XQuery 3.0 
+    - Namespaces of annotations, errors, collations
+  * In addition to host language API and XQuery language improvements,
+    plenty of bug fixes and optimizations have been made.
 
 version 1.4
   * added a datetime library module with nondeterministic functions

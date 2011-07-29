@@ -57,6 +57,14 @@ that are supported by Zorba:
 
   <li><a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery Full Text Extension</a> is supported by default.
   Please see \ref ft_top for more details.</li>
+  The Full Text Extension increases memory usage during runtime.
+  If you want to disable this feature, you can compile Zorba without Full Text support
+  by setting the CMake variable \c ZORBA_NO_FULL_TEXT to "ON".
+  For example:
+
+  \code
+  cmake -D ZORBA_NO_FULL_TEXT=ON <path_to_zorba_source>
+  \endcode
 
   <li><a href="http://www.w3.org/TR/xpath-30/">XPath</a>
   is a sublanguage of XQuery,
@@ -65,14 +73,11 @@ that are supported by Zorba:
   the XPath compatibility mode is always false (<a href="http://www.w3.org/TR/xquery/#static_context">http://www.w3.org/TR/xquery/#static_context</a>).</li>
 
   <li><a href="http://www.w3.org/TR/xqueryx/">XQueryX</a> is not supported by default for all the variants of XQuery (1.0, 3.0, Update, Full Text).
-  In case XQueryX is not needed,
-  it can be enabled when Zorba is compiled.
-  Specifically, the CMake variable \c ZORBA_XQUERYX must be set to "ON".
-  If you want to run XQueryX tests,
-  you have to set the CMake variable \c ZORBA_TEST_XQUERYX to "ON".
+  In case XQueryX is needed,
+  it can be enabled when Zorba is compiled by setting the CMake variable \c ZORBA_XQUERYX to "ON".
+
   \code
   cmake -D ZORBA_XQUERYX=ON <path_to_zorba_source>
-  cmake -D ZORBA_TEST_XQUERYX=ON <path_to_zorba_source>
   \endcode
 
   </li>

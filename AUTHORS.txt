@@ -22,19 +22,24 @@ The primary authors are:
   * Matthias Brantner
   * Nicolae Brinza
   * William Candillon
-  * Dana Florescu                                                                                       
+  * Dana Florescu
   * David Graf
   * Chris Hillery
   * Donald Kossmann 
   * Tim Kraska
   * Paul Kunz
+  * Carlos Lopez
   * Paul Lucas
   * Dan Muresan
   * Sorin Nasoi
+  * Rodolfo Ochoa
   * Paul Pedersen
   * Gabriel Petrovay
   * Markus Pilman
   * Sam Rehman
+  * Luis Rodriguez
+  * Daniel Thomas
   * Daniel Turcanu
   * Till Westmann
+  * Juan Zacarias
   * Markos Zaharioudakis

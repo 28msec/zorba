@@ -16,7 +16,7 @@
   Build & Installation
   --------------------
 
-  Please see the documentation on the web site or the doc directory
+  Please see the documentation on the web site or in the doc directory
   of the package.
 
   Bugs and errors
@@ -45,4 +45,4 @@
   https://sourceforge.net/tracker/?group_id=226244&atid=1067586
 
   o If you want to participate in actively developing Zorba or
-  support Zorba, please write a mail to: zorba@zorba-xquery.org
+  support Zorba, please write a mail to: zorba-coders@lists.inf.ethz.ch.
