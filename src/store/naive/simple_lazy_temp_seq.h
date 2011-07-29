@@ -51,7 +51,7 @@ class SimpleLazyTempSeq : public store::TempSeq
   store::Iterator_t          theIterator;
   bool                       theCopy;
   bool                       theMatFinished;
-  ulong                      thePurgedUpTo;
+  uint64_t                      thePurgedUpTo;
   
   std::vector<store::Item_t> theItems;
 
@@ -107,9 +107,9 @@ class SimpleLazyTempSeqIter : public store::Iterator
  private:
   SimpleLazyTempSeq_t  theTempSeq;
 
-  ulong                theCurPos;
-  ulong                theStartPos;
-  ulong                theEndPos;
+  uint64_t             theCurPos;
+  uint64_t             theStartPos;
+  uint64_t             theEndPos;
 
  public:
   SimpleLazyTempSeqIter(
@@ -132,7 +132,7 @@ class SimpleLazyTempSeqIter : public store::Iterator
 ********************************************************************************/
 inline void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
 {
-  ulong lPos;
+  uint64_t lPos;
   try {
     lPos = to_xs_unsignedLong(position);
   } catch (std::range_error& e)
@@ -177,7 +177,7 @@ inline void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& resul
 ********************************************************************************/
 inline bool SimpleLazyTempSeq::containsItem(xs_integer position) 
 {
-  ulong lPos;
+  uint64_t lPos;
   try {
     lPos = to_xs_unsignedLong(position);
   } catch (std::range_error& e)
@@ -191,7 +191,7 @@ inline bool SimpleLazyTempSeq::containsItem(xs_integer position)
   }
   assert(lPos > thePurgedUpTo);
 
-  ulong numItemsToBuffer = lPos - thePurgedUpTo;
+  uint64_t numItemsToBuffer = lPos - thePurgedUpTo;
 
   while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
   {

@@ -161,11 +161,11 @@ UpdInsertChildren::UpdInsertChildren(
 {
   theSibling.transfer(sibling);
 
-  ulong numNewChildren = 0;
-  ulong numChildren = (ulong)children.size();
+  uint64_t numNewChildren = 0;
+  uint64_t numChildren = (uint64_t)children.size();
   theNewChildren.resize(numChildren);
 
-  for (ulong i = 0; i < numChildren; i++)
+  for (uint64_t i = 0; i < numChildren; i++)
   {
     if (i > 0 &&
         children[i]->getNodeKind() == store::StoreConsts::textNode &&
@@ -265,9 +265,9 @@ UpdInsertAttributes::UpdInsertAttributes(
   UpdatePrimitive(pul, aLoc, target),
   theNumApplied(0)
 {
-  ulong numAttrs = (ulong)attrs.size();
+  uint64_t numAttrs = (uint64_t)attrs.size();
   theNewAttrs.resize(numAttrs);
-  for (ulong i = 0; i < numAttrs; i++)
+  for (uint64_t i = 0; i < numAttrs; i++)
     theNewAttrs[i].transfer(attrs[i]);
 }
 
@@ -314,9 +314,9 @@ UpdReplaceAttribute::UpdReplaceAttribute(
 {
   theAttr.transfer(attr);
 
-  ulong numAttrs = (ulong)newAttrs.size();
+  uint64_t numAttrs = (uint64_t)newAttrs.size();
   theNewAttrs.resize(numAttrs);
-  for (ulong i = 0; i < numAttrs; i++)
+  for (uint64_t i = 0; i < numAttrs; i++)
       theNewAttrs[i].transfer(newAttrs[i]);
 }
 
@@ -372,9 +372,9 @@ UpdReplaceChild::UpdReplaceChild(
        childKind == store::StoreConsts::textNode))
     theRemoveType = true;
 
-  ulong numChildren = (ulong)newChildren.size();
+  uint64_t numChildren = (uint64_t)newChildren.size();
   theNewChildren.resize(numChildren);
-  for (ulong i = 0; i < numChildren; i++)
+  for (uint64_t i = 0; i < numChildren; i++)
   {
     theNewChildren[i].transfer(newChildren[i]);
 
@@ -718,10 +718,10 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  ulong numNodes = (ulong)nodes.size();
+  uint64_t numNodes = (uint64_t)nodes.size();
   theNodes.resize(numNodes);
 
-  for (ulong i = 0; i < numNodes; ++i)
+  for (uint64_t i = 0; i < numNodes; ++i)
     theNodes[i].transfer(nodes[i]);
 }
 
@@ -739,10 +739,10 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  ulong numNodes = (ulong)nodes.size();
+  uint64_t numNodes = (uint64_t)nodes.size();
   theNodes.resize(numNodes);
 
-  for (ulong i = 0; i < numNodes; ++i)
+  for (uint64_t i = 0; i < numNodes; ++i)
     theNodes[i].transfer(nodes[i]);
 }
 
@@ -806,7 +806,7 @@ void UpdDeleteCollection::apply()
       ERROR_LOC( theLoc )
     );
 
-  ulong size;
+  uint64_t size;
   try {
     size = to_xs_unsignedLong(collection->size());
   } catch (std::range_error& e)
@@ -820,7 +820,7 @@ void UpdDeleteCollection::apply()
       );
   }
 
-  for (ulong i = 0; i < size; ++i)
+  for (uint64_t i = 0; i < size; ++i)
   {
     XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
     XmlTree* tree = root->getTree();
@@ -854,8 +854,8 @@ void UpdInsertIntoCollection::apply()
 
   theIsApplied = true;
 
-  ulong numNodes = (ulong)theNodes.size();
-  for (ulong i = 0; i < numNodes; ++i)
+  uint64_t numNodes = (uint64_t)theNodes.size();
+  for (uint64_t i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], -1);
     ++theNumApplied;
@@ -869,7 +869,7 @@ void UpdInsertIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  ulong lastPos;
+  uint64_t lastPos;
   try {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
   } catch (std::range_error& e)
@@ -906,8 +906,8 @@ void UpdInsertFirstIntoCollection::apply()
 
   theCollectionPul->setAdjustTreePositions();
 
-  ulong numNodes = (ulong)theNodes.size();
-  for (ulong i = 0; i < numNodes; ++i)
+  uint64_t numNodes = (uint64_t)theNodes.size();
+  for (uint64_t i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], i);
     ++theNumApplied;
@@ -921,11 +921,11 @@ void UpdInsertFirstIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  for (ulong i = 0; i < theNumApplied; ++i)
+  for (uint64_t i = 0; i < theNumApplied; ++i)
   {
     ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(0));
 
-    lColl->removeNode((ulong)0);
+    lColl->removeNode((uint64_t)0);
   }
 }
 
@@ -941,8 +941,8 @@ void UpdInsertLastIntoCollection::apply()
 
   theIsApplied = true;
 
-  ulong numNodes = (ulong)theNodes.size();
-  for (ulong i = 0; i < numNodes; ++i)
+  uint64_t numNodes = (uint64_t)theNodes.size();
+  for (uint64_t i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], -1);
   }
@@ -955,7 +955,7 @@ void UpdInsertLastIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  ulong lastPos;
+  uint64_t lastPos;
   try {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
   } catch (std::range_error& e)
@@ -1004,7 +1004,7 @@ void UpdInsertBeforeIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, (ulong)theNodes.size());
+  lColl->removeNodes(theFirstPos, (uint64_t)theNodes.size());
 }
 
 
@@ -1035,7 +1035,7 @@ void UpdInsertAfterIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, (ulong)theNodes.size());
+  lColl->removeNodes(theFirstPos, (uint64_t)theNodes.size());
 }
 
 
@@ -1050,7 +1050,7 @@ void UpdDeleteNodesFromCollection::apply()
 
   theIsApplied = true;
 
-  ulong size;
+  uint64_t size;
   try {
     size = to_xs_unsignedLong(lColl->size());
   } catch (std::range_error& e)
@@ -1086,7 +1086,7 @@ void UpdDeleteNodesFromCollection::apply()
   theFound.resize(numNodes);
   thePositions.resize(numNodes);
 
-  for (ulong i = 0; i < numNodes; ++i)
+  for (uint64_t i = 0; i < numNodes; ++i)
   {
     theFound[i] = lColl->removeNode(theNodes[i], thePositions[i]);
     ++theNumApplied;
@@ -1099,7 +1099,7 @@ void UpdDeleteNodesFromCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  for (ulong i = 0; i < theNumApplied; ++i)
+  for (uint64_t i = 0; i < theNumApplied; ++i)
   {
     if (theFound[i])
     {

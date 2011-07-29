@@ -102,7 +102,7 @@ DebuggerCommunicator::connect()
 bool
 DebuggerCommunicator::isConnected()
 {
-  return theSocket;
+  return theSocket != NULL;
 }
 
 const std::string&

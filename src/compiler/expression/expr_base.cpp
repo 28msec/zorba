@@ -82,11 +82,11 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 ********************************************************************************/
 bool expr::is_sequential(short theScriptingKind)
 {
-  return theScriptingKind & (VAR_SETTING_EXPR |
+  return (theScriptingKind & (VAR_SETTING_EXPR |
                              APPLYING_EXPR |
                              EXITING_EXPR |
                              BREAKING_EXPR | 
-                             SEQUENTIAL_FUNC_EXPR);
+                             SEQUENTIAL_FUNC_EXPR)) != 0;
 }
 
 

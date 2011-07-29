@@ -55,7 +55,7 @@ bool SimpleTempSeq::empty()
 ********************************************************************************/
 store::Item_t SimpleTempSeq::operator[](xs_integer aIndex) 
 {
-  ulong lIndex;
+  uint64_t lIndex;
   try {
     lIndex = to_xs_unsignedLong(aIndex);
   } catch (std::range_error& e)
@@ -85,7 +85,7 @@ xs_integer SimpleTempSeq::getSize()
 ********************************************************************************/
 void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 {
-  ulong lPos;
+  uint64_t lPos;
   try {
     lPos = to_xs_unsignedLong(position);
   } catch (std::range_error& e)
@@ -113,7 +113,7 @@ void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 ********************************************************************************/
 bool SimpleTempSeq::containsItem(xs_integer position)
 {
-  ulong lPos;
+  uint64_t lPos;
   try {
     lPos = to_xs_unsignedLong(position);
   } catch (std::range_error& e)

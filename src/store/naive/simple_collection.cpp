@@ -128,7 +128,7 @@ void SimpleCollection::addNode(
   if (lPosition < 0 || lPosition >= theXmlTrees.size())
   {
     theXmlTrees.push_back(nodeItem);
-    node->setCollection(this, (ulong)theXmlTrees.size() - 1);
+    node->setCollection(this, (uint64_t)theXmlTrees.size() - 1);
   }
   else
   {
@@ -153,7 +153,7 @@ ulong SimpleCollection::addNodes(
 
   xs_integer targetPos;
   bool found = findNode(targetNode, targetPos);
-  ulong lTargetPos = to_xs_long(targetPos);
+  uint64_t lTargetPos = to_xs_long(targetPos);
 
   if (!found)
   {
@@ -166,10 +166,10 @@ ulong SimpleCollection::addNodes(
   if (!before)
     ++lTargetPos;
 
-  ulong numNodes = (ulong)theXmlTrees.size();
-  ulong numNewNodes = (ulong)nodes.size();
+  uint64_t numNodes = (uint64_t)theXmlTrees.size();
+  uint64_t numNewNodes = (uint64_t)nodes.size();
   
-  for (ulong i = 0; i < numNewNodes; ++i)
+  for (uint64_t i = 0; i < numNewNodes; ++i)
   {
     if (!nodes[i]->isNode())
     {
@@ -210,7 +210,7 @@ ulong SimpleCollection::addNodes(
           &theXmlTrees[lTargetPos],
           (numNodes-lTargetPos) * sizeof(store::Item_t));
 
-  for (ulong i = lTargetPos; i < lTargetPos + numNewNodes; ++i)
+  for (uint64_t i = lTargetPos; i < lTargetPos + numNewNodes; ++i)
     theXmlTrees[i].setNull();
 #else
   for (long j = numNodes-1, i = theXmlTrees.size()-1; j >= lTargetPos; --j, --i)
@@ -219,7 +219,7 @@ ulong SimpleCollection::addNodes(
   }
 #endif
 
-  for (ulong i = 0; i < numNewNodes; ++i)
+  for (uint64_t i = 0; i < numNewNodes; ++i)
   {
     theXmlTrees[lTargetPos + i].transfer(nodes[i]);
   }
@@ -248,7 +248,7 @@ bool SimpleCollection::removeNode(store::Item* nodeItem, xs_integer& position)
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   bool found = findNode(nodeItem, position);
-  ulong lPosition = to_xs_long(position);
+  uint64_t lPosition = to_xs_long(position);
 
   if (found)
   {
@@ -274,7 +274,7 @@ bool SimpleCollection::removeNode(xs_integer position)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  ulong lPosition = to_xs_long(position);
+  uint64_t lPosition = to_xs_long(position);
 
   if (lPosition >= theXmlTrees.size())
   {
@@ -302,8 +302,8 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  ulong lPosition = to_xs_long(position);
-  ulong lNum = to_xs_long(num);
+  uint64_t lPosition = to_xs_long(position);
+  uint64_t lNum = to_xs_long(num);
 
   if (lNum == 0 || lPosition >= theXmlTrees.size())
   {
@@ -311,11 +311,11 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
   }
   else 
   {
-    ulong last = lPosition + lNum;
+    uint64_t last = lPosition + lNum;
     if (last > theXmlTrees.size())
       last = theXmlTrees.size();
 
-    for (ulong i = lPosition; i < last; ++i)
+    for (uint64_t i = lPosition; i < last; ++i)
     { 
       XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
       ZORBA_ASSERT(node->getCollection() == this);
@@ -335,7 +335,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 ********************************************************************************/
 store::Item_t SimpleCollection::nodeAt(xs_integer position)
 {
-  ulong lPosition = to_xs_long(position);
+  uint64_t lPosition = to_xs_long(position);
   if (lPosition >= theXmlTrees.size())
   {
     return NULL;
@@ -370,7 +370,7 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
 
   position = n->getTree()->getPosition();
 
-  ulong lPosition = to_xs_long(position);
+  uint64_t lPosition = to_xs_long(position);
 
   if (lPosition < theXmlTrees.size() &&
       BASE_NODE(theXmlTrees[lPosition])->getTreeId() == n->getTreeId())
@@ -378,9 +378,9 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
     return true;
   }
 
-  ulong numTrees = (ulong)theXmlTrees.size();
+  uint64_t numTrees = (uint64_t)theXmlTrees.size();
 
-  for (ulong i = 0; i < numTrees; ++i)
+  for (uint64_t i = 0; i < numTrees; ++i)
   {
     // check if the nodes are the same
     if (node->equals(theXmlTrees[i]))
@@ -400,9 +400,9 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
 ********************************************************************************/
 void SimpleCollection::adjustTreePositions()
 {
-  ulong numTrees = (ulong)theXmlTrees.size();
+  uint64_t numTrees = (uint64_t)theXmlTrees.size();
 
-  for (ulong i = 0; i < numTrees; ++i)
+  for (uint64_t i = 0; i < numTrees; ++i)
   {
     BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
   }
@@ -426,9 +426,9 @@ void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
     const store::IndexSpecification& indexSpec = index->getSpecification();
 
     const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    ulong numIndexSources = (ulong)indexSources.size();
+    uint64_t numIndexSources = (uint64_t)indexSources.size();
 
-    for (ulong i = 0; i < numIndexSources; ++i)
+    for (uint64_t i = 0; i < numIndexSources; ++i)
     {
       if (indexSources[i]->equals(getName()))
       {

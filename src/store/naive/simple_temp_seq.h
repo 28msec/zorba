@@ -102,9 +102,9 @@ class SimpleTempSeqIter : public store::TempSeqIterator
   SimpleTempSeq_t     theTempSeq;
   BorderType          theBorderType;
 
-  ulong               theCurPos;
-  ulong               theStartPos;
-  ulong               theEndPos;
+  uint64_t               theCurPos;
+  uint64_t               theStartPos;
+  uint64_t               theEndPos;
 
  public:
   SimpleTempSeqIter() {}
