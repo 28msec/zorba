@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Generate an XQUTS test submission from a recent CTest run.
+# Generate an XQTS test submission from a recent CTest run.
 
 get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
 if (ZORBA_BUILD_DIR)
@@ -32,5 +32,5 @@ set (testfile "${builddir}/Testing/${ctest_tag}/Test.xml")
 
 # Execute Zorba
 execute_process (COMMAND "${zorba}" --omit-xml-declaration --indent
-                 --query "${cwd}/generate-submission.xq" --as-files
+                 --query "${cwd}/generate-submission-xqts.xq" --as-files
                  -e "ctests=${testfile}")

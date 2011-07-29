@@ -17,29 +17,33 @@ To generate a report for submitting to the W3C:
 0. In order to generate the report for XQueryX compile Zorba by setting:
   ZORBA_XQUERYX=ON and ZORBA_TEST_XQUERYX=ON. These options are set to OFF by default.
 
-1. Import XQTS.
+1. Import XQTS/XQFTTS.
 
 2. Run a CTest dashboard from your build directory:
 
-  ctest -T test -R w3c_testsuite/XQuery or
+  ctest -T test -R w3c_testsuite/XQuery 
   ctest -T test -R w3c_testsuite/XQueryX
+  ctest -T test -R w3c_full_text_testsuite/XQuery
+  ctest -T test -R w3c_full_text_testsuite/XQueryX
 
 3. From this directory (test/rbkt/Scripts/w3c), modify
-   generate-submission.xq to reflect:
+   generate-submission-xqts.xq/generate-submission-xqftts.xq to reflect:
 
-   - the node 'implementation', attribute 'version' - the version of Zorba and the svn revision tested
-   - node 'syntax' - either XQuery or XQueryX
-   - node 'test-run', attribute 'date-run' - the date run 
-   - node 'test-suite', attribute 'version' - the test suite version (for example '1.0.2' or 'current')
+  - the node 'implementation', attribute 'version' - the version of Zorba and the svn revision tested
+  - node 'syntax' - either XQuery or XQueryX
+  - node 'test-run', attribute 'date-run' - the date run
+  - node 'test-suite', attribute 'version' - the test suite version (for example '1.0.2' or 'current')
 
 4. From this directory (test/rbkt/Scripts/w3c), run
 
-  cmake -P Submit.cmake > zorba-xqts-submission.xml
+  cmake -P Submit_xqts.cmake > zorba-xqts-submission.xml
+  cmake -P Submit_xqftts.cmake > zorba-xqftts-submission.xml
 
    Note that this assumes your build directory is ../../../../build. If
    that is not true, specify the path to your build directory:
 
-  cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit.cmake > zorba-xqts-submission.xml
+  cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit_xqts.cmake > zorba-xqts-submission.xml
+  cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit_xqftts.cmake > zorba-xqftts-submission.xml
 
    The script depends on the XQTS schema being located in
 
@@ -49,9 +53,11 @@ To generate a report for submitting to the W3C:
    not run the import script, just copy the "ReportingResults"
    directory from the XQTS download to w3c_reportingresults.
 
-In order to generate the HTML versions of the reports (XQTSReport.html and XQTSReportSimple.html) these are the additional steps that have to be followed:
+In order to generate the HTML versions of the reports:
+- either (XQTSReport.html and XQTSReportSimple.html)
+- or (XQFTTSReport.html and XQFTTSReportSimple.html) these are the additional steps that have to be followed:
 
-5. Go to the /tmp folder and unzip the XQTS version you used to generate the report(s). Let's assume it is XQTS_current.zip.
+5. Go to the /tmp folder and unzip the XQTS/XQFTTS version you used to generate the report(s). Let's assume it is XQTS_current.zip.
 
 6.  Copy the XML(s) into the /tmp/XQTS_current/ReportingResults folder
 

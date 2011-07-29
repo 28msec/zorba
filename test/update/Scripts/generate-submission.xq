@@ -91,12 +91,6 @@ else
              result="not applicable"
              comment="Zorba does not support the 'Update Facility Static Typing Feature'"
            />
-          else if ($testname = 'namespace-errors-q16') then
-          <test-case
-             name="{$testname}"
-             result="pass"
-             comment="Zorba reports the correct result. For details please see 'http://www.w3.org/Bugs/Public/show_bug.cgi?id=10432'"
-           />
           else
            <test-case
              name="{$testname}"
