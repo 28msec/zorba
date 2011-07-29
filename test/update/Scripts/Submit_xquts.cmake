@@ -33,5 +33,5 @@ set (testfile "${builddir}/Testing/${ctest_tag}/Test.xml")
 
 # Execute Zorba
 execute_process (COMMAND "${zorba}" --omit-xml-declaration --indent
-                 --query "${cwd}/generate-submission.xq" --as-files
+                 --query "${cwd}/generate-submission-xquts.xq" --as-files
                  -e "ctests=${testfile}")
