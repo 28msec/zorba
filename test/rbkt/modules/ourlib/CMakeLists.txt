@@ -13,3 +13,6 @@
 # limitations under the License.
 
 ADD_LIBRARY(ourlib SHARED ourlib.cpp)
+SET_TARGET_PROPERTIES (ourlib PROPERTIES
+  FOLDER "Tests"
+)

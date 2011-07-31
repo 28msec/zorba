@@ -42,7 +42,10 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
       -o "\"${CMAKE_CURRENT_BINARY_DIR}/headers_svg/headers.svg\""
       COMMENT "Building header dependencies SVG..."
   )
-  SET_TARGET_PROPERTIES(headers_svg PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+  SET_TARGET_PROPERTIES (headers_svg PROPERTIES
+    EXCLUDE_FROM_DEFAULT_BUILD 1
+    FOLDER "Docs"
+  )
   
   ADD_DEPENDENCIES(headers_svg "codedocs")
   

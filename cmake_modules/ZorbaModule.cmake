@@ -251,13 +251,12 @@ MACRO (DECLARE_ZORBA_MODULE)
     # "libext.so.2.0", which is difficult to transmogrify into the
     # target filename we actually want later. So in either case, the
     # target property isn't desirable.
-    # FOLDER is to (try to) make Visual Studio projects a bit less
-    # cluttered.
-    SET_TARGET_PROPERTIES(${module_lib_target} PROPERTIES
+    # FOLDER is to group IDE projects into folders.
+    SET_TARGET_PROPERTIES (${module_lib_target} PROPERTIES
       OUTPUT_NAME "${module_filewe}_${MODULE_VERSION}${SUFFIX}"
-      ${target_type}_OUTPUT_DIRECTORY
-      "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src"
-      FOLDER "ModuleLibs")
+      ${target_type}_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.src"
+      FOLDER "Modules"
+    )
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
     INSTALL(TARGETS ${module_lib_target}
@@ -408,7 +407,10 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
         COMMENT "Copying ${_input_file} to URI path" VERBATIM)
       LIST (APPEND _output_files "${_output_file}")
     ENDWHILE (copy_rules)
-    ADD_CUSTOM_TARGET ("check_uris" ALL DEPENDS ${_output_files} VERBATIM)
+    ADD_CUSTOM_TARGET (check_uris ALL DEPENDS ${_output_files} VERBATIM)
+    SET_TARGET_PROPERTIES(check_uris PROPERTIES
+      FOLDER "Modules"
+    )
     SET_PROPERTY (GLOBAL PROPERTY ZORBA_URI_FILES)
   ENDIF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
@@ -581,12 +583,15 @@ MACRO (ADD_XQDOC_TARGETS)
       DEPENDS ${LOCAL_MODULES}
       COMMENT "Building XQDoc XML documentation for ${PROJECT_NAME} module..."
   )
-  #SET_TARGET_PROPERTIES(xqdoc-xml-${PROJECT_NAME} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
   IF(TARGET xqdoc-xml)
     ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} zorba_simplestore)
     ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} xqdoc-xml)
     ADD_DEPENDENCIES(xqdoc xqdoc-xml-${PROJECT_NAME})
   ENDIF(TARGET xqdoc-xml)
+  SET_TARGET_PROPERTIES (xqdoc-xml-${PROJECT_NAME} PROPERTIES
+    EXCLUDE_FROM_DEFAULT_BUILD 1
+    FOLDER "Docs"
+  )
 
   SET(ZORBA_XHTML_REQUISITES_PATH ${Zorba_DIR}/xqdoc/requisites CACHE PATH "Dir where to the html requisites are stored")
   ADD_CUSTOM_TARGET(xqdoc-${PROJECT_NAME}
@@ -602,7 +607,10 @@ MACRO (ADD_XQDOC_TARGETS)
       COMMENT "Building XQDoc documentation for the ${PROJECT_NAME} module ..."
   )
   ADD_DEPENDENCIES(xqdoc-${PROJECT_NAME} xqdoc-xml-${PROJECT_NAME})
-  SET_TARGET_PROPERTIES(xqdoc-${PROJECT_NAME} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+  SET_TARGET_PROPERTIES (xqdoc-${PROJECT_NAME} PROPERTIES
+    EXCLUDE_FROM_DEFAULT_BUILD 1
+    FOLDER "Docs"
+  )
 
 ENDMACRO(ADD_XQDOC_TARGETS)
 

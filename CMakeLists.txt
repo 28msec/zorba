@@ -68,6 +68,8 @@ IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
        "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
 ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
+# turn on the folder grouping used by IDEs (VS or XCode)
+SET_PROPERTY (GLOBAL PROPERTY USE_FOLDERS ON)
 
 ###############################################################################
 # Check for system include files, features, etc.

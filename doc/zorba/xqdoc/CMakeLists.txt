@@ -50,8 +50,10 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
       DEPENDS ${ZORBA_ALL_MODULES}
       COMMENT "Building XQDoc XML documentation for the modules..."
   )
-  #SET_TARGET_PROPERTIES(xqdoc-xml PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
   ADD_DEPENDENCIES(xqdoc-xml zorba_simplestore)
+  SET_TARGET_PROPERTIES (xqdoc-xml PROPERTIES
+    FOLDER "Docs"
+  )
 
   ADD_CUSTOM_TARGET(xqdoc
     ${ZORBA_EXE_SCRIPT}
@@ -66,7 +68,10 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
       COMMENT "Building XQDoc documentation for the modules..."
   )
   ADD_DEPENDENCIES(xqdoc "xqdoc-xml")
-  SET_TARGET_PROPERTIES(xqdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+  SET_TARGET_PROPERTIES (xqdoc PROPERTIES
+    EXCLUDE_FROM_DEFAULT_BUILD 1
+    FOLDER "Docs"
+  )
 
   ADD_TEST(doc/stress_tests/make_xqdoc
       ${ZORBA_EXE_SCRIPT}
@@ -92,7 +97,10 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
       -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/modules.svg\""
       COMMENT "Building module dependencies SVG..."
   )
-  SET_TARGET_PROPERTIES(modules_svg PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+  SET_TARGET_PROPERTIES (modules_svg PROPERTIES
+    EXCLUDE_FROM_DEFAULT_BUILD 1
+    FOLDER "Docs"
+  )
 
   ADD_DEPENDENCIES(modules_svg xqdoc-xml xqdoc)
 
