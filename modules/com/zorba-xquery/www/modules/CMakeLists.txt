@@ -99,3 +99,11 @@ DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/ddl.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl")
 DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/dml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml")
+
+# error and warning modules
+DECLARE_ZORBA_MODULE (FILE pregenerated/errors.xq
+  URI "http://www.zorba-xquery.com/errors"
+)
+DECLARE_ZORBA_MODULE (FILE pregenerated/warnings.xq
+  URI "http://www.zorba-xquery.com/warnings"
+)

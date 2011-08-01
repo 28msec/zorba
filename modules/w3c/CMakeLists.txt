@@ -21,3 +21,6 @@ DECLARE_ZORBA_MODULE (FILE xpath_functions.xq
   
 DECLARE_ZORBA_MODULE (FILE xpath_functions_math.xq
   URI "http://www.w3.org/2005/xpath-functions/math")
+
+DECLARE_ZORBA_MODULE (FILE pregenerated/xqt-errors.xq
+  URI "http://www.w3.org/2005/xqt-errors")

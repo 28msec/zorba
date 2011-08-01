@@ -521,3 +521,10 @@ ENDIF (WIN32)
 # This must be done last! Create the one top-level target which
 # depends on all generated (copied) module/schema files.
 DONE_DECLARING_ZORBA_URIS()
+
+# This dependency makes sure that the error and warning definition
+# modules are generated before trying to install them as zorba modules.
+# This dependency is zorba-only related, which is why it's added here
+# and not within zorba-modules, which is for general use in other
+# non-zorba modules.
+ADD_DEPENDENCIES(check_uris gen_diag_modules)

@@ -56,7 +56,10 @@ declare %ann:nondeterministic %ann:sequential function local:testXQDoc($modulesP
       return string-join(
          if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
             ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
-            ($moduleUri = "http://www.functx.com/")) then ()
+            ($moduleUri = "http://www.functx.com/") or
+            ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
+            ($moduleUri = "http://www.zorba-xquery.com/errors") or
+            ($moduleUri = "http://www.zorba-xquery.com/warnings")) then ()
         else(
         local:test-module($xqdoc),
         local:test-functions($xqdoc),

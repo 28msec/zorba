@@ -48,6 +48,36 @@ ZORBA_DIAGNOSTIC_GENERATOR(
     ""
     "${CMAKE_BINARY_DIR}/src/diagnostics/dict_en.cpp")
 
+ZORBA_DIAGNOSTIC_GENERATOR(
+    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
+    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=err"
+    "diagnostic_en.xml"
+    ""
+    "${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
+    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=zerr"
+    "diagnostic_en.xml"
+    ""
+    "${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/errors.xq"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
+    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=zwarn"
+    "diagnostic_en.xml"
+    ""
+    "${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/warnings.xq"
+)
+
+ADD_CUSTOM_TARGET (gen_diag_modules
+  DEPENDS ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/warnings.xq
+          ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/errors.xq
+          ${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq
+)
+
 IF (WIN32)
   SET(DIAGNOSTICS_SRCS ${DIAGNOSTICS_SRCS} StackWalker.cpp)
 ENDIF (WIN32)
