@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:~
  : OAuth Client Module
  : This module provides the functions necessary to acquire access to the personal
