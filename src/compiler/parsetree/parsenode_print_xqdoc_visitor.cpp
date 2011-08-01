@@ -262,6 +262,8 @@ protected:
   store::ItemFactory * theFactory;
 
   string               theQuery;
+  zstring              theEncoding;
+  zstring              theXQueryVersion;
 
 public:
 
@@ -414,6 +416,13 @@ void end_visit(const MainModule& n, void* /*visit_state*/)
   //print_comment(theModule, n.getComment());
 }
 
+XQDOC_NO_BEGIN_TAG (VersionDecl)
+void end_visit(const VersionDecl& n, void* /*visit_state*/)
+{
+  theXQueryVersion = n.get_version();
+  theEncoding = n.get_encoding();
+}
+
 void *begin_visit(const ModuleDecl& n) {
   theNamespaces[n.get_prefix()] = n.get_target_namespace();
   return no_state;
@@ -421,15 +430,14 @@ void *begin_visit(const ModuleDecl& n) {
 
 void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 {
-  store::Item_t lURIQName, lNameQName, lTypeQName, lCustomQName, lProjectQName, lProjectValue;
-
-  store::Item_t lURIElem, lNameElem, lTypeAttr, lCustomElem, lURIText, lNameText, lProjectText;
+  store::Item_t lURIQName, lNameQName, lTypeQName, lCustomQName, lTagQName, lProjectValue;
+  store::Item_t lURIElem, lNameElem, lTypeAttr, lProjectElem, lURIText, lNameText, lProjectText;
+  store::Item_t lEncodingValue, lEncodingText, lEncodingElem, lXQVersionValue, lXQVersionText, lXQVersionElem;
 
   theFactory->createQName(lURIQName, theXQDocNS, theXQDocPrefix, "uri");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lTypeQName, "", "", "type");
-  theFactory->createQName(lCustomQName, theXQDocNS, theXQDocPrefix, "custom");
-  theFactory->createQName(lProjectQName, "", "", "tag");
+  
 
   store::Item_t lAttrValue;
   zstring lAttrString("library");
@@ -451,17 +459,55 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
   if(!lProject.empty())
   {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(lCustomElem, theModule,
+    theFactory->createQName(lCustomQName,  theXQDocNS, theXQDocPrefix, "custom");
+    theFactory->createElementNode(lProjectElem, theModule,
                                 lCustomQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
     zstring lProjectString("project");
     theFactory->createString(lProjectValue, lProjectString);
 
+    theFactory->createQName(lTagQName,  "", "", "tag");
     theFactory->createAttributeNode(
-      lProjectQName, lCustomElem, lProjectQName, lTypeName, lProjectValue);
+      lTagQName, lProjectElem, lTagQName, lTypeName, lProjectValue);
 
-    theFactory->createTextNode(lProjectText, lCustomElem, lProject);
+    theFactory->createTextNode(lProjectText, lProjectElem, lProject); 
+  }
+
+  if(!theEncoding.empty())
+  {
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createQName(lCustomQName,  theXQDocNS, theXQDocPrefix, "custom");
+    theFactory->createElementNode(lEncodingElem, theModule,
+                                  lCustomQName, lTypeName,
+                                  true, false, theNSBindings, theBaseURI);
+
+    zstring lEncodingString("encoding");
+    theFactory->createString(lEncodingValue, lEncodingString);
+
+    theFactory->createQName(lTagQName,  "", "", "tag");
+    theFactory->createAttributeNode(
+      lTagQName, lEncodingElem, lTagQName, lTypeName, lEncodingValue);
+
+    theFactory->createTextNode(lEncodingText, lEncodingElem, theEncoding);
+  }
+
+  if(!theXQueryVersion.empty())
+  {
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createQName(lCustomQName,  theXQDocNS, theXQDocPrefix, "custom");
+    theFactory->createElementNode(lXQVersionElem, theModule,
+                                  lCustomQName, lTypeName,
+                                  true, false, theNSBindings, theBaseURI);
+
+    zstring lXQueryVersionString("XQuery version");
+    theFactory->createString(lXQVersionValue, lXQueryVersionString);
+
+    theFactory->createQName(lTagQName,  "", "", "tag");
+    theFactory->createAttributeNode(
+      lTagQName, lXQVersionElem, lTagQName, lTypeName, lXQVersionValue);
+
+    theFactory->createTextNode(lXQVersionText, lXQVersionElem, theXQueryVersion);
   }
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -1036,7 +1082,6 @@ XQDOC_NO_BEGIN_END_TAG (VarGetsDeclList)
 XQDOC_NO_BEGIN_END_TAG (VarInDecl)
 XQDOC_NO_BEGIN_END_TAG (VarInDeclList)
 XQDOC_NO_BEGIN_END_TAG (VarRef)
-XQDOC_NO_BEGIN_END_TAG (VersionDecl)
 XQDOC_NO_BEGIN_END_TAG (VFO_DeclList)
 XQDOC_NO_BEGIN_END_TAG (WhereClause)
 XQDOC_NO_BEGIN_END_TAG (WhileExpr)

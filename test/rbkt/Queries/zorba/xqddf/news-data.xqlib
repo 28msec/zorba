@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 module namespace news-data = "http://www.news.org/data";
 
 import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd";

@@ -1,3 +1,3 @@
 Args: 
 -x 
-modulesPath:=xs:string($RBKT_SRC_DIR/../../modules)
+ZorbaPath:=xs:string($RBKT_SRC_DIR/../../)

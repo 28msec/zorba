@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
  :
@@ -42,18 +44,38 @@ declare copy-namespaces preserve, inherit;
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
+(:~
+ : the name of the folder containing the external functions implementations 
+ :)
 declare variable $xqdoc2html:xqFolderName as xs:string := "external_functions_impl";
+(:~
+ : the name of the folder where the modules will be copied for the XQDoc documentation
+ :)
 declare variable $xqdoc2html:moduleFolderName as xs:string := "modules";
+(:~
+ : the name of the folder where the examples will be copied for the XQDoc documentation  
+ :)
 declare variable $xqdoc2html:exampleFolderName as xs:string := "examples";
-
+(:~
+ :  The QName of the collection containing the XQDoc XML's
+ :)
 declare variable $xqdoc2html:collection as xs:QName := xs:QName("xqdoc2html:collection");
 declare collection xqdoc2html:collection as node()*;
 
+(:~
+ :  The name of the collection containing all the configuration XML's
+ :)
 declare variable $xqdoc2html:collectionConfig as xs:QName := xs:QName("xqdoc2html:collectionConfig");
 declare collection xqdoc2html:collectionConfig as node()*;
 
+(:~
+ :  Collector of the entried in the left menu
+ :)
 declare variable $xqdoc2html:menuEntries := <entries/>;
 
+(:~
+ :  The level 1 wights for the categories in the left menu (this gives the order of the Level1 items)
+ :)
 declare variable $xqdoc2html:level1Weight as xs:string* := 
 ("www.w3.org", "XDM", "store", "introspection", "reflection",
  "external", "xqdoc","data processing", "programming languages", "excel", 
@@ -386,6 +408,7 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:gathe
  : @param $modulesPath location of the modules.
  : @param $xhtmlRequisitesPath the folder containing the images, lib, styles and templates folders.
  : @param $xqdocBuildPath where to generate the XQDoc XML documents.
+ : @param $examplePath the path to the examples folder.
  : @return Empty sequence.
  :)
 declare %ann:nondeterministic %ann:sequential function xqdoc2html:copy-xhtml-requisites(
@@ -1208,7 +1231,14 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
         (<span>Please note that this module does not belong to the core of the Zorba XQuery engine. Please check <a href="http://www.zorba-xquery.com/site2/doc/latest/zorba/html/module_lifecycle.html" target="_blank">this</a> resource about this module import.</span>,<br />,<br />)
       },
      xqdoc2html:description($module/xqdoc:comment),
-     xqdoc2html:annotations-module($module/xqdoc:comment))
+     xqdoc2html:annotations-module($module/xqdoc:comment),
+     if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
+        ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
+        ($moduleUri = "http://www.functx.com/")) then ()
+     else
+      (<div class="subsubsection">XQuery version and Encoding for this module:</div>,
+       <p class="annotationText">xquery version "{$module/xqdoc:custom[@tag='XQuery version']}" encoding "{$module/xqdoc:custom[@tag='encoding']}";</p>)
+     )
 };
 
 

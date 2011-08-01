@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
  :
@@ -28,10 +30,17 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
+(:~
+ : fetch:ErrRetrievingResource
+ :)
 declare variable $fetch:ErrRetrievingResource as xs:QName :=
   fn:QName("http://www.zorba-xquery.com/modules/fetch",
            "fetch:ErrRetrievingResource");
 
+
+(:~
+ : fetch:ResourceDoesNotExist
+ :)
 declare variable $fetch:ResourceDoesNotExist as xs:QName :=
   fn:QName("http://www.zorba-xquery.com/modules/fetch",
            "fetch:ResourceDoesNotExist");
@@ -40,6 +49,7 @@ declare variable $fetch:ResourceDoesNotExist as xs:QName :=
  : Tries to fetch the resource referred to by the given URI.
  : 
  : @param $uri the resource to fetch to
+ : @return the resource referred to by the given URI
  : @error fetch:ErrRetrievingResource if an error occurred
  :        retrieving the resource.
  : @error fetch:ResourceDoesNotExist if no resource could be found at

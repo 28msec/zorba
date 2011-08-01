@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 module namespace n = "http://www.28msec.com/test";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";

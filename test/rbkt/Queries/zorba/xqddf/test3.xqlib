@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 module namespace test3="www.test3.com";
 
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";

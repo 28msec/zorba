@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:
  : Copyright 2006-2010 The FLWOR Foundation.
  :
@@ -70,6 +72,7 @@ declare %ann:nondeterministic %ann:sequential function pxqdoc:delete-XML-dir(
  :
  : @param $modulesPath where to search for modules recursively.
  : @param $xqdocPath where to generate the XQDoc XML documents.
+ : @param $isInsideZorbaCore xs:boolean indicating if the module is part of Zorba core or not.
  : @return empty sequence.
  :)
 declare %ann:nondeterministic %ann:sequential function pxqdoc:generate-xqdoc-XML(

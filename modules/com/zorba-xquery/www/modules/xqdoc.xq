@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:
  : Copyright 2006-2010 The FLWOR Foundation.
  :
