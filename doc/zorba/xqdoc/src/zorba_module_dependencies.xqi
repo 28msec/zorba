@@ -106,13 +106,7 @@ declare %ann:sequential function z:fill-nodesCollector() as xs:string*
                                and not($lModuleProject = $lModuleUri)) 
                             then concat($subProject,"_") 
                             else ()
-    let $lName := if(($subProjectFinal = "data_converters_") or 
-                     ($subProjectFinal = "data_cleaning_") or 
-                     ($subProjectFinal = "data_formatting_") or
-                     ($subProjectFinal = "atomic_") or
-                     ($subProjectFinal = "item_") or
-                     ($subProjectFinal = "node_")) then fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_")
-                  else concat($subProjectFinal,fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_"))
+    let $lName := concat($subProjectFinal,fn:replace(substring-before(data($xqdoc/xqdoc:module/xqdoc:name),"."),"-","_"))
     where (fn:starts-with($lModuleProject, $category) or
            fn:contains($lModuleProject, $category))
     return

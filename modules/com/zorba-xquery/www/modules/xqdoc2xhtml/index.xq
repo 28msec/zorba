@@ -1236,7 +1236,7 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
         ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
         ($moduleUri = "http://www.functx.com/")) then ()
      else
-      (<div class="subsubsection">XQuery version and Encoding for this module:</div>,
+      (<div class="subsubsection">XQuery version and encoding for this module:</div>,
        <p class="annotationText">xquery version "{$module/xqdoc:custom[@tag='XQuery version']}" encoding "{$module/xqdoc:custom[@tag='encoding']}";</p>)
      )
 };
@@ -1545,7 +1545,7 @@ declare %private %ann:nondeterministic function xqdoc2html:functions($functions,
             <del>{xqdoc2html:module-function-link($name, $signature)}</del>
           else
             xqdoc2html:module-function-link($name, $signature)
-        }</div>,
+        }<a href="#function_summary"><img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'"/></a></div>,
         if ($isDeprecated) then
           <p><span class="deprecated">Deprecated</span>{
             if (exists($comment/xqdoc:deprecated/node())) then
@@ -1563,8 +1563,7 @@ declare %private %ann:nondeterministic function xqdoc2html:functions($functions,
         xqdoc2html:annotations($comment),
         xqdoc2html:annotations-author($comment),        
         xqdoc2html:annotations-see($comment),
-        xqdoc2html:annotations-example($comment, $xqdocXhtmlPath),
-        <div id="allignright"><a href="#function_summary"><img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'"/></a></div>,  
+        xqdoc2html:annotations-example($comment, $xqdocXhtmlPath),  
         <hr />)                
        )
     else ()
