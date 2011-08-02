@@ -4,6 +4,8 @@ import module namespace ns = "http://example.org/datamodule/" at "modifier_1.xqd
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+
 declare %ann:sequential function local:ddl() {
   (
     ddl:create-collection($ns:coll_1, (<a/>,<b/>)),
@@ -19,8 +21,8 @@ declare %ann:sequential function local:testa_1()
     {
       dml:delete-nodes(subsequence(dml:collection($ns:coll_1), 1, 2));
     }
-  } catch * ($error) {
-    exit returning ("a",$error);
+  } catch *  {
+    exit returning ("a",$err:code);
   }
 };
 
@@ -31,8 +33,8 @@ declare %ann:sequential function local:testa_2()
     {
       dml:delete-nodes(subsequence(dml:collection($ns:coll_2), 1, 2));
     }
-  } catch * ($error) {
-    exit returning ("a",$error);
+  } catch * {
+    exit returning ("a",$err:code);
   }
 };
 
@@ -43,8 +45,8 @@ declare %ann:sequential function local:testa_3()
     {
       dml:delete-nodes(subsequence(dml:collection($ns:coll_3), 2, 2));
     }
-  } catch * ($error) {
-    exit returning ("a",$error);
+  } catch *  {
+    exit returning ("a",$err:code);
   }
 };
 

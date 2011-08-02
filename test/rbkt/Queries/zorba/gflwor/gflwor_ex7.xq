@@ -5,6 +5,8 @@ import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
 
 import module namespace data = "http://www.28msec.com/WindyCityDBDemo/lib/data" at "data.xqlib";
 
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+
 
 declare variable $local:error := xs:QName('data:error');
 
@@ -26,9 +28,9 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
         )
       )
     } 
-    catch * ($ecode, $desc)
+    catch * 
     {
-      error($local:error, concat("Invalid Query: ", $expr, ". ", $desc))
+      error($local:error, concat("Invalid Query: ", $expr, ". ", $err:description))
     }
 };
 

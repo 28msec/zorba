@@ -4,14 +4,15 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare function local:testa() {
   try {
     {
       dml:collection($ns:http)
     }
-  } catch * ($error) {
-    ("a",$error)
+  } catch *  {
+    ("a",$err:code)
   }
 };
 
@@ -20,8 +21,8 @@ declare function local:testb() {
     {
       dml:index-of(<a/>)
     }
-  } catch * ($error) {
-    ("b",$error)
+  } catch *  {
+    ("b",$err:code)
   }
 };
 
@@ -30,8 +31,8 @@ declare %ann:sequential function local:testc() {
     {
       ddl:delete-collection($ns:http);
     }
-  } catch * ($error) {
-    exit returning ("c",$error);
+  } catch *  {
+    exit returning ("c",$err:code);
   }
 };
 
@@ -40,8 +41,8 @@ declare %ann:sequential function local:testd() {
     {
       dml:insert-nodes-first($ns:http, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("d",$error);
+  } catch *  {
+    exit returning ("d",$err:code);
   }
 };
 
@@ -50,8 +51,8 @@ declare %ann:sequential function local:teste() {
     {
       dml:insert-nodes-last($ns:http, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("e",$error);
+  } catch *  {
+    exit returning ("e",$err:code);
   }
 };
 
@@ -60,8 +61,8 @@ declare %ann:sequential function local:testf() {
     {
       dml:insert-nodes-before($ns:http, <a/>, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("f",$error);
+  } catch *  {
+    exit returning ("f",$err:code);
   }
 };
 
@@ -70,8 +71,8 @@ declare %ann:sequential function local:testg() {
     {
       dml:insert-nodes-after($ns:http, <a/>, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("g",$error);
+  } catch *  {
+    exit returning ("g",$err:code);
   }
 };
 
@@ -80,8 +81,8 @@ declare %ann:sequential function local:testi() {
     {
       dml:delete-nodes(<a/>);
     }
-  } catch * ($error) {
-    exit returning ("i",$error);
+  } catch *  {
+    exit returning ("i",$err:code);
   }
 };
 

@@ -7118,17 +7118,9 @@ void end_visit(const CatchListExpr& v, void* visit_state)
 
 
 /*******************************************************************************
-  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
+  [172] CatchClause ::= "catch" CatchErrorList "{" Expr "}"
 
   [173] CatchErrorList ::= NameTest ("|" NameTest)*
-
-  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
-
-  [175] CatchErrorCode ::= "$" VarName
-
-  [176] CatchErrorDesc ::= "$" VarName
-
-  [177] CatchErrorVal ::= "$" VarName
 ********************************************************************************/
 void* begin_visit(const CatchExpr& v)
 {
@@ -7140,35 +7132,27 @@ void* begin_visit(const CatchExpr& v)
 
   push_scope();
 
-  if (v.getVarErrorCode())
-  {
-    var_expr_t ev = bind_var(loc,
-                             v.getVarErrorCode(),
-                             var_expr::catch_var,
-                             theRTM.QNAME_TYPE_QUESTION);
+  store::Item_t lCode, lDesc, lValue, lModule, lLineNo, lColumnNo;
 
-    cc->set_error_code_var(ev);
+  GENV_ITEMFACTORY->createQName(lCode, XQUERY_ERR_NS, "", "code");
+  GENV_ITEMFACTORY->createQName(lDesc, XQUERY_ERR_NS, "", "description");
+  GENV_ITEMFACTORY->createQName(lValue, XQUERY_ERR_NS, "", "value");
+  GENV_ITEMFACTORY->createQName(lModule, XQUERY_ERR_NS, "", "module");
+  GENV_ITEMFACTORY->createQName(lLineNo, XQUERY_ERR_NS, "", "line-number");
+  GENV_ITEMFACTORY->createQName(lColumnNo, XQUERY_ERR_NS, "", "column-number");
 
-    if (v.getVarErrorDescr())
-    {
-      var_expr_t dv = bind_var(loc,
-                               v.getVarErrorDescr(),
-                               var_expr::catch_var,
-                               theRTM.STRING_TYPE_QUESTION);
-
-      cc->set_error_desc_var(dv);
-
-      if (v.getVarErrorVal())
-      {
-        var_expr_t vv = bind_var(loc,
-                                 v.getVarErrorVal(),
-                                 var_expr::catch_var,
-                                 theRTM.ITEM_TYPE_QUESTION);
-
-        cc->set_error_item_var(vv);
-      }
-    }
-  }
+  cc->add_var(catch_clause::err_code,
+      bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE) );
+  cc->add_var(catch_clause::err_desc,
+      bind_var(loc, lDesc.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+  cc->add_var(catch_clause::err_value,
+      bind_var(loc, lValue.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_STAR) );
+  cc->add_var(catch_clause::err_module,
+      bind_var(loc, lModule.getp(), var_expr::catch_var, theRTM.STRING_TYPE_QUESTION) );
+  cc->add_var(catch_clause::err_line_no,
+      bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+  cc->add_var(catch_clause::err_column_no,
+      bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
 
   tce->add_clause(cc);
 

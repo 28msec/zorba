@@ -27,7 +27,7 @@ declare %ann:sequential function local:remove-twice()
 {
   try {
     doc:remove("foo");
-  } catch zerr:ZXQD0002 ($err) {
+  } catch zerr:ZXQD0002 {
     exit returning "caught attempt to remove a document that doesn't exist";
   }
 };

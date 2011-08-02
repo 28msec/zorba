@@ -4,6 +4,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ns = "http://www.unknown.com/";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare variable $name as xs:QName := xs:QName("ns:name");
 
@@ -12,8 +13,8 @@ declare %ann:sequential function local:testa() {
     {
       ddl:is-available-collection($name)
     }
-  } catch * ($error) {
-    ("a",$error)
+  } catch * {
+    ("a",$err:code)
   }
 };
 
@@ -22,8 +23,8 @@ declare %ann:sequential function local:testb() {
     {
       dml:collection($name)
     }
-  } catch * ($error) {
-    ("b",$error)
+  } catch * {
+    ("b",$err:code)
   }
 };
 
@@ -32,8 +33,8 @@ declare %ann:sequential function local:testc() {
     {
       dml:index-of(<a/>)
     }
-  } catch * ($error) {
-    ("c",$error)
+  } catch *  {
+    ("c",$err:code)
   }
 };
 
@@ -42,8 +43,8 @@ declare %ann:sequential function local:testd() {
     {
       ddl:create-collection($name);
     }
-  } catch * ($error) {
-    exit returning ("d",$error);
+  } catch *  {
+    exit returning ("d",$err:code);
   }
 };
 
@@ -52,8 +53,8 @@ declare %ann:sequential function local:teste() {
     {
       ddl:delete-collection($name);
     }
-  } catch * ($error) {
-    exit returning ("e",$error);
+  } catch *  {
+    exit returning ("e",$err:code);
   }
 };
 
@@ -62,8 +63,8 @@ declare %ann:sequential function local:testf() {
     {
       dml:insert-nodes-first($name, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("f",$error);
+  } catch *  {
+    exit returning ("f",$err:code);
   }
 };
 
@@ -72,8 +73,8 @@ declare %ann:sequential function local:testg() {
     {
       dml:insert-nodes-last($name, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("g",$error);
+  } catch *  {
+    exit returning ("g",$err:code);
   }
 };
 
@@ -82,8 +83,8 @@ declare %ann:sequential function local:testh() {
     {
       dml:insert-nodes-before($name, <a/>, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("h",$error);
+  } catch *  {
+    exit returning ("h",$err:code);
   }
 };
 
@@ -92,8 +93,8 @@ declare %ann:sequential function local:testi() {
     {
       dml:insert-nodes-after($name, <a/>, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("i",$error);
+  } catch * {
+    exit returning ("i",$err:code);
   }
 };
 
@@ -102,8 +103,8 @@ declare %ann:sequential function local:testk() {
     {
       dml:delete-nodes(<a/>);
     }
-  } catch * ($error) {
-    exit returning ("k",$error);
+  } catch *  {
+    exit returning ("k",$err:code);
   }
 };
 

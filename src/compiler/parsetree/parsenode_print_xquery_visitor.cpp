@@ -1857,21 +1857,7 @@ DEFAULT_END_VISIT (ReverseAxis);
         (*i)->accept(*this);
       }
 
-      if(n.getVarErrorCode())
-      {
-        os << "($" << n.getVarErrorCode()->get_qname();
-      }
-
-      if(n.getVarErrorDescr())
-      {
-        os << ", $" << n.getVarErrorDescr()->get_qname();
-      }
-
-      if(n.getVarErrorVal())
-      {
-        os << ", $" << n.getVarErrorVal()->get_qname();
-      }
-      os << "){";
+      os << "{";
       n.getExprSingle()->accept(*this);
       os << '}';
       return 0;

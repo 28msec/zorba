@@ -1254,9 +1254,7 @@ void catch_clause::serialize(::zorba::serialization::Archiver& ar)
 {
   //serialize_baseclass(ar, (SimpleRCObject*)this);
   ar & theNameTests;
-  ar & theErrorCodeVar;
-  ar & theErrorDescVar;
-  ar & theErrorItemVar;
+  ar & theVarMap;
 }
 
 
@@ -1334,23 +1332,11 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
   {
     lClause->add_nametest_h(lIter->getp());
   }
-
-  if (theErrorCodeVar) 
+  for (var_map_t::const_iterator lIter = theVarMap.begin();
+       lIter != theVarMap.end();
+       ++lIter) 
   {
-    lClause->set_error_code_var(
-        static_cast<var_expr*>(theErrorCodeVar->clone(subst).getp()));
-  }
-
-  if (theErrorDescVar) 
-  {
-    lClause->set_error_desc_var(
-        static_cast<var_expr*>(theErrorDescVar->clone(subst).getp()));
-  }
-
-  if (theErrorItemVar) 
-  {
-    lClause->set_error_item_var(
-        static_cast<var_expr*>(theErrorItemVar->clone(subst).getp()));
+    lClause->add_var((catch_clause::var_type)lIter->first, lIter->second.getp());
   }
 
   return lClause.getp();

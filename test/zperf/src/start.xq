@@ -8,6 +8,7 @@ import module namespace http="http://expath.org/ns/http-client";
 
 declare namespace pdash = "http://www.28msec.com/pdash";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 
 declare %ann:sequential function local:getPlatform()
@@ -259,17 +260,17 @@ declare %ann:sequential function local:runXMarkTests($zorbaCmd as xs:string, $xm
             {
                 $t := tims:parseTimings($times);
             }
-            catch * ($ecode, $desc)
+            catch * 
             {
-                fn:trace("", fn:concat("  - Test ", $testName, " failed, skip submiting it: ", $ecode, "  ", $desc ));
+                fn:trace("", fn:concat("  - Test ", $testName, " failed, skip submiting it: ", $err:code, "  ", $err:description ));
 
                 exit returning 
                     <pdash:test id="{$testName}" iterations="{$noOfRuns}">
                       <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
                       <error>
                       {   
-                        fn:concat("  - Test ", $testName, " failed: erorcode=", $ecode, 
-                            "  desc=", $desc, " exit-code=", fn:data($res/exit-code), 
+                        fn:concat("  - Test ", $testName, " failed: erorcode=", $err:code, 
+                            "  desc=", $err:description, " exit-code=", fn:data($res/exit-code), 
                             " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
                       }
                       </error>
@@ -404,16 +405,16 @@ declare %ann:sequential function local:runXRayTests($zorbaCmd as xs:string,
         {
             $t := tims:parseTimings($times);
         }
-        catch * ($ecode, $desc)
+        catch *
         {
-            fn:trace("", fn:concat("  - Test xray failed, skip submiting it: ", $ecode, "  ", $desc ));
+            fn:trace("", fn:concat("  - Test xray failed, skip submiting it: ", $err:code, "  ", $err:description ));
             
             exit returning 
                 <pdash:test id="xray" iterations="{$noOfRuns}">
                   <pdash:measurements><pdash:error>1</pdash:error></pdash:measurements>
                   <error>
                   {   
-                    fn:concat("  - Test xray failed, skip submiting it: erorcode=", $ecode, "  desc=", $desc, 
+                    fn:concat("  - Test xray failed, skip submiting it: erorcode=", $err:code, "  desc=", $err:description, 
                     " exit-code=", fn:data($res/exit-code), " stdout=", fn:data($res/stdout), " stderr=", fn:data($res/stderr) )
                   }
                   </error>

@@ -6,6 +6,7 @@ import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare copy-namespaces preserve, inherit;
 
@@ -65,8 +66,8 @@ declare %ann:nondeterministic %ann:sequential function local:testXQDoc($modulesP
         local:test-functions($xqdoc),
         local:test-variables($xqdoc)
       ),"")
-    } catch * ($ec, $em){
-    fn:concat("ERROR: ", $ec, " Message: ", $em, "
+    } catch * {
+    fn:concat("ERROR: ", $err:code, " Message: ", $err:description, "
 processing file: ", $filePath)
     };
     string-join($res,"")

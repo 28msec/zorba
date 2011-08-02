@@ -38,6 +38,7 @@ import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace werr = "http://www.w3.org/2005/xqt-errors";
 
 declare copy-namespaces preserve, inherit;
 
@@ -386,8 +387,8 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:gathe
         xqdoc2html:collect-schema($xsdUri, $schemaFileName, $xqdoc2html:schemasCollector),
         file:copy($xsdFilePath, $schemaTarget)
       }
-    } catch * ($error_code, $error_message) {
-      fn:error($err:UE005, fn:concat("xqdoc2html:gather-schemas ", $xsdFilePath, " Message: ", $error_message))
+    } catch *  {
+      fn:error($err:UE005, fn:concat("xqdoc2html:gather-schemas ", $xsdFilePath, " Message: ", $werr:description))
     } 
 };
 
@@ -647,9 +648,9 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:gener
       else ();
     }
   }
-  catch * ($error_code, $error_message) 
+  catch * 
   {      
-    fn:error($err:UE004, fn:concat("FAILED: ", $moduleUri, " Message: ", $error_message));
+    fn:error($err:UE004, fn:concat("FAILED: ", $moduleUri, " Message: ", $werr:description));
   }
 };
 
@@ -712,8 +713,8 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:copy-
       else
       try {         
         xqdoc2html:copy-example($exampleSource, $exampleDestination, $examplePath)
-      } catch * ($error_code, $error_message) {
-        fn:error($err:UE009, fn:concat("Copy example from <", $exampleSource,"> to <", $exampleDestination, "> failed. Error code: ", $error_code, " Message: ", $error_message))
+      } catch *  {
+        fn:error($err:UE009, fn:concat("Copy example from <", $exampleSource,"> to <", $exampleDestination, "> failed. Error code: ", $werr:code, " Message: ", $werr:description))
       }
       
     };

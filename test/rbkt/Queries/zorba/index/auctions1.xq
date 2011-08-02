@@ -7,6 +7,8 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+
 auctions:create-db();
 
 
@@ -59,9 +61,9 @@ try
 {
    index_dml:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
 }
-catch * ($code, $desc)
+catch * 
 {
-  <exception>{$code} : {$desc}</exception>
+  <exception>{$err:code} : {$err:description}</exception>
 },
 
 "
@@ -76,9 +78,9 @@ try
 { 
   index_dml:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))
 }
-catch * ($code, $desc)
+catch * 
 {
-  <exception>{$code} : {$desc}</exception>
+  <exception>{$err:code} : {$err:description}</exception>
 },
 
 "
@@ -89,9 +91,9 @@ try
 {
   index_dml:probe-index-point-value($auctions:AuctionDates, 10)
 }
-catch * ($code, $desc)
+catch * 
 {
-  <exception>{$code} : {$desc}</exception>
+  <exception>{$err:code} : {$err:description}</exception>
 },
 
 "
@@ -113,9 +115,9 @@ try
   index_dml:probe-index-point-general($auctions:AuctionDates, 
                                   (xs:date("2000-12-04"), "2000-12-04"))
 }
-catch * ($code, $desc)
+catch * 
 {
-  <exception>{$code} : {$desc}</exception>
+  <exception>{$err:code} : {$err:description}</exception>
 },
 
 "
@@ -248,9 +250,9 @@ try
 {
   index_dml:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))
 }
-catch * ($code, $desc)
+catch * 
 {
-  <exception>{$code} : {$desc}</exception>
+  <exception>{$err:code} : {$err:description}</exception>
 },
 
 "
@@ -262,9 +264,9 @@ try
 {
   index_dml:probe-index-point-value($auctions:AuctionDates2, 10)
 }
-catch * ($code, $desc)
+catch * 
 {
-  <exception>{$code} : {$desc}</exception>
+  <exception>{$err:code} : {$err:description}</exception>
 },
 
 "

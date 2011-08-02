@@ -875,17 +875,10 @@ public:
 
         CatchClauseList := CatchClause+
 
-  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
+  [172] CatchClause ::= "catch" CatchErrorList "{" Expr "}"
 
   [173] CatchErrorList ::= NameTest ("|" NameTest)*
 
-  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
-
-  [175] CatchErrorCode ::= "$" VarName
-
-  [176] CatchErrorDesc ::= "$" VarName
-
-  [177] CatchErrorVal ::= "$" VarName
 ********************************************************************************/
 class catch_clause;
 typedef rchandle<catch_clause> catch_clause_t;
@@ -896,14 +889,24 @@ class catch_clause : public SimpleRCObject
   friend class trycatch_expr;
 
 public:
+  enum var_type
+  {
+    err_code = 0,
+    err_desc,
+    err_value,
+    err_module,
+    err_line_no,
+    err_column_no
+  };
+
+public:
   typedef rchandle<NodeNameTest> nt_t;
   typedef std::vector<nt_t> nt_list_t;
+  typedef std::map<int, var_expr_t> var_map_t;
 
 protected:
-  nt_list_t   theNameTests;
-  var_expr_t  theErrorCodeVar;
-  var_expr_t  theErrorDescVar;
-  var_expr_t  theErrorItemVar;
+  nt_list_t  theNameTests;
+  var_map_t  theVarMap;
   
 public:
   SERIALIZABLE_CLASS(catch_clause)
@@ -918,19 +921,13 @@ public:
   nt_list_t& get_nametests() { return theNameTests; }
   
   void add_nametest_h(nt_t n) { theNameTests.push_back(n); }
+
+  void set_vars(var_map_t& a) { theVarMap = a; }
+
+  var_map_t& get_vars() { return theVarMap; }
   
-  void set_error_code_var(var_expr_t a) { theErrorCodeVar = a; }
-
-  const var_expr* get_error_code_var() const { return theErrorCodeVar.getp(); }
+  void add_var(var_type v, var_expr_t n) { theVarMap[v] = n; }
   
-  void set_error_desc_var(var_expr_t a) { theErrorDescVar = a; }
-
-  const var_expr* get_error_desc_var() const { return theErrorDescVar.getp(); }
-  
-  void set_error_item_var(var_expr_t a) { theErrorItemVar = a; }
-
-  const var_expr* get_error_item_var() const { return theErrorItemVar.getp(); }
-
   catch_clause_t clone(expr::substitution_t& subst) const;
 };
 

@@ -5251,17 +5251,9 @@ public:
 
 
 /*******************************************************************************
-  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
+  [172] CatchClause ::= "catch" CatchErrorList "{" Expr "}"
 
   [173] CatchErrorList ::= NameTest ("|" NameTest)*
-
-  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
-
-  [175] CatchErrorCode ::= "$" VarName
-
-  [176] CatchErrorDesc ::= "$" VarName
-
-  [177] CatchErrorVal ::= "$" VarName
 ********************************************************************************/
 class CatchExpr : public exprnode
 {
@@ -5270,36 +5262,21 @@ public:
 
 protected:
   NameTestList        theNameTests;
-  rchandle<QName>     theVarErrorCode;
-  rchandle<QName>     theVarErrorDescr;
-  rchandle<QName>     theVarErrorVal;
   rchandle<parsenode> theExprSingle;
 
 public:
   CatchExpr(
     const QueryLoc& aQueryLoc,
     NameTestList& aNameTest,
-    rchandle<QName> aVarErrorCode,
-    rchandle<QName> aVarErrorDescr,
-    rchandle<QName> aVarErrorVal,
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
     theNameTests(aNameTest),
-    theVarErrorCode(aVarErrorCode),
-    theVarErrorDescr(aVarErrorDescr),
-    theVarErrorVal(aVarErrorVal),
     theExprSingle(aExprSingle)
   {
   }
 
   const NameTestList &getNameTests() const { return theNameTests; }
-
-  const QName* getVarErrorCode() const { return theVarErrorCode.getp(); }
-
-  const QName* getVarErrorDescr() const { return theVarErrorDescr.getp(); }
-
-  const QName* getVarErrorVal() const { return theVarErrorVal.getp(); }
 
   rchandle<parsenode> getExprSingle() const { return theExprSingle; }
 

@@ -8,6 +8,6 @@ let $x := 'a'
 return
   try {
       $x cast as xs:integer 
-  } catch err:FORG0001 ($code) {
-    $code eq $err:FORG0001
+  } catch err:FORG0001 {
+    $err:code eq $err:FORG0001
   }

@@ -5,6 +5,6 @@ try {
     $x cast as xs:integer 
 } catch err:XPST0051 { 
   "Cast failed: item does not have a known, atomic type"
-} catch * ($error, $desc) {
-    "Ha! It worked ", $error, $desc
+} catch * {
+    "Ha! It worked ", $err:code, $err:description
 }

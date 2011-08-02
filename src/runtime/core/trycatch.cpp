@@ -183,70 +183,166 @@ TryCatchIterator::bindErrorVars(
   TryCatchIteratorState* state =
     StateTraitsImpl<TryCatchIteratorState>::getState(planState, theStateOffset);
 
-  // bind the error code (always)
-  store::Item_t lErrorCodeItem;
-	diagnostic::QName const &err_name = e.diagnostic().qname();
-  GENV_ITEMFACTORY->createQName(
-      lErrorCodeItem,
-      err_name.ns(),
-      err_name.prefix(),
-      err_name.localname());
-
   typedef std::vector<LetVarIter_t>::const_iterator LetVarConstIter;
 
-  LetVarConstIter lErrorCodeVarIter = clause->errorcode_var.begin();
-  LetVarConstIter lErrorCodeVarIterEnd = clause->errorcode_var.end();
-  for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ )
+  for (CatchClause::VarMap_t::const_iterator lIter = clause->vars.begin();
+       lIter != clause->vars.end();
+       ++lIter)
   {
-    store::Iterator_t lErrorCodeIter = new ItemIterator(lErrorCodeItem);
-    lErrorCodeIter->open();
-    state->theErrorIters.push_back(lErrorCodeIter);
-    (*lErrorCodeVarIter)->bind(lErrorCodeIter, planState);
-  }
-
-  // bind the description (if exists)
-  LetVarConstIter lErrorDescVarIter = clause->errordesc_var.begin();
-  LetVarConstIter lErrorDescVarIterEnd = clause->errordesc_var.end();
-  for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ )
-  {
-    // bind the description or the empty sequence
-    store::Iterator_t lErrorDescIter;
-		char const *const what = e.what();
-    if (what && *what)
+    switch (lIter->first)
     {
-      zstring errDescr = what;
-      store::Item_t errDescItem;
-      GENV_ITEMFACTORY->createString(errDescItem, errDescr);
-      lErrorDescIter = new ItemIterator(errDescItem);
+      case CatchClause::err_code:
+      {
+        LetVarConstIter lErrorCodeVarIter = lIter->second.begin();
+        LetVarConstIter lErrorCodeVarIterEnd = lIter->second.end();
+        // bind the error code (always)
+        store::Item_t lErrorCodeItem;
+	      diagnostic::QName const &err_name = e.diagnostic().qname();
+        GENV_ITEMFACTORY->createQName(
+            lErrorCodeItem,
+            err_name.ns(),
+            err_name.prefix(),
+            err_name.localname());
+
+        for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ )
+        {
+          store::Iterator_t lErrorCodeIter = new ItemIterator(lErrorCodeItem);
+          lErrorCodeIter->open();
+          state->theErrorIters.push_back(lErrorCodeIter);
+          (*lErrorCodeVarIter)->bind(lErrorCodeIter, planState);
+        }
+      }
+      break;
+      case CatchClause::err_desc:
+      {
+        LetVarConstIter lErrorDescVarIter = lIter->second.begin();
+        LetVarConstIter lErrorDescVarIterEnd = lIter->second.end();
+        for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ )
+        {
+          // bind the description or the empty sequence
+          store::Iterator_t lErrorDescIter;
+	      	char const *const what = e.what();
+          if (what && *what)
+          {
+            zstring errDescr = what;
+            store::Item_t errDescItem;
+            GENV_ITEMFACTORY->createString(errDescItem, errDescr);
+            lErrorDescIter = new ItemIterator(errDescItem);
+          }
+          else
+          {
+            lErrorDescIter = new ItemIterator();
+          }
+          lErrorDescIter->open();
+          state->theErrorIters.push_back(lErrorDescIter);
+          (*lErrorDescVarIter)->bind(lErrorDescIter, planState);
+        }
+      }
+      break;
+      case CatchClause::err_value:
+      {
+        LetVarConstIter lErrorObjVarIter = lIter->second.begin();
+        LetVarConstIter lErrorObjVarIterEnd = lIter->second.end();
+	      std::vector<store::Item_t> eObjs;
+
+	      if ( UserException const *ue = dynamic_cast<UserException const*>( &e ) ) {
+	      	UserException::error_object_type const &eo = ue->error_object();
+	      	if ( !eo.empty() )
+	      		convert_error_object( eo, &eObjs );
+	      }
+
+        for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
+          store::Iterator_t lErrorObjIter = eObjs.empty() ?
+	      		new ItemIterator() : new ItemIterator(eObjs);
+          lErrorObjIter->open();
+          state->theErrorIters.push_back(lErrorObjIter);
+          (*lErrorObjVarIter)->bind(lErrorObjIter, planState);
+        }
+      }
+      break;
+      case CatchClause::err_module:
+      {
+        LetVarConstIter lErrorModuleVarIter = lIter->second.begin();
+        LetVarConstIter lErrorModuleVarIterEnd = lIter->second.end();
+
+        for ( ; lErrorModuleVarIter != lErrorModuleVarIterEnd; lErrorModuleVarIter++ )
+        {
+          store::Iterator_t lErrorModuleIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+               ue->has_source() ) {
+            store::Item_t lErrorModuleItem;
+            zstring lModule = ue->source_uri();
+            GENV_ITEMFACTORY->createString(lErrorModuleItem, lModule);
+            lErrorModuleIter = new ItemIterator(lErrorModuleItem);
+	        }
+          else
+          {
+            lErrorModuleIter = new ItemIterator();
+          }
+          lErrorModuleIter->open();
+          state->theErrorIters.push_back(lErrorModuleIter);
+          (*lErrorModuleVarIter)->bind(lErrorModuleIter, planState);
+        }
+      }
+      break;
+      case CatchClause::err_line_no:
+      {
+        LetVarConstIter lErrorLineVarIter = lIter->second.begin();
+        LetVarConstIter lErrorLineVarIterEnd = lIter->second.end();
+
+
+        for ( ; lErrorLineVarIter != lErrorLineVarIterEnd; lErrorLineVarIter++ )
+        {
+          store::Iterator_t lErrorLineIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+               ue->has_source() ) {
+            store::Item_t lErrorLineItem;
+            GENV_ITEMFACTORY->createInteger(lErrorLineItem, ue->source_line());
+            lErrorLineIter = new ItemIterator(lErrorLineItem);
+	        }
+          else
+          {
+            lErrorLineIter = new ItemIterator();
+          }
+          lErrorLineIter->open();
+          state->theErrorIters.push_back(lErrorLineIter);
+          (*lErrorLineVarIter)->bind(lErrorLineIter, planState);
+        }
+      }
+      break;
+      case CatchClause::err_column_no:
+      {
+        LetVarConstIter lErrorColumnVarIter = lIter->second.begin();
+        LetVarConstIter lErrorColumnVarIterEnd = lIter->second.end();
+
+        for ( ; lErrorColumnVarIter != lErrorColumnVarIterEnd; lErrorColumnVarIter++ )
+        {
+          store::Iterator_t lErrorColumnIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+               ue->has_source() ) {
+            store::Item_t lErrorColumnItem;
+            GENV_ITEMFACTORY->createInteger(lErrorColumnItem, ue->source_column());
+            lErrorColumnIter = new ItemIterator(lErrorColumnItem);
+	        }
+          else
+          {
+            lErrorColumnIter = new ItemIterator();
+          }
+          lErrorColumnIter->open();
+          state->theErrorIters.push_back(lErrorColumnIter);
+          (*lErrorColumnVarIter)->bind(lErrorColumnIter, planState);
+        }
+      break;
+      }
+      default: ZORBA_ASSERT(false);
     }
-    else
-    {
-      lErrorDescIter = new ItemIterator();
-    }
-    lErrorDescIter->open();
-    state->theErrorIters.push_back(lErrorDescIter);
-    (*lErrorDescVarIter)->bind(lErrorDescIter, planState);
   }
-
-  // bind the error object if exists
-  LetVarConstIter lErrorObjVarIter = clause->errorobj_var.begin();
-  LetVarConstIter lErrorObjVarIterEnd = clause->errorobj_var.end();
-	std::vector<store::Item_t> eObjs;
-
-	if ( UserException const *ue = dynamic_cast<UserException const*>( &e ) ) {
-		UserException::error_object_type const &eo = ue->error_object();
-		if ( !eo.empty() )
-			convert_error_object( eo, &eObjs );
-	}
-
-  for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
-    store::Iterator_t lErrorObjIter = eObjs.empty() ?
-			new ItemIterator() : new ItemIterator(eObjs);
-    lErrorObjIter->open();
-    state->theErrorIters.push_back(lErrorObjIter);
-    (*lErrorObjVarIter)->bind(lErrorObjIter, planState);
-  }
-
 }
 
 bool

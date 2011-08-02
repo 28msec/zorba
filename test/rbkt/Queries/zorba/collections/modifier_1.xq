@@ -3,6 +3,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare %ann:sequential function local:ddl() {
   (
@@ -18,8 +19,8 @@ declare %ann:sequential function local:testa_1() {
     {
       dml:insert-nodes-first($ns:coll_1, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("a",$error);
+  } catch *  {
+    exit returning ("a",$err:code);
   }
 };
 
@@ -29,8 +30,8 @@ declare %ann:sequential function local:testa_2() {
     {
       dml:insert-nodes-first($ns:coll_2, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("a",$error);
+  } catch *  {
+    exit returning ("a",$err:code);
   }
 };
 
@@ -39,8 +40,8 @@ declare %ann:sequential function local:testa_3() {
     {
       dml:insert-nodes-first($ns:coll_3, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("a",$error);
+  } catch *  {
+    exit returning ("a",$err:code);
   }
 };
 
@@ -49,8 +50,8 @@ declare %ann:sequential function local:testb_1() {
     {
       dml:insert-nodes-last($ns:coll_1, <b/>);
     }
-  } catch * ($error) {
-    exit returning ("b",$error);
+  } catch *  {
+    exit returning ("b",$err:code);
   }
 };
 
@@ -70,8 +71,8 @@ declare %ann:sequential function local:testc_1() {
     {
       dml:insert-nodes-before($ns:coll_1, dml:collection($ns:coll_1)[1], <c/>);
     }
-  } catch * ($error) {
-    exit returning ("c",$error);
+  } catch *  {
+    exit returning ("c",$err:code);
   }
 };
 
@@ -81,8 +82,8 @@ declare %ann:sequential function local:testc_2() {
     {
       dml:insert-nodes-before($ns:coll_2, dml:collection($ns:coll_2)[1], <c/>);
     }
-  } catch * ($error) {
-    exit returning ("c",$error);
+  } catch *  {
+    exit returning ("c",$err:code);
   }
 };
 
@@ -92,8 +93,8 @@ declare %ann:sequential function local:testc_3() {
     {
       dml:insert-nodes-before($ns:coll_3, dml:collection($ns:coll_3)[1], <c/>);
     }
-  } catch * ($error) {
-    exit returning ("c",$error);
+  } catch *  {
+    exit returning ("c",$err:code);
   }
 };
 
@@ -103,8 +104,8 @@ declare %ann:sequential function local:testd_1() {
     {
       dml:insert-nodes-after($ns:coll_1, dml:collection($ns:coll_1)[last()], <d/>);
     }
-  } catch * ($error) {
-    exit returning ("d",$error);
+  } catch *  {
+    exit returning ("d",$err:code);
   }
 };
 
@@ -114,8 +115,8 @@ declare %ann:sequential function local:testd_2() {
     {
       dml:insert-nodes-after($ns:coll_2, dml:collection($ns:coll_2)[last()], <d/>);
     }
-  } catch * ($error) {
-    exit returning ("d",$error);
+  } catch *  {
+    exit returning ("d",$err:code);
   }
 };
 
@@ -125,8 +126,8 @@ declare %ann:sequential function local:testd_3() {
     {
       dml:insert-nodes-after($ns:coll_3, dml:collection($ns:coll_3)[last()], <d/>);
     }
-  } catch * ($error) {
-    exit returning ("d",$error);
+  } catch *  {
+    exit returning ("d",$err:code);
   }
 };
 

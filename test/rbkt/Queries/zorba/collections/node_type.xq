@@ -4,6 +4,7 @@ import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.x
 import module namespace ns = "http://example.org/datamodule/" at "node_type.xqdata";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare function local:create-person($name as xs:string) as schema-element(s:person) 
 {
@@ -23,8 +24,8 @@ declare %ann:sequential function local:testa_1()
     {
       dml:insert-nodes-first($ns:collection, <a/>);
     }
-  } catch * ($error) {
-    exit returning ("a",$error);
+  } catch * {
+    exit returning ("a",$err:code);
   }
 };
 
@@ -41,8 +42,8 @@ declare %ann:sequential function local:testb_1()
     {
       dml:insert-nodes-last($ns:collection, <b/>);
     }
-  } catch * ($error) {
-    exit returning ("b",$error);
+  } catch * {
+    exit returning ("b",$err:code);
   }
 };
 
@@ -61,8 +62,8 @@ declare %ann:sequential function local:testc_1()
       return
         dml:insert-nodes-before($ns:collection, $x, <c/>);
     }
-  } catch * ($error) {
-    exit returning ("c",$error);
+  } catch *  {
+    exit returning ("c",$err:code);
   }
 };
 
@@ -84,8 +85,8 @@ declare %ann:sequential function local:testd_1()
       return
         dml:insert-nodes-after($ns:collection, $x, <d/>);
     }
-  } catch * ($error) {
-    exit returning ("d",$error);
+  } catch *  {
+    exit returning ("d",$err:code);
   }
 };
 
@@ -106,8 +107,8 @@ declare %ann:sequential function local:testf_1()
       return
         insert node <abc>4</abc> into $x;
     }
-  } catch * ($error) {
-    exit returning ("f",$error);
+  } catch * {
+    exit returning ("f",$err:code);
   }
 };
 

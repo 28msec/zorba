@@ -2403,35 +2403,7 @@ CatchListStatement :
 CatchStatement :
     CATCH NameTestList BlockStatement
     {
-       $$ = new CatchExpr(LOC(@$), *$2, NULL, NULL, NULL, $3);
-       delete $2;
-    }
-  |
-    CATCH NameTestList LPAR DOLLAR QNAME RPAR BlockStatement
-    {
-      $$ = new CatchExpr(LOC(@$),*$2, static_cast<QName*>($5), NULL, NULL, $7);
-       delete $2;
-    }
-  |
-    CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
-    {
-       $$ = new CatchExpr(LOC(@$),
-                          *$2,
-                          static_cast<QName*>($5),
-                          static_cast<QName*>($8),
-                          NULL,
-                          $10);
-       delete $2;
-    }
-  |
-    CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BlockStatement
-    {
-       $$ = new CatchExpr(LOC (@$),
-                          *$2,
-                          static_cast<QName*>($5),
-                          static_cast<QName*>($8),
-                          static_cast<QName*>($11),
-                          $13);
+       $$ = new CatchExpr(LOC(@$), *$2, $3);
        delete $2;
     }
   ;
@@ -5504,32 +5476,7 @@ CatchListExpr :
 CatchExpr :
     CATCH NameTestList BracedExpr
     {
-       $$ = new CatchExpr(LOC(@$), *$2, NULL, NULL, NULL, $3);
-       delete $2;
-    }
-  | CATCH NameTestList LPAR DOLLAR QNAME RPAR BracedExpr
-    {
-      $$ = new CatchExpr(LOC(@$),*$2, static_cast<QName*>($5), NULL, NULL, $7);
-       delete $2;
-    }
-  | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
-    {
-       $$ = new CatchExpr(LOC(@$),
-                          *$2,
-                          static_cast<QName*>($5),
-                          static_cast<QName*>($8),
-                          NULL,
-                          $10);
-       delete $2;
-    }
-  | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
-    {
-       $$ = new CatchExpr(LOC (@$),
-                          *$2,
-                          static_cast<QName*>($5),
-                          static_cast<QName*>($8),
-                          static_cast<QName*>($11),
-                          $13);
+       $$ = new CatchExpr(LOC(@$), *$2, $3);
        delete $2;
     }
   ;

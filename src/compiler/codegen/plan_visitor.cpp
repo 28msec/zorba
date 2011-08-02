@@ -1803,20 +1803,13 @@ bool begin_visit(trycatch_expr& v)
   for(int i = v.clause_count() - 1; i >= 0; --i)
   {
     catch_clause* cc = &*v[i];
-    if (cc->get_error_code_var() != NULL)
+    catch_clause::var_map_t& vars = cc->get_vars();
+    
+    for (catch_clause::var_map_t::const_iterator lIter = vars.begin();
+         lIter != vars.end();
+         ++lIter)
     {
-      catchvar_iter_map.put((uint64_t)&*cc->get_error_code_var(),
-                            new std::vector<LetVarIter_t>());
-    }
-    if (cc->get_error_desc_var() != NULL)
-    {
-      catchvar_iter_map.put((uint64_t)&*cc->get_error_desc_var(),
-                            new std::vector<LetVarIter_t>());
-    }
-    if (cc->get_error_item_var() != NULL)
-    {
-      catchvar_iter_map.put((uint64_t)&*cc->get_error_item_var(),
-                            new std::vector<LetVarIter_t>());
+      catchvar_iter_map.put((uint64_t)&*(lIter->second), new std::vector<LetVarIter_t>());
     }
   }
   return true;
@@ -1835,27 +1828,41 @@ void end_visit(trycatch_expr& v)
     TryCatchIterator::CatchClause rcc;
     rcc.node_names = cc->get_nametests();
     rcc.catch_expr = pop_itstack();
+    catch_clause::var_map_t& vars = cc->get_vars();
 
-    if (cc->get_error_code_var() != NULL)
+    for (catch_clause::var_map_t::const_iterator lIter = vars.begin();
+         lIter != vars.end();
+         ++lIter)
     {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_code_var(), vec);
+      bool bound = catchvar_iter_map.get((uint64_t)&*(lIter->second), vec);
       ZORBA_ASSERT(bound);
-      rcc.errorcode_var = *vec;
+      catch_clause::var_type var_type = (catch_clause::var_type)lIter->first;
+
+      switch (var_type)
+      {
+      case catch_clause::err_code:
+        rcc.vars[TryCatchIterator::CatchClause::err_code] = *vec;
+        break;
+      case catch_clause::err_desc:
+        rcc.vars[TryCatchIterator::CatchClause::err_desc] = *vec;
+        break;
+      case catch_clause::err_value:
+        rcc.vars[TryCatchIterator::CatchClause::err_value] = *vec;
+        break;
+      case catch_clause::err_module:
+        rcc.vars[TryCatchIterator::CatchClause::err_module] = *vec;
+        break;
+      case catch_clause::err_line_no:
+        rcc.vars[TryCatchIterator::CatchClause::err_line_no] = *vec;
+        break;
+      case catch_clause::err_column_no:
+        rcc.vars[TryCatchIterator::CatchClause::err_column_no] = *vec;
+        break;
+      default:
+        ZORBA_ASSERT(false);
+      }
     }
 
-    if (cc->get_error_desc_var() != NULL)
-    {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_desc_var(), vec);
-      ZORBA_ASSERT(bound);
-      rcc.errordesc_var = *vec;
-    }
-
-    if (cc->get_error_item_var() != NULL)
-    {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_item_var(), vec);
-      ZORBA_ASSERT(bound);
-      rcc.errorobj_var = *vec;
-    }
     rev_ccs.push_back(rcc);
   }
 

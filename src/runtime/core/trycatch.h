@@ -51,11 +51,21 @@ public:
   class CatchClause : public ::zorba::serialization::SerializeBaseClass
   {
   public:
+    enum var_type
+    {
+      err_code = 0,
+      err_desc,
+      err_value,
+      err_module,
+      err_line_no,
+      err_column_no
+    };
+
+  public:
     std::vector<NodeNameTest_t> node_names;
     PlanIter_t     catch_expr;
-    std::vector<LetVarIter_t> errorcode_var;
-    std::vector<LetVarIter_t> errordesc_var;
-    std::vector<LetVarIter_t> errorobj_var;
+    typedef std::map<int, std::vector<LetVarIter_t> > VarMap_t;
+    VarMap_t vars;
 
   public:
     SERIALIZABLE_CLASS(CatchClause);
@@ -66,9 +76,7 @@ public:
     {
       ar & node_names;
       ar & catch_expr;
-      ar & errorcode_var;
-      ar & errordesc_var;
-      ar & errorobj_var;
+      ar & vars;
     }
 
     CatchClause() {}

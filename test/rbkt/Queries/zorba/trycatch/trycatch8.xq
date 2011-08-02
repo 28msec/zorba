@@ -10,6 +10,6 @@ import module namespace lib = 'http://www.example.com/lib' at "trycatch8.xqlib";
 
 try {
   lib:error()
-} catch * ($error_code, $desc, $obj) {
-  $error_code, $desc, $obj
+} catch * {
+  $err:code, $err:description, $err:value
 }

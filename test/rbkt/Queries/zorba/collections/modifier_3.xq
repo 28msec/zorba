@@ -3,6 +3,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace ns = "http://example.org/datamodule/" at "modifier_3.xqdata";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare %ann:sequential function local:ddl() {
     ddl:create-collection(xs:QName("ns:coll_1"), (<a><x/></a>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>));
@@ -15,8 +16,8 @@ declare %ann:sequential function local:test1() {
       return
         insert node <x/> into $x;
     }
-  } catch * ($error) {
-    exit returning ("1",$error);
+  } catch *  {
+    exit returning ("1",$err:code);
   }
 };
 
@@ -27,8 +28,8 @@ declare %ann:sequential function local:test2() {
       return
         delete node $x;
     }
-  } catch * ($error) {
-    exit returning ("2",$error);
+  } catch *  {
+    exit returning ("2",$err:code);
   }
 };
 
@@ -39,8 +40,8 @@ declare %ann:sequential function local:test3() {
       return
         rename node $x as "blabla";
     }
-  } catch * ($error) {
-    exit returning ("3",$error);
+  } catch *  {
+    exit returning ("3",$err:code);
   }
 };
 
@@ -51,8 +52,8 @@ declare %ann:sequential function local:test4() {
       return
         replace node $x/x with <y/>;
     }
-  } catch * ($error) {
-    exit returning ("4",$error);
+  } catch *  {
+    exit returning ("4",$err:code);
   }
 };
 

@@ -295,11 +295,12 @@ external_function_errors_3(Zorba* aZorba)
 
   std::ostringstream queryText;
   queryText << "declare namespace foo=\"urn:foo\";" "\n"
+            << "declare namespace err=\"http://www.w3.org/2005/xqt-errors\";" "\n"
             << "declare function foo:func3() external;" "\n"
             << "try {" "\n"
             << "foo:func3()" "\n"
-            << "} catch * ($errcode, $errdesc) {" "\n"
-            << "  $errcode, $errdesc" "\n"
+            << "} catch * {" "\n"
+            << "  $err:code, $err:description" "\n"
             << "}" "\n";
     
   XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
@@ -323,11 +324,12 @@ external_function_errors_4(Zorba* aZorba)
 
   std::ostringstream queryText;
   queryText << "declare namespace foo=\"urn:foo\";" "\n"
+            << "declare namespace err=\"http://www.w3.org/2005/xqt-errors\";" "\n"
             << "declare function foo:func4() external;" "\n"
             << "try {" "\n"
             << "foo:func4()" "\n"
-            << "} catch * ($errcode, $errdesc, $errval) {" "\n"
-            << "  $errcode, $errdesc, $errval" "\n"
+            << "} catch * {" "\n"
+            << "  $err:code, $err:description, $err:value" "\n"
             << "}" "\n";
     
   XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 

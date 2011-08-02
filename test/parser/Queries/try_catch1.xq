@@ -7,6 +7,6 @@ catch err:XPST0051 {
 catch err:XPST0080 {
   "text"
 }
-catch * ($error) {
-  "Error: " ,$error 
+catch *  {
+  "Error: " ,$err:code
 }
