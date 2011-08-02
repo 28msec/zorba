@@ -101,14 +101,14 @@ Zorba provides a way that allows the developer of a module to specify a version 
 An importing module can specify restriction on the version of a module it wants to use.
 This allows developers to easily declare dependencies between particular versions of a module.
 In addition, a module can specify on which version of Zorba it depends.
-Details about module versioning can be found at \ref ml_packs_versioning.
+Details about module versioning can be found at \ref mod_versioning.
 
 The options to declare the module and zorba version are listed here for completeness.
 
-To declare version 2.0 of a module that depends on version 2.0 of Zorba, the following option declaration may be used.
+To declare version 2.5 of a module that depends on version 2.0 of Zorba, the following option declaration may be used.
 \code
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "2.5";
 declare option ver:zorba-version "2.0";
 \endcode
 

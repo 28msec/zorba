@@ -1,0 +1,20 @@
+/** \page modules_top Modules in Zorba
+
+Zorba's functionality can be greatly extended through the use of
+<i>modules</i>. Modules are libraries of XQuery functions and
+variables which provide additional functionality.
+
+The Zorba code includes a few key modules, for example to access data
+from the local filesystem or the web. In addition, the Zorba team
+supports a large number of external modules ranging from support for
+other data languages (JSON, CSV...) to data-cleaning and image
+processing. For a complete list of these modules, see: <b><a
+href="../xqdoc/xhtml/index.html">XQuery Module Library</a></b>.
+
+To write queries using these modules, first read <b>\ref
+mod_importing</b>, and then <b>\ref mod_versioning</b>.
+
+You can also write your own modules to encapsulate features or for
+re-use by others. For information on this, see <b>\ref mod_authoring</b>.
+
+*/

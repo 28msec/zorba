@@ -12,8 +12,7 @@ import schema namespace r = "http://example" at "example.xsd";
 
 For a full example see the \ref example1 below.
 
-For more information on how the schema import, in this case <tt>example.xsd</tt>, 
-is resolved to the <tt>example.xsd</tt> file on the file system see \ref uriresolvers .
+Note: for simplicity, the examples on this page make use of the "at <filename>" clause of <tt>import schema</tt> to explicitly load a specific schema file. However, when developing XQuery applications, it is usually better to omit this clause, and make use of Zorba's extensive URI-resolution mechanisms to load schemas by URI. For details on this, see \ref uriresolvers.
 
 \section validateExpr Validate expression
 Use validate expression to validate an untyped document against an XMLSchema.

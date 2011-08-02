@@ -15,11 +15,11 @@
 
 <b><a href="../xqdoc/xhtml/index.html">XQuery Module Library</a></b>
 
-<b>\ref module_lifecycle</b>
+<b>\ref modules_top</b>
 <ul>
-  <li>\ref ml_importing_module</li>
-  <li>\ref ml_packs_versioning</li>
-  <li>\ref ml_creating_module</li>
+  <li>\ref mod_importing</li>
+  <li>\ref mod_versioning</li>
+  <li>\ref mod_authoring</li>
 </ul>
 
 <b>\ref storing_manipulating_data</b>

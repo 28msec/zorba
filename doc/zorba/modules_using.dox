@@ -1,0 +1,176 @@
+/** \page modules_using Using Modules in Zorba
+
+\section mod_importing Importing Modules
+
+To make use of a particular module in your query, you must first
+<i>import</i> the module. XQuery provides standard syntax for doing
+this:
+
+\code
+import module namespace file = "http://expath.org/ns/file";
+\endcode
+
+This will load all the functions and variables declared by the named
+module into your query, and associate the specified prefix (in this
+case "file") with the URI of the module. You can then utilize these
+functions in your query:
+
+\code
+import module namespace file = "http://expath.org/ns/file";
+
+if (file:is-file("foo.txt"))
+then file:delete("foo.txt")
+else ()
+\endcode
+
+You may import as many modules as you wish, so long as each is at a
+unique URI and is associated with a unique prefix.
+
+Note: the URI specified to <tt>import module</tt> will be resolved by
+Zorba's URI resolution mechanism; often this will result in the module
+being loaded from the local filesystem, even though most module URIs
+are in the <tt>http:</tt> scheme. For more information on this
+mechanism, see \ref uriresolvers.
+
+Alternately, you can load a specific file as a module as follows:
+
+\code
+import module namespace file = "http://expath.org/ns/file" at "file.xq";
+\endcode
+
+As discussed on \ref uriresolvers, this technique is usually best
+avoided in larger applications; however, it is useful for quick
+testing and debugging.
+
+\section mod_versioning Versioning Modules
+
+Zorba extends XQuery with the concept of <i>versioned modules</i>. A
+given module may be made available in several versions over time, and
+a given installation of Zorba may have multiple versions available.
+
+Version numbers for modules in Zorba are of the form
+<i>major.minor[.patch]</i>. For example: "1.0", "2.5", and "2.5.1" are
+all legal version numbers.
+
+You import a particular version of a module by specifying the version
+number as a <i>fragment</i> at the end of the module's namespace URI.
+For instance, to import version 2.0 of the file module:
+
+\code
+import module namespace file = "http://expath.org/ns/file#2.2";
+\endcode
+
+\subsection mod_ver_implies Implications of Version Numbers
+
+Zorba presumes that a given <i>minor</i> version is
+backwards-compatible with any earlier <i>minor</i> version, but that
+later <i>minor</i> versions introduce additional API features that are
+not available in earlier versions. It will therefore allow a later
+<i>minor</i> version to be imported than is specified in the
+<tt>import module</tt> statement.  For example, if version 2.4 of the
+file module is available, the above import statement will load it,
+even though the import statement specifies 2.2. On the other hand, if
+only version 2.0 of the file module available, the above import
+statement will <b>not</b> load it, because it is assumed that the
+query depends on features which were not introduced until version 2.2.
+
+Zorba presumes that a given <i>major</i> version may have incompatible
+changes to its API compared to a lower major version. It will
+therefore <b>not</b> allow a later <i>major</i> version to be imported
+than is specified in the <tt>import module</tt> statement. For
+example, if only version 3.3 of the file module is available, the
+above import statement will <b>not</b> load it, because it is assumed
+that version 3.x has API differences that are incompatible with
+version 2.x.
+
+Zorba treats <i>patch</i> versions (if present) in the same way as
+<i>minor</i> versions: they effectively occur "between" minor
+versions, and it is presumed that they may introduce new APIs which
+are not available in lower versions. So, given:
+
+\code
+import module namespace file = "http://expath.org/ns/file#2.5.2";
+\endcode
+
+Zorba will, for example, import version 2.5.3, 2.6, or 2.6.1 if one of
+them is available. It will <b>not</b> import version 2.5.1 or 2.5.
+
+\subsection mod_ver_specifying Specifying Version Ranges
+
+You may import a range of version numbers, in which case Zorba will
+import the latest available version which matches the range. For
+example, if you know that any 2.x or 3.x version of the file module
+provides the APIs your query requires, you can use:
+
+\code
+import module namespace file = "http://expath.org/ns/file#2.0-3.0";
+\endcode
+
+Zorba will import the latest 3.x version available; or, if there are
+no 3.x versions, then it will import the latest 2.x version.
+
+If you know you depend on functionality that was introduced in version
+2.2, but that 3.x also will work, you can use:
+
+\code
+import module namespace file = "http://expath.org/ns/file#2.2-3.0";
+\endcode
+
+In this case, Zorba will import the latest 3.x version available; or,
+if there are no 3.x versions, then it will import the latest 2.x
+version so long as it is at least 2.2.
+
+\subsection mod_ver_invalid Invalid Version Ranges
+
+Zorba presumes that all <i>minor</i> version increments are
+backwards-compatible. Therefore, the second version specified in a
+version range is actually "open-ended", because any higher
+<i>minor</i> (or <i>patch</i>) version may also be imported by
+Zorba. Because of this, the following version ranges are not valid:
+
+\code
+(: Invalid import specification :)
+import module namespace file = "http://expath.org/ns/file#2.2-3.8";
+\endcode
+\code
+(: Invalid import specification :)
+import module namespace file = "http://expath.org/ns/file#2.2-2.4";
+\endcode
+
+In fact, to ensure that there is no confusion about this, Zorba
+requires that the second version in a version range be of the form
+"X.0" - that is, the minor version must be "0", and there must be no
+patch version.
+
+\subsection mod_ver_explicit Explicit Version Import
+
+Zorba does allow one override of its assumptions about API
+compatibility. If you wish to import version 2.4 and no other version
+(even a higher minor version), use:
+
+\code
+import module namespace file = "http://expath.org/ns/file#2.4!";
+\endcode
+
+with an exclamation point (!) after the version.
+
+This should only be used in cases where the module author did not
+follow Zorba's conventions, and introduced backwards-incompatible
+changes in version 2.5. This feature is intentionally very limited, as
+it is not recommended practice. In particular, you cannot use ! in
+conjunction with version ranges.
+
+\subsection mod_ver_none Importing with No Version Fragment
+
+If you import a module <i>without</i> specifying a version fragment,
+then Zorba will import the highest available version of the module,
+regardless of major number.
+
+This is necessary to support modules from other sources that do not
+use Zorba's versioning mechanism. However, it is not recommended that
+you use this kind of import for a module that <i>is</i> versioned,
+because you cannot control which major version of the module you will
+get. This could lead to your query breaking in future when an updated,
+backwards-incompatible version of the module is released.
+
+*/
