@@ -379,6 +379,13 @@ As a fairly silly but functional example, here is a URL Resolver that
 returns a small hard-coded module for a specific URL:
 
 \code
+   using namespace zorba;
+
+   static void streamReleaser(std::istream* aStream)
+   {
+     delete aStream;
+   }
+
    class FoobarModuleURLResolver : public URLResolver
    {
      public:
@@ -391,11 +398,10 @@ returns a small hard-coded module for a specific URL:
        if (aEntityData->getKind() == EntityData::MODULE &&
          aUrl == "http://www.example.com/foobar") 
        {
-         return new StreamResource
-           (std::auto_ptr<std::istream>(
-             new std::istringstream
+         return StreamResource::create
+           (new std::istringstream
              ("module namespace lm = 'http://www.example.com/foobar'; "
-               "declare function lm:foo() { 'foo' };")));
+              "declare function lm:foo() { 'foo' };"), &streamReleaser);
        }
        else {
          return NULL;
@@ -410,15 +416,22 @@ content for those URLs from a database. As long as the database API
 allows you to obtain the information as a <code>std::istream</code>,
 you may stream this data directly to Zorba.
 
-Note that <code>StreamResource</code>'s constructor takes a
-<code>std::auto_ptr<></code> to a <code>std::istream</code>. This is
-to accentuate the fact that the <code>StreamResource</code> object
-itself takes memory ownership of the <code>istream</code>, and will
-free it when it is no longer required.
-
-Zorba will take memory ownership of any <code>Resource</code> object
-returned from a URL Resolver, and will free it when it is no longer
-required.
+Two notes about memory management: First, when a user-defined
+<code>URLResolver</code> returns a <code>Resource</code>, Zorba will
+take memory ownership of the <code>Resource</code>, and will free it
+when it is no longer needed. Second, when user code creates a
+<code>StreamResource</code>, the <code>StreamResource</code> assumes
+memory ownership of the <code>std::istream</code> that is wrapped.
+However, Zorba cannot free the <code>std::istream</code> itself,
+because it was instantiated inside user code rather than inside
+Zorba's own library. On Windows, in some circumstances, if a DLL
+deletes an object that was not instantiated inside that DLL, the
+application will crash. Therefore, the <code>StreamResource</code>
+factory function <code>create()</code> also takes a
+<code>StreamReleaser</code>, which is a function pointer. Zorba will
+call this function pointer, passing the <code>std::istream</code>,
+when it is no longer needed; the function is expected to free the
+<code>std::istream</code>.
 
 Unlike <code>mapURI()</code>, it is acceptable for
 <code>resolveURL</code> to throw exceptions. A URL Resolver should
