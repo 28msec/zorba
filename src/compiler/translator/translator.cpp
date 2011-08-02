@@ -3394,6 +3394,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       {
         RAISE_ERROR(zerr::XSST0002, loc, ERROR_PARAMS(fname));
       }
+
+      if (!body->is_sequential())
+      {
+        theCCB->theXQueryDiagnostics->add_warning(
+        NEW_XQUERY_WARNING(zwarn::ZWST0003_FAKE_SEQUENTIAL_FUNCTION,
+                           WARN_PARAMS(fname),
+                           WARN_LOC(loc)));
+      }
     }
     else if (udf->isUpdating())
     {

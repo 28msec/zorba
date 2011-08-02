@@ -1,12 +1,12 @@
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare %ann:sequential function local:magic-trick() 
+declare function local:magic-trick() 
 {
   exit returning ("magician's hat:", "rabbit");
   exit returning ("dead code"); 
 };
 
-declare %ann:sequential function local:professional-magician() 
+declare function local:professional-magician() 
 {
   let $res := local:magic-trick()
   return

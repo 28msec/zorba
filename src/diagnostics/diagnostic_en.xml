@@ -2254,6 +2254,10 @@
       <value>"$1": unknown or unsupported annotation</value>
     </diagnostic>
 
+    <diagnostic code="ZWST0003" name="FAKE_SEQUENTIAL_FUNCTION">
+      <value>"$1": function declared sequential, but has non-sequential body</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->

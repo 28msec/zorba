@@ -352,6 +352,7 @@ extern entry const dict_en[] = {
   { "ZSTR0060", "out of range: $1" },
   { "ZWST0001", "\"$1\": variable declared but not used" },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
+  { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQP0000", "no error" },

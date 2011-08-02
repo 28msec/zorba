@@ -1071,6 +1071,9 @@ ZorbaWarningCode ZWST0001_UNUSED_VARIABLE( "ZWST0001" );
 ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION( "ZWST0002" );
 
 
+ZorbaWarningCode ZWST0003_FAKE_SEQUENTIAL_FUNCTION( "ZWST0003" );
+
+
 } // namespace zwarn
 
 } // namespace zorba

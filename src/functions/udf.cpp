@@ -171,12 +171,17 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
 ********************************************************************************/
 short user_function::getScriptingKind() const 
 {
+  // Return the declared scripting kind. If the declared kind is updating/sequential,
+  // but the function body is not really updating/sequential, an error/warning is
+  // raised by the translator.
+  return theScriptingKind;
+
+#if 0
   if (theBodyExpr == NULL)
-  {
     return theScriptingKind;
-  }
 
   return theBodyExpr->get_scripting_detail();
+#endif
 }
 
 

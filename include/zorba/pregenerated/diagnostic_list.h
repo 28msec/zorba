@@ -730,6 +730,8 @@ extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0001_UNUSED_VARIABLE;
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION;
 
+extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0003_FAKE_SEQUENTIAL_FUNCTION;
+
 } // namespace zwarn
 } // namespace zorba
 #endif /* ZORBA_DIAGNOSTIC_LIST_API_H */

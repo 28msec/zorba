@@ -20,7 +20,8 @@ opened bug #3152386
 :)
 (: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
 (:
-declare %ann:sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
+declare %ann:sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) 
+{
   let $serParams := 
     <output:serialization-parameters>
         <output:method value="xml"/>
@@ -41,11 +42,13 @@ declare %ann:sequential function util:download-and-write-spec($specVersion as xs
       file:write($docPath, http-expath:send-request($req, ())[2], $serParams)
 };
 :)
-declare %ann:sequential function util:create-spec-function-arity-sequence(
+
+
+declare function util:create-spec-function-arity-sequence(
   $docPath as xs:string,
   $xquery_version as xs:string)
-as xs:string* {
-
+as xs:string* 
+{
   let $docSpec := fn:doc($docPath)
 
   let $functionsSpec :=
@@ -107,8 +110,10 @@ as xs:string* {
         )
 };
 
+
 declare function util:create-zorba-function-arity-sequence($functionNames as xs:QName*)
-as xs:string* {
+as xs:string* 
+{
   for $funcQname in $functionNames
   where (fn:namespace-uri-from-QName($funcQname) = "http://www.w3.org/2005/xpath-functions")
   order by fn:local-name-from-QName($funcQname)

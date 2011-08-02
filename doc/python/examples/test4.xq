@@ -2,7 +2,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare variable $x := 1;
 
-declare %ann:sequential function local:f () 
+declare function local:f () 
 {
   variable $x := 2;
   variable $y := $x;
