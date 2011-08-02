@@ -67,7 +67,7 @@ XQDDF to manage (ddl) and manipulate (dml) collections, indexes, and integrity c
   <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a> (prefix: icddl)</li>
 </ul>
 
-As usual, these module must be imported by any other module that wants to invoke any of the XQDDF functions.
+As usual, these modules must be imported by any other module that wants to invoke any of the XQDDF functions.
 
 \section collections Collections
 
@@ -87,7 +87,7 @@ collections. We will also use the term <strong>"document"</strong> to refer to
 any XML tree whose root is a parent-less node of any kind (not necessarily a
 document node).
 
-<h3><a name="collection">An XQDDF collection</a></h3> is defined as an ordered
+<h3><a name="collection">XQDDF Collections</a></h3> An XQDDF collection is defined as an ordered
 set of documents that is disjoint from any other collection and is uniquely
 identified by a QName. Furthermore, with respect to document order, the relative
 order of two nodes belonging to different documents within the same collection
@@ -95,7 +95,7 @@ is defined to be the same as the relative position of their containing documents
 within the collection. We will say that a node belongs to a collection if it is
 inside a document that belongs to that collection.
 
-Like a W3C collection, an <a href="#collection">XQDDF collection</a> can also be
+Like a W3C collection, an <a href="#collection">XQDDF collection</a> can be
 viewed as a sequence of nodes: it is the sequence containing the root nodes of
 the documents that belong to the collection (and as we will see later, the
 function <a href="#cdml_collection"

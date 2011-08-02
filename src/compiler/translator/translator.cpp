@@ -3424,6 +3424,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       RAISE_ERROR(err::XUST0001, loc, ERROR_PARAMS(ZED(XUST0001_UDF_2), fname));
     }
 
+    // sequential udfs are implicitly declared as non-deterministic (even if
+    // they are actuall deterministic). We do this to avoid having to declare
+    // a udf as both sequential and non-deterministic. It is OK to do this,
+    // because the optimization constraints imposed by sequential are a superset
+    // of those imposed by non-deterministic.
+    if (udf->isSequential())
+      udf->setDeterministic(false);
+
     // If function has any params, they have been wraped in a flwor expr. Set the
     // return clause of the flwor to the body expr of the function, and then make
     // this flwor be the actual body of the function.
