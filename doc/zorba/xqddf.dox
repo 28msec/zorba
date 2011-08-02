@@ -225,15 +225,13 @@ associated document container.
 
   import module namespace cddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
-  import schema namespace news-schemas = "http://www.news.org/schemas";
-
   import module namespace news-data = "http://www.news.org/data";
 
   cddl:create-collection($news-data:employees);
 
   cddl:create-collection($news-data:articles);
 
-  cddl:create-collection($news-data:months, (<month name="Jan">...</month>, ..., <month name="Dec">...</month>)));
+  cddl:create-collection($news-data:months, (<month name="Jan">...</month>, ..., <month name="Dec">...</month>));
 \endcode
 
 The next script ("user-script-1") shows how collections may be used. First the
@@ -283,14 +281,6 @@ nodes that belong to the collection. The function looks up the collection
 declaration and the collection container, and removes the source nodes from the
 collection container.
 
-Notice that the whole user-script-1 is organized as a concatenation of three
-block expressions. Only the second block produces an actual result, the other
-two are purely updating blocks (their result is the empty sequence). Writing the
-query as a concatenation of blocks (instead of a single sequential expression),
-allows the result of the script to be the concatenation of the results of each
-block (instead of the result of just the last expression in the sequential
-expression).
-
 \code
   (: "user-script-1":)
 
@@ -300,27 +290,22 @@ expression).
 
   import module namespace news-data = "http://www.news.org/data";
 
-  block
-  {
-    cdml:insert-nodes($news-data:employees, (<employee id="100">....</employee>, ..., <employee id="500">...</employee>);
+  cdml:insert-nodes($news-data:employees, (<employee id="100">...</employee>, ..., <employee id="500">...</employee>));
 
-    (cdml:insert-nodes($news-data:articles, doc("article1.xml)/article),
-     cdml:insert-nodes($news-data:articles, rest:get("http://www.reuters.com.xml/article234.xhtml")//article),
-     ....,
-     cdml:insert-nodes($news-data:articles, doc("article100.xml)/article));
-  },
-  block
-  {
-    for $emp in cdml:collection($news-data:employees)[./position/@kind eq "journalist"]
-    let $articles := for $art in cdml:collection($news-data:articles)[.//author//name eq $emp/name]
-                     order by $art//date
-                     return $art
-    return <result>{$emp}<articles>{$articles//title}</articles></result>,
-  },
-  block
-  {
-    cdml:delete-nodes(cdml:collection($news-data:articles)[.//date lt xs:date("01/01/2000")];
-  }
+  (
+    cdml:insert-nodes($news-data:articles, doc("article1.xml")/article),
+    cdml:insert-nodes($news-data:articles, rest:get("http://www.reuters.com.xml/article234.xhtml")//article),
+    ....,
+    cdml:insert-nodes($news-data:articles, doc("article100.xml")/article)
+  );
+
+  for $emp in cdml:collection($news-data:employees)[./position/@kind eq "journalist"]
+  let $articles := for $art in cdml:collection($news-data:articles)[.//author//name eq $emp/name]
+                   order by $art//date
+                   return $art
+  return <result>{$emp}<articles>{$articles//title}</articles></result>;
+
+  cdml:delete-nodes(cdml:collection($news-data:articles)[.//date lt xs:date("01/01/2000")]);
 \endcode
 
 We conclude this example with the "admin-script-2" script, which simply destroys
@@ -453,7 +438,7 @@ update primitives are described below:
 \code
   declare updating function cdml:create_collection($collectionName as xs:QName)
 
-  upd:createCollection($collectionName as xs:QName).
+  upd:createCollection($collectionName as xs:QName)
 \endcode
 
 The function is evaluated as follows:
@@ -1080,6 +1065,8 @@ where different kinds of employees have ids of different data types.
 
   module namespace news-data = "http://www.news.org/data";
 
+  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
   declare namespace ann = "http://www.zorba-xquery.com/annotations";
@@ -1091,7 +1078,7 @@ where different kinds of employees have ids of different data types.
   declare %ann:const %ann:ordered %ann:read-only-nodes collection news-data:months
     as schema-element(news-schema:month)*;
 
-  declare %ann:automatic %an:value-equality index news-data:CityEmp
+  declare %ann:automatic %ann:value-equality index news-data:CityEmp
     on nodes cdml:collection(xs:QName("news-data:employees"))/employee
     by .//station/city as xs:string;
 
@@ -1257,11 +1244,11 @@ counterparts.
 \code
   (: The "no-probe-1" query :)
 
-  import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
-  idml:collection($news-data:employees)/employee[.//station/city eq "Paris"]
+  cdml:collection($news-data:employees)/employee[.//station/city eq "Paris"]
 \endcode
 
 <a name="query_no_probe_2" id="query_no_probe_2"></a>
