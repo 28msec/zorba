@@ -77,6 +77,9 @@ ADD_CUSTOM_TARGET (gen_diag_modules
           ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/errors.xq
           ${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq
 )
+SET_TARGET_PROPERTIES (gen_diag_modules PROPERTIES
+  FOLDER "Modules"
+)
 
 IF (WIN32)
   SET(DIAGNOSTICS_SRCS ${DIAGNOSTICS_SRCS} StackWalker.cpp)
