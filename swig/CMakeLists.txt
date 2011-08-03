@@ -33,7 +33,13 @@ IF (SWIG_FOUND)
   ENDIF (APPLE AND CMAKE_MINOR_VERSION GREATER 6)
 
   ADD_SUBDIRECTORY (python)
-  ADD_SUBDIRECTORY (php)
+
+  IF (APPLE)
+    # the php binding is not supported on Mac (see bug #3371525)
+  ELSE (APPLE)
+    ADD_SUBDIRECTORY (php)
+  ENDIF (APPLE)
+
   ADD_SUBDIRECTORY (java)
 
   IF (APPLE AND UNIVERSAL)
