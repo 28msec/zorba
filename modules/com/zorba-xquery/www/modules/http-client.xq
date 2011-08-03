@@ -450,7 +450,7 @@ declare %ann:sequential function http:put($href as xs:string, $body as item(), $
  :)
 declare %ann:sequential function http:delete($href as xs:string) as item()+
 {
-  http:http-nondeterministic-impl(
+  http:http-sequential-impl(
     validate {
       <http-schema:request method="DELETE" href="{$href}">
       </http-schema:request>
