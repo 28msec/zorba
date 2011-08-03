@@ -1,0 +1,12 @@
+/** \page mod_building_in Building Modules Into Zorba
+
+Once you have created a module project (see \ref mod_authoring)
+containing modules and schemas, there are two different ways that you
+can build those modules directly into Zorba, such that they are on
+Zorba's default module path and will be found automatically.
+
+\section mod_installing_in Installing Modules Into Zorba
+
+\section mod_baking_in Building Zorba With Additional Modules
+
+*/

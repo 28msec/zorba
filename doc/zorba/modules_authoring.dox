@@ -1,4 +1,292 @@
 /** \page mod_authoring Writing Your Own Modules
 
+Writing your own modules for Zorba is easy. This guide will cover
+writing a simple XQuery module; using Zorba's CMake-based build system
+to deploy the module; versioning your module; and writing a more
+complex module with external functions implemented in C++.
+
+\section mod_author_simple Creating a Simple XQuery Module
+
+A "module" is simply a library of XQuery functions and variables,
+usually which perform a set of related functions. Modules are defined
+by the XQuery language specification.
+
+A module exists in a particular <i>namespace</i>, which is identified
+by a URI. A module must start with a module <i>declaration</i>, which
+specifies the namespace URI and associates that URI with a prefix for
+easy reference.
+
+\code
+module namespace mymod = "http://www.zorba-xquery.com/mymod";
+\endcode
+
+After the module declaration, you may have as many <i>function</i> or
+<i>variable</i> declarations as you like. All of the functions and
+variables you declare in the modules namespace will be made available
+to queries that <i>import</i> your module.
+
+Here we declare a module which exposes a string variable (and assign
+it a value), as well as two simple functions.
+
+\code
+module namespace mymod = "http://www.zorba-xquery.com/mymod";
+
+declare variable $mymod:value as xs:string := "my string value";
+
+declare function mymod:hello() as xs:string {
+  "hello"
+};
+
+declare function mymod:get-value() as xs:string {
+  $mymod:value
+};
+\endcode
+
+Assuming for the moment that this file is stored in the current
+working directory as <tt>mymod.xq</tt>, we can write a query which
+imports the module and uses one of its functions:
+
+\code
+import module namespace mymod="http://www.zorba-xquery.com/mymod"
+  at "mymod.xq";
+
+mymod:hello()
+\endcode
+
+If this query is in a file called <tt>query.xq</tt> in the current
+working directory, we can execute it:
+
+\code
+% zorba -f -q query.xq
+<?xml version="1.0" encoding="UTF-8"?>
+hello
+\endcode
+
+\section mod_author_project Creating a CMake Module Project
+
+As mentioned in \ref mod_importing, using the <tt>at "..."</tt>
+clauses when importing modules is best avoided. There are also many
+ways to expand upon this example, such as introducing versioning for
+our module; importing schemas; depending on other modules; writing
+external function implementations in C++; and creating test cases to
+ensure your module's functionality.
+
+Zorba offers a comprehensive system for module authors to do all of
+the above easily and consistently, utilizing the same build tool that
+Zorba itself utilizes: CMake (http://www.cmake.org/). If you plan to
+write Zorba modules for use by other developers, we strongly recommend
+creating a CMake project so that you may easily integrate with Zorba
+and other modules.
+
+Assuming that you have cmake installed (it is available in most Linux
+distributions, and installers are available for Windows and MacOS - it
+is also part of MacPorts), creating a project for a Zorba module is
+very easy. First, in a new directory, copy the <tt>mymod.xq</tt> file
+from above, and create a file named <tt>CMakeLists.txt</tt>:
+
+\code
+# My Zorba Module Project
+
+PROJECT (my_zorba_module)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+
+FIND_PACKAGE (Zorba REQUIRED)
+INCLUDE ("${Zorba_USE_FILE}")
+
+DECLARE_ZORBA_MODULE (FILE mymod.xq URI "http://www.zorba-xquery.com/mymod")
+
+DONE_DECLARING_ZORBA_URIS ()
+\endcode
+
+This is the minimum required "boilerplate" for your CMake project.
+Here is a brief explanation for each line:
+
+\code
+# My Zorba Module Project
+\endcode
+
+This is a CMake comment.
+
+\code
+PROJECT (my_zorba_module)
+\endcode
+
+CMake groups build environments into <i>projects</i>, which must have
+unique names. The name can be anything you like, but should be
+descriptive. In future, if other module projects depend on your
+module project, they will use this name to identify it.
+
+\code
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+\endcode
+
+CMake has introduced many new features over time; Zorba's CMake
+support requires at least CMake version 2.6. Without the above line,
+your project will still work (assuming you are in fact using at least
+CMake 2.6), but will display a warning.
+
+\code
+FIND_PACKAGE (Zorba REQUIRED)
+INCLUDE ("${Zorba_USE_FILE}")
+\endcode
+
+CMake has an exhaustive facility for introspecting your development
+environment and finding dependencies. The <tt>FIND_PACKAGE()</tt>
+command will search for many things, including other CMake projects
+such as Zorba. Zorba ships CMake configuration files allowing it to be
+found in this way, and these configuration files tell our
+project where Zorba is located as well as setting a number of other useful
+variables describing the Zorba environment.
+
+One such variable, <tt>${Zorba_USE_FILE}</tt>, is a pointer to a CMake
+script containing a variety of utility CMake macros that are very
+useful when developing modules. By using <tt>INCLUDE()</tt> to load
+this file, we gain access to everything we need to build our module.
+(This "use file" technique is a convention for CMake projects.)
+
+\code
+DECLARE_ZORBA_MODULE (FILE mymod.xq URI "http://www.zorba-xquery.com/mymod")
+\endcode
+
+<tt>DECLARE_ZORBA_MODULE()</tt> is the centerpiece of the Zorba module
+development environment; most of the rest of this guide will be
+describing how to use it in detail.
+
+\code
+DONE_DECLARING_ZORBA_URIS()
+\endcode
+
+This must be the last thing called by your top-level
+<tt>CMakeLists.txt</tt> file. It collects all the information provided
+by earlier calls to <tt>DECLARE_ZORBA_MODULE()</tt> (and its sister
+macro, <tt>DECLARE_ZORBA_SCHEMA()</tt>, described later) and generates
+all the necessary build system rules and targets.
+
+\section mod_author_building Building the Module Project
+
+You have created a small but complete Zorba module CMake project.
+Now, the project must be built. One of the great things about CMake is
+that it is capable of creating build environments for a number of
+different tools. On Unix systems (include Windows with Cygwin), it can
+create a Makefile-based environment.  It can also create projects for
+the KDevelop, Code::Blocks, and QtCreator IDEs, among others, and has
+some support for Eclipse as well. On MacOS, it can create Xcode
+projects.  On Windows, it can create Visual Studio projects, and it
+can also create a Makefile-based environment for use with Visual
+Studio's nmake utility. See CMake's documentation for more details and
+other supported build environments.
+
+This guide will focus on a Makefile environment, but it should be
+equally applicable to all others.
+
+CMake encourages the use of "out-of-source" builds; that is, all files
+that are generated by the build are created in a directory which is
+separate from the source code. This is good practice. One common
+convention is to create a directory named <tt>build</tt> as a
+subdirectory of the top-level directory of the project, so from the
+command-line, execute the following commands from your project
+directory:
+
+\code
+mkdir build
+cd build
+cmake ..
+\endcode
+
+The <tt>cmake ..</tt> command tells CMake to create a build
+environment based on the source directory <tt>..</tt>, that is, the
+parent directory. You could also create your build directory anywhere
+on the system, in which case, you simply provide the full absolute or
+relative path to your source directory as the argument to
+<tt>cmake</tt>.
+
+If you have Zorba installed in a standard system-wide location, the
+above will likely be all you need to do. However, if the
+<tt>cmake</tt> step does not find Zorba, you can point CMake in the
+right direction like this:
+
+\code
+cmake -DCMAKE_PREFIX_PATH=/path/to/zorbaroot ..
+\endcode
+
+"zorbaroot" is the root directory of a Zorba installation; it should
+contain <tt>bin/zorba</tt> among other files.
+
+The default build configuration for CMake is "Unix Makefiles". If you
+are building using a different tool set, you must provide the
+<tt>-G</tt> option to <tt>cmake</tt>. For example, if you wish to
+create a Visual Studio 10 project, use:
+
+\code
+cmake -G"Visual Studio 10" ..
+\endcode
+
+No matter what your eventual <tt>cmake</tt> command line ends up
+being, the nice thing is you will only need to execute it once.  From
+that point on, you can simply invoke the default build target in
+whatever build environment you have created. CMake sets up all
+dependencies correctly, and will automatically re-invoke itself if you
+modify the <tt>CMakeLists.txt</tt> file or make any other changes
+which would require <tt>cmake</tt> to generate the build environment
+again.
+
+So, go ahead and build! For Unix Makefiles, just type:
+
+\code
+make
+\endcode
+
+\section mod_author_built What Happens When You Build?
+
+For this very simple module project, not much happens when you build.
+You will probably see output similar to this:
+
+\code
+Scanning dependencies of target check_uris
+[  0%] Copying /tmp/myproject/mymod.xq to URI path
+[100%] Built target check_uris
+\endcode
+
+The primary result of building this project is that a directory named
+(by default) <tt>URI_PATH</tt> will be created in your build
+directory, containing all of your declared modules and schemas in an
+appropriate directory structure for Zorba's URI resolution mechanism
+(see \ref uriresolvers). This means that we can eliminate the <tt>at
+"..."</tt> clause from our test query which imports this module:
+
+\code
+import module namespace "http://www.zorba-xquery.com/mymod";
+
+mymod:hello()
+\endcode
+
+and then execute Zorba as follows:
+
+\code
+% zorba --module-path /tmp/myproject/build/URI_PATH -f -q query.xq
+<?xml version="1.0" encoding="UTF-8"?>
+hello
+\endcode
+
+By providing this one <tt>--module-path</tt> argument, Zorba will
+automatically be able to load any of our modules or schemas by URI,
+rather than requiring explicit filesystem paths to them. This makes it
+much easier to develop larger XQuery applications, because the entire
+application can be moved around easily, and you won't need to edit all
+of your queries to change the paths to load your modules as you move
+from development to production.
+
+ introducing versioning for
+our module; importing schemas; depending on other modules; writing
+external function implementations in C++; and creating test cases to
+ensure your module's functionality
+
+- maybe create modules_authoring_2.dox for all this?
+
+- maybe move mod_author_simple to modules_top.dox?
+
+\ref mod_building_in
+
+
 
 */
