@@ -731,7 +731,7 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:copy-
  :        separated by <pre>;</pre>.
  : @return The full path of the file to be resolved.
  :)
-declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:resolve-file-path(
+declare %private %ann:nondeterministic function xqdoc2html:resolve-file-path(
   $relativeFilePath as xs:string,
   $directoryPath as xs:string
 ) as xs:string
@@ -975,7 +975,7 @@ declare %private %ann:nondeterministic %ann:sequential function xqdoc2html:parse
  : @param $xqdoc the xqdoc functions.
  : @return a xs:boolean if there are external functions declared.
  :)
-declare %private %ann:sequential function xqdoc2html:contains-external-functions (
+declare %private function xqdoc2html:contains-external-functions (
   $xqdoc) as xs:boolean 
 {
   let $ext := count(for $sig in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:signature
