@@ -19,6 +19,7 @@
 
 #include <zorba/config.h>
 
+#if 0
 #ifndef ZORBA_NO_FULL_TEXT
 
 #include <zorba/stemmer.h>
@@ -52,6 +53,7 @@ private:
 } // namespace zorba
 
 #endif /* ZORBA_NO_FULL_TEXT */
+#endif
 #endif /* ZORBA_STEMMER_WRAPPERS_H */
 /*
  * Local variables:

@@ -32,10 +32,6 @@ SET(CONTEXT_SRCS
     features.cpp
     )
 
-IF (NOT ZORBA_NO_FULL_TEXT)
-  LIST(APPEND CONTEXT_SRCS stemmer_wrappers.cpp)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
-
 SET(CONTEXT_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/context/root_static_context_init.cpp
   )

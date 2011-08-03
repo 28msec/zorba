@@ -30,7 +30,7 @@ namespace zorba {
   class DiagnosticHandler;
   class StaticCollectionManagerImpl;
   class static_context;
-#ifndef ZORBA_NO_FULL_TEXT
+#if 0
   namespace internal {
     class StemmerProviderWrapper;
   }
@@ -62,7 +62,7 @@ protected:
   DiagnosticHandler                 * theDiagnosticHandler;
   bool                                theUserDiagnosticHandler;
 
-#ifndef ZORBA_NO_FULL_TEXT
+#if 0
   typedef std::map<StemmerProvider const*,internal::StemmerProviderWrapper const*>
   stemmer_providers_t;
 
@@ -185,7 +185,7 @@ public:
   virtual TypeIdentifier_t
   getCollectionType(const String& aCollectionUri) const;
 
-#ifndef ZORBA_NO_FULL_TEXT
+#if 0
   virtual void
   addStemmerProvider( StemmerProvider const* );
 

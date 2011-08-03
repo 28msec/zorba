@@ -58,7 +58,6 @@ SET(UNIT_TESTS_SRCS
   collection.cpp
   test_audit.cpp
   string_instantiate.cpp
-  stemmer_provider.cpp
   streamable_string.cpp
   string_test.cpp
   main_sequential.cpp
@@ -66,10 +65,6 @@ SET(UNIT_TESTS_SRCS
   invoke.cpp
   xquery_functions.cpp
 )
-
-IF(ZORBA_NO_FULL_TEXT)
-  LIST(REMOVE_ITEM UNIT_TESTS_SRCS "stemmer_provider.cpp")
-ENDIF(ZORBA_NO_FULL_TEXT)
 
 # multithread_simple.cpp
 # multithread_stress_test.cpp
