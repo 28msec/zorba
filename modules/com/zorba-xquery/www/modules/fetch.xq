@@ -22,37 +22,45 @@ xquery version "3.0";
  : For example, it fetches content for file or http resources if Zorba
  : allows file or http access, respectively.
  :
+ : <p>The errors raised by functions of this module have the namespace
+ : <tt>http://www.zorba-xquery.com/errors</tt> (associated with prefix zerr).</p>
+ :
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ :
  : @author Matthias Brantner
+ :
  : @project external
  :)
 module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : fetch:ErrRetrievingResource
- :)
-declare variable $fetch:ErrRetrievingResource as xs:QName :=
-  fn:QName("http://www.zorba-xquery.com/modules/fetch",
-           "fetch:ErrRetrievingResource");
-
-
-(:~
- : fetch:ResourceDoesNotExist
- :)
-declare variable $fetch:ResourceDoesNotExist as xs:QName :=
-  fn:QName("http://www.zorba-xquery.com/modules/fetch",
-           "fetch:ResourceDoesNotExist");
-
-(:~
- : Tries to fetch the resource referred to by the given URI.
- : 
- : @param $uri the resource to fetch to
- : @return the resource referred to by the given URI
- : @error fetch:ErrRetrievingResource if an error occurred
- :        retrieving the resource.
- : @error fetch:ResourceDoesNotExist if no resource could be found at
- :        the given location.
+ : <p>Tries to fetch the resource referred to by the given URI.</p>
+ :
+ : <p>In order to retrieve the content, the functions uses the
+ : URI resolution and URL resolver process as documented at
+ : <a href="../../html/uriresolvers.html">
+ : URI Resolvers</a>. Therefore, it queries all URI mappers
+ : and resolvers with kind <tt>EntityData::SOME_CONTENT</tt>.</p>
+ :
+ : <p>The function is annotated with the <tt>ann:streamable</tt>
+ : annotation, that is it returns a streamable string. A streamable
+ : string can only be consumed once. Please see section "Streamable Strings"
+ : in the <a href="../../html/options_and_annotations.html">
+ : documentation of Zorba's annotations</a>.
+ : </p>
+ :
+ : @param $uri the resource to fetch.
+ : @return the resource referred to by the given URI as streamble string.
+ :
+ : @error zerr:ZXQP0025 if the URI could not be resolved
+ :   or did not resolve to a <tt>StreamResource</tt>.
+ :
+ : @see <a href="../../doc/latest/zorba/html/uriresolvers.html">URI Resolvers</a>.
+ : @see <a href="../../zorba/html/options_and_annotations.html">Annotations</a>.
  :)
 declare %ann:streamable function fetch:content($uri as xs:string) as xs:string external;
