@@ -59,14 +59,14 @@
   <li><a class="el" href="../../php/html/index.html">PHP API</a></li>
 </ul>
 
-<b style="display:none;">\ref plugable_components</b>
+<b style="display:none;">\ref plugable_components </b>
 
 <b>W3C Specifications</b>
 <ul>
   <li>\ref overview</li>
-  <li><b><a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a></b>  (\ref conformance)</li>
-  <li><b><a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a></b>  (\ref conformance)</li>
-  <li><b><a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a></b>  (\ref conformance)</li>
+  <li><b><a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a></b>  (\ref conformanceXQTS)</li>
+  <li><b><a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a></b>  (\ref conformanceXQUTS)</li>
+  <li><b><a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a></b>  (\ref conformanceXQFTTS)</li>
   <li><b><a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a></b>  (\ref partial_support "Partial Support")</li>
   <li><b><a href="http://www.w3.org/XML/Schema">W3C XML Schema</a></b></li>
   <li><b><a href="http://www.w3.org/TR/xslt">W3C XSL Transformations (XSLT) 1.0</a></b></li>

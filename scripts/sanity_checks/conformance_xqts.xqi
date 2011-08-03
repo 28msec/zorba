@@ -1,0 +1,245 @@
+xquery version "3.0";
+
+module namespace conf  = "http://www.zorba-xquery.com/modules/conformance";
+
+import module namespace file = "http://expath.org/ns/file";
+import module namespace functx = "http://www.functx.com/";
+
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace xqCat = "http://www.w3.org/2005/02/query-test-XQTSCatalog";
+declare namespace xqRes = "http://www.w3.org/2005/02/query-test-XQTSResult";
+
+declare variable $conf:submissionXqueryX as xs:QName := xs:QName("conf:submissionXqueryX");
+declare collection conf:submissionXqueryX as node()*;
+
+declare variable $conf:submissionXquery as xs:QName := xs:QName("conf:submissionXquery");
+declare collection conf:submissionXquery as node()*;
+
+declare variable $conf:xquery as xs:QName := xs:QName("conf:xquery");
+declare collection conf:xquery as node()*;
+
+declare variable $conf:xqueryx as xs:QName := xs:QName("conf:xqueryx");
+declare collection conf:xqueryx as node()*;
+
+declare variable $conf:serParamXhtml :=
+  <output:serialization-parameters>
+    <output:method value="xhtml"/>
+    <output:indent value="yes"/>
+  </output:serialization-parameters>;
+  
+declare variable $conf:XQTS_PATH  as xs:string := "/tmp/XQTS_current";
+declare variable $conf:XQTS_submission as xs:string := 
+        "/tmp/XQTS_current/ReportingResults/zorba_11511_xqts_current_xquery_1_0.xml";
+declare variable $conf:XQTSX_submission as xs:string := 
+        "/tmp/XQTS_current/ReportingResults/zorba_11511_xqtsx_current_xquery_1_0.xml";
+
+declare variable $conf:XQuery   as xs:string := "XQuery";
+declare variable $conf:XQueryX  as xs:string := "XQueryX";
+
+declare function conf:count-available-tests($node) as xs:integer?
+{
+  if(count($node//xqCat:test-group) eq xs:integer(0)) then 
+    count($node//xqCat:test-case)
+  else
+    ()
+};
+
+declare function conf:failing-tests($node, $no_spaces as xs:integer)
+{
+  let $padding := functx:repeat-string(codepoints-to-string(160), $no_spaces)
+  return
+    (: if there are no sub-categories and there are tests in this category :)
+    if(count($node//xqCat:test-group) eq xs:integer(0)) then 
+    {
+      (: list all tests that are not passing in either XQuery or XQueryX :)
+      for $testCase in $node//xqCat:test-case
+      let $testCaseName := data($testCase/@name)
+      let $xqTmp  := data(dml:collection( xs:QName("conf:xquery"))[@name = $testCaseName]/@value)
+      let $xqStatus := if(exists($xqTmp)) then $xqTmp else "pass"
+      let $xqxTmp := data(dml:collection(xs:QName("conf:xqueryx"))[@name = $testCaseName]/@value)
+      let $xqxStatus := if(exists($xqxTmp)) then $xqTmp else "pass"
+      where (exists(dml:collection( xs:QName("conf:xquery"))[@name = $testCaseName]) or
+             exists(dml:collection( xs:QName("conf:xqueryx"))[@name = $testCaseName]))          
+      return
+        if(($xqStatus = "pass") and ($xqStatus = "pass")) then ()
+        else  
+          <tr bgcolor="lightcyan">
+            <td >{$padding}
+              <a target="_blank" href="{concat('http://dev.w3.org/cvsweb/~checkout~/2006/xquery-test-suite/TestSuiteStagingArea/Queries/XQuery/',data($testCase/@FilePath),$testCaseName,'.xq')}">{$testCaseName}</a>
+            </td>
+            <td class="xq" bgcolor="{if($xqStatus = 'fail') then 'coral' else if($xqStatus = 'pass') then 'mediumseagreen' else 'lightcyan'}">
+              {$xqStatus}</td>
+            <td class="xqx" bgcolor="{if($xqxStatus = 'fail') then 'coral' else if($xqxStatus = 'pass') then 'mediumseagreen' else 'lightcyan'}">
+              {$xqxStatus}</td>
+          </tr>
+    }
+    else ()
+};
+
+declare function conf:create-tr(
+  $nodes, 
+  $no_spaces as xs:integer,
+  $StaticTyping as xs:boolean)
+{
+  let $padding := functx:repeat-string(codepoints-to-string(160), $no_spaces)
+  return
+    for $test-group in $nodes  
+    let $failingTests := conf:failing-tests($test-group, ($no_spaces + xs:integer(2)))
+    let $total := conf:count-available-tests($test-group)
+    let $passingXQ := $total - count($failingTests//td[@class = "xq"])
+    let $passingXQX := $total - count($failingTests//td[@class = "xqx"])
+    let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
+    return
+    (
+     if(count($test-group//xqCat:test-case) ne xs:integer(0)) then
+      <tr bgcolor="lightcyan">
+        <td bgcolor="{if(not(exists($total))) then 'paleturquoise' else 'lightcyan'}">
+          {concat($padding,data($test-group/xqCat:GroupInfo/xqCat:title))}</td>
+        <td bgcolor="{if(not(exists($total))) then 'paleturquoise'
+                      else if($passingXQ = $total) then 'mediumseagreen' 
+                      else if($isStaticTyping) then 'white' else 'coral'}">
+          {if(exists($total) and ($total ne xs:integer(0))) 
+           then concat($passingXQ,"/",$total) else ()}</td>
+        <td bgcolor="{if(not(exists($total))) then 'paleturquoise' 
+                      else if($passingXQX = $total) then 'mediumseagreen' 
+                      else if($isStaticTyping) then 'white' else 'coral'}">
+          {if(exists($total) and ($total ne xs:integer(0))) 
+           then concat($passingXQX,"/",$total) else ()}</td>
+      </tr> else (),
+      if($isStaticTyping) then ()
+      else $failingTests,
+      conf:create-tr($test-group/xqCat:test-group, 
+                     ($no_spaces + xs:integer(2)),
+                     $isStaticTyping)
+    )
+};
+
+declare %ann:nondeterministic %ann:sequential function conf:create-collection($syntax as xs:string, $XQTS_catalog)
+{
+  variable $noTestsCatalog := count($XQTS_catalog//*:test-case);
+  
+  if($syntax eq $conf:XQuery) then
+  {
+    ddl:create-collection($conf:xquery);
+ 
+    variable $noTestsSubmissionXQuery := count(dml:collection(xs:QName("conf:submissionXquery")));
+    
+    if($noTestsCatalog ne $noTestsSubmissionXQuery) then
+    {
+      variable $untested as xs:integer := trace(($noTestsCatalog - $noTestsSubmissionXQuery),
+                                          "tests that are not reported in the XQuery submission file and have to be identified...");
+      (: there are tests for wich we do not report anything :)
+      
+      for $testCatalog in $XQTS_catalog//*:test-case
+      where empty(dml:collection(xs:QName("conf:submissionXquery"))/xqRes:test-case[@name = data($testCatalog/@name)])
+      return
+        dml:apply-insert-nodes($conf:xquery, <test name="{data($testCatalog/@name)}" value="no result"/>);
+        
+    }
+    else ();
+    
+    for $testFailed in dml:collection(xs:QName("conf:submissionXquery"))
+    let $comment := data($testFailed/@comment)
+    where not(data($testFailed/@result) = "pass")
+    return
+      if(exists($comment)) then
+        dml:apply-insert-nodes($conf:xquery, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}" comment="{$comment}"/>);
+      else
+        dml:apply-insert-nodes($conf:xquery, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}"/>);
+  }
+  else if($syntax eq $conf:XQueryX) then
+  {
+    ddl:create-collection($conf:xqueryx);
+    
+    variable $noTestsSubmissionXQueryX := count(dml:collection(xs:QName("conf:submissionXqueryX")));
+
+    if($noTestsCatalog ne $noTestsSubmissionXQueryX) then
+    {
+      variable $untested as xs:integer := trace(($noTestsCatalog - $noTestsSubmissionXQueryX),
+                                          "tests that are not reported in the XQueryX submission file and have to be identified..."); 
+      (: there are tests for wich we do not report anything :)
+      
+      for $testCatalog in $XQTS_catalog//*:test-case
+      where empty(dml:collection(xs:QName("conf:submissionXqueryX"))/xqRes:test-case[@name = data($testCatalog/@name)])
+      return
+        dml:apply-insert-nodes($conf:xqueryx, <test name="{data($testCatalog/@name)}" value="no result"/>);
+      
+    }
+    else ();
+    
+    for $testFailed in dml:collection(xs:QName("conf:submissionXqueryX"))
+    let $comment := data($testFailed/@comment)
+    where not(data($testFailed/@result) = "pass")
+    return 
+      if(exists($comment)) then
+        dml:apply-insert-nodes($conf:xqueryx, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}" comment="{$comment}"/>);
+      else
+        dml:apply-insert-nodes($conf:xqueryx, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}"/>);
+  }
+  else
+  ();
+};
+
+declare %ann:nondeterministic %ann:sequential function conf:create-collection-submissions()
+{
+  ddl:create-collection($conf:submissionXquery);
+  
+  let $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTS_submission)))
+  return
+    for $test in $doc/xqRes:test-suite-result//xqRes:test-case
+    return dml:apply-insert-nodes($conf:submissionXquery, $test);
+    
+  ddl:create-collection($conf:submissionXqueryX);
+  
+  let $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTSX_submission)))
+  return
+    for $test in $doc/xqRes:test-suite-result//xqRes:test-case
+    return dml:apply-insert-nodes($conf:submissionXqueryX, $test);
+};
+
+declare function conf:generate-detailed-table($XQTS_catalog)
+{
+  <table bgcolor="lightcyan">
+    <tr><td>Feature</td><td>XQuery</td><td>XQueryX</td></tr>
+    <tr><td></td><td></td><td></td></tr>
+    {
+      for $test-group in $XQTS_catalog/xqCat:test-suite/xqCat:test-group
+      (: we disable Static Typing explicitelly because there is no clear rule to connect the features with test-groups description :)
+      let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
+      return conf:create-tr( $test-group, 
+                              xs:integer(0),
+                              $isStaticTyping)
+    }
+  </table>
+};
+
+declare %ann:sequential function conf:test()
+{  
+  (: load the XQTS_catalog as text and replace the relative path to 'cat' with an absolute path :)
+  variable $XQTS_catalog_text := replace(file:read-text(file:resolve-path(concat($conf:XQTS_PATH,file:directory-separator(),"XQTSCatalog.xml"))),
+                                    '"cat/',
+                                    concat('"file://',$conf:XQTS_PATH,file:directory-separator(),"cat",file:directory-separator()));
+                                    
+  variable $XQTS_catalog := fn:parse-xml($XQTS_catalog_text);
+  
+  conf:create-collection($conf:XQuery, $XQTS_catalog);
+  conf:create-collection($conf:XQueryX, $XQTS_catalog);
+  
+  variable $pageName := "conformanceXQTS";
+
+  variable $path := fn:concat($conf:XQTS_PATH, file:directory-separator(), $pageName, ".dox");
+  
+  file:write(trace($path,"output file path"),
+             ("/** \page conformanceXQTS  Conformance W3C XQuery 1.0
+
+",
+             {conf:generate-detailed-table($XQTS_catalog)}
+,"
+*/"), 
+             $conf:serParamXhtml);
+};
