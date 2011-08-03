@@ -1,0 +1,10 @@
+/** \page conformance Conformance
+
+<b> There are 3 conformance pages: </b>
+<ul>
+  <li>\ref conformanceXQTS </li>
+  <li>\ref conformanceXQUTS </li>
+  <li>\ref conformanceXQFTTS </li>
+</ul>
+
+*/

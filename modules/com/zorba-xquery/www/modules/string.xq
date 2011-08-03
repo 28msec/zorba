@@ -42,8 +42,9 @@ declare option ver:module-version "2.0";
  : @return a materialized string of its input or the input if the input
  :         item was not a streamable string.
  :
- : @see string:is-streamable
- : @see {http://expath.org/ns/file}read-text
+ : @see <a href="www.zorba-xquery.com_modules_string.html#is-streamable-1">string:is-streamable</a>
+ : @see <a href="expath.org_ns_file.html#read-text-1">file:read-text#1</a>
+ : @see <a href="expath.org_ns_file.html#read-text-2">file:read-text#2</a>
  :)
 declare function string:materialize($s as xs:string) as xs:string external;
 
