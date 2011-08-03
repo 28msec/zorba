@@ -20,7 +20,6 @@ SET(API_SRCS
     zorbaimpl.cpp
     xqueryimpl.cpp
     sax2impl.cpp
-    printer_diagnostic_handler.cpp
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp
     resultiteratorimpl.cpp
