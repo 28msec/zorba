@@ -113,7 +113,7 @@ declare %ann:variadic %ann:sequential function reflection:invoke-s(
 
 
 (:~
- : The purpose of this function is to (dynamically) execute an XQuery program
+ : <p>The purpose of this function is to (dynamically) execute an XQuery program
  : from inside another XQuery program. The XQuery program that invokes the
  : eval function will be referred to as the "outer" program and the XQuery
  : program that is executed by the eval invocation will be referred to as
@@ -124,8 +124,13 @@ declare %ann:variadic %ann:sequential function reflection:invoke-s(
  : an XQuery main module. That is, it parses the string, compiles the 
  : resulting parse tree, executes the resulting execution plan, and finally 
  : returns the result or error (if any) to the outer program.
+ : The given XQuery program needs to be a valid according to XQuery's 
+ : MainModule production (see <a href="http://www.w3.org/TR/xquery/#doc-xquery-MainModule">
+ : http://www.w3.org/TR/xquery/#doc-xquery-MainModule</a>. Please note
+ : that the inner pogram must at least have the XQuery version of the
+ : outer program [err:XQST0031].</p>
  :
- : The inner program "inherits" the static and dynamic context of the outer
+ : <p>The inner program "inherits" the static and dynamic context of the outer
  : program. Specifically, evaluation of the inner program is done in static and 
  : dynamic contextes that are initialized as copies of the static and dynamic 
  : contextes of the outer program at the place where the eval invocation appears 
@@ -136,17 +141,19 @@ declare %ann:variadic %ann:sequential function reflection:invoke-s(
  : imported by the inner main module from library modules, hide their corresponding
  : inherited declarations. For example, if the inner main module declares 
  : a variable or function with the same name as an inherited variable or function, 
- : the inner variable/function hides the inherited one. 
+ : the inner variable/function hides the inherited one.</p> 
  :
- : If the inner program declares an external variable with the same name as an 
+ : <p>If the inner program declares an external variable with the same name as an 
  : inherited variable, the value of the inherited variable is used to initialize 
  : the inner external variable. If, however, an inner external variable has no 
  : default initializer and no corresponding inherited variable, it will remain 
- : uninitialized, causing the inner program to raise an error when executed.  
+ : uninitialized, causing the inner program to raise an error when executed.</p>
  : 
  : @param $query the query string to be evaluated
  :
- : @error whatever error the evaluated XQuery may return
+ : @error whatever error the evaluated XQuery may return.
+ : @error err:XQST0031 If the XQuery version of the inner program is greater
+ :   than the version of the outer program.
  :
  : @return the result of evaluating the query
  :
@@ -164,6 +171,8 @@ declare function reflection:eval(
  : @param $query the query string to be evaluated
  :
  : @error whatever error the evaluated XQuery may return
+ : @error err:XQST0031 If the XQuery version of the inner program is greater
+ :   than the version of the outer program.
  :
  : @return the result of evaluating the query
  :)
@@ -179,6 +188,8 @@ declare %ann:nondeterministic function reflection:eval-n(
  : @param $query the query string to be evaluated
  :
  : @error whatever error the evaluated XQuery may return
+ : @error err:XQST0031 If the XQuery version of the inner program is greater
+ :   than the version of the outer program.
  :
  : @return the PUL resulting from evaluating the query
  :
@@ -196,6 +207,8 @@ declare %ann:nondeterministic updating function reflection:eval-u(
  : @param $query the query string to be evaluated
  :
  : @error whatever error the evaluated XQuery may return
+ : @error err:XQST0031 If the XQuery version of the inner program is greater
+ :   than the version of the outer program.
  :
  : @return the result of evaluating the query (the result is not supposed to
  :         contain any PUL).
