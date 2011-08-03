@@ -22,10 +22,15 @@ xquery version "1.0";
  : is the ancestor if another) and (2) properties of given
  : nodes (e.g. their level in the tree).
  :
+ : The same functionality can be achieved with simple XPath expressions.
+ : However, please note that using the functions in this modules instead
+ : of path expressions guarantees better performance.
+ :
  : @author Matthias Brantner
  : @project XDM/node
  :)
 module namespace node = "http://www.zorba-xquery.com/modules/node";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
