@@ -27,6 +27,9 @@ that are supported by Zorba:
   \code
     xquery version "1.0";
   \endcode
+
+  Please note that XQuery 1.1 has been renamed to XQuery 3.0.
+  XQuery 1.1 does not exist.
   </li>
 
   <li>There are several XQuery features that can be enabled or disabled:
