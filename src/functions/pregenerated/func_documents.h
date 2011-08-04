@@ -38,11 +38,11 @@ void populate_context_documents(static_context* sctx);
 
 
 
-//zorba-store-documents:add
-class zorba_store_documents_add : public function
+//zorba-store-documents:put
+class zorba_store_documents_put : public function
 {
 public:
-  zorba_store_documents_add(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_documents_put(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

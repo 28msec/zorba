@@ -20,19 +20,22 @@ xquery version "3.0";
  : This modules provides a set of functions to modify a collection and retrieve the nodes
  : contained in a particular collection.
  :
- : Collections are identified by QNames and come into existence (i.e. be made available)
- : by calling one of the two create-collection functions of the 
- : <tt>http://www.zorba-xquery.com/modules/store/static/collections/ddl</tt>
- : module.
+ : <p>This module is part of <a href="../../../html/xqddf.htm">Zorba's XQuery Data
+ : Definition Facility</a>. All the collections managed by this module
+ : have to be pre-declared in the prolog of a module. Please refer to the
+ : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : for more information and examples.</p>
  :
- : The variable $content passed to any of the insert functions is evaluated
- : as though it were an enclosed expression in an element constructor.
- : The result of this step is a sequence of nodes to be inserted into the collection.
- :
+ : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../../html/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- : @project store/collections/static
  :
  : @project store/collections/static
  :
@@ -40,6 +43,7 @@ xquery version "3.0";
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
@@ -56,11 +60,11 @@ declare option ver:module-version "2.0";
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is append-only,
  :        const, or queue.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
  :
  :)
@@ -78,12 +82,12 @@ declare updating function dml:insert-nodes(
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is append-only,
  :        const, or queue.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
  :
  :)
@@ -101,11 +105,11 @@ declare updating function dml:insert-nodes-first(
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const.
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
  :
  :)
@@ -126,14 +130,14 @@ declare updating function dml:insert-nodes-last(
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const, append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const, append-only,
  :        or queue.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
- : @error XDDY0011 if the $target node is not a node that is contained in the collection $name.
+ : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
  :)
 declare updating function dml:insert-nodes-before(
@@ -154,14 +158,14 @@ declare updating function dml:insert-nodes-before(
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const, append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const, append-only,
  :        or queue.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
- : @error XDDY0011 if the $target node is not a node that is contained in the collection $name.
+ : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
  :)
 declare updating function dml:insert-nodes-after(
@@ -181,11 +185,11 @@ declare updating function dml:insert-nodes-after(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is append-only,
  :        const, or queue.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
  :
  : @see dml:insert-nodes
@@ -206,12 +210,12 @@ declare %ann:sequential function dml:apply-insert-nodes(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is append-only,
  :        const, or queue.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type according to the
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type according to the
  :        rules for SequenceType Matching.
  :
  : @see dml:insert-nodes-first
@@ -232,11 +236,11 @@ declare %ann:sequential function dml:apply-insert-nodes-first(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const.
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
  :
  : @see dml:insert-nodes-last
@@ -259,14 +263,14 @@ declare %ann:sequential function dml:apply-insert-nodes-last(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const, append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const, append-only,
  :        or queue.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
- : @error XDDY0011 if the $target node is not a node that is contained in the collection $name.
+ : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
  : @see dml:insert-nodes-before
  :
@@ -289,14 +293,14 @@ declare %ann:sequential function dml:apply-insert-nodes-before(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const, append-only,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const, append-only,
  :        or queue.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDTY0001 if $content does not match the expected type (i.e. declared by the collection)
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
- : @error XDDY0011 if the $target node is not a node that is contained in the collection $name.
+ : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
  : @see dml:insert-nodes-after
  :
@@ -315,11 +319,11 @@ declare %ann:sequential function dml:apply-insert-nodes-after(
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the nodes from their collections.
  :
- : @error XDDY0006 if the modifier property of the collection $name is const, append-only,
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const, append-only,
           or queue.
- : @error XDTY0001 if $content does not match the expected type according to the
+ : @error zerr:ZDTY0001 if $content does not match the expected type according to the
  :        rules for SequenceType Matching.
- : @error XDDY0011 if any nodes in the $target sequence is not a member of a collection
+ : @error zerr:ZDDY0011 if any nodes in the $target sequence is not a member of a collection
  :        or not all nodes of the $target sequence belong to the same collection.
  :        the collection identified by the $name parameter.
  :
@@ -335,11 +339,11 @@ declare updating function dml:delete-nodes($target as node()*)  external;
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the first node from the collection.
 
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const or append-only.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDDY0011 If the collection is empty.
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const or append-only.
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDDY0011 If the collection is empty.
  :
  :)
 declare updating function dml:delete-node-first($name as xs:QName) external;
@@ -355,11 +359,11 @@ declare updating function dml:delete-node-first($name as xs:QName) external;
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the nodes from the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const or append-only.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDDY0011 If the collection contains less than $number nodes.
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const or append-only.
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDDY0011 If the collection contains less than $number nodes.
  :
  :)
 declare updating function dml:delete-nodes-first(
@@ -375,12 +379,12 @@ declare updating function dml:delete-nodes-first(
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the last node from the collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0006 if the modifier property of the collection $name is const,
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection $name is const,
  :        append-only, or queue.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDDY0011 If the collection is empty.
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDDY0011 If the collection is empty.
  :)
 declare updating function dml:delete-node-last($name as xs:QName)  external;
 
@@ -394,10 +398,10 @@ declare updating function dml:delete-node-last($name as xs:QName)  external;
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the nodes.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0012 if the order property of the collection $name is unordered.
- : @error XDDY0011 If the collection contains less than $number nodes.
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
+ : @error zerr:ZDDY0011 If the collection contains less than $number nodes.
  :
  :)
 declare updating function dml:delete-nodes-last(
@@ -411,8 +415,8 @@ declare updating function dml:delete-nodes-last(
  :
  : @return Returns the position as xs:integer of the given node in the collection.
  :
- : @error XDDY0011 if the node is not stored in any collection.
- : @error XDDY0012 if the order property of collection of that node is unordered.
+ : @error zerr:ZDDY0011 if the node is not stored in any collection.
+ : @error zerr:ZDDY0012 if the order property of collection of that node is unordered.
  :
  :)
 declare function dml:index-of($node as node()) as xs:integer  external;
@@ -425,8 +429,8 @@ declare function dml:index-of($node as node()) as xs:integer  external;
  :
  : @return The sequence contained in the given collection.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0001 if the collection identified by $name is not declared.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  :)
 declare function dml:collection($name as xs:QName) as node()*  external;
@@ -439,7 +443,7 @@ declare function dml:collection($name as xs:QName) as node()*  external;
  : @return The result of this function is a QName which identifies the collection
  :         to which the given node belongs to.
  :
- : @error XDDY0011 if the given node does not belong to a collection.
+ : @error zerr:ZDDY0011 if the given node does not belong to a collection.
  :
  :)
 declare function dml:collection-name($node as node()) as xs:QName external;

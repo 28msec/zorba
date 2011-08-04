@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -17,22 +17,33 @@ xquery version "1.0";
  :)
 
 (:~
- : This modules defines a set of functions for managing persistent, ordered, and
- : updatable collections which are declared in the prolog (context) of a module.
+ : This modules defines a set of functions for managing collections which are
+ : declared in the prolog of a module.
  : For example, it provides functions to create, delete, or introspect collections.
  :
- : Such collections are identified by QNames and come into existence (i.e. be made
- : available) by calling one of the two create-collection functions and be destroyed by
- : the delete-collection function.
+ : <p>This module is part of <a href="../../../html/xqddf.htm">Zorba's XQuery Data
+ : Definition Facility</a>. All the collections managed by this module
+ : have to be pre-declared in the prolog of a module. Please refer to the
+ : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : for more information and examples.</p>
  :
+ : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../../html/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ :
  : @project store/collections/static
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -66,9 +77,9 @@ declare function ddl:available-collections() as xs:QName*  external;
  :         pending update list which, once applied, creates a collection
  :         with the given name.
  :
- : @error XDDY0001 if the expanded QName $name is not equal
+ : @error zerr:ZDDY0001 if the expanded QName $name is not equal
  :        to any of the declared collections in the static context.
- : @error XDDY0002 if a collection with the given expanded QName already
+ : @error zerr:ZDDY0002 if a collection with the given expanded QName already
  :        exists.
  :
  :)
@@ -86,11 +97,11 @@ declare updating function ddl:create-collection($name as xs:QName) external;
  :         pending update list which, once applied, creates a collection
  :         with the given name and inserts the given nodes into it.
  :
- : @error XDDY0001 if the expanded QName $name is not equal
+ : @error zerr:ZDDY0001 if the expanded QName $name is not equal
  :        to any of the declared collections in the static context.
- : @error XDDY0002 if a collection with the given expanded QName already
+ : @error zerr:ZDDY0002 if a collection with the given expanded QName already
  :        exists.
- : @error XDTY0001 if $content does not match the expected type
+ : @error zerr:ZDTY0001 if $content does not match the expected type
  :        (i.e. declared by the collection) according to the rules
  :        for SequenceType Matching.
  :
@@ -109,13 +120,13 @@ declare updating function ddl:create-collection(
  :         update list which, once applied, deletes the collection with the given
  :         name.
  :
- : @error XDDY0001 if the expanded QName $name is not equal
+ : @error zerr:ZDDY0001 if the expanded QName $name is not equal
  :        to any of the declared collections in the static context.
- : @error XDDY0003 if the expanded QName $name is not equal
+ : @error zerr:ZDDY0003 if the expanded QName $name is not equal
  :        to any of the available collections.
- : @error ZDDY0015 if any of the in-scope variables references a node that
+ : @error zerr:ZDDY0015 if any of the in-scope variables references a node that
  :        belongs to the collection with QName $name.
- : @error ZDDY0013 if the domain or key expression of any of the available
+ : @error zerr:ZDDY0013 if the domain or key expression of any of the available
  :        indexes access the collection with name $name.
  :
  :)

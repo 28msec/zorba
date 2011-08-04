@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -19,7 +19,13 @@ xquery version "1.0";
 (:~
  : This module defines a set of functions which manage documents that
  : are persisted in the store. Specifically, it contains functions
- : to add, remove, list, or retrieve documents.
+ : to put, remove, list, or retrieve documents.
+ :
+ : <p>Please refer to <a href="../../html/storing_manipulating_data.html">our documentation</a> for 
+ : more information about the lifecycle management and manipulation of documents.</p>
+ :
+ : @see <a href="../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
@@ -27,23 +33,37 @@ xquery version "1.0";
  :)
 module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "2.0";
+
 (:~
  : Adds a document to the store. The document is bound to the URI
  : given as first parameter. This URI is the name of the document and
  : can be used by the doc:document() function to retrieve
  : the document from the store.
  :
+ : The semantics of the function is similar to the fn:put function. The difference
+ : is that this function accepts only document nodes as parameters.
+ : Please note that this function does not try to fetch the document from the
+ : external resource identified by $uri. Instead, the file or http-client
+ : modules can be used to retrieve the resource as string and fn:parse-xml can be used
+ : to parse the string returning a document.
+ :
  : @param $uri The URI of the document. If a relative URI is given, the URI
  :        is made absolute using the static base URI of the module.
  : @param $doc The document node to be added to the store.
  :
- : @return Returns an empty XDM instance and a pending update list which, when
+ : @return an empty XDM instance and a pending update list which, when
  :         applied, adds the given document to the store.
  :
- : @error ZAPI0020 if the store already contains a document for the given $uri.
- : @error FODC0004 if the given URI is not valid or couldn't be absolutized.
+ : @error zerr:ZAPI0020 if the store already contains a document for the given $uri.
+ : @error err:FODC0004 if the given URI is not valid or couldn't be absolutized.
+ :
+ : @example test/rbkt/Queries/zorba/store/retrieve.xq
  :)
-declare updating function doc:add(
+declare updating function doc:put(
   $uri as xs:string,
   $doc as document-node()) external;
 
@@ -56,21 +76,26 @@ declare updating function doc:add(
  : @return Returns an empty XDM instance and a pending update list which, when
  :         applied, removes the document bound to the given URI.
  :
- : @error XQD0001 if no document with the given URI exists in the store.
- : @error FODC0004 if the given URI is not valid or couldn't be absolutized.
+ : @error zerr:ZXQD0002 if no document with the given URI exists in the store.
+ : @error err:FODC0004 if the given URI is not valid or couldn't be absolutized.
  :)
 declare updating function doc:remove($uri as xs:string) external;
 
 (:~
  : Returns the document with the given URI from the store.
  :
+ : The difference to fn:doc is that this function does not attempt to retrieve
+ : the resource from the file system or the web before returning it.
+ : Its only responsibility is to return the document from the store that was
+ : bound using fn:put or doc:put.
+ :
  : @param $uri The URI of the document to retrieve. If a relative URI is given,
  : the URI is made absolute using the static base URI of the module.
  :
  : @return Returns the document bound to the given URI.
  :
- : @error XQD0001 if no document with the given URI exists in the store.
- : @error FODC0004 if the given URI is not valid or couldn't be absolutized.
+ : @error zerr:ZXQD0002 if no document with the given URI exists in the store.
+ : @error err:FODC0004 if the given URI is not valid or couldn't be absolutized.
  :)
 declare function doc:document($uri as xs:string) as document-node() external;
 
@@ -90,6 +115,6 @@ declare function doc:available-documents() as xs:string* external;
  :
  : @return Returns true if a document with the given URI exists in the store or false otherwise.
  :
- : @error FODC0004 if the given URI is not valid or couldn't be absolutized.
+ : @error err:FODC0004 if the given URI is not valid or couldn't be absolutized.
  :)
 declare function doc:is-available-document($uri as xs:string) as xs:boolean external;

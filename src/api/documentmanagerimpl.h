@@ -37,7 +37,7 @@ namespace zorba {
 
   public:
     void
-    add(const String& aURI, const Item& aDoc);
+    put(const String& aURI, const Item& aDoc);
 
     void
     remove(const String& aURI);

@@ -1,4 +1,4 @@
-caught duplicate attempt to add a document
+caught duplicate attempt to put a document
 true
 bar
 http://www.zorba-xquery.com/foo

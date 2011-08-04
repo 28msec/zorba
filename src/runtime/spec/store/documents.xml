@@ -20,16 +20,16 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="AddDocumentIterator" >
+<zorba:iterator name="PutDocumentIterator" >
 
     <zorba:description author="Matthias Brantner">
       declare updating function
-      add($uri as xs:string, $doc as xs:document-node()) as empty-sequence()
+      put($uri as xs:string, $doc as xs:document-node()) as empty-sequence()
     </zorba:description>
 
     <zorba:function> 
 
-      <zorba:signature localname="add" prefix="zorba-store-documents">
+      <zorba:signature localname="put" prefix="zorba-store-documents">
         <zorba:param>xs:string</zorba:param>
         <zorba:param>document-node()</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>

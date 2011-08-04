@@ -5,6 +5,6 @@ import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic
 let $mydoc := http:get-node("http://zorba-xquery.com/rest-tests/doc.html")[2]
 return
   {
-    doc:add("mydoc.xml", $mydoc); (: add the document with name mydoc.xml :)
+    doc:put("mydoc.xml", $mydoc); (: add the document with name mydoc.xml :)
     doc:document("mydoc.xml")
   }

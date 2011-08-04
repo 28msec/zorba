@@ -452,7 +452,7 @@ namespace zorba{
 
     class FnDocAvailableIterator;
 
-    class AddDocumentIterator;
+    class PutDocumentIterator;
 
     class RemoveDocumentIterator;
 
@@ -1178,8 +1178,8 @@ public:
     virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnDocAvailableIterator& ) = 0;
 
-    virtual void beginVisit ( const AddDocumentIterator& ) = 0;
-    virtual void endVisit   ( const AddDocumentIterator& ) = 0;
+    virtual void beginVisit ( const PutDocumentIterator& ) = 0;
+    virtual void endVisit   ( const PutDocumentIterator& ) = 0;
 
     virtual void beginVisit ( const RemoveDocumentIterator& ) = 0;
     virtual void endVisit   ( const RemoveDocumentIterator& ) = 0;

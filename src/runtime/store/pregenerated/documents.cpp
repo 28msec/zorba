@@ -33,18 +33,18 @@
 
 namespace zorba {
 
-// <AddDocumentIterator>
-const char* AddDocumentIterator::class_name_str = "AddDocumentIterator";
-AddDocumentIterator::class_factory<AddDocumentIterator>
-AddDocumentIterator::g_class_factory;
+// <PutDocumentIterator>
+const char* PutDocumentIterator::class_name_str = "PutDocumentIterator";
+PutDocumentIterator::class_factory<PutDocumentIterator>
+PutDocumentIterator::g_class_factory;
 
 const serialization::ClassVersion 
-AddDocumentIterator::class_versions[] ={{ 1, 0x000905, false}};
+PutDocumentIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int AddDocumentIterator::class_versions_count =
-sizeof(AddDocumentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int PutDocumentIterator::class_versions_count =
+sizeof(PutDocumentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void AddDocumentIterator::accept(PlanIterVisitor& v) const {
+void PutDocumentIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -56,9 +56,9 @@ void AddDocumentIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-AddDocumentIterator::~AddDocumentIterator() {}
+PutDocumentIterator::~PutDocumentIterator() {}
 
-// </AddDocumentIterator>
+// </PutDocumentIterator>
 
 
 // <RemoveDocumentIterator>

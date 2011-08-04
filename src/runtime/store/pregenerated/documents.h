@@ -36,33 +36,33 @@ namespace zorba {
 /**
  * 
  *      declare updating function
- *      add($uri as xs:string, $doc as xs:document-node()) as empty-sequence()
+ *      put($uri as xs:string, $doc as xs:document-node()) as empty-sequence()
  *    
  * Author: Matthias Brantner
  */
-class AddDocumentIterator : public NaryBaseIterator<AddDocumentIterator, PlanIteratorState>
+class PutDocumentIterator : public NaryBaseIterator<PutDocumentIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(AddDocumentIterator);
+  SERIALIZABLE_CLASS(PutDocumentIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AddDocumentIterator,
-    NaryBaseIterator<AddDocumentIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PutDocumentIterator,
+    NaryBaseIterator<PutDocumentIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<AddDocumentIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<PutDocumentIterator, PlanIteratorState>*)this);
   }
 
-  AddDocumentIterator(
+  PutDocumentIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<AddDocumentIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<PutDocumentIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~AddDocumentIterator();
+  virtual ~PutDocumentIterator();
 
   void accept(PlanIterVisitor& v) const;
 

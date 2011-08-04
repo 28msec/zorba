@@ -29,12 +29,17 @@ xquery version "3.0";
  : map is created. The value can be an arbitrary sequence
  : of items.
  :
+ : @see <a href="../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ :
  : @author Matthias Brantner
  :
  : @project store/data structures
  :)
 module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";

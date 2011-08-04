@@ -17,19 +17,32 @@ xquery version "3.0";
 :)
 
 (:~
- : This module defines a set of functions to probe and refresh indexes.
+ : This module defines a set of functions to probe and refresh indexes which are
+ : declared in the prolog of a module.
  :
- : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : <p>This module is part of <a href="../../../html/xqddf.htm">Zorba's XQuery Data
+ : Definition Facility</a>. All the indexes managed by this module
+ : have to be pre-declared in the prolog of a module. Please refer to the
+ : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : for more information and examples.</p>
+ :
+ : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../../html/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
- : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
- : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann,
- :   Markos Zaharioudakis
+ : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ :
  : @project store/indexes/static
  :
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -52,9 +65,9 @@ declare option ver:module-version "2.0";
  :   the associated domain nodes are
  : returned. Otherwise, the empty sequence is returned.
  :
- : @error zerr::ZDDY0021 if the index with name $name is not declared.
- : @error zerr::ZDDY0023 if the index with name $name does not exist.
- : @error zerr::ZDDY0025 if the number of keys passed as arguments
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
+ : @error zerr:ZDDY0025 if the number of keys passed as arguments
  :    does not match the number of keys declared for the index.
  :)
 declare %ann:variadic function dml:probe-index-point-value(
@@ -100,9 +113,9 @@ declare %ann:variadic function dml:probe-index-point-value(
  :          rangeUpperBound value is part of the range.  
  : @return The sequence of domain nodes matching this range probe.
  :
- : @error zerr::ZDDY0021 if the index with name $name is not declared.
- : @error zerr::ZDDY0023 if the index with name $name does not exist.
- : @error zerr::ZDDY0025 if the number of rangespecs passed as arguments
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
+ : @error zerr:ZDDY0025 if the number of rangespecs passed as arguments
  :    does not match the number of keys declared for the index.
  :)
 declare %ann:variadic function dml:probe-index-range-value($name as xs:QName, 
@@ -123,8 +136,8 @@ declare %ann:variadic function dml:probe-index-range-value($name as xs:QName,
  : @return The result of the function is an empty XDM instance and a
  :         pending update list which, when applied, refreshes the contents
  :         of the index.that consists of a
- : @error zerr::ZDDY0021 if the index with name $name is not declared.
- : @error zerr::ZDDY0023 if the index with name $name does not exist.
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
  :)
 declare updating function dml:refresh-index($name as xs:QName) external;
 

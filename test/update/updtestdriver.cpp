@@ -129,7 +129,7 @@ set_var (
     {
       lDoc = lXmlMgr->parseXML(is);
       sctx->validate(lDoc, lDoc, zorba::validate_lax);
-      lDocMgr->add(name, lDoc);
+      lDocMgr->put(name, lDoc);
     }
 
     if(name != ".")

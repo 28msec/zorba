@@ -52,7 +52,7 @@ datamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
 
     // (2) bind the document in the store using the DocumentManager
     DocumentManager* lDocMgr = aDataManager->getDocumentManager();
-    lDocMgr->add("books.xml", lDoc);
+    lDocMgr->put("books.xml", lDoc);
 
     // (3) doc('books.xml') accesses the previously found document
     XQuery_t lQuery = aZorba->compileQuery("doc('books.xml')//book"); 

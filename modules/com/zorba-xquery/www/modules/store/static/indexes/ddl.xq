@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -17,20 +17,32 @@ xquery version "1.0";
 :)
 
 (:~
- : This module defines a set of functions to deal with indexes in Zorba.
- : For example, it provides functions to create or delete indexes.
+ : This modules defines a set of functions for managing indexes which are
+ : declared in the prolog of a module.
  :
- : @see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/XQDDF.html" target="_blank">Zorba Data Definition Facility</a>
+ : <p>This module is part of <a href="../../../html/xqddf.htm">Zorba's XQuery Data
+ : Definition Facility</a>. All the indexes managed by this module
+ : have to be pre-declared in the prolog of a module. Please refer to the
+ : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : for more information and examples.</p>
+ :
+ : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../../html/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ :
  : @project store/indexes/static
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -41,7 +53,6 @@ declare option ver:module-version "2.0";
  : @param $name The QName of the index that is being checked.
  :
  : @return true if the index is available and false otherwise.
- :
  :)
 declare function ddl:is-available-index($name as xs:QName) as xs:boolean external;
 
@@ -56,7 +67,8 @@ declare function ddl:available-indexes() as xs:QName* external;
 
 (:~
  : The create-index function is an updating function which creates the
- : index with the given expanded QName.
+ : index with the given expanded QName and populates the index with its
+ : values.
  :
  : @param $name The QName of the index to create.
  :
@@ -64,9 +76,9 @@ declare function ddl:available-indexes() as xs:QName* external;
  :         update list which, once applied, creates the index with the given
  :         name.
  :
- : @error ZDDY0021 if the expanded QName of $name is not equal  
+ : @error zerr:ZDDY0021 if the expanded QName of $name is not equal  
  :        to the name of any resource in the statically known indexes.
- : @error ZDDY0022 if the index with the given name is already created.
+ : @error zerr:ZDDY0022 if the index with the given name is already created.
  :)
 declare updating function ddl:create-index(
   $name as xs:QName)  external;
@@ -80,7 +92,7 @@ declare updating function ddl:create-index(
  : @return The result of the function is an empty XDM instance and a pending
  :         update list which, once applied, deletes the index with the given name.
  :
- : @error XDDY0009 If available indexes does not provide a mapping for
+ : @error zerr:ZDDY0009 If available indexes does not provide a mapping for
  :        the expanded QName $name.
  :
  :)

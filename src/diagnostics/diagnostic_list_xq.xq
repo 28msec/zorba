@@ -97,6 +97,8 @@ declare function local:header ($namespace as xs:string) as xs:string
     " : the variables.", $util:newline,
     " :", $util:newline,
     " : @author Carlos Lopez", $util:newline,
+    " :", $util:newline,
+    " : @project error", $util:newline,
     " :)", $util:newline, $util:newline,
     "xquery version '1.0';",
     $util:newline, $util:newline,

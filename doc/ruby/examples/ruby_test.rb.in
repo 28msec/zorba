@@ -69,7 +69,7 @@ def example5(zorba)
   docIter.next(doc)
   docIter.destroy()
 
-  docMgr.add("books.xml", doc);
+  docMgr.put("books.xml", doc);
 
   xquery = zorba.compileQuery("doc('books.xml')//book")
   print xquery.execute()

@@ -36,9 +36,9 @@ namespace zorba {
 
 /*******************************************************************************
   declare updating function
-  add($uri as xs:string, $doc as xs:document-node()) as empty-sequence()
+  put($uri as xs:string, $doc as xs:document-node()) as empty-sequence()
 ********************************************************************************/
-bool AddDocumentIterator::nextImpl(
+bool PutDocumentIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
 {

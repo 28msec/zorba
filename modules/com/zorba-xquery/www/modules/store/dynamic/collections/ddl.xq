@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -20,32 +20,28 @@ xquery version "1.0";
  : This modules defines a set of functions for managing persistent, ordered, and
  : updatable collections.
  :
- : Such collections are identified by QNames and come into existence (i.e. be made
- : available) by calling one of the two create-collection functions and be destroyed by
- : the delete-collection function.
+ : <p>Please refer to our documentation for <a href="../../html/storing_manipulating_data.html">
+ : more information</a> about the lifecycle management and the manipulation of such
+ : collections.</p>
  :
- : In contrast to the functions in the module 
- : <tt>http://www.zorba-xquery.com/modules/store/static/collections/ddl</tt>
- : the function in this module operate on collections which do not have to
- : be statically declared in the prolog of a module.
- :
+ : @see <a href="../../html/storing_manipulating_data.html">Data Lifecycle</a>
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- : @project store/collections/dynamic
  :
  : @project store/collections/dynamic
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 
 (:~
- : The function returns true if a collection with the given QName is available
- : (i.e. has been created).
+ : The function returns true if a collection with the given QName is available.
  :
  : @param $name The QName of the collection that is being checked.
  :
@@ -73,7 +69,7 @@ declare function ddl:available-collections() as xs:QName* external;
  :         pending update list which, once applied, creates a collection
  :         with the given name.
  :
- : @error XDDY0002 if a collection with the given expanded QName already
+ : @error zerr:ZDDY0002 if a collection with the given expanded QName already
  :        exists.
  :
  :)
@@ -91,7 +87,7 @@ declare updating function ddl:create-collection($name as xs:QName) external;
  :         pending update list which, once applied, creates a collection
  :         with the given name and inserts the given nodes into it.
  :
- : @error XDDY0002 if a collection with the given expanded QName already
+ : @error zerr:ZDDY0002 if a collection with the given expanded QName already
  :        exists.
  :
  : @see ddl:create-collection
@@ -113,8 +109,8 @@ declare updating function ddl:create-collection(
  :         update list which, once applied, deletes the collection with the given
  :         name.
  :
- : @error XDDY0003 if the collection with the given name does not exist.
- : @error ZDDY0015 if any of the in-scope variables references a node that
+ : @error zerr:ZDDY0003 if the collection with the given name does not exist.
+ : @error zerr:ZDDY0015 if any of the in-scope variables references a node that
  :        belongs to the collection with QName $name.
  :
  :)

@@ -681,8 +681,8 @@ namespace zorba {
     void beginVisit( const FnDocAvailableIterator& );
     void endVisit  ( const FnDocAvailableIterator& );
 
-    void beginVisit( const AddDocumentIterator& );
-    void endVisit  ( const AddDocumentIterator& );
+    void beginVisit( const PutDocumentIterator& );
+    void endVisit  ( const PutDocumentIterator& );
 
     void beginVisit( const RemoveDocumentIterator& );
     void endVisit  ( const RemoveDocumentIterator& );

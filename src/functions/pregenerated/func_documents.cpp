@@ -31,14 +31,14 @@ namespace zorba{
 
 
 
-PlanIter_t zorba_store_documents_add::codegen(
+PlanIter_t zorba_store_documents_put::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new AddDocumentIterator(sctx, loc, argv);
+  return new PutDocumentIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_store_documents_remove::codegen(
@@ -86,12 +86,12 @@ void populate_context_documents(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_documents_add,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","add"), 
+    DECL_WITH_KIND(sctx, zorba_store_documents_put,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","put"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_DOCUMENTS_ADD_2);
+        FunctionConsts::ZORBA_STORE_DOCUMENTS_PUT_2);
 
   }
 

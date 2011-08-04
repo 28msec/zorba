@@ -79,7 +79,7 @@ function example_5(Zorba $aZorba)
   $iter->close();
   $iter->destroy();
 
-  $lDocMgr->add("books.xml", $doc);
+  $lDocMgr->put("books.xml", $doc);
 
   $lQuery = $aZorba->compileQuery("doc('books.xml')//book");
 

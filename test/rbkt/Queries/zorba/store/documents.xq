@@ -4,17 +4,17 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare base-uri "http://www.zorba-xquery.com/";
 
-declare %ann:sequential function local:add()
+declare %ann:sequential function local:put()
 {
-  doc:add("foo", document { <foo>bar</foo> });
+  doc:put("foo", document { <foo>bar</foo> });
 };
 
-declare %ann:sequential function local:add-twice()
+declare %ann:sequential function local:put-twice()
 {
   try {
-    doc:add("foo", document { <foo>bar</foo> });
+    doc:put("foo", document { <foo>bar</foo> });
   } catch zerr:ZAPI0020 {
-    exit returning "caught duplicate attempt to add a document";
+    exit returning "caught duplicate attempt to put a document";
   }
 };
 
@@ -51,8 +51,8 @@ declare function local:resolve()
 };
 
 string-join(
-  (local:add(), (: add a document :)
-   local:add-twice(), (: try creating it a second time and make sure that an error is raised :)
+  (local:put(), (: put a document :)
+   local:put-twice(), (: try creating it a second time and make sure that an error is raised :)
    string(doc:is-available-document("foo")), (: check if the document is available :)
    local:document(), (: return the document :)
    doc:available-documents(), (: list the names of all documents :)

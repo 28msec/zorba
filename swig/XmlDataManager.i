@@ -27,9 +27,9 @@ public:
   DocumentManager(const DocumentManager& aMgr) : theManager(aMgr.theManager) {}
   DocumentManager(zorba::DocumentManager* aMgr) : theManager(aMgr) {}
 
-  void add(const std::string& aName, Item aDoc)
+  void put(const std::string& aName, Item aDoc)
   {
-    theManager->add(aName, aDoc.theItem);
+    theManager->put(aName, aDoc.theItem);
   }
 
   void remove(const std::string& aName)
@@ -78,7 +78,7 @@ public:
 class DocumentManager
 {
 public:
-  void add(const std::string& aName, Item aDoc);
+  void put(const std::string& aName, Item aDoc);
 
   void remove(const std::string& aName);
 

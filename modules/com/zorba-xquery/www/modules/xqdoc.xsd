@@ -90,7 +90,7 @@
   </xsd:complexType>
 
   <!-- Complex type used for defining a custom comment type.
-     The type attribute allows the differentiation of the custom
+     The tag attribute allows the differentiation of the custom
      comment types. If the custom comment is @example, then the
        value in the 'tag' attribute would be 'example'. -->
   <xsd:complexType name="custom">
@@ -177,10 +177,10 @@
   <xsd:complexType name="module">
     <xsd:sequence>
       <xsd:element name="uri" type="uri"/>
-      <xsd:element name="custom" type="custom" minOccurs="0" />
       <xsd:element name="name" type="name" minOccurs="0"/>
       <xsd:element name="comment" type="comment" minOccurs="0"/>
       <xsd:element name="body" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="custom" type="custom" minOccurs="0" />
     </xsd:sequence>
     <xsd:attribute name="type" use="required">
       <xsd:simpleType>

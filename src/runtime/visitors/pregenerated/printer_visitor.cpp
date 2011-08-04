@@ -3050,18 +3050,18 @@ void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
 // </FnDocAvailableIterator>
 
 
-// <AddDocumentIterator>
-void PrinterVisitor::beginVisit ( const AddDocumentIterator& a) {
-  thePrinter.startBeginVisit("AddDocumentIterator", ++theId);
+// <PutDocumentIterator>
+void PrinterVisitor::beginVisit ( const PutDocumentIterator& a) {
+  thePrinter.startBeginVisit("PutDocumentIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const AddDocumentIterator& ) {
+void PrinterVisitor::endVisit ( const PutDocumentIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </AddDocumentIterator>
+// </PutDocumentIterator>
 
 
 // <RemoveDocumentIterator>

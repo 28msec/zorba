@@ -1210,6 +1210,9 @@ declare %private %ann:nondeterministic function xqdoc2html:body(
     xqdoc2html:module-resources($xqdocXhtmlPath, xqdoc2html:module-uri($xqdoc)),
     xqdoc2html:module-dependencies($xqdoc),
     xqdoc2html:module-external-specifications($xqdoc/xqdoc:module),
+    xqdoc2html:module-namespaces(
+      $xqdoc/xqdoc:module/xqdoc:custom[@tag="namespaces"]
+    ),
     xqdoc2html:module-variables($xqdoc/xqdoc:variables),
     xqdoc2html:module-function-summary($functions),
     xqdoc2html:functions($functions, $xqdocXhtmlPath)
@@ -1380,16 +1383,16 @@ declare %private function xqdoc2html:imports(
 };
 
 (:~
- : Create the items for the Related Specifications 
- : ('see' annotattions appearing in the module description part).
+ : Create the items for the Related Documentation 
+ : ('see' annotations appearing in the module description part).
  :
  : @param $module the node containing the XQDoc XML module.
- : @return the XHTML for the 'Related Specifications'.
+ : @return the XHTML for the 'Related Documentation'.
  :)
 declare %private function xqdoc2html:module-external-specifications($module) {
   if(fn:count($module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]) >0) then
-    (<div class="section"><span id="external_specifications">Related Specifications</span></div>,
-    <p>For more details please check out these resources:<ul>
+    (<div class="section"><span id="external_specifications">Related Documentation</span></div>,
+    <p>For more details please also see:<ul>
     {
       let $annotations := $module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]
       return
@@ -1425,6 +1428,33 @@ declare %private function xqdoc2html:module-variables($variables)
       return (<tr>
               <td>${$varName}</td>
               <td>{xqdoc2html:description($variable/xqdoc:comment)}</td>
+              </tr>
+             )
+    }</table>)
+  else
+    ()
+};
+
+(:~
+ : Create the module namespaces XHTML.
+ :
+ : @param $namespaces the custom node containing the XQDoc XML namespaces.
+ : @return the XHTML for the module namespaces.
+ :)
+declare %private function xqdoc2html:module-namespaces($namespaces)
+{
+  if($namespaces/xqdoc:namespace) then
+    (<div class="section"><span id="variables">Namespaces</span></div>,
+    <table class="varlist">
+    {      
+      for $namespace in $namespaces/xqdoc:namespace
+      let $prefix := data($namespace/@prefix)
+      let $uri := data($namespace/@uri)
+      (:where empty($variable/xqdoc:invoked) :)
+      order by $prefix
+      return (<tr>
+              <td>{$prefix}</td>
+              <td>{$uri}</td>
               </tr>
              )
     }</table>)

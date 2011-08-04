@@ -33,7 +33,7 @@ def test(zorba):
   docIter.destroy() 
  
   docManager = dataManager.getDocumentManager() 
-  docManager.add("my_fake_books.xml", doc) 
+  docManager.put("my_fake_books.xml", doc) 
   xquery = zorba.compileQuery("doc('my_fake_books.xml')") 
    
   result = xquery.execute() 

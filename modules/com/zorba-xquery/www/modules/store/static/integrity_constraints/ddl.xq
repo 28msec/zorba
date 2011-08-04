@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -17,19 +17,33 @@ xquery version "1.0";
 :)
 
 (:~
- : This module defines a set of functions to deal with integrity constraints.
+ : This module defines a set of functions to manage integrity constraints
+ : which are declared in the prolog of a module.
  : For example, it provides functions to activate or deactivate integrity constraints.
  :
- : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : <p>This module is part of <a href="../../../html/xqddf.htm">Zorba's XQuery Data
+ : Definition Facility</a>. All the integrity constraints managed by this module
+ : have to be pre-declared in the prolog of a module. Please refer to the
+ : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : for more information and examples.</p>
+ :
+ : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../../html/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- : @project store/integrity constraints/static
  :
+ : @project store/integrity constraints/static
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 

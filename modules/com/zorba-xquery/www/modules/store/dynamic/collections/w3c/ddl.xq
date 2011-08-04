@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -20,21 +20,27 @@ xquery version "1.0";
  : This modules defines a set of functions for managing persistent, ordered, and
  : updatable collections.
  :
- : Such collections are identified by a URI as defined in the XQuery specification.
- : The can be created by calling one of the two create-collection functions and be
- : destroyed by the delete-collection function.
+ : <p>Such collections are identified by a URI as defined in the XQuery specification.
+ : However, please note that we do not advice users to use collections identified by URIs.
+ : Instead, we refer to the <a href="../../../html/storing_manipulating_data.html">data lifecycle
+ : documentation</a>. It gives an overview over serveral ways to work with collections,
+ : documents, and other data-structures.</p>
  :
+ : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml
+ : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
  : @project store/collections/w3c
- :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl";
 
 import module namespace qddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -97,7 +103,7 @@ declare function ddl:available-collections() as xs:string*
 
 (:~
  : The create-collection function is an updating function which creates
- : the collection with the given URI.
+ : the collection with the given URI and the empty-sequence as contents.
  :
  : @param $name The URI of the collection to create.
  :
@@ -105,7 +111,7 @@ declare function ddl:available-collections() as xs:string*
  :         pending update list which, once applied, creates a collection
  :         with the given name.
  :
- : @error XDDY0002 if a collection with the given URI already exists.
+ : @error zerr:ZDDY0002 if a collection with the given URI already exists.
  :
  :)
 declare updating function ddl:create-collection($coll-name as xs:string) 
@@ -125,7 +131,7 @@ declare updating function ddl:create-collection($coll-name as xs:string)
  :         pending update list which, once applied, creates a collection
  :         with the given name and inserts the given nodes into it.
  :
- : @error XDDY0002 if a collection with the given URI already exists.
+ : @error zerr:ZDDY0002 if a collection with the given URI already exists.
  :
  :)
 declare updating function ddl:create-collection(
@@ -145,8 +151,8 @@ declare updating function ddl:create-collection(
  :         update list which, once applied, deletes the collection with the given
  :         name.
  :
- : @error XDDY0003 if the URI $name is not equal to any of the available collections.
- : @error ZDDY0015 if any of the in-scope variables references a node that
+ : @error zerr:ZDDY0003 if the URI $name is not equal to any of the available collections.
+ : @error zerr:ZDDY0015 if any of the in-scope variables references a node that
  :        belongs to the collection with the given URI.
  :
  :)

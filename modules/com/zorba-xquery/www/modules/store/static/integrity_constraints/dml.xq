@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -18,10 +18,22 @@ xquery version "1.0";
 
 (:~
  : This module defines a function to check if an integrity constraint is satisfied.
+ : The integrity constraint needs to be declared in the prolog of a module.
  :
- : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
- : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : <p>This module is part of <a href="../../../html/xqddf.htm">Zorba's XQuery Data
+ : Definition Facility</a>. All the integrity constraints managed by this module
+ : have to be pre-declared in the prolog of a module. Please refer to the
+ : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : for more information and examples.</p>
+ :
+ : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../../html/xqddf.html">XQuery Data Definition Facility</a>
+ : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
+ : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
+ : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project store/integrity constraints/static
@@ -29,6 +41,7 @@ xquery version "1.0";
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -40,8 +53,8 @@ declare option ver:module-version "2.0";
  :
  : @return true if the constraints are valid in the database, false otherwise.
  :
- : @error XDDY0031 if the integrity constraint identified by $name is not declared.
- : @error XDDY0032 if the integrity constraint identified by $name is not available.
+ : @error zerr:ZDDY0031 if the integrity constraint identified by $name is not declared.
+ : @error zerr:ZDDY0032 if the integrity constraint identified by $name is not available.
  :)
 declare function dml:check-integrity-constraint(
   $name as xs:QName) as xs:boolean external;

@@ -93,11 +93,11 @@ DocumentManagerImpl::~DocumentManagerImpl()
 
 ********************************************************************************/
 void
-DocumentManagerImpl::add(const String& aURI, const Item& aDoc)
+DocumentManagerImpl::put(const String& aURI, const Item& aDoc)
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(theDocNamespace, "add");
+    Item lQName = theFactory->createQName(theDocNamespace, "put");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(theFactory->createAnyURI(aURI)));

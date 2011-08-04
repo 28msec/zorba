@@ -428,7 +428,7 @@ void set_var(
       zorba::Item lValidatedDoc;
       sctx->validate(lDoc, lValidatedDoc, zorba::validate_lax);
 
-      lDocMgr->add(val, lValidatedDoc);
+      lDocMgr->put(val, lValidatedDoc);
       lDoc = lDocMgr->document(val);
     }
     if(name != ".")

@@ -20,30 +20,21 @@ xquery version "3.0";
  : This modules provides a set of functions to modify a collection and retrieve the nodes
  : contained in a particular collection.
  :
- : Such collections are identified by QNames and come into existence (i.e. be made available)
- : by calling one of the two create-collection functions of the 
- : <tt>http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</tt>
- : module.
- :
- : The variable $content passed to any of the insert functions is evaluated
- : as though it were an enclosed expression in an element constructor.
- : The result of this step is a sequence of nodes to be inserted into the collection.
- :
- : In contrast to the functions in the module
- : <tt>http://www.zorba-xquery.com/modules/store/static/collections/dml</tt>
- : the function in this module operate on collections which do not have to
- : be statically declared in the prolog.
- :
+ : <p>Please refer to our documentation for <a href="../../html/storing_manipulating_data.html">
+ : more information</a> about the lifecycle management and the manipulation of such
+ : collections.</p>
+ : 
+ : @see <a href="../../html/storing_manipulating_data.html">Data Lifecycle</a>
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
- : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
+ : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- : @project store/collections/dynamic
  :
  : @project store/collections/dynamic
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -59,7 +50,7 @@ declare option ver:module-version "2.0";
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  :)
 declare updating function dml:insert-nodes-first(
@@ -76,7 +67,7 @@ declare updating function dml:insert-nodes-first(
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  :)
 declare updating function dml:insert-nodes-last(
@@ -96,8 +87,8 @@ declare updating function dml:insert-nodes-last(
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0011 if the target node is not contained in the collection.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0011 if the target node is not contained in the collection.
  :
  :)
 declare updating function dml:insert-nodes-before(
@@ -118,8 +109,8 @@ declare updating function dml:insert-nodes-before(
  : @return The result of the function is an empty XDM instance and a pending update list
  :         which, once applied, inserts the nodes into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0011 if the target node is not contained in the collection.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0011 if the target node is not contained in the collection.
  :
  :)
 declare updating function dml:insert-nodes-after(
@@ -138,7 +129,7 @@ declare updating function dml:insert-nodes-after(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  : @see dml:insert-nodes-first
  :
@@ -158,7 +149,7 @@ declare %ann:sequential function dml:apply-insert-nodes-first(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  : @see dml:insert-nodes-last
  :
@@ -180,7 +171,7 @@ declare %ann:sequential function dml:apply-insert-nodes-last(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  : @see dml:insert-nodes-before
  :
@@ -203,7 +194,7 @@ declare %ann:sequential function dml:apply-insert-nodes-before(
  : @return The result of the function is the sequence of nodes that have been
  :         inserted into the collection.
  :
- : @error XDDY0003 if the collection identified by $name is not available.
+ : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  : @see dml:insert-nodes-after
  :
@@ -222,7 +213,7 @@ declare %ann:sequential function dml:apply-insert-nodes-after(
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the nodes from their collections.
  :
- : @error XDDY0011 if any nodes in the $target sequence is not a member of a collection
+ : @error zerr:ZDDY0011 if any nodes in the $target sequence is not a member of a collection
  :        or not all nodes of the $target sequence belong to the same collection.
  :
  :)
@@ -237,7 +228,7 @@ declare updating function dml:delete-nodes($target as node()*) external;
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the first node from the collection.
  :
- : @error XDDY0011 if the collection doesn't contain any node.
+ : @error zerr:ZDDY0011 if the collection doesn't contain any node.
  :
  :)
 declare updating function dml:delete-node-first($name as xs:QName) external;
@@ -253,7 +244,7 @@ declare updating function dml:delete-node-first($name as xs:QName) external;
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the nodes from the collection.
  :
- : @error XDDY0011 if the collection doesn't contain the given number of nodes.
+ : @error zerr:ZDDY0011 if the collection doesn't contain the given number of nodes.
  :
  :)
 declare updating function dml:delete-nodes-first(
@@ -269,9 +260,9 @@ declare updating function dml:delete-nodes-first(
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the last node from the collection.
  :
- : @error XDDY0009 If available collections does not provide a mapping
+ : @error zerr:ZDDY0009 If available collections does not provide a mapping
  :        for the expanded QName $name.
- : @error XDDY0011 if the collection doesn't contain any node.
+ : @error zerr:ZDDY0011 if the collection doesn't contain any node.
  :
  :)
 declare updating function dml:delete-node-last($name as xs:QName) external;
@@ -287,9 +278,9 @@ declare updating function dml:delete-node-last($name as xs:QName) external;
  : @return The result of this function is an empty XDM instance and a pending update
  :         list which, once applied, deletes the last n nodes.
  :
- : @error XDDY0009 If available collections does not provide a mapping
+ : @error zerr:ZDDY0009 If available collections does not provide a mapping
  :        for the expanded QName $name.
- : @error XDDY0011 if the collection doesn't contain the given number of nodes.
+ : @error zerr:ZDDY0011 if the collection doesn't contain the given number of nodes.
  :
  :)
 declare updating function dml:delete-nodes-last(
@@ -303,7 +294,7 @@ declare updating function dml:delete-nodes-last(
  :
  : @return Returns the position as xs:integer of the given node in the collection.
  :
- : @error XDDY0011 if node is not contained in any collection.
+ : @error zerr:ZDDY0011 if node is not contained in any collection.
  :
  :)
 declare function dml:index-of($node as node()) as xs:integer external;
@@ -316,7 +307,7 @@ declare function dml:index-of($node as node()) as xs:integer external;
  :
  : @return The sequence contained in the given collection.
  :
- : @error XDDY0009 If available collections does not provide a mapping
+ : @error zerr:ZDDY0009 If available collections does not provide a mapping
  :        for the expanded QName $name.
  :
  :)
@@ -330,7 +321,7 @@ declare function dml:collection($name as xs:QName) as node()* external;
  : @return The result of this function is a QName which identifies the collection
  :         to which the given node belongs to.
  :
- : @error XDDY0011 if the given node does not belong to a collection.
+ : @error zerr:ZDDY0011 if the given node does not belong to a collection.
  :
  :)
 declare function dml:collection-name($node as node()) as xs:QName external;

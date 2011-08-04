@@ -61,7 +61,7 @@ def example5(zorba):
   docIter.destroy()
 
   docManager = dataManager.getDocumentManager()
-  docManager.add("books.xml", doc)
+  docManager.put("books.xml", doc)
   xquery = zorba.compileQuery("doc('books.xml')//book")
   print xquery.execute()
   docManager.remove("books.xml");

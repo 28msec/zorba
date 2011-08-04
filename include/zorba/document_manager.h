@@ -28,7 +28,7 @@ namespace zorba {
   {
   public:
     virtual void
-    add(const String& aURI, const Item& aDoc) = 0;
+    put(const String& aURI, const Item& aDoc) = 0;
 
     virtual void
     remove(const String& aURI) = 0;

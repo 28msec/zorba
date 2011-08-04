@@ -80,6 +80,14 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lURI = lSctx->resolve_relative_uri(strval);
   lResource = lSctx->resolve_uri(lURI, impl::EntityData::MODULE, lErrorMessage);
   lStream = static_cast<impl::StreamResource*>(lResource.get());
+  if ( ! lStream )
+  {
+    throw XQUERY_EXCEPTION(
+      err::XQST0046,
+      ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ),
+      ERROR_LOC( loc )
+    );
+  }
   lFile = lStream->getStream();
 
   // now, do the real work

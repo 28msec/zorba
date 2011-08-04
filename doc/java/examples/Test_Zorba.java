@@ -105,7 +105,7 @@ public class Test_Zorba
     i.delete();
 
     DocumentManager docMgr = dm.getDocumentManager();
-    docMgr.add("books.xml", doc);
+    docMgr.put("books.xml", doc);
 
     doc.delete();
 

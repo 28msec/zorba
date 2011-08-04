@@ -53,6 +53,161 @@ string getFileName(const string& aFileName)
   }
 }
 
+void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
+{
+  if (aAnn) {
+    store::Item_t lTypeName, lAnnotationsQName, lAnnotationQName;
+    store::Item_t lAnnotationsElem, lAnnotationElem;
+
+    theFactory->createQName(lAnnotationsQName, theXQDocNS, theXQDocPrefix, "annotations");
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(
+        lAnnotationsElem, aParent, lAnnotationsQName, lTypeName,
+        true, false, theNSBindings, theBaseURI);
+
+    for (size_t i = 0; i < aAnn->size(); ++i)
+    {
+      AnnotationParsenode* lAnn = (*aAnn)[i];
+
+      theFactory->createQName(lAnnotationQName, theXQDocNS, theXQDocPrefix, "annotation");
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createElementNode(
+          lAnnotationElem, lAnnotationsElem, lAnnotationQName,
+          lTypeName, true, false, theNSBindings, theBaseURI);
+
+      store::Item_t lAnnAttr;
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+
+      AnnotationLiteralListParsenode* lLits = lAnn->get_literals().getp();
+
+      std::ostringstream lAttrValue;
+      if (lLits)
+      {
+        for (size_t j = 0; j < lLits->size(); ++j)
+        {
+          if (j > 0)
+            lAttrValue << " ";
+
+          exprnode* lLit = (*lLits)[j].getp();
+          Literal* l = static_cast<Literal*>(lLit);
+          if (l->get_type() == Literal::STRING_LITERAL)
+          {
+            StringLiteral* s = l->get_string_literal().getp();
+            lAttrValue << s->get_strval();
+          }
+          else
+          {
+            NumericLiteral* n = l->get_numeric_literal().getp();
+            lAttrValue << n->toString();
+          }
+        }
+      }
+      zstring lTmp = lAttrValue.str().c_str();
+      store::Item_t lAttrValueItem;
+      theFactory->createString(lAttrValueItem, lTmp);
+
+      store::Item_t lAttrNamespaceItem, lAttrLocalnameItem;
+
+      lTmp = lAnn->get_qname()->get_prefix();
+      lTmp = theNamespaceMap[lTmp];
+      theFactory->createString(lAttrNamespaceItem, lTmp);
+
+      lTmp = lAnn->get_qname()->get_localname();
+      theFactory->createString(lAttrLocalnameItem, lTmp);
+
+      store::Item_t lNamespaceQName;
+      theFactory->createQName(lNamespaceQName, "", "", "namespace");
+      store::Item_t lLocalnameQName;
+      theFactory->createQName(lLocalnameQName, "", "", "localname");
+      store::Item_t lValueQName;
+      theFactory->createQName(lValueQName, "", "", "value");
+     
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lNamespaceQName, lAnnotationElem, lNamespaceQName,
+        lTypeName, lAttrNamespaceItem);
+
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lLocalnameQName, lAnnotationElem, lLocalnameQName,
+        lTypeName, lAttrLocalnameItem);
+
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createAttributeNode(
+        lValueQName, lAnnotationElem, lValueQName,
+        lTypeName, lAttrValueItem);
+    }
+  }
+}
+
+void print_namespaces()
+{
+  store::Item_t lTypeName; 
+  store::Item_t lNamespaceQName, lCustomElem;
+  store::Item_t lPrefixQName, lURIQName;
+  store::Item_t lNamespace, lAttrValue;
+  bool lFirst = true;
+
+  for (std::map<zstring, zstring>::const_iterator lIter = theNamespaceMap.begin();
+       lIter != theNamespaceMap.end();
+       ++lIter)
+  {
+    zstring lTmp = lIter->first;
+    if ( lTmp == "local" || lTmp == "" ||
+         lTmp == "fn" || lTmp == "xs")
+    {
+      continue;
+    }
+
+    if (lFirst)
+    {
+      store::Item_t lCustomQName, lTagQName, lNamespaceValue;
+
+      theFactory->createQName(
+          lCustomQName, theXQDocNS, theXQDocPrefix, "custom");
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createElementNode(
+          lCustomElem, theModule, lCustomQName, lTypeName,
+          true, false, theNSBindings, theBaseURI);
+
+      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      theFactory->createQName(lTagQName,  "", "", "tag");
+
+      zstring lNamespaceString("namespaces");
+      theFactory->createString(lNamespaceValue, lNamespaceString);
+      theFactory->createAttributeNode(
+        lTagQName, lCustomElem, lTagQName, lTypeName, lNamespaceValue);
+
+      lFirst = false;
+    }
+
+    theFactory->createQName(
+        lNamespaceQName, theXQDocNS, theXQDocPrefix, "namespace");
+    theFactory->createQName(
+        lPrefixQName, "", "", "prefix");
+    theFactory->createQName(
+        lURIQName, "", "", "uri");
+
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createElementNode(
+        lNamespace, lCustomElem,
+        lNamespaceQName, lTypeName,
+        true, false, theNSBindings, theBaseURI);
+
+    theFactory->createString(lAttrValue, lTmp);
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createAttributeNode(
+      lPrefixQName, lNamespace, lPrefixQName, lTypeName, lAttrValue);
+
+    lTmp = lIter->second;
+    theFactory->createString(lAttrValue, lTmp);
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createAttributeNode(
+      lURIQName, lNamespace, lURIQName, lTypeName, lAttrValue);
+
+  }
+}
+
 void print_comment(store::Item_t& result, const XQDocComment* aComment)
 {
   if (aComment == 0) {
@@ -249,7 +404,7 @@ protected:
   map<string, store::Item_t>  theInvokedFunc;
 
   // prefix -> uri
-  map<zstring, zstring> theNamespaces;
+  map<zstring, zstring> theNamespaceMap;
 
   const char*          theXQDocNS;
   const char*          theXQDocPrefix;
@@ -277,17 +432,18 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theVersion("1.0"),
   theFactory(GENV_ITEMFACTORY)
 {
-  theNamespaces["fn"] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaces[""] = "http://www.w3.org/2005/xpath-functions";
-  theNamespaces["xs"] = "http://www.w3.org/2001/XMLSchema";
-  theNamespaces["local"] = "http://www.w3.org/2005/xquery-local-functions";
+  theNamespaceMap["fn"] = "http://www.w3.org/2005/xpath-functions";
+  theNamespaceMap[""] = "http://www.w3.org/2005/xpath-functions";
+  theNamespaceMap["xs"] = "http://www.w3.org/2001/XMLSchema";
+  theNamespaceMap["local"] = "http://www.w3.org/2005/xquery-local-functions";
 }
 
 
 void print(const parsenode* p, const store::Item_t& aDateTime)
 {
   store::Item_t lXQDocQName, lControlQName, lDateQName, lVersionQName,
-                lImportsQName, lVariablesQName, lFunctionsQName, lModuleQName;
+                lImportsQName, lVariablesQName, lFunctionsQName,
+                lModuleQName, lNamespacesQName;
 
   store::Item_t lControlElem, lDateElem, lVersionElem,
                 lDateText, lVersionText;
@@ -299,6 +455,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
   theFactory->createQName(lImportsQName, theXQDocNS, theXQDocPrefix, "imports");
   theFactory->createQName(lVariablesQName, theXQDocNS, theXQDocPrefix, "variables");
   theFactory->createQName(lFunctionsQName, theXQDocNS, theXQDocPrefix, "functions");
+  theFactory->createQName(lNamespacesQName, theXQDocNS, theXQDocPrefix, "namespaces");
   theFactory->createQName(lModuleQName, theXQDocNS, theXQDocPrefix, "module");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -355,6 +512,8 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
 
   p->accept(*this);
 
+  print_namespaces();
+
 }
 
 #define IDS \
@@ -384,7 +543,7 @@ XQDOC_NO_BEGIN_TAG (DefaultNamespaceDecl)
 void end_visit(const DefaultNamespaceDecl& n, void* /*visit_state*/)
 {
   if (n.get_mode() == ParseConstants::ns_function_default)
-    theNamespaces[""] = n.get_default_namespace();
+    theNamespaceMap[""] = n.get_default_namespace();
 }
 
 XQDOC_NO_BEGIN_TAG (MainModule)
@@ -424,7 +583,7 @@ void end_visit(const VersionDecl& n, void* /*visit_state*/)
 }
 
 void *begin_visit(const ModuleDecl& n) {
-  theNamespaces[n.get_prefix()] = n.get_target_namespace();
+  theNamespaceMap[n.get_prefix()] = n.get_target_namespace();
   return no_state;
 }
 
@@ -527,14 +686,11 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName;
   store::Item_t lFuncElem, lNameElem, lSigElem, lFuncText, lNameText, lSigText;
   store::Item_t lArityAttr, lArityValue;
-  store::Item_t lAnnotationsElem, lAnnotationElem;
-  store::Item_t lAnnotationsQName, lAnnotationQName;
 
   theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
   theFactory->createQName(lArityQName, "", "", "arity");
-  theFactory->createQName(lAnnotationsQName, theXQDocNS, theXQDocPrefix, "annotations");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -560,84 +716,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       lArityQName, lFuncElem, lArityQName, lTypeName, lArityValue);
 
   AnnotationListParsenode* lAnns = n.get_annotations();
-  if (lAnns) {
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-        lAnnotationsElem, lFuncElem, lAnnotationsQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
-
-    for (size_t i = 0; i < lAnns->size(); ++i)
-    {
-      AnnotationParsenode* lAnn = (*lAnns)[i];
-
-      theFactory->createQName(lAnnotationQName, theXQDocNS, theXQDocPrefix, "annotation");
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createElementNode(
-          lAnnotationElem, lAnnotationsElem, lAnnotationQName,
-          lTypeName, true, false, theNSBindings, theBaseURI);
-
-      store::Item_t lAnnAttr;
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-
-      AnnotationLiteralListParsenode* lLits = lAnn->get_literals().getp();
-
-      std::ostringstream lAttrValue;
-      if (lLits)
-      {
-        for (size_t j = 0; j < lLits->size(); ++j)
-        {
-          if (j > 0)
-            lAttrValue << " ";
-
-          exprnode* lLit = (*lLits)[j].getp();
-          Literal* l = static_cast<Literal*>(lLit);
-          if (l->get_type() == Literal::STRING_LITERAL)
-          {
-            StringLiteral* s = l->get_string_literal().getp();
-            lAttrValue << s->get_strval();
-          }
-          else
-          {
-            NumericLiteral* n = l->get_numeric_literal().getp();
-            lAttrValue << n->toString();
-          }
-        }
-      }
-      zstring lTmp = lAttrValue.str().c_str();
-      store::Item_t lAttrValueItem;
-      theFactory->createString(lAttrValueItem, lTmp);
-
-      store::Item_t lAttrNamespaceItem, lAttrLocalnameItem;
-
-      lTmp = lAnn->get_qname()->get_namespace();
-      theFactory->createString(lAttrNamespaceItem, lTmp);
-
-      lTmp = lAnn->get_qname()->get_localname();
-      theFactory->createString(lAttrLocalnameItem, lTmp);
-
-      store::Item_t lNamespaceQName;
-      theFactory->createQName(lNamespaceQName, "", "", "namespace");
-      store::Item_t lLocalnameQName;
-      theFactory->createQName(lLocalnameQName, "", "", "localname");
-      store::Item_t lValueQName;
-      theFactory->createQName(lValueQName, "", "", "value");
-     
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createAttributeNode(
-        lNamespaceQName, lAnnotationElem, lNamespaceQName,
-        lTypeName, lAttrNamespaceItem);
-
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createAttributeNode(
-        lLocalnameQName, lAnnotationElem, lLocalnameQName,
-        lTypeName, lAttrLocalnameItem);
-
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createAttributeNode(
-        lValueQName, lAnnotationElem, lValueQName,
-        lTypeName, lAttrValueItem);
-    }
-  }
+  print_annotations(lAnns, lFuncElem);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -714,8 +793,8 @@ void add_invoked_function (
       lUriElem, lInvokedElem, lUriQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
-  map<zstring, zstring>::iterator ite = theNamespaces.find(aPrefix);
-  if (ite == theNamespaces.end())
+  map<zstring, zstring>::iterator ite = theNamespaceMap.find(aPrefix);
+  if (ite == theNamespaceMap.end())
   {
     throw ZORBA_EXCEPTION(
       zerr::ZXQD0001_PREFIX_NOT_DECLARED,
@@ -792,6 +871,10 @@ void end_visit(const VarDecl& n, void*)
     (*lIter).second->copy(lVariableElem.getp(), lCopyMode);
   }
   theInvokedFunc.clear();
+
+  AnnotationListParsenode* lAnns = n.get_annotations();
+  print_annotations(lAnns, lVariableElem);
+
 }
 
 
@@ -832,7 +915,7 @@ void end_visit(const ModuleImport& n, void*)
 
   // collect prefix -> uri mappings for properly
   // reporting function invocations (see FunctionCall)
-  theNamespaces[n.get_prefix()] = n.get_uri();
+  theNamespaceMap[n.get_prefix()] = n.get_uri();
 }
 
 // SchemaImport can also bind prefixes which may be used
@@ -878,7 +961,7 @@ void end_visit(const SchemaImport& n, void*)
   {
     lPrefix = n.get_prefix()->get_prefix();
   }
-  theNamespaces[lPrefix] = n.get_uri();
+  theNamespaceMap[lPrefix] = n.get_uri();
 }
 
 XQDOC_NO_BEGIN_TAG (NamespaceDecl)
@@ -887,7 +970,7 @@ void end_visit(const NamespaceDecl& n, void*)
 {
   // collect prefix -> uri mappings for properly
   // reporting function invocations (see FunctionCall)
-  theNamespaces[n.get_prefix()] = n.get_uri();
+  theNamespaceMap[n.get_prefix()] = n.get_uri();
 }
 
 
