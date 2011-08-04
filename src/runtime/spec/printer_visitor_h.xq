@@ -14,7 +14,7 @@ declare %ann:nondeterministic %ann:sequential function local:get-files($files as
 };
 
 
-declare %ann:nondeterministic %ann:sequential function local:process-file($file) as xs:string
+declare %ann:nondeterministic function local:process-file($file) as xs:string
 {
   let $doc := fn:parse-xml(file:read-text($file))/zorba:iterators
   return

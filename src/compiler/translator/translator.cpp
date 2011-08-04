@@ -2911,14 +2911,6 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       else
         moduleRootSctx = independentSctx->create_child_context();
 
-      if (targetNS == "http://expath.org/ns/file")
-      {
-        // We want the baseURI property of the module sctx to be the full
-        // pathname of the query file.
-        zstring uri;
-        if (theCCB->theRootSctx->get_entity_retrieval_uri(uri))
-          moduleRootSctx->set_encapsulating_entity_uri(uri);
-      }
       moduleRootSctx->set_entity_retrieval_uri(compURI);
       moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
