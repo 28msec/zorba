@@ -61,7 +61,6 @@ declare option ver:module-version "2.0";
  : @error zerr:ZAPI0020 if the store already contains a document for the given $uri.
  : @error err:FODC0004 if the given URI is not valid or couldn't be absolutized.
  :
- : @example test/rbkt/Queries/zorba/store/retrieve.xq
  :)
 declare updating function doc:put(
   $uri as xs:string,
