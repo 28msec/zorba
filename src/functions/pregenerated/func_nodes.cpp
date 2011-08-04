@@ -251,7 +251,7 @@ void populate_context_nodes(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_zorba_ref_node_by_reference,
         (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-by-reference"), 
         GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
         FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1);
 
   }

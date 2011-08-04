@@ -43,6 +43,14 @@ bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   valid = consumeNext(inNode, theChildren[0], planState);
   assert(valid);
 
+  if (! inNode->getCollection() )
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZAPI0080_CANNOT_RETRIEVE_NODE_REFERENCE,
+      ERROR_LOC( loc )
+    );
+  }
+
   STACK_PUSH(GENV_STORE.getReference(result, inNode), state);
   STACK_END(state);
 }

@@ -1766,6 +1766,9 @@
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
+      <value>can not retrieve node-reference for a node that is not in a collection.</value>
+    </diagnostic>
 
     <!--////////// Zorba Class Serialization Errors ////////////////////////-->
 
