@@ -16,6 +16,11 @@ declare copy-namespaces preserve, inherit;
  :)
 declare variable $ZorbaPath as xs:string external;
 
+(:~
+ : This variable contains the path to Zorba directory
+ :)
+declare variable $ZorbaBuildPath as xs:string external;
+
 (: 
  : This function returns a sequence of valid PATHS where modules can be found:
  : this includes the Zorba core modules path and also all the paths to the external modules that are checked out
@@ -26,7 +31,7 @@ declare %ann:nondeterministic function local:get-src-dirs() as xs:string*
   let $ZorbaCoreModules := fn:resolve-uri(concat($ZorbaPath,"modules"))
   
   (: read from CMakeCache.txt the path where the external modules are checked out (if any) :)
-  let $ZorbaCMakeCache := fn:resolve-uri(concat($ZorbaPath,file:directory-separator(),"build",file:directory-separator(),"CMakeCache.txt"))
+  let $ZorbaCMakeCache := fn:resolve-uri(concat($ZorbaBuildPath, file:directory-separator(), "CMakeCache.txt"))
   let $ZorbaModulesDir := substring-before(tokenize(file:read-text($ZorbaCMakeCache),"ZORBA_MODULES_DIR:PATH=")[2],"
 ")
   let $dirs := file:list(fn:resolve-uri($ZorbaModulesDir))
@@ -45,7 +50,7 @@ declare %ann:nondeterministic function local:get-src-dirs() as xs:string*
  :
  : @param $modulePath where to search for modules recursively.
  :)
-declare %ann:nondeterministic %ann:sequential function local:testXQDoc($modulesPath as xs:string) as xs:string?
+declare %ann:nondeterministic function local:testXQDoc($modulesPath as xs:string) as xs:string?
 {
   variable $res := 
   for $file in file:list(fn:resolve-uri($modulesPath), fn:true(), "*.xq")
@@ -190,9 +195,12 @@ declare function local:test-variable(
             ())
 };
 
+
 variable $errors as xs:string :=  string-join(for $complete-dir in local:get-src-dirs()
                                               return local:testXQDoc($complete-dir),"");
+
 variable $errorsCount := count(fn:analyze-string($errors,"ERROR:")//fn:match);
+
 if ($errorsCount = 0) then
 "CONGRATULATIONS! You've got a Schnitzel!"
 else

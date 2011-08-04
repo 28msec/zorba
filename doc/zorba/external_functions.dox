@@ -1,0 +1,23 @@
+/** 
+
+\page external_functions External Functions
+
+\section external External Modules/Functions
+
+In XQuery, a module can have external functions. External functions are implemented outside of the XQuery environment. In Zorba, external functions can be implemented using the C++ or C API. Examples showing the implementation of external functions can be found in some <a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">of the examples</a> that are shipped with Zorba.
+
+Once a function has been implemented it needs to be provided to Zorba by implementations of the <a href="../../cxx/html/classzorba_1_1ExternalModule.html" target="_blank">ExternalModule</a> interface. Instances of such implementations need to be registered in the static context. In principle, there exist two ways to register an external module.
+
+First, an external module can be registered in the host language using the static context method registerModule. Examples showing the details can be found in the <a href="../../zorba/html/index.html" target="_blank">Zorba documentation</a>.
+
+Second, an implementation of an external module can be packaged into a dynamic library (dll, so, or dylib). The dynamic library is loaded lazily when the module is imported for the first time and the corresponding external module is automatically registered in the static context. 
+Analogously to automatic URI resolving, the standard URI resolver computes the location of such a dynamic library. For example, consider the following module (located in the file foo.xq) with one external function.
+
+\code
+module namespace foo = "http://www.28msec.com/modules/foo";
+declare function foo:bar() external;
+\endcode
+
+In this example, Zorba will try to load (if the implementation is not already available in the static context) the implementation of the module from the dynamic library located in a file named foo.dylib on Mac OS X, foo.dll on Windows, or foo.so on Linux.
+
+*/
