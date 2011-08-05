@@ -98,7 +98,7 @@ std::pair<short, short>
 getRandomPorts() 
 {
   srand(getSeed());
-  // using only ephemeral ports (49152–65535)
+  // using only ephemeral ports (49152-65535)
   int from = 49152;
   int to = 65535;
   int lPort1 = rand() % (to - from + 1) + from;

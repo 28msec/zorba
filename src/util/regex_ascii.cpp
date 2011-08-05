@@ -1,4 +1,4 @@
-/*
+a/*
  * Copyright 2006-2008 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -1021,7 +1021,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
             *matched_len = 1;
             return true;
           }
-        case 'i'://the set of initial name characters, those ·match·ed by Letter | '_' | ':'
+        case 'i'://the set of initial name characters, those matched by Letter | '_' | ':'
           if((source[0] == '_') ||
             (source[0] == ':') ||
             XQCharType::isLetter(source[0]))
@@ -1039,7 +1039,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
           }
           *matched_len = 1;
           return true;
-        case 'c'://the set of name characters, those ·match·ed by NameChar
+        case 'c'://the set of name characters, those matched by NameChar
           if(XQCharType::isNameChar(source[0]))
           {
             *matched_len = 1;
