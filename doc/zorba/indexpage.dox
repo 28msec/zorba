@@ -22,7 +22,7 @@
   <li>\ref mod_authoring</li>
 </ul>
 
-<b>\ref storing_manipulating_data</b>
+<b>\ref data_lifecycle</b>
 <ul>
   <li>\ref dl_examples</li>
   <li>\ref dl_zorba_store</li>
@@ -36,7 +36,6 @@
 
 <b>\ref ft_top</b>
 <ul>
-  <li>\ref ft_stemmer</li>
   <li>\ref ft_thesaurus</li>
 </ul>
 
@@ -76,7 +75,7 @@
 
 <b>Zorba Proprietary Specifications</b>
 <ul>
-  <li><b><a href="http://xquery-scripting.ethz.ch/spec.html">XQuery Scripting Extension</a></b>  (\ref scripting_tutorial "Tutorial")</li>
+  <li><b><a href="scripting_spec.html">XQuery Scripting Extension</a></b>  (\ref scripting_tutorial "Tutorial")</li>
   <li>\ref xqddf</li>
   <!--li>\ref extensions_update</li-->
 </ul>

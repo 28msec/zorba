@@ -44,6 +44,10 @@ IF (DOXYGEN_FOUND)
                   ${CMAKE_CURRENT_BINARY_DIR}/html/documentation.png COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/noisepattern.png
                   ${CMAKE_CURRENT_BINARY_DIR}/html/noisepattern.png COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/scripting_spec.html
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/scripting_spec.html COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/W3C-WD.css
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/W3C-WD.css COPYONLY)
 ENDIF (DOXYGEN_FOUND)
 
 # adding the subdirectory responsible for adding the

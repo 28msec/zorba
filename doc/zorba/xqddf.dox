@@ -50,7 +50,7 @@ extensions are called the <strong>XQuery Data Definition Facility</strong>
 (XQDDF). XQDDF is an extension of <a href="http://www.w3.org/TR/xquery-3-/"
 target="_blank">XQuery 3.0</a>, <a href="http://www.w3.org/TR/xquery-update-10/"
 target="_blank">XQuery Update Facility</a>, and <a
-href="http://xquery-scripting.ethz.ch/spec.html" target="_blank">Zorba's XQuery Scripting
+href="scripting_spec.html" target="_blank">Zorba's XQuery Scripting
 Extension</a>.
 
 As part of the XQDDF implementation, Zorba includes new "built-in" modules
@@ -286,6 +286,8 @@ collection container.
 
   import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
+  import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
+
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
   import module namespace news-data = "http://www.news.org/data";
@@ -294,7 +296,7 @@ collection container.
 
   (
     cdml:insert-nodes($news-data:articles, doc("article1.xml")/article),
-    cdml:insert-nodes($news-data:articles, rest:get("http://www.reuters.com.xml/article234.xhtml")//article),
+    cdml:insert-nodes($news-data:articles, http:get("http://www.reuters.com/article234.xhtml")//article),
     ....,
     cdml:insert-nodes($news-data:articles, doc("article100.xml")/article)
   );
