@@ -38,8 +38,6 @@ ELSE(ZORBA_SUPPRESS_CURL)
 ENDIF(ZORBA_SUPPRESS_CURL)
 
 DECLARE_ZORBA_SCHEMA(FILE xqdoc.xsd URI "http://www.xqdoc.org/1.0")
-DECLARE_ZORBA_SCHEMA(FILE xslt-xquery-serialization.xsd
-  URI "http://www.w3.org/2010/xslt-xquery-serialization")
 DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/datetime")
 DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 2.0
