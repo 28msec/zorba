@@ -181,6 +181,16 @@ MACRO (DECLARE_ZORBA_MODULE)
     SET_PROPERTY (GLOBAL APPEND PROPERTY "${uri_sym}-versions" ${version_int})
   ENDIF (MODULE_VERSION)
 
+  # Add to module manifest (except test modules).
+  IF (NOT MODULE_TEST_ONLY)
+    SET (_version_attr)
+    IF (MODULE_VERSION)
+      SET (_version_attr " version=\"${MODULE_VERSION}\"")
+    ENDIF (MODULE_VERSION)
+    FILE (APPEND "${zorba_modules_file}"
+      "<z:module${_version_attr}>${MODULE_URI}</z:module>\n")
+  ENDIF (NOT MODULE_TEST_ONLY)
+
   # Now, deal with associated C++ source for external functions.
 
   SET (module_lib_target)
@@ -387,6 +397,8 @@ ENDMACRO (ADD_COPY_RULE)
 # the top-level project in a build.
 MACRO (DONE_DECLARING_ZORBA_URIS)
   IF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    # Close out the zorba modules manifest
+    FILE (APPEND "${zorba_modules_file}" "</z:modules>\n")
     IF (POLICY CMP0007)
       CMAKE_POLICY (SET CMP0007 NEW)
     ENDIF (POLICY CMP0007)
@@ -419,12 +431,16 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
   ENDIF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 
-# Initialize expected failures output file when first included
+# Initialize expected failures and zorba modules output files when
+# first included
 set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
-GET_PROPERTY (is_init GLOBAL PROPERTY expected_failures_initialized)
+set (zorba_modules_file "${CMAKE_BINARY_DIR}/ZorbaModules.xml")
+GET_PROPERTY (is_init GLOBAL PROPERTY ZorbaModule_initialized)
 IF (NOT is_init)
   file (WRITE "${expected_failures_file}" "")
-  SET_PROPERTY (GLOBAL PROPERTY expected_failures_initialized 1)
+  file (WRITE "${zorba_modules_file}"
+    "<z:modules xmlns:z=\"http://www.zorba-xquery.com/modules\">\n")
+  SET_PROPERTY (GLOBAL PROPERTY ZorbaModule_initialized 1)
 ENDIF (NOT is_init)
 
 # The expected_failure() function is used to mark a test which is currently
