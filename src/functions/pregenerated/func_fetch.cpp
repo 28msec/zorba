@@ -59,8 +59,9 @@ void populate_context_fetch(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_FETCH_CONTENT_1);
+        FunctionConsts::FN_ZORBA_FETCH_CONTENT_2);
 
   }
 

@@ -16,6 +16,7 @@
   <zorba:function>
     <zorba:signature localname="content" prefix="fn-zorba-fetch">
       <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
 

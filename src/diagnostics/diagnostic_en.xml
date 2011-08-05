@@ -1604,6 +1604,10 @@
       <value>item creation failed</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0026" name="INVALID_ENUM_VALUE">
+      <value>"$1": invalid enumerated value for $2</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0028" name="TARGET_NAMESPACE_NOT_PROVIDED">
       <value>"$1": target namespace not provided by module from $2</value>
     </diagnostic>

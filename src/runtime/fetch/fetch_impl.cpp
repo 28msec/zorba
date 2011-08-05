@@ -42,6 +42,9 @@ FetchContentIterator::nextImpl(
     PlanState& aPlanState) const
 {
   store::Item_t lUri;
+  store::Item_t lEntityKind;
+  impl::EntityData::Kind lKind;
+  zstring lKindStr;
   zstring lErrorMessage;
   std::auto_ptr<impl::Resource> lRes;
   impl::StreamResource* lStreamRes;
@@ -50,13 +53,38 @@ FetchContentIterator::nextImpl(
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   consumeNext(lUri, theChildren[0].getp(), aPlanState);
+  consumeNext(lEntityKind, theChildren[1].getp(), aPlanState);
+
+  // Figure out the EntityKind (any better way to do this?)
+  lKindStr = lEntityKind->getStringValue();
+  if ( ! lKindStr.compare("SOME_CONTENT")) {
+    lKind = impl::EntityData::SOME_CONTENT;
+  }
+  else if ( ! lKindStr.compare("SCHEMA")) {
+    lKind = impl::EntityData::SCHEMA;
+  }
+  else if ( ! lKindStr.compare("MODULE")) {
+    lKind = impl::EntityData::MODULE;
+  }
+  else if ( ! lKindStr.compare("THESAURUS")) {
+    lKind = impl::EntityData::THESAURUS;
+  }
+  else if ( ! lKindStr.compare("STOP_WORDS")) {
+    lKind = impl::EntityData::STOP_WORDS;
+  }
+  else {
+    throw XQUERY_EXCEPTION(
+          zerr::ZXQP0026_INVALID_ENUM_VALUE,
+          ERROR_PARAMS(lKindStr, "entityKind"),
+          ERROR_LOC(loc));
+  }
 
   try {
     // ask the uri mappers and resolvers to give
-    // me a resource of type SOME_CONTENT
+    // me a resource of specified kind
     lRes = theSctx->resolve_uri(
       lUri->getStringValue(),
-      impl::EntityData::SOME_CONTENT,
+      lKind,
       lErrorMessage);
 
   } catch (ZorbaException const& e) {

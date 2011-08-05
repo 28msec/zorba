@@ -63,4 +63,36 @@ declare option ver:module-version "2.0";
  : @see <a href="../../doc/latest/zorba/html/uriresolvers.html">URI Resolvers</a>.
  : @see <a href="../../zorba/html/options_and_annotations.html">Annotations</a>.
  :)
-declare %ann:streamable function fetch:content($uri as xs:string) as xs:string external;
+declare %ann:streamable function fetch:content($uri as xs:string) as xs:string
+{
+  fetch:content($uri, "SOME_CONTENT")
+};
+
+(:~
+ : <p>Tries to fetch the resource referred to by the given URI.</p>
+ :
+ : <p>In order to retrieve the content, the functions uses the
+ : URI resolution and URL resolver process as documented at
+ : <a href="../../html/uriresolvers.html">
+ : URI Resolvers</a>. Therefore, it queries all URI mappers
+ : and resolvers with the specified entity kind.</p>
+ :
+ : <p>The function is annotated with the <tt>ann:streamable</tt>
+ : annotation, that is it returns a streamable string. A streamable
+ : string can only be consumed once. Please see section "Streamable Strings"
+ : in the <a href="../../html/options_and_annotations.html">
+ : documentation of Zorba's annotations</a>.
+ : </p>
+ :
+ : @param $uri the resource to fetch.
+ : @param $entityKind the kind of resource to fetch.
+ : @return the resource referred to by the given URI as streamble string.
+ :
+ : @error zerr:ZXQP0025 if the URI could not be resolved
+ :   or did not resolve to a <tt>StreamResource</tt>.
+ :
+ : @see <a href="../../doc/latest/zorba/html/uriresolvers.html">URI Resolvers</a>.
+ : @see <a href="../../zorba/html/options_and_annotations.html">Annotations</a>.
+ :)
+
+declare %ann:streamable function fetch:content($uri as xs:string, $entityKind as xs:string) as xs:string external;
