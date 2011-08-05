@@ -1,5 +1,0 @@
-#!/bin/sh 
-exec zorba -r -q "`tail +4 "$0"`"
-#!
-import module namespace main = 'http://www.zorba-xquery.com/examples/twitter/main';
-main:main()
