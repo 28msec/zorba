@@ -2233,8 +2233,8 @@ appear in the merged list.</li>
 
 \section error_summary Appendix Error Summary
 
-The prefix "zerr" is bound to the error namespace of Zorba, i.e. http://www.zorba-xquery.com/errors.
-The prefix "err" is bound to the general XQuery error namespace, i.e. http://www.w3.org/2005/xqt-errors.
+The prefix "zerr" is bound to the error namespace of Zorba, i.e. http://www.zorba-xquery.com/errors .
+The prefix "err" is bound to the general XQuery error namespace, i.e. http://www.w3.org/2005/xqt-errors .
 
 <p>XQuery Data Definition Facility - Static Errors:</p>
 
