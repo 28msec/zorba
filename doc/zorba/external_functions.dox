@@ -2,11 +2,74 @@
 
 \page external_functions External Functions
 
-\section external External Modules/Functions
+\section external External Functions
 
-In XQuery, a module can have external functions. External functions are implemented outside of the XQuery environment. In Zorba, external functions can be implemented using the C++ or C API. Examples showing the implementation of external functions can be found in some <a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">of the examples</a> that are shipped with Zorba.
+In XQuery, a module may declare both user-defined and external functions (see
+<a href=" http://www.w3.org/TR/xquery-30/#FunctionDeclns">
+http://www.w3.org/TR/xquery-30/#FunctionDeclns</a>). User-defined functions are 
+implemented as XQuery expressions, and their implementation is provided together 
+with their declaration. In contrast, external functions are typically implemented
+in a host language other than XQuery, and their implementation is not inside the
+declaring module. As a result, XQuery processors must provide mechanisms by which
+(1) the implementation of an external function can be located, (2) the argument 
+values are passed from the XQuery runtime environment to the host language, 
+and (3) the result of the function is passed back from the host language to the 
+XQuery runtime environment. We call step (1) <b>external function resolution</b>.
+Steps (2) and (3) are part of <b>external function invocation</b>.
 
-Once a function has been implemented it needs to be provided to Zorba by implementations of the <a href="../../cxx/html/classzorba_1_1ExternalModule.html" target="_blank">ExternalModule</a> interface. Instances of such implementations need to be registered in the static context. In principle, there exist two ways to register an external module.
+In Zorba, external functions can be implemented using the C++ or C API. In this 
+documentation we focus on the C++ API. Related code examples can be found 
+<a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">here</a>.
+
+
+\subsection Implementation
+
+In Zorba, external functions must be implemented as instances of the 
+<a href="../../cxx/html/classzorba_1_1ExternalFunction.html" target="_blank">
+ExternalFunction</a> class. We refer to such instances as <b>external function
+objects</b>. During its evaluation, an external function may or may not need to 
+access the static or dynamic contexts of the invoking XQuery module. If the 
+function implementation does need to access either context, the function is 
+referred to as <b>contextual</b>; otherwise, it is <b>non-contextual</b>. 
+Zorba provides classes 
+<a href="../../cxx/html/classzorba_1_1ContextualExternalFunction.html" target="_blank">
+ContextualExternalFunction</a> and 
+<a href="../../cxx/html/classzorba_1_1NonContextualExternalFunction.html" target="_blank">
+NonContextualExternalFunction</a> to differentiate between contextual and 
+non-contextual external functions, respectively. Both of these classes are 
+abstract subclasses of ExternalFunction and provide a (virtual) evaluate method 
+that serves as the implementation of the function. For each external function, 
+an application must provide a concrete subclass of either of these classes.
+
+
+\subsection Invocation
+
+Invoking an external function boils down to invoking the evaluate method on
+the associated function object. The first parameter of evaluate is a vector
+of pointers to <a href="../../cxx/html/classzorba_1_1ItemSequence.html">
+ItemSequence</a> objects. During invocation, the given vector will contain 
+one entry for each parameter listed in the external function declaration.
+The Zorba XQuery processor makes sure that the types of the item sequences 
+given to evaluate match the types of the formal parameters. Similarly, the 
+evaluate method returns the result of the function as an ItemSequence. Again,
+Zorba makes sure that the type of the returned ItemSequence matches the
+declared return type of the function. In the function is contextual, its
+evaluate method has two additional parameters; they are pointers to the
+static and dynamic contextes of the module declaring the function.
+
+
+\subsection Resolution
+
+Before it can invoke an external function, Zorba must locate its function
+object. For this, Zorba looks-up the function object in the static context,
+using the function QName as the key. However, it is the responsibility of
+the application to register the function objects to the static context.
+Zorba provides two mechanisms for an application to package and register
+its external functions. Both mechanisms involve the use of the
+<a href="../../cxx/html/classzorba_1_1ExternalModule.html" target="_blank">
+ExternalModule</a> interface. 
+
+Instances of such implementations need to be registered in the static context. In principle, there exist two ways to register an external module.
 
 First, an external module can be registered in the host language using the static context method registerModule. Examples showing the details can be found in the <a href="../../zorba/html/index.html" target="_blank">Zorba documentation</a>.
 

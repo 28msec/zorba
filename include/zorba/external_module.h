@@ -27,7 +27,7 @@ class ExternalFunction;
 
 
 /***************************************************************************//**
-  An external module represent a group of external functions, all belonging to
+  An external module represents a group of external functions, all belonging to
   the same target namespace. Class ExternalModule provides the interface for
   retrieving the target namespace URI and/or the implementation of each contained
   external function by function name. 
@@ -38,7 +38,8 @@ class ExternalFunction;
   Instances of this class must be implemented by the application and provide 
   storage for the implementations of the external functions. The instances must
   be registered in the static context in order for the functions to be accessible
-  by a query (see StaticContext::registerModule method). 
+  by a query (see <a href="../../zorba/html/external_functions.html">
+  here</a> for more details.). 
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC ExternalModule 
 {

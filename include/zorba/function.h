@@ -178,7 +178,8 @@ public:
 
   For each external function, an application must provide a concrete subclass
   of this class and "store" an instance of the subclass inside an ExternalModule
-  object, as described at ????
+  object, as described <a href="../../zorba/html/external_functions.html">
+  here</a>.
 *******************************************************************************/
 class ZORBA_DLL_PUBLIC NonContextualExternalFunction : public ExternalFunction
 {
@@ -199,7 +200,8 @@ class ZORBA_DLL_PUBLIC NonContextualExternalFunction : public ExternalFunction
 
   For each external function, an application must provide a concrete subclass
   of this class and "store" an instance of the subclass inside an ExternalModule
-  object, as described at ????
+  object, as described <a href="../../zorba/html/external_functions.html">
+  here</a>.
 *******************************************************************************/
 class ZORBA_DLL_PUBLIC ContextualExternalFunction : public ExternalFunction
 {

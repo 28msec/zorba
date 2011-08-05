@@ -398,11 +398,18 @@ class ExtFuncArgItemSequence : public ItemSequence
   class InternalIterator : public Iterator
   {
   private:
-    ExtFuncArgItemSequence   *theItemSequence;
+    ExtFuncArgItemSequence * theItemSequence;
     bool is_open;
     int open_count;
+
   public:
-    InternalIterator(ExtFuncArgItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), open_count(0) {}
+    InternalIterator(ExtFuncArgItemSequence* item_sequence) 
+      : 
+      theItemSequence(item_sequence),
+      is_open(false),
+      open_count(0)
+    {
+    }
 
     virtual void open()
     {
@@ -411,21 +418,28 @@ class ExtFuncArgItemSequence : public ItemSequence
       //  theItemSequence->theChild->reset(theItemSequence->thePlanState);
       open_count++;
     }
+
     bool next(Item& item)
     {
       ZORBA_ASSERT(is_open);
       store::Item_t result;
-      bool status = theItemSequence->theChild->consumeNext(result, theItemSequence->theChild.getp(), theItemSequence->thePlanState);
+      bool status = theItemSequence->theChild->
+                    consumeNext(result,
+                                theItemSequence->theChild.getp(),
+                                theItemSequence->thePlanState);
       item = status ? result : NULL;
       return status;
     }
+
     virtual void close()
     {
       is_open = false;
-    //  theItemSequence->theChild->close(theItemSequence->thePlanState);
+      // theItemSequence->theChild->close(theItemSequence->thePlanState);
     }
+
     virtual bool isOpen() const {return is_open;}
   };
+
 private:
   PlanIter_t   theChild;
   PlanState  & thePlanState;

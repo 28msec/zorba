@@ -22,7 +22,10 @@
   <li>\ref mod_authoring</li>
 </ul>
 
+<b>\ref external_functions</b>
+
 <b>\ref data_lifecycle</b>
+
 <ul>
   <li>\ref dl_examples</li>
   <li>\ref dl_zorba_store</li>
