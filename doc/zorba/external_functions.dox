@@ -17,8 +17,9 @@ and (3) the result of the function is passed back from the host language to the
 XQuery runtime environment. We call step (1) <b>external function resolution</b>.
 Steps (2) and (3) are part of <b>external function invocation</b>.
 
-In Zorba, external functions can be implemented using the C++ or C API. In this 
-documentation we focus on the C++ API. Related code examples can be found 
+In Zorba, the C++ API provides the "glue" between the XQuery processor and the
+hosting environment into which external functions are implemented.. Related code 
+examples can be found 
 <a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">here</a>.
 
 
@@ -64,16 +65,20 @@ Before it can invoke an external function, Zorba must locate its function
 object. For this, Zorba looks-up the function object in the static context,
 using the function QName as the key. However, it is the responsibility of
 the application to register the function objects to the static context.
-Zorba provides two mechanisms for an application to package and register
-its external functions. Both mechanisms involve the use of the
+For this, Zorba provides the
 <a href="../../cxx/html/classzorba_1_1ExternalModule.html" target="_blank">
-ExternalModule</a> interface. 
+ExternalModule</a> abstract class. ExternalModule represents a group of 
+external functions, all belonging to the same target namespace. It provides 
+the interface for retrieving the function object of each contained
+external function given the function's QName. Applications are responsible
+for implementing concrete subclasses of ExternalModule and for registering
+instances of such subclasses into the static context. 
 
-Instances of such implementations need to be registered in the static context. In principle, there exist two ways to register an external module.
-
-First, an external module can be registered in the host language using the static context method registerModule. Examples showing the details can be found in the <a href="../../zorba/html/index.html" target="_blank">Zorba documentation</a>.
-
-Second, an implementation of an external module can be packaged into a dynamic library (dll, so, or dylib). The dynamic library is loaded lazily when the module is imported for the first time and the corresponding external module is automatically registered in the static context. 
+Registration can be done in either of the two following ways. First, an 
+external module can be registered explicitly using the registerModule method
+of <a href="../../cxx/html/classzorba_1_1StaticContext.html">StaticContext</a>. 
+Second, an implementation of an external module can be packaged into a dynamic 
+library (dll, so, or dylib). The dynamic library is loaded lazily when the module is imported for the first time and the corresponding external module is automatically registered in the static context. 
 Analogously to automatic URI resolving, the standard URI resolver computes the location of such a dynamic library. For example, consider the following module (located in the file foo.xq) with one external function.
 
 \code

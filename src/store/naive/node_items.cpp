@@ -4303,7 +4303,7 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
           avalue->getTypeCode() > XS_ENTITY)
         return;
 
-      text = &getString();
+      text = &avalue->getString();
     }
     else
     {
