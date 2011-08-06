@@ -271,17 +271,25 @@ main(int argc, char** argv)
 
   ulong numQueries = (ulong)lSpec.theStates.size();
 
+  //
+  // For each query in the spec file
+  //
   for(ulong curQuery = 0; curQuery < numQueries; ++curQuery)
   {
     State* lState = lSpec.theStates[curQuery];
 
+    zorba::XQuery_t lQuery;
+
+    //
+    // Open the query file
+    //
     std::string qname_str;
     if(lSpecPath.get_path().find("XQueryX") == std::string::npos)
       qname_str = lState->theName + ".xq";
     else
       qname_str = lState->theName + ".xqx";
 
-    std::cout << "qname_str " << qname_str << std::endl;
+    std::cout << "query name = " << qname_str << std::endl;
 
     zorba::filesystem_path lQueryName(qname_str,
                                       zorba::file::CONVERT_SLASHES);
@@ -293,6 +301,10 @@ main(int argc, char** argv)
     std::cout << std::endl;
     std::ifstream lQueryStream(lQueryFile.c_str());
 
+    //
+    // Create static context and set it up. 
+    // Create and compile the query object.
+    //
     try 
     {
       zorba::StaticContext_t lContext = engine->createStaticContext();
@@ -306,12 +318,12 @@ main(int argc, char** argv)
         smapper.reset(new zorba::TestSchemaURIMapper( uri_map_file.c_str() ));
         lContext->registerURIMapper( smapper.get() );
 
-        zorba::Item lEnable
-          = engine->getItemFactory()->createQName(
-              "http://www.zorba-xquery.com/options/features", "", "enable");
-        zorba::Item lDisable
-          = engine->getItemFactory()->createQName(
-              "http://www.zorba-xquery.com/options/features", "", "disable");
+        zorba::Item lEnable = engine->getItemFactory()->
+        createQName("http://www.zorba-xquery.com/options/features", "", "enable");
+
+        zorba::Item lDisable = engine->getItemFactory()->
+        createQName("http://www.zorba-xquery.com/options/features", "", "disable");
+
         lContext->declareOption(lEnable, "hof");
         lContext->declareOption(lDisable, "scripting");
 #if 1
@@ -325,7 +337,7 @@ main(int argc, char** argv)
 #endif
       }
       
-      zorba::XQuery_t lQuery = engine->createQuery();
+      lQuery = engine->createQuery();
       lQuery->setFileName (lQueryFile.c_str());
       lQuery->compile(lQueryStream, lContext, getCompilerHints());
 
@@ -336,8 +348,6 @@ main(int argc, char** argv)
         return save_retval;
       }
 #endif
-
-      lQueries.push_back(lQuery);
     }
     catch (zorba::ZorbaException &e) 
     {
@@ -353,11 +363,13 @@ main(int argc, char** argv)
         return 3;
       }
     }
-    
 
+    //
+    //
+    //    
     try
     {
-      zorba::DynamicContext* lDynCtx = lQueries.back()->getDynamicContext();
+      zorba::DynamicContext* lDynCtx = lQuery->getDynamicContext();
       if (lState->hasDate) 
       {
         std::string lDateTime = lState->theDate; 
@@ -377,28 +389,34 @@ main(int argc, char** argv)
             lVar->theInline,
             lVar->theName,
             lVar->theValue,
-            lQueries.back()->getStaticContext(),
+            lQuery->getStaticContext(),
             lDynCtx);
       }
     }
     catch (zorba::ZorbaException &e) 
     {
-      if (isErrorExpected(e, lState)) {
+      if (isErrorExpected(e, lState)) 
+      {
         std::cout << "Expected execution error:\n" << e << std::endl;
         continue;
-      } else {
+      }
+      else
+      {
         std::cout << "Unexpected execution error:\n" << e << std::endl;
         return 6;
       }
     }
     
+    //
+    //
+    //
     try 
     {
       if (lResultFile.exists()) 
         lResultFile.remove();
 
       std::ofstream lResFileStream(lResultFile.get_path().c_str());
-      lQueries.back()->execute(lResFileStream, &lSerOptions);
+      lQuery->execute(lResFileStream, &lSerOptions);
       lResFileStream.flush();
         
       if (lState->hasCompare) 
@@ -477,7 +495,6 @@ main(int argc, char** argv)
         {
           return 4;
         } 
-        
       }
       else if (lState->hasErrors && curQuery == numQueries-1) 
       {
@@ -490,6 +507,7 @@ main(int argc, char** argv)
         std::cout << std::endl;
         std::cout << "Query returns result but no expected result defined!"
                   << std::endl;
+        zorba::printFile(std::cout, lResultFile.get_path());
       }
     }
     catch (zorba::ZorbaException &e) 

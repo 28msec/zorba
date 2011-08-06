@@ -1,51 +1,30 @@
-/** \page storing_manipulating_data Storing and Manipulating Data
+/** \page data_lifecycle Data Life Cycle
 
-Zorba provides several ways in which data (mostly nodes) can be stored.
-By storing we mean associating a name (URI or QName) with a container (document, collection, or other data structures) that contains the data.
-This name-container-binding is registered in the Zorba Store.
-Once the data is stored, it can be retrieved and manipulated within the same or a different XQuery program.
+\section dl_overview Overview
 
-In general, there are two different categories of storage containers (see image below).
+Zorba processes XML data (modeled and accessed as XDM instances, <a href="http://www.w3.org/TR/xpath-datamodel/">http://www.w3.org/TR/xpath-datamodel/</a>) accessible in the data store.
+Below is a short overview of the Zorba data life cycle: how to load data in the Zorba store, how to query and update it, and how to remove the data from the store.
 
-<b>Static Containers</b> which have to be declared (statically) in the prolog of a module.
-For example,
+\image html data_lifecycle.png
 
-\code
-  declare collection news-data:articles as node()*;
-\endcode
+The store contains several types of data containers: documents, collections, and other structures (for the moment only unordered maps are supported, but more such structures -- like stacks or queues -- will be supported in future versions).
+Each such container is identified by a name, which can be a URI or a QName.
+The association between the name and the content of the containers is maintained by the store during the lifetime of the container.
 
-Having them declared in the prolog allows the processor to reason about them when the XQuery program is compiled.
-For example, it allows indexes on data in a particular collection to be automatically maintained when the underlying data is updated.
-An extensive documentation about the static containers can be found in the documentation of what we call the \ref xqddf.
+There are two kinds of containers: static and dynamic.
+Collections can be either static or dynamic.
+Documents and maps can only be dynamic. 
 
-<b>Dynamic containers</b> which the user can arbitrarily create during runtime (without the need to statically declare them in the prolog).
-For example, the user can associate a document or collection with a URI or QName using a simple function call.
-
-\code
-declare variable $coll := xs:QName("ddl:coll1");
-
-ddl:create-collection($coll);
-\endcode
-  
 \image html store_concepts.png
 
-As already mentioned (and is depicted in the image above), Zorba provides three data containers:
+While the dynamic containers require no static knowledge from the query processor (no need for explicit knowledge about their existence at compilation time), the static collections require the query processor to be aware of their existence, and take this information into consideration at compilation and optimization time.
+Note that static collections can have indexes and integrity constraints defined on them (declared using the \ref xqddf), while the dynamic structures cannot.
+At compilation time the query processor needs to be aware of the indexes, integrity constraints of the static collections in order to generate correct  and optimal execution plans.
 
-<ul>
-  <li> <b>Collections</b> are sequences of nodes. They can either be static or dynamic.
-  <li> <b>Documents</b> are dynamic.
-  <li> <b>Unordered Maps</b> is a dynamic container that allows to map a set of (atomic) keys to a sequence of items.
-</ul>
+Both static and dynamic collections have functions that allow queries to manipulate them.
+Like in most other databases, the functions are clustered into Data Definition Modules (DDL; e.g. creation, deletion) and Data Manipulation Modules (DML; e.g. query, update).
 
-In addition to those three data containers, there exist two other static containers, i.e. indexes and integrity constraints.
-In contrast to collections, documents, and maps, those containers do not contain items themselves.
-Instead indexes  and integrity constraints can be used to provide efficient access to and define constraints on data stored in a (static) collection, respectively.
-
-All of the (dynamic and static) containers can be created or modified using functions from various modules.
-
-The following tables give an overview over the various modules that exist to 
-(1) manage the life-cycle of a container (data definition) and
-(2) retrieve and manipulate the data stored in a container (data manipulation).
+The following tables gives the complete list of all Zorba modules that allow the manipulation of static and dynamic containers.
 
 <table>
   <tr>
@@ -134,97 +113,176 @@ The following tables give an overview over the various modules that exist to
   </tr>
 </table>
 
+Please note that all of the modules listed above require XQuery version 3.0 or later.
+
+Other the fact the static and dynamic containers are treated differently by the query processor during compilation, their lifetime is exactly the same.
+Data can be loaded in any container -- static or dynamic --  and after that it will be available for queries and updates, until the data is explicitly deleted from the store, or the store itself expires.
+(Note that not all the Zorba Stores are persistent stores).
+Please refer to the section below on various Zorba stores.
+
+Also please note that a data container that is available in the store will be available to all XQuery programs that are being executed synchronously.
+Again, please read more about the Zorba Data Stores bellow about data consistency details.
+
 \section dl_examples Examples
-
 In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers.
-This section does not aim to be complete.
-Specifically, it doesn't give examples for static collections, indexes, or integrity constraints.
-For a complete reference, please see the documentation for the \ref xqddf (static containers) and the modules listed above.
+It is important to note that most of the examples uses the <a href="../../zorba/html/scripting_tutorial.html">XQuery Scripting Extension</a> for apply pending updates  in order to make them visible to subsequent expressions in the same program.
 
-\subsection dl_retrieve_store_doc Retrieving and Storing a Document
-This examples demonstrates three things:
+\subsection dl_scenario_1 Scenario 1
 
+In the first scenario, we show how to use the \ref xqddf and the XQuery Update Facility to
 <ul>
-  <li>how the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_http-client.html">http-client</a> can be used to retrieve a document from the web,</li>
-  <li>how this document can be stored, and</li>
-  <li>how the document stored document can be retrieved.</li>
+  <li>declare and create a collection with an,</li>
+  <li>add data to the collection that is retrieved from the web,</li>
+  <li>query the collection,</li>
+  <li>delete and modify data in the collection, and</li>
+  <li>finally delete the entire collection an the index</li>
 </ul>
 
+\subsection dl_sc1_ex1 Declare a Collection with Index
+Declare an unordered collection that can store KML placemarks (see <a href="http://code.google.com/apis/kml/documentation/">http://code.google.com/apis/kml/documentation/</a>).
+On top of this collection, we declare a unique value index that is indexing the names of the parks.
+Please note that this module is a library module because collections and indexes can not be declared in a main module.
+All of the following examples import the library module in order to be able to access the collection.
+
+\include zorba/store/sc1_ex1.xqlib
+
+\subsection dl_sc1_ex2 Create a Collection and Index
+This is an administration program that imports the module declaring the collection and invokes the <tt>create-collection</tt> and <tt>create-index</tt> functions to create the empty collection and index containers, respectively.
+
+\include zorba/store/sc1_ex2.xq
+
+\subsection dl_sc1_ex3 Store Data in a Collection
+Once the collection has been created, we can now populate it with some placemarks.
+The according placemarks (data about Wildlife National Parks in India) is retrieved from the web.
+The resource retrieved is a single KML document, from which we select only the placemarks.
+Before inserting them into the collection, the validate expression makes sure that each placemark is valid according to the KML schema.
+
+\include zorba/store/sc1_ex3.xq
+
+\subsection dl_sc1_ex4 Query a Collection's Data
+This very simple query shows how to invoke the collection function of the dml module to retrieve the contents of the collection.
+The query returns the names of all national parks in India that have elephants.
+
+\include zorba/store/sc1_ex4.xq
+
+\subsection dl_sc1_ex5 Delete Nodes from a Collection
+To do cleanup of the data in the collection, the following snippet deletes all national parks from the database that do not have Elephants.
+
+\include zorba/store/sc1_ex5.xq
+
+\subsection dl_sc1_ex6 Updates Nodes in a Collection
+In order modify a particular node in a collection, the XQuery Update Facility can be used.
+In the example below, we set the visibility of all national parks that contain wild pigs to false because we don't want them to show up in a map.
+Please note that we need to insert the <tt>visibility</tt> element after the name element because otherwise the revalidation of the node in the collection would fail.
+
+\include zorba/store/sc1_ex6.xq
+
+\subsection dl_sc1_ex7 Delete a Collection
+
+Finally, the last examples shows how the collection and index containers can be deleted from the store.
+All the nodes stored in the collection are also deleted.
+Please note that the index has to be deleted before the according collection.
+
+\include zorba/store/sc1_ex7.xq
+
+\subsection dl_scenario_2 Scenario 2
+
+The examples in this subsection show how to
+<ul>
+  <li>create a dynamic collection,</li>
+  <li>retrieve data form the web and load in a collection,</li>
+  <li>query and update data, and</li>
+  <li>delete the collection.</li>
+</ul>
+
+\subsection dl_sc2_ex1 Creating a Dynamic Collection
+
+Analogous to the creation of a collection in \ref dl_sc1_ex2, the following examples demonstrates how a dynamic collection can be created.
+The collection is called "earthquakes" and will be used to contain data of the worldwide earthquakes from July, 29th 2011 to August, 5th 2011 (retrieved from <a href="http://explore.data.gov/Geography-and-Environment/Worldwide-M1-Earthquakes-Past-7-Days/7tag-iwnu">data.gov</a>).
+
+\include zorba/store/sc2_ex1.xq
+
+\subsection dl_sc2_ex2 Retrieve Data and Store in Collection
+
+This examples fetches the data as CSV from the web, converts it to XML, and inserts it into the earthquake collection.
+The conversion is done using <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">Zorba's CSV converter module</a>.
+
+\include zorba/store/sc2_ex2.xq
+
+
+\subsection dl_sc2_ex3 Query a Collection
+
+Given all the information of earthquakes in the collection, the following example shows how to query that data.
+The query selects all the earthquakes having a magnitude of three or higher whose region contains the string "California".
+
+\include zorba/store/sc2_ex3.xq
+
+
+\section dl_sc3 Scenario 3
+
+Previous examples have show how to work with static and dynamic collections.
+The next set of examples will focus on documents.
+As a data set, we use the meat, poultry, and egg inspection directory from <a href="http://explore.data.gov/Agriculture/Meat-Poultry-and-Egg-Inspection-Directory-by-Estab/ffj8-dww2">data.gov</a>.
+The data is available as a CSV file in our file system.
+
+\subsection dl_sc3_ex1 Put a Document
+In this example, we read a file from the file system whose name is available in the external variable named input-context.
+The CSV contents of the file is parsed and converted into XML using the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">CSV module</a>.
+The resulting document is put into the store and given the name "meat_poultry.xml".
+
+\include zorba/store/sc3_ex1.xq
+
+\subsection dl_sc3_ex2 Retrieving and Modifying a Document
+The XML format of the resulting document (from the CSV conversion in the previous example) is not really nice.
+For example, a sketch of the document is as follows:
+
 \code
-import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
-
-import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
-
-let $mydoc := http:get-node("http://zorba-xquery.com/rest-tests/doc.html")[2]
-return
-  {
-    doc:add("mydoc.xml", $mydoc); (: add the document with name mydoc.xml :)
-    doc:document("mydoc.xml")
-  }
+<root>
+  <row>
+    <column>EstNumber</column>
+    <column>Company</column>
+    <column>Street</column>
+    <column>City</column>
+    <column>State</column>
+    <column>Zip</column>
+    <column>Phone</column>
+    <column>GrantDate</column>
+    <column>Activities</column>
+    <column>DBAs</column>
+  </row>
+  <row>
+    <column>M1-P1370</column>
+    <column>Vienna Beef Ltd.</column>
+    <column>2501 N. Damen Ave.</column>
+    <column>Chicago</column>
+    <column>IL</column>
+    <column>60647</column>
+    <column>(773) 278-7800</column>
+    <column/>
+    <column>Processing</column>
+    <column>Bistro Soups,David Berg,International Deli Brokerage,Kosher Zion Sausage Co,Vienna Beef LTD,Vienna Sausage Manufacturing</column>
+  </row>
+</root>
 \endcode
 
-It is important to note that the examples uses the <a href="../../zorba/html/scripting_tutorial.html">XQuery Scripting Extension</a> to apply the update primitive created by the doc:add() function.
-Doing so allow the subsequent function call to doc:document() to retrieve the document.
+The columns in the first row element define the names of the columns in the subsequent row elements.
+The following query uses an XQuery Update expression to rename the columns.
 
-\subsection dl_create_collection Creating and Manipulating a Collection
+\include zorba/store/sc3_ex2.xq
 
-This section gives an examples that shows how a collection can be created and populated.
+Please note that the <tt>first-row-is-header</tt> option of the <tt>csv:parse</tt> function would have done the job also but we though it was more fun to present this query. ;-)
 
-\code
-import module namespace cddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-import module namespace cdml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+\subsection dl_sc3_ex3 Serializing a Document to JSON
 
-variable $coll-name := xs:QName("local:mycol");
+In this last example, we show how the document resulting from the previous example can be serialized to JSON using <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_json.html">Zorba's JSON module</a>.
 
-cddl:create-collection($coll-name);
+\include zorba/store/sc3_ex3.xq
 
-for $i in 1 to 10
-return
-    cdml:insert-nodes-last(
-      $coll-name,
-      <mynode id="{$i}"/>
-    );
+Note: data can be loaded in the Zorba store either via API calls (see the C++ API and the other APIs, link) or directly via XQuery function calls.
+Both ways are being executed internally in exactly the same way -- in fact all such C++ API functions are 100% mirrored by XQuery functions.
+We strongly encourage users to use the XQuery modules for data manipulation instead of the C++ API.
+The reason is simple: the XQuery processor can understand the data flow and data lifecycle in the first case, while it cannot in the second.
 
-cdml:collection($coll-name)
-\endcode
-
-The examples uses a dynamic collection to store nodes.
-This collection is created using the <tt>create-collection</tt> function from the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">dynamic collection ddl module</a>.
-After the collection has been created, the <tt>insert-nodes-last</tt> function is used to add nodes to the collection.
-At the end, the contents of the collection is returned.
-
-\subsection dl_modify_document Modifying a Document
-
-Previous examples in this section have shown how data can be added to the store.
-Functions of the various data manipulation (dml) modules can be used to add or remove data from containers.
-For example, we have seen how to add a document to the store or add nodes to a collection that is bound in the store.
-However, all those functions don't allow you do update the actual nodes that are stored in those containers.
-The following example shows how the <a href="http://www.w3.org/TR/xquery-update-10">XQuery Update Facility</a> can be used to modify the contents of a document.
-
-\code
-import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
-
-import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
-
-declare namespace xhtml = "http://www.w3.org/1999/xhtml";
-
-let $mydoc := http:get-node("http://zorba-xquery.com/rest-tests/doc.html")[2]
-return
-  {
-    doc:add("mydoc.xml", $mydoc); (: add the document with name mydoc.xml :)
-
-    replace value of node
-      doc:document("mydoc.xml")//xhtml:title
-    with
-      "Excel Functions";
-
-    doc:document("mydoc.xml")//xhtml:title/text()
-  }
-\endcode
-
-The example is an extension to the example shown in \ref dl_retrieve_store_doc.
-After the document has been added to the store, the <tt>replace</tt> expression is used to update the contents of the title element.
-At the end, the updated title is returned.
 
 \section dl_zorba_store  Zorba Stores
 
@@ -244,7 +302,7 @@ For example, a mobile device store can safely assume that only a single request 
 Analogously, a main memory store does not provide persistence of data across process boundaries.
 
 The Zorba source distribution as well as the packages provided by <a href="http://www.zorba-xquery.com/">http://www.zorba-xquery.com/</a> come with a main memory based store.
-The life-cycle of the data in this store is bounded by the life-time of the process in which it is running.
+The life cycle of the data in this store is bounded by the life time of the process in which it is running.
 For example, a document added to the store can be accessed by XQuery programs in the same process.
 As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the document is destroyed and changes to the data are not propagated to any persistence storage.
 

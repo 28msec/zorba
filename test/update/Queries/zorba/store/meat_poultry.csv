@@ -1,0 +1,100 @@
+EstNumber,Company,Street,City,State,Zip,Phone,GrantDate,Activities,DBAs
+M1-P1370,Vienna Beef Ltd.,2501 N. Damen Ave.,Chicago,IL,60647,(773) 278-7800,,Processing,"Bistro Soups,David Berg,International Deli Brokerage,Kosher Zion Sausage Co,Vienna Beef LTD,Vienna Sausage Manufacturing"
+00001  P-07478  M,"Tyson Foods, Inc.",704 Factory Street,Wilkesboro,NC,28697,(336) 838-2171,11/22/10,"Slaughter, Processing","Tyson Farms, Inc."
+00001AAP-07478AAM,"Tyson Foods, Inc.",706 Factory Street,Wilkesboro,NC,28697,(336) 838-2171,9/13/06,Processing,"Delightful Farms, Inc.,Delta Valley,TSD Sales & Distribution,Tyson Farms, Inc.,Victor F. Weaver & Co."
+M2AD-P4247,Pinnacle Foods Corporation,2467 Henry Ladyn Drive,Fort Madison,IA,52627,(319) 463-7111,1/31/11,Processing,"Armour,Brooks,Hartford House,Hungry Man,Nalley's,Pinnacle Foods Corp. LLC"
+00002FRM-00002FRP,"Conagra, Inc.","Six ConAgra Drive,6-110",Omaha,NE,68102,(402) 240-7609,10/1/92,Processing,"Armour,Award Brand,Banquett,Chun King,Conagra Frozen Foods,Dining Treat,Healthy Choice,Morton,Patio"
+00002WMM-00337  P,"Fairmont Foods of MN, Inc.",905 East 4th Street,Fairmont,MN,56031,(507) 238-9001,9/23/99,Processing,
+00003  I,Northwestern Selecta Inc.,599 calle 15 NW,San Juan,PR,00920-2110,(787) 781-1950,9/26/88,Import,
+00003  M-05636  P,"Armour-Eckrich Meats, LLC",410 Kirk Road,St. Charles,IL,60174,(630) 584-5900,12/3/73,Processing,"Armour,Armour Deli Company,Armour Food Company,Armour Foodservice Company,Bar B Foods,Beatrice Meats Inc,Blue Coach Foods, Inc.,Butterball Foods Company,Butterball Turkey Company,C Poultry Company Limited,CEI Products, Inc.,Conagra,Conagra Deli Company,Conagra Foods,ConAgra Foods Retail Products,ConAgra Foods, Inc.,ConAgra Poultry Company,ConAgra Refg. Prepared Foods,ConAgra Turkey Company,Cook Family Foods, LTD,Cook Family Foods, LTD, KY,Cook Foods, LTD,Country Pride Foods Company,Country Skillet Poultry Prods,CPF Sales,Cudahy Foods,Decker Food Company,Eckrich Deli Company,Eckrich Foodservice Company,Eckrich, Inc,Hanau Meat Company,Hebrew National Kosher Foods,Jacob E Decker & Sons,Longmont Foods,Marburger Foods,Marburger Packing,Mayrose Processed Meats,Monfort of Colorado,National Foods,North American Provision Co,Peschke Packing Co.,Purity Bacon Products,Purity Farms,SHK Foods,St Louis Ind Packing Co,Texas Barbecue Company,Texas Signature Foods,Van Wagenen & Schickhaus Co."
+00003  P,Mountaire Frms of Delaware Inc,29005 John J. Williams Hwy,Millsboro,DE,19966,(302) 934-1100,9/7/01,"Slaughter, Processing",
+00003CAM-00003CAP,JBS Swift,13215 Cambridge St.,Santa Fe Springs,CA,90670-4901,(562) 565-8000,2/21/97,Processing,"Armour Food Co.,Swift & Company,Swift Foods Company,Swift Pork Company,Swift Premium"
+M3D,Swift Beef Company,U.S. Highway 287,Cactus,TX,79013,(806) 966-5103,8/20/07,"Slaughter, Processing","Armour Food Company,Swift & Company,Swift Foods Company,Swift Pork Company,Swift Premium"
+M3JC-P3JC,"Armour-Eckrich Meats, Inc.",1920 Lacy Drive,Junction City,KS,66441,(785) 762-3306,6/22/05,Processing,"Armour Food Company,Armour-Eckrich Meats, LLC,Bob Ostrow,Cumberland Gap Provisions Co.,Curly's Food, Inc.,Decker Food Company,Eastbay Packing Co.,Gwaltney,Hunter Krey Packing Co.,Hunter Packing Co.,John Morrell & Co.,Kretschmar Brands, Inc.,Krey Packing Co.,Lykes Meat Group,Mohawk Provision, Inc.,Northside Foods,Partridge Meats, Inc.,Patrick Cudahy,Peyton Packing Co., Inc.,Racorn, Inc,Rath Blackhawk, Inc.,Robert & Oake, Inc.,Rodeo Meats, Inc.,Selective Petfood Services,Smithfield Foods, Inc.,Smithfield Packing Co.,Sunnyland Inc.,Tobin's First Prize Meat Co.,Tom Sawyer Meats Inc.,Valleydale, Inc.,Yorkshire Farms"
+00003K M-07173  P,"Butterball, LLC",9401 E. Highland,Jonesboro,AR,72401,(870) 933-0001,10/4/06,Processing,
+00003L M,Swift Beef Company,920 North 7th Avenue,Greeley,CO,80631,(970) 304-7000,1/7/97,Slaughter,"Monfort Lamb,Swift & Company,Swift Beef Company,Swift Lamb Company"
+00003M M-08908  P,"Armour-Eckrich Meats, LLC",820 North Eleventh Street,Saint James,MN,56081,(507) 375-3124,11/2/87,Processing,"Armour Food Company,Bob Ostrow,Cumberland Gap Provisions Co.,Curly's Food Inc.,Decker Food Company,Eastbay Packing Co.,Gwaltney,Hunter Krey Packing Co.,Hunter Packing Co.,John Morrell & Co.,Kretschmar Brands, Inc.,Krey Packing Co.,Lykes Meat Group,Mohawk Provision, Inc.,Northside Foods,Partridge Meats, Inc.,Patrick Cudahy,Peyton Packing Co., Inc.,Racorn, Inc.,Rath Blackhawk, Inc.,Robert & Oake, Inc.,Rodeo Meats, Inc.,Selective Petfood Services, I,Smithfield Foods, Inc.,Smithfield Packing Co.,Sunnyland Inc.,Tobin's First Prize Meat Co.,Tom Sawyer Meats Inc.,Valleydale, Inc.,Yorkshire Farms"
+M3S,Swift Pork Company,??,??,??,??,(641) 752-7131,2/4/09,"Slaughter, Processing","Armour Food Company,Swift & Company,Swift Foods Co.,Swift Premium"
+00003W M,Swift Pork Company,Highway 60 Northeast,Worthington,MN,56187,(507) 372-2121,3/5/84,"Slaughter, Processing","Armour Food Company,JBS Swift & Co.,Swift & Company,Swift Foods Company,Swift Pork Company,Swift Premium"
+00004  I,Broadleaf Inc.,5600 South Alameda Street,Vernon,CA,90058,(323) 826-9890,11/8/06,Import,
+00004C M-00005  P,Campbell Soup Supply Co LLC,6200 Franklin Blvd.,Sacramento,CA,95824,(916) 428-7890,1/12/48,Processing,
+00004D M-00004  P,Campbell Soup Supply Co.,12-773 State Route 110,Napoleon,OH,43545,(419) 592-1010,1/1/59,Processing,"Bounty,Franco-American,Pepperidge Farms,Swanson's"
+00004K M-00013  P,"Campbell Soup Supply Company,",500 NW Loop 286,Paris,TX,75461-9016,(903) 784-3341,6/29/11,Processing,
+00004P M-00049  P,Campbell Soup. Co.,1 Campbell Place,Camden,NJ,08103-1799,(856) 342-4800,3/3/87,Processing,
+00004R M-08039  P,Campbell Soup Supply Co.,2120 NC 71 Hwy North,Maxton,NC,28364,(910) 844-5631,6/7/82,Processing,
+00005  I,"Houston Central Industries, In",7080 Express Lane,Houston,TX,77078,(713) 491-0444,11/30/99,Import,Alfrod Refrigerated Warehouse
+00005  M-06817  P,Zwanenberg Food Group (USA)Inc,3640 Muddy Creek Road,Cincinnati,OH,45238,(513) 682-6000,11/6/70,Processing,
+00006  I,Preferred Freezer Services LBF,4901 Bandini Blvd.,Vernon,CA,90040,(323) 263-8811,1/4/08,Import,
+00006  P-17250  M,Tyson Foods Inc.,"67240 Main Street, Hwy 231 South",Blountsville,AL,35031,(205) 429-2421,11/21/88,"Slaughter, Processing","Tyson Farms Inc,Tyson Sales and Distribution"
+00007  I,Versa Cold,19840 Rancho Way,Dominguez Hills,CA,90221,(310) 900-7089,10/16/06,Import,
+00009  I,Wilmington Cold Storage,2 Industrial Way,Wilmington,MA,1887,(781) 935-8670,5/19/86,Import,
+00010  I,"Atlantic Coast Freezers, LLC",2192 Northwest Blvd.,Vineland,NJ,08362-0863,(856) 696-1770,3/8/07,Import,
+00010  M-07212  P,"Freedman Meats, Inc.",2901 Polk Street,Houston,TX,77003,(713) 229-8000,3/26/01,Processing,Freedman Food Service Of Houst
+00011  I,"Dynamic Ventures, Inc.",165-K Guerrero St.,Hariman,GU,96911,(671) 649-9788,4/13/98,Import,
+00011  M-00011  P,The Butchery Inc.,182 North Street,Danvers,MA,1923,(978) 777-3000,1/10/05,Processing,Butcher's Gourmet LLC
+00012  I,Oberto Sausage Co. ,7060 S. 238th Street,Kent,WA,98032,(253) 437-6100,1/17/05,Import,"Lowrey's,Lowrey's Big Beef,O.S.C. of Oregon,Smokecraft,Smokecraft/Lowrey's"
+00013  I,"Delaware Ave. Enterprises, Inc",3301 S. Columbus Blvd.,Philadelphia,PA,19148,(215) 551-2735,4/23/02,Import,
+00014  I,Pacific Logistics LP,16110 East Hardy Road,Houston,TX,77032,(281) 821-4110,12/3/90,Import,P & O Cold Logistics
+00015  I,Nocs West Gulf,9223 Hwy 225 @ Miller Cut-Off,La Porte,TX,77571,(281) 930-8002,11/18/09,Import,
+00016  I,VersaCold,1610 E. Sepulveda Blvd.,Carson,CA,90745,(310) 632-6265,10/16/06,Import,
+00017  I,Preferred Freezers Services,3101 South 3rd Street,Philadelphia,PA,19148,(215) 271-5600,4/10/07,Import,
+00017D M-07613  P,John Morrell & Co.,1400 North Weber Rd.,Sioux Falls,SD,57103,(605) 330-3135,4/3/11,"Slaughter, Processing","Ark Valley,Armour Food Company,Armour-Eckrich Meats, LLC,Butterball,Carando,Carolina Turkey,Cook's Ham, Inc.,Country Lean,Curly's Food Inc.,Decker Food Company,East Bay Packing Co.,Farmland Foods, Inc.,Farmstead,Gwaltney,Hunter Krey  Packing Co.,Hunter Packing Co.,John Morrell & Co.,Kneip,Krakus Foods International,Kretschmar Brands, Inc.,Krey Packing Co.,Lakeview,Lundy's,Maple River Brand,Mohawk Provision, Inc.,Moseys,Moyer Packing Co.,Northside Foods,OhSe,Partridge Meats, Inc.,Patrick Cudahy,Peyton Packing Co., Inc.,Premium Farms,Premium Pet Health,Premium Standard Farms,Quick-To-Fix,Racorn, Inc.,Rath Black Hawk, Inc.,RMH Foods,Rodeo Meats, Inc.,Roegelein,Selective Pet Food Services,Smithfield Foods, Inc.,Smithfield Packing Co.,Spring Hill Brand,Stefano Foods,Tobin's First Prize Meat Co.,Valley Dale, Inc.,Village Butcher,Windsor"
+M17S-P5644,"Specialty Foods Group, Inc.",4550 W. Jackson Blvd.,Chicago,IL,60624,(773) 378-1300,,Processing,"Field Packing Company,Fischer Packing,Saratoga Meat Products, Inc.,Scott Petersen,Tom Sawyer Meat Products, Inc"
+00018  I,Southwest Food Processing and ,12190 Rojas Dr.,El Paso,TX,79936,(915) 860-2200,8/18/93,Import,
+00018  P,Cargill Meat Solutions Corp.,135 Huffman Drive,Dayton,VA,22821,(540) 879-2521,6/27/05,"Slaughter, Processing",Cargill Value Added Meats
+00018A P,Cargill Meat Solutions Corp.,5688 South Valley Pike,Mount Crawford,VA,22841,(540) 437-8000,8/22/02,ID Warehouse,
+00020  I,VersaCold,502 North Broadway,La Porte,TX,77571,(281) 471-0072,11/3/06,Import,
+00021B M-00748  P,Gerber Products Company,4301 Harriet Lane,Fort Smith,AR,72904,(479) 782-8671,6/5/08,Processing,
+00025  I,"Dietz and Watson, Inc",1000 Coopertown Rd,Delanco,NJ,8075,(856) 898-0200,9/8/08,Import,
+00019  M-00019  P,"Armour-Eckrich Meats, LLC",5015 S. 33rd Street,Omaha,NE,68107,(402) 731-6400,12/5/06,Processing,"Bob Ostrow,Cumberland Gap Provisions Co.,Curly's Foods Inc.,Dekker Food Company,Eastbay Packing Co.,Gwaltney,Hunrer Packing Co.,Hunter Krey Packing Co.,John Morrell & Co.,Kretschmar Brands, Inc.,Krey Packing Co..,Lykes Meat Group,Mohawk Provision, Inc.,Northside Foods,Partridge Meats, Inc.,Patrick Cudahy,Peyton Packing Co., Inc.,Racorn, Inc.,Rath Blackhawk, Inc.,Robert & Oake, Inc.,Rodeo Meat, Inc.,Selective Petfood Services, I,Smithfield Foods, Inc.,Smithfield Packing Co.,Sunnyland Inc.,Tobin's First Prize Meat Co.I,Tom Sawyer Meats Inc.,Valleydale, Inc.,Yorkshire Farms"
+00020AEM-00020AEP,"Lopez Foods, Inc.",9500 NW 4th Street,Oklahoma City,OK,73127,(405) 789-7500,3/21/73,Processing,
+00020I M-04225  P,"Tyson  Deli, Inc.",1300 S. Lake St.,Cherokee,IA,51012,(712) 225-5161,2/23/05,Processing,"Brennan Packing Co., Inc.,Foodbrands America, Inc.,Russer Foods,TSD Sales and Distrubution,Tyson Foods, Inc.,Tyson Fresh Meats,Tyson Prepared Foods,Tyson Retail Deli"
+00024  I,Anchor Distribution Services,2950 Merced Street,San Leandro,CA,94577,(510) 483-9120,3/1/00,Import,
+00024  M-18217  P,Cherry Meat Packers Inc.,4750 S. California Ave.,Chicago,IL,60632,(773) 927-1200,3/10/98,Processing,"Chicago Meat House,Southside Meat Company"
+M25-P21,Pilgrim's Pride Corp of WV,214 S. Main Street,Moorefield,WV,26836--125,(304) 538-2381,4/29/10,Processing,"CN PPC,ConAgra Poultry Company,Country Pride,Country Skillet,Eat Well Stay Healthy,Gold Kist,Gold Kist Farms,Hester Industries, Inc.,Pierce Foods,Pilgrim's Pride"
+00026A M-00423  P,Plumrose USA  Inc,101 E. Veterans Drive,Booneville,MS,38829,(662) 728-6291,1/20/82,Processing,"Dak,Danola,Elcona,Plumrose"
+00027  I,United States Cold Storage # 2,1600 West Calton Rd.,Laredo,TX,78044,(956) 722-8207,6/10/03,Import,
+M27,Creekstone Farms Premium Beef,604 Goff Industrial Park,Arkansas City,KS,67005,(620) 741-3100,6/21/11,"Slaughter, Processing","Carolina Turkey Brand ""Just P,Creekstone Farms Brand Grill,Creekstone Farms Brand Ground,Creekstone Farms Brand Value,Creekstone Farms Distributor',Creekstone Farms Internationa,Creekstone Farms Natural Blac,Creekstone Farms Premium Blac,Creekstone Farms Walnut River,Cub Foods Brand Ranchers Pref,Schlotsky's Brand Cooked Beef,Skylark Brand Meats,Wal-Mart Brand Prima Della Co"
+00027  P,"Tyson Foods, Inc.",8564 Highway 71 South,Grannis,AR,71944,(870) 385-2331,2/15/11,"Slaughter, Processing","Tyson Poultry, Inc."
+00028  I,Luen Fung Enterprises,Harmon Industrial Park,Harmon,GU,96931,(671) 647-7074,5/7/02,Import,
+M28-P28,"Patrick Cudahy, Inc.",1 Sweet Apple-wood Lane,Cudahy,WI,53110,(414) 744-2000,11/9/04,Processing,"Agar Food Products,Krakus Foods"
+00029  I,Cameco Inc.,100 Pine Street,Verona,NJ,7044,(973) 239-2700,5/7/86,Import,
+00030  I,F & C & R Investment Corp.,"Road 175 KM 27.2, Solar # 34, Urb. Indust. Rio Can",Caguas,PR,725,(787) 783-1988,9/7/07,Import,GMT Corporation
+00031  I,Preferred Freezer Services,2700 Trade Street,Chesapeake,VA,23323,(757) 558-4700,2/19/08,Import,
+00031  M-00031  P,Fresh Mark Massillon,1888 Southway S.E.,Massillon,OH,44646,(330) 832-7491,6/15/01,Processing,"Stark Provision Company,Sugardale Foods,Superior's Brand Meats"
+00032  P,MarJac Poultry,1020 Aviation Blvd,Gainesville,GA,30503,(770) 536-0561,4/5/90,"Slaughter, Processing",
+00033  I,Market Wholesale,751 Chalan Machaute Suite 106,Maite,GU,96910,(671) 477-9018,5/26/93,Import,Market Wholesale & Distributor
+00033  M-00033  P,Agar Supply Co. Inc.,225 John Hancock Rd.,Taunton,MA,02780-7818,(617) 880-5243,1/29/01,Processing,
+00036  I,Preferred Freezer Services of ,1780 West Beaver Street,Jacksonville,FL,32209,(904) 301-1400,6/2/08,Import,
+00037  I,Preferred Freezer Services,10060 Porter Road,La Porte,TX,77571,(281) 867-4500,12/11/07,Import,
+00038  I,E-cert - Imports,1400 Independence Ave. SW,Washington,DC,20250,( ) - ,,,
+00039  P,Pine Manor/Miller Poultry,9622 West County Road 350 North,Orland,IN,46776,(260) 829-6550,9/25/02,"Slaughter, Processing","Crystal Valley Foods,Crystal Valley Poultry,Fawn River Poultry,Miller Amish Country Farms,Miller Amish Country Foods,Miller Amish Country Poultry,Miller Poultry,Orland Poultry,Pine Manor,Pine Manor Farms,Pine Manor Foods,Pine Manor Poultry"
+00040  P,Pilgrim's Pride Corporation,125  Industrial Blvd,Ellijay,GA,30540,(706) 635-4991,8/18/10,"Slaughter, Processing","Country Pride,Goldkist Farms,Wampler Foods"
+00042  M-00042  P,"Edmond's Chile Company, Inc.",3236 Oregon Avenue,Saint Louis,MO,63118,(314) 772-1499,6/28/94,Processing,
+00044  I,East Coast Whse.& Dist. Corp.,1130 Polaris Street,Elizabeth,NJ,7201,(908) 351-2800,4/15/87,Import,
+00044A M-00044A P,ConAgra Foods Pkgd Fds LLC,4551 Squires Road,Quincy,MI,49082,(517) 689-2221,10/29/08,Processing,"Banquet Food Company,Bar B Foods,Blue Ribbon Flavors,CEI Products, Inc,ConAgra,ConAgra Deli Company,ConAgra Food Ingredients,ConAgra Foods,ConAgra Foods Food Ingredient,ConAgra Foods Ret Prod Compan,ConAgra Foods Retail Prdct Co,ConAgra Foods, Inc,ConAgra Frozen Foods,ConAgra Grocery Prods Co,ConAgra Ref Prepared Foods,ConAgra Ref. Foods Company,ConAgra, Inc,CPF Sales,Exclusive Snack Foods Co,Gilroy Foods and Flavors,Golden Flake Snack Foods Inc,Goodmark Foods,Hanau Meat Co,Healthy Choice,Hebrew National Kosher Foods,Hega,Independence County,Intnt'l Home Foods Co,Kid Cuisine,La Choy Food Products Co,Laura Scudder's Inc,Lightlife Foods,Morton,National Foods,North American Provision Co,Peschke Packing, Co,Spice Tec,St Louis Independent Pckng Co,Texas Barbecue Company,Trenton Home Foods Inc,Van Camps,Van Wagenen & Schickhaus Co,Willow Brand,Worl Brand"
+00047  I,"A.N. Deringer, Inc.",438 Griffith Ave.,Sweetgrass,MT,59484,(406) 335-2342,7/26/95,Import,
+00052  I,"U.Okada & Company, Ltd.",1000 Queen St.,Honolulu,HI,96814,(808) 597-1102,5/26/93,Import,"U. Okada & Company, Ltd."
+00054  I,Frank Murphy,1601 West 12th St.,Long Beach,CA,90813,(562) 495-4144,3/5/98,Import,"Weighmasters-Murphy, Inc."
+00054  M,"Daniele International, Inc.",1000 Daniele Drive,Mapleville,RI,2839,(401) 568-6228,3/27/06,Processing,"D.P.I.,Daniele Prosciutto, Inc.,Daniele, Inc.,Gio International, Inc.,Stedagio"
+00056  P-00056  M,Pilgrim's Pride Corporation,330 Co-op Drive,Timberville,VA,22853-9581,(540) 896-7000,7/15/11,"Slaughter, Processing","Rockingham Poultry Inc,Wampler Foods Inc"
+00058  I,U S Growers Cold Storage #4,2825 East 44th Street,Los Angeles,CA,90058,(323) 583-3163,3/3/09,Import,"U.S. Growers Cold Storage, Inc"
+00063  I,"CAN Transport, Inc",2807 El Presidio Street,Carson,CA,90810,(310) 900-1450,12/21/90,Import,"Amco Distribution Svcs.Inc,Znetshipper Com. Inc."
+00066  I,United States Cold Storage,33400 Dowe Ave,Union City,CA,94587,(510) 489-2244,5/17/88,Import,United States Cold Storage
+M71-P71,Lambert Meat Laboratory,500 Shug Jordan Parkway,Auburn University,AL,36849,(334) 844-1566,11/29/05,"Slaughter, Processing",
+P72,"Tyson Foods, Inc",1291 N Hwy. 7,Dardanelle,AR,72834,(479) 229-3357,2/27/07,"Slaughter, Processing","Tyson Poultry, Inc."
+M73A-P73A,Brown Thompson,139 St. Rt. 339N,Fancy Farm,KY,42039,(270) 623-6321,9/16/04,Processing,
+00074  I,Wilson Food Service,94-150 Leokane St.,Waipahu,HI,96797,(808) 676-8171,5/26/93,Import,Wilson Food Service
+00075  I,"Beaver Street Fisheries, Inc.",1741 West Beaver Street,Jacksonville,FL,32209,(904) 354-5661,3/17/88,Import,"Beaver Street Fisheries, Inc.,Beaver Street Foods"
+00077  M-00077  P,"Maid-Rite Steak Company, Inc.",105 Keystone Industrial Park,Dunmore,PA,18512,(570) 343-4748,1/19/61,Processing,Polarized Meat Co
+00077A M-00077A P,"Maid Rite Steak Co., Inc. Scnt",151 Cedar Avenue,Scranton,PA,18505,(570) 346-3572,8/10/98,Processing,
+00077B M-00077B P,"Maid-Rite Steak Co., Inc.",RR  Route 438,Dalton,PA,18414,(570) 563-8235,6/16/03,Processing,
+00079  I,"Palama Meat Company, Inc.",2029 Lauwiliwili St.,Honolulu,HI,96707,(808) 682-8305,1/4/11,Import,
+00079C M,Smithfield Packing Company,2401 Wilco Blvd,Wilson,NC,27893,(252) 243-7180,6/2/10,Processing,"Coddle's Roasted Meats,Esskay, Inc.,Gwaltney of Smithfield, inc.,Hancock's Old Fashioned Count,John Morrell,Jordan's of Virginia Ham Co.,Lundy Packing Company,Lundy's,Lykes Meat Group,North Side Foods,Old Almanance,Patrick Cudahy, Inc.,Premium Farms,Pruden Packing Co.,PSF Holdings,Schneider Corporation,Smithfield Foods, Inc.,Smithfield Ham & Products, In,Smithfield International,Smithfield Packing Co., Inc.,Smithfield, Inc.,Stadler's Country Ham, Inc.,Sunnyland,V.W. Joyner,Valleydale Foods,Valleydale Foods, Inc.,Willliamsburg"
+00081A M-00081A P,Bar-S Foods Co.,500 South Bar-S Boulevard,Altus,OK,73521,(580) 481-3800,12/3/07,Processing,
+00081E M-00081E P,Bar-S Foods Company,100 Bar-S Drive,Elk City,OK,73644,(580) 821-5700,2/17/98,ID Warehouse,
+00581  P,B&B Poultry,300 Hwy 60 South,Hospers,IA,51238,( ) - ,,,
+00081L M-00081L P,Bar-S Foods Co.,802 S.W. Goodyear Blvd.,Lawton,OK,73505-9797,(580) 510-3300,8/15/07,Processing,
+00084  P,Pilgrim's Pride Corporation,2411 Ferris Street,Dallas,TX,75226,(214) 565-8600,7/20/11,"Slaughter, Processing",
+M85B,Cargill Meat Solutions Corp.,8295 Arenzville Road,Beardstown,IL,62618,(217) 323-3774,8/9/07,"Slaughter, Processing","Excel Corporation,Excel Corporation(of Delaware,Excel Meat Corporation"
+M85M,Cargill Meat Solutions Corp.,3555 West Arrow St,Marshall,MO,65340,(316) 291-2500,8/16/04,Processing,EXCEL Corporation

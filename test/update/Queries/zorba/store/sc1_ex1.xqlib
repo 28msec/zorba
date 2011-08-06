@@ -1,0 +1,14 @@
+module namespace kml-data = "http://www.mykml/data";
+
+import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import schema namespace kml = "http://earth.google.com/kml/2.1" at "kml21.xsd";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:unordered collection kml-data:placemarks
+  as schema-element(kml:Placemark)*;
+
+declare %ann:automatic %ann:value-equality %ann:unique index kml-data:park-names
+  on nodes cdml:collection(xs:QName("kml-data:placemarks"))
+  by ./kml:name as xs:string;

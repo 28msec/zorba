@@ -1113,7 +1113,7 @@ specification, and properties). Then, the query creates the indexes by invoking
 the <a href="#create_index">iddl:create-index</a> function, passing the name of the index as input.
 
 Let us consider the creation of the CityEmp index (the process is the similar
-for the ArtCountEmp and EmpMgr indexes). <a href="#index_creation">Index creation</a> 
+for the ArtCountEmp and EmpMgr indexes). <a href="#index_creation">Index Creation</a> 
 starts with retrieving the index definition from the static
 context, using the index name. Then, an index container is created, whose
 entries will be pairs associating a city name with a set of employees. Next, the
@@ -1350,7 +1350,7 @@ receive an error.
 \endcode
 
 
-\subsection index_declaration Index declaration
+\subsection index_declaration Index Declaration
 
 
 \code
@@ -1525,7 +1525,7 @@ no collation is specified, the default collation from the static context of the
 declaring module is used.
 
 
-\subsection index_creation Index creation
+\subsection index_creation Index Creation
 
 
 As explained already, indexes are just sets of index entries, mapping key items
@@ -1748,7 +1748,7 @@ the index to the index entry container.
 </ul>
 
 
-\subsection index_deletion Index deletion
+\subsection index_deletion Index Deletion
 
 
 To destroy an index, XQDDF provides the delete-index updating function. The
@@ -1787,7 +1787,7 @@ from the indexes table.</li>
   </ul>
 
 
-\subsection index_probing Index probing
+\subsection index_probing Index Probing
 
 
 Probing an index means retrieving the domain nodes associated with a particular
@@ -1975,7 +1975,7 @@ is true or false, and uop is either the <= or the < operator depending on whethe
 $upperBoundsIncluded is true or false.
 
 
-\subsection index_maintenance Index maintenance
+\subsection index_maintenance Index Maintenance
 
 
 An index is said to be up-to-date if its content reflects the index definition
@@ -1985,7 +1985,7 @@ would be produced if the
 function was invoked on the same index and with the same underlying data.
 An index is said to be stale if it is not up-to-date. Indexes become stale when
 documents in collections are updated or when documents are inserted/removed
-in/from collections. <strong>Index maintenance</strong> is the operation by
+in/from collections. <strong>Index Maintenance</strong> is the operation by
 which stale index contents are updated so that the index becomes up-to-date.
 Zorba offers two maintenance modes: manual and automatic.
 
