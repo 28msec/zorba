@@ -202,8 +202,8 @@ namespace zorba {
      *         are reported. The caller retains ownership over the
      *         DiagnosticHandler passed as parameter.
      */
-    void
-    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+    virtual void
+    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler) = 0;
 
     protected:
     /** \brief Destructor

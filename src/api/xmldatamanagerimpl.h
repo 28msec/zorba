@@ -96,7 +96,8 @@ public:
   Item
   fetch(const String& aURI) const;
 
-  void registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+  void
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
 private:
   XmlDataManagerImpl();
