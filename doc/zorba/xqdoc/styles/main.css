@@ -2,6 +2,8 @@ img {
   border: 0;
 }
 
+.floatright { float: right; }
+
 tt, pre, code {
   font-family: Monaco, monospace;
 }
@@ -494,6 +496,18 @@ body {
 
 
 /* Left Menu */
+span.leftMenu { 
+  color: #1A41A8; 
+  text-decoration: underline;
+  cursor: pointer; 
+}
+
+span.leftMenu:hover { 
+  color: #1A41A8; 
+  text-decoration: underline;
+  cursor: hand; 
+}
+
 li.none {
   list-style:none;
 }

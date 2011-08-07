@@ -3,22 +3,14 @@
     <title>Documentation for http://www.functx.com/</title>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <meta content="public" http-equiv="CACHE-CONTROL" />
+    <meta content="-1" http-equiv="Expires" />
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" href="styles/jquery.treeview.css" />
-    <script src="lib/jquery.js" type="text/javascript"></script>
-    <script src="lib/jquery.cookie.js" type="text/javascript"></script>
-    <script src="lib/jquery.treeview.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      $(function() {
-        $("#documentation").treeview({
-            animated: "fast",
-            collapsed: true,
-            unique: false,
-            persist: "cookie"
-        });
-      })
-    </script>
-    <!-- This is for Syntax highlighting (XQuery, XML) -->
+    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.pack.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.min.js"></script>
     <script type="text/javascript" src="lib/shCore.js"></script>
     <script type="text/javascript" src="lib/shBrushXQuery.js"></script>
     <script type="text/javascript" src="lib/shBrushXml.js"></script>
@@ -71,7 +63,18 @@
       </div>
     </div>
     <div id="main">
-      <div id="leftMenu" />
+      <div id="leftMenu">
+        <script type="text/javascript">
+          jQuery(document).ready(function() {
+              $("#documentation").treeview({
+                  animated: "fast",
+                  collapsed: true,
+                  unique: false,
+                  persist: "cookie"
+              });
+            });
+        </script>
+      </div>
       <div id="rightcontent">
         <h1>http://www.functx.com/<sup>
             <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
@@ -106,17 +109,26 @@
           <span id="module_resources">Module Resources</span>
         </div>
         <ul>
-          <li>the XQuery module can be found <a href="modules/www.functx.com_index.xq" target="_blank">here</a>.</li>
+          <li>the XQuery module can be found <a href="modules/www.functx.com_index.html" target="_blank">here</a>.</li>
         </ul>
         <div class="section">
-          <span id="external_specifications">Related Specifications</span>
+          <span id="external_specifications">Related Documentation</span>
         </div>
-        <p>For more details please check out these resources:<ul>
+        <p>For more details please also see:<ul>
             <li>
               <a href="http://www.xqueryfunctions.com" target="_blank">http://www.xqueryfunctions.com</a>
             </li>
           </ul>
         </p>
+        <div class="section">
+          <span id="variables">Namespaces</span>
+        </div>
+        <table class="varlist">
+          <tr>
+            <td>functx</td>
+            <td>http://www.functx.com/</td>
+          </tr>
+        </table>
         <div class="section">
           <span id="function_summary">Function Summary</span>
         </div>
@@ -2636,6 +2648,9 @@
         </div>
         <div class="subsection" id="add-attributes-3">
           <span class="no_underline">add-attributes</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:add-attributes<span class="functName"></span> (
 <span class="funcParam">            $elements</span> as element(*)*, 
@@ -2660,14 +2675,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_add-attributes.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_add-attributes.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="add-months-2">
           <span class="no_underline">add-months</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:add-months<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType?, 
@@ -2690,14 +2703,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_add-months.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_add-months.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="add-or-update-attributes-3">
           <span class="no_underline">add-or-update-attributes</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:add-or-update-attributes<span class="functName"></span> (
 <span class="funcParam">            $elements</span> as element(*)*, 
@@ -2722,14 +2733,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_add-or-update-attributes.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_add-or-update-attributes.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="all-whitespace-1">
           <span class="no_underline">all-whitespace</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:all-whitespace<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -2750,14 +2759,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_all-whitespace.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_all-whitespace.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="are-distinct-values-1">
           <span class="no_underline">are-distinct-values</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:are-distinct-values<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as xs:anyAtomicType* 
@@ -2778,14 +2785,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_are-distinct-values.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_are-distinct-values.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="atomic-type-1">
           <span class="no_underline">atomic-type</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:atomic-type<span class="functName"></span> (
 <span class="funcParam">            $values</span> as xs:anyAtomicType* 
@@ -2806,14 +2811,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_atomic-type.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_atomic-type.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="avg-empty-is-zero-2">
           <span class="no_underline">avg-empty-is-zero</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:avg-empty-is-zero<span class="functName"></span> (
 <span class="funcParam">            $values</span> as xs:anyAtomicType*, 
@@ -2836,14 +2839,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_avg-empty-is-zero.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_avg-empty-is-zero.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="between-exclusive-3">
           <span class="no_underline">between-exclusive</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:between-exclusive<span class="functName"></span> (
 <span class="funcParam">            $value</span> as xs:anyAtomicType?, 
@@ -2868,14 +2869,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_between-exclusive.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_between-exclusive.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="between-inclusive-3">
           <span class="no_underline">between-inclusive</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:between-inclusive<span class="functName"></span> (
 <span class="funcParam">            $value</span> as xs:anyAtomicType?, 
@@ -2900,14 +2899,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_between-inclusive.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_between-inclusive.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="camel-case-to-words-2">
           <span class="no_underline">camel-case-to-words</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:camel-case-to-words<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -2930,14 +2927,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_camel-case-to-words.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_camel-case-to-words.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="capitalize-first-1">
           <span class="no_underline">capitalize-first</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:capitalize-first<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -2958,14 +2953,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_capitalize-first.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_capitalize-first.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="change-element-names-deep-3">
           <span class="no_underline">change-element-names-deep</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:change-element-names-deep<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()*, 
@@ -2990,14 +2983,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_change-element-names-deep.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_change-element-names-deep.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="change-element-ns-3">
           <span class="no_underline">change-element-ns</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:change-element-ns<span class="functName"></span> (
 <span class="funcParam">            $elements</span> as element(*)*, 
@@ -3022,14 +3013,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_change-element-ns.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_change-element-ns.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="change-element-ns-deep-3">
           <span class="no_underline">change-element-ns-deep</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:change-element-ns-deep<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()*, 
@@ -3054,14 +3043,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_change-element-ns-deep.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_change-element-ns-deep.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="chars-1">
           <span class="no_underline">chars</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:chars<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -3082,14 +3069,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_chars.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_chars.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="contains-any-of-2">
           <span class="no_underline">contains-any-of</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:contains-any-of<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -3112,14 +3097,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_contains-any-of.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_contains-any-of.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="contains-case-insensitive-2">
           <span class="no_underline">contains-case-insensitive</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:contains-case-insensitive<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -3142,14 +3125,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_contains-case-insensitive.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_contains-case-insensitive.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="contains-word-2">
           <span class="no_underline">contains-word</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:contains-word<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -3172,14 +3153,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_contains-word.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_contains-word.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="copy-attributes-2">
           <span class="no_underline">copy-attributes</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:copy-attributes<span class="functName"></span> (
 <span class="funcParam">            $copyTo</span> as element(*), 
@@ -3202,14 +3181,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_copy-attributes.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_copy-attributes.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="date-3">
           <span class="no_underline">date</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:date<span class="functName"></span> (
 <span class="funcParam">            $year</span> as xs:anyAtomicType, 
@@ -3234,14 +3211,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_date.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_date.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="dateTime-6">
           <span class="no_underline">dateTime</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:dateTime<span class="functName"></span> (
 <span class="funcParam">            $year</span> as xs:anyAtomicType, 
@@ -3272,14 +3247,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_datetime.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_datetime.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="day-in-year-1">
           <span class="no_underline">day-in-year</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:day-in-year<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -3300,14 +3273,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_day-in-year.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_day-in-year.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="day-of-week-1">
           <span class="no_underline">day-of-week</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:day-of-week<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -3328,14 +3299,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_day-of-week.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_day-of-week.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="day-of-week-abbrev-en-1">
           <span class="no_underline">day-of-week-abbrev-en</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:day-of-week-abbrev-en<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -3356,14 +3325,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_day-of-week-abbrev-en.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_day-of-week-abbrev-en.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="day-of-week-name-en-1">
           <span class="no_underline">day-of-week-name-en</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:day-of-week-name-en<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -3384,14 +3351,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_day-of-week-name-en.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_day-of-week-name-en.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="dayTimeDuration-4">
           <span class="no_underline">dayTimeDuration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:dayTimeDuration<span class="functName"></span> (
 <span class="funcParam">            $days</span> as xs:decimal?, 
@@ -3418,14 +3383,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_daytimeduration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_daytimeduration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="days-in-month-1">
           <span class="no_underline">days-in-month</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:days-in-month<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -3446,14 +3409,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_days-in-month.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_days-in-month.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="depth-of-node-1">
           <span class="no_underline">depth-of-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:depth-of-node<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()? 
@@ -3474,14 +3435,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_depth-of-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_depth-of-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="distinct-attribute-names-1">
           <span class="no_underline">distinct-attribute-names</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:distinct-attribute-names<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -3502,14 +3461,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_distinct-attribute-names.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_distinct-attribute-names.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="distinct-deep-1">
           <span class="no_underline">distinct-deep</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:distinct-deep<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -3530,14 +3487,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_distinct-deep.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_distinct-deep.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="distinct-element-names-1">
           <span class="no_underline">distinct-element-names</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:distinct-element-names<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -3558,14 +3513,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_distinct-element-names.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_distinct-element-names.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="distinct-element-paths-1">
           <span class="no_underline">distinct-element-paths</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:distinct-element-paths<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -3586,14 +3539,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_distinct-element-paths.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_distinct-element-paths.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="distinct-nodes-1">
           <span class="no_underline">distinct-nodes</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:distinct-nodes<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -3614,14 +3565,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_distinct-nodes.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_distinct-nodes.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="duration-from-timezone-1">
           <span class="no_underline">duration-from-timezone</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:duration-from-timezone<span class="functName"></span> (
 <span class="funcParam">            $timezone</span> as xs:string 
@@ -3642,14 +3591,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_duration-from-timezone.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_duration-from-timezone.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="dynamic-path-2">
           <span class="no_underline">dynamic-path</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:dynamic-path<span class="functName"></span> (
 <span class="funcParam">            $parent</span> as node(), 
@@ -3672,14 +3619,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_dynamic-path.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_dynamic-path.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="escape-for-regex-1">
           <span class="no_underline">escape-for-regex</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:escape-for-regex<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -3700,14 +3645,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_escape-for-regex.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_escape-for-regex.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="exclusive-or-2">
           <span class="no_underline">exclusive-or</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:exclusive-or<span class="functName"></span> (
 <span class="funcParam">            $arg1</span> as xs:boolean?, 
@@ -3730,14 +3673,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_exclusive-or.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_exclusive-or.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="first-day-of-month-1">
           <span class="no_underline">first-day-of-month</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:first-day-of-month<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -3758,14 +3699,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_first-day-of-month.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_first-day-of-month.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="first-day-of-year-1">
           <span class="no_underline">first-day-of-year</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:first-day-of-year<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -3786,14 +3725,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_first-day-of-year.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_first-day-of-year.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="first-node-1">
           <span class="no_underline">first-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:first-node<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -3814,14 +3751,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_first-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_first-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="follows-not-descendant-2">
           <span class="no_underline">follows-not-descendant</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:follows-not-descendant<span class="functName"></span> (
 <span class="funcParam">            $a</span> as node()?, 
@@ -3844,14 +3779,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_follows-not-descendant.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_follows-not-descendant.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="format-as-title-en-1">
           <span class="no_underline">format-as-title-en</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:format-as-title-en<span class="functName"></span> (
 <span class="funcParam">            $titles</span> as xs:string* 
@@ -3872,14 +3805,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_format-as-title-en.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_format-as-title-en.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="fragment-from-uri-1">
           <span class="no_underline">fragment-from-uri</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:fragment-from-uri<span class="functName"></span> (
 <span class="funcParam">            $uri</span> as xs:string? 
@@ -3900,14 +3831,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_fragment-from-uri.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_fragment-from-uri.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="get-matches-2">
           <span class="no_underline">get-matches</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:get-matches<span class="functName"></span> (
 <span class="funcParam">            $string</span> as xs:string?, 
@@ -3930,14 +3859,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_get-matches.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_get-matches.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="get-matches-and-non-matches-2">
           <span class="no_underline">get-matches-and-non-matches</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:get-matches-and-non-matches<span class="functName"></span> (
 <span class="funcParam">            $string</span> as xs:string?, 
@@ -3960,14 +3887,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_get-matches-and-non-matches.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_get-matches-and-non-matches.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="has-element-only-content-1">
           <span class="no_underline">has-element-only-content</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:has-element-only-content<span class="functName"></span> (
 <span class="funcParam">            $element</span> as element(*) 
@@ -3988,14 +3913,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_has-element-only-content.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_has-element-only-content.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="has-empty-content-1">
           <span class="no_underline">has-empty-content</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:has-empty-content<span class="functName"></span> (
 <span class="funcParam">            $element</span> as element(*) 
@@ -4016,14 +3939,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_has-empty-content.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_has-empty-content.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="has-mixed-content-1">
           <span class="no_underline">has-mixed-content</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:has-mixed-content<span class="functName"></span> (
 <span class="funcParam">            $element</span> as element(*) 
@@ -4044,14 +3965,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_has-mixed-content.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_has-mixed-content.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="has-simple-content-1">
           <span class="no_underline">has-simple-content</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:has-simple-content<span class="functName"></span> (
 <span class="funcParam">            $element</span> as element(*) 
@@ -4072,14 +3991,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_has-simple-content.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_has-simple-content.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="id-from-element-1">
           <span class="no_underline">id-from-element</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:id-from-element<span class="functName"></span> (
 <span class="funcParam">            $element</span> as element(*)? 
@@ -4100,14 +4017,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_id-from-element.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_id-from-element.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="id-untyped-2">
           <span class="no_underline">id-untyped</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:id-untyped<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()*, 
@@ -4130,14 +4045,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_id-untyped.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_id-untyped.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="if-absent-2">
           <span class="no_underline">if-absent</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:if-absent<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as item()*, 
@@ -4160,14 +4073,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_if-absent.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_if-absent.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="if-empty-2">
           <span class="no_underline">if-empty</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:if-empty<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as item()?, 
@@ -4190,14 +4101,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_if-empty.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_if-empty.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="index-of-deep-equal-node-2">
           <span class="no_underline">index-of-deep-equal-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:index-of-deep-equal-node<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()*, 
@@ -4220,14 +4129,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_index-of-deep-equal-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_index-of-deep-equal-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="index-of-match-first-2">
           <span class="no_underline">index-of-match-first</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:index-of-match-first<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -4250,14 +4157,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_index-of-match-first.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_index-of-match-first.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="index-of-node-2">
           <span class="no_underline">index-of-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:index-of-node<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()*, 
@@ -4280,14 +4185,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_index-of-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_index-of-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="index-of-string-2">
           <span class="no_underline">index-of-string</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:index-of-string<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -4310,14 +4213,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_index-of-string.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_index-of-string.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="index-of-string-first-2">
           <span class="no_underline">index-of-string-first</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:index-of-string-first<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -4340,14 +4241,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_index-of-string-first.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_index-of-string-first.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="index-of-string-last-2">
           <span class="no_underline">index-of-string-last</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:index-of-string-last<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -4370,14 +4269,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_index-of-string-last.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_index-of-string-last.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="insert-string-3">
           <span class="no_underline">insert-string</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:insert-string<span class="functName"></span> (
 <span class="funcParam">            $originalString</span> as xs:string?, 
@@ -4402,14 +4299,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_insert-string.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_insert-string.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-a-number-1">
           <span class="no_underline">is-a-number</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-a-number<span class="functName"></span> (
 <span class="funcParam">            $value</span> as xs:anyAtomicType? 
@@ -4430,14 +4325,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-a-number.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-a-number.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-absolute-uri-1">
           <span class="no_underline">is-absolute-uri</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-absolute-uri<span class="functName"></span> (
 <span class="funcParam">            $uri</span> as xs:string? 
@@ -4458,14 +4351,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-absolute-uri.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-absolute-uri.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-ancestor-2">
           <span class="no_underline">is-ancestor</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-ancestor<span class="functName"></span> (
 <span class="funcParam">            $node1</span> as node(), 
@@ -4488,14 +4379,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-ancestor.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-ancestor.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-descendant-2">
           <span class="no_underline">is-descendant</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-descendant<span class="functName"></span> (
 <span class="funcParam">            $node1</span> as node(), 
@@ -4518,14 +4407,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-descendant.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-descendant.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-leap-year-1">
           <span class="no_underline">is-leap-year</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-leap-year<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -4546,14 +4433,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-leap-year.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-leap-year.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-node-among-descendants-2">
           <span class="no_underline">is-node-among-descendants</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-node-among-descendants<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()?, 
@@ -4576,14 +4461,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-node-among-descendants.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-node-among-descendants.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-node-among-descendants-deep-equal-2">
           <span class="no_underline">is-node-among-descendants-deep-equal</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-node-among-descendants-deep-equal<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()?, 
@@ -4606,14 +4489,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-node-among-descendants-deep-equal.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-node-among-descendants-deep-equal.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-node-in-sequence-2">
           <span class="no_underline">is-node-in-sequence</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-node-in-sequence<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()?, 
@@ -4636,14 +4517,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-node-in-sequence.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-node-in-sequence.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-node-in-sequence-deep-equal-2">
           <span class="no_underline">is-node-in-sequence-deep-equal</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-node-in-sequence-deep-equal<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()?, 
@@ -4666,14 +4545,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-node-in-sequence-deep-equal.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-node-in-sequence-deep-equal.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="is-value-in-sequence-2">
           <span class="no_underline">is-value-in-sequence</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:is-value-in-sequence<span class="functName"></span> (
 <span class="funcParam">            $value</span> as xs:anyAtomicType?, 
@@ -4696,14 +4573,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_is-value-in-sequence.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_is-value-in-sequence.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="last-day-of-month-1">
           <span class="no_underline">last-day-of-month</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:last-day-of-month<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -4724,14 +4599,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_last-day-of-month.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_last-day-of-month.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="last-day-of-year-1">
           <span class="no_underline">last-day-of-year</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:last-day-of-year<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -4752,14 +4625,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_last-day-of-year.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_last-day-of-year.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="last-node-1">
           <span class="no_underline">last-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:last-node<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -4780,14 +4651,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_last-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_last-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="leaf-elements-1">
           <span class="no_underline">leaf-elements</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:leaf-elements<span class="functName"></span> (
 <span class="funcParam">            $root</span> as node()? 
@@ -4808,14 +4677,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_leaf-elements.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_leaf-elements.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="left-trim-1">
           <span class="no_underline">left-trim</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:left-trim<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -4836,14 +4703,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_left-trim.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_left-trim.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="line-count-1">
           <span class="no_underline">line-count</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:line-count<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -4864,14 +4729,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_line-count.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_line-count.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="lines-1">
           <span class="no_underline">lines</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:lines<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -4892,14 +4755,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_lines.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_lines.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="max-depth-1">
           <span class="no_underline">max-depth</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:max-depth<span class="functName"></span> (
 <span class="funcParam">            $root</span> as node()? 
@@ -4920,14 +4781,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_max-depth.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_max-depth.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="max-determine-type-1">
           <span class="no_underline">max-determine-type</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:max-determine-type<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as xs:anyAtomicType* 
@@ -4948,14 +4807,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_max-determine-type.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_max-determine-type.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="max-line-length-1">
           <span class="no_underline">max-line-length</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:max-line-length<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -4976,14 +4833,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_max-line-length.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_max-line-length.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="max-node-1">
           <span class="no_underline">max-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:max-node<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -5004,14 +4859,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_max-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_max-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="max-string-1">
           <span class="no_underline">max-string</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:max-string<span class="functName"></span> (
 <span class="funcParam">            $strings</span> as xs:anyAtomicType* 
@@ -5032,14 +4885,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_max-string.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_max-string.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="min-determine-type-1">
           <span class="no_underline">min-determine-type</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:min-determine-type<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as xs:anyAtomicType* 
@@ -5060,14 +4911,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_min-determine-type.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_min-determine-type.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="min-node-1">
           <span class="no_underline">min-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:min-node<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -5088,14 +4937,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_min-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_min-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="min-non-empty-string-1">
           <span class="no_underline">min-non-empty-string</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:min-non-empty-string<span class="functName"></span> (
 <span class="funcParam">            $strings</span> as xs:string* 
@@ -5116,14 +4963,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_min-non-empty-string.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_min-non-empty-string.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="min-string-1">
           <span class="no_underline">min-string</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:min-string<span class="functName"></span> (
 <span class="funcParam">            $strings</span> as xs:anyAtomicType* 
@@ -5144,14 +4989,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_min-string.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_min-string.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="mmddyyyy-to-date-1">
           <span class="no_underline">mmddyyyy-to-date</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:mmddyyyy-to-date<span class="functName"></span> (
 <span class="funcParam">            $dateString</span> as xs:string? 
@@ -5172,14 +5015,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_mmddyyyy-to-date.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_mmddyyyy-to-date.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="month-abbrev-en-1">
           <span class="no_underline">month-abbrev-en</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:month-abbrev-en<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -5200,14 +5041,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_month-abbrev-en.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_month-abbrev-en.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="month-name-en-1">
           <span class="no_underline">month-name-en</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:month-name-en<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -5228,14 +5067,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_month-name-en.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_month-name-en.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="name-test-2">
           <span class="no_underline">name-test</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:name-test<span class="functName"></span> (
 <span class="funcParam">            $testname</span> as xs:string?, 
@@ -5258,14 +5095,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_name-test.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_name-test.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="namespaces-in-use-1">
           <span class="no_underline">namespaces-in-use</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:namespaces-in-use<span class="functName"></span> (
 <span class="funcParam">            $root</span> as node()? 
@@ -5286,14 +5121,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_namespaces-in-use.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_namespaces-in-use.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="next-day-1">
           <span class="no_underline">next-day</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:next-day<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -5314,14 +5147,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_next-day.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_next-day.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="node-kind-1">
           <span class="no_underline">node-kind</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:node-kind<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -5342,14 +5173,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_node-kind.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_node-kind.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="non-distinct-values-1">
           <span class="no_underline">non-distinct-values</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:non-distinct-values<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as xs:anyAtomicType* 
@@ -5370,14 +5199,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_non-distinct-values.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_non-distinct-values.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="number-of-matches-2">
           <span class="no_underline">number-of-matches</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:number-of-matches<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -5400,14 +5227,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_number-of-matches.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_number-of-matches.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="open-ref-document-1">
           <span class="no_underline">open-ref-document</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:open-ref-document<span class="functName"></span> (
 <span class="funcParam">            $refNode</span> as node() 
@@ -5428,14 +5253,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_open-ref-document.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_open-ref-document.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="ordinal-number-en-1">
           <span class="no_underline">ordinal-number-en</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:ordinal-number-en<span class="functName"></span> (
 <span class="funcParam">            $num</span> as xs:integer? 
@@ -5456,14 +5279,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_ordinal-number-en.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_ordinal-number-en.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="pad-integer-to-length-2">
           <span class="no_underline">pad-integer-to-length</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:pad-integer-to-length<span class="functName"></span> (
 <span class="funcParam">            $integerToPad</span> as xs:anyAtomicType?, 
@@ -5486,14 +5307,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_pad-integer-to-length.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_pad-integer-to-length.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="pad-string-to-length-3">
           <span class="no_underline">pad-string-to-length</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:pad-string-to-length<span class="functName"></span> (
 <span class="funcParam">            $stringToPad</span> as xs:string?, 
@@ -5518,14 +5337,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_pad-string-to-length.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_pad-string-to-length.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="path-to-node-1">
           <span class="no_underline">path-to-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:path-to-node<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()* 
@@ -5546,14 +5363,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_path-to-node.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_path-to-node.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="path-to-node-with-pos-1">
           <span class="no_underline">path-to-node-with-pos</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:path-to-node-with-pos<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()? 
@@ -5574,14 +5389,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_path-to-node-with-pos.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_path-to-node-with-pos.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="precedes-not-ancestor-2">
           <span class="no_underline">precedes-not-ancestor</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:precedes-not-ancestor<span class="functName"></span> (
 <span class="funcParam">            $a</span> as node()?, 
@@ -5604,14 +5417,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_precedes-not-ancestor.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_precedes-not-ancestor.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="previous-day-1">
           <span class="no_underline">previous-day</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:previous-day<span class="functName"></span> (
 <span class="funcParam">            $date</span> as xs:anyAtomicType? 
@@ -5632,14 +5443,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_previous-day.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_previous-day.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="remove-attributes-2">
           <span class="no_underline">remove-attributes</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:remove-attributes<span class="functName"></span> (
 <span class="funcParam">            $elements</span> as element(*)*, 
@@ -5662,14 +5471,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_remove-attributes.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_remove-attributes.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="remove-attributes-deep-2">
           <span class="no_underline">remove-attributes-deep</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:remove-attributes-deep<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()*, 
@@ -5692,14 +5499,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_remove-attributes-deep.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_remove-attributes-deep.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="remove-elements-2">
           <span class="no_underline">remove-elements</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:remove-elements<span class="functName"></span> (
 <span class="funcParam">            $elements</span> as element(*)*, 
@@ -5722,14 +5527,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_remove-elements.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_remove-elements.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="remove-elements-deep-2">
           <span class="no_underline">remove-elements-deep</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:remove-elements-deep<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()*, 
@@ -5752,14 +5555,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_remove-elements-deep.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_remove-elements-deep.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="remove-elements-not-contents-2">
           <span class="no_underline">remove-elements-not-contents</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:remove-elements-not-contents<span class="functName"></span> (
 <span class="funcParam">            $nodes</span> as node()*, 
@@ -5782,14 +5583,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_remove-elements-not-contents.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_remove-elements-not-contents.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="repeat-string-2">
           <span class="no_underline">repeat-string</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:repeat-string<span class="functName"></span> (
 <span class="funcParam">            $stringToRepeat</span> as xs:string?, 
@@ -5812,14 +5611,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_repeat-string.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_repeat-string.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="replace-beginning-3">
           <span class="no_underline">replace-beginning</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:replace-beginning<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -5844,14 +5641,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_replace-beginning.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_replace-beginning.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="replace-element-values-2">
           <span class="no_underline">replace-element-values</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:replace-element-values<span class="functName"></span> (
 <span class="funcParam">            $elements</span> as element(*)*, 
@@ -5874,14 +5669,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_replace-element-values.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_replace-element-values.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="replace-first-3">
           <span class="no_underline">replace-first</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:replace-first<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -5906,14 +5699,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_replace-first.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_replace-first.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="replace-multi-3">
           <span class="no_underline">replace-multi</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:replace-multi<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -5938,14 +5729,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_replace-multi.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_replace-multi.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="reverse-string-1">
           <span class="no_underline">reverse-string</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:reverse-string<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -5966,14 +5755,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_reverse-string.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_reverse-string.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="right-trim-1">
           <span class="no_underline">right-trim</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:right-trim<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -5994,14 +5781,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_right-trim.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_right-trim.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="scheme-from-uri-1">
           <span class="no_underline">scheme-from-uri</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:scheme-from-uri<span class="functName"></span> (
 <span class="funcParam">            $uri</span> as xs:string? 
@@ -6022,14 +5807,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_scheme-from-uri.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_scheme-from-uri.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sequence-deep-equal-2">
           <span class="no_underline">sequence-deep-equal</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sequence-deep-equal<span class="functName"></span> (
 <span class="funcParam">            $seq1</span> as item()*, 
@@ -6052,14 +5835,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sequence-deep-equal.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sequence-deep-equal.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sequence-node-equal-2">
           <span class="no_underline">sequence-node-equal</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sequence-node-equal<span class="functName"></span> (
 <span class="funcParam">            $seq1</span> as node()*, 
@@ -6082,14 +5863,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sequence-node-equal.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sequence-node-equal.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sequence-node-equal-any-order-2">
           <span class="no_underline">sequence-node-equal-any-order</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sequence-node-equal-any-order<span class="functName"></span> (
 <span class="funcParam">            $seq1</span> as node()*, 
@@ -6112,14 +5891,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sequence-node-equal-any-order.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sequence-node-equal-any-order.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sequence-type-1">
           <span class="no_underline">sequence-type</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sequence-type<span class="functName"></span> (
 <span class="funcParam">            $items</span> as item()* 
@@ -6140,14 +5917,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sequence-type.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sequence-type.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="siblings-1">
           <span class="no_underline">siblings</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:siblings<span class="functName"></span> (
 <span class="funcParam">            $node</span> as node()? 
@@ -6168,14 +5943,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_siblings.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_siblings.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="siblings-same-name-1">
           <span class="no_underline">siblings-same-name</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:siblings-same-name<span class="functName"></span> (
 <span class="funcParam">            $element</span> as element(*)? 
@@ -6196,14 +5969,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_siblings-same-name.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_siblings-same-name.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sort-1">
           <span class="no_underline">sort</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sort<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as item()* 
@@ -6224,14 +5995,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sort.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sort.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sort-as-numeric-1">
           <span class="no_underline">sort-as-numeric</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sort-as-numeric<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as item()* 
@@ -6252,14 +6021,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sort-as-numeric.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sort-as-numeric.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sort-case-insensitive-1">
           <span class="no_underline">sort-case-insensitive</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sort-case-insensitive<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as item()* 
@@ -6280,14 +6047,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sort-case-insensitive.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sort-case-insensitive.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sort-document-order-1">
           <span class="no_underline">sort-document-order</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:sort-document-order<span class="functName"></span> (
 <span class="funcParam">            $seq</span> as node()* 
@@ -6308,14 +6073,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_sort-document-order.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_sort-document-order.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-after-if-contains-2">
           <span class="no_underline">substring-after-if-contains</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-after-if-contains<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6338,14 +6101,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-after-if-contains.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-after-if-contains.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-after-last-2">
           <span class="no_underline">substring-after-last</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-after-last<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6368,14 +6129,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-after-last.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-after-last.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-after-last-match-2">
           <span class="no_underline">substring-after-last-match</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-after-last-match<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6398,14 +6157,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-after-last-match.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-after-last-match.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-after-match-2">
           <span class="no_underline">substring-after-match</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-after-match<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6428,14 +6185,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-after-match.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-after-match.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-before-if-contains-2">
           <span class="no_underline">substring-before-if-contains</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-before-if-contains<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6458,14 +6213,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-before-if-contains.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-before-if-contains.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-before-last-2">
           <span class="no_underline">substring-before-last</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-before-last<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6488,14 +6241,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-before-last.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-before-last.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-before-last-match-2">
           <span class="no_underline">substring-before-last-match</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-before-last-match<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6518,14 +6269,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-before-last-match.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-before-last-match.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="substring-before-match-2">
           <span class="no_underline">substring-before-match</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:substring-before-match<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string?, 
@@ -6548,14 +6297,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_substring-before-match.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_substring-before-match.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="time-3">
           <span class="no_underline">time</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:time<span class="functName"></span> (
 <span class="funcParam">            $hour</span> as xs:anyAtomicType, 
@@ -6580,14 +6327,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_time.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_time.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="timezone-from-duration-1">
           <span class="no_underline">timezone-from-duration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:timezone-from-duration<span class="functName"></span> (
 <span class="funcParam">            $duration</span> as xs:dayTimeDuration 
@@ -6608,14 +6353,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_timezone-from-duration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_timezone-from-duration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="total-days-from-duration-1">
           <span class="no_underline">total-days-from-duration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:total-days-from-duration<span class="functName"></span> (
 <span class="funcParam">            $duration</span> as xs:dayTimeDuration? 
@@ -6636,14 +6379,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_total-days-from-duration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_total-days-from-duration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="total-hours-from-duration-1">
           <span class="no_underline">total-hours-from-duration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:total-hours-from-duration<span class="functName"></span> (
 <span class="funcParam">            $duration</span> as xs:dayTimeDuration? 
@@ -6664,14 +6405,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_total-hours-from-duration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_total-hours-from-duration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="total-minutes-from-duration-1">
           <span class="no_underline">total-minutes-from-duration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:total-minutes-from-duration<span class="functName"></span> (
 <span class="funcParam">            $duration</span> as xs:dayTimeDuration? 
@@ -6692,14 +6431,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_total-minutes-from-duration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_total-minutes-from-duration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="total-months-from-duration-1">
           <span class="no_underline">total-months-from-duration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:total-months-from-duration<span class="functName"></span> (
 <span class="funcParam">            $duration</span> as xs:yearMonthDuration? 
@@ -6720,14 +6457,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_total-months-from-duration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_total-months-from-duration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="total-seconds-from-duration-1">
           <span class="no_underline">total-seconds-from-duration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:total-seconds-from-duration<span class="functName"></span> (
 <span class="funcParam">            $duration</span> as xs:dayTimeDuration? 
@@ -6748,14 +6483,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_total-seconds-from-duration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_total-seconds-from-duration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="total-years-from-duration-1">
           <span class="no_underline">total-years-from-duration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:total-years-from-duration<span class="functName"></span> (
 <span class="funcParam">            $duration</span> as xs:yearMonthDuration? 
@@ -6776,14 +6509,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_total-years-from-duration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_total-years-from-duration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="trim-1">
           <span class="no_underline">trim</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:trim<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -6804,14 +6535,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_trim.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_trim.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="update-attributes-3">
           <span class="no_underline">update-attributes</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:update-attributes<span class="functName"></span> (
 <span class="funcParam">            $elements</span> as element(*)*, 
@@ -6836,14 +6565,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_update-attributes.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_update-attributes.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="value-except-2">
           <span class="no_underline">value-except</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:value-except<span class="functName"></span> (
 <span class="funcParam">            $arg1</span> as xs:anyAtomicType*, 
@@ -6866,14 +6593,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_value-except.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_value-except.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="value-intersect-2">
           <span class="no_underline">value-intersect</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:value-intersect<span class="functName"></span> (
 <span class="funcParam">            $arg1</span> as xs:anyAtomicType*, 
@@ -6896,14 +6621,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_value-intersect.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_value-intersect.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="value-union-2">
           <span class="no_underline">value-union</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:value-union<span class="functName"></span> (
 <span class="funcParam">            $arg1</span> as xs:anyAtomicType*, 
@@ -6926,14 +6649,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_value-union.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_value-union.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="word-count-1">
           <span class="no_underline">word-count</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:word-count<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -6954,14 +6675,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_word-count.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_word-count.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="words-to-camel-case-1">
           <span class="no_underline">words-to-camel-case</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:words-to-camel-case<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:string? 
@@ -6982,14 +6701,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_words-to-camel-case.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_words-to-camel-case.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="wrap-values-in-elements-2">
           <span class="no_underline">wrap-values-in-elements</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:wrap-values-in-elements<span class="functName"></span> (
 <span class="funcParam">            $values</span> as xs:anyAtomicType*, 
@@ -7012,14 +6729,12 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_wrap-values-in-elements.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_wrap-values-in-elements.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="yearMonthDuration-2">
           <span class="no_underline">yearMonthDuration</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function functx:yearMonthDuration<span class="functName"></span> (
 <span class="funcParam">            $years</span> as xs:decimal?, 
@@ -7042,11 +6757,6 @@
             <a href="http://www.xqueryfunctions.com/xq/functx_yearmonthduration.html" target="_blank">http://www.xqueryfunctions.com/xq/functx_yearmonthduration.html</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
       </div>
     </div>

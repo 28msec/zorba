@@ -31,7 +31,7 @@ declare %ann:nondeterministic function local:get-src-dirs() as xs:string*
   let $ZorbaCoreModules := fn:resolve-uri(concat($ZorbaPath,"modules"))
   
   (: read from CMakeCache.txt the path where the external modules are checked out (if any) :)
-  let $ZorbaCMakeCache := fn:resolve-uri(concat($ZorbaBuildPath, file:directory-separator(), "CMakeCache.txt"))
+  let $ZorbaCMakeCache := trace(fn:resolve-uri(concat($ZorbaBuildPath, file:directory-separator(), "CMakeCache.txt")),"markos")
   let $ZorbaModulesDir := substring-before(tokenize(file:read-text($ZorbaCMakeCache),"ZORBA_MODULES_DIR:PATH=")[2],"
 ")
   let $dirs := file:list(fn:resolve-uri($ZorbaModulesDir))
@@ -84,7 +84,7 @@ declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
   let $moduleUri := $xqdoc/xqdoc:module/xqdoc:uri
   let $hasDescription := exists($module/xqdoc:description)
   let $hasAuthor := exists($module/xqdoc:author)
-  let $hasXQueryVersion := exists($xqdoc/xqdoc:module/xqdoc:custom[@tag="XQuery version"])
+  let $hasXQueryVersion := exists($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="XQuery version"])
 
   return string-join((
     (: Test for module description :)

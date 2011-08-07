@@ -3,22 +3,14 @@
     <title>Documentation for http://www.w3.org/2005/xpath-functions/math</title>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <meta content="public" http-equiv="CACHE-CONTROL" />
+    <meta content="-1" http-equiv="Expires" />
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" href="styles/jquery.treeview.css" />
-    <script src="lib/jquery.js" type="text/javascript"></script>
-    <script src="lib/jquery.cookie.js" type="text/javascript"></script>
-    <script src="lib/jquery.treeview.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      $(function() {
-        $("#documentation").treeview({
-            animated: "fast",
-            collapsed: true,
-            unique: false,
-            persist: "cookie"
-        });
-      })
-    </script>
-    <!-- This is for Syntax highlighting (XQuery, XML) -->
+    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.pack.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.min.js"></script>
     <script type="text/javascript" src="lib/shCore.js"></script>
     <script type="text/javascript" src="lib/shBrushXQuery.js"></script>
     <script type="text/javascript" src="lib/shBrushXml.js"></script>
@@ -71,7 +63,18 @@
       </div>
     </div>
     <div id="main">
-      <div id="leftMenu" />
+      <div id="leftMenu">
+        <script type="text/javascript">
+          jQuery(document).ready(function() {
+              $("#documentation").treeview({
+                  animated: "fast",
+                  collapsed: true,
+                  unique: false,
+                  persist: "cookie"
+              });
+            });
+        </script>        
+      </div>
       <div id="rightcontent">
         <h1>http://www.w3.org/2005/xpath-functions/math<sup>
             <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
@@ -93,17 +96,26 @@
           <span id="module_resources">Module Resources</span>
         </div>
         <ul>
-          <li>the XQuery module can be found <a href="modules/www.w3.org_2005_xpath-functions_math.xq" target="_blank">here</a>.</li>
+          <li>the XQuery module can be found <a href="modules/www.w3.org_2005_xpath-functions_math.html" target="_blank">here</a>.</li>
         </ul>
         <div class="section">
-          <span id="external_specifications">Related Specifications</span>
+          <span id="external_specifications">Related Documentation</span>
         </div>
-        <p>For more details please check out these resources:<ul>
+        <p>For more details please also see:<ul>
             <li>
               <a href="http://www.w3.org/TR/xpath-functions-30/#trigonometry" target="_blank">http://www.w3.org/TR/xpath-functions-30/#trigonometry</a>
             </li>
           </ul>
         </p>
+        <div class="section">
+          <span id="variables">Namespaces</span>
+        </div>
+        <table class="varlist">
+          <tr>
+            <td>math</td>
+            <td>http://www.w3.org/2005/xpath-functions/math</td>
+          </tr>
+        </table>
         <div class="section">
           <span id="function_summary">Function Summary</span>
         </div>
@@ -398,6 +410,9 @@
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>acos</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:acos<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -408,17 +423,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-acos">math:acos</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="asin-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>asin</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:asin<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -429,17 +442,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-asin">math:asin</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="atan-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>atan</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:atan<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -450,17 +461,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-atan">math:atan</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="atan2-2">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>atan2</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:atan2<span class="functName"></span> (
 <span class="funcParam">            $y</span> as xs:double, 
@@ -472,17 +481,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-atan2">math:atan2</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="cos-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>cos</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:cos<span class="functName"></span> (
 <span class="funcParam">            $θ</span> as xs:double? 
@@ -493,17 +500,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-cos">math:cos</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="exp-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>exp</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:exp<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -514,17 +519,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-exp">math:exp</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="exp10-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>exp10</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:exp10<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -535,17 +538,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-exp10">math:exp10</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="log-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>log</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:log<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -556,17 +557,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-log">math:log</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="log10-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>log10</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:log10<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -577,17 +576,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-log10">math:log10</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="pi-0">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>pi</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:pi<span class="functName"></span> (
  ) as xs:double external</pre>
@@ -597,17 +594,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-pi">math:pi</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="pow-2">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>pow</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:pow<span class="functName"></span> (
 <span class="funcParam">            $x</span> as xs:double?, 
@@ -619,17 +614,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-pow">math:pow</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sin-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>sin</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:sin<span class="functName"></span> (
 <span class="funcParam">            $θ</span> as xs:double? 
@@ -640,17 +633,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-sin">math:sin</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="sqrt-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>sqrt</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:sqrt<span class="functName"></span> (
 <span class="funcParam">            $arg</span> as xs:double? 
@@ -661,17 +652,15 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-sqrt">math:sqrt</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
         <div class="subsection" id="tan-1">
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
             </a>tan</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
         </div>
         <pre class="signature">declare function math:tan<span class="functName"></span> (
 <span class="funcParam">            $θ</span> as xs:double? 
@@ -682,11 +671,6 @@
           <li>for semantics please check <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xpath-functions-30/#func-math-tan">math:tan</a>
           </li>
         </ul>
-        <div id="allignright">
-          <a href="#function_summary">
-            <img src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
-          </a>
-        </div>
         <hr />
       </div>
     </div>

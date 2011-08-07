@@ -53,6 +53,33 @@ string getFileName(const string& aFileName)
   }
 }
 
+void print_custom(
+  store::Item_t& result,
+  zstring aTag,
+  zstring lValue
+)
+{
+  store::Item_t lTypeName, lCustomQName, lTagQName, lTagValue;
+  store::Item_t lCustomElem, lCustomText;
+
+  if(!lValue.empty())
+  {
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    theFactory->createQName(lCustomQName,  theXQDocNS, theXQDocPrefix, "custom");
+    theFactory->createElementNode(lCustomElem, result,
+                                  lCustomQName, lTypeName,
+                                  true, false, theNSBindings, theBaseURI);
+
+    theFactory->createString(lTagValue, aTag);
+
+    theFactory->createQName(lTagQName,  "", "", "tag");
+    theFactory->createAttributeNode(
+      lTagQName, lCustomElem, lTagQName, lTypeName, lTagValue);
+
+    theFactory->createTextNode(lCustomText, lCustomElem, lValue);
+  }
+}
+
 void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 {
   if (aAnn) {
@@ -208,10 +235,10 @@ void print_namespaces()
   }
 }
 
-void print_comment(store::Item_t& result, const XQDocComment* aComment)
+store::Item_t print_comment(store::Item_t& result, const XQDocComment* aComment)
 {
   if (aComment == 0) {
-    return;
+    return NULL;
   }
   list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
   list<XQDocAnnotation>::const_iterator lIt;
@@ -319,8 +346,9 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
       const XQDocAnnotation lAnnotation = *lIt;
       printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "example", true);
     }
-
+    return lCommentElem;
   }
+  return NULL;
 }
 
 
@@ -589,14 +617,12 @@ void *begin_visit(const ModuleDecl& n) {
 
 void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 {
-  store::Item_t lURIQName, lNameQName, lTypeQName, lCustomQName, lTagQName, lProjectValue;
-  store::Item_t lURIElem, lNameElem, lTypeAttr, lProjectElem, lURIText, lNameText, lProjectText;
-  store::Item_t lEncodingValue, lEncodingText, lEncodingElem, lXQVersionValue, lXQVersionText, lXQVersionElem;
+  store::Item_t lURIQName, lNameQName, lNameText, lTypeQName;
+  store::Item_t lURIElem, lNameElem, lTypeAttr, lURIText;
 
   theFactory->createQName(lURIQName, theXQDocNS, theXQDocPrefix, "uri");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lTypeQName, "", "", "type");
-  
 
   store::Item_t lAttrValue;
   zstring lAttrString("library");
@@ -614,61 +640,6 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
   zstring lTargetNS = n.get_target_namespace();
   theFactory->createTextNode(lURIText, lURIElem.getp(), lTargetNS);
 
-  zstring lProject = n.getComment()->getProject();
-  if(!lProject.empty())
-  {
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createQName(lCustomQName,  theXQDocNS, theXQDocPrefix, "custom");
-    theFactory->createElementNode(lProjectElem, theModule,
-                                lCustomQName, lTypeName,
-                                true, false, theNSBindings, theBaseURI);
-
-    zstring lProjectString("project");
-    theFactory->createString(lProjectValue, lProjectString);
-
-    theFactory->createQName(lTagQName,  "", "", "tag");
-    theFactory->createAttributeNode(
-      lTagQName, lProjectElem, lTagQName, lTypeName, lProjectValue);
-
-    theFactory->createTextNode(lProjectText, lProjectElem, lProject); 
-  }
-
-  if(!theEncoding.empty())
-  {
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createQName(lCustomQName,  theXQDocNS, theXQDocPrefix, "custom");
-    theFactory->createElementNode(lEncodingElem, theModule,
-                                  lCustomQName, lTypeName,
-                                  true, false, theNSBindings, theBaseURI);
-
-    zstring lEncodingString("encoding");
-    theFactory->createString(lEncodingValue, lEncodingString);
-
-    theFactory->createQName(lTagQName,  "", "", "tag");
-    theFactory->createAttributeNode(
-      lTagQName, lEncodingElem, lTagQName, lTypeName, lEncodingValue);
-
-    theFactory->createTextNode(lEncodingText, lEncodingElem, theEncoding);
-  }
-
-  if(!theXQueryVersion.empty())
-  {
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createQName(lCustomQName,  theXQDocNS, theXQDocPrefix, "custom");
-    theFactory->createElementNode(lXQVersionElem, theModule,
-                                  lCustomQName, lTypeName,
-                                  true, false, theNSBindings, theBaseURI);
-
-    zstring lXQueryVersionString("XQuery version");
-    theFactory->createString(lXQVersionValue, lXQueryVersionString);
-
-    theFactory->createQName(lTagQName,  "", "", "tag");
-    theFactory->createAttributeNode(
-      lTagQName, lXQVersionElem, lTagQName, lTypeName, lXQVersionValue);
-
-    theFactory->createTextNode(lXQVersionText, lXQVersionElem, theXQueryVersion);
-  }
-
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(lNameElem, theModule,
                                 lNameQName, lTypeName,
@@ -676,7 +647,11 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 
   theFactory->createTextNode(lNameText, lNameElem, theFileName);
 
-  print_comment(theModule, n.getComment());
+  store::Item_t lCommentElem = print_comment(theModule, n.getComment());
+
+  print_custom(lCommentElem, "project", n.getComment()->getProject());
+  print_custom(lCommentElem, "XQuery version", theXQueryVersion);
+  print_custom(lCommentElem, "encoding", theEncoding);
 }
 
 XQDOC_NO_BEGIN_TAG (FunctionDecl)
@@ -859,7 +834,12 @@ void end_visit(const VarDecl& n, void*)
 
   theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
-  print_comment(lVariableElem, n.getComment());
+  store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
+
+  std::stringstream os;
+  os << n.get_location().getLineBegin() << "." << n.get_location().getColumnBegin() << "-";
+  os << n.get_location().getLineEnd()   << "." << n.get_location().getColumnEnd();
+  print_custom(lCommentElem, "location", os.str());
 
   // add all invoked function elements as children to the end of the current
   // function element. After this, clear the set of invoked functions
@@ -874,7 +854,6 @@ void end_visit(const VarDecl& n, void*)
 
   AnnotationListParsenode* lAnns = n.get_annotations();
   print_annotations(lAnns, lVariableElem);
-
 }
 
 
