@@ -127,7 +127,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
         throw XQUERY_EXCEPTION(
           err::FORG0006,
           ERROR_PARAMS(
-            ZED( BadArgTypeForFn_2o34 ), "", "fn:boolean",
+            ZED( BadArgTypeForFn_2o34o ), "", "fn:boolean",
             ZED( EBVNotDefSeq_5 ), *type
           ),
           ERROR_LOC( loc )
