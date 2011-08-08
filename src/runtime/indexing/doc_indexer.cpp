@@ -129,6 +129,10 @@ void DocIndexer::createIndexEntries(
 
   //std::cout << std::endl << std::endl;
 
+  theDctx->unset_variable(theNodeVar->get_unique_id(),
+                          theNodeVar->get_name(),
+                          QueryLoc::null);
+
   thePlanWrapper->reset();
 }
 

@@ -363,6 +363,50 @@ void dynamic_context::set_variable(
 /*******************************************************************************
 
 ********************************************************************************/
+void dynamic_context::unset_variable(
+    ulong varid,
+    const store::Item_t& varname,
+    const QueryLoc& loc)
+{
+  if (varid >= theVarValues.size() ||
+      theVarValues[varid].theState == VarValue::undeclared)
+  {
+    throw XQUERY_EXCEPTION(
+      err::XPDY0002,
+      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
+      ERROR_LOC( loc )
+    );
+  }
+
+  VarValue& var = theVarValues[varid];
+
+  if (var.theState == VarValue::item)
+  {
+    assert(var.theValue.item != NULL);
+    var.theValue.item->removeReference();
+  }
+  else if (var.theState == VarValue::temp_seq)
+  {
+    assert(var.theValue.temp_seq != NULL);
+    RCHelper::removeReference(var.theValue.temp_seq);
+  }
+  else if (var.theState == VarValue::declared)
+  {
+    assert(var.theValue.item == NULL);
+  }
+  else 
+  {
+    ZORBA_ASSERT(false);
+  }
+
+  var.theState = VarValue::declared;
+  var.theValue.item = NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::get_variable(
     ulong varid,
     const store::Item_t& varname,

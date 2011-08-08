@@ -49,8 +49,11 @@ static std::string computeVersionInfix(zstring const& aImportedVersion)
   return lInfix.str();
 }
 
-static zstring computeLibraryName
-(const URI& aURI, zstring const& aImportedVersion, bool aUseDebugDir = false)
+
+static zstring computeLibraryName(
+    const URI& aURI,
+    const zstring& aImportedVersion, 
+    bool aUseDebugDir = false)
 {
   zstring lPathNotation = aURI.toPathNotation();
 
@@ -94,8 +97,10 @@ static zstring computeLibraryName
   // If version number is not blank, insert it into the path before the extension
   std::ostringstream lLibraryName;
   lLibraryName << lBranchPath;
+
 #ifdef WIN32
-  if (aUseDebugDir) {
+  if (aUseDebugDir) 
+  {
 #ifndef NDEBUG
     lLibraryName << "Debug\\";
 #else
@@ -104,8 +109,11 @@ static zstring computeLibraryName
   }
   lLibraryName << lFileName << get_current_lib_suffix()
                << computeVersionInfix(aImportedVersion) << ".dll";
-#else
-  if (aUseDebugDir) {
+
+#else // !WIN32
+
+  if (aUseDebugDir) 
+  {
     lLibraryName << "Debug/";
   }
 #ifdef APPLE
@@ -119,6 +127,7 @@ static zstring computeLibraryName
 
   return lLibraryName.str();
 }
+
 
 ExternalModule*
 DynamicLoader::loadModule(const zstring& aFile) const
@@ -178,7 +187,9 @@ DynamicLoader::loadModule(const zstring& aFile) const
 
 
 DynamicLoader::DynamicLoader()
-{}
+{
+}
+
 
 DynamicLoader&
 DynamicLoader::getInstance()
@@ -186,6 +197,7 @@ DynamicLoader::getInstance()
   static DynamicLoader singleton;
   return singleton;
 }
+
 
 DynamicLoader::~DynamicLoader()
 {
@@ -200,9 +212,9 @@ DynamicLoader::~DynamicLoader()
   }
 }
 
+
 ExternalModule*
-DynamicLoader::getExternalModule
-(zstring const& aNsURI, static_context& aSctx)
+DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
 {
   std::vector<zstring> lModulePaths;
   aSctx.get_full_module_paths(lModulePaths);
@@ -215,34 +227,39 @@ DynamicLoader::getExternalModule
 
     // Lookup version of the module
     store::Item_t lMajorOpt;
-    GENV.getItemFactory()->createQName
-        (lMajorOpt,
-         zstring(ZORBA_VERSIONING_NS),
-         zstring(""),
-         zstring(ZORBA_OPTION_MODULE_VERSION));
+    GENV.getItemFactory()->createQName(lMajorOpt,
+                                       zstring(ZORBA_VERSIONING_NS),
+                                       zstring(""),
+                                       zstring(ZORBA_OPTION_MODULE_VERSION));
+    
     zstring lImportedVersion;
-    if (!aSctx.lookup_option(lMajorOpt.getp(), lImportedVersion)) {
+    
+    if (!aSctx.lookup_option(lMajorOpt.getp(), lImportedVersion)) 
+    {
       lImportedVersion = "";
     }
+
     zstring lLibraryName = computeLibraryName(lURI, lImportedVersion);
+
     zstring lLibraryNameDebug = computeLibraryName(lURI, lImportedVersion, true);
 
-    // check all module path in the according order
-    // the higher in the hirarchy the static context is
-    // the higher the priority of its module paths
+    // Check all module path in the according order. The higher in the hirarchy
+    // the static context is the higher the priority of its module paths.
     for (std::vector<zstring>::const_iterator ite = lModulePaths.begin();
-        ite != lModulePaths.end();
+         ite != lModulePaths.end();
          ++ite)
     {
       zstring potentialModuleFile = (*ite);
       zstring potentialModuleFileDebug = potentialModuleFile;
+
       potentialModuleFile.append(lLibraryName);
       potentialModuleFileDebug.append(lLibraryNameDebug);
 
       std::auto_ptr<std::istream> modfile
         (new std::ifstream(potentialModuleFile.c_str()));
 
-      if (!modfile->good()) {
+      if (!modfile->good()) 
+      {
         modfile.reset(new std::ifstream(potentialModuleFileDebug.c_str()));
         potentialModuleFile = potentialModuleFileDebug;
       }

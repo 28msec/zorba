@@ -29,13 +29,16 @@ class URI;
 class DynamicLoader
 {
 public:
-  static ExternalModule* getExternalModule
-  (zstring const& aNsURI, static_context& aSctx);
+  static ExternalModule* getExternalModule(
+      zstring const& aNsURI,
+      static_context& aSctx);
 
 private:
 
   DynamicLoader();
+
   ~DynamicLoader();
+
   static DynamicLoader& getInstance();
 
   ExternalModule* loadModule(const zstring& aFile) const;

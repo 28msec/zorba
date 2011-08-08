@@ -157,6 +157,11 @@ public:
       const QueryLoc& loc,
       store::Iterator_t& value);
 
+  void unset_variable(
+      ulong varid, 
+      const store::Item_t& varname,
+      const QueryLoc& loc);
+
   void get_variable(
         ulong varid,
         const store::Item_t& varname,
