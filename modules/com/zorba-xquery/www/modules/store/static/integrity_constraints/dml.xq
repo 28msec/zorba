@@ -39,7 +39,7 @@ xquery version "3.0";
  : @project store/integrity constraints/static
  :
  :)
-module namespace dml = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
+module namespace icdml = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -56,5 +56,5 @@ declare option ver:module-version "2.0";
  : @error zerr:ZDDY0031 if the integrity constraint identified by $name is not declared.
  : @error zerr:ZDDY0032 if the integrity constraint identified by $name is not available.
  :)
-declare function dml:check-integrity-constraint(
+declare function icdml:check-integrity-constraint(
   $name as xs:QName) as xs:boolean external;

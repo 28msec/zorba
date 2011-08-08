@@ -40,7 +40,7 @@ xquery version "3.0";
  : @project store/indexes/static
  :
  :)
-module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -54,7 +54,7 @@ declare option ver:module-version "2.0";
  :
  : @return true if the index is available and false otherwise.
  :)
-declare function ddl:is-available-index($name as xs:QName) as xs:boolean external;
+declare function iddl:is-available-index($name as xs:QName) as xs:boolean external;
 
 (:~
  : The function returns a sequence of QNames representing the indexes that are
@@ -63,7 +63,7 @@ declare function ddl:is-available-index($name as xs:QName) as xs:boolean externa
  : @return A sequence of QNames, one for each available index, or an empty
  : sequence if none are.
  :)
-declare function ddl:available-indexes() as xs:QName* external;
+declare function iddl:available-indexes() as xs:QName* external;
 
 (:~
  : The create-index function is an updating function which creates the
@@ -80,7 +80,7 @@ declare function ddl:available-indexes() as xs:QName* external;
  :        to the name of any resource in the statically known indexes.
  : @error zerr:ZDDY0022 if the index with the given name is already created.
  :)
-declare updating function ddl:create-index(
+declare updating function iddl:create-index(
   $name as xs:QName)  external;
 
 (:~
@@ -96,7 +96,7 @@ declare updating function ddl:create-index(
  :        the expanded QName $name.
  :
  :)
-declare updating function ddl:delete-index(
+declare updating function iddl:delete-index(
   $name as xs:QName)  external;
 
 (:~
@@ -107,7 +107,7 @@ declare updating function ddl:delete-index(
  :
  : @return true if the index is declared or false otherwise.
  :)
-declare function ddl:is-declared-index(
+declare function iddl:is-declared-index(
   $name as xs:QName) as xs:boolean  external;
 
 (:~
@@ -116,4 +116,4 @@ declare function ddl:is-declared-index(
  :
  : @return A sequence of QNames, one for each created collection, or an emtpy sequence.
  :)
-declare function ddl:declared-indexes() as xs:QName*  external;
+declare function iddl:declared-indexes() as xs:QName*  external;

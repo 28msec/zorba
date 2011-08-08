@@ -41,7 +41,7 @@ xquery version "3.0";
  : @project store/integrity constraints/static
  :
  :)
-module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
+module namespace icddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -55,7 +55,7 @@ declare option ver:module-version "2.0";
  :
  : @return true if the integrity constraint has is activated and false otherwise.
  :)
-declare function ddl:is-activated-integrity-constraint(
+declare function icddl:is-activated-integrity-constraint(
   $name as xs:QName) as xs:boolean external;
 
 (:~
@@ -66,7 +66,7 @@ declare function ddl:is-activated-integrity-constraint(
  : @return A sequence of QNames, one for each activated integrity constraint,
  :         or an empty sequence.
  :)
-declare function ddl:activated-integrity-constraints() as xs:QName*  external;
+declare function icddl:activated-integrity-constraints() as xs:QName*  external;
 
 
 (:~
@@ -82,7 +82,7 @@ declare function ddl:activated-integrity-constraints() as xs:QName*  external;
  : @error zerr:ZDDY0031 if available integrity constraints in the static context
  :        does not provide a mapping for the expanded QName $name.
  :)
-declare updating function ddl:activate-integrity-constraint(
+declare updating function icddl:activate-integrity-constraint(
   $name as xs:QName)  external;
 
 (:~
@@ -99,7 +99,7 @@ declare updating function ddl:activate-integrity-constraint(
  :        the static context.
  : @error zerr:ZDDY0032 if the given integrity constraints is not activated.
  :)
-declare updating function ddl:deactivate-integrity-constraint(
+declare updating function icddl:deactivate-integrity-constraint(
   $name as xs:QName)  external;
 
 (:~
@@ -108,7 +108,7 @@ declare updating function ddl:deactivate-integrity-constraint(
  :
  : @return A sequence of QNames, one for each created integrity constraints, or an emtpy sequence.
  :)
-declare function ddl:declared-integrity-constraints() as xs:QName*  external;
+declare function icddl:declared-integrity-constraints() as xs:QName*  external;
 
 (:~
  : The function returns true if a integrity constraints with the given
@@ -118,5 +118,5 @@ declare function ddl:declared-integrity-constraints() as xs:QName*  external;
  :
  : @return true if the constraint is declared and false otherwise.
  :)
-declare function ddl:is-declared-integrity-constraint(
+declare function icddl:is-declared-integrity-constraint(
   $name as xs:QName) as xs:boolean  external;

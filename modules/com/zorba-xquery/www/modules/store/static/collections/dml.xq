@@ -40,7 +40,7 @@ xquery version "3.0";
  : @project store/collections/static
  :
  :)
-module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
@@ -68,7 +68,7 @@ declare option ver:module-version "2.0";
  :        according to the rules for SequenceType Matching.
  :
  :)
-declare updating function dml:insert-nodes(
+declare updating function cdml:insert-nodes(
   $name as xs:QName,
   $content as node()*) external;
 
@@ -91,7 +91,7 @@ declare updating function dml:insert-nodes(
  :        according to the rules for SequenceType Matching.
  :
  :)
-declare updating function dml:insert-nodes-first(
+declare updating function cdml:insert-nodes-first(
   $name as xs:QName,
   $content as node()*)  external;
 
@@ -113,7 +113,7 @@ declare updating function dml:insert-nodes-first(
  :        according to the rules for SequenceType Matching.
  :
  :)
-declare updating function dml:insert-nodes-last(
+declare updating function cdml:insert-nodes-last(
   $name as xs:QName,
   $content as node()*)  external;
 
@@ -140,7 +140,7 @@ declare updating function dml:insert-nodes-last(
  : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
  :)
-declare updating function dml:insert-nodes-before(
+declare updating function cdml:insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*)  external;
@@ -168,7 +168,7 @@ declare updating function dml:insert-nodes-before(
  : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
  :)
-declare updating function dml:insert-nodes-after(
+declare updating function cdml:insert-nodes-after(
   $name as xs:QName,
   $target as node(),
   $content as node()*)  external;
@@ -192,10 +192,10 @@ declare updating function dml:insert-nodes-after(
  : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
  :
- : @see dml:insert-nodes
+ : @see cdml:insert-nodes
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes(
+declare %ann:sequential function cdml:apply-insert-nodes(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -218,10 +218,10 @@ declare %ann:sequential function dml:apply-insert-nodes(
  : @error zerr:ZDTY0001 if $content does not match the expected type according to the
  :        rules for SequenceType Matching.
  :
- : @see dml:insert-nodes-first
+ : @see cdml:insert-nodes-first
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-first(
+declare %ann:sequential function cdml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -243,10 +243,10 @@ declare %ann:sequential function dml:apply-insert-nodes-first(
  : @error zerr:ZDTY0001 if $content does not match the expected type (i.e. declared by the collection)
  :        according to the rules for SequenceType Matching.
  :
- : @see dml:insert-nodes-last
+ : @see cdml:insert-nodes-last
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-last(
+declare %ann:sequential function cdml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -272,10 +272,10 @@ declare %ann:sequential function dml:apply-insert-nodes-last(
  :        according to the rules for SequenceType Matching.
  : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
- : @see dml:insert-nodes-before
+ : @see cdml:insert-nodes-before
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-before(
+declare %ann:sequential function cdml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()*  external;
@@ -302,10 +302,10 @@ declare %ann:sequential function dml:apply-insert-nodes-before(
  :        according to the rules for SequenceType Matching.
  : @error zerr:ZDDY0011 if the $target node is not a node that is contained in the collection $name.
  :
- : @see dml:insert-nodes-after
+ : @see cdml:insert-nodes-after
  :
  :)
-declare %ann:sequential function dml:apply-insert-nodes-after(
+declare %ann:sequential function cdml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()*  external;
@@ -328,7 +328,7 @@ declare %ann:sequential function dml:apply-insert-nodes-after(
  :        the collection identified by the $name parameter.
  :
  :)
-declare updating function dml:delete-nodes($target as node()*)  external;
+declare updating function cdml:delete-nodes($target as node()*)  external;
 
 (:~
  : The delete-node-first function is an updating function that deletes the
@@ -346,7 +346,7 @@ declare updating function dml:delete-nodes($target as node()*)  external;
  : @error zerr:ZDDY0011 If the collection is empty.
  :
  :)
-declare updating function dml:delete-node-first($name as xs:QName) external;
+declare updating function cdml:delete-node-first($name as xs:QName) external;
 
 (:~
  : The delete-nodes-first function is an updating function that deletes the
@@ -366,7 +366,7 @@ declare updating function dml:delete-node-first($name as xs:QName) external;
  : @error zerr:ZDDY0011 If the collection contains less than $number nodes.
  :
  :)
-declare updating function dml:delete-nodes-first(
+declare updating function cdml:delete-nodes-first(
   $name as xs:QName,
   $number as xs:integer)  external;
 
@@ -386,7 +386,7 @@ declare updating function dml:delete-nodes-first(
  : @error zerr:ZDDY0012 if the order property of the collection $name is unordered.
  : @error zerr:ZDDY0011 If the collection is empty.
  :)
-declare updating function dml:delete-node-last($name as xs:QName)  external;
+declare updating function cdml:delete-node-last($name as xs:QName)  external;
 
 (:~
  : The delete-nodes-last function is an updating function that deletes the
@@ -404,7 +404,7 @@ declare updating function dml:delete-node-last($name as xs:QName)  external;
  : @error zerr:ZDDY0011 If the collection contains less than $number nodes.
  :
  :)
-declare updating function dml:delete-nodes-last(
+declare updating function cdml:delete-nodes-last(
   $name as xs:QName,
   $number as xs:integer)  external;
 
@@ -419,7 +419,7 @@ declare updating function dml:delete-nodes-last(
  : @error zerr:ZDDY0012 if the order property of collection of that node is unordered.
  :
  :)
-declare function dml:index-of($node as node()) as xs:integer  external;
+declare function cdml:index-of($node as node()) as xs:integer  external;
 
 (:~
  : The collection function returns the sequence of nodes of the collection
@@ -433,7 +433,7 @@ declare function dml:index-of($node as node()) as xs:integer  external;
  : @error zerr:ZDDY0003 if the collection identified by $name is not available.
  :
  :)
-declare function dml:collection($name as xs:QName) as node()*  external;
+declare function cdml:collection($name as xs:QName) as node()*  external;
 
 (:~
  : This function returns the name of the collection the given node belongs
@@ -446,4 +446,4 @@ declare function dml:collection($name as xs:QName) as node()*  external;
  : @error zerr:ZDDY0011 if the given node does not belong to a collection.
  :
  :)
-declare function dml:collection-name($node as node()) as xs:QName external;
+declare function cdml:collection-name($node as node()) as xs:QName external;

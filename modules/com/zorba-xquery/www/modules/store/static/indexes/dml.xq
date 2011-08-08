@@ -40,7 +40,7 @@ xquery version "3.0";
  : @project store/indexes/static
  :
  :)
-module namespace dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
@@ -70,7 +70,7 @@ declare option ver:module-version "2.0";
  : @error zerr:ZDDY0025 if the number of keys passed as arguments
  :    does not match the number of keys declared for the index.
  :)
-declare %ann:variadic function dml:probe-index-point-value(
+declare %ann:variadic function idml:probe-index-point-value(
   $name as xs:QName, 
   $key_i as xs:anyAtomicType?) as node()*  external; 
 
@@ -118,7 +118,7 @@ declare %ann:variadic function dml:probe-index-point-value(
  : @error zerr:ZDDY0025 if the number of rangespecs passed as arguments
  :    does not match the number of keys declared for the index.
  :)
-declare %ann:variadic function dml:probe-index-range-value($name as xs:QName, 
+declare %ann:variadic function idml:probe-index-range-value($name as xs:QName, 
   $rangeLowerBound1         as xs:anyAtomicType?,
   $rangeUpperBound1         as xs:anyAtomicType?,
   $rangeHaveLowerBound1     as xs:boolean,
@@ -139,5 +139,5 @@ declare %ann:variadic function dml:probe-index-range-value($name as xs:QName,
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
  :)
-declare updating function dml:refresh-index($name as xs:QName) external;
+declare updating function idml:refresh-index($name as xs:QName) external;
 

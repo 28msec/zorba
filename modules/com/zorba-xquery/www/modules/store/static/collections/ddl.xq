@@ -41,7 +41,7 @@ xquery version "3.0";
  : @project store/collections/static
  :
  :)
-module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+module namespace cddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -56,7 +56,7 @@ declare option ver:module-version "2.0";
  : @return true if the collection is available and false otherwise.
  :
  :)
-declare function ddl:is-available-collection($name as xs:QName) as xs:boolean external;
+declare function cddl:is-available-collection($name as xs:QName) as xs:boolean external;
 
 (:~
  : The function returns a sequence of QNames of the collections that are
@@ -65,7 +65,7 @@ declare function ddl:is-available-collection($name as xs:QName) as xs:boolean ex
  : @return A sequence of QNames, one for each available collection, or an emtpy sequence.
  :
  :)
-declare function ddl:available-collections() as xs:QName*  external;
+declare function cddl:available-collections() as xs:QName*  external;
 
 (:~
  : The create-collection function is an updating function which creates
@@ -83,7 +83,7 @@ declare function ddl:available-collections() as xs:QName*  external;
  :        exists.
  :
  :)
-declare updating function ddl:create-collection($name as xs:QName) external;
+declare updating function cddl:create-collection($name as xs:QName) external;
 
 (:~
  : The create-collection function is an updating function which creates
@@ -106,7 +106,7 @@ declare updating function ddl:create-collection($name as xs:QName) external;
  :        for SequenceType Matching.
  :
  :)
-declare updating function ddl:create-collection(
+declare updating function cddl:create-collection(
   $name as xs:QName,
   $content as node()*)  external;
 
@@ -130,7 +130,7 @@ declare updating function ddl:create-collection(
  :        indexes access the collection with name $name.
  :
  :)
-declare updating function ddl:delete-collection(
+declare updating function cddl:delete-collection(
   $name as xs:QName)  external;
 
 (:~
@@ -142,7 +142,7 @@ declare updating function ddl:delete-collection(
  : @return true if the collection is declared or false otherwise.
  :
  :)
-declare function ddl:is-declared-collection(
+declare function cddl:is-declared-collection(
   $name as xs:QName) as xs:boolean  external;
 
 (:~
@@ -152,4 +152,4 @@ declare function ddl:is-declared-collection(
  : @return A sequence of QNames, one for each created collection, or an emtpy sequence.
  :
  :)
-declare function ddl:declared-collections() as xs:QName*  external;
+declare function cddl:declared-collections() as xs:QName*  external;
