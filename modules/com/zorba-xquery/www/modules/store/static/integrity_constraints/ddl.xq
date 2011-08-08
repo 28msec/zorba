@@ -79,7 +79,7 @@ declare function ddl:activated-integrity-constraints() as xs:QName*  external;
  :         pending update list that consists of a
  :         upd:activateIntegrityConstraint($name) update primitive.
  :
- : @error ZDDY0031 if available integrity constraints in the static context
+ : @error zerr:ZDDY0031 if available integrity constraints in the static context
  :        does not provide a mapping for the expanded QName $name.
  :)
 declare updating function ddl:activate-integrity-constraint(
@@ -95,9 +95,9 @@ declare updating function ddl:activate-integrity-constraint(
  :         pending update list which, once applied, deactivates the
  :         integrity constraint.
  :
- : @error ZDDY0032 if the integrity constraints is not declared in the
+ : @error zerr:ZDDY0032 if the integrity constraints is not declared in the
  :        the static context.
- : @error ZDDY0032 if the given integrity constraints is not activated.
+ : @error zerr:ZDDY0032 if the given integrity constraints is not activated.
  :)
 declare updating function ddl:deactivate-integrity-constraint(
   $name as xs:QName)  external;
