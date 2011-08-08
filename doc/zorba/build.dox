@@ -137,7 +137,7 @@ In order to build Zorba, you need the following libraries and development header
 - Zorba has other options as well.
   You can tweak the performance and library footprint
   by enabling or disabling various features from Zorba.
-  Details here \ref zorba_options.
+  Details here \ref options_and_annotations .
 
 \section buildcclient Building IMAP CClient
 
