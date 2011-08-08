@@ -575,11 +575,13 @@ table.ft_rels th {
   line-height: 1.4;
 }
 
-.contents p {
+.contents p,
+.contents pre {
   margin: 14px 0;
 }
 
-.textblock p {
+.textblock p,
+.textblock pre {
   margin: 14px 0;
 }
 
