@@ -5,6 +5,7 @@ This page is a quick presentation on how to use Zorba with XMLSchema type inform
 
 \section immport How to import a schema
 In order to use XMLSchema type information in a query a schema file needs to be imported.
+Note the URI must match the target namespace of schema file.
 
 \code
 import schema namespace r = "http://example" at "example.xsd";
