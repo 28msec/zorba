@@ -540,3 +540,9 @@ li.none {
     margin-top: 0.3em;
     margin-bottom: 0.3em;
 }
+
+#discuss
+{
+  padding: 5px;
+  margin: 5px;
+}

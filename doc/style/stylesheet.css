@@ -117,10 +117,10 @@ DL.el {
 PRE.fragment {
     border: 1px solid #CCCCCC;
     background-color: #f5f5f5;
-    margin-top: 4px;
+    /*margin-top: 4px;
     margin-bottom: 4px;
     margin-left: 2px;
-    margin-right: 8px;
+    margin-right: 8px;*/
     padding-left: 6px;
     padding-right: 6px;
     padding-top: 4px;
@@ -635,4 +635,10 @@ table.ft_rels th {
 {
     margin-top: 0.3em;
     margin-bottom: 0.3em;
+}
+
+#discuss
+{
+  padding: 5px;
+  margin: 5px;    
 }
