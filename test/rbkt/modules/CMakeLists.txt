@@ -41,3 +41,13 @@ DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/modules/theschema"
   FILE "schema.xsd" TEST_ONLY)
 DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/myschema"
   VERSION 1.0 FILE "schema.xq" TEST_ONLY)
+
+DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/manifest"
+  FILE "manifest.xsd" TEST_ONLY)
+
+IF (NOT ZORBA_NO_XMLSCHEMA)
+  ADD_TEST (check_manifest "${ZORBA_EXE_SCRIPT}" -f -q
+    "${CMAKE_CURRENT_SOURCE_DIR}/check_manifest.xq"
+    -e "manifest:=${CMAKE_BINARY_DIR}/ZorbaManifest.xml"
+    --module-path "${CMAKE_BINARY_DIR}/TEST_URI_PATH")
+ENDIF (NOT ZORBA_NO_XMLSCHEMA)

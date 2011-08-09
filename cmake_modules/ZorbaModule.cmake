@@ -183,12 +183,7 @@ MACRO (DECLARE_ZORBA_MODULE)
 
   # Add to module manifest (except test modules).
   IF (NOT MODULE_TEST_ONLY)
-    SET (_version_attr)
-    IF (MODULE_VERSION)
-      SET (_version_attr " version=\"${MODULE_VERSION}\"")
-    ENDIF (MODULE_VERSION)
-    FILE (APPEND "${zorba_modules_file}"
-      "<z:module${_version_attr}>${MODULE_URI}</z:module>\n")
+    ADD_ZORBA_MANIFEST_ENTRY("module" ${MODULE_URI} "${MODULE_VERSION}")
   ENDIF (NOT MODULE_TEST_ONLY)
 
   # Now, deal with associated C++ source for external functions.
@@ -328,7 +323,7 @@ MACRO (DECLARE_ZORBA_SCHEMA)
 
   # Add to schema manifest (except test schema).
   IF (NOT SCHEMA_TEST_ONLY)
-    FILE (APPEND "${zorba_schemas_file}" "<z:schema>${SCHEMA_URI}</z:schema>\n")
+    ADD_ZORBA_MANIFEST_ENTRY("schema" ${SCHEMA_URI} "")
   ENDIF (NOT SCHEMA_TEST_ONLY)
 
   ADD_COPY_RULE ("${SOURCE_FILE}" "${schema_path}/${schema_filename}"
@@ -394,6 +389,31 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET TEST_ONLY)
   ENDIF (file_found EQUAL -1)
 ENDMACRO (ADD_COPY_RULE)
 
+# Utility macro for adding a line to either the schema or module
+# manifest file.
+MACRO (ADD_ZORBA_MANIFEST_ENTRY ENTRY_TYPE URI VERSION)
+  SET (_version_attr)
+  IF (NOT "${VERSION}" STREQUAL "")
+    SET (_version_attr " version=\"${VERSION}\"")
+  ENDIF (NOT "${VERSION}" STREQUAL "")
+  # A module or schema is "core" if it's part of the Zorba
+  # distribution. The Zorba project is named "zorba", so see if we're
+  # in that project.
+  IF ("${zorba_SOURCE_DIR}" STREQUAL "${PROJECT_SOURCE_DIR}")
+    SET (_is_core true)
+  ELSE ("${zorba_SOURCE_DIR}" STREQUAL "${PROJECT_SOURCE_DIR}")
+    SET (_is_core false)
+  ENDIF ("${zorba_SOURCE_DIR}" STREQUAL "${PROJECT_SOURCE_DIR}")
+
+  FILE (APPEND "${zorba_manifest_file}"
+    "<z:${ENTRY_TYPE} isCore=\"${_is_core}\"${_version_attr}>\n")
+  FILE (APPEND "${zorba_manifest_file}"
+    "  <z:uri>${URI}</z:uri>\n")
+  FILE (APPEND "${zorba_manifest_file}"
+    "  <z:projectRoot>${PROJECT_SOURCE_DIR}</z:projectRoot>\n")
+  FILE (APPEND "${zorba_manifest_file}" "</z:${ENTRY_TYPE}>\n")
+ENDMACRO (ADD_ZORBA_MANIFEST_ENTRY)
+
 # Macro which states the project is done calling
 # DECLARE_ZORBA_MODULE() and DECLARE_ZORBA_SCHEMA(). Causes a single
 # target to be declared which will copy all declared module/schema
@@ -403,8 +423,7 @@ ENDMACRO (ADD_COPY_RULE)
 MACRO (DONE_DECLARING_ZORBA_URIS)
   IF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     # Close out the zorba modules and schemas manifests
-    FILE (APPEND "${zorba_modules_file}" "</z:modules>\n")
-    FILE (APPEND "${zorba_schemas_file}" "</z:schemas>\n")
+    FILE (APPEND "${zorba_manifest_file}" "</z:manifest>\n")
     IF (POLICY CMP0007)
       CMAKE_POLICY (SET CMP0007 NEW)
     ENDIF (POLICY CMP0007)
@@ -440,15 +459,12 @@ ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 # Initialize expected failures and zorba modules output files when
 # first included
 set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
-set (zorba_modules_file "${CMAKE_BINARY_DIR}/ZorbaModules.xml")
-set (zorba_schemas_file "${CMAKE_BINARY_DIR}/ZorbaSchemas.xml")
+set (zorba_manifest_file "${CMAKE_BINARY_DIR}/ZorbaManifest.xml")
 GET_PROPERTY (is_init GLOBAL PROPERTY ZorbaModule_initialized)
 IF (NOT is_init)
   file (WRITE "${expected_failures_file}" "")
-  file (WRITE "${zorba_modules_file}"
-    "<z:modules xmlns:z=\"http://www.zorba-xquery.com/modules\">\n")
-  file (WRITE "${zorba_schemas_file}"
-    "<z:schemas xmlns:z=\"http://www.zorba-xquery.com/schemas\">\n")
+  file (WRITE "${zorba_manifest_file}"
+    "<z:manifest xmlns:z=\"http://www.zorba-xquery.com/manifest\">\n")
   SET_PROPERTY (GLOBAL PROPERTY ZorbaModule_initialized 1)
 ENDIF (NOT is_init)
 
