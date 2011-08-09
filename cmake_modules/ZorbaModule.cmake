@@ -326,6 +326,11 @@ MACRO (DECLARE_ZORBA_SCHEMA)
   GET_FILENAME_COMPONENT (schema_name "${SCHEMA_FILE}" NAME)
   MANGLE_URI (${SCHEMA_URI} "xsd" schema_path schema_filename)
 
+  # Add to schema manifest (except test schema).
+  IF (NOT SCHEMA_TEST_ONLY)
+    FILE (APPEND "${zorba_schemas_file}" "<z:schema>${SCHEMA_URI}</z:schema>\n")
+  ENDIF (NOT SCHEMA_TEST_ONLY)
+
   ADD_COPY_RULE ("${SOURCE_FILE}" "${schema_path}/${schema_filename}"
     "" "" "${SCHEMA_TEST_ONLY}")
 
@@ -397,8 +402,9 @@ ENDMACRO (ADD_COPY_RULE)
 # the top-level project in a build.
 MACRO (DONE_DECLARING_ZORBA_URIS)
   IF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    # Close out the zorba modules manifest
+    # Close out the zorba modules and schemas manifests
     FILE (APPEND "${zorba_modules_file}" "</z:modules>\n")
+    FILE (APPEND "${zorba_schemas_file}" "</z:schemas>\n")
     IF (POLICY CMP0007)
       CMAKE_POLICY (SET CMP0007 NEW)
     ENDIF (POLICY CMP0007)
@@ -435,11 +441,14 @@ ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 # first included
 set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
 set (zorba_modules_file "${CMAKE_BINARY_DIR}/ZorbaModules.xml")
+set (zorba_schemas_file "${CMAKE_BINARY_DIR}/ZorbaSchemas.xml")
 GET_PROPERTY (is_init GLOBAL PROPERTY ZorbaModule_initialized)
 IF (NOT is_init)
   file (WRITE "${expected_failures_file}" "")
   file (WRITE "${zorba_modules_file}"
     "<z:modules xmlns:z=\"http://www.zorba-xquery.com/modules\">\n")
+  file (WRITE "${zorba_schemas_file}"
+    "<z:schemas xmlns:z=\"http://www.zorba-xquery.com/schemas\">\n")
   SET_PROPERTY (GLOBAL PROPERTY ZorbaModule_initialized 1)
 ENDIF (NOT is_init)
 
