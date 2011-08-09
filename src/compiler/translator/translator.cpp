@@ -7140,7 +7140,7 @@ void* begin_visit(const CatchExpr& v)
 
   push_scope();
 
-  store::Item_t lCode, lDesc, lValue, lModule, lLineNo, lColumnNo;
+  store::Item_t lCode, lDesc, lValue, lModule, lLineNo, lColumnNo, lStackTrace;
 
   GENV_ITEMFACTORY->createQName(lCode, XQUERY_ERR_NS, "", "code");
   GENV_ITEMFACTORY->createQName(lDesc, XQUERY_ERR_NS, "", "description");
@@ -7148,6 +7148,7 @@ void* begin_visit(const CatchExpr& v)
   GENV_ITEMFACTORY->createQName(lModule, XQUERY_ERR_NS, "", "module");
   GENV_ITEMFACTORY->createQName(lLineNo, XQUERY_ERR_NS, "", "line-number");
   GENV_ITEMFACTORY->createQName(lColumnNo, XQUERY_ERR_NS, "", "column-number");
+  GENV_ITEMFACTORY->createQName(lStackTrace, ZORBA_ERR_NS, "", "stack-trace");
 
   cc->add_var(catch_clause::err_code,
       bind_var(loc, lCode.getp(), var_expr::catch_var, theRTM.QNAME_TYPE_ONE) );
@@ -7161,6 +7162,8 @@ void* begin_visit(const CatchExpr& v)
       bind_var(loc, lLineNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
   cc->add_var(catch_clause::err_column_no,
       bind_var(loc, lColumnNo.getp(), var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION) );
+  cc->add_var(catch_clause::zerr_stack_trace,
+      bind_var(loc, lStackTrace.getp(), var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION) );
 
   tce->add_clause(cc);
 

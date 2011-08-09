@@ -31,6 +31,8 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/node_test.h"
+#include "types/root_typemanager.h"
+#include "zorbamisc/ns_consts.h"
 
 
 namespace zorba {
@@ -173,6 +175,144 @@ TryCatchIterator::matchedCatch(
   return false;
 }
 
+/**
+ * <zerr:stack>
+ *   <zerr:entry>
+ *     <zerr:function name="foo" arity="0"/>
+ *     <zerr:location name="blub.txt" line-begin="0" line-end="0"
+ *       column-begin="0" column-end="0"/>
+ *   </zerr:entry>
+ * </zerr:stack>
+ */
+store::Item_t
+TryCatchIterator::getStackTrace(const XQueryStackTrace& s) const
+{
+  store::NsBindings lBindings;
+  zstring lBaseURI        = ZORBA_ERR_NS;
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+
+  store::Item_t lStackQName, lEntryQName, lFNQName, lLocationQName;
+  store::Item_t lNameQName, lNSQName, lLocalQName;
+  store::Item_t lArityQName, lLineBeginQName, lLineEndQName;
+  store::Item_t lColumnBeginQName, lColumnEndQName;
+
+  GENV_ITEMFACTORY->createQName(lStackQName, ZORBA_ERR_NS, "", "stack");
+  GENV_ITEMFACTORY->createQName(lEntryQName, ZORBA_ERR_NS, "", "entry");
+  GENV_ITEMFACTORY->createQName(lFNQName, ZORBA_ERR_NS, "", "function");
+  GENV_ITEMFACTORY->createQName(lLocationQName, ZORBA_ERR_NS, "", "location");
+  GENV_ITEMFACTORY->createQName(lNameQName, "", "", "name");
+  GENV_ITEMFACTORY->createQName(lNSQName, "", "", "namespace");
+  GENV_ITEMFACTORY->createQName(lLocalQName, "", "", "localname");
+  GENV_ITEMFACTORY->createQName(lArityQName, "", "", "arity");
+  GENV_ITEMFACTORY->createQName(lLineBeginQName, "", "", "line-begin");
+  GENV_ITEMFACTORY->createQName(lLineEndQName, "", "", "line-end");
+  GENV_ITEMFACTORY->createQName(lColumnBeginQName, "", "", "column-begin");
+  GENV_ITEMFACTORY->createQName(lColumnEndQName, "", "", "column-end");
+
+  store::Item_t lResult;
+  GENV_ITEMFACTORY->createElementNode(
+      lResult, NULL, lStackQName, lTypeName,
+      true, false, lBindings, lBaseURI);
+
+  for (XQueryStackTrace::const_iterator lIter = s.begin();
+       lIter != s.end(); ++lIter)
+  {
+    GENV_ITEMFACTORY->createQName(lStackQName, ZORBA_ERR_NS, "", "stack");
+    GENV_ITEMFACTORY->createQName(lEntryQName, ZORBA_ERR_NS, "", "entry");
+    GENV_ITEMFACTORY->createQName(lFNQName, ZORBA_ERR_NS, "", "function");
+    GENV_ITEMFACTORY->createQName(lLocationQName, ZORBA_ERR_NS, "", "location");
+    GENV_ITEMFACTORY->createQName(lNameQName, "", "", "name");
+    GENV_ITEMFACTORY->createQName(lNSQName, "", "", "namespace");
+    GENV_ITEMFACTORY->createQName(lLocalQName, "", "", "localname");
+    GENV_ITEMFACTORY->createQName(lArityQName, "", "", "arity");
+    GENV_ITEMFACTORY->createQName(lLineBeginQName, "", "", "line-begin");
+    GENV_ITEMFACTORY->createQName(lLineEndQName, "", "", "line-end");
+    GENV_ITEMFACTORY->createQName(lColumnBeginQName, "", "", "column-begin");
+    GENV_ITEMFACTORY->createQName(lColumnEndQName, "", "", "column-end");
+    store::Item_t lEntry;
+
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createElementNode(
+        lEntry, lResult, lEntryQName, lTypeName,
+        true, false, lBindings, lBaseURI);
+
+    store::Item_t lFunction, lLocation;
+
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createElementNode(
+        lFunction, lEntry, lFNQName, lTypeName,
+        true, false, lBindings, lBaseURI);
+
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createElementNode(
+        lLocation, lEntry, lLocationQName, lTypeName,
+        true, false, lBindings, lBaseURI);
+
+    store::Item_t lTmpAttr;
+    store::Item_t lTmpValue;
+
+    // function namespace
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    zstring lTmpString = lIter->getFnName().ns();
+    GENV_ITEMFACTORY->createString( lTmpValue, lTmpString );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lFunction.getp(), lNSQName, lTypeName,
+        lTmpValue);
+
+    // function localname
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    lTmpString = lIter->getFnName().localname();
+    GENV_ITEMFACTORY->createString( lTmpValue, lTmpString );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lFunction.getp(), lLocalQName, lTypeName,
+        lTmpValue);
+
+    // function arity
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getFnArity() );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lFunction.getp(), lArityQName, lTypeName,
+        lTmpValue);
+
+    // location name
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    lTmpString = lIter->getFileName().c_str();
+    GENV_ITEMFACTORY->createString( lTmpValue, lTmpString );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lLocation.getp(), lNameQName, lTypeName,
+        lTmpValue);
+
+    // location line begin
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLine() );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lLocation.getp(), lLineBeginQName, lTypeName,
+        lTmpValue);
+
+    // location line end
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getLineEnd() );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lLocation.getp(), lLineEndQName, lTypeName,
+        lTmpValue);
+
+    // location column begin
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumn() );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lLocation.getp(), lColumnBeginQName, lTypeName,
+        lTmpValue);
+
+    // location column end
+    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createInteger( lTmpValue, lIter->getColumnEnd() );
+    GENV_ITEMFACTORY->createAttributeNode(
+        lTmpAttr, lLocation.getp(), lColumnEndQName, lTypeName,
+        lTmpValue);
+
+  }
+  return lResult;
+}
 
 void
 TryCatchIterator::bindErrorVars(
@@ -337,6 +477,31 @@ TryCatchIterator::bindErrorVars(
           lErrorColumnIter->open();
           state->theErrorIters.push_back(lErrorColumnIter);
           (*lErrorColumnVarIter)->bind(lErrorColumnIter, planState);
+        }
+      break;
+      }
+      case CatchClause::zerr_stack_trace:
+      {
+        LetVarConstIter lStackTraceVarIter = lIter->second.begin();
+        LetVarConstIter lStackTraceVarIterEnd = lIter->second.end();
+        for ( ; lStackTraceVarIter != lStackTraceVarIterEnd; lStackTraceVarIter++ )
+        {
+          store::Iterator_t lStackTraceIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+              !ue->query_trace().empty() ) 
+          {
+            lStackTraceIter = new ItemIterator(
+                getStackTrace( ue->query_trace() ) );
+          }
+          else
+          {
+            lStackTraceIter = new ItemIterator();
+          }
+          lStackTraceIter->open();
+          state->theErrorIters.push_back(lStackTraceIter);
+          (*lStackTraceVarIter)->bind(lStackTraceIter, planState);
         }
       break;
       }

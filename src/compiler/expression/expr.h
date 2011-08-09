@@ -896,7 +896,8 @@ public:
     err_value,
     err_module,
     err_line_no,
-    err_column_no
+    err_column_no,
+    zerr_stack_trace
   };
 
 public:

@@ -1858,6 +1858,9 @@ void end_visit(trycatch_expr& v)
       case catch_clause::err_column_no:
         rcc.vars[TryCatchIterator::CatchClause::err_column_no] = *vec;
         break;
+      case catch_clause::zerr_stack_trace:
+        rcc.vars[TryCatchIterator::CatchClause::zerr_stack_trace] = *vec;
+        break;
       default:
         ZORBA_ASSERT(false);
       }

@@ -58,7 +58,8 @@ public:
       err_value,
       err_module,
       err_line_no,
-      err_column_no
+      err_column_no,
+      zerr_stack_trace
     };
 
   public:
@@ -124,6 +125,8 @@ protected:
   bool matchedCatch(ZorbaException const& e, TryCatchIteratorState* state, PlanState&) const;
 
   void bindErrorVars(ZorbaException const& e, const CatchClause* state, PlanState&) const;
+
+  store::Item_t getStackTrace(const XQueryStackTrace&) const;
 };
   
 
