@@ -1651,6 +1651,7 @@ static void addGroupElement(store::Item_t &parent,
 {
   int    match_startg = match_start2;
   int    match_endg = match_start2;
+  int    match_endgood = match_start2;
   store::Item_t group_element_name;
   store::Item_t nr_attrib_name;
   for(i=i+1;i<nr_pattern_groups;i++)
@@ -1663,12 +1664,12 @@ static void addGroupElement(store::Item_t &parent,
     match_startg = rx.get_match_start(i+1);
     if((match_startg < 0) && (gparent < 0))
       continue;
-    if(match_endg < match_startg)
+    if(match_endgood < match_startg)
     {
       //add non-group match text
       zstring                non_group_str;
 
-      copyUtf8Chars(sin, match_endg, match_end1_bytes, match_startg, non_group_str);
+      copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_startg, non_group_str);
       store::Item_t non_group_text_item;
       GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent.getp(), non_group_str);
     }
@@ -1689,6 +1690,7 @@ static void addGroupElement(store::Item_t &parent,
     GENV_ITEMFACTORY->createAttributeNode(id_attrib_item, group_elem.getp(), nr_attrib_name, untyped_type_name, strid_item);
     if(match_startg < 0)
       continue;
+    match_endgood = match_endg;
     if((i+1)<nr_pattern_groups)
     {
       if(group_parent[i+1] > gparent)
@@ -1707,11 +1709,11 @@ static void addGroupElement(store::Item_t &parent,
     GENV_ITEMFACTORY->createTextNode(group_text_item, group_elem.getp(), group_str);
   }
   //add last non-group match
-  if(match_endg < match_end2)
+  if(match_endgood < match_end2)
   {
     zstring                non_group_str;
 
-    copyUtf8Chars(sin, match_endg, match_end1_bytes, match_end2, non_group_str);
+    copyUtf8Chars(sin, match_endgood, match_end1_bytes, match_end2, non_group_str);
     store::Item_t non_group_text_item;
     GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent, non_group_str);
   }

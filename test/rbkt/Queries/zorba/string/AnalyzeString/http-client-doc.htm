@@ -1,0 +1,1663 @@
+<html>
+  <head>
+    <title>Documentation for http://www.zorba-xquery.com/modules/http-client</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta content="public" http-equiv="CACHE-CONTROL" />
+    <meta content="-1" http-equiv="Expires" />
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/jquery.treeview.css" />
+    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/jquery.cookie.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.pack.js"></script>
+    <script type="text/javascript" src="lib/jquery.treeview.min.js"></script>
+    <script type="text/javascript" src="lib/shCore.js"></script>
+    <script type="text/javascript" src="lib/shBrushXQuery.js"></script>
+    <script type="text/javascript" src="lib/shBrushXml.js"></script>
+    <link type="text/css" rel="stylesheet" href="styles/shCore.css" />
+    <link type="text/css" rel="stylesheet" href="styles/shThemeDefault.css" />
+    <link type="text/css" rel="stylesheet" href="styles/shThemeXQuery.css" />
+    <script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script>
+  </head>
+  <body>
+    <div id="header">
+      <div class="innerheader text-left">
+        <div id="logo_container">
+          <a href="../../../../../html/index.html">
+            <img src="images/zorba_logo.png" alt="Zorba C++ XQuery Processor" />
+          </a>
+          <h1>
+            <a href="../../../../../html/index.html">Zorba</a>
+          </h1>
+          <p>
+            <a href="../../../../../html/index.html">The XQuery Processor</a>
+          </p>
+        </div>
+        <div id="innermenu" class="box">
+          <ul>
+            <li style="width:102px !important;">
+              <a href="../../../zorba/html/index.html" class="documentation">Documentation</a>
+            </li>
+            <li>
+              <a href="http://try.zorba-xquery.com" target="_blank" class="tryzorba">Live Demo</a>
+            </li>
+            <li>
+              <a href="../../../../../html/modules.html" class="modules">Modules</a>
+            </li>
+            <li>
+              <a href="../../../../../html/downloads.html" class="download">Download</a>
+            </li>
+            <li>
+              <a href="../../../../../html/tools.html" class="tools">Tools</a>
+            </li>
+            <li>
+              <a href="../../../../../html/blog.html" class="blog">Blog</a>
+            </li>
+            <li>
+              <a href="../../../../../html/code.html" class="open">Code</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="main">
+      <div id="leftMenu">
+        <script type="text/javascript">
+          jQuery(document).ready(function() {
+              $("#documentation").treeview({
+                  animated: "fast",
+                  collapsed: true,
+                  unique: false,
+                  persist: "cookie"
+              });
+            });
+        </script>
+        <ul id="documentation" class="treeview">
+          <ul>
+            <span>
+              <a href="index.html">XQuery Modules Documentation</a>
+            </span>
+            <li>
+              <a href="function_index.html">Function Index</a>
+            </li>
+            <li>
+              <span>www.w3.org</span>
+              <ul>
+                <li>
+                  <span>2005</span>
+                  <ul>
+                    <li>
+                      <a href="www.w3.org_2005_xpath-functions_math.html" title="http://www.w3.org/2005/xpath-functions/math">xpath_functions_math</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.w3.org_2005_xpath-functions.html" title="http://www.w3.org/2005/xpath-functions">xpath_functions</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>XDM</span>
+              <ul>
+                <li>
+                  <span>atomic</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_datetime.html" title="http://www.zorba-xquery.com/modules/datetime">datetime</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_math.html" title="http://www.zorba-xquery.com/modules/math">math</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_random.html" title="http://www.zorba-xquery.com/modules/random">random</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_string.html" title="http://www.zorba-xquery.com/modules/string">string</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>item</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_schema.html" title="http://www.zorba-xquery.com/modules/schema">schema</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>node</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_node.html" title="http://www.zorba-xquery.com/modules/node">node</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_node-reference.html" title="http://www.zorba-xquery.com/modules/node-reference">node-reference</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>store</span>
+              <ul>
+                <li>
+                  <span>collections</span>
+                  <ul>
+                    <li>
+                      <span>dynamic</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_dml.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span>static</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_collections_dml.html" title="http://www.zorba-xquery.com/modules/store/static/collections/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_collections_ddl.html" title="http://www.zorba-xquery.com/modules/store/static/collections/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span>w3c</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl">ddl</a>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html" title="http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml">dml</a>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>data structures</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_store_data-structures_unordered-map.html" title="http://www.zorba-xquery.com/modules/store/data-structures/unordered-map">unordered-map</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>documents</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_store_dynamic_documents.html" title="http://www.zorba-xquery.com/modules/store/dynamic/documents">dynamic</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>indexes</span>
+                  <ul>
+                    <li>
+                      <span>static</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_indexes_ddl.html" title="http://www.zorba-xquery.com/modules/store/static/indexes/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_indexes_dml.html" title="http://www.zorba-xquery.com/modules/store/static/indexes/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>integrity constraints</span>
+                  <ul>
+                    <li>
+                      <span>static</span>
+                      <ul>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html" title="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl">ddl</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                        <li>
+                          <a href="www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html" title="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml">dml</a>
+                          <sup>
+                            <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                          </sup>
+                          <sup>
+                            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                          </sup>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>introspection</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_introspection_sctx.html" title="http://www.zorba-xquery.com/modules/introspection/sctx">sctx</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>reflection</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_reflection.html" title="http://www.zorba-xquery.com/modules/reflection">reflection</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>external</span>
+              <ul>
+                <li>
+                  <a href="expath.org_ns_file.html" title="http://expath.org/ns/file">file</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_fetch.html" title="http://www.zorba-xquery.com/modules/fetch">fetch</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_http-client.html" title="http://www.zorba-xquery.com/modules/http-client">http-client</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_process.html" title="http://www.zorba-xquery.com/modules/process">process</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_system.html" title="http://www.zorba-xquery.com/modules/system">system</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>xqdoc</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_xqdoc.html" title="http://www.zorba-xquery.com/modules/xqdoc">xqdoc</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_project_xqdoc.html" title="http://www.zorba-xquery.com/modules/project_xqdoc">project_xqdoc</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <span>xqdoc2xhtml</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xqdoc2xhtml_index.html" title="http://www.zorba-xquery.com/modules/xqdoc2xhtml/">index</a>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xqdoc2xhtml_error.html" title="http://www.zorba-xquery.com/modules/xqdoc2xhtml/error">error</a>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>data processing</span>
+              <ul>
+                <li>
+                  <span>data cleaning</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_phonetic-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/phonetic-string-similarity">phonetic-string-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_hybrid-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/hybrid-string-similarity">hybrid-string-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_set-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/set-similarity">set-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_token-based-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/token-based-string-similarity">token-based-string-similarity</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_normalization.html" title="http://www.zorba-xquery.com/modules/data-cleaning/normalization">normalization</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_conversion.html" title="http://www.zorba-xquery.com/modules/data-cleaning/conversion">conversion</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_consolidation.html" title="http://www.zorba-xquery.com/modules/data-cleaning/consolidation">consolidation</a>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_data-cleaning_character-based-string-similarity.html" title="http://www.zorba-xquery.com/modules/data-cleaning/character-based-string-similarity">character-based-string-similarity</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>data converters</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_base64.html" title="http://www.zorba-xquery.com/modules/converters/base64">base64</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_csv.html" title="http://www.zorba-xquery.com/modules/converters/csv">csv</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_html.html" title="http://www.zorba-xquery.com/modules/converters/html">html</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_converters_json.html" title="http://www.zorba-xquery.com/modules/converters/json">json</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xml.html" title="http://www.zorba-xquery.com/modules/xml">xml</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <span>data formatting</span>
+                  <ul>
+                    <li>
+                      <a href="www.zorba-xquery.com_modules_xsl-fo.html" title="http://www.zorba-xquery.com/modules/xsl-fo">xsl-fo</a>
+                      <sup>
+                        <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                      </sup>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>programming languages</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_languages_xslt.html" title="http://www.zorba-xquery.com/modules/languages/xslt">xslt</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>excel</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_math.html" title="http://www.zorba-xquery.com/modules/excel/math">math</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_statistical.html" title="http://www.zorba-xquery.com/modules/excel/statistical">statistical</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_math-sumproduct.html" title="http://www.zorba-xquery.com/modules/excel/math-sumproduct">math-sumproduct</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_statistical-zorba.html" title="http://www.zorba-xquery.com/modules/excel/statistical-zorba">statistical-zorba</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_text.html" title="http://www.zorba-xquery.com/modules/excel/text">text</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_logical.html" title="http://www.zorba-xquery.com/modules/excel/logical">logical</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_information.html" title="http://www.zorba-xquery.com/modules/excel/information">information</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_errors.html" title="http://www.zorba-xquery.com/modules/excel/errors">errors</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_engineering.html" title="http://www.zorba-xquery.com/modules/excel/engineering">engineering</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_datetime.html" title="http://www.zorba-xquery.com/modules/excel/datetime">datetime</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_excel_lookup.html" title="http://www.zorba-xquery.com/modules/excel/lookup">lookup</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>cryptography</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_cryptography_hash.html" title="http://www.zorba-xquery.com/modules/cryptography/hash">hash</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_cryptography_hmac.html" title="http://www.zorba-xquery.com/modules/cryptography/hmac">hmac</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>geo</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_geoproj.html" title="http://www.zorba-xquery.com/modules/geoproj">geoproj</a>
+                </li>
+                <li>
+                  <a href="expath.org_ns_geo.html" title="http://expath.org/ns/geo">geo</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>image</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_basic.html" title="http://www.zorba-xquery.com/modules/image/basic">basic</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_graphviz.html" title="http://www.zorba-xquery.com/modules/image/graphviz">graphviz</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_manipulation.html" title="http://www.zorba-xquery.com/modules/image/manipulation">manipulation</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_paint.html" title="http://www.zorba-xquery.com/modules/image/paint">paint</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_image_animation.html" title="http://www.zorba-xquery.com/modules/image/animation">animation</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>OAuth</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_oauth_error.html" title="http://www.zorba-xquery.com/modules/oauth/error">error</a>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_oauth_client.html" title="http://www.zorba-xquery.com/modules/oauth/client">client</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>expath.org</span>
+              <ul>
+                <li>
+                  <span>ns</span>
+                  <ul>
+                    <li>
+                      <a href="expath.org_ns_error.html" title="http://expath.org/ns/error">http-client-error</a>
+                      <sup>
+                        <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                      </sup>
+                    </li>
+                    <li>
+                      <a href="expath.org_ns_http-client.html" title="http://expath.org/ns/http-client">http-client</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>www.functx.com</span>
+              <ul>
+                <li>
+                  <a href="www.functx.com_index.html" title="http://www.functx.com/">functx</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>communication</span>
+              <ul>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_email_imap.html" title="http://www.zorba-xquery.com/modules/email/imap">imap</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_modules_email_smtp.html" title="http://www.zorba-xquery.com/modules/email/smtp">smtp</a>
+                  <sup>
+                    <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a>
+                  </sup>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span>error</span>
+              <ul>
+                <li>
+                  <a href="www.w3.org_2005_xqt-errors.html" title="http://www.w3.org/2005/xqt-errors">xqt-errors</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_errors.html" title="http://www.zorba-xquery.com/errors">errors</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+                <li>
+                  <a href="www.zorba-xquery.com_warnings.html" title="http://www.zorba-xquery.com/warnings">warnings</a>
+                  <sup>
+                    <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+                  </sup>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </ul>
+      </div>
+      <div id="rightcontent">
+        <h1>http://www.zorba-xquery.com/modules/http-client<sup>
+            <img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core." />
+          </sup>
+        </h1>
+        <div class="section">
+          <span id="module_description">Module Description</span>
+        </div>
+        <span>Before using any of the functions below please remember to import the module namespace:
+      <pre class="brush: xquery;">import module namespace http = "http://www.zorba-xquery.com/modules/http-client";</pre>
+        </span>
+        <p> This module provides an interface for zorbas http client. Basically it
+ provides functions for simple http requests (GET, POST, DELETE etc.)
+ and a general purpose function. If the simple functions are not enough
+ powerfull for your needs, you should use the implementation of the EXPath
+ module instead. See <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.expath.org/spec/http-client">the spec
+ of the http-client</a> for more information about EXPaths http-client.
+ While the EXPath functions are all declared as sequential, some functions in
+ this module are defined as nondeterministic. But if you are making a request
+ with one of these functions to a server which does not conform to the HTTP
+ RFC (i.e. which introduces side effects for side-effect free calls like GET),
+ use the EXPath module instead. Otherwise the behavior of your code will
+ be undefined. Zorba has no way to figure out, if a HTTP call is side-effect
+ free or not.
+ Examples of how to use this module:
+ <b xmlns:xqdoc="http://www.xqdoc.org/1.0">Simple GET Request (retrieving text)</b>
+          <pre xmlns:xqdoc="http://www.xqdoc.org/1.0" class="brush: xquery;">http:get-text( "www.example.com" )</pre>
+ returns
+   <pre xmlns:xqdoc="http://www.xqdoc.org/1.0" class="brush: xml;">
+   &lt;response xmlns="http://expath.org/ns/http-client" status="200" message="OK"&gt;
+     &lt;header name="Content-Type" value="text/html; charset=UTF-8"/&gt;
+     &lt;header name="Content-Length" value="574"/&gt;
+     ...
+     &lt;body media-type="text/html"/&gt;
+   &lt;/response&gt;
+   &amp;lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&amp;gt;
+   &amp;lt;html&amp;gt;
+     &amp;lt;head&amp;gt;
+       &amp;lt;meta http-equiv="Content-Type"
+       content="text/html; charset=utf-8" /&amp;gt;
+       &amp;lt;title&amp;gt;Example Web Page&lt;/title&amp;gt;
+     &amp;lt;/head&amp;gt;
+     &amp;lt;body&amp;gt;
+       &amp;lt;p&amp;gt;You have reached this web page by typing "example.com",
+       "example.net", or "example.org" into your web browser.&amp;lt;/p&amp;gt;
+       &amp;lt;p&amp;gt;These domain names are reserved for use in documentation and are
+       Not available for registration. See
+       &amp;lt;a href="http://www.rfc-editor.org/rfc/rfc2606.txt"&amp;gt;RFC 2606&amp;lt;/a&amp;gt;,
+       Section 3.&amp;lt;/p&amp;gt;
+     &amp;lt;/body&amp;gt;
+   &amp;lt;/html&amp;gt;
+   </pre>
+          <b xmlns:xqdoc="http://www.xqdoc.org/1.0">Simple GET Request (retrieving XHTML)</b>
+          <pre xmlns:xqdoc="http://www.xqdoc.org/1.0" class="brush: xquery;">
+   declare namespace xhtml="http://www.w3.org/1999/xhtml";
+   http:get-node( "www.w3.org" )[2]//xhtml:body
+   </pre>
+          <p xmlns:xqdoc="http://www.xqdoc.org/1.0">
+ This example shows how to retrieve an XHTML resource. Note, that the node test
+ that is looking for the body element in the result requires the xhtml
+ namespace to be specified.
+ </p>
+          <b xmlns:xqdoc="http://www.xqdoc.org/1.0">Simple POST Request</b>
+          <p xmlns:xqdoc="http://www.xqdoc.org/1.0">
+ Here is a simple example which sends a text content by making an HTTP POST
+ request.
+ </p>
+          <pre xmlns:xqdoc="http://www.xqdoc.org/1.0" class="brush: xquery;">
+   http:post( "...", "Hello World" )
+   </pre>
+ The response of this request can look as follows:
+   <pre xmlns:xqdoc="http://www.xqdoc.org/1.0" class="brush: xml;">
+   &lt;http:response status="200" message="Ok"&gt;
+      &lt;http:header name="Content-Type" value="text/html"/&gt;
+      &lt;http:header name="Server" value="Apache ..."/&gt;
+      ...
+      &lt;http:body content-type="text/html"/&gt;
+   &lt;/http:response&gt;
+ </pre>
+        </p>
+        <div class="subsubsection">Author:</div>
+        <p class="annotationText">Markus Pilman</p>
+        <div class="subsubsection">XQuery version and encoding for this module:</div>
+        <p class="annotationText">xquery version "<xqdoc:custom xmlns:xqdoc="http://www.xqdoc.org/1.0" tag="XQuery version">3.0</xqdoc:custom>" encoding "<xqdoc:custom xmlns:xqdoc="http://www.xqdoc.org/1.0" tag="encoding">utf-8</xqdoc:custom>";</p>
+        <div class="section">
+          <span id="module_resources">Module Resources</span>
+        </div>
+        <ul>
+          <li>the XQuery module can be found <a href="modules/www.zorba-xquery.com_modules_http-client.html" target="_blank">here</a>.</li>
+          <li>the implementation of the external functions can be found <a href="external_functions_impl/www.zorba-xquery.com_modules_http-client" target="_blank">here</a>.</li>
+        </ul>
+        <div class="section">
+          <span id="module_dependencies">Module Dependencies</span>
+        </div>
+        <p>Imported modules:<ul>
+            <li>
+              <a href="expath.org_ns_error.html">http://expath.org/ns/error</a>
+            </li>
+          </ul>
+        </p>
+        <p>Imported schemas:<ul>
+            <li>
+              <a href="schemas/expath.org_ns_http-client.html" target="_blank">http://expath.org/ns/http-client</a>
+            </li>
+          </ul>
+        </p>
+        <p>External C++ library dependencies:<ul>
+            <li>
+              <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://curl.haxx.se/">cURL Library</a>
+            </li>
+          </ul>
+        </p>
+        <div class="section">
+          <span id="external_specifications">Related Documentation</span>
+        </div>
+        <p>For more details please also see:<ul>
+            <li>
+              <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a>
+            </li>
+          </ul>
+        </p>
+        <div class="section">
+          <span id="variables">Namespaces</span>
+        </div>
+        <table class="varlist">
+          <tr>
+            <td>ann</td>
+            <td>http://www.zorba-xquery.com/annotations</td>
+          </tr>
+          <tr>
+            <td>err</td>
+            <td>http://www.w3.org/2005/xqt-errors</td>
+          </tr>
+          <tr>
+            <td>error</td>
+            <td>http://expath.org/ns/error</td>
+          </tr>
+          <tr>
+            <td>http</td>
+            <td>http://www.zorba-xquery.com/modules/http-client</td>
+          </tr>
+          <tr>
+            <td>http-schema</td>
+            <td>http://expath.org/ns/http-client</td>
+          </tr>
+          <tr>
+            <td>ver</td>
+            <td>http://www.zorba-xquery.com/options/versioning</td>
+          </tr>
+        </table>
+        <div class="section">
+          <span id="function_summary">Function Summary</span>
+        </div>
+        <table class="funclist">
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+                  <img src="images/Sequential.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#delete-1" title="Makes a HTTP DELETE request.">delete</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+<br />
+                <span class="padding"> Makes a HTTP DELETE request.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+                  <img src="images/Nondeterministic.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#get-1" title="This function makes a GET request on a given URL. This function just makes a http GET request on $href. The function is nondeterministic. But if a GET request to the given address has side effects, which would not conform with the RFC but is often the case, then you should use a sequential function instead. This functions uses the ContentType of the response to parse the result. It will return a sequence of items, where the first item describes the result according to the expath specification. The next items are the date of each body element. Each body will be: an element node, if the returned content type is one of: text/xml application/xml text/xml-external-parsed-entity application/xml-external-parsed-entity or if the Content-Type ends with &quot;+xml&quot; A text node, if the content type starts with &quot;text/&quot; and does not match the strings for xml. for all other content types the type will be xs:base64Binary Unlike the expath http-client, this function will never tidy html to xml.">get</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+<br />
+                <span class="padding"> This function makes a GET request on a given URL.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+                  <img src="images/Nondeterministic.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#get-binary-1" title="This function makes a GET request on a given URL. This function just makes a http GET request on $href. The function is nondeterministic. But if a GET request to the given address has side effects, which would not conform with the RFC but is often the case, then you should use a sequential function instead.">get-binary</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+<br />
+                <span class="padding"> This function makes a GET request on a given URL.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+                  <img src="images/Nondeterministic.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#get-node-1" title="This function makes a GET request on a given URL. This function just makes a http GET request on $href. The function is nondeterministic. But if a GET request to the given address has side effects, which would not conform with the RFC but is often the case, then you should use a sequential function instead.">get-node</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+<br />
+                <span class="padding"> This function makes a GET request on a given URL.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+                  <img src="images/Nondeterministic.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#get-text-1" title="This function makes a GET request on a given URL. This function just makes a http GET request on $href. The function is nondeterministic. But if a GET request to the given address has side effects, which would not conform with the RFC but is often the case, then you should use a sequential function instead.">get-text</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+<br />
+                <span class="padding"> This function makes a GET request on a given URL.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+                  <img src="images/Nondeterministic.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#head-1" title="Makes a HTTP HEAD request.">head</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()<br />
+                <span class="padding"> Makes a HTTP HEAD request.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+                  <img src="images/Nondeterministic.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#options-1" title="Makes a HTTP OPTIONS request. This request ask for OPTIONS supported of the server.">options</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as xs:string*<br />
+                <span class="padding"> Makes a HTTP OPTIONS request.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+                  <img src="images/Sequential.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#post-2" title="Makes a HTTP POST request. This function supports only simple http POST requests which should suite most of the mostly common requests. Unlike the send-request function from the EXPath http client, the user only has to give a URL, where she wants the request sent to and a body as an item. The body will than be serialized as follows: If $body is of type xs:string, it will be serialized as plain text and the Content-Type for the request will be set to &quot;text/plain&quot; If $body is an element node, the Content-Type will be set to &quot;text/xml&quot; and the element will be serialized as xml.">post</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item() 
+ ) as item()+<br />
+                <span class="padding"> Makes a HTTP POST request.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+                  <img src="images/Sequential.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#post-3" title="Makes a HTTP POST request. This function supports only simple http POST requests which should suite most of the mostly common requests. Unlike the send-request function from the EXPath http client, the user only has to give a URL, where she wants the request sent to and a body as an item. The body will than be serialized as follows: If $body is of type xs:string, it will be serialized as plain text and the Content-Type for the request will be set to &quot;text/plain&quot; If $body is an element node, the Content-Type will be set to &quot;text/xml&quot; and the element will be serialized as xml.">post</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item(), 
+<span class="funcParam">            $content-type</span> as xs:string 
+ ) as item()+<br />
+                <span class="padding"> Makes a HTTP POST request.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+                  <img src="images/Sequential.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#put-2" title="Makes a HTTP PUT request.">put</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item() 
+ ) as item()+<br />
+                <span class="padding"> Makes a HTTP PUT request.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+                  <img src="images/Sequential.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#put-3" title="Makes a HTTP PUT request. This function takes the content type as a third parameter. Note that this content type is used to determine the serialization, if the second argument is an element node. If this automatic process does not work, use fn:serialize instead.">put</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item(), 
+<span class="funcParam">            $content-type</span> as xs:string 
+ ) as item()+<br />
+                <span class="padding"> Makes a HTTP PUT request.</span>
+              </tt>
+            </td>
+          </tr>
+          <tr>
+            <td class="type">
+              <span class="no_underline">
+                <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+                  <img src="images/Sequential.gif" />
+                </a>
+              </span>
+            </td>
+            <td>
+              <tt>
+                <span class="functName">
+                  <a href="#send-request-3" title="This function sends an HTTP request and returns the corresponding response. It just implements the http:send-request/3 function from the EXPath module. To provide better interoperability between XQuery engines, use the EXPath module instead. This function is declared as sequential (see XQuery Scripting). Sequential functions are allowed to have side effects. For example, most probably, an HTTP POST request is a request that has side effects because it adds/changes a remote resource.">send-request</a>
+                </span>
+                <span class="functName"></span> (
+<span class="funcParam">            $request</span> as element(http-schema:request)?, 
+<span class="funcParam">            $href</span> as xs:string?, 
+<span class="funcParam">            $bodies</span> as item()* 
+ ) as item()+<br />
+                <span class="padding"> This function sends an HTTP request and returns the corresponding response.</span>
+              </tt>
+            </td>
+          </tr>
+        </table>
+        <div class="section">
+          <span id="functions">Functions</span>
+        </div>
+        <div class="subsection" id="delete-1">
+          <span class="no_underline">
+            <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+              <img src="images/Sequential.gif" />
+            </a> delete</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:sequential function http:delete<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+</pre>
+        <p> Makes a HTTP DELETE request.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL where to send the request.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>The first element of the result is the metadata (like headers, status etc), the next elements are the response</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="get-1">
+          <span class="no_underline">
+            <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+              <img src="images/Nondeterministic.gif" />
+            </a> get</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:nondeterministic function http:get<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+</pre>
+        <p> This function makes a GET request on a given URL.
+ This function just makes a http GET request on $href. The function
+ is nondeterministic. But if a GET request to the given address has
+ side effects, which would not conform with the RFC but is often the
+ case, then you should use a sequential function instead.
+ This functions uses the ContentType of the response to parse the result.
+ It will return a sequence of items, where the first item describes the
+ result according to the <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://www.expath.org/spec/http-client">
+ expath specification</a>. The next items are the date of each body
+ element. Each body will be:
+ <ul xmlns:xqdoc="http://www.xqdoc.org/1.0">
+            <li>
+    an element node, if the returned content type is one of:
+    <ul>
+                <li>text/xml</li>
+                <li>application/xml</li>
+                <li>text/xml-external-parsed-entity</li>
+                <li>application/xml-external-parsed-entity</li>
+                <li>or if the Content-Type ends with "+xml"</li>
+              </ul>
+            </li>
+            <li>
+    A text node, if the content type starts with "text/" and does not match the
+    strings for xml.
+  </li>
+            <li>for all other content types the type will be xs:base64Binary</li>
+          </ul>
+ Unlike the expath http-client, this function will never tidy html to xml.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL to which the call will be made.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>a sequence of items, where the first item is a element of type http:responseType. The response element is also described in the <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://expath.org/modules/http-client.html#d2e483">specification</a>. If there is one (or several, in case of multipart) response body, the response bodies are the next items in the sequence.</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="get-binary-1">
+          <span class="no_underline">
+            <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+              <img src="images/Nondeterministic.gif" />
+            </a> get-binary</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:nondeterministic function http:get-binary<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+</pre>
+        <p> This function makes a GET request on a given URL.
+ This function just makes a http GET request on $href. The function
+ is nondeterministic. But if a GET request to the given address has
+ side effects, which would not conform with the RFC but is often the
+ case, then you should use a sequential function instead.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL to which the call will be made.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>a sequence of items, where the first item is a element of type http:responseType. The response element is also described in the <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://expath.org/modules/http-client.html#d2e483">specification</a>. If there is one (or several, in case of multipart) response body, the response bodies are the next items in the sequence.</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="get-node-1">
+          <span class="no_underline">
+            <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+              <img src="images/Nondeterministic.gif" />
+            </a> get-node</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:nondeterministic function http:get-node<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+</pre>
+        <p> This function makes a GET request on a given URL.
+ This function just makes a http GET request on $href. The function
+ is nondeterministic. But if a GET request to the given address has
+ side effects, which would not conform with the RFC but is often the
+ case, then you should use a sequential function instead.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL to which the call will be made.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>a sequence of items, where the first item is a element of type http:responseType. The response element is also described in the <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://expath.org/modules/http-client.html#d2e483">specification</a>. If there is one (or several, in case of multipart) response body, the response bodies are the next items in the sequence.</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="get-text-1">
+          <span class="no_underline">
+            <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+              <img src="images/Nondeterministic.gif" />
+            </a> get-text</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:nondeterministic function http:get-text<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()+</pre>
+        <p> This function makes a GET request on a given URL.
+ This function just makes a http GET request on $href. The function
+ is nondeterministic. But if a GET request to the given address has
+ side effects, which would not conform with the RFC but is often the
+ case, then you should use a sequential function instead.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL to which the call will be made.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>a sequence of items, where the first item is a element of type http:responseType. The response element is also described in the <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://expath.org/modules/http-client.html#d2e483">specification</a>. If there is one (or several, in case of multipart) response body, the response bodies are the next items in the sequence.</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="head-1">
+          <span class="no_underline">
+            <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+              <img src="images/Nondeterministic.gif" />
+            </a> head</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:nondeterministic function http:head<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as item()</pre>
+        <p> Makes a HTTP HEAD request.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL to which the request will be made.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>A element which describes the result of this request. A http HEAD request never returns a body.</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="options-1">
+          <span class="no_underline">
+            <a href="../../html/options_and_annotations.html" title="%ann:nondeterministic" target="_blank">
+              <img src="images/Nondeterministic.gif" />
+            </a> options</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:nondeterministic function http:options<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string 
+ ) as xs:string*</pre>
+        <p> Makes a HTTP OPTIONS request.
+ This request ask for OPTIONS supported of the server.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL where to send the request.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>A sequence of string with the allowed operations</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="post-2">
+          <span class="no_underline">
+            <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+              <img src="images/Sequential.gif" />
+            </a> post</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:sequential function http:post<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item() 
+ ) as item()+</pre>
+        <p> Makes a HTTP POST request.
+ This function supports only simple http POST requests which should suite
+ most of the mostly common requests. Unlike the send-request function from
+ the EXPath http client, the user only has to give a URL, where she wants
+ the request sent to and a body as an item. The body will than be serialized
+ as follows:
+  <ul xmlns:xqdoc="http://www.xqdoc.org/1.0">
+            <li>If $body is of type xs:string, it will be serialized as plain text and
+        the Content-Type for the request will be set to "text/plain"</li>
+            <li>If $body is an element node, the Content-Type will be set to "text/xml"
+        and the element will be serialized as xml.</li>
+          </ul>
+        </p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL where to send the request.</li>
+          <li>$body The body which will be sent to the server</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>The first element of the result is the metadata (like headers, status etc), the next elements are the response</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="post-3">
+          <span class="no_underline">
+            <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+              <img src="images/Sequential.gif" />
+            </a> post</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:sequential function http:post<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item(), 
+<span class="funcParam">            $content-type</span> as xs:string 
+ ) as item()+</pre>
+        <p> Makes a HTTP POST request.
+ This function supports only simple http POST requests which should suite
+ most of the mostly common requests. Unlike the send-request function from
+ the EXPath http client, the user only has to give a URL, where she wants
+ the request sent to and a body as an item. The body will than be serialized
+ as follows:
+  <ul xmlns:xqdoc="http://www.xqdoc.org/1.0">
+            <li>If $body is of type xs:string, it will be serialized as plain text and
+        the Content-Type for the request will be set to "text/plain"</li>
+            <li>If $body is an element node, the Content-Type will be set to "text/xml"
+        and the element will be serialized as xml.</li>
+          </ul>
+        </p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL where to send the request.</li>
+          <li>$body The body which will be sent to the server</li>
+          <li>$content-type The content type of the body.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>The first element of the result is the metadata (like headers, status etc), the next elements are the response</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="put-2">
+          <span class="no_underline">
+            <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+              <img src="images/Sequential.gif" />
+            </a> put</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:sequential function http:put<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item() 
+ ) as item()+</pre>
+        <p> Makes a HTTP PUT request.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL where to send the request.</li>
+          <li>$body The body which will be sent to the server</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>The first element of the result is the metadata (like headers, status etc), the next elements are the response</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="put-3">
+          <span class="no_underline">
+            <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+              <img src="images/Sequential.gif" />
+            </a> put</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:sequential function http:put<span class="functName"></span> (
+<span class="funcParam">            $href</span> as xs:string, 
+<span class="funcParam">            $body</span> as item(), 
+<span class="funcParam">            $content-type</span> as xs:string 
+ ) as item()+</pre>
+        <p> Makes a HTTP PUT request. This function takes the content type as a third parameter.
+ Note that this content type is used to determine the serialization, if the second
+ argument is an element node. If this automatic process does not work, use fn:serialize
+ instead.
+</p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$href The URL where to send the request.</li>
+          <li>$body The body which will be sent to the server</li>
+          <li>$content-type The content type of the body.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>The first element of the result is the metadata (like headers, status etc), the next elements are the response</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+        <div class="subsection" id="send-request-3">
+          <span class="no_underline">
+            <a href="http://xquery-scripting.ethz.ch/spec.html" title="sequential" target="_blank">
+              <img src="images/Sequential.gif" />
+            </a> send-request</span>
+          <a href="#function_summary">
+            <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
+          </a>
+        </div>
+        <pre class="signature">declare %ann:sequential function http:send-request<span class="functName"></span> (
+<span class="funcParam">            $request</span> as element(http-schema:request)?, 
+<span class="funcParam">            $href</span> as xs:string?, 
+<span class="funcParam">            $bodies</span> as item()* 
+ ) as item()+</pre>
+        <p> This function sends an HTTP request and returns the corresponding response. It just
+ implements the http:send-request/3 function from the EXPath module. To provide better
+ interoperability between XQuery engines, use the EXPath module instead.
+ <p xmlns:xqdoc="http://www.xqdoc.org/1.0">
+ This function is declared as sequential (see XQuery Scripting).
+ Sequential functions are allowed to have side effects. For example, most probably,
+ an HTTP POST request is a request that has side effects because it adds/changes
+ a remote resource.
+ </p>
+        </p>
+        <div class="subsubsection">Parameters:</div>
+        <ul>
+          <li>$request Contains the various parameters of the request. See the specification. for a full description of the structure of this element.</li>
+          <li>$href is the HTTP or HTTPS URI to send the request to. It must be a valid xs:anyURI, but is declared as a string to be able to pass literal strings (without requiring to explicitly cast it to an xs:anyURI.)</li>
+          <li>$content is the request body content, for HTTP methods that can contain a body in the request (i.e. POST and PUT). It is an error, if this param is not the empty sequence for methods other then DELETE, GET, HEAD and OPTIONS.</li>
+        </ul>
+        <div class="subsubsection">Returns:</div>
+        <ul>
+          <li>a sequence of items, where the first item is a element of type http:responseType. The response element is also described in the <a xmlns:xqdoc="http://www.xqdoc.org/1.0" href="http://expath.org/modules/http-client.html#d2e483">specification</a>. If there is one (or several, in case of multipart) response body, the response bodies are the next items in the sequence.</li>
+        </ul>
+        <div class="subsubsection">Errors:</div>
+        <ul>
+          <li>err:XPST0081 Schema validation error - this happens whenever a wrong request element is given.</li>
+          <li>error:HC001 An HTTP error occurred.</li>
+          <li>error:HC002 Error parsing the entity content as XML or HTML.</li>
+          <li>error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.</li>
+          <li>error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).</li>
+          <li>error:HC005 The request element is not valid.</li>
+          <li>error:HC006 A timeout occurred waiting for the response.</li>
+        </ul>
+        <hr />
+      </div>
+    </div>
+    <div style="clear:both;">
+      <div id="discuss">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            var disqus_developer = 1;
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'zorba'; // required: replace example with your forum shortname
+            var self = location.href;
+            // The following are highly recommended additional parameters. Remove the slashes in front to use.
+            var disqus_identifier = self;
+            var disqus_url = self;
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span>
+        </a>
+      </div>
+    </div>
+    <div id="footer">
+      <div id="innerfooter">
+        <p>Zorba is supported by the 
+          <a href="http://flworfound.org/" target="_blank">FLWOR Foundation</a> 
+          and distributed under
+          <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache Licence, Version 2.0</a>.</p>
+      </div>
+    </div>
+  </body>
+</html>
