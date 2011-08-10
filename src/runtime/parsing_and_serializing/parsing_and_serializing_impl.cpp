@@ -109,7 +109,7 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
     } catch (ZorbaException const& e) {
       throw XQUERY_EXCEPTION(
-        err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc )
+        err::FODC0006, ERROR_PARAMS("fn:parse-xml()", e.what() ), ERROR_LOC( loc )
       );
     }
 

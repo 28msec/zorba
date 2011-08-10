@@ -74,20 +74,29 @@ public:
   {
     ParseXmlFragmentOptions opt;
 
-    if ((options.find("e") != zstring::npos && options.find("E") != zstring::npos)
-        ||
-        (options.find("d") != zstring::npos && options.find("D") != zstring::npos)
-        ||
-        (options.find("s") != zstring::npos && options.find("S") != zstring::npos)
-        ||
-        (options.find("l") != zstring::npos && options.find("L") != zstring::npos)
-        ||
-        (options.find("w") != zstring::npos && options.find("W") != zstring::npos)
-        ||
-        (options.find("f") != zstring::npos && options.find("F") != zstring::npos))
-    {
-      throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS( "inconsistent options to the parse-xml-fragment() function" ), ERROR_LOC( loc ));
-    }
+    if (options.find("e") != zstring::npos && options.find("E") != zstring::npos)
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "e", "E"), ERROR_LOC( loc ));
+
+    if (options.find("d") != zstring::npos && options.find("D") != zstring::npos)
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "d", "D"), ERROR_LOC( loc ));
+
+    if (options.find("s") != zstring::npos && options.find("S") != zstring::npos)
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "s", "S"), ERROR_LOC( loc ));
+
+    if (options.find("l") != zstring::npos && options.find("L") != zstring::npos)
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "l", "L"), ERROR_LOC( loc ));
+
+    if (options.find("w") != zstring::npos && options.find("W") != zstring::npos)
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "w", "W"), ERROR_LOC( loc ));
+
+    if (options.find("f") != zstring::npos && options.find("F") != zstring::npos)
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                ERROR_PARAMS(ZED(ParseFragmentOptionCombinationNotAllowed), "f", "F"), ERROR_LOC( loc ));
 
     if (options.find("e") != zstring::npos)
       opt.enableExternalEntitiesProcessing = true;
@@ -119,7 +128,8 @@ public:
         &&
         (opt.enableDTDValidation || opt.enableStrictSchemaValidation || opt.enableLaxSchemaValidation))
     {
-      throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS( "inconsistent options to the parse-xml-fragment() function" ), ERROR_LOC( loc ));
+      throw XQUERY_EXCEPTION(zerr::ZXQD0003_INCONSISTENT_PARSE_FRAGMENT_OPTIONS,
+                ERROR_PARAMS(ZED(ParseFragmentOptionDSLNotAllowed)), ERROR_LOC( loc ));
     }
 
     return opt;
@@ -224,6 +234,8 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
 
     if (state->theProperties.getEnableExtParsedEntity())
     {
+      // state->theFragmentStream.root_elements_to_skip = 0;
+
       while (state->theFragmentStream.theBuffer == NULL
              ||
              state->theFragmentStream.current_offset < state->theFragmentStream.buffer_size)
@@ -232,7 +244,7 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
           result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
         } catch (ZorbaException const& e) {
           if (parseOptions.enableFatelErrorProcessing)
-            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc ));
+            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml-fragment()", e.what()), ERROR_LOC( loc ));
           else
             result = NULL;
         }
@@ -244,13 +256,13 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
         }
       }
     }
-    else  // if (state->theProperties.getEnableExtParsedEntity())
+    else  // if (!state->theProperties.getEnableExtParsedEntity())
     {
       try {
         result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
       } catch (ZorbaException const& e) {
         if (parseOptions.enableFatelErrorProcessing)
-          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc ));
+          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse-xml-fragment()", e.what()), ERROR_LOC( loc ));
         else
           result = NULL;
       }

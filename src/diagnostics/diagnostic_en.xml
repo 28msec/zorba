@@ -226,7 +226,7 @@
       <comment>
        It is a static error to import a module if the in-scope schema
        definitions of the importing module do not include all of the following:
-    
+
        -# An in-scope schema type for each type-name that appears:
           - in the type of a variable that is declared in the imported module
             and referenced in the importing module, OR
@@ -913,7 +913,7 @@
       <comment>
        Invalid content passed to \c fn:parse().
       </comment>
-      <value>invalid content passed to fn:parse-xml(): $1</value>
+      <value>invalid content passed to $1: $2</value>
     </diagnostic>
 
     <diagnostic code="FODC0007">
@@ -1686,6 +1686,10 @@
 
     <diagnostic code="ZXQD0002" name="DOCUMENT_NOT_VALID">
       <value>"$1": $2</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQD0003" name="INCONSISTENT_PARSE_FRAGMENT_OPTIONS">
+      <value>inconsistent options to the parse-xml-fragment() function: $1</value>
     </diagnostic>
 
     <!--////////// Zorba API Errors ////////////////////////////////////////-->
@@ -2902,15 +2906,15 @@
     <entry key="SchemaElementName">
       <value>schema-element name</value>
     </entry>
- 
+
     <entry key="SchemaOutOfMemory">
       <value>OutOfMemoryException during parsing</value>
     </entry>
- 
+
     <entry key="SchemaParseError">
       <value>error during parsing</value>
     </entry>
- 
+
     <entry key="SchemaUnexpected">
       <value>unexpected exception during parsing</value>
     </entry>
@@ -3321,6 +3325,14 @@
 
     <entry key="xqueryx_empty_content">
       <value>xqueryx content is empty</value>
+    </entry>
+
+    <entry key="ParseFragmentOptionDSLNotAllowed">
+      <value>if the e option is specified, none of the options d, s, or l may be enabled</value>
+    </entry>
+
+    <entry key="ParseFragmentOptionCombinationNotAllowed">
+      <value>specifying both $2 and $3 is an error</value>
     </entry>
 
   </subvalues>
