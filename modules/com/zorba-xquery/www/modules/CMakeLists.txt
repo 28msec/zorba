@@ -25,7 +25,7 @@ ELSE(ZORBA_SUPPRESS_CURL)
   IF(CURL_FOUND)
     MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
     INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
-    DECLARE_ZORBA_MODULE(FILE http-client-error.xq VERSION 2.0
+    DECLARE_ZORBA_MODULE(FILE http-client-error.xq
       URI "http://expath.org/ns/error")
     DECLARE_ZORBA_SCHEMA(FILE http-client.xsd
       URI "http://expath.org/ns/http-client")

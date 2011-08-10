@@ -49,7 +49,7 @@ FileizeURIMapper::mapURI
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
-  if (ascii::ends_with(aUri, "/")) {
+  if (ascii::ends_with(lPath, "/")) {
     // If URI ends with /, append "index.xsd" or "index.xq".
     lPath.append("index");
     lPath.append(lExtension);

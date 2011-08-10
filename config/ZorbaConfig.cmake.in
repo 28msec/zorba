@@ -17,7 +17,7 @@
 #  Zorba_INCLUDE_DIRS - include directories for Zorba
 #  Zorba_LIBRARY_DIRS - library directories for Zorba (normally not used!)
 #  Zorba_LIBRARIES    - libraries to link against QQQ
-#  Zorba_EXECUTABLE   - the Zorba executable QQQ
+#  Zorba_EXE          - the Zorba executable (or .bat script inside Zorba build)
 #  Zorba_TESTDRIVER   - the Zorba testdriver executable
 #  ZORBA_STORE_NAME   - the name of the store in this installation
 #  Zorba_USE_FILE     - file which projects depending on Zorba should INCLUDE()
@@ -45,6 +45,7 @@ SET_NORMALIZED (Zorba_LIBRARY_DIRS "@Zorba_LIBRARY_DIRS@")
 SET_NORMALIZED (Zorba_CMAKE_MODULES_DIR "@Zorba_CMAKE_MODULES_DIR@")
 SET_NORMALIZED (Zorba_TESTDRIVER "@Zorba_TESTDRIVER@" CACHE PATH
   "Path to Zorba's testdriver")
+SET_NORMALIZED (Zorba_EXE "@Zorba_EXE_PATH@" CACHE PATH "Path to Zorba executable")
 
 # Tell the user project where modules are installed. Note: This variable
 # is all-uppercase because it is also used internally by Zorba's build.

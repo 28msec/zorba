@@ -46,7 +46,7 @@ DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/manifest"
   FILE "manifest.xsd" TEST_ONLY)
 
 IF (NOT ZORBA_NO_XMLSCHEMA)
-  ADD_TEST (check_manifest "${ZORBA_EXE_SCRIPT}" -f -q
+  ADD_TEST (check_manifest "${ZORBA_EXE}" -f -q
     "${CMAKE_CURRENT_SOURCE_DIR}/check_manifest.xq"
     -e "manifest:=${CMAKE_BINARY_DIR}/ZorbaManifest.xml"
     --module-path "${CMAKE_BINARY_DIR}/TEST_URI_PATH")

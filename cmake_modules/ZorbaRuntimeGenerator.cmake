@@ -53,7 +53,7 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
     COMMAND "${CMAKE_COMMAND}"
     -D "source_dir=\"${CMAKE_SOURCE_DIR}\""
     -D "binary_dir=\"${CMAKE_BINARY_DIR}\""
-    -D "ZORBA_EXE=\"${ZORBA_EXE_SCRIPT}\"" 
+    -D "ZORBA_EXE=\"${ZORBA_EXE}\"" 
     -D "query=\"${GEN_QUERY}\"" 
     -D "gen_file=\"${OUTPUT}\""
     -D "extvars:STRING=\"${EXTVARS}\""
@@ -66,7 +66,7 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
 #MESSAGE(STATUS  "       COMMAND \"${CMAKE_COMMAND}\" ")
 #MESSAGE(STATUS  "       -D \"source_dir=${CMAKE_SOURCE_DIR}\" ")
 #MESSAGE(STATUS  "       -D \"binary_dir=${CMAKE_BINARY_DIR}\" ")
-#MESSAGE(STATUS  "       -D \"ZORBA_EXE=${ZORBA_EXE_SCRIPT}\"  ")
+#MESSAGE(STATUS  "       -D \"ZORBA_EXE=${ZORBA_EXE}\"  ")
 #MESSAGE(STATUS  "       -D \"query=${GEN_QUERY}\"  ")
 #MESSAGE(STATUS  "       -D \"gen_file=${OUTPUT}\" ")
 #MESSAGE(STATUS  "       -D \"extvars:STRING=${EXTVARS}\" ")
@@ -80,7 +80,7 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
 ADD_TEST("RuntimeGeneratorTest-${TEST_NAME}" "${CMAKE_COMMAND}"
     -D "source_dir=${CMAKE_SOURCE_DIR}"
     -D "binary_dir=${CMAKE_BINARY_DIR}"
-    -D "ZORBA_EXE=${ZORBA_EXE_SCRIPT}"
+    -D "ZORBA_EXE=${ZORBA_EXE}"
     -D "query=${GEN_QUERY}" 
     -D "gen_file=${OUTPUT}"
     -D "extvars:STRING=${EXTVARS}"
@@ -107,7 +107,7 @@ MACRO(ZORBA_DIAGNOSTIC_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
     COMMAND "${CMAKE_COMMAND}"
     -D "source_dir=\"${CMAKE_SOURCE_DIR}\""
     -D "binary_dir=\"${CMAKE_BINARY_DIR}\""
-    -D "ZORBA_EXE=\"${ZORBA_EXE_SCRIPT}\"" 
+    -D "ZORBA_EXE=\"${ZORBA_EXE}\"" 
     -D "query=\"${GEN_QUERY}\"" 
     -D "gen_file=\"${OUTPUT}\""
     -D "extvars:STRING=\"${EXTVARS}\""
@@ -119,7 +119,7 @@ MACRO(ZORBA_DIAGNOSTIC_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
   ADD_TEST("RuntimeGeneratorTest-${TEST_NAME}" "${CMAKE_COMMAND}"
     -D "source_dir=${CMAKE_SOURCE_DIR}"
     -D "binary_dir=${CMAKE_BINARY_DIR}"
-    -D "ZORBA_EXE=${ZORBA_EXE_SCRIPT}"
+    -D "ZORBA_EXE=${ZORBA_EXE}"
     -D "query=${GEN_QUERY}" 
     -D "gen_file=${OUTPUT}"
     -D "extvars:STRING=${EXTVARS}"

@@ -26,17 +26,17 @@ MACRO (FIND_PREREQS)
   SET (svn "${SVN_EXECUTABLE}")
 
   # create path to execute zorba
-  SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/bin/zorba")
+  SET(ZORBA_EXE "${ZORBA_BUILD_DIR}/bin/zorba")
   IF (WIN32)
-    SET(ZORBA_EXE_SCRIPT "${ZORBA_EXE_SCRIPT}.bat")
+    SET(ZORBA_EXE "${ZORBA_EXE}.bat")
   ENDIF (WIN32)
-  IF (NOT EXISTS ${ZORBA_EXE_SCRIPT})
-    MESSAGE (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
-  ENDIF (NOT EXISTS ${ZORBA_EXE_SCRIPT})
-  EXECUTE_PROCESS (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+  IF (NOT EXISTS ${ZORBA_EXE})
+    MESSAGE (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE})")
+  ENDIF (NOT EXISTS ${ZORBA_EXE})
+  EXECUTE_PROCESS (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
     --query "1+1" OUTPUT_VARIABLE ignored RESULT_VARIABLE result)
   IF (result)
-    MESSAGE (FATAL_ERROR "Zorba is not functional. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
+    MESSAGE (FATAL_ERROR "Zorba is not functional. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE})")
   ENDIF (result)
 ENDMACRO (FIND_PREREQS)
 
@@ -62,7 +62,7 @@ MACRO (get_files_with_status filelist svnstatusxml changelist)
   # BUG: if the query below has new lines you will get a Zorba syntax error on Windows
   set (query "fn:string-join(for $entry in status/${elem}/entry let $status := data($entry/wc-status/@item) ${whereclause} return $entry/@path, ';')")
   # Set "filelist" to result
-  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
                    --query "${query}" --context-item "${svnstatusxml}"
                    OUTPUT_VARIABLE "${filelist}")
 ENDMACRO (get_files_with_status)
@@ -166,11 +166,11 @@ function (svn_unpackage changefile outdir tmpdir logfile result_var
   endforeach (textfile)
 
   # Determine SVN URL and revision
-  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
                    --query "data(info/entry/@revision)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE svnrev)
-  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
                    --query "data(info/entry/url)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE svnroot)
@@ -190,7 +190,7 @@ function (svn_unpackage changefile outdir tmpdir logfile result_var
       OUTPUT_FILE "${tmpdir}/tmpinfo.xml" ERROR_VARIABLE ignored
       RESULT_VARIABLE result)
     if (NOT result)
-      execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+      execute_process (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
         --query "data(info/entry/url)"
         --context-item "${tmpdir}/tmpinfo.xml"
         OUTPUT_VARIABLE subdir_svnroot)
@@ -226,7 +226,7 @@ function (svn_unpackage changefile outdir tmpdir logfile result_var
   file (READ "${chgdir}/changelist" changelist)
   get_files_with_status (deletefiles
                          "${chgdir}/svn-status.xml" "${changelist}" deleted)
-  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
                    --query "data(info/entry/@path)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE clientroot)

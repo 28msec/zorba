@@ -34,7 +34,7 @@ FILE (TO_NATIVE_PATH ${CMAKE_ZORBA_BINARY_DIR}/test/rbkt/itertest.xq itertest_xq
     
 EXECUTE_PROCESS (
   COMMAND
-    ${ZORBA_EXE_SCRIPT}
+    ${ZORBA_EXE}
     -f -q ${itertest_xq_path}
     -e testfile:=${TESTFILE} 
     -e apitest-path:=${APITEST_PATH}

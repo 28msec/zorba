@@ -31,6 +31,7 @@ SET(Zorba_LIBRARY_DIRS "${ZORBA_ROOT}/lib")
 SET(Zorba_USE_FILE "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}/ZorbaUse.cmake")
 SET(Zorba_CMAKE_MODULES_DIR "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}")
 SET(Zorba_TESTDRIVER "${ZORBA_ROOT}/bin/testdriver")
+SET(Zorba_EXE_PATH "${ZORBA_ROOT}/bin/zorba")
 SET(Zorba_EXTERNALMODULECONFIG_FILE
   "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}/ExternalModuleConfig.cmake.in")
 SET(Zorba_MODULES_INSTALL_DIR "${ZORBA_ROOT}/${ZORBA_MODULES_INSTALL_DIR}")
@@ -49,6 +50,7 @@ SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src")
 SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_SOURCE_DIR}/cmake_modules")
 SET(Zorba_USE_FILE     "${CMAKE_CURRENT_SOURCE_DIR}/ZorbaUse.cmake")
 GET_TARGET_PROPERTY(Zorba_TESTDRIVER testdriver LOCATION)
+SET(Zorba_EXE_PATH     "${ZORBA_EXE}")
 # Note: We also set this one into the parent's scope, so that it is
 # available for modules/CMakeLists.txt.
 SET(Zorba_EXTERNALMODULECONFIG_FILE

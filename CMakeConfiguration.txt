@@ -117,12 +117,12 @@ MESSAGE(STATUS "ZORBA_WIN_DLL:                        " ${ZORBA_WIN_DLL})
 
 # We need the path to the zorba executable because it will be used during the
 # build to generate source code and documentation.
-SET(ZORBA_EXE_SCRIPT "${CMAKE_BINARY_DIR}/bin/zorba")
+SET(ZORBA_EXE "${CMAKE_BINARY_DIR}/bin/zorba")
 IF(WIN32)
-  SET(ZORBA_EXE_SCRIPT "${ZORBA_EXE_SCRIPT}.bat")
+  SET(ZORBA_EXE "${ZORBA_EXE_SCRIPT}.bat")
 ENDIF(WIN32)
-SET(ZORBA_EXE_SCRIPT ${ZORBA_EXE_SCRIPT} CACHE STRING "executable used for generating the runtime")
-MESSAGE(STATUS "ZORBA_EXE_SCRIPT:                     " ${ZORBA_EXE_SCRIPT})
+SET(ZORBA_EXE ${ZORBA_EXE} CACHE STRING "executable used for generating the runtime")
+MESSAGE(STATUS "ZORBA_EXE:                            " ${ZORBA_EXE})
 
 # flags for debugging the parser
 SET(ZORBA_DEBUG_PARSER OFF CACHE BOOL "debug the parser")

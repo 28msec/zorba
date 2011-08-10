@@ -15,7 +15,7 @@
 # Utility macro to parse CMake-style argument lists
 MACRO(PARSE_ARGUMENTS prefix arg_names onearg_names option_names)
   SET(DEFAULT_ARGS)
-  FOREACH(arg_name ${arg_names})
+  FOREACH(arg_name ${arg_names} ${onearg_names})
     SET(${prefix}_${arg_name})
   ENDFOREACH(arg_name)
   FOREACH(option ${option_names})
@@ -145,6 +145,20 @@ MACRO (DECLARE_ZORBA_MODULE)
   # things in CMake properties.
   STRING (REGEX REPLACE "[/ ]" "_" uri_sym "${module_path}/${module_filename}")
 
+  # Determine which module this is, numerically. This number will be
+  # used to generate unique names, for instance for the target name
+  # for the external library (if any) and for the compilation test. I
+  # wish I could name these targets after the URI rather than an int
+  # to avoid any possibility of conflicts, but when you do that you
+  # quickly run up against Windows' pathetic 260-character path
+  # limitation.
+  GET_PROPERTY (num_zorba_modules GLOBAL PROPERTY ZORBA_MODULE_COUNT)
+  IF (NOT num_zorba_modules)
+    SET (num_zorba_modules 0)
+  ENDIF (NOT num_zorba_modules)
+  MATH (EXPR num_zorba_modules "${num_zorba_modules} + 1")
+  SET_PROPERTY (GLOBAL PROPERTY ZORBA_MODULE_COUNT ${num_zorba_modules})
+
   # Compute the version numbers, if any provided.
   IF (MODULE_VERSION)
     STRING (REPLACE "." ";" version "${MODULE_VERSION}")
@@ -231,22 +245,9 @@ MACRO (DECLARE_ZORBA_MODULE)
       SET (target_type LIBRARY)
     ENDIF (WIN32)
 
-    # Determine which module this is, numerically. This number will be
-    # used to generate unique target names for the external library
-    # (if any). I wish I could name these targets after the URI rather
-    # than an int to avoid any possibility of conflicts, but when you
-    # do that you quickly run up against Windows' pathetic
-    # 260-character path limitation.
-    GET_PROPERTY (num_mod_targets GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT)
-    IF (NOT num_mod_targets)
-      SET (num_mod_targets 0)
-    ENDIF (NOT num_mod_targets)
-    MATH (EXPR num_mod_targets "${num_mod_targets} + 1")
-    SET_PROPERTY (GLOBAL PROPERTY ZORBA_MODULE_TARGET_COUNT ${num_mod_targets})
-
     # Add the library target. Ensure that the output name is based on
     # the module *URI*'s final component.
-    SET(module_lib_target "modlib${num_mod_targets}_${module_name}")
+    SET(module_lib_target "modlib${num_zorba_modules}_${module_name}")
     ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
     # It seems like it would be nice to set the VERSION and/or
@@ -294,6 +295,24 @@ MACRO (DECLARE_ZORBA_MODULE)
     ADD_COPY_RULE ("${lib_location}" "${module_path}/${lib_filename}"
       "" "${module_lib_target}" "${MODULE_TEST_ONLY}")
   ENDIF (module_lib_target)
+
+  # Last but not least, whip up a test case that ensures the module
+  # can at least be compiled. Don't bother for test-only modules
+  # (presumably they're there to be tested!).
+  IF (NOT MODULE_TEST_ONLY)
+    SET (module_test_query
+      "${CMAKE_CURRENT_BINARY_DIR}/test_mod_${num_zorba_modules}.xq")
+    IF (MODULE_VERSION)
+      SET (_mod_fragment "#${MODULE_VERSION}")
+    ELSE (MODULE_VERSION)
+      SET (_mod_fragment)
+    ENDIF (MODULE_VERSION)
+    FILE (WRITE "${module_test_query}"
+      "import module namespace t = \"${MODULE_URI}${_mod_fragment}\";\n1\n")
+    ADD_TEST (check_mod_${num_zorba_modules}_${module_name}
+      "${Zorba_EXE}" -f -q "${module_test_query}"
+      --module-path "${CMAKE_BINARY_DIR}/URI_PATH")
+  ENDIF (NOT MODULE_TEST_ONLY)
 
 ENDMACRO (DECLARE_ZORBA_MODULE)
 
@@ -514,7 +533,7 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
     ENDIF(WIN32)
     ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
       "--rbkt-src" "${TEST_DIR}"
-      "--module-path" "${PROJECT_BINARY_DIR}/URI_PATH/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
+      "--module-path" "${CMAKE_BINARY_DIR}/URI_PATH/${PATH_SEP}${SECONDARY_MODULE_PATHS}"
       "${TESTFILE}")
 
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)

@@ -41,7 +41,7 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
   # Add the xqdoc command for which a working zorba cmd is required.
   FILE(GLOB_RECURSE ZORBA_ALL_MODULES  ../../../modules/*.xq)
   ADD_CUSTOM_TARGET(xqdoc-xml
-    ${ZORBA_EXE_SCRIPT}
+    ${ZORBA_EXE}
       --omit-xml-declaration
       -f
       -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main-zorbamodules-xml.xq\""
@@ -56,7 +56,7 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
   )
 
   ADD_CUSTOM_TARGET(xqdoc
-    ${ZORBA_EXE_SCRIPT}
+    ${ZORBA_EXE}
       --omit-xml-declaration
       -f
       -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main-zorbamodules-html.xq\""
@@ -74,7 +74,7 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
   )
 
   ADD_TEST(doc/stress_tests/make_xqdoc
-      ${ZORBA_EXE_SCRIPT}
+      ${ZORBA_EXE}
       --omit-xml-declaration
       -f
       -q "${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-zorbamodules-html.xq"
@@ -89,7 +89,7 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
 
   # Add the modules_svg command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(modules_svg
-    ${ZORBA_EXE_SCRIPT}
+    ${ZORBA_EXE}
       --omit-xml-declaration
       -f
       -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/generate-module-dependencies-svg.xq\""

@@ -21,7 +21,7 @@
 #  extvars: List of external variables to bind (-e args to zorba)
 #  files: List of files to bind to $files in query
 #  gen_file: Full path to generated file (in binary dir)
-#  ZORBA_EXE: Full path of ZORBA_EXE_SCRIPT
+#  ZORBA_EXE: Full path of ZORBA_EXE
 #  binary_dir: Full path of CMAKE_BINARY_DIR
 #  source_dir: Full path of CMAKE_SOURCE_DIR
 

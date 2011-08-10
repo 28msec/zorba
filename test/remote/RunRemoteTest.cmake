@@ -55,7 +55,7 @@ FIND_PREREQS ()
 
 # Create a working directory named after the current time, to ensure
 # first-come, first-serve and prevent collisions
-execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+execute_process (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
   --query "fn:adjust-dateTime-to-timezone(fn:current-dateTime(), xs:dayTimeDuration(\"PT0H\"))"
   OUTPUT_VARIABLE datetime)
 string (REPLACE ":" "-" datetime "${datetime}")
