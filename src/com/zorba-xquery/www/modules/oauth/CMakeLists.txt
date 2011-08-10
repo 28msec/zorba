@@ -13,4 +13,9 @@
 # limitations under the License.
 
 DECLARE_ZORBA_MODULE (URI "http://www.zorba-xquery.com/modules/oauth/client" VERSION 1.0 FILE "client.xq")
+# This test is introduced by DECLARE_ZORBA_MODULE(), so this is the
+# best place for the EXPECTED_FAILURE() (especially because we're
+# cheating and using the undocumented ${num_zorba_modules}).
+EXPECTED_FAILURE("check_mod_${num_zorba_modules}_client.xq" 3389465)
+
 DECLARE_ZORBA_MODULE (URI "http://www.zorba-xquery.com/modules/oauth/error" VERSION 1.0 FILE "error.xq")
