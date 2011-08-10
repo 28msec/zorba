@@ -55,4 +55,4 @@ ENDIF (DOXYGEN_FOUND)
 ADD_SUBDIRECTORY(xqdoc)
 
 # make the xqdoc target as a dependee of the doc target
-ADD_DEPENDENCIES(doc "xqdoc")
+ADD_DEPENDENCIES(doc "xqdoc-zorba")

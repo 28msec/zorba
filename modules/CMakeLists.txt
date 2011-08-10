@@ -86,11 +86,6 @@ ENDFOREACH (module_dir)
 # path
 LIST (APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 
-SET(ZORBA_XQDOC_MAIN_EXTMODULES_XML_XQ  ${CMAKE_CURRENT_SOURCE_DIR}/../doc/zorba/xqdoc/src/xqdoc-main-extmodules-xml.xq CACHE PATH "The xqdoc xml generator for external modules")
-SET(ZORBA_XQDOC_MAIN_EXTMODULES_HTML_XQ  ${CMAKE_CURRENT_SOURCE_DIR}/../doc/zorba/xqdoc/src/xqdoc-main-extmodules-html.xq CACHE PATH "The xqdoc html generator for external modules")
-SET(ZORBA_EXTMODULE_XQDOC_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/../doc/zorba/xqdoc CACHE PATH "Dir where to store xqdoc generated files, xml and html")
-SET(ZORBA_XHTML_REQUISITES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../doc/zorba/xqdoc CACHE PATH "Dir where to the html requisites are stored")
-
 # Now, iterate through all the module projects again and actually add
 # them to this Zorba project. Create a binary directory for them
 # inside our own.

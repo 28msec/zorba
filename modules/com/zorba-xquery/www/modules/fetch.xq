@@ -60,8 +60,8 @@ declare option ver:module-version "2.0";
  : @error zerr:ZXQP0025 if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :
- : @see <a href="../../doc/latest/zorba/html/uriresolvers.html">URI Resolvers</a>.
- : @see <a href="../../zorba/html/options_and_annotations.html">Annotations</a>.
+ : @see <a href="../../html/uriresolvers.html">URI Resolvers</a>.
+ : @see <a href="../../html/options_and_annotations.html">Documentation of Zorba's annotations</a>.
  :)
 declare %ann:streamable function fetch:content($uri as xs:string) as xs:string
 {
@@ -91,8 +91,8 @@ declare %ann:streamable function fetch:content($uri as xs:string) as xs:string
  : @error zerr:ZXQP0025 if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :
- : @see <a href="../../doc/latest/zorba/html/uriresolvers.html">URI Resolvers</a>.
- : @see <a href="../../zorba/html/options_and_annotations.html">Annotations</a>.
+ : @see <a href="../../html/uriresolvers.html">URI Resolvers</a>.
+ : @see <a href="../../html/options_and_annotations.html">Documentation of Zorba's annotations</a>.
  :)
 
 declare %ann:streamable function fetch:content($uri as xs:string, $entityKind as xs:string) as xs:string external;

@@ -40,16 +40,12 @@ import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serializati
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace werr = "http://www.w3.org/2005/xqt-errors";
+declare namespace z = "http://www.zorba-xquery.com/manifest";
 
 declare copy-namespaces preserve, inherit;
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
-
-(:~
- : the name of the folder containing the external functions implementations 
- :)
-declare %private variable $xqdoc2html:xqFolderName as xs:string := "external_functions_impl";
 
 (:~
  : the name of the folder where the modules will be copied for the XQDoc documentation
@@ -68,15 +64,14 @@ declare %private variable $xqdoc2html:collection as xs:QName := xs:QName("xqdoc2
 declare collection xqdoc2html:collection as node()*;
 
 (:~
- :  The name of the collection containing all the configuration XML's
- :)
-declare %private variable $xqdoc2html:collectionConfig as xs:QName := xs:QName("xqdoc2html:collectionConfig");
-declare collection xqdoc2html:collectionConfig as node()*;
-
-(:~
- :  Collector of the entried in the left menu
+ :  Collector of the entries in the left menu
  :)
 declare %private variable $xqdoc2html:menuEntries := <entries/>;
+
+(:~
+ :  Collector for the Zorba manifest
+ :)
+declare %private variable $xqdoc2html:ZorbaManifest := <manifest/>;
 
 (:~
  :  The level 1 wights for the categories in the left menu (this gives the order of the Level1 items)
@@ -125,23 +120,6 @@ declare %private variable $xqdoc2html:functionIndexPageName as xs:string := "fun
 
 (:~
  : This function adds a new record into the $collector.
- : @param $moduleURI the module URI.
- : @param $relativeFileName the relative path to the module.
- : @param $collector the name of the collector.
- : @param $containsExternalFuncs true is the module contails external functions.
- : @return empty sequence.
- :)
-declare %private %ann:sequential function xqdoc2html:collect-module (
-  $moduleURI as xs:string, 
-  $relativeFileName as xs:string, 
-  $containsExternalFuncs as xs:boolean,
-  $collector) 
-{
-  insert node <module uri="{$moduleURI}" file="{$relativeFileName}" pureXQuery="{not($containsExternalFuncs)}"/> as last into $collector;
-};
-
-(:~
- : This function adds a new record into the $collector.
  : @param $schemaURI the schema URI.
  : @param $fileName the schema file name.
  : @param $collector the name of the collector.
@@ -153,44 +131,6 @@ declare %private %ann:sequential function xqdoc2html:collect-schema (
   $collector) 
 {
   insert node <schema uri="{$schemaURI}" file="{$fileName}" /> as last into $collector;
-};
-
-(:~
- : This function adds a new record into the $collector.
- : @param $xqdoc the XQDoc xml node.
- : @param $relativeFileName the relative path to the module.
- : @param $collector the name of the collector.
- : @return empty sequence.
- :)
-declare %private %ann:sequential function xqdoc2html:collect-functions(
-  $xqdoc,
-  $relativeFileName as xs:string,
-  $collector)
-{
-  {
-    insert nodes
-      for $function in $xqdoc/xqdoc:functions/xqdoc:function
-      let $name := fn:substring-after($function/xqdoc:name/text(),':'),
-          $signature := $function/xqdoc:signature/text(),
-          $arity := $function/@arity,
-          $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
-      (: use only the functions not marked as %private:)
-      where xqdoc2html:function-is-not-private($function)
-      order by $name, $arity
-      return
-        <function moduleUri="{$xqdoc/xqdoc:module/xqdoc:uri/text()}"
-                  file="{$relativeFileName}"
-                  name="{$name}"
-                  signature="{$function/xqdoc:signature/text()}"
-                  arity="{$arity}"
-                  isDeprecated="{fn:exists($function/xqdoc:comment/xqdoc:deprecated)}"/>
-    as last into $collector;
-    
-    fn:trace(fn:count($xqdoc/xqdoc:functions/xqdoc:function), " number of functions in the module");
-    
-   }
-     
-   $collector
 };
 
 (:~
@@ -222,22 +162,6 @@ declare %private function  xqdoc2html:value-intersect(
 {
   fn:distinct-values($arg1[.=$arg2])
 };
-
-(:~
- : This function returns a sequence containing all the distinct items 
- : that appear in $arg1 and $arg2, in an arbitrary order.
- :
- : @param $arg1 first sequence.
- : @param $arg2 second sequence.
- : @return $arg1 union $arg2.
- :)
-declare %private function xqdoc2html:value-union (
-  $arg1 as xs:anyAtomicType*,
-  $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* 
-{
-  fn:distinct-values(($arg1, $arg2))
-};
-    
 
 (:~
  : The function gathers all the files with the given extensions from the provided $sourcePath
@@ -282,11 +206,13 @@ declare %private %ann:sequential function xqdoc2html:gather-and-copy(
  : @param $folderPath the folder path.
  : @return the URI of the module.
  :)
+ (:
 declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:string) as xs:string {
   let $tok := tokenize($folderPath, fn:concat("\",file:directory-separator()))
   return
     fn:concat('http://', $tok[3],'.', $tok[2],'.', $tok[1], substring-after($folderPath, $tok[3]))
 };
+:)
 
 (:~ Returns the string resulting from replacing the directory-separators (i.e. / ) with '_'
  :
@@ -294,7 +220,7 @@ declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:str
  : @return the string resulting from replacing the directory-separators (i.e. / ) with '_'. 
  :
  :)
-declare function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
+declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
   let $lmodule := if(fn:ends-with($moduleURI,"/")) then fn:concat($moduleURI,"index") else $moduleURI
   return
     replace(
@@ -322,31 +248,6 @@ declare %private %ann:sequential function xqdoc2html:copy-files(
   xqdoc2html:gather-and-copy($sourcePath, $destinationPath, $extensions);
 };
 
-(:~ 
- : Copy all the external functions implementations (if any)
- :
- : @param $xqPath the path to the .xq.src folder (if any).
- : @param $xqSrcPath the path where the .xq.src will be copied(if it exists).
- : @param $moduleURI the module URI.
- : @return empty string 
- :
- :)
-declare %private %ann:sequential function xqdoc2html:copy-xqsrc-folders(
-  $xqPath as xs:string,
-  $xqSrcPath as xs:string,
-  $moduleURI as xs:string)
-{  
-  if(file:exists($xqPath)) then
-  {
-    let $xqSrcFolder := xqdoc2html:get-filename($moduleURI),
-        $xqSrcDestinationPath := fn:concat($xqSrcPath, file:directory-separator(), $xqSrcFolder)
-              
-    return 
-      xqdoc2html:copy-files($xqPath, $xqSrcDestinationPath, ("cpp", "h"));
-  }
-  else ();
-};
-
 (:_____________________________________________________________________________________________________:)
 
 (:~
@@ -361,17 +262,13 @@ declare %private %ann:sequential function xqdoc2html:copy-xqsrc-folders(
  :  <li>xq.src folders</li>
  : </ul>
  :
- : @param $modulesPath location of the modules.
  : @param $xhtmlRequisitesPath the folder containing the images, lib, styles and templates folders.
  : @param $xqdocBuildPath where to generate the XQDoc XML documents.
- : @param $examplePath the path to the examples folder.
  : @return Empty sequence.
  :)
 declare %ann:sequential function xqdoc2html:copy-xhtml-requisites(
-  $modulePaths          as xs:string,
   $xhtmlRequisitesPath  as xs:string,
-  $xqdocBuildPath       as xs:string,
-  $examplePath          as xs:string)
+  $xqdocBuildPath       as xs:string)
 {
   let $xhtmlPath      := fn:concat($xqdocBuildPath, file:directory-separator(), "xhtml"),
       $xmlPath        := fn:concat($xqdocBuildPath, file:directory-separator(), "xml"),
@@ -380,8 +277,8 @@ declare %ann:sequential function xqdoc2html:copy-xhtml-requisites(
       $libPath        := fn:concat($xhtmlPath,      file:directory-separator(), "lib"),
       $cssPath        := fn:concat($xhtmlPath,      file:directory-separator(), "styles"),
       $templatePath   := fn:concat($xhtmlRequisitesPath,
-                                    file:directory-separator(), "templates",
-                                    file:directory-separator(), "main.html")
+                                   file:directory-separator(), "templates",
+                                   file:directory-separator(), "main.html")
   return
     {
       (: first - create the xhtml folder if it does not exist already :)
@@ -429,30 +326,55 @@ $xqdocXmlPath as xs:string)
   return dml:apply-insert-nodes($collectionName, $xqdoc);
 };
 
+declare %private %ann:sequential function xqdoc2html:collectZorbaManifestEntries(
+  $xqdocBuildPath as xs:string)
+{    
+  variable $manifestXMLPath := concat($xqdocBuildPath,file:directory-separator(),
+                                    "..",file:directory-separator(), 
+                                    "..",file:directory-separator(),
+                                    "..",file:directory-separator(),"ZorbaManifest.xml");
+  if(not(file:is-file($manifestXMLPath))) then
+  {
+    variable $message := fn:concat("The file <ZorbaManifest.xml> was not found in the Zorba build directory: <", $manifestXMLPath, ">");
+    fn:error($err:UE004, $message);
+  }
+  else 
+  try 
+  {
+    variable $manifestXML := fn:parse-xml(file:read-text($manifestXMLPath));
+    
+    variable $moduleManifests := $manifestXML//*:module;    
+         
+    for $module in $moduleManifests
+    return
+      insert node <module uri="{data($module/z:uri)}"
+                          isCore="{data($module/@isCore)}"
+                          version="{if (exists(data($module/@version))) then data($module/@version) else ''}"
+                          projectRoot="{data($module/z:projectRoot)}"/> as last into $xqdoc2html:ZorbaManifest;
+  }
+  catch *
+  {
+    fn:error(fn:concat("The file <",$manifestXMLPath,"> does not have the correct structure."));
+  }
+};
+  
 (:~
  : This function creates the XQDoc XMLs and from them the XQDoc XHTMLs.
  :
- : @param $leftMenu the menu containing the links to the generated XHTMLs.
- : @param $modulePath where to search for .xq modules recursively.
  : @param $xqdocBuildPath where to output the XQDoc XMLs and XHTMLs.
  : @param $indexHtmlPath where to load the template for the index.html.
- : @param $zorbaPath path to zorba dir, useful to compute absolute path of examples 
- :        from internal modules
  : @param $zorbaVersion Zorba version.
+ : @param $xhtmlRequisitesPath the path where the XHTML requisites are stored.
  : @return Empty sequence.
  :)
 declare %ann:sequential function xqdoc2html:main(
-  $modulePath     as xs:string , 
   $xqdocBuildPath as xs:string,
   $indexHtmlPath  as xs:string,
-  $zorbaPath      as xs:string,
   $zorbaVersion   as xs:string,
   $xhtmlRequisitesPath as xs:string)  
-{
-  (: gather all the config XML's :)
-  variable $xqdocXmlConfigPath as xs:string := 
-  fn:concat($xqdocBuildPath, file:directory-separator(), "config");
-  xqdoc2html:create-collection-categories (xs:QName("xqdoc2html:collectionConfig"), $xqdocXmlConfigPath);
+{ 
+  (: fill out $xqdoc2html:ZorbaManifest :)
+  xqdoc2html:collectZorbaManifestEntries($xqdocBuildPath);
   
   variable $xqdocXmlPath as xs:string := 
   fn:concat($xqdocBuildPath, file:directory-separator(), "xml");
@@ -477,7 +399,7 @@ declare %ann:sequential function xqdoc2html:main(
   variable $leftMenuIndex := xqdoc2html:create-general-menu();
   variable $generalLeftMenu :=  <ul id="documentation" class="treeview">{$leftMenuIndex}</ul>;
                                           
-  xqdoc2html:generate-xqdoc-xhtml($generalLeftMenu, $xhtmlRequisitesPath, $xqdocXhtmlPath, $zorbaPath); 
+  xqdoc2html:generate-xqdoc-xhtml($generalLeftMenu, $xhtmlRequisitesPath, $xqdocXhtmlPath);
 
   variable $functionIndex := 
   xqdoc2html:generate-function-index-xhtml( $generalLeftMenu,
@@ -498,23 +420,33 @@ declare %ann:sequential function xqdoc2html:main(
                          
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));                           
   ddl:delete-collection(xs:QName("xqdoc2html:collection"));
-  
-  dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collectionConfig")));                           
-  ddl:delete-collection(xs:QName("xqdoc2html:collectionConfig"));  
 };
 
-declare %private function xqdoc2html:get-module-path(
-  $moduleUri as xs:string
-) as xs:string
+declare %private function xqdoc2html:fix-uri($moduleUri) as xs:string
 {
-  dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@modulePath
+  (: TODO there's a bug in the ZorbaManifest.xml :)
+  if($moduleUri = "http://expath.org/ns/http-client") then 
+    concat($moduleUri,".xq") 
+  else $moduleUri
 };
 
-declare %private function xqdoc2html:get-examples-path(
+declare %private function xqdoc2html:get-project-root(
   $moduleUri as xs:string
   ) as xs:string
 {
-  dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@examplePath
+  xs:string(data($xqdoc2html:ZorbaManifest/module[@uri= xqdoc2html:fix-uri($moduleUri)]/@projectRoot))
+};
+
+declare %private function xqdoc2html:get-is-core(
+  $moduleUri) as xs:boolean
+{
+  xs:boolean(data($xqdoc2html:ZorbaManifest/module[@uri= xqdoc2html:fix-uri($moduleUri)]/@isCore))
+};
+
+declare %private function xqdoc2html:get-module-version(
+  $moduleUri) as xs:string?
+{
+  data($xqdoc2html:ZorbaManifest/module[@uri= xqdoc2html:fix-uri($moduleUri)]/@version)
 };
 
 (:~
@@ -560,9 +492,7 @@ declare %private %ann:sequential function xqdoc2html:copy-schemas(
   let $schemaURI := data($schema/xqdoc:uri)
   return
     (: if the schema does not already exists :)
-    if(empty($xqdoc2html:schemasCollector/schema[@uri=$schemaURI]) and
-      not($schemaURI = "http://www.zorba-xquery.com/modules/email/imap") and
-      not($schemaURI = "http://www.zorba-xquery.com/modules/email/email")) then
+    if(empty($xqdoc2html:schemasCollector/schema[@uri=$schemaURI])) then
     {
       variable $schemaName := concat(xqdoc2html:get-filename($schemaURI), ".html");
       xqdoc2html:collect-schema($schemaURI, $schemaName, $xqdoc2html:schemasCollector);
@@ -592,15 +522,12 @@ declare %private %ann:sequential function xqdoc2html:copy-schemas(
 declare %private %ann:sequential function xqdoc2html:generate-xqdoc-xhtml(
   $generalLeftMenu,
   $xhtmlRequisitesPath  as xs:string,
-  $xqdocXhtmlPath       as xs:string,
-  $zorbaPath            as xs:string
+  $xqdocXhtmlPath       as xs:string
   ) as xs:string*
 {  
   variable $modulePath  := fn:concat($xqdocXhtmlPath, file:directory-separator(), $xqdoc2html:moduleFolderName); 
-  variable $extFuncPath := fn:concat($xqdocXhtmlPath, file:directory-separator(), $xqdoc2html:xqFolderName);
   variable $examplesFolderDestination := fn:concat($xqdocXhtmlPath, file:directory-separator(),$xqdoc2html:exampleFolderName); 
   file:create-directory($modulePath);  
-  file:create-directory($extFuncPath);
   file:create-directory($examplesFolderDestination);
   
   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
@@ -624,32 +551,30 @@ declare %private %ann:sequential function xqdoc2html:generate-xqdoc-xhtml(
       variable $xhtml := xqdoc2html:add-left-menu($generalLeftMenu, $xhtmlSource);
       variable $xhtmlFilePath := fn:concat($xqdocXhtmlPath, file:directory-separator(), $xhtmlRelativeFilePath);
       file:write(fn:trace($xhtmlFilePath," write XQDoc XHTML"), $xhtml, $xqdoc2html:serParamXhtml);
+      
+      (: copy the .xq module to the xhtml/modules folder :)
+      variable $moduleContent := fetch:content($moduleUri, "MODULE");
+      variable $destination := fn:concat($modulePath, file:directory-separator(), pxqdoc:get-filename($moduleUri),".html");
+      file:write( $destination,
+                xqdoc2html:create-xhtml-wrapper($moduleContent,"xquery"),
+                $xqdoc2html:serParamXhtml);
     }
     else
     {      
       (: replace the inlined examples with actual XQuery code :)
-      variable $examplesPath := xqdoc2html:get-examples-path($moduleUri);
-      if($examplesPath eq "") then
-        $examplesPath := $zorbaPath;
-      else ();
+      variable $examplesPath := xqdoc2html:get-project-root($moduleUri);
       variable $xqdoc2 := xqdoc2html:configure-xml($docNode/xqdoc:xqdoc, $examplesPath, $xqdocXhtmlPath);
       
       (: copy the examples listed in the .xq file into the xhtml/examples folder :)
       xqdoc2html:copy-examples($xqdoc2, $examplesFolderDestination, $examplesPath);
       
       (: copy the .xq module to the xhtml/modules folder :)
-      variable $modulefilePath := xqdoc2html:get-module-path($moduleUri);
-      variable $moduleContent := file:read-text($modulefilePath);
+      variable $moduleContent := fetch:content($moduleUri, "MODULE");
       variable $destination := fn:concat($modulePath, file:directory-separator(), pxqdoc:get-filename($moduleUri),".html");
       file:write( $destination,
                 xqdoc2html:create-xhtml-wrapper($moduleContent,"xquery"),
                 $xqdoc2html:serParamXhtml);
-      
-      (: copy the implementation of the external functions :)
-      xqdoc2html:copy-xqsrc-folders(fn:concat($modulefilePath,".src"), 
-                                    $extFuncPath,
-                                    $moduleUri);
-                                    
+                                        
       (: copy the schemas that are imported by this module :)
       variable $schemaImports := $docNode/xqdoc:xqdoc/xqdoc:imports/xqdoc:import[@type="schema"];
       if(count($schemaImports) ne xs:integer(0)) then
@@ -688,7 +613,7 @@ declare %private %ann:sequential function xqdoc2html:configure-xml (
   $examplePath as xs:string,
   $xqdocXhtmlPath as xs:string)
 {    
-  (: replace the inlineExamples with actual inline code :)  
+  (: replace the inlineExamples with actual inline code :)
   for $inlineExample in $xqdoc//*:inlineexample
   return
   {
@@ -697,7 +622,7 @@ declare %private %ann:sequential function xqdoc2html:configure-xml (
     replace node $inlineExample with
       <pre class="brush: xquery;">{text{$exampleContent}}</pre>;      
   }
- 
+
   $xqdoc
 };
 
@@ -1221,7 +1146,7 @@ declare %private %ann:nondeterministic function xqdoc2html:body(
                     where xqdoc2html:function-is-not-private($function)
                     return $function
   let $moduleUri := xqdoc2html:module-uri($xqdoc)
-  let $isZorbaCore as xs:boolean := xs:boolean(dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@isCore)
+  let $isZorbaCore as xs:boolean := xqdoc2html:get-is-core($moduleUri)
   let $modulePrefix as xs:string := if(count($functions) ne xs:integer(0)) then 
   substring-before($xqdoc/xqdoc:functions/xqdoc:function[1]/xqdoc:name/text(),':') else
   if($xqdoc/xqdoc:variables/xqdoc:variable) then
@@ -1254,7 +1179,7 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
       <pre class="brush: xquery;">import module namespace {$modulePrefix} = "{$moduleUri}";</pre>
       </span>,
       {
-        if(xs:boolean(dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=$moduleUri]/@isCore)) then () else
+        if(xqdoc2html:get-is-core($moduleUri)) then () else
         (<span>Please note that this module does not belong to the core of the Zorba XQuery engine. Please check <a href="../../html/downloads.html" target="_blank">this</a> resource about this module import.</span>,<br />,<br />)
       },
      xqdoc2html:description($module/xqdoc:comment),
@@ -1312,9 +1237,8 @@ declare %private function xqdoc2html:annotations-module($comment) {
 };
 
 (:~
- : Create the XHTML for the module resources (the implementation of the external functions).
+ : Create the XHTML for the module resources.
  :
- : @param $xqSrcPath the path to the xq.src folders.
  : @param $moduleUri the module URI.
  : @param $indexCollector the modules names part of the left menu.
  : @return the XHTML for the 'Module Resources'.
@@ -1323,17 +1247,12 @@ declare %private %ann:nondeterministic function xqdoc2html:module-resources(
   $xqdocXhtmlPath as xs:string,
   $moduleUri as xs:string) 
 {
-  let $folder := xqdoc2html:get-filename($moduleUri),
-      $xqSrcPath := fn:concat($xqdocXhtmlPath,file:directory-separator(), $xqdoc2html:xqFolderName)
+  let $folder := xqdoc2html:get-filename($moduleUri)
   return
     (<div class="section"><span id="module_resources">Module Resources</span></div>,
      <ul>
-     <li>the XQuery module can be found <a href="modules/{fn:concat(pxqdoc:get-filename($moduleUri),".html")}" target="_blank">here</a>.</li>
-    {if(file:exists(fn:concat($xqSrcPath,file:directory-separator(),$folder,file:directory-separator()))) then
-       <li>the implementation of the external functions can be found <a href="{fn:concat($xqdoc2html:xqFolderName,file:directory-separator(),$folder)}" target="_blank">here</a>.</li>
-    else
-      ()}
-      </ul>)
+       <li>the XQuery module can be found <a href="modules/{fn:concat(pxqdoc:get-filename($moduleUri),".html")}" target="_blank">here</a>.</li>
+     </ul>)
 };
 
 (:~
@@ -1932,20 +1851,21 @@ declare %private %ann:sequential function xqdoc2html:collect-menu-entries()
   for $docNode in dml:collection(xs:QName("xqdoc2html:collection"))
       let $module := $docNode/xqdoc:xqdoc/xqdoc:module,
           $lModuleProject := $module/xqdoc:comment/xqdoc:custom[@tag="project"]/text(),
-          $lModuleUri     := $module/xqdoc:uri/text(),
-          $lModuleName    := substring-before($module/xqdoc:name/text(),".xq"),  
+          $lModuleUri     := $module/xqdoc:uri/text(),  
           $lXHTMLFileName := pxqdoc:get-filename($lModuleUri),
           $lPureXquery    := not(xqdoc2html:contains-external-functions($docNode/xqdoc:xqdoc)),
           $lTmp := substring-after($lModuleUri,'http://'),
           $lTmpTok := tokenize($lTmp,'/'),
           $lTmp2 := if(ends-with($lTmp,'/')) then substring($lTmp,1,string-length($lTmp)-1) else string-join(xqdoc2html:value-except($lTmpTok,$lTmpTok[last()]),'/'),
-          $structure  := if(exists($lModuleProject)) then $lModuleProject else $lTmp2
+          $lModuleName    := if(ends-with($lModuleUri,'/')) then $lTmpTok[last()-1] else $lTmpTok[last()],
+          $structure      := if(exists($lModuleProject)) then $lModuleProject else $lTmp2
   order by $lModuleProject, $lModuleUri
-    return xqdoc2html:collect-entry($lXHTMLFileName,
-                                    $lModuleName,
-                                    $structure,
-                                    xs:string($lPureXquery),
-                                    $lModuleUri)
+    return
+      xqdoc2html:collect-entry( $lXHTMLFileName,
+                                $lModuleName,
+                                $structure,
+                                xs:string($lPureXquery),
+                                $lModuleUri)
 };
 
 (:~
@@ -1967,7 +1887,7 @@ declare %private %ann:sequential function xqdoc2html:create-module-helper(
     insert nodes <li><span>{$category}</span><ul>
     {
       for $entry in $xqdoc2html:menuEntries/entry
-      let $isZorbaCore as xs:boolean := xs:boolean(dml:collection(xs:QName("xqdoc2html:collectionConfig"))/module[@moduleURI=data($entry/@moduleURI)]/@isCore)
+      let $isZorbaCore as xs:boolean := xqdoc2html:get-is-core(data($entry/@moduleURI))
       order by $entry/@structure
       where ($entry/@structure eq $currentCategory)
       return
@@ -2147,9 +2067,9 @@ declare %private %ann:sequential function xqdoc2html:generate-index-html(
           then
             insert nodes
               (<div class="section"><span class="section">Zorba XQuery Processor {$zorbaVersion}</span></div>,
-              <p>This document contains a list of all the core and external ("core" and "external").</p>,
+              <p>This document contains a list of all the <strong>core</strong> and <strong>non core</strong> Zorba modules.</p>,
               <p>Please check out <a href="../../html/modules_top.html">Modules in Zorba</a> documentation page.</p>,
-              <p>The core Zorba modules are annotated bellow with this small image: <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>.</p>,
+              <p>The <strong>core</strong> Zorba modules are annotated bellow with this small image: <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>.</p>,
               <p>Please send us comments in case you would like to suggest us adding a particular XQuery module, or if you would like to donate an existing third party XQuery module.</p>,
               $modules)
             as last into $right_content;

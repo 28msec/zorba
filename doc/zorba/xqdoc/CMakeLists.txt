@@ -32,62 +32,18 @@ INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/templates
         DESTINATION xqdoc/requisites
         PATTERN "*.svn" EXCLUDE
         )
-INSTALL(FILES src/xqdoc-main-extmodules-html.xq
-              src/xqdoc-main-extmodules-xml.xq
+INSTALL(FILES src/xqdoc-html.xq
+              src/xqdoc-xml.xq
         DESTINATION xqdoc/generator/
         )
 
-  SET(MODULES_PATHS ${CMAKE_SOURCE_DIR}/modules) # ${ZORBA_EXTERNAL_MODULES_SRCS})
-  # Add the xqdoc command for which a working zorba cmd is required.
-  FILE(GLOB_RECURSE ZORBA_ALL_MODULES  ../../../modules/*.xq)
-  ADD_CUSTOM_TARGET(xqdoc-xml
-    ${ZORBA_EXE}
-      --omit-xml-declaration
-      -f
-      -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main-zorbamodules-xml.xq\""
-      -e "\"modulesPath:=${MODULES_PATHS}\""
-      -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
-      DEPENDS ${ZORBA_ALL_MODULES}
-      COMMENT "Building XQDoc XML documentation for the modules..."
-  )
-  ADD_DEPENDENCIES(xqdoc-xml zorba_simplestore)
-  SET_TARGET_PROPERTIES (xqdoc-xml PROPERTIES
-    FOLDER "Docs"
-  )
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-html.xq
+                ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc-html.xq COPYONLY)
 
-  ADD_CUSTOM_TARGET(xqdoc
-    ${ZORBA_EXE}
-      --omit-xml-declaration
-      -f
-      -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main-zorbamodules-html.xq\""
-      -e "\"modulesPath:=${MODULES_PATHS}\""
-      -e "\"xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}\""
-      -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
-      -e "\"examplePath:=${CMAKE_SOURCE_DIR}\""
-      -e "\"zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}\""
-      COMMENT "Building XQDoc documentation for the modules..."
-  )
-  ADD_DEPENDENCIES(xqdoc "xqdoc-xml")
-  SET_TARGET_PROPERTIES (xqdoc PROPERTIES
-    EXCLUDE_FROM_DEFAULT_BUILD 1
-    FOLDER "Docs"
-  )
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-xml.xq
+                ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc-xml.xq COPYONLY)
 
-  ADD_TEST(doc/stress_tests/make_xqdoc
-      ${ZORBA_EXE}
-      --omit-xml-declaration
-      -f
-      -q "${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-zorbamodules-html.xq"
-      -e "modulesPath:=${MODULES_PATHS}"
-      -e "xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}"
-      -e "xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}"
-      -e "examplePath:=${CMAKE_SOURCE_DIR}"
-      -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
-      )
-
-  EXPECTED_FAILURE(doc/stress_tests/make_xqdoc 3330316)
-
-  # Add the modules_svg command for which a working zorba cmd is required.
+#   Add the modules_svg command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(modules_svg
     ${ZORBA_EXE}
       --omit-xml-declaration
@@ -101,7 +57,6 @@ INSTALL(FILES src/xqdoc-main-extmodules-html.xq
     EXCLUDE_FROM_DEFAULT_BUILD 1
     FOLDER "Docs"
   )
-
-  ADD_DEPENDENCIES(modules_svg xqdoc-xml xqdoc)
+  ADD_DEPENDENCIES(modules_svg "xqdoc-zorba")
 
 ENDIF(NOT ZORBA_WITH_FILE_ACCESS)

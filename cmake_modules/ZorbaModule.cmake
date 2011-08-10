@@ -473,6 +473,7 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
     )
     SET_PROPERTY (GLOBAL PROPERTY ZORBA_URI_FILES)
   ENDIF (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  ADD_XQDOC_TARGETS(${PROJECT_SOURCE_DIR})
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 
 # Initialize expected failures and zorba modules output files when
@@ -621,65 +622,63 @@ ENDMACRO(ZORBA_SET_TEST_PROPERTY)
 #if the external module is not compiled in zorba, it will set the variables to point to executables and files in the installed zorba
 #if you want to use the files from your local zorba build, you have to set the variables manually
 #the variables are:
-# ZORBA_XQDOC_MAIN_EXTMODULES_XML_XQ - points to file xqdoc-main-extmodules-xml.xq
-# ZORBA_XQDOC_MAIN_EXTMODULES_HTML_XQ - points to file xqdoc-main-extmodules-html.xq
-# ZORBA_EXTMODULE_XQDOC_OUTPUT_DIR - points to the output dir for xml and html
+# ZORBA_XQDOC_XML_XQ  - points to file xqdoc-xml.xq
+# ZORBA_XQDOC_HTML_XQ - points to file xqdoc-html.xq
+# ZORBA_XQDOC_OUTPUT_DIR - points to the output dir for xml and html
 # ZORBA_XHTML_REQUISITES_PATH - points to the dir containing the html requisites (images, lib, styles, templates dirs)
 # ZORBA_EXE_SCRIPT - points to zorba.exe (or zorba.bat)
-MACRO (ADD_XQDOC_TARGETS)
+MACRO (ADD_XQDOC_TARGETS PROJECT_DIR)
 
   MESSAGE(STATUS "ADD_XQDOC_TARGETS for project ${PROJECT_NAME}")
 
   # Add the xqdoc command for which a working zorba cmd is required.
   SET(ZORBA_EXE_SCRIPT  ${Zorba_DIR}/bin/zorba CACHE PATH "Path to installed zorba.exe")
 
-  FILE(GLOB_RECURSE LOCAL_MODULES  ${PROJECT_SOURCE_DIR}/src/*.xq)
-  SET(ZORBA_XQDOC_MAIN_EXTMODULES_XML_XQ  ${Zorba_DIR}/xqdoc/generator/xqdoc-main-extmodules-xml.xq CACHE PATH "The xqdoc xml generator for external modules")
-  SET(ZORBA_XQDOC_MAIN_EXTMODULES_HTML_XQ  ${Zorba_DIR}/xqdoc/generator/xqdoc-main-extmodules-html.xq CACHE PATH "The xqdoc html generator for external modules")
-  SET(ZORBA_EXTMODULE_XQDOC_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Dir where to store xqdoc generated files, xml and html")
+  SET(ZORBA_XQDOC_XML_XQ
+      ${Zorba_DIR}/xqdoc/generator/xqdoc-xml.xq
+      CACHE PATH
+      "The XQDoc XML generator for external modules.")
+  SET(ZORBA_XQDOC_HTML_XQ
+      ${Zorba_DIR}/xqdoc/generator/xqdoc-html.xq
+      CACHE PATH
+      "The XQDoc XHTML generator for external modules.")
+
   ADD_CUSTOM_TARGET(xqdoc-xml-${PROJECT_NAME}
     ${ZORBA_EXE_SCRIPT}
       --omit-xml-declaration
       -f
-      -q "${ZORBA_XQDOC_MAIN_EXTMODULES_XML_XQ}"
-      -e "\"modulePath:=${PROJECT_SOURCE_DIR}/src\""
-      -e "\"xqdocBuildPath:=${ZORBA_EXTMODULE_XQDOC_OUTPUT_DIR}\""
+      -q "${ZORBA_XQDOC_XML_XQ}"
+      -e "\"xqdocBuildPath:=${PROJECT_DIR}/build/doc/zorba/xqdoc\""
       DEPENDS ${LOCAL_MODULES}
       COMMENT "Building XQDoc XML documentation for ${PROJECT_NAME} module..."
   )
-  IF(TARGET xqdoc-xml)
-    ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} zorba_simplestore)
-    ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} xqdoc-xml)
-    ADD_DEPENDENCIES(xqdoc xqdoc-xml-${PROJECT_NAME})
-  ENDIF(TARGET xqdoc-xml)
+  MESSAGE(STATUS "  added target xqdoc-xml-${PROJECT_NAME}")
+  ADD_DEPENDENCIES(xqdoc-xml-${PROJECT_NAME} zorba_simplestore)
+
   SET_TARGET_PROPERTIES (xqdoc-xml-${PROJECT_NAME} PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD 1
     FOLDER "Docs"
   )
 
-  SET(ZORBA_XHTML_REQUISITES_PATH ${Zorba_DIR}/xqdoc/requisites CACHE PATH "Dir where to the html requisites are stored")
+  SET(ZORBA_XHTML_REQUISITES_PATH
+      ${Zorba_DIR}/../doc/zorba/xqdoc
+      CACHE PATH
+      "Dir where to the XHTML requisites are stored.")
   ADD_CUSTOM_TARGET(xqdoc-${PROJECT_NAME}
     ${ZORBA_EXE_SCRIPT}
       --omit-xml-declaration
       -f
-      -q "${ZORBA_XQDOC_MAIN_EXTMODULES_HTML_XQ}"
-      -e "\"modulePath:=${PROJECT_SOURCE_DIR}/src\""
+      -q "${ZORBA_XQDOC_HTML_XQ}"
       -e "\"xhtmlRequisitesPath:=${ZORBA_XHTML_REQUISITES_PATH}\""
-      -e "\"xqdocBuildPath:=${ZORBA_EXTMODULE_XQDOC_OUTPUT_DIR}\""
-      -e "\"examplePath:=${Zorba_DIR}/..\""
+      -e "\"xqdocBuildPath:=${PROJECT_DIR}/build/doc/zorba/xqdoc\""
       -e "\"zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}\""
-      COMMENT "Building XQDoc documentation for the ${PROJECT_NAME} module ..."
+      COMMENT "Building XQDoc XHTML documentation for the ${PROJECT_NAME} module ..."
   )
+  MESSAGE(STATUS "  added target xqdoc-${PROJECT_NAME}")
   ADD_DEPENDENCIES(xqdoc-${PROJECT_NAME} xqdoc-xml-${PROJECT_NAME})
   SET_TARGET_PROPERTIES (xqdoc-${PROJECT_NAME} PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD 1
     FOLDER "Docs"
   )
-
+  MESSAGE(STATUS "ADD_XQDOC_TARGETS END")
 ENDMACRO(ADD_XQDOC_TARGETS)
-
-#macro to be called from CMakeLists.txt in the root of external module
-#should be called by all external modules that comply with this build system
-MACRO (SETUP_EXTERNAL_MODULE)
- ADD_XQDOC_TARGETS()
-ENDMACRO(SETUP_EXTERNAL_MODULE)

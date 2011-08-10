@@ -34,8 +34,13 @@ import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace zm = "http://www.zorba-xquery.com/manifest";
+import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+
+import module namespace err  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error";
+declare namespace werr = "http://www.w3.org/2005/xqt-errors";
 declare option ver:module-version "2.0";
 
 (:~
@@ -53,7 +58,7 @@ declare variable $pxqdoc:serParamXml :=
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
-declare %ann:nondeterministic %ann:sequential function pxqdoc:delete-XML-dir(
+declare %ann:sequential function pxqdoc:delete-XML-dir(
   $xqdocPath as xs:string)
 {
   variable $xqdocXMLPath  := fn:concat( $xqdocPath,
@@ -66,73 +71,60 @@ declare %ann:nondeterministic %ann:sequential function pxqdoc:delete-XML-dir(
 };
 
 (:~
- : This function generates the XQDoc XML for all the modules found in $modulesPath 
- : and writes the resulting XML documents in $xqdocXmlPath. 
- : The hierarchy is not preserved.
+ : This function generates the XQDoc XML for all the modules found in build/ZorbaManifest.xml
  :
- : @param $modulesPath where to search for modules recursively.
  : @param $xqdocPath where to generate the XQDoc XML documents.
- : @param $isInsideZorbaCore xs:boolean indicating if the module is part of Zorba core or not.
  : @return empty sequence.
  :)
-declare %ann:nondeterministic %ann:sequential function pxqdoc:generate-xqdoc-XML(
-  $modulesPath as xs:string,
-  $xqdocPath as xs:string,
-  $isInsideZorbaCore as xs:boolean) as element()*
+declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
+  $xqdocPath as xs:string)
 {
-  variable $xqdocXMLPath  := fn:concat( $xqdocPath,
-                                        file:directory-separator(),
-                                        "xml");
-                                        
-  variable $xqdocXMLConfigPath  := fn:concat( $xqdocPath,
-                                              file:directory-separator(),
-                                              "config"); 
- 
-  (: create the XML folder if it does not exist already :)
-  file:create-directory($xqdocXMLPath);
+  (: Note: only the modules that are configured in the Zorba version you are using will be build :)  
+  variable $manifestXMLPath := concat($xqdocPath,file:directory-separator(),
+                                      "..",file:directory-separator(), 
+                                      "..",file:directory-separator(),
+                                      "..",file:directory-separator(),"ZorbaManifest.xml");
+                                      
+  variable $xqdocXMLPath := concat($xqdocPath, file:directory-separator(), "xml");
   
-  (: create the XML config folder if it does not exist already :)
-  file:create-directory($xqdocXMLConfigPath);
-  
-  (: make sure all the passed paths point to existing folders :)
-  variable $lPaths := tokenize($modulesPath, ";");
-  variable $lModulePaths as xs:string* := distinct-values(for $lPath in $lPaths return if (file:is-directory($lPath)) then $lPath else () );
-  variable $src_dir as xs:string := fn:concat("/", "src");
-
-  for $filedirs in $lModulePaths
-  for $file in file:list($filedirs, fn:true(), "*.xq")
-  return
+  if(not(file:is-file($manifestXMLPath))) then
   {
-    if(fn:ends-with($file,"xxx.xq")) then
-      ();
+    variable $message := fn:concat("The file <ZorbaManifest.xml> was not found in the Zorba build directory: <", $manifestXMLPath, ">");
+    fn:error($err:UE004, $message);
+  }
+  else 
+  try 
+  {
+    variable $manifestXML := fn:parse-xml(file:read-text($manifestXMLPath));
+    
+    variable $moduleManifests := $manifestXML//*:module;
+    
+    if(count($moduleManifests) eq xs:integer(0)) then ();
     else
-    {        
-      variable $filePath          := fn:concat($filedirs, file:directory-separator(), $file); 
-      variable $xqdoc             := xqd:xqdoc(file:path-to-uri($filePath));
-      variable $xqdocRelFileName  := pxqdoc:get-filename($xqdoc/xqdoc:module/xqdoc:uri);
-      variable $xqdocFileName     := fn:concat( $xqdocXMLPath,
-                                                file:directory-separator(),
-                                                $xqdocRelFileName, 
-                                                ".xml");
-      variable $xqdocConfigFileName := fn:concat( $xqdocXMLConfigPath,
-                                                  file:directory-separator(),
-                                                  $xqdocRelFileName, 
-                                                  ".xml"); 
-      (: Write the XQDoc XML's :)
-      file:write( trace($xqdocFileName," write XQDoc XML"),
-                  $xqdoc, 
-                  $pxqdoc:serParamXml);
-
-      (: Write the additional information needed by the XQDoc generator:)                                                
-      file:write( $xqdocConfigFileName, 
-                  <module modulePath="{$filePath}" 
-                          moduleURI="{$xqdoc/xqdoc:module/xqdoc:uri}"
-                          examplePath="{fn:substring-before($filePath,$src_dir)}"
-                          moduleRelLocation="{fn:substring-before($filePath,$src_dir)}"
-                          isCore="{$isInsideZorbaCore}" />,
-                  $pxqdoc:serParamXml);
+    {
+      (: create the XML folder if it does not exist already :)
+      file:create-directory(trace($xqdocXMLPath," create xml folder ..."));
       
-    }
+      for $module in $moduleManifests
+      (: note the module version is not supported because of a bug in the fetch for the module URI ending with / :)
+      (:let $moduleURI := if(ends-with(data($module/zm:uri),'/')) then data($module/zm:uri) 
+                       else if(exists($module/@version)) then concat(data($module/zm:uri),"#",data($module/@version))
+                       else data($module/zm:uri):)
+      (:let $moduleFetched := fetch:content(trace($moduleURI,"fetch module URI version.."), "MODULE"):)
+      let $moduleURI := if(ends-with(data($module/zm:uri),".xq")) then substring-before(data($module/zm:uri),".xq") else data($module/zm:uri)
+      let $moduleFetched := fetch:content($moduleURI, "MODULE")
+      let $xqdoc := xqd:xqdoc-content($moduleFetched)
+      let $xqdocRelFileName  := pxqdoc:get-filename($moduleURI)
+      let $xqdocFileName := concat($xqdocXMLPath, file:directory-separator(), $xqdocRelFileName, ".xml")
+      return
+        file:write(trace($xqdocFileName," write XQDoc XML"),
+                   $xqdoc, 
+                   $pxqdoc:serParamXml)
+    };
+  }
+  catch *
+  {
+    fn:error($err:UE004,fn:concat("The file <",$manifestXMLPath,"> does not have the correct structure."));
   }
 };
 
