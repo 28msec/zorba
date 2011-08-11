@@ -4,13 +4,46 @@ Zorba's functionality can be greatly extended through the use of
 <i>modules</i>. Modules are libraries of XQuery functions and
 variables which provide additional functionality.
 
-The Zorba code includes a few key modules, for example to access data
-from the local filesystem or the web. In addition, the Zorba team
-supports a large number of external modules ranging from support for
-other data languages (JSON, CSV...) to data-cleaning and image
-processing. For a complete list of these modules, see: <b><a
+Those included with the Zorba processor library are \ref core_modules,
+the ones that are distributed as separate libraries are \ref non_core_modules.
+
+\section core_modules Core Modules
+
+The Zorba code includes a few core modules:
+
+   - <a href="../xqdoc/xhtml/www.w3.org_2005_xpath-functions.html">xpath</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_node.html">XDM</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">store</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_introspection_sctx.html">introspection</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_reflection.html">reflection</a>
+   - <a href="../xqdoc/xhtml/expath.org_ns_file.html">file</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_fetch.html">fetch</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_http-client.html">http-client</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_xqdoc.html">xqdoc</a>
+   - <a href="../xqdoc/xhtml/www.functx.com_index.html">functx</a>
+
+\section non_core_modules Non-core Modules
+
+In addition, the Zorba team supports a large number of non-core modules:
+
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_data-cleaning_hybrid-string-similarity.html">data-cleaning</a>
+   - data-converters: <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_converters_json.html">JSON</a>, <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">CSV</a>, <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_converters_html.html">HTML</a>
+   - data-formatting: <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_xsl-fo.html">XSL-FO</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_email_smtp.html">email</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_excel_statistical.html">excel</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_geoproj.html">geo</a>
+   - <a href="../xqdoc/xhtml/expath.org_ns_http-client.html">http-client</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_image_manipulation.html">image</a>
+   - programming languages: <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_languages_xslt.html">XSLT</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_oauth_client.html">oauth</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_process.html">process</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_cryptography_hmac.html">security</a>
+   - <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_system.html">system</a>
+
+For a complete list of these modules, see: <b><a
 href="../xqdoc/xhtml/index.html">XQuery Module Library</a></b>.
 
+\section module_usage Using
 To write queries using these modules, first read <b>\ref
 mod_importing</b>, and then <b>\ref mod_versioning</b>.
 
