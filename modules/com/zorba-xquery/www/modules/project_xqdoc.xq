@@ -73,29 +73,26 @@ declare %ann:sequential function pxqdoc:delete-XML-dir(
 (:~
  : This function generates the XQDoc XML for all the modules found in build/ZorbaManifest.xml
  :
+ : @param $zorbaManifestPath location of ZorbaManifest.xml.
  : @param $xqdocPath where to generate the XQDoc XML documents.
  : @return empty sequence.
  :)
 declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
+  $zorbaManifestPath as xs:string,
   $xqdocPath as xs:string)
 {
-  (: Note: only the modules that are configured in the Zorba version you are using will be build :)  
-  variable $manifestXMLPath := concat($xqdocPath,file:directory-separator(),
-                                      "..",file:directory-separator(), 
-                                      "..",file:directory-separator(),
-                                      "..",file:directory-separator(),"ZorbaManifest.xml");
-                                      
+  (: Note: only the modules that are configured in the Zorba version you are using will be build :)                                      
   variable $xqdocXMLPath := concat($xqdocPath, file:directory-separator(), "xml");
   
-  if(not(file:is-file($manifestXMLPath))) then
+  if(not(file:is-file($zorbaManifestPath))) then
   {
-    variable $message := fn:concat("The file <ZorbaManifest.xml> was not found in the Zorba build directory: <", $manifestXMLPath, ">");
+    variable $message := fn:concat("The file <ZorbaManifest.xml> was not found: <", $zorbaManifestPath, ">");
     fn:error($err:UE004, $message);
   }
   else 
   try 
   {
-    variable $manifestXML := fn:parse-xml(file:read-text($manifestXMLPath));
+    variable $manifestXML := fn:parse-xml(file:read-text($zorbaManifestPath));
     
     variable $moduleManifests := $manifestXML//*:module;
     
@@ -124,7 +121,7 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
   }
   catch *
   {
-    fn:error($err:UE004,fn:concat("The file <",$manifestXMLPath,"> does not have the correct structure."));
+    fn:error($err:UE004,fn:concat("The file <",$zorbaManifestPath,"> does not have the correct structure."));
   }
 };
 

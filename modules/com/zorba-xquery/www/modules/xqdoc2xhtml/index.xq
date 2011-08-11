@@ -327,21 +327,18 @@ $xqdocXmlPath as xs:string)
 };
 
 declare %private %ann:sequential function xqdoc2html:collectZorbaManifestEntries(
+  $zorbaManifestPath as xs:string,
   $xqdocBuildPath as xs:string)
 {    
-  variable $manifestXMLPath := concat($xqdocBuildPath,file:directory-separator(),
-                                    "..",file:directory-separator(), 
-                                    "..",file:directory-separator(),
-                                    "..",file:directory-separator(),"ZorbaManifest.xml");
-  if(not(file:is-file($manifestXMLPath))) then
+  if(not(file:is-file($zorbaManifestPath))) then
   {
-    variable $message := fn:concat("The file <ZorbaManifest.xml> was not found in the Zorba build directory: <", $manifestXMLPath, ">");
+    variable $message := fn:concat("The file <ZorbaManifest.xml> was not found: <", $zorbaManifestPath, ">");
     fn:error($err:UE004, $message);
   }
   else 
   try 
   {
-    variable $manifestXML := fn:parse-xml(file:read-text($manifestXMLPath));
+    variable $manifestXML := fn:parse-xml(file:read-text($zorbaManifestPath));
     
     variable $moduleManifests := $manifestXML//*:module;    
          
@@ -354,13 +351,14 @@ declare %private %ann:sequential function xqdoc2html:collectZorbaManifestEntries
   }
   catch *
   {
-    fn:error(fn:concat("The file <",$manifestXMLPath,"> does not have the correct structure."));
+    fn:error(fn:concat("The file <",$zorbaManifestPath,"> does not have the correct structure."));
   }
 };
   
 (:~
  : This function creates the XQDoc XMLs and from them the XQDoc XHTMLs.
  :
+ : @param $zorbaManifestPath location of ZorbaManifest.xml.
  : @param $xqdocBuildPath where to output the XQDoc XMLs and XHTMLs.
  : @param $indexHtmlPath where to load the template for the index.html.
  : @param $zorbaVersion Zorba version.
@@ -368,13 +366,14 @@ declare %private %ann:sequential function xqdoc2html:collectZorbaManifestEntries
  : @return Empty sequence.
  :)
 declare %ann:sequential function xqdoc2html:main(
+  $zorbaManifestPath as xs:string,
   $xqdocBuildPath as xs:string,
   $indexHtmlPath  as xs:string,
   $zorbaVersion   as xs:string,
   $xhtmlRequisitesPath as xs:string)  
 { 
   (: fill out $xqdoc2html:ZorbaManifest :)
-  xqdoc2html:collectZorbaManifestEntries($xqdocBuildPath);
+  xqdoc2html:collectZorbaManifestEntries($zorbaManifestPath, $xqdocBuildPath);
   
   variable $xqdocXmlPath as xs:string := 
   fn:concat($xqdocBuildPath, file:directory-separator(), "xml");

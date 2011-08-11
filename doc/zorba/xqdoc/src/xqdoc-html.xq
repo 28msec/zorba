@@ -16,13 +16,14 @@
 
 import module namespace x2h = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
 
+declare variable $zorbaManifestPath as xs:string external;
 declare variable $xhtmlRequisitesPath as xs:string external;
 declare variable $xqdocBuildPath      as xs:string external;
 declare variable $zorbaVersion        as xs:string external;
 
-
+trace($zorbaManifestPath  ,"$zorbaManifestPath");
 trace($xhtmlRequisitesPath,"$xhtmlRequisitesPath");
-trace($xqdocBuildPath,     "$xqdocBuildPath     ");
+trace($xqdocBuildPath     ,"$xqdocBuildPath     ");
 
 x2h:copy-xhtml-requisites(fn:trace($xhtmlRequisitesPath,  "Copy XHTML requisites from :"),
                           fn:trace($xqdocBuildPath,       "                      in   :"));
@@ -30,7 +31,8 @@ x2h:copy-xhtml-requisites(fn:trace($xhtmlRequisitesPath,  "Copy XHTML requisites
 variable $indexHtmlPath as xs:string := 
 fn:concat($xhtmlRequisitesPath, "/templates/main.html");
 
-x2h:main( $xqdocBuildPath,
+x2h:main( $zorbaManifestPath,
+          $xqdocBuildPath,
           $indexHtmlPath,
           $zorbaVersion,
           $xhtmlRequisitesPath);
