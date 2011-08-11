@@ -660,7 +660,7 @@ MACRO (ADD_XQDOC_TARGETS)
   )
 
   SET(ZORBA_XHTML_REQUISITES_PATH
-      ${Zorba_DIR}/../doc/zorba/xqdoc
+      ${CMAKE_SOURCE_DIR}/doc/zorba/xqdoc
       CACHE PATH
       "Dir where to the XHTML requisites are stored.")
   ADD_CUSTOM_TARGET(xqdoc
