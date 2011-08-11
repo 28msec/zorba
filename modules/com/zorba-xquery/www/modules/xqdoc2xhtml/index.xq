@@ -422,31 +422,23 @@ declare %ann:sequential function xqdoc2html:main(
   ddl:delete-collection(xs:QName("xqdoc2html:collection"));
 };
 
-declare %private function xqdoc2html:fix-uri($moduleUri) as xs:string
-{
-  (: TODO there's a bug in the ZorbaManifest.xml :)
-  if($moduleUri = "http://expath.org/ns/http-client") then 
-    concat($moduleUri,".xq") 
-  else $moduleUri
-};
-
 declare %private function xqdoc2html:get-project-root(
   $moduleUri as xs:string
   ) as xs:string
 {
-  xs:string(data($xqdoc2html:ZorbaManifest/module[@uri= xqdoc2html:fix-uri($moduleUri)]/@projectRoot))
+  xs:string(data($xqdoc2html:ZorbaManifest/module[@uri= $moduleUri]/@projectRoot))
 };
 
 declare %private function xqdoc2html:get-is-core(
   $moduleUri) as xs:boolean
 {
-  xs:boolean(data($xqdoc2html:ZorbaManifest/module[@uri= xqdoc2html:fix-uri($moduleUri)]/@isCore))
+  xs:boolean(data($xqdoc2html:ZorbaManifest/module[@uri= $moduleUri]/@isCore))
 };
 
 declare %private function xqdoc2html:get-module-version(
   $moduleUri) as xs:string?
 {
-  data($xqdoc2html:ZorbaManifest/module[@uri= xqdoc2html:fix-uri($moduleUri)]/@version)
+  data($xqdoc2html:ZorbaManifest/module[@uri= $moduleUri]/@version)
 };
 
 (:~
