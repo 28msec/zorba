@@ -1,10 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,8 +39,24 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/mbrantner/zorba/trycatch/core/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
+
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <list>
 #include <string>
@@ -70,7 +85,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 74 "/home/mbrantner/zorba/trycatch/build/src/compiler/parser/xquery_parser.hpp"
+#line 89 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -78,23 +93,17 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 #include "stack.hh"
 
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/home/mbrantner/zorba/trycatch/build/src/compiler/parser/xquery_parser.hpp"
+#line 100 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 98 "/home/mbrantner/zorba/trycatch/build/src/compiler/parser/xquery_parser.hpp"
+#line 107 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -136,13 +145,10 @@ do {							\
 #endif
 
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 146 "/home/mbrantner/zorba/trycatch/build/src/compiler/parser/xquery_parser.hpp"
+#line 152 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -154,7 +160,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 139 "/home/mbrantner/zorba/trycatch/core/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -178,7 +184,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 182 "/home/mbrantner/zorba/trycatch/build/src/compiler/parser/xquery_parser.hpp"
+#line 188 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -421,93 +427,92 @@ namespace zorba {
      MODIFY = 488,
      COPY = 489,
      WITH = 490,
-     LOCAL = 491,
-     BREAK = 492,
-     CONTINUE = 493,
-     EXIT = 494,
-     LOOP = 495,
-     RETURNING = 496,
-     WHILE = 497,
-     TRY = 498,
-     CATCH = 499,
-     USING = 500,
-     ALL = 501,
-     ANY = 502,
-     CONTAINS = 503,
-     CONTENT = 504,
-     DIACRITICS = 505,
-     DIFFERENT = 506,
-     DISTANCE = 507,
-     END = 508,
-     ENTIRE = 509,
-     EXACTLY = 510,
-     FROM = 511,
-     FTAND = 512,
-     FTNOT = 513,
-     NOT = 514,
-     FT_OPTION = 515,
-     FTOR = 516,
-     INSENSITIVE = 517,
-     LANGUAGE = 518,
-     LEVELS = 519,
-     LOWERCASE = 520,
-     OCCURS = 521,
-     PARAGRAPH = 522,
-     PARAGRAPHS = 523,
-     PHRASE = 524,
-     RELATIONSHIP = 525,
-     SAME = 526,
-     SCORE = 527,
-     SENSITIVE = 528,
-     SENTENCE = 529,
-     SENTENCES = 530,
-     STEMMING = 531,
-     STOP = 532,
-     THESAURUS = 533,
-     TIMES = 534,
-     UPPERCASE = 535,
-     WEIGHT = 536,
-     WILDCARDS = 537,
-     WINDOW = 538,
-     WITHOUT = 539,
-     WORDS = 540,
-     COLLECTION = 541,
-     CONSTOPT = 542,
-     APPEND_ONLY = 543,
-     QUEUE = 544,
-     MUTABLE = 545,
-     READ_ONLY = 546,
-     UNIQUE = 547,
-     NON = 548,
-     INDEX = 549,
-     MANUALLY = 550,
-     AUTOMATICALLY = 551,
-     MAINTAINED = 552,
-     ON = 553,
-     RANGE = 554,
-     EQUALITY = 555,
-     GENERAL = 556,
-     INTEGRITY = 557,
-     CONSTRAINT = 558,
-     CHECK = 559,
-     KEY = 560,
-     FOREACH = 561,
-     FOREIGN = 562,
-     KEYS = 563,
-     BYTE_ORDER_MARK_UTF8 = 564,
-     RANGE_REDUCE = 565,
-     ADDITIVE_REDUCE = 566,
-     MULTIPLICATIVE_REDUCE = 567,
-     UNION_REDUCE = 568,
-     INTERSECT_EXCEPT_REDUCE = 569,
-     QVARINDECLLIST_REDUCE = 570,
-     COMMA_DOLLAR = 571,
-     UNARY_PREC = 572,
-     SEQUENCE_TYPE_REDUCE = 573,
-     OCCURS_STAR = 574,
-     OCCURS_PLUS = 575,
-     OCCURS_HOOK = 576,
-     STEP_REDUCE = 577
+     BREAK = 491,
+     CONTINUE = 492,
+     EXIT = 493,
+     LOOP = 494,
+     RETURNING = 495,
+     WHILE = 496,
+     TRY = 497,
+     CATCH = 498,
+     USING = 499,
+     ALL = 500,
+     ANY = 501,
+     CONTAINS = 502,
+     CONTENT = 503,
+     DIACRITICS = 504,
+     DIFFERENT = 505,
+     DISTANCE = 506,
+     END = 507,
+     ENTIRE = 508,
+     EXACTLY = 509,
+     FROM = 510,
+     FTAND = 511,
+     FTNOT = 512,
+     NOT = 513,
+     FT_OPTION = 514,
+     FTOR = 515,
+     INSENSITIVE = 516,
+     LANGUAGE = 517,
+     LEVELS = 518,
+     LOWERCASE = 519,
+     OCCURS = 520,
+     PARAGRAPH = 521,
+     PARAGRAPHS = 522,
+     PHRASE = 523,
+     RELATIONSHIP = 524,
+     SAME = 525,
+     SCORE = 526,
+     SENSITIVE = 527,
+     SENTENCE = 528,
+     SENTENCES = 529,
+     STEMMING = 530,
+     STOP = 531,
+     THESAURUS = 532,
+     TIMES = 533,
+     UPPERCASE = 534,
+     WEIGHT = 535,
+     WILDCARDS = 536,
+     WINDOW = 537,
+     WITHOUT = 538,
+     WORDS = 539,
+     COLLECTION = 540,
+     CONSTOPT = 541,
+     APPEND_ONLY = 542,
+     QUEUE = 543,
+     MUTABLE = 544,
+     READ_ONLY = 545,
+     UNIQUE = 546,
+     NON = 547,
+     INDEX = 548,
+     MANUALLY = 549,
+     AUTOMATICALLY = 550,
+     MAINTAINED = 551,
+     ON = 552,
+     RANGE = 553,
+     EQUALITY = 554,
+     GENERAL = 555,
+     INTEGRITY = 556,
+     CONSTRAINT = 557,
+     CHECK = 558,
+     KEY = 559,
+     FOREACH = 560,
+     FOREIGN = 561,
+     KEYS = 562,
+     BYTE_ORDER_MARK_UTF8 = 563,
+     RANGE_REDUCE = 564,
+     ADDITIVE_REDUCE = 565,
+     MULTIPLICATIVE_REDUCE = 566,
+     UNION_REDUCE = 567,
+     INTERSECT_EXCEPT_REDUCE = 568,
+     QVARINDECLLIST_REDUCE = 569,
+     COMMA_DOLLAR = 570,
+     UNARY_PREC = 571,
+     SEQUENCE_TYPE_REDUCE = 572,
+     OCCURS_STAR = 573,
+     OCCURS_PLUS = 574,
+     OCCURS_HOOK = 575,
+     STEP_REDUCE = 576
    };
 
     };
@@ -678,13 +683,10 @@ namespace zorba {
     xquery_driver& driver;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 688 "/home/mbrantner/zorba/trycatch/build/src/compiler/parser/xquery_parser.hpp"
+#line 690 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

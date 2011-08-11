@@ -448,7 +448,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* scripting-related */
 /* ----------------- */
-%token LOCAL                            "'local'"
 %token BREAK                            "'break'"
 %token CONTINUE                         "'continue'"
 %token EXIT                             "'exit'"
@@ -2206,24 +2205,10 @@ BlockVarDeclList :
       $$ = vdecl;
     }
   |
-    LOCAL VARIABLE BlockVarDecl
-    {
-      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), NULL);
-      vdecl->add($3);
-      $$ = vdecl;
-    }
-  |
     AnnotationList VARIABLE BlockVarDecl
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), static_cast<AnnotationListParsenode*>($1));
       vdecl->add($3);
-      $$ = vdecl;
-    }
-  |
-    LOCAL AnnotationList VARIABLE BlockVarDecl
-    {
-      VarDeclStmt* vdecl = new VarDeclStmt(LOC(@$), static_cast<AnnotationListParsenode*>($2));
-      vdecl->add($4);
       $$ = vdecl;
     }
   ;
@@ -6454,7 +6439,6 @@ FUNCTION_NAME :
     |   ORDERED                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ordered"))); }
     |   UNORDERED               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("unordered"))); }
     |   RETURNING               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("returning"))); }
-    |   LOCAL                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("local"))); }
     |   EXIT                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("exit"))); }
     |   LOOP                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("loop"))); }
     |   BREAK                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("break"))); }

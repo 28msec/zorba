@@ -485,7 +485,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "revalidation" { return token::REVALIDATION; }
 "as" { return token::AS; }
 "try" { return token::TRY; }
-"local" { return token::LOCAL; }
 
   /* Axes */
 "ancestor-or-self" { return token::ANCESTOR_OR_SELF; }

@@ -8,7 +8,7 @@
     $x := $x + $y;
   }
 
-  local variable $y := 10;
+  variable $y := 10;
 
   $x + $y
 }

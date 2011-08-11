@@ -73,7 +73,7 @@ a.env:visited, a.env:link { color: black;
       <ul>
          <li>Matthias Brantner, 28msec, Inc., matthias.brantner@28msec.com</li>
          <li>Daniela Florescu, Oracle Corporation, daniela.florescu@oracle.com</li>
-         <li>Ghislain Fourny, FLWOR Foundation, ghislain.fourny@flworfound.org</li>
+         <li>Ghislain Fourny, ETH Zurich, ghislain.fourny@inf.ethz.ch</li>
          <li>Josh Spiegel, Oracle Corporation, josh.spiegel@oracle.com</li>
       </ul>
       <h1>Abstract</h1>
@@ -135,7 +135,7 @@ a.env:visited, a.env:link { color: black;
          <li><a href="#id-expr-changes">Changes to existing expressions</a><ol></ol>
             <ol>
                <li><a href="#id-node-constructors-statements">Direct and Computed Node Constructors</a></li>
-               <li><a href="#id-predicate-quantified">Predicate and quantified expressions.</a></li>
+               <li><a href="#id-predicate-quantified">Filter and quantified expressions.</a></li>
                <li><a href="#id-other-expr">Other Expressions</a></li>
             </ol>
          </li>
@@ -370,7 +370,9 @@ a.env:visited, a.env:link { color: black;
          
       </p>
                 
-      <p>Unless otherwise stated, a sequential expression or a statement must be executed exactly once.</p>
+      <p>Unless otherwise stated, in an evaluation of a sequential expression or of a statement,
+                     the operand expressions or statements must be evaluated exactly once, from left to right.
+      </p>
                 
       <p>
                      An implementation may use any execution strategy as long as the result complies with
@@ -886,12 +888,12 @@ exit returning local:error(concat("You cannot use the ",
       </h2>
               
               <pre>
-20 - <a name="VarDeclStatement" class="new">VarDeclStatement</a> ::= ("local" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Annotation" class="un">Annotation</a>*)? "variable" "$" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName" class="un">VarName</a> <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration" class="un">TypeDeclaration</a>? (":=" <a href="#ExprSingle" class="ext">ExprSingle</a>)?
+20 - <a name="VarDeclStatement" class="new">VarDeclStatement</a> ::= <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Annotation" class="un">Annotation</a>* "variable" "$" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName" class="un">VarName</a> <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration" class="un">TypeDeclaration</a>? (":=" <a href="#ExprSingle" class="ext">ExprSingle</a>)?
     ("," "$" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName" class="un">VarName</a> <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration" class="un">TypeDeclaration</a>? (":=" <a href="#ExprSingle" class="ext">ExprSingle</a>)?)* ";"
     </pre>
               <p>
          [The expression on
-                   the right-hand side of a block variable declaration is called an
+                   the right-hand side of a variable declaration is called an
                    <b>initializing expression</b>.]
          
       </p>
@@ -986,7 +988,7 @@ variable $uid := doc("users.xml")/users/user_tuple
          
       </p>
                       
-      <p>The test expression must be non-updating and non-sequential.</p>
+      <p>The test expression must be non-updating.</p>
                   
                 <b>Semantics:</b>
                     
@@ -1013,7 +1015,9 @@ variable $uid := doc("users.xml")/users/user_tuple
                 <b>Evaluation order:</b>
                     
       <p>
-                         The statement is executed exactly once after each evaluation of the test expression until its EBV is false.
+                         The test expression is evaluated once. Then if the EBV of the test expression is true, the statement is executed
+         exactly once and the test expression is evaluated again. These steps are repeated until the EBV of the test expression is
+         false.
                        
       </p>
                   
@@ -1084,7 +1088,7 @@ while ($c &lt; 100) {
                     
       <hr>
                     
-      <p>The expressions in the for, let, window, order-by, group-by, where and count clauses must be
+      <p>The expressions in the window-start, window-end, order-by, group-by, where and count clauses must be
                        non-sequential.
       </p>
                   
@@ -1093,15 +1097,18 @@ while ($c &lt; 100) {
       <p>The semantics of FLWOR Expressions is unchanged.</p>
                     
       <p>For FLWOR Statements, the input tuple stream is generated as described in XQuery 3.0.
-                         The return statement is executed once for each tuple in its input tuple stream,
-                         using the variable bindings in the respective tuples, in the order in which these tuples
-                         appear in the input tuple stream.
+                         The return statement is then executed for each tuple in its input tuple stream,
+                         using the variable bindings in the respective tuples.
       </p>
                   
                 <b>Evaluation order:</b>
                     
-      <p>The return clauses are evaluated in the order in which these tuples
-                         appear in the input tuple stream.
+      <p>Each FLWOR clause is evaluated exactly once, one after the other, from left to right.
+                         In the evaluation of the first clause, the operand expression is evaluated exactly once.
+                         In the evaluation of each other clause, the operand expression is evaluated exactly once for every tuple in
+         the input stream produced
+                         by the former clause, in the exact same order as in the stream.
+                         
       </p>
                   
                 <b>Example:</b>
@@ -1156,7 +1163,7 @@ as last into $table);
                     
       <hr>
                     
-      <p>The test expression must be non-sequential.</p>
+      <p>(none)</p>
                   
                 <b>Semantics:</b>
                     
@@ -1170,7 +1177,8 @@ as last into $table);
                   
                 <b>Evaluation order:</b>
                     
-      <p>Depending on the EBV of the test expression, either the then clause or the
+      <p>The test expression is evaluated exactly once. Then, depending on the EBV of the test expression, either the then clause or
+         the
                          else clause (but not both) is evaluated, exactly once.
       </p>
                   
@@ -1219,7 +1227,7 @@ if($newbid &lt;= 60000) then {
                     
       <hr>
                     
-      <p>The switch operand expression must be non-sequential.</p>
+      <p>(none)</p>
                   
                 <b>Semantics:</b>
                     
@@ -1232,7 +1240,7 @@ if($newbid &lt;= 60000) then {
                   
                 <b>Evaluation order:</b>
                     
-      <p>Only the return clause in the effective case is evaluated, exactly once.</p>
+      <p>The test expression is evaluated exactly once. Then, only the return clause in the effective case is evaluated, exactly once.</p>
                   
               
             
@@ -1289,7 +1297,7 @@ if($newbid &lt;= 60000) then {
               
               
       <p>In addition to Typeswitch Expressions, XQSX introduces Typeswitch Statements,
-                   defined like Typeswitch Expressions except that the try and catch clauses are
+                   defined like Typeswitch Expressions except that the clauses are
                    statements.
       </p>
               <pre>
@@ -1308,7 +1316,7 @@ if($newbid &lt;= 60000) then {
                     
       <hr>
                     
-      <p>The test expression must be non-sequential.</p>
+      <p>(none)</p>
                   
                 <b>Semantics:</b>
                     
@@ -1321,7 +1329,7 @@ if($newbid &lt;= 60000) then {
                   
                 <b>Evaluation order:</b>
                     
-      <p>Only the return clause in the effective case is evaluated.</p>
+      <p>The test expression is evaluated exactly once. Then, only the return clause in the effective case is evaluated, exactly once.</p>
                   
               
             
@@ -1439,14 +1447,15 @@ into doc("bids.xml")/bids;
               
             
             
-      <h2><a name="id-predicate-quantified"></a>6.2. Predicate and quantified expressions.
+      <h2><a name="id-predicate-quantified"></a>6.2. Filter and quantified expressions.
       </h2>
               
               
                 <b>Composability Constraints:</b>
                     
       <p>
-                         A quantified or predicate expression must be non-sequential.
+                         The expression in square brackets in a filter expression, as well as the conditional expression (second operand)
+         in a quantified expression, must be non-sequential.
                        
       </p>
                     
@@ -1454,12 +1463,18 @@ into doc("bids.xml")/bids;
       <p><b>Note:</b></p>
                       
       <p>
-                           The motivation behind this restriction is that their operands can be converted to for or where clauses in
-         FLWOR expressions in the query plan.
+                           The motivation behind this restriction is that their operands can be converted to where clauses in FLWOR
+         expressions in the query plan.
                          
       </p>
                     
       <hr>
+                  
+                <b>Evaluation order:</b>
+                    
+      <p>The base expression in a filter expression is evaluated exactly once.</p>
+                    
+      <p>The base expression (first operand) in a quantified expression is evaluated exactly once.</p>
                   
               
             
@@ -1539,7 +1554,9 @@ into doc("bids.xml")/bids;
                 <b>Evaluation Order:</b>
                     
       <p>
-                         Operand expressions are evaluated from left to right, bottom-up in the expression tree.
+                         Operand expressions are evaluated from left to right, bottom-up in the expression tree (i.e., in a function
+         call,
+                         the parameters are evaluated before the function body is evaluated).
                        
       </p>
                   
@@ -1755,7 +1772,7 @@ Statements1 := Statement1*
     
 
           
-20 - <a name="VarDeclStatement" class="new">VarDeclStatement</a> ::= ("local" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Annotation" class="un">Annotation</a>*)? "variable" "$" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName" class="un">VarName</a> <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration" class="un">TypeDeclaration</a>? (":=" <a href="#ExprSingle" class="ext">ExprSingle</a>)?
+20 - <a name="VarDeclStatement" class="new">VarDeclStatement</a> ::= <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Annotation" class="un">Annotation</a>* "variable" "$" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName" class="un">VarName</a> <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration" class="un">TypeDeclaration</a>? (":=" <a href="#ExprSingle" class="ext">ExprSingle</a>)?
     ("," "$" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarName" class="un">VarName</a> <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-TypeDeclaration" class="un">TypeDeclaration</a>? (":=" <a href="#ExprSingle" class="ext">ExprSingle</a>)?)* ";"
     
 

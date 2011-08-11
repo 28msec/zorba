@@ -212,8 +212,8 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
     store::Item_t lQName = const_cast<store::Item*>((*lIter)->getQName());
     StaticContextConsts::annotations_t lAnn = lCtx.lookup_ann(lQName);
 
-    // detect duplicate annotations
-    if ( lCurrAnn.test( lAnn ) )
+    // detect duplicate annotations (if we "know" them)
+    if ( lAnn != StaticContextConsts::zann_end && lCurrAnn.test( lAnn ) )
     {
         throw XQUERY_EXCEPTION(
             err::XQST0106,

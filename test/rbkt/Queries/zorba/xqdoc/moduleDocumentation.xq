@@ -31,7 +31,7 @@ declare %ann:nondeterministic function local:get-src-dirs() as xs:string*
   let $ZorbaCoreModules := fn:resolve-uri(concat($ZorbaPath,"modules"))
   
   (: read from CMakeCache.txt the path where the external modules are checked out (if any) :)
-  let $ZorbaCMakeCache := trace(fn:resolve-uri(concat($ZorbaBuildPath, file:directory-separator(), "CMakeCache.txt")),"markos")
+  let $ZorbaCMakeCache := fn:resolve-uri(concat($ZorbaBuildPath, file:directory-separator(), "CMakeCache.txt"))
   let $ZorbaModulesDir := substring-before(tokenize(file:read-text($ZorbaCMakeCache),"ZORBA_MODULES_DIR:PATH=")[2],"
 ")
   let $dirs := file:list(fn:resolve-uri($ZorbaModulesDir))
