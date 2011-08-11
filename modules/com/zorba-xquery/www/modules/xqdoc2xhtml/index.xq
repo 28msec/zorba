@@ -576,7 +576,6 @@ declare %private %ann:sequential function xqdoc2html:generate-xqdoc-xhtml(
       {         
         variable $templatePath := fn:concat($xhtmlRequisitesPath, file:directory-separator(),"templates",file:directory-separator(),"main.html");
         variable $xhtml := xqdoc2html:doc($xqdoc2, $generalLeftMenu, $templatePath, $xqdocXhtmlPath);
-        xqdoc2html:configure-xhtml($xhtml);
         variable $xhtmlFilePath := fn:concat($xqdocXhtmlPath, file:directory-separator(), $getFilename,".html");
         file:write(fn:trace($xhtmlFilePath," write XQDoc XHTML"), $xhtml, $xqdoc2html:serParamXhtml);
       }
@@ -944,28 +943,16 @@ declare  %private function xqdoc2html:get-example-filename-link($examplePath as 
   fn:tokenize($examplePath,fn:concat("\",file:directory-separator()))[last()]
 };
 
-(:~
- : This function does some additional processing for the $xhtml like
- : replacing the function type description with images, 
- : replacing the function names description with images+name of the functions.
- : @param $xhtml the node containing the XHTML file.
- : @return the processed $xhtml.
- :)
-declare %private %ann:sequential function xqdoc2html:configure-xhtml (
-  $xhtml)
+declare %private function xqdoc2html:add-images(
+  $type as xs:string)
 {
-  (: replace the function type description with images :)  
   let $ZorbaOptAndAnn := "../../html/options_and_annotations.html",
       $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
       $xqsSpec := "http://xquery-scripting.ethz.ch/spec.html",
       $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
-      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
-  let $imagesPath := "images/"
-  for $typeTd in $xhtml//*:td
-  where $typeTd/@class eq "type"
-  let $type := $typeTd/text()
-  return {
-  replace node $typeTd/text() with
+      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function",
+      $imagesPath := "images/"
+  return
     <span class="no_underline">
       {if(contains($type, "updating")) then
         <a  href="{$xquSpec}" 
@@ -1002,53 +989,6 @@ declare %private %ann:sequential function xqdoc2html:configure-xhtml (
         <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "External.gif")}" /></a>  
        else ()}
     </span>
-  };
-  
-  (: replace the function names description with images+name of the functions :) 
-  let $ZorbaOptAndAnn := "../../html/options_and_annotations.html",
-      $xquSpec := "http://www.w3.org/TR/xquery-update-10/#dt-updating-function",
-      $xqsSpec := "http://xquery-scripting.ethz.ch/spec.html",
-      $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
-      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
-  let $imagesPath := "images/"
-  for $func in $xhtml//*:div
-  where $func/@class eq "subsection"
-  let $funcName := $func/text()
-  return {    
-    replace node $func/text() with
-    <span class="no_underline">
-      {if(contains($funcName, "updating ")) then
-        <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "Updating.gif")}" /></a>  
-       else ()}
-       {if(contains($funcName, "sequential ")) then
-        <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "Sequential.gif")}" /></a>  
-       else ()}
-       {if(contains($funcName, "nondeterministic ")) then
-        <a href="{$ZorbaOptAndAnn}" title="%ann:nondeterministic" target="_blank"><img src="{concat($imagesPath, "Nondeterministic.gif")}" /></a>  
-       else ()}
-       {if(contains($funcName, "variadic ")) then
-        <a  title="A function annotated with the http://www.zorba-xquery.com/annotations:variadic annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments."
-            href="{$ZorbaOptAndAnn}"
-            target="_blank"><img src="{concat($imagesPath, "Variadic.gif")}" /></a>  
-       else ()}
-       {if(contains($funcName, "streamable ")) then
-        <a href="{$ZorbaOptAndAnn}" title="A function annotated with the http://www.zorba-xquery.com/annotations:streamable annotation is a function that may return 
- an xs:string item whose content is streamed. Such a string is called a streamable string. Such strings have the advantage that their
- contents doesn't need to be materialized in memory. If a function consuming such a string is able to process the string
- in a streaming fashion, this allows for processing of strings with a virtually infinite length. However, the disadvantage is that 
- a streamable string can only be consumed exactly once. If a streamable string is consumed more than once, an error is raised.
- In order to enable multiple consumers of a streamable string, the string:materialize function can be used
- to materialize the entire contents in an (regular) xs:string item."
-        target="_blank"><img src="{concat($imagesPath, "Streamable.gif")}" /></a>  
-       else ()}
-       {if(contains($funcName, "external ")) then
-        <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "External.gif")}" /></a>  
-       else ()}    
-       {text {replace(replace(replace(replace(replace($funcName,"updating ",""),"sequential ",""),"nondeterministic ",""),"variadic ",""),"external ","")}}
-    </span>   
-  };
-  
-  $xhtml
 };
 
 (:~
@@ -1350,22 +1290,31 @@ declare %private function xqdoc2html:module-variables($variables)
           where (count($variable/xqdoc:annotations/xqdoc:annotation[@localname="private"]) = 0)
           return $variable)
   return
-  if($noPublicVariables ne xs:integer(0)) then
-    (<div class="section"><span id="variables">Variables</span></div>,
-    <table class="varlist">
-    {      
+  if($noPublicVariables eq xs:integer(0)) then ()
+  else
+   (<div class="section"><span id="variables">Variables</span></div>,
+    <table class="funclist">
+   {      
       for $variable in $variables/xqdoc:variable
-      let $varName := $variable/xqdoc:uri/text()
+      let $name := $variable/xqdoc:uri/text()
+      let $type := $variable/xqdoc:comment/xqdoc:custom[@tag="type"]/text()
+      let $isExternal := $variable/xqdoc:comment/xqdoc:custom[@tag="isExternal"]/text()
+      let $ann := string-join((for $annotation in $variable/xqdoc:annotations/xqdoc:annotation
+                               return data($annotation/@localname),
+                               if($isExternal) then "external" else ""," ")," ")
+
       where (count($variable/xqdoc:annotations/xqdoc:annotation[@localname="private"]) = 0) 
-      order by $varName
+      order by $name
       return (<tr>
-              <td>${$varName}</td>
-              <td>{xqdoc2html:description($variable/xqdoc:comment)}</td>
+              <td>{xqdoc2html:add-images($ann)}</td>
+              <td>${$name}
+                  {if(exists($type)) then concat(" as ",$type) else ""}
+                  {if(exists($isExternal)) then " external" else ()}<br/>
+                  {normalize-space(xqdoc2html:description($variable/xqdoc:comment))}</td>
               </tr>
              )
-    }</table>)
-  else
-    ()
+    }
+    </table>)
 };
 
 (:~
@@ -1422,7 +1371,7 @@ declare %private function xqdoc2html:module-function-summary($functions)
             $external := if(ends-with($signature,"external")) then "external" else ""
         return
           <tr>
-            <td class="type">{concat($type," ",$external)}</td>
+            <td class="type">{xqdoc2html:add-images(concat($type," ",$external))}</td>
             <td>
               <tt>{
                 if ($isDeprecated) then
@@ -1544,28 +1493,30 @@ declare %private %ann:nondeterministic function xqdoc2html:functions($functions,
 declare %private function xqdoc2html:module-function-link($name as xs:string, $signature) {
 
 let $lcSignature := fn:lower-case($signature)
-let $lname := if(ends-with($signature, 'external')) then concat('external ',$name) else $name
 return
 (
+  xqdoc2html:add-images(string-join((
   if(contains($lcSignature, 'updating')) then
-    'updating ' else (),
+    'updating' else (),
     
   if(contains($lcSignature, 'sequential')) then
-    'sequential ' else (),
+    'sequential' else (),
     
   if(contains($lcSignature, 'nondeterministic')) then
-    'nondeterministic ' else (),
+    'nondeterministic' else (),
     
   if(contains($lcSignature, 'non-deterministic')) then
-    'nondeterministic ' else (),
+    'nondeterministic' else (),
     
   if(contains($lcSignature, 'variadic')) then
-    'variadic ' else (),
+    'variadic' else (),
   
   if(contains($lcSignature, 'streamable')) then
-    'streamable ' else (),
+    'streamable' else (),
+  if(ends-with($signature, 'external')) then
+    'external' else ())," ")),
     
-  $lname
+  $name
 )
 };
 

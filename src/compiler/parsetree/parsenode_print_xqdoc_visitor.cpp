@@ -836,10 +836,15 @@ void end_visit(const VarDecl& n, void*)
 
   store::Item_t lCommentElem = print_comment(lVariableElem, n.getComment());
 
-  std::stringstream os;
-  os << n.get_location().getLineBegin() << "." << n.get_location().getColumnBegin() << "-";
-  os << n.get_location().getLineEnd()   << "." << n.get_location().getColumnEnd();
-  print_custom(lCommentElem, "location", os.str());
+  if(n.get_typedecl())
+  {
+    std::stringstream os;
+    print_parsetree_xquery(os , &*n.get_typedecl());
+    print_custom(lCommentElem, "type", os.str());
+  }
+
+  if(n.is_extern())
+    print_custom(lCommentElem, "isExternal", "true");
 
   // add all invoked function elements as children to the end of the current
   // function element. After this, clear the set of invoked functions
