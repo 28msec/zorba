@@ -1,5 +1,109 @@
 /** \page errors_warnings XQuery Errors and Warnings
 
-Info to be added.
+During the interaction with Zorba (e.g.through the C++ API) and the processing of XQuery programs, errors may be raised and warnings may be reported.
+In this document, we describe how errors and warnings can be dealt with using Zorba's C++ API and XQuery.
+
+\section errors_warnings_errors Errors
+
+Zorba may raise errors during the static analysis phase and the dynamic evaluation phase of a query.
+Moreover, errors may be raised by any of the host language APIs.
+Each such error is identified by a QName.
+Most of the errors are defined by any of the XQuery specifications (e.g. XQuery 1.0 or 3.0, XQuery Update, or XQuery Full Text) and contained in the XPath and XQuery error namespace (http://www.w3.org/2005/xqt-errors).
+In addition, Zorba defines a set of errors in the %http://www.zorba-xquery.com/errors namespace.
+
+A full list of potential errors can be found in the diagnostic_list.h header (<tt>err</tt> and <tt>zerr</tt> namespaces) of the C++ API or in the following XQuery modules:
+
+<ul>
+  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a></li>
+  <li><a href="../xqdoc/xhtml/www.w3.org_2005_xqt-errors.html">http://www.w3.org/2005/xqt-errors</a></li>
+</ul>
+
+The XQuery modules declare one variable per error.
+The name and value of the variable is the QName of the corresponding error.
+
+\section errors_warnings_warnings Warnings
+
+In addition to the errors mentioned in the previous section, Zorba may raise warnings during the static analysis phase of the query.
+Warnings are diagnostic messages that report constructions which are not inherently erroneous but which are risky or suggest there may have been an error.
+Like an error, a warning is identified by a QName whose namespace is %http://www.zorba-xquery.com/warnings.
+A list of warnings can either be found in the diagnostic_list.h header (<tt>zwarn</tt> namespace) of the C++ API or in the <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_warnings.html">http://www.zorba-xquery.com/warnings</a> module.
+
+A warning can be enabled (i.e. will be reported), disabled (i.e. will not be reported), or turned into an error (i.e. an error with the same name will be raised) by specifying options in the static context that is used to compile the query or in the prolog of a particular XQuery module.
+
+For example, given the following prolog of an XQuery module, all warnings are treated as errors:
+
+\code
+  declare namespace op = "http://www.zorba-xquery.com/options/warnings";
+  declare namespace w = "http://www.zorba-xquery.com/warnings";
+
+  declare option op:error "w:all";
+\endcode
+
+More information on how options can be used to configure warnings can be found in the \ref options_and_annotations documentation.
+
+
+\section errors_warnings_cpp Errors and Warnings in the C++ API
+In the C++ API, errors are reported using the exception classes: <tt>ZorbaException</tt>, <tt>XQueryException</tt>, and <tt>UserException</tt>.
+Objects of type <tt>ZorbaException</tt> contain a description of the error.
+Instances of the class <tt>XQueryException</tt> are raised during the static or dynamic analysis or evaluation phase, respectively.
+They contain additional information about the source location of the problem in the XQuery program (i.e. <tt>source_uri()</tt>, <tt>source_line()</tt>, <tt>source_column()</tt>, <tt>source_line_end()</tt>, and <tt>source_column_end()</tt>).
+Moreover, if the error occurs during the dynamic evaluation phase, the object carries the stack trace containing the names and source location of the invoked functions.
+<tt>UserException</tt> is an <tt>XQueryException</tt> which is used to report errors that are raised by XQuery's <tt>fn:error()</tt> function.
+In addition to the source location and stack trace, instances of this class may also carry an error object (if passed to <tt>fn:error</tt>).
+
+In the C++ API, those objects are usually thrown and need to be caught (and handled) by the caller.
+However, the API also provides a way to register a user-defined diagnostic handler (i.e. subclass of <tt>DiagnosticHandler</tt>) whose <tt>error (ZorbaException const & exception)</tt> function is invoked if an error occurs.
+
+Please take a look at the C++ examples that show how to deal with errors and warnings in the C++ API (<a href="../cxx/html/errors_8cpp-example.html">errors.cpp</a>).
+
+\section try_catch Try/Catch Expressions
+The XQuery <a href="http://www.w3.org/TR/xquery-30/#id-try-catch">try/catch expression</a> provides error handling for dynamic errors and type errors raised during dynamic evaluation.
+For example,
+
+\include zorba/trycatch/trycatch_doc_example_01.xq
+
+Withing the catch expression, a couple of implicit variables are declared.
+Some of them (e.g.<tt>\$err:code</tt>, <tt>\$err:description</tt>, or <tt>\$err:line-number</tt>) are defined by the spec.
+They are contained in XQuery's error namespace http://www.w3.org/2005/xqt-errors (prefix <tt>err</tt>).
+Zorba defines an additional implicit variable that contains the stack trace of the error as an element.
+The name of the variable is <tt>\$zerr:stack-trace</tt> where the <tt>zerr</tt> prefix is bound to the namespace %http://www.zorba-xquery.com/errors.
+
+For example, the query
+
+\code
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+
+declare function local:bar()
+{
+  1 div 0
+};
+
+declare function local:foo()
+{
+  local:bar()
+};
+
+try 
+{
+  local:foo()
+} catch * {
+  $zerr:stack-trace
+}
+\endcode
+
+returns the following result:
+
+\code
+<stack xmlns="http://www.zorba-xquery.com/errors">
+  <entry>
+    <function namespace="http://www.w3.org/2005/xquery-local-functions" localname="bar" arity="0"/>
+    <location name="/home/mbrantner/zorba/vanilla/build/tmp.xq" line-begin="10" line-end="10" column-begin="3" column-end="14"/>
+  </entry>
+  <entry>
+    <function namespace="http://www.w3.org/2005/xquery-local-functions" localname="foo" arity="0"/>
+    <location name="/home/mbrantner/zorba/vanilla/build/tmp.xq" line-begin="15" line-end="15" column-begin="3" column-end="14"/>
+  </entry>
+</stack>
+\endcode
 
 */

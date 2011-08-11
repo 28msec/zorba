@@ -2257,11 +2257,13 @@
 
   <namespace prefix="zwarn">
 
-    <diagnostic code="ZWST0001" name="UNUSED_VARIABLE">
-      <value>"$1": variable declared but not used</value>
-    </diagnostic>
-
     <diagnostic code="ZWST0002" name="UNKNOWN_ANNOTATION">
+      <comment>
+        This warning is reported if the declaration of a function, variable,
+        collection, or index contains an annotation that is not in the
+        http://www.zorba-xquery.com/annotations namespace and Zorba doesn't know
+        how to handle.
+      </comment>
       <value>"$1": unknown or unsupported annotation</value>
     </diagnostic>
 

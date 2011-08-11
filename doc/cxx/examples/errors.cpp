@@ -55,9 +55,6 @@ error_example_2(Zorba* aZorba)
   return false;
 }
 
-// for callback functions that are not overriden, an
-// exception will be thrown (see example 4)
-// for all the ones that we override, we call the callback function (see example 3)
 class MyDiagnosticHandler  : public DiagnosticHandler 
 {
 public:

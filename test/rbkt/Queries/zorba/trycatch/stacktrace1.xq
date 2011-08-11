@@ -14,7 +14,7 @@ try
 {
   local:foo()
 } catch * {
-  copy $blub := $zerr:stack-trace
-  modify delete node $blub//@name
-  return $blub
+  copy $copy := $zerr:stack-trace
+  modify delete node $copy//@name
+  return $copy
 }

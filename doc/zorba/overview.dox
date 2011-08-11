@@ -59,7 +59,7 @@ that are supported by Zorba:
   </li>
 
   <li><a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery Full Text Extension</a> is supported by default.
-  Please see \ref ft_top for more details.</li>
+  Please see \ref ft_intro for more details.</li>
   The Full Text Extension increases memory usage during runtime.
   If you want to disable this feature, you can compile Zorba without Full Text support
   by setting the CMake variable \c ZORBA_NO_FULL_TEXT to "ON".

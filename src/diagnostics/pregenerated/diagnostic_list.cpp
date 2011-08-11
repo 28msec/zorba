@@ -1074,9 +1074,6 @@ ZorbaErrorCode XSST0008( "XSST0008" );
 
 namespace zwarn {
 
-ZorbaWarningCode ZWST0001_UNUSED_VARIABLE( "ZWST0001" );
-
-
 ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION( "ZWST0002" );
 
 

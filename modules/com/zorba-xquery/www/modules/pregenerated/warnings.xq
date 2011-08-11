@@ -38,10 +38,12 @@ module namespace zwarn = 'http://www.zorba-xquery.com/warnings';
 declare variable $zwarn:NS := 'http://www.zorba-xquery.com/warnings';
 
 (:~
-:)
-declare variable $zwarn:ZWST0001 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0001");
-
-(:~
+ :
+ : This warning is reported if the declaration of a function, variable,
+ : collection, or index contains an annotation that is not in the
+ : http://www.zorba-xquery.com/annotations namespace and Zorba doesn't know
+ : how to handle.
+ : 
 :)
 declare variable $zwarn:ZWST0002 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0002");
 
