@@ -38,3 +38,5 @@ x2h:main( $zorbaManifestPath,
           $indexHtmlPath,
           $zorbaVersion,
           $xhtmlRequisitesPath);
+          
+trace(1,"XQDoc generated successfully!");
