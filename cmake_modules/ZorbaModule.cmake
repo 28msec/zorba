@@ -680,17 +680,5 @@ MACRO (ADD_XQDOC_TARGETS)
     EXCLUDE_FROM_DEFAULT_BUILD 1
     FOLDER "Docs"
   )
-  ADD_TEST( test/rbkt/zorba/xqdoc/make_xqdoc
-      ${Zorba_EXE}
-      --omit-xml-declaration
-      -f
-      -q "${Zorba_DIR}/../test/rbkt/Queries/zorba/xqdoc/make_xqdoc.xqi"
-      -e "zorbaManifestPath:=${zorba_manifest_file}"
-      -e "xhtmlRequisitesPath:=${ZORBA_XHTML_REQUISITES_PATH}"
-      -e "xqdocBuildPath:=${CMAKE_BINARY_DIR}/test/rbkt/QueryResults/zorba/xqdoc"
-      -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
-  )
-  SET_TESTS_PROPERTIES("test/rbkt/zorba/xqdoc/make_xqdoc" PROPERTIES PASS_REGULAR_EXPRESSION "XQDoc generated successfully!")
-  MESSAGE(STATUS "  added test test/rbkt/zorba/xqdoc/make_xqdoc")
   MESSAGE(STATUS "ADD_XQDOC_TARGETS END")
 ENDMACRO(ADD_XQDOC_TARGETS)

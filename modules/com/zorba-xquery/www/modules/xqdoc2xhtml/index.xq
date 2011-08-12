@@ -286,13 +286,13 @@ declare %ann:sequential function xqdoc2html:copy-xhtml-requisites(
 
       (: second - clear the XHTML folder :)
       if(file:exists($xhtmlPath)) then
-        file:delete($xhtmlPath);
+        file:delete(fn:trace($xhtmlPath, " delete XHTML folder :"));
       else ();      
       
       (: third - re-copy these files :)
-      xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath ,("gif", "png", "svg"));
-      xqdoc2html:copy-files($xhtmlRequisitesPath, $libPath    ,"js");
-      xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath    ,"css");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($imagesPath,   " copy images in :"), ("gif", "png", "svg"));
+      xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($libPath,      " copy scripts in :"), "js");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, fn:trace($cssPath,      " copy stylesheets in :"), "css");
            
       file:create-directory($schemasPath);      
     }
@@ -403,9 +403,9 @@ declare %ann:sequential function xqdoc2html:main(
   variable $functionIndex := 
   xqdoc2html:generate-function-index-xhtml( $generalLeftMenu,
                                             $indexHtmlPath, 
-                                            fn:concat($xqdocXhtmlPath, 
+                            fn:trace(fn:concat($xqdocXhtmlPath, 
                                               file:directory-separator(), 
-                                              $xqdoc2html:functionIndexPageName));
+                                              $xqdoc2html:functionIndexPageName)," create function index page"));
                                                   
   variable $doc := 
     xqdoc2html:generate-index-html($indexHtmlPath,
@@ -541,7 +541,7 @@ declare %private %ann:sequential function xqdoc2html:generate-xqdoc-xhtml(
       
       variable $xhtml := xqdoc2html:add-left-menu($generalLeftMenu, $xhtmlSource);
       variable $xhtmlFilePath := fn:concat($xqdocXhtmlPath, file:directory-separator(), $xhtmlRelativeFilePath);
-      file:write($xhtmlFilePath, $xhtml, $xqdoc2html:serParamXhtml);
+      file:write(fn:trace($xhtmlFilePath," write XQDoc XHTML"), $xhtml, $xqdoc2html:serParamXhtml);
       
       (: copy the .xq module to the xhtml/modules folder :)
       variable $moduleContent := fetch:content($moduleUri, "MODULE");
@@ -577,7 +577,7 @@ declare %private %ann:sequential function xqdoc2html:generate-xqdoc-xhtml(
         variable $templatePath := fn:concat($xhtmlRequisitesPath, file:directory-separator(),"templates",file:directory-separator(),"main.html");
         variable $xhtml := xqdoc2html:doc($xqdoc2, $generalLeftMenu, $templatePath, $xqdocXhtmlPath);
         variable $xhtmlFilePath := fn:concat($xqdocXhtmlPath, file:directory-separator(), $getFilename,".html");
-        file:write($xhtmlFilePath, $xhtml, $xqdoc2html:serParamXhtml);
+        file:write(fn:trace($xhtmlFilePath," write XQDoc XHTML"), $xhtml, $xqdoc2html:serParamXhtml);
       }
       else ();
     }
@@ -632,10 +632,10 @@ declare %private %ann:sequential function xqdoc2html:copy-examples(
   (:copy the @examples:)
   {
     variable $noExamples := count($xqdoc/xqdoc:functions/xqdoc:function/xqdoc:comment/xqdoc:custom[@tag="example"]);
-    (:if($noExamples ne xs:integer(0)) then
+    if($noExamples ne xs:integer(0)) then
       trace($noExamples,
           " number of examples processed");
-    else ();:)
+    else ();
     for $example in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:comment/xqdoc:custom[@tag="example"]
     let $exampleText := xqdoc2html:get-example-filename($example/text())
     let $exampleDestination := fn:concat($examplesFolderDestination, "/", replace($exampleText,'.xq','.html'))
@@ -1120,7 +1120,7 @@ declare %private function xqdoc2html:module-description($moduleUri as xs:string,
         ($moduleUri = "http://www.functx.com/")) then ()
      else
       (<div class="subsubsection">XQuery version and encoding for this module:</div>,
-       <p class="annotationText">xquery version "{$module/xqdoc:comment/xqdoc:custom[@tag='XQuery version']/text()}" encoding "{$module/xqdoc:comment/xqdoc:custom[@tag='encoding']/text()}";</p>)
+       <p class="annotationText">xquery version "{$module/xqdoc:comment/xqdoc:custom[@tag='XQuery version']}" encoding "{$module/xqdoc:comment/xqdoc:custom[@tag='encoding']}";</p>)
      )
 };
 

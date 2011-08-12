@@ -66,7 +66,7 @@ declare %ann:sequential function pxqdoc:delete-XML-dir(
                                         "xml");
   (: clear the XML folder :)
   if(file:exists($xqdocXMLPath)) then
-    file:delete($xqdocXMLPath);
+    file:delete(fn:trace($xqdocXMLPath, " delete XML folder :"));
   else ();
 };
 
@@ -100,7 +100,7 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
     else
     {
       (: create the XML folder if it does not exist already :)
-      file:create-directory($xqdocXMLPath);
+      file:create-directory(trace($xqdocXMLPath," create xml folder ..."));
       
       for $module in $moduleManifests
       (: note the module version is not supported because of a bug in the fetch for the module URI ending with / :)
@@ -114,7 +114,7 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
       let $xqdocRelFileName  := pxqdoc:get-filename($moduleURI)
       let $xqdocFileName := concat($xqdocXMLPath, file:directory-separator(), $xqdocRelFileName, ".xml")
       return
-        file:write($xqdocFileName,
+        file:write(trace($xqdocFileName," write XQDoc XML"),
                    $xqdoc, 
                    $pxqdoc:serParamXml)
     };
