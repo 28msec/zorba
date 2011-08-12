@@ -94,7 +94,7 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
   {
     variable $manifestXML := fn:parse-xml(file:read-text($zorbaManifestPath));
     
-    variable $moduleManifests := $manifestXML//*:module;
+    variable $moduleManifests := $manifestXML/zm:manifest/zm:module;
     
     if(count($moduleManifests) eq xs:integer(0)) then ();
     else

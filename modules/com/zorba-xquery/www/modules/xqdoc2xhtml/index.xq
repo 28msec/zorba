@@ -340,7 +340,7 @@ declare %private %ann:sequential function xqdoc2html:collectZorbaManifestEntries
   {
     variable $manifestXML := fn:parse-xml(file:read-text($zorbaManifestPath));
     
-    variable $moduleManifests := $manifestXML//*:module;    
+    variable $moduleManifests := $manifestXML/z:manifest/z:module;    
          
     for $module in $moduleManifests
     return
