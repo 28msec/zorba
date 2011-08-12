@@ -26,11 +26,13 @@ namespace zorba
 
 RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
 {
-  relpath_expr *re = dynamic_cast<relpath_expr *>(node);
-  if (re != NULL) {
+  relpath_expr* re = dynamic_cast<relpath_expr *>(node);
+  if (re != NULL) 
+  {
     ulong numSteps = (ulong)re->size();
     
-    for (ulong i = 0; i < numSteps - 1; i++) {
+    for (ulong i = 0; i < numSteps - 1; i++) 
+    {
       axis_step_expr* axisStep = dynamic_cast<axis_step_expr*>((*re)[i].getp());
       
       if (axisStep != NULL &&
@@ -49,13 +51,15 @@ RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
       }
     }
 
-    if (numSteps == 1) {
+    if (numSteps == 1) 
+    {
       return (*re) [0];
     }
   }
 
   return NULL;
 }
+
 
 RULE_REWRITE_POST(EliminateExtraneousPathSteps)
 {

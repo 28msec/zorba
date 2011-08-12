@@ -446,6 +446,9 @@ void while_expr::compute_scripting_kind()
   theScriptingKind = theBody->get_scripting_detail();
 
   theScriptingKind &= ~BREAKING_EXPR;
+
+  if (theScriptingKind == UNKNOWN_SCRIPTING_KIND)
+    theScriptingKind = SIMPLE_EXPR;
 }
 
 

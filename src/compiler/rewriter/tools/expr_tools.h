@@ -44,6 +44,9 @@
 namespace zorba
 {
 
+namespace expr_tools
+{
+
 int count_variable_uses(const expr* root, const var_expr* var, RewriterContext* rCtx, int limit);
 
 
@@ -87,7 +90,7 @@ public:
 };
 
 
-const var_ptr_set& get_varset_annotation(const expr* e, Annotations::Key k);
+const var_ptr_set& get_varset_annotation(const expr* e);
 
 
 /*******************************************************************************
@@ -100,6 +103,7 @@ inline bool is_data(expr* e)
 }
 
 
+}
 }
 
 #endif /* ZORBA_EXPR_TOOLS_H */

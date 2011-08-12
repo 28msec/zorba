@@ -150,11 +150,13 @@ expr_t MarkConsumerNodeProps::apply(
 
     if (exp->discardsXDM())
     {
-      pushdown_ignores_sorted_nodes(node, exp->get_expr());
-      pushdown_ignores_duplicate_nodes(node, exp->get_expr());
+      set_ignores_sorted_nodes(exp->get_expr(), ANNOTATION_TRUE);
+      set_ignores_duplicate_nodes(exp->get_expr(), ANNOTATION_TRUE);
     }
     else
     {
+      pushdown_ignores_sorted_nodes(node, exp->get_expr());
+      pushdown_ignores_duplicate_nodes(node, exp->get_expr());
     }
 
     break;
@@ -223,12 +225,6 @@ expr_t MarkConsumerNodeProps::apply(
         // On the other hand, if the flwor does need to produce nodes in doc
         // order, then we conservatively mark each FOR domain expr as needing
         // to produce nodes in doc order as well.
-        // 
-        // Note: this property does not hold for dup nodes; for example:
-        // (let $a := <u><v>1</v></u>
-        //  let $x := ($a, $a)
-        //  for $y in $x return <a>{$y}</a>
-        // )//u
         if (posVar == NULL)
         {
           domainExpr->setIgnoresSortedNodes(flwor->getIgnoresSortedNodes());
@@ -294,10 +290,6 @@ expr_t MarkConsumerNodeProps::apply(
     expr_t arg = (*static_cast<relpath_expr *>(node))[0];
     pushdown_ignores_sorted_nodes(node, arg);
     pushdown_ignores_duplicate_nodes(node, arg);
-
-    //set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
-    //set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
-      
     break;
   }
 

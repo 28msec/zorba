@@ -664,7 +664,7 @@ static void rewriteJoin(
   modifiers[0].theEmptyLeast = true;
   modifiers[0].theCollation = sctx->get_default_collation(QueryLoc::null);
 
-  replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
+  expr_tools::replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
 
   idx->setKeyExpressions(columnExprs);
 

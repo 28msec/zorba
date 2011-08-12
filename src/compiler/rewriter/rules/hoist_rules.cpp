@@ -73,9 +73,14 @@ struct flwor_holder
 {
   struct flwor_holder  * prev;
   rchandle<flwor_expr>   flwor;
-  int                    clause_count;
+  long                   clauseCount;
 
-  flwor_holder() : prev(NULL), clause_count(0) { }
+  flwor_holder() 
+    :
+    prev(NULL),
+    clauseCount(0)
+  {
+  }
 };
 
 
@@ -90,17 +95,14 @@ expr_t HoistRule::apply(
 {
   assert(node == rCtx.getRoot());
 
-  //  if (containsUpdates(node))
-  //   return node;
-
   ulong numVars = 0;
   VarIdMap varmap;
 
-  index_flwor_vars(node, numVars, varmap, NULL);
+  expr_tools::index_flwor_vars(node, numVars, varmap, NULL);
 
   ExprVarsMap freevarMap;
   DynamicBitset freeset(numVars);
-  build_expr_to_vars_map(node, varmap, freeset, freevarMap);
+  expr_tools::build_expr_to_vars_map(node, varmap, freeset, freevarMap);
 
   struct flwor_holder root;
   modified = hoist_expressions(rCtx, node, varmap, freevarMap, &root);
@@ -127,35 +129,7 @@ static bool hoist_expressions(
 {
   bool status = false;
 
-  if (e->get_expr_kind() == block_expr_kind || e->is_sequential())
-  {
-    // Note : local vars must also be indexed if they are allowed to be set
-    // inside the for/let clauses of a flwor expr.
-
-    ExprIterator iter(e);
-
-    while (!iter.done())
-    {
-      // TODO: if no updating child exprs have been encountered so far, subexprs
-      // of the current child expr may be hoisted outside the sequential expr as
-      // long as they don't reference any local vars.
-      expr_t ce = *iter;
-
-      struct flwor_holder root;
-      bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
-
-      if (nestedModified && root.flwor != NULL)
-      {
-        root.flwor->set_return_expr(ce);
-        (*iter) = root.flwor;
-      }
-
-      status = nestedModified || status;
-
-      iter.next();
-    }
-  }
-  else if (e->get_expr_kind() == flwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -165,6 +139,7 @@ static bool hoist_expressions(
 
     ulong numForLetClauses = flwor->num_forlet_clauses();
     ulong i = 0;
+
     while (i < numForLetClauses)
     {
       forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i));
@@ -198,7 +173,7 @@ static bool hoist_expressions(
         }
       }
 
-      i = ++(curr_holder.clause_count);
+      i = ++(curr_holder.clauseCount);
 
       assert(numForLetClauses == flwor->num_forlet_clauses());
     }
@@ -218,16 +193,43 @@ static bool hoist_expressions(
       }
     }
 
+    // TODO: hoist orderby exprs
+
     expr_t re = flwor->get_return_expr();
-    expr_t rvar = try_hoisting(rCtx, re, varmap, freevarMap, &curr_holder);
-    if (rvar != NULL)
+    expr_t unhoistExpr = try_hoisting(rCtx, re, varmap, freevarMap, &curr_holder);
+    if (unhoistExpr != NULL)
     {
-      flwor->set_return_expr(rvar.getp());
+      flwor->set_return_expr(unhoistExpr.getp());
       status = true;
     }
     else
     {
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
+    }
+  }
+  else if (e->get_expr_kind() == block_expr_kind || e->is_sequential())
+  {
+    ExprIterator iter(e);
+
+    while (!iter.done())
+    {
+      // TODO: if no updating child exprs have been encountered so far, subexprs
+      // of the current child expr may be hoisted outside the sequential expr as
+      // long as they don't reference any local vars.
+      expr_t ce = *iter;
+
+      struct flwor_holder root;
+      bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
+
+      if (nestedModified && root.flwor != NULL)
+      {
+        root.flwor->set_return_expr(ce);
+        (*iter) = root.flwor;
+      }
+
+      status = nestedModified || status;
+
+      iter.next();
     }
   }
   else if (e->is_updating() ||
@@ -277,10 +279,7 @@ static expr_t try_hoisting(
     const ExprVarsMap& freevarMap,
     struct flwor_holder* holder)
 {
-  if (non_hoistable(e) ||
-      e->contains_node_construction() ||
-      e->containsRecursiveCall() ||
-      is_enclosed_expr(e))
+  if (non_hoistable(e) || e->contains_node_construction())
   {
     return NULL;
   }
@@ -295,11 +294,12 @@ static expr_t try_hoisting(
 
   bool inloop = false;
   bool foundReferencedFLWORVar = false;
+  bool foundSequentialClause = false;
   int i = 0;
 
   // h->prev == NULL means that expr e is not inside any flwor expr, and as a
   // result, there is nothing to hoist. 
-  while (h->prev != NULL && !foundReferencedFLWORVar)
+  while (h->prev != NULL)
   {
     group_clause* gc = h->flwor->get_group_clause();
 
@@ -331,10 +331,16 @@ static expr_t try_hoisting(
     // If yes, then let V be the inner-most var referenced by e. If there are any
     // FOR vars after V, e can be hoisted out of any such FOR vars. Otherwise, e
     // cannot be hoisted.
-    for (i = h->clause_count - 1; i >= 0; --i)
+    for (i = h->clauseCount - 1; i >= 0; --i)
     {
       const forletwin_clause* flc = reinterpret_cast<const forletwin_clause*>
                                     ((*h->flwor)[i]);
+
+      if (flc->get_expr()->is_sequential())
+      {
+        foundSequentialClause = true;
+        break;
+      }
 
       if (contains_var(flc->get_var(), varmap, varset) ||
           contains_var(flc->get_pos_var(), varmap, varset) ||
@@ -349,8 +355,10 @@ static expr_t try_hoisting(
                  TypeOps::type_max_cnt(tm, *flc->get_expr()->get_return_type()) >= 2));
     }
 
-    if (!foundReferencedFLWORVar)
-      h = h->prev;
+    if (foundSequentialClause || foundReferencedFLWORVar)
+      break;
+
+    h = h->prev;
   }
 
   if (!inloop)
@@ -388,7 +396,7 @@ static expr_t try_hoisting(
   else
   {
     h->flwor->add_clause(i + 1, flref);
-    ++h->clause_count;
+    ++h->clauseCount;
   }
 
   expr_t unhoisted = new fo_expr(e->get_sctx(),
@@ -440,6 +448,8 @@ static bool non_hoistable(const expr* e)
       (k == wrapper_expr_kind && 
        non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
       is_already_hoisted(e) ||
+      is_enclosed_expr(e) ||
+      e->containsRecursiveCall() ||
       e->is_nondeterministic() ||
       e->is_sequential())
   {

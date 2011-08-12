@@ -834,39 +834,161 @@ bool begin_visit(flwor_expr& v)
 
   bool isGeneral = v.is_general();
 
+  ulong numClauses = v.num_clauses();
+
   if (v.is_sequential())
   {
-    if (!isGeneral &&
-        (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
+    if (!isGeneral)
     {
-      materialize_clause* mat = 
-      new materialize_clause(v.get_sctx(), v.get_return_expr()->get_loc());
-
-      v.add_clause(mat);
-    }
-    else if (isGeneral)
-    {
-      const flwor_clause* lastClause = v[v.num_clauses()-1];
-
-      if (lastClause->get_kind() != flwor_clause::order_clause &&
-          lastClause->get_kind() != flwor_clause::group_clause)
+      if (v.has_sequential_clauses())
       {
-        std::vector<OrderModifier> modifiers;
-        std::vector<expr_t> orderingExprs;
+        bool numForClauses = 0;
 
-        orderby_clause* mat = 
-          new orderby_clause(v.get_sctx(), 
-                             v.get_return_expr()->get_loc(),
-                             true,
-                             modifiers,
-                             orderingExprs);
+        for (ulong i = 0; i < numClauses; ++i)
+        {
+          const flwor_clause* c = v[i];
+
+          if (c->get_kind() == flwor_clause::for_clause)
+          {
+            ++numForClauses;
+
+            if (c->get_expr()->is_sequential())
+            {
+              // TODO: do not convert to general flwor if the whole flwor consists
+              // of a single FOR followed by RETURN.
+              isGeneral = true;
+              v.set_general(true);
+              break;
+            }
+          }
+          else if (c->get_kind() == flwor_clause::let_clause)
+          {
+            if (c->get_expr()->is_sequential())
+            {
+              if (numForClauses > 0)
+              {
+                isGeneral = true;
+                v.set_general(true);
+                break;
+              }
+            }
+          }
+          else
+          {
+            break;
+          }
+        }
+      }
+
+      if (!isGeneral &&
+          v.get_return_expr()->is_sequential() &&
+          (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
+      {
+        materialize_clause* mat = 
+        new materialize_clause(v.get_sctx(), v.get_return_expr()->get_loc());
 
         v.add_clause(mat);
+        ++numClauses;
+      }
+    } // !isGeneral
+    
+    if (isGeneral)
+    {
+      std::vector<OrderModifier> modifiers;
+      std::vector<expr_t> orderingExprs;
+
+      bool numForClauses = 0;
+      ulong i = 0;
+
+      while (i < numClauses)
+      {
+        const flwor_clause* c = v[i];
+
+        flwor_clause::ClauseKind k = c->get_kind();
+
+        switch (k)
+        {
+        case flwor_clause::for_clause:
+        case flwor_clause::let_clause:
+        {
+          if (k == flwor_clause::for_clause)
+            ++numForClauses;
+
+          if (c->get_expr()->is_sequential())
+          {
+            if (k == flwor_clause::for_clause || numForClauses > 0)
+            {
+              if (i > 0 &&
+                  v[i-1]->get_kind() != flwor_clause::order_clause &&
+                  v[i-1]->get_kind() != flwor_clause::group_clause)
+              {
+                orderby_clause* mat = 
+                new orderby_clause(v.get_sctx(), 
+                                   c->get_loc(),
+                                   true,
+                                   modifiers,
+                                   orderingExprs);
+
+                v.add_clause(i, mat);
+                ++i;
+                ++numClauses;
+              }
+
+              if (i < numClauses - 1 &&
+                  v[i+1]->get_kind() != flwor_clause::group_clause)
+              {
+                orderby_clause* mat = 
+                new orderby_clause(v.get_sctx(), 
+                                   c->get_loc(),
+                                   true,
+                                   modifiers,
+                                   orderingExprs);
+
+                v.add_clause(i+1, mat);
+                ++numClauses;
+              }
+            }
+          }
+
+          break;
+        }
+        case flwor_clause::window_clause:
+        {
+          ++numForClauses;
+          break;
+        }
+        case flwor_clause::where_clause:
+        case flwor_clause::group_clause:
+        case flwor_clause::order_clause:
+        case flwor_clause::count_clause:
+        {
+          break;
+        }
+        default:
+          ZORBA_ASSERT(false);
+        }
+
+        ++i;
+      }
+
+      const flwor_clause* lastClause = v[v.num_clauses()-1];
+
+      if (v.get_return_expr()->is_sequential() &&
+          lastClause->get_kind() != flwor_clause::order_clause &&
+          lastClause->get_kind() != flwor_clause::group_clause)
+      {
+        orderby_clause* mat = 
+        new orderby_clause(v.get_sctx(), 
+                           v.get_return_expr()->get_loc(),
+                           true,
+                           modifiers,
+                           orderingExprs);
+
+        v.add_clause(mat);
+        ++numClauses;
       }
     }
   }
-
-  ulong numClauses = v.num_clauses();
 
   for (ulong i = 0; i < numClauses; ++i)
   {

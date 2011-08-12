@@ -405,39 +405,6 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
       PROPOGATE_SORTED_NODES(retExpr, e);
       PROPOGATE_DISTINCT_NODES(retExpr, e);
     }
-
-#if 0
-    ulong numVars = e->num_forlet_clauses();
-
-    if (numVars == 1)
-    {
-      forletwin_clause* cl = static_cast<forletwin_clause*>(e->get_clause(0));
-
-      if (cl->get_kind() == flwor_clause::for_clause)
-      {
-        expr* retExpr = e->get_return_expr();
-
-        const var_expr* var = retExpr->get_var();
-
-        if (var != NULL && var == cl->get_var())
-        {
-          PROPOGATE_SORTED_NODES(cl->get_expr(), e);
-          PROPOGATE_DISTINCT_NODES(cl->get_expr(), e);
-        }
-      }
-      else if (cl->get_kind() == flwor_clause::let_clause)
-      {
-        expr* retExpr = e->get_return_expr();
-
-        PROPOGATE_SORTED_NODES(retExpr, e);
-        PROPOGATE_DISTINCT_NODES(retExpr, e);
-      }
-      else
-      {
-        ZORBA_ASSERT(false);
-      }
-    }
-#endif
   }
 }
 

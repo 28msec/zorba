@@ -122,6 +122,21 @@ void UpdatePrimitive::addNodeForValidation(zorba::store::Item* node)
   method). This way, to undo a delete, we just need to reconnect the target node
   at its original position under its original parent.
 ********************************************************************************/
+UpdDelete::UpdDelete(CollectionPul* pul, const QueryLoc* loc, store::Item_t& target)
+  :
+  UpdatePrimitive(pul, loc, target)
+{
+  XmlNode* child = BASE_NODE(theTarget);
+
+  store::StoreConsts::NodeKind childKind = child->getNodeKind();
+
+  if (childKind == store::StoreConsts::elementNode || 
+      childKind == store::StoreConsts::attributeNode ||
+      childKind == store::StoreConsts::textNode)
+    theRemoveType = true;
+}
+
+
 void UpdDelete::apply()
 {
   XmlNode* target = BASE_NODE(theTarget);
@@ -365,8 +380,8 @@ UpdReplaceChild::UpdReplaceChild(
   theChild.transfer(child);
 
   store::StoreConsts::NodeKind targetKind = theTarget->getNodeKind();
-
   store::StoreConsts::NodeKind childKind = theChild->getNodeKind();
+
   if (targetKind == store::StoreConsts::elementNode &&
       (childKind == store::StoreConsts::elementNode ||
        childKind == store::StoreConsts::textNode))
@@ -374,7 +389,7 @@ UpdReplaceChild::UpdReplaceChild(
 
   uint64_t numChildren = (uint64_t)newChildren.size();
   theNewChildren.resize(numChildren);
-  for (uint64_t i = 0; i < numChildren; i++)
+  for (uint64_t i = 0; i < numChildren; ++i)
   {
     theNewChildren[i].transfer(newChildren[i]);
 
@@ -392,7 +407,6 @@ UpdReplaceChild::UpdReplaceChild(
 
 void UpdReplaceChild::apply()
 {
-  theIsApplied = true;
   INTERNAL_NODE(theTarget)->replaceChild(*this);
 }
 

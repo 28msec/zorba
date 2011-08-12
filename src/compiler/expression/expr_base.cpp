@@ -62,6 +62,8 @@ static xqtref_t print_expr_and_type(expr* e, xqtref_t t)
 #endif
 
 
+typedef std::set<const var_expr *> var_ptr_set;
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

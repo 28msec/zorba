@@ -647,6 +647,7 @@ public:
 
 protected:
   bool          theIsGeneral;
+  bool          theHasSequentialClauses;
   clause_list_t theClauses;
   expr_t        theReturnExpr;
 
@@ -656,15 +657,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  flwor_expr(static_context* sctx, const QueryLoc& loc, bool general)
-    :
-    expr(sctx, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
-    theIsGeneral(general)
-  {
-    theScriptingKind = SIMPLE_EXPR;
-  }
+  flwor_expr(static_context* sctx, const QueryLoc& loc, bool general);
 
   bool is_general() const { return theIsGeneral; }
+
+  void set_general(bool v) { theIsGeneral = true; }
 
   bool is_updating() const { return theReturnExpr->is_updating(); }
 
@@ -675,6 +672,8 @@ public:
     theReturnExpr = e;
     compute_scripting_kind();
   }
+
+  bool has_sequential_clauses() const { return theHasSequentialClauses; }
 
   void compute_scripting_kind();
 

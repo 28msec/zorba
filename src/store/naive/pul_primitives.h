@@ -164,11 +164,7 @@ protected:
   zstring          theLeftContent;
 
 protected:
-  UpdDelete(CollectionPul* pul, const QueryLoc* aLoc, store::Item_t& target)
-    :
-    UpdatePrimitive(pul, aLoc, target)
-  {
-  }
+  UpdDelete(CollectionPul* pul, const QueryLoc* aLoc, store::Item_t& target);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -338,8 +334,13 @@ protected:
   std::vector<store::Item_t>  theNewChildren;
 
   ulong                       theNumApplied;
+
+  ulong                       thePos;
   store::Item_t               theLeftMergedNode;
   store::Item_t               theRightMergedNode;
+  store::Item_t               theRightSibling;
+  zstring                     theLeftContent;
+
   bool                        theIsTyped;
 
   UpdReplaceChild(

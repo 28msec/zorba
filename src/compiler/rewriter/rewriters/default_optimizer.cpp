@@ -194,7 +194,10 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     rCtx.theExprVarsMap = new ExprVarsMap;
 
     ulong numVars = 0;
-    index_flwor_vars(rCtx.getRoot(), numVars, *rCtx.theVarIdMap, rCtx.theIdVarMap);
+    expr_tools::index_flwor_vars(rCtx.getRoot(),
+                                 numVars,
+                                 *rCtx.theVarIdMap,
+                                 rCtx.theIdVarMap);
 
     do
     {
@@ -203,10 +206,10 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       rCtx.theExprVarsMap->clear();
 
       DynamicBitset freeset(numVars);
-      build_expr_to_vars_map(rCtx.getRoot(),
-                             *rCtx.theVarIdMap,
-                             freeset,
-                             *rCtx.theExprVarsMap);
+      expr_tools::build_expr_to_vars_map(rCtx.getRoot(),
+                                         *rCtx.theVarIdMap,
+                                         freeset,
+                                         *rCtx.theExprVarsMap);
 
       local_modified = false; 
 

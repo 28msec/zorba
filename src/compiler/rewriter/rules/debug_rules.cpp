@@ -35,9 +35,11 @@ RULE_REWRITE_POST(EchoNodes)
   return NULL;
 }
 
+
 RULE_REWRITE_PRE(PlanPrinter)
 {
-  if (node == rCtx.getRoot()) {
+  if (node == rCtx.getRoot()) 
+  {
     node->put(std::cout);
   }
   return NULL;

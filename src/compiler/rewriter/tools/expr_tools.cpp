@@ -30,6 +30,9 @@
 namespace zorba
 {
 
+namespace expr_tools
+{
+
 static void add_wincond_vars(const flwor_wincond*, ulong&, VarIdMap&, IdVarMap*);
 
 static void add_var(var_expr*, ulong&, VarIdMap&, IdVarMap*);
@@ -37,6 +40,98 @@ static void add_var(var_expr*, ulong&, VarIdMap&, IdVarMap*);
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
 static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool count_variable_uses_rec(
+    const expr* e,
+    const var_expr* var,
+    RewriterContext* rCtx,
+    int limit,
+    int& count)
+{
+  if (limit > 0 && count >= limit)
+  {
+    return false;
+  }
+
+  if (e == var)
+  {
+    ++count;
+    return true;
+  }
+
+  if (e->get_expr_kind() == if_expr_kind)
+  {
+    const if_expr* ifExpr = static_cast<const if_expr*>(e);
+
+    int thenCount = 0;
+    int elseCount = 0;
+
+    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, rCtx, limit, count))
+        return false;
+
+    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, rCtx, limit, thenCount))
+    {
+      count = thenCount;
+      return false;
+    }
+
+    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, rCtx, limit, elseCount))
+    {
+      count = elseCount;
+      return false;
+    }
+
+    count += (thenCount > elseCount ? thenCount : elseCount);
+  }
+  else
+  {
+    ExprConstIterator iter(e);
+    while (!iter.done())
+    {
+      if (!count_variable_uses_rec(iter.get_expr(), var, rCtx, limit, count))
+        return false;
+      
+      iter.next();
+    }
+  }
+
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int count_variable_uses(
+    const expr* root,
+    const var_expr* var,
+    RewriterContext* rCtx,
+    int limit = 0)
+{
+  int count = 0;
+
+  count_variable_uses_rec(root, var, rCtx, limit, count);
+
+  return count;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const var_ptr_set& get_varset_annotation(const expr* e) 
+{
+  static var_ptr_set no_free_vars;
+
+  AnnotationValue_t ann = e->get_annotation(Annotations::FREE_VARS);
+  return (ann == NULL ?
+          no_free_vars :
+          dynamic_cast<VarSetAnnVal *>(ann.getp())->theVarset);
+}
 
 
 /*******************************************************************************
@@ -61,11 +156,8 @@ expr_t fix_annotations(expr* new_expr, const expr* old_expr)
   {
     if (k == Annotations::FREE_VARS)
     {
-      const var_ptr_set& old_set = 
-      get_varset_annotation(old_expr, Annotations::FREE_VARS);
-
-      const var_ptr_set& new_set = 
-      get_varset_annotation(new_expr, Annotations::FREE_VARS);
+      const var_ptr_set& old_set = get_varset_annotation(old_expr);
+      const var_ptr_set& new_set = get_varset_annotation(new_expr);
 
       var_ptr_set s;
       std::set_union(old_set.begin(),
@@ -431,6 +523,7 @@ static void set_bit(
 }
 
 
+}
 }
 
 /* vim:set et sw=2 ts=2: */

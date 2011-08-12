@@ -13,7 +13,5 @@
 # limitations under the License.
 SET(REWRITER_TOOLS_SRCS
     expr_tools.cpp
-    freevars.cpp
-    var_counter.cpp
     dataflow_annotations.cpp
     udf_graph.cpp)

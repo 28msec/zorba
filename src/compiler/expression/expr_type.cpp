@@ -622,28 +622,13 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     block_expr* e = static_cast<block_expr*>(this);
 
-    // return type of a sequential expression is the union
-    // of the types of all exit expressions and the
-    // last expression of this sequential expression.
-    // This could be improved but would require much more control
-    // flow analysis.
-    // bugfix for bug #3042043
-    for (size_t i = 0; i < e->theArgs.size(); ++i)
+    if (!e->theArgs.empty())
     {
-      if (//dynamic_cast<exit_expr*>(e->theArgs[i].getp()) || // exit expression
-          i == e->theArgs.size() - 1) 
-      {
-        if (!newType.getp()) // first exit expression or last expression
-        {
-          newType = e->theArgs[i]->get_return_type();
-        }
-        else
-        {
-          newType = TypeOps::union_type(*newType.getp(),
-                                        *e->theArgs[i]->get_return_type(),
-                                        tm);
-        }
-      }
+      newType = e->theArgs[e->theArgs.size() - 1]->get_return_type();
+    }
+    else
+    {
+      newType = rtm.EMPTY_TYPE;
     }
     break;
   }

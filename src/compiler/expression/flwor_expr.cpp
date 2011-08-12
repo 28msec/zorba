@@ -852,10 +852,24 @@ flwor_clause_t where_clause::clone(expr::substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
+flwor_expr::flwor_expr(static_context* sctx, const QueryLoc& loc, bool general)
+  :
+  expr(sctx, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
+  theIsGeneral(general),
+  theHasSequentialClauses(false)
+{
+  theScriptingKind = SIMPLE_EXPR;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theIsGeneral;
+  ar & theHasSequentialClauses;
   ar & theClauses;
   ar & theReturnExpr;
 }
