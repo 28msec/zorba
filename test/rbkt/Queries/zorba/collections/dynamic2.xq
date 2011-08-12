@@ -14,7 +14,7 @@ declare function local:check($nodes)
     else fn:error()
 };
 
-ddl:create-collection($coll);
+ddl:create($coll);
 
 $content := dml:apply-insert-nodes-first($coll, for $i  in 1 to 10 return <b>{$i}</b>);
 local:check(dml:collection($coll)[position() <= 10]);

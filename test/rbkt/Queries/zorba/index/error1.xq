@@ -6,6 +6,6 @@ declare index foo
 on nodes (<a i="1"/>, <b i="2"/>, <c i="1"/>)
 by fn:data(./@i) as xs:string;
 
-index_ddl:create-index(xs:QName("foo"));
+index_ddl:create(xs:QName("foo"));
 index_ddl:drop-index(xs:QName("foo"));
 

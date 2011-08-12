@@ -35,6 +35,6 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
 };
 
 
-ddl:create-collection($data:users);
+ddl:create($data:users);
 local:get($data:users, ", 1+1")
 

@@ -5,7 +5,7 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:foo($collName as xs:QName) {
-  ddl:create-collection($collName,<a/>);
+  ddl:create($collName,<a/>);
   let $a := dml:collection($collName)
   return dml:insert-nodes-last($collName, <b/>);
   exit returning ();

@@ -22,7 +22,7 @@
 <zorba:iterator name="ActivateICIterator" arity="unary">
 
     <zorba:description author="Zorba Team">
-  activate-integrity-constraint($icName as xs:QName) as ()
+  activate($icName as xs:QName) as ()
 
   Activates a staticaly declared integrity constraint for runtime
   check durring apply updates. After activation, the integrity
@@ -33,7 +33,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="activate-integrity-constraint" 
+      <zorba:signature localname="activate" 
         prefix="zorba-store-integrity_constraints-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -55,7 +55,7 @@
 <zorba:iterator name="DeactivateICIterator" arity="unary">
 
     <zorba:description author="Zorba Team">
-  deactivate-integrity-constraint($icName as xs:QName) as ()
+  deactivate($icName as xs:QName) as ()
 
   Deactivates the runtime check of the $icName integrity constraint
   and it also removes it from dynamic context.
@@ -66,7 +66,7 @@
 
     <zorba:function>
  
-      <zorba:signature localname="deactivate-integrity-constraint" 
+      <zorba:signature localname="deactivate" 
                        prefix="zorba-store-integrity_constraints-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>

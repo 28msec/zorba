@@ -3,4 +3,4 @@ import module namespace ns = "http://example.org/datamodule/" at "../collections
 
 declare variable $input-context1 external;
 
-ddl:create-collection(xs:QName('ns:collection_1'), fn:doc($input-context1)//*)
+ddl:create(xs:QName('ns:collection_1'), fn:doc($input-context1)//*)

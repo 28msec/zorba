@@ -5,11 +5,11 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 conf:create-collection-submissions ();
 conf:test();
 dml:delete-nodes(dml:collection(xs:QName("conf:submissionXqueryX")));                           
-ddl:delete-collection(xs:QName("conf:submissionXqueryX"));
+ddl:delete(xs:QName("conf:submissionXqueryX"));
 dml:delete-nodes(dml:collection(xs:QName("conf:submissionXquery")));                           
-ddl:delete-collection(xs:QName("conf:submissionXquery"));
+ddl:delete(xs:QName("conf:submissionXquery"));
 dml:delete-nodes(dml:collection(xs:QName("conf:xquery")));                           
-ddl:delete-collection(xs:QName("conf:xquery"));
+ddl:delete(xs:QName("conf:xquery"));
 dml:delete-nodes(dml:collection(xs:QName("conf:xqueryx")));                           
-ddl:delete-collection(xs:QName("conf:xqueryx"));
+ddl:delete(xs:QName("conf:xqueryx"));
 

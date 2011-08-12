@@ -5,10 +5,10 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
 
-ddl:create-collection($xqddf-test:white-collection);
-ddl:create-collection($xqddf-test:blue-collection);
+ddl:create($xqddf-test:white-collection);
+ddl:create($xqddf-test:blue-collection);
 
-ic_ddl:activate-integrity-constraint($xqddf-test:ric1);
+ic_ddl:activate($xqddf-test:ric1);
 
 
 {

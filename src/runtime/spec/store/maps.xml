@@ -61,7 +61,7 @@
 
     <zorba:function> 
 
-      <zorba:signature localname="destroy" prefix="zorba-store-data-structure-unordered-map">
+      <zorba:signature localname="delete" prefix="zorba-store-data-structure-unordered-map">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>

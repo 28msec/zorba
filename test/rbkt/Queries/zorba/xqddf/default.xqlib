@@ -22,9 +22,9 @@ declare variable $def:user-by-uid := xs:QName("def:user-by-uid");
 
 declare %ann:sequential function def:init()
 {
-  ddl:create-collection($def:user);
+  ddl:create($def:user);
 
-  index_ddl:create-index($def:user-by-uid);
+  index_ddl:create($def:user-by-uid);
 
   dml:insert-nodes($def:user,
     (

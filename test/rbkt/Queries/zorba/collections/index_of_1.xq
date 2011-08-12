@@ -6,7 +6,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:test()
 {
-  ddl:create-collection(xs:QName("ns:test1"));
+  ddl:create(xs:QName("ns:test1"));
   dml:insert-nodes-last(xs:QName("ns:test1"), <a/>);
   dml:insert-nodes-last(xs:QName("ns:test1"), <b/>);
   dml:insert-nodes-last(xs:QName("ns:test1"), <c/>);

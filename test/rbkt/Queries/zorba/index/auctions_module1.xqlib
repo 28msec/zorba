@@ -82,21 +82,21 @@ by (for $x in ./bidder/date return $x);
 
 declare %ann:sequential function auctions:create-db()
 {
-  ddl:create-collection($auctions:auctions);
+  ddl:create($auctions:auctions);
 
   dml:insert-nodes($auctions:auctions, doc("auctions1.xml"));
 
-  index_ddl:create-index($auctions:PersonId);
+  index_ddl:create($auctions:PersonId);
 
-  index_ddl:create-index($auctions:PersonCity);
+  index_ddl:create($auctions:PersonCity);
 
-  index_ddl:create-index($auctions:PersonWatches);
+  index_ddl:create($auctions:PersonWatches);
 
-  index_ddl:create-index($auctions:PersonWatches2);
+  index_ddl:create($auctions:PersonWatches2);
 
-  index_ddl:create-index($auctions:AuctionDates);
+  index_ddl:create($auctions:AuctionDates);
 
-  index_ddl:create-index($auctions:AuctionDates2);
+  index_ddl:create($auctions:AuctionDates2);
 };
 
 

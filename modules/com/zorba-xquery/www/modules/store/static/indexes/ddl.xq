@@ -66,7 +66,7 @@ declare function iddl:is-available-index($name as xs:QName) as xs:boolean extern
 declare function iddl:available-indexes() as xs:QName* external;
 
 (:~
- : The create-index function is an updating function which creates the
+ : The create function is an updating function which creates the
  : index with the given expanded QName and populates the index with its
  : values.
  :
@@ -80,11 +80,11 @@ declare function iddl:available-indexes() as xs:QName* external;
  :        to the name of any resource in the statically known indexes.
  : @error zerr:ZDDY0022 if the index with the given name is already created.
  :)
-declare updating function iddl:create-index(
+declare updating function iddl:create(
   $name as xs:QName)  external;
 
 (:~
- : The delete-index function is an updating function that deletes
+ : The delete function is an updating function that deletes
  : the index with the given expanded QName.
  :
  : @param $name The QName of the index to delete.
@@ -96,7 +96,7 @@ declare updating function iddl:create-index(
  :        the expanded QName $name.
  :
  :)
-declare updating function iddl:delete-index(
+declare updating function iddl:delete(
   $name as xs:QName)  external;
 
 (:~

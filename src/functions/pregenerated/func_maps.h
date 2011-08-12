@@ -55,11 +55,11 @@ public:
 };
 
 
-//zorba-store-data-structure-unordered-map:destroy
-class zorba_store_data_structure_unordered_map_destroy : public function
+//zorba-store-data-structure-unordered-map:delete
+class zorba_store_data_structure_unordered_map_delete : public function
 {
 public:
-  zorba_store_data_structure_unordered_map_destroy(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_data_structure_unordered_map_delete(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

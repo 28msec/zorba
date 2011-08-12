@@ -102,7 +102,7 @@ declare function ddl:available-collections() as xs:string*
 };
 
 (:~
- : The create-collection function is an updating function which creates
+ : The create function is an updating function which creates
  : the collection with the given URI and the empty-sequence as contents.
  :
  : @param $name The URI of the collection to create.
@@ -114,13 +114,13 @@ declare function ddl:available-collections() as xs:string*
  : @error zerr:ZDDY0002 if a collection with the given URI already exists.
  :
  :)
-declare updating function ddl:create-collection($coll-name as xs:string) 
+declare updating function ddl:create($coll-name as xs:string) 
 {
-  qddl:create-collection(ddl:to-qname($coll-name))
+  qddl:create(ddl:to-qname($coll-name))
 };
 
 (:~
- : The create-collection function is an updating function which creates
+ : The create function is an updating function which creates
  : the collection with the given URI. Moreover, it adds copies
  : of the sequence $content to the new collection.
  :
@@ -134,15 +134,15 @@ declare updating function ddl:create-collection($coll-name as xs:string)
  : @error zerr:ZDDY0002 if a collection with the given URI already exists.
  :
  :)
-declare updating function ddl:create-collection(
+declare updating function ddl:create(
   $coll-name as xs:string,
   $content as node()*) 
 {
-  qddl:create-collection(ddl:to-qname($coll-name), $content)
+  qddl:create(ddl:to-qname($coll-name), $content)
 };
 
 (:~
- : The delete-collection function is an updating function that removes
+ : The delete function is an updating function that removes
  : the collection with the given URI.
  :
  : @param $name The URI of the collection to delete.
@@ -156,7 +156,7 @@ declare updating function ddl:create-collection(
  :        belongs to the collection with the given URI.
  :
  :)
-declare updating function ddl:delete-collection($coll-name as xs:string)
+declare updating function ddl:delete($coll-name as xs:string)
 {
-  qddl:delete-collection(ddl:to-qname($coll-name))
+  qddl:delete(ddl:to-qname($coll-name))
 };

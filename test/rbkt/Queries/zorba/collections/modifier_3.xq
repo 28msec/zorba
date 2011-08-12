@@ -6,7 +6,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare %ann:sequential function local:ddl() {
-    ddl:create-collection(xs:QName("ns:coll_1"), (<a><x/></a>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>));
+    ddl:create(xs:QName("ns:coll_1"), (<a><x/></a>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>));
 };
 
 declare %ann:sequential function local:test1() {

@@ -38,5 +38,5 @@ declare %ann:sequential function guestbook:list()
 };
 
 declare %ann:sequential function guestbook:init() {
-  ddl:create-collection($guestbook:entries);
+  ddl:create($guestbook:entries);
 };

@@ -167,28 +167,28 @@
 <zorba:iterator name="ZorbaCreateCollectionIterator" >
 
     <zorba:description author="Zorba Team">
-      zorba:create-collection
+      zorba:create
     </zorba:description>
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-collections-static-ddl">
+      <zorba:signature localname="create" prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-collections-static-ddl">
+      <zorba:signature localname="create" prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:signature localname="create" prefix="zorba-store-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create-collection" prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:signature localname="create" prefix="zorba-store-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -226,17 +226,17 @@
 <zorba:iterator name="ZorbaDeleteCollectionIterator" >
 
     <zorba:description author="Zorba Team">
-      zorba:delete-collection
+      zorba:delete
     </zorba:description>
 
     <zorba:function generateCodegen="false">
 
-      <zorba:signature localname="delete-collection" prefix="zorba-store-collections-static-ddl">
+      <zorba:signature localname="delete" prefix="zorba-store-collections-static-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-collection" prefix="zorba-store-dynamic-collections-ddl">
+      <zorba:signature localname="delete" prefix="zorba-store-dynamic-collections-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>

@@ -317,7 +317,7 @@ declare %private %ann:sequential function xqdoc2html:create-collection-categorie
 $collectionName as xs:QName,
 $xqdocXmlPath as xs:string)
 {
-  ddl:create-collection($collectionName);
+  ddl:create($collectionName);
   
   (: gather all the XQDoc XML's :)
   for $xqdocRelPath in file:list($xqdocXmlPath, fn:false(), "*.xml")
@@ -418,7 +418,7 @@ declare %ann:sequential function xqdoc2html:main(
              $xqdoc2html:serParamXhtml);                                          
                          
   dml:delete-nodes(dml:collection(xs:QName("xqdoc2html:collection")));                           
-  ddl:delete-collection(xs:QName("xqdoc2html:collection"));
+  ddl:delete(xs:QName("xqdoc2html:collection"));
 };
 
 declare %private function xqdoc2html:get-project-root(

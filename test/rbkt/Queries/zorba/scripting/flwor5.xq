@@ -7,7 +7,7 @@ declare variable $col := xs:QName("myCollection");
 
 declare %ann:sequential function local:test()
 {
-  ddl:create-collection($col, (<a><c>1</c></a>,<b>2</b>));
+  ddl:create($col, (<a><c>1</c></a>,<b>2</b>));
 
   let $x := dml:collection($col)[1]/c
   for $i in (1 to count(dml:collection($col)) + 1)

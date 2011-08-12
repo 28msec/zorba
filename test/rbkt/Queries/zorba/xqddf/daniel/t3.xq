@@ -3,7 +3,7 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 
-ddl:create-collection($xqddf-test:ordered-collection, (<wb>1</wb>,<wb>2</wb>,<wb>3</wb>,<wb>4</wb>,<wb>5</wb>,<wb>6</wb>,<wb>7</wb>,<wb>8</wb>,<wb>9</wb>,<wb>10</wb>));
+ddl:create($xqddf-test:ordered-collection, (<wb>1</wb>,<wb>2</wb>,<wb>3</wb>,<wb>4</wb>,<wb>5</wb>,<wb>6</wb>,<wb>7</wb>,<wb>8</wb>,<wb>9</wb>,<wb>10</wb>));
 
 
 let $n := <a><b>bnm</b><c></c></a>

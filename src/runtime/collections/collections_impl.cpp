@@ -349,10 +349,10 @@ ZorbaIndexOfIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  create-collection($name as xs:QName) as empty-sequence()
+  create($name as xs:QName) as empty-sequence()
 
   declare updating function
-  create-collection($name as xs:QName, $nodes as node()*) as empty-sequence()
+  create($name as xs:QName, $nodes as node()*) as empty-sequence()
 
   The first function will create a new, empty, collection. The second function
   will create a new collection and will add the given nodes to it.
@@ -474,7 +474,7 @@ ZorbaCreateCollectionIterator::getCollection(
 }
 
 /*******************************************************************************
-  declare updating function delete-collection($name as xs:QName)
+  declare updating function delete($name as xs:QName)
 
   The function will delete the collection identified by the given URI.
 ********************************************************************************/

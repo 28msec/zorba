@@ -125,7 +125,7 @@ declare %ann:nondeterministic %ann:sequential function conf:create-collection($s
   
   if($syntax eq $conf:XQuery) then
   {
-    ddl:create-collection($conf:xquery);
+    ddl:create($conf:xquery);
  
     variable $noTestsSubmissionXQuery := count(dml:collection(xs:QName("conf:submissionXquery")));
     
@@ -154,7 +154,7 @@ declare %ann:nondeterministic %ann:sequential function conf:create-collection($s
   }
   else if($syntax eq $conf:XQueryX) then
   {
-    ddl:create-collection($conf:xqueryx);
+    ddl:create($conf:xqueryx);
     
     variable $noTestsSubmissionXQueryX := count(dml:collection(xs:QName("conf:submissionXqueryX")));
 
@@ -187,14 +187,14 @@ declare %ann:nondeterministic %ann:sequential function conf:create-collection($s
 
 declare %ann:nondeterministic %ann:sequential function conf:create-collection-submissions()
 {
-  ddl:create-collection($conf:submissionXquery);
+  ddl:create($conf:submissionXquery);
   
   let $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTS_submission)))
   return
     for $test in $doc/xqRes:test-suite-result//xqRes:test-case
     return dml:apply-insert-nodes($conf:submissionXquery, $test);
     
-  ddl:create-collection($conf:submissionXqueryX);
+  ddl:create($conf:submissionXqueryX);
   
   let $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTSX_submission)))
   return

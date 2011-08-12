@@ -5,10 +5,10 @@ import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/stat
 
 
 
-ddl:create-collection($m:empc);  
-ddl:create-collection($m:trnc);  
+ddl:create($m:empc);  
+ddl:create($m:trnc);  
 
-ic_ddl:activate-integrity-constraint(xs:QName("m:ic_foreignKey"));
+ic_ddl:activate(xs:QName("m:ic_foreignKey"));
 
 
 (: employees :)

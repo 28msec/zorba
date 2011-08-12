@@ -19,8 +19,8 @@ xquery version "3.0";
 (:~
  : This module defines a set of functions for working with
  : maps. A map is identified by a QName and can
- : be created using the map:create function and destroyed
- : using the map:destroy function, respectively. However, its
+ : be created using the map:create function and deleted
+ : using the map:delete function, respectively. However, its
  : actual lifetime depends on the particular store implementation.
  :
  : The key of a particular entry in the map can consist
@@ -70,14 +70,14 @@ declare %ann:variadic %ann:sequential function map:create(
 (:~
  : Destroys the map with the given name.
  : 
- : @param $name the name of the map to destroy
+ : @param $name the name of the map to delete
  :
- : @return the function is sequential and immediately destroys
+ : @return the function is sequential and immediately deletes
  :         the map but returns the empty-sequence.
  :
  : @error zerr:ZDDY0023 if a map with the given name does not exist.
  :)
-declare %ann:sequential function map:destroy(
+declare %ann:sequential function map:delete(
   $name as xs:QName) as empty-sequence() external;
 
 (:~

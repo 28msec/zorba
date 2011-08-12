@@ -5,9 +5,9 @@ import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/s
 import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
 
-ddl:create-collection($xqddf-test:white-collection);
+ddl:create($xqddf-test:white-collection);
 
-index_ddl:create-index($xqddf-test:index1);
+index_ddl:create($xqddf-test:index1);
 
 for $i in fn:doc("auction.xml")//item
 return 

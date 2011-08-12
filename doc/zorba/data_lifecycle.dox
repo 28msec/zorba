@@ -147,7 +147,7 @@ All of the following examples import the library module in order to be able to a
 \include zorba/store/sc1_ex1.xqlib
 
 \subsection dl_sc1_ex2 Create a Collection and Index
-This is an administration program that imports the module declaring the collection and invokes the <tt>create-collection</tt> and <tt>create-index</tt> functions to create the empty collection and index containers, respectively.
+This is an administration program that imports the module declaring the collection and invokes the <tt>create</tt> and <tt>create</tt> functions to create the empty collection and index containers, respectively.
 
 \include zorba/store/sc1_ex2.xq
 

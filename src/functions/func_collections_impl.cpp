@@ -56,7 +56,7 @@ PlanIter_t zorba_store_collections_static_dml_index_of::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t zorba_store_collections_static_ddl_create_collection::codegen(
+PlanIter_t zorba_store_collections_static_ddl_create::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -71,7 +71,7 @@ PlanIter_t zorba_store_collections_static_ddl_create_collection::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t zorba_store_collections_static_ddl_delete_collection::codegen(
+PlanIter_t zorba_store_collections_static_ddl_delete::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,

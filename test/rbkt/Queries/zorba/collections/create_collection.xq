@@ -5,13 +5,13 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:create() {
-  ddl:create-collection(xs:QName("ns:test1"));
-  ddl:create-collection(xs:QName("ns:test2"));
+  ddl:create(xs:QName("ns:test1"));
+  ddl:create(xs:QName("ns:test2"));
   exit returning ddl:is-available-collection(xs:QName("ns:test1")) and ddl:is-available-collection(xs:QName("ns:test2"));
 };
 
 declare %ann:sequential function local:create-and-insert() {
-  ddl:create-collection(xs:QName("ns:test3"), for $i in 1 to 10 return <a> { $i } </a>);
+  ddl:create(xs:QName("ns:test3"), for $i in 1 to 10 return <a> { $i } </a>);
   exit returning ddl:is-available-collection(xs:QName("ns:test3")) and fn:count(dml:collection(xs:QName("ns:test3"))) eq 10;
 };
 

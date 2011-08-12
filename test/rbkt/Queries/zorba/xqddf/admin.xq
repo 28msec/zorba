@@ -11,23 +11,23 @@ import module namespace news-data = "http://www.news.org/data" at "news-data.xql
 
 declare sequential function local:init() 
 {
-  ddl:create-collection($news-data:employees);
+  ddl:create($news-data:employees);
   
-  ddl:create-collection($news-data:articles);
+  ddl:create($news-data:articles);
   
-  ddl:create-collection($news-data:months, (
+  ddl:create($news-data:months, (
     validate {<news:month name="Jan"></news:month>}, 
     validate {<news:month name="Dec"></news:month>}) );
 
-  index_ddl:create-index($news-data:CityEmp);
+  index_ddl:create($news-data:CityEmp);
 
-  index_ddl:create-index($news-data:ArtCountEmp);
+  index_ddl:create($news-data:ArtCountEmp);
 
-  ic_ddl:activate-integrity-constraint($news-data:UniqueId);
+  ic_ddl:activate($news-data:UniqueId);
 
-  ic_ddl:activate-integrity-constraint($news-data:AuthorName);
+  ic_ddl:activate($news-data:AuthorName);
 
-  ic_ddl:activate-integrity-constraint($news-data:ArticleEmployees);
+  ic_ddl:activate($news-data:ArticleEmployees);
 
   dml:insert-nodes($news-data:employees, 
     (

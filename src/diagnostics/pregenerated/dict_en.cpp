@@ -274,7 +274,7 @@ extern entry const dict_en[] = {
   { "ZDDY0013", "\"$1\": can not delete collection because indexes reference it" },
   { "ZDDY0014", "\"$1\": can not delete collection because integrity constraints reference it" },
   { "ZDDY0015", "\"$1\": can not delete collection because there are references to its nodes" },
-  { "ZDDY0016", "\"$1\": multiple calls to create-collection() in same snapshot" },
+  { "ZDDY0016", "\"$1\": multiple attemps to create a collection in the same snapshot" },
   { "ZDDY0017", "node does not belong to any collection" },
   { "ZDDY0018", "all nodes must be in same collection" },
   { "ZDDY0020", "\"$1\": index domain expression yields nodes that are not in collection" },

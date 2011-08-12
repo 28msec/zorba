@@ -9,7 +9,7 @@ declare variable $is-available := ();
 declare variable $content := ();
 declare variable $name := ();
 
-ddl:create-collection($coll);
+ddl:create($coll);
 dml:insert-nodes-first($coll, for $i  in 1 to 10 return <b>{$i}</b>);
 dml:insert-nodes-last($coll, for $i  in 1 to 10 return <c>{$i}</c>);
 dml:insert-nodes-before($coll, dml:collection($coll)[2], for $i  in 1 to 10 return <d>{$i}</d>);

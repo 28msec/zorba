@@ -9,10 +9,10 @@ declare variable $foo := xs:QName("test3:foo");
 declare variable $idx := xs:QName("test3:idx");
 
 
-ddl:create-collection($foo);
+ddl:create($foo);
 
 dml:insert-nodes($foo, doc("test3.xml"));
 
-index_ddl:create-index($idx);
+index_ddl:create($idx);
 
 index_dml:probe-index-point-value($idx, xs:long(68000))

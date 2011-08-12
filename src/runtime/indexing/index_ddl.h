@@ -37,15 +37,15 @@ class ItemHandleHashSet;
 
   This is an intenal function that is used by the hashjoins rule to create and
   populate a temp index. There are 3 reasons why we need a different function
-  than the regular create-index, which is defined below:
+  than the regular create, which is defined below:
 
-  1. create-index assumes that the domain and key expressions do not reference
+  1. create assumes that the domain and key expressions do not reference
      any free variables. This is not true for the temp index created by the
      hashjoin rule.
-  2. The argument to create-index can be any arbitrary expression that returns
+  2. The argument to create can be any arbitrary expression that returns
      a QName. In the case of create-internal-index we know that the arg is a
      const expr holding a qname item.
-  3. create-internal-index is a "simple" function, whereas create-index is an
+  3. create-internal-index is a "simple" function, whereas create is an
      updating function.
 ********************************************************************************/
 class CreateInternalIndexIterator : public UnaryBaseIterator<CreateInternalIndexIterator,
@@ -90,7 +90,7 @@ public:
 
 
 /*******************************************************************************
-  create-index($indexName as xs:QName) as pul()
+  create($indexName as xs:QName) as pul()
  
   This is an updating function. During normal runtime (see CreateIndexIterator),
   it checks that index does not exist already (in the store) and generates an
@@ -198,7 +198,7 @@ public:
  *  This is an updating function. During normal runtime (see RefreshIndexIterator),
  *  it checks that index exists (in the dynamic context) and generates an update
  *  primitive. During applyUpdates(), it clears the index of its contents and then
- *  rebuilds the index the same way as the create-index() function.
+ *  rebuilds the index the same way as the create() function.
  *    
  * Author: Zorba Team
  */

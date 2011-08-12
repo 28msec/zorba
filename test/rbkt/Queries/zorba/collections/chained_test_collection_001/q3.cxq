@@ -4,7 +4,7 @@ import module namespace ns = "http://example.org/datamodule/" at "../collections
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:foo() {
-  ddl:delete-collection(xs:QName("ns:collection_1"));
+  ddl:delete(xs:QName("ns:collection_1"));
   exit returning ();
 };
 

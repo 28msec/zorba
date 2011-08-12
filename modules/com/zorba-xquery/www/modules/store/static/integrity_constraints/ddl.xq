@@ -70,7 +70,7 @@ declare function icddl:activated-integrity-constraints() as xs:QName*  external;
 
 
 (:~
- : The activate-integrity-constraint function is an updating function
+ : The activate function is an updating function
  : that activates the integrity constraint identified by the expanded QName
  : $name in the dynamic context.
  :
@@ -82,11 +82,11 @@ declare function icddl:activated-integrity-constraints() as xs:QName*  external;
  : @error zerr:ZDDY0031 if available integrity constraints in the static context
  :        does not provide a mapping for the expanded QName $name.
  :)
-declare updating function icddl:activate-integrity-constraint(
+declare updating function icddl:activate(
   $name as xs:QName)  external;
 
 (:~
- : The deactivate-integrity-constraint function is an updating function that
+ : The deactivate function is an updating function that
  : deactivates the integrity constraint with the given QName.
  :
  : @param $name The QName of the integrity constraint to deactivate.
@@ -99,7 +99,7 @@ declare updating function icddl:activate-integrity-constraint(
  :        the static context.
  : @error zerr:ZDDY0032 if the given integrity constraints is not activated.
  :)
-declare updating function icddl:deactivate-integrity-constraint(
+declare updating function icddl:deactivate(
   $name as xs:QName)  external;
 
 (:~

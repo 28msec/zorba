@@ -28,7 +28,7 @@ flwor_expr
 RETURN
   sequential_expr 
   [
-    op-extensions:create-index/1 
+    op-extensions:create/1 
     [
       const_expr [ tempIndex0 ]
     ]
@@ -140,7 +140,7 @@ flwor_expr (0x80c9f18)
 RETURN
   fn::concatenate/3 (0x80a6460) 
   [
-    op-extensions:create-index/1 (0x80a3fe8) [
+    op-extensions:create/1 (0x80a3fe8) [
       const_expr (0x80a5a20) [AtomicXQType XS_ANY_URI] [ tempIndex0 ]
     ]
 

@@ -35,7 +35,7 @@ namespace zorba {
 
 /**
  * 
- *  activate-integrity-constraint($icName as xs:QName) as ()
+ *  activate($icName as xs:QName) as ()
  *
  *  Activates a staticaly declared integrity constraint for runtime
  *  check durring apply updates. After activation, the integrity
@@ -77,7 +77,7 @@ public:
 
 /**
  * 
- *  deactivate-integrity-constraint($icName as xs:QName) as ()
+ *  deactivate($icName as xs:QName) as ()
  *
  *  Deactivates the runtime check of the $icName integrity constraint
  *  and it also removes it from dynamic context.

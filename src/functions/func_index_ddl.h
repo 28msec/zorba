@@ -65,7 +65,7 @@ public:
 
 
 /*******************************************************************************
-  fn-zorba-ddl:create-index($indexName as xs:QName)
+  fn-zorba-ddl:create($indexName as xs:QName)
 ********************************************************************************/
 class fn_zorba_ddl_create_index : public function
 {
@@ -85,7 +85,7 @@ public:
 
 
 /*******************************************************************************
-  fn-zorba-ddl:delete-index($indexName as xs:QName)
+  fn-zorba-ddl:delete($indexName as xs:QName)
 ********************************************************************************/
 class fn_zorba_ddl_delete_index : public function
 {

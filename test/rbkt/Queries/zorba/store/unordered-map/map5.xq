@@ -6,5 +6,5 @@ let $type := fn:QName("http://www.w3.org/2001/XMLSchema", "xs:integer")
 return
   {
     map:create($name, $type);
-    map:destroy(fn:QName("http://www.zorba-xquery.com/map", "second"));
+    map:delete(fn:QName("http://www.zorba-xquery.com/map", "second"));
   }

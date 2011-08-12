@@ -38,11 +38,11 @@ void populate_context_ic_ddl(static_context* sctx);
 
 
 
-//zorba-store-integrity_constraints-static-ddl:activate-integrity-constraint
-class zorba_store_integrity_constraints_static_ddl_activate_integrity_constraint : public function
+//zorba-store-integrity_constraints-static-ddl:activate
+class zorba_store_integrity_constraints_static_ddl_activate : public function
 {
 public:
-  zorba_store_integrity_constraints_static_ddl_activate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_integrity_constraints_static_ddl_activate(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -55,11 +55,11 @@ public:
 };
 
 
-//zorba-store-integrity_constraints-static-ddl:deactivate-integrity-constraint
-class zorba_store_integrity_constraints_static_ddl_deactivate_integrity_constraint : public function
+//zorba-store-integrity_constraints-static-ddl:deactivate
+class zorba_store_integrity_constraints_static_ddl_deactivate : public function
 {
 public:
-  zorba_store_integrity_constraints_static_ddl_deactivate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_integrity_constraints_static_ddl_deactivate(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

@@ -41,7 +41,7 @@ declare %ann:sequential function local:testc() {
 declare %ann:sequential function local:testd() {
   try {
     {
-      ddl:create-collection($name);
+      ddl:create($name);
     }
   } catch *  {
     exit returning ("d",$err:code);
@@ -51,7 +51,7 @@ declare %ann:sequential function local:testd() {
 declare %ann:sequential function local:teste() {
   try {
     {
-      ddl:delete-collection($name);
+      ddl:delete($name);
     }
   } catch *  {
     exit returning ("e",$err:code);

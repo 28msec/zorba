@@ -188,7 +188,7 @@ public:
 
 /**
  * 
- *      zorba:create-collection
+ *      zorba:create
  *    
  * Author: Zorba Team
  */
@@ -232,7 +232,7 @@ public:
 
 /**
  * 
- *      zorba:delete-collection
+ *      zorba:delete
  *    
  * Author: Zorba Team
  */

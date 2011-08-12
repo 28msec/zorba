@@ -5,9 +5,9 @@ import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/stat
 
 
 
-ddl:create-collection($m:empc);  
+ddl:create($m:empc);  
 
-ic_ddl:activate-integrity-constraint(xs:QName("m:ic_uniqueKey"));
+ic_ddl:activate(xs:QName("m:ic_uniqueKey"));
 
 {
 (: employees :)

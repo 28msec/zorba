@@ -1592,7 +1592,7 @@ void PULImpl::applyUpdates(bool inheritNSBindings)
   try
   {
     // For each collection C, apply XQUF and collection primitives (except
-    // delete-collection primitives). Also, refresh any indexes that can be
+    // delete primitives). Also, refresh any indexes that can be
     // maintained incrementally w.r.t. updates in C.
     for (; collIte != collEnd; ++collIte)
     {
@@ -1635,7 +1635,7 @@ void PULImpl::applyUpdates(bool inheritNSBindings)
       }
     }
 
-    // Apply delete-collection primitives
+    // Apply delete primitives
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
     {
       CollectionPul* pul = collIte->second;
@@ -2015,7 +2015,7 @@ void CollectionPul::applyUpdates()
     }
 #endif
 
-    // Apply collection primitives, except delete-collection primitives
+    // Apply collection primitives, except delete primitives
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);

@@ -6,7 +6,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:test()
 {
-  ddl:create-collection(xs:QName("ns:test1"), <a><b>Foo</b></a>);
+  ddl:create(xs:QName("ns:test1"), <a><b>Foo</b></a>);
 
   replace value of node dml:collection(xs:QName("ns:test1"))[1]/b with "Bar";
 

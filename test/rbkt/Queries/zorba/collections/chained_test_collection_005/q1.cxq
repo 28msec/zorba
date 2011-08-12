@@ -6,7 +6,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare variable $input-context1 external;
 
 declare %ann:sequential function local:foo() {
-  ddl:create-collection(xs:QName('ns:http'), fn:doc($input-context1)//*);
+  ddl:create(xs:QName('ns:http'), fn:doc($input-context1)//*);
   exit returning ();
 };
 

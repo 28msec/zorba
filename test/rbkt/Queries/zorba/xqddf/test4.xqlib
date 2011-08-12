@@ -18,8 +18,8 @@ declare %ann:automatic %ann:nonunique %ann:value-equality index n:index
 
 declare %ann:sequential function n:foo()
 {
-  ddl:create-collection(xs:QName("n:foo"));
-  index_ddl:create-index(xs:QName("n:index"));
+  ddl:create(xs:QName("n:foo"));
+  index_ddl:create(xs:QName("n:index"));
 
   dml:insert-nodes(xs:QName("n:foo"), <a/>);
   1

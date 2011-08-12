@@ -4,10 +4,10 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:create() {
-  ddl:create-collection($ns:collection_1);
-  ddl:create-collection($ns:collection_2);
-  ddl:create-collection($ns:http);
-  ddl:create-collection($ns:test1);
+  ddl:create($ns:collection_1);
+  ddl:create($ns:collection_2);
+  ddl:create($ns:http);
+  ddl:create($ns:test1);
   ( 
     "create",
     for $x in ddl:available-collections()
@@ -19,7 +19,7 @@ declare %ann:sequential function local:create() {
 };
 
 declare %ann:sequential function local:delete() {
-  ddl:delete-collection($ns:collection_1);
+  ddl:delete($ns:collection_1);
   ( 
     "delete",
     ddl:is-available-collection($ns:collection_1),

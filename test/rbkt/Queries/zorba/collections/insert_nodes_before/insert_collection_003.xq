@@ -3,7 +3,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 
 import module namespace ns = "http://www.example.com/example" at "../collection_001.xqdata";
 
-ddl:create-collection(xs:QName("ns:collection_unordered"));
+ddl:create(xs:QName("ns:collection_unordered"));
 
 dml:insert-nodes-first(xs:QName("ns:collection_unordered"), <a/>);
 

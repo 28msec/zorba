@@ -41,7 +41,7 @@ PlanIter_t zorba_store_data_structure_unordered_map_create::codegen(
   return new MapCreateIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_data_structure_unordered_map_destroy::codegen(
+PlanIter_t zorba_store_data_structure_unordered_map_delete::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -129,11 +129,11 @@ void populate_context_maps(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_destroy,
-        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","destroy"), 
+    DECL_WITH_KIND(sctx, zorba_store_data_structure_unordered_map_delete,
+        (createQName("http://www.zorba-xquery.com/modules/store/data-structures/unordered-map","","delete"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_DESTROY_1);
+        FunctionConsts::ZORBA_STORE_DATA_STRUCTURE_UNORDERED_MAP_DELETE_1);
 
   }
 

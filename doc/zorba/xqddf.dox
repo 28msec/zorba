@@ -203,7 +203,7 @@ First, the collection descriptions must be made visible to the script. This is
 done by importing the <a href="#lib_module_news_data_collections"
 title="news-data">"news-data"</a> library module that contains the collection
 declarations. Then, the collections are created by calling the
-cddl:create-collection function. There are two versions of this function: the
+cddl:create function. There are two versions of this function: the
 first takes a QName as input and the second takes both a QName and a
 node-producing expression. In the first version, an empty document container is
 created by Zorba's storage system and registered inside a <strong>collections
@@ -227,11 +227,11 @@ associated document container.
 
   import module namespace news-data = "http://www.news.org/data";
 
-  cddl:create-collection($news-data:employees);
+  cddl:create($news-data:employees);
 
-  cddl:create-collection($news-data:articles);
+  cddl:create($news-data:articles);
 
-  cddl:create-collection($news-data:months, (<month name="Jan">...</month>, ..., <month name="Dec">...</month>));
+  cddl:create($news-data:months, (<month name="Jan">...</month>, ..., <month name="Dec">...</month>));
 \endcode
 
 The next script ("user-script-1") shows how collections may be used. First the
@@ -311,7 +311,7 @@ collection container.
 \endcode
 
 We conclude this example with the "admin-script-2" script, which simply destroys
-the collections using the cddl:delete-collection function. The function
+the collections using the cddl:delete function. The function
 de-registers the collection from the collections table, destroys all the
 documents in the collection and all the indexes and integrity constraints
 associated the collection, and finally destroys the document container itself.
@@ -323,11 +323,11 @@ associated the collection, and finally destroys the document container itself.
 
   import module namespace news-data = "http://www.news.org/data";
 
-  cddl:delete-collection($news-data:employees);
+  cddl:delete($news-data:employees);
 
-  cddl:delete-collection($news-data:articles);
+  cddl:delete($news-data:articles);
 
-  cddl:delete-collection($news-data:months);
+  cddl:delete($news-data:months);
 \endcode
 
 \subsection collection_declaration Collection Declaration
@@ -466,7 +466,7 @@ The update primitive is applied as follows:
 expanded QName to the document container.</li>
   </ul>
 
-The second create-collection function creates the collection and populates it
+The second create function creates the collection and populates it
 with an initial set of trees.
 
 \code
@@ -896,16 +896,16 @@ Specifically, delete-node-last($collectionName) is equivalent to delete-nodes-la
 
 \subsection destroying_collections Destroying Collections
 
-To destroy a collection, XQDDF provides the delete-collection updating function.
+To destroy a collection, XQDDF provides the <tt>delete</tt> updating function.
 The function itself and its associated update primitive are described below.
 
 \code
-  declare updating function cddl:delete-collection($collectionName as xs:QName)
+  declare updating function cddl:delete($collectionName as xs:QName)
 
   upd:deleteCollection($collectionName as xs :QName)
 \endcode
 
-The delete-collection function is evaluated as follows:
+The delete function is evaluated as follows:
 
   <ul>
   <li>If the given expanded QName does not identify a collection among the
@@ -1110,7 +1110,7 @@ The script must first import the <a href="#lib_module_news_data_indexes">
 effect of this import is to create three entries in the static context of the main
 module, mapping the index names to the index definitions (domain expression, key
 specification, and properties). Then, the query creates the indexes by invoking
-the <a href="#create_index">iddl:create-index</a> function, passing the name of the index as input.
+the <a href="#create_index">iddl:create</a> function, passing the name of the index as input.
 
 Let us consider the creation of the CityEmp index (the process is the similar
 for the ArtCountEmp and EmpMgr indexes). <a href="#index_creation">Index Creation</a> 
@@ -1127,7 +1127,7 @@ set associated with C; otherwise, an new entry is created mapping C to the set {
 E }. The last step in index creation involves registering the index inside an
 <strong>indexes table</strong> that maps index names to index containers. The
 index container will remain registered until it is destroyed by a call to the <a
-href="#delete_index">iddl:delete-index</a> function
+href="#delete_index">iddl:delete</a> function
 (see the <a href="#admin_script_4">"admin-script-4"</a>
 script below).
 
@@ -1139,11 +1139,11 @@ script below).
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
-  iddf:create-index($news-data:CityEmp);
+  iddf:create($news-data:CityEmp);
 
-  iddf:create-index($news-data:ArtCountEmp);
+  iddf:create($news-data:ArtCountEmp);
 
-  iddf:create-index($news-data:EmpMgr);
+  iddf:create($news-data:EmpMgr);
 \endcode
 
 The next step in this example is to show how the index can be used to to
@@ -1332,7 +1332,7 @@ index was declared as '%ann:manual'.
 Finally, we conclude this example with a query that shows how to destroy an
 index. As shown in <a href="#admin_script_4">"admin-script-4"</a> below,
 <a href="#index_deletion">index deletion</a> is done via
-the <a href="#delete_index">iddl:delete-index</a>
+the <a href="#delete_index">iddl:delete</a>
 function. The function simply destroys the index container and removes the
 mapping between the index name and the index container from the indexes table.
 After the index is deleted, any query that tries to access the index will
@@ -1346,7 +1346,7 @@ receive an error.
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
-  iddl:delete-index($news-data:CityEmp);
+  iddl:delete($news-data:CityEmp);
 \endcode
 
 
@@ -1550,20 +1550,20 @@ to every query and every module that participates in the execution of that query
 Creation of an index involves creating an initially empty index entry container,
 populating that container with the entries computed by the domain and key
 expressions of the index, and "registering" that container in the indexes table.
-All this is done by the <a href="#create_index">iddl:create-index</a> function 
-that is described below. In fact, iddl:create-index is an updating function, 
+All this is done by the <a href="#create_index">iddl:create</a> function 
+that is described below. In fact, iddl:create is an updating function, 
 so instead of actually creating the index, it generates a pending update 
 primitive that becomes part of a pending update list (PUL) to be applied at a 
 later time. The update primitive is also described below.
 
 <a name="create_index" id="create_index"></a>
 \code
-  declare updating function iddl:create-index($indexName as xs:QName)
+  declare updating function iddl:create($indexName as xs:QName)
 
   upd:createIndex($indexName as xs:QName).
 \endcode
 
-The create-index function is evaluated as follows:
+The create function is evaluated as follows:
 
   <ul>
   <li>If the given expanded QName does not identify an index among the
@@ -1751,17 +1751,17 @@ the index to the index entry container.
 \subsection index_deletion Index Deletion
 
 
-To destroy an index, XQDDF provides the delete-index updating function. The
+To destroy an index, XQDDF provides the delete updating function. The
 function itself and its associated update primitive are described below.
 
 <a name="delete_index" id="delete_index"></a>
 \code
-  declare updating function iddl:delete-index($indexName as xs :QName)
+  declare updating function iddl:delete($indexName as xs :QName)
 
   upd:deleteIndex($indexName as xs:QName)
 \endcode
 
-The delete-index function is evaluated as follows:
+The delete function is evaluated as follows:
 
   <ul>
   <li>If the given expanded QName does not identify an index among the
@@ -1981,7 +1981,7 @@ $upperBoundsIncluded is true or false.
 An index is said to be up-to-date if its content reflects the index definition
 on the current data snapshot, i.e., the contents are the same as those that
 would be produced if the
-<a href="#create_index" title="idml:create-index">iddl:create-index</a>
+<a href="#create_index" title="idml:create">iddl:create</a>
 function was invoked on the same index and with the same underlying data.
 An index is said to be stale if it is not up-to-date. Indexes become stale when
 documents in collections are updated or when documents are inserted/removed
@@ -2041,7 +2041,7 @@ table.</li>
   <li>The container is made up-to-date in some implementation dependent way. In
       Zorba this is done by discarding the current contents and rebuilding
       the index from scratch (the same way as the
-<a href="#create_index" title="iddl:create-index">iddl:create-index</a>
+<a href="#create_index" title="iddl:create">iddl:create</a>
 function populates an empty index container).</li>
   </ul>
 
@@ -2173,8 +2173,8 @@ ICs can be checked manually (if requested by the user) or automatically on
 updates
 apply time, after validation and indexes are computed. In order to be checked
 automatically, an IC needs to be active. ICs can be (de-)activated using the two
-updating functions icddl:activate-integrity-constraint and
-icddl:deactivate-integrity-constraint, respectively. Each function takes the
+updating functions icddl:activate and
+icddl:deactivate, respectively. Each function takes the
 name of
 the IC to (de-)activate as parameter. The flag indicating whether an IC is
 active or
@@ -2195,7 +2195,7 @@ values are the QNames of the ICs. This allows their names to be easily
 referenced by
 subsequent expressions. For example, such a variable can be passed as a
 parameter to
-the activate-integrity-constraint in the importing admin-script module (see
+the activate in the importing admin-script module (see
 above).
 For the ICs from the section above, those variables are declared as follows:
 
@@ -2387,7 +2387,7 @@ collection because there are integrity constraints that reference it.
 collection because there are references on its nodes.
 
 <a name="ERRZDDY0016" id="ERRZDDY0016"></a>zerr:ZDDY0016, Cannot invoke the
-create-collection function multiple times with the same QName in the same
+create function multiple times with the same QName in the same
 snapshot.
 
   <a name="ERRZDDY0020" id="ERRZDDY0020"></a>zerr:ZDDY0020, The domain expression
@@ -2410,7 +2410,7 @@ arguments in probe of index.
 support range probes.
 
 <a name="ERRZDDY0027" id="ERRZDDY0027"></a>zerr:ZDDY0027, Cannot invoke the
-create-index function multiple times with the same QName in the same snapshot.
+create function multiple times with the same QName in the same snapshot.
 
 <a name="ERRZDDY0030" id="ERRZDDY0030"></a>zerr:ZDDY0030, Index does not
 support general range probes.

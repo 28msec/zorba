@@ -60,7 +60,7 @@ declare function ddl:is-available-collection($name as xs:QName) as xs:boolean ex
 declare function ddl:available-collections() as xs:QName* external;
 
 (:~
- : The create-collection function is an updating function which creates
+ : The create function is an updating function which creates
  : the collection with the given expanded QName.
  :
  : @param $name The QName of the collection to create.
@@ -73,10 +73,10 @@ declare function ddl:available-collections() as xs:QName* external;
  :        exists.
  :
  :)
-declare updating function ddl:create-collection($name as xs:QName) external;
+declare updating function ddl:create($name as xs:QName) external;
 
 (:~
- : The create-collection function is an updating function which creates
+ : The create function is an updating function which creates
  : the collection with the given expanded QName. Moreover, it adds copies
  : of the sequence $content to the new collection.
  :
@@ -90,17 +90,17 @@ declare updating function ddl:create-collection($name as xs:QName) external;
  : @error zerr:ZDDY0002 if a collection with the given expanded QName already
  :        exists.
  :
- : @see ddl:create-collection
+ : @see ddl:create
  : @see ddl:insert-nodes-last
  :
  :)
-declare updating function ddl:create-collection(
+declare updating function ddl:create(
   $name as xs:QName,
   $content as node()*) external;
 
 
 (:~
- : The delete-collection function is an updating function that removes
+ : The delete function is an updating function that removes
  : the collection with the given expanded QName.
  :
  : @param $name The QName of the collection to delete.
@@ -114,4 +114,4 @@ declare updating function ddl:create-collection(
  :        belongs to the collection with QName $name.
  :
  :)
-declare updating function ddl:delete-collection($coll as xs:QName) external;
+declare updating function ddl:delete($coll as xs:QName) external;

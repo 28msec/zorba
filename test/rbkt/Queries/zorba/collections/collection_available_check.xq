@@ -29,7 +29,7 @@ declare function local:testb() {
 declare %ann:sequential function local:testc() {
   try {
     {
-      ddl:delete-collection($ns:http);
+      ddl:delete($ns:http);
     }
   } catch *  {
     exit returning ("c",$err:code);

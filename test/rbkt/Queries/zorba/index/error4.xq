@@ -9,7 +9,7 @@ import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/s
 import module namespace idx = "http://www.w3.org/TestModules/idx" at
                               "error_module3.xqlib";
 
-ddl:create-collection(xs:QName("idx:auctions"));
+ddl:create(xs:QName("idx:auctions"));
 
-index_ddl:create-index(xs:QName("idx:foo"));
-index_ddl:delete-index(xs:QName("idx:foo"));
+index_ddl:create(xs:QName("idx:foo"));
+index_ddl:delete(xs:QName("idx:foo"));

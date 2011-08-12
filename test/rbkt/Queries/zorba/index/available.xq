@@ -8,10 +8,10 @@ import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/s
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:test_create() {
-  ddl:create-collection(xs:QName("decl:coll1"));
-  index_ddl:create-index(xs:QName("decl:coll1_index"));
-  ddl:create-collection(xs:QName("decl:coll3"));
-  index_ddl:create-index(xs:QName("decl:coll3_index"));
+  ddl:create(xs:QName("decl:coll1"));
+  index_ddl:create(xs:QName("decl:coll1_index"));
+  ddl:create(xs:QName("decl:coll3"));
+  index_ddl:create(xs:QName("decl:coll3_index"));
   (
     index_ddl:is-available-index(xs:QName("decl:coll1_index")),
     index_ddl:is-available-index(xs:QName("decl:coll2_index")),
@@ -23,7 +23,7 @@ declare %ann:sequential function local:test_create() {
 };
 
 declare %ann:sequential function local:test_delete() {
-  index_ddl:delete-index(xs:QName("decl:coll1_index"));
+  index_ddl:delete(xs:QName("decl:coll1_index"));
   (
     index_ddl:is-available-index(xs:QName("decl:coll1_index")),
     index_ddl:is-available-index(xs:QName("decl:coll2_index")),

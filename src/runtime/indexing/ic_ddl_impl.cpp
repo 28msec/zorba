@@ -38,7 +38,7 @@ namespace zorba
 
 /*******************************************************************************
  Implementation for:
-   activate-integrity-constraint($icName as xs:QName) as ()
+   activate($icName as xs:QName) as ()
 ******************************************************************************/
 bool
 ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -97,7 +97,7 @@ ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 /*******************************************************************************
  Implementation for:
-   deactivate-integrity-constraint($icName as xs:QName) as ()
+   deactivate($icName as xs:QName) as ()
 ******************************************************************************/
 bool
 DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const

@@ -16,7 +16,7 @@ declare variable $module2:coll as xs:QName := xs:QName("module2:coll");
 
 declare %ann:sequential function module2:init()
 {
-  ddl:create-collection(xs:QName("module2:coll"), (<a><test/></a>, <b><test/></b>));
+  ddl:create(xs:QName("module2:coll"), (<a><test/></a>, <b><test/></b>));
 };
 
 

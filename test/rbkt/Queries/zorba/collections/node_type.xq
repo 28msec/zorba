@@ -14,7 +14,7 @@ declare function local:create-person($name as xs:string) as schema-element(s:per
 
 declare %ann:sequential function local:ddl() 
 {
-  ddl:create-collection($ns:collection, local:create-person("default"));
+  ddl:create($ns:collection, local:create-person("default"));
 };
 
 

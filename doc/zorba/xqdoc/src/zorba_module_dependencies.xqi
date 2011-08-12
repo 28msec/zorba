@@ -91,7 +91,7 @@ declare %ann:sequential function z:create-collection-categories (
 $collectionName as xs:QName,
 $xqdocXmlPath as xs:string)
 {
-  ddl:create-collection($collectionName);
+  ddl:create($collectionName);
   
   (: gather all the XQDoc XML's :)
   for $xqdocRelPath in file:list($xqdocXmlPath, fn:false(), "*.xml")
@@ -133,7 +133,7 @@ declare %ann:sequential function z:create-collections($xqdocXMLPath as xs:string
 declare %ann:sequential function z:delete-collections()
 { 
   dml:delete-nodes(dml:collection(xs:QName("z:collection")));                           
-  ddl:delete-collection(xs:QName("z:collection"));
+  ddl:delete(xs:QName("z:collection"));
 };
  
 (:~

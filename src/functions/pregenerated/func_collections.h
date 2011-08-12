@@ -97,11 +97,11 @@ public:
 };
 
 
-//zorba-store-collections-static-ddl:create-collection
-class zorba_store_collections_static_ddl_create_collection : public function
+//zorba-store-collections-static-ddl:create
+class zorba_store_collections_static_ddl_create : public function
 {
 public:
-  zorba_store_collections_static_ddl_create_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_collections_static_ddl_create(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }
@@ -114,11 +114,11 @@ public:
 };
 
 
-//zorba-store-collections-static-ddl:delete-collection
-class zorba_store_collections_static_ddl_delete_collection : public function
+//zorba-store-collections-static-ddl:delete
+class zorba_store_collections_static_ddl_delete : public function
 {
 public:
-  zorba_store_collections_static_ddl_delete_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+  zorba_store_collections_static_ddl_delete(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

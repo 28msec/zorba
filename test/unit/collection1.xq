@@ -23,7 +23,7 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:test() 
 {
-  ddl:create-collection($mod1:coll);
+  ddl:create($mod1:coll);
   dml:insert-nodes-last($mod1:coll, (<a>one</a>,<b>two</b>));
   dml:collection($mod1:coll);
 };

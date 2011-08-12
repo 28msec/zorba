@@ -79,9 +79,9 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   Index-related functions:
   ------------------------
 
-    create-index(...)
+    create(...)
     create-internal-index(...)
-    drop-index(...)
+    delete(...)
     refresh-index(...)
     probe-index-point(...)
     probe-index-range(...)

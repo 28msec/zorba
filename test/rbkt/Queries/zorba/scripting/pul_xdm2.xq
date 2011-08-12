@@ -17,7 +17,7 @@ declare updating function local:test3()
 };
 
 
-ddl:create-collection($col, (<a></a>,<b></b>));
+ddl:create($col, (<a></a>,<b></b>));
 
 (
 xqsx:apply(local:test3()),

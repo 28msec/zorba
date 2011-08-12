@@ -5,6 +5,6 @@ import schema namespace news-schemas = "http://www.news.org/schemas" at "news-sc
 
 import module namespace news-data = "http://www.news.org/data" at "index_does_not_exist.xqlib";
 
-ddl:create-collection($news-data:employees);
+ddl:create($news-data:employees);
 
 index_dml:probe-index-point-value($news-data:CityEmp, "Paris");

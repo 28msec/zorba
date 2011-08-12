@@ -68,7 +68,7 @@ declare function cddl:is-available-collection($name as xs:QName) as xs:boolean e
 declare function cddl:available-collections() as xs:QName*  external;
 
 (:~
- : The create-collection function is an updating function which creates
+ : The create function is an updating function which creates
  : the collection with the given expanded QName.
  :
  : @param $name The QName of the collection to create.
@@ -83,10 +83,10 @@ declare function cddl:available-collections() as xs:QName*  external;
  :        exists.
  :
  :)
-declare updating function cddl:create-collection($name as xs:QName) external;
+declare updating function cddl:create($name as xs:QName) external;
 
 (:~
- : The create-collection function is an updating function which creates
+ : The create function is an updating function which creates
  : the collection with the given expanded QName. Moreover, it adds copies
  : of the sequence $content to the new collection.
  :
@@ -106,12 +106,12 @@ declare updating function cddl:create-collection($name as xs:QName) external;
  :        for SequenceType Matching.
  :
  :)
-declare updating function cddl:create-collection(
+declare updating function cddl:create(
   $name as xs:QName,
   $content as node()*)  external;
 
 (:~
- : The delete-collection function is an updating function that deletes
+ : The delete function is an updating function that deletes
  : the collection with the given expanded QName.
  :
  : @param $name The QName of the collection to delete.
@@ -130,7 +130,7 @@ declare updating function cddl:create-collection(
  :        indexes access the collection with name $name.
  :
  :)
-declare updating function cddl:delete-collection(
+declare updating function cddl:delete(
   $name as xs:QName)  external;
 
 (:~

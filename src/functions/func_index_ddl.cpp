@@ -170,14 +170,14 @@ void populate_context_index_ddl(static_context* sctx)
   DECL(sctx, fn_zorba_ddl_create_index,
        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl",
                     "",
-                    "create-index"),
+                    "create"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_ddl_delete_index,
        (createQName("http://www.zorba-xquery.com/modules/store/static/indexes/ddl",
                     "",
-                    "delete-index"),
+                    "delete"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 

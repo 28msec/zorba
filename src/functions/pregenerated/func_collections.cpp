@@ -246,11 +246,11 @@ void populate_context_collections(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","create-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DDL_CREATE_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DDL_CREATE_1);
 
   }
 
@@ -258,12 +258,12 @@ void populate_context_collections(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","create-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DDL_CREATE_COLLECTION_2);
+        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DDL_CREATE_2);
 
   }
 
@@ -271,11 +271,11 @@ void populate_context_collections(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","create-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_CREATE_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_CREATE_1);
 
   }
 
@@ -283,12 +283,12 @@ void populate_context_collections(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","create-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_create,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","create"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_CREATE_COLLECTION_2);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_CREATE_2);
 
   }
 
@@ -296,11 +296,11 @@ void populate_context_collections(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_delete_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","delete-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_delete,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/ddl","","delete"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DDL_DELETE_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DDL_DELETE_1);
 
   }
 
@@ -308,11 +308,11 @@ void populate_context_collections(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_delete_collection,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","delete-collection"), 
+    DECL_WITH_KIND(sctx, zorba_store_collections_static_ddl_delete,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl","","delete"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_DELETE_COLLECTION_1);
+        FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_DELETE_1);
 
   }
 

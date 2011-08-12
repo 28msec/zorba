@@ -8,9 +8,9 @@ declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare %ann:sequential function local:ddl() {
   (
-    ddl:create-collection($ns:coll_1, (<a/>,<b/>)),
-    ddl:create-collection($ns:coll_2, (<a/>,<b/>)),
-    ddl:create-collection($ns:coll_3, (<a/>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>))
+    ddl:create($ns:coll_1, (<a/>,<b/>)),
+    ddl:create($ns:coll_2, (<a/>,<b/>)),
+    ddl:create($ns:coll_3, (<a/>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>))
   );
 };
 

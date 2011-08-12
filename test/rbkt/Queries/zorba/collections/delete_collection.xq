@@ -6,16 +6,16 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:create() 
 {
-  ddl:create-collection(xs:QName("ns:test1"));
-  ddl:create-collection(xs:QName("ns:test2"), for $i in 1 to 10 return <a> { $i } </a> );
+  ddl:create(xs:QName("ns:test1"));
+  ddl:create(xs:QName("ns:test2"), for $i in 1 to 10 return <a> { $i } </a> );
   exit returning ddl:is-available-collection(xs:QName("ns:test1")) and ddl:is-available-collection(xs:QName("ns:test2"));
 };
 
 
 declare %ann:sequential function local:delete() 
 {
-  ddl:delete-collection(xs:QName("ns:test1"));
-  ddl:delete-collection(xs:QName("ns:test2"));
+  ddl:delete(xs:QName("ns:test1"));
+  ddl:delete(xs:QName("ns:test2"));
   exit returning fn:not(ddl:is-available-collection(xs:QName("ns:test1")) or ddl:is-available-collection(xs:QName("ns:test2")));
 };
 

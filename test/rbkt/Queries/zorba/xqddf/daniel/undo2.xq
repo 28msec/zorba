@@ -4,7 +4,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-ddl:create-collection($xqddf-test:white-collection);
+ddl:create($xqddf-test:white-collection);
 
 {
 <newline>
@@ -17,7 +17,7 @@ for $i in fn:doc("auction.xml")//item
 return 
     dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
 
-index_ddl:create-index($xqddf-test:index1);
+index_ddl:create($xqddf-test:index1);
 },
 
 {

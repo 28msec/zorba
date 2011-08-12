@@ -5,7 +5,7 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare %ann:sequential function local:create() {
-  ddl:create-collection(xs:QName("ns:test1"));
+  ddl:create(xs:QName("ns:test1"));
   exit returning ddl:is-available-collection(xs:QName("ns:test1"));
 };
 

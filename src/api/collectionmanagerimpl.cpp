@@ -98,7 +98,7 @@ CollectionManagerImpl::createCollection(const Item& aName)
   {
     Item lFunc = theFactory->createQName(
         theColDDLNamespace,
-        "create-collection");
+        "create");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aName));
@@ -124,7 +124,7 @@ CollectionManagerImpl::createCollection(
   {
     Item lFunc = theFactory->createQName(
         theColDDLNamespace,
-        "create-collection");
+        "create");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aName));
@@ -154,7 +154,7 @@ CollectionManagerImpl::deleteCollection(const Item& aName)
     }
 
     Item lFunc = theFactory->createQName(
-        theColDDLNamespace, "delete-collection");
+        theColDDLNamespace, "delete");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aName));

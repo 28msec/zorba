@@ -1912,7 +1912,7 @@
     </diagnostic>
 
     <diagnostic code="ZDDY0016" name="COLLECTION_MULTIPLE_CREATES">
-      <value>"$1": multiple calls to create-collection() in same snapshot</value>
+      <value>"$1": multiple attemps to create a collection in the same snapshot</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0017" name="NODE_IS_ORPHAN">

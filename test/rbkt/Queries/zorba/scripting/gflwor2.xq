@@ -7,7 +7,7 @@ declare variable $col := xs:QName("myCollection");
 
 declare %ann:sequential function local:test()
 {
-  ddl:create-collection($col, (<a><c>1</c></a>,<b>2</b>));
+  ddl:create($col, (<a><c>1</c></a>,<b>2</b>));
 
   for $i in (1 to 3)
   where $i > 1
