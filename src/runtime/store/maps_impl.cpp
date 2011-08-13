@@ -461,7 +461,7 @@ MapKeysIterator::nextImpl(
           "", "attribute");
 
       GENV_ITEMFACTORY->createQName(lValueAttrName,
-          "", "", "value");
+           "", "", "value");
 
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
 
