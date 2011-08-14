@@ -60,6 +60,7 @@ SET(UNIT_TESTS_SRCS
   string_instantiate.cpp
   streamable_string.cpp
   string_test.cpp
+  unique_ptr.cpp
   main_sequential.cpp
   datetime.cpp
   invoke.cpp
