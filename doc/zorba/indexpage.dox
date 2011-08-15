@@ -20,9 +20,8 @@
   <li>\ref mod_importing</li>
   <li>\ref mod_versioning</li>
   <li>\ref mod_authoring</li>
+  <li>\ref external_functions</li>
 </ul>
-
-<b>\ref external_functions</b>
 
 <b>\ref data_lifecycle</b>
 
@@ -67,6 +66,8 @@
 <ul>
   <li>\ref overview</li>
   <li><b><a href="http://www.w3.org/TR/xquery/">W3C XQuery 1.0</a></b>  (\ref conformanceXQTS)</li>
+  <li><b><a href="http://www.w3.org/TR/xpath-functions-30/">XPath and XQuery Functions and Operators</a></b>
+     (<b><a href="../xqdoc/xhtml/function_index.html">List of Supported Functions</a></b>)</li>
   <li><b><a href="http://www.w3.org/TR/xquery-update-10/">W3C XQuery Update Facility 1.0</a></b>  (\ref conformanceXQUTS)</li>
   <li><b><a href="http://www.w3.org/TR/xpath-full-text-10/">W3C XQuery and XPath Full Text 1.0</a></b>  (\ref conformanceXQFTTS)</li>
   <li><b><a href="http://www.w3.org/TR/xquery-30/">W3C XQuery 3.0</a></b>  (\ref partial_support "Partial Support")</li>
