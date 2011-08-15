@@ -44,8 +44,8 @@ declare option ver:module-version "2.0";
  : @param $serializer-params Parameter to control the serialization of the
  :    content.
  : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:sequential function file:append(
   $file as xs:string,
@@ -65,8 +65,8 @@ declare %ann:sequential function file:append(
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:sequential function file:append-binary(
   $file as xs:string,
@@ -79,8 +79,8 @@ declare %ann:sequential function file:append-binary(
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %private %ann:sequential function file:append-text(
   $file as xs:string,
@@ -93,12 +93,12 @@ declare %private %ann:sequential function file:append-text(
  : @param $source The path/URI of the file or directory to copy.
  : @param $destination The destination path/URI.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If the computed destination points to a file system item
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0002 If the computed destination points to a file system item
  :    with a different type than the <pre>$source</pre>.
- : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ : @error file:FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic %ann:sequential function file:copy(
   $source as xs:string,
@@ -120,12 +120,12 @@ declare %ann:nondeterministic %ann:sequential function file:copy(
  : @param $sourceFile The path/URI of the file to copy.
  : @param $destination The destination path/URI.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If the computed destination points to directory.
- : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0002 If the computed destination points to directory.
+ : @error file:FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
- : @error FOFL0004 If <pre>$sourceFile</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$sourceFile</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %private %ann:sequential function file:copy-file-impl(
   $sourceFile as xs:string,
@@ -138,11 +138,11 @@ declare %private %ann:sequential function file:copy-file-impl(
  : @param $sourceDir The path/URI of the directory to copy.
  : @param $destination The destination path/URI.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If <pre>$destination</pre> points to an existing file.
- : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0002 If <pre>$destination</pre> points to an existing file.
+ : @error file:FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %private %ann:nondeterministic %ann:sequential function file:copy-directory-impl(
   $sourceDir as xs:string,
@@ -179,9 +179,9 @@ declare %private %ann:nondeterministic %ann:sequential function file:copy-direct
  : @param $sourceDir The path/URI of the directory to copy the content from.
  : @param $destination The destination directory path/URI.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0003 If <pre>$destination</pre> directory does not exist.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0003 If <pre>$destination</pre> directory does not exist.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %private %ann:nondeterministic %ann:sequential function file:copy-directory-content(
   $sourceDir as xs:string,
@@ -205,9 +205,9 @@ declare %private %ann:nondeterministic %ann:sequential function file:copy-direct
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @return The empty sequence.
- : @error FOFL0002 If the directory cannot be created because of an already
+ : @error file:FOFL0002 If the directory cannot be created because of an already
  :    existing file.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:sequential function file:create-directory(
   $dir as xs:string
@@ -221,8 +221,8 @@ declare %ann:sequential function file:create-directory(
  :
  : @param $path The path/URI of the file or directory to delete.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$path</pre> path does not exist.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$path</pre> path does not exist.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic %ann:sequential function file:delete(
   $path as xs:string
@@ -242,8 +242,8 @@ declare %ann:nondeterministic %ann:sequential function file:delete(
  :
  : @param $file The path/URI of the file to delete.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$file</pre> path does not exist.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$file</pre> path does not exist.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %private %ann:sequential function file:delete-file-impl(
   $file as xs:string
@@ -254,9 +254,9 @@ declare %private %ann:sequential function file:delete-file-impl(
  :
  : @param $dir The path/URI of the directory to delete.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$dir</pre> path does not exist.
- : @error FOFL0003 If <pre>$dir</pre> does not point to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$dir</pre> path does not exist.
+ : @error file:FOFL0003 If <pre>$dir</pre> does not point to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %private %ann:nondeterministic %ann:sequential function file:delete-directory-impl(
   $dir as xs:string
@@ -310,12 +310,12 @@ declare %ann:nondeterministic function file:is-file(
  : @param $source The path/URI of the file to move.
  : @param $destination The destination path/URI.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If <pre>$source</pre> points to a directory and
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0002 If <pre>$source</pre> points to a directory and
  :    <pre>$destination</pre> points to an existing file.
- : @error FOFL0003 If <pre>$destination</pre> does not exist and it's parent
+ : @error file:FOFL0003 If <pre>$destination</pre> does not exist and it's parent
  :    directory does not exist either.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:sequential function file:move(
   $source as xs:string,
@@ -332,9 +332,9 @@ declare %ann:sequential function file:move(
  :
  : @param $file The file to read.
  : @return The content of the file as Base64.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:read-binary(
   $file as xs:string
@@ -349,9 +349,9 @@ declare %ann:nondeterministic function file:read-binary(
  :
  : @param $file The file to read.
  : @return The content of the file as string.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:read-text(
   $file as xs:string
@@ -370,10 +370,10 @@ declare %ann:nondeterministic function file:read-text(
  : @param $file The file to read.
  : @param $encoding The encoding used when reading the file.
  : @return The content of the file as string.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL0006 If <pre>$encoding</pre> is not supported.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error file:FOFL0006 If <pre>$encoding</pre> is not supported.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:read-text(
   $file as xs:string,
@@ -389,9 +389,9 @@ declare %ann:nondeterministic function file:read-text(
  :
  : @param $file The file to read.
  : @return The content of the file as a sequence of strings.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:read-text-lines(
   $file as xs:string
@@ -415,10 +415,10 @@ declare %ann:nondeterministic function file:read-text-lines(
  : @param $file The file to read.
  : @param $encoding The encoding used when reading the file.
  : @return The content of the file as a sequence of strings.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0004 If <pre>$source</pre> points to a directory.
- : @error FOFL0006 If <pre>$encoding</pre> is not supported.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error file:FOFL0006 If <pre>$encoding</pre> is not supported.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:read-text-lines(
   $file as xs:string,
@@ -474,8 +474,8 @@ declare %private %ann:nondeterministic %ann:sequential function file:copy-direct
  : @param $serializer-params Parameter to control the serialization of the
  :        content.
  : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:sequential function file:write(
   $file as xs:string,
@@ -495,8 +495,8 @@ declare %ann:sequential function file:write(
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:sequential function file:write-binary(
   $file as xs:string,
@@ -509,8 +509,8 @@ declare %ann:sequential function file:write-binary(
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:sequential function file:write-binary(
   $file as xs:string,
@@ -526,8 +526,8 @@ declare %ann:sequential function file:write-binary(
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
- : @error FOFL0004 If <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %private %ann:sequential function file:write-text(
   $file as xs:string,
@@ -542,8 +542,8 @@ declare %private %ann:sequential function file:write-text(
  :
  : @param $dir The path/URI of the directory to retrieve the children from.
  : @return The sequence of names of the direct children.
- : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:list(
   $dir as xs:string
@@ -561,8 +561,8 @@ declare %ann:nondeterministic function file:list(
  : @param $recursive A boolean flag indicating whether the operation should be
  :    performed recursively.
  : @return A sequence of relative paths.
- : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:list(
   $path as xs:string,
@@ -598,8 +598,8 @@ declare %ann:nondeterministic function file:list(
  :    performed recursively.
  : @param $pattern The file name pattern.
  : @return A sequence of file names matching the pattern.
- : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:list(
   $path as xs:string,
@@ -639,8 +639,8 @@ declare function file:glob-to-regex(
  : @param $path The file system item to read the last modification
  :    timestamp from.
  : @return The date and time of the last modification of the item.
- : @error FOFL0001 If the <pre>$path</pre> does not exist.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$path</pre> does not exist.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:last-modified(
   $path as xs:string
@@ -651,9 +651,9 @@ declare %ann:nondeterministic function file:last-modified(
  :
  : @param $file The file get the size.
  : @return An integer representing the size in bytes of the file.
- : @error FOFL0001 If the <pre>$file</pre> does not exist.
- : @error FOFL0004 If the <pre>$file</pre> points to a directory.
- : @error FOFL9999 If any other error occurs.
+ : @error file:FOFL0001 If the <pre>$file</pre> does not exist.
+ : @error file:FOFL0004 If the <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
  :)
 declare %ann:nondeterministic function file:size(
   $file as xs:string
@@ -712,7 +712,7 @@ declare function file:path-to-uri(
  :
  : @param $path The uri or path to normalize.
  : @return The native path corresponding to <pre>$path</pre>.
- : @error FOFL9999 If an error occurs while trying to obtain the native path.
+ : @error file:FOFL9999 If an error occurs while trying to obtain the native path.
  :)
 declare function file:path-to-native($path as xs:string) as xs:string external;
 
