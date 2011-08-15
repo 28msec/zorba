@@ -1,1 +1,0 @@
-<header xmlns="http://expath.org/ns/http-client" name="Content-Type" value="application/xml"/>

@@ -18,24 +18,16 @@ xquery version "3.0";
 
 
 (:~
- : This module provides an interface for zorbas http client. Basically it
- : provides functions for simple http requests (GET, POST, DELETE etc.)
- : and a general purpose function. If the simple functions are not enough
- : powerfull for your needs, you should use the implementation of the EXPath
- : module instead. See <a href="http://www.expath.org/spec/http-client">the spec
- : of the http-client</a> for more information about EXPaths http-client.
+ : <h1>Introduction</h1>
+ : <p>
+ : This module provides provides simple functions for performing HTTP requests
+ : (GET, POST, DELETE etc.), as well as a more flexible general
+ : purpose function (<a href="#send-request-3">send-request()</a>).
+ : </p>
  : 
- : While the EXPath functions are all declared as sequential, some functions in
- : this module are defined as nondeterministic. But if you are making a request
- : with one of these functions to a server which does not conform to the HTTP
- : RFC (i.e. which introduces side effects for side-effect free calls like GET),
- : use the EXPath module instead. Otherwise the behavior of your code will
- : be undefined. Zorba has no way to figure out, if a HTTP call is side-effect
- : free or not.
+ : <h1>Examples of how to use this module:</h1>
  : 
- : Examples of how to use this module:
- : 
- : <b>Simple GET Request (retrieving text)</b>
+ : <h4>Simple GET Request (retrieving text)</h4>
  : 
  : <pre class="brush: xquery;">http:get-text( "www.example.com" )</pre>
  : 
@@ -66,7 +58,7 @@ xquery version "3.0";
  :   &amp;lt;/html&amp;gt;
  :   </pre>
  : 
- : <b>Simple GET Request (retrieving XHTML)</b>
+ : <h4>Simple GET Request (retrieving XHTML)</h4>
  : 
  :   <pre class="brush: xquery;">
  :   declare namespace xhtml="http://www.w3.org/1999/xhtml";
@@ -75,15 +67,15 @@ xquery version "3.0";
  :   </pre>
  : 
  : <p>
- : This example shows how to retrieve an XHTML resource. Note, that the node test
- : that is looking for the body element in the result requires the xhtml
+ : This example shows how to retrieve an XHTML resource. Note that the path
+ : expression that is looking for the "body" element in the result requires the xhtml
  : namespace to be specified.
  : </p>
  : 
- : <b>Simple POST Request</b>
+ : <h4>Simple POST Request</h4>
  : 
  : <p>
- : Here is a simple example which sends a text content by making an HTTP POST
+ : Here is a simple example which sends text content by making an HTTP POST
  : request.
  : </p>
  : 
@@ -91,16 +83,109 @@ xquery version "3.0";
  :   http:post( "...", "Hello World" )
  :   </pre>
  : 
- : The response of this request can look as follows:
  : 
- :   <pre class="brush: xml;">
- :   &lt;http:response status="200" message="Ok">
- :      &lt;http:header name="Content-Type" value="text/html"/>
- :      &lt;http:header name="Server" value="Apache ..."/>
- :      ...
- :      &lt;http:body content-type="text/html"/>
- :   &lt;/http:response>
- : </pre>
+ : 
+ : <h1 id="standard_return">Return Values</h1>
+ : 
+ : <p>Most functions in this module (all except
+ : <a href="#options-1">options()</a>) return one or more items.
+ : (<a href="#head-1">head()</a> returns exactly one.) For all of these,
+ : the first item returned will be a &lt;http-schema:response&gt;
+ : element, as seen in the examples above. This element has "status" and
+ : "message" attributes, representing the result of the HTTP call. It
+ : also has any number of &lt;http-schema:header&gt; child elements that
+ : encode the HTTP headers returned by the HTTP server. Finally, it
+ : will generally contain a &lt;http-schema:body&gt; child element with
+ : a "media-type" attribute that identifies the content-type of the
+ : result data.</p>
+ : 
+ : <p>The full schema of this &lt;http-schema:response&gt; element is
+ : part of the <a href="http://expath.org/modules/http-client/">EXPath
+ : HTTP Client module</a>. You can see the schema
+ : <a href="schemas/expath.org_ns_http-client.html">here</a>.</p>
+ : 
+ : <p>Any items in function return values after the initial
+ : &lt;http-schema:response&gt; element are the body/bodies of the HTTP
+ : response from the server. (MIME Multi-part responses will have
+ : more than one body.) The type of these items depends on the 
+ : Content-Type for each body. Each item will be:</p>
+ : 
+ : <ul>
+ :  <li>
+ :    an element node, if the returned content type is one of:
+ :    <ul>
+ :      <li>text/xml</li>
+ :      <li>application/xml</li>
+ :      <li>text/xml-external-parsed-entity</li>
+ :      <li>application/xml-external-parsed-entity</li>
+ :      <li>or if the Content-Type ends with "+xml".</li>
+ :    </ul>
+ :  </li>
+ :  <li>
+ :    an xs:string, if the content type starts with "text/" and does not match the
+ :    above XML content types strings.
+ :  </li>
+ :  <li>xs:base64Binary for all other content types.</li>
+ : </ul>
+ : 
+ : <p>This return value - a sequence of items comprising one
+ : &lt;http-schema:response&gt; element followed by zero or more
+ : response items - is referred to as the "standard http-client 
+ : return type" in the function declarations below.</p>
+ :
+ : <h1 id="url_string">$href Arguments to Functions</h1>
+ :
+ : All functions in this module accept a URL argument named $href. In
+ : all cases, the value passed to $href must be a valid xs:anyURI.
+ : However, all functions declare $href to be of type xs:string. This
+ : is for convenience, since you can pass a string literal value (that
+ : is, a URL in double-quotes spelled out explicitly in your query)
+ : to an xs:string parameter.
+ : 
+ : <h1 id="get_warning">Important Notice Regarding get() Functions</h1>
+ : 
+ : All of the get() functions in this module -
+ : <a href="#get-1">get()</a>, <a href="#get-node-1">get-node()</a>,
+ : <a href="#get-text-1">get-text()</a>, and
+ : <a href="#get-binary()">get-binary()</a> - are declared to be
+ : <i>nondeterministic</i>, which means that Zorba will not cache
+ : their results. However, they are <b>not</b> declared to be
+ : <i>sequential</i>, which means that Zorba may re-order them
+ : as part of its query optimization. According to the HTTP RFC,
+ : GET requests should only return data, and should not have any
+ : side-effects. However, in practice it is not uncommon for GET
+ : requests to have side-effects. If your application depends on
+ : the ordering of side-effects from making GET requests, you should
+ : either use the more complex <a href="#send-request-3">send-request()</a>
+ : function (which <b>is</b> declared <i>sequential</i>), or alterately
+ : wrap each call to get() in your own sequential function, to ensure
+ : that Zorba does not place the GET requests out of order.
+ : 
+ : <h1 id="expath_relation">Relation to the EXPath http-client module</h1>
+ : 
+ : <a href="http://expath.org/">EXPath</a> defines its own http-client
+ : module, which is available separately for Zorba as a non-core module.
+ : There are two primary differences between EXPath's http-client and
+ : Zorba's core http-client (this module):
+ : 
+ : <ol>
+ :   <li>EXPath defines only the send-request() function, although it
+ : does include convenient 1- and 2-argument forms in addition to the
+ : full 3-argument form. EXPath does not include the simpler get(),
+ : post(), put(), delete(), head(), and options() functions defined by
+ : this module.</li>
+ :   <li>EXPath specifies that all HTML content returned from the
+ : HTTP server will be <i>tidied up</i> into valid XML, and then parsed
+ : into an element. As this required an additional third-party library
+ : dependency, Zorba's http-client module does not perform this tidying.
+ : Instead, HTML content is returned as a string (with special XML
+ : characters replaced with XML entity references, as shown in the
+ : above examples).</li>
+ : </ol>
+ : 
+ : See <a href="http://www.expath.org/spec/http-client">the full spec
+ : of the EXPath http-client module</a> for more information.
+ : 
  : 
  : @author Markus Pilman
  : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a>
@@ -121,39 +206,35 @@ declare option ver:module-version "2.0";
 
 
 (:~
- : This function sends an HTTP request and returns the corresponding response. It just
- : implements the http:send-request/3 function from the EXPath module. To provide better
- : interoperability between XQuery engines, use the EXPath module instead.
+ : This function sends an HTTP request and returns the corresponding response.
+ : Its inputs, outputs, and behavior are identical to the
+ : <a href="http://expath.org/spec/http-client">EXPath http-client</a>'s
+ : send-request() function (except that HTML responses are not tidied
+ : into XML - see <a href="#expath_relation">the note above</a>). It
+ : is provided here for use in Zorba installations that do not have
+ : the EXPath module available. If you have the option of using the 
+ : EXPath module instead of this function, please do so, as it will
+ : allow your application to be more interoperable between different
+ : XQuery engines.
  :
- : <p>
- : This function is declared as sequential (see XQuery Scripting).
- : Sequential functions are allowed to have side effects. For example, most probably,
- : an HTTP POST request is a request that has side effects because it adds/changes
- : a remote resource.
- : </p>
+ : Full documentation of the $request parameter can be found in
+ : <a href="http://expath.org/spec/http-client.html#d2e183">the EXPath
+ : specification</a>.
  :
- : @param $request Contains the various parameters of the request. 
- :   See the 
- :   <a href="http://expath.org/modules/http-client.html#d2e183">specification</a>.
- :   for a full description of the structure of this element.
- : @param $href is the HTTP or HTTPS URI to send the request to. It must be a valid
- :  xs:anyURI, but is declared as a string to be able to pass literal strings
- :  (without requiring to explicitly cast it to an xs:anyURI.)
- : @param $content is the request body content, for HTTP methods that can
- :  contain a body in the request (i.e. POST and PUT). It is an error, if this
- :  param is not the empty sequence for methods other then DELETE, GET, HEAD
- :  and OPTIONS.
- : @return a sequence of items, where the first item is a element of type
- :  http:responseType. The response element is also described in the
- :  <a href="http://expath.org/modules/http-client.html#d2e483">specification</a>.
- :  If there is one (or several, in case of multipart) response body, the response bodies
- :  are the next items in the sequence.
- : @error err:XPST0081 Schema validation error - this happens whenever a wrong request element is given.
+ : @param $request Contains the various parameters of the request (see above).
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above). If this
+ :  parameter is specified, it will override the "href" attribute of
+ :  $request.
+ : @param $bodies is the request body content, for HTTP methods that can
+ :  contain a body in the request (i.e. POST and PUT). It is an error if this
+ :  param is not the empty sequence for methods 
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
  : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC005 The input request element is not valid.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:sequential function http:send-request(
@@ -187,50 +268,14 @@ declare %ann:sequential function http:send-request(
 
 
 (:~
- : This function makes a GET request on a given URL.
+ : This function makes a GET request to a given URL.
  :
- : This function just makes a http GET request on $href. The function
- : is nondeterministic. But if a GET request to the given address has
- : side effects, which would not conform with the RFC but is often the
- : case, then you should use a sequential function instead.
- :
- : This functions uses the ContentType of the response to parse the result.
- : It will return a sequence of items, where the first item describes the
- : result according to the <a href="http://www.expath.org/spec/http-client">
- : expath specification</a>. The next items are the date of each body
- : element. Each body will be:
- :
- : <ul>
- :  <li>
- :    an element node, if the returned content type is one of:
- :    <ul>
- :      <li>text/xml</li>
- :      <li>application/xml</li>
- :      <li>text/xml-external-parsed-entity</li>
- :      <li>application/xml-external-parsed-entity</li>
- :      <li>or if the Content-Type ends with "+xml"</li>
- :    </ul>
- :  </li>
- :  <li>
- :    A text node, if the content type starts with "text/" and does not match the
- :    strings for xml.
- :  </li>
- :  <li>for all other content types the type will be xs:base64Binary</li>
- : </ul>
- :
- : Unlike the expath http-client, this function will never tidy html to xml.
- :
- : @param $href The URL to which the call will be made.
- : @return a sequence of items, where the first item is a element of type
- :  http:responseType. The response element is also described in the
- :  <a href="http://expath.org/modules/http-client.html#d2e483">specification</a>.
- :  If there is one (or several, in case of multipart) response body, the response bodies
- :  are the next items in the sequence.
+ : @see <a href="#get_warning">Notice about get() functions</a>
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:nondeterministic function http:get($href as xs:string) as item()+
@@ -239,24 +284,15 @@ declare %ann:nondeterministic function http:get($href as xs:string) as item()+
 };
 
 (:~
- : This function makes a GET request on a given URL.
+ : This function makes a GET request to a given URL. All returned bodies
+ : are forced to be interpreted as XML and parsed into elements.
  :
- : This function just makes a http GET request on $href. The function
- : is nondeterministic. But if a GET request to the given address has
- : side effects, which would not conform with the RFC but is often the
- : case, then you should use a sequential function instead.
- :
- : @param $href The URL to which the call will be made.
- : @return a sequence of items, where the first item is a element of type
- :  http:responseType. The response element is also described in the
- :  <a href="http://expath.org/modules/http-client.html#d2e483">specification</a>.
- :  If there is one (or several, in case of multipart) response body, the response bodies
- :  are the next items in the sequence.
+ : @see <a href="#get_warning">Notice about get() functions</a>
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:nondeterministic function http:get-node($href as xs:string) as item()+
@@ -265,24 +301,16 @@ declare %ann:nondeterministic function http:get-node($href as xs:string) as item
 };
 
 (:~
- : This function makes a GET request on a given URL.
+ : This function makes a GET request to a given URL. All returned bodies
+ : are forced to be interpreted as plain strings, and will be returned
+ : as xs:string items.
  :
- : This function just makes a http GET request on $href. The function
- : is nondeterministic. But if a GET request to the given address has
- : side effects, which would not conform with the RFC but is often the
- : case, then you should use a sequential function instead.
- :
- : @param $href The URL to which the call will be made.
- : @return a sequence of items, where the first item is a element of type
- :  http:responseType. The response element is also described in the
- :  <a href="http://expath.org/modules/http-client.html#d2e483">specification</a>.
- :  If there is one (or several, in case of multipart) response body, the response bodies
- :  are the next items in the sequence.
+ : @see <a href="#get_warning">Notice about get() functions</a>
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:nondeterministic function http:get-text($href as xs:string) as item()+
@@ -291,24 +319,16 @@ declare %ann:nondeterministic function http:get-text($href as xs:string) as item
 };
 
 (:~
- : This function makes a GET request on a given URL.
+ : This function makes a GET request on a given URL. All returned bodies
+ : are forced to be interpreted as binary data, and will be returned
+ : as xs:base64Binary items.
  :
- : This function just makes a http GET request on $href. The function
- : is nondeterministic. But if a GET request to the given address has
- : side effects, which would not conform with the RFC but is often the
- : case, then you should use a sequential function instead.
- :
- : @param $href The URL to which the call will be made.
- : @return a sequence of items, where the first item is a element of type
- :  http:responseType. The response element is also described in the
- :  <a href="http://expath.org/modules/http-client.html#d2e483">specification</a>.
- :  If there is one (or several, in case of multipart) response body, the response bodies
- :  are the next items in the sequence.
+ : @see <a href="#get_warning">Notice about get() functions</a>
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:nondeterministic function http:get-binary($href as xs:string) as item()+
@@ -317,16 +337,14 @@ declare %ann:nondeterministic function http:get-binary($href as xs:string) as it
 };
 
 (:~
- : Makes a HTTP HEAD request.
+ : This function makes an HTTP HEAD request on a given URL.
  :
- : @param $href The URL to which the request will be made.
- : @return A element which describes the result of this request. A http HEAD
- :         request never returns a body.
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @return <a href="#standard_return">standard http-client return type</a>
+ :  (since HEAD never returns any body data, only the
+ :  &lt;http-schema:response&gt; element will be returned).
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:nondeterministic function http:head($href as xs:string) as item() {
@@ -338,17 +356,13 @@ declare %ann:nondeterministic function http:head($href as xs:string) as item() {
 };
 
 (:~
- : Makes a HTTP OPTIONS request.
+ : This function makes an HTTP OPTIONS request, which asks the server
+ : which operations it supports.
  :
- : This request ask for OPTIONS supported of the server.
- :
- : @param $href The URL where to send the request.
- : @return A sequence of string with the allowed operations
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @return A sequence of xs:string values of the allowed operations.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:nondeterministic function http:options($href as xs:string) as xs:string* {
@@ -363,17 +377,18 @@ declare %ann:nondeterministic function http:options($href as xs:string) as xs:st
 
 
 (:~
- : Makes a HTTP PUT request.
+ : This function makes an HTTP PUT request to a given URL. If the body
+ : passed to this function is an element, it will be serialized to XML
+ : to be sent to the server, and the Content-Type sent to the server will
+ : be "text/xml". Otherwise, the body will be converted to
+ : a plain string, and the Content-Type will be "text/plain".
  :
- : @param $href The URL where to send the request.
- : @param $body The body which will be sent to the server
- : @return The first element of the result is the metadata (like
- :         headers, status etc), the next elements are the response
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @param $body The body which will be sent to the server.
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:sequential function http:put($href as xs:string, $body as item()) as item()+
@@ -390,21 +405,31 @@ declare %ann:sequential function http:put($href as xs:string, $body as item()) a
 };
 
 (:~
- : Makes a HTTP PUT request. This function takes the content type as a third parameter.
- : Note that this content type is used to determine the serialization, if the second
- : argument is an element node. If this automatic process does not work, use fn:serialize
- : instead.
+ : This function makes an HTTP PUT request to a given URL. If the body
+ : passed to this function is an element, it will be serialized 
+ : according to the $content-type parameter as follows:
+ : <ul>
+ :  <li>If $content-type is "text/xml", "application/xml",
+ : "text/xml-external-parsed-entity", or
+ : "application/xml-external-parsed-entity", or if it ends with "+xml",
+ : $body will be serialized to XML.</li>
+ :  <li>If $content-type starts with "text/html", $body will be
+ : serialized to HTML.</li>
+ :  <li>Otherwise, $body will be serialized to text.</li>
+ : </ul>
+ : If $body is not an element, $body will be serialized to text
+ : regardless of $content-type.
  :
- : @param $href The URL where to send the request.
- : @param $body The body which will be sent to the server
- : @param $content-type The content type of the body.
- : @return The first element of the result is the metadata (like
- :         headers, status etc), the next elements are the response
+ : <p>In any case, Content-Type of the request sent to the server will
+ : be $content-type.</p>
+ :
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @param $body The body which will be sent to the server.
+ : @param $content-type The content type of $body as described above.
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:sequential function http:put($href as xs:string, $body as item(), $content-type as xs:string) as item()+
@@ -436,16 +461,13 @@ declare %ann:sequential function http:put($href as xs:string, $body as item(), $
 };
 
 (:~
- : Makes a HTTP DELETE request.
+ : This function makes an HTTP DELETE request to a given URL.
  :
- : @param $href The URL where to send the request.
- : @return The first element of the result is the metadata (like
- :         headers, status etc), the next elements are the response
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:sequential function http:delete($href as xs:string) as item()+
@@ -458,29 +480,18 @@ declare %ann:sequential function http:delete($href as xs:string) as item()+
 };
 
 (:~
- : Makes a HTTP POST request.
+ : This function makes an HTTP POST request to a given URL. If the body
+ : passed to this function is an element, it will be serialized to XML
+ : to be sent to the server, and the Content-Type sent to the server will
+ : be "text/xml". Otherwise, the body will be converted to
+ : a plain string, and the Content-Type will be "text/plain".
  :
- : This function supports only simple http POST requests which should suite
- : most of the mostly common requests. Unlike the send-request function from
- : the EXPath http client, the user only has to give a URL, where she wants
- : the request sent to and a body as an item. The body will than be serialized
- : as follows:
- :  <ul>
- :    <li>If $body is of type xs:string, it will be serialized as plain text and
- :        the Content-Type for the request will be set to "text/plain"</li>
- :    <li>If $body is an element node, the Content-Type will be set to "text/xml"
- :        and the element will be serialized as xml.</li>
- :  </ul>
- :
- : @param $href The URL where to send the request.
- : @param $body The body which will be sent to the server
- : @return The first element of the result is the metadata (like
- :         headers, status etc), the next elements are the response
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
+ : @param $body The body which will be sent to the server.
+ : @return <a href="#standard_return">standard http-client return type</a>.
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:sequential function http:post($href as xs:string, $body as item()) as item()+
@@ -497,30 +508,32 @@ declare %ann:sequential function http:post($href as xs:string, $body as item()) 
 };
 
 (:~
- : Makes a HTTP POST request.
+ : This function makes an HTTP POST request to a given URL. If the body
+ : passed to this function is an element, it will be serialized 
+ : according to the $content-type parameter as follows:
+ : <ul>
+ :  <li>If $content-type is "text/xml", "application/xml",
+ : "text/xml-external-parsed-entity", or
+ : "application/xml-external-parsed-entity", or if it ends with "+xml",
+ : $body will be serialized to XML.</li>
+ :  <li>If $content-type starts with "text/html", $body will be
+ : serialized to HTML.</li>
+ :  <li>Otherwise, $body will be serialized to text.</li>
+ : </ul>
+ : If $body is not an element, $body will be serialized to text
+ : regardless of $content-type.
  :
- : This function supports only simple http POST requests which should suite
- : most of the mostly common requests. Unlike the send-request function from
- : the EXPath http client, the user only has to give a URL, where she wants
- : the request sent to and a body as an item. The body will than be serialized
- : as follows:
- :  <ul>
- :    <li>If $body is of type xs:string, it will be serialized as plain text and
- :        the Content-Type for the request will be set to "text/plain"</li>
- :    <li>If $body is an element node, the Content-Type will be set to "text/xml"
- :        and the element will be serialized as xml.</li>
- :  </ul>
+ : <p>In any case, Content-Type of the request sent to the server will
+ : be $content-type.</p>
  :
- : @param $href The URL where to send the request.
+ : @param $href The URL to which the request will be made (see
+ :  <a href="#url_string">note</a> above).
  : @param $body The body which will be sent to the server
- : @param $content-type The content type of the body.
+ : @param $content-type The content type of the body as described above.
  : @return The first element of the result is the metadata (like
  :         headers, status etc), the next elements are the response
  : @error error:HC001 An HTTP error occurred.
- : @error error:HC002 Error parsing the entity content as XML or HTML.
- : @error error:HC003 With a multipart response, the override-media-type must be either a multipart media type or application/octet-stream.
- : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
- : @error error:HC005 The request element is not valid.
+ : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :)
 declare %ann:sequential function http:post($href as xs:string, $body as item(), $content-type as xs:string) as item()+

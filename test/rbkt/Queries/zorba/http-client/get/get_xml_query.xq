@@ -1,0 +1,5 @@
+import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+
+http:get("http://zorbatest.lambda.nu:8080/cgi-bin/test-xml?querystring")[2]
+/body/query/text()
+

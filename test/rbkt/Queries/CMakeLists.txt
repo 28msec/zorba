@@ -266,5 +266,7 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
+EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
+EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 # vim:set et sw=2 ts=2:
