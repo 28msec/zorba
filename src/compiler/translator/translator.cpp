@@ -594,6 +594,8 @@ protected:
 
   std::stack<NodeSortInfo>               theNodeSortStack;
 
+  std::stack<bool>                       theInWhileStack;
+
   rchandle<AnnotationList>               theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
@@ -5496,6 +5498,8 @@ void* begin_visit(const WhileExpr& v)
 {
   TRACE_VISIT();
 
+  theInWhileStack.push(true);
+
   return no_state;
 }
 
@@ -5523,6 +5527,8 @@ void end_visit(const WhileExpr& v, void* visit_state)
   seqBody = new block_expr(bodyExpr->get_sctx(), loc, false, stmts, NULL);
 
   push_nodestack(new while_expr(theRootSctx, loc, seqBody));
+
+  theInWhileStack.pop();
 }
 
 
@@ -5545,18 +5551,28 @@ void end_visit(const FlowCtlStatement& v, void* visit_state)
   switch (v.get_action())
   {
   case FlowCtlStatement::BREAK:
+  {
+    if (theInWhileStack.empty())
+    {
+      RAISE_ERROR_NO_PARAMS(zerr::XSST0009, loc);
+    }
     a = flowctl_expr::BREAK;
     break;
-
+  }
   case FlowCtlStatement::CONTINUE:
+  {
+    if (theInWhileStack.empty())
+    {
+      RAISE_ERROR_NO_PARAMS(zerr::XSST0010, loc);
+    }
     a = flowctl_expr::CONTINUE;
     break;
-
+  }
   default:
     ZORBA_FATAL(false, "");
   }
 
-  push_nodestack (new flowctl_expr (theRootSctx, loc, a));
+  push_nodestack(new flowctl_expr(theRootSctx, loc, a));
 }
 
 
@@ -5670,13 +5686,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0 &&
       v.is_non_10())
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0003,
-      ERROR_PARAMS(
-        ZED( XQueryVersionAtLeast10_2 ), theSctx->xquery_version()
-      ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(XQueryVersionAtLeast10_2), theSctx->xquery_version()));
   }
 
   rchandle<flwor_expr> flwor = new flwor_expr(theRootSctx, loc, v.is_general());
@@ -5781,9 +5792,7 @@ void* begin_visit(const ForClause& v)
   if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-      throw XQUERY_EXCEPTION(
-        err::XPST0003, ERROR_PARAMS( ZED( OuterForClause11 ) ), ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(OuterForClause11)));
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -7191,7 +7200,10 @@ void end_visit(const CatchExpr& v, void* visit_state)
 
 
 /*******************************************************************************
-  [65] QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
+  QuantifiedExpr ::= ("some" | "every") QVarInDeclList "satisfies" ExprSingle
+
+  QVarInDeclList ::= "$" VarName TypeDeclaration? "in" ExprSingle 
+                     ("," "$" VarName TypeDeclaration? "in" ExprSingle)*
 
   A universally quantified expr is translated into a flwor expr:
 

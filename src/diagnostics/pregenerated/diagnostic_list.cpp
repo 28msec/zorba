@@ -1070,6 +1070,12 @@ ZorbaErrorCode XSST0007( "XSST0007" );
 ZorbaErrorCode XSST0008( "XSST0008" );
 
 
+ZorbaErrorCode XSST0009( "XSST0009" );
+
+
+ZorbaErrorCode XSST0010( "XSST0010" );
+
+
 } // namespace zerr
 
 namespace zwarn {

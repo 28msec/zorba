@@ -749,3 +749,11 @@ declare variable $zerr:XSST0007 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0007
 (:~
 :)
 declare variable $zerr:XSST0008 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0008");
+
+(:~
+:)
+declare variable $zerr:XSST0009 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0009");
+
+(:~
+:)
+declare variable $zerr:XSST0010 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0010");

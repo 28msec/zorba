@@ -157,6 +157,9 @@ static bool hoist_expressions(
         status = true;
 
         numForLetClauses = flwor->num_forlet_clauses();
+
+        // TODO: the expr that was just hoisted here, may contain sub-exprs that
+        // can be hoisted even earlier. 
       }
       else
       {

@@ -216,7 +216,7 @@ void if_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void if_expr::compute_scripting_kind()
 {
-  checkSimpleExpr(theCondExpr);
+  checkNonUpdating(theCondExpr);
 
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 

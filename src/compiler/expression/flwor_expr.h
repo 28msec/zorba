@@ -663,8 +663,6 @@ public:
 
   void set_general(bool v) { theIsGeneral = true; }
 
-  bool is_updating() const { return theReturnExpr->is_updating(); }
-
   expr* get_return_expr() const { return theReturnExpr.getp(); }
 
   void set_return_expr(expr_t e)
@@ -679,7 +677,7 @@ public:
 
   ulong num_clauses() const { return (ulong)theClauses.size(); }
 
-  void add_clause(flwor_clause* c);
+  void add_clause(flwor_clause* c, bool computeScriptingKind = true);
 
   void add_clause(ulong pos, flwor_clause* c);
 

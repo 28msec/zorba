@@ -436,7 +436,7 @@ void while_expr::compute_scripting_kind()
   if_expr* ifExpr = static_cast<if_expr*>(condExpr);
   condExpr = ifExpr->get_cond_expr();
 
-  checkSimpleExpr(condExpr);
+  checkNonUpdating(condExpr);
 
   if (!seqExpr->is_sequential() && !seqExpr->is_vacuous())
   {

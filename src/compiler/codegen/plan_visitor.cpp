@@ -934,8 +934,9 @@ bool begin_visit(flwor_expr& v)
                 ++numClauses;
               }
 
-              if (i < numClauses - 1 &&
-                  v[i+1]->get_kind() != flwor_clause::group_clause)
+              if (i == numClauses -1 ||
+                  (i < numClauses - 1 &&
+                   v[i+1]->get_kind() != flwor_clause::group_clause))
               {
                 orderby_clause* mat = 
                 new orderby_clause(v.get_sctx(), 

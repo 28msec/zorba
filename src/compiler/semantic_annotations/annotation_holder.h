@@ -46,8 +46,6 @@ public:
   const AnnotationValue_t get_annotation(Annotations::Key key) const;
 
   void remove_annotation(Annotations::Key key);
-
-  virtual bool is_updating() const = 0;
 };
 
 }

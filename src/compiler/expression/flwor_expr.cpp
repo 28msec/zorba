@@ -103,9 +103,9 @@ forletwin_clause::forletwin_clause(
 {
   if (theVarExpr != NULL)
     theVarExpr->set_flwor_clause(this);
-  // TODO: decide on this
-  //expr::checkNonUpdating(theDomainExpr);
-  expr::checkSimpleExpr(theDomainExpr);
+
+  expr::checkNonUpdating(theDomainExpr);
+  //expr::checkSimpleExpr(theDomainExpr);
 }
 
 
@@ -899,10 +899,13 @@ void flwor_expr::remove_clause(ulong pos)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::add_clause(flwor_clause* c)
+void flwor_expr::add_clause(flwor_clause* c, bool computeScriptingKind)
 {
   theClauses.push_back(c);
   c->theFlworExpr = this;
+
+  if (computeScriptingKind)
+    compute_scripting_kind();
 }
 
 
@@ -913,6 +916,8 @@ void flwor_expr::add_clause(ulong pos, flwor_clause* c)
 {
   theClauses.insert(theClauses.begin() + pos, c);
   c->theFlworExpr = this;
+
+  compute_scripting_kind();
 }
 
 
@@ -1133,9 +1138,51 @@ void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
 ********************************************************************************/
 void flwor_expr::compute_scripting_kind()
 {
+  ulong numClauses = num_clauses();
+
+  for (ulong i = 0; i < numClauses; ++i)
+  {
+    const flwor_clause* c = theClauses[i];
+    flwor_clause::ClauseKind k = c->get_kind();
+
+    if (k == flwor_clause::for_clause ||
+        k == flwor_clause::let_clause ||
+        k == flwor_clause::window_clause)
+    { 
+      const forletwin_clause* c2 = static_cast<const forletwin_clause*>(c);
+
+      theScriptingKind |= c2->get_expr()->get_scripting_detail();
+
+      if (c2->get_expr()->is_sequential())
+        theHasSequentialClauses = true;
+    }
+  }
+
   const expr* ret = get_return_expr();
   if (ret)
-    theScriptingKind = ret->get_scripting_detail();
+    theScriptingKind |= ret->get_scripting_detail();
+
+  if (is_sequential(theScriptingKind))
+  {
+    theScriptingKind &= ~SIMPLE_EXPR;
+    theScriptingKind &= ~VACUOUS_EXPR;
+  }
+
+  if (theScriptingKind & UPDATING_EXPR)
+  {
+    theScriptingKind &= ~SIMPLE_EXPR;
+    theScriptingKind &= ~VACUOUS_EXPR;
+  }
+
+  if (theScriptingKind & VACUOUS_EXPR)
+  {
+    if (ret && ret->is_vacuous())
+      theScriptingKind &= ~SIMPLE_EXPR;
+    else
+      theScriptingKind &= ~VACUOUS_EXPR;
+  }
+
+  checkScriptingKind();
 }
 
 
@@ -1152,7 +1199,7 @@ expr_t flwor_expr::clone(substitution_t& subst) const
   {
     flwor_clause_t cloneClause = theClauses[i]->clone(subst);
 
-    cloneFlwor->add_clause(cloneClause.getp());
+    cloneFlwor->add_clause(cloneClause.getp(), false);
   }
 
   cloneFlwor->set_return_expr(theReturnExpr->clone(subst));

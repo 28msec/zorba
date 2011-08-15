@@ -2248,7 +2248,13 @@
       <value>"$1": variable not assignable</value>
     </diagnostic>
     <diagnostic code="XSST0008">
-      <value>"while" expression with non-sequential body</value>
+      <value>"while" statement with non-sequential body</value>
+    </diagnostic>
+    <diagnostic code="XSST0009">
+      <value>"break loop" statement not inside while statement</value>
+    </diagnostic>
+    <diagnostic code="XSST0010">
+      <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
   </namespace>

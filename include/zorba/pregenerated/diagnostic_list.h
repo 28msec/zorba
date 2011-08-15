@@ -728,6 +728,10 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0007;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0008;
 
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0009;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode XSST0010;
+
 } // namespace zerr
 
 namespace zwarn {
