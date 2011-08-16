@@ -4911,19 +4911,21 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                       GET_BUILTIN_FUNCTION(FN_EXISTS_1),
                                       uniKeyExpr.getp());
 
+#if 0
       zstring commentStr("#trace fnExists");
       expr_t comentExpr = new const_expr(theRootSctx, loc, commentStr);
       fo_expr_t fnTraceExpr = new fo_expr(theRootSctx,
                                          loc,
                                          GET_BUILTIN_FUNCTION(FN_TRACE_2),
                                          existsExpr.getp(), comentExpr.getp());
+#endif
 
 
       // every ... satisfies evTestExpr
       fo_expr_t fnNotExpr = new fo_expr(theRootSctx,
                                         loc,
                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                        fnTraceExpr.getp() /*existsExpr*/);
+                                        existsExpr);
 
       evFlworExpr->add_where(fnNotExpr.getp());
 

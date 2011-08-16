@@ -4,8 +4,8 @@ module namespace news-data = "http://www.news.org/data";
 
 import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd";
 
-import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
-import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
@@ -18,7 +18,7 @@ declare %ann:read-only-nodes %ann:const %ann:ordered collection news-data:months
   as schema-element(news:month)*;
 
 
-declare %ann:automatic %value-equality index news-data:CityEmp
+declare %ann:automatic %ann:value-equality index news-data:CityEmp
   on nodes manip:collection(xs:QName("news-data:employees"))
   by .//news:station/news:city as xs:string;
 
@@ -26,7 +26,7 @@ declare %ann:automatic %value-equality index news-data:CityEmp
 declare %ann:manual %ann:value-range index news-data:ArtCountEmp
   on nodes manip:collection(xs:QName("news-data:employees"))[./news:position/@kind eq "journalist"]
   by count(for $art in manip:collection(xs:QName("news-data:articles"))
-           where $art/empid = ./@id
+           where xs:integer($art/empid/text()) = ./@id
            return $art) as xs:integer;
 
 
@@ -40,7 +40,7 @@ declare integrity constraint news-data:AuthorNames
 
 declare integrity constraint news-data:ArticleEmployees
   foreign key
-    from collection news-data:articles node $x key $x/empid
+    from collection news-data:articles node $x key xs:integer($x/empid)
     to   collection news-data:employees node $y key fn:data($y/@id);
 
 

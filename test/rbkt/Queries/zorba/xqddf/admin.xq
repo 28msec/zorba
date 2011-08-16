@@ -8,8 +8,10 @@ import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd
 
 import module namespace news-data = "http://www.news.org/data" at "news-data.xqlib";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare sequential function local:init() 
+
+declare %ann:sequential function local:init() 
 {
   ddl:create($news-data:employees);
   
@@ -46,49 +48,35 @@ declare sequential function local:init()
   );
 
   dml:insert-nodes($news-data:articles, 
-    (
     <articles>
       <empid>100</empid>
       <date>12/31/1999</date>
       <author><name>Jim Gray</name></author>
     </articles>
-    )
   );
 
   index_dml:refresh-index($news-data:ArtCountEmp);
 };
 
 
-declare sequential function local:do() 
+declare %ann:sequential function local:do() 
 {
-  block 
-  {
     for $emp in dml:collection($news-data:employees)[.//news:position/@kind eq "journalist"]
     let $articles := for $art in dml:collection($news-data:articles)[.//author//name eq $emp/news:name]
                      order by $art//date
                      return $art
-    return <result>{$emp}<articles>{$articles//title}</articles></result>
-  },
-  block 
-  {
-    index_dml:probe-index-point-value($news-data:CityEmp, "Paris")
-  },
-  block 
-  {
+    return <result>{$emp}<articles>{$articles//title}</articles></result>,
+    index_dml:probe-index-point-value($news-data:CityEmp, "Paris"),
     index_dml:probe-index-range-value($news-data:ArtCountEmp,
                                   100, (), true(), false(), true(), false())
-  }
 };
 
 
-declare sequential function local:done() 
+declare %ann:sequential function local:done() 
 {
-  block 
-  {
-    dml:delete-nodes($news-data:articles, 
+    dml:delete-nodes(
       dml:collection($news-data:articles)[.//date lt "01/01/2000"]
     );
-  }
 };
 
 
