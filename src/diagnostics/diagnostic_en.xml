@@ -2277,6 +2277,10 @@
       <value>"$1": function declared sequential, but has non-sequential body</value>
     </diagnostic>
 
+    <diagnostic code="ZWST0004" name="AMBIGUOUS_SEQUENTIAL_FLWOR">
+      <value>Sequential FLWOR expr may not have the semantics you expect</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->

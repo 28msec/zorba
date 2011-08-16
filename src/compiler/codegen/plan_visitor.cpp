@@ -910,14 +910,21 @@ bool begin_visit(flwor_expr& v)
         {
         case flwor_clause::for_clause:
         case flwor_clause::let_clause:
+        case flwor_clause::window_clause:
         {
-          if (k == flwor_clause::for_clause)
+          if (k == flwor_clause::for_clause || k == flwor_clause::window_clause)
             ++numForClauses;
 
           if (c->get_expr()->is_sequential())
           {
-            if (k == flwor_clause::for_clause || numForClauses > 0)
+            if (k == flwor_clause::for_clause || 
+                k == flwor_clause::window_clause ||
+                numForClauses > 0)
             {
+              theCCB->theXQueryDiagnostics->add_warning(
+              NEW_XQUERY_WARNING(zwarn::ZWST0004_AMBIGUOUS_SEQUENTIAL_FLWOR,
+                                 WARN_LOC(c->get_loc())));
+
               if (i > 0 &&
                   v[i-1]->get_kind() != flwor_clause::order_clause &&
                   v[i-1]->get_kind() != flwor_clause::group_clause)
@@ -951,11 +958,6 @@ bool begin_visit(flwor_expr& v)
             }
           }
 
-          break;
-        }
-        case flwor_clause::window_clause:
-        {
-          ++numForClauses;
           break;
         }
         case flwor_clause::where_clause:

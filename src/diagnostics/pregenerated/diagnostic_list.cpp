@@ -1086,6 +1086,9 @@ ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION( "ZWST0002" );
 ZorbaWarningCode ZWST0003_FAKE_SEQUENTIAL_FUNCTION( "ZWST0003" );
 
 
+ZorbaWarningCode ZWST0004_AMBIGUOUS_SEQUENTIAL_FLWOR( "ZWST0004" );
+
+
 } // namespace zwarn
 
 } // namespace zorba

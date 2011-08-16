@@ -59,10 +59,7 @@ typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
                        number of bits) is equal to the size of theVarIdMap.
 
   theFlworStack      : The current "in-scope" flwor exprs, ie., flwor exprs that
-                       the rule has entered but but not exited yet.
-
-  theIsModifiedStack : A stack of bools to remember whether a flwor expr in
-                       theFlworStack has been modified or replaced by the rule.
+                       the rule has entered but not exited yet.
 ********************************************************************************/
 class RewriterContext 
 {

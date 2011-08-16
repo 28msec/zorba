@@ -195,10 +195,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   const function* fn;
   const expr* predExpr = predInfo.thePredicate;
 
-  static_context* sctx = predExpr->get_sctx();
-  TypeManager* tm = sctx->get_typemanager();
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
   // skip fn:boolean() wrapper
   while (true)
   {
@@ -221,6 +217,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   if (opKind != CompareConsts::VALUE_EQUAL && opKind != CompareConsts::GENERAL_EQUAL)
     return false;
+
+  static_context* sctx = predExpr->get_sctx();
 
   predInfo.theIsGeneral = (opKind == CompareConsts::GENERAL_EQUAL);
 
@@ -266,6 +264,9 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     outerVarId = var2id;
     innerVarId = var1id;
   }
+
+  TypeManager* tm = sctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   // The domain of the outer var must contain more than 1 item.
   xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->get_return_type();
@@ -370,21 +371,25 @@ static var_expr* findForVar(
 
     if (var->get_kind() == var_expr::for_var)
     {
+      curExpr = var->get_domain_expr();
+
+      if (curExpr->is_sequential())
+        return NULL;
+
       xqtref_t domainType = var->get_domain_expr()->get_return_type();
 
-      if (domainType->get_quantifier() == TypeConstants::QUANT_ONE)
+      if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
       {
-        // treat this var as a let var
-        curExpr = var->get_domain_expr();
-      }
-      else
-      {
-        break;
+        // found a real FOR var, so we return it. 
+        return var;
       }
     }
     else if (var->get_kind() == var_expr::let_var)
     {
       curExpr = var->get_domain_expr();
+
+      if (curExpr->is_sequential())
+        return NULL;
     }
     else
     {
@@ -800,6 +805,10 @@ static bool findFlworForVar(
     if (i < numFlwors - 1 && 
         rCtx.theInReturnClause[i] == true &&
         flworExpr->is_sequential())
+      return false;
+
+    // This condition is rather conservative and can be relaxed. TODO
+    if (flworExpr->has_sequential_clauses())
       return false;
 
     long pos;

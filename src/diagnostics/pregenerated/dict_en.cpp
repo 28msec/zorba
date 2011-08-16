@@ -355,6 +355,7 @@ extern entry const dict_en[] = {
   { "ZSTR0060", "out of range: $1" },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
+  { "ZWST0004", "Sequential FLWOR expr may not have the semantics you expect" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQD0003", "inconsistent options to the parse-xml-fragment() function: $1" },
