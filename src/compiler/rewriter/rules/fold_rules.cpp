@@ -194,6 +194,19 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
         udf->setBody(rctx.getRoot());
+
+        if (rCtx.theCCB->theConfig.optimize_cb != NULL)
+        {
+          if (udf->getName())
+          {
+            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(),
+                                               udf->getName()->getStringValue().c_str());
+          }
+          else
+          {
+            rCtx.theCCB->theConfig.optimize_cb(udf->getBody(), "inline function");
+          }
+        }
       }
 
       if (rCtx.theUDF != NULL &&

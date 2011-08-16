@@ -5492,7 +5492,7 @@ void end_visit(const ExitExpr& v, void* visit_state)
 
 
 /*******************************************************************************
-
+  WhileExpr ::= "while" "(" Expr ")" Statement
 ********************************************************************************/
 void* begin_visit(const WhileExpr& v)
 {

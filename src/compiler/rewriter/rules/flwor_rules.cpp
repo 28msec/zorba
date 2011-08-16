@@ -46,7 +46,7 @@ static bool is_trivial_expr(const expr*);
 
 static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr&);
 
-static bool var_in_try_block_or_in_loop(const var_expr*, const expr*, bool, bool, ulong&);
+static bool var_in_try_block_or_in_loop(const var_expr*, const expr*, bool, bool, bool&);
 
 static bool is_subseq_pred(RewriterContext&, const flwor_expr*, const expr*, var_expr_t&, expr_t&);
 
@@ -657,20 +657,19 @@ static bool safe_to_fold_single_use(
   if (referencingExpr == NULL)
     return false;
 
-  ulong numRefs = 1;
+  bool found = false;
   return !var_in_try_block_or_in_loop(var,
                                       referencingExpr,
                                       false,
                                       hasNodeConstr, 
-                                      numRefs);
+                                      found);
 }
 
 
 /*******************************************************************************
-  Given a variable V and an expression E that references V a given number of
-  times (numRemainingRefs), return true if there is at least one reference v
-  of V in E such that:
-  (a) v occurs inside a for-loop within E, or
+  Given a variable V and an expression E that references V at most once, return 
+  true if E does indeed reference V and
+  (a) the reference occurs inside a for-loop within E, or
   (b) 
 ********************************************************************************/
 static bool var_in_try_block_or_in_loop(
@@ -678,9 +677,9 @@ static bool var_in_try_block_or_in_loop(
     const expr* e,
     bool in_try_block_or_in_loop,
     bool hasNodeConstr,
-    ulong& numRemainingRefs)
+    bool& found)
 {
-  if (numRemainingRefs == 0)
+  if (found)
     return false;
 
   TypeManager* tm = v->get_type_manager();
@@ -695,7 +694,7 @@ static bool var_in_try_block_or_in_loop(
                                     tce->get_try_expr(),
                                     true,
                                     hasNodeConstr,
-                                    numRemainingRefs))
+                                    found))
     {
       return true;
     }
@@ -708,11 +707,30 @@ static bool var_in_try_block_or_in_loop(
                                       tce->get_catch_expr(i),
                                       in_try_block_or_in_loop,
                                       hasNodeConstr,
-                                      numRemainingRefs))
+                                      found))
       {
         return true;
       }
     }
+    return false;
+  }
+  else if (kind == while_expr_kind)
+  {
+    ExprConstIterator ei(e);
+    while(!ei.done())
+    {
+      if (var_in_try_block_or_in_loop(v,
+                                      ei.get_expr(),
+                                      true,
+                                      hasNodeConstr,
+                                      found))
+        return true;
+
+      ZORBA_ASSERT(!found);
+
+      ei.next();
+    }
+
     return false;
   }
   else if (kind == flwor_expr_kind)
@@ -740,7 +758,8 @@ static bool var_in_try_block_or_in_loop(
             TypeOps::type_max_cnt(tm, *flc.get_expr()->get_return_type()) >= 2)
         {
           // we assume here that the var will be referenced somewhere in the
-          // remainder of the flwor expr, but this is not necessarily true ????
+          // remainder of the flwor expr, but this is not necessarily true 
+          // ???? TODO
           return true;
         }
 
@@ -761,20 +780,53 @@ static bool var_in_try_block_or_in_loop(
                                        &*referencingExpr,
                                        in_try_block_or_in_loop,
                                        hasNodeConstr,
-                                       numRemainingRefs);
+                                       found);
   }
   else if (e == v)
   {
-    --numRemainingRefs;
+    found = true;
     return in_try_block_or_in_loop;
   }
+  else if (kind == if_expr_kind)
+  {
+    const if_expr* ifExpr = static_cast<const if_expr*>(e);
 
+    if (var_in_try_block_or_in_loop(v,
+                                    ifExpr->get_cond_expr(),
+                                    in_try_block_or_in_loop,
+                                    hasNodeConstr,
+                                    found))
+      return true;
+
+    if (found)
+      return false;
+
+    bool thenFound = false;
+    bool elseFound = false;
+
+    if (var_in_try_block_or_in_loop(v,
+                                    ifExpr->get_then_expr(),
+                                    in_try_block_or_in_loop,
+                                    hasNodeConstr,
+                                    thenFound))
+      return true;
+
+    if (var_in_try_block_or_in_loop(v,
+                                    ifExpr->get_else_expr(),
+                                    in_try_block_or_in_loop,
+                                    hasNodeConstr,
+                                    elseFound))
+      return true;
+
+    found = (thenFound || elseFound);
+    return false;
+  }
 #if 0
   else if (kind == elem_expr_kind ||
-      kind == attr_expr_kind ||
-      kind == pi_expr_kind ||
-      kind == text_expr_kind ||
-      kind == doc_expr_kind)
+           kind == attr_expr_kind ||
+           kind == pi_expr_kind ||
+           kind == text_expr_kind ||
+           kind == doc_expr_kind)
   {
     // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
     if (hasNodeConstr)
@@ -790,10 +842,13 @@ static bool var_in_try_block_or_in_loop(
                                     ei.get_expr(),
                                     in_try_block_or_in_loop,
                                     hasNodeConstr,
-                                    numRemainingRefs))
+                                    found))
     {
       return true;
     }
+
+    if (found)
+      return false;
 
     ei.next();
   }

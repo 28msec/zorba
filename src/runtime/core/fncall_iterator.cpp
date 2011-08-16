@@ -327,7 +327,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       for (; argsRefsIte != argsRefsEnd; ++argsRefsIte, ++argWrapsIte)
       {
-       store::Iterator_t& argWrapper = (*argWrapsIte);
+        store::Iterator_t& argWrapper = (*argWrapsIte);
         const ArgVarRefs& argVarRefs = (*argsRefsIte);
         ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
         ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
