@@ -31,6 +31,8 @@ module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
