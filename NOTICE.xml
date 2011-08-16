@@ -1,10 +1,7 @@
------------
-Zorba 1.5.0
------------
-
-
-Apache 2
-
+<notice xmlns="http://www.zorba-xquery.com/notice">
+  <master-license>
+    <license>Apache 2</license>
+    <text>
       Copyright 2006-2011 The FLWOR Foundation
 
       See LICENSE.txt for license information.
@@ -16,17 +13,14 @@ Apache 2
       ------------------------
       Portions of this software were developed at the Systems
       Group of the ETH Zurich, Switzerland.
-    
-
-Other files used by this project:
-----------------------------------------------------
-
-src/zorbatypes/m_apm.h
-src/zorbatypes/mapm/
-
-Copyright: 1999-2007 Michael C. Ring
-Website: http://www.tc.umn.edu/~ringx004/mapm-main.html
-
+    </text>
+  </master-license>
+  <foreign-files>
+    <file>src/zorbatypes/m_apm.h</file>
+    <file>src/zorbatypes/mapm/</file>
+    <copyright>1999-2007 Michael C. Ring</copyright>
+    <website>http://www.tc.umn.edu/~ringx004/mapm-main.html</website>
+    <foreign-notice>
       This software is Freeware.
 
       Permission to use, copy, and distribute this software and its
@@ -44,14 +38,12 @@ Website: http://www.tc.umn.edu/~ringx004/mapm-main.html
       at the top of all modified source code files and edit accordingly.
 
       This software is provided "as is" without express or implied warranty.
-    
-----------------------------------------------------
-
-src/zorbamisc/config/stdint.h
-
-Copyright: 2006 Alexander Chemeris
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>src/zorbamisc/config/stdint.h</file>
+    <copyright>2006 Alexander Chemeris</copyright>
+    <foreign-notice>
       Redistribution and use in source and binary forms, with or without
       modification, are permitted provided that the following conditions are met:
 
@@ -75,14 +67,12 @@ Copyright: 2006 Alexander Chemeris
       WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
       OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
       ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-    
-----------------------------------------------------
-
-src/zorbautils/stemmer/
-
-Copyright: 2001 Dr. Martin Porter
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>src/zorbautils/stemmer/</file>
+    <copyright>2001 Dr. Martin Porter</copyright>
+    <foreign-notice>
       All the software given out on this Snowball site is covered by the BSD
       License (see http://www.opensource.org/licenses/bsd-license.html), with
       Copyright (c) 2001, Dr Martin Porter, and (for the Java developments)
@@ -97,14 +87,12 @@ Copyright: 2001 Dr. Martin Porter
 
       We have not bothered to insert the licensing arrangement into the text of
       the Snowball software.
-    
-----------------------------------------------------
-
-src/util/less.h
-
-Copyright: 1998 Paul J. Lucas
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>src/util/less.h</file>
+    <copyright>1998 Paul J. Lucas</copyright>
+    <foreign-notice>
       Redistribution and use in source and binary forms, with or without
       modification, are permitted provided that the following conditions are met:
 
@@ -129,14 +117,12 @@ Copyright: 1998 Paul J. Lucas
       CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
       POSSIBILITY OF SUCH DAMAGE.
-    
-----------------------------------------------------
-
-src/util/auto_vector.h (has been modified)
-
-Copyright: 2003 Reliable Software
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file is-modified="true">src/util/auto_vector.h</file>
+    <copyright>2003 Reliable Software</copyright>
+    <foreign-notice>
       Redistribution and use in source and binary forms, with or without
       modification, are permitted provided that the following conditions are met:
 
@@ -161,31 +147,27 @@ Copyright: 2003 Reliable Software
       CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
       POSSIBILITY OF SUCH DAMAGE.
-    
-----------------------------------------------------
-
-cmake_modules/FindBoost.cmake
-
-Copyright: 
-      2006-2008 Andreas Schneider <mail@cynapses.org>
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>cmake_modules/FindBoost.cmake</file>
+    <copyright>
+      2006-2008 Andreas Schneider &lt;mail@cynapses.org&gt;
       2007      Wengo
       2007      Mike Jackson
-      2008      Andreas Pakulat <apaku@gmx.de>
-    
-
-
+      2008      Andreas Pakulat &lt;apaku@gmx.de&gt;
+    </copyright>
+    <foreign-notice>
       Redistribution AND use is allowed according to the terms of the New BSD license.
       For details see the accompanying COPYING-CMAKE-SCRIPTS file.
-    
-----------------------------------------------------
-
-cmake_modules/FindJNI.cmake
-cmake_modules/FindPythonLibs.cmake
-cmake_modules/FindSWIG.cmake
-
-Copyright: 2001-2009 Kitware, Inc.
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>cmake_modules/FindJNI.cmake</file>
+    <file>cmake_modules/FindPythonLibs.cmake</file>
+    <file>cmake_modules/FindSWIG.cmake</file>
+    <copyright>2001-2009 Kitware, Inc.</copyright>
+    <foreign-notice>
       Distributed under the OSI-approved BSD License (the "License");
       see accompanying file Copyright.txt for details.
 
@@ -249,14 +231,12 @@ Copyright: 2001-2009 Kitware, Inc.
       Grant U54 EB005149.
 
       * Kitware, Inc.
-    
-----------------------------------------------------
-
-/xml.xsd
-
-Copyright: 2001 World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University)
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>/xml.xsd</file>
+    <copyright>2001 World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University)</copyright>
+    <foreign-notice>
       All Rights Reserved. This work is distributed under the W3C Software License [1] in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
       W3C Software Notice and License
@@ -279,14 +259,12 @@ Copyright: 2001 World Wide Web Consortium, (Massachusetts Institute of Technolog
       COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR DOCUMENTATION.
 
       The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to the software without specific, written prior permission. Title to copyright in this software and any associated documentation will at all times remain with copyright holders.
-    
-----------------------------------------------------
-
-schemas/xslt-xquery-serialization.xsd
-
-Copyright: 2010 World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University)
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>schemas/xslt-xquery-serialization.xsd</file>
+    <copyright>2010 World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University)</copyright>
+    <foreign-notice>
       All Rights Reserved. This work is distributed under the W3C Software License [1] in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
       W3C Software Notice and License
@@ -309,14 +287,12 @@ Copyright: 2010 World Wide Web Consortium, (Massachusetts Institute of Technolog
       COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR DOCUMENTATION.
 
       The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to the software without specific, written prior permission. Title to copyright in this software and any associated documentation will at all times remain with copyright holders.
-    
-----------------------------------------------------
-
-modules/w3c/xpath-functions.xsd
-
-Copyright: 2005 World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University)
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>modules/w3c/xpath-functions.xsd</file>
+    <copyright>2005 World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University)</copyright>
+    <foreign-notice>
       All Rights Reserved. This work is distributed under the W3C Software License [1] in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
       W3C Software Notice and License
@@ -339,14 +315,12 @@ Copyright: 2005 World Wide Web Consortium, (Massachusetts Institute of Technolog
       COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR DOCUMENTATION.
 
       The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to the software without specific, written prior permission. Title to copyright in this software and any associated documentation will at all times remain with copyright holders.
-    
-----------------------------------------------------
-
-include/xqc.h
-
-Copyright: 2008, Matthias Brantner, John Snelson
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>include/xqc.h</file>
+    <copyright>2008, Matthias Brantner, John Snelson</copyright>
+    <foreign-notice>
       * All rights reserved.
       *
       * Redistribution and use in source and binary forms, with or without
@@ -372,14 +346,12 @@ Copyright: 2008, Matthias Brantner, John Snelson
       * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
       * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
       * POSSIBILITY OF SUCH DAMAGE.
-    
-----------------------------------------------------
-
-modules/functx/functx.xq
-
-Copyright: 2007 Datypic
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>modules/functx/functx.xq</file>
+    <copyright>2007 Datypic</copyright>
+    <foreign-notice>
       : This library is free software; you can redistribute it and/or
       : modify it under the terms of the GNU Lesser General Public
       : License as published by the Free Software Foundation; either
@@ -393,14 +365,12 @@ Copyright: 2007 Datypic
       : You should have received a copy of the GNU Lesser General Public
       : License along with this library; if not, write to the Free Software
       : Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-    
-----------------------------------------------------
-
-src/compiler/parser/FlexLexer.h
-
-Copyright: 1993 The Regents of the University of California
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>src/compiler/parser/FlexLexer.h</file>
+    <copyright>1993 The Regents of the University of California</copyright>
+    <foreign-notice>
       // All rights reserved.
       //
       // This code is derived from software contributed to Berkeley by
@@ -424,25 +394,22 @@ Copyright: 1993 The Regents of the University of California
       //  IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
       //  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
       //  PURPOSE.
-    
-----------------------------------------------------
-
-src/diagnostics/StackWalker.cpp
-src/diagnostics/StackWalker.h
-
-Copyright: 2005 Jochen Kalmbach 
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>src/diagnostics/StackWalker.cpp</file>
+    <file>src/diagnostics/StackWalker.h</file>
+    <copyright>2005 Jochen Kalmbach </copyright>
+    <license>BSD</license>
+    <foreign-notice>
       Under BSD License: http://www.opensource.org/licenses/bsd-license.php
-    
-----------------------------------------------------
-
-src/util/singleton.h
-src/util/threads.h
-
-Copyright: 2001 Andrei Alexandrescu
-
-
+    </foreign-notice>
+  </foreign-files>
+  <foreign-files>
+    <file>src/util/singleton.h</file>
+    <file>src/util/threads.h</file>
+    <copyright>2001 Andrei Alexandrescu</copyright>
+    <foreign-notice>
       This code accompanies the book:
       Alexandrescu, Andrei. "Modern C++ Design: Generic Programming and Design
           Patterns Applied". Copyright (c) 2001. Addison-Wesley.
@@ -453,19 +420,16 @@ Copyright: 2001 Andrei Alexandrescu
       The author or Addison-Wesley Longman make no representations about the
           suitability of this software for any purpose. It is provided "as is"
           without express or implied warranty.
-    
+    </foreign-notice>
+  </foreign-files>
 
-External libraries used by this project:
-----------------------------------------------------
-
-Name: LIBXML2
-Preferred version: 2.2.16 or higher
-Is mandatory: true
-Website: http://xmlsoft.org/
-License: MIT
-Copyright: 1998-2002 Daniel Veillard.  All Rights Reserved.
-External notice: 
-
+  <external-lib mandatory="true">
+    <name>LIBXML2</name>
+    <version>2.2.16 or higher</version>
+    <website>http://xmlsoft.org/</website>
+    <license>MIT</license>
+    <copyright>1998-2002 Daniel Veillard.  All Rights Reserved.</copyright>
+    <foreign-notice>
       Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
       The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -475,17 +439,16 @@ External notice:
       Except as contained in this notice, the name of Daniel Veillard shall not
       be used in advertising or otherwise to promote the sale, use or other deal-
       ings in this Software without prior written authorization from him.
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-lib>
 
-Name: LIBXSLT
-Preferred version: 1.1.26
-Is mandatory: false
-Website: http://xmlsoft.org/XSLT/
-License: MIT
-Copyright: 2001-2002 Daniel Veillard.  All Rights Reserved.
-External notice: 
-
+  <external-lib mandatory="false">
+    <name>LIBXSLT</name>
+    <version>1.1.26</version>
+    <website>http://xmlsoft.org/XSLT/</website>
+    <license>MIT</license>
+    <copyright>2001-2002 Daniel Veillard.  All Rights Reserved.</copyright>
+    <foreign-notice>
       Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
       The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -495,33 +458,31 @@ External notice:
 
       Except as contained in this notice, the name of Daniel Veillard shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization from him.
 
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-lib>
 
-Name: ICU4C
-Preferred version: 3.6 or higher
-Is mandatory: true
-Website: http://www.icu-project.org/
-License: ICU License
-Copyright: 1995-2011 International Business Machines Corporation and others 
-External notice: 
-
+  <external-lib mandatory="true">
+    <name>ICU4C</name>
+    <version>3.6 or higher</version>
+    <license>ICU License</license>
+    <website>http://www.icu-project.org/</website>
+    <copyright>1995-2011 International Business Machines Corporation and others </copyright>
+    <foreign-notice>
       Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, provided that the above copyright notice(s) and this permission notice appear in all copies of the Software and that both the above copyright notice(s) and this permission notice appear in supporting documentation.
 
       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
       Except as contained in this notice, the name of a copyright holder shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization of the copyright holder.
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-lib>
 
-Name: CURL
-Preferred version: above 7.12
-Is mandatory: false
-Website: http://curl.haxx.se/
-License: MIT/X derivate license
-Copyright: 1996 - 2011, Daniel Stenberg, <daniel@haxx.se>.
-External notice: 
-
+  <external-lib mandatory="false">
+    <name>CURL</name>
+    <version>above 7.12</version>
+    <website>http://curl.haxx.se/</website>
+    <license>MIT/X derivate license</license>
+    <copyright>1996 - 2011, Daniel Stenberg, &lt;daniel@haxx.se&gt;.</copyright>
+    <foreign-notice>
       All rights reserved.
 
       Permission to use, copy, modify, and distribute this software for any purpose
@@ -539,26 +500,23 @@ External notice:
       Except as contained in this notice, the name of a copyright holder shall not
       be used in advertising or otherwise to promote the sale, use or other dealings
       in this Software without prior written authorization of the copyright holder.
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-lib>
 
-Name: ICONV
-Preferred version: above 1.12
-Is mandatory: true
-Website: http://www.gnu.org/software/libiconv/
-License: LGPL
-Copyright: 1998, 2010 Free Software Foundation, Inc.
-External notice: 
+  <external-lib mandatory="true">
+    <name>ICONV</name>
+    <version>above 1.12</version>
+    <website>http://www.gnu.org/software/libiconv/</website>
+    <license>LGPL</license>
+    <copyright>1998, 2010 Free Software Foundation, Inc.</copyright>
+  </external-lib>
 
-----------------------------------------------------
-
-Name: ZLIB
-Preferred version: 1.2.5
-Is mandatory: true
-Website: http://www.zlib.net/
-Copyright: 1995-2004 Jean-loup Gailly and Mark Adler
-External notice: 
-
+  <external-lib mandatory="true">
+    <name>ZLIB</name>
+    <version>1.2.5</version>
+    <website>http://www.zlib.net/</website>
+    <copyright>1995-2004 Jean-loup Gailly and Mark Adler</copyright>
+    <foreign-notice>
       This software is provided 'as-is', without any express or implied
       warranty.  In no event will the authors be held liable for any damages
       arising from the use of this software.
@@ -577,32 +535,30 @@ External notice:
 
       Jean-loup Gailly jloup@gzip.org
       Mark Adler madler@alumni.caltech.edu
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-lib>
 
-Name: XERCES
-Preferred version: 2.8.0 or higher
-Is mandatory: true
-Website: http://xerces.apache.org/xerces-c/
-License: Apache 2
-Copyright: Copyright © 1999-2010 The Apache Software Foundation. All Rights Reserved.
-External notice: 
-
+  <external-lib mandatory="true">
+    <name>XERCES</name>
+    <version>2.8.0 or higher</version>
+    <website>http://xerces.apache.org/xerces-c/</website>
+    <license>Apache 2</license>
+    <copyright>Copyright © 1999-2010 The Apache Software Foundation. All Rights Reserved.</copyright>
+    <foreign-notice>
       http://www.apache.org/licenses/LICENSE-2.0
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-lib>
 
-Name: BOOST (boost_filesystem)
-Preferred version: 1.32 or higher
-Is mandatory: false
-Website: http://www.boost.org/
-License: Boost Software License v1.0
-Copyright: 
+  <external-lib mandatory="false">
+    <name>BOOST (boost_filesystem)</name>
+    <version>1.32 or higher</version>
+    <website>http://www.boost.org/</website>
+    <license>Boost Software License v1.0</license>
+    <copyright>
       Beman Dawes, David Abrahams, 1998-2005.
       Rene Rivera 2004-2007
-    
-External notice: 
-
+    </copyright>
+    <foreign-notice>
       Permission is hereby granted, free of charge, to any person or organization
       obtaining a copy of the software and accompanying documentation covered by
       this license (the "Software") to use, reproduce, display, distribute,
@@ -624,21 +580,18 @@ External notice:
       FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
       ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
       DEALINGS IN THE SOFTWARE.
-    
+    </foreign-notice>
+  </external-lib>
 
-External applications used by this project:
-----------------------------------------------------
-
-Name: FLEX
-Preferred version: 2.5.33
-Is mandatory: false
-Website: http://flex.sourceforge.net/
-Copyright: 
+  <external-app mandatory="false">
+    <name>FLEX</name>
+    <version>2.5.33</version>
+    <website>http://flex.sourceforge.net/</website>
+    <copyright>
       2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 The Flex Project.
       1990, 1997 The Regents of the University of California. All rights reserved.
-    
-External notice: 
-
+    </copyright>
+    <foreign-notice>
       Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
       1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -647,44 +600,40 @@ External notice:
       Neither the name of the University nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
       THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-app>
 
-Name: BISON
-Preferred version: 2.4 or higher
-Is mandatory: false
-Website: http://www.gnu.org/software/bison/
-License: GPL
-Copyright: 1998, 2001, 2003, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
-External notice: 
+  <external-app mandatory="false">
+    <name>BISON</name>
+    <version>2.4 or higher</version>
+    <website>http://www.gnu.org/software/bison/</website>
+    <license>GPL</license>
+    <copyright>1998, 2001, 2003, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.</copyright>
+  </external-app>
 
-----------------------------------------------------
-
-Name: DOXYGEN
-Preferred version: v1.7.4 
-Is mandatory: false
-Website: www.doxygen.org
-License: GPL
-Copyright: 1997-2011 by Dimitri van Heesch
-External notice: 
-
+  <external-app mandatory="false">
+    <name>DOXYGEN</name>
+    <version>v1.7.4 </version>
+    <website>www.doxygen.org</website>
+    <license>GPL</license>
+    <copyright>1997-2011 by Dimitri van Heesch</copyright>
+    <foreign-notice>
       Permission to use, copy, modify, and distribute this software and its documentation under the terms of the GNU General Public License is hereby granted.
       No representations are made about the suitability of this software for any purpose. 
       It is provided "as is" without express or implied warranty. 
       See the GNU General Public License for more details.
 
       Documents produced by doxygen are derivative works derived from the input used in their production; they are not affected by this license.
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-app>
 
-Name: CMAKE
-Preferred version: 2.8.4
-Is mandatory: true
-Website: http://www.cmake.org/
-License: Creative Commons Attribution-NoDerivs 3.0 Unported License
-Copyright: 2000-2009 Kitware, Inc., Insight Software Consortium. All rights reserved.
-External notice: 
-
+  <external-app mandatory="true">
+    <name>CMAKE</name>
+    <version>2.8.4</version>
+    <website>http://www.cmake.org/</website>
+    <license>Creative Commons Attribution-NoDerivs 3.0 Unported License</license>
+    <copyright>2000-2009 Kitware, Inc., Insight Software Consortium. All rights reserved.</copyright>
+    <foreign-notice>
       Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
       Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -694,22 +643,21 @@ External notice:
       Neither the names of Kitware, Inc., the Insight Software Consortium, nor the names of their contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
       THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-    
-----------------------------------------------------
+    </foreign-notice>
+  </external-app>
 
-Name: SWIG
-Preferred version: 2.0.4 or above
-Is mandatory: false
-Website: http://www.swig.org/
-License: GPL
-Copyright: 
+  <external-app mandatory="false">
+    <name>SWIG</name>
+    <version>2.0.4 or above</version>
+    <website>http://www.swig.org/</website>
+    <license>GPL</license>
+    <copyright>
       1995-2011 The SWIG Developers
       2005-2006 Arizona Board of Regents (University of Arizona).
       1998-2005 University of Chicago.
       1995-1998 The University of Utah and the Regents of the University of California
-    
-External notice: 
-
+    </copyright>
+    <foreign-notice>
       SWIG is free software: you can redistribute it and/or modify it
       under the terms of the GNU General Public License as published by
       the Free Software Foundation, either version 3 of the License, or
@@ -732,4 +680,6 @@ External notice:
 
       See the COPYRIGHT file for a list of contributors to SWIG and their
       copyright notices.
-    
+    </foreign-notice>
+  </external-app>
+</notice>
