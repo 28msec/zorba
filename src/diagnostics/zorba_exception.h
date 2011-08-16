@@ -25,6 +25,17 @@ namespace zorba {
 ////////// ZorbaException creation ////////////////////////////////////////////
 
 /**
+ * Helper function to clone a ZorbaException in order to keep ZorbaException's
+ * clone() member function \c protected.
+ *
+ * @param e The ZorbaException to clone.
+ * @return Returns a clone of \a e.
+ */
+inline std::auto_ptr<ZorbaException> clone( ZorbaException const &e ) {
+  return e.clone();
+}
+
+/**
  * Makes a ZorbaException.
  *
  * @param raise_file The C++ source-code file name whence the exception was

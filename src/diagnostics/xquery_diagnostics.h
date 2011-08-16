@@ -78,7 +78,7 @@ public:
    * @param exception The exception to add.  The exception is cloned.
    */
   void add_error( ZorbaException const &exception ) {
-    add_error( exception.clone() );
+    add_error( clone( exception ) );
   }
 
   /**

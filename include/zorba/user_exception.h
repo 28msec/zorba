@@ -127,8 +127,11 @@ public:
   }
 
   // inherited
-  std::auto_ptr<ZorbaException> clone() const;
   void polymorphic_throw() const;
+
+protected:
+  // inherited
+  std::auto_ptr<ZorbaException> clone() const;
 
 private:
   error_object_type error_object_;

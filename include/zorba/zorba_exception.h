@@ -64,13 +64,6 @@ public:
   ZorbaException& operator=( ZorbaException const &from );
 
   /**
-   * Clones this exception object.
-   *
-   * @return Returns a clone of this exception.
-   */
-  virtual std::auto_ptr<ZorbaException> clone() const;
-
-  /**
    * Gets the diagnostic carried by this exception.
    *
    * @return Returns said diagnostic.
@@ -130,6 +123,13 @@ protected:
                   line_type raise_line, char const *message );
 
   /**
+   * Clones this exception object.
+   *
+   * @return Returns a clone of this exception.
+   */
+  virtual std::auto_ptr<ZorbaException> clone() const;
+
+  /**
    * Prints the exception to the given ostream.
    *
    * @param o The ostream to print to.
@@ -144,6 +144,8 @@ private:
   std::string raise_file_;
   line_type raise_line_;
   std::string message_;
+
+  friend std::auto_ptr<ZorbaException> clone( ZorbaException const& );
 
   friend ZorbaException make_zorba_exception(
     char const*, line_type, Diagnostic const&,
