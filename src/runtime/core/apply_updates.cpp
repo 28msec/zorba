@@ -154,9 +154,9 @@ void apply_updates(
 
   for (ulong i = 0; i < numIndices; ++i)
   {
-    IndexDecl* zorbaIndex = sctx->lookup_index(indexes[i]->getName());
+    IndexDecl* indexDecl = sctx->lookup_index(indexes[i]->getName());
     
-    if (zorbaIndex == NULL)
+    if (indexDecl == NULL)
     {
       throw XQUERY_EXCEPTION(
         zerr::ZDDY0021_INDEX_NOT_DECLARED,
@@ -165,17 +165,17 @@ void apply_updates(
       );
     }
 
-    if (zorbaIndex->getMaintenanceMode() == IndexDecl::DOC_MAP)
+    if (indexDecl->getMaintenanceMode() == IndexDecl::DOC_MAP)
     {
-      DocIndexer* docIndexer = zorbaIndex->getDocIndexer(ccb, loc);
+      DocIndexer* docIndexer = indexDecl->getDocIndexer(ccb, loc);
       assert(docIndexer != NULL);
 
       docIndexer->setup(ccb);
 
-      pul->addIndexEntryCreator(zorbaIndex->getSourceName(0), indexes[i], docIndexer);
+      pul->addIndexEntryCreator(indexDecl->getSourceName(0), indexes[i], docIndexer);
     }
 
-    zorbaIndexes[i] = zorbaIndex;
+    zorbaIndexes[i] = indexDecl;
   }
 
   try 
@@ -219,7 +219,7 @@ void apply_updates(
     {
       XQueryException lNewE = XQUERY_EXCEPTION(
         err::XUDY0021,
-        ERROR_PARAMS( ZED( XUDY0021_AppliedAt ), loc )
+        ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc)
       );
 
       QueryLoc lLoc;

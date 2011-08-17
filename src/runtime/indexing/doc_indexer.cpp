@@ -84,7 +84,7 @@ void DocIndexer::createIndexEntries(
                         QueryLoc::null,
                         tmp);
 
-  ulong numEntries = 0;
+  ulong numEntries = delta.size();
   store::Item_t domainNode;
   store::IndexKey* key = NULL;
 
@@ -121,6 +121,10 @@ void DocIndexer::createIndexEntries(
     {
       delete delta[i].second;
     }
+
+    theDctx->unset_variable(theNodeVar->get_unique_id(),
+                            theNodeVar->get_name(),
+                            QueryLoc::null);
 
     thePlanWrapper->reset();
 

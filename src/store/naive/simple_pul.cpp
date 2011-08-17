@@ -42,7 +42,7 @@ namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-inline void cleanList(std::vector<UpdatePrimitive*> aVector)
+void cleanList(std::vector<UpdatePrimitive*>& aVector)
 {
   std::vector<UpdatePrimitive*>::iterator ite = aVector.begin();
   std::vector<UpdatePrimitive*>::iterator end = aVector.end();
@@ -57,15 +57,21 @@ inline void cleanList(std::vector<UpdatePrimitive*> aVector)
 /*******************************************************************************
 
 ********************************************************************************/
-inline void cleanIndexDelta(store::IndexDelta& delta)
+void cleanIndexDeltas(std::vector<store::IndexDelta>& deltas)
 {
-  store::IndexDelta::iterator ite = delta.begin();
-  store::IndexDelta::iterator end = delta.end();
+  std::vector<store::IndexDelta>::iterator ite = deltas.begin();
+  std::vector<store::IndexDelta>::iterator end = deltas.end();
 
   for (; ite != end; ++ite)
   {
-    if ((*ite).second)
-      delete (*ite).second;
+    store::IndexDelta::iterator ite2 = (*ite).begin();
+    store::IndexDelta::iterator end2 = (*ite).end();
+
+    for (; ite2 != end2; ++ite2)
+    {
+      if ((*ite2).second)
+        delete (*ite2).second;
+    }
   }
 }
 
@@ -73,7 +79,7 @@ inline void cleanIndexDelta(store::IndexDelta& delta)
 /*******************************************************************************
 
 ********************************************************************************/
-inline void applyList(std::vector<UpdatePrimitive*> aVector)
+void applyList(std::vector<UpdatePrimitive*>& aVector)
 {
   std::vector<UpdatePrimitive*>::iterator iter = aVector.begin();
   std::vector<UpdatePrimitive*>::iterator end = aVector.end();
@@ -88,7 +94,7 @@ inline void applyList(std::vector<UpdatePrimitive*> aVector)
 /*******************************************************************************
 
 ********************************************************************************/
-inline void undoList(std::vector<UpdatePrimitive*> list)
+void undoList(std::vector<UpdatePrimitive*>& list)
 {
   ulong size = (ulong)list.size();
 
@@ -159,7 +165,6 @@ PULImpl::~PULImpl()
   cleanList(theDestroyHashMapList);
   cleanList(theInsertIntoHashMapList);
   cleanList(theRemoveFromHashMapList);
-
 }
 
 
@@ -223,19 +228,21 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 
   CollectionPulMap::iterator ite = theCollectionPuls.find(collName);
 
+  theLastCollection = collName;
+
   if (ite != theCollectionPuls.end())
   {
-    return ite->second;
+    theLastPul = ite->second;
   }
   else
   {
-    theLastCollection = collName;
     SimpleCollection* collection = static_cast<SimpleCollection*>
                                    (GET_STORE().getCollection(collName).getp());
     theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
-    return theLastPul;
   }
+
+  return theLastPul;
 }
 
 
@@ -244,9 +251,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   Create a delete primitive in "this" pul for the given node, if another delete
   for the same node does not exist already.
 ********************************************************************************/
-void PULImpl::addDelete(
-      const QueryLoc* aQueryLoc,
-      store::Item_t& target)
+void PULImpl::addDelete(const QueryLoc* aQueryLoc, store::Item_t& target)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
@@ -289,7 +294,11 @@ void PULImpl::addInsertInto(
     std::vector<store::Item_t>& children)
 {
   store::Item_t sibling;
-  addInsertChildren(aQueryLoc, store::UpdateConsts::UP_INSERT_INTO, target, sibling, children);
+  addInsertChildren(aQueryLoc, 
+                    store::UpdateConsts::UP_INSERT_INTO, 
+                    target,
+                    sibling, 
+                    children);
 }
 
 
@@ -299,8 +308,11 @@ void PULImpl::addInsertFirst(
     std::vector<store::Item_t>& children)
 {
   store::Item_t sibling;
-  addInsertChildren(aQueryLoc, store::UpdateConsts::UP_INSERT_INTO_FIRST,
-                    target, sibling, children);
+  addInsertChildren(aQueryLoc,
+                    store::UpdateConsts::UP_INSERT_INTO_FIRST,
+                    target,
+                    sibling,
+                    children);
 }
 
 
@@ -349,8 +361,8 @@ void PULImpl::addInsertChildren(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertChildren* upd = GET_STORE().getPULFactory().createUpdInsertChildren(pul, aQueryLoc, kind,
-                                                 target, sibling, children);
+  UpdInsertChildren* upd = GET_STORE().getPULFactory().
+  createUpdInsertChildren(pul, aQueryLoc, kind, target, sibling, children);
 
   if (kind == store::UpdateConsts::UP_INSERT_INTO)
     pul->theDoFirstList.push_back(upd);
@@ -375,7 +387,7 @@ void PULImpl::addInsertChildren(
 ********************************************************************************/
 void PULImpl::addInsertAttributes(
     const QueryLoc* aQueryLoc,
-    store::Item_t&              target,
+    store::Item_t& target,
     std::vector<store::Item_t>& attrs)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
@@ -391,7 +403,9 @@ void PULImpl::addInsertAttributes(
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
-  UpdInsertAttributes* upd = GET_STORE().getPULFactory().createUpdInsertAttributes(pul, aQueryLoc, target, attrs);
+  UpdInsertAttributes* upd = GET_STORE().getPULFactory().
+  createUpdInsertAttributes(pul, aQueryLoc, target, attrs);
+
   pul->theDoFirstList.push_back(upd);
 
   if (!found)
@@ -481,8 +495,8 @@ void PULImpl::addReplaceNode(
 ********************************************************************************/
 void PULImpl::addReplaceContent(
     const QueryLoc* aQueryLoc,
-    store::Item_t&         target,
-    store::Item_t&         newChild)
+    store::Item_t& target,
+    store::Item_t& newChild)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
@@ -537,17 +551,21 @@ void PULImpl::addReplaceValue(
   {
   case store::StoreConsts::attributeNode:
   {
-    upd = GET_STORE().getPULFactory().createUpdReplaceAttrValue(pul, aQueryLoc, target, newValue);
+    upd = GET_STORE().getPULFactory().
+    createUpdReplaceAttrValue(pul, aQueryLoc, target, newValue);
     break;
   }
   case store::StoreConsts::textNode:
-    upd = GET_STORE().getPULFactory().createUpdReplaceTextValue(pul, aQueryLoc, target, newValue);
+    upd = GET_STORE().getPULFactory().
+    createUpdReplaceTextValue(pul, aQueryLoc, target, newValue);
     break;
   case store::StoreConsts::piNode:
-    upd = GET_STORE().getPULFactory().createUpdReplacePiValue(pul, aQueryLoc, target, newValue);
+    upd = GET_STORE().getPULFactory().
+    createUpdReplacePiValue(pul, aQueryLoc, target, newValue);
     break;
   case store::StoreConsts::commentNode:
-    upd = GET_STORE().getPULFactory().createUpdReplaceCommentValue(pul, aQueryLoc, target, newValue);
+    upd = GET_STORE().getPULFactory().
+    createUpdReplaceCommentValue(pul, aQueryLoc, target, newValue);
     break;
   default:
     ZORBA_FATAL(0, "");
@@ -603,7 +621,8 @@ void PULImpl::addRename(
     ElementNode* elemTarget = ELEM_NODE(target);
     elemTarget->checkNamespaceConflict(newName.getp(), err::XUDY0023);
 
-    upd = GET_STORE().getPULFactory().createUpdRenameElem(pul, aQueryLoc, target, newName);
+    upd = GET_STORE().getPULFactory().
+    createUpdRenameElem(pul, aQueryLoc, target, newName);
     break;
   }
   case store::StoreConsts::attributeNode:
@@ -971,17 +990,18 @@ void PULImpl::addDeActivateIC(
 ********************************************************************************/
 void PULImpl::addCreateDocument(
     const QueryLoc* aQueryLoc,
-      const store::Item_t& uri,
-      store::Item_t& doc)
+    const store::Item_t& uri,
+    store::Item_t& doc)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateDocument(
       this, aQueryLoc, uri, doc);
   theCreateDocumentList.push_back(upd);
 }
 
+
 void PULImpl::addDeleteDocument(
     const QueryLoc* aQueryLoc,
-      const store::Item_t& uri)
+    const store::Item_t& uri)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeleteDocument(
       this, aQueryLoc, uri);
@@ -994,10 +1014,10 @@ void PULImpl::addDeleteDocument(
 ********************************************************************************/
 void PULImpl::addCreateHashMap(
     const QueryLoc* aQueryLoc,
-      const store::Item_t& aQName,
-      const std::vector<store::Item_t>& aKeyTypes,
-      const std::vector<zstring>& aCollations,
-      long  aTimezone)
+    const store::Item_t& aQName,
+    const std::vector<store::Item_t>& aKeyTypes,
+    const std::vector<zstring>& aCollations,
+    long  aTimezone)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateHashMap(
       this, aQueryLoc, aQName, aKeyTypes, aCollations, aTimezone);
@@ -1006,7 +1026,7 @@ void PULImpl::addCreateHashMap(
 
 void PULImpl::addDestroyHashMap(
     const QueryLoc* aQueryLoc,
-      const store::Item_t& aQName)
+    const store::Item_t& aQName)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDestroyHashMap(
       this, aQueryLoc, aQName);
@@ -1015,9 +1035,9 @@ void PULImpl::addDestroyHashMap(
 
 void PULImpl::addInsertIntoHashMap(
     const QueryLoc* aQueryLoc,
-      const store::Item_t& aQName,
-      const std::vector<store::Item_t>& aKey,
-      const store::Iterator_t& aValue)
+    const store::Item_t& aQName,
+    const std::vector<store::Item_t>& aKey,
+    const store::Iterator_t& aValue)
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdInsertIntoHashMap(
       this, aQueryLoc, aQName, aKey, aValue);
@@ -1033,6 +1053,7 @@ void PULImpl::addRemoveFromHashMap(
       this, aQueryLoc, aQName, aKey);
   theRemoveFromHashMapList.push_back(upd);
 }
+
 
 /*******************************************************************************
   Merge PULs
@@ -1458,7 +1479,8 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
     return;
 
   // First, find all the collections that are modified. We also gather all the
-  // modified collection docs, because they will be need later to maintain indices.
+  // modified/inserted/deleted collection docs, because they will be need later
+  // to maintain indices.
   std::set<store::Collection*> collections;
 
   CollectionPulMap::iterator collIte = theCollectionPuls.begin();
@@ -1484,9 +1506,9 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       pul->theModifiedDocs.insert(node->getRoot());
     }
 
-    ulong numCollUpdates = (ulong)pul->theInsertIntoCollectionList.size();
+    csize numCollUpdates = pul->theInsertIntoCollectionList.size();
 
-    for (ulong i = 0; i < numCollUpdates; ++i)
+    for (csize i = 0; i < numCollUpdates; ++i)
     {
       UpdCollection* upd = static_cast<UpdCollection*>
                            (pul->theInsertIntoCollectionList[i]);
@@ -1496,9 +1518,9 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
         pul->theInsertedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
     }
 
-    numCollUpdates = (ulong)pul->theDeleteFromCollectionList.size();
+    numCollUpdates = pul->theDeleteFromCollectionList.size();
 
-    for (ulong i = 0; i < numCollUpdates; ++i)
+    for (csize i = 0; i < numCollUpdates; ++i)
     {
       UpdCollection* upd = static_cast<UpdCollection*>
                            (pul->theDeleteFromCollectionList[i]);
@@ -1523,9 +1545,9 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       continue;
 
     const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    ulong numIndexSources = (ulong)indexSources.size();
+    csize numIndexSources = indexSources.size();
 
-    for (ulong i = 0; i < numIndexSources; ++i)
+    for (csize i = 0; i < numIndexSources; ++i)
     {
       std::set<store::Collection*>::const_iterator colIte = collections.begin();
       std::set<store::Collection*>::const_iterator colEnd = collections.end();
@@ -1635,7 +1657,7 @@ void PULImpl::applyUpdates(bool inheritNSBindings)
       }
     }
 
-    // Apply delete primitives
+    // Apply delete-collection primitives
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
     {
       CollectionPul* pul = collIte->second;
@@ -1742,19 +1764,10 @@ CollectionPul::~CollectionPul()
   cleanList(theDeleteFromCollectionList);
   cleanList(theDeleteCollectionList);
 
-  ulong numDeltas = (ulong)theBeforeIndexDeltas.size();
-
-  for (ulong i = 0; i < numDeltas; ++i)
-  {
-    cleanIndexDelta(theBeforeIndexDeltas[i]);
-  }
-
-  numDeltas = (ulong)theAfterIndexDeltas.size();
-
-  for (ulong i = 0; i < numDeltas; ++i)
-  {
-    cleanIndexDelta(theAfterIndexDeltas[i]);
-  }
+  cleanIndexDeltas(theBeforeIndexDeltas);
+  cleanIndexDeltas(theAfterIndexDeltas);
+  cleanIndexDeltas(theInsertedDocsIndexDeltas);
+  cleanIndexDeltas(theDeletedDocsIndexDeltas);
 }
 
 
@@ -1794,6 +1807,64 @@ static bool cmp(const std::pair<store::Item_t, store::IndexKey*>& e1,
                 const std::pair<store::Item_t, store::IndexKey*>& e2)
 {
   return e1.first.getp() < e2.first.getp();
+}
+
+
+/*******************************************************************************
+  Compute the index contents on the modified docs, before any modifications
+  are actually applied.
+********************************************************************************/
+void CollectionPul::computeIndexBeforeDeltas()
+{
+  computeIndexDeltas(theBeforeIndexDeltas);
+}
+
+
+/*******************************************************************************
+  Compute the index contents on the modified docs, after the modifications
+  are actually applied. Also, compute the index contents on the newly inserted
+  and the deleted docs.
+********************************************************************************/
+void CollectionPul::computeIndexAfterDeltas()
+{
+  computeIndexDeltas(theAfterIndexDeltas);
+
+  csize numIncrementalIndices = theIncrementalIndices.size();
+
+  if (numIncrementalIndices == 0)
+    return;
+
+  theInsertedDocsIndexDeltas.resize(numIncrementalIndices);
+
+  std::vector<XmlNode*>::const_iterator docIte = theInsertedDocs.begin();
+  std::vector<XmlNode*>::const_iterator docEnd = theInsertedDocs.end();
+
+  for (; docIte != docEnd; ++docIte)
+  {
+    for (ulong i = 0; i < numIncrementalIndices; ++i)
+    {
+      store::IndexEntryCreator* docIndexer = theIndexEntryCreators[i].getp();
+      store::IndexDelta& indexDelta = theInsertedDocsIndexDeltas[i];
+
+      docIndexer->createIndexEntries((*docIte), indexDelta);
+    }
+  }
+
+  theDeletedDocsIndexDeltas.resize(numIncrementalIndices);
+
+  docIte = theDeletedDocs.begin();
+  docEnd = theDeletedDocs.end();
+
+  for (; docIte != docEnd; ++docIte)
+  {
+    for (ulong i = 0; i < numIncrementalIndices; ++i)
+    {
+      store::IndexEntryCreator* docIndexer = theIndexEntryCreators[i].getp();
+      store::IndexDelta& indexDelta = theDeletedDocsIndexDeltas[i];
+
+      docIndexer->createIndexEntries((*docIte), indexDelta);
+    }
+  }
 }
 
 
@@ -1844,7 +1915,6 @@ void CollectionPul::refreshIndices()
   for (ulong idx = 0; idx < numIncrementalIndices; ++idx)
   {
     IndexImpl* index = theIncrementalIndices[idx];
-    store::IndexEntryCreator* docIndexer = theIndexEntryCreators[idx].getp();
 
     //
     // Referesh the index w.r.t. modified docs.
@@ -1855,11 +1925,17 @@ void CollectionPul::refreshIndices()
     
     store::IndexDelta& beforeDelta = theBeforeIndexDeltas[idx];
     store::IndexDelta& afterDelta = theAfterIndexDeltas[idx];
+    store::IndexDelta& insertedDelta = theInsertedDocsIndexDeltas[idx];
+    store::IndexDelta& deletedDelta = theDeletedDocsIndexDeltas[idx];
 
     store::IndexDelta::iterator beforeIte = beforeDelta.begin();
     store::IndexDelta::iterator beforeEnd = beforeDelta.end();
     store::IndexDelta::iterator afterIte = afterDelta.begin();
     store::IndexDelta::iterator afterEnd = afterDelta.end();
+    store::IndexDelta::iterator insertedIte = insertedDelta.begin();
+    store::IndexDelta::iterator insertedEnd = insertedDelta.end();
+    store::IndexDelta::iterator deletedIte = deletedDelta.begin();
+    store::IndexDelta::iterator deletedEnd = deletedDelta.end();
 
     while (beforeIte != beforeEnd && afterIte != afterEnd)
     {
@@ -1906,59 +1982,17 @@ void CollectionPul::refreshIndices()
     //
     // Referesh the index w.r.t. newly inserted docs.
     //
-    ulong numDocs = (ulong)theInsertedDocs.size();
-
-    for (ulong i = 0; i < numDocs; ++i)
+    for (; insertedIte != insertedEnd; ++insertedIte)
     {
-      store::IndexDelta delta;
-
-      try
-      {
-        docIndexer->createIndexEntries(theInsertedDocs[i], delta);
-
-        ulong numEntries = (ulong)delta.size();
-
-        for (ulong j = 0; j < numEntries; ++j)
-        {
-          index->insert(delta[j].second, delta[j].first);
-        }
-      }
-      catch (...)
-      {
-        cleanIndexDelta(delta);
-        throw;
-      }
-
-      cleanIndexDelta(delta);
+      index->insert((*insertedIte).second, (*insertedIte).first);
     }
 
     //
     // Referesh the index w.r.t. deleted docs,
     //
-    numDocs = (ulong)theDeletedDocs.size();
-
-    for (ulong i = 0; i < numDocs; ++i)
+    for (; deletedIte != deletedEnd; ++deletedIte)
     {
-      store::IndexDelta delta;
-
-      try
-      {
-        docIndexer->createIndexEntries(theDeletedDocs[i], delta);
-
-        ulong numEntries = (ulong)delta.size();
-
-        for (ulong j = 0; j < numEntries; ++j)
-        {
-          index->remove(delta[j].second, delta[j].first);
-        }
-      }
-      catch (...)
-      {
-        cleanIndexDelta(delta);
-        throw;
-      }
-
-      cleanIndexDelta(delta);
+      index->remove((*deletedIte).second, (*deletedIte).first);
     }
   }
 }
@@ -1976,7 +2010,7 @@ void CollectionPul::applyUpdates()
   try
   {
     // Compute the before-delta for each incrementally maintained index.
-    computeIndexDeltas(theBeforeIndexDeltas);
+    computeIndexBeforeDeltas();
 
     theIsApplied = true;
 
@@ -2021,13 +2055,10 @@ void CollectionPul::applyUpdates()
     applyList(theDeleteFromCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
-    computeIndexDeltas(theAfterIndexDeltas);
-
-    // Refresh each incrementally maintained index using its before and after
-    // deltas. 
-    refreshIndices();
+    computeIndexAfterDeltas();
   }
-  catch ( std::exception const &e ) {
+  catch (const std::exception& e) 
+  {
 #ifndef NDEBUG
     std::cerr << "Exception thrown during pul::applyUpdates: " << e.what() << std::endl;
 #endif
@@ -2054,6 +2085,10 @@ void CollectionPul::finalizeUpdates()
 {
   try
   {
+    // Refresh each incrementally maintained index using its before and after
+    // deltas. 
+    refreshIndices();
+
     // If necessary, adjust the position of trees inside this collection.
     if (theAdjustTreePositions)
     {

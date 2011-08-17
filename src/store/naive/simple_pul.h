@@ -62,7 +62,7 @@ typedef std::vector<UpdatePrimitive*> NodeUpdates;
 
   It is used to check that, for certain kinds of updates, there are no duplicate
   updates of that kind on the same target node. In particular, there can be no
-  duplicate delete, rename, replaveValue, replaceContent, or replaceNode updates.
+  duplicate rename, replaveValue, replaceContent, or replaceNode updates.
 ********************************************************************************/
 class NodeToUpdatesMap
 {
@@ -165,6 +165,8 @@ protected:
 
   std::vector<store::IndexDelta>     theBeforeIndexDeltas;
   std::vector<store::IndexDelta>     theAfterIndexDeltas;
+  std::vector<store::IndexDelta>     theInsertedDocsIndexDeltas;
+  std::vector<store::IndexDelta>     theDeletedDocsIndexDeltas;
 
 public:
   CollectionPul(PULImpl* pul, SimpleCollection* collection);
@@ -179,7 +181,9 @@ public:
 
   void undoUpdates();
 
-  void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
+  void computeIndexBeforeDeltas();
+
+  void computeIndexAfterDeltas();
 
   void refreshIndices();
 
@@ -187,6 +191,8 @@ public:
 
 protected:
   void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);
+
+  void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
 };
 
 
