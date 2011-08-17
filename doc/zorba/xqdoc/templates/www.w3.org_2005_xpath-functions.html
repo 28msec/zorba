@@ -9,7 +9,6 @@
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="lib/jquery.treeview.js"></script>
-    <script type="text/javascript" src="lib/jquery.treeview.pack.js"></script>
     <script type="text/javascript" src="lib/jquery.treeview.min.js"></script>
     <script type="text/javascript" src="lib/shCore.js"></script>
     <script type="text/javascript" src="lib/shBrushXQuery.js"></script>
@@ -19,6 +18,17 @@
     <link type="text/css" rel="stylesheet" href="styles/shThemeXQuery.css" />
     <script type="text/javascript">
       SyntaxHighlighter.all()
+    </script>
+    <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $("#documentation").treeview({
+              control: "#treecontrol",
+              animated: "fast",
+              collapsed: true,
+              unique: false,
+              persist: "cookie"
+          });
+        });
     </script>
   </head>
   <body>
@@ -64,16 +74,12 @@
     </div>
     <div id="main">
       <div id="leftMenu">
-        <script type="text/javascript">
-          jQuery(document).ready(function() {
-              $("#documentation").treeview({
-                  animated: "fast",
-                  collapsed: true,
-                  unique: false,
-                  persist: "cookie"
-              });
-            });
-        </script>        
+        <div id="treecontrol">
+          <a title="Collapse the entire tree below" href="#">
+            <img src="images/minus.gif" /> Collapse All</a>
+          <a title="Expand the entire tree below" href="#">
+            <img src="images/plus.gif" /> Expand All</a>
+        </div>
       </div>
       <div id="rightcontent">
         <h1>http://www.w3.org/2005/xpath-functions<sup>
@@ -4080,8 +4086,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>QName</span>
-          <a href="#function_summary">
+            </a>
+          </span>QName<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4100,8 +4106,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>abs</span>
-          <a href="#function_summary">
+            </a>
+          </span>abs<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4119,8 +4125,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>adjust-date-to-timezone</span>
-          <a href="#function_summary">
+            </a>
+          </span>adjust-date-to-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4138,8 +4144,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>adjust-date-to-timezone</span>
-          <a href="#function_summary">
+            </a>
+          </span>adjust-date-to-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4158,8 +4164,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>adjust-dateTime-to-timezone</span>
-          <a href="#function_summary">
+            </a>
+          </span>adjust-dateTime-to-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4177,8 +4183,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>adjust-dateTime-to-timezone</span>
-          <a href="#function_summary">
+            </a>
+          </span>adjust-dateTime-to-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4197,8 +4203,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>adjust-time-to-timezone</span>
-          <a href="#function_summary">
+            </a>
+          </span>adjust-time-to-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4216,8 +4222,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>adjust-time-to-timezone</span>
-          <a href="#function_summary">
+            </a>
+          </span>adjust-time-to-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4236,8 +4242,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>analyze-string</span>
-          <a href="#function_summary">
+            </a>
+          </span>analyze-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4256,8 +4262,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>analyze-string</span>
-          <a href="#function_summary">
+            </a>
+          </span>analyze-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4277,8 +4283,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>available-environment-variables</span>
-          <a href="#function_summary">
+            </a>
+          </span>available-environment-variables<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4295,8 +4301,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>avg</span>
-          <a href="#function_summary">
+            </a>
+          </span>avg<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4314,8 +4320,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>base-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>base-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4332,8 +4338,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>base-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>base-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4351,8 +4357,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>boolean</span>
-          <a href="#function_summary">
+            </a>
+          </span>boolean<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4370,8 +4376,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>ceiling</span>
-          <a href="#function_summary">
+            </a>
+          </span>ceiling<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4389,8 +4395,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>codepoint-equal</span>
-          <a href="#function_summary">
+            </a>
+          </span>codepoint-equal<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4409,8 +4415,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>codepoints-to-string</span>
-          <a href="#function_summary">
+            </a>
+          </span>codepoints-to-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4428,8 +4434,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>codepoints-to-string</span>
-          <a href="#function_summary">
+            </a>
+          </span>codepoints-to-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4447,8 +4453,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>collection</span>
-          <a href="#function_summary">
+            </a>
+          </span>collection<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4465,8 +4471,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>collection</span>
-          <a href="#function_summary">
+            </a>
+          </span>collection<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4484,8 +4490,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>compare</span>
-          <a href="#function_summary">
+            </a>
+          </span>compare<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4504,8 +4510,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>compare</span>
-          <a href="#function_summary">
+            </a>
+          </span>compare<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4525,8 +4531,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>concat</span>
-          <a href="#function_summary">
+            </a>
+          </span>concat<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4545,8 +4551,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>contains</span>
-          <a href="#function_summary">
+            </a>
+          </span>contains<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4565,8 +4571,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>contains</span>
-          <a href="#function_summary">
+            </a>
+          </span>contains<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4586,8 +4592,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>count</span>
-          <a href="#function_summary">
+            </a>
+          </span>count<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4605,8 +4611,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>current-date</span>
-          <a href="#function_summary">
+            </a>
+          </span>current-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4623,8 +4629,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>current-dateTime</span>
-          <a href="#function_summary">
+            </a>
+          </span>current-dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4641,8 +4647,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>current-time</span>
-          <a href="#function_summary">
+            </a>
+          </span>current-time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4659,8 +4665,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>data</span>
-          <a href="#function_summary">
+            </a>
+          </span>data<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4677,8 +4683,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>data</span>
-          <a href="#function_summary">
+            </a>
+          </span>data<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4696,8 +4702,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>dateTime</span>
-          <a href="#function_summary">
+            </a>
+          </span>dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4716,8 +4722,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>day-from-date</span>
-          <a href="#function_summary">
+            </a>
+          </span>day-from-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4735,8 +4741,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>days-from-duration</span>
-          <a href="#function_summary">
+            </a>
+          </span>days-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4754,8 +4760,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>deep-equal</span>
-          <a href="#function_summary">
+            </a>
+          </span>deep-equal<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4774,8 +4780,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>deep-equal</span>
-          <a href="#function_summary">
+            </a>
+          </span>deep-equal<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4795,8 +4801,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>default-collation</span>
-          <a href="#function_summary">
+            </a>
+          </span>default-collation<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4813,8 +4819,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>distinct-values</span>
-          <a href="#function_summary">
+            </a>
+          </span>distinct-values<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4832,8 +4838,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>distinct-values</span>
-          <a href="#function_summary">
+            </a>
+          </span>distinct-values<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4852,8 +4858,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>doc</span>
-          <a href="#function_summary">
+            </a>
+          </span>doc<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4871,8 +4877,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>doc-available</span>
-          <a href="#function_summary">
+            </a>
+          </span>doc-available<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4890,8 +4896,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>document-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>document-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4908,8 +4914,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>document-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>document-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4927,8 +4933,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>element-with-id</span>
-          <a href="#function_summary">
+            </a>
+          </span>element-with-id<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4946,8 +4952,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>element-with-id</span>
-          <a href="#function_summary">
+            </a>
+          </span>element-with-id<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4966,8 +4972,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>empty</span>
-          <a href="#function_summary">
+            </a>
+          </span>empty<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4985,8 +4991,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>encode-for-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>encode-for-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5004,8 +5010,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>ends-with</span>
-          <a href="#function_summary">
+            </a>
+          </span>ends-with<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5024,8 +5030,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>ends-with</span>
-          <a href="#function_summary">
+            </a>
+          </span>ends-with<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5045,8 +5051,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>environment-variable</span>
-          <a href="#function_summary">
+            </a>
+          </span>environment-variable<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5064,8 +5070,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>error</span>
-          <a href="#function_summary">
+            </a>
+          </span>error<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5082,8 +5088,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>error</span>
-          <a href="#function_summary">
+            </a>
+          </span>error<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5101,8 +5107,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>error</span>
-          <a href="#function_summary">
+            </a>
+          </span>error<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5121,8 +5127,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>error</span>
-          <a href="#function_summary">
+            </a>
+          </span>error<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5142,8 +5148,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>escape-html-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>escape-html-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5161,8 +5167,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>exactly-one</span>
-          <a href="#function_summary">
+            </a>
+          </span>exactly-one<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5180,8 +5186,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>exists</span>
-          <a href="#function_summary">
+            </a>
+          </span>exists<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5199,8 +5205,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>false</span>
-          <a href="#function_summary">
+            </a>
+          </span>false<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5217,8 +5223,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>filter</span>
-          <a href="#function_summary">
+            </a>
+          </span>filter<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5237,8 +5243,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>floor</span>
-          <a href="#function_summary">
+            </a>
+          </span>floor<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5256,8 +5262,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>fold-left</span>
-          <a href="#function_summary">
+            </a>
+          </span>fold-left<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5277,8 +5283,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>fold-right</span>
-          <a href="#function_summary">
+            </a>
+          </span>fold-right<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5298,8 +5304,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-date</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5318,8 +5324,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-date</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5341,8 +5347,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-dateTime</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5361,8 +5367,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-dateTime</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5384,8 +5390,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-integer</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-integer<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5404,8 +5410,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-integer</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-integer<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5425,8 +5431,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-number</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-number<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5445,8 +5451,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-number</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-number<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5466,8 +5472,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-time</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5486,8 +5492,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>format-time</span>
-          <a href="#function_summary">
+            </a>
+          </span>format-time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5509,8 +5515,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>function-arity</span>
-          <a href="#function_summary">
+            </a>
+          </span>function-arity<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5528,8 +5534,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>generate-id</span>
-          <a href="#function_summary">
+            </a>
+          </span>generate-id<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5546,8 +5552,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>generate-id</span>
-          <a href="#function_summary">
+            </a>
+          </span>generate-id<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5565,8 +5571,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>has-children</span>
-          <a href="#function_summary">
+            </a>
+          </span>has-children<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5584,8 +5590,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>head</span>
-          <a href="#function_summary">
+            </a>
+          </span>head<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5603,8 +5609,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>hours-from-duration</span>
-          <a href="#function_summary">
+            </a>
+          </span>hours-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5622,8 +5628,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>hours-from-time</span>
-          <a href="#function_summary">
+            </a>
+          </span>hours-from-time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5641,8 +5647,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>id</span>
-          <a href="#function_summary">
+            </a>
+          </span>id<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5660,8 +5666,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>id</span>
-          <a href="#function_summary">
+            </a>
+          </span>id<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5680,8 +5686,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>idref</span>
-          <a href="#function_summary">
+            </a>
+          </span>idref<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5699,8 +5705,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>idref</span>
-          <a href="#function_summary">
+            </a>
+          </span>idref<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5719,8 +5725,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>implicit-timezone</span>
-          <a href="#function_summary">
+            </a>
+          </span>implicit-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5737,8 +5743,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>in-scope-prefixes</span>
-          <a href="#function_summary">
+            </a>
+          </span>in-scope-prefixes<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5756,8 +5762,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>index-of</span>
-          <a href="#function_summary">
+            </a>
+          </span>index-of<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5776,8 +5782,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>index-of</span>
-          <a href="#function_summary">
+            </a>
+          </span>index-of<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5797,8 +5803,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>innermost</span>
-          <a href="#function_summary">
+            </a>
+          </span>innermost<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5816,8 +5822,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>insert-before</span>
-          <a href="#function_summary">
+            </a>
+          </span>insert-before<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5837,8 +5843,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>iri-to-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>iri-to-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5856,8 +5862,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>lang</span>
-          <a href="#function_summary">
+            </a>
+          </span>lang<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5875,8 +5881,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>lang</span>
-          <a href="#function_summary">
+            </a>
+          </span>lang<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5895,8 +5901,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>last</span>
-          <a href="#function_summary">
+            </a>
+          </span>last<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5913,8 +5919,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>local-name</span>
-          <a href="#function_summary">
+            </a>
+          </span>local-name<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5931,8 +5937,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>local-name</span>
-          <a href="#function_summary">
+            </a>
+          </span>local-name<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5950,8 +5956,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>local-name-from-QName</span>
-          <a href="#function_summary">
+            </a>
+          </span>local-name-from-QName<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5969,8 +5975,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>lower-case</span>
-          <a href="#function_summary">
+            </a>
+          </span>lower-case<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5988,8 +5994,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>map</span>
-          <a href="#function_summary">
+            </a>
+          </span>map<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6008,8 +6014,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>map-pairs</span>
-          <a href="#function_summary">
+            </a>
+          </span>map-pairs<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6029,8 +6035,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>matches</span>
-          <a href="#function_summary">
+            </a>
+          </span>matches<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6049,8 +6055,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>matches</span>
-          <a href="#function_summary">
+            </a>
+          </span>matches<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6070,8 +6076,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>max</span>
-          <a href="#function_summary">
+            </a>
+          </span>max<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6089,8 +6095,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>max</span>
-          <a href="#function_summary">
+            </a>
+          </span>max<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6109,8 +6115,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>min</span>
-          <a href="#function_summary">
+            </a>
+          </span>min<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6128,8 +6134,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>min</span>
-          <a href="#function_summary">
+            </a>
+          </span>min<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6148,8 +6154,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>minutes-from-dateTime</span>
-          <a href="#function_summary">
+            </a>
+          </span>minutes-from-dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6167,8 +6173,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>minutes-from-duration</span>
-          <a href="#function_summary">
+            </a>
+          </span>minutes-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6186,8 +6192,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>minutes-from-time</span>
-          <a href="#function_summary">
+            </a>
+          </span>minutes-from-time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6205,8 +6211,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>month-from-date</span>
-          <a href="#function_summary">
+            </a>
+          </span>month-from-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6224,8 +6230,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>months-from-duration</span>
-          <a href="#function_summary">
+            </a>
+          </span>months-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6243,8 +6249,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>name</span>
-          <a href="#function_summary">
+            </a>
+          </span>name<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6261,8 +6267,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>name</span>
-          <a href="#function_summary">
+            </a>
+          </span>name<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6280,8 +6286,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>namespace-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>namespace-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6298,8 +6304,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>namespace-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>namespace-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6317,8 +6323,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>namespace-uri-for-prefix</span>
-          <a href="#function_summary">
+            </a>
+          </span>namespace-uri-for-prefix<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6337,8 +6343,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>namespace-uri-from-QName</span>
-          <a href="#function_summary">
+            </a>
+          </span>namespace-uri-from-QName<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6356,8 +6362,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>nilled</span>
-          <a href="#function_summary">
+            </a>
+          </span>nilled<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6375,8 +6381,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>node-name</span>
-          <a href="#function_summary">
+            </a>
+          </span>node-name<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6393,8 +6399,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>node-name</span>
-          <a href="#function_summary">
+            </a>
+          </span>node-name<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6412,8 +6418,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>normalize-space</span>
-          <a href="#function_summary">
+            </a>
+          </span>normalize-space<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6430,8 +6436,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>normalize-space</span>
-          <a href="#function_summary">
+            </a>
+          </span>normalize-space<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6449,8 +6455,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>normalize-unicode</span>
-          <a href="#function_summary">
+            </a>
+          </span>normalize-unicode<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6468,8 +6474,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>normalize-unicode</span>
-          <a href="#function_summary">
+            </a>
+          </span>normalize-unicode<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6488,8 +6494,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>not</span>
-          <a href="#function_summary">
+            </a>
+          </span>not<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6507,8 +6513,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>number</span>
-          <a href="#function_summary">
+            </a>
+          </span>number<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6525,8 +6531,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>number</span>
-          <a href="#function_summary">
+            </a>
+          </span>number<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6544,8 +6550,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>one-or-more</span>
-          <a href="#function_summary">
+            </a>
+          </span>one-or-more<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6563,8 +6569,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>outermost</span>
-          <a href="#function_summary">
+            </a>
+          </span>outermost<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6582,8 +6588,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>parse-xml</span>
-          <a href="#function_summary">
+            </a>
+          </span>parse-xml<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6601,8 +6607,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>parse-xml</span>
-          <a href="#function_summary">
+            </a>
+          </span>parse-xml<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6621,8 +6627,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>position</span>
-          <a href="#function_summary">
+            </a>
+          </span>position<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6639,8 +6645,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>prefix-from-QName</span>
-          <a href="#function_summary">
+            </a>
+          </span>prefix-from-QName<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6658,8 +6664,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>remove</span>
-          <a href="#function_summary">
+            </a>
+          </span>remove<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6678,8 +6684,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>replace</span>
-          <a href="#function_summary">
+            </a>
+          </span>replace<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6699,8 +6705,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>replace</span>
-          <a href="#function_summary">
+            </a>
+          </span>replace<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6721,8 +6727,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>resolve-QName</span>
-          <a href="#function_summary">
+            </a>
+          </span>resolve-QName<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6741,8 +6747,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>resolve-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>resolve-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6760,8 +6766,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>resolve-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>resolve-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6780,8 +6786,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>reverse</span>
-          <a href="#function_summary">
+            </a>
+          </span>reverse<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6799,8 +6805,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>root</span>
-          <a href="#function_summary">
+            </a>
+          </span>root<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6817,8 +6823,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>root</span>
-          <a href="#function_summary">
+            </a>
+          </span>root<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6836,8 +6842,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>round</span>
-          <a href="#function_summary">
+            </a>
+          </span>round<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6855,8 +6861,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>round</span>
-          <a href="#function_summary">
+            </a>
+          </span>round<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6875,8 +6881,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>round-half-to-even</span>
-          <a href="#function_summary">
+            </a>
+          </span>round-half-to-even<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6894,8 +6900,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>round-half-to-even</span>
-          <a href="#function_summary">
+            </a>
+          </span>round-half-to-even<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6914,8 +6920,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>seconds-from-dateTime</span>
-          <a href="#function_summary">
+            </a>
+          </span>seconds-from-dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6933,8 +6939,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>seconds-from-duration</span>
-          <a href="#function_summary">
+            </a>
+          </span>seconds-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6952,8 +6958,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>seconds-from-time</span>
-          <a href="#function_summary">
+            </a>
+          </span>seconds-from-time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6971,8 +6977,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>serialize</span>
-          <a href="#function_summary">
+            </a>
+          </span>serialize<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6990,8 +6996,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>serialize</span>
-          <a href="#function_summary">
+            </a>
+          </span>serialize<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7010,8 +7016,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>starts-with</span>
-          <a href="#function_summary">
+            </a>
+          </span>starts-with<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7030,8 +7036,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>starts-with</span>
-          <a href="#function_summary">
+            </a>
+          </span>starts-with<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7051,8 +7057,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>static-base-uri</span>
-          <a href="#function_summary">
+            </a>
+          </span>static-base-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7069,8 +7075,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string</span>
-          <a href="#function_summary">
+            </a>
+          </span>string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7087,8 +7093,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string</span>
-          <a href="#function_summary">
+            </a>
+          </span>string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7106,8 +7112,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string-join</span>
-          <a href="#function_summary">
+            </a>
+          </span>string-join<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7125,8 +7131,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string-join</span>
-          <a href="#function_summary">
+            </a>
+          </span>string-join<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7145,8 +7151,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string-length</span>
-          <a href="#function_summary">
+            </a>
+          </span>string-length<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7163,8 +7169,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string-length</span>
-          <a href="#function_summary">
+            </a>
+          </span>string-length<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7182,8 +7188,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string-to-codepoints</span>
-          <a href="#function_summary">
+            </a>
+          </span>string-to-codepoints<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7201,8 +7207,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>string-to-codepoints</span>
-          <a href="#function_summary">
+            </a>
+          </span>string-to-codepoints<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7220,8 +7226,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>subsequence</span>
-          <a href="#function_summary">
+            </a>
+          </span>subsequence<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7240,8 +7246,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>subsequence</span>
-          <a href="#function_summary">
+            </a>
+          </span>subsequence<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7261,8 +7267,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>substring</span>
-          <a href="#function_summary">
+            </a>
+          </span>substring<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7281,8 +7287,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>substring</span>
-          <a href="#function_summary">
+            </a>
+          </span>substring<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7302,8 +7308,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>substring-after</span>
-          <a href="#function_summary">
+            </a>
+          </span>substring-after<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7322,8 +7328,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>substring-after</span>
-          <a href="#function_summary">
+            </a>
+          </span>substring-after<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7343,8 +7349,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>substring-before</span>
-          <a href="#function_summary">
+            </a>
+          </span>substring-before<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7363,8 +7369,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>substring-before</span>
-          <a href="#function_summary">
+            </a>
+          </span>substring-before<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7384,8 +7390,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>sum</span>
-          <a href="#function_summary">
+            </a>
+          </span>sum<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7403,8 +7409,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>sum</span>
-          <a href="#function_summary">
+            </a>
+          </span>sum<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7423,8 +7429,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>tail</span>
-          <a href="#function_summary">
+            </a>
+          </span>tail<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7442,8 +7448,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>timezone-from-date</span>
-          <a href="#function_summary">
+            </a>
+          </span>timezone-from-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7461,8 +7467,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>timezone-from-dateTime</span>
-          <a href="#function_summary">
+            </a>
+          </span>timezone-from-dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7480,8 +7486,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>timezone-from-time</span>
-          <a href="#function_summary">
+            </a>
+          </span>timezone-from-time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7499,8 +7505,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>tokenize</span>
-          <a href="#function_summary">
+            </a>
+          </span>tokenize<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7519,8 +7525,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>tokenize</span>
-          <a href="#function_summary">
+            </a>
+          </span>tokenize<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7540,8 +7546,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>trace</span>
-          <a href="#function_summary">
+            </a>
+          </span>trace<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7560,8 +7566,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>translate</span>
-          <a href="#function_summary">
+            </a>
+          </span>translate<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7581,8 +7587,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>true</span>
-          <a href="#function_summary">
+            </a>
+          </span>true<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7599,8 +7605,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>unordered</span>
-          <a href="#function_summary">
+            </a>
+          </span>unordered<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7618,8 +7624,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>unparsed-text</span>
-          <a href="#function_summary">
+            </a>
+          </span>unparsed-text<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7637,8 +7643,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>unparsed-text</span>
-          <a href="#function_summary">
+            </a>
+          </span>unparsed-text<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7657,8 +7663,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>unparsed-text-available</span>
-          <a href="#function_summary">
+            </a>
+          </span>unparsed-text-available<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7676,8 +7682,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>unparsed-text-available</span>
-          <a href="#function_summary">
+            </a>
+          </span>unparsed-text-available<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7696,8 +7702,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>unparsed-text-lines</span>
-          <a href="#function_summary">
+            </a>
+          </span>unparsed-text-lines<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7715,8 +7721,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>unparsed-text-lines</span>
-          <a href="#function_summary">
+            </a>
+          </span>unparsed-text-lines<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7735,8 +7741,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>upper-case</span>
-          <a href="#function_summary">
+            </a>
+          </span>upper-case<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7754,8 +7760,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>uri-collection</span>
-          <a href="#function_summary">
+            </a>
+          </span>uri-collection<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7772,8 +7778,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>uri-collection</span>
-          <a href="#function_summary">
+            </a>
+          </span>uri-collection<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7791,8 +7797,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>year-from-date</span>
-          <a href="#function_summary">
+            </a>
+          </span>year-from-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7810,8 +7816,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>years-from-duration</span>
-          <a href="#function_summary">
+            </a>
+          </span>years-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7829,8 +7835,8 @@
           <span class="no_underline">
             <a href="http://www.w3.org/TR/xquery-30/#dt-external-function" title="external" target="_blank">
               <img src="images/External.gif" />
-            </a>zero-or-one</span>
-          <a href="#function_summary">
+            </a>
+          </span>zero-or-one<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -7846,9 +7852,8 @@
         <hr />
       </div>
     </div>
-
     <div style="clear:both;">
-      <div id="discuss" >
+      <div id="discuss">
         <div id="disqus_thread"></div>
         <script type="text/javascript">
             var disqus_developer = 1;
@@ -7866,11 +7871,12 @@
                 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
             })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span>
+        </a>
       </div>
     </div>
-
     <div id="footer">
       <div id="innerfooter">
         <p>Zorba is supported by the 

@@ -1162,7 +1162,7 @@ declare %private function xqdoc2html:annotations-module($comment) {
     ( 
       <div class="subsubsection">{
         concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
-      }</div>,    
+      }</div>,
       <p class="annotationText">{$annotation/node()}</p>
     )
 };
@@ -1265,10 +1265,9 @@ declare %private function xqdoc2html:module-external-specifications($module) {
       let $annotations := $module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]
       return
         for $annotation in $annotations
-          return
-          if(fn:count($annotation/node()) eq 1 
-             and fn:starts-with(fn:lower-case($annotation/node()), "http://") ) then
-            <li><a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a></li>
+        return
+          if(fn:count($annotation/node()) eq 1) then
+            <li>{xqdoc2html:replace-with-a-html-tag(xs:string($annotation/node()))}</li>
           else
             <li>{$annotation/node()}</li>
     }
@@ -1607,6 +1606,23 @@ declare %private function xqdoc2html:annotations($comment) {
     )
 };
 
+declare %private function xqdoc2html:replace-with-a-html-tag(
+  $text as xs:string)
+{
+ (: this is meant to be used only for the @see tags at this moment :)
+ let $containsHttp := starts-with(lower-case($text), "http://"),
+     $isModuleURI as xs:boolean := exists($xqdoc2html:ZorbaManifest/module[@uri= $text])
+ return
+  if($containsHttp) then
+  (
+    if($isModuleURI) then
+      <a href="{concat(xqdoc2html:get-filename($text),'.html')}">{$text}</a>
+    else 
+      <a href="{$text}" target="_blank">{$text}</a>
+  )
+  else $text
+};
+
 (:~
  : This function groups together all the @see annotations.
  :
@@ -1622,13 +1638,15 @@ declare %private function xqdoc2html:annotations-see($comment) {
 (: this hack should be replaced with links everywhere in text     :)
 (: replace the @see nodes that start with http:// with HTML a tag :)
     (<div class="subsubsection">See:</div>,<ul>
-    {for $annotation in $see
+    {
+    for $annotation in $see
     return
-      if(fn:count($annotation/node()) eq 1 
-         and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
-        <li>{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</li>
-    else
-        <li>{$annotation/node()}</li>}</ul>
+      if(fn:count($annotation/node()) eq 1) then
+        <li>{xqdoc2html:replace-with-a-html-tag(xs:string($annotation/node()))}</li>
+      else
+        <li>{$annotation/node()}</li>
+    }
+    </ul>
     )
 (: **********************************************************     :)
 };

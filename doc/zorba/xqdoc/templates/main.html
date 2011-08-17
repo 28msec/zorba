@@ -19,6 +19,17 @@
     <script type="text/javascript">
       SyntaxHighlighter.all()
     </script>
+    <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $("#documentation").treeview({
+              control: "#treecontrol",
+              animated: "fast",
+              collapsed: true,
+              unique: false,
+              persist: "cookie"
+          });
+        });
+    </script>
   </head>
   <body>
     <div id="header">
@@ -47,16 +58,10 @@
     </div>
     <div id="main">
       <div id="leftMenu" >
-        <script type="text/javascript">
-          jQuery(document).ready(function() {
-              $("#documentation").treeview({
-                  animated: "fast",
-                  collapsed: true,
-                  unique: false,
-                  persist: "cookie"
-              });
-            });
-        </script>
+        <div id="treecontrol">
+          <a title="Collapse the entire tree below" href="#"><img src="images/minus.gif" /> Collapse All</a> 
+          <a title="Expand the entire tree below"   href="#"><img src="images/plus.gif" /> Expand All</a>
+        </div>
       </div>
       <div id="rightcontent" />
     </div>

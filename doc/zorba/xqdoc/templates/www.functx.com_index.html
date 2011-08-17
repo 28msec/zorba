@@ -9,7 +9,6 @@
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/jquery.cookie.js"></script>
     <script type="text/javascript" src="lib/jquery.treeview.js"></script>
-    <script type="text/javascript" src="lib/jquery.treeview.pack.js"></script>
     <script type="text/javascript" src="lib/jquery.treeview.min.js"></script>
     <script type="text/javascript" src="lib/shCore.js"></script>
     <script type="text/javascript" src="lib/shBrushXQuery.js"></script>
@@ -19,6 +18,17 @@
     <link type="text/css" rel="stylesheet" href="styles/shThemeXQuery.css" />
     <script type="text/javascript">
       SyntaxHighlighter.all()
+    </script>
+    <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $("#documentation").treeview({
+              control: "#treecontrol",
+              animated: "fast",
+              collapsed: true,
+              unique: false,
+              persist: "cookie"
+          });
+        });
     </script>
   </head>
   <body>
@@ -64,16 +74,12 @@
     </div>
     <div id="main">
       <div id="leftMenu">
-        <script type="text/javascript">
-          jQuery(document).ready(function() {
-              $("#documentation").treeview({
-                  animated: "fast",
-                  collapsed: true,
-                  unique: false,
-                  persist: "cookie"
-              });
-            });
-        </script>
+        <div id="treecontrol">
+          <a title="Collapse the entire tree below" href="#">
+            <img src="images/minus.gif" /> Collapse All</a>
+          <a title="Expand the entire tree below" href="#">
+            <img src="images/plus.gif" /> Expand All</a>
+        </div>
       </div>
       <div id="rightcontent">
         <h1>http://www.functx.com/<sup>
@@ -2647,8 +2653,7 @@
           <span id="functions">Functions</span>
         </div>
         <div class="subsection" id="add-attributes-3">
-          <span class="no_underline">add-attributes</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>add-attributes<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2677,8 +2682,7 @@
         </ul>
         <hr />
         <div class="subsection" id="add-months-2">
-          <span class="no_underline">add-months</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>add-months<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2705,8 +2709,7 @@
         </ul>
         <hr />
         <div class="subsection" id="add-or-update-attributes-3">
-          <span class="no_underline">add-or-update-attributes</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>add-or-update-attributes<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2735,8 +2738,7 @@
         </ul>
         <hr />
         <div class="subsection" id="all-whitespace-1">
-          <span class="no_underline">all-whitespace</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>all-whitespace<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2761,8 +2763,7 @@
         </ul>
         <hr />
         <div class="subsection" id="are-distinct-values-1">
-          <span class="no_underline">are-distinct-values</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>are-distinct-values<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2787,8 +2788,7 @@
         </ul>
         <hr />
         <div class="subsection" id="atomic-type-1">
-          <span class="no_underline">atomic-type</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>atomic-type<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2813,8 +2813,7 @@
         </ul>
         <hr />
         <div class="subsection" id="avg-empty-is-zero-2">
-          <span class="no_underline">avg-empty-is-zero</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>avg-empty-is-zero<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2841,8 +2840,7 @@
         </ul>
         <hr />
         <div class="subsection" id="between-exclusive-3">
-          <span class="no_underline">between-exclusive</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>between-exclusive<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2871,8 +2869,7 @@
         </ul>
         <hr />
         <div class="subsection" id="between-inclusive-3">
-          <span class="no_underline">between-inclusive</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>between-inclusive<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2901,8 +2898,7 @@
         </ul>
         <hr />
         <div class="subsection" id="camel-case-to-words-2">
-          <span class="no_underline">camel-case-to-words</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>camel-case-to-words<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2929,8 +2925,7 @@
         </ul>
         <hr />
         <div class="subsection" id="capitalize-first-1">
-          <span class="no_underline">capitalize-first</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>capitalize-first<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2955,8 +2950,7 @@
         </ul>
         <hr />
         <div class="subsection" id="change-element-names-deep-3">
-          <span class="no_underline">change-element-names-deep</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>change-element-names-deep<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -2985,8 +2979,7 @@
         </ul>
         <hr />
         <div class="subsection" id="change-element-ns-3">
-          <span class="no_underline">change-element-ns</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>change-element-ns<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3015,8 +3008,7 @@
         </ul>
         <hr />
         <div class="subsection" id="change-element-ns-deep-3">
-          <span class="no_underline">change-element-ns-deep</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>change-element-ns-deep<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3045,8 +3037,7 @@
         </ul>
         <hr />
         <div class="subsection" id="chars-1">
-          <span class="no_underline">chars</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>chars<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3071,8 +3062,7 @@
         </ul>
         <hr />
         <div class="subsection" id="contains-any-of-2">
-          <span class="no_underline">contains-any-of</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>contains-any-of<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3099,8 +3089,7 @@
         </ul>
         <hr />
         <div class="subsection" id="contains-case-insensitive-2">
-          <span class="no_underline">contains-case-insensitive</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>contains-case-insensitive<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3127,8 +3116,7 @@
         </ul>
         <hr />
         <div class="subsection" id="contains-word-2">
-          <span class="no_underline">contains-word</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>contains-word<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3155,8 +3143,7 @@
         </ul>
         <hr />
         <div class="subsection" id="copy-attributes-2">
-          <span class="no_underline">copy-attributes</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>copy-attributes<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3183,8 +3170,7 @@
         </ul>
         <hr />
         <div class="subsection" id="date-3">
-          <span class="no_underline">date</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3213,8 +3199,7 @@
         </ul>
         <hr />
         <div class="subsection" id="dateTime-6">
-          <span class="no_underline">dateTime</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>dateTime<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3249,8 +3234,7 @@
         </ul>
         <hr />
         <div class="subsection" id="day-in-year-1">
-          <span class="no_underline">day-in-year</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>day-in-year<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3275,8 +3259,7 @@
         </ul>
         <hr />
         <div class="subsection" id="day-of-week-1">
-          <span class="no_underline">day-of-week</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>day-of-week<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3301,8 +3284,7 @@
         </ul>
         <hr />
         <div class="subsection" id="day-of-week-abbrev-en-1">
-          <span class="no_underline">day-of-week-abbrev-en</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>day-of-week-abbrev-en<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3327,8 +3309,7 @@
         </ul>
         <hr />
         <div class="subsection" id="day-of-week-name-en-1">
-          <span class="no_underline">day-of-week-name-en</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>day-of-week-name-en<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3353,8 +3334,7 @@
         </ul>
         <hr />
         <div class="subsection" id="dayTimeDuration-4">
-          <span class="no_underline">dayTimeDuration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>dayTimeDuration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3385,8 +3365,7 @@
         </ul>
         <hr />
         <div class="subsection" id="days-in-month-1">
-          <span class="no_underline">days-in-month</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>days-in-month<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3411,8 +3390,7 @@
         </ul>
         <hr />
         <div class="subsection" id="depth-of-node-1">
-          <span class="no_underline">depth-of-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>depth-of-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3437,8 +3415,7 @@
         </ul>
         <hr />
         <div class="subsection" id="distinct-attribute-names-1">
-          <span class="no_underline">distinct-attribute-names</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>distinct-attribute-names<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3463,8 +3440,7 @@
         </ul>
         <hr />
         <div class="subsection" id="distinct-deep-1">
-          <span class="no_underline">distinct-deep</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>distinct-deep<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3489,8 +3465,7 @@
         </ul>
         <hr />
         <div class="subsection" id="distinct-element-names-1">
-          <span class="no_underline">distinct-element-names</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>distinct-element-names<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3515,8 +3490,7 @@
         </ul>
         <hr />
         <div class="subsection" id="distinct-element-paths-1">
-          <span class="no_underline">distinct-element-paths</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>distinct-element-paths<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3541,8 +3515,7 @@
         </ul>
         <hr />
         <div class="subsection" id="distinct-nodes-1">
-          <span class="no_underline">distinct-nodes</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>distinct-nodes<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3567,8 +3540,7 @@
         </ul>
         <hr />
         <div class="subsection" id="duration-from-timezone-1">
-          <span class="no_underline">duration-from-timezone</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>duration-from-timezone<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3593,8 +3565,7 @@
         </ul>
         <hr />
         <div class="subsection" id="dynamic-path-2">
-          <span class="no_underline">dynamic-path</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>dynamic-path<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3621,8 +3592,7 @@
         </ul>
         <hr />
         <div class="subsection" id="escape-for-regex-1">
-          <span class="no_underline">escape-for-regex</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>escape-for-regex<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3647,8 +3617,7 @@
         </ul>
         <hr />
         <div class="subsection" id="exclusive-or-2">
-          <span class="no_underline">exclusive-or</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>exclusive-or<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3675,8 +3644,7 @@
         </ul>
         <hr />
         <div class="subsection" id="first-day-of-month-1">
-          <span class="no_underline">first-day-of-month</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>first-day-of-month<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3701,8 +3669,7 @@
         </ul>
         <hr />
         <div class="subsection" id="first-day-of-year-1">
-          <span class="no_underline">first-day-of-year</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>first-day-of-year<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3727,8 +3694,7 @@
         </ul>
         <hr />
         <div class="subsection" id="first-node-1">
-          <span class="no_underline">first-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>first-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3753,8 +3719,7 @@
         </ul>
         <hr />
         <div class="subsection" id="follows-not-descendant-2">
-          <span class="no_underline">follows-not-descendant</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>follows-not-descendant<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3781,8 +3746,7 @@
         </ul>
         <hr />
         <div class="subsection" id="format-as-title-en-1">
-          <span class="no_underline">format-as-title-en</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>format-as-title-en<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3807,8 +3771,7 @@
         </ul>
         <hr />
         <div class="subsection" id="fragment-from-uri-1">
-          <span class="no_underline">fragment-from-uri</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>fragment-from-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3833,8 +3796,7 @@
         </ul>
         <hr />
         <div class="subsection" id="get-matches-2">
-          <span class="no_underline">get-matches</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>get-matches<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3861,8 +3823,7 @@
         </ul>
         <hr />
         <div class="subsection" id="get-matches-and-non-matches-2">
-          <span class="no_underline">get-matches-and-non-matches</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>get-matches-and-non-matches<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3889,8 +3850,7 @@
         </ul>
         <hr />
         <div class="subsection" id="has-element-only-content-1">
-          <span class="no_underline">has-element-only-content</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>has-element-only-content<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3915,8 +3875,7 @@
         </ul>
         <hr />
         <div class="subsection" id="has-empty-content-1">
-          <span class="no_underline">has-empty-content</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>has-empty-content<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3941,8 +3900,7 @@
         </ul>
         <hr />
         <div class="subsection" id="has-mixed-content-1">
-          <span class="no_underline">has-mixed-content</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>has-mixed-content<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3967,8 +3925,7 @@
         </ul>
         <hr />
         <div class="subsection" id="has-simple-content-1">
-          <span class="no_underline">has-simple-content</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>has-simple-content<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -3993,8 +3950,7 @@
         </ul>
         <hr />
         <div class="subsection" id="id-from-element-1">
-          <span class="no_underline">id-from-element</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>id-from-element<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4019,8 +3975,7 @@
         </ul>
         <hr />
         <div class="subsection" id="id-untyped-2">
-          <span class="no_underline">id-untyped</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>id-untyped<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4047,8 +4002,7 @@
         </ul>
         <hr />
         <div class="subsection" id="if-absent-2">
-          <span class="no_underline">if-absent</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>if-absent<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4075,8 +4029,7 @@
         </ul>
         <hr />
         <div class="subsection" id="if-empty-2">
-          <span class="no_underline">if-empty</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>if-empty<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4103,8 +4056,7 @@
         </ul>
         <hr />
         <div class="subsection" id="index-of-deep-equal-node-2">
-          <span class="no_underline">index-of-deep-equal-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>index-of-deep-equal-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4131,8 +4083,7 @@
         </ul>
         <hr />
         <div class="subsection" id="index-of-match-first-2">
-          <span class="no_underline">index-of-match-first</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>index-of-match-first<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4159,8 +4110,7 @@
         </ul>
         <hr />
         <div class="subsection" id="index-of-node-2">
-          <span class="no_underline">index-of-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>index-of-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4187,8 +4137,7 @@
         </ul>
         <hr />
         <div class="subsection" id="index-of-string-2">
-          <span class="no_underline">index-of-string</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>index-of-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4215,8 +4164,7 @@
         </ul>
         <hr />
         <div class="subsection" id="index-of-string-first-2">
-          <span class="no_underline">index-of-string-first</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>index-of-string-first<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4243,8 +4191,7 @@
         </ul>
         <hr />
         <div class="subsection" id="index-of-string-last-2">
-          <span class="no_underline">index-of-string-last</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>index-of-string-last<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4271,8 +4218,7 @@
         </ul>
         <hr />
         <div class="subsection" id="insert-string-3">
-          <span class="no_underline">insert-string</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>insert-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4301,8 +4247,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-a-number-1">
-          <span class="no_underline">is-a-number</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-a-number<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4327,8 +4272,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-absolute-uri-1">
-          <span class="no_underline">is-absolute-uri</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-absolute-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4353,8 +4297,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-ancestor-2">
-          <span class="no_underline">is-ancestor</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-ancestor<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4381,8 +4324,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-descendant-2">
-          <span class="no_underline">is-descendant</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-descendant<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4409,8 +4351,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-leap-year-1">
-          <span class="no_underline">is-leap-year</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-leap-year<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4435,8 +4376,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-node-among-descendants-2">
-          <span class="no_underline">is-node-among-descendants</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-node-among-descendants<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4463,8 +4403,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-node-among-descendants-deep-equal-2">
-          <span class="no_underline">is-node-among-descendants-deep-equal</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-node-among-descendants-deep-equal<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4491,8 +4430,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-node-in-sequence-2">
-          <span class="no_underline">is-node-in-sequence</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-node-in-sequence<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4519,8 +4457,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-node-in-sequence-deep-equal-2">
-          <span class="no_underline">is-node-in-sequence-deep-equal</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-node-in-sequence-deep-equal<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4547,8 +4484,7 @@
         </ul>
         <hr />
         <div class="subsection" id="is-value-in-sequence-2">
-          <span class="no_underline">is-value-in-sequence</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>is-value-in-sequence<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4575,8 +4511,7 @@
         </ul>
         <hr />
         <div class="subsection" id="last-day-of-month-1">
-          <span class="no_underline">last-day-of-month</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>last-day-of-month<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4601,8 +4536,7 @@
         </ul>
         <hr />
         <div class="subsection" id="last-day-of-year-1">
-          <span class="no_underline">last-day-of-year</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>last-day-of-year<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4627,8 +4561,7 @@
         </ul>
         <hr />
         <div class="subsection" id="last-node-1">
-          <span class="no_underline">last-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>last-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4653,8 +4586,7 @@
         </ul>
         <hr />
         <div class="subsection" id="leaf-elements-1">
-          <span class="no_underline">leaf-elements</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>leaf-elements<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4679,8 +4611,7 @@
         </ul>
         <hr />
         <div class="subsection" id="left-trim-1">
-          <span class="no_underline">left-trim</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>left-trim<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4705,8 +4636,7 @@
         </ul>
         <hr />
         <div class="subsection" id="line-count-1">
-          <span class="no_underline">line-count</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>line-count<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4731,8 +4661,7 @@
         </ul>
         <hr />
         <div class="subsection" id="lines-1">
-          <span class="no_underline">lines</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>lines<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4757,8 +4686,7 @@
         </ul>
         <hr />
         <div class="subsection" id="max-depth-1">
-          <span class="no_underline">max-depth</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>max-depth<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4783,8 +4711,7 @@
         </ul>
         <hr />
         <div class="subsection" id="max-determine-type-1">
-          <span class="no_underline">max-determine-type</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>max-determine-type<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4809,8 +4736,7 @@
         </ul>
         <hr />
         <div class="subsection" id="max-line-length-1">
-          <span class="no_underline">max-line-length</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>max-line-length<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4835,8 +4761,7 @@
         </ul>
         <hr />
         <div class="subsection" id="max-node-1">
-          <span class="no_underline">max-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>max-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4861,8 +4786,7 @@
         </ul>
         <hr />
         <div class="subsection" id="max-string-1">
-          <span class="no_underline">max-string</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>max-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4887,8 +4811,7 @@
         </ul>
         <hr />
         <div class="subsection" id="min-determine-type-1">
-          <span class="no_underline">min-determine-type</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>min-determine-type<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4913,8 +4836,7 @@
         </ul>
         <hr />
         <div class="subsection" id="min-node-1">
-          <span class="no_underline">min-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>min-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4939,8 +4861,7 @@
         </ul>
         <hr />
         <div class="subsection" id="min-non-empty-string-1">
-          <span class="no_underline">min-non-empty-string</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>min-non-empty-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4965,8 +4886,7 @@
         </ul>
         <hr />
         <div class="subsection" id="min-string-1">
-          <span class="no_underline">min-string</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>min-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -4991,8 +4911,7 @@
         </ul>
         <hr />
         <div class="subsection" id="mmddyyyy-to-date-1">
-          <span class="no_underline">mmddyyyy-to-date</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>mmddyyyy-to-date<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5017,8 +4936,7 @@
         </ul>
         <hr />
         <div class="subsection" id="month-abbrev-en-1">
-          <span class="no_underline">month-abbrev-en</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>month-abbrev-en<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5043,8 +4961,7 @@
         </ul>
         <hr />
         <div class="subsection" id="month-name-en-1">
-          <span class="no_underline">month-name-en</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>month-name-en<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5069,8 +4986,7 @@
         </ul>
         <hr />
         <div class="subsection" id="name-test-2">
-          <span class="no_underline">name-test</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>name-test<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5097,8 +5013,7 @@
         </ul>
         <hr />
         <div class="subsection" id="namespaces-in-use-1">
-          <span class="no_underline">namespaces-in-use</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>namespaces-in-use<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5123,8 +5038,7 @@
         </ul>
         <hr />
         <div class="subsection" id="next-day-1">
-          <span class="no_underline">next-day</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>next-day<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5149,8 +5063,7 @@
         </ul>
         <hr />
         <div class="subsection" id="node-kind-1">
-          <span class="no_underline">node-kind</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>node-kind<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5175,8 +5088,7 @@
         </ul>
         <hr />
         <div class="subsection" id="non-distinct-values-1">
-          <span class="no_underline">non-distinct-values</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>non-distinct-values<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5201,8 +5113,7 @@
         </ul>
         <hr />
         <div class="subsection" id="number-of-matches-2">
-          <span class="no_underline">number-of-matches</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>number-of-matches<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5229,8 +5140,7 @@
         </ul>
         <hr />
         <div class="subsection" id="open-ref-document-1">
-          <span class="no_underline">open-ref-document</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>open-ref-document<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5255,8 +5165,7 @@
         </ul>
         <hr />
         <div class="subsection" id="ordinal-number-en-1">
-          <span class="no_underline">ordinal-number-en</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>ordinal-number-en<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5281,8 +5190,7 @@
         </ul>
         <hr />
         <div class="subsection" id="pad-integer-to-length-2">
-          <span class="no_underline">pad-integer-to-length</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>pad-integer-to-length<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5309,8 +5217,7 @@
         </ul>
         <hr />
         <div class="subsection" id="pad-string-to-length-3">
-          <span class="no_underline">pad-string-to-length</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>pad-string-to-length<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5339,8 +5246,7 @@
         </ul>
         <hr />
         <div class="subsection" id="path-to-node-1">
-          <span class="no_underline">path-to-node</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>path-to-node<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5365,8 +5271,7 @@
         </ul>
         <hr />
         <div class="subsection" id="path-to-node-with-pos-1">
-          <span class="no_underline">path-to-node-with-pos</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>path-to-node-with-pos<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5391,8 +5296,7 @@
         </ul>
         <hr />
         <div class="subsection" id="precedes-not-ancestor-2">
-          <span class="no_underline">precedes-not-ancestor</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>precedes-not-ancestor<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5419,8 +5323,7 @@
         </ul>
         <hr />
         <div class="subsection" id="previous-day-1">
-          <span class="no_underline">previous-day</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>previous-day<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5445,8 +5348,7 @@
         </ul>
         <hr />
         <div class="subsection" id="remove-attributes-2">
-          <span class="no_underline">remove-attributes</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>remove-attributes<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5473,8 +5375,7 @@
         </ul>
         <hr />
         <div class="subsection" id="remove-attributes-deep-2">
-          <span class="no_underline">remove-attributes-deep</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>remove-attributes-deep<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5501,8 +5402,7 @@
         </ul>
         <hr />
         <div class="subsection" id="remove-elements-2">
-          <span class="no_underline">remove-elements</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>remove-elements<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5529,8 +5429,7 @@
         </ul>
         <hr />
         <div class="subsection" id="remove-elements-deep-2">
-          <span class="no_underline">remove-elements-deep</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>remove-elements-deep<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5557,8 +5456,7 @@
         </ul>
         <hr />
         <div class="subsection" id="remove-elements-not-contents-2">
-          <span class="no_underline">remove-elements-not-contents</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>remove-elements-not-contents<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5585,8 +5483,7 @@
         </ul>
         <hr />
         <div class="subsection" id="repeat-string-2">
-          <span class="no_underline">repeat-string</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>repeat-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5613,8 +5510,7 @@
         </ul>
         <hr />
         <div class="subsection" id="replace-beginning-3">
-          <span class="no_underline">replace-beginning</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>replace-beginning<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5643,8 +5539,7 @@
         </ul>
         <hr />
         <div class="subsection" id="replace-element-values-2">
-          <span class="no_underline">replace-element-values</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>replace-element-values<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5671,8 +5566,7 @@
         </ul>
         <hr />
         <div class="subsection" id="replace-first-3">
-          <span class="no_underline">replace-first</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>replace-first<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5701,8 +5595,7 @@
         </ul>
         <hr />
         <div class="subsection" id="replace-multi-3">
-          <span class="no_underline">replace-multi</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>replace-multi<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5731,8 +5624,7 @@
         </ul>
         <hr />
         <div class="subsection" id="reverse-string-1">
-          <span class="no_underline">reverse-string</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>reverse-string<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5757,8 +5649,7 @@
         </ul>
         <hr />
         <div class="subsection" id="right-trim-1">
-          <span class="no_underline">right-trim</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>right-trim<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5783,8 +5674,7 @@
         </ul>
         <hr />
         <div class="subsection" id="scheme-from-uri-1">
-          <span class="no_underline">scheme-from-uri</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>scheme-from-uri<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5809,8 +5699,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sequence-deep-equal-2">
-          <span class="no_underline">sequence-deep-equal</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sequence-deep-equal<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5837,8 +5726,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sequence-node-equal-2">
-          <span class="no_underline">sequence-node-equal</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sequence-node-equal<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5865,8 +5753,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sequence-node-equal-any-order-2">
-          <span class="no_underline">sequence-node-equal-any-order</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sequence-node-equal-any-order<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5893,8 +5780,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sequence-type-1">
-          <span class="no_underline">sequence-type</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sequence-type<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5919,8 +5805,7 @@
         </ul>
         <hr />
         <div class="subsection" id="siblings-1">
-          <span class="no_underline">siblings</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>siblings<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5945,8 +5830,7 @@
         </ul>
         <hr />
         <div class="subsection" id="siblings-same-name-1">
-          <span class="no_underline">siblings-same-name</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>siblings-same-name<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5971,8 +5855,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sort-1">
-          <span class="no_underline">sort</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sort<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -5997,8 +5880,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sort-as-numeric-1">
-          <span class="no_underline">sort-as-numeric</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sort-as-numeric<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6023,8 +5905,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sort-case-insensitive-1">
-          <span class="no_underline">sort-case-insensitive</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sort-case-insensitive<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6049,8 +5930,7 @@
         </ul>
         <hr />
         <div class="subsection" id="sort-document-order-1">
-          <span class="no_underline">sort-document-order</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>sort-document-order<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6075,8 +5955,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-after-if-contains-2">
-          <span class="no_underline">substring-after-if-contains</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-after-if-contains<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6103,8 +5982,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-after-last-2">
-          <span class="no_underline">substring-after-last</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-after-last<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6131,8 +6009,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-after-last-match-2">
-          <span class="no_underline">substring-after-last-match</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-after-last-match<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6159,8 +6036,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-after-match-2">
-          <span class="no_underline">substring-after-match</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-after-match<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6187,8 +6063,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-before-if-contains-2">
-          <span class="no_underline">substring-before-if-contains</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-before-if-contains<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6215,8 +6090,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-before-last-2">
-          <span class="no_underline">substring-before-last</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-before-last<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6243,8 +6117,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-before-last-match-2">
-          <span class="no_underline">substring-before-last-match</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-before-last-match<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6271,8 +6144,7 @@
         </ul>
         <hr />
         <div class="subsection" id="substring-before-match-2">
-          <span class="no_underline">substring-before-match</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>substring-before-match<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6299,8 +6171,7 @@
         </ul>
         <hr />
         <div class="subsection" id="time-3">
-          <span class="no_underline">time</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>time<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6329,8 +6200,7 @@
         </ul>
         <hr />
         <div class="subsection" id="timezone-from-duration-1">
-          <span class="no_underline">timezone-from-duration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>timezone-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6355,8 +6225,7 @@
         </ul>
         <hr />
         <div class="subsection" id="total-days-from-duration-1">
-          <span class="no_underline">total-days-from-duration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>total-days-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6381,8 +6250,7 @@
         </ul>
         <hr />
         <div class="subsection" id="total-hours-from-duration-1">
-          <span class="no_underline">total-hours-from-duration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>total-hours-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6407,8 +6275,7 @@
         </ul>
         <hr />
         <div class="subsection" id="total-minutes-from-duration-1">
-          <span class="no_underline">total-minutes-from-duration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>total-minutes-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6433,8 +6300,7 @@
         </ul>
         <hr />
         <div class="subsection" id="total-months-from-duration-1">
-          <span class="no_underline">total-months-from-duration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>total-months-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6459,8 +6325,7 @@
         </ul>
         <hr />
         <div class="subsection" id="total-seconds-from-duration-1">
-          <span class="no_underline">total-seconds-from-duration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>total-seconds-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6485,8 +6350,7 @@
         </ul>
         <hr />
         <div class="subsection" id="total-years-from-duration-1">
-          <span class="no_underline">total-years-from-duration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>total-years-from-duration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6511,8 +6375,7 @@
         </ul>
         <hr />
         <div class="subsection" id="trim-1">
-          <span class="no_underline">trim</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>trim<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6537,8 +6400,7 @@
         </ul>
         <hr />
         <div class="subsection" id="update-attributes-3">
-          <span class="no_underline">update-attributes</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>update-attributes<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6567,8 +6429,7 @@
         </ul>
         <hr />
         <div class="subsection" id="value-except-2">
-          <span class="no_underline">value-except</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>value-except<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6595,8 +6456,7 @@
         </ul>
         <hr />
         <div class="subsection" id="value-intersect-2">
-          <span class="no_underline">value-intersect</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>value-intersect<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6623,8 +6483,7 @@
         </ul>
         <hr />
         <div class="subsection" id="value-union-2">
-          <span class="no_underline">value-union</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>value-union<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6651,8 +6510,7 @@
         </ul>
         <hr />
         <div class="subsection" id="word-count-1">
-          <span class="no_underline">word-count</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>word-count<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6677,8 +6535,7 @@
         </ul>
         <hr />
         <div class="subsection" id="words-to-camel-case-1">
-          <span class="no_underline">words-to-camel-case</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>words-to-camel-case<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6703,8 +6560,7 @@
         </ul>
         <hr />
         <div class="subsection" id="wrap-values-in-elements-2">
-          <span class="no_underline">wrap-values-in-elements</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>wrap-values-in-elements<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6731,8 +6587,7 @@
         </ul>
         <hr />
         <div class="subsection" id="yearMonthDuration-2">
-          <span class="no_underline">yearMonthDuration</span>
-          <a href="#function_summary">
+          <span class="no_underline"></span>yearMonthDuration<a href="#function_summary">
             <img class="floatright" src="images/up.gif" alt="back to 'Function Summary'" title="back to 'Function Summary'" />
           </a>
         </div>
@@ -6760,9 +6615,8 @@
         <hr />
       </div>
     </div>
-
     <div style="clear:both;">
-      <div id="discuss" >
+      <div id="discuss">
         <div id="disqus_thread"></div>
         <script type="text/javascript">
             var disqus_developer = 1;
@@ -6780,11 +6634,12 @@
                 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
             })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+        <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span>
+        </a>
       </div>
     </div>
-
     <div id="footer">
       <div id="innerfooter">
         <p>Zorba is supported by the 

@@ -70,6 +70,19 @@ declare %ann:sequential function pxqdoc:delete-XML-dir(
   else ();
 };
 
+declare %private %ann:nondeterministic function pxqdoc:load-manifest(
+  $zorbaManifestPath as xs:string)
+{
+  try 
+  {
+    fn:parse-xml(file:read-text($zorbaManifestPath)) 
+  }
+  catch *
+  {
+    fn:error($err:UE004,fn:concat("The file <",$zorbaManifestPath,"> does not have the correct structure."))
+  }
+};
+
 (:~
  : This function generates the XQDoc XML for all the modules found in build/ZorbaManifest.xml
  :
@@ -84,24 +97,21 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
   (: Note: only the modules that are configured in the Zorba version you are using will be build :)                                      
   variable $xqdocXMLPath := concat($xqdocPath, file:directory-separator(), "xml");
   
+  (: create the XML folder if it does not exist already :)
+  file:create-directory($xqdocXMLPath);
+      
   if(not(file:is-file($zorbaManifestPath))) then
   {
     variable $message := fn:concat("The file <ZorbaManifest.xml> was not found: <", $zorbaManifestPath, ">. Suggestion: run 'cmake' in your build folder such that ZorbaManifest.xml is regenerated.");
     fn:error($err:UE004, $message);
   }
-  else 
-  try 
+  else  
   {
-    variable $manifestXML := fn:parse-xml(file:read-text($zorbaManifestPath));
-    
+    variable $manifestXML := pxqdoc:load-manifest($zorbaManifestPath);
     variable $moduleManifests := $manifestXML/zm:manifest/zm:module;
-    
     if(count($moduleManifests) eq xs:integer(0)) then ();
     else
     {
-      (: create the XML folder if it does not exist already :)
-      file:create-directory($xqdocXMLPath);
-      
       for $module in $moduleManifests
       (: note the module version is not supported because of a bug in the fetch for the module URI ending with / :)
       (:let $moduleURI := if(ends-with(data($module/zm:uri),'/')) then data($module/zm:uri) 
@@ -118,11 +128,7 @@ declare %ann:sequential function pxqdoc:generate-xqdoc-XML(
                    $xqdoc, 
                    $pxqdoc:serParamXml)
     };
-  }
-  catch *
-  {
-    fn:error($err:UE004,fn:concat("The file <",$zorbaManifestPath,"> does not have the correct structure."));
-  }
+  }  
 };
 
 (:~ 
