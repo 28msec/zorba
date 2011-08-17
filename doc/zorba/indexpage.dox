@@ -19,7 +19,9 @@
 <ul>
   <li>\ref mod_importing</li>
   <li>\ref mod_versioning</li>
-  <li>\ref mod_authoring</li>
+  <li>\ref modules_authoring</li>
+  <li>\ref modules_authoring_2</li>
+  <li>\ref modules_building_in</li>
   <li>\ref external_functions</li>
 </ul>
 

@@ -26,6 +26,9 @@ else ()
 You may import as many modules as you wish, so long as each is at a
 unique URI and is associated with a unique prefix.
 
+<a href="../../../../html/downloads.html">Please check here</a> for
+more information about importing \ref non_core_modules.
+
 Note: the URI specified to <tt>import module</tt> will be resolved by
 Zorba's URI resolution mechanism; often this will result in the module
 being loaded from the local filesystem, even though most module URIs
@@ -38,7 +41,7 @@ Alternately, you can load a specific file as a module as follows:
 import module namespace file = "http://expath.org/ns/file" at "file.xq";
 \endcode
 
-As discussed on \ref uriresolvers, this technique is usually best
+As discussed in \ref uriresolvers, this technique is usually best
 avoided in larger applications; however, it is useful for quick
 testing and debugging.
 

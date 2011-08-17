@@ -1,4 +1,4 @@
-/** \page mod_authoring Writing Your Own Modules
+/** \page modules_authoring Writing Your Own Modules
 
 Writing your own modules for Zorba is easy. This guide will cover
 writing a simple XQuery module; using Zorba's CMake-based build system
@@ -77,6 +77,10 @@ Zorba itself utilizes: CMake (http://www.cmake.org/). If you plan to
 write Zorba modules for use by other developers, we strongly recommend
 creating a CMake project so that you may easily integrate with Zorba
 and other modules.
+
+(Note: the majority of this section is also relevant if you are
+developing an entire stand-alone application which uses Zorba as a
+library.)
 
 Assuming that you have cmake installed (it is available in most Linux
 distributions, and installers are available for Windows and MacOS - it
@@ -210,7 +214,8 @@ cmake -DCMAKE_PREFIX_PATH=/path/to/zorbaroot ..
 \endcode
 
 "zorbaroot" is the root directory of a Zorba installation; it should
-contain <tt>bin/zorba</tt> among other files.
+contain <tt>bin/zorba</tt> (<tt>bin/zorba.exe</tt> on Windows) among
+other files.
 
 The default build configuration for CMake is "Unix Makefiles". If you
 are building using a different tool set, you must provide the
@@ -276,16 +281,10 @@ application can be moved around easily, and you won't need to edit all
 of your queries to change the paths to load your modules as you move
 from development to production.
 
- introducing versioning for
-our module; importing schemas; depending on other modules; writing
-external function implementations in C++; and creating test cases to
-ensure your module's functionality
 
-- maybe create modules_authoring_2.dox for all this?
+\ref modules_authoring_2
 
-- maybe move mod_author_simple to modules_top.dox?
-
-\ref mod_building_in
+\ref modules_building_in
 
 
 

@@ -48,7 +48,7 @@ To write queries using these modules, first read <b>\ref
 mod_importing</b>, and then <b>\ref mod_versioning</b>.
 
 You can also write your own modules to encapsulate features or for
-re-use by others. For information on this, see <b>\ref mod_authoring</b> and
+re-use by others. For information on this, see <b>\ref modules_authoring</b> and
 <b>\ref external_functions</b>.
 
 */

@@ -1,0 +1,336 @@
+/** \page modules_authoring_2 Module Authoring, Continued
+
+\section mod_author_declare Basics of DECLARE_ZORBA_MODULE()
+
+This simple module example uses two of the arguments to
+<tt>DECLARE_ZORBA_MODULE()</tt>, namely <tt>FILE</tt> and
+<tt>URI</tt>.  These are in fact the only required arguments. (By the
+way, all arguments may appear in any order.)
+
+The <tt>FILE</tt> argument takes a single value, which is the path to
+the <tt>.xq</tt> for the module. If this is a relative path, it will
+be resolved relative to the current source directory (that is, the
+directory containing <tt>CMakeLists.txt</tt>). It may also be an
+absolute path. It is not required to put double-quotes around the
+value unless the path contains space characters (this is true of all
+CMake values). However, if your path includes any CMake variable
+references, such as <tt>"${CMAKE_CURRENT_SOURCE_DIR}/mymod.xq"</tt>,
+then it is good practice to surround the value with double-quotes in
+case the variable ever contains space characters in future.
+
+The <tt>URI</tt> argument also takes a single value, which is the
+namespace URI of the module file. Note that it is very important that
+this URI matches the <tt>module namespace</tt> URI in the <tt>.xq</tt>
+file itself. Currently the CMake macros are not advanced enough to
+parse the XQuery file and verify that this is true.
+
+As URIs cannot contain space characters, it is not necessary to
+surround the value with double-quotes. However, you may do so if it
+makes the statement more readable for you.
+
+A note: the filename of your module (as passed to <tt>FILE</tt>) may
+be anything you like. It does not have to have anything in common with
+the namespace URI. Conventionally, it will be the final component of
+your URI with ".xq" appended, as in our example where the filename for
+the namespace URI <tt>http://www.zorba-xquery.com/mymod</tt> was
+<tt>mymod.xq</tt>. This is a good convention, because once the module
+is <i>installed</i> into the <tt>URI_PATH</tt> directory or elsewhere,
+this is the filename it will have. However, it is not required.
+
+\section mod_author_versioning Introducing Versioning
+
+Zorba extends XQuery by offering versioned access to modules (see \ref
+mod_versioning). Adding versioning to your modules is very easy.
+There are two steps: Adding the <tt>module-version</tt> declaration to
+your module source code; and passing the <tt>VERSION</tt> argument to
+<tt>DECLARE_ZORBA_MODULE</tt>.
+
+\subsection mod_auth_vers_option The module-version Option
+
+Zorba looks for an XQuery option to define the version of the module.
+XQuery options are identified by a QName. The specific QName Zorba
+looks for has the localname <tt>module-version</tt>, and is located in
+the namespace
+<tt>http://www.zorba-xquery.com/options/versioning</tt>.  Therefore,
+put the following two lines into your module, after the module
+declaration:
+
+\code
+declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare option ver:module-version "1.0";
+\endcode
+
+Note: As your module grows more complex, you may find that you need to
+separate the above two lines. The XQuery language requires that all
+<i>namespace declarations</i> and <i>import statements</i> (<tt>import
+module</tt> and <tt>import schema</tt>) must occur before any
+<i>variable</i>, <i>function</i>, or <i>option</i> declarations.  So
+the namespace declaration may end up being earlier in the file than
+the option declaration. This is fine.
+
+Also note that, while the XQuery language allows you to have your
+variable, function, and option declarations in any order, Zorba
+requires the <tt>module-version</tt> option to be declared before any
+variables or functions in order to function correctly.
+
+\subsection mod_auth_vers_declare The VERSION Argument to DECLARE_ZORBA_MODULE()
+
+Now you must also tell <tt>DECLARE_ZORBA_MODULE()</tt> the version of
+the module, so that it can copy it to the correct locations on the URI
+path. As with the <tt>URI</tt> argument, it is important that this
+matches the actual version as declared in the <tt>.xq</tt> file.
+
+\code
+DECLARE_ZORBA_MODULE
+  (FILE mymod.xq URI "http://www.zorba-xquery.com/mymod" VERSION 1.0)
+\endcode
+
+As with <tt>URI</tt>, version numbers cannot contain space characters,
+and therefore double-quotes surrounding the value are optional.
+
+That's it! Now query authors can import your module using the version
+fragment, as discussed in \ref mod_versioning.
+
+You may declare multiple versions of the same module (that is, with
+the same namespace URI), so that you can for instance maintain and
+contine to ship version 1.x of your module even after you have
+developed version 2.x. However, there is one limitation to
+<tt>DECLARE_ZORBA_MODULE()</tt> regarding this: You must ensure that
+you declare all versions of the same module in <i>decreasing version
+number order</i>, that is, starting with the highest version number
+and working backwards. So, for example, if you are shipping versions
+3.1, 2.4, and 1.6 of your module, you may have:
+
+\code
+DECLARE_ZORBA_MODULE
+  (FILE mymod-3.xq URI "http://www.zorba-xquery.com/mymod" VERSION 3.1)
+DECLARE_ZORBA_MODULE
+  (FILE mymod-2.xq URI "http://www.zorba-xquery.com/mymod" VERSION 2.4)
+DECLARE_ZORBA_MODULE
+  (FILE mymod-1.xq URI "http://www.zorba-xquery.com/mymod" VERSION 1.6)
+\endcode
+
+If you do this incorrectly (out of order), you will get an error when
+you invoke CMake, so it is not possible to accidentally do it wrong.
+
+(Note that the above example also demonstrates, as noted earlier, that
+the filename of your module <tt>.xq</tt> file need not directly
+correspond with the namespace URI. You may use different filenames for
+supporting different versions if you wish.)
+
+\section mod_author_schemas Adding schemas
+
+If you develop modules that make use of your own XML Schemas, then you
+should keep those schemas as part of your module project and install
+them. Zorba provides a macro <tt>DECLARE_ZORBA_SCHEMA()</tt> for this
+purpose, which works almost identically to
+<tt>DECLARE_ZORBA_MODULE()</tt>:
+
+\code
+DECLARE_ZORBA_SCHEMA
+  (URI "http://www.zorba-xquery.com/myschema" FILE "schema.xsd")
+\endcode
+
+The semantics and meanings of the <tt>URI</tt> and <tt>FILE</tt>
+arguments are the same.
+
+One important distinction is that Zorba does not currently support
+versioning of schemas, so there is no <tt>VERSION</tt> argument to
+<tt>DECLARE_ZORBA_SCHEMA()</tt>. We hope to add this functionality in
+a later release.
+
+\section mod_author_testing Writing Tests
+
+Now that you've written a module, it would be a great idea to write
+some test cases for it to ensure that later changes don't break any
+functionality. (In fact, if you subscribe to the Test-Driven
+Development philosophy, you probably want to write the tests first!)
+Zorba ships a testdriver program and macros to easily add XQuery-based
+tests to your project.
+
+\subsection mod_author_testing_basic Basic Testing
+
+The basic steps are:
+
+1. Create a test directory with two subdirectories named "Queries" and
+"ExpQueryResults". Here we assume that directory is named <tt>tests</tt>
+and is located at the top of your project.
+
+2. Inside <tt>Queries</tt>, create XQueries in files with the
+extension <tt>.xq</tt>.  You may use any directory structure you like
+inside this directory to organize your test queries.
+
+3. Inside <tt>ExpQueryResults</tt>, create expected results files for
+your queries with the extension <tt>.xml.res</tt>. The directory
+structure should be exactly the same as inside <tt>Queries</tt>. For
+instance, if you have a test in the file
+<tt>tests/Queries/feature-A/test-1.xq</tt>, then the expected results
+should be in <tt>tests/ExpQueryResults/feature-A/test-1.xml.res</tt>.
+
+4. In your <tt>CMakeLists.txt</tt>, add the following lines near the
+top - for example right after the <tt>PROJECT (...)</tt> line:
+
+\code
+ENABLE_TESTING ()
+INCLUDE (CTest)
+\endcode
+
+5. Finally, elsewhere in your <tt>CMakeLists.txt</tt>, add:
+
+\code
+ADD_TEST_DIRECTORY (tests)
+\endcode
+
+That's it! Now, from your build directory, after re-building your project,
+you can run all your tests by simply executing the command <tt>ctest</tt>.
+CTest is a testing framework that ships with CMake. It has a great many
+features, but the two most important command-line options are:
+
+1. <tt>ctest -R <pattern></tt> will execute only those tests whose
+name matches the given pattern. Since <tt>ADD_TEST_DIRECTORY()</tt>
+creates the test names based on the directory structure under
+<tt>Queries</tt>, this makes it easy to run a subset of your
+tests. For instance, <tt>ctest -R feature-A</tt> will run all the
+tests in the "feature-A" directory.
+
+2. <tt>ctest -V</tt> will show the output of the tests, rather than
+just a synopsis of the results. This is useful when debugging. Since
+the output of testdriver is fairly verbose, it is best to combine
+<tt>-V</tt> with a <tt>-R</tt> option that limits ctest to exactly one
+test; for example: <tt>ctest -V -R feature-A/test-1</tt>.
+
+\subsection mod_author_testing_advanced More Advanced Testing
+
+Zorba's testdriver has several other features - it is actually the
+same test program used by Zorba itself both for its own internal
+testing as well as running the W3C's XQuery Test Suite conformance
+suite, which has a number of complex requirements.
+
+testdriver activates additional features when a test query has a
+corresponding <tt>.spec</tt> file. This is a file in the same
+directory as an <tt>.xq</tt> test query, with the same file name but a
+<tt>.spec</tt> extension. For instance, for the test mentioned in step
+3 above, the spec file would be
+<tt>tests/Queries/feature-A/test-1.spec</tt>. We will briefly document
+the two most useful features here.
+
+1. Negative tests: If you would like to test error conditions, you can
+add a line such as the following to your .spec file:
+
+\code
+Error: http://www.w3.org/2005/xqt-errors:XPTY0004
+\endcode
+
+This tells testdriver to expect that the query will raise an error
+with the given QName. If any other error, or no error at all, is
+raised, then the test will fail. In this case, it is not necessary to
+have an expected results <tt>.xml.res</tt> file, as the expected
+result is instead the error.
+
+2. Binding external variables: If your query has external variables,
+you may bind them with lines in your .spec file such as the following:
+
+\code
+Args:
+-x
+var:=value
+\endcode
+
+(Unfortunately, it is necessary to put the above assignment exactly as
+shown, on three separate lines in the .spec file.)
+
+This will bind the string value "value" to the variable <tt>$var</tt>
+in the query.
+
+You may also bind an XML file as a document variable by using
+"=" instead of ":=" in the assignment:
+
+\code
+Args:
+-x
+var=$RBKT_SRC_DIR/input.xml
+\endcode
+
+This will parse the specified XML file and bind the resulting document
+node to the variable <tt>$var</tt>.
+
+The expression <tt>$RBKT_SRC_DIR</tt> will be replaced by the full
+path to the directory that was originally passed to
+<tt>ADD_TEST_DIRECTORY()</tt>. (The named <tt>$RBKT_SRC_DIR</tt> is a
+strange historical artifact of the early days of Zorba testing.)
+
+\section mod_author_cpp External Functions in C++
+
+The final advanced feature of <tt>DECLARE_ZORBA_MODULE</tt> is
+building a dynamic library for any external module functions that are
+implemented in C++. For information about actually writing these
+functions, see \ref external_functions. Here we describe how
+<tt>DECLARE_ZORBA_MODULE()</tt> automates the building and
+distributing of these libraries.
+
+If you have a module with external function declarations named
+<tt>module.xq</tt>, then you simply create a subdirectory named
+<tt>module.xq.src</tt> in the same directory as the <tt>.xq</tt>
+file. <tt>DECLARE_ZORBA_MODULE()</tt> will identify this directory and:
+
+1. Add build rules to your project that compiles all <tt>.cpp</tt>
+files in the <tt>.xq.src</tt> directory (or any subdirectories of that
+directory)
+
+2. Link them together into an appropriately-named shared library for
+your operating system
+
+3. Copy the resulting shared library into <tt>URI_PATH</tt> with the
+correct name and location, and
+
+4. Create an <tt>INSTALL</tt> rule so that the shared library will be
+installed correctly along with your project.
+
+If your code depends on other dynamic libraries, you can pass the full
+paths to those libraries to <tt>DECLARE_ZORBA_MODULE()</tt> using the
+<tt>LINK_LIBRARIES</tt> option. In most cases, you will have this full
+path available because you used CMake's <tt>FIND_PACKAGE()</tt>
+command to locate it. For example, here is a bit of the
+<tt>CMakeLists.txt</tt> for the non-core XSLT module, which depends on
+libxslt:
+
+\code
+FIND_PACKAGE (LibXslt)
+IF (LIBXSLT_FOUND)
+    INCLUDE_DIRECTORIES (${LIBXSLT_INCLUDE_DIR})
+    DECLARE_ZORBA_MODULE (FILE xslt.xq VERSION 1.0
+      URI "http://www.zorba-xquery.com/modules/languages/xslt"
+      LINK_LIBRARIES "${LIBXSLT_LIBRARIES}")
+ENDIF (LIBXSLT_FOUND)
+\endcode
+
+Note that while <tt>DECLARE_ZORBA_MODULE</tt> will set up all the
+above build rules for your source code, it is still your
+responsibility to ensure that those .cpp files can find the necessary
+header files by using CMake's <tt>INCLUDE_DIRECTORIES()</tt>
+command. Again, generally speaking the path to the appropriate include
+directory will be set in a CMake variable by the
+<tt>FIND_PACKAGE()</tt> command.
+
+\section mod_author_declare_synopsis Zorba Module CMake Macros: Summary
+
+For reference, here is the complete set of options for all macros
+provided by Zorba:
+
+\code
+DECLARE_ZORBA_MODULE (FILE <.xq filename>
+                      URI <module URI>
+                      [ VERSION <version number> ]
+                      [ LINK_LIBRARIES <library> [ <library> ...] ]
+                      [ TEST_ONLY ] )
+
+DECLARE_ZORBA_SCHEMA (FILE <.xq filename>
+                      URI <module URI>
+                      [ TEST_ONLY ] )
+
+ADD_TEST_DIRECTORY (<test directory>)
+
+DONE_DECLARING_ZORBA_URIS ()
+\endcode
+
+*/

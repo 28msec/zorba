@@ -5,7 +5,7 @@
 In XQuery, many resources are named by URIs - most notably schemas and
 modules, but also documents, full-text stopwords lists and thesauri,
 and so on. URIs are by convention often given with the
-<tt>http :</tt> scheme and the domain name of the provider. However,
+<tt>http:</tt> scheme and the domain name of the provider. However,
 in general it is not desirable to load the resource via HTTP, and in
 many cases the resource is not actually available at the named URI -
 in other words, they are <b>URIs</b> (Uniform Resource
@@ -253,8 +253,6 @@ Note that the memory ownership of the <code>URIMapper</code> instance
 remains with the client program; it must de-allocate it appropriately
 when the static context is no longer used.
 
-<i>TODO link to example code? How do I do that?</i>
-
 In your <code>mapURI()</code> implementation, <code>aUri</code> is the
 input URI. <code>aEntityData</code> is a pointer to additional
 information about the URI being resolved. As of Zorba 2.0, the only
@@ -314,9 +312,6 @@ Zorba includes two built-in URL Resolvers: One which handles
 <code>https:</code>, and <code>ftp:</code> URLs. These are implemented
 by using Zorba's <code>file</code> and <code>http-client</code>
 modules, respectively.
-
-<i>TODO links to modules' documentation; information about how to
-suppress those modules, after we're sure that actually works</i>
 
 To implement your own URL Resolver, subclass the C++ API class
 <code>URLResolver</code> and implement the <code>resolveURL()</code>
