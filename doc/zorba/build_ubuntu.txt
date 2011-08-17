@@ -30,6 +30,8 @@ cd imap-2007e
 make lnp EXTRACFLAGS="-I/usr/include/openssl -fPIC"
 (if something goes wrong, delete all, tar again and make again, don't trust make clean)
 
+Or another option is to install the c-client lib from ppa:juan457/zorba-dependencies
+see http://launchpad.net/~juan457/+archive/zorba-dependencies/+packages for details. 
 
 
 --Install ImageMagick (for image modules)
@@ -52,6 +54,15 @@ cd build
 cmake ../
 make
 sudo make install
+
+
+
+
+-- Install Jansson (for JSON module)  from ppa:petri/ppa
+
+sudo add-apt-repository ppa:petri/ppa
+sudo apt-get update
+sudo apt-get install libjansson4 libjansson-dev
 
 
 
