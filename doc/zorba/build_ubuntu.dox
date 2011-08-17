@@ -1,0 +1,95 @@
+/**
+
+\page build_ubuntu Build Zorba on Ubuntu Linux
+
+\section bu_instructions Instructions
+
+For building Zorba on Ubuntu 11.04 (gcc version 4.5.2) folow the next steps:
+
+Install tools
+\code
+sudo apt-get update
+sudo apt-get install subversion build-essential cmake
+\endcode
+
+Optional
+\code
+sudo apt-get install valgrind
+\endcode
+
+Required libraries
+\code
+sudo apt-get install libxml2-dev libxslt-dev libicu-dev libcurl4-openssl-dev libtidy-dev libxerces-c-dev iconv libzlib-dev
+\endcode
+
+
+\section bu_cclient Build C-Client library
+
+One option is to install the c-client lib from
+<a href=" http://launchpad.net/~juan457/+archive/zorba-dependencies/+packages">ppa:juan457/zorba-dependencies</a>.
+
+
+Or build it localy using the -I/usr/include/openssl -fPIC options:
+
+\code
+wget ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
+tar -xf imap-2007e.tar.gz
+sudo apt-get install libpam-dev
+cd imap-2007e
+make lnp EXTRACFLAGS="-I/usr/include/openssl -fPIC"
+\endcode
+
+Note: To try again in case of errors, delete all, untar and make again, don't trust make clean.
+
+
+\section bu_imagemagick Install ImageMagick (for image modules)
+
+\code
+sudo apt-get install imagemagick libmagick++-dev
+\endcode
+
+
+
+\section bu_geos Install GEOS (for geo module)
+
+\code
+sudo apt-get install libgeos-dev
+\endcode
+
+Or if the version is older than 3.2.2 then compile manually:
+
+\code
+sudo apt-get remove libgeos-dev
+svn checkout http://svn.osgeo.org/geos/trunk geos-svn
+cd geos-svn
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+\endcode
+
+
+
+\section bu_jansson Install Jansson (for JSON module)  from ppa:petri/ppa
+
+\code
+sudo add-apt-repository ppa:petri/ppa
+sudo apt-get update
+sudo apt-get install libjansson4 libjansson-dev
+\endcode
+
+
+
+\section bu_build_zorba Get and build Zorba
+
+\code
+svn co https://zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba
+cd zorba
+mkdir debug
+cd debug
+cmake -DCMAKE_BUILD_TYPE="Debug" -DCCLIENT_INCLUDE="~/imap-2007e/c-client" -DCCLIENT_LIBRARY="~/imap-227e/c-client/c-client.a" ../
+make
+\endcode
+
+**/

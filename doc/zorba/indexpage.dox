@@ -4,6 +4,7 @@
 
 <b>\ref build </b>
 <ul>
+  <li>\ref build_ubuntu </li>
   <li>\ref php_ubuntu_tutorial </li>
   <li>\ref php_windows_tutorial </li>
   <li>\ref python_windows_tutorial </li>
