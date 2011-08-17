@@ -12,4 +12,3 @@ dml:delete-nodes(dml:collection(xs:QName("conf:xquery")));
 ddl:delete(xs:QName("conf:xquery"));
 dml:delete-nodes(dml:collection(xs:QName("conf:xqueryx")));                           
 ddl:delete(xs:QName("conf:xqueryx"));
-

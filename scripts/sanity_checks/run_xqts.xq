@@ -8,8 +8,8 @@ dml:delete-nodes(dml:collection(xs:QName("conf:submissionXqueryX")));
 ddl:delete(xs:QName("conf:submissionXqueryX"));
 dml:delete-nodes(dml:collection(xs:QName("conf:submissionXquery")));                           
 ddl:delete(xs:QName("conf:submissionXquery"));
-dml:delete-nodes(dml:collection(xs:QName("conf:xquery")));                           
-ddl:delete(xs:QName("conf:xquery"));
-dml:delete-nodes(dml:collection(xs:QName("conf:xqueryx")));                           
-ddl:delete(xs:QName("conf:xqueryx"));
+dml:delete-nodes(dml:collection(xs:QName("conf:failingXQuery")));                           
+ddl:delete(xs:QName("conf:failingXQuery"));
+dml:delete-nodes(dml:collection(xs:QName("conf:failingXQueryX")));                           
+ddl:delete(xs:QName("conf:failingXQueryX"));
 

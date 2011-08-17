@@ -14,60 +14,78 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace xqCat = "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare namespace xqRes = "http://www.w3.org/2005/02/query-test-XQTSResult";
 
-declare variable $conf:submissionXqueryX as xs:QName := xs:QName("conf:submissionXqueryX");
+declare %private variable $conf:submissionXqueryX as xs:QName := xs:QName("conf:submissionXqueryX");
 declare collection conf:submissionXqueryX as node()*;
 
-declare variable $conf:submissionXquery as xs:QName := xs:QName("conf:submissionXquery");
+declare %private variable $conf:submissionXquery as xs:QName := xs:QName("conf:submissionXquery");
 declare collection conf:submissionXquery as node()*;
 
-declare variable $conf:xquery as xs:QName := xs:QName("conf:xquery");
-declare collection conf:xquery as node()*;
+declare %private variable $conf:failingXQuery as xs:QName := xs:QName("conf:failingXQuery");
+declare collection conf:failingXQuery as node()*;
 
-declare variable $conf:xqueryx as xs:QName := xs:QName("conf:xqueryx");
-declare collection conf:xqueryx as node()*;
+declare %private variable $conf:failingXQueryX as xs:QName := xs:QName("conf:failingXQueryX");
+declare collection conf:failingXQueryX as node()*;
 
-declare variable $conf:serParamXhtml :=
+declare %private variable $conf:serParamXml :=
+  <output:serialization-parameters>
+    <output:method value="xml"/>
+    <output:indent value="yes"/>
+  </output:serialization-parameters>;
+  
+declare %private variable $conf:serParamXhtml :=
   <output:serialization-parameters>
     <output:method value="xhtml"/>
     <output:indent value="yes"/>
   </output:serialization-parameters>;
   
-declare variable $conf:XQTS_PATH  as xs:string := "/tmp/XQTS_current";
-declare variable $conf:XQTS_submission as xs:string := 
-        "/tmp/XQTS_current/ReportingResults/zorba_11511_xqts_current_xquery_1_0.xml";
-declare variable $conf:XQTSX_submission as xs:string := 
-        "/tmp/XQTS_current/ReportingResults/zorba_11511_xqtsx_current_xquery_1_0.xml";
+declare %private variable $conf:XQTS_PATH  as xs:string := "/tmp/XQTS_current";
+declare %private variable $conf:XQTS_submission as xs:string := 
+        "/tmp/XQTS_current/ReportingResults/zorba_11674_xqts_current_xquery_1_0.xml";
+declare %private variable $conf:XQTSX_submission as xs:string := 
+        "/tmp/XQTS_current/ReportingResults/zorba_11674_xqtsx_current_xquery_1_0.xml";
 
-declare variable $conf:XQuery   as xs:string := "XQuery";
-declare variable $conf:XQueryX  as xs:string := "XQueryX";
+declare %private variable $conf:XQuery   as xs:string := "XQuery";
+declare %private variable $conf:XQueryX  as xs:string := "XQueryX";
 
-declare function conf:count-available-tests($node) as xs:integer?
+declare %private variable $conf:features := <features/>;
+
+declare %private %ann:sequential function conf:collect-feature(
+  $name as xs:string, 
+  $supported as xs:string) 
 {
-  if(count($node//xqCat:test-group) eq xs:integer(0)) then 
+  insert node <feature name ="{$name}" supported="{$supported}" /> as last into $conf:features;
+};
+
+declare function conf:count-available-tests($node, $isDetailed as xs:boolean) as xs:integer?
+{
+  if(not($isDetailed) or
+    ($isDetailed and (count($node//xqCat:test-group) eq xs:integer(0)))) then
     count($node//xqCat:test-case)
   else
     ()
 };
 
-declare function conf:failing-tests($node, $no_spaces as xs:integer)
+declare function conf:failing-tests($node, $no_spaces as xs:integer, $isDetailed as xs:boolean)
 {
   let $padding := functx:repeat-string(codepoints-to-string(160), $no_spaces)
   return
+    if(not($isDetailed) or 
+      ($isDetailed and (count($node//xqCat:test-group) eq xs:integer(0)))) then
     (: if there are no sub-categories and there are tests in this category :)
-    if(count($node//xqCat:test-group) eq xs:integer(0)) then 
     {
       (: list all tests that are not passing in either XQuery or XQueryX :)
       for $testCase in $node//xqCat:test-case
       let $testCaseName := data($testCase/@name)
-      let $xqTmp  := data(dml:collection( xs:QName("conf:xquery"))[@name = $testCaseName]/@value)
+      let $xqTmp  := xs:string(dml:collection(xs:QName("conf:failingXQuery"))[@name = $testCaseName]/@value)
       let $xqStatus := if(exists($xqTmp)) then $xqTmp else "pass"
-      let $xqxTmp := data(dml:collection(xs:QName("conf:xqueryx"))[@name = $testCaseName]/@value)
-      let $xqxStatus := if(exists($xqxTmp)) then $xqTmp else "pass"
-      where (exists(dml:collection( xs:QName("conf:xquery"))[@name = $testCaseName]) or
-             exists(dml:collection( xs:QName("conf:xqueryx"))[@name = $testCaseName]))          
+
+      let $xqxTmp := xs:string(dml:collection(xs:QName("conf:failingXQueryX"))[@name = $testCaseName]/@value)
+      let $xqxStatus := if(exists($xqxTmp)) then $xqxTmp else "pass"
+      where (exists(dml:collection( xs:QName("conf:failingXQuery"))[@name = $testCaseName]/@value) or
+             exists(dml:collection( xs:QName("conf:failingXQueryX"))[@name = $testCaseName]/@value))
       return
-        if(($xqStatus = "pass") and ($xqStatus = "pass")) then ()
-        else  
+        if(($xqStatus = "pass") and ($xqxStatus = "pass")) then ()
+        else
           <tr bgcolor="lightcyan">
             <td >{$padding}
               <a target="_blank" href="{concat('http://dev.w3.org/cvsweb/~checkout~/2006/xquery-test-suite/TestSuiteStagingArea/Queries/XQuery/',data($testCase/@FilePath),$testCaseName,'.xq')}">{$testCaseName}</a>
@@ -88,11 +106,29 @@ declare function conf:create-tr(
 {
   let $padding := functx:repeat-string(codepoints-to-string(160), $no_spaces)
   return
-    for $test-group in $nodes  
-    let $failingTests := conf:failing-tests($test-group, ($no_spaces + xs:integer(2)))
-    let $total := conf:count-available-tests($test-group)
-    let $passingXQ := $total - count($failingTests//td[@class = "xq"])
-    let $passingXQX := $total - count($failingTests//td[@class = "xqx"])
+    for $test-group in $nodes
+    let $failingTests := conf:failing-tests($test-group, ($no_spaces + xs:integer(2)), fn:true())
+    
+    let $total := conf:count-available-tests($test-group, fn:true())
+    let $passingXQ := $total - count(for $test in $failingTests//td[@class = "xq"] 
+                                     where (not($test/text()='pass') and 
+                                           not($test/text()='not applicable') and 
+                                           not($test/text()='no result'))
+                                     return $test)
+    let $notApplXQ := count(for $test in $failingTests//td[@class = "xq"]
+                            where  ($test/text()='not applicable')
+                            return $test)
+    let $sumXQ := $passingXQ + $notApplXQ
+                            
+    let $passingXQX := $total - count(for $test in $failingTests//td[@class = "xqx"] 
+                                     where (not($test/text()='pass') and
+                                           not($test/text()='not applicable') and 
+                                           not($test/text()='no result') )
+                                     return $test)
+    let $notApplXQX := count(for $test in $failingTests//td[@class = "xqx"]
+                            where  ($test/text()='not applicable')
+                            return $test)
+    let $sumXQX := $passingXQX + $notApplXQX
     let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
     return
     (
@@ -100,22 +136,81 @@ declare function conf:create-tr(
       <tr bgcolor="lightcyan">
         <td bgcolor="{if(not(exists($total))) then 'paleturquoise' else 'lightcyan'}">
           {concat($padding,data($test-group/xqCat:GroupInfo/xqCat:title))}</td>
-        <td bgcolor="{if(not(exists($total))) then 'paleturquoise'
-                      else if($passingXQ = $total) then 'mediumseagreen' 
-                      else if($isStaticTyping) then 'white' else 'coral'}">
+        <td align="center" bgcolor="{if(not(exists($total))) then 'paleturquoise'
+                      else if($sumXQ = $total) then 'mediumseagreen' 
+                      else if($isStaticTyping) then 'white'
+                      else if(($sumXQ div $total)*100 > 25) then 'palegreen' else 'coral'}">
           {if(exists($total) and ($total ne xs:integer(0))) 
-           then concat($passingXQ,"/",$total) else ()}</td>
-        <td bgcolor="{if(not(exists($total))) then 'paleturquoise' 
-                      else if($passingXQX = $total) then 'mediumseagreen' 
-                      else if($isStaticTyping) then 'white' else 'coral'}">
+           then concat($sumXQ,"/",$total) else ()}</td>
+        <td align="center" bgcolor="{if(not(exists($total))) then 'paleturquoise' 
+                      else if($sumXQX = $total) then 'mediumseagreen'
+                      else if($isStaticTyping) then 'white' 
+                      else if(($sumXQX div $total)*100 > 25) then 'palegreen' else 'coral'}">
           {if(exists($total) and ($total ne xs:integer(0))) 
-           then concat($passingXQX,"/",$total) else ()}</td>
+           then concat($sumXQX,"/",$total) else ()}</td>
       </tr> else (),
-      if($isStaticTyping) then ()
-      else $failingTests,
       conf:create-tr($test-group/xqCat:test-group, 
                      ($no_spaces + xs:integer(2)),
                      $isStaticTyping)
+    )
+};
+
+declare function conf:create-tr-summary(
+  $nodes, 
+  $no_spaces as xs:integer,
+  $StaticTyping as xs:boolean)
+{
+  let $padding := functx:repeat-string(codepoints-to-string(160), $no_spaces)
+  return
+    for $test-group in $nodes
+    let $failingTests := conf:failing-tests($test-group, ($no_spaces + xs:integer(2)), fn:false())
+    let $total := conf:count-available-tests($test-group, fn:false())
+    let $passingXQ := $total - count(for $test in $failingTests//td[@class = "xq"] 
+                                     where (not($test/text()='pass') and 
+                                           not($test/text()='not applicable') and 
+                                           not($test/text()='no result')) 
+                                     return $test)
+    let $notApplXQ := count(for $test in $failingTests//td[@class = "xq"]
+                            where  ($test/text()='not applicable')
+                            return $test)
+    let $sumXQ := $passingXQ + $notApplXQ
+                            
+    let $passingXQX := $total - count(for $test in $failingTests//td[@class = "xqx"] 
+                                     where (not($test/text()='pass') and
+                                           not($test/text()='not applicable') and 
+                                           not($test/text()='no result') )
+                                     return $test)
+    let $notApplXQX := count(for $test in $failingTests//td[@class = "xqx"]
+                            where  ($test/text()='not applicable')
+                            return $test)
+    let $sumXQX := $passingXQX + $notApplXQX
+    let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
+    return
+    (
+     if(count($test-group//xqCat:test-case) ne xs:integer(0)) then
+      <tr bgcolor="lightcyan">
+        <td bgcolor="{if(not(exists($total))) then 'paleturquoise' else 'lightcyan'}">
+          {concat($padding,data($test-group/xqCat:GroupInfo/xqCat:title))}</td>
+        <td align="center" bgcolor="{if(not(exists($total))) then 'paleturquoise'
+                      else if($sumXQ = $total) then 'mediumseagreen'
+                      else if($isStaticTyping) then 'white'
+                      else if(($sumXQ div $total)*100 > 25) then 'palegreen' else 'coral'}">
+          {if(exists($total) and ($total ne xs:integer(0))) 
+           then concat($sumXQ,"/",$total) else ()}<br />
+           {if(data($test-group/@name) = "MinimalConformance") then concat(round(($sumXQ div $total)*100),'%') else ()}</td>
+        <td  align="center" bgcolor="{if(not(exists($total))) then 'paleturquoise' 
+                      else if($sumXQX = $total) then 'mediumseagreen'
+                      else if($isStaticTyping) then 'white'
+                      else if(($sumXQX div $total)*100 > 25) then 'palegreen' else 'coral'}">
+          {if(exists($total) and ($total ne xs:integer(0))) 
+           then concat($sumXQX,"/",$total) else ()}<br />
+           {if(data($test-group/@name) = "MinimalConformance") then concat(round(($sumXQX div $total)*100),'%') else ()}</td>
+      </tr> else (),
+      if(data($test-group/@name) = "Optional") then
+      conf:create-tr-summary($test-group/xqCat:test-group, 
+                            ($no_spaces + xs:integer(2)),
+                            $isStaticTyping)
+      else ()
     )
 };
 
@@ -125,75 +220,82 @@ declare %ann:nondeterministic %ann:sequential function conf:create-collection($s
   
   if($syntax eq $conf:XQuery) then
   {
-    ddl:create($conf:xquery);
- 
+    ddl:create($conf:failingXQuery);
+
     variable $noTestsSubmissionXQuery := count(dml:collection(xs:QName("conf:submissionXquery")));
     
-    if($noTestsCatalog ne $noTestsSubmissionXQuery) then
+    if($noTestsCatalog > $noTestsSubmissionXQuery) then
     {
       variable $untested as xs:integer := trace(($noTestsCatalog - $noTestsSubmissionXQuery),
                                           "tests that are not reported in the XQuery submission file and have to be identified...");
-      (: there are tests for wich we do not report anything :)
+      (: there are tests for which we do not report anything :)
       
       for $testCatalog in $XQTS_catalog//*:test-case
-      where empty(dml:collection(xs:QName("conf:submissionXquery"))/xqRes:test-case[@name = data($testCatalog/@name)])
+      where empty(dml:collection(xs:QName("conf:submissionXquery"))[@name = data($testCatalog/@name)])
       return
-        dml:apply-insert-nodes($conf:xquery, <test name="{data($testCatalog/@name)}" value="no result"/>);
+        dml:apply-insert-nodes($conf:failingXQuery, <test name="{data($testCatalog/@name)}" value="no result"/>);
         
     }
     else ();
     
     for $testFailed in dml:collection(xs:QName("conf:submissionXquery"))
+    let $name := data($testFailed/@name)
+    let $status := data($testFailed/@result)
     let $comment := data($testFailed/@comment)
-    where not(data($testFailed/@result) = "pass")
+    where (not($status = "pass") and not($status = "not applicable"))
     return
       if(exists($comment)) then
-        dml:apply-insert-nodes($conf:xquery, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}" comment="{$comment}"/>);
+        dml:apply-insert-nodes($conf:failingXQuery, <test name="{$name}" value="{$status}" comment="{$comment}"/>);
       else
-        dml:apply-insert-nodes($conf:xquery, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}"/>);
+        dml:apply-insert-nodes($conf:failingXQuery, <test name="{$name}" value="{$status}"/>);
   }
   else if($syntax eq $conf:XQueryX) then
   {
-    ddl:create($conf:xqueryx);
+    ddl:create($conf:failingXQueryX);
     
     variable $noTestsSubmissionXQueryX := count(dml:collection(xs:QName("conf:submissionXqueryX")));
-
-    if($noTestsCatalog ne $noTestsSubmissionXQueryX) then
+    if($noTestsCatalog > $noTestsSubmissionXQueryX) then
     {
       variable $untested as xs:integer := trace(($noTestsCatalog - $noTestsSubmissionXQueryX),
                                           "tests that are not reported in the XQueryX submission file and have to be identified..."); 
-      (: there are tests for wich we do not report anything :)
-      
+      (: there are tests for which we do not report anything :)      
       for $testCatalog in $XQTS_catalog//*:test-case
-      where empty(dml:collection(xs:QName("conf:submissionXqueryX"))/xqRes:test-case[@name = data($testCatalog/@name)])
+      where empty(dml:collection(xs:QName("conf:submissionXqueryX"))[@name = data($testCatalog/@name)])
       return
-        dml:apply-insert-nodes($conf:xqueryx, <test name="{data($testCatalog/@name)}" value="no result"/>);
-      
+        dml:apply-insert-nodes($conf:failingXQueryX, <test name="{data($testCatalog/@name)}" value="no result"/>);
     }
     else ();
     
     for $testFailed in dml:collection(xs:QName("conf:submissionXqueryX"))
+    let $name := data($testFailed/@name)
+    let $status := data($testFailed/@result)
     let $comment := data($testFailed/@comment)
-    where not(data($testFailed/@result) = "pass")
-    return 
+    where (not($status = "pass") and not($status = "not applicable"))
+    return
       if(exists($comment)) then
-        dml:apply-insert-nodes($conf:xqueryx, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}" comment="{$comment}"/>);
+        dml:apply-insert-nodes($conf:failingXQueryX, <test name="{$name}" value="{$status}" comment="{$comment}"/>);
       else
-        dml:apply-insert-nodes($conf:xqueryx, <test name="{data($testFailed/@name)}" value="{data($testFailed/@result)}"/>);
+        dml:apply-insert-nodes($conf:failingXQueryX, <test name="{$name}" value="{$status}"/>);
   }
   else
   ();
 };
 
-declare %ann:nondeterministic %ann:sequential function conf:create-collection-submissions()
+declare %ann:sequential function conf:create-collection-submissions()
 {
   ddl:create($conf:submissionXquery);
   
-  let $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTS_submission)))
+  variable $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTS_submission)));
+
+  for $test in $doc/xqRes:test-suite-result//xqRes:test-case
+  return dml:apply-insert-nodes($conf:submissionXquery, $test);
+
+  (: collect features :)
+  for $feature in $doc/xqRes:test-suite-result/xqRes:implementation/xqRes:features/xqRes:feature
   return
-    for $test in $doc/xqRes:test-suite-result//xqRes:test-case
-    return dml:apply-insert-nodes($conf:submissionXquery, $test);
-    
+    conf:collect-feature(data($feature/@name),
+                         data($feature/@supported));
+
   ddl:create($conf:submissionXqueryX);
   
   let $doc := fn:parse-xml(file:read-text(file:resolve-path($conf:XQTSX_submission)))
@@ -205,15 +307,48 @@ declare %ann:nondeterministic %ann:sequential function conf:create-collection-su
 declare function conf:generate-detailed-table($XQTS_catalog)
 {
   <table bgcolor="lightcyan">
-    <tr><td>Feature</td><td>XQuery</td><td>XQueryX</td></tr>
+    <tr><td>W3C XQuery 1.0 features</td><td>XQuery</td><td>XQueryX</td></tr>
     <tr><td></td><td></td><td></td></tr>
     {
       for $test-group in $XQTS_catalog/xqCat:test-suite/xqCat:test-group
       (: we disable Static Typing explicitelly because there is no clear rule to connect the features with test-groups description :)
       let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
-      return conf:create-tr( $test-group, 
-                              xs:integer(0),
-                              $isStaticTyping)
+      return conf:create-tr($test-group,
+                            xs:integer(0),
+                            $isStaticTyping)
+    }
+  </table>
+};
+
+declare function conf:generate-summary-table($XQTS_catalog)
+{
+  <table bgcolor="lightcyan">
+    <tr><td>W3C XQuery 1.0 features</td><td>XQuery</td><td>XQueryX</td></tr>
+    <tr><td></td><td></td><td></td></tr>
+    {
+      for $test-group in $XQTS_catalog/xqCat:test-suite/xqCat:test-group
+      (: we disable Static Typing explicitelly because there is no clear rule to connect the features with test-groups description :)
+      let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
+      return conf:create-tr-summary($test-group,
+                                    xs:integer(0),
+                                    $isStaticTyping)
+    }
+  </table>
+};
+
+declare function conf:generate-features-table()
+{
+  <table bgcolor="lightcyan">
+    <tr><td>W3C XQuery 1.0 feature</td><td>supported</td></tr>
+    <tr><td></td><td></td></tr>
+    {
+      for $feature in $conf:features/feature
+      let $isSupported := xs:boolean(data($feature/@supported))
+      return
+      <tr>
+        <td>{data($feature/@name)}</td>
+        <td bgcolor="{if($isSupported) then 'mediumseagreen' else 'white'}">{data($feature/@supported)}</td>
+      </tr>
     }
   </table>
 };
@@ -226,19 +361,40 @@ declare %ann:sequential function conf:test()
                                     concat('"file://',$conf:XQTS_PATH,file:directory-separator(),"cat",file:directory-separator()));
                                     
   variable $XQTS_catalog := fn:parse-xml($XQTS_catalog_text);
+
+  (: remove the XQuery11 from the reports :)
+  delete node $XQTS_catalog/xqCat:test-suite/xqCat:test-group[@name="XQuery11"];
   
+  (:file:write(concat($conf:XQTS_PATH,file:directory-separator(),"XQTSCatalogSoso.xml"),
+              $XQTS_catalog,
+              $conf:serParamXml);:)
+
   conf:create-collection($conf:XQuery, $XQTS_catalog);
   conf:create-collection($conf:XQueryX, $XQTS_catalog);
-  
-  variable $pageName := "conformanceXQTS";
 
-  variable $path := fn:concat($conf:XQTS_PATH, file:directory-separator(), $pageName, ".dox");
-  
-  file:write(trace($path,"output file path"),
-             ("/** \page conformanceXQTS  Conformance W3C XQuery 1.0
+  variable $pageNameDetailed := "conformanceXQTS";
+  variable $pathDetailed := fn:concat($conf:XQTS_PATH, file:directory-separator(), $pageNameDetailed, ".dox");
+
+  file:write(trace($pathDetailed,"output detailed file path"),
+             ("/** \page conformanceXQTS  Detailed W3C XQuery 1.0 conformance
+This is a detailed report of all XQuery 1.0 tests passing and failing. 
 
 ",
              {conf:generate-detailed-table($XQTS_catalog)}
+,"
+*/"), 
+             $conf:serParamXhtml);
+
+  variable $pageNameSummary := "conformanceXQTSSummary";
+  variable $pathSummary := fn:concat($conf:XQTS_PATH, file:directory-separator(), $pageNameSummary, ".dox");
+  file:write(trace($pathSummary,"output summary file path"),
+             ("/** \page conformanceXQTSSummary  Summary W3C XQuery 1.0 conformance
+This is a summary report of all XQuery 1.0 tests passing and failing. 
+
+",
+             {conf:generate-features-table()},"
+",
+             {conf:generate-summary-table($XQTS_catalog)}
 ,"
 */"), 
              $conf:serParamXhtml);

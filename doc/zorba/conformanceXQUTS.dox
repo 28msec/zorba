@@ -1,8 +1,8 @@
-/** \page conformanceXQUTS  Conformance W3C XQuery Update Facility 1.0
+/** \page conformanceXQUTS  Detailed W3C XQuery Update Facility 1.0 conformance
 
 <table bgcolor="lightcyan">
   <tr>
-    <td>Feature</td>
+    <td>W3C XQuery Update Facility 1.0 features</td>
     <td>XQuery</td>
     <td>XQueryX</td>
   </tr>
@@ -13,366 +13,318 @@
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Minimal Conformance</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  Extensions to the Prolog</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Variable Declaration</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Function Declaration</td>
-    <td bgcolor="mediumseagreen">21/21</td>
-    <td bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  New Kinds of Expressions</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Insert Expressions</td>
-    <td bgcolor="mediumseagreen">100/100</td>
-    <td bgcolor="mediumseagreen">100/100</td>
+    <td align="center" bgcolor="mediumseagreen">100/100</td>
+    <td align="center" bgcolor="mediumseagreen">100/100</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Delete Expressions</td>
-    <td bgcolor="mediumseagreen">30/30</td>
-    <td bgcolor="mediumseagreen">30/30</td>
+    <td align="center" bgcolor="mediumseagreen">30/30</td>
+    <td align="center" bgcolor="mediumseagreen">30/30</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">    Replace Expressions</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      Replacing a Node</td>
-    <td bgcolor="mediumseagreen">22/22</td>
-    <td bgcolor="mediumseagreen">22/22</td>
+    <td align="center" bgcolor="mediumseagreen">22/22</td>
+    <td align="center" bgcolor="mediumseagreen">22/22</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      Replacing the Value of a Node</td>
-    <td bgcolor="mediumseagreen">33/33</td>
-    <td bgcolor="mediumseagreen">33/33</td>
+    <td align="center" bgcolor="mediumseagreen">33/33</td>
+    <td align="center" bgcolor="mediumseagreen">33/33</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Rename Expressions</td>
-    <td bgcolor="mediumseagreen">44/44</td>
-    <td bgcolor="mediumseagreen">44/44</td>
+    <td align="center" bgcolor="mediumseagreen">44/44</td>
+    <td align="center" bgcolor="mediumseagreen">44/44</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Transform Expressions</td>
-    <td bgcolor="mediumseagreen">58/58</td>
-    <td bgcolor="mediumseagreen">58/58</td>
+    <td align="center" bgcolor="mediumseagreen">58/58</td>
+    <td align="center" bgcolor="mediumseagreen">58/58</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Compatibility of Updating Expressions</td>
-    <td bgcolor="mediumseagreen">30/30</td>
-    <td bgcolor="mediumseagreen">30/30</td>
+    <td align="center" bgcolor="mediumseagreen">30/30</td>
+    <td align="center" bgcolor="mediumseagreen">30/30</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  Extension to Existing Expressions</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    FLWOR Expressions</td>
-    <td bgcolor="mediumseagreen">25/25</td>
-    <td bgcolor="mediumseagreen">25/25</td>
+    <td align="center" bgcolor="mediumseagreen">25/25</td>
+    <td align="center" bgcolor="mediumseagreen">25/25</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Typeswitch Expressions</td>
-    <td bgcolor="mediumseagreen">38/38</td>
-    <td bgcolor="mediumseagreen">38/38</td>
+    <td align="center" bgcolor="mediumseagreen">38/38</td>
+    <td align="center" bgcolor="mediumseagreen">38/38</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Conditional Expressions</td>
-    <td bgcolor="mediumseagreen">38/38</td>
-    <td bgcolor="mediumseagreen">38/38</td>
+    <td align="center" bgcolor="mediumseagreen">38/38</td>
+    <td align="center" bgcolor="mediumseagreen">38/38</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Comma Expressions</td>
-    <td bgcolor="mediumseagreen">38/38</td>
-    <td bgcolor="mediumseagreen">38/38</td>
+    <td align="center" bgcolor="mediumseagreen">38/38</td>
+    <td align="center" bgcolor="mediumseagreen">38/38</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Parenthesized Expression</td>
-    <td bgcolor="mediumseagreen">3/3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Function Call</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Other Expressions</td>
-    <td bgcolor="mediumseagreen">32/32</td>
-    <td bgcolor="mediumseagreen">32/32</td>
+    <td align="center" bgcolor="mediumseagreen">32/32</td>
+    <td align="center" bgcolor="mediumseagreen">32/32</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  Extensions to Built-in Function Library</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">    fn:put</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      fn:put() applied to document nodes</td>
-    <td bgcolor="mediumseagreen">8/8</td>
-    <td bgcolor="mediumseagreen">8/8</td>
+    <td align="center" bgcolor="mediumseagreen">8/8</td>
+    <td align="center" bgcolor="mediumseagreen">8/8</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      fn:put() applied to element nodes</td>
-    <td bgcolor="mediumseagreen">3/3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  XML Query Update Operations</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">    XML Query Update Primitives</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      Data model errors on changing attributes</td>
-    <td bgcolor="mediumseagreen">17/17</td>
-    <td bgcolor="mediumseagreen">17/17</td>
+    <td align="center" bgcolor="mediumseagreen">17/17</td>
+    <td align="center" bgcolor="mediumseagreen">17/17</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      Namespace binding conflicts on attribute updates</td>
-    <td bgcolor="mediumseagreen">19/19</td>
-    <td bgcolor="mediumseagreen">19/19</td>
+    <td align="center" bgcolor="mediumseagreen">19/19</td>
+    <td align="center" bgcolor="mediumseagreen">19/19</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">    XQuery Update Routines</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      upd:mergeUpdates</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      upd:applyUpdates</td>
-    <td bgcolor="mediumseagreen">21/21</td>
-    <td bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      upd:setToUntyped</td>
-    <td bgcolor="mediumseagreen">10/10</td>
-    <td bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="mediumseagreen">10/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      upd:propagateNamespace</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Additional Typing</td>
-    <td bgcolor="mediumseagreen">60/60</td>
-    <td bgcolor="mediumseagreen">60/60</td>
+    <td align="center" bgcolor="mediumseagreen">60/60</td>
+    <td align="center" bgcolor="mediumseagreen">60/60</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Other Tests</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Optional Features</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  Revalidation</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Revalidation Declaration = strict</td>
-    <td bgcolor="mediumseagreen">21/21</td>
-    <td bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Revalidation Declaration = strict unsupported</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/Prolog/RevalidationDeclaration/revalidation-declaration-01-fail.xq">revalidation-declaration-01-fail</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Revalidation Declaration = lax</td>
-    <td bgcolor="mediumseagreen">19/19</td>
-    <td bgcolor="mediumseagreen">19/19</td>
+    <td align="center" bgcolor="mediumseagreen">19/19</td>
+    <td align="center" bgcolor="mediumseagreen">19/19</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Revalidation Declaration = lax unsupported</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/Prolog/RevalidationDeclaration/revalidation-declaration-03-fail.xq">revalidation-declaration-03-fail</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Revalidation Declaration = skip</td>
-    <td bgcolor="mediumseagreen">33/33</td>
-    <td bgcolor="mediumseagreen">33/33</td>
+    <td align="center" bgcolor="mediumseagreen">33/33</td>
+    <td align="center" bgcolor="mediumseagreen">33/33</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Revalidation Declaration = skip unsupported</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/Prolog/RevalidationDeclaration/revalidation-declaration-05-fail.xq">revalidation-declaration-05-fail</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Revalidation Declaration = strict + skip</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/ValTrans/revalidate-valtrans-ins-003.xq">revalidate-valtrans-ins-003</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Update Facility Static Typing Feature</td>
-    <td bgcolor="white">0/27</td>
-    <td bgcolor="white">0/27</td>
+    <td align="center" bgcolor="white">0/27</td>
+    <td align="center" bgcolor="white">0/27</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Tests that need the Full Axis Feature</td>
-    <td bgcolor="mediumseagreen">14/14</td>
-    <td bgcolor="mediumseagreen">14/14</td>
+    <td align="center" bgcolor="mediumseagreen">14/14</td>
+    <td align="center" bgcolor="mediumseagreen">14/14</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  fn:put applied to nodes other than document and element nodes</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to comment nodes</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to comment nodes - unsupported</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/Put/fn-put-003-fail.xq">fn-put-003-fail</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to processing-instruction nodes</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to processing-instruction nodes - unsupported</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/Put/fn-put-004-fail.xq">fn-put-004-fail</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to attribute nodes</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to attribute nodes - unsupported</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/Put/fn-put-005-fail.xq">fn-put-005-fail</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to text nodes</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    fn:put() applied to text nodes - unsupported</td>
-    <td bgcolor="white">0/1</td>
-    <td bgcolor="white">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xquery-update-10-test-suite/Queries/XQuery/Put/fn-put-006-fail.xq">fn-put-006-fail</a>
-    </td>
-    <td class="xq" bgcolor="lightcyan">not applicable</td>
-    <td class="xqx" bgcolor="lightcyan">not applicable</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Use Cases</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Cases "R" - Updating Relational Data</td>
-    <td bgcolor="mediumseagreen">11/11</td>
-    <td bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="mediumseagreen">11/11</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Cases "address Book" - Synchronizing address book entries</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Cases "Soap" - processing messages</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Cases "Namespaces" - moving elements from one namespace to another</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Cases "Parts" - modifying recursive documents</td>
-    <td bgcolor="mediumseagreen">7/7</td>
-    <td bgcolor="mediumseagreen">7/7</td>
+    <td align="center" bgcolor="mediumseagreen">7/7</td>
+    <td align="center" bgcolor="mediumseagreen">7/7</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Cases "Nil"</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
 </table>
 */

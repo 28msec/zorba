@@ -1,8 +1,8 @@
-/** \page conformanceXQFTTS  Conformance W3C XQuery and XPath Full Text 1.0
+/** \page conformanceXQFTTS  Detailed conformance W3C XQuery and XPath Full Text 1.0
 
 <table bgcolor="lightcyan">
   <tr>
-    <td>Feature</td>
+    <td>W3C XQuery and XPath Full Text 1.0 features</td>
     <td>XQuery</td>
     <td>XQueryX</td>
   </tr>
@@ -13,941 +13,473 @@
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Minimal Conformance</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  Examples</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 2.2.2</td>
-    <td bgcolor="mediumseagreen">4/4</td>
-    <td bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="coral">0/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 2.3</td>
-    <td bgcolor="coral">0/5</td>
-    <td bgcolor="coral">0/5</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/2.3-ScoreVariables/examples-23-q1.xq">examples-23-q1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/2.3-ScoreVariables/examples-23-q2.xq">examples-23-q2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/2.3-ScoreVariables/examples-23-q3.xq">examples-23-q3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/2.3-ScoreVariables/examples-23-q4.xq">examples-23-q4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/2.3-ScoreVariables/examples-23-q5.xq">examples-23-q5</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">0/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 2.3.1</td>
-    <td bgcolor="coral">0/1</td>
-    <td bgcolor="coral">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/2.3.1-UsingWeightsWithinAScoredFTContainsExpr/examples-231-q1.xq">examples-231-q1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">0/1</td>
+    <td align="center" bgcolor="coral">0/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.2</td>
-    <td bgcolor="coral">4/5</td>
-    <td bgcolor="coral">4/5</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/3.2-SearchTokensAndPhrases/ft-3.2-examples-q5.xq">ft-3.2-examples-q5</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">4/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.3</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="coral">0/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.2</td>
-    <td bgcolor="mediumseagreen">4/4</td>
-    <td bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="coral">0/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="coral">0/3</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.4</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.5</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.6</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.7</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.4.8</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.5.1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="coral">0/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.5.2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.5.3</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="coral">0/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.5.4</td>
-    <td bgcolor="mediumseagreen">3/3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="coral">0/3</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.6.1</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.6.2</td>
-    <td bgcolor="coral">5/6</td>
-    <td bgcolor="coral">5/6</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>      <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/3.6.2-WindowSelection/examples-362-5.xq">examples-362-5</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">5/6</td>
+    <td align="center" bgcolor="coral">0/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.6.3</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.6.4</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="coral">0/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.6.5</td>
-    <td bgcolor="mediumseagreen">4/4</td>
-    <td bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="coral">0/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Section 3.7</td>
-    <td bgcolor="mediumseagreen">1/1</td>
-    <td bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="mediumseagreen">1/1</td>
+    <td align="center" bgcolor="coral">0/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">  Expressions</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">    Tests of For-Let-Where-OrderBy-Return Expressions</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      FOR Clause with Score variable</td>
-    <td bgcolor="coral">0/11</td>
-    <td bgcolor="coral">0/11</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-1.xq">ForScoreExpr-1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-2.xq">ForScoreExpr-2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-3.xq">ForScoreExpr-3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-4.xq">ForScoreExpr-4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-5.xq">ForScoreExpr-5</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-6.xq">ForScoreExpr-6</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-BadVar1.xq">ForScoreExpr-BadVar1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-BadVar2.xq">ForScoreExpr-BadVar2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-Var1.xq">ForScoreExpr-Var1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-Var2.xq">ForScoreExpr-Var2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-Var3.xq">ForScoreExpr-Var3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">0/11</td>
+    <td align="center" bgcolor="coral">0/11</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      Let Clause with Score variable</td>
-    <td bgcolor="coral">1/4</td>
-    <td bgcolor="coral">1/4</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/LetScoreExpr/LetScoreExpr-1.xq">LetScoreExpr-1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/LetScoreExpr/LetScoreExpr-3.xq">LetScoreExpr-3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>        <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/LetScoreExpr/LetScoreExpr-4.xq">LetScoreExpr-4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">1/4</td>
+    <td align="center" bgcolor="coral">1/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">    Operators</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">      Comparison Operators</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">        Full-Text Contains Expressions</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">          Full-Text Selections</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">            Full-Text Tokens and Phrases</td>
-    <td bgcolor="coral">66/68</td>
-    <td bgcolor="coral">66/68</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/FTWords/FTWordsValue-IntegerLiteral.xq">FTWordsValue-IntegerLiteral</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/FTWords/FTWordsValue-DecimalLiteral.xq">FTWordsValue-DecimalLiteral</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">66/68</td>
+    <td align="center" bgcolor="coral">2/68</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">            Full-Text Cardinality Selection</td>
-    <td bgcolor="mediumseagreen">20/20</td>
-    <td bgcolor="mediumseagreen">20/20</td>
+    <td align="center" bgcolor="mediumseagreen">20/20</td>
+    <td align="center" bgcolor="coral">0/20</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">            Full-Text Operators</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text ftor Operator</td>
-    <td bgcolor="mediumseagreen">15/15</td>
-    <td bgcolor="mediumseagreen">15/15</td>
+    <td align="center" bgcolor="mediumseagreen">15/15</td>
+    <td align="center" bgcolor="coral">2/15</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text ftand Operator</td>
-    <td bgcolor="mediumseagreen">11/11</td>
-    <td bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="coral">2/11</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text ftnot Operator</td>
-    <td bgcolor="mediumseagreen">7/7</td>
-    <td bgcolor="mediumseagreen">7/7</td>
+    <td align="center" bgcolor="mediumseagreen">7/7</td>
+    <td align="center" bgcolor="coral">0/7</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text not in Operator</td>
-    <td bgcolor="mediumseagreen">11/11</td>
-    <td bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="coral">0/11</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-text Match Options</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="coral">0/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Language Match Option</td>
-    <td bgcolor="mediumseagreen">4/4</td>
-    <td bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="coral">0/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Wildcard Match Option</td>
-    <td bgcolor="mediumseagreen">21/21</td>
-    <td bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="coral">0/21</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Thesaurus Match Option</td>
-    <td bgcolor="coral">9/10</td>
-    <td bgcolor="coral">9/10</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/MatchOptions/FTThesaurus/ft-3.4.3-expressions-q4.xq">ft-3.4.3-expressions-q4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">9/10</td>
+    <td align="center" bgcolor="palegreen">4/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Stemming Match Option</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Case Match Option</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="coral">0/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Diacritics Match Option</td>
-    <td bgcolor="mediumseagreen">4/4</td>
-    <td bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="coral">0/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Stop Word Match Option.</td>
-    <td bgcolor="mediumseagreen">10/10</td>
-    <td bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="coral">0/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Full-Text Extension Option</td>
-    <td bgcolor="mediumseagreen">3/3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="coral">0/3</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">            Full-Text Positional Filters</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Ordered Selection</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="coral">0/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Window Selection</td>
-    <td bgcolor="mediumseagreen">21/21</td>
-    <td bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="mediumseagreen">21/21</td>
+    <td align="center" bgcolor="coral">3/21</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Distance Selection</td>
-    <td bgcolor="mediumseagreen">33/33</td>
-    <td bgcolor="mediumseagreen">33/33</td>
+    <td align="center" bgcolor="mediumseagreen">33/33</td>
+    <td align="center" bgcolor="coral">2/33</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Scope Selection</td>
-    <td bgcolor="coral">10/19</td>
-    <td bgcolor="coral">10/19</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-03.xq">different-sentence-03</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-04.xq">different-sentence-04</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-05.xq">different-sentence-05</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-08.xq">different-sentence-08</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-09.xq">different-sentence-09</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-10.xq">different-sentence-10</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-11.xq">different-sentence-11</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-12.xq">different-sentence-12</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>                <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/PositionalFilters/FTScope/different-sentence-13.xq">different-sentence-13</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">10/19</td>
+    <td align="center" bgcolor="coral">0/19</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">              Anchoring Selection</td>
-    <td bgcolor="mediumseagreen">10/10</td>
-    <td bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="coral">0/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">            Full-Text FTSelection weight</td>
-    <td bgcolor="coral">3/14</td>
-    <td bgcolor="coral">3/14</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1a.xq">FTSelection-Weight-q1a</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1b.xq">FTSelection-Weight-q1b</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1c.xq">FTSelection-Weight-q1c</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1d.xq">FTSelection-Weight-q1d</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1e.xq">FTSelection-Weight-q1e</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1f.xq">FTSelection-Weight-q1f</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1g.xq">FTSelection-Weight-q1g</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q1h.xq">FTSelection-Weight-q1h</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q2a.xq">FTSelection-Weight-q2a</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q2b.xq">FTSelection-Weight-q2b</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>              <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-q3.xq">FTSelection-Weight-q3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">3/14</td>
+    <td align="center" bgcolor="coral">3/14</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">          Full-Text Ignore</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">          Full-Text Extension Selections</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="palegreen">4/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Optional Features</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Full-Text not in Operator</td>
-    <td bgcolor="mediumseagreen">9/9</td>
-    <td bgcolor="mediumseagreen">9/9</td>
+    <td align="center" bgcolor="mediumseagreen">9/9</td>
+    <td align="center" bgcolor="coral">0/9</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Full-Text ftnot Operator</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained FTUnit/FTBigUnit</td>
-    <td bgcolor="mediumseagreen">18/18</td>
-    <td bgcolor="mediumseagreen">18/18</td>
+    <td align="center" bgcolor="mediumseagreen">18/18</td>
+    <td align="center" bgcolor="coral">0/18</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Order Selection</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Scope Selection</td>
-    <td bgcolor="mediumseagreen">10/10</td>
-    <td bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="coral">0/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Window Selection</td>
-    <td bgcolor="coral">4/5</td>
-    <td bgcolor="coral">4/5</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Examples/3.6.2-WindowSelection/unconstrained-examples-362-5.xq">unconstrained-examples-362-5</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">4/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Distance Selection</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Full-Text Cardinality Selection</td>
-    <td bgcolor="mediumseagreen">20/20</td>
-    <td bgcolor="mediumseagreen">20/20</td>
+    <td align="center" bgcolor="mediumseagreen">20/20</td>
+    <td align="center" bgcolor="coral">0/20</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Anchoring Selection</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Full-Text Case Option</td>
-    <td bgcolor="mediumseagreen">4/4</td>
-    <td bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="coral">0/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Full-Text Stop Word Option</td>
-    <td bgcolor="mediumseagreen">14/14</td>
-    <td bgcolor="mediumseagreen">14/14</td>
+    <td align="center" bgcolor="mediumseagreen">14/14</td>
+    <td align="center" bgcolor="coral">0/14</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Full-Text Language Option</td>
-    <td bgcolor="mediumseagreen">2/2</td>
-    <td bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="mediumseagreen">2/2</td>
+    <td align="center" bgcolor="coral">0/2</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Ignore Option</td>
-    <td bgcolor="mediumseagreen">5/5</td>
-    <td bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="mediumseagreen">5/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Scoring</td>
-    <td bgcolor="coral">0/12</td>
-    <td bgcolor="coral">0/12</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-1.xq">ForScoreExpr-unconstrained-1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-2.xq">ForScoreExpr-unconstrained-2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-3.xq">ForScoreExpr-unconstrained-3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-4.xq">ForScoreExpr-unconstrained-4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-5.xq">ForScoreExpr-unconstrained-5</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-6.xq">ForScoreExpr-unconstrained-6</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-Var1.xq">ForScoreExpr-unconstrained-Var1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-Var2.xq">ForScoreExpr-unconstrained-Var2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/ForScoreExpr/ForScoreExpr-unconstrained-Var3.xq">ForScoreExpr-unconstrained-Var3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/LetScoreExpr/LetScoreExpr-unconstrained-1.xq">LetScoreExpr-unconstrained-1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/LetScoreExpr/LetScoreExpr-unconstrained-3.xq">LetScoreExpr-unconstrained-3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/FLWORExpr/LetScoreExpr/LetScoreExpr-unconstrained-4.xq">LetScoreExpr-unconstrained-4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">0/12</td>
+    <td align="center" bgcolor="coral">0/12</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Unconstrained Weight Range</td>
-    <td bgcolor="coral">0/5</td>
-    <td bgcolor="coral">0/5</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-unconstrained-q1d.xq">FTSelection-Weight-unconstrained-q1d</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-unconstrained-q1e.xq">FTSelection-Weight-unconstrained-q1e</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-unconstrained-q1f.xq">FTSelection-Weight-unconstrained-q1f</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-unconstrained-q1g.xq">FTSelection-Weight-unconstrained-q1g</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/Expressions/Operators/CompExpr/FTContainsExpr/FTSelection/Weight/FTSelection-Weight-unconstrained-q1h.xq">FTSelection-Weight-unconstrained-q1h</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">0/5</td>
+    <td align="center" bgcolor="coral">0/5</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "ACROSS"; optional aspects</td>
-    <td bgcolor="coral">0/1</td>
-    <td bgcolor="coral">0/1</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-ACROSS/across-queries-results-q2b.xq">across-queries-results-q2b</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">0/1</td>
+    <td align="center" bgcolor="coral">0/1</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Use Cases</td>
-    <td bgcolor="paleturquoise"></td>
-    <td bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
+    <td align="center" bgcolor="paleturquoise"></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "ELEMENT"</td>
-    <td bgcolor="mediumseagreen">11/11</td>
-    <td bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="mediumseagreen">11/11</td>
+    <td align="center" bgcolor="coral">0/11</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "ACROSS"</td>
-    <td bgcolor="coral">9/10</td>
-    <td bgcolor="coral">9/10</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-ACROSS/across-queries-results-q2.xq">across-queries-results-q2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">9/10</td>
+    <td align="center" bgcolor="coral">0/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "OTHER"</td>
-    <td bgcolor="mediumseagreen">3/3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="coral">0/3</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "WILDCARD"</td>
-    <td bgcolor="mediumseagreen">10/10</td>
-    <td bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="coral">0/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "STEMMING"</td>
-    <td bgcolor="mediumseagreen">4/4</td>
-    <td bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="mediumseagreen">4/4</td>
+    <td align="center" bgcolor="coral">0/4</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "THESAURUS"</td>
-    <td bgcolor="mediumseagreen">12/12</td>
-    <td bgcolor="mediumseagreen">12/12</td>
+    <td align="center" bgcolor="mediumseagreen">12/12</td>
+    <td align="center" bgcolor="coral">0/12</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "STOP-WORD"</td>
-    <td bgcolor="mediumseagreen">6/6</td>
-    <td bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="mediumseagreen">6/6</td>
+    <td align="center" bgcolor="coral">0/6</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "CHARACTER"</td>
-    <td bgcolor="mediumseagreen">8/8</td>
-    <td bgcolor="mediumseagreen">8/8</td>
+    <td align="center" bgcolor="mediumseagreen">8/8</td>
+    <td align="center" bgcolor="coral">0/8</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "LOGICAL"</td>
-    <td bgcolor="mediumseagreen">14/14</td>
-    <td bgcolor="mediumseagreen">14/14</td>
+    <td align="center" bgcolor="mediumseagreen">14/14</td>
+    <td align="center" bgcolor="coral">0/14</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "CARDINALITY"</td>
-    <td bgcolor="mediumseagreen">8/8</td>
-    <td bgcolor="mediumseagreen">8/8</td>
+    <td align="center" bgcolor="mediumseagreen">8/8</td>
+    <td align="center" bgcolor="coral">0/8</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "PROXIMITY"</td>
-    <td bgcolor="mediumseagreen">10/10</td>
-    <td bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="mediumseagreen">10/10</td>
+    <td align="center" bgcolor="coral">0/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "AXES"</td>
-    <td bgcolor="mediumseagreen">7/7</td>
-    <td bgcolor="mediumseagreen">7/7</td>
+    <td align="center" bgcolor="mediumseagreen">7/7</td>
+    <td align="center" bgcolor="coral">0/7</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "IGNORE"</td>
-    <td bgcolor="coral">5/8</td>
-    <td bgcolor="coral">5/8</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-IGNORE/ignore-queries-results-q1.xq">ignore-queries-results-q1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-IGNORE/ignore-queries-results-q1b.xq">ignore-queries-results-q1b</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-IGNORE/ignore-queries-results-q4.xq">ignore-queries-results-q4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">5/8</td>
+    <td align="center" bgcolor="coral">0/8</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "FULL-TEXT-COMPOSABILITY"</td>
-    <td bgcolor="coral">6/7</td>
-    <td bgcolor="coral">6/7</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-FULL-TEXT-COMPOSABILITY/full-text-composability-queries-results-q4.xq">full-text-composability-queries-results-q4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">6/7</td>
+    <td align="center" bgcolor="coral">0/7</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "XQUERY-XPATH-COMPOSABILITY"</td>
-    <td bgcolor="coral">8/10</td>
-    <td bgcolor="coral">8/10</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9.xq">xquery-xpath-composability-queries-results-q9</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-XQUERY-XPATH-COMPOSABILITY/xquery-xpath-composability-queries-results-q9b.xq">xquery-xpath-composability-queries-results-q9b</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="palegreen">8/10</td>
+    <td align="center" bgcolor="coral">0/10</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Use Case "SCORE"</td>
-    <td bgcolor="coral">0/7</td>
-    <td bgcolor="coral">0/7</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-SCORE/score-queries-results-q1.xq">score-queries-results-q1</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-SCORE/score-queries-results-q2.xq">score-queries-results-q2</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-SCORE/score-queries-results-q3.xq">score-queries-results-q3</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-SCORE/score-queries-results-q3b.xq">score-queries-results-q3b</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-SCORE/score-queries-results-q4.xq">score-queries-results-q4</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-SCORE/score-queries-results-q5.xq">score-queries-results-q5</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td>    <a target="_blank" href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/TestSuiteStagingArea/Queries/XQuery/UseCase/UseCase-SCORE/score-queries-results-q6.xq">score-queries-results-q6</a>
-    </td>
-    <td class="xq" bgcolor="coral">fail</td>
-    <td class="xqx" bgcolor="coral">fail</td>
+    <td align="center" bgcolor="coral">0/7</td>
+    <td align="center" bgcolor="coral">0/7</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Consistency in XQFTTS Catalog</td>
-    <td bgcolor="mediumseagreen">3/3</td>
-    <td bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
+    <td align="center" bgcolor="mediumseagreen">3/3</td>
   </tr>
 </table>
 */
