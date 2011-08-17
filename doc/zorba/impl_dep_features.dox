@@ -1,18 +1,17 @@
- /** \page impl_dep_features  Implementation dependent features, supported features and context properties
+ /** \page impl_dep_features  Information about Implementation Dependent Features and Properties
 
 <ul>
   <li> \ref IDI </li>
   <li> \ref Features </li>
   <li> \ref Context_properties </li>
-</ul>\section IDI Implementation defined items
+</ul>
+
+\section IDI Implementation Defined Items
 <table bgcolor="lightcyan">
-  <tr>
-    <td collspan="3">Implementation defined items</td>
-  </tr>
   <tr>
     <td>Feature</td>
     <td>Name</td>
-    <td>Value</td>
+    <td>Value/Description</td>
   </tr>
   <tr>
     <td>W3C XQuery Update Facility 1.0</td>
@@ -34,11 +33,10 @@
     <td>fnPutSemantics</td>
     <td>fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent.</td>
   </tr>
-</table>\section Features
+</table>
+
+\section Features Supported Features
 <table bgcolor="lightcyan">
-  <tr>
-    <td collspan="3">Features</td>
-  </tr>
   <tr>
     <td>Feature</td>
     <td>Name</td>
@@ -174,11 +172,10 @@
     <td>Weights</td>
     <td bgcolor="white">false</td>
   </tr>
-</table>\section Context_properties Context properties
+</table>
+
+\section Context_properties Context Properties
 <table bgcolor="lightcyan">
-  <tr>
-    <td collspan="4">Context properties</td>
-  </tr>
   <tr>
     <td>Feature</td>
     <td>Name</td>

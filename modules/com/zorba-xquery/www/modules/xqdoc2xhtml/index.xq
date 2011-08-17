@@ -1957,8 +1957,8 @@ declare %private %ann:sequential function xqdoc2html:create-module-table(
 declare %private function xqdoc2html:create-left-menu()
 {
   <ul>
-    <span><a href="index.html">XQuery Modules Documentation</a></span>
-    <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>
+    <li><a href="index.html">All Modules</a></li>
+    <li><a href="{$xqdoc2html:functionIndexPageName}">All Functions</a></li>
   </ul>
 };
 
