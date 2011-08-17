@@ -69,8 +69,8 @@ namespace zorba {
   }
 
 /*************
- * URIMapper is an abstract class, but we have to define its vtbl and
- * base destructor somewhere.
+ * URIMapper is an abstract class, but we have to define its vtbl,
+ * base destructor and default functions somewhere.
  *************/
 
   URIMapper::URIMapper()
@@ -78,6 +78,12 @@ namespace zorba {
 
   URIMapper::~URIMapper()
   {}
+
+  URIMapper::Kind
+  URIMapper::mapperKind()
+  {
+    return CANDIDATE;
+  }
 
 /*************
  * URIResolver is an abstract class, but we have to define its vtbl

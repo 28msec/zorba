@@ -227,7 +227,7 @@ class ZORBA_DLL_PUBLIC URIMapper
    *
    * If you do not override this method, the default is "candidate".
    */
-  virtual Kind mapperKind() { return CANDIDATE; }
+  virtual Kind mapperKind();
 
   /**
    * @brief Constant indicating that Zorba should deny access to the
