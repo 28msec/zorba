@@ -31,9 +31,9 @@ public:
 
   SmartObject(const SmartObject&) : theRefCount(0) { }
 
-  virtual ~SmartObject() { }
+  virtual ~SmartObject();
 
-  virtual void free() { delete this; }
+  virtual void free();
 
   long getRefCount() const { return theRefCount; }
 

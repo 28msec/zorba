@@ -15,7 +15,8 @@
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/api/version.cpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp)
 
 SET(API_SRCS
-		diagnostic_handler.cpp
+    smart_ptr.cpp
+    diagnostic_handler.cpp
     zorba.cpp
     zorbaimpl.cpp
     xqueryimpl.cpp
@@ -56,9 +57,10 @@ SET(API_SRCS
     auditimpl.cpp
     )
 
-
 ADD_SRC_SUBFOLDER(API_SRCS serialization API_SERIALIZATION_SRCS)
 
 SET(API_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp
   )
+
+# vim:set et sw=2 ts=2:
