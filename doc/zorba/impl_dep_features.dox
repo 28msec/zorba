@@ -1,5 +1,290 @@
-/** \page impl_dep_features Implementation Dependent Features
+ /** \page impl_dep_features  Implementation dependent features, supported features and context properties
 
-Info to be added.
-
-*/
+<ul>
+  <li> \ref IDI </li>
+  <li> \ref Features </li>
+  <li> \ref Context_properties </li>
+</ul>\section IDI Implementation defined items
+<table bgcolor="lightcyan">
+  <tr>
+    <td collspan="3">Implementation defined items</td>
+  </tr>
+  <tr>
+    <td>Feature</td>
+    <td>Name</td>
+    <td>Value</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery Update Facility 1.0</td>
+    <td>supportedRevalidationModes</td>
+    <td>lax, skip, strict</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery Update Facility 1.0</td>
+    <td>defaultRevalidationMode</td>
+    <td>lax</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery Update Facility 1.0</td>
+    <td>externalFunctionXDMPUL</td>
+    <td>Zorba allows external functions to be implemented in C++. Such functions may return XDM instances. However, it is not possible to implement an updating external function.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery Update Facility 1.0</td>
+    <td>fnPutSemantics</td>
+    <td>fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent.</td>
+  </tr>
+</table>\section Features
+<table bgcolor="lightcyan">
+  <tr>
+    <td collspan="3">Features</td>
+  </tr>
+  <tr>
+    <td>Feature</td>
+    <td>Name</td>
+    <td>Value</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Minimal Conformance</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Schema Import</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Schema Validation</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Static Typing</td>
+    <td bgcolor="white">false</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Static Typing Extensions</td>
+    <td bgcolor="white">false</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Full Axis</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Module</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Serialization</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery Update Facility 1.0</td>
+    <td>Minimal Conformance</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery Update Facility 1.0</td>
+    <td>Update Facility Static Typing Feature</td>
+    <td bgcolor="white">false</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Minimal Conformance</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTMildNot Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTUnaryNot Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTUnit and FTBigUnit</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTOrder Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTScope Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTWindow Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTDistance Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTTimes Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTContent Operator</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTCaseOption</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTStopwordOption</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTLanguageOption</td>
+    <td bgcolor="mediumseagreen">true</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>FTIgnoreOption</td>
+    <td bgcolor="white">false</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Scoring</td>
+    <td bgcolor="white">false</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Weights</td>
+    <td bgcolor="white">false</td>
+  </tr>
+</table>\section Context_properties Context properties
+<table bgcolor="lightcyan">
+  <tr>
+    <td collspan="4">Context properties</td>
+  </tr>
+  <tr>
+    <td>Feature</td>
+    <td>Name</td>
+    <td>Context type</td>
+    <td>Value</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default function namespace</td>
+    <td>static</td>
+    <td>http://www.w3.org/2005/xpath-functions</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Context item static type</td>
+    <td>static</td>
+    <td>item()</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default collation</td>
+    <td>static</td>
+    <td>http://www.w3.org/2005/xpath-functions/collation/codepoint</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Construction mode</td>
+    <td>static</td>
+    <td>preserve</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Ordering mode</td>
+    <td>static</td>
+    <td>ordered</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default order for empty sequences</td>
+    <td>static</td>
+    <td>empty greatest</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Boundary-space policy</td>
+    <td>static</td>
+    <td>strip</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Copy-namespaces mode</td>
+    <td>static</td>
+    <td>inherit preserve</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery Update Facility 1.0</td>
+    <td>Revalidation mode</td>
+    <td>static</td>
+    <td>lax</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Default function namespace</td>
+    <td>static</td>
+    <td>http://www.w3.org/2005/xpath-functions</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Context item static type</td>
+    <td>static</td>
+    <td>item()</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Default collation</td>
+    <td>static</td>
+    <td>http://www.w3.org/2005/xpath-functions/collation/codepoint</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Construction mode</td>
+    <td>static</td>
+    <td>preserve</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Ordering mode</td>
+    <td>static</td>
+    <td>ordered</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Default order for empty sequences</td>
+    <td>static</td>
+    <td>empty greatest</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Boundary-space policy</td>
+    <td>static</td>
+    <td>strip</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery and XPath Full Text 1.0</td>
+    <td>Copy-namespaces mode</td>
+    <td>static</td>
+    <td>inherit preserve</td>
+  </tr>
+</table>*/

@@ -17,3 +17,8 @@ Here is how the query work:
 - they load the submission XML's for XQuery and XQueryX
 - based on this information they generate the conformance reported; Due to the fact that the output is a .dox page that 
 has to be included in the Zorab documentation *only* the tests that have a status other than "pass" are shown.
+
+generate_implementation_defined_features_dox.xq
+Run it in order to generate the docygen page:
+./zorba --indent -z method=xml --omit-xml-declaration
+-f -q ../../scripts/sanity_checks/generate_implementation_defined_features_dox.xq > /home/spungi/work/zorba2/doc/zorba/impl_dep_features.dox
