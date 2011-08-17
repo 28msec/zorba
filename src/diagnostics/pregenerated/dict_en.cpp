@@ -360,6 +360,7 @@ extern entry const dict_en[] = {
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQD0003", "inconsistent options to the parse-xml-fragment() function: $1" },
   { "ZXQD0004", "invalid parameter: $1" },
+  { "ZXQD0005", "key with type $1 not subtype or castable to target type $2 of map ($3)" },
   { "ZXQP0000", "no error" },
   { "ZXQP0001", "dynamic runtime error${: 1}" },
   { "ZXQP0002", "\"$1\": assertion failed" },

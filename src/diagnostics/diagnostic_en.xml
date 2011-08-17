@@ -1702,6 +1702,10 @@
       </entry>
     </diagnostic>
 
+    <diagnostic code="ZXQD0005" name="INVALID_KEY_FOR_MAP">
+      <value>key with type $1 not subtype or castable to target type $2 of map ($3)</value>
+    </diagnostic>
+
     <!--////////// Zorba API Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZAPI0002" name="XQUERY_COMPILATION_FAILED">

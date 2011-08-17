@@ -100,8 +100,8 @@ declare %ann:sequential function map:delete(
  : @error zerr:ZDDY0025 if the given number of key attributes does not match
  :        the number of key attributes specified when creating
  :        the map (see the map:create function).
- : @error err:XPTY0004 if any of the given key attributes is
- :        not a subtype of the corresponding key attribute
+ : @error zerr:ZXQD0005 if any of the given key attributes can not
+ :        be cast (or is not a subtype) of the corresponding key attribute
  :        specified when creating the map.
  :
  : @see map:create
@@ -127,8 +127,8 @@ declare %ann:variadic %ann:sequential function map:insert(
  : @error zerr:ZDDY0025 if the given number of key attributes does not match
  :        the number of key attributes specified when creating
  :        the map (see the map:create function).
- : @error err:XPTY0004 if any of the given key attributes is
- :        not a subtype of the corresponding key attribute
+ : @error zerr:ZXQD0005 if any of the given key attributes can not
+ :        be cast (or is not a subtype) of the corresponding key attribute
  :        specified when creating the map.
  :
  : @see map:create
@@ -151,8 +151,8 @@ declare %ann:variadic function map:get(
  : @error zerr:ZDDY0025 if the given number of key attributes does not match
  :        the number of key attributes specified when creating
  :        the map (see the map:create function).
- : @error err:XPTY0004 if any of the given key attributes is
- :        not a subtype of the corresponding key attribute
+ : @error zerr:ZXQD0005 if any of the given key attributes can not
+ :        be cast (or is not a subtype) of the corresponding key attribute
  :        specified when creating the map.
  :
  : @see map:create

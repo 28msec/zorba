@@ -25,6 +25,7 @@
 #include "runtime/store/maps.h"
 
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 
 #include "store/api/pul.h"
 #include "store/api/store.h"
@@ -49,25 +50,55 @@ namespace zorba {
                          ERROR_LOC(loc));
 
 static void
-checkIndexType(
-    const store::Item_t& aKeyItem,
+castOrCheckIndexType(
+    store::Item_t& aKeyItem,
     const store::Item_t& aKeyType,
     const store::Item_t& aQName,
+    namespace_context* aNCtx,
     const QueryLoc& loc)
 {
   xqtref_t searchKeyType = GENV_TYPESYSTEM.create_value_type(aKeyItem);
   xqtref_t indexKeyType  = GENV_TYPESYSTEM.create_named_type(
       aKeyType.getp(), TypeConstants::QUANT_ONE, loc);
   
-  if (indexKeyType != NULL &&
-      !TypeOps::is_subtype(&GENV_TYPESYSTEM, *searchKeyType, *indexKeyType))
+  if ( indexKeyType != NULL )
   {
-    RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
-                   *searchKeyType,
-                   aQName->getStringValue(),
-                   *indexKeyType)
-    );
+    if ( !TypeOps::is_subtype(&GENV_TYPESYSTEM, *searchKeyType, *indexKeyType))
+    {
+      store::Item_t lResult;
+      try
+      {
+        if ( !GenericCast::castToAtomic(
+              lResult,
+              aKeyItem,
+              indexKeyType.getp(),
+              &GENV_TYPESYSTEM,
+              aNCtx,
+              loc ) )
+        {
+          RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
+            ERROR_PARAMS(*searchKeyType,
+                         *indexKeyType,
+                         aQName->getStringValue())
+          );
+        }
+        else
+        {
+          aKeyItem = lResult;
+        }
+      } catch (const ZorbaException& e)
+      {
+        if ( e.diagnostic() == err::FORG0001 )
+        {
+          RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
+            ERROR_PARAMS(*searchKeyType,
+                         *indexKeyType,
+                         aQName->getStringValue())
+          );
+        }
+        throw;
+      }
+    }
   }
 }
     
@@ -225,21 +256,9 @@ MapGetIterator::nextImpl(
       break;
     }
 
-    xqtref_t searchKeyType = GENV_TYPESYSTEM.create_value_type(lKeyItem);
-    xqtref_t indexKeyType  = GENV_TYPESYSTEM.create_named_type(
-        lSpec.theKeyTypes[i-1].getp(), TypeConstants::QUANT_ONE, loc);
+    namespace_context tmp_ctx(theSctx);
+    castOrCheckIndexType(lKeyItem, lSpec.theKeyTypes[i-1], lQName, &tmp_ctx, loc);
 
-    if (indexKeyType != NULL &&
-        !TypeOps::is_subtype(&GENV_TYPESYSTEM, *searchKeyType, *indexKeyType))
-    {
-      RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
-                     *searchKeyType,
-                     lQName->getStringValue(),
-                     *indexKeyType)
-      );
-    }
-    
     state->theCond->pushItem(lKeyItem);
   }
 
@@ -309,7 +328,8 @@ MapInsertIterator::nextImpl(
   {
     if (consumeNext(lKey[i-2], theChildren[i].getp(), aPlanState))
     {
-      checkIndexType(lKey[i-2], lSpec.theKeyTypes[i-2], lQName, loc);
+      namespace_context tmp_ctx(theSctx);
+      castOrCheckIndexType(lKey[i-2], lSpec.theKeyTypes[i-2], lQName, &tmp_ctx, loc);
     }
   }
 
@@ -376,7 +396,8 @@ MapRemoveIterator::nextImpl(
   {
     if (consumeNext(lKey[i-1], theChildren[i], aPlanState)) 
     {
-      checkIndexType(lKey[i-1], lSpec.theKeyTypes[i-1], lQName, loc);
+      namespace_context tmp_ctx(theSctx);
+      castOrCheckIndexType(lKey[i-1], lSpec.theKeyTypes[i-1], lQName, &tmp_ctx, loc);
     }
   }
 
