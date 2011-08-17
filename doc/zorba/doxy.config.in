@@ -450,7 +450,9 @@ WARN_LOGFILE           = Doc/doxy.log
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@ \
+                         @CMAKE_SOURCE_DIR@/include/zorba \
+                         @CMAKE_CURRENT_SOURCE_DIR@/manual
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -498,7 +500,8 @@ EXCLUDE_PATTERNS       = */.svn \
 # directories that contain example code fragments that are included (see 
 # the \include command).
 
-EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba \
+EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/doc/cxx/examples \
+                         @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba \
                          @CMAKE_SOURCE_DIR@/test/update/Queries \
                          @CMAKE_SOURCE_DIR@/test/update/ExpectedTestResults
 

@@ -26,9 +26,9 @@ The name and value of the variable is the QName of the corresponding error.
 In addition to the errors mentioned in the previous section, Zorba may raise warnings during the static analysis phase of the query.
 Warnings are diagnostic messages that report constructions which are not inherently erroneous but which are risky or suggest there may have been an error.
 Like an error, a warning is identified by a QName whose namespace is %http://www.zorba-xquery.com/warnings.
-A list of warnings can be found in the diagnostic_list.h header (<tt>zwarn</tt> namespace) of the C++ API and in the <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_warnings.html">http://www.zorba-xquery.com/warnings</a> module.
+A list of warnings can be found in the diagnostic_list.h header (zwarn namespace) of the C++ API and in the <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_warnings.html">http://www.zorba-xquery.com/warnings</a> module.
 
-A warning can be enabled (i.e. will be reported), disabled (i.e. will not be reported), or turned into an error (i.e. an error with the same name will be raised) by specifying options in the static context that is used to compile the query (<tt>StaticContext::declareOption</tt>) or in the prolog of an XQuery module.
+A warning can be enabled (i.e. will be reported), disabled (i.e. will not be reported), or turned into an error (i.e. an error with the same name will be raised) by specifying options in the static context that is used to compile the query (zorba::StaticContext::declareOption) or in the prolog of an XQuery module.
 
 For example, given the following prolog of an XQuery module, all warnings are treated as errors:
 
@@ -43,16 +43,16 @@ More information on how options can be used to configure warnings can be found i
 
 
 \section errors_warnings_cpp Errors and Warnings in the C++ API
-In the C++ API, errors are reported using the exception classes: <tt>ZorbaException</tt>, <tt>XQueryException</tt>, and <tt>UserException</tt>.
-Objects of type <tt>ZorbaException</tt> contain a description of the error.
-Instances of the class <tt>XQueryException</tt> are raised during the static or dynamic analysis or evaluation phase, respectively.
-They contain additional information about the source location of the problem in the XQuery program (i.e. <tt>source_uri()</tt>, <tt>source_line()</tt>, <tt>source_column()</tt>, <tt>source_line_end()</tt>, and <tt>source_column_end()</tt>).
+In the C++ API, errors are reported using the exception classes: zorba::ZorbaException, zorba::XQueryException, and zorba::UserException.
+Objects of type zorba::ZorbaException contain a description of the error.
+Instances of the class zorba::XQueryException are raised during the static or dynamic analysis or evaluation phase, respectively.
+They contain additional information about the source location of the problem in the XQuery program (i.e. zorba::XQueryException::source_uri(), zorba::XQueryException::source_line(), zorba::XQueryException::source_column(), zorba::XQueryException::source_line_end(), and zorba::XQueryException::source_column_end()).
 Moreover, if the error occurs during the dynamic evaluation phase, the object carries the stack trace containing the names and source location of the invoked functions.
-<tt>UserException</tt> is an <tt>XQueryException</tt> which is used to report errors that are raised by XQuery's <tt>fn:error()</tt> function.
+zorba::UserException is an zorba::XQueryException which is used to report errors that are raised by XQuery's <tt>fn:error()</tt> function.
 In addition to the source location and stack trace, instances of this class may also carry an error object (if passed to <tt>fn:error</tt>).
 
 In the C++ API, those objects are usually thrown and need to be caught (and handled) by the caller.
-However, the API also provides a way to register a user-defined diagnostic handler (i.e. subclass of <tt>DiagnosticHandler</tt>) whose <tt>error (ZorbaException const & exception)</tt> function is invoked if an error occurs.
+However, the API also provides a way to register a user-defined diagnostic handler (i.e. subclass of zorba::DiagnosticHandler) whose zorba::DiagnosticHandler::error (ZorbaException const & exception) function is invoked if an error occurs.
 
 Please take a look at the C++ examples that show how to deal with errors and warnings in the C++ API (<a href="../../cxx/html/errors_8cpp-example.html">errors.cpp</a>).
 
