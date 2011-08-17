@@ -15,6 +15,7 @@
  */
 
 #include <zorba/smart_ptr.h>
+#include "stdafx.h"
 
 namespace zorba {
 
