@@ -41,131 +41,15 @@ else
         Serialization.</p>
       </description>
 
-      <implementation-defined-items>
-        <implementation-defined-item name="expressionUnicode" value=""/>
-        <implementation-defined-item name="collations" value=""/>
-        <implementation-defined-item name="implicitTimezone" value=""/>
-        <implementation-defined-item name="warningsMethod" value=""/>
-        <implementation-defined-item name="errorsMethod" value=""/>
-        <implementation-defined-item name="XMLVersion" value=""/>
-        <implementation-defined-item name="overwrittenContextComponents" value=""/>
-        <implementation-defined-item name="axes" value=""/>
-        <implementation-defined-item name="defaultOrderEmpty" value=""/>
-        <implementation-defined-item name="pragmas" value=""/>
-        <implementation-defined-item name="optionDeclarations" value=""/>
-        <implementation-defined-item name="externalFunctionProtocols" value=""/>
-        <implementation-defined-item name="moduleLocationHints" value=""/>
-        <implementation-defined-item name="staticTypingExtensions" value=""/>
-        <implementation-defined-item name="serializationInvocation" value=""/>
-        <implementation-defined-item name="serializationDefaults" value=""/>
-        <implementation-defined-item name="externalFunctionCall" value=""/>
-        <implementation-defined-item name="limits" value=""/>
-        <implementation-defined-item name="traceDestination" value=""/>
-        <implementation-defined-item name="integerOperations" value=""/>
-        <implementation-defined-item name="decimalDigits" value=""/>
-        <implementation-defined-item name="roundOrTruncate" value=""/>
-        <implementation-defined-item name="Unicode" value=""/>
-        <implementation-defined-item name="normalizationForms" value=""/>
-        <implementation-defined-item name="collationUnits" value=""/>
-        <implementation-defined-item name="secondsDigits" value=""/>
-        <implementation-defined-item name="stringToDecimal" value=""/>
-        <implementation-defined-item name="docProcessing" value=""/>
-        <implementation-defined-item name="weakenStable" value=""/>
-        <implementation-defined-item name="additionalTypes" value=""/>
-        <implementation-defined-item name="undefinedProperties" value=""/>
-        <implementation-defined-item name="sequenceNormalization" value=""/>
-        <implementation-defined-item name="outputMethods" value=""/>
-        <implementation-defined-item name="normalizationFormBehavior" value=""/>
-        <implementation-defined-item name="additionalParams" value=""/>
-        <implementation-defined-item name="encodingPhase" value=""/>
-        <implementation-defined-item name="CDATASerialization" value=""/>
-        <implementation-defined-item name="Tokenization" value=""/>
-        <implementation-defined-item name="phrase" value=""/>
-        <implementation-defined-item name="sentence" value=""/>
-        <implementation-defined-item name="paragraph" value=""/>
-        <implementation-defined-item name="Markup Effect Token Boundaries" value=""/>
-        <implementation-defined-item name="Scoring Expressions" value=""/>
-        <implementation-defined-item name="Matching" value=""/>
-        <implementation-defined-item name="Match Option Order" value=""/>
-        <implementation-defined-item name="Language Option Tokenization" value=""/>
-        <implementation-defined-item name="Language Option Valid ID" value=""/>
-        <implementation-defined-item name="Language Option Undefined" value=""/>
-        <implementation-defined-item name="Mismatched Languages" value=""/>
-        <implementation-defined-item name="Thesaurus Option" value=""/>
-        <implementation-defined-item name="Thesaurus Relationships" value=""/>
-        <implementation-defined-item name="Thesaurus Levels" value=""/>
-        <implementation-defined-item name="Stemming Option" value=""/>
-        <implementation-defined-item name="Query Token In Stopword List" value=""/>
-        <implementation-defined-item name="StopWord Option Match Number" value=""/>
-        <implementation-defined-item name="StopWord Option Default" value=""/>
-        <implementation-defined-item name="Extension Option" value=""/>
-        <implementation-defined-item name="Extension Selection" value=""/>
-        <implementation-defined-item name="Equal Items Different Tokens" value=""/>
-        <implementation-defined-item name="FTIgnoreOption" value=""/>
-        <implementation-defined-item name="Static Context Items" value=""/>
-      </implementation-defined-items>
-      
-      <features>
-        <feature name="Minimal Conformance" supported='true' />
-        <feature name="FTMildNot Operator" supported='true' />
-        <feature name="FTUnaryNot Operator" supported='true' />
-        <feature name="FTUnit and FTBigUnit" supported='true' />
-        <feature name="FTOrder Operator" supported='true' />
-        <feature name="FTScope Operator" supported='true' />
-        <feature name="FTWindow Operator" supported='true' />
-        <feature name="FTDistance Operator" supported='true' />
-        <feature name="FTTimes Operator" supported='true' />
-        <feature name="FTContent Operator" supported='true' />
-        <feature name="FTCaseOption" supported='true' />
-        <feature name="FTStopwordOption" supported='true' />
-        <feature name="FTLanguageOption" supported='true' />
-        <feature name="FTIgnoreOption" supported='false' />
-        <feature name="Scoring" supported='false' />
-        <feature name="Weights" supported='false' />
-      </features>
-
-      <context-properties>        
-        <context-property name="Statically known namespaces" context-type="static" value=""/>
-        <context-property name="Default element/type namespace" context-type="static" value=""/>
-        <context-property name="Default function namespace" context-type="static" value="http://www.w3.org/2005/xpath-functions"/>
-        <context-property name="In-scope schema types" context-type="static" value=""/>
-        <context-property name="In-scope element declarations" context-type="static" value=""/>
-        <context-property name="In-scope attribute declarations" context-type="static" value=""/>
-        <context-property name="In-scope variables" context-type="static" value=""/>
-        <context-property name="Context item static type" context-type="static" value="item()"/>
-        <context-property name="Function signatures" context-type="static" value=""/>
-        <context-property name="Statically known collations" context-type="static" value=""/>
-        <context-property name="Default collation" context-type="static" value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
-        <context-property name="Construction mode" context-type="static" value="preserve"/>
-        <context-property name="Ordering mode" context-type="static" value="ordered"/>
-        <context-property name="Default order for empty sequences" context-type="static" value="empty greatest"/>
-        <context-property name="Boundary-space policy" context-type="static" value="strip"/>
-        <context-property name="Copy-namespaces mode" context-type="static" value="inherit preserve"/>
-        <context-property name="Base URI" context-type="static" value=""/>
-        <context-property name="Statically known documents" context-type="static" value=""/>
-        <context-property name="Statically known collections" context-type="static" value=""/>
-        <context-property name="Statically known default collection type" context-type="static" value=""/>
-        <context-property name="Context item" context-type="dynamic" value=""/>
-        <context-property name="Context position" context-type="dynamic" value=""/>
-        <context-property name="Context size" context-type="dynamic" value=""/>
-        <context-property name="Variable values" context-type="dynamic" value=""/>
-        <context-property name="Function implementations" context-type="dynamic" value=""/>
-        <context-property name="Current dateTime" context-type="dynamic" value=""/>
-        <context-property name="Implicit timezone" context-type="dynamic" value=""/>
-        <context-property name="Available documents" context-type="dynamic" value=""/>
-        <context-property name="Available collections" context-type="dynamic" value=""/>
-        <context-property name="Default collection" context-type="dynamic" value=""/>
-        <context-property name="FTCaseOption" context-type="static" value=""/>
-        <context-property name="FTDiacriticsOption" context-type="static" value=""/>
-        <context-property name="FTStemOption" context-type="static" value=""/>
-        <context-property name="FTThesaurusOption" context-type="static" value=""/>
-        <context-property name="Statically known thesauri" context-type="static" value=""/>
-        <context-property name="FTStopWordOption" context-type="static" value=""/>
-        <context-property name="Statically known stop word lists" context-type="static" value=""/>
-        <context-property name="FTLanguageOption" context-type="static" value=""/>
-        <context-property name="Statically known languages" context-type="static" value=""/>
-        <context-property name="FTWildcardOption" context-type="static" value=""/>
-      </context-properties>
+    {
+      let $XQFTTSZorba := fn:doc("XQFTTS.xml")
+      return
+      (
+        <implementation-defined-items>{$XQFTTSZorba//*:implementation-defined-item}</implementation-defined-items>,
+        <features>{$XQFTTSZorba//*:feature}</features>,
+        <context-properties>{$XQFTTSZorba//*:context-property}</context-properties>
+      )
+    }
 
     </implementation>
 

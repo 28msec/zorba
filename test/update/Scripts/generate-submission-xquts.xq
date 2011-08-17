@@ -40,24 +40,15 @@ else
         Serialization.</p>
       </description>
       
-      <implementation-defined-items>
-        <implementation-defined-item name="supportedRevalidationModes" value="lax, skip, strict"/>
-        <implementation-defined-item name="defaultRevalidationMode" value="lax"/>
-        <implementation-defined-item name="externalFunctionXDMPUL" value=""/>
-        <implementation-defined-item name="fnPutSemantics" value=""/>
-      </implementation-defined-items>
-
-      <features>
-        <feature name='Minimal Conformance' supported='true' />
-        <feature name='Update Facility Static Typing Feature' supported='false' />
-      </features>
-         
-      <context-properties>
-       <context-property
-         name="Revalidation mode"
-         value="lax"
-         context-type="static"/>
-      </context-properties>
+    {
+      let $XQUTSZorba := fn:doc("XQUTS.xml")
+      return
+      (
+        <implementation-defined-items>{$XQUTSZorba//*:implementation-defined-item}</implementation-defined-items>,
+        <features>{$XQUTSZorba//*:feature}</features>,
+        <context-properties>{$XQUTSZorba//*:context-property}</context-properties>
+      )
+    }
             
     </implementation>
 
