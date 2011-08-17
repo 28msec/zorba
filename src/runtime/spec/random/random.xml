@@ -14,22 +14,25 @@
 
 <!--
 /*******************************************************************************
- Zorba random: generates a random integer
 ********************************************************************************/
 -->
-<zorba:iterator name="RandomIterator" arity="nary">
+<zorba:iterator name="SeededRandomIterator" arity="nary">
 
-  <zorba:description author="Zorba Team">Function for generating a random integer.</zorba:description>
+  <zorba:description author="Zorba Team">
+    Function for generating pseudo random integers
+  </zorba:description>
 
-  <zorba:function isDeterministic="false">
+  <zorba:state>
+    <zorba:member type="xs_integer" name="theSeqLength" brief=""/>
+    <zorba:member type="xs_integer" name="theCurrCounter" brief=""/>
+  </zorba:state>
 
-    <zorba:signature localname="random" prefix="fn-zorba-util">
-      <zorba:output>xs:integer</zorba:output>
-    </zorba:signature>
+  <zorba:function isDeterministic="true">
 
-    <zorba:signature localname="random" prefix="fn-zorba-util">
-      <zorba:param>xs:integer</zorba:param>
-      <zorba:output>xs:integer</zorba:output>
+    <zorba:signature localname="seeded-random" prefix="fn-zorba-random">
+      <zorba:param>xs:integer</zorba:param> <!-- $seed -->
+      <zorba:param>xs:integer</zorba:param> <!-- num of number to be genreated -->
+      <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
 
   </zorba:function>
@@ -38,22 +41,25 @@
 
 <!--
 /*******************************************************************************
- Zorba pseudo-random: generates a pseudo-random integer
 ********************************************************************************/
 -->
-<zorba:iterator name="PseudoRandomIterator" arity="nary">
+<zorba:iterator name="RandomIterator" arity="nary">
 
-  <zorba:description author="Zorba Team">Function for generating a random integer.</zorba:description>
+  <zorba:description author="Zorba Team">
+    Function for generating random integers.
+    The function uses srand and passes the current time in millis as seed
+  </zorba:description>
 
-  <zorba:function isDeterministic="false">
+  <zorba:state>
+    <zorba:member type="xs_integer" name="theSeqLength" brief=""/>
+    <zorba:member type="xs_integer" name="theCurrCounter" brief=""/>
+  </zorba:state>
+
+  <zorba:function isDeterministic="true">
 
     <zorba:signature localname="random" prefix="fn-zorba-random">
-      <zorba:output>xs:integer</zorba:output>
-    </zorba:signature>
-
-    <zorba:signature localname="random" prefix="fn-zorba-random">
-      <zorba:param>xs:integer</zorba:param>
-      <zorba:output>xs:integer</zorba:output>
+      <zorba:param>xs:integer</zorba:param> <!-- num of number to be genreated -->
+      <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
 
   </zorba:function>

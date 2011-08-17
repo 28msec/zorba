@@ -1692,6 +1692,16 @@
       <value>inconsistent options to the parse-xml-fragment() function: $1</value>
     </diagnostic>
 
+    <diagnostic code="ZXQD0004" name="INVALID_PARAMETER">
+      <value>invalid parameter: $1</value>
+      <entry key="NON_NEGATIVE">
+        <value>given value must be non-negative ($2)</value>
+      </entry>
+      <entry key="NOT_WITHIN_RANGE">
+        <value>not within allowed range ($2)</value>
+      </entry>
+    </diagnostic>
+
     <!--////////// Zorba API Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZAPI0002" name="XQUERY_COMPILATION_FAILED">

@@ -2531,6 +2531,20 @@ void PrinterVisitor::endVisit ( const InScopePrefixesIterator& ) {
 // </InScopePrefixesIterator>
 
 
+// <SeededRandomIterator>
+void PrinterVisitor::beginVisit ( const SeededRandomIterator& a) {
+  thePrinter.startBeginVisit("SeededRandomIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeededRandomIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeededRandomIterator>
+
+
 // <RandomIterator>
 void PrinterVisitor::beginVisit ( const RandomIterator& a) {
   thePrinter.startBeginVisit("RandomIterator", ++theId);
@@ -2543,20 +2557,6 @@ void PrinterVisitor::endVisit ( const RandomIterator& ) {
   thePrinter.endEndVisit();
 }
 // </RandomIterator>
-
-
-// <PseudoRandomIterator>
-void PrinterVisitor::beginVisit ( const PseudoRandomIterator& a) {
-  thePrinter.startBeginVisit("PseudoRandomIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const PseudoRandomIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </PseudoRandomIterator>
 
 
 // <UuidIterator>

@@ -32,6 +32,46 @@
 
 namespace zorba {
 
+// <SeededRandomIterator>
+const char* SeededRandomIterator::class_name_str = "SeededRandomIterator";
+SeededRandomIterator::class_factory<SeededRandomIterator>
+SeededRandomIterator::g_class_factory;
+
+const serialization::ClassVersion 
+SeededRandomIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int SeededRandomIterator::class_versions_count =
+sizeof(SeededRandomIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void SeededRandomIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SeededRandomIterator::~SeededRandomIterator() {}
+
+SeededRandomIteratorState::SeededRandomIteratorState() {}
+
+SeededRandomIteratorState::~SeededRandomIteratorState() {}
+
+
+void SeededRandomIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void SeededRandomIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </SeededRandomIterator>
+
+
 // <RandomIterator>
 const char* RandomIterator::class_name_str = "RandomIterator";
 RandomIterator::class_factory<RandomIterator>
@@ -57,35 +97,19 @@ void RandomIterator::accept(PlanIterVisitor& v) const {
 
 RandomIterator::~RandomIterator() {}
 
-// </RandomIterator>
+RandomIteratorState::RandomIteratorState() {}
+
+RandomIteratorState::~RandomIteratorState() {}
 
 
-// <PseudoRandomIterator>
-const char* PseudoRandomIterator::class_name_str = "PseudoRandomIterator";
-PseudoRandomIterator::class_factory<PseudoRandomIterator>
-PseudoRandomIterator::g_class_factory;
-
-const serialization::ClassVersion 
-PseudoRandomIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int PseudoRandomIterator::class_versions_count =
-sizeof(PseudoRandomIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void PseudoRandomIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
+void RandomIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
 }
 
-PseudoRandomIterator::~PseudoRandomIterator() {}
-
-// </PseudoRandomIterator>
+void RandomIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </RandomIterator>
 
 
 // <UuidIterator>

@@ -34,32 +34,48 @@
 namespace zorba {
 
 /**
- * Function for generating a random integer.
+ * 
+ *    Function for generating pseudo random integers
+ *  
  * Author: Zorba Team
  */
-class RandomIterator : public NaryBaseIterator<RandomIterator, PlanIteratorState>
+class SeededRandomIteratorState : public PlanIteratorState
+{
+public:
+  xs_integer theSeqLength; //
+  xs_integer theCurrCounter; //
+
+  SeededRandomIteratorState();
+
+  ~SeededRandomIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class SeededRandomIterator : public NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(RandomIterator);
+  SERIALIZABLE_CLASS(SeededRandomIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(RandomIterator,
-    NaryBaseIterator<RandomIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeededRandomIterator,
+    NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<RandomIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>*)this);
   }
 
-  RandomIterator(
+  SeededRandomIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<RandomIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~RandomIterator();
+  virtual ~SeededRandomIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -68,32 +84,49 @@ public:
 
 
 /**
- * Function for generating a random integer.
+ * 
+ *    Function for generating random integers.
+ *    The function uses srand and passes the current time in millis as seed
+ *  
  * Author: Zorba Team
  */
-class PseudoRandomIterator : public NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>
+class RandomIteratorState : public PlanIteratorState
+{
+public:
+  xs_integer theSeqLength; //
+  xs_integer theCurrCounter; //
+
+  RandomIteratorState();
+
+  ~RandomIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class RandomIterator : public NaryBaseIterator<RandomIterator, RandomIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(PseudoRandomIterator);
+  SERIALIZABLE_CLASS(RandomIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PseudoRandomIterator,
-    NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(RandomIterator,
+    NaryBaseIterator<RandomIterator, RandomIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<RandomIterator, RandomIteratorState>*)this);
   }
 
-  PseudoRandomIterator(
+  RandomIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<RandomIterator, RandomIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~PseudoRandomIterator();
+  virtual ~RandomIterator();
 
   void accept(PlanIterVisitor& v) const;
 

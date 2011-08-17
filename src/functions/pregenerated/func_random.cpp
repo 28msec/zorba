@@ -31,14 +31,14 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_util_random::codegen(
+PlanIter_t fn_zorba_random_seeded_random::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new RandomIterator(sctx, loc, argv);
+  return new SeededRandomIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_random_random::codegen(
@@ -48,7 +48,7 @@ PlanIter_t fn_zorba_random_random::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new PseudoRandomIterator(sctx, loc, argv);
+  return new RandomIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_util_uuid::codegen(
@@ -66,33 +66,12 @@ void populate_context_random(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, fn_zorba_util_random,
-        (createQName("http://www.zorba-xquery.com/zorba/util-functions","","random"), 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_UTIL_RANDOM_0);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_util_random,
-        (createQName("http://www.zorba-xquery.com/zorba/util-functions","","random"), 
+    DECL_WITH_KIND(sctx, fn_zorba_random_seeded_random,
+        (createQName("http://www.zorba-xquery.com/modules/random","","seeded-random"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_UTIL_RANDOM_1);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_random_random,
-        (createQName("http://www.zorba-xquery.com/modules/random","","random"), 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_RANDOM_RANDOM_0);
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_RANDOM_SEEDED_RANDOM_2);
 
   }
 
@@ -103,7 +82,7 @@ void populate_context_random(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_zorba_random_random,
         (createQName("http://www.zorba-xquery.com/modules/random","","random"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
+        GENV_TYPESYSTEM.INTEGER_TYPE_STAR),
         FunctionConsts::FN_ZORBA_RANDOM_RANDOM_1);
 
   }

@@ -38,13 +38,12 @@ void populate_context_random(static_context* sctx);
 
 
 
-//fn-zorba-util:random
-class fn_zorba_util_random : public function
+//fn-zorba-random:seeded-random
+class fn_zorba_random_seeded_random : public function
 {
 public:
-  fn_zorba_util_random(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_random_seeded_random(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-setDeterministic(false);
 
 }
 
@@ -58,7 +57,6 @@ class fn_zorba_random_random : public function
 public:
   fn_zorba_random_random(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
-setDeterministic(false);
 
 }
 

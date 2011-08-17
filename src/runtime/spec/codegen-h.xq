@@ -90,7 +90,6 @@ declare function local:create-function-arity($iter, $function, $funcVersion as x
                                  then 
                                    "setDeterministic(false);&#xA;"
                                  else ""
-(:    let $funcVersion := local:create-func-version($function//zorba:signature[$arity]) :)
     return 
       concat($name, '(const signature&amp; sig, FunctionConsts::FunctionKind kind)',
              $gen:newline, $gen:indent,

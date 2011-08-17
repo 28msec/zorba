@@ -18,76 +18,124 @@
 #include "system/globalenv.h"
 
 #include "runtime/random/random.h"
+#include "diagnostics/diagnostic.h"
 
 #include "zorbatypes/numconversions.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include <zorba/util/time.h>
+#include <limits>
 
 #include "util/uuid/uuid.h"
 
 namespace zorba {
 
 bool
-PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+SeededRandomIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
 {
-  store::Item_t    item;
+  store::Item_t    seed;
+  store::Item_t    num;
+  unsigned int     int_seed;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  SeededRandomIteratorState* state;
+  DEFAULT_STACK_INIT(SeededRandomIteratorState, state, planState);
 
-  if((theChildren.size() == 1) &&
-      consumeNext(item, theChildren[0].getp(), planState))
+  consumeNext(seed, theChildren[0].getp(), planState);
+  consumeNext(num, theChildren[1].getp(), planState);
+  if ( num->getIntegerValue() < xs_integer( 0 ) ) 
   {
-    zstring const seed( item->getIntegerValue().toString() );
-    try {
-      xs_unsignedInt const seedInt = ztd::aton<xs_unsignedInt>(seed.c_str());
-      std::srand((unsigned int)seedInt);
-    }
-    catch ( std::exception const& ) {
-      // TODO
-      throw;
-    }
+    STACK_PUSH(false, state);
   }
   else
   {
-    std::srand((unsigned int)(time(NULL)));
-  }
+    state->theSeqLength = num->getIntegerValue();
+    state->theCurrCounter = 0;
 
-  GENV_ITEMFACTORY->createInteger(result, Integer(std::rand()));
-  STACK_PUSH (true, state);
+    if ( seed->getIntegerValue() < xs_integer ( 0 ) )
+    {
+      throw XQUERY_EXCEPTION(
+          zerr::ZXQD0004_INVALID_PARAMETER,
+          ERROR_PARAMS (
+            ZED( ZXQD0004_NON_NEGATIVE ),
+            seed->getIntegerValue()
+          ),
+          ERROR_LOC ( loc )
+      );
+    }
+
+    try
+    {
+      int_seed = static_cast<unsigned int>(
+          to_xs_int( seed->getIntegerValue() ) );
+    } catch (std::range_error& e)
+    {
+      throw XQUERY_EXCEPTION(
+          zerr::ZXQD0004_INVALID_PARAMETER,
+          ERROR_PARAMS (
+            ZED( ZXQD0004_NOT_WITHIN_RANGE ),
+            seed->getIntegerValue()
+          ),
+          ERROR_LOC ( loc )
+      );
+    }
+
+    std::srand( int_seed );
+
+    while ( state->theCurrCounter < state->theSeqLength )
+    {
+      GENV_ITEMFACTORY->createInteger(result, Integer(std::rand()));
+      state->theCurrCounter++;
+      STACK_PUSH (true, state);
+    }
+    STACK_PUSH (false, state);
+  }
 
   STACK_END (state);
 }
 
 bool
-RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+RandomIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
 {
-  store::Item_t    item;
+  store::Item_t    num;
+  unsigned int     int_seed;
+  long             walltime_millis;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  RandomIteratorState* state;
+  DEFAULT_STACK_INIT(RandomIteratorState, state, planState);
 
-  if((theChildren.size() == 1) &&
-      consumeNext(item, theChildren[0].getp(), planState))
+  consumeNext(num, theChildren[0].getp(), planState);
+  if ( num->getIntegerValue() < xs_integer( 0 ) ) 
   {
-    zstring const seed( item->getIntegerValue().toString() );
-    try {
-      xs_unsignedInt const seedInt = ztd::aton<xs_unsignedInt>(seed.c_str());
-      std::srand((unsigned int)seedInt);
-    }
-    catch ( std::exception const& ) {
-      // TODO
-      throw;
-    }
+    STACK_PUSH(false, state);
   }
   else
   {
-    std::srand((unsigned int)(time(NULL)));
-  }
+    state->theSeqLength = num->getIntegerValue();
+    state->theCurrCounter = 0;
 
-  GENV_ITEMFACTORY->createInteger(result, Integer(std::rand()));
-  STACK_PUSH (true, state);
+    // provide the seed using the current walltime in milli seconds
+    // broken down to the limits of unsigned int
+    time::walltime lCurrWallTime;
+    time::get_current_walltime( lCurrWallTime );
+    walltime_millis = time::get_walltime_in_millis( lCurrWallTime );
+
+    int_seed = walltime_millis % std::numeric_limits<unsigned int>::max();
+
+    std::srand( int_seed );
+
+    while ( state->theCurrCounter < state->theSeqLength )
+    {
+      GENV_ITEMFACTORY->createInteger(result, Integer(std::rand()));
+      state->theCurrCounter++;
+      STACK_PUSH (true, state);
+    }
+    STACK_PUSH (false, state);
+  }
 
   STACK_END (state);
 }

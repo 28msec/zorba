@@ -568,11 +568,11 @@ namespace zorba {
     void beginVisit( const InScopePrefixesIterator& );
     void endVisit  ( const InScopePrefixesIterator& );
 
+    void beginVisit( const SeededRandomIterator& );
+    void endVisit  ( const SeededRandomIterator& );
+
     void beginVisit( const RandomIterator& );
     void endVisit  ( const RandomIterator& );
-
-    void beginVisit( const PseudoRandomIterator& );
-    void endVisit  ( const PseudoRandomIterator& );
 
     void beginVisit( const UuidIterator& );
     void endVisit  ( const UuidIterator& );
