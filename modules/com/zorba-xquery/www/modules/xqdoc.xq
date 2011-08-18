@@ -60,34 +60,40 @@ xquery version "3.0";
  :
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+
+declare namespace err = "http://www.w3.org/2005/xqt-errors";
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+
 declare option ver:module-version "2.0";
 
 (:~
  : Generated an XQDoc XML document for the module located
  : at the URI provided as parameter to this function.
  :
- : @param $module-url The URL of the module for which to
+ : @param $module-uri The URL of the module for which to
  :        generate XQDoc.
- : @return The xqDoc element as specified by
- :         <a href="www.xqdoc.org">xqdoc.org</a>.
- : @error An error is thrown if no module is located at the
- :        given URL or the module could not be parsed.
+ : @return An element according to the xqdoc schema
+ :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ : @error zerr::ZXQD0002 if the xqdoc comments in the
+ :  module contain invalid XML
  :)
 declare %ann:nondeterministic function xqd:xqdoc(
-  $module-url as xs:string
+  $module-uri as xs:string
 ) as element() external;
 
 (:~
  : Generated the an XQDoc XML document for the module provided
  : as parameter to this function.
  :
- : @param $module The module (as string) file for which to generate
- :        XQDoc.
- : @return The xqDoc element as specified by
- :         <a href="www.xqdoc.org">xqdoc.org</a>.
- : @error An error is thrown if the module could not be parsed.
+ : @param $module The module (as string) for which to generate
+ :  the XQDoc documentation.
+ : @return An element according to the xqdoc schema
+ :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ : @error zerr::ZXQD0002 if the xqdoc comments in the
+ :  module contain invalid XML
  :)
 declare function xqd:xqdoc-content(
   $module as xs:string
