@@ -104,8 +104,8 @@ A.codeRef:visited {
     color: #0000FF
 }
 A:hover { 
-    text-decoration: none;  
-    background-color: #f2f2ff
+    text-decoration: underline;
+    /*background-color: #f2f2ff*/
 }
 DL.el { 
     margin-left: -1cm 
