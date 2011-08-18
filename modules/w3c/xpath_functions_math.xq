@@ -65,17 +65,17 @@ declare function math:sqrt($arg as xs:double?) as xs:double? external;
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-math-sin">math:sin</a>
  :)
-declare function math:sin($θ as xs:double?) as xs:double? external;
+declare function math:sin($theta as xs:double?) as xs:double? external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-math-cos">math:cos</a>
  :)
-declare function math:cos($θ as xs:double?) as xs:double? external;
+declare function math:cos($theta as xs:double?) as xs:double? external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-math-tan">math:tan</a>
  :)
-declare function math:tan($θ as xs:double?) as xs:double? external;
+declare function math:tan($theta as xs:double?) as xs:double? external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-math-asin">math:asin</a>
