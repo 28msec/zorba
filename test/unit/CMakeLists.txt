@@ -45,6 +45,10 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_1.xq ${CMAKE_
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_2.xq ${CMAKE_CURRENT_BINARY_DIR}/streamable_string_query_2.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string.cpp ${CMAKE_CURRENT_BINARY_DIR}/streamable_string.cpp)
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module1.xq ${CMAKE_CURRENT_BINARY_DIR}/module1.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module2.xq ${CMAKE_CURRENT_BINARY_DIR}/module2.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module3.xq ${CMAKE_CURRENT_BINARY_DIR}/module3.xq)
+
 SET(UNIT_TESTS_SRCS
   path_resolver.cpp
   multiple_runs.cpp
@@ -66,6 +70,7 @@ SET(UNIT_TESTS_SRCS
   invoke.cpp
   xquery_functions.cpp
   xmldatamanager.cpp
+  staticcollectionmanager.cpp
 )
 
 # multithread_simple.cpp

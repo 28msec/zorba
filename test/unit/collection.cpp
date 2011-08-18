@@ -28,17 +28,15 @@ int collection(int argc, char* argv[])
   void* store = zorba::StoreManager::getStore();
   zorba::Zorba* z = zorba::Zorba::getInstance(store);
 
+  std::ifstream lIn("collection1.xq");
+  assert(lIn.good());
+  zorba::XQuery_t lQuery = z->createQuery();
+  Zorba_CompilerHints lHints;
+  lQuery->compile(lIn, lHints);
+  std::cout << lQuery << std::endl;
+
   try
   {
-    {
-      std::ifstream lIn("collection1.xq");
-      assert(lIn.good());
-      zorba::XQuery_t lQuery = z->createQuery();
-      Zorba_CompilerHints lHints;
-      lQuery->compile(lIn, lHints);
-      std::cout << lQuery << std::endl;
-    }
-
     {
       std::ifstream lIn("collection2.xq");
       zorba::XQuery_t lQuery = z->createQuery();
@@ -49,6 +47,7 @@ int collection(int argc, char* argv[])
   }
   catch (zorba::XQueryException &e)
   {
+    // catch collection not declared error (it's expected)
     std::cerr << "Error: " << e << std::endl;
     return 0;
   }

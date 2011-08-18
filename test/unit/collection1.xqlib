@@ -17,6 +17,8 @@
 
 module namespace mod1 = "http://www.mod1.ch/";
 
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
 declare variable $mod1:coll := xs:QName("mod1:coll");
 
-declare ordered append-only collection mod1:coll as node()*;
+declare %ann:ordered %ann:append-only collection mod1:coll as node()*;

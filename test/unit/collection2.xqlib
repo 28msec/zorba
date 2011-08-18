@@ -18,5 +18,6 @@
 module namespace mod2 = "http://www.mod2.ch/";
 
 declare namespace mod1 = "http://www.mod1.ch/";
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
-declare ordered collection mod1:coll as node()*;
+declare %ann:ordered collection mod2:coll as node()*;

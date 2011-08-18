@@ -23,7 +23,7 @@
 #include <zorba/serializer.h>
 #include <zorba/item_sequence.h>
 #include <zorba/singleton_item_sequence.h>
-#include <zorba/staticcollectionmanager.h>
+#include <zorba/static_collection_manager.h>
 
 using namespace zorba;
 
@@ -92,7 +92,7 @@ staticcollectionamanger2(zorba::Zorba* z)
   StaticCollectionManager* lColMgr = lQuery->getStaticCollectionManager();
 
   ItemFactory* lFac = z->getItemFactory();
-  Item lCollName2 = lFac->createQName("http://www.mod4.com/", "coll");
+  Item lCollName2 = lFac->createQName("http://www.mod2.com/", "coll");
 
   lColMgr->createCollection(lCollName2);
 

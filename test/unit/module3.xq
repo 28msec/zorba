@@ -16,5 +16,7 @@
 
 module namespace mod3 = "http://www.mod3.com/";
 
-declare ordered append-only collection mod3:coll as node()*;
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare %ann:ordered %ann:append-only collection mod3:coll as node()*;
 
