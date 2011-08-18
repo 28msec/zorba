@@ -104,6 +104,7 @@ RandomIterator::nextImpl(
   store::Item_t    num;
   unsigned int     int_seed;
   long             walltime_millis;
+  zstring ltmp;
 
   RandomIteratorState* state;
   DEFAULT_STACK_INIT(RandomIteratorState, state, planState);
@@ -123,6 +124,12 @@ RandomIterator::nextImpl(
     time::walltime lCurrWallTime;
     time::get_current_walltime( lCurrWallTime );
     walltime_millis = time::get_walltime_in_millis( lCurrWallTime );
+
+    uuid_t  u;
+    memset(&u, 0, sizeof(uuid_t));
+    uuid_create(&u);
+
+    walltime_millis += u.time_low;
 
     int_seed = walltime_millis % std::numeric_limits<unsigned int>::max();
 

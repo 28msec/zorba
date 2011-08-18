@@ -67,9 +67,9 @@ declare function r:seeded-random(
  :
  : <p>However, the function is based on posix function <tt>srand()</tt> and
  : <tt>rand()</tt>. Specifically, it invokes <tt>srand()</tt>
- : with the current wallclock time in milliseconds (restricted to
- : the limit of unsigned int on the given platform) and then returns
- : the values returned by invoking <tt>rand()</tt> <tt>$num</tt>-times.</p>
+ : with some random number based on the current time
+ : and then returns the values returned by invoking
+ : <tt>rand()</tt> <tt>$num</tt>-times.</p>
  :
  : @param $num the length of the sequence returned
  : @return <tt>$num</tt> random integers, or the empty
@@ -134,7 +134,11 @@ declare function r:seeded-random-between(
       )
     else
       for $i in r:seeded-random( $seed, $num )
-      return xs:integer($i mod ($upper - $lower) + $lower)
+      return
+        if ( ( $upper - $lower ) lt 10000 ) then
+          xs:integer( fn:round( xs:double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
+        else
+          xs:integer( fn:round( xs:double( $i ) mod ( $upper - $lower ) ) + $lower )
 };
 
 (:~
