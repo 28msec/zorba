@@ -26,7 +26,7 @@ The name and value of the variable is the QName of the corresponding error.
 In addition to the errors mentioned in the previous section, Zorba may raise warnings during the static analysis phase of the query.
 Warnings are diagnostic messages that report constructions which are not inherently erroneous but which are risky or suggest there may have been an error.
 Like an error, a warning is identified by a QName whose namespace is %http://www.zorba-xquery.com/warnings.
-A list of warnings can be found in the diagnostic_list.h header (zwarn namespace) of the C++ API and in the <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_warnings.html">http://www.zorba-xquery.com/warnings</a> module.
+A list of warnings can be found in the diagnostic_list.h header (zwarn namespace) of the C++ API and in the <a href="../xqdoc/xhtml/www.zorba-xquery.com_warnings.html">http://www.zorba-xquery.com/warnings</a> module.
 
 A warning can be enabled (i.e. will be reported), disabled (i.e. will not be reported), or turned into an error (i.e. an error with the same name will be raised) by specifying options in the static context that is used to compile the query (zorba::StaticContext::declareOption) or in the prolog of an XQuery module.
 

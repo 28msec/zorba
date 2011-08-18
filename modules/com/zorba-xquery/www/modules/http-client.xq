@@ -218,7 +218,7 @@ declare option ver:module-version "2.0";
  : XQuery engines.
  :
  : Full documentation of the $request parameter can be found in
- : <a href="http://expath.org/spec/http-client.html#d2e183">the EXPath
+ : <a href="http://expath.org/spec/http-client#d2e183">the EXPath
  : specification</a>.
  :
  : @param $request Contains the various parameters of the request (see above).

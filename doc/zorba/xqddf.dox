@@ -47,7 +47,7 @@ and new built-in functions. Furthermore, both the static and the dynamic
 contexts are extended with new components that store information about
 collections, indexes, and integrity constraints. Collectively, all these
 extensions are called the <strong>XQuery Data Definition Facility</strong>
-(XQDDF). XQDDF is an extension of <a href="http://www.w3.org/TR/xquery-3-/"
+(XQDDF). XQDDF is an extension of <a href="http://www.w3.org/TR/xquery-30/"
 target="_blank">XQuery 3.0</a>, <a href="http://www.w3.org/TR/xquery-update-10/"
 target="_blank">XQuery Update Facility</a>, and <a
 href="scripting_spec.html" target="_blank">Zorba's XQuery Scripting
@@ -2190,7 +2190,7 @@ QName passed as parameter, to be checked.
 
 Similar to collections and indexes, the module declaring the integrity
 constraints
-(i.e. with namespace http://www.news.org/data) can also declare variables whoes
+(i.e. with namespace %http://www.news.org/data) can also declare variables whoes
 values are the QNames of the ICs. This allows their names to be easily
 referenced by
 subsequent expressions. For example, such a variable can be passed as a
@@ -2233,7 +2233,7 @@ appear in the merged list.</li>
 
 \section error_summary Appendix Error Summary
 
-The prefix "zerr" is bound to the error namespace of Zorba, i.e. http://www.zorba-xquery.com/errors .
+The prefix "zerr" is bound to the error namespace of Zorba, i.e. %http://www.zorba-xquery.com/errors .
 The prefix "err" is bound to the general XQuery error namespace, i.e. http://www.w3.org/2005/xqt-errors .
 
 <p>XQuery Data Definition Facility - Static Errors:</p>

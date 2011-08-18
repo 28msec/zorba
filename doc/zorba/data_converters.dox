@@ -14,10 +14,10 @@ At the end of the processing, the resulting instance can be converted back into 
 Please take a look at the various data converter modules for more information.
 
 <ul>
-  <li>CSV: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_csv.html">http://www.zorba-xquery.com/modules/converters/csv</a></li>
-  <li>HTML: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_html.html">http://www.zorba-xquery.com/modules/converters/html</a></li>
-  <li>JSON: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_json.html">http://www.zorba-xquery.com/modules/converters/json</a></li>
-  <li>XML: <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_xml.html">http://www.zorba-xquery.com/modules/converters/xml</a></li>
+  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">CSV</a></li>
+  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_html.html">HTML: </a></li>
+  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_json.html">JSON</a></li>
+  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_xml.html">XML</a></li>
 </ul>
 
 Also, please <a href="mailto:zorba-users@zorba-xquery.com">send us</a> a message if there is a particular data format that you would like to see supported by Zorba, and we will try to help.

@@ -205,7 +205,7 @@ The collection is called "earthquakes" and will be used to contain data of the w
 \subsection dl_sc2_ex2 Retrieve Data and Store in Collection
 
 This examples fetches the data as CSV from the web, converts it to XML, and inserts it into the earthquake collection.
-The conversion is done using <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">Zorba's CSV converter module</a>.
+The conversion is done using <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">Zorba's CSV converter module</a>.
 
 \include zorba/store/sc2_ex2.xq
 

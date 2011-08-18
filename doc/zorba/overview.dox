@@ -87,8 +87,8 @@ that are supported by Zorba:
 
   <li><a href="http://www.w3.org/TR/xslt">XSLT 1.0</a> is supported via the external library <a href="http://xmlsoft.org/XSLT/">LibXSLT</a>.
   For more information,
-  please check the <a href="../../latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_languages_xslt.html">XSLT module</a>.
-  Zorba has no support yet for the upcoming standard <a href="http://www.w3.org/XML/Group/qtspecs/specifications/xslt-30/html/Overview.html">XSLT 3.0</a>.
+  please check the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_languages_xslt.html">XSLT module</a>.
+  Zorba has no support yet for the upcoming standard <a href="http://www.w3.org/XML/Group/qtspecs/specifications/xslt-30/html/">XSLT 3.0</a>.
   Please let us know if this is a language that Zorba should support.</li>
 
   <li><a href="http://www.w3.org/TR/xslt-xquery-serialization/">XML Serialization</a> is supported by default.</li>

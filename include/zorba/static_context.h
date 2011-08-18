@@ -142,12 +142,12 @@ namespace zorba {
       /** \brief Adds a collation URI.
        *
        * The URI specifies the locale and collation strength of the collation that is added.
-       * A valid collation URI must begin with http://www.flworfound.org/collations/.
+       * A valid collation URI must begin with %http://www.zorba-xquery.com/collations/.
        * This prefix is followed by a collation strength (i.e. PRIMARY, SECONDARY, TERTIARY,
        * QUATTERNARY, or IDENTICAL) followed by a '/'.
        * After the strength a lower-case two- or three-letter ISO-639 language code must follow.
        * The URI may end with an upper-case two-letter ISO-3166.
-       * For example, http://www.flworfound.org/collations/PRIMARY/en/US
+       * For example, %http://www.zorba-xquery.com/collations/PRIMARY/en/US
        * specifies an english language with US begin the country..
        *
        * Internally, ICU is used for comparing strings. For detailed description see
