@@ -5,7 +5,6 @@
   <li> \ref Features </li>
   <li> \ref Context_properties </li>
 </ul>
-
 \section IDI Implementation Defined Items
 <table bgcolor="lightcyan">
   <tr>
@@ -34,7 +33,6 @@
     <td>fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent.</td>
   </tr>
 </table>
-
 \section Features Supported Features
 <table bgcolor="lightcyan">
   <tr>
@@ -173,13 +171,12 @@
     <td bgcolor="white">false</td>
   </tr>
 </table>
-
 \section Context_properties Context Properties
 <table bgcolor="lightcyan">
   <tr>
     <td>Feature</td>
     <td>Name</td>
-    <td>Context type</td>
+    <td>Context Type</td>
     <td>Value</td>
   </tr>
   <tr>

@@ -20,7 +20,7 @@ let $XQFTTSZorba := fn:doc("../../test/rbkt/Scripts/w3c/XQFTTS.xml")
 
 return 
 ("",
-"/** \page impl_dep_features  Implementation dependent features, supported features and context properties
+"/** \page impl_dep_features  Information about Implementation Dependent Features and Properties
 
 ",
 <ul>
@@ -28,10 +28,10 @@ return
   <li> \ref Features </li>
   <li> \ref Context_properties </li>
 </ul>,
-"\section IDI Implementation defined items",
+"
+\section IDI Implementation Defined Items",
   <table bgcolor="lightcyan">
-    <tr><td collspan="3">Implementation defined items</td></tr>
-    <tr><td>Feature</td><td>Name</td><td>Value</td></tr>
+    <tr><td>Feature</td><td>Name</td><td>Value/Description</td></tr>
     {
       for $idi in $XQTSZorba//*:implementation-defined-item
       where not(data($idi/@value) = "")
@@ -64,9 +64,9 @@ return
     }
   </table>
   ,
-"\section Features",
+"
+\section Features Supported Features",
   <table bgcolor="lightcyan">
-    <tr><td collspan="3">Features</td></tr>
     <tr><td>Feature</td><td>Name</td><td>Value</td></tr>
     {
       for $feature in $XQTSZorba//*:feature
@@ -96,10 +96,10 @@ return
       </tr>
     }
   </table>,
-  "\section Context_properties Context properties",
+  "
+\section Context_properties Context Properties",
     <table bgcolor="lightcyan">
-    <tr><td collspan="4">Context properties</td></tr>
-    <tr><td>Feature</td><td>Name</td><td>Context type</td><td>Value</td></tr>
+    <tr><td>Feature</td><td>Name</td><td>Context Type</td><td>Value</td></tr>
     {
       for $property in $XQTSZorba//*:context-property
       where not(data($property/@value) = "")
