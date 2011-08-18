@@ -112,7 +112,3 @@ ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 # ADD NEW UNIT TESTS HERE
 ZORBA_ADD_TEST("test/libunit/uri" LibUnitTest uri)
 EXPECTED_FAILURE(test/libunit/uri 3118348)
-
-IF(ZORBA_WITH_DEBUGGER)
-  ADD_SUBDIRECTORY(debugger)
-ENDIF(ZORBA_WITH_DEBUGGER)
