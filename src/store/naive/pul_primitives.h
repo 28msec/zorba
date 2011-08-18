@@ -159,12 +159,14 @@ class UpdDelete : public UpdatePrimitive
 
 protected:
   InternalNode   * theParent;
-  ulong            thePos;
-  store::Item_t    theRightSibling;
-  zstring          theLeftContent;
+
+  csize            thePos;
+  XmlNode_t        theRsib;
+  XmlNode_t        theLsib;
+  XmlNode_t        theNewTextNode;
 
 protected:
-  UpdDelete(CollectionPul* pul, const QueryLoc* aLoc, store::Item_t& target);
+  UpdDelete(CollectionPul* pul, const QueryLoc* loc, store::Item_t& target);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -335,13 +337,10 @@ protected:
 
   ulong                       theNumApplied;
 
-  ulong                       thePos;
-  store::Item_t               theLeftMergedNode;
-  store::Item_t               theRightMergedNode;
-  store::Item_t               theRightSibling;
-  zstring                     theLeftContent;
-
-  bool                        theIsTyped;
+  csize                       thePos;
+  XmlNode_t                   theRsib;
+  XmlNode_t                   theLsib;
+  XmlNode_t                   theNewTextNode;
 
   UpdReplaceChild(
         CollectionPul* pul,

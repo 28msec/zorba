@@ -2104,6 +2104,9 @@ void CollectionPul::finalizeUpdates()
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
 
+      if (!upd->theIsApplied)
+        continue;
+
       if (upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD)
       {
         UpdReplaceChild* upd2 = static_cast<UpdReplaceChild*>(upd);
@@ -2115,18 +2118,16 @@ void CollectionPul::finalizeUpdates()
         node->theParent = INTERNAL_NODE(upd->theTarget);
         node->detach();
 
-        if (upd2->theLeftMergedNode != NULL)
+        if (upd2->theRsib != NULL)
         {
-          node = BASE_NODE(upd2->theLeftMergedNode);
-          node->theParent = INTERNAL_NODE(upd2->theTarget);
-          node->detach();
+          upd2->theRsib->theParent = INTERNAL_NODE(upd2->theTarget);
+          upd2->theRsib->detach();
         }
 
-        if (upd2->theRightMergedNode != NULL)
+        if (upd2->theLsib != NULL)
         {
-          node = BASE_NODE(upd2->theRightMergedNode);
-          node->theParent = INTERNAL_NODE(upd2->theTarget);
-          node->detach();
+          upd2->theLsib->theParent = INTERNAL_NODE(upd2->theTarget);
+          upd2->theLsib->detach();
         }
       }
       else
@@ -2167,11 +2168,12 @@ void CollectionPul::finalizeUpdates()
         target->detach();
       }
 
-      if (upd->theRightSibling != NULL)
+      if (upd->theNewTextNode != NULL)
       {
-        XmlNode* target = BASE_NODE(upd->theRightSibling);
-        target->theParent = upd->theParent;
-        target->detach();
+        upd->theRsib->theParent = upd->theParent;
+        upd->theRsib->detach();
+        upd->theLsib->theParent = upd->theParent;
+        upd->theLsib->detach();
       }
     }
 

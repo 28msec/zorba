@@ -758,9 +758,6 @@ void InternalNode::deleteChild(UpdDelete& upd)
 {
   XmlNode* child = BASE_NODE(upd.theTarget);
 
-  store::StoreConsts::NodeKind childKind = child->getNodeKind();
-  store::StoreConsts::NodeKind parentKind = getNodeKind();
-
   // For now, just diconnect but do not detach the child. This way, undo becomes
   // easy as we just have to connect the child back to it parent. The child will
   // be detached later, after all updates have been applied with no errors (see.
@@ -777,10 +774,14 @@ void InternalNode::deleteChild(UpdDelete& upd)
   
   // Merge 2 text nodes that become adjacent due to this delete
 
+  store::StoreConsts::NodeKind childKind = child->getNodeKind();
+  store::StoreConsts::NodeKind parentKind = getNodeKind();
+
   if (childKind == store::StoreConsts::attributeNode ||
       parentKind != store::StoreConsts::elementNode)
     return;
 
+  // Note: numChildren() returns the number of children AFTER the child deletion
   if (pos == 0 || pos == numChildren())
     return;
 
@@ -794,15 +795,19 @@ void InternalNode::deleteChild(UpdDelete& upd)
   TextNode* t_rsib = reinterpret_cast<TextNode*>(rsib);
   TextNode* t_lsib = reinterpret_cast<TextNode*>(lsib);
 
-  upd.theRightSibling = t_rsib;
-  upd.theLeftContent = t_lsib->getText();
-
-  removeChild(pos);
+  upd.theRsib = t_rsib;
+  upd.theLsib = t_lsib;
 
   zstring newText = t_lsib->getText();
   newText += t_rsib->getText();
 
-  t_lsib->setText(newText);
+  upd.theNewTextNode = GET_NODE_FACTORY().createTextNode(this->getTree(),
+                                                         this,
+                                                         false,
+                                                         pos+1,
+                                                         newText);
+  removeChild(pos);
+  removeChild(pos-1);
 }
 
 
@@ -814,22 +819,24 @@ void InternalNode::restoreChild(UpdDelete& upd)
   XmlNode* child = BASE_NODE(upd.theTarget);
   csize pos = upd.thePos;
 
-  child->connect(this, pos);
+  if (upd.theNewTextNode)
+  {
+    ZORBA_ASSERT(pos > 0);
+    ZORBA_ASSERT(getChild(pos - 1) == upd.theNewTextNode);
+
+    upd.theRsib->connect(this, pos);
+    child->connect(this, pos);
+    upd.theLsib->connect(this, pos);
+    
+    upd.theNewTextNode->detach();
+  }
+  else
+  {
+    child->connect(this, pos);
+  }
 
   if (!upd.theTypeUndoList.empty())
     restoreType(upd.theTypeUndoList);
-
-  if (upd.theRightSibling != NULL)
-  {
-    ZORBA_ASSERT(pos > 0);
-    ZORBA_ASSERT(getChild(pos - 1)->getNodeKind() == store::StoreConsts::textNode);
-
-    TextNode* lsib = reinterpret_cast<TextNode*>(getChild(pos - 1));
-    TextNode* rsib = reinterpret_cast<TextNode*>(upd.theRightSibling.getp());
-
-    rsib->connect(this, pos+1);
-    lsib->setText(upd.theLeftContent);
-  }
 }
 
 
@@ -1166,6 +1173,7 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
     if (upd.theRemoveType)
       removeType(upd);
   
+    // Note: numChildren() returns the number of children AFTER the child deletion
     if (pos == 0 || pos == numChildren())
       return;
 
@@ -1179,21 +1187,26 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
     TextNode* t_rsib = reinterpret_cast<TextNode*>(rsib);
     TextNode* t_lsib = reinterpret_cast<TextNode*>(lsib);
 
-    upd.theRightSibling = t_rsib;
-    upd.theLeftContent = t_lsib->getText();
-      
-    removeChild(pos);
-      
+    upd.theRsib = t_rsib;
+    upd.theLsib = t_lsib;
+
     zstring newText = t_lsib->getText();
     newText += t_rsib->getText();
-      
-    t_lsib->setText(newText);
+
+    upd.theNewTextNode = GET_NODE_FACTORY().createTextNode(this->getTree(),
+                                                           this,
+                                                           false,
+                                                           pos+1,
+                                                           newText);
+    removeChild(pos);
+    removeChild(pos-1);
   }
   else
   {
     csize pos = findChild(child);
 
-    ZORBA_FATAL(pos < numChildren(), "");
+    if (pos >= numChildren())
+      return;
 
     upd.thePos = pos;
     upd.theIsApplied = true;
@@ -1235,35 +1248,37 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
     {
       TextNode* textNode1 = reinterpret_cast<TextNode*>(lsib);
       TextNode* textNode2 = reinterpret_cast<TextNode*>(firstNew);
+      
+      upd.theLsib = lsib;
 
-      zstring content;
-      content.reserve(textNode1->getText().size() + textNode2->getText().size());
-      content = textNode1->getText();
-      content += textNode2->getText();
-
-      textNode2->setText(content);
-
-      upd.theLeftMergedNode = lsib;
+      zstring newText;
+      newText.reserve(textNode1->getText().size() + textNode2->getText().size());
+      newText = textNode1->getText();
+      newText += textNode2->getText();
+    
+      // Note: we can update in-place textNode2 because it is a brand new node that
+      // cannot be referenced anywhere outside this pul.
+      textNode2->setText(newText);
 
       --pos;
       removeChild(pos);
     }
-
+    
     if (rsib != NULL &&
         rsib->getNodeKind() == store::StoreConsts::textNode &&
         lastNew->getNodeKind() == store::StoreConsts::textNode)
     {
       TextNode* textNode1 = reinterpret_cast<TextNode*>(lastNew);
       TextNode* textNode2 = reinterpret_cast<TextNode*>(rsib);
-
-      zstring content;
-      content.reserve(textNode1->getText().size() + textNode2->getText().size());
-      content = textNode1->getText();
-      content += textNode2->getText();
-
-      textNode1->setText(content);
       
-      upd.theRightMergedNode = rsib;
+      upd.theRsib = rsib;
+
+      zstring newText;
+      newText.reserve(textNode1->getText().size() + textNode2->getText().size());
+      newText = textNode1->getText();
+      newText += textNode2->getText();
+      
+      textNode1->setText(newText);
       
       removeChild(pos + numNewChildren);
     }
@@ -1284,18 +1299,20 @@ void InternalNode::restoreChild(UpdReplaceChild& upd)
 
     csize pos = upd.thePos;
 
-    child->connect(this, pos);
-
-    if (upd.theRightSibling != NULL)
+    if (upd.theNewTextNode)
     {
       ZORBA_ASSERT(pos > 0);
-      ZORBA_ASSERT(getChild(pos - 1)->getNodeKind() == store::StoreConsts::textNode);
-
-      TextNode* lsib = reinterpret_cast<TextNode*>(getChild(pos - 1));
-      TextNode* rsib = reinterpret_cast<TextNode*>(upd.theRightSibling.getp());
+      ZORBA_ASSERT(getChild(pos - 1) == upd.theNewTextNode.getp());
       
-      rsib->connect(this, pos+1);
-      lsib->setText(upd.theLeftContent);
+      upd.theRsib->connect(this, pos);
+      child->connect(this, pos);
+      upd.theLsib->connect(this, pos);
+      
+      upd.theNewTextNode->detach();
+    }
+    else
+    {
+      child->connect(this, pos);
     }
   }
   else
@@ -1303,24 +1320,24 @@ void InternalNode::restoreChild(UpdReplaceChild& upd)
     if (upd.theNumApplied == 0)
       return;
 
-    csize pos = findChild(BASE_NODE(upd.theNewChildren[0]));
+    csize pos = upd.thePos;
 
-    ZORBA_FATAL(pos < numChildren(), "");
-    ZORBA_ASSERT(pos == upd.thePos);
+    if (upd.theLsib)
+    {
+      ZORBA_ASSERT(pos > 0);
+      upd.theLsib->connect(this, pos-1);
+    }
+
+    ZORBA_ASSERT(getChild(pos) == upd.theNewChildren[0].getp());
 
     removeChildren(pos, upd.theNumApplied);
 
     child->connect(this, pos);
 
-    if (upd.theLeftMergedNode)
-    {
-      ZORBA_ASSERT(pos > 0);
-      insertChild(BASE_NODE(upd.theLeftMergedNode), pos-1);
-    }
-    else if (upd.theRightMergedNode)
+    if (upd.theRsib)
     {
       ZORBA_ASSERT(pos < numChildren() - 1);
-      insertChild(BASE_NODE(upd.theRightMergedNode), pos+1);
+      upd.theRsib->connect(this, pos + numNewChildren);
     }
   }
 

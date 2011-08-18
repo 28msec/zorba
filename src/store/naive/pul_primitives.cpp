@@ -47,7 +47,10 @@ namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-UpdatePrimitive::UpdatePrimitive(PULImpl* pul, const QueryLoc* aLoc, store::Item_t& target)
+UpdatePrimitive::UpdatePrimitive(
+    PULImpl* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& target)
   :
   thePul(pul),
   theCollectionPul(NULL),
@@ -61,7 +64,10 @@ UpdatePrimitive::UpdatePrimitive(PULImpl* pul, const QueryLoc* aLoc, store::Item
 }
 
 
-UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, const QueryLoc* aLoc, store::Item_t& target)
+UpdatePrimitive::UpdatePrimitive(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& target)
   :
   thePul(pul->thePul),
   theCollectionPul(pul),
@@ -156,6 +162,10 @@ void UpdDelete::undo()
   {
     theParent->restoreChild(*this);
   }
+
+  theRsib = NULL;
+  theLsib = NULL;
+  theNewTextNode = NULL;
 }
 
 
@@ -374,8 +384,7 @@ UpdReplaceChild::UpdReplaceChild(
     std::vector<store::Item_t>& newChildren)
   :
   UpdatePrimitive(pul, aLoc, target),
-  theNumApplied(0),
-  theIsTyped(false)
+  theNumApplied(0)
 {
   theChild.transfer(child);
 
@@ -387,9 +396,9 @@ UpdReplaceChild::UpdReplaceChild(
        childKind == store::StoreConsts::textNode))
     theRemoveType = true;
 
-  uint64_t numChildren = (uint64_t)newChildren.size();
+  csize numChildren = newChildren.size();
   theNewChildren.resize(numChildren);
-  for (uint64_t i = 0; i < numChildren; ++i)
+  for (csize i = 0; i < numChildren; ++i)
   {
     theNewChildren[i].transfer(newChildren[i]);
 
@@ -414,6 +423,10 @@ void UpdReplaceChild::apply()
 void UpdReplaceChild::undo()
 {
   INTERNAL_NODE(theTarget)->restoreChild(*this);
+
+  theRsib = NULL;
+  theLsib = NULL;
+  theNewTextNode = NULL;
 }
 
 
