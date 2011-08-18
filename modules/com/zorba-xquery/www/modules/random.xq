@@ -195,3 +195,12 @@ declare %ann:nondeterministic function r:random-between(
 {
   r:random-between($lower, $upper, 1)
 };
+
+(:~
+ : This function returns a uuid. Note, that the function is not stable,
+ : that is, it returns a different UUID everytime the function is invoked.
+ :
+ : @return the generated UUID as xs:string
+:)
+declare %ann:nondeterministic function r:uuid() as xs:string external;
+
