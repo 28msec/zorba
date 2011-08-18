@@ -252,8 +252,14 @@ void copy_clause::serialize(::zorba::serialization::Archiver& ar)
 copy_clause_t copy_clause::clone(expr::substitution_t& subst) const 
 {
   ZORBA_ASSERT(theVar && theExpr);
-  return new copy_clause(static_cast<var_expr*>(theVar->clone(subst).getp()), 
-                         theExpr->clone(subst));   
+
+  expr_t domainCopy = theExpr->clone(subst);
+
+  var_expr_t varCopy = new var_expr(*theVar);
+
+  subst[theVar.getp()] = varCopy.getp();
+
+  return new copy_clause(varCopy, domainCopy);   
 }
 
 
@@ -321,15 +327,15 @@ expr_t transform_expr::clone(substitution_t& subst) const
 
   rchandle<transform_expr> cloneExpr(new transform_expr(theSctx, get_loc()));
 
-  cloneExpr->setModifyExpr(theModifyExpr->clone(subst));
-  cloneExpr->setReturnExpr(theReturnExpr->clone(subst));
-
   for (std::vector<copy_clause_t>::const_iterator lIter = theCopyClauses.begin();
        lIter != theCopyClauses.end();
        ++lIter) 
   {
     cloneExpr->add_back((*lIter)->clone(subst));
   }
+
+  cloneExpr->setModifyExpr(theModifyExpr->clone(subst));
+  cloneExpr->setReturnExpr(theReturnExpr->clone(subst));
 
   return cloneExpr.getp();
 }
