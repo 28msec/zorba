@@ -48,13 +48,19 @@ ELSE (EXISTS ${ZORBA_EXE})
 ENDIF (EXISTS ${ZORBA_EXE})
 
 IF(ZORBA_WORKS)
+  # Generate NOTICE.txt from NOTICE.xml
   ADD_CUSTOM_COMMAND(OUTPUT "${CMAKE_SOURCE_DIR}/NOTICE.txt"
     COMMAND "${ZORBA_EXE}" "-q" "${CMAKE_CURRENT_BINARY_DIR}/notice-generator.xq" "-f" "--omit-xml-declaration"
     MAIN_DEPENDENCY "${CMAKE_CURRENT_BINARY_DIR}/notice-generator.xq" 
     DEPENDS "${CMAKE_SOURCE_DIR}/NOTICE.xml")
-
   ADD_CUSTOM_TARGET(NOTICE ALL
     DEPENDS "${CMAKE_SOURCE_DIR}/NOTICE.txt"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
+
+  # Manual target to check for Apache license in all sources
+  ADD_CUSTOM_TARGET(check_apache_license COMMAND
+    "${ZORBA_EXE}" -f -q "${CMAKE_CURRENT_SOURCE_DIR}/check_apache_license.xq"
+    -e "path-to-zorba:=${CMAKE_SOURCE_DIR}"
+    -e "path-to-modules:=${ZORBA_MODULES_DIR}")
 ENDIF(ZORBA_WORKS)

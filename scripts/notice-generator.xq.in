@@ -36,7 +36,9 @@ declare function local:header() as xs:string
   concat(
     "-----------", "&#10;",
     "Zorba ", $local:zorba-version, "&#10;",
-    "-----------"
+    "-----------", "&#10;&#10;",
+    "(Note: This file is generated automatically from NOTICE.xml.&#10;",
+    "Please do not modify this file directly.)&#10;&#10;"
   )
 };
 

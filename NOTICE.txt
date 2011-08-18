@@ -2,6 +2,11 @@
 Zorba 1.5.0
 -----------
 
+(Note: This file is generated automatically from NOTICE.xml.
+Please do not modify this file directly.)
+
+
+
 
 Apache 2
 
