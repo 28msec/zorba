@@ -272,7 +272,7 @@ bool fileEquals(
   }
 
   // Consume a leading byte-order-mark
-  char bom[3];
+  char bom[3] = { '\0' };
   refStream.read(bom, 3);
   if (bom[0] != static_cast<char>(0xEF) ||
     bom[1] != static_cast<char>(0xBB) ||
