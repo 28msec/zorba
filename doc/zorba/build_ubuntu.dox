@@ -86,10 +86,10 @@ sudo apt-get install libjansson4 libjansson-dev
 \code
 svn co https://zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba
 cd zorba
-mkdir debug
-cd debug
+cmake -Doutdir=../zm -Dallmodules=1 -P modules/DownloadModules.cmake
+mkdir build
+cd build
 cmake -DCMAKE_BUILD_TYPE="Debug" -DCCLIENT_INCLUDE="~/imap-2007e/c-client" -DCCLIENT_LIBRARY="~/imap-227e/c-client/c-client.a" ../
-make
 \endcode
 
 **/

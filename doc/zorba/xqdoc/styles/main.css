@@ -304,8 +304,8 @@ body {
 .innerheader h1 {
   text-align: left;
   font-size: 42px;
-  padding-top: 28px;
-  padding-left: 66px;
+  padding-top: 14px;
+  padding-left: 64px;
   font-weight: bolder;
   font-family: 'Lucida Grande',Helvetica,Arial,sans-serif;
 }
@@ -319,13 +319,13 @@ body {
 }
 
 .innerheader a, .innerheader a:visited {
-  -moz-transition: all 0.25s linear 0s;
+  transition: all 0.25s linear 0s;
   border-left: 2px solid #FFFFFF;
   text-decoration:  none;
 }
 
 .innerheader a:hover {
-  -moz-transition: all 0.25s linear 0s;
+  transition: all 0.25s linear 0s;
   border-color: #184a79;
   text-decoration:  none;
 }
@@ -333,7 +333,7 @@ body {
 .innerheader p {
   font-size: 13px;
   padding-top: 5px;
-  padding-left: 66px;
+  padding-left: 64px;
   font-family: 'Lucida Grande',Helvetica,Arial,sans-serif;
 }
 

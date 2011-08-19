@@ -118,8 +118,8 @@ void EventSchemaValidator::endElem(store::Item_t elemName)
 
 void EventSchemaValidator::attr(store::Item_t attrName, const zstring& textValue)
 {
-  //cout << "  sv   Attr: " << attrName->getPrefix()->c_str() << ":"
-  //     << attrName->getLocalName()->c_str() << " = '" << textValue->c_str() << "'\n";
+  //cout << "  sv   Attr: " << attrName->getPrefix() << ":"
+  //     << attrName->getLocalName() << " = '" << textValue << "'\n";
 
   XMLChArray prefix(attrName->getPrefix());
   XMLChArray uri(attrName->getNamespace());
@@ -140,7 +140,7 @@ void EventSchemaValidator::endAttrs()
 
 void EventSchemaValidator::text(const zstring& textValue)
 {
-  //cout << "  sv   Text: '" << textValue->c_str() << "'\n";
+  //cout << "  sv   Text: '" << textValue << "'\n";
 
   XMLChArray value(textValue);
   theSchemaValidatorFilter->textEvent(value);
@@ -150,7 +150,7 @@ void EventSchemaValidator::text(const zstring& textValue)
 
 void EventSchemaValidator::ns(const zstring& prefix, const zstring& uri)
 {
-  //cout << "     Ns  : " << prefix->c_str() << " = '" << uri->c_str() << "'\n";
+  //cout << "     Ns  : " << prefix << " = '" << uri << "'\n";
 
   XMLChArray prefixVal(prefix.c_str());
   XMLChArray uriVal(uri.c_str());
@@ -211,8 +211,8 @@ store::Item_t EventSchemaValidator::getSubstitutedElemQName()
                                   "",
                                   substElemName.localForm());
 
-    //cout << " : " << substElemQName->getLocalName()->c_str() << " @ "
-    //     << substElemQName->getNamespace()->c_str() <<"\n";
+    //cout << " : " << substElemQName->getLocalName() << " @ "
+    //     << substElemQName->getNamespace() <<"\n";
 
     return substElemQName;
   }
@@ -226,8 +226,8 @@ void EventSchemaValidator::startType(store::Item_t typeQName)
   XMLChArray uri(typeQName->getNamespace());
   XMLChArray localname(typeQName->getLocalName());
 
-  //cout << "   SType: " << typeQName->getLocalName()->c_str() << " @ "
-  //     << typeQName->getNamespace()->c_str() << "\n";
+  //cout << "   SType: " << typeQName->getLocalName() << " @ "
+  //     << typeQName->getNamespace() << "\n";
 
   theSchemaValidatorFilter->startTypeEvent(uri, localname);
 }
