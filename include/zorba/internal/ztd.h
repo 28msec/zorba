@@ -149,7 +149,7 @@ namespace has_insertion_operator_impl {
    * type \c T has a global <code>std::ostream& operator<<(std::ostream&,T
    * const&)</code> defined for it.  However, do not use this class directly.
    *
-   * @tparam The type to check.
+   * @tparam T The type to check.
    */
   template<typename T>
   class has_insertion_operator {
