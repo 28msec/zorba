@@ -111,7 +111,7 @@ namespace audit {
 
   class ZORBA_DLL_PUBLIC Provider {
   public:
-    virtual Configuration* createConfiguration()                = 0;
+    virtual Configuration* createConfiguration(size_t = 0)      = 0;
     virtual void           destroyConfiguration(Configuration*) = 0;
 
     virtual Event* createEvent(const Configuration*) = 0;

@@ -179,9 +179,8 @@ bool Configuration::enableProperty(
 // ConfigurationImpl
 //************************************************************************
 
-ConfigurationImpl::ConfigurationImpl()
-  : m_enabled(0) {
-  m_size = Configuration::getPropertyCount();
+ConfigurationImpl::ConfigurationImpl(size_t size)
+  : m_size(size), m_enabled(0) {
   m_enabled = new bool[m_size];
   for (bool* itr = m_enabled; itr < m_enabled + m_size; ++itr) {
     *itr = false;
@@ -399,8 +398,11 @@ NOPEventImpl NOP_EVENT_IMPL;
 // ProviderImpl
 //************************************************************************
 
-Configuration* ProviderImpl::createConfiguration() {
-  return new ConfigurationImpl();
+Configuration* ProviderImpl::createConfiguration(size_t size) {
+  if (!size) {
+    size = Configuration::getPropertyCount();
+  }
+  return new ConfigurationImpl(size);
 }
 
 void ProviderImpl::destroyConfiguration(Configuration* config) {

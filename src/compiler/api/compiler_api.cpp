@@ -210,7 +210,7 @@ PlanIter_t XQueryCompiler::compile(
       sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
 
   zorba::time::Timer lTimer;
-  zorba::audit::ScopedTimeAuditor durationAudit(
+  zorba::audit::DurationAuditor durationAudit(
       sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
 
   parsenode_t lAST = parse(aXQuery, aFileName);
@@ -237,13 +237,13 @@ PlanIter_t XQueryCompiler::compile(
 {
   {
     zorba::time::Timer lTimer;
-    zorba::audit::ScopedTimeAuditor durationAudit(
+    zorba::audit::DurationAuditor durationAudit(
         aAuditRecord, zorba::audit::XQUERY_COMPILATION_TRANSLATION_DURATION, lTimer);
     rootExpr = normalize(ast); // also does the translation
   }
   {
     zorba::time::Timer lTimer;
-    zorba::audit::ScopedTimeAuditor durationAudit(
+    zorba::audit::DurationAuditor durationAudit(
         aAuditRecord, zorba::audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION, lTimer);
     rootExpr = optimize(rootExpr);
   }
@@ -255,7 +255,7 @@ PlanIter_t XQueryCompiler::compile(
   PlanIter_t plan;
   {
     zorba::time::Timer lTimer;
-    zorba::audit::ScopedTimeAuditor durationAudit(
+    zorba::audit::DurationAuditor durationAudit(
         aAuditRecord, zorba::audit::XQUERY_COMPILATION_CODEGENERATION_DURATION, lTimer);
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
   }

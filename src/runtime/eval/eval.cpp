@@ -351,13 +351,13 @@ PlanIter_t EvalIterator::compile(
   zorba::audit::ScopedRecord sar(ae);
 
   std::string lName = evalname.str();
-  zorba::audit::ScopedAuditor<std::string> filenameAudit(
+  zorba::audit::StringAuditor filenameAudit(
       sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lName);
 
   parsenode_t ast;
   {
     zorba::time::Timer lTimer;
-    zorba::audit::ScopedTimeAuditor durationAudit(
+    zorba::audit::DurationAuditor durationAudit(
         sar, zorba::audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
     ast = compiler.parse(os, lName);
   }

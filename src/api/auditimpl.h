@@ -118,7 +118,7 @@ namespace audit {
     friend class EventImpl;
     friend class ProviderImpl;
 
-    ConfigurationImpl();
+    ConfigurationImpl(size_t size);
     ConfigurationImpl(const ConfigurationImpl&); // not implemented
     ConfigurationImpl& operator=(const ConfigurationImpl&);  // not implemented
     virtual ~ConfigurationImpl();
@@ -200,7 +200,7 @@ namespace audit {
 
   class ProviderImpl : public Provider {
   public:
-    virtual Configuration* createConfiguration();
+    virtual Configuration* createConfiguration(size_t);
     virtual void           destroyConfiguration(Configuration*);
 
     virtual Event* createEvent(const Configuration*);
@@ -208,7 +208,6 @@ namespace audit {
   };
 
   extern ProviderImpl PROVIDER_IMPL;
-
 }
 }
 

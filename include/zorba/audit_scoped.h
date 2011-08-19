@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cassert>
 #include <zorba/audit.h>
 #include <zorba/util/timer.h>
 
@@ -28,6 +29,7 @@ namespace audit {
   class ZORBA_DLL_PUBLIC ScopedRecord {
   public:
     ScopedRecord(Event* event) : theEvent(event), theRecord(0) {
+      assert(event);
     }
 
     ~ScopedRecord() {
@@ -53,16 +55,16 @@ namespace audit {
       Record* theRecord;
   };
 
-  template <class T> struct AuditorTraits {
+  template <class T, unsigned char flags = 0> struct AuditorTraits {
   };
 
-  template <class T> class ScopedAuditor {
+  template <class T, unsigned char flags = 0> class ScopedAuditor {
   public:
     ScopedAuditor(ScopedRecord& record, const Property& prop, T& value)
       : theRecord(record), theProperty(prop), theValue(value) {
       theNeedToAuditFlag = record.getEvent()->audit(prop);
       if (theNeedToAuditFlag) {
-        AuditorTraits<T>::start(value);
+        AuditorTraits<T, flags>::start(value);
       }
     }
 
@@ -83,19 +85,35 @@ namespace audit {
     void now() {
       if (theNeedToAuditFlag) {
         Record* rec = theRecord.getRecord();
-        rec->add(theProperty, AuditorTraits<T>::end(theValue));
+        rec->add(theProperty, AuditorTraits<T, flags>::end(theValue));
         theNeedToAuditFlag = false;
       }
     }
 
   private:
+    ScopedAuditor() {}
+    ScopedAuditor(const ScopedAuditor&) {}
+
     ScopedRecord&   theRecord;
     const Property& theProperty;
     bool            theNeedToAuditFlag;
     T&              theValue;
   };
 
-  typedef ScopedAuditor<zorba::time::Timer> ScopedTimeAuditor;
+  typedef ScopedAuditor<const std::string>       StringAuditor;
+  typedef ScopedAuditor<const int>               IntAuditor;
+  typedef ScopedAuditor<zorba::time::Timer>      DurationAuditor;
+  typedef ScopedAuditor<zorba::time::Timer, 0x1> TimestampAuditor;
+
+  template<> struct AuditorTraits<const std::string> {
+    typedef const std::string value_type;
+    typedef const std::string audit_type;
+    static inline void start(value_type& value) {
+    }
+    static inline audit_type end(value_type& value) {
+      return value;
+    }
+  };
 
   template<> struct AuditorTraits<String> {
     typedef String value_type;
@@ -107,9 +125,9 @@ namespace audit {
     }
   };
 
-  template<> struct AuditorTraits<std::string> {
-    typedef std::string value_type;
-    typedef std::string audit_type;
+  template<> struct AuditorTraits<const int> {
+    typedef const int       value_type;
+    typedef long long       audit_type;
     static inline void start(value_type& value) {
     }
     static inline audit_type end(value_type& value) {
@@ -138,6 +156,17 @@ namespace audit {
     }
   };
 
+  template<> struct AuditorTraits< std::pair<std::streampos, std::ostream*> > {
+    typedef std::pair<std::streampos, std::ostream*> value_type;
+    typedef long long      audit_type;
+    static inline void start(value_type& value) {
+      value.first = value.second->tellp();
+    }
+    static inline audit_type end(value_type& value) {
+      return value.second->tellp() - value.first;
+    }
+  };
+
   template<> struct AuditorTraits<zorba::time::Timer> {
     typedef zorba::time::Timer value_type;
     typedef long long          audit_type;
@@ -147,8 +176,19 @@ namespace audit {
     static inline audit_type end(value_type& value) {
       return static_cast<audit_type>(value.elapsed());
     }
+
   };
 
+  template<> struct AuditorTraits<zorba::time::Timer, 0x1> {
+    typedef zorba::time::Timer value_type;
+    typedef long long          audit_type;
+    static inline void start(value_type& value) {
+      value.start();
+    }
+    static inline audit_type end(value_type& value) {
+      return static_cast<audit_type>(value.getStart());
+    }
+  };
 }
 }
 #endif
