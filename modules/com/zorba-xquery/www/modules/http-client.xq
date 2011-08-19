@@ -24,54 +24,105 @@ xquery version "3.0";
  : (GET, POST, DELETE etc.), as well as a more flexible general
  : purpose function (<a href="#send-request-3">send-request()</a>).
  : </p>
- : 
- : <h1>Examples of how to use this module:</h1>
- : 
- : <h4>Simple GET Request (retrieving text)</h4>
- : 
- : <pre class="brush: xquery;">http:get-text( "www.example.com" )</pre>
- : 
- : returns
- : 
- :   <pre class="brush: xml;">
- :   &lt;response xmlns="http://expath.org/ns/http-client" status="200" message="OK"&gt;
- :     &lt;header name="Content-Type" value="text/html; charset=UTF-8"/&gt;
- :     &lt;header name="Content-Length" value="574"/&gt;
- :     ...
- :     &lt;body media-type="text/html"/&gt;
- :   &lt;/response&gt;
- :   &amp;lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&amp;gt;
- :   &amp;lt;html&amp;gt;
- :     &amp;lt;head&amp;gt;
- :       &amp;lt;meta http-equiv="Content-Type"
- :       content="text/html; charset=utf-8" /&amp;gt;
- :       &amp;lt;title&amp;gt;Example Web Page&lt;/title&amp;gt;
- :     &amp;lt;/head&amp;gt;
- :     &amp;lt;body&amp;gt;
- :       &amp;lt;p&amp;gt;You have reached this web page by typing "example.com",
- :       "example.net", or "example.org" into your web browser.&amp;lt;/p&amp;gt;
- :       &amp;lt;p&amp;gt;These domain names are reserved for use in documentation and are
- :       Not available for registration. See 
- :       &amp;lt;a href="http://www.rfc-editor.org/rfc/rfc2606.txt"&amp;gt;RFC 2606&amp;lt;/a&amp;gt;,
- :       Section 3.&amp;lt;/p&amp;gt;
- :     &amp;lt;/body&amp;gt;
- :   &amp;lt;/html&amp;gt;
- :   </pre>
+ :
+ : <h1>Examples of how to use this module</h1>
+ :
+ : <h4>Simple GET Request</h4>
+ :
+ : <pre class="brush:xquery;">
+ : import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+ : declare namespace svg="http://www.w3.org/2000/svg";
+ : http:get("http://www.w3.org/Graphics/SVG/svglogo.svg")[2]/svg:svg/svg:title
+ : </pre>
+ :
+ : <p>
+ : This example downloads an XML resource from the web (in this case,
+ : an SVG file, which is an XML-based image format) and returns it as
+ : a document node. Since the XML is in a namespace, we declare that
+ : namespace; we can then perform a path expression directly on the
+ : return value of http:get().
+ : </p>
  : 
  : <h4>Simple GET Request (retrieving XHTML)</h4>
  : 
  :   <pre class="brush: xquery;">
+ :   import module namespace http="http://www.zorba-xquery.com/modules/http-client";
  :   declare namespace xhtml="http://www.w3.org/1999/xhtml";
  : 
- :   http:get-node( "www.w3.org" )[2]//xhtml:body
+ :   http:get-node( "http://www.w3.org" )[2]//xhtml:body
  :   </pre>
  : 
  : <p>
- : This example shows how to retrieve an XHTML resource. Note that the path
- : expression that is looking for the "body" element in the result requires the xhtml
- : namespace to be specified.
+ : This example shows how to retrieve an XHTML resource. XHTML is
+ : XML, so the http:get-node() function will return it as a document node
+ : and you can operate on it with the full power of XQuery. As above, since this
+ : XML is in a particular namespace, the above query defines that namespace
+ : with the prefix "xhtml" so it can easily perform path expressions, etc.
+ : </p>
+ :
+ : <p>
+ : Note: many webservers, include www.w3.org, return XHTML with the
+ : HTTP Content-Type "text/html". Zorba cannot assume that "text/html"
+ : is actually XHTML, and so http:get() would have returned raw text
+ : rather than a document node. That is why the example above uses
+ : http:get-node(), which overrides the server's Content-Type and tells
+ : Zorba to attempt to parse the result as XML.
  : </p>
  : 
+ : <h4>Simple GET Request (retrieving HTML as text)</h4>
+ : 
+ : <p>
+ : Note that XQuery does <b>not</b> understand plain HTML, and so if the URL
+ : you retrieve contains plain HTML data (not XHTML), it will be treated as
+ : plain text as shown in the next example. If you want to operate on the HTML
+ : with XQuery, you should use the HTML language module which can transform
+ : HTML to XHTML. The HTML module is supported by the Zorba team, but it is
+ : not a "core module", meaning that it is not shipped with every Zorba
+ : installation and may not be available. See
+ : <a href="../../../../html/downloads.html">the Zorba downloads
+ : page</a> for information about obtaining this module if you do not
+ : have it.</p>
+ : 
+ : <pre class="brush: xquery;">
+ : import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+ : http:get("http://www.example.com")[2]
+ : </pre>
+ : 
+ : returns
+ : 
+ :   <pre class="brush: xml;">
+ :   &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+ :   &lt;html&gt;
+ :     &lt;head&gt;
+ :       &lt;meta http-equiv="Content-Type"
+ :       content="text/html; charset=utf-8" /&gt;
+ :       &lt;title&gt;Example Web Page&lt;/title&gt;
+ :     &lt;/head&gt;
+ :     &lt;body&gt;
+ :       &lt;p&gt;You have reached this web page by typing "example.com",
+ :       "example.net", or "example.org" into your web browser.&lt;/p&gt;
+ :       &lt;p&gt;These domain names are reserved for use in documentation and are
+ :       Not available for registration. See 
+ :       &lt;a href="http://www.rfc-editor.org/rfc/rfc2606.txt"&gt;RFC 2606&lt;/a&gt;,
+ :       Section 3.&lt;/p&gt;
+ :     &lt;/body&gt;
+ :   &lt;/html&gt;
+ :   </pre>
+ :
+ : <p>Note that the response data above is a simple
+ : xs:string value containing the HTML data, not actual XML data. If you
+ : executed the above query using the Zorba command-line client, you would
+ : have actually seen data like the following:</p>
+ :
+ : <pre class="brush: xml;">
+ :   &amp;lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&amp;gt;
+ :   &amp;lt;html&amp;gt;
+ :      ...
+ : </pre>
+ :
+ : <p>because Zorba would attempt to serialize it as XML data, and would
+ : escape all the raw angle brackets in the original xs:string.</p>
+ :
  : <h4>Simple POST Request</h4>
  : 
  : <p>
@@ -79,12 +130,11 @@ xquery version "3.0";
  : request.
  : </p>
  : 
- :   <pre class="brush: xquery;">
- :   http:post( "...", "Hello World" )
- :   </pre>
- : 
- : 
- : 
+ : <pre class="brush: xquery;">
+ : import module namespace http="http://www.zorba-xquery.com/modules/http-client";
+ : http:post( "...", "Hello World" )
+ : </pre>
+ :
  : <h1 id="standard_return">Return Values</h1>
  : 
  : <p>Most functions in this module (all except
