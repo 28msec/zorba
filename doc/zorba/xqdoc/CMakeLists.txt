@@ -17,28 +17,28 @@ IF(NOT ZORBA_WITH_FILE_ACCESS)
 ELSE(NOT ZORBA_WITH_FILE_ACCESS)
 
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/images
-        DESTINATION xqdoc/requisites
+        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites
         COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib
-        DESTINATION xqdoc/requisites
+        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites
         COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/styles
-        DESTINATION xqdoc/requisites 
+        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites 
         COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/templates
-        DESTINATION xqdoc/requisites  
+        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites  
         COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(FILES src/xqdoc-html.xq
               src/xqdoc-xml.xq
-        DESTINATION xqdoc/generator/ 
+        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/generator/ 
         COMPONENT "doc"
         )
 
