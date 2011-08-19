@@ -29,7 +29,7 @@
 #
 # See the FindICU.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32 (ICU ICU_FOUND icu)
+FIND_PACKAGE_WIN32 (NAME ICU FOUND_VAR ICU_FOUND SEARCH_NAMES icu)
 
 IF (ICU_FOUND)
 

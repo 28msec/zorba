@@ -28,6 +28,7 @@ IF(PHP5_FOUND)
   MESSAGE(STATUS "Installing: " ${CMAKE_CURRENT_BINARY_DIR}/simple.php)
   
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/simple.php
+          COMPONENT "php_examples"
           DESTINATION
           share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/php/examples)
 ENDIF(PHP5_FOUND)

@@ -266,9 +266,18 @@ MACRO (DECLARE_ZORBA_MODULE)
     )
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
-    INSTALL(TARGETS ${module_lib_target}
-      ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path})
-
+      
+      IF(NOT ${PROJECT_NAME} STREQUAL "zorba")
+        STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})
+        INSTALL(TARGETS ${module_lib_target}
+        ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path}
+        COMPONENT ${component_name})
+        
+      ELSE(NOT ${PROJECT_NAME} STREQUAL "zorba")
+        INSTALL(TARGETS ${module_lib_target}
+        ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path})
+      ENDIF(NOT ${PROJECT_NAME} STREQUAL "zorba")
+      
   ENDIF(MODULE_EXTRA_SOURCES OR EXISTS "${SOURCE_FILE}.src/")
 
   # Done dealing with C++. Now, set up rules which will copy the
@@ -400,9 +409,36 @@ MACRO (ADD_COPY_RULE INPUT_FILE OUTPUT_FILE VERSION_ARG DEPEND_TARGET TEST_ONLY)
     # For .xq and .xsd files, also set up an INSTALL rule (if not TEST_ONLY).
     IF (NOT ${TEST_ONLY} EQUAL 1)
       IF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
-        INSTALL (FILES "${INPUT_FILE}"
+        
+        IF(NOT PROJECT_NAME STREQUAL "zorba")
+          STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})   
+          INSTALL (FILES "${INPUT_FILE}"
+            DESTINATION "${ZORBA_MODULES_INSTALL_DIR}/${_output_path}"
+            RENAME "${_output_filename}"
+            COMPONENT "${component_name}")
+          
+          IF (NOT ${component_name}_cpack)
+            SET (${component_name}_cpack 1)
+        
+            STRING(TOUPPER ${component_name} component_name2)
+            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_GROUP \"external_modules\")\n")
+            
+            STRING(REPLACE "zorba_" "" component_display_name ${component_name})
+            STRING(REPLACE "_" " " component_display_name ${component_display_name})
+            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_DISPLAY_NAME \"${component_display_name}\")\n")
+            
+            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_DESCRIPTION \"Install the functionalities of the ${component_display_name}.\")\n")
+            FILE(APPEND ${CMAKE_BINARY_DIR}/CMakeCPackModules.cmake "SET(CPACK_COMPONENT_${component_name2}_INSTALL_TYPES Full)\n")
+          ENDIF (NOT ${component_name}_cpack)  
+            
+        ELSE(NOT PROJECT_NAME STREQUAL "zorba")
+          INSTALL (FILES "${INPUT_FILE}"
           DESTINATION "${ZORBA_MODULES_INSTALL_DIR}/${_output_path}"
           RENAME "${_output_filename}")
+        ENDIF(NOT PROJECT_NAME STREQUAL "zorba")
+        
+        
+          
       ENDIF (${_output_ext} STREQUAL ".xq" OR ${_output_ext} STREQUAL ".xsd")
     ENDIF (NOT ${TEST_ONLY} EQUAL 1)
   ENDIF (file_found EQUAL -1)

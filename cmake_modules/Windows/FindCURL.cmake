@@ -27,7 +27,7 @@
 #
 # See the FindCURL.cmake module shipped with CMake for more information.
 
-FIND_PACKAGE_WIN32(CURL CURL_FOUND curl)
+FIND_PACKAGE_WIN32(NAME CURL FOUND_VAR CURL_FOUND SEARCH_NAMES curl)
 
 IF (CURL_FOUND)
 

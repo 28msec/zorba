@@ -36,6 +36,7 @@ IF (PYTHONINTERP_FOUND)
       ${CMAKE_CURRENT_BINARY_DIR}/python_test.py
     DESTINATION
       share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/python/examples
+    COMPONENT "python_examples"
   )
   
 ELSE (PYTHONINTERP_FOUND)

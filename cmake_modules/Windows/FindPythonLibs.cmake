@@ -27,4 +27,4 @@
 #
 # See the FindPythonLibs.cmake module shipped with CMake for more information.
 
-FIND_PACKAGE_WIN32 (PythonLibs PYTHONLIBS_FOUND python)
+FIND_PACKAGE_WIN32 (NAME PythonLibs FOUND_VAR PYTHONLIBS_FOUND SEARCH_NAMES python)

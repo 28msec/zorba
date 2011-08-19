@@ -26,4 +26,4 @@
 #
 # See the FindSWIG.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32(SWIG SWIG_FOUND swig)
+FIND_PACKAGE_WIN32(NAME SWIG FOUND_VAR SWIG_FOUND SEARCH_NAMES swig)

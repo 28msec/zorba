@@ -52,7 +52,7 @@ ENDMACRO (PRINT_FIND_TITLE MODULE_NAME)
 
 # This macro will try to find a third party library on Windows.
 # Parameters:
-#  MODULE_NAME  - the XXX in the FindXXX.cmake that is used for search
+#  NAME  - the XXX in the FindXXX.cmake that is used for search
 #    e.g.: "ICU" when trying to find ICU with FindICU.cmake
 #  FOUND_VAR    - the variable the FindXXX.cmake module sets if the library is found
 #    e.g.: "XERCESC_FOUND" when trying to find XercesC
@@ -62,12 +62,23 @@ ENDMACRO (PRINT_FIND_TITLE MODULE_NAME)
 # Once done this will define:
 #  FOUND_LOCATION - The directory where the library was found
 #
-MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
-
+MACRO (FIND_PACKAGE_WIN32)
+  PARSE_ARGUMENTS(MODULE "SEARCH_NAMES;COMPONENTS" "NAME;FOUND_VAR" "TEST_ONLY" ${ARGN})
+  
   IF (NOT WIN32)
     MESSAGE(FATAL_ERROR "This macro is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
 
+  IF(NOT MODULE_NAME)
+    MESSAGE (FATAL_ERROR "'NAME' argument is required")
+  ENDIF(NOT MODULE_NAME)
+  IF(NOT MODULE_FOUND_VAR)
+    MESSAGE (FATAL_ERROR "'FOUND_VAR' argument is required")
+  ENDIF(NOT MODULE_FOUND_VAR)
+  IF(NOT MODULE_SEARCH_NAMES)
+    MESSAGE (FATAL_ERROR "'SEARCH_NAMES' argument is required")
+  ENDIF(NOT MODULE_SEARCH_NAMES)
+  
   PRINT_FIND_TITLE (${MODULE_NAME})
   
   # reset the output variable where the target library is found
@@ -83,7 +94,7 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
   SET (PATH_REGEX)
   FOREACH (PATH ${SEARCH_PATHS})
     FILE (TO_CMAKE_PATH "${PATH}" PATH)
-    FOREACH (NAME ${SEARCH_NAMES})
+    FOREACH (NAME ${MODULE_SEARCH_NAMES})
       SET (PATH_REGEX ${PATH_REGEX} "${PATH}/*${NAME}*")
     ENDFOREACH (NAME)
   ENDFOREACH (PATH)
@@ -107,7 +118,7 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
     STRING (TOLOWER "${PATH}" LC_PATH)
 
     # now iterate over all the possible names
-    FOREACH (NAME ${SEARCH_NAMES})
+    FOREACH (NAME ${MODULE_SEARCH_NAMES})
       STRING (TOLOWER "${NAME}" LC_NAME)
       IF ("${LC_PATH}" MATCHES ".*${LC_NAME}.*")
         IF (EXISTS "${PATH}/include")
@@ -147,12 +158,16 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
     SET (CMAKE_PREFIX_PATH ${PATH})
 
     # call the real Find${MODULE_NAME}.cmake module
-    FIND_PACKAGE (${MODULE_NAME})
+    IF(NOT MODULE_COMPONENTS)
+      FIND_PACKAGE (${MODULE_NAME})
+    ELSE(NOT MODULE_COMPONENTS)
+      FIND_PACKAGE (${MODULE_NAME} COMPONENTS ${MODULE_COMPONENTS})
+    ENDIF(NOT MODULE_COMPONENTS)
     
-    IF (${FOUND_VAR})
+    IF (${MODULE_FOUND_VAR})
       SET (FOUND_LOCATION ${CMAKE_PREFIX_PATH})
       BREAK ()
-    ENDIF (${FOUND_VAR})
+    ENDIF (${MODULE_FOUND_VAR})
   ENDFOREACH(PATH)
 
   PRINT_FIND_END_TITLE (${MODULE_NAME} FOUND_LOCATION)
@@ -162,6 +177,11 @@ MACRO (FIND_PACKAGE_WIN32 MODULE_NAME FOUND_VAR SEARCH_NAMES)
   # restore the prefix path
   SET (CMAKE_PREFIX_PATH ${OLD_CMAKE_PREFIX_PATH})
 
+  SET(MODULE_NAME)
+  SET(MODULE_FOUND_VAR)
+  SET(MODULE_SEARCH_NAMES)
+  SET(MODULE_COMPONENT)
+
 ENDMACRO (FIND_PACKAGE_WIN32)
 
 
@@ -170,7 +190,6 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
   IF (NOT WIN32)
     MESSAGE(FATAL_ERROR "This macro is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
-
   # get the current DLLs and their paths
   SET (dlls "${ZORBA_REQUIRED_DLLS}")
   SET (paths "${ZORBA_REQUIRED_DLL_PATHS}")
@@ -195,6 +214,13 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
       FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
       LIST (APPEND paths "${NATIVE_PATH}")
       MESSAGE(STATUS "Added dll to ZORBA_REQUIRED_DLLS cache variable: ${TMP_DLL_VAR}")
+      
+      IF(NOT ${PROJECT_NAME} STREQUAL  "zorba")
+        STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})
+        INSTALL(PROGRAMS ${TMP_DLL_VAR} DESTINATION bin COMPONENT ${component_name})
+      ENDIF(NOT ${PROJECT_NAME} STREQUAL  "zorba")
+     
+      
     ELSE (TMP_DLL_VAR)
       MESSAGE (WARNING "${NAME} was not found in: ${LIBRARY_LOCATION}. Zorba will not run unless you have it in the path.")
     ENDIF (TMP_DLL_VAR)
@@ -212,13 +238,15 @@ MACRO(FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
   # make sure we don't leave garbage in the cache and don't influence other logic with this
   SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
 
-  # set the current DLLs and their paths in a variable
-  SET (ZORBA_REQUIRED_DLLS "${dlls}"
-    CACHE STRING "List of DLLs that must be installed" FORCE
-  )
-  SET (ZORBA_REQUIRED_DLL_PATHS "${paths}"
-    CACHE STRING "List of paths executable require in order to find the required DLLs" FORCE
-  )
+  IF(${PROJECT_NAME} STREQUAL  "zorba")
+    # set the current DLLs and their paths in a variable
+    SET (ZORBA_REQUIRED_DLLS "${dlls}"
+      CACHE STRING "List of DLLs that must be installed" FORCE
+    )
+    SET (ZORBA_REQUIRED_DLL_PATHS "${paths}"
+      CACHE STRING "List of paths executable require in order to find the required DLLs" FORCE
+    )
+  ENDIF(${PROJECT_NAME} STREQUAL  "zorba")
 
 ENDMACRO(FIND_PACKAGE_DLLS_WIN32)
 

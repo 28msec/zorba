@@ -18,23 +18,28 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
 
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/images
         DESTINATION xqdoc/requisites
+        COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib
         DESTINATION xqdoc/requisites
+        COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/styles
-        DESTINATION xqdoc/requisites
+        DESTINATION xqdoc/requisites 
+        COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/templates
-        DESTINATION xqdoc/requisites
+        DESTINATION xqdoc/requisites  
+        COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
 INSTALL(FILES src/xqdoc-html.xq
               src/xqdoc-xml.xq
-        DESTINATION xqdoc/generator/
+        DESTINATION xqdoc/generator/ 
+        COMPONENT "doc"
         )
 
 CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-html.xq

@@ -27,7 +27,7 @@
 #
 # See the FindXercesC.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32(XercesC XERCESC_FOUND xerces)
+FIND_PACKAGE_WIN32(NAME XercesC FOUND_VAR XERCESC_FOUND SEARCH_NAMES xerces)
 
 IF (XERCESC_FOUND)
 

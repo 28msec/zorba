@@ -27,7 +27,7 @@
 #
 # See the FindLibTidy.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32(LibXslt LIBXSLT_FOUND libxslt)
+FIND_PACKAGE_WIN32(NAME LibXslt FOUND_VAR LIBXSLT_FOUND SEARCH_NAMES libxslt)
 
 IF (LIBXSLT_FOUND)
 

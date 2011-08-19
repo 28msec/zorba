@@ -125,7 +125,9 @@ void root_static_context::init()
       ascii::replace_all(moddir, '/', '\\');
       zstring fileURL;
       fileURL = dll_path;
+	  fileURL = fileURL.append("..\\");
       fileURL = fileURL.append(moddir);
+	  fileURL = fileURL.append("\\");
       lRootModulePaths.push_back(fileURL);
     }
   }

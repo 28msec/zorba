@@ -26,4 +26,4 @@
 #
 # See the FindPythonInterp.cmake module shipped with CMake for more information.
 
-FIND_PACKAGE_WIN32 (PythonInterp PYTHONINTERP_FOUND python)
+FIND_PACKAGE_WIN32 (NAME PythonInterp FOUND_VAR PYTHONINTERP_FOUND SEARCH_NAMES python)

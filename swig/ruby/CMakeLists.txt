@@ -11,8 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+IF(APPLE)
 CMAKE_FIND_FRAMEWORKS ( Ruby )
+ENDIF(APPLE)
 FIND_PACKAGE(Ruby)
 
 IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
@@ -33,14 +34,17 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
 
   EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
 48    OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
-  STRING(REPLACE "/usr/" "" RUBY_SITEARCH_DIR "${RUBY_SITEARCH_DIR}" )
-
+  #STRING(REPLACE "/usr/" "" RUBY_SITEARCH_DIR "${RUBY_SITEARCH_DIR}" )
+  
+  SET (RUBY_SITEARCH_DIR "${CMAKE_INSTALL_PREFIX}/share/ruby")
+  
   IF ( APPLE )
     INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api.bundle
     DESTINATION ${RUBY_SITEARCH_DIR} )
   ELSE ( APPLE )
     INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
-    DESTINATION ${RUBY_SITEARCH_DIR} )
+    DESTINATION ${RUBY_SITEARCH_DIR}
+    COMPONENT ruby_swig )
   ENDIF ( APPLE )
 ELSE (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   MESSAGE(STATUS "SWIG Ruby: binding not generated because library and include files are not installed.")

@@ -60,5 +60,6 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cparsing.xml"
 INSTALL(FILES ${CAPI_EXAMPLES}
         ${CMAKE_CURRENT_BINARY_DIR}/cexamples.c
         ${CMAKE_CURRENT_BINARY_DIR}/cparsing.xml
+        COMPONENT "doc"
         DESTINATION
         share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/c/examples)

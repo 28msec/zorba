@@ -68,8 +68,10 @@ IF (JAVA_INCLUDE_PATH)
       INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so DESTINATION ${JAVA_SITEARCH_DIR})
 		  INSTALL(FILES ${JAVA_SWIG_FILES} DESTINATION ${JAVA_SITEARCH_DIR})
 		ELSE(NOT WIN32)
-      INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll DESTINATION bin/java/org/zorbaxquery/api/ )
-		  INSTALL(FILES ${JAVA_SWIG_FILES} DESTINATION bin/java/org/zorbaxquery/api )
+      INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll DESTINATION bin/java/org/zorbaxquery/api/ 
+      COMPONENT "java_swig")
+		  INSTALL(FILES ${JAVA_SWIG_FILES} DESTINATION bin/java/org/zorbaxquery/api 
+      COMPONENT "java_swig")
 		ENDIF(NOT WIN32)
   ENDIF ( APPLE )
 
