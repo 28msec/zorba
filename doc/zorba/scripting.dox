@@ -282,7 +282,9 @@ Another example is the condition expression of a conditional statement, which is
 
 \subsection scripting_statements Statements inside expressions: node constructors
 
-There is one most prominent location where statements can be very useful. If you remember PHP, it allows executing instructions, and declaratively outputing some HTML. With Zorba Scripting, statements can be used in element constructors, giving it some PHP taste.
+There is one most prominent location where statements can be very useful.
+If you remember PHP, it allows executing instructions, and declaratively outputing some HTML.
+With Zorba Scripting, statements can be used in element constructors, giving it some PHP taste.
 In the following example, the element constructor contains a series a statements followed by a single expression which constructs (and returns) the body of the page.
 
 \code
@@ -323,13 +325,10 @@ A function body works exactly the same way. Note that if the body expression of 
 
 \subsection scripting_pitfall Pitfall: block statements, block expressions
 
-It is also possible to have several statements followed by an expression inside curly braces (with no node constructor). This is called a block expression. Distinguishing block statements and block expressions might be seen as a pitfall of Zorba Scripting, although there is a very simple technique for telling whether a scripting construct is a statement or an expression.
+It is also possible to have several statements followed by an expression inside curly braces (with no node constructor). This is called a block expression.
 
-
-If a parsed construct ends with a semi-colon or an empty block, possibly followed by several closing curly braces (i.e., ";}}}}}" or "{}}}}}"), then it is a statement.
-Otherwise it is an expression.
-
-In particular, anything (valid) that ends neither with a semi-colon or a closing curly-brace is an expression. If there is no semi-colon or opening curly brace before the closing curly braces, it is also an expression. Which means you cannot concatenate something else after it!
+Distinguishing block statements and block expressions is done by looking whether it ends with a statement or an expression.
+As a rule of thumb, anything (valid) that ends neither with a semi-colon or a closing curly-brace is an expression. If there is no semi-colon or opening curly brace before the closing curly braces, it is also an expression. Which means you cannot concatenate something else after it!
 
 As a last piece of advice, if the parser complains while you are writing a scripting program, there can be two main kind of errors: either you are trying to mix expressions and statements suboperands, which is not allowed (for example in a conditional statement or expression - <b>remember that the semi-colon sticks to an operand, not to the entire control flow construct</b>). Or if you got this right, it might be that you are trying to concatenate something after an expression. In both cases, <b>it is very likely that you wrote a block expression where you meant to use a block statement</b> (see criterion above). In this case, you probably just forgot a semi-colon.
 

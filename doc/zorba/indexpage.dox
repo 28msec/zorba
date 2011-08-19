@@ -83,7 +83,7 @@
 
 <b>Zorba Proprietary Specifications</b>
 <ul>
-  <li><b><a href="scripting_spec.html">XQuery Scripting Extension</a></b>  (\ref scripting_tutorial "Tutorial")</li>
+  <li>XQuery Scripting Extension  (please see the <b><a href="scripting_spec.html">Specification</a></b> and our \ref scripting_tutorial "Tutorial")</li>
   <li>\ref xqddf</li>
   <!--li>\ref extensions_update</li-->
 </ul>

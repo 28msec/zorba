@@ -554,7 +554,7 @@ a.env:visited, a.env:link { color: black;
       </h2>
                 
                 <pre>
-32 - <a name="FunctionDecl" class="ext">FunctionDecl</a> ::= "function" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> "(" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-ParamList" class="un">ParamList</a>? ")"
+33 - <a name="FunctionDecl" class="ext">FunctionDecl</a> ::= "function" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> "(" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-ParamList" class="un">ParamList</a>? ")"
                       ("as" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-SequenceType" class="un">SequenceType</a>)? ("{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}" | "external"))
     </pre><pre>
 [unchanged] Annotation : =  "%" EQName ( "(" Literal ("," Literal)* ")" ) ?
@@ -1343,7 +1343,7 @@ if($newbid &lt;= 60000) then {
               
       <p>A block expression is a concatenation of zero, one or more statements and one expression, surrounded by curly braces.</p>
               <pre>
-30 - <a name="PrimaryExpr" class="ext">PrimaryExpr</a> ::=
+31 - <a name="PrimaryExpr" class="ext">PrimaryExpr</a> ::=
       <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Literal" class="un">Literal</a>
   |   <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarRef" class="un">VarRef</a>
   |   <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-ParenthesizedExpr" class="un">ParenthesizedExpr</a>
@@ -1355,7 +1355,7 @@ if($newbid &lt;= 60000) then {
   |   <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-FunctionItemExpr" class="un">FunctionItemExpr</a>
   |   <a href="#BlockExpr" class="new">BlockExpr</a>
     </pre><pre>
-31 - <a name="BlockExpr" class="new">BlockExpr</a> ::= "{" <a href="#StatementsAndExpr" class="new">StatementsAndExpr</a> "}
+32 - <a name="BlockExpr" class="new">BlockExpr</a> ::= "{" <a href="#StatementsAndExpr" class="new">StatementsAndExpr</a> "}
     </pre><pre>
 3 - <a name="StatementsAndExpr" class="new">StatementsAndExpr</a> ::= <a href="#Statements" class="new">Statements</a> <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a>
     </pre><pre>
@@ -1413,17 +1413,19 @@ into doc("bids.xml")/bids;
               
       <p>Node constructors are extended to allow statements in their content.</p>
               <pre>
-24 - <a name="CommonContent" class="ext">CommonContent</a> ::= <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-PredefinedEntityRef" class="un">PredefinedEntityRef</a> | <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-CharRef" class="un">CharRef</a> | "{{" | "}}" | "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+24 - <a name="CommonContent" class="ext">CommonContent</a> ::= <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-PredefinedEntityRef" class="un">PredefinedEntityRef</a> | <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-CharRef" class="un">CharRef</a> | "{{" | "}}" | <a href="#BlockExpr" class="new">BlockExpr</a>
 </pre><pre>
-25 - <a name="ContentExpr" class="ext">ContentExpr</a> ::= <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a>
+25 - <a name="ContentExpr" class="ext">ContentExpr</a> ::= <a href="#StatementsAndExpr" class="new">StatementsAndExpr</a>
 
-26 - CompDocConstructor ::= "document" "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+26 - CompDocConstructor ::= "document" <a href="#BlockExpr" class="new">BlockExpr</a>
 
-27 - CompAttrConstructor ::= "attribute" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+27 - CompAttrConstructor ::= "attribute" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) ("{" "}" | <a href="#BlockExpr" class="new">BlockExpr</a>)
 
-28 - CompPIConstructor ::= "processing-instruction" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-NCName" class="un">NCName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+28 - CompPIConstructor ::= "processing-instruction" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-NCName" class="un">NCName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) ("{" "}" | <a href="#BlockExpr" class="new">BlockExpr</a>)
 
-29 - CompCommentConstructor ::= "comment" "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+29 - CompCommentConstructor ::= "comment" <a href="#BlockExpr" class="new">BlockExpr</a>
+
+30 - CompTextConstructor ::= "text" <a href="#BlockExpr" class="new">BlockExpr</a>
     </pre>
               
                 <b>Composability Constraints:</b>
@@ -1434,10 +1436,8 @@ into doc("bids.xml")/bids;
                     
       <p>The semantics are the same as in XQuery 3.0.</p>
                     
-      <p>StatementsAndOptionalExpr corresponds a block expression and is evaluated as such,
-                         except that the final expression may be omitted
-                         (i.e., there are only statements). If such is the case,
-                         the final expression is considered to be the empty sequence.
+      <p>The block expression is evaluated as such and its results are used
+                       as specified in XQuery 3.0.
       </p>
                   
                 <b>Evaluation order:</b>
@@ -1646,7 +1646,7 @@ into doc("bids.xml")/bids;
                This happens in function bodies, node constructors and block expressions.
       </p>
           <pre>
-[unchanged] PrimaryExpr ::= /* as in XQuery 3.0, no BlockExpr */
+[unchanged] PrimaryExpr ::= /* as in XQuery 3.0, no standalone BlockExpr */
       Literal
   |   VarRef
   |   ParenthesizedExpr
@@ -1800,23 +1800,25 @@ Statements1 := Statement1*
   |   <a href="http://www.w3.org/TR/xquery-update-10/#prod-xquery-TransformExpr" class="up">TransformExpr</a>    </pre>
       (Direct element constructors)
       <pre>
-24 - <a name="CommonContent" class="ext">CommonContent</a> ::= <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-PredefinedEntityRef" class="un">PredefinedEntityRef</a> | <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-CharRef" class="un">CharRef</a> | "{{" | "}}" | "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+24 - <a name="CommonContent" class="ext">CommonContent</a> ::= <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-PredefinedEntityRef" class="un">PredefinedEntityRef</a> | <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-CharRef" class="un">CharRef</a> | "{{" | "}}" | <a href="#BlockExpr" class="new">BlockExpr</a>
 </pre>
       (Computed element constructors)
       <pre>
-25 - <a name="ContentExpr" class="ext">ContentExpr</a> ::= <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a>
+25 - <a name="ContentExpr" class="ext">ContentExpr</a> ::= <a href="#StatementsAndOptionalExpr" class="new">StatementsAndExpr</a>
 
-26 - CompDocConstructor ::= "document" "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+26 - CompDocConstructor ::= "document" <a href="#BlockExpr" class="new">BlockExpr</a>
 
-27 - CompAttrConstructor ::= "attribute" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+27 - CompAttrConstructor ::= "attribute" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) ("{" "}" | <a href="#BlockExpr" class="new">BlockExpr</a>)
 
-28 - CompPIConstructor ::= "processing-instruction" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-NCName" class="un">NCName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+28 - CompPIConstructor ::= "processing-instruction" (<a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-NCName" class="un">NCName</a> | ("{" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Expr" class="un">Expr</a> "}")) ("{" "}" | <a href="#BlockExpr" class="new">BlockExpr</a>)
 
-29 - CompCommentConstructor ::= "comment" "{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}"
+29 - CompCommentConstructor ::= "comment" <a href="#BlockExpr" class="new">BlockExpr</a>
+
+30 - CompTextConstructor ::= "text" <a href="#BlockExpr" class="new">BlockExpr</a>
     </pre>
       (Block expression)
       <pre>
-30 - <a name="PrimaryExpr" class="ext">PrimaryExpr</a> ::=
+31 - <a name="PrimaryExpr" class="ext">PrimaryExpr</a> ::=
       <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-Literal" class="un">Literal</a>
   |   <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-VarRef" class="un">VarRef</a>
   |   <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-ParenthesizedExpr" class="un">ParenthesizedExpr</a>
@@ -1828,9 +1830,9 @@ Statements1 := Statement1*
   |   <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-FunctionItemExpr" class="un">FunctionItemExpr</a>
   |   <a href="#BlockExpr" class="new">BlockExpr</a>
     
-31 - <a name="BlockExpr" class="new">BlockExpr</a> ::= "{" <a href="#StatementsAndExpr" class="new">StatementsAndExpr</a> "}
+32 - <a name="BlockExpr" class="new">BlockExpr</a> ::= "{" <a href="#StatementsAndExpr" class="new">StatementsAndExpr</a> "}
     </pre><h3>Function body</h3><pre>
-32 - <a name="FunctionDecl" class="ext">FunctionDecl</a> ::= "function" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> "(" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-ParamList" class="un">ParamList</a>? ")"
+33 - <a name="FunctionDecl" class="ext">FunctionDecl</a> ::= "function" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName" class="un">EQName</a> "(" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-ParamList" class="un">ParamList</a>? ")"
                       ("as" <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-SequenceType" class="un">SequenceType</a>)? ("{" <a href="#StatementsAndOptionalExpr" class="new">StatementsAndOptionalExpr</a> "}" | "external"))
     </pre></body>
 </html>

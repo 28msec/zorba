@@ -4728,7 +4728,7 @@ ComputedConstructor :
 
 // [108]
 CompDocConstructor :
-        DOCUMENT LBRACE StatementsAndOptionalExpr RBRACE
+        DOCUMENT LBRACE StatementsAndExpr RBRACE
         {
             $$ = new CompDocConstructor( LOC(@$), $3 );
         }
