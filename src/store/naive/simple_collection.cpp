@@ -125,7 +125,7 @@ void SimpleCollection::addNode(
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
-  if (lPosition < 0 || lPosition >= theXmlTrees.size())
+  if (lPosition < 0 || to_xs_unsignedLong(lPosition) >= theXmlTrees.size())
   {
     theXmlTrees.push_back(nodeItem);
     node->setCollection(this, (uint64_t)theXmlTrees.size() - 1);

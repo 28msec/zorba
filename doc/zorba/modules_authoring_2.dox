@@ -186,7 +186,7 @@ you can run all your tests by simply executing the command <tt>ctest</tt>.
 CTest is a testing framework that ships with CMake. It has a great many
 features, but the two most important command-line options are:
 
-1. <tt>ctest -R <pattern></tt> will execute only those tests whose
+1. <tt>ctest -R [pattern]</tt> will execute only those tests whose
 name matches the given pattern. Since <tt>ADD_TEST_DIRECTORY()</tt>
 creates the test names based on the directory structure under
 <tt>Queries</tt>, this makes it easy to run a subset of your

@@ -34,14 +34,19 @@ declare %ann:nondeterministic function local:get-src-dirs() as xs:string*
   let $ZorbaCMakeCache := fn:resolve-uri(concat($ZorbaBuildPath, file:directory-separator(), "CMakeCache.txt"))
   let $ZorbaModulesDir := substring-before(tokenize(file:read-text($ZorbaCMakeCache),"ZORBA_MODULES_DIR:PATH=")[2],"
 ")
-  let $dirs := file:list(fn:resolve-uri($ZorbaModulesDir))
-  return( $ZorbaCoreModules,
-          for $dir in $dirs
-          let $file := fn:resolve-uri(concat($ZorbaModulesDir,file:directory-separator(),$dir,file:directory-separator(),"CMakeLists.txt"))
-          let $text := file:read-text($file)
-          let $as := fn:analyze-string($text, "ADD_SUBDIRECTORY\((.*?)\)")
-          let $match := replace($as/fn:match/fn:group[@nr eq 1],'"',"")
-          return fn:resolve-uri(concat($ZorbaModulesDir,file:directory-separator(),$dir,file:directory-separator(),$match)))
+  let $resolved := fn:resolve-uri($ZorbaModulesDir)
+  return
+    if (file:exists($resolved))
+    then
+      let $dirs := file:list(fn:resolve-uri($ZorbaModulesDir))
+      return( $ZorbaCoreModules,
+              for $dir in $dirs
+              let $file := fn:resolve-uri(concat($ZorbaModulesDir,file:directory-separator(),$dir,file:directory-separator(),"CMakeLists.txt"))
+              let $text := file:read-text($file)
+              let $as := fn:analyze-string($text, "ADD_SUBDIRECTORY\((.*?)\)")
+              let $match := replace($as/fn:match/fn:group[@nr eq 1],'"',"")
+              return fn:resolve-uri(concat($ZorbaModulesDir,file:directory-separator(),$dir,file:directory-separator(),$match)))
+    else ()
 };
 
 (:~

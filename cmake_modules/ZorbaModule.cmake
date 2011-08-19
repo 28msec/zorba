@@ -669,11 +669,11 @@ MACRO (ADD_XQDOC_TARGETS)
   MESSAGE(STATUS "ADD_XQDOC_TARGETS")
 
   SET(ZORBA_XQDOC_XML_XQ
-      ${Zorba_DIR}/xqdoc/generator/xqdoc-xml.xq
+    ${CMAKE_BINARY_DIR}/xqdoc/generator/xqdoc-xml.xq
       CACHE PATH
       "The XQDoc XML generator for external modules.")
   SET(ZORBA_XQDOC_HTML_XQ
-      ${Zorba_DIR}/xqdoc/generator/xqdoc-html.xq
+    ${CMAKE_BINARY_DIR}/xqdoc/generator/xqdoc-html.xq
       CACHE PATH
       "The XQDoc XHTML generator for external modules.")
 

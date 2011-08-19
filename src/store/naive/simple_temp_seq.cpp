@@ -310,7 +310,7 @@ bool SimpleTempSeqIter::next(store::Item_t& result)
   switch (theBorderType)
 	{
   case none:
-    if ( theCurPos < to_xs_long(theTempSeq->getSize()) ) 
+    if ( theCurPos < to_xs_unsignedLong(theTempSeq->getSize()) ) 
     {
       result = (*theTempSeq)[theCurPos];
       return true;
@@ -335,7 +335,7 @@ store::Item* SimpleTempSeqIter::next()
   switch (theBorderType)
 	{
   case none:
-    if ( theCurPos < to_xs_long(theTempSeq->getSize()) ) 
+    if ( theCurPos < to_xs_unsignedLong(theTempSeq->getSize()) ) 
       return (*theTempSeq)[theCurPos];
     break;
   case startEnd:

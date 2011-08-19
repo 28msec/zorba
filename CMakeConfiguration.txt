@@ -119,7 +119,7 @@ MESSAGE(STATUS "ZORBA_WIN_DLL:                        " ${ZORBA_WIN_DLL})
 # build to generate source code and documentation.
 SET(ZORBA_EXE "${CMAKE_BINARY_DIR}/bin/zorba")
 IF(WIN32)
-  SET(ZORBA_EXE "${ZORBA_EXE_SCRIPT}.bat")
+  SET(ZORBA_EXE "${ZORBA_EXE}.bat")
 ENDIF(WIN32)
 SET(ZORBA_EXE ${ZORBA_EXE} CACHE STRING "executable used for generating the runtime")
 MESSAGE(STATUS "ZORBA_EXE:                            " ${ZORBA_EXE})
