@@ -34,9 +34,9 @@ MACRO (SET_NORMALIZED VARNAME VALUE)
 ENDMACRO (SET_NORMALIZED)
 
 # Pass through some variables from main Zorba CMake configuration.
-SET (ZORBA_VERSION "@ZORBA_VERSION@" CACHE STRING "Zorba's version")
+SET (ZORBA_VERSION "@ZORBA_VERSION@" CACHE STRING "Zorba's version" FORCE)
 SET (ZORBA_STORE_NAME "@ZORBA_STORE_NAME@" CACHE STRING
-  "Name of the store implementation this Zorba was built with")
+  "Name of the store implementation this Zorba was built with" FORCE)
 
 # Tell the user project where to find our headers, libraries, and
 # CMake modules
@@ -44,13 +44,13 @@ SET_NORMALIZED (Zorba_INCLUDE_DIRS "@Zorba_INCLUDE_DIRS@")
 SET_NORMALIZED (Zorba_LIBRARY_DIRS "@Zorba_LIBRARY_DIRS@")
 SET_NORMALIZED (Zorba_CMAKE_MODULES_DIR "@Zorba_CMAKE_MODULES_DIR@")
 SET_NORMALIZED (Zorba_TESTDRIVER "@Zorba_TESTDRIVER@" CACHE PATH
-  "Path to Zorba's testdriver")
-SET_NORMALIZED (Zorba_EXE "@Zorba_EXE_PATH@" CACHE PATH "Path to Zorba executable")
+  "Path to Zorba's testdriver" FORCE)
+SET_NORMALIZED (Zorba_EXE "@Zorba_EXE_PATH@" CACHE PATH "Path to Zorba executable" FORCE)
 
 # Tell the user project where modules are installed. Note: This variable
 # is all-uppercase because it is also used internally by Zorba's build.
 SET_NORMALIZED (ZORBA_MODULES_INSTALL_DIR "@Zorba_MODULES_INSTALL_DIR@"
-  CACHE STRING "Path to Zorba modules in this Zorba installation")
+  CACHE STRING "Path to Zorba modules in this Zorba installation" FORCE)
 
 # Tell the user project where to find the "USE" file.
 # This file uses the above settings to configure the user project.
