@@ -286,6 +286,9 @@ declare option ver:module-version "2.0";
  : @error error:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
  : @error error:HC005 The input request element is not valid.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/send-request/send-request_href.xq
+ : @example test/rbkt/Queries/zorba/http-client/send-request/http3-post.xq
  :)
 declare %ann:sequential function http:send-request(
   $request as element(http-schema:request)?,
@@ -327,6 +330,8 @@ declare %ann:sequential function http:send-request(
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/get/get_text.xq
  :)
 declare %ann:nondeterministic function http:get($href as xs:string) as item()+
 {
@@ -344,6 +349,8 @@ declare %ann:nondeterministic function http:get($href as xs:string) as item()+
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/get-node/get-node_xml_query.xq
  :)
 declare %ann:nondeterministic function http:get-node($href as xs:string) as item()+
 {
@@ -362,6 +369,8 @@ declare %ann:nondeterministic function http:get-node($href as xs:string) as item
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/get-text/get-text_xml_query.xq 
  :)
 declare %ann:nondeterministic function http:get-text($href as xs:string) as item()+
 {
@@ -380,6 +389,8 @@ declare %ann:nondeterministic function http:get-text($href as xs:string) as item
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/get-binary/get-binary_xml_query.xq
  :)
 declare %ann:nondeterministic function http:get-binary($href as xs:string) as item()+
 {
@@ -396,6 +407,8 @@ declare %ann:nondeterministic function http:get-binary($href as xs:string) as it
  :  &lt;http-schema:response&gt; element will be returned).
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/head/head_status.xq
  :)
 declare %ann:nondeterministic function http:head($href as xs:string) as item() {
   http:http-nondeterministic-impl(
@@ -414,6 +427,8 @@ declare %ann:nondeterministic function http:head($href as xs:string) as item() {
  : @return A sequence of xs:string values of the allowed operations.
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/options/options.xq
  :)
 declare %ann:nondeterministic function http:options($href as xs:string) as xs:string* {
   let $resp := http:http-nondeterministic-impl(
@@ -440,6 +455,8 @@ declare %ann:nondeterministic function http:options($href as xs:string) as xs:st
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/put/put2_element.xq
  :)
 declare %ann:sequential function http:put($href as xs:string, $body as item()) as item()+
 {
@@ -481,6 +498,8 @@ declare %ann:sequential function http:put($href as xs:string, $body as item()) a
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/put/put3_html_br.xq
  :)
 declare %ann:sequential function http:put($href as xs:string, $body as item(), $content-type as xs:string) as item()+
 {
@@ -519,6 +538,8 @@ declare %ann:sequential function http:put($href as xs:string, $body as item(), $
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/delete/delete.xq
  :)
 declare %ann:sequential function http:delete($href as xs:string) as item()+
 {
@@ -543,6 +564,8 @@ declare %ann:sequential function http:delete($href as xs:string) as item()+
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/post/post2_comment.xq
  :)
 declare %ann:sequential function http:post($href as xs:string, $body as item()) as item()+
 {
@@ -585,6 +608,8 @@ declare %ann:sequential function http:post($href as xs:string, $body as item()) 
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
+ :
+ : @example test/rbkt/Queries/zorba/http-client/post/post3_xml.xq
  :)
 declare %ann:sequential function http:post($href as xs:string, $body as item(), $content-type as xs:string) as item()+
 {
