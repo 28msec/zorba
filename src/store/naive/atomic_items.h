@@ -630,6 +630,10 @@ public:
 
   std::istream& getStream();
 
+  StreamReleaser getStreamReleaser();
+
+  void setStreamReleaser(StreamReleaser aReleaser);
+
   ~StreamableStringItem()
   {
     if (theStreamReleaser) {

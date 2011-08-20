@@ -21,6 +21,7 @@
 
 #include <zorba/config.h>
 #include <zorba/store_consts.h>
+#include <zorba/streams.h>
 
 #include "zorbatypes/rclock.h"
 #include "zorbatypes/schema_types.h"
@@ -727,6 +728,21 @@ public:
    * @throw ZorbaException if the item is not streamable.
    */
   virtual std::istream& getStream();
+
+  /**
+   * Gets the StreamReleaser associated with this item.
+   *
+   * @return the StreamReleaser.
+   * @throw ZorbaException if the item is not streamable.
+   */
+  virtual StreamReleaser getStreamReleaser();
+
+  /**
+   * Sets the StreamReleaser associated with this item.
+   *
+   * @throw ZorbaException if the item is not streamable.
+   */
+  virtual void setStreamReleaser(StreamReleaser aReleaser);
 
   /* -------------------- Methods for Full-Text --------------------- */
 

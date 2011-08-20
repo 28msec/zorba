@@ -32,8 +32,8 @@
 #include <istream>
 #include <zorbatypes/zstring.h>
 #include <util/auto_vector.h>
-#include <util/http_util.h>
 #include <store/api/shared_types.h>
+#include <zorba/streams.h>
 
 namespace zorba {
 
@@ -101,8 +101,6 @@ public:
                  StreamReleaser aStreamReleaser,
                  zstring aStreamUrl = "");
   
-  StreamResource(HttpStream* aHttpStream, const zstring& aUrl = "");
-  
   virtual ~StreamResource();
 
   /**
@@ -133,7 +131,6 @@ private:
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
   zstring theStreamUrl;
-  HttpStream* theHttpStream;
 };
 
 /**

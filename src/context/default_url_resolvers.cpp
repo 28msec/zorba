@@ -55,7 +55,11 @@ HTTPURLResolver::resolveURL
   try {
     std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
     lStream->init();
-    return new StreamResource(lStream.release(), aUrl);
+    // Take ownership of the istream and pass it to the StreamResource
+    StreamResource* lResource =
+        new StreamResource(&(lStream->getStream()), lStream->getStreamReleaser());
+    lStream->setStreamReleaser(nullptr);
+    return lResource;
   } catch (...) {
     throw os_error::exception("", aUrl.c_str(), "Could not create stream resource");
   }

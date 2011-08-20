@@ -28,6 +28,8 @@ namespace zorba {
     std::istream& getStream();
     void init();
     bool didInit() { return theDidInit; }
+    StreamReleaser getStreamReleaser();
+    void setStreamReleaser(StreamReleaser aReleaser);
   private:
     ItemSequence_t theItemSequence;
     StaticContext_t theStaticContext;

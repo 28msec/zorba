@@ -50,24 +50,11 @@ namespace impl {
     : Resource(),
       theStream(aStream),
       theStreamReleaser(aStreamReleaser),
-      theStreamUrl(aStreamUrl),
-      theHttpStream(0)
+      theStreamUrl(aStreamUrl)
   {}
   
-  StreamResource::StreamResource
-  (HttpStream* aHttpStream, const zstring& aUrl)
-  : Resource(),
-    theStream(nullptr),
-    theStreamReleaser(nullptr),
-    theStreamUrl(aUrl),
-    theHttpStream(aHttpStream)
-  {
-  }
-
   StreamResource::~StreamResource()
   {
-    if (theHttpStream)
-      delete theHttpStream;
     if (theStreamReleaser)
       theStreamReleaser(theStream);
   }
@@ -75,18 +62,12 @@ namespace impl {
   std::istream*
   StreamResource::getStream()
   {
-    if (theStream)
-      return theStream;
-    else {
-      return &theHttpStream->getStream();
-    }
+    return theStream;
   }
 
   StreamReleaser
   StreamResource::getStreamReleaser()
   {
-    // This will be nullptr if we were constructed from an HttpStream,
-    // which is OK.
     return theStreamReleaser;
   }
 

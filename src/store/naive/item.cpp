@@ -1181,6 +1181,21 @@ std::istream& Item::getStream()
   );
 }
 
+StreamReleaser Item::getStreamReleaser()
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
 } // namespace store
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

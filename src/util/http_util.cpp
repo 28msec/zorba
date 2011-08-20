@@ -20,6 +20,7 @@
 
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/empty_sequence.h>
+#include <api/unmarshaller.h>
 #include "http_util.h"
 #include "error_util.h"
 
@@ -96,5 +97,17 @@ namespace zorba {
   std::istream& HttpStream::getStream()
   {
     return theStreamableString.getStream();
+  }
+
+  StreamReleaser HttpStream::getStreamReleaser()
+  {
+    store::Item* lItem = Unmarshaller::getInternalItem(theStreamableString);
+    return lItem->getStreamReleaser();
+  }
+
+  void HttpStream::setStreamReleaser(StreamReleaser aReleaser)
+  {
+    store::Item* lItem = Unmarshaller::getInternalItem(theStreamableString);
+    lItem->setStreamReleaser(aReleaser);
   }
 }

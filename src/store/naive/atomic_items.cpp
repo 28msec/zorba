@@ -1007,6 +1007,16 @@ std::istream& StreamableStringItem::getStream()
   return theIstream;
 }
 
+StreamReleaser StreamableStringItem::getStreamReleaser()
+{
+  return theStreamReleaser;
+}
+
+void StreamableStringItem::setStreamReleaser(StreamReleaser aReleaser)
+{
+  theStreamReleaser = aReleaser;
+}
+
 
 void StreamableStringItem::materialize() const
 {
