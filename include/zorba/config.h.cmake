@@ -147,7 +147,6 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_WITH_BIG_INTEGER
 #cmakedefine ZORBA_WITH_DEBUGGER
 #cmakedefine ZORBA_WITH_FILE_ACCESS
-#cmakedefine ZORBA_WITH_FOP
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 #cmakedefine ZORBA_WITH_DEBUGGER_CLIENT
 
