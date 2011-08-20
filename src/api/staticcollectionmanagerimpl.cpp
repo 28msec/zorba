@@ -188,7 +188,7 @@ StaticCollectionManagerImpl::isDeclaredCollection(const Item& aQName) const
     Iterator_t lIter = lSeq->getIterator();
     lIter->open();
     Item lRes;
-    assert (lIter->next(lRes));
+    lIter->next(lRes);
     return lRes.getBooleanValue();
   }
   ZORBA_DM_CATCH

@@ -52,15 +52,13 @@ IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   MESSAGE(FATAL_ERROR "Please create a separate build directory and call CMake again")
 ENDIF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
-IF (MSVC_IDE)
-  # set the default build type to release
-  # NOTE: the "NMake Makefiles" generator will always set the default build type to "Debug"
-  IF (NOT CMAKE_BUILD_TYPE)
-    SET (CMAKE_BUILD_TYPE Release CACHE STRING
-         "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-         FORCE)
-  ENDIF (NOT CMAKE_BUILD_TYPE)
-ENDIF (MSVC_IDE)
+# set the default build type to release
+# NOTE: the "NMake Makefiles" generator will always set the default build type to "Debug"
+IF (NOT CMAKE_BUILD_TYPE)
+  SET (CMAKE_BUILD_TYPE Release CACHE STRING
+       "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+       FORCE)
+ENDIF (NOT CMAKE_BUILD_TYPE)
 
 # set the default installation directory to "dist" in the build directory
 IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

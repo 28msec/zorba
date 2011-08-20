@@ -10067,7 +10067,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
            return eval { $query }
         */
 
-        expr_script_kind_t scriptingKind;
+        expr_script_kind_t scriptingKind = SIMPLE_EXPR; // avoid warning
         zstring query_params;
         std::vector<var_expr_t> temp_vars;
 
