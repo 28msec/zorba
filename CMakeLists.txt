@@ -119,8 +119,10 @@ CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32)
 CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
 CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
 
+CHECK_CXX_SOURCE_COMPILES ("#include <type_traits>\nint main() { std::enable_if<true,int> x; }" ZORBA_CXX_ENABLE_IF)
 CHECK_CXX_SOURCE_COMPILES ("int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
 CHECK_CXX_SOURCE_COMPILES ("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+CHECK_CXX_SOURCE_COMPILES ("#include <memory>\nint main() { std::unique_ptr<int> p; }" ZORBA_CXX_UNIQUE_PTR)
 
 ################################################################################
 # Various cmake macros

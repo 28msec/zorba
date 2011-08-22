@@ -17,7 +17,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "util/unique_ptr.h"
+#include <zorba/internal/unique_ptr.h>
 
 using namespace std;
 
@@ -56,9 +56,15 @@ struct B : A, instances<B> {
 };
 
 struct D {
+  D( int *p = 0 ) : destroy_count( p ) { }
+
   void destroy() {
+    if ( destroy_count )
+      ++*destroy_count;
     delete this;
   }
+
+  int *const destroy_count;
 };
 
 template<typename T>
@@ -70,52 +76,54 @@ struct destroy_deleter {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-using namespace zorba;
-
 static void test_basic() {
   {
-    ztd::unique_ptr<A> a( new A );
+    unique_ptr<A> a( new A );
     ASSERT_TRUE( COUNT(A) == 1 );
   }
   ASSERT_TRUE( COUNT(A) == 0 );
 }
 
 static void test_assignment() {
-  ztd::unique_ptr<A> a1( new A );
-  ztd::unique_ptr<A> a2;
-  a2 = ztd::move( a1 );
+  unique_ptr<A> a1( new A );
+  unique_ptr<A> a2;
+  a2 = move( a1 );
   ASSERT_TRUE( COUNT(A) == 1 );
   ASSERT_TRUE( !a1 );
   ASSERT_TRUE( a2 );
 }
 
 static void test_copy_constructor() {
-  ztd::unique_ptr<A> a1( new A );
+  unique_ptr<A> a1( new A );
   ASSERT_TRUE( COUNT(A) == 1 );
-  ztd::unique_ptr<A> a2( ztd::move( a1 ) );
+  unique_ptr<A> a2( move( a1 ) );
   ASSERT_TRUE( COUNT(A) == 1 );
   ASSERT_TRUE( !a1 );
   ASSERT_TRUE( a2 );
 }
 
 static void test_deleter_reference() {
-  destroy_deleter<D> dd;
-  ztd::unique_ptr<D,destroy_deleter<D>&> d1( new D, dd );
-  ztd::unique_ptr<D,destroy_deleter<D>&> d2( new D, dd );
-  ASSERT_TRUE( &d1.get_deleter() == &d2.get_deleter() );
+  int destroy_count = 0;
+  {
+    destroy_deleter<D> dd;
+    unique_ptr<D,destroy_deleter<D>&> d1( new D( &destroy_count ), dd );
+    unique_ptr<D,destroy_deleter<D>&> d2( new D( &destroy_count ), dd );
+    ASSERT_TRUE( &d1.get_deleter() == &d2.get_deleter() );
+  }
+  ASSERT_TRUE( destroy_count == 2 );
 }
 
 static void test_derived() {
   {
-    ztd::unique_ptr<A> a1( new B );
+    unique_ptr<A> a1( new B );
     ASSERT_TRUE( COUNT(A) == 1 );
     ASSERT_TRUE( COUNT(B) == 1 );
   }
   ASSERT_TRUE( COUNT(A) == 0 );
   ASSERT_TRUE( COUNT(B) == 0 );
   {
-    ztd::unique_ptr<A> a1( new A );
-    ztd::unique_ptr<B> b1( new B );
+    unique_ptr<A> a1( new A );
+    unique_ptr<B> b1( new B );
     ASSERT_TRUE( COUNT(A) == 2 );
     ASSERT_TRUE( COUNT(B) == 1 );
     a1 = b1;
@@ -127,21 +135,21 @@ static void test_derived() {
 }
 
 template<typename T>
-void f( ztd::unique_ptr<T> p ) {
+void f( unique_ptr<T> p ) {
   ASSERT_TRUE( p );
   ASSERT_TRUE( COUNT(A) == 1 );
 }
 
 static void test_function_arg() {
-  ztd::unique_ptr<A> a1( new A );
+  unique_ptr<A> a1( new A );
   ASSERT_TRUE( COUNT(A) == 1 );
-  f( ztd::move( a1 ) );
+  f( move( a1 ) );
   ASSERT_TRUE( COUNT(A) == 0 );
   ASSERT_TRUE( !a1 );
 }
 
 static void test_null_assignment() {
-  ztd::unique_ptr<A> a1( new A );
+  unique_ptr<A> a1( new A );
   ASSERT_TRUE( COUNT(A) == 1 );
   a1 = 0;
   ASSERT_TRUE( COUNT(A) == 0 );
@@ -151,7 +159,7 @@ static void test_null_assignment() {
 static void test_release() {
   A *p = 0;
   {
-    ztd::unique_ptr<A> a1( new A );
+    unique_ptr<A> a1( new A );
     ASSERT_TRUE( COUNT(A) == 1 );
     p = a1.release();
     ASSERT_TRUE( COUNT(A) == 1 );
@@ -164,17 +172,17 @@ static void test_release() {
 }
 
 static void test_sizeof() {
-  ztd::unique_ptr<A> a1;
+  unique_ptr<A> a1;
   ASSERT_TRUE( sizeof( a1 ) == sizeof( void* ) );
-  ztd::unique_ptr<D,destroy_deleter<D> > d1;
+  unique_ptr<D,destroy_deleter<D> > d1;
   ASSERT_TRUE( sizeof( d1 ) == sizeof( void* ) );
 }
 
 static void test_swap() {
   A *p1 = new A;
   A *p2 = new A;
-  ztd::unique_ptr<A> a1( p1 );
-  ztd::unique_ptr<A> a2( p2 );
+  unique_ptr<A> a1( p1 );
+  unique_ptr<A> a2( p2 );
   ASSERT_TRUE( a1.get() == p1 );
   ASSERT_TRUE( a2.get() == p2 );
   a1.swap( a2 );

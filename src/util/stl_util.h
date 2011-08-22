@@ -32,7 +32,6 @@
 namespace zorba {
 namespace ztd {
 
-using internal::ztd::enable_if;
 using internal::ztd::has_insertion_operator;
 using internal::ztd::less;
 
@@ -291,13 +290,13 @@ struct is_float<float> {
 };
 
 template<typename NumericType> inline
-typename enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
+typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
 ge0( NumericType n ) {
   return n >= 0;
 }
 
 template<typename IntType> inline
-typename enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
 ge0( IntType ) {
   return true;
 }

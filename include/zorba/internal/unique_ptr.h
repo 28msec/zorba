@@ -19,17 +19,15 @@
 
 #include <zorba/config.h>
 
-#include <algorithm>
-#ifdef ZORBA_TR1_IN_TR1_SUBDIRECTORY
-# include <tr1/type_traits>
+#ifdef ZORBA_CXX_UNIQUE_PTR
+# include <memory>                      /* for unique_ptr */
+# include <utility>                     /* for forward, move */
 #else
-# include <type_traits>
-#endif /* ZORBA_TR1_IN_TR1_SUBDIRECTORY */
 
-#include "stl_util.h"
+#include <algorithm>
+#include "type_traits.h"
 
-namespace zorba {
-namespace ztd {
+namespace std {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -41,39 +39,38 @@ public:
   T* operator->() { return &r_; }
 };
 
-template<typename T> inline
-typename enable_if<!ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T&>::type
+template<typename T> inline typename
+enable_if<!ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T&>::type
 move( T &t ) {
   return t;
 }
 
-template<typename T> inline
-typename enable_if<!ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,
-                   T const&>::type
+template<typename T> inline typename
+enable_if<!ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T const&>::type
 move( T const &t ) {
   return t;
 }
 
-template<typename T> inline
-typename enable_if<ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T>::type
+template<typename T> inline typename
+enable_if<ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T>::type
 move( T &t ) {
   return T( rvalue<T>( t ) );
 }
 
-template<typename T> inline
-typename enable_if<ZORBA_TR1_NS::is_reference<T>::value,T>::type
+template<typename T> inline typename
+enable_if<ZORBA_TR1_NS::is_reference<T>::value,T>::type
 forward( T t ) {
   return t;
 }
 
-template<typename T> inline
-typename enable_if<!ZORBA_TR1_NS::is_reference<T>::value,T>::type
+template<typename T> inline typename
+enable_if<!ZORBA_TR1_NS::is_reference<T>::value,T>::type
 forward( T &t ) {
   return move( t );
 }
 
-template<typename T> inline
-typename enable_if<!ZORBA_TR1_NS::is_reference<T>::value,T>::type
+template<typename T> inline typename
+enable_if<!ZORBA_TR1_NS::is_reference<T>::value,T>::type
 forward( T const &t ) {
   return move( const_cast<T&>( t ) );
 }
@@ -150,11 +147,6 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace ztd
-} // namespace zorba
-
-namespace std {
-
 /**
  * Swaps two unique_ptr objects.
  *
@@ -162,16 +154,11 @@ namespace std {
  * @param b The second object to swap.
  */
 template<typename T,typename D,bool IsEmpty> inline
-void swap( zorba::ztd::unique_ptr_storage<T,D,IsEmpty> &a,
-           zorba::ztd::unique_ptr_storage<T,D,IsEmpty> &b ) {
+void swap( unique_ptr_storage<T,D,IsEmpty> &a,
+           unique_ptr_storage<T,D,IsEmpty> &b ) {
   std::swap( a.ptr_, b.ptr_ );
   std::swap( a.deleter(), b.deleter() );
 }
-
-} // namespace std
-
-namespace zorba {
-namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -191,8 +178,7 @@ struct default_delete {
    */
   template<typename U>
   default_delete( default_delete<U> const&,
-    typename enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type* = 0
-  )
+    typename enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type* = 0 )
   {
   }
 
@@ -294,10 +280,11 @@ public:
   }
 
   /**
-   * Destroys the pointed-to object by calling the deleter.
+   * Destroys the pointed-to object by calling the deleter (if the pointer is
+   * not null).
    */
   ~unique_ptr() {
-    get_deleter()( storage_.ptr_ );
+    call_deleter();
   }
 
   /**
@@ -412,7 +399,7 @@ public:
    */
   void reset( pointer p = 0 ) throw() {
     if ( p != storage_.ptr_ ) {
-      get_deleter()( storage_.ptr_ );
+      call_deleter();
       storage_.ptr_ = p;
     }
   }
@@ -446,6 +433,11 @@ public:
 private:
   unique_ptr_storage<T,D> storage_;
 
+  void call_deleter() {
+    if ( storage_.ptr_ )
+      get_deleter()( storage_.ptr_ );
+  }
+
   // forbid
   unique_ptr( unique_ptr& );
   unique_ptr& operator=( unique_ptr& );
@@ -470,13 +462,6 @@ ZORBA_UNIQUE_PTR_RELOP(>=)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace ztd
-} // namespace zorba
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace std {
-
 /**
  * Swaps the pointed-to object and deleter of one unique_ptr with that of
  * another.
@@ -485,13 +470,14 @@ namespace std {
  * @param b The second unique_ptr.
  */
 template<typename T,typename D> inline
-void swap( zorba::ztd::unique_ptr<T,D> &a, zorba::ztd::unique_ptr<T,D> &b ) {
+void swap( unique_ptr<T,D> &a, unique_ptr<T,D> &b ) {
   a.swap( b );
 }
 
-} // namespace std
-
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace std
+
+#endif /* ZORBA_CXX_UNIQUE_PTR */
 #endif /* ZORBA_UNIQUE_PTR_H */
 /* vim:set et sw=2 ts=2: */

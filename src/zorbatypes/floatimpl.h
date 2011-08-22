@@ -81,7 +81,7 @@ public:
   ////////// assignment operators /////////////////////////////////////////////
 
   template<typename A>
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                           FloatImpl&>::type
   operator=( A n );
 
@@ -91,27 +91,27 @@ public:
   ////////// arithmetic operators /////////////////////////////////////////////
 
   template<typename A>
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                           FloatImpl&>::type
   operator+=( A n );
 
   template<typename A>
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                           FloatImpl&>::type
   operator-=( A n );
 
   template<typename A>
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                           FloatImpl&>::type
   operator*=( A n );
 
   template<typename A>
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                           FloatImpl&>::type
   operator/=( A n );
 
   template<typename A>
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                           FloatImpl&>::type
   operator%=( A n );
 
@@ -346,7 +346,7 @@ inline FloatImpl<FloatType>::FloatImpl( value_type v, precision_type p ) :
 
 template<typename T>
 template<typename A> inline
-typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                         FloatImpl<T>&>::type
 FloatImpl<T>::operator=( A n ) {
   value_ = static_cast<value_type>( n );
@@ -366,13 +366,13 @@ inline FloatImpl<T>& FloatImpl<T>::operator=( FloatImpl<U> const &f ) {
 
 #define ZORBA_DEF_FLOATIMPL_OP(OP)                                \
   template<typename T,typename A> inline                          \
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
                           FloatImpl<T> >::type                    \
   operator OP( FloatImpl<T> const &f, A n ) {                     \
     return FloatImpl<T>( f.getNumber() OP static_cast<T>( n ) );  \
   }                                                               \
   template<typename T,typename A> inline                          \
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
                           FloatImpl<T> >::type                    \
   operator OP( A n, FloatImpl<T> const &f ) {                     \
     return FloatImpl<T>( static_cast<T>( n ) OP f.getNumber() );  \
@@ -386,14 +386,14 @@ ZORBA_DEF_FLOATIMPL_OP( / )
 #undef ZORBA_DEF_FLOATIMPL_OP
 
 template<typename T,typename A> inline
-typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                         FloatImpl<T> >::type
 operator%( FloatImpl<T> const &f, A n ) {
   return FloatImpl<T>( std::fmod( f.getNumber(), static_cast<T>( n ) ) );
 }
 
 template<typename T,typename A> inline
-typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
+typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,
                         FloatImpl<T> >::type
 operator%( A n, FloatImpl<T> const &f ) {
   return FloatImpl<T>( std::fmod( static_cast<T>( n ), f.getNumber() ) );
@@ -420,7 +420,7 @@ FloatImpl<T> operator%( FloatImpl<T> const &f, FloatImpl<T> const &g ) {
 #define ZORBA_DEF_FLOATIMPL_OP(OP)                                \
   template<typename T>                                            \
   template<typename A> inline                                     \
-  typename ztd::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
+  typename std::enable_if<ZORBA_TR1_NS::is_arithmetic<A>::value,  \
                           FloatImpl<T>&>::type                    \
   FloatImpl<T>::operator OP( A n ) {                              \
     value_ OP static_cast<value_type>( n );                       \

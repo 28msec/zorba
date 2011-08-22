@@ -24,11 +24,7 @@
 
 #include <zorba/config.h>
 
-#ifdef ZORBA_TR1_IN_TR1_SUBDIRECTORY
-# include <tr1/type_traits>
-#else
-# include <type_traits>
-#endif
+#include "type_traits.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -37,24 +33,6 @@ namespace internal {
 namespace ztd {
 
 ////////// tr1 ////////////////////////////////////////////////////////////////
-
-/**
- * \internal
- * Define our own version of \c enable_if since g++ 4.2.1 (the version that
- * comes with Xcode 3.x) doesn't have \c enable_if.
- */
-template<bool,typename T = void>
-struct enable_if {
-};
-
-/**
- * \internal
- * Specialization of \c enable_if for the \c true case.
- */
-template<typename T>
-struct enable_if<true,T> {
-  typedef T type;
-};
 
 /**
  * \internal
@@ -257,9 +235,9 @@ ZORBA_DECL_HAS_MEM_FN( toString );
  * @return Returns a string representation of the object.
  */
 template<typename T> inline
-typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
-                && has_insertion_operator<T>::value,
-                   std::string>::type
+typename std::enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
+                     && has_insertion_operator<T>::value,
+                        std::string>::type
 to_string( T const &t ) {
   std::ostringstream o;
   o << t;
@@ -278,9 +256,9 @@ to_string( T const &t ) {
  * @return Returns a string representation of the object.
  */
 template<class T> inline
-typename enable_if<!has_insertion_operator<T>::value
-                && has_c_str<T,char const* (T::*)() const>::value,
-                   std::string>::type
+typename std::enable_if<!has_insertion_operator<T>::value
+                     && has_c_str<T,char const* (T::*)() const>::value,
+                        std::string>::type
 to_string( T const &t ) {
   return t.c_str();
 }
@@ -298,9 +276,9 @@ to_string( T const &t ) {
  * @return Returns a string representation of the object.
  */
 template<class T> inline
-typename enable_if<!has_insertion_operator<T>::value
-                && !has_c_str<T,char const* (T::*)() const>::value
-                && has_str<T,std::string (T::*)() const>::value,
+typename std::enable_if<!has_insertion_operator<T>::value
+                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && has_str<T,std::string (T::*)() const>::value,
                 std::string>::type
 to_string( T const &t ) {
   return t.str();
@@ -318,9 +296,9 @@ to_string( T const &t ) {
  * @return Returns a string representation of the object.
  */
 template<class T> inline
-typename enable_if<!has_insertion_operator<T>::value
-                && has_toString<T,std::string (T::*)() const>::value,
-                   std::string>::type
+typename std::enable_if<!has_insertion_operator<T>::value
+                     && has_toString<T,std::string (T::*)() const>::value,
+                        std::string>::type
 to_string( T const &t ) {
   return t.toString();
 }
@@ -335,7 +313,7 @@ to_string( T const &t ) {
  * otherwise returns \c "<null>".
  */
 template<typename T> inline
-typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,std::string>::type
+typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,std::string>::type
 to_string( T p ) {
   return p ? to_string( *p ) : "<null>";
 }

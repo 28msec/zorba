@@ -151,7 +151,7 @@ std::string get_err_string( char const *function,
  * @return Returns said error string.
  */
 template<class StringType> inline
-typename ztd::enable_if<
+typename std::enable_if<
   ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
   std::string
 >::type

@@ -464,9 +464,9 @@ template<typename IntegralType> inline
 // signed integral type", but Microsoft's implementation is broken and returns
 // true for floating point types as well.
 //
-typename enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
-                && ZORBA_TR1_NS::is_signed<IntegralType>::value,
-                   IntegralType>::type
+typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
+                     && ZORBA_TR1_NS::is_signed<IntegralType>::value,
+                        IntegralType>::type
 aton( char const *s ) {
   long long const result = atoll( s );
   if ( result < std::numeric_limits<IntegralType>::min() ||
@@ -489,8 +489,8 @@ aton( char const *s ) {
  * @throws range_error if the number overflows/underflows.
  */
 template<typename IntegralType> inline
-typename enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
-                   IntegralType>::type
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
+                        IntegralType>::type
 aton( char const *s ) {
   unsigned long long const result = atoull( s );
   if ( result > std::numeric_limits<IntegralType>::max() )
@@ -510,7 +510,7 @@ aton( char const *s ) {
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
-typename enable_if<is_double<NumericType>::value,NumericType>::type
+typename std::enable_if<is_double<NumericType>::value,NumericType>::type
 aton( char const *s ) {
   return atod( s );
 }
@@ -527,7 +527,7 @@ aton( char const *s ) {
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
-typename enable_if<is_float<NumericType>::value,NumericType>::type
+typename std::enable_if<is_float<NumericType>::value,NumericType>::type
 aton( char const *s ) {
   return atof( s );
 }
@@ -687,10 +687,10 @@ inline char* itoa( unsigned long n, char *buf ) {
  * @param out The output string.
  */
 template<typename T,class OutputStringType> inline
-typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
-                && !ZORBA_TR1_NS::is_integral<T>::value
-                && has_insertion_operator<T>::value,
-                   void>::type
+typename std::enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
+                     && !ZORBA_TR1_NS::is_integral<T>::value
+                     && has_insertion_operator<T>::value,
+                        void>::type
 to_string( T const &t, OutputStringType *out ) {
   std::ostringstream o;
   o << t;
@@ -706,7 +706,7 @@ to_string( T const &t, OutputStringType *out ) {
  * @param out The output string.
  */
 template<typename T,class OutputStringType> inline
-typename enable_if<ZORBA_TR1_NS::is_integral<T>::value,void>::type
+typename std::enable_if<ZORBA_TR1_NS::is_integral<T>::value,void>::type
 to_string( T t, OutputStringType *out ) {
   itoa_buf_type buf;
   *out = itoa( t, buf );
@@ -724,9 +724,9 @@ to_string( T t, OutputStringType *out ) {
  * @param out The output string.
  */
 template<class T,class OutputStringType> inline
-typename enable_if<!has_insertion_operator<T>::value
-                && has_c_str<T,char const* (T::*)() const>::value,
-                void>::type
+typename std::enable_if<!has_insertion_operator<T>::value
+                     && has_c_str<T,char const* (T::*)() const>::value,
+                        void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.c_str();
 }
@@ -744,10 +744,10 @@ to_string( T const &t, OutputStringType *out ) {
  * @param out The output string.
  */
 template<class T,class OutputStringType> inline
-typename enable_if<!has_insertion_operator<T>::value
-                && !has_c_str<T,char const* (T::*)() const>::value
-                && has_str<T,std::string (T::*)() const>::value,
-                   void>::type
+typename std::enable_if<!has_insertion_operator<T>::value
+                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && has_str<T,std::string (T::*)() const>::value,
+                        void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.str();
 }
@@ -764,9 +764,9 @@ to_string( T const &t, OutputStringType *out ) {
  * @param out The output string.
  */
 template<class T,class OutputStringType> inline
-typename enable_if<!has_insertion_operator<T>::value
-                && has_toString<T,std::string (T::*)() const>::value,
-                   void>::type
+typename std::enable_if<!has_insertion_operator<T>::value
+                     && has_toString<T,std::string (T::*)() const>::value,
+                        void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.toString();
 }
@@ -781,7 +781,7 @@ to_string( T const &t, OutputStringType *out ) {
  * the result of \c to_string(*p); otherwise \c "<null>".
  */
 template<typename T,class OutputStringType> inline
-typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
+typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
 to_string( T p, OutputStringType *out ) {
   if ( p )
     to_string( *p, out );
