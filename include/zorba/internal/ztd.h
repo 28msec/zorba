@@ -191,6 +191,40 @@ inline char const* c_str( char const *s ) {
   return s;
 }
 
+////////// destroy_delete (for unique_ptr) ////////////////////////////////////
+
+/**
+ * A deleter class that can be used with unique_ptr.  Instead of calling \c
+ * delete on the pointed-to object, it calls its \c destroy() member function.
+ */
+template<typename T>
+struct destroy_delete {
+  destroy_delete() { }
+
+  /**
+   * Copy constructor.
+   *
+   * @tparam U The delete type of the deleter to copy-construct from such that
+   * \c U* is convertible to \c T*.
+   */
+  template<typename U>
+  destroy_delete( destroy_delete<U> const&,
+    typename
+      std::enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type* = 0 )
+  {
+  }
+
+  /**
+   * Calls the \c destroy() member function of the pointed-to object.
+   *
+   * @param p A pointer to the object.
+   */
+  void operator()( T *p ) {
+    if ( p )
+      p->destroy();
+  }
+};
+
 ////////// less<char const*> ///////////////////////////////////////////////////
 
 // This declaration exists only to declare that less is a template class.

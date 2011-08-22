@@ -18,8 +18,10 @@
 #include <iomanip>
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/internal/ztd.h>
 
 using namespace std;
+using namespace zorba::internal;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -67,13 +69,6 @@ struct D {
   int *const destroy_count;
 };
 
-template<typename T>
-struct destroy_deleter {
-  void operator()( T *p ) {
-    p->destroy();
-  }
-};
-
 ///////////////////////////////////////////////////////////////////////////////
 
 static void test_basic() {
@@ -105,9 +100,9 @@ static void test_copy_constructor() {
 static void test_deleter_reference() {
   int destroy_count = 0;
   {
-    destroy_deleter<D> dd;
-    unique_ptr<D,destroy_deleter<D>&> d1( new D( &destroy_count ), dd );
-    unique_ptr<D,destroy_deleter<D>&> d2( new D( &destroy_count ), dd );
+    ztd::destroy_delete<D> dd;
+    unique_ptr<D,ztd::destroy_delete<D>&> d1( new D( &destroy_count ), dd );
+    unique_ptr<D,ztd::destroy_delete<D>&> d2( new D( &destroy_count ), dd );
     ASSERT_TRUE( &d1.get_deleter() == &d2.get_deleter() );
   }
   ASSERT_TRUE( destroy_count == 2 );
@@ -174,7 +169,7 @@ static void test_release() {
 static void test_sizeof() {
   unique_ptr<A> a1;
   ASSERT_TRUE( sizeof( a1 ) == sizeof( void* ) );
-  unique_ptr<D,destroy_deleter<D> > d1;
+  unique_ptr<D,ztd::destroy_delete<D> > d1;
   ASSERT_TRUE( sizeof( d1 ) == sizeof( void* ) );
 }
 
