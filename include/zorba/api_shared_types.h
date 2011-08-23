@@ -18,6 +18,7 @@
 
 #include <memory>
 
+#include <zorba/config.h>
 #include <zorba/smart_ptr.h>
 
 namespace zorba {
@@ -47,6 +48,10 @@ namespace zorba {
   class DiagnosticHandler;
   class QueryLocation;
   typedef SmartPtr<QueryLocation> QueryLocation_t;
+
+#ifndef ZORBA_NO_FULL_TEXT
+  class TokenizerProvider;
+#endif /* ZORBA_NO_FULL_TEXT */
 
   // smart pointers
   typedef zorba::SmartPtr<XQuery>                  XQuery_t;

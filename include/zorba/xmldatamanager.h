@@ -191,7 +191,7 @@ namespace zorba {
     virtual Item
     fetch(const String& aURI) const = 0;
 
-    /** \brief Register an DiagnosticHandler to which errors occuring during the
+    /** \brief Register a DiagnosticHandler to which errors occuring during the
      * management of documents and collections are reported.
      *
      * If no DiagnosticHandler has been set using this function then
@@ -205,6 +205,21 @@ namespace zorba {
     virtual void
     registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler) = 0;
 
+#ifndef ZORBA_NO_FULL_TEXT
+    /**
+     * Registers a TokenizerProvider to use for toknenization of text content
+     * in order to perform queries involving full-text.
+     *
+     * If no TokenizerProvider has been set using this function, then the
+     * default TokenizerProvider will be used.
+     *
+     * @param provider If not NULL, sets the TokenizerProvider to use; if NULL,
+     * removes any previously registered TokenizerProvider.
+     */
+    virtual void
+    registerTokenizerProvider(TokenizerProvider const *provider) = 0;
+#endif /* ZORBA_NO_FULL_TEXT */
+
     protected:
     /** \brief Destructor
      */
@@ -212,6 +227,6 @@ namespace zorba {
 
   }; /* class XmlDataManager */
 
-} /* namespace zorba */
-#endif
+} // namespace zorba
+#endif /* ZORBA_XMLDATAMANAGER_API_H */
 /* vim:set et sw=2 ts=2: */

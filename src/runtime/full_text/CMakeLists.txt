@@ -37,6 +37,9 @@ SET(FULLTEXT_SRCS
     stop_words/stop_words_no.cpp
     stop_words/stop_words_pt.cpp
     stop_words/stop_words_sv.cpp
+    tokenizer.cpp
+    icu_tokenizer.cpp
+    default_tokenizer.cpp
     )
 
 IF (ZORBA_WITH_FILE_ACCESS)

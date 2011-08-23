@@ -73,6 +73,11 @@ SET(UNIT_TESTS_SRCS
   staticcollectionmanager.cpp
 )
 
+IF(NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND UNIT_TESTS_SRCS
+    tokenizer.cpp)
+ENDIF(NOT ZORBA_NO_FULL_TEXT)
+
 # multithread_simple.cpp
 # multithread_stress_test.cpp
 

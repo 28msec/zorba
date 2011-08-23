@@ -39,7 +39,9 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "uri_resolver_wrappers.h"
+#ifndef ZORBA_NO_FULL_TEXT
 #include "context/stemmer_wrappers.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "compiler/parser/query_loc.h"
 #include "compiler/api/compilercb.h"
@@ -744,10 +746,6 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
   return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
 
 #if 0
 /*******************************************************************************

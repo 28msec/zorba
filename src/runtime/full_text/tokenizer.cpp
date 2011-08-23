@@ -15,26 +15,42 @@
  */
 #include "stdafx.h"
 
-#include "zorbautils/icu_tokenizer.h"
+#include <zorba/tokenizer.h>
 
 namespace zorba {
 
-Tokenizer::Tokenizer() {
-  token_no_ = para_no_ = 0;
-  sent_no_ = 1;
+///////////////////////////////////////////////////////////////////////////////
+
+Tokenizer::Tokenizer( Numbers &no, int trace_options ) :
+  trace_options_( trace_options ),
+  no_( &no )
+{
 }
 
 Tokenizer::~Tokenizer() {
+  // out-of-line since it's virtual
+}
+
+void Tokenizer::element( Item const&, int ) {
   // do nothing
 }
 
-Tokenizer* Tokenizer::create( bool wildcards ) {
-  return new ICU_Tokenizer( wildcards );
+Tokenizer::Numbers::Numbers() {
+  token = para = 0;
+  sent = 1;
 }
 
 Tokenizer::Callback::~Callback() {
-  // do nothing
+  // out-of-line since it's virtual
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+TokenizerProvider::~TokenizerProvider() {
+  // out-of-line since it's virtual
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

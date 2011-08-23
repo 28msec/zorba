@@ -37,6 +37,7 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/locale.h>
+#include <zorba/tokenizer.h>
 #include "ft_token_store.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -44,7 +45,6 @@
 
 #include "diagnostics/assert.h"
 #include "zorbautils/fatal.h"
-#include "zorbautils/tokenizer.h"
 #include "zorbautils/hashfun.h"
 
 #include "zorbatypes/zstring.h"
@@ -95,7 +95,9 @@ typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 
+#ifndef ZORBA_NO_FULL_TEXT
 class XmlNodeTokenizerCallback;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 #define NODE_STOP \
@@ -266,7 +268,7 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenStore& getTokenStore() { return theTokens; }
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 };
 
 
@@ -494,9 +496,9 @@ public:
   void setFlags(uint32_t flags) { theFlags = flags; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getDocumentTokens(
-      locale::iso639_1::type = locale::iso639_1::unknown) const;
-#endif
+  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+                               locale::iso639_1::type, bool = false ) const;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
   virtual void getBaseURIInternal(zstring& uri, bool& local) const;
@@ -513,7 +515,7 @@ protected:
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void tokenize( XmlNodeTokenizerCallback& );
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
 private:
   void setTree(const XmlTree* t);
@@ -1101,8 +1103,8 @@ public:
   isPrecedingSibling(const store::Item_t&) const { return false; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t
-  getDocumentTokens( locale::iso639_1::type = locale::iso639_1::unknown ) const;
+  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+                               locale::iso639_1::type, bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
@@ -1507,14 +1509,15 @@ public:
   typedef FTTokenStore::container_type container_type;
   typedef FTTokenStore::size_type begin_type;
 
-  XmlNodeTokenizerCallback( Tokenizer &tokenizer, FTTokenStore &token_store,
-                            locale::iso639_1::type lang );
+  XmlNodeTokenizerCallback( TokenizerProvider const &provider,
+                            Tokenizer::Numbers &numbers,
+                            locale::iso639_1::type lang,
+                            FTTokenStore &token_store );
 
-  XmlNodeTokenizerCallback( Tokenizer &tokenizer, container_type &tokens,
-                            locale::iso639_1::type lang );
-
-  void operator()( char const *utf8_s, size_t utf8_len,
-                   int_t pos, int_t sent, int_t para, void* );
+  XmlNodeTokenizerCallback( TokenizerProvider const &provider,
+                            Tokenizer::Numbers &numbers,
+                            locale::iso639_1::type lang,
+                            container_type &tokens );
 
   begin_type beginTokenization() const;
 
@@ -1524,18 +1527,21 @@ public:
 
   void pop_element() { element_stack_.pop(); }
 
-  void push_lang( locale::iso639_1::type lang ) { lang_stack_.push( lang ); }
+  void push_lang( locale::iso639_1::type lang );
 
-  void pop_lang() { lang_stack_.pop(); }
+  void pop_lang();
 
   void tokenize( char const *utf8_s, size_t len );
 
-  Tokenizer& tokenizer() const { return tokenizer_; }
+  Tokenizer& tokenizer() const { return *tokenizer_stack_.top(); }
 
+  // inherited
+  void operator()( char const *utf8_s, size_type utf8_len,
+                   size_type pos, size_type sent, size_type para, void* );
 private:
-  typedef std::stack<locale::iso639_1::type> lang_stack_t;
-
   typedef std::stack<ElementNode*> element_stack_t;
+  typedef std::stack<locale::iso639_1::type> lang_stack_t;
+  typedef std::stack<Tokenizer*> tokenizer_stack_t;
 
   ElementNode* get_element() const {
     return element_stack_.top();
@@ -1545,20 +1551,20 @@ private:
     return lang_stack_.top();
   }
 
-  Tokenizer &tokenizer_;
+  TokenizerProvider const &provider_;
+  Tokenizer::Numbers &numbers_;
   FTTokenStore *token_store_;
   container_type &tokens_;
   element_stack_t element_stack_;
   lang_stack_t lang_stack_;
+  tokenizer_stack_t tokenizer_stack_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 
 
 } // namespace store
 } // namespace zorba
-
-
-#endif
+#endif /* ZORBA_SIMPLE_STORE_NODE_ITEMS */
 /*
  * Local variables:
  * mode: c++

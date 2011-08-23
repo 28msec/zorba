@@ -30,6 +30,7 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/locale.h>
+#include <zorba/tokenizer.h>
 #include "store/api/ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -747,28 +748,18 @@ public:
   /* -------------------- Methods for Full-Text --------------------- */
 
 #ifndef ZORBA_NO_FULL_TEXT
-
   /**
-   * Gets the document tokens for this item.
+   * Gets the tokens for this item.
    *
+   * @param provider The TokenizerProvider to use.
+   * @param numbers The Tokenizer::Numbers to use.
    * @param lang The language to use for tokenization.
-   * @return Returns an iterator over the document tokens.
+   * @param wildcards If \c true, allow XQuery wildcard syntax.
+   * @return Returns an iterator over the tokens.
    */
   virtual FTTokenIterator_t
-  getDocumentTokens(locale::iso639_1::type lang = locale::iso639_1::unknown) const;
-
-  /**
-   * Gets the query tokens for this item.
-   *
-   * @param lang The language to use for tokenization.
-   * @param wildcards If true, allow XQuery wildcard syntax in tokens.
-   * @return Returns an iterator over the query tokens.
-   */
-  virtual FTTokenIterator_t
-  getQueryTokens( 
-      locale::iso639_1::type lang = locale::iso639_1::unknown,
-      bool wildcards = false) const;
-
+  getTokens(TokenizerProvider const &provider, Tokenizer::Numbers &numbers,
+            locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 private:
@@ -776,15 +767,10 @@ private:
   Item& operator=(const Item&);
 }; 
 
-
-
-
-
 } // namespace store
 } // namespace zorba
 
-#endif
-
+#endif /* ZORBA_STORE_ITEM_H */
 /*
  * Local variables:
  * mode: c++

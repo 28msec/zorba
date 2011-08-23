@@ -34,7 +34,7 @@ namespace zorba {
   namespace internal {
     class StemmerProviderWrapper;
   }
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
 
@@ -67,7 +67,7 @@ protected:
   stemmer_providers_t;
 
   stemmer_providers_t theStemmerProviders;
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
   // allow for lazy creation
   mutable StaticCollectionManagerImpl* theCollectionMgr;

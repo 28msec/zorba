@@ -25,7 +25,6 @@
 #include "zorbatypes/URI.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "zorbautils/locale.h"
-#include "zorbautils/tokenizer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #include "zorbamisc/ns_consts.h"
@@ -4159,10 +4158,14 @@ zstring CommentNode::show() const
  *
  ******************************************************************************/
 
-XmlNodeTokenizerCallback::XmlNodeTokenizerCallback( Tokenizer &tokenizer,
-                                                    FTTokenStore &token_store,
-                                                    iso639_1::type lang ) :
-  tokenizer_( tokenizer ),
+XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
+  TokenizerProvider const &provider,
+  Tokenizer::Numbers &numbers,
+  iso639_1::type lang,
+  FTTokenStore &token_store
+) :
+  provider_( provider ),
+  numbers_( numbers ),
   token_store_( &token_store ),
   tokens_( token_store.getDocumentTokens() )
 {
@@ -4170,10 +4173,14 @@ XmlNodeTokenizerCallback::XmlNodeTokenizerCallback( Tokenizer &tokenizer,
 }
 
 
-XmlNodeTokenizerCallback::XmlNodeTokenizerCallback( Tokenizer &tokenizer,
-                                                    container_type &tokens,
-                                                    iso639_1::type lang ) :
-  tokenizer_( tokenizer ),
+XmlNodeTokenizerCallback::XmlNodeTokenizerCallback(
+  TokenizerProvider const &provider,
+  Tokenizer::Numbers &numbers,
+  iso639_1::type lang,
+  container_type &tokens
+) :
+  provider_( provider ),
+  numbers_( numbers ),
   token_store_( NULL ),
   tokens_( tokens )
 {
@@ -4188,27 +4195,39 @@ XmlNodeTokenizerCallback::beginTokenization() const {
 
 
 inline void XmlNodeTokenizerCallback::endTokenization(
-    XmlNode const *node,
-    XmlNodeTokenizerCallback::begin_type begin )
+  XmlNode const *node,
+  XmlNodeTokenizerCallback::begin_type begin )
 {
   token_store_->putRange(node, begin, token_store_->getDocumentTokens().size());
 }
 
+void XmlNodeTokenizerCallback::pop_lang() {
+  lang_stack_.pop();
+  ztd::pop_stack( tokenizer_stack_ )->destroy();
+}
 
-void XmlNodeTokenizerCallback::operator()( char const *utf8_s, size_t utf8_len,
-                                           int_t pos, int_t sent, int_t para,
-                                           void *payload )
+void XmlNodeTokenizerCallback::push_lang( iso639_1::type lang ) {
+  lang_stack_.push( lang );
+  Tokenizer::ptr t( provider_.getTokenizer( lang, numbers_ ) );
+  ZORBA_ASSERT( t.get() );
+  tokenizer_stack_.push( t.get() );
+  t.release();
+}
+
+
+void XmlNodeTokenizerCallback::
+operator()( char const *utf8_s, size_type utf8_len, size_type pos,
+            size_type sent, size_type para, void *payload )
 {
   store::Item const *const item = static_cast<store::Item*>( payload );
   FTToken t( utf8_s, utf8_len, pos, sent, para, item, get_lang() );
   tokens_.push_back( t );
 }
 
-
 inline void XmlNodeTokenizerCallback::tokenize( char const *utf8_s,
                                                 size_t len ) {
-  tokenizer_.tokenize(
-    utf8_s, len, get_lang(), *this,
+  tokenizer().tokenize(
+    utf8_s, len, get_lang(), false, *this,
     element_stack_.empty() ? NULL : static_cast<void*>( get_element() )
   );
 }
@@ -4229,7 +4248,9 @@ void AttributeNode::tokenize( XmlNodeTokenizerCallback &cb )
 
 
 FTTokenIterator_t
-AttributeNode::getDocumentTokens( iso639_1::type lang ) const
+AttributeNode::getTokens( TokenizerProvider const &provider,
+                          Tokenizer::Numbers &numbers, iso639_1::type lang,
+                          bool ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
   while ( true ) {
@@ -4239,8 +4260,7 @@ AttributeNode::getDocumentTokens( iso639_1::type lang ) const
         new NaiveFTTokenIterator( *tokens, 0, tokens->size() )
       );
     FTTokenStore::container_type att_tokens;
-    std::auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
-    XmlNodeTokenizerCallback cb( *tokenizer, att_tokens, lang );
+    XmlNodeTokenizerCallback cb( provider, numbers, lang, att_tokens );
     const_cast<AttributeNode*>( this )->tokenize( cb );
     token_store.putAttr( this, att_tokens );
   }
@@ -4249,9 +4269,6 @@ AttributeNode::getDocumentTokens( iso639_1::type lang ) const
 
 void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
 {
-  Tokenizer &tokenizer = cb.tokenizer();
-  tokenizer.para( tokenizer.para() + 1 );
-
   XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
   for ( ulong i = 0; i < numChildren(); ++i )
     getChild( i )->tokenize( cb );
@@ -4261,6 +4278,17 @@ void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
 
 void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
 {
+  Tokenizer &tokenizer = cb.tokenizer();
+
+  zorba::Item element_name;
+  if ( tokenizer.trace_options() )
+    element_name = getNodeName();
+
+  if ( tokenizer.trace_options() & Tokenizer::trace_begin )
+    tokenizer.element( element_name, Tokenizer::trace_begin );
+  else if ( !tokenizer.trace_options() )
+    ++tokenizer.numbers().para;
+
   //
   // See if this XML element has an xml:lang attribute: if so, switch to that
   // language.
@@ -4281,6 +4309,9 @@ void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
   cb.pop_element();
   if ( pushed_lang )
     cb.pop_lang();
+
+  if ( tokenizer.trace_options() & Tokenizer::trace_end )
+    tokenizer.element( element_name, Tokenizer::trace_end );
 }
 
 
@@ -4342,15 +4373,16 @@ void TextNode::tokenize( XmlNodeTokenizerCallback &cb )
 
 
 FTTokenIterator_t
-XmlNode::getDocumentTokens( iso639_1::type lang ) const
+XmlNode::getTokens( TokenizerProvider const &provider,
+                    Tokenizer::Numbers &numbers, iso639_1::type lang,
+                    bool ) const
 {
   FTTokenStore &token_store = getTree()->getTokenStore();
   FTTokenStore::container_type &tokens = token_store.getDocumentTokens();
 
   if ( tokens.empty() )
   {
-    std::auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
-    XmlNodeTokenizerCallback cb( *tokenizer, token_store, lang );
+    XmlNodeTokenizerCallback cb( provider, numbers, lang, token_store );
     getRoot()->tokenize( cb );
   }
 

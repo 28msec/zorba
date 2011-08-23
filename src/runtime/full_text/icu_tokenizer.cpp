@@ -16,27 +16,28 @@
 #include "stdafx.h"
 
 #include <cctype>
-#include <memory>                       /* for auto_ptr */
 #include <unicode/unistr.h>
 
 #define DEBUG_TOKENIZER 0
 #if DEBUG_TOKENIZER
 #include <iostream>
-#endif
+#endif /* DEBUG_TOKENIZER */
 
 #include <zorba/diagnostic_list.h>
 
+#include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/zorba_exception.h"
+#include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
+#include "zorbautils/locale.h"
+#include "zorbautils/mutex.h"
 
 #include "icu_tokenizer.h"
-#include "locale.h"
-#include "mutex.h"
 
 using namespace std;
 U_NAMESPACE_USE
@@ -50,9 +51,9 @@ namespace {
 
 class temp_token {
 public:
-  typedef Tokenizer::int_t int_t;
+  typedef Tokenizer::size_type size_type;
 
-  void append( char const *s, size_t slen ) {
+  void append( char const *s, size_type slen ) {
     value_.append( s, slen );
   }
 
@@ -74,7 +75,8 @@ public:
     }
   }
 
-  void set( char const *s, size_t slen, int_t pos, int_t sent, int_t para ) {
+  void set( char const *s, size_type slen, size_type pos, size_type sent,
+            size_type para ) {
     clear();
     append( s, slen );
     pos_  = pos;
@@ -84,7 +86,7 @@ public:
 
 private:
   string value_;
-  int_t pos_, sent_, para_;
+  size_type pos_, sent_, para_;
 };
 
 } // anonymous namespace
@@ -119,21 +121,16 @@ static Locale const& get_icu_locale_for( iso639_1::type lang ) {
   return icu_locale;
 }
 
-/**
- * Creates the ICU word & sentence RuleBasedBreakIterators for the given
- * language.
- *
- * @param lang The language to create the RuleBasedBreakIterators for.
- * @param result The created iterators are put here.
- */
-void ICU_Tokenizer::create_iterators( iso639_1::type lang,
-                                      ICU_Iterators &result ) {
-  typedef auto_ptr<RuleBasedBreakIterator> rbbi_ptr;
+///////////////////////////////////////////////////////////////////////////////
 
+ICU_Tokenizer::ICU_Tokenizer( iso639_1::type lang, Numbers &no ) :
+  Tokenizer( no ),
+  lang_( lang )
+{
   Locale const &icu_locale = get_icu_locale_for( lang );
   UErrorCode status = U_ZERO_ERROR;
 
-  rbbi_ptr word_it(
+  word_.reset(
     dynamic_cast<RuleBasedBreakIterator*>(
       BreakIterator::createWordInstance( icu_locale, status )
     )
@@ -141,42 +138,24 @@ void ICU_Tokenizer::create_iterators( iso639_1::type lang,
   if ( U_FAILURE( status ) )
     throw ZORBA_EXCEPTION( zerr::ZXQP0036_BREAKITERATOR_CREATION_FAILED );
 
-  rbbi_ptr sent_it(
+  sent_.reset(
     dynamic_cast<RuleBasedBreakIterator*>(
       BreakIterator::createSentenceInstance( Locale::getUS(), status )
     )
   );
   if ( U_FAILURE( status ) )
     throw ZORBA_EXCEPTION( zerr::ZXQP0036_BREAKITERATOR_CREATION_FAILED );
-
-  result.word_ = word_it.release();
-  result.sent_ = sent_it.release();
 }
 
-/**
- * Gets the ICU word & sentence RuleBasedBreakIterators for the given language
- * (creating them if necessary).
- *
- * @param lang The language to get the RuleBasedBreakIterators for.
- * @return Returns said iterators.
- */
-ICU_Tokenizer::ICU_Iterators&
-ICU_Tokenizer::get_iterators_for( iso639_1::type lang ) {
-  lang_iters_t::iterator i = lang_iters_.find( lang );
-  if ( i != lang_iters_.end() )
-    return i->second;
-  ICU_Iterators &iters = lang_iters_[ lang ];
-  create_iterators( lang, iters );
-  return iters;
+ICU_Tokenizer::~ICU_Tokenizer() {
+  // out-of-line since it's virtual
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
-  // do nothing else
+void ICU_Tokenizer::destroy() const {
+  delete this;
 }
-
-///////////////////////////////////////////////////////////////////////////////
 
 #define HANDLE_BACKSLASH()            \
   if ( !got_backslash ) ; else {      \
@@ -194,10 +173,10 @@ ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
 #define IS_WORD_BREAK(TYPE,STATUS) \
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
-void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
-                              iso639_1::type lang, Callback &callback,
-                              void *payload ) {
-  ICU_Iterators &iters = get_iterators_for( lang );
+void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
+                              iso639_1::type lang, bool wildcards,
+                              Callback &callback, void *payload ) {
+  ZORBA_ASSERT( lang == lang_ );
 
   unicode::char_type *utf16_buf;
   unicode::size_type utf16_len;
@@ -219,11 +198,11 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
   // This UnicodeString wraps the existing buffer: no copy is made.
   UnicodeString const utf16_s( false, utf16_buf, utf16_len );
 
-  iters.word_->setText( utf16_s );
-  int32_t word_start = iters.word_->first(), word_end = iters.word_->next();
+  word_->setText( utf16_s );
+  int32_t word_start = word_->first(), word_end = word_->next();
 
-  iters.sent_->setText( utf16_s );
-  int32_t sent_start = iters.sent_->first(), sent_end = iters.sent_->next();
+  sent_->setText( utf16_s );
+  int32_t sent_start = sent_->first(), sent_end = sent_->next();
 
   temp_token t;
 
@@ -250,7 +229,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
     zstring_b utf8_word;
     utf8_word.wrap_memory( utf8_buf, utf8_len );
 
-    int32_t const rule_status = iters.word_->getRuleStatus();
+    int32_t const rule_status = word_->getRuleStatus();
 
     //
     // "Junk" tokens are whitespace and punctuation -- except some punctuation
@@ -269,7 +248,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
 #     if DEBUG_TOKENIZER
       cout << "(NONE)" << endl;
 #     endif
-      if ( wildcards_ ) {
+      if ( wildcards ) {
         switch ( *utf8_buf ) {
           case '.':
             HANDLE_BACKSLASH();
@@ -332,7 +311,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
         for ( i = 0; i < utf8_len; ++i, ++c ) {
           if ( i && *c == ',' )
             break;
-          if ( !isdigit( *c ) )
+          if ( !ascii::is_digit( *c ) )
             throw XQUERY_EXCEPTION(
               err::FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
             );
@@ -342,7 +321,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
             err::FTDY0020, ERROR_PARAMS( "", ZED( CharExpected_3 ), ',' )
           );
         for ( ++i, ++c; i < utf8_len; ++i, ++c ) {
-          if ( !isdigit( *c ) )
+          if ( !ascii::is_digit( *c ) )
             throw XQUERY_EXCEPTION(
               err::FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit_3 ), *c )
             );
@@ -373,15 +352,19 @@ set_token:
     if ( !is_junk ) {
       if ( in_wild || got_backslash )
         t.append( utf8_buf, utf8_len );
-      else
-        t.set( utf8_buf, utf8_len, token_no_++, sent_no_, para_no_ );
+      else {
+        t.set(
+          utf8_buf, utf8_len, numbers().token, numbers().sent, numbers().para
+        );
+        ++numbers().token;
+      }
     }
 
 next:
-    word_start = word_end, word_end = iters.word_->next();
+    word_start = word_end, word_end = word_->next();
     if ( word_end >= sent_end && sent_end != BreakIterator::DONE ) {
-      sent_start = sent_end, sent_end = iters.sent_->next();
-      ++sent_no_;
+      sent_start = sent_end, sent_end = sent_->next();
+      ++numbers().sent;
     }
   } // while
 
@@ -391,6 +374,16 @@ next:
     );
   t.send( payload, callback );
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+Tokenizer::ptr
+ICU_TokenizerProvider::getTokenizer( iso639_1::type lang,
+                                     Tokenizer::Numbers &no ) const {
+  return Tokenizer::ptr( new ICU_Tokenizer( lang, no ) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

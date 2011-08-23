@@ -26,7 +26,6 @@
 #include "zorbatypes/URI.h"
 
 #include "zorbautils/hashfun.h"
-#include "zorbautils/icu_tokenizer.h"
 
 #include "store/api/item.h"
 #include "store/api/store.h"
@@ -51,8 +50,10 @@
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
 
 using namespace std;
+using namespace zorba::locale;
 
-namespace zorba { namespace simplestore {
+namespace zorba {
+namespace simplestore {
 
 
 /*******************************************************************************
@@ -844,38 +845,20 @@ zstring StringItem::show() const
 }
 
 #ifndef ZORBA_NO_FULL_TEXT
-
-FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) const
+FTTokenIterator_t
+StringItem::getTokens( TokenizerProvider const &provider,
+                       Tokenizer::Numbers &numbers, iso639_1::type lang,
+                       bool wildcards ) const
 {
-  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
+  typedef NaiveFTTokenIterator::container_type tokens_t;
+  auto_ptr<tokens_t> tokens( new tokens_t );
 
-  auto_ptr<NaiveFTTokenIterator::container_type> tokens(
-    new NaiveFTTokenIterator::container_type
-  );
-
-  AtomicItemTokenizerCallback cb( *tokenizer, lang, *tokens );
-  cb.tokenize( theValue.data(), theValue.size() );
+  Tokenizer::ptr t( provider.getTokenizer( lang, numbers ) );
+  AtomicItemTokenizerCallback cb( *t, lang, *tokens );
+  cb.tokenize( theValue.data(), theValue.size(), wildcards );
 
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
 }
-
-
-FTTokenIterator_t StringItem::getQueryTokens(
-    locale::iso639_1::type lang,
-    bool wildcards ) const
-{
-  auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
-
-  auto_ptr<NaiveFTTokenIterator::container_type> tokens(
-    new NaiveFTTokenIterator::container_type
-  );
-
-  AtomicItemTokenizerCallback cb( *tokenizer, lang, *tokens );
-  cb.tokenize( theValue.data(), theValue.size() );
-
-  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
-}
-
 #endif /* ZORBA_NO_FULL_TEXT */
 
 
@@ -2482,21 +2465,35 @@ zstring ErrorItem::show() const
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
+
 /*******************************************************************************
   class AtomicItemTokenizerCallback
 ********************************************************************************/
-#ifndef ZORBA_NO_FULL_TEXT
-void AtomicItemTokenizerCallback::operator()(
-    char const *utf8_s,
-    size_t utf8_len,
-    int_t token_no, 
-    int_t sent_no,
-    int_t para_no,
-    void* )
+
+AtomicItemTokenizerCallback::AtomicItemTokenizerCallback( 
+  Tokenizer &tokenizer,
+  locale::iso639_1::type lang,
+  container_type &tokens
+) :
+  tokenizer_( tokenizer ),
+  lang_( lang ),
+  tokens_( tokens )
 {
+}
+
+void AtomicItemTokenizerCallback::operator()(
+  char const *utf8_s,
+  size_type utf8_len,
+  size_type token_no, 
+  size_type sent_no,
+  size_type para_no,
+  void*
+) {
   FTToken const t( utf8_s, utf8_len, token_no, lang_ );
   tokens_.push_back( t );
 }
+
 #endif /* ZORBA_NO_FULL_TEXT */
 
 

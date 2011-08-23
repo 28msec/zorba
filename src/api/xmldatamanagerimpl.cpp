@@ -19,6 +19,7 @@
 
 #include <fstream>
 
+#include <zorba/config.h>
 #include <zorba/zorba_string.h>
 #include <zorba/item.h>
 #include <zorba/item_sequence.h>
@@ -78,7 +79,7 @@ XmlDataManagerImpl::XmlDataManagerImpl()
 
   ZORBA_TRY
   {
-    theStore = & GENV.getStore();
+    theStore = & GENV_STORE;
   }
   ZORBA_CATCH
 }
@@ -318,6 +319,13 @@ void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosti
     theW3CColManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
 }
+
+#ifndef ZORBA_NO_FULL_TEXT
+void XmlDataManagerImpl::
+registerTokenizerProvider(TokenizerProvider const *provider) {
+  theStore->setTokenizerProvider( provider );
+}
+#endif /* ZORBA_NO_FULL_TEXT */
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

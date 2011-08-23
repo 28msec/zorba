@@ -17,15 +17,17 @@
 #ifndef ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 #define ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 
-#include <map>
+#include <memory>                       /* for auto_ptr */
 #include <unicode/rbbi.h>               /* for RuleBasedBreakIterator */
 
 #include <zorba/locale.h>
+#include <zorba/tokenizer.h>
 
-#include "tokenizer.h"
 #include "util/cxx_util.h"
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * An %ICU_Tokenizer is-a Tokenizer that uses the ICU (International Components
@@ -37,36 +39,36 @@ public:
   /**
    * Constructs an %ICU_Tokenizer.
    *
-   * @param wildcards If \c true, allows XQuery wildcard syntax characters to
-   * be part of tokens.
+   * @param lang The language of the text that the tokenizer will tokenize.
+   * @param no The Numbers to use.
    */
-  ICU_Tokenizer( bool wildcards = false );
+  ICU_Tokenizer( locale::iso639_1::type lang, Numbers &no );
+
+  ~ICU_Tokenizer();
 
   // inherited
-  void tokenize( char const*, size_t, locale::iso639_1::type, Callback&,
-                 void* );
+  void destroy() const;
+  void tokenize( char const*, size_type, locale::iso639_1::type, bool,
+                 Callback&, void* );
 
 private:
-  struct ICU_Iterators {
-    RuleBasedBreakIterator *word_;
-    RuleBasedBreakIterator *sent_;
+  typedef std::auto_ptr<RuleBasedBreakIterator> rbbi_ptr;
 
-    ICU_Iterators() : word_( nullptr ), sent_( nullptr ) { }
-
-    ~ICU_Iterators() {
-      delete word_;
-      delete sent_;
-    }
-  };
-
-  typedef std::map<locale::iso639_1::type,ICU_Iterators> lang_iters_t;
-
-  lang_iters_t lang_iters_;
-  bool const wildcards_;
-
-  static void create_iterators( locale::iso639_1::type, ICU_Iterators& );
-  ICU_Iterators& get_iterators_for( locale::iso639_1::type );
+  locale::iso639_1::type const lang_;
+  rbbi_ptr word_;
+  rbbi_ptr sent_;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+class ICU_TokenizerProvider : public TokenizerProvider {
+public:
+  // inherited
+  Tokenizer::ptr
+  getTokenizer( locale::iso639_1::type, Tokenizer::Numbers& ) const;
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_ICU_TOKENIZER_H */

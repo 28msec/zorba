@@ -142,6 +142,10 @@ protected:
 
   long                          theTraceLevel;
 
+#ifndef ZORBA_NO_FULL_TEXT
+  TokenizerProvider const     * theTokenizerProvider;
+#endif /* ZORBA_NO_FULL_TEXT */
+
 public:
   // needs to be virtual to allow implementation of additional stores
   virtual void populateValueIndex(
@@ -362,15 +366,18 @@ protected:
   virtual CollectionSet* createCollectionSet() const;
 
   virtual void destroyCollectionSet(CollectionSet*) const;
+
+#ifndef ZORBA_NO_FULL_TEXT
+  TokenizerProvider const* getTokenizerProvider() const;
+
+  void setTokenizerProvider(TokenizerProvider const*);
+#endif /* ZORBA_NO_FULL_TEXT */
 };
-
-
 
 } // namespace store
 } // namespace zorba
 
 #endif /* ZORBA_STORE_SIMPLE_STORE_H */
-
 /*
  * Local variables:
  * mode: c++

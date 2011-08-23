@@ -20,8 +20,11 @@
 #include <set>
 #include <vector>
 
+#include <zorba/tokenizer.h>
+
 #include "compiler/expression/ftnode.h"
 #include "store/api/item.h"
+#include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "util/cxx_util.h"
@@ -30,7 +33,6 @@
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbamisc/ns_consts.h"
-#include "zorbautils/tokenizer.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"
@@ -1181,8 +1183,8 @@ public:
   {
   }
 
-  void operator()( char const *utf8_s, size_t utf8_len, int_t, int_t, int_t,
-                   void* ) {
+  void operator()( char const *utf8_s, size_type utf8_len, size_type,
+                   size_type, size_type, void* ) {
     FTToken const t( utf8_s, (int)utf8_len, token_no_, lang_ );
     tokens_.push_back( t );
   }
@@ -1215,11 +1217,17 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 
   FTTokenSeqIterator::FTTokens synonyms;
   thesaurus_callback cb( qt0.pos(), qt0.lang(), synonyms );
-  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
+
+  Tokenizer::Numbers tno;
+  Tokenizer::ptr tokenizer(
+    GENV_STORE.getTokenizerProvider()->getTokenizer( qt0.lang(), tno )
+  );
 
   for ( zstring synonym; tresult->next( &synonym ); ) {
     synonyms.clear();
-    tokenizer->tokenize( synonym.data(), synonym.size(), qt0.lang(), cb );
+    tokenizer->tokenize(
+      synonym.data(), synonym.size(), qt0.lang(), false, cb
+    );
     query_item_t const query_item( new FTTokenSeqIterator( synonyms ) );
     result.push_back( query_item );
   }

@@ -56,6 +56,9 @@
 #include "store/naive/document_name_iterator.h"
 #include "store/naive/pul_primitive_factory.h"
 
+#ifndef ZORBA_NO_FULL_TEXT
+#include "runtime/full_text/default_tokenizer.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba
 {
@@ -1723,6 +1726,17 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
   return tempSeq;
 }
 
+#ifndef ZORBA_NO_FULL_TEXT
+void SimpleStore::setTokenizerProvider( TokenizerProvider const *p ) {
+  theTokenizerProvider = p;
+}
+
+TokenizerProvider const* SimpleStore::getTokenizerProvider() const {
+  return theTokenizerProvider ?
+    theTokenizerProvider :
+    &DefaultTokenizerProvider::instance();
+}
+#endif /* ZORBA_NO_FULL_TEXT */
 
 } // namespace store
 } // namespace zorba

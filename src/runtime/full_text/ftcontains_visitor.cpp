@@ -22,10 +22,11 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/query_loc.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "store/api/store.h"
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
-#include "diagnostics/xquery_diagnostics.h"
 #include "zorbatypes/numconversions.h"
 
 #ifndef NDEBUG
@@ -418,14 +419,16 @@ void V::end_visit( ftunary_not& ) {
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords )
 void V::end_visit( ftwords &w ) {
+  store::Item_t item;
   ftmatch_options const &options = *TOP( options_stack_ );
   locale::iso639_1::type const lang = get_lang_from( &options );
+  query_item_star_t query_items;
   bool const wildcards = get_wildcards_from( &options );
+  TokenizerProvider const &tokenizer_provider =
+    *GENV_STORE.getTokenizerProvider();
 
   PlanIter_t plan_iter = w.get_value_iter();
   plan_iter->reset( plan_state_ );
-  query_item_star_t query_items;
-  store::Item_t item;
 
   try {
     //
@@ -433,7 +436,10 @@ void V::end_visit( ftwords &w ) {
     // actual query.
     //
     while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
-      query_item_t const qi( item->getQueryTokens( lang, wildcards ) );
+      Tokenizer::Numbers no;
+      query_item_t const qi(
+        item->getTokens( tokenizer_provider, no, lang, wildcards )
+      );
       if ( qi->hasNext() )
         query_items.push_back( qi );
     }

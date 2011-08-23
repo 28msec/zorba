@@ -22,6 +22,10 @@
 #include <vector>
 
 #include <zorba/streams.h>
+#ifndef ZORBA_NO_FULL_TEXT
+#include <zorba/tokenizer.h>
+#endif /* ZORBA_NO_FULL_TEXT */
+
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
 #include "store/naive/store_defs.h"
@@ -32,7 +36,6 @@
 
 #include "zorbatypes/schema_types.h"
 #include "zorbatypes/datetime.h"
-#include "zorbautils/tokenizer.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -532,7 +535,9 @@ public:
 class StringItem : public AtomicItem
 {
   friend class BasicItemFactory;
+#ifndef ZORBA_NO_FULL_TEXT
   friend class AtomicItemTokenizerCallback;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
   zstring theValue;
@@ -573,12 +578,8 @@ public:
   virtual zstring show() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t
-  getDocumentTokens( locale::iso639_1::type = locale::iso639_1::unknown ) const;
-
-  FTTokenIterator_t
-  getQueryTokens( locale::iso639_1::type = locale::iso639_1::unknown,
-                  bool wildcards = false ) const;
+  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+                               locale::iso639_1::type, bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 };
 
@@ -2168,31 +2169,25 @@ public:
   AtomicItemTokenizerCallback( 
       Tokenizer &tokenizer,
       locale::iso639_1::type lang,
-      container_type &tokens )
-    :
-    tokenizer_( tokenizer ),
-    tokens_( tokens ),
-    lang_( lang )
-  {
-  }
+      container_type &tokens );
 
   void operator()(
       char const *utf8_s,
-      size_t utf8_len,
-      int_t token_no,
-      int_t sent_no,
-      int_t para_no,
+      size_type utf8_len,
+      size_type token_no,
+      size_type sent_no,
+      size_type para_no,
       void* = 0 );
 
-  void tokenize( char const *utf8_s, size_t len ) 
+  void tokenize( char const *utf8_s, size_t len, bool wildcards = false ) 
   {
-    tokenizer_.tokenize( utf8_s, len, lang_, *this );
+    tokenizer_.tokenize( utf8_s, len, lang_, wildcards, *this );
   }
 
 private:
   Tokenizer                    & tokenizer_;
-  container_type               & tokens_;
   locale::iso639_1::type const   lang_;
+  container_type               & tokens_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 

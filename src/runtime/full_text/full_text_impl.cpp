@@ -21,6 +21,7 @@
 #include "store/api/ft_token_iterator.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
 #include "system/globalenv.h"
 #include "util/stl_util.h"
 
@@ -66,22 +67,27 @@ void FTContainsIterator::serialize( serialization::Archiver &ar ) {
 
 bool FTContainsIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
-  PlanIterator const *const search_ctx = theChild0.getp();
-  PlanIterator const *const ftignore = theChild1.getp();
   store::Item_t doc_item;
-  static_context const *static_ctx;
-  ftmatch_options const *options;
-  locale::iso639_1::type lang;
   bool ftcontains = false;
+  PlanIterator const *const ftignore = theChild1.getp();
+  locale::iso639_1::type lang;
+  ftmatch_options const *options;
+  PlanIterator const *const search_ctx = theChild0.getp();
+  static_context const *static_ctx;
+  TokenizerProvider const *tokenizer_provider;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
+  tokenizer_provider = GENV_STORE.getTokenizerProvider();
 
   while ( !ftcontains && consumeNext( doc_item, search_ctx, plan_state ) ) {
-    FTTokenIterator_t doc_tokens( doc_item->getDocumentTokens( lang ) );
+    Tokenizer::Numbers no;
+    FTTokenIterator_t doc_tokens(
+      doc_item->getTokens( *tokenizer_provider, no, lang )
+    );
     store::Item_t ignore_item;
     if ( ftignore )
       consumeNext( ignore_item, ftignore, plan_state );

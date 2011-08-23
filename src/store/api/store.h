@@ -311,9 +311,29 @@ public:
   virtual IC* getIC(const Item* icQName)  = 0;
 
   /* ------------------------ Map Management ---------------------------*/
+
   virtual Index* getMap(const Item* aQName) const = 0;
 
   virtual Iterator_t listMapNames() = 0;
+
+#ifndef ZORBA_NO_FULL_TEXT
+  /* ------------------------ Full-Text -------------------------------------*/
+
+  /**
+   * Sets the TokenizerProvider to use.
+   *
+   * @param provider The TokenizerProvider to use or NULL to use the default.
+   */
+  virtual void setTokenizerProvider(TokenizerProvider const *provider) = 0;
+
+  /**
+   * Gets the TokenizerProvider in use.
+   *
+   * @return Returns said TokenizerProvider.
+   */
+  virtual TokenizerProvider const* getTokenizerProvider() const = 0;
+
+#endif /* ZORBA_NO_FULL_TEXT */
 };
 
 } // namespace store

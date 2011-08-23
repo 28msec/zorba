@@ -99,6 +99,10 @@ public:
   void
   registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
+#ifndef ZORBA_NO_FULL_TEXT
+  void registerTokenizerProvider(TokenizerProvider const *provider);
+#endif /* ZORBA_NO_FULL_TEXT */
+
 private:
   XmlDataManagerImpl();
 

@@ -308,25 +308,16 @@ void Item::appendStringValue(zstring& buf) const
 }
 
 
-
 #ifndef ZORBA_NO_FULL_TEXT
-
-FTTokenIterator_t Item::getDocumentTokens( locale::iso639_1::type lang ) const
+FTTokenIterator_t
+Item::getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
+                 locale::iso639_1::type, bool ) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
     ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
   );
 }
-
-FTTokenIterator_t Item::getQueryTokens( locale::iso639_1::type, bool ) const
-{
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
-  );
-}
-
 #endif /* ZORBA_NO_FULL_TEXT */
 
 /* ---------------------  Methods for AtomicValues --------------------------- */
