@@ -18,6 +18,7 @@
 #define ZORBA_CONTEXT_STATIC_CONTEXT_H
 
 #include <deque>
+#include <map>
 #include <memory>
 #include <set>
 #include <vector>
@@ -38,7 +39,10 @@
 #include "context/features.h"
 
 #include "zorbautils/hashmap_zstring.h"
+
+#ifndef ZORBA_NO_FULL_TEXT
 #include "zorbautils/stemmer.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "common/shared_types.h"
 #include "util/stl_util.h"
@@ -509,7 +513,7 @@ protected:
 #ifndef ZORBA_NO_FULL_TEXT
   typedef std::deque<internal::StemmerProvider const*> stemmer_providers_t;
   stemmer_providers_t                     theStemmerProviders;
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
   checked_vector<zstring>                 theModulePaths;
 
@@ -703,7 +707,7 @@ public:
   internal::Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
 
   void remove_stemmer_provider( internal::StemmerProvider const *p );
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
   void set_module_paths(const std::vector<zstring>& aModulePaths);
 
