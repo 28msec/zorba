@@ -1,0 +1,10 @@
+#!/bin/sh
+echo Content-type: text/xml
+echo
+echo "<body>"
+echo "<method>$REQUEST_METHOD</method>"
+echo "<query>$QUERY_STRING</query>"
+echo "<post>"
+cat
+echo "</post></body>"
+

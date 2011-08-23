@@ -1,0 +1,8 @@
+#!/bin/sh
+echo Content-type: text/plain
+echo
+echo "Method: $REQUEST_METHOD"
+echo "Query: $QUERY_STRING"
+echo "Post: "
+cat
+
