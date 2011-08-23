@@ -305,6 +305,7 @@ to_string( T const &t ) {
  * @tparam T The class type that:
  *  - has no <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
  *  - has no <code>char const* T::c_str() const</code> defined
+ *  - has no <code>std::string T::toString() const</code> defined
  *  - has <code>std::string T::str() const</code> defined
  * @param t The object.
  * @return Returns a string representation of the object.
@@ -312,7 +313,8 @@ to_string( T const &t ) {
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
                      && !has_c_str<T,char const* (T::*)() const>::value
-                     && has_str<T,std::string (T::*)() const>::value,
+                     && has_str<T,std::string (T::*)() const>::value
+                     && !has_toString<T,std::string (T::*)() const>::value,
                         std::string>::type
 to_string( T const &t ) {
   return t.str();
@@ -326,6 +328,7 @@ to_string( T const &t ) {
  * @tparam T The class type that:
  *  - has no <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
  *  - has no <code>char const* T::c_str() const</code> defined
+ *  - has no <code>std::string T::str() const</code> defined
  *  - has <code>std::string T::toString() const</code> defined
  * @param t The object.
  * @return Returns a string representation of the object.
@@ -333,6 +336,7 @@ to_string( T const &t ) {
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
                      && !has_c_str<T,char const* (T::*)() const>::value
+                     && !has_str<T,std::string (T::*)() const>::value
                      && has_toString<T,std::string (T::*)() const>::value,
                         std::string>::type
 to_string( T const &t ) {
