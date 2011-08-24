@@ -123,7 +123,7 @@ void TestTokenizer::element( Item const &qname, int trace_options ) {
 }
 
 inline bool TestTokenizer::is_word_begin_char( char c ) {
-  return isalnum( c );
+  return !!isalnum( c );
 }
 
 bool TestTokenizer::is_word_char( char c ) {

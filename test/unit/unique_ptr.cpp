@@ -35,7 +35,7 @@ static bool assert_true( char const *expr, int line, bool result ) {
   return result;
 }
 
-#define ASSERT_TRUE( EXPR ) assert_true( #EXPR, __LINE__, EXPR )
+#define ASSERT_TRUE( EXPR ) assert_true( #EXPR, __LINE__, !!(EXPR) )
 
 ///////////////////////////////////////////////////////////////////////////////
 
