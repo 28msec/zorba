@@ -32,6 +32,7 @@
 namespace zorba {
 namespace ztd {
 
+using internal::ztd::destroy_delete;
 using internal::ztd::has_insertion_operator;
 using internal::ztd::less;
 

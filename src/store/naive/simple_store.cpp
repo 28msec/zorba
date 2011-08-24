@@ -56,6 +56,8 @@
 #include "store/naive/document_name_iterator.h"
 #include "store/naive/pul_primitive_factory.h"
 
+#include "util/cxx_util.h"
+
 #ifndef ZORBA_NO_FULL_TEXT
 #include "runtime/full_text/default_tokenizer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -102,6 +104,9 @@ SimpleStore::SimpleStore()
   theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
+#ifndef ZORBA_NO_FULL_TEXT
+  , theTokenizerProvider( nullptr )
+#endif /* ZORBA_NO_FULL_TEXT */
 {
 }
 
