@@ -338,7 +338,7 @@ associated the collection, and finally destroys the document container itself.
   
   CollectionDecl ::= 'declare'  Annotation* 'collection' QName CollectionTypeDecl?
 
-  CollectionTypeDeclaration ::= 'as' KindTest OccurenceIndicator?
+  CollectionTypeDeclaration ::= 'as' KindTest OccurrenceIndicator?
 \endcode
 
 Collections are defined by <strong>collection declaration statements</strong>,
@@ -1369,7 +1369,7 @@ receive an error.
 
   IndexKeyExpr ::= PathExpr
 
-  IndexKeyTypeDecl ::= 'as' AtomicType OccurenceIndicator?
+  IndexKeyTypeDecl ::= 'as' AtomicType OccurrenceIndicator?
 
   AtomicType ::= QName
 
