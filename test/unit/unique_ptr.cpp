@@ -116,6 +116,7 @@ static void test_derived() {
   }
   ASSERT_TRUE( COUNT(A) == 0 );
   ASSERT_TRUE( COUNT(B) == 0 );
+#if 0
   {
     unique_ptr<A> a1( new A );
     unique_ptr<B> b1( new B );
@@ -127,6 +128,7 @@ static void test_derived() {
     ASSERT_TRUE( !b1 );
     ASSERT_TRUE( a1 );
   }
+#endif
 }
 
 template<typename T>
