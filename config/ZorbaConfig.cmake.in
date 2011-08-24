@@ -49,7 +49,7 @@ SET_NORMALIZED (Zorba_EXE "@Zorba_EXE_PATH@" CACHE PATH "Path to Zorba executabl
 
 # Tell the user project where modules are installed. Note: This variable
 # is all-uppercase because it is also used internally by Zorba's build.
-SET_NORMALIZED (ZORBA_MODULES_INSTALL_DIR "@Zorba_MODULES_INSTALL_DIR@"
+SET (ZORBA_MODULES_INSTALL_DIR "@Zorba_MODULES_INSTALL_DIR@"
   CACHE STRING "Path to Zorba modules in this Zorba installation" FORCE)
 
 # Tell the user project where to find the "USE" file.

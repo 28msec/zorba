@@ -33,7 +33,7 @@ SET(Zorba_CMAKE_MODULES_DIR "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}")
 SET(Zorba_TESTDRIVER "${ZORBA_ROOT}/bin/testdriver")
 SET(Zorba_EXE_PATH "${ZORBA_ROOT}/bin/zorba")
 SET(Zorba_EXTERNALMODULECONFIG_FILE
-  "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}/ExternalModuleConfig.cmake.in")
+  "${ZORBA_ROOT}/${ZORBA_CMAKE_DIR}/ExternalModuleConfig.cmake.in")   
 SET(Zorba_MODULES_INSTALL_DIR "${ZORBA_ROOT}/${ZORBA_MODULES_INSTALL_DIR}")
 
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
@@ -63,7 +63,7 @@ SET(Zorba_EXE "${ZORBA_EXE}" PARENT_SCOPE)
 
 # Note: This value doesn't really make much sense, but neither does any
 # other value
-SET(Zorba_MODULES_INSTALL_DIR "${CMAKE_BINARY_DIR}/URI_PATH")
+SET(Zorba_MODULES_INSTALL_DIR "${ZORBA_MODULES_INSTALL_DIR}")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/ZorbaConfig.cmake.in"
   "${CMAKE_BINARY_DIR}/ZorbaConfig.cmake" @ONLY)
 
