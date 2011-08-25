@@ -58,7 +58,7 @@ template<> struct less<char const*> :
 
 class TestTokenizer : public Tokenizer {
 public:
-  TestTokenizer( Numbers &num ) : Tokenizer( num, true ) { }
+  TestTokenizer( Numbers &num ) : Tokenizer( num, trace_begin ) { }
   ~TestTokenizer();
 
   // inherited
