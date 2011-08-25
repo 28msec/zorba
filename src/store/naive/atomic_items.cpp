@@ -50,7 +50,9 @@
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
 
 using namespace std;
+#ifndef ZORBA_NO_FULL_TEXT
 using namespace zorba::locale;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba {
 namespace simplestore {

@@ -45,10 +45,11 @@
 
 #include "util/string_util.h"
 
+#ifndef ZORBA_NO_FULL_TEXT
+using namespace zorba::locale;
+#endif /* ZORBA_NO_FULL_TEXT */
+
 namespace zorba { namespace simplestore {
-
-using namespace locale;
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
