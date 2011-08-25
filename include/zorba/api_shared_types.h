@@ -50,6 +50,7 @@ namespace zorba {
   typedef SmartPtr<QueryLocation> QueryLocation_t;
 
 #ifndef ZORBA_NO_FULL_TEXT
+  class StemmerProvider;
   class TokenizerProvider;
 #endif /* ZORBA_NO_FULL_TEXT */
 

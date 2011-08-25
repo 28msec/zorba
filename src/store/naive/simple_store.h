@@ -143,6 +143,7 @@ protected:
   long                          theTraceLevel;
 
 #ifndef ZORBA_NO_FULL_TEXT
+  internal::StemmerProvider const * theStemmerProvider;
   TokenizerProvider const     * theTokenizerProvider;
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -336,6 +337,12 @@ public:
         bool lazy);
 
   store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
+
+#ifndef ZORBA_NO_FULL_TEXT
+  internal::StemmerProvider const* getStemmerProvider() const;
+
+  void setStemmerProvider(internal::StemmerProvider const*);
+#endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
   SimpleStore();

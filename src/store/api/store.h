@@ -22,6 +22,9 @@
 #include "store/api/shared_types.h"
 #include "store/api/load_properties.h"
 
+#ifndef ZORBA_NO_FULL_TEXT
+#include "zorbautils/stemmer.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba 
 { 
@@ -320,6 +323,20 @@ public:
   /* ------------------------ Full-Text -------------------------------------*/
 
   /**
+   * Sets the StemmerProvider to use.
+   *
+   * @param p The StemmerProvider to use or NULL to use the default.
+   */
+  virtual void setStemmerProvider(internal::StemmerProvider const *p) = 0;
+
+  /**
+   * Gets the StemmerProvider in use.
+   *
+   * @return Returns said StemmerProvider.
+   */
+  virtual internal::StemmerProvider const* getStemmerProvider() const = 0;
+
+  /**
    * Sets the TokenizerProvider to use.
    *
    * @param provider The TokenizerProvider to use or NULL to use the default.
@@ -340,7 +357,6 @@ public:
 } // namespace zorba
 
 #endif /* ZORBA_STORE_STORE_H */
-
 /*
  * Local variables:
  * mode: c++

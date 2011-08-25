@@ -207,6 +207,19 @@ namespace zorba {
 
 #ifndef ZORBA_NO_FULL_TEXT
     /**
+     * Registers a StemmerProvider to use for stemming of text content in order
+     * to perform queries involving full-text.
+     *
+     * If no StemmerProvider has been set using this function, then the default
+     * StemmerProvider will be used.
+     *
+     * @param provider If not NULL, sets the StemmerProvider to use; if NULL,
+     * removes any previously registered StemmerProvider.
+     */
+    virtual void
+    registerStemmerProvider(StemmerProvider const *provider) = 0;
+
+    /**
      * Registers a TokenizerProvider to use for toknenization of text content
      * in order to perform queries involving full-text.
      *

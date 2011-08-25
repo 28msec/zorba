@@ -1512,29 +1512,6 @@ static_context::apply_url_resolvers
 }
 
 
-#ifndef ZORBA_NO_FULL_TEXT
-
-internal::Stemmer const*
-static_context::get_stemmer( iso639_1::type lang ) const {
-  FOR_EACH( stemmer_providers_t, p, theStemmerProviders )
-    if ( internal::Stemmer const *const stemmer = (*p)->get_stemmer( lang ) )
-      return stemmer;
-  return theParent ?
-    theParent->get_stemmer( lang ) :
-    internal::StemmerProvider::get_default_provider().get_stemmer( lang );
-}
-
-void
-static_context::remove_stemmer_provider( internal::StemmerProvider const *p ) {
-  ztd::erase_1st_if(
-    theStemmerProviders,
-    std::bind2nd( std::equal_to<internal::StemmerProvider const*>(), p )
-  );
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
-
-
 /*******************************************************************************
 
 ********************************************************************************/

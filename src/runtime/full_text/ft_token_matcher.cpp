@@ -18,6 +18,8 @@
 #include <cctype>
 
 #include "compiler/expression/ftnode.h"
+#include "diagnostics/assert.h"
+#include "store/api/store.h"
 #include "util/cxx_util.h"
 #include "util/stl_util.h"
 
@@ -61,7 +63,6 @@ ft_token_matcher::ft_token_matcher( ftmatch_options const &options,
   diacritics_insensitive_( get_diacritics_insensitive( options ) ),
   lang_( get_lang_from( &options ) ),
   stemming_( get_stemming( options ) ),
-  stemmer_( sctx ),
   stop_words_( get_stop_words( options, lang_, sctx ) ),
   wildcards_( get_wildcards_from( &options ) )
 {
@@ -73,10 +74,17 @@ ft_token_matcher::~ft_token_matcher() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ft_token_matcher::match_stemmer::match_stemmer() :
+  provider_( GENV_STORE.getStemmerProvider() )
+{
+  ZORBA_ASSERT( provider_ );
+}
+
 void ft_token_matcher::match_stemmer::
 operator()( string_t const &word, iso639_1::type lang,
             string_t *result ) const {
-  if ( internal::Stemmer const *const stemmer = sctx_.get_stemmer( lang ) )
+  internal::Stemmer::ptr stemmer( provider_->get_stemmer( lang ) );
+  if ( stemmer )
     stemmer->stem( word, lang, result );
   else
     *result = word;

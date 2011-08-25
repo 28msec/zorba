@@ -46,6 +46,10 @@
 
 #include "runtime/util/flowctl_exception.h"
 
+#ifndef ZORBA_NO_FULL_TEXT
+#include "stemmer_wrapper.h"
+#endif /* ZORBA_NO_FULL_TEXT */
+
 namespace zorba {
 
 
@@ -70,6 +74,9 @@ XmlDataManagerImpl::XmlDataManagerImpl()
   : theDocManager(0),
     theColManager(0),
     theW3CColManager(0)
+#ifndef ZORBA_NO_FULL_TEXT
+  , theStemmerProviderWrapper(0)
+#endif /* ZORBA_NO_FULL_TEXT */
 {
   initStaticContext();
   initializeItemFactory();
@@ -321,6 +328,20 @@ void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosti
 }
 
 #ifndef ZORBA_NO_FULL_TEXT
+void XmlDataManagerImpl::
+registerStemmerProvider(StemmerProvider const *p) {
+  if ( theStemmerProviderWrapper ) {
+    if ( theStemmerProviderWrapper->get_provider() == p )
+      return;
+    delete theStemmerProviderWrapper;
+    theStemmerProviderWrapper = nullptr;
+  }
+  if ( p ) {
+    theStemmerProviderWrapper = new internal::StemmerProviderWrapper( p );
+    theStore->setStemmerProvider( theStemmerProviderWrapper );
+  }
+}
+
 void XmlDataManagerImpl::
 registerTokenizerProvider(TokenizerProvider const *provider) {
   theStore->setTokenizerProvider( provider );

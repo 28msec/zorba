@@ -59,6 +59,7 @@
 #include "util/cxx_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
+#include "zorbautils/stemmer.h"
 #include "runtime/full_text/default_tokenizer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -105,6 +106,7 @@ SimpleStore::SimpleStore()
   theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 #ifndef ZORBA_NO_FULL_TEXT
+  , theStemmerProvider( nullptr )
   , theTokenizerProvider( nullptr )
 #endif /* ZORBA_NO_FULL_TEXT */
 {
@@ -1732,8 +1734,17 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
 }
 
 #ifndef ZORBA_NO_FULL_TEXT
+void SimpleStore::setStemmerProvider( internal::StemmerProvider const *p ) {
+  theStemmerProvider = p;
+}
+
 void SimpleStore::setTokenizerProvider( TokenizerProvider const *p ) {
   theTokenizerProvider = p;
+}
+
+internal::StemmerProvider const* SimpleStore::getStemmerProvider() const {
+  return theStemmerProvider ?
+    theStemmerProvider : &internal::StemmerProvider::get_default();
 }
 
 TokenizerProvider const* SimpleStore::getTokenizerProvider() const {

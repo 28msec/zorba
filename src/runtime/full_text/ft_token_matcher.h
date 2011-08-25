@@ -22,6 +22,7 @@
 #include "compiler/expression/ftnode.h"
 #include "context/static_context.h"
 #include "zorbatypes/ft_token.h"
+#include "zorbautils/stemmer.h"
 
 #include "ft_stop_words_set.h"
 
@@ -47,13 +48,13 @@ public:
   bool match( FTToken const &dt, FTToken const &qt ) const;
 
 private:
-
   class match_stemmer : public FTToken::Stemmer {
   public:
-    match_stemmer( static_context const &sctx ) : sctx_( sctx ) { }
+    match_stemmer();
+    // inherited
     void operator()( string_t const&, locale::iso639_1::type, string_t* ) const;
   private:
-    static_context const &sctx_;
+    internal::StemmerProvider const *const provider_;
   };
 
   ftcase_option const *const case_option_;

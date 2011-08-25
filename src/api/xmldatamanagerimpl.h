@@ -26,6 +26,9 @@
 #include "common/shared_types.h"
 #include "util/singleton.h"
 
+#ifndef ZORBA_NO_FULL_TEXT
+#include "stemmer_wrapper.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba {
 
@@ -60,6 +63,10 @@ protected:
   mutable DocumentManagerImpl*   theDocManager;
   mutable CollectionManagerImpl* theColManager;
   mutable CollectionManagerImpl* theW3CColManager;
+
+#ifndef ZORBA_NO_FULL_TEXT
+  internal::StemmerProviderWrapper * theStemmerProviderWrapper;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
   void
@@ -100,6 +107,7 @@ public:
   registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
 #ifndef ZORBA_NO_FULL_TEXT
+  void registerStemmerProvider(StemmerProvider const *provider);
   void registerTokenizerProvider(TokenizerProvider const *provider);
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -115,9 +123,9 @@ Loki::SingletonHolder<XmlDataManagerImpl,
                       Loki::CreateUsingNew,
                       Loki::DeletableSingleton> XmlDataManagerSingleton;
 
-} /* namespace zorba */
-#endif
+} // namespace zorba
 
+#endif /* ZORBA_XMLDATAMANAGER_IMPL_H */
 /*
  * Local variables:
  * mode: c++

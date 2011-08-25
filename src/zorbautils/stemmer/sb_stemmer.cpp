@@ -68,6 +68,10 @@ SnowballStemmer const* SnowballStemmer::create( iso639_1::type lang ) {
   return is_lang_supported( lang ) ? new SnowballStemmer( lang ) : nullptr;
 }
 
+void SnowballStemmer::destroy() const {
+  // Do nothing since built-in stemmers are cached for re-use.
+}
+
 void SnowballStemmer::stem( zstring const &word, iso639_1::type lang,
                             zstring *result ) const {
   //

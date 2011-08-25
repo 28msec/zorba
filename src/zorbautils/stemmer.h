@@ -21,8 +21,10 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/locale.h>
 
+#include "util/stl_util.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
@@ -35,7 +37,12 @@ namespace internal {
  */
 class Stemmer {
 public:
-  virtual ~Stemmer();
+  typedef std::unique_ptr<Stemmer const,ztd::destroy_delete<Stemmer const> > ptr;
+
+  /**
+   * Destroys this %Stemmer.
+   */
+  virtual void destroy() const = 0;
 
   /**
    * Gets the stem of the given word.
@@ -46,6 +53,8 @@ public:
    */
   virtual void stem( zstring const &word, locale::iso639_1::type lang,
                      zstring *result ) const = 0;
+protected:
+  virtual ~Stemmer();
 };
 
 /**
@@ -60,7 +69,7 @@ public:
    *
    * @return Returns said %StemmerProvider.
    */
-  static StemmerProvider const& get_default_provider();
+  static StemmerProvider const& get_default();
 
   /**
    * Gets an instance of a Stemmer for the given language.
@@ -69,7 +78,7 @@ public:
    * @return Returns said Stemmer or \c nullptr if no stemmer is availabe for
    * the given language.
    */
-  virtual Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
+  virtual Stemmer::ptr get_stemmer( locale::iso639_1::type lang ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

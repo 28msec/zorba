@@ -39,11 +39,6 @@
 #include "context/features.h"
 
 #include "zorbautils/hashmap_zstring.h"
-
-#ifndef ZORBA_NO_FULL_TEXT
-#include "zorbautils/stemmer.h"
-#endif /* ZORBA_NO_FULL_TEXT */
-
 #include "common/shared_types.h"
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
@@ -510,11 +505,6 @@ protected:
 
   ztd::auto_vector<impl::URLResolver>     theURLResolvers;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  typedef std::deque<internal::StemmerProvider const*> stemmer_providers_t;
-  stemmer_providers_t                     theStemmerProviders;
-#endif /* ZORBA_NO_FULL_TEXT */
-
   checked_vector<zstring>                 theModulePaths;
 
   ExternalModuleMap                     * theExternalModulesMap;
@@ -698,16 +688,6 @@ public:
   void get_component_uris
   (zstring const& aUri, impl::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
-
-#ifndef ZORBA_NO_FULL_TEXT
-  void add_stemmer_provider( internal::StemmerProvider const *p ) {
-    theStemmerProviders.push_front( p );
-  }
-
-  internal::Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
-
-  void remove_stemmer_provider( internal::StemmerProvider const *p );
-#endif /* ZORBA_NO_FULL_TEXT */
 
   void set_module_paths(const std::vector<zstring>& aModulePaths);
 

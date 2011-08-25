@@ -42,6 +42,7 @@ public:
   static SnowballStemmer const* create( locale::iso639_1::type lang );
 
   // inherited
+  void destroy() const;
   void stem( zstring const &word, locale::iso639_1::type lang,
              zstring *result ) const;
 
