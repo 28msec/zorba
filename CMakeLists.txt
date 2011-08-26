@@ -22,9 +22,6 @@ INCLUDE(CTest)
 SET(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET(CMAKE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
-# Enable RPaths in installed binaries
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
 cmake_minimum_required(VERSION 2.6)
@@ -65,6 +62,9 @@ IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   SET (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist CACHE STRING
        "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
 ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+
+# Enable RPaths in installed binaries
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 # turn on the folder grouping used by IDEs (VS or XCode)
 SET_PROPERTY (GLOBAL PROPERTY USE_FOLDERS ON)

@@ -34,8 +34,11 @@ DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/ext"
 
 ADD_SUBDIRECTORY(ourlib)
 
-DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/link" VERSION 1.0
-  LINK_LIBRARIES "ourlib" FILE "link.xq" TEST_ONLY)
+# For the moment, this test module depends on Xerces
+IF (NOT ZORBA_NO_XMLSCHEMA)
+  DECLARE_ZORBA_MODULE(URI "http://www.zorba-xquery.com/modules/link"
+    VERSION 1.0 LINK_LIBRARIES "ourlib" FILE "link.xq" TEST_ONLY)
+ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
 DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/modules/theschema"
   FILE "schema.xsd" TEST_ONLY)
