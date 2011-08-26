@@ -371,6 +371,7 @@ class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator,
 private:
   bool theAttrContent;
   bool theTextContent;
+  bool theIsInUpdateExpr;
 
 public:
   SERIALIZABLE_CLASS(EnclosedIterator);
@@ -394,6 +395,8 @@ public:
   bool getTextContent() const;
 
   void setTextContent();
+
+  void setInUpdateExpr();
 
   void accept(PlanIterVisitor& v) const;
 

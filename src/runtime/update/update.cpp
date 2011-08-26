@@ -409,13 +409,13 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
-    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(err::XUDY0027, ERROR_LOC(loc));
 
   if (consumeNext(temp, theChild0, aPlanState))
-    throw XQUERY_EXCEPTION( err::XUTY0008, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(err::XUTY0008, ERROR_LOC(loc));
 
   if (!lTarget->isNode())
-     throw XQUERY_EXCEPTION( err::XUTY0008, ERROR_LOC( loc ) );
+     throw XQUERY_EXCEPTION(err::XUTY0008, ERROR_LOC(loc));
 
   lTargetKind = lTarget->getNodeKind();
 
@@ -425,7 +425,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
          lTargetKind == store::StoreConsts::commentNode ||
          lTargetKind == store::StoreConsts::piNode))
   {
-    throw XQUERY_EXCEPTION( err::XUTY0008, ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(err::XUTY0008, ERROR_LOC(loc));
   }
 
   if (theType == store::UpdateConsts::NODE) // replace node ...

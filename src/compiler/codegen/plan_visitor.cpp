@@ -308,7 +308,8 @@ class plan_visitor : public expr_visitor
   {
     ELEMENT_CONTENT = 0,
     ATTRIBUTE_CONTENT,
-    TEXT_CONTENT
+    TEXT_CONTENT,
+    UPDATE_CONTEXT
   } EnclosedExprContext;
 
 protected:
@@ -2135,86 +2136,6 @@ void end_visit(if_expr& v)
 }
 
 
-bool begin_visit(insert_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-  TypeManager* tm = v.get_type_manager();
-
-  store::UpdateConsts::InsertType kind  = v.getType();
-
-  expr* targetExpr = v.getTargetExpr();
-  expr* sourceExpr = v.getSourceExpr();
-  xqtref_t targetType = targetExpr->get_return_type();
-  xqtref_t sourceType = sourceExpr->get_return_type();
-
-  if (TypeOps::is_equal(tm, *targetType, *rtm.EMPTY_TYPE, qloc))
-    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
-
-#if XQUF_STATIC_TYPING_SAFE
-
-  if (kind == store::UpdateConsts::INTO ||
-      kind == store::UpdateConsts::AS_FIRST_INTO ||
-      kind == store::UpdateConsts::AS_LAST_INTO)
-  {
-    if (TypeOps::is_subtype(tm, *targetType, *rtm.DOCUMENT_TYPE_STAR, qloc) &&
-        TypeOps::is_subtype(tm, *sourceType, *rtm.ATTRIBUTE_TYPE_STAR, qloc))
-    {
-      throw XQUERY_EXCEPTION(err::XUTY0022, ERROR_LOC(qloc));
-    }
-
-    if (TypeOps::is_subtype(tm, *targetType, *rtm.ANY_SIMPLE_TYPE, qloc))
-    {
-      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
-    }
-
-    if (TypeOps::is_subtype(tm, *targetType, *rtm.ATTRIBUTE_TYPE_STAR, qloc) ||
-        TypeOps::is_subtype(tm, *targetType, *rtm.TEXT_TYPE_STAR, qloc) ||
-        TypeOps::is_subtype(tm, *targetType, *rtm.COMMENT_TYPE_STAR, qloc) ||
-        TypeOps::is_subtype(tm, *targetType, *rtm.PI_TYPE_STAR, qloc))
-    {
-      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
-    }
-  }
-  else
-  {
-  }
-
-#elif XQUF_STATIC_TYPING_STRICT
-
-  if (kind == store::UpdateConsts::INTO ||
-      kind == store::UpdateConsts::AS_FIRST_INTO ||
-      kind == store::UpdateConsts::AS_LAST_INTO)
-  {
-    if (TypeOps::is_subtype(tm, *targetType, *rtm.DOCUMENT_TYPE_STAR) &&
-        TypeOps::is_subtype(tm, *sourceType, *rtm.ATTRIBUTE_TYPE_STAR))
-    {
-      throw XQUERY_EXCEPTION(err::XUTY0022, ERROR_LOC(qloc));
-    }
-
-    if (!TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
-        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
-    {
-      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
-    }
-  }
-  else
-  {
-    if (!TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR) &&
-        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) &&
-        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) &&
-        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
-    {
-      throw XQUERY_EXCEPTION( err::XUTY0006, ERROR_LOC( qloc ) );
-    }
-  }
-#endif
-
-  return true;
-}
-
-
 bool begin_visit(exit_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -2336,10 +2257,14 @@ void end_visit(fo_expr& v)
 
       if (!theEnclosedContextStack.empty())
       {
-        if (theEnclosedContextStack.top() == ATTRIBUTE_CONTENT)
+        EnclosedExprContext ctx = theEnclosedContextStack.top();
+
+        if (ctx == ATTRIBUTE_CONTENT)
           dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
-        else if (theEnclosedContextStack.top() == TEXT_CONTENT)
+        else if (ctx == TEXT_CONTENT)
           dynamic_cast<EnclosedIterator*>(iter.getp())->setTextContent();
+        else if (ctx == UPDATE_CONTEXT)
+          dynamic_cast<EnclosedIterator*>(iter.getp())->setInUpdateExpr();
       }
     }
 #if 0
@@ -3107,9 +3032,61 @@ void end_visit(order_expr& v)
 ////////////////////////////////////////////////////////////////////////////////
 
 
+bool begin_visit(insert_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = v.get_type_manager();
+
+  store::UpdateConsts::InsertType kind  = v.getType();
+
+  expr* targetExpr = v.getTargetExpr();
+  expr* sourceExpr = v.getSourceExpr();
+  xqtref_t targetType = targetExpr->get_return_type();
+  xqtref_t sourceType = sourceExpr->get_return_type();
+
+  if (TypeOps::is_equal(tm, *targetType, *rtm.EMPTY_TYPE, qloc))
+    throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
+
+  if (kind == store::UpdateConsts::INTO ||
+      kind == store::UpdateConsts::AS_FIRST_INTO ||
+      kind == store::UpdateConsts::AS_LAST_INTO)
+  {
+    if (TypeOps::is_subtype(tm, *targetType, *rtm.DOCUMENT_TYPE_STAR, qloc) &&
+        TypeOps::is_subtype(tm, *sourceType, *rtm.ATTRIBUTE_TYPE_STAR, qloc))
+    {
+      throw XQUERY_EXCEPTION(err::XUTY0022, ERROR_LOC(qloc));
+    }
+
+    if (TypeOps::is_subtype(tm, *targetType, *rtm.ANY_SIMPLE_TYPE, qloc))
+    {
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
+    }
+
+    if (TypeOps::is_subtype(tm, *targetType, *rtm.ATTRIBUTE_TYPE_STAR, qloc) ||
+        TypeOps::is_subtype(tm, *targetType, *rtm.TEXT_TYPE_STAR, qloc) ||
+        TypeOps::is_subtype(tm, *targetType, *rtm.COMMENT_TYPE_STAR, qloc) ||
+        TypeOps::is_subtype(tm, *targetType, *rtm.PI_TYPE_STAR, qloc))
+    {
+      throw XQUERY_EXCEPTION( err::XUTY0005, ERROR_LOC( qloc ) );
+    }
+  }
+  else
+  {
+  }
+
+  theEnclosedContextStack.push(UPDATE_CONTEXT);
+
+  return true;
+}
+
+
 void end_visit(insert_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  theEnclosedContextStack.pop();
 
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lSource = pop_itstack();
@@ -3122,6 +3099,8 @@ bool begin_visit(delete_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
+  theEnclosedContextStack.push(UPDATE_CONTEXT);
+
   return true;
 }
 
@@ -3129,6 +3108,9 @@ bool begin_visit(delete_expr& v)
 void end_visit(delete_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  theEnclosedContextStack.pop();
+
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lDelete = new DeleteIterator(sctx, qloc, lTarget);
   push_itstack(&*lDelete);
@@ -3147,6 +3129,8 @@ bool begin_visit(replace_expr& v)
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE, qloc))
     throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
+  theEnclosedContextStack.push(UPDATE_CONTEXT);
+
   return true;
 }
 
@@ -3154,6 +3138,9 @@ bool begin_visit(replace_expr& v)
 void end_visit(replace_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  theEnclosedContextStack.pop();
+
   PlanIter_t lReplacement = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lReplace = new ReplaceIterator(sctx,
@@ -3177,6 +3164,8 @@ bool begin_visit(rename_expr& v)
   if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE, qloc))
     throw XQUERY_EXCEPTION( err::XUDY0027, ERROR_LOC( qloc ) );
 
+  theEnclosedContextStack.push(UPDATE_CONTEXT);
+
   return true;
 }
 
@@ -3184,6 +3173,9 @@ bool begin_visit(rename_expr& v)
 void end_visit(rename_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
+  theEnclosedContextStack.pop();
+
   PlanIter_t lName = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lRename;

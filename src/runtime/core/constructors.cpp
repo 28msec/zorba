@@ -1000,14 +1000,15 @@ EnclosedIteratorState::~EnclosedIteratorState()
 }
 
 
-EnclosedIterator::EnclosedIterator (
+EnclosedIterator::EnclosedIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& childIter)
   :
-  UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState> ( sctx, loc, childIter ),
+  UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>(sctx, loc, childIter),
   theAttrContent(false),
-  theTextContent(false)
+  theTextContent(false),
+  theIsInUpdateExpr(false)
 {
 }
 
@@ -1019,6 +1020,7 @@ void EnclosedIterator::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theAttrContent;
   ar & theTextContent;
+  ar & theIsInUpdateExpr;
 }
 
 
@@ -1048,12 +1050,19 @@ void EnclosedIterator::setTextContent()
 }
 
 
+void EnclosedIterator::setInUpdateExpr()
+{
+  theIsInUpdateExpr = true;
+}
+
+
 bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   zstring strval;
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
   bool haveContent = false;
+  store::Item* parent;
 
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
@@ -1243,9 +1252,11 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
           if (!strval.empty())
           {
-            STACK_PUSH(factory->createTextNode(result,
-                                               (path.empty() ? NULL : path.top()),
-                                               strval),
+            parent = NULL;
+            if (!theIsInUpdateExpr && !path.empty())
+              parent = path.top();
+
+            STACK_PUSH(factory->createTextNode(result, parent, strval),
                        state);
           }
 

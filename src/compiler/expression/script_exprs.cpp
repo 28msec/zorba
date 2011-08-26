@@ -229,7 +229,10 @@ void apply_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void apply_expr::compute_scripting_kind()
 {
-  theScriptingKind = APPLYING_EXPR;
+  if (theExpr->is_updating())
+    theScriptingKind = APPLYING_EXPR;
+  else
+    theScriptingKind = theExpr->get_scripting_detail();
 }
 
 

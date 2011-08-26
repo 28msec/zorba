@@ -1336,8 +1336,8 @@ void InternalNode::restoreChild(UpdReplaceChild& upd)
 
     if (upd.theRsib)
     {
-      ZORBA_ASSERT(pos < numChildren() - 1);
       upd.theRsib->connect(this, pos + numNewChildren);
+      ZORBA_ASSERT(pos < numChildren() - 1);
     }
   }
 
