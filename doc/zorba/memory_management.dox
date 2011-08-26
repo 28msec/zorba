@@ -135,6 +135,7 @@ If you now implemented your stemmer like this:
 class MyStemmer {
 public:
   void destroy();
+  // ...
 private:
   MyStemmer();
   friend class MyStemmerProvider; // only it can create instances
