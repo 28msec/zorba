@@ -203,14 +203,14 @@ thesaurus::~thesaurus() {
     ztd::delete_ptr_seq( entry->second );
 }
 
-thesaurus::iterator_ptr
+thesaurus::iterator::ptr
 thesaurus::lookup( zstring const &phrase, zstring const &relationship,
                    ft_int at_least, ft_int at_most ) const {
 # if DEBUG_THESAURUS
   cout << "==================================================" << endl;
   cout << "query phrase: " << phrase << endl;
 # endif
-  return iterator_ptr(
+  return iterator::ptr(
     new iterator( thesaurus_, phrase, relationship, at_least, at_most )
   );
 }

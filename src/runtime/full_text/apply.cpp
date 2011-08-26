@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include <limits>
-#include <memory>                       /* for auto_ptr */
 #include <set>
 #include <vector>
 
@@ -1209,7 +1208,7 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
   ft_thesaurus::ptr thesaurus( ft_thesaurus::get( tid.get_uri(), qt0.lang(),
                                                   static_ctx_ ) );
 
-  ft_thesaurus::iterator_ptr tresult(
+  ft_thesaurus::iterator::ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )
   );
   if ( !tresult.get() )

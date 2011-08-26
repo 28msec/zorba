@@ -131,7 +131,7 @@ public:
 
 protected:
   // inherited
-  std::auto_ptr<ZorbaException> clone() const;
+  std::unique_ptr<ZorbaException> clone() const;
 
 private:
   error_object_type error_object_;

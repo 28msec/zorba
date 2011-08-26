@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <memory>
+#include <zorba/internal/unique_ptr.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -853,7 +853,7 @@ StringItem::getTokens( TokenizerProvider const &provider,
                        bool wildcards ) const
 {
   typedef NaiveFTTokenIterator::container_type tokens_t;
-  auto_ptr<tokens_t> tokens( new tokens_t );
+  unique_ptr<tokens_t> tokens( new tokens_t );
 
   Tokenizer::ptr t( provider.getTokenizer( lang, numbers ) );
   AtomicItemTokenizerCallback cb( *t, lang, *tokens );

@@ -81,8 +81,8 @@ UserException& UserException::operator=( UserException const &from ) {
   return *this;
 }
 
-auto_ptr<ZorbaException> UserException::clone() const {
-  return auto_ptr<ZorbaException>( new UserException( *this ) );
+unique_ptr<ZorbaException> UserException::clone() const {
+  return unique_ptr<ZorbaException>( new UserException( *this ) );
 }
 
 void UserException::polymorphic_throw() const {

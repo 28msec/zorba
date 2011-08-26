@@ -68,8 +68,8 @@ XQueryException& XQueryException::operator=( XQueryException const &from ) {
   return *this;
 }
 
-auto_ptr<ZorbaException> XQueryException::clone() const {
-  return auto_ptr<ZorbaException>( new XQueryException( *this ) );
+unique_ptr<ZorbaException> XQueryException::clone() const {
+  return unique_ptr<ZorbaException>( new XQueryException( *this ) );
 }
 
 void XQueryException::set_source( char const *uri,

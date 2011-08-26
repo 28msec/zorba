@@ -19,10 +19,10 @@
 
 #include <iostream>
 #include <exception>
-#include <memory>
 #include <string>
 
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/error.h>
 
 namespace zorba {
@@ -127,7 +127,7 @@ protected:
    *
    * @return Returns a clone of this exception.
    */
-  virtual std::auto_ptr<ZorbaException> clone() const;
+  virtual std::unique_ptr<ZorbaException> clone() const;
 
   /**
    * Prints the exception to the given ostream.
@@ -145,7 +145,7 @@ private:
   line_type raise_line_;
   std::string message_;
 
-  friend std::auto_ptr<ZorbaException> clone( ZorbaException const& );
+  friend std::unique_ptr<ZorbaException> clone( ZorbaException const& );
 
   friend ZorbaException make_zorba_exception(
     char const*, line_type, Diagnostic const&,

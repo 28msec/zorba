@@ -17,9 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_FT_THESAURUS_H
 #define ZORBA_FULL_TEXT_FT_THESAURUS_H
 
-#include <memory>                       /* for auto_ptr */
-
 #include <zorba/locale.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/zstring.h"
 
@@ -34,11 +33,14 @@ namespace zorba {
  */
 class ft_thesaurus {
 public:
+  typedef std::unique_ptr<ft_thesaurus> ptr;
 
   /**
    * An %iterator is used to iterate over lookup results.
    */
   struct iterator {
+    typedef std::unique_ptr<iterator> ptr;
+
     virtual ~iterator();
 
     /**
@@ -49,9 +51,6 @@ public:
      */
     virtual bool next( zstring *synonym ) = 0;
   };
-
-  typedef std::auto_ptr<ft_thesaurus> ptr;
-  typedef std::auto_ptr<iterator> iterator_ptr;
 
   virtual ~ft_thesaurus();
 
@@ -79,9 +78,9 @@ public:
    * @return Returns a pointer to an iterator for the results or \c nullptr if
    * the phrase was not found.
    */
-  virtual iterator_ptr lookup( zstring const &phrase,
-                               zstring const &relationship, ft_int at_least,
-                               ft_int at_most ) const = 0;
+  virtual iterator::ptr lookup( zstring const &phrase,
+                                zstring const &relationship, ft_int at_least,
+                                ft_int at_most ) const = 0;
 
 protected:
   ft_thesaurus() { }

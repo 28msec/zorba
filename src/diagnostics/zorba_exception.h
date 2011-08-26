@@ -31,7 +31,7 @@ namespace zorba {
  * @param e The ZorbaException to clone.
  * @return Returns a clone of \a e.
  */
-inline std::auto_ptr<ZorbaException> clone( ZorbaException const &e ) {
+inline std::unique_ptr<ZorbaException> clone( ZorbaException const &e ) {
   return e.clone();
 }
 

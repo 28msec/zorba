@@ -17,9 +17,9 @@
 #ifndef ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 #define ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 
-#include <memory>                       /* for auto_ptr */
 #include <unicode/rbbi.h>               /* for RuleBasedBreakIterator */
 
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/locale.h>
 #include <zorba/tokenizer.h>
 
@@ -52,7 +52,7 @@ public:
                  Callback&, void* );
 
 private:
-  typedef std::auto_ptr<RuleBasedBreakIterator> rbbi_ptr;
+  typedef std::unique_ptr<RuleBasedBreakIterator> rbbi_ptr;
 
   locale::iso639_1::type const lang_;
   rbbi_ptr word_;

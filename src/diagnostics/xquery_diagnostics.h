@@ -18,10 +18,10 @@
 #ifndef ZORBA_XQUERY_DIAGNOSTICS_H
 #define ZORBA_XQUERY_DIAGNOSTICS_H
 
-#include <memory>
 #include <vector>
 
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
 
 // TODO: this #include is temporary
 #include <zorba/diagnostic_list.h>
@@ -68,7 +68,7 @@ public:
    * @param exception The exception to add.  The %XQueryDiagnostics takes
    * ownership of the exception.
    */
-  void add_error( std::auto_ptr<ZorbaException> exception ) {
+  void add_error( std::unique_ptr<ZorbaException> exception ) {
     add_error( exception.release() );
   }
 

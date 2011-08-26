@@ -17,9 +17,8 @@
 #ifndef ZORBA_XQUERY_FUNCTIONS_API_H
 #define ZORBA_XQUERY_FUNCTIONS_API_H
 
-#include <memory>                       /* for auto_ptr */
-
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {
@@ -57,7 +56,7 @@ public:
    * @param s The %Sequence to copy from.  Note that it is a destructive copy
    * in that the sequence of \a s is 'i' moved.
    */
-  Sequence( Sequence const &s ) : i_( s.i_ ) { }
+  Sequence( Sequence const &s ) : i_( std::move( s.i_ ) ) { }
 
   /**
    * Gets the next element in the sequence.
@@ -70,7 +69,7 @@ public:
   }
 
 private:
-  mutable std::auto_ptr<iterator> i_;
+  mutable std::unique_ptr<iterator> i_;
 
   // forbid
   Sequence& operator=( Sequence const& );

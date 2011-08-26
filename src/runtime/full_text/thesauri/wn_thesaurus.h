@@ -43,7 +43,7 @@ public:
   ~thesaurus();
 
   // inherited
-  iterator_ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
+  iterator::ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
 
 private:
   /**

@@ -492,10 +492,10 @@ char const* thesaurus::find_lemma( zstring const &phrase ) const {
   return *range.first;
 }
 
-thesaurus::iterator_ptr
+thesaurus::iterator::ptr
 thesaurus::lookup( zstring const &phrase, zstring const &relationship,
                    ft_int at_least, ft_int at_most ) const {
-  iterator_ptr result;
+  iterator::ptr result;
 # if DEBUG_FT_THESAURUS
   cout << "==================================================" << endl;
   cout << "query phrase: " << phrase << endl;
@@ -507,7 +507,7 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
       )
     );
   }
-  return result;
+  return std::move( result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

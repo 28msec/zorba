@@ -76,8 +76,8 @@ ZorbaException& ZorbaException::operator=( ZorbaException const &from ) {
   return *this;
 }
 
-auto_ptr<ZorbaException> ZorbaException::clone() const {
-  return auto_ptr<ZorbaException>( new ZorbaException( *this ) );
+unique_ptr<ZorbaException> ZorbaException::clone() const {
+  return unique_ptr<ZorbaException>( new ZorbaException( *this ) );
 }
 
 void ZorbaException::polymorphic_throw() const {

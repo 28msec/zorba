@@ -64,7 +64,7 @@ HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       error = true;
       state->theDone = true;
-      std::auto_ptr<ZorbaException> ze( clone( e ) );
+      std::unique_ptr<ZorbaException> ze( clone( e ) );
 
       GENV_ITEMFACTORY->createError(result, ze.release());
     }
