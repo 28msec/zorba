@@ -20,10 +20,10 @@ xquery version "1.0";
  : The module provides functions to compute a stable reference (URI) for
  : a node that is stored in a collection and vice versa.
  :
- : <p>Please see the <a href="../../html/storing_manipulating_data.html">data lifecycle
+ : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
  : documentation</a> about details on management and manipulation of collections.</p>
  : 
- : @see <a href="../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  :
  : @author Matthias Brantner
  :

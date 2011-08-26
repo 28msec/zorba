@@ -79,7 +79,7 @@ xquery version "3.0";
  : HTML to XHTML. The HTML module is supported by the Zorba team, but it is
  : not a "core module", meaning that it is not shipped with every Zorba
  : installation and may not be available. See
- : <a href="../../../../html/downloads.html">the Zorba downloads
+ : <a href="http://www.zorba-xquery.com/site2/html/downloads.html">the Zorba downloads
  : page</a> for information about obtaining this module if you do not
  : have it.</p>
  : 

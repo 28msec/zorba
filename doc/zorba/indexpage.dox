@@ -45,6 +45,8 @@
   <li>\ref ft_thesaurus</li>
 </ul>
 
+<b>\ref errors_warnings</b>
+
 <b>\ref options_and_annotations</b>
 
 <b style="display:none;">\ref controlling_memory</b>
@@ -52,8 +54,6 @@
 <b>\ref impl_dep_features</b>
 
 <b><a href="../../cxx/html/index.html">C++ API</a></b> 
-
-<b>\ref errors_warnings</b>
 
 <b>Language Bindings</b>
 <ul>
@@ -83,7 +83,7 @@
 
 <b>Zorba Proprietary Specifications</b>
 <ul>
-  <li>XQuery Scripting Extension  (please see the <b><a href="scripting_spec.html">Specification</a></b> and our \ref scripting_tutorial "Tutorial")</li>
+  <li><a href="scripting_spec.html">XQuery Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")</li>
   <li>\ref xqddf</li>
   <!--li>\ref extensions_update</li-->
 </ul>

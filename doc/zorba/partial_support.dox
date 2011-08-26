@@ -26,14 +26,14 @@
     <li>(DONE) Added <a href="http://www.w3.org/TR/xquery-30/#id-context-item-declarations"   target="_blank"><b>4.17 Context Item Declaration</b></a>.</li>
     <li>(DONE) Modified <a href="http://www.w3.org/TR/xquery-30/#id-version-declaration"   target="_blank"><b>4.1 Version Declaration</b></a> to add support for XQuery 3.0.</li>
     <li>(PARTIALLY DONE) Added <a href="http://www.w3.org/TR/xquery-30/#id-decimal-format-decl"   target="_blank"><b>4.10 Decimal-Format Declaration</b></a> to allow a query to specify formats for <code style="font-family: monospace;">fn:format-number()</code>. Added corresponding properties to the static context.</li>
-    <li>(DONE) Modified <code style="font-family: monospace;">derives-from()</code> in <a href="http://www.w3.org/TR/xquery-30/#id-sequencetype-matching"   target="_blank"><b>2.5.5 SequenceType Matching</b></a> to support union types. Resolves <a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=7749#c2"   target="_blank">Bug 7749</a>.</li>
+    <li>(DONE) Modified <code style="font-family: monospace;">derives-from()</code> in <a href="http://www.w3.org/TR/xquery-30/#id-sequencetype-matching"   target="_blank"><b>2.5.5 SequenceType Matching</b></a> to support union types.
     <li>(PARTIALLY DONE see \ref options_and_annotations) Added <a title="annotation assertion" href="http://www.w3.org/TR/xquery-30/#dt-annotation-assertion"   target="_blank">annotation assertions</a> to <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-FunctionTest"   target="_blank">function tests</a>.</li>
     <li>(DONE) Added support for literal URLs in names, using <a href="http://www.w3.org/TR/xquery-30/#doc-xquery30-EQName"   target="_blank">EQNames</a>.</li>
     <li>(NOT DONE) Added support for XML Schema 1.1.</li>
     <li>(DONE) Added support for union types in function arguments.</li>
-    <li>(NOT DONE) Allowed serialization options to be specified as an XDM instance using output declarations. See <a href="http://www.w3.org/TR/xquery-30/#id-serialization"   target="_blank"><b>2.2.4 Serialization</b></a>. Resolves <a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=9302"   target="_blank">Bug 9302</a>. Moved serialization options to the static context, with module scope.</li>
-    <li>(DONE) Added support for private variables. Resolves <a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=10875"   target="_blank">Bug 10875</a>.</li>
-    <li>(DONE) Added support for casting to union types. Resolves <a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=7860"   target="_blank">Bug 7860</a></li>
+    <li>(NOT DONE) Allowed serialization options to be specified as an XDM instance using output declarations. See <a href="http://www.w3.org/TR/xquery-30/#id-serialization"   target="_blank"><b>2.2.4 Serialization</b></a>.
+    <li>(DONE) Added support for private variables.
+    <li>(DONE) Added support for casting to union types.
 </ol>
 
 */

@@ -20,14 +20,14 @@ xquery version "3.0";
  : This modules defines a set of functions for managing indexes which are
  : declared in the prolog of a module.
  :
- : <p>This module is part of <a href="../../../html/xqddf.htm">Zorba's XQuery Data
+ : <p>This module is part of <a href="../../html/xqddf.html">Zorba's XQuery Data
  : Definition Facility</a>. All the indexes managed by this module
  : have to be pre-declared in the prolog of a module. Please refer to the
- : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : <a href="../../html/data_lifecycle.html">general documentation</a>
  : for more information and examples.</p>
  :
- : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
- : @see <a href="../../../html/xqddf.html">XQuery Data Definition Facility</a>
+ : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
+ : @see <a href="../../html/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl

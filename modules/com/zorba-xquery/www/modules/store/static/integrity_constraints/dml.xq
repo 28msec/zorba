@@ -23,7 +23,7 @@ xquery version "3.0";
  : <p>This module is part of <a href="../../html/xqddf.html">Zorba's XQuery Data
  : Definition Facility</a>. All the integrity constraints managed by this module
  : have to be pre-declared in the prolog of a module. Please refer to the
- : <a href="../../../html/storing_manipulating_data.html">general documentation</a>
+ : <a href="../../html/data_lifecycle.html">general documentation</a>
  : for more information and examples.</p>
  :
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>

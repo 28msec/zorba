@@ -29,7 +29,7 @@ xquery version "3.0";
  : map is created. The value can be an arbitrary sequence
  : of items.
  :
- : @see <a href="../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Matthias Brantner

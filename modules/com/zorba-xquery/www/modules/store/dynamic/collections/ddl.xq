@@ -20,11 +20,11 @@ xquery version "3.0";
  : This modules defines a set of functions for managing persistent, ordered, and
  : updatable collections.
  :
- : <p>Please refer to our documentation for <a href="../../html/storing_manipulating_data.html">
+ : <p>Please refer to our documentation for <a href="../../html/data_lifecycle.html">
  : more information</a> about the lifecycle management and the manipulation of such
  : collections.</p>
  :
- : @see <a href="../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/dml
  : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :

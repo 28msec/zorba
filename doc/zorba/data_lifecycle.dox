@@ -1,9 +1,9 @@
-/** \page data_lifecycle Data Life Cycle
+/** \page data_lifecycle Data Lifecycle
 
 \section dl_overview Overview
 
 Zorba processes XML data (modeled and accessed as XDM instances, <a href="http://www.w3.org/TR/xpath-datamodel/">http://www.w3.org/TR/xpath-datamodel/</a>) accessible in the data store.
-Below is a short overview of the Zorba data life cycle: how to load data in the Zorba store, how to query and update it, and how to remove the data from the store.
+Below is a short overview of the Zorba data lifecycle: how to load data in the Zorba store, how to query and update it, and how to remove the data from the store.
 
 \image html data_lifecycle.png
 
@@ -302,7 +302,7 @@ For example, a mobile device store can safely assume that only a single request 
 Analogously, a main memory store does not provide persistence of data across process boundaries.
 
 The Zorba source distribution as well as the packages provided by <a href="http://www.zorba-xquery.com/">http://www.zorba-xquery.com/</a> come with a main memory based store.
-The life cycle of the data in this store is bounded by the life time of the process in which it is running.
+The lifecycle of the data in this store is bounded by the lifetime of the process in which it is running.
 For example, a document added to the store can be accessed by XQuery programs in the same process.
 As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the document is destroyed and changes to the data are not propagated to any persistence storage.
 

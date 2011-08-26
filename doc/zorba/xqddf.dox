@@ -967,7 +967,7 @@ general, several domain nodes may produce the same key tuple. As a result, each
 index entry is a pair consisting of a key tuple and the set of domain nodes that
 produced the key tuple.
 
-General comaprison operators accept operands that are sequences potentially
+General comparison operators accept operands that are sequences potentially
 containing more than one item. As a result, the main difference between value
 and general indexes is the the later allow a key expression to return multiple
 values with potentially different data types. On the other hand, for simplicity,
@@ -1051,7 +1051,7 @@ maintained" ('%ann:manual'), which means that programmers must explicitly reques
 be synchronized with the underlying data. 
 
 The last index declaration assigns the name news-data:EmpMgr to the index. 
-The index is decalred as a '%ann:general-equality' index, which, like '%ann:value-equality'
+The index is declared as a '%ann:general-equality' index, which, like '%ann:value-equality'
 means that the index does not maintain its keys in any order. The index key
 expression selects, for each employee E, the ids of the employees managed by E. 
 Notice that this set of ids may be empty. The index will contain an entry mapping 
@@ -1689,7 +1689,7 @@ If the index is a general index:
   the i-th domain node, and K<sub>i</sub> be the key sequence computed for 
   D<sub>i</sub>. If any key item in K<sub>i</sub> has type xs:untypedAtomic, 
   the item is removed from K<sub>i</sub> and is cast to every primitive builtin 
-  data type. For each successfull cast, the resulting item is inserted back 
+  data type. For each successful cast, the resulting item is inserted back 
   into K<sub>i</sub>.
   </li>
 
@@ -1825,7 +1825,7 @@ the sequence type specified in the corresponding IndexKeyTypeDecl; otherwise,
 a type error is raised [err:XPTY0004].
 
 The result of this function is either an error or the set of domain nodes that 
-statisfy the following xquery condition:
+satisfy the following xquery condition:
 
 \code
 $key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
@@ -1854,7 +1854,7 @@ atomic item in it must match the atomic type specified by the IndexKeyTypeDecl
 of the index; otherwise, a type error is raised [err:XPTY0004]. 
 
 The result of this function is either an error or the set of domain nodes that 
-statisfy the following xquery condition:
+satisfy the following xquery condition:
 
 \code
 $keys = $node/keyExpr
@@ -1881,7 +1881,7 @@ where keyExpr is the expression specified in the keyspec of the index.
                           $rangeupperBoundIncludedM as xs:boolean) as node()*
 \endcode
 
-The probe-index-range-vaalue function can be invoked on range indices only 
+The probe-index-range-value function can be invoked on range indices only 
 (value or general) [<a href="#ERRZDDY0026">zerr:ZDDY0026</a>]. To describe the
 semantics of this function, we start by defining the i<sup>th</sup> <strong>key
 column</strong> of an index as the set of key items produced by evaluating the
@@ -1992,8 +1992,8 @@ Zorba offers two maintenance modes: manual and automatic.
 If an index is declared as "automatically maintained" (i.e. '%ann:automatic'), Zorba guarantees that
 every time a PUL is applied, the index is made up-to-date before the 
 upd:apply-updates function returns. Ideally, all indexes should be automatically
-maintained, but in general, index maintenance can be a very exprensive operation
-perormance-wise. As a result, Zorba will reject a declaration for an automatic
+maintained, but in general, index maintenance can be a very expensive operation
+performance-wise. As a result, Zorba will reject a declaration for an automatic
 index if it determines that it cannot maintain the index in an "efficient" way.
 The definition of efficiency with respect to index maintenance is implementation
 dependent, but in general, it means that the index can be maintained in some
@@ -2001,10 +2001,10 @@ incremental way that is faster than simply re-creating the whole index from
 scratch. However, even incremental maintenance can have a high cost, which
 may make the manual mode described below the preferred choice.
 
-If an index is declared as "manually maintained" (i.e. '%ann;manual'), it is the responsibility of
+If an index is declared as "manually maintained" (i.e. '%ann:manual'), it is the responsibility of
 the programmers to keep the index up-to-date. This can be done using the 
 idml:refresh-index updating function described below. Since Zorba does not
-take any maintenance action during PUL applications, manually maintenained
+take any maintenance action during PUL applications, manually maintained
 indexes may become stale in between calls to the idml:refresh-index function.
 Obviously, the manual mode must be used if an index cannot be maintained
 automatically. However, even for automatically maintainable indexes, the
@@ -2167,7 +2167,7 @@ equivalent to the following XQuery expression.
     satisfies $y/id eq $x//sale/empid
 \endcode
 
-\subsection ic_life_cycle Life Cycle Management
+\subsection ic_life_cycle Lifecycle Management
 
 ICs can be checked manually (if requested by the user) or automatically on
 updates
@@ -2190,7 +2190,7 @@ QName passed as parameter, to be checked.
 
 Similar to collections and indexes, the module declaring the integrity
 constraints
-(i.e. with namespace %http://www.news.org/data) can also declare variables whoes
+(i.e. with namespace %http://www.news.org/data) can also declare variables whose
 values are the QNames of the ICs. This allows their names to be easily
 referenced by
 subsequent expressions. For example, such a variable can be passed as a

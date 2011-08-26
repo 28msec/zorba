@@ -181,11 +181,11 @@ Zorba provides a couple of annotations that allow the user to define the semanti
 All these annotations have the namespace <tt>http://www.zorba-xquery.com/annotations</tt>.
 
 \paragraph deterministic_annotation Deterministic and Nondeterministic Functions
-A deterministic function is a function that always evaluates to the same result if it is invoked multiple times with the same arguments during the evaluation of a query.
+A deterministic function is a function that always evaluates to the same result if it is invoked multiple times with the same arguments during the evaluation of a <a href="scripting_spec.html#id-snapshot-scope">snapshot</a>.
 In general, all functions defined by XQuery are deterministic.
 However, a module developer might develop a function (in a host language) which does not guarantee to be deterministic.
 For example, a function generating random numbers is clearly not deterministic.
-Knowing about this property is crucial for the query optimizer to retain the semantics.
+Knowing about this property is crucial for the query optimizer to retain the semantics (e.g. caching would lead to incorrect results).
 
 For this reason, Zorba provides two annotations (<tt>nondeterministic</tt> and <tt>deterministic</tt>) that allow a developer to declare whether a function is deterministic or not.
 

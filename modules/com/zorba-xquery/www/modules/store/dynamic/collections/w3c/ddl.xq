@@ -22,11 +22,11 @@ xquery version "3.0";
  :
  : <p>Such collections are identified by a URI as defined in the XQuery specification.
  : However, please note that we do not advice users to use collections identified by URIs.
- : Instead, we refer to the <a href="../../../html/storing_manipulating_data.html">data lifecycle
+ : Instead, we refer to the <a href="../../html/data_lifecycle.html">data lifecycle
  : documentation</a>. It gives an overview over serveral ways to work with collections,
  : documents, and other data-structures.</p>
  :
- : @see <a href="../../../html/storing_manipulating_data.html">Data Lifecycle</a>
+ : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/dml

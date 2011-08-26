@@ -132,12 +132,12 @@ declare function local:process-response($resp as element())
     let $fun-msg-name := fn:QName($local:localns, concat("local:", $resp/@command/data(.)))
     return (
       if (sctx:function-arguments-count($fun-cont-name) = 1) then
-        refl:invoke-simple($fun-cont-name, $resp)
+        refl:invoke($fun-cont-name, $resp)
       else
         local:has-to-stop($resp),
       $resp/@transaction_id/data(.),
       if (sctx:function-arguments-count($fun-msg-name) = 1) then
-        refl:invoke-simple($fun-msg-name, $resp)
+        refl:invoke($fun-msg-name, $resp)
       else
         "Recieved a message - command not implemented"
     )
@@ -156,7 +156,7 @@ declare function local:main($response as element()) {
   let $process-fun as xs:QName := fn:QName($local:localns, concat("local:process-", node-name($response)))
   return
     if (sctx:function-arguments-count($process-fun) = 1) then
-      refl:invoke-simple($process-fun, $response)
+      refl:invoke($process-fun, $response)
     else (
           true(),
           ($response/@transaction_id, 0)[1]/data(.),
