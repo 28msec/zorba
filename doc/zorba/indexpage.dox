@@ -41,6 +41,7 @@
 
 <b>\ref ft_intro</b>
 <ul>
+  <li>\ref ft_stemmer</li>
   <li>\ref ft_thesaurus</li>
 </ul>
 
