@@ -24,60 +24,37 @@
 # include <utility>                     /* for forward, move */
 #else
 
-#include <algorithm>
+#include <algorithm>                    /* for swap() */
 #include "type_traits.h"
 
 namespace std {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-class rvalue {
-  T &r_;
-public:
-  explicit rvalue( T &r ) : r_( r ) { }
-  T* operator->() { return &r_; }
-};
-
-template<typename T> inline typename
-enable_if<!ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T&>::type
+template<typename T> inline
+typename enable_if<!zorba::internal::is_movable<T>::value,T&>::type
 move( T &t ) {
-  return t;
+   return t;
 }
 
-template<typename T> inline typename
-enable_if<!ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T const&>::type
-move( T const &t ) {
-  return t;
-}
-
-template<typename T> inline typename
-enable_if<ZORBA_TR1_NS::is_convertible<T,rvalue<T> >::value,T>::type
+template<typename T> inline
+typename enable_if<zorba::internal::is_movable<T>::value,
+                   zorba::internal::rv<T>&>::type
 move( T &t ) {
-  return T( rvalue<T>( t ) );
+   return *static_cast<zorba::internal::rv<T>*>( &t );
 }
 
-template<typename T> inline typename
-enable_if<ZORBA_TR1_NS::is_reference<T>::value,T>::type
-forward( T t ) {
+template<typename T> inline
+typename enable_if<zorba::internal::is_movable<T>::value,
+                   zorba::internal::rv<T>&>::type
+move( zorba::internal::rv<T> &t ) {
   return t;
-}
-
-template<typename T> inline typename
-enable_if<!ZORBA_TR1_NS::is_reference<T>::value,T>::type
-forward( T &t ) {
-  return move( t );
-}
-
-template<typename T> inline typename
-enable_if<!ZORBA_TR1_NS::is_reference<T>::value,T>::type
-forward( T const &t ) {
-  return move( const_cast<T&>( t ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * Storage for unique_ptr's pointer and deleter.
  *
  * @tparam T The pointed-to type.
@@ -86,15 +63,15 @@ forward( T const &t ) {
 template<typename T,typename D,bool = ZORBA_TR1_NS::is_empty<D>::value>
 class unique_ptr_storage {
   typedef typename ZORBA_TR1_NS::add_reference<D>::type deleter_reference;
-  typedef rvalue<unique_ptr_storage> rvalue_type;
+  typedef zorba::internal::rv<unique_ptr_storage> rvalue_type;
 public:
   T *ptr_;
 
-  unique_ptr_storage( T *p ) throw() : ptr_( move( p ) ) {
+  unique_ptr_storage( T *p ) throw() : ptr_( p ) {
   }
 
   unique_ptr_storage( T *p, deleter_reference d ) :
-    ptr_( move( p ) ), deleter_( forward<D>( d ) )
+    ptr_( p ), deleter_( d )
   {
   }
 
@@ -114,6 +91,7 @@ private:
 };
 
 /**
+ * \internal
  * Specialization of %unique_ptr_storage when the \c D is empty.
  *
  * @tparam T The pointed-to type.
@@ -121,14 +99,14 @@ private:
  */
 template<typename T,typename D>
 class unique_ptr_storage<T,D,true> : private D {
-  typedef rvalue<unique_ptr_storage> rvalue_type;
+  typedef zorba::internal::rv<unique_ptr_storage> rvalue_type;
 public:
   T *ptr_;
 
-  unique_ptr_storage( T *p ) throw() : ptr_( move( p ) ) {
+  unique_ptr_storage( T *p ) throw() : ptr_( p ) {
   }
 
-  unique_ptr_storage( T *p, D &d ) : D( move( d ) ), ptr_( move( p ) ) {
+  unique_ptr_storage( T *p, D &d ) : D( d ), ptr_( p ) {
   }
 
   operator rvalue_type() throw() {
@@ -148,6 +126,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * Swaps two unique_ptr objects.
  *
  * @param a The first object to swap.
@@ -163,6 +142,7 @@ void swap( unique_ptr_storage<T,D,IsEmpty> &a,
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * The default deleter class used by unique_ptr.  It simply calls \c delete on
  * the pointed-to object.
  */
@@ -173,8 +153,8 @@ struct default_delete {
   /**
    * Copy constructor.
    *
-   * @tparam U The delete type of the deleter to copy-construct from such that
-   * \c U* is convertible to \c T*.
+   * @tparam U The type of the deleter to copy-construct from such that \c U*
+   * is convertible to \c T*.
    */
   template<typename U>
   default_delete( default_delete<U> const&,
@@ -195,6 +175,7 @@ struct default_delete {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * Emulation of the C++11 std::unique_ptr.
  *
  * @tparam T The pointed-to type.
@@ -210,8 +191,6 @@ class unique_ptr {
 
   typedef typename ZORBA_TR1_NS::add_reference<D const>::type
           deleter_const_reference;
-
-  typedef rvalue<unique_ptr> rvalue_type;
 
   // see http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html
   struct pointer_conversion { int valid; };
@@ -241,28 +220,6 @@ public:
   }
 
   /**
-   * Constructs a %unique_ptr from an existing %unique_ptr 
-   *
-   * @tparam U The pointed-to type such that \c U* is convertible to \c T*.
-   * @tparam E The deleter such that \c E is convertible to \c D.
-   * @param p The %unique_ptr to move from.
-   */
-  template<typename U,typename E>
-  unique_ptr( unique_ptr<U,E> p,
-    typename enable_if<
-      ZORBA_TR1_NS::is_convertible<typename unique_ptr<U>::pointer,
-                                   pointer>::value &&
-      ZORBA_TR1_NS::is_convertible<E,D>::value && (
-        !ZORBA_TR1_NS::is_reference<D>::value ||
-         ZORBA_TR1_NS::is_same<D,E>::value
-      )
-    >::type* = 0
-  ) :
-    storage_( p.release(), forward<D>( forward<E>( p.get_deleter() ) ) )
-  {
-  }
-
-  /**
    * Constructs a %unique_ptr from an existing %unique_ptr.  Note that:
    * \code
    *  unique_ptr<int> a( new int(1) );
@@ -274,9 +231,33 @@ public:
    *  unique_ptr<int> b( move(a) );     // ok now
    * \endcode
    *
-   * @param r The %unique_ptr to move from.
+   * @param p The %unique_ptr to move from.
    */
-  unique_ptr( rvalue_type r ) : storage_( r->release(), r->get_deleter() ) {
+  unique_ptr( zorba::internal::rv<unique_ptr> &p ) :
+    storage_( p.release(), p.get_deleter() )
+  {
+  }
+
+  /**
+   * Constructs a %unique_ptr from an existing %unique_ptr 
+   *
+   * @tparam U The pointed-to type such that \c U* is convertible to \c T*.
+   * @tparam E The deleter such that \c E is convertible to \c D.
+   * @param p The %unique_ptr to move from.
+   */
+  template<typename U,typename E>
+  unique_ptr( zorba::internal::rv<unique_ptr<U,E> > &p,
+    typename enable_if<
+      ZORBA_TR1_NS::is_convertible<typename unique_ptr<U>::pointer,
+                                   pointer>::value &&
+      ZORBA_TR1_NS::is_convertible<E,D>::value && (
+        !ZORBA_TR1_NS::is_reference<D>::value ||
+         ZORBA_TR1_NS::is_same<D,E>::value
+      )
+    >::type* = 0
+  ) :
+    storage_( p.release(), move<D>( p.get_deleter() ) )
+  {
   }
 
   /**
@@ -292,18 +273,10 @@ public:
    * to this %unique_ptr.  The object pointed-to by this %unique_ptr, if any,
    * is deleted.
    *
-   * @tparam U The pointed-to type such that \c U* is convertible to \c T*.
-   * @tparam E The deleter of \a p.
    * @param p The %unique_ptr to move from.
    * @return Returns \c *this.
    */
-  template<typename U,typename E>
-    typename enable_if<
-      ZORBA_TR1_NS::is_convertible<typename unique_ptr<U>::pointer,
-                                   pointer>::value,
-      unique_ptr&
-    >::type
-  operator=( unique_ptr<U,E> &p ) {
+  unique_ptr& operator=( zorba::internal::rv<unique_ptr> &p ) {
     reset( p.release() );
     storage_.deleter() = move( p.get_deleter() );
     return *this;
@@ -314,12 +287,15 @@ public:
    * to this %unique_ptr.  The object pointed-to by this %unique_ptr, if any,
    * is deleted.
    *
+   * @tparam U The pointed-to type such that \c U* is convertible to \c T*.
+   * @tparam E The deleter of \a p.
    * @param p The %unique_ptr to move from.
    * @return Returns \c *this.
    */
-  unique_ptr& operator=( rvalue_type r ) {
-    reset( r->release() );
-    storage_.deleter() = move( r->get_deleter() );
+  template<typename U,typename E>
+  unique_ptr& operator=( zorba::internal::rv<unique_ptr<U,E> > &p ) {
+    reset( p.release() );
+    storage_.deleter() = move( p.get_deleter() );
     return *this;
   }
 
@@ -414,13 +390,6 @@ public:
   }
 
   /**
-   * Conversion to an rvalue.
-   */
-  operator rvalue_type() throw() {
-    return rvalue_type( *this );
-  }
-
-  /**
    * Conversion to \c bool.
    *
    * @return Returns \c true only if the pointer is not null; \c false only if
@@ -441,6 +410,17 @@ private:
   // forbid
   unique_ptr( unique_ptr& );
   unique_ptr& operator=( unique_ptr& );
+  template<typename U,typename E> unique_ptr( unique_ptr<U,E>& );
+  template<typename U,typename E> unique_ptr& operator=( unique_ptr<U,E>& );
+
+public:
+  operator ::zorba::internal::rv<unique_ptr>&() throw() {
+    return *static_cast<zorba::internal::rv<unique_ptr>*>( this ); 
+  }
+
+  operator ::zorba::internal::rv<unique_ptr> const&() const throw() {
+    return *static_cast<zorba::internal::rv<unique_ptr> const*>( this ); 
+  }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -463,6 +443,7 @@ ZORBA_UNIQUE_PTR_RELOP(>=)
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * Swaps the pointed-to object and deleter of one unique_ptr with that of
  * another.
  *

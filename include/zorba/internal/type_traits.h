@@ -53,5 +53,44 @@ struct enable_if<true,T> {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+namespace zorba {
+namespace internal {
+
+/**
+ * \internal
+ * Dummy rvalue class used by unique_ptr to prevent copying.
+ */
+template<typename T>
+class rv : public T {
+  rv();
+  ~rv();
+  rv( rv const& );
+  rv& operator=( rv const& );
+  //
+  // The struct and friend declaration below eliminate a "class rv<T> only
+  // defines a private destructor and has no friends" warning.
+  //
+  struct f;
+  friend struct f;
+};
+
+template<bool B>
+struct bool_value {
+  static bool const value = B;
+};
+
+template<typename T>
+struct is_movable : bool_value<ZORBA_TR1_NS::is_convertible<T,rv<T>&>::value> {
+};
+
+template<typename T>
+struct is_movable< rv<T> > : bool_value<false> {
+};
+
+} // namespace internal
+} // namespace zorba
+
+///////////////////////////////////////////////////////////////////////////////
+
 #endif /* ZORBA_INTERNAL_TYPE_TRAITS_H */
 /* vim:set et sw=2 ts=2: */

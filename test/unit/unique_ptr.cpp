@@ -69,7 +69,28 @@ struct D {
   int *const destroy_count;
 };
 
-///////////////////////////////////////////////////////////////////////////////
+////////// Compile-time-only tests ////////////////////////////////////////////
+
+static unique_ptr<A> f_A( unique_ptr<A> p ) {
+  return unique_ptr<A>();
+}
+
+#if 0
+static unique_ptr<B> f_B( unique_ptr<A> p ) {
+  return unique_ptr<B>();
+}
+#endif
+
+static void compile_test() {
+  unique_ptr<A> a1;
+  unique_ptr<A> a2( f_A( move( a1 ) ) );
+  unique_ptr<B> b1;
+#if 0
+  unique_ptr<A> a3( f_B( move( b1 ) ) );
+#endif
+}
+
+////////// Run-time tests /////////////////////////////////////////////////////
 
 static void test_basic() {
   {
@@ -116,19 +137,17 @@ static void test_derived() {
   }
   ASSERT_TRUE( COUNT(A) == 0 );
   ASSERT_TRUE( COUNT(B) == 0 );
-#if 0
   {
     unique_ptr<A> a1( new A );
     unique_ptr<B> b1( new B );
     ASSERT_TRUE( COUNT(A) == 2 );
     ASSERT_TRUE( COUNT(B) == 1 );
-    a1 = b1;
+    a1 = move( b1 );
     ASSERT_TRUE( COUNT(A) == 1 );
     ASSERT_TRUE( COUNT(B) == 1 );
     ASSERT_TRUE( !b1 );
     ASSERT_TRUE( a1 );
   }
-#endif
 }
 
 template<typename T>
@@ -195,6 +214,7 @@ static void test_swap() {
 ///////////////////////////////////////////////////////////////////////////////
 
 int unique_ptr( int, char*[] ) {
+  compile_test();
   test_basic();
   test_assignment();
   test_copy_constructor();
