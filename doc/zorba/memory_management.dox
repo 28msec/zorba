@@ -151,7 +151,7 @@ public:
 };
 
 Stemmer::ptr MyStemmerProvider::getStemmer( locale::iso639_1::type lang ) const {
-  MyStemmer stemmer;
+  static MyStemmer stemmer;
   return Stemmer::ptr( &stemmer );
 }
 \endcode
