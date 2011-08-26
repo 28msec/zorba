@@ -157,14 +157,14 @@ public:
    *
    * @param utf8_s    The UTF-8 string to tokenize.  It need not be
    *                  null-terminated.
-   * @param len       The number of bytes in the token string.
-   * @param lang      The language of the text.
+   * @param utf8_len  The number of bytes in the string to be tokenized.
+   * @param lang      The language of the string.
    * @param wildcards If \c true, allows XQuery wildcard syntax characters to
    *                  be part of tokens.
    * @param callback  The Callback to call once per token.
    * @param payload   Optional user-defined data.
    */
-  virtual void tokenize( char const *utf8_s, size_type len,
+  virtual void tokenize( char const *utf8_s, size_type utf8_len,
                          locale::iso639_1::type lang, bool wildcards,
                          Callback &callback, void *payload = 0 ) = 0;
 
