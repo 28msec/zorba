@@ -7,6 +7,8 @@ version 2.0.1
   * Fixed scripting bug where apply statement was considered a sequential expr even if the source expr was non-updating and non-sequential.
   * Fixed bug #3394400 (Element replacement, really unexpected result)
   * Fixed bug #3394588 (Unexpected error during pul undo)
+  * Fixed bugs #3398511 and #3398552 with "make install"
+  * Fixed bug #3398521 for compiling with ZORBA_NO_XMLSCHEMA
 
 version 2.0
   * Zorba 2.0 is a major rewrite of previous versions. It doesn't claim to
@@ -21,7 +23,7 @@ version 2.0
     - Function APIs
     - XQuery Data Definition Facility
     - XQuery modules and module versioning
-    - Changes to conform with the latest XQuery 3.0 
+    - Changes to conform with the latest XQuery 3.0
     - Namespaces of annotations, errors, collations.
   * In addition to host language API and XQuery language improvements,
     plenty of bug fixes and optimizations have been made.
