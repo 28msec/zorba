@@ -24,6 +24,8 @@
 # include <windows.h>
 #endif /* WIN32 */
 
+#include <zorba/internal/unique_ptr.h>
+
 #include "diagnostics/dict.h"
 #include "diagnostics/diagnostic.h"
 
@@ -100,7 +102,7 @@ string get_err_string( char const *function, code_type code ) {
     reinterpret_cast<LPWSTR>( &werr_string ), 0, NULL
   );
   int const err_size = ::wcslen( werr_string ) * 3;
-  ztd::auto_vec<char> const err_buf( new char[ err_size ] );
+  unique_ptr<char[]> const err_buf( new char[ err_size ] );
   char *const err_string = err_buf.get();
   WideCharToMultiByte(
     CP_UTF8, 0, werr_string, -1, err_string, err_size, NULL, NULL

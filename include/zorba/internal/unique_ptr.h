@@ -172,6 +172,19 @@ struct default_delete {
   }
 };
 
+/**
+ * \internal
+ * Specialization of default_delete for arrays.  It simply calls \c delete[] on
+ * the pointed-to array.
+ */
+template<typename T>
+struct default_delete<T[]> {
+  default_delete() { }
+  void operator()( T *p ) const {
+    delete[] p;
+  }
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -395,6 +408,111 @@ public:
    * @return Returns \c true only if the pointer is not null; \c false only if
    * the pointer is null.
    */
+  operator explicit_bool() const throw() {
+    return get() ? &pointer_conversion::valid : 0;
+  }
+
+private:
+  unique_ptr_storage<T,D> storage_;
+
+  void call_deleter() {
+    if ( storage_.ptr_ )
+      get_deleter()( storage_.ptr_ );
+  }
+
+  // forbid
+  unique_ptr( unique_ptr& );
+  unique_ptr& operator=( unique_ptr& );
+  template<typename U,typename E> unique_ptr( unique_ptr<U,E>& );
+  template<typename U,typename E> unique_ptr& operator=( unique_ptr<U,E>& );
+
+public:
+  operator ::zorba::internal::rv<unique_ptr>&() throw() {
+    return *static_cast<zorba::internal::rv<unique_ptr>*>( this ); 
+  }
+
+  operator ::zorba::internal::rv<unique_ptr> const&() const throw() {
+    return *static_cast<zorba::internal::rv<unique_ptr> const*>( this ); 
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \internal
+ * Specialization of %unique_ptr for arrays.
+ *
+ * @tparam T The pointed-to array type.
+ * @tparam D The deleter to use, if any.  It must be either a function pointer
+ * or a functor such that if \c d is of type \a D and \c p is of type \a T*,
+ * then \c d(p) is valid and deletes the pointed-to object.  The deleter must
+ * handle null pointers.  Note that \a D may be a reference type.
+ */
+template<typename T,typename D>
+class unique_ptr<T[],D> {
+  typedef typename ZORBA_TR1_NS::add_reference<D>::type
+          deleter_reference;
+
+  typedef typename ZORBA_TR1_NS::add_reference<D const>::type
+          deleter_const_reference;
+
+  struct pointer_conversion { int valid; };
+  typedef int pointer_conversion::*explicit_bool;
+
+public:
+  typedef T element_type;
+  typedef T* pointer;
+  typedef D deleter_type;
+
+  explicit unique_ptr( pointer p = 0 ) throw() : storage_( p ) {
+  }
+
+  unique_ptr( pointer p, deleter_reference d ) : storage_( p, d ) {
+  }
+
+  ~unique_ptr() {
+    call_deleter();
+  }
+
+  unique_ptr& operator=( zorba::internal::rv<unique_ptr> &p ) {
+    reset( p.release() );
+    storage_.deleter() = move( p.get_deleter() );
+    return *this;
+  }
+
+  pointer get() const throw() {
+    return storage_.ptr_;
+  }
+
+  T& operator[]( size_t i ) const {
+    return get()[i];
+  }
+
+  deleter_reference get_deleter() throw() {
+    return storage_.deleter();
+  }
+
+  deleter_const_reference get_deleter() const throw() {
+    return storage_.deleter();
+  }
+
+  pointer release() throw() {
+    pointer const temp = get();
+    storage_.ptr_ = 0;
+    return temp;
+  }
+
+  void reset( pointer p = 0 ) throw() {
+    if ( p != storage_.ptr_ ) {
+      call_deleter();
+      storage_.ptr_ = p;
+    }
+  }
+
+  void swap( unique_ptr &p ) {
+    std::swap( storage_, p.storage_ );
+  }
+
   operator explicit_bool() const throw() {
     return get() ? &pointer_conversion::valid : 0;
   }

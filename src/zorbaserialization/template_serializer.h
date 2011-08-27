@@ -23,6 +23,7 @@
 #include <stdio.h>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/string_util.h"
 #include "util/stl_util.h"
@@ -98,7 +99,7 @@ void operator&(Archiver &ar, zorba::rstring<RepType> &obj)
     }
     else
     {
-      ztd::auto_vec<unsigned char> cstr;
+      std::unique_ptr<unsigned char[]> cstr;
       zorba::zstring::size_type s;
 
       ar.set_is_temp_field(true);

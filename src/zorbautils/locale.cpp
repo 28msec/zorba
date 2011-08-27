@@ -26,6 +26,8 @@
 #include <algorithm>
 #include <cstring>
 
+#include <zorba/internal/unique_ptr.h>
+
 #include "util/cxx_util.h"
 #include "util/less.h"
 #include "util/stl_util.h"
@@ -473,7 +475,7 @@ iso3166_1::type get_host_country() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static ztd::auto_vec<char> country_name;
+  static unique_ptr<char[]> country_name;
   static iso3166_1::type country_code;
 
   if ( !country_name ) {
@@ -490,11 +492,11 @@ iso3166_1::type get_host_country() {
         *sep = '\0';
       if ( char *const sep = ::strpbrk( loc_info, "_-" ) ) {
         //
-        // We have to allocate a new string for just the country since auto_vec
-        // can't point to a character that isn't the first otherwise its call
-        // to delete[] will be undefined.
+        // We have to allocate a new string for just the country since
+        // unique_ptr can't point to a character that isn't the first otherwise
+        // its call to delete[] will be undefined.
         //
-        ztd::auto_vec<char> const old_loc_info( loc_info );
+        unique_ptr<char[]> const old_loc_info( loc_info );
         loc_info = ztd::new_strdup( sep + 1 );
       }
     }
@@ -513,7 +515,7 @@ iso639_1::type get_host_lang() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static ztd::auto_vec<char> lang_name;
+  static unique_ptr<char[]> lang_name;
   static iso639_1::type lang_code = iso639_1::en;
 
   if ( !lang_name ) {

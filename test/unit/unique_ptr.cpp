@@ -92,6 +92,14 @@ static void compile_test() {
 
 ////////// Run-time tests /////////////////////////////////////////////////////
 
+static void test_array() {
+  {
+    unique_ptr<A[]> a( new A[2] );
+    ASSERT_TRUE( COUNT(A) == 2 );
+  }
+  ASSERT_TRUE( COUNT(A) == 0 );
+}
+
 static void test_basic() {
   {
     unique_ptr<A> a( new A );
@@ -215,6 +223,7 @@ static void test_swap() {
 
 int unique_ptr( int, char*[] ) {
   compile_test();
+  test_array();
   test_basic();
   test_assignment();
   test_copy_constructor();

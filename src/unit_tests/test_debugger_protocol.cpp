@@ -16,11 +16,12 @@
 
 #include <string>
 
+#include <zorba/internal/unique_ptr.h>
+
 #include "unit_test_list.h"
 
 #include "debugger/message_factory.h"
 #include "zorbatypes/zstring.h"
-#include "util/stl_util.h"
 
 namespace zorba
 {
@@ -104,7 +105,7 @@ bool TestDebuggerSerialization::testReplyMessage()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\1\200\0\xb";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -118,7 +119,7 @@ bool TestDebuggerSerialization::testReplyMessageOk()
   test_packet<ReplyMessage>( &msg );
   const char * lBinary = "\0\0\0\xb\0\0\0\1\200\0\0";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -131,7 +132,7 @@ bool TestDebuggerSerialization::testRunMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\1\0\xf1\1";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -144,7 +145,7 @@ bool TestDebuggerSerialization::testSuspendMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\2\0\xf1\2"; 
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -157,7 +158,7 @@ bool TestDebuggerSerialization::testResumeMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\3\0\xf1\3"; 
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -170,7 +171,7 @@ bool TestDebuggerSerialization::testTerminateMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\4\0\xf1\4"; 
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp(lBmsg.get(), lBinary, length);
 }
   
@@ -183,7 +184,7 @@ bool TestDebuggerSerialization::testStepIntoMessage()
   if (!lResult) return false;
   const char* lBinary =  "\0\0\0\x19\0\0\0\5\0\xf1\5{\"stepType\":1}"; 
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -196,7 +197,7 @@ bool TestDebuggerSerialization::testStepOutMessage()
   if (!lResult) return false;
   const char* lBinary =  "\0\0\0\x19\0\0\0\6\0\xf1\5{\"stepType\":2}";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -209,7 +210,7 @@ bool TestDebuggerSerialization::testStepOverMessage()
   if (!lResult) return false;
   const char* lBinary =  "\0\0\0\x19\0\0\0\7\0\xf1\5{\"stepType\":3}";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize( length ));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize( length ));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
   
@@ -222,7 +223,7 @@ bool TestDebuggerSerialization::testStartedEvent()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\x8\0\xf8\1";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -235,7 +236,7 @@ bool TestDebuggerSerialization::testTerminatedEvent()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\x9\0\xf8\2";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -256,8 +257,8 @@ bool TestDebuggerSerialization::testSuspendedEvent()
   if(!lResult) return false;
 
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
-  ztd::auto_vec<char> lBinary(new char[length]);
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
+  std::unique_ptr<char[]> lBinary(new char[length]);
   memcpy( lBinary.get(), "\0\0\0\x070\0\0\0\xa\0\xf8\3", MESSAGE_HEADER_SIZE );
   const char * lJSONString = "{\"cause\":1,\"location\":{\"fileName\":\"data.xq\",\"lineBegin\":1,\"columnBegin\":1,\"lineEnd\":1,\"columnEnd\":1}}";
   memcpy( lBinary.get() + MESSAGE_HEADER_SIZE, lJSONString, length - MESSAGE_HEADER_SIZE );
@@ -273,7 +274,7 @@ bool TestDebuggerSerialization::testResumedEvent()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\xb\0\xf8\4";
   Length length;
-  ztd::auto_vec<Byte> lBmsg(msg.serialize(length));
+  std::unique_ptr<Byte[]> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 

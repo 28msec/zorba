@@ -24,6 +24,7 @@
 #endif /* DEBUG_TOKENIZER */
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
@@ -183,7 +184,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
   if ( !unicode::to_string( utf8_s, (unicode::size_type)utf8_len, &utf16_buf, &utf16_len ) ) {
     // TODO
   }
-  ztd::auto_vec<unicode::char_type> const auto_utf16_buf( utf16_buf );
+  unique_ptr<unicode::char_type[]> const auto_utf16_buf( utf16_buf );
 
   //
   // ICU bizarrely treats newline and carriage-return as sentence terminators
@@ -224,7 +225,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_type utf8_len,
     if ( !utf8::to_string( word, word_len, &utf8_buf, &utf8_len ) ) {
       // TODO
     }
-    ztd::auto_vec<utf8::storage_type> const auto_utf8_buf( utf8_buf );
+    unique_ptr<utf8::storage_type[]> const auto_utf8_buf( utf8_buf );
 
     zstring_b utf8_word;
     utf8_word.wrap_memory( utf8_buf, utf8_len );
