@@ -1,0 +1,219 @@
+/** \page ft_tokenizer Full Text Tokenizer
+
+\section ft_tokenizer_intro Introduction
+
+The Zorba XQuery processor implements the
+<a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
+specification that, among other things,
+tokenizes a string into a sequence of tokens.
+See
+<a href="http://www.w3.org/TR/xpath-full-text-10/#TokenizationSec">Tokenization</a>.
+
+The initial implementation of the toknenizer
+uses the one provided by the
+<a href="http://site.icu-project.org/">ICU library</a>.
+However, you can provide your own tokenizer instead.
+
+\section ft_class_tokenizer The Tokenizer Class
+
+The \c Tokenizer class is:
+
+\code
+class Tokenizer {
+public:
+  typedef /* implementation-defined */ ptr;
+  typedef /* implementation-defined */ size_type;
+
+  struct Numbers {
+    typedef Tokenizer::size_type value_type;
+
+    value_type token;   // Token number.
+    value_type sent;    // Sentence number.
+    value_type para;    // Paragraph number.
+
+    Numbers();
+  };
+
+  class Callback {
+  public:
+    typedef Tokenizer::size_type size_type;;
+
+    virtual ~Callback();
+
+    virtual void operator()( char const *utf8_s, size_type utf8_len,
+                             size_type token_no, size_type sent_no, size_type para_no,
+                             void *payload = 0 ) = 0;
+  };
+
+  enum ElementTraceOptions {
+    trace_none  = 0x0,  // Trace no elements.
+    trace_begin = 0x1,  // Trace the beginning of elements.
+    trace_end   = 0x2   // Trace the ending of elements.
+  };
+
+  virtual void destroy() const = 0;
+  virtual void element( Item const &qname, int trace_options );
+  Numbers& numbers();
+  Numbers const& numbers() const;
+  int trace_options() const;
+
+  virtual void tokenize( char const *utf8_s, size_type utf8_len, locale::iso639_1::type lang,
+                         bool wildcards, Callback &callback, void *payload = 0 ) = 0;
+
+protected:
+  Tokenizer( Numbers&, int trace_options = trace_none );
+  virtual ~Tokenizer();
+};
+\endcode
+
+For details about the \c ptr type,
+the \c destroy() function,
+and why the destructor is \c protected,
+see the \ref memory_management document.
+
+The \c Numbers \c struct is created by Zorba
+and passed to your constructor.
+It simply keeps track of the current
+token, sentence, and paragraph numbers.
+
+To implement the \c Tokenizer,
+you need to implement the \c %tokenize() function where:
+
+<table>
+  <tr>
+    <td>\c utf8_s</td>
+    <td>
+      A pointer to the UTF-8 byte sequence
+      comprising the string to be tokenized.
+    </td>
+  </tr>
+  <tr>
+    <td>\c utf8_len</td>
+    <td>
+      The number of bytes in the string to be tokenized.
+    </td>
+  </tr>
+  <tr>
+    <td>\c lang</td>
+    <td>
+      The language of the string.
+    </td>
+  </tr>
+  <tr>
+    <td>\c wildcards</td>
+    <td>
+      If \c true,
+      allows XQuery
+      <a href="http://www.w3.org/TR/xpath-full-text-10/#ftwildcardoption">wildcard syntax characters</a>
+      to be part of tokens.
+    </td>
+  </tr>
+  <tr>
+    <td>\c callback</td>
+    <td>
+      The Callback to call once per token.
+    </td>
+  </tr>
+  <tr>
+    <td>\c payload</td>
+    <td>
+      Optional implementation-defined data.
+    </td>
+  </tr>
+</table>
+
+A complete implementation of \c %tokenize() is non-trivial
+and therefore an example is beyond the scope of this API documentation.
+However,
+the things a tokenizer should take into consideration include:
+
+  - Detecting sentence termination ('.', '?', and '!' characters).
+  - Handling floating-point numbers with possible thousands separators
+    in US and European formats, e.g. "98.7", "98,7", "10,000", etc.
+  - Distinguishing '.' used as a sentence terminator
+    from '.' used as a decimal point.
+  - Handling apostrophies, e.g., "men's".
+  - Handling acronyms, e.g., "AT&T".
+
+\subsection ft_paragraphs Paragraphs
+
+By default,
+Zorba increments the current paragraph number once
+for each XML element encountered.
+However,
+this doens't work well for mixed content.
+For example, in the XHTML:
+\code
+<p>The <em>best</em> thing ever!</p>
+\endcode
+all the tokens are both in the same sentence and paragraph,
+but Zorba will consider that 3 paragraphs by default.
+
+Your tokenizer can take control over when the paragraph number is incremented
+by passing the bitwise-or
+of the \c ElementTraceOptions values
+to the constructor
+and overriding the \c element() function.
+The \c element() function is passed the QName of the current XML element
+and (depending on the initial value passed to the constructor)
+one of \c trace_begin or \c trace_end.
+Note that this function is called
+only if the trace options value
+passed to the constructor
+was non-zero.
+
+For example,
+the \c element() function for tokenizing XHTML
+would be along the lines of:
+\code
+void MyTokenizer::element( Item const &qname, int trace_options ) {
+  if ( trace_options & trace_end )
+    return;
+  String const name( qname.getLocalName() );
+  if ( /* qname is an XHTML block-level element */ )
+    ++numbers().para;
+}
+\endcode
+
+\section ft_class_tokenizer_provider The TokenizerProviderClass
+
+In addition to a \c Tokenizer,
+you must also implement a \c TokenizerProvider
+that, given a language, provides a \c Tokenizer for that language:
+
+\code
+class TokenizerProvider {
+public:
+  virtual ~TokenizerProvider();
+  virtual Tokenizer::ptr getTokenizer( locale::iso639_1::type lang, Tokenizer::Numbers &numbers ) const = 0;
+};
+\endcode
+
+A simple \c TokenizerProvider for our tokenizer can be implemented as:
+
+\code
+class MyTokenizerProvider : public TokenizerProvider {
+public:
+  Tokenizer::ptr getTokenizer( locale::iso639_1::type lang ) const;
+};
+
+Tokenizer::ptr MyTokenizerProvider::getTokenizer( locale::iso639_1::type lang const {
+  return Tokenizer::ptr( new MyTokenizer );
+}
+\endcode
+
+\section ft_tokenizer_enable Using Your Tokenizer
+
+To enable your tokenizer to be used,
+you need to register it with the \c XmlDataManager:
+
+\code
+void *const store = StoreManager::getStore();
+Zorba *const zorba = Zorba::getInstance( store );
+
+MyTokenizerProvider provider;
+zorba->getXmlDataManager()->registerTokenizerProvider( &provider );
+\endcode
+
+*/
+/* vim:set et sw=2 ts=2: */

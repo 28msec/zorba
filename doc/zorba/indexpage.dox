@@ -43,6 +43,7 @@
 <ul>
   <li>\ref ft_stemmer</li>
   <li>\ref ft_thesaurus</li>
+  <li>\ref ft_tokenizer</li>
 </ul>
 
 <b>\ref errors_warnings</b>
