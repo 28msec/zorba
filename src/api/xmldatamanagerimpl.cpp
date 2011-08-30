@@ -330,6 +330,7 @@ void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosti
 #ifndef ZORBA_NO_FULL_TEXT
 void XmlDataManagerImpl::
 registerStemmerProvider(StemmerProvider const *p) {
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
   if ( theStemmerProviderWrapper ) {
     if ( theStemmerProviderWrapper->get_provider() == p )
       return;
@@ -343,8 +344,9 @@ registerStemmerProvider(StemmerProvider const *p) {
 }
 
 void XmlDataManagerImpl::
-registerTokenizerProvider(TokenizerProvider const *provider) {
-  theStore->setTokenizerProvider( provider );
+registerTokenizerProvider(TokenizerProvider const *p) {
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+  theStore->setTokenizerProvider( p );
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
