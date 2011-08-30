@@ -90,7 +90,8 @@ Note that \c result should always be set to something.
 If your stemmer doesn't know how to stem the given word,
 you should set \c result to \c word.
 
-A very simple stemmer that stems the word "foobar" to "foo"
+A very simple stemmer
+that stems the word "foobar" to "foo"
 can be implemented as:
 
 \code
