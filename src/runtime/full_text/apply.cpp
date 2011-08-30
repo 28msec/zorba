@@ -647,7 +647,8 @@ void apply_ftor( ft_all_matches const &ami, ft_all_matches const &amj,
  * Helper function for apply_ftorder(): checks whether the given two string
  * matches are ordered.
  */
-inline bool are_ordered( ft_string_match const &smi, ft_string_match const &smj ) {
+inline bool are_ordered( ft_string_match const &smi,
+                         ft_string_match const &smj ) {
   return
     ( smi.pos.start <= smj.pos.start && smi.query_pos <= smj.query_pos ) ||
     ( smi.pos.start >= smj.pos.start && smi.query_pos >= smj.query_pos );
@@ -1205,8 +1206,9 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
   else
     at_least = 0, at_most = numeric_limits<ft_int>::max();
 
-  ft_thesaurus::ptr thesaurus( ft_thesaurus::get( tid.get_uri(), qt0.lang(),
-                                                  static_ctx_ ) );
+  ft_thesaurus::ptr thesaurus(
+    ft_thesaurus::get( tid.get_uri(), qt0.lang(), static_ctx_ )
+  );
 
   ft_thesaurus::iterator::ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )
