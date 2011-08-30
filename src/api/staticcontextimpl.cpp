@@ -747,32 +747,6 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 }
 
 
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-void StaticContextImpl::addStemmerProvider( zorba::StemmerProvider const *p ) {
-  if ( !theStemmerProviders[ p ] ) {
-    internal::StemmerProviderWrapper *const w =
-      new internal::StemmerProviderWrapper( p );
-    theStemmerProviders[ p ] = w;
-    theCtx->add_stemmer_provider( w );
-  }
-}
-
-void StaticContextImpl::removeStemmerProvider( StemmerProvider const *p ) {
-  stemmer_providers_t::iterator const i = theStemmerProviders.find( p );
-  if ( i != theStemmerProviders.end() ) {
-    internal::StemmerProviderWrapper const *const w = i->second;
-    theStemmerProviders.erase( i );
-    theCtx->remove_stemmer_provider( w );
-    delete w;
-  }
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
-
-
 /*******************************************************************************
 
 ********************************************************************************/

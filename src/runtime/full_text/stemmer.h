@@ -37,7 +37,8 @@ namespace internal {
  */
 class Stemmer {
 public:
-  typedef std::unique_ptr<Stemmer const,ztd::destroy_delete<Stemmer const> > ptr;
+  typedef std::unique_ptr<Stemmer const,
+                          ztd::destroy_delete<Stemmer const> > ptr;
 
   /**
    * Destroys this %Stemmer.
@@ -53,6 +54,7 @@ public:
    */
   virtual void stem( zstring const &word, locale::iso639_1::type lang,
                      zstring *result ) const = 0;
+
 protected:
   virtual ~Stemmer();
 };

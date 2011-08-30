@@ -15,8 +15,6 @@
  */
 #include "stdafx.h"
 
-#include <memory>
-
 #include "util/cxx_util.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/locale.h"

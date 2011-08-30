@@ -19,12 +19,12 @@
 
 #include "diagnostics/assert.h"
 #include "runtime/full_text/ft_wildcard.h"
+#include "runtime/full_text/stemmer.h"
 #include "util/cxx_util.h"
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
 #include "zorbautils/locale.h"
-#include "zorbautils/stemmer.h"
 
 #include "ft_token.h"
 

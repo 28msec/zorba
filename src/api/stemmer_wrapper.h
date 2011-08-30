@@ -22,7 +22,7 @@
 #ifndef ZORBA_NO_FULL_TEXT
 
 #include <zorba/stemmer.h>
-#include "zorbautils/stemmer.h"
+#include "runtime/full_text/stemmer.h"
 
 namespace zorba {
 namespace internal {

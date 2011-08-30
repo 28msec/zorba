@@ -15,14 +15,12 @@
  */
 #include "stdafx.h"
 
-#include <zorba/internal/unique_ptr.h>
-
+#include "util/cxx_util.h"
 #include "zorbautils/locale.h"
+#include "zorbautils/mutex.h"
 
-#include "mutex.h"
 #include "stemmer.h"
 #include "stemmer/sb_stemmer.h"
-#include "util/cxx_util.h"
 
 using namespace std;
 using namespace zorba::locale;

@@ -25,6 +25,7 @@ SET(FULLTEXT_SRCS
     ftcontains_visitor.cpp
     full_text.cpp
     full_text_impl.cpp
+    stemmer.cpp
     stop_words/stop_words_da.cpp
     stop_words/stop_words_de.cpp
     stop_words/stop_words_en.cpp
@@ -41,6 +42,8 @@ SET(FULLTEXT_SRCS
     icu_tokenizer.cpp
     default_tokenizer.cpp
     )
+
+ADD_SRC_SUBFOLDER(FULLTEXT_SRCS stemmer LIBSTEMMER_SRCS)
 
 IF (ZORBA_WITH_FILE_ACCESS)
     ADD_SRC_SUBFOLDER(FULLTEXT_SRCS thesauri THESAURUS_SRCS)

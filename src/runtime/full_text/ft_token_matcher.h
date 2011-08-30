@@ -22,8 +22,8 @@
 #include "compiler/expression/ftnode.h"
 #include "context/static_context.h"
 #include "zorbatypes/ft_token.h"
-#include "zorbautils/stemmer.h"
 
+#include "stemmer.h"
 #include "ft_stop_words_set.h"
 
 namespace zorba {

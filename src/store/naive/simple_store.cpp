@@ -59,8 +59,8 @@
 #include "util/cxx_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
-#include "zorbautils/stemmer.h"
 #include "runtime/full_text/default_tokenizer.h"
+#include "runtime/full_text/stemmer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba
