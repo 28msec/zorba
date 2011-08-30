@@ -12,42 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#IF (NOT WIN32 OR UNIX)
-
 MESSAGE (STATUS "Adding iterator plan tests")
 FILE (GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.iter)
 
-# tests need to be registered for each store
-FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-  SET(SUFFIX)
-  IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-    SET(SUFFIX "_${ZORBA_STORE_NAME}")
-  ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+# compute path to apitest
+SET(SUFFIX)
+IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+  SET(SUFFIX "_${ZORBA_STORE_NAME}")
+ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+IF (WIN32)
+  SET(APITEST_PATH ${CMAKE_BINARY_DIR}/test/apitest${SUFFIX}.bat)
+ELSE()
+  SET(APITEST_PATH ${CMAKE_BINARY_DIR}/test/apitest${SUFFIX})
+ENDIF()
 
-  # compute path to apitest
-  IF (WIN32)
-    SET(APITEST_PATH ${CMAKE_BINARY_DIR}/test/apitest${SUFFIX}.bat)
-  ELSE()
-    SET(APITEST_PATH ${CMAKE_BINARY_DIR}/test/apitest${SUFFIX})
-  ENDIF()
-
-  FOREACH (TESTFILE ${TESTFILES})
-    STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
+FOREACH (TESTFILE ${TESTFILES})
+  STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
    
-    ADD_TEST(
-      "iterplans/${TESTNAME}" 
-      "${CMAKE_COMMAND}"
-      -D "TESTFILE=${TESTFILE}"
-      -D "CMAKE_ZORBA_BINARY_DIR=${CMAKE_BINARY_DIR}"
-      -D "ZORBA_EXE=${ZORBA_EXE}"
-      -D "CMAKE_ZORBA_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
-      -D "APITEST_PATH=${APITEST_PATH}"
-      -P "${CMAKE_CURRENT_SOURCE_DIR}/iterscript.cmake")
+  ADD_TEST(
+    "iterplans/${TESTNAME}" 
+    "${CMAKE_COMMAND}"
+    -D "TESTFILE=${TESTFILE}"
+    -D "CMAKE_ZORBA_BINARY_DIR=${CMAKE_BINARY_DIR}"
+    -D "ZORBA_EXE=${ZORBA_EXE}"
+    -D "CMAKE_ZORBA_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+    -D "APITEST_PATH=${APITEST_PATH}"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/iterscript.cmake")
      
-    SET_TESTS_PROPERTIES("iterplans/${TESTNAME}" 
-      PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
-  ENDFOREACH(TESTFILE)
-ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-
-#ENDIF (NOT WIN32 OR UNIX)
+  SET_TESTS_PROPERTIES("iterplans/${TESTNAME}" 
+    PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
+ENDFOREACH(TESTFILE)
 
