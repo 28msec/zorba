@@ -39,9 +39,14 @@ SET(FULLTEXT_SRCS
     stop_words/stop_words_pt.cpp
     stop_words/stop_words_sv.cpp
     tokenizer.cpp
-    icu_tokenizer.cpp
     default_tokenizer.cpp
     )
+
+IF (ZORBA_NO_UNICODE)
+  LIST(APPEND FULLTEXT_SRCS latin_tokenizer.cpp)
+ELSE (ZORBA_NO_UNICODE)
+  LIST(APPEND FULLTEXT_SRCS icu_tokenizer.cpp)
+ENDIF (ZORBA_NO_UNICODE)
 
 ADD_SRC_SUBFOLDER(FULLTEXT_SRCS stemmer LIBSTEMMER_SRCS)
 
