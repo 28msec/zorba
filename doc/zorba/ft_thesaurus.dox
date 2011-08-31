@@ -418,10 +418,217 @@ These relationships are:
 
 \subsection ft_thesaurus_wordnet_levels WordNet Levels
 
-In no levels are specified in a query,
+If no levels are specified in a query,
 Zorba defaults the WordNet implementation to be 2 levels.
 The rationale can be found
 <a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444">here</a>.
+
+\section ft_thesaurus_providing Providing Your Own Thesaurus
+
+Using the Zorba C++ API,
+you can provide your own thesaurus
+by deriving from three classes:
+\c Thesaurus,
+\c Thesaurus::iterator,
+and
+\c ThesaurusProvider.
+
+\subsection ft_class_thesaurus The Thesaurus Class
+
+The \c Thesaurus class is:
+
+\code
+class Thesaurus {
+public:
+  typedef /* implementation-defined */ ptr;
+  typedef /* implementation-defined */ range_type;
+
+  class iterator {
+  public:
+    typedef /* implementation-defined */ ptr;
+    virtual bool next( String *synonym ) = 0;
+  protected:
+    virtual ~iterator();
+  };
+
+  virtual iterator::ptr lookup( String const &phrase, String const &relationship, range_type at_least, range_type at_most ) const = 0;
+protected:
+  virtual ~Thesaurus();
+};
+\endcode
+
+For details about the \c ptr type,
+the \c destroy() function,
+and why the destructor is \c protected,
+see the \ref memory_management document.
+
+To implement the \c Thesaurus
+you need to implement the \c lookup() function where:
+
+<table>
+  <tr>
+    <td>\c phrase</td>
+    <td>The phrase to be looked-up.</td>
+  </tr>
+  <tr>
+    <td>\c relationship</td>
+    <td>The relationship the results are to have to the phrase, if any.</td>
+  </tr>
+  <tr>
+    <td>\c at_least</td>
+    <td>The The minimum number of levels within the thesaurus to be traversed.</td>
+  </tr>
+  <tr>
+    <td>\c at_most</td>
+    <td>The The maximum number of levels within the thesaurus to be traversed.</td>
+  </tr>
+</table>
+
+The \c lookup() function returns a pointer to an \c iterator
+that is used to iterate over the phrase's synonyms.
+
+A very simple thesaurus
+can be implemented as:
+
+\code
+class MyThesaurus : public Thesaurus {
+public:
+  void destroy() const;
+  iterator::ptr lookup( String const &phrase, String const &relationship, range_type at_least, range_type at_most ) const;
+private:
+  //
+  // Define a simple thesaurus data structure as a map from a phrase to a list of its synonyms.
+  //
+  typedef std::list<String> synonyms_t;
+  typedef std::map<String,synonyms_t const*> thesaurus_t;
+
+  static thesaurus_t const& get_thesaurus();
+
+  class iterator : public Thesaurus::iterator {
+  public:
+    iterator( synonyms_t const &s ) : synonyms_( s ), i_( s.begin() ) { }
+    void destroy();
+    bool next( String *synonym );
+  private:
+    synonyms_t const &synonyms_;      // synonyms to iterate over
+    synonyms_t::const_iterator i_;    // current iterator position
+  };
+};
+
+void MyThesaurus::destroy() const {
+  // Do nothing since we statically allocate a singleton instance of our thesaurus.
+}
+
+MyThesaurus::thesaurus_t const& MyThesaurus::get_thesaurus() {
+  static thesaurus_t thesaurus;
+  if ( thesaurus.empty() ) {
+    //
+    // Construct a thesaurus "by hand" for this example.  A real thesaurus would probably
+    // be read from disk.
+    //
+    // Note that every list of synonyms must always include the original phrase.
+    //
+    static synonyms_t synonyms;
+    synonyms.push_back( "foo" );
+    synonyms.push_back( "foobar" );
+    thesaurus[ "foo"    ] = &synonyms;
+    thesaurus[ "foobar" ] = &synonyms;
+  }
+  return thesaurus;
+}
+\endcode
+
+\code
+MyThesaurus::iterator::ptr MyThesaurus::lookup( String const &phrase, String const &relationship,
+                                                range_type at_least, range_type at_most ) const {
+  static thesaurus_t const &thesaurus = get_thesaurus();
+  thesaurus_t::const_iterator const i = thesaurus.find( phrase );
+  iterator::ptr result;
+  if ( i != thesaurus.end() )
+    result.reset( new iterator( *i->second ) );
+  return std::move( result );
+}
+
+void MyThesaurus::iterator::destroy() const {
+  delete this;
+}
+
+bool MyThesaurus::iterator::next( String *synonym ) {
+  if ( i_ != synonyms_.end() ) {
+    *synonym = *i_; // not *i_++ since post-increment is less efficient
+    ++i_;
+    return true;
+  }
+  return false;
+}
+\endcode
+
+A real thesaurus would load a large number of synonyms,
+of course.
+
+\subsection ft_class_thesaurus_provider The ThesaurusProvider Class
+
+In addition to a \c Thesaurus,
+you must also implement a \c ThesaurusProvider
+that, given a language, provides a \c Thesaurus for that language:
+
+\code
+class ThesaurusProvider {
+public:
+  virtual ~ThesaurusProvider();
+  virtual Thesaurus::ptr getThesaurus( String const &uri, locale::iso639_1::type lang ) const = 0;
+};
+\endcode
+
+A simple \c ThesaurusProvider for our simple thesaurus can be implemented as:
+
+\code
+class MyThesaurusProvider : public ThesaurusProvider {
+public:
+  ThesaurusProvider( String const &uri ) : uri_( uri ) { }
+  Thesaurus::ptr getThesaurus( String const &uri, locale::iso639_1::type lang ) const;
+private:
+  String const uri_;
+};
+
+Thesaurus::ptr
+MyThesaurusProvider::getThesaurus( String const &uri, locale::iso639_1::type lang ) const {
+  static MyThesaurus thesaurus;
+  Thesaurus::ptr result;
+  if ( uri == uri_ )
+    switch ( lang ) {
+      case locale::iso639_1::en:
+      case locale::iso639_1::unknown:
+        //
+        // Here, we could test to ensure that the language of our thesaurus
+        // matches the language sought, but in our case, we want our thesaurus
+        // to be used for all languages since "foo" and "foobar" are universal.
+        //
+      default:
+        result.reset( &thesaurus );
+    }
+  return std::move( result );
+}
+\endcode
+
+\subsection ft_thesaurus_enable Using Your Thesaurus
+
+To enable your thesaurus to be used,
+you need to add it to a static context:
+
+\code
+StaticContext_t sctx = zorba->createStaticContext();
+MyThesaurusProvider provider( "http://www.example.com" );
+sctx->addThesaurusProvider( &provider );
+\endcode
+
+You can then perform a query using your thesaurus:
+
+\code
+let $x := <msg>foobar</msg>
+return $x contains text "foo"
+  using thesaurus at "http://www.example.com";
+\endcode
 
 */
 /* vim:set et sw=2 ts=2: */

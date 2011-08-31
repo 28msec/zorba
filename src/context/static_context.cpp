@@ -1512,6 +1512,32 @@ static_context::apply_url_resolvers
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
+
+internal::Thesaurus::ptr
+static_context::get_thesaurus( zstring const &uri, iso639_1::type lang ) const {
+  FOR_EACH( thesaurus_providers_t, p, theThesaurusProviders ) {
+    internal::Thesaurus::ptr t( (*p)->get_thesaurus( uri, lang ) );
+    if ( t.get() )
+      return std::move( t );
+  }
+  return theParent ?
+    theParent->get_thesaurus( uri, lang ) :
+    internal::ThesaurusProvider::get_default_provider()
+      .get_thesaurus( uri, lang );
+}
+
+void static_context::remove_thesaurus_provider(
+    internal::ThesaurusProvider const *p ) {
+  ztd::erase_1st_if(
+    theThesaurusProviders,
+    std::bind2nd( std::equal_to<internal::ThesaurusProvider const*>(), p )
+  );
+}
+
+#endif /* ZORBA_NO_FULL_TEXT */
+
+
 /*******************************************************************************
 
 ********************************************************************************/

@@ -32,6 +32,13 @@ SET(CONTEXT_SRCS
     features.cpp
     )
 
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND CONTEXT_SRCS
+    thesaurus_wrappers.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
 SET(CONTEXT_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/context/root_static_context_init.cpp
   )
+
+# vim:set et sw=2 ts=2:

@@ -38,10 +38,11 @@
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
-#include "uri_resolver_wrappers.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "context/stemmer_wrappers.h"
+#include "context/thesaurus_wrappers.h"
 #endif /* ZORBA_NO_FULL_TEXT */
+#include "uri_resolver_wrappers.h"
 
 #include "compiler/parser/query_loc.h"
 #include "compiler/api/compilercb.h"
@@ -745,6 +746,33 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
   }
   return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
 }
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+/*******************************************************************************
+
+********************************************************************************/
+
+void StaticContextImpl::addThesaurusProvider( ThesaurusProvider const *p ) {
+  if ( !theThesaurusProviders[ p ] ) {
+    internal::ThesaurusProviderWrapper *const w =
+      new internal::ThesaurusProviderWrapper( p );
+    theThesaurusProviders[ p ] = w;
+    theCtx->add_thesaurus_provider( w );
+  }
+}
+
+void StaticContextImpl::removeThesaurusProvider( ThesaurusProvider const *p ) {
+  thesaurus_providers_t::iterator const i = theThesaurusProviders.find( p );
+  if ( i != theThesaurusProviders.end() ) {
+    internal::ThesaurusProviderWrapper const *const w = i->second;
+    theThesaurusProviders.erase( i );
+    theCtx->remove_thesaurus_provider( w );
+    delete w;
+  }
+}
+
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 /*******************************************************************************

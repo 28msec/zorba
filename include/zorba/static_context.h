@@ -26,6 +26,9 @@
 #include <zorba/function.h>
 #include <zorba/annotation.h>
 #include <zorba/smart_ptr.h>
+#ifndef ZORBA_NO_FULL_TEXT
+#include <zorba/thesaurus.h>
+#endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba {
 
@@ -380,6 +383,14 @@ namespace zorba {
        */
       virtual TypeIdentifier_t
       getCollectionType(const String& aCollectionUri) const = 0;
+
+#ifndef ZORBA_NO_FULL_TEXT
+      virtual void
+      addThesaurusProvider( ThesaurusProvider const* ) = 0;
+
+      virtual void
+      removeThesaurusProvider( ThesaurusProvider const* ) = 0;
+#endif /* ZORBA_NO_FULL_TEXT */
 
       /** \brief Check if a function with the given name and arity are registered in the context.
        */

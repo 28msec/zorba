@@ -254,6 +254,14 @@ thesaurus::iterator::iterator( thesaurus const &t, char const *p,
   candidate_queue_.push_back( LevelMarker );
 }
 
+thesaurus::iterator::~iterator() {
+  // out-of-line since it's virtual
+}
+
+void thesaurus::iterator::destroy() const {
+  delete this;
+}
+
 bool thesaurus::iterator::next( zstring *synonym ) {
   while ( result_queue_.empty() ) {
 #   if DEBUG_FT_THESAURUS
@@ -477,6 +485,10 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) :
 
 thesaurus::~thesaurus() {
   // do nothing
+}
+
+void thesaurus::destroy() const {
+  delete this;
 }
 
 char const* thesaurus::find_lemma( zstring const &phrase ) const {

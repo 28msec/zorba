@@ -22,6 +22,8 @@
 #include <zorba/tokenizer.h>
 
 #include "compiler/expression/ftnode.h"
+#include "diagnostics/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -29,8 +31,6 @@
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
-#include "diagnostics/dict.h"
-#include "diagnostics/xquery_diagnostics.h"
 #include "zorbamisc/ns_consts.h"
 
 #ifndef NDEBUG
@@ -41,11 +41,11 @@
 
 #include "apply.h"
 #include "ft_single_token_iterator.h"
-#include "ft_thesaurus.h"
 #include "ft_token_matcher.h"
 #include "ft_token_seq_iterator.h"
 #include "ft_token_span.h"
 #include "ftcontains_visitor.h"
+#include "thesaurus.h"
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.
@@ -1206,11 +1206,17 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
   else
     at_least = 0, at_most = numeric_limits<ft_int>::max();
 
-  ft_thesaurus::ptr thesaurus(
-    ft_thesaurus::get( tid.get_uri(), qt0.lang(), static_ctx_ )
+  zstring const &uri = tid.get_uri();
+  vector<zstring> comp_uris;
+  static_ctx_.get_component_uris( uri, impl::EntityData::THESAURUS, comp_uris );
+  if ( comp_uris.size() != 1 )
+    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
+
+  internal::Thesaurus::ptr thesaurus(
+    static_ctx_.get_thesaurus( comp_uris.front(), qt0.lang() )
   );
 
-  ft_thesaurus::iterator::ptr tresult(
+  internal::Thesaurus::iterator::ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )
   );
   if ( !tresult.get() )

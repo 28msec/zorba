@@ -39,6 +39,11 @@
 #include "context/features.h"
 
 #include "zorbautils/hashmap_zstring.h"
+
+#ifndef ZORBA_NO_FULL_TEXT
+#include "runtime/full_text/thesaurus.h"
+#endif /* ZORBA_NO_FULL_TEXT */
+
 #include "common/shared_types.h"
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
@@ -505,6 +510,11 @@ protected:
 
   ztd::auto_vector<impl::URLResolver>     theURLResolvers;
 
+#ifndef ZORBA_NO_FULL_TEXT
+  typedef std::deque<internal::ThesaurusProvider const*> thesaurus_providers_t;
+  thesaurus_providers_t                   theThesaurusProviders;
+#endif /* ZORBA_NO_FULL_TEXT */
+
   checked_vector<zstring>                 theModulePaths;
 
   ExternalModuleMap                     * theExternalModulesMap;
@@ -688,6 +698,17 @@ public:
   void get_component_uris
   (zstring const& aUri, impl::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
+
+#ifndef ZORBA_NO_FULL_TEXT
+  void add_thesaurus_provider( internal::ThesaurusProvider const *p ) {
+    theThesaurusProviders.push_front( p );
+  }
+
+  internal::Thesaurus::ptr get_thesaurus( zstring const &uri,
+                                          locale::iso639_1::type lang ) const;
+
+  void remove_thesaurus_provider( internal::ThesaurusProvider const *p );
+#endif /* ZORBA_NO_FULL_TEXT */
 
   void set_module_paths(const std::vector<zstring>& aModulePaths);
 

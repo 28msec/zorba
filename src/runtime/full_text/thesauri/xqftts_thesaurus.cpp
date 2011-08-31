@@ -102,6 +102,14 @@ thesaurus::iterator::iterator( thesaurus_t const &t, zstring const &phrase,
   }
 }
 
+thesaurus::iterator::~iterator() {
+  // out-of-line since it's virtual
+}
+
+void thesaurus::iterator::destroy() const {
+  delete this;
+}
+
 bool thesaurus::iterator::next( zstring *result ) {
   using namespace iso2788;
 
@@ -201,6 +209,10 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) {
 thesaurus::~thesaurus() {
   MUTATE_EACH( thesaurus_t, entry, thesaurus_ )
     ztd::delete_ptr_seq( entry->second );
+}
+
+void thesaurus::destroy() const {
+  delete this;
 }
 
 thesaurus::iterator::ptr

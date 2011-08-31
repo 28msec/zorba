@@ -23,7 +23,7 @@
 
 #include "util/mmap_file.h"
 
-#include "../ft_thesaurus.h"
+#include "../thesaurus.h"
 #include "iso2788.h"
 #include "wn_db_segment.h"
 #include "wn_types.h"
@@ -37,12 +37,13 @@ namespace wordnet {
  * A %wordnet::thesaurus is an ft_thesaurus for Wordnet.
  * See: http://wordnet.princeton.edu/
  */
-class thesaurus : public ft_thesaurus {
+class thesaurus : public internal::Thesaurus {
 public:
   thesaurus( zstring const &path, locale::iso639_1::type lang );
   ~thesaurus();
 
   // inherited
+  void destroy() const;
   iterator::ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
 
 private:
@@ -77,14 +78,16 @@ private:
 
   /////////////////////////////////////////////////////////////////////////////
 
-  class iterator : public ft_thesaurus::iterator {
+  class iterator : public internal::Thesaurus::iterator {
   public:
     // inherited
+    void destroy() const;
     bool next( zstring* );
 
   private:
     iterator( thesaurus const&, char const *lemma, pointer::type,
               ft_int at_least, ft_int at_most );
+    ~iterator();
 
     thesaurus const &thesaurus_;
 

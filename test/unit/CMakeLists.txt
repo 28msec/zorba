@@ -76,6 +76,7 @@ SET(UNIT_TESTS_SRCS
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND UNIT_TESTS_SRCS
     stemmer.cpp
+    thesaurus.cpp
     tokenizer.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 

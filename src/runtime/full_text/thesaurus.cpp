@@ -19,18 +19,18 @@
 
 #include <zorba/config.h>
 
+#include <context/static_context.h>
+#include <diagnostics/dict.h>
+#include <diagnostics/xquery_diagnostics.h>
 #include <util/cxx_util.h>
 #include <util/fs_util.h>
 #include <util/less.h>
 #include <util/string_util.h>
 #include <util/uri_util.h>
-#include <diagnostics/xquery_diagnostics.h>
-#include <diagnostics/dict.h>
-#include <context/static_context.h>
 
-#include "ft_thesaurus.h"
+#include "thesaurus.h"
 #ifdef ZORBA_WITH_FILE_ACCESS
-#include "thesauri/wn_thesaurus.h"
+# include "thesauri/wn_thesaurus.h"
 #endif
 #include "thesauri/xqftts_thesaurus.h"
 
@@ -38,6 +38,7 @@ using namespace std;
 using namespace zorba::locale;
 
 namespace zorba {
+namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -87,7 +88,7 @@ namespace thesaurus_impl {
 static void parse_mapping( zstring const &mapping, thesaurus_impl::type *t,
                            zstring *uri ) {
   zstring impl_name;
-  if ( ztd::split( mapping, '|', &impl_name, uri ) ) {
+  if ( zorba::ztd::split( mapping, '|', &impl_name, uri ) ) {
     *t = thesaurus_impl::find( impl_name );
   } else {
     *t = thesaurus_impl::DEFAULT;
@@ -97,24 +98,31 @@ static void parse_mapping( zstring const &mapping, thesaurus_impl::type *t,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ft_thesaurus::~ft_thesaurus() {
-  // do nothing
+Thesaurus::iterator::~iterator() {
+  // out-of-line since it's virtual
 }
 
-ft_thesaurus::ptr ft_thesaurus::get( zstring const &in_uri,
-                                     iso639_1::type lang,
-                                     static_context const& sctx ) {
-  std::vector<zstring> components;
-  // QQQ For now, we use a component URI mapper to return the mapping string.
-  // I believe we can eliminate the need for this string, and hence we should
-  // be able to call the normal resolve_uri() here in future.
-  sctx.get_component_uris(in_uri, impl::EntityData::THESAURUS, components);
-  if (components.size() != 1) {
-    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( in_uri ) );
-  }
-  zstring uri;
+Thesaurus::~Thesaurus() {
+  // out-of-line since it's virtual
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ThesaurusProvider::~ThesaurusProvider() {
+  // Out-of-line since it's virtual.
+}
+
+ThesaurusProvider const& ThesaurusProvider::get_default_provider() {
+  static ThesaurusProvider default_provider;
+  return default_provider;
+}
+
+Thesaurus::ptr
+ThesaurusProvider::get_thesaurus( zstring const &in_uri,
+                                  iso639_1::type lang )  const {
   thesaurus_impl::type th_impl;
-  parse_mapping( components[0], &th_impl, &uri );
+  zstring uri;
+  parse_mapping( in_uri, &th_impl, &uri );
 
   zstring th_path;
   switch ( uri::get_scheme( uri ) ) {
@@ -129,7 +137,7 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &in_uri,
       );
   }
 
-  ft_thesaurus *result;
+  Thesaurus *result;
   switch ( th_impl ) {
 #   ifdef ZORBA_WITH_FILE_ACCESS
     case thesaurus_impl::wordnet:
@@ -140,18 +148,13 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &in_uri,
       result = new xqftts::thesaurus( th_path, lang );
       break;
     default:
-      throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( components[0] ) );
+      throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
   }
-  return ptr( result );
+  return Thesaurus::ptr( result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ft_thesaurus::iterator::~iterator() {
-  // Out-of-line since it's virtual.
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
+} // namespace internal
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

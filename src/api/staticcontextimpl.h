@@ -30,9 +30,9 @@ namespace zorba {
   class DiagnosticHandler;
   class StaticCollectionManagerImpl;
   class static_context;
-#if 0
+#ifndef ZORBA_NO_FULL_TEXT
   namespace internal {
-    class StemmerProviderWrapper;
+    class ThesaurusProviderWrapper;
   }
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -62,11 +62,12 @@ protected:
   DiagnosticHandler                 * theDiagnosticHandler;
   bool                                theUserDiagnosticHandler;
 
-#if 0
-  typedef std::map<StemmerProvider const*,internal::StemmerProviderWrapper const*>
-  stemmer_providers_t;
+#ifndef ZORBA_NO_FULL_TEXT
+  typedef std::map<ThesaurusProvider const*,
+                   internal::ThesaurusProviderWrapper const*>
+          thesaurus_providers_t;
 
-  stemmer_providers_t theStemmerProviders;
+  thesaurus_providers_t               theThesaurusProviders;
 #endif /* ZORBA_NO_FULL_TEXT */
 
   // allow for lazy creation
@@ -185,12 +186,12 @@ public:
   virtual TypeIdentifier_t
   getCollectionType(const String& aCollectionUri) const;
 
-#if 0
+#ifndef ZORBA_NO_FULL_TEXT
   virtual void
-  addStemmerProvider( StemmerProvider const* );
+  addThesaurusProvider( ThesaurusProvider const* );
 
   virtual void
-  removeStemmerProvider( StemmerProvider const* );
+  removeThesaurusProvider( ThesaurusProvider const* );
 #endif /* ZORBA_NO_FULL_TEXT */
 
   virtual bool
