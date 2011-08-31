@@ -169,13 +169,11 @@ inline char TestTokenizer::peek( char const *s, char const *end ) {
   return ++s < end ? *s : '\0';
 }
 
-#define HANDLE_BACKSLASH()              \
-  do {                                  \
-    if ( got_backslash ) {              \
-      got_backslash = in_wild = false;  \
-      break;                            \
-    }                                   \
-  } while (0)
+#define HANDLE_BACKSLASH()            \
+  if ( !got_backslash ) ; else {      \
+    got_backslash = in_wild = false;  \
+    break;                            \
+  }
 
 void TestTokenizer::tokenize( char const *s, size_type s_len,
                               iso639_1::type lang, bool wildcards,
