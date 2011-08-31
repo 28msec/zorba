@@ -1,5 +1,9 @@
 Zorba - The XQuery Processor
 
+version 2.x
+
+  * Custom Full-text thesaurus.
+
 version 2.0.1
 
   * Custom Full-text stemming.
