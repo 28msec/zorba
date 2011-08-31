@@ -16,17 +16,25 @@
 
 #include "stdafx.h"
 
-#include "default_tokenizer.h"
-#include "icu_tokenizer.h"
+#include <zorba/config.h>
 
-using namespace std;
+#include "default_tokenizer.h"
+#ifdef ZORBA_NO_UNICODE
+# include "latin_tokenizer.h"
+#else
+# include "icu_tokenizer.h"
+#endif /* ZORBA_NO_UNICODE */
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-TokenizerProvider const& DefaultTokenizerProvider::instance() {
+TokenizerProvider const& default_tokenizer_provider() {
+#ifdef ZORBA_NO_UNICODE
+  static LatinTokenizerProvider const instance;
+#else
   static ICU_TokenizerProvider const instance;
+#endif /* ZORBA_NO_UNICODE */
   return instance;
 };
 

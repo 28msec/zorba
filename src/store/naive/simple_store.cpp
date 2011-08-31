@@ -1749,8 +1749,7 @@ internal::StemmerProvider const* SimpleStore::getStemmerProvider() const {
 
 TokenizerProvider const* SimpleStore::getTokenizerProvider() const {
   return theTokenizerProvider ?
-    theTokenizerProvider :
-    &DefaultTokenizerProvider::instance();
+    theTokenizerProvider : &default_tokenizer_provider();
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 
