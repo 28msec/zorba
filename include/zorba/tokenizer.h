@@ -98,7 +98,7 @@ public:
    * This function is called by Zorba when the %Tokenizer is no longer needed.
    *
    * If your TokenizerProvider dynamically allocates %Tokenizer objects, then
-   * the implementation can (and usually is) simply <code>delete this</code>.
+   * the implementation can simply be (and usually is) <code>delete this</code>.
    *
    * If your TokenizerProvider returns a pointer to a static %Tokenizer object,
    * then the implementation should do nothing.

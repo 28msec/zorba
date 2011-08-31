@@ -44,7 +44,7 @@ public:
    * This function is called by Zorba when the %Stemmer is no longer needed.
    *
    * If your StemmerProvider dynamically allocates %Stemmer objects, then the
-   * implementation can (and usually is) simply <code>delete this</code>.
+   * implementation can simply be (and usually is) <code>delete this</code>.
    *
    * If your StemmerProvider returns a pointer to a static %Stemmer object,
    * then the implementation should do nothing.
