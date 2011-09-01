@@ -1,4 +1,7 @@
-/** \page conformanceXQFTTS  Detailed conformance W3C XQuery and XPath Full Text 1.0
+/** \page conformanceXQFTTS  XQuery and XPath Full Text 1.0 Conformance
+
+Zorba achieves 87.94% correctness (88.78% on Minimal Conformance and 87.45% on Optional Features)
+for the <a href="http://dev.w3.org/2007/xpath-full-text-10-test-suite/">W3C Test Suite for XQuery and XPath Full Text 1.0</a>.
 
 <table bgcolor="lightcyan">
   <tr>

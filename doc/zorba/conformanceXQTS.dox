@@ -1,5 +1,8 @@
-/** \page conformanceXQTS  Detailed W3C XQuery 1.0 conformance
-This is a detailed report of all XQuery 1.0 tests passing and failing. 
+/** \page conformanceXQTS  XQuery 1.0 Conformance
+
+Zorba achieves 99.97% correctness (99.98% on Minimal Conformance and 99.62% on Optional Features)
+for the <a href="http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/">W3C Test Suite for XQuery 1.0</a>.
+ 
 
 <table bgcolor="lightcyan">
   <tr>

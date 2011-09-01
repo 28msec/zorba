@@ -79,11 +79,11 @@ A.qindexHL:visited {
     color: #ffffff
 }
 A.el { 
-    text-decoration: none; 
-    font-weight: bold
+    text-decoration: none;
+    /*font-weight: bold;*/
 }
 A.elRef { 
-    font-weight: bold
+    /*font-weight: bold;*/
 }
 A.code:link { 
     text-decoration: none; 
@@ -621,6 +621,15 @@ table.ft_rels th {
     text-align: left;
 }
 
+/* Table in Documentation index page */
+.tdDocIndexTable
+{
+    vertical-align: top;
+    font-size: 100%;
+    padding: 5px;
+    width: 50%;
+}
+
 /* Doxygen table */
 .doxtable {
     border-collapse: collapse;
@@ -639,6 +648,8 @@ table.ft_rels th {
 
 #discuss
 {
+  /*display:none;*/
   padding: 5px;
   margin: 5px;    
 }
+

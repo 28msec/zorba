@@ -13,7 +13,11 @@ import schema namespace r = "http://example" at "example.xsd";
 
 For a full example see the \ref example1 below.
 
-Note: for simplicity, the examples on this page make use of the "at <filename>" clause of <tt>import schema</tt> to explicitly load a specific schema file. However, when developing XQuery applications, it is usually better to omit this clause, and make use of Zorba's extensive URI-resolution mechanisms to load schemas by URI. For details on this, see \ref uriresolvers.
+Note: for simplicity, the examples on this page make use of the "at <filename>" 
+clause of <tt>import schema</tt> to explicitly load a specific schema file.
+However, when developing XQuery applications, it is usually better to omit this
+ clause, and make use of Zorba's extensive URI-resolution mechanisms to load
+ schema documents by URI. For details on this, see \ref uriresolvers.
 
 \section validateExpr Validate expression
 Use validate expression to validate an untyped document against an XMLSchema.
@@ -76,7 +80,8 @@ $ zorba --trailing-nl -i -f -q example.xq
 
 \section schema-type Schema type name
 
-Using the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_schema.html">schema module</a> it is possible to find out the QName of the shema type a certain type has or if it was validated already.
+Using the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_schema.html">schema module</a>
+it is possible to find out the QName of a certain schema type.
 
 
 \ref example1 can be adapted to the following:
@@ -111,7 +116,8 @@ TypeA http://example
 The C++ Zorba API can be used by an application to validate a document and 
 later passed as a valid input into another query.
 
-In the \ref example2 first loadProlog method on the static context was used to import the required schema file and than validate method was called to get the new validated item.
+In the \ref example2 first loadProlog method on the static context was used to import the required
+ schema file and than validate method was called to get the new validated item.
 
 \code
   sc->loadProlog("import schema namespace s='http://test.org' at 'schema.xsd';", hints);

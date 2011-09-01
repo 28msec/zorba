@@ -1,22 +1,25 @@
-/** \page conformance Conformance
+/** \page conformance Conformance Results for the W3C Test Suite
+
+The summary of the Zorba conformance results for the
+<a href="http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/">W3C XQuery Test Suite</a> is given bellow.
+
+For more information, please refer to the following pages that contain detailed testing results:
 
 <ul>
   <li> W3C XQuery 1.0
   <ul>
-    <li> \ref summaryXQTS
     <li> \ref conformanceXQTS
   </ul>
   <li> W3C XQuery Update Facility 1.0
   <ul>
-    <li> \ref summaryXQUTS
     <li> \ref conformanceXQUTS
   </ul>
   <li> W3C XQuery and XPath Full Text 1.0
   <ul>
-    <li> \ref summaryXQFTTS
     <li> \ref conformanceXQFTTS
   </ul>
 </ul>
+
 
 \section summaryXQTS Summary conformance W3C XQuery 1.0
 The following table shows the supported features:
@@ -78,8 +81,8 @@ This is the W3C XQuery 1.0 conformance summary:
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Minimal Conformance</td>
-    <td align="center" bgcolor="palegreen">17497/17499<br />100%</td>
-    <td align="center" bgcolor="palegreen">17497/17499<br />100%</td>
+    <td align="center" bgcolor="palegreen">17497/17499<br />99.98%</td>
+    <td align="center" bgcolor="palegreen">17497/17499<br />99.98%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Optional Features</td>
@@ -348,8 +351,8 @@ This is the W3C XQuery and XPath Full Text 1.0 conformance summary:
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Minimal Conformance</td>
-    <td align="center" bgcolor="palegreen">384/429<br />90%</td>
-    <td align="center" bgcolor="coral">24/429<br />6%</td>
+    <td align="center" bgcolor="palegreen">384/429<br />89.51%</td>
+    <td align="center" bgcolor="coral">24/429<br />5.59%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Optional Features</td>
