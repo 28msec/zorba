@@ -22,13 +22,23 @@ SET ( CPACK_DEBIAN_PACKAGE_DEPENDS "libxml2-dev, libicu-dev, libxerces-c-dev" )
 
 # for Windows Null Soft Installer System ...
 if(CPACK_GENERATOR MATCHES "NSIS")
-  SET(CPACK_PACKAGE_EXECUTABLES "zorba" "Zorba Command Line Client" )
-
-  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\zoba.exe")
   SET(CPACK_NSIS_DISPLAY_NAME "Zorba XQuery Processor ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
   SET(CPACK_NSIS_HELP_LINK "http:\\\\http://www.zorba-xquery.org/")
   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\http://www.zorba-xquery.org/")
   SET(CPACK_NSIS_CONTACT "info@flworfound.org")
+  
+  SET(CPACK_NSIS_CREATE_ICONS_EXTRA "
+    CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Zorba Command Line Client.lnk' 'cmd.exe' '/K set path=%path%;%cd%\\bin&echo Start using Zorba: zorba -q 1+1  or  zorba -f -q example.xq'
+    CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Zorba Documentation.lnk' '$INSTDIR\\\\share\\\\doc\\\\zorba-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}\\\\zorba\\\\html\\\\index.html'
+    CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Modules Documentation.lnk' '$INSTDIR\\\\share\\\\doc\\\\zorba-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}\\\\zorba\\\\xqdoc\\\\xhtml\\\\index.html'
+    ")
+  SET(CPACK_NSIS_DELETE_ICONS_EXTRA "
+    !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
+    Delete '$SMPROGRAMS\\\\$MUI_TEMP\\\\Zorba Command Line Client.lnk'
+    Delete '$SMPROGRAMS\\\\$MUI_TEMP\\\\Zorba Documentation.lnk'
+    Delete '$SMPROGRAMS\\\\$MUI_TEMP\\\\Modules Documentation.lnk' 
+    ")
+  
   SET(CPACK_NSIS_MODIFY_PATH ON)
 endif(CPACK_GENERATOR MATCHES "NSIS")
 
