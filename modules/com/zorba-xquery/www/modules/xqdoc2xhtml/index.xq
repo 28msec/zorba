@@ -2029,7 +2029,8 @@ declare %private %ann:sequential function xqdoc2html:generate-index-html(
               (<div class="section"><span class="section">Zorba XQuery Processor {$zorbaVersion}</span></div>,
               <p>This document contains a list of all the <strong>core</strong> and <strong>non core</strong> Zorba modules.</p>,
               <p>Please check out <a href="../../html/modules_top.html">Modules in Zorba</a> documentation page.</p>,
-              <p>The <strong>core</strong> Zorba modules are annotated bellow with this small image: <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>.</p>,
+              <p>The <strong>core</strong> Zorba modules are annotated below with this small image: <sup><img src="images/ZCsmall.gif" alt="ZC" title="This module is part of Zorba core."/></sup>.</p>,
+              <p>The superscript (E) denotes modules that have external functions. Those are not portable to other XQuery processors.</p>,
               <p>Please send us comments in case you would like to suggest us adding a particular XQuery module, or if you would like to donate an existing third party XQuery module.</p>,
               $modules)
             as last into $right_content;

@@ -19,14 +19,20 @@ sudo apt-get install valgrind
 
 Required libraries
 \code
-sudo apt-get install libxml2-dev libxslt-dev libicu-dev libcurl4-openssl-dev libtidy-dev libxerces-c-dev iconv libzlib-dev
+sudo apt-get install libxml2-dev libxslt-dev libicu-dev libcurl4-openssl-dev libtidy-dev libxerces-c-dev libz-dev
 \endcode
 
 
 \section bu_cclient Build C-Client library
 
 One option is to install the c-client lib from
-<a href=" http://launchpad.net/~juan457/+archive/zorba-dependencies/+packages">ppa:juan457/zorba-dependencies</a>.
+<a href=" http://launchpad.net/~juan457/+archive/zorba/+packages">ppa:juan457/zorba</a>.
+
+\code
+sudo add-apt-repository ppa:juan457/zorba
+sudo apt-get update
+sudo sudo apt-get install libc-client2007e libc-client2007e-dev
+\endcode
 
 
 Or build it localy using the -I/usr/include/openssl -fPIC options:
@@ -56,7 +62,17 @@ sudo apt-get install imagemagick libmagick++-dev
 sudo apt-get install libgeos-dev
 \endcode
 
-Or if the version is older than 3.2.2 then compile manually:
+If the version is older than 3.2.2 then there are two options:
+
+a. install it from <a href=" http://launchpad.net/~juan457/+archive/zorba/+packages">ppa:juan457/zorba</a>.
+
+\code
+sudo add-apt-repository ppa:juan457/zorba
+sudo apt-get update
+sudo apt-get install libgeos libgeos-dev
+\endcode 
+
+b. or compile it manually:
 
 \code
 sudo apt-get remove libgeos-dev
@@ -89,7 +105,36 @@ cd zorba
 cmake -Doutdir=../zm -Dallmodules=1 -P modules/DownloadModules.cmake
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE="Debug" -DCCLIENT_INCLUDE="~/imap-2007e/c-client" -DCCLIENT_LIBRARY="~/imap-227e/c-client/c-client.a" ../
+\endcode
+
+If all libraries were installed from ppa-s:
+\code
+cmake ..
+make
+\endcode
+
+Otherwise specify the location of c-client library:
+\code
+cmake -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_PREFIX_PATH="~/imap-2007e/c-client" ../
+make
+\endcode
+
+
+
+\section bu_running_tests Run tests
+
+To run all Zorba tests:
+\code
+ctest
+\endcode
+
+
+
+\section bu_install Installation
+
+To install this version of Zorba:
+\code
+make install
 \endcode
 
 **/

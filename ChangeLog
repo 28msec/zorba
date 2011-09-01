@@ -3,6 +3,7 @@ Zorba - The XQuery Processor
 version 2.x
 
   * Custom Full-text thesaurus.
+  * Fixed bug #3401971 (node-by-reference on dynamic collections)
 
 version 2.0.1
 

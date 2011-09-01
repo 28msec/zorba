@@ -1511,6 +1511,23 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       }
     }
 
+    if (!lFound)
+    {
+      lIter = theCollections->collections(true);
+      lIter->open();
+
+      // search the collection
+      while (lIter->next(lCollection))
+      {
+        collection = static_cast<SimpleCollection*>(lCollection.getp());
+
+        if (collection->getId() == collectionId) {
+          lFound = true;
+          break;
+        }
+      }
+    }
+
     // If collection found, look for the tree
     if (lFound)
     {
