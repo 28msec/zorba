@@ -729,6 +729,9 @@ bool LetVarIterator::setTargetLenIter(const PlanIter_t& v)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
 {
   LetVarState* state;
@@ -946,6 +949,9 @@ uint32_t LetVarIterator::getStateSizeOfSubtree() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void LetVarIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);

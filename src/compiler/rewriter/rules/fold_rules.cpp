@@ -650,15 +650,24 @@ RULE_REWRITE_PRE(PartialEval)
     if (arg->isNonDiscardable())
       return NULL;
 
-    xqtref_t arg_type = arg->get_return_type();
+    xqtref_t argType = arg->get_return_type();
+    xqtref_t targetType = cbe->get_target_type();
 
-    if (TypeOps::is_subtype(tm, *arg_type, *cbe->get_target_type(), node->get_loc()))
+    if (TypeOps::is_subtype(tm, *argType, *targetType, node->get_loc()))
     {
       return new const_expr(node->get_sctx(), LOC(node), true);
     }
     else if (node->get_expr_kind() == instanceof_expr_kind)
     {
-      return (TypeOps::intersect_type(*arg_type, *cbe->get_target_type(), tm) ==
+      instanceof_expr* ioExpr = static_cast<instanceof_expr*>(node);
+
+      if (ioExpr->getCheckPrimeOnly())
+      {
+        argType = TypeOps::prime_type(tm, *argType);
+        targetType = TypeOps::prime_type(tm, *targetType);
+      }
+
+      return (TypeOps::intersect_type(*argType, *targetType, tm) ==
               GENV_TYPESYSTEM.NONE_TYPE ?
               new const_expr(node->get_sctx(), LOC(node), false) :
               NULL);

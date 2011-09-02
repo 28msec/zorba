@@ -945,14 +945,16 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 
 
 /*******************************************************************************
-  Checks whether "condExpr" has the form '$posVar = posExpr', where
+  Checks whether "condExpr" has the form '$posVar op posExpr', where
 
-  (a) posExpr is an integer literal with value >= 1, or
-  (b) the flwor expr has no sequential clauses and posExpr is an expression whose 
-      type is xs:Integer and which does not reference the for var associated with
-      posVar nor any other vars that are defined after that for var.
+  (a)  op is eq or =, and
+  (b1) posExpr is an integer literal with value >= 1, or
+  (b2) the flwor expr has no sequential clauses and posExpr is an expression 
+       whose type is xs:Integer? and which does not reference the for var 
+       associated with posVar nor any other vars that are defined after that 
+       for var.
 
-  TODO: (b) can be relaxed somewhat: it is ok if all the sequential clauses are 
+  TODO: (b2) can be relaxed somewhat: it is ok if all the sequential clauses are 
   before the clause that defines the pos var.
 ********************************************************************************/
 static bool is_subseq_pred(
@@ -967,15 +969,28 @@ static bool is_subseq_pred(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   const QueryLoc& posLoc = posExpr->get_loc();
 
-  const fo_expr* fo = dynamic_cast<const fo_expr*>(condExpr);
+  const fo_expr* fo;
+  const function* f;
 
-  if (fo == NULL)
-    return false;
+  while (true)
+  {
+    if (condExpr->get_expr_kind() != fo_expr_kind)
+      return false;
 
-  const function* f = fo->get_func();
+    fo = static_cast<const fo_expr*>(condExpr);
+    f = fo->get_func();
 
-  if (f->getKind() != FunctionConsts::OP_EQUAL_2 &&
-      f->getKind() != FunctionConsts::OP_VALUE_EQUAL_2)
+    if (f->getKind() == FunctionConsts::FN_BOOLEAN_1)
+    {
+      condExpr = fo->get_arg(0);
+      continue;
+    }
+
+    break;
+  }
+
+  if (f->comparisonKind() != CompareConsts::GENERAL_EQUAL &&
+      f->comparisonKind() != CompareConsts::VALUE_EQUAL)
     return false;
 
   for (ulong i = 0; i < 2; ++i)
@@ -1006,7 +1021,7 @@ static bool is_subseq_pred(
       {
         xqtref_t posExprType = posExpr->get_return_type();
 
-        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_ONE, posLoc))
+        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_QUESTION, posLoc))
         {
           VarIdMap varidMap;
           ulong numFlworVars = 0;

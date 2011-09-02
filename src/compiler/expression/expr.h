@@ -436,11 +436,20 @@ public:
 
 /***************************************************************************//**
 	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
+
+  theCheckPrimeOnly : 
+  Normally, this is false. It is set to true only if this is an instanceof expr
+  that is created during the translation of a PredicateList (see translator.cpp).
+  This flag is used during the PartialEval rule.
+
 ********************************************************************************/
 class instanceof_expr : public castable_base_expr 
 {
   friend class ExprIterator;
   friend class expr;
+
+protected:
+  bool theCheckPrimeOnly;
 
 public:
   SERIALIZABLE_CLASS(instanceof_expr)
@@ -448,7 +457,14 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  instanceof_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
+  instanceof_expr(
+      static_context* sctx,
+      const QueryLoc&, 
+      expr_t, 
+      xqtref_t,
+      bool checkPrimeOnly = false);
+
+  bool getCheckPrimeOnly() const { return theCheckPrimeOnly; }
 
   expr_t clone(substitution_t& s) const;
 

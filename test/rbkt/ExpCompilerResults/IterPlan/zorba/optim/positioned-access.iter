@@ -1,0 +1,62 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="n1">
+    <FnConcatIterator>
+      <SingletonIterator value="xs:integer(2)"/>
+      <SingletonIterator value="xs:integer(3)"/>
+      <SingletonIterator value="xs:integer(6)"/>
+    </FnConcatIterator>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="3" varname="n2">
+    <FnConcatIterator>
+      <SingletonIterator value="xs:integer(2)"/>
+      <SingletonIterator value="xs:integer(3)"/>
+    </FnConcatIterator>
+  </CtxVarDeclareIterator>
+  <FnConcatIterator>
+    <FunctionTraceIterator>
+      <flwor::FLWORIterator>
+        <LetVariable name="x" materialize="true">
+          <PromoteIterator type="xs:integer">
+            <FnDataIterator>
+              <CtxVarIterator varid="2" varname="n1" varkind="global"/>
+            </FnDataIterator>
+          </PromoteIterator>
+        </LetVariable>
+        <ReturnClause>
+          <LetVarIterator varname="x">
+            <LetVarIterator varname="x">
+              <LetVarIterator varname="x" targetPos="1"/>
+            </LetVarIterator>
+          </LetVarIterator>
+        </ReturnClause>
+      </flwor::FLWORIterator>
+    </FunctionTraceIterator>
+    <FunctionTraceIterator>
+      <flwor::FLWORIterator>
+        <LetVariable name="x" materialize="true">
+          <PromoteIterator type="xs:integer">
+            <FnDataIterator>
+              <CtxVarIterator varid="3" varname="n2" varkind="global"/>
+            </FnDataIterator>
+          </PromoteIterator>
+        </LetVariable>
+        <ReturnClause>
+          <LetVarIterator varname="x">
+            <LetVarIterator varname="x">
+              <LetVarIterator varname="x" targetPos="1"/>
+            </LetVarIterator>
+          </LetVarIterator>
+        </ReturnClause>
+      </flwor::FLWORIterator>
+    </FunctionTraceIterator>
+  </FnConcatIterator>
+</SequentialIterator>
+

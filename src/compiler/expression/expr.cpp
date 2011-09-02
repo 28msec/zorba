@@ -611,9 +611,11 @@ instanceof_expr::instanceof_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
-    xqtref_t type)
+    xqtref_t type,
+    bool checkPrimeOnly)
   :
-  castable_base_expr(sctx, loc, instanceof_expr_kind, inputExpr, type)
+  castable_base_expr(sctx, loc, instanceof_expr_kind, inputExpr, type),
+  theCheckPrimeOnly(checkPrimeOnly)
 {
 }
 
@@ -621,6 +623,7 @@ instanceof_expr::instanceof_expr(
 void instanceof_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (castable_base_expr*)this);
+  ar & theCheckPrimeOnly;
 }
 
 

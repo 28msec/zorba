@@ -620,7 +620,9 @@ bool SequencePointAccessIterator::nextImpl(
 
   state->theIsChildReset = false;
 
-  CONSUME(startPosItem, 1);
+  if (!consumeNext(startPosItem, theChildren[1].getp(), planState))
+    goto done;
+
   startPos = startPosItem->getLongValue();
 
   if (startPos <= 0)
@@ -646,6 +648,7 @@ done:
 
   STACK_END(state);
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

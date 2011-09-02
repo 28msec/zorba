@@ -267,7 +267,7 @@ class ModulesInfo
 public:
   CompilerCB                        * theCCB;
   hashmap<zstring, static_context_t>  mod_sctx_map;
-  hashmap<zstring, zstring>               mod_ns_map;
+  hashmap<zstring, zstring>           mod_ns_map;
   checked_vector<expr_t>              theInitExprs;
   std::auto_ptr<static_context>       globalSctx;
 
@@ -2725,11 +2725,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   // Create a ModuleVersion based on the input namespace URI.
-  ModuleVersion const lModVer(v.get_uri());
+  const ModuleVersion modVer(v.get_uri());
 
   // targetNS is the target namespace *without* any
   // version-declaration fragment.
-  zstring const targetNS = lModVer.namespace_uri();
+  zstring const targetNS = modVer.namespace_uri();
   zstring const pfx = (!v.get_prefix().empty()) ? v.get_prefix() : "";
 
   if (static_context::is_reserved_module(targetNS))
@@ -2808,7 +2808,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   {
     // Note the use of versioned_uri() here, so that the namespace with any
     // version fragment will be passed through to the mappers.
-    theSctx->get_component_uris(lModVer.versioned_uri(),
+    theSctx->get_component_uris(modVer.versioned_uri(),
                                 impl::EntityData::MODULE, compURIs);
   }
   else
@@ -2826,13 +2826,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
        ++ite)
   {
     // Create a ModuleVersion for the current component URI.
-    ModuleVersion const lCompModVer(*ite);
+    const ModuleVersion compModVer(*ite);
 
     // Get the location uri for the module to import (minus version fragment,
     // if any). This will be the key for mod_ns_map and mod_sctx_map. Note:
     // if in future we support loading multiple versions of the same module,
     // this key will have to change.
-    zstring const compURI = lCompModVer.namespace_uri();
+    const zstring compURI = compModVer.namespace_uri();
 
     // If this import forms a cycle in a chain of module imports, skip it.
     // If the importing module is referencing any variable or function of
@@ -2884,12 +2884,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // fragment to be passed to the mappers.
       zstring lErrorMessage;
       std::auto_ptr<impl::Resource> lResource =
-        theSctx->resolve_uri(lCompModVer.versioned_uri(),
-                             impl::EntityData::MODULE,
-                             lErrorMessage);
+      theSctx->resolve_uri(compModVer.versioned_uri(),
+                           impl::EntityData::MODULE,
+                           lErrorMessage);
 
       impl::StreamResource* lStreamResource =
-          dynamic_cast<impl::StreamResource*> (lResource.get());
+      dynamic_cast<impl::StreamResource*> (lResource.get());
+
       if (lStreamResource != NULL)
       {
         modfile = lStreamResource->getStream();
@@ -2980,7 +2981,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // least, "declare option" information is not stored in the sctx that is
       // in mod_sctx_map; therefore, when dealing with an already-imported
       // sctx, there's no way to know what version it is. SF bug# 3312333.
-      if (lModVer.is_valid_version())
+      if (modVer.is_valid_version())
       {
         store::Item_t lMajorOpt;
         theSctx->expand_qname(lMajorOpt,
@@ -3000,10 +3001,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
           ERROR_PARAMS(lImportedVersion));
         }
 
-        if (!lImportedModVer.satisfies(lModVer))
+        if (!lImportedModVer.satisfies(modVer))
         {
           RAISE_ERROR(zerr::ZXQP0037_INAPPROPRIATE_MODULE_VERSION, loc,
-          ERROR_PARAMS(lModVer.versioned_uri(), lImportedVersion));
+          ERROR_PARAMS(modVer.versioned_uri(), lImportedVersion));
         }
       }
 
@@ -9148,9 +9149,15 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // Check if the pred expr returns a numeric result
   fo_expr_t condExpr;
   std::vector<expr_t> condOperands(3);
-  condOperands[0] = new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_ONE);
-  condOperands[1] = new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_ONE);
-  condOperands[2] = new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_ONE);
+
+  condOperands[0] = 
+  new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
+
+  condOperands[1] = 
+  new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
+
+  condOperands[2] = 
+  new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
   condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
 

@@ -4,6 +4,8 @@ version 2.x
 
   * Custom Full-text thesaurus.
   * Fixed bug #3401971 (node-by-reference on dynamic collections)
+  * Optimization for positioned sequence access (e.g. $x[$x[1]] where $x is a
+  sequence of integers)
 
 version 2.0.1
 
