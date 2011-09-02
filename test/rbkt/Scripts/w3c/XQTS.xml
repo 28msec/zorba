@@ -1,67 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zorba xmlns="http://www.w3.org/2005/02/query-test-XQTSResult">  
   <implementation-defined-items>        
+
     <implementation-defined-item name="expressionUnicode" value=""/>
-    <implementation-defined-item name="collations" value=""/>
-    <implementation-defined-item name="implicitTimezone" value=""/>
-    <implementation-defined-item name="warningsMethod" value=""/>
-    <implementation-defined-item name="errorsMethod" value=""/>
-    <implementation-defined-item name="XMLVersion" value=""/>
-    <implementation-defined-item name="overwrittenContextComponents" value=""/>
-    <implementation-defined-item name="axes" value=""/>
-    <implementation-defined-item name="defaultOrderEmpty" value=""/>
-    <implementation-defined-item name="pragmas" value=""/>
-    <implementation-defined-item name="optionDeclarations" value=""/>
-    <implementation-defined-item name="externalFunctionProtocols" value=""/>
-    <implementation-defined-item name="moduleLocationHints" value=""/>
-    <implementation-defined-item name="staticTypingExtensions" value=""/>
-    <implementation-defined-item name="serializationInvocation" value=""/>
+
+    <implementation-defined-item 
+     name="collations" 
+     value="http://www.w3.org/2005/xpath-functions/collation/codepoint,"/>
+
+    <implementation-defined-item 
+     name="implicitTimezone" 
+     value="The implicit timezone is computed based on the current local time of the computer running Zorba"/>
+
+    <implementation-defined-item 
+     name="warningsMethod" 
+     value="Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html. Currently, there are only 2 warnings: 1. ZWST0002: generated when an unknown annotation is encountered in an XQuery program. 2. ZWST0003: generated when a non-external user-defined function is declared as sequential, but its implementation is not really sequential."/>
+
+    <implementation-defined-item 
+     name="errorsMethod" 
+     value="Errors are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html."/>
+
+    <implementation-defined-item
+     name="XMLVersion" 
+     value="XML 1.0"/>
+
+    <implementation-defined-item
+     name="overwrittenContextComponents" 
+     value="The following static context components are overwrtten/augmented: 1. Statically known namespaces: Augmented with zerr –> http://www.zorba-xquery.com/ 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*"/>
+
+    <implementation-defined-item 
+     name="axes" 
+     value="All axes are supported"/>
+
+    <implementation-defined-item 
+     name="defaultOrderEmpty" 
+     value="empty_greatest"/>
+
+    <implementation-defined-item 
+     name="pragmas" 
+     value="no pragmas are recognized"/>
+
+    <implementation-defined-item 
+     name="optionDeclarations" 
+     value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/options_and_annotations.html."/>
+
+    <implementation-defined-item 
+     name="externalFunctionProtocols" 
+     value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/external_functions.html"/>
+
+    <implementation-defined-item 
+     name="moduleLocationHints" 
+     value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/modules_top.html."/>
+
+    <implementation-defined-item 
+     name="staticTypingExtensions" 
+     value="Static typing is not supported"/>
+
+    <implementation-defined-item 
+     name="serializationInvocation" 
+     value="The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1XQuery.html). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1Serializer.html)."/>
+
     <implementation-defined-item name="serializationDefaults" value=""/>
-    <implementation-defined-item name="externalFunctionCall" value=""/>
+
+    <implementation-defined-item 
+     name="externalFunctionCall" 
+     value="An error is raised using the regular error handling mechanism of zorba. The kind of error depends on the kind of failure. For example, zerr:ZXQP0008  if the function implementation is not found, or err:XPTY0004 if the result of the function does not match the declared returned type."/>
+
     <implementation-defined-item name="limits" value=""/>
-    <implementation-defined-item name="traceDestination" value=""/>
+
+    <implementation-defined-item 
+     name="traceDestination" 
+     value="By default, it is std:cerr. Users can modify this via the StaticContext::setTraceStream method."/>
+
     <implementation-defined-item name="integerOperations" value=""/>
+
     <implementation-defined-item name="decimalDigits" value=""/>
+
     <implementation-defined-item name="roundOrTruncate" value=""/>
+
     <implementation-defined-item name="Unicode" value=""/>
+
     <implementation-defined-item name="normalizationForms" value=""/>
+
     <implementation-defined-item name="collationUnits" value=""/>
+
     <implementation-defined-item name="secondsDigits" value=""/>
+
     <implementation-defined-item name="stringToDecimal" value=""/>
+
     <implementation-defined-item name="docProcessing" value=""/>
+
     <implementation-defined-item name="weakenStable" value=""/>
-    <implementation-defined-item name="additionalTypes" value=""/>
-    <implementation-defined-item name="undefinedProperties" value=""/>
+
+    <implementation-defined-item 
+     name="additionalTypes" 
+     value="There are no implementation-defined types. User-defined types are created and become “in-scope” when “import schema” statements are processed. User-defined types (including anonymous types) are created within a static context and they are destroyed when their containing static context is destroyed. "/>
+
+    <implementation-defined-item 
+     name="undefinedProperties" 
+     value="err:FOTY0012"/>
+
     <implementation-defined-item name="sequenceNormalization" value=""/>
+
     <implementation-defined-item name="outputMethods" value=""/>
+
     <implementation-defined-item name="normalizationFormBehavior" value=""/>
+
     <implementation-defined-item name="additionalParams" value=""/>
+
     <implementation-defined-item name="encodingPhase" value=""/>
+
     <implementation-defined-item name="CDATASerialization" value=""/>
+
     <implementation-defined-item name="Tokenization" value=""/>
+
     <implementation-defined-item name="phrase" value=""/>
+
     <implementation-defined-item name="sentence" value=""/>
+
     <implementation-defined-item name="paragraph" value=""/>
+
     <implementation-defined-item name="Markup Effect Token Boundaries" value=""/>
+
     <implementation-defined-item name="Scoring Expressions" value=""/>
+
     <implementation-defined-item name="Matching" value=""/>
+
     <implementation-defined-item name="Match Option Order" value=""/>
+
     <implementation-defined-item name="Language Option Tokenization" value=""/>
+
     <implementation-defined-item name="Language Option Valid ID" value=""/>
+
     <implementation-defined-item name="Language Option Undefined" value=""/>
+
     <implementation-defined-item name="Mismatched Languages" value=""/>
+
     <implementation-defined-item name="Thesaurus Option" value=""/>
+
     <implementation-defined-item name="Thesaurus Relationships" value=""/>
+
     <implementation-defined-item name="Thesaurus Levels" value=""/>
+
     <implementation-defined-item name="Stemming Option" value=""/>
+
     <implementation-defined-item name="Query Token In Stopword List" value=""/>
+
     <implementation-defined-item name="StopWord Option Match Number" value=""/>
+
     <implementation-defined-item name="StopWord Option Default" value=""/>
+
     <implementation-defined-item name="Extension Option" value=""/>
+
     <implementation-defined-item name="Extension Selection" value=""/>
+
     <implementation-defined-item name="Equal Items Different Tokens" value=""/>
+
     <implementation-defined-item name="FTIgnoreOption" value=""/>
+
     <implementation-defined-item name="Static Context Items" value=""/>
+
   </implementation-defined-items>
   
   <features>
@@ -76,36 +174,125 @@
   </features>
   
   <context-properties>
-    <context-property name="Statically known namespaces" context-type="static" value=""/>
-    <context-property name="Default element/type namespace" context-type="static" value=""/>
-    <context-property name="Default function namespace" context-type="static" value="http://www.w3.org/2005/xpath-functions"/>
-    <context-property name="In-scope schema types" context-type="static" value=""/>
-    <context-property name="In-scope element declarations" context-type="static" value=""/>
-    <context-property name="In-scope attribute declarations" context-type="static" value=""/>
-    <context-property name="In-scope variables" context-type="static" value=""/>
-    <context-property name="Context item static type" context-type="static" value="item()"/>
-    <context-property name="Function signatures" context-type="static" value=""/>
-    <context-property name="Statically known collations" context-type="static" value=""/>
-    <context-property name="Default collation" context-type="static" value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
-    <context-property name="Construction mode" context-type="static" value="preserve"/>
-    <context-property name="Ordering mode" context-type="static" value="ordered"/>
-    <context-property name="Default order for empty sequences" context-type="static" value="empty greatest"/>
-    <context-property name="Boundary-space policy" context-type="static" value="strip"/>
-    <context-property name="Copy-namespaces mode" context-type="static" value="inherit preserve"/>
-    <context-property name="Base URI" context-type="static" value=""/>
-    <context-property name="Statically known documents" context-type="static" value=""/>
-    <context-property name="Statically known collections" context-type="static" value=""/>
-    <context-property name="Statically known default collection type" context-type="static" value=""/>
-    <context-property name="Context item" context-type="dynamic" value=""/>
-    <context-property name="Context position" context-type="dynamic" value=""/>
-    <context-property name="Context size" context-type="dynamic" value=""/>
-    <context-property name="Variable values" context-type="dynamic" value=""/>
-    <context-property name="Function implementations" context-type="dynamic" value=""/>
-    <context-property name="Current dateTime" context-type="dynamic" value=""/>
-    <context-property name="Implicit timezone" context-type="dynamic" value=""/>
-    <context-property name="Available documents" context-type="dynamic" value=""/>
-    <context-property name="Available collections" context-type="dynamic" value=""/>
-    <context-property name="Default collection" context-type="dynamic" value=""/>     
+    <context-property 
+     name="Statically known namespaces" context-type="static" 
+     value="fn –> http://www.w3.org/2005/xpath-functions, xml –> http://www.w3.org/XML/1998/namespace, xs –> http://www.w3.org/2001/XMLSchema, xsi –> http://www.w3.org/2001/XMLSchema-instance, local –> http://www.w3.org/2005/xquery-local-functions, zerr –> http://www.zorba-xquery.com/"/>
+
+    <context-property 
+     name="Default element/type namespace" context-type="static" 
+     value="None"/>
+
+    <context-property 
+     name="Default function namespace" context-type="static" 
+     value="http://www.w3.org/2005/xpath-functions"/>
+
+    <context-property 
+     name="In-scope schema types" context-type="static" 
+     value="Built-in types in xs"/>
+
+    <context-property 
+     name="In-scope element declarations" context-type="static" 
+     value="None"/>
+
+    <context-property 
+     name="In-scope attribute declarations" context-type="static" 
+     value="None"/>
+
+    <context-property 
+     name="In-scope variables" context-type="static" 
+     value="None"/>
+
+    <context-property 
+     name="Context item static type" context-type="static" 
+     value="item()"/>
+
+    <context-property 
+     name="Function signatures" context-type="static" 
+     value="functions in fn namespace, and constructors for built-in atomic types"/>
+
+    <context-property 
+     name="Statically known collations" context-type="static" 
+     value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
+
+    <context-property 
+     name="Default collation" context-type="static" 
+     value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
+
+    <context-property 
+     name="Construction mode" context-type="static" 
+     value="preserve"/>
+
+    <context-property 
+     name="Ordering mode" context-type="static" 
+     value="ordered"/>
+
+    <context-property 
+     name="Default order for empty sequences" context-type="static" 
+     value="empty greatest"/>
+
+    <context-property 
+     name="Boundary-space policy" context-type="static" 
+     value="strip"/>
+
+    <context-property 
+     name="Copy-namespaces mode" context-type="static" 
+     value="inherit preserve"/>
+
+    <context-property 
+     name="Base URI" context-type="static" 
+     value="Uses the rules in http://www.w3.org/TR/xquery-30/#id-base-uri-decl, where the implementation-defined default mentioned there is http://www.zorba-xquery.com"/>
+
+    <context-property 
+     name="Statically known documents" context-type="static" 
+     value="None"/>
+
+    <context-property 
+     name="Statically known collections" context-type="static" 
+     value="None"/>
+
+    <context-property 
+     name="Statically known default collection type" context-type="static" 
+     value="item()*"/>
+
+    <context-property 
+     name="Context item" context-type="dynamic" 
+     value="None. Before execution of a query, a value can be assigned to the context itemvia the DynamicContext::setContextItem method."/>
+
+    <context-property 
+     name="Context position" context-type="dynamic" 
+     value="None"/>
+
+    <context-property 
+     name="Context size" context-type="dynamic" 
+     value="None"/>
+
+    <context-property 
+     name="Variable values" context-type="dynamic" 
+     value="None"/>
+
+    <context-property 
+     name="Function implementations" context-type="dynamic" 
+     value="Functions in fn namespace, and constructors for built-in atomic types."/>
+
+    <context-property 
+     name="Current dateTime" context-type="dynamic" 
+     value="The current local time on the computer running Zorba"/>
+
+    <context-property 
+     name="Implicit timezone" context-type="dynamic" 
+     value="Computed based on the current local time on the computer running Zorba"/>
+
+    <context-property 
+     name="Available documents" context-type="dynamic" 
+     value="The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)"/>
+
+    <context-property 
+     name="Available collections" context-type="dynamic" 
+     value="The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)"/>"/>
+
+    <context-property 
+     name="Default collection" context-type="dynamic" 
+     value="None."/>
   </context-properties>
   
 </zorba>
