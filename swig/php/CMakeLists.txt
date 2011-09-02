@@ -40,6 +40,7 @@ ELSE (NOT PHP5_FOUND)
 
   # The following fix was added because of the changes in CMake 2.8, which have the
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
+  SET_TARGET_PROPERTIES( ${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PROJECT_LABEL "Api_PHP" )
   IF (LINUX OR CYGWIN)
     SET_TARGET_PROPERTIES (${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PREFIX "")
   ENDIF (LINUX OR CYGWIN)
@@ -56,13 +57,19 @@ ELSE (NOT PHP5_FOUND)
       DESTINATION ${PHP5_INSTALL_PATH}
     )
 	ELSE (NOT WIN32 OR CYGWIN)
-    INSTALL (
-      FILES
+    IF (MSVC_IDE)
+      INSTALL ( FILES 
+        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.php
+        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll
+        COMPONENT "php_swig"
+        DESTINATION share/php )
+    ELSE (MSVC_IDE)
+      INSTALL ( FILES 
         ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.php
         ${CMAKE_CURRENT_BINARY_DIR}/php_zorba_api.dll
-      COMPONENT "php_swig"
-      DESTINATION php_ext
-    )
+        COMPONENT "php_swig"
+        DESTINATION share/php )
+    ENDIF (MSVC_IDE)
   ENDIF (NOT WIN32 OR CYGWIN)
 
   ### Start PHP proxy generation
@@ -82,7 +89,7 @@ ELSE (NOT PHP5_FOUND)
     ARGS generate_proxy.php
   )
   ADD_CUSTOM_TARGET (
-    php_wrapper ALL
+    Api_PHP_Wrapper ALL
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_wrapper.php
   )
   ### End PHP proxy generation

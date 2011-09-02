@@ -37,6 +37,7 @@ IF (JAVA_INCLUDE_PATH)
 
   SWIG_ADD_MODULE( libzorba_api java zorba_api.i )
   SWIG_LINK_LIBRARIES( libzorba_api zorba_simplestore ${JAVA_LIBRARY} )
+  SET_PROPERTY( TARGET libzorba_api PROPERTY PROJECT_LABEL "Api_Java" )
   IF(WIN32)
     set_target_properties( libzorba_api PROPERTIES OUTPUT_NAME "zorba_api" )
   ENDIF(WIN32)
@@ -68,10 +69,21 @@ IF (JAVA_INCLUDE_PATH)
       INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so DESTINATION ${JAVA_SITEARCH_DIR})
 		  INSTALL(FILES ${JAVA_SWIG_FILES} DESTINATION ${JAVA_SITEARCH_DIR})
 		ELSE(NOT WIN32)
-      INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll DESTINATION bin/java/org/zorbaxquery/api/ 
-      COMPONENT "java_swig")
-		  INSTALL(FILES ${JAVA_SWIG_FILES} DESTINATION bin/java/org/zorbaxquery/api 
-      COMPONENT "java_swig")
+      IF (MSVC_IDE)
+        INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll 
+        DESTINATION share/java
+        COMPONENT "java_swig")
+        INSTALL(FILES ${JAVA_SWIG_FILES} 
+        DESTINATION share/java
+        COMPONENT "java_swig")
+      ELSE (MSVC_IDE)
+        INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll 
+        DESTINATION share/java
+        COMPONENT "java_swig")
+        INSTALL(FILES ${JAVA_SWIG_FILES} 
+        DESTINATION share/java
+        COMPONENT "java_swig")
+      ENDIF (MSVC_IDE)
 		ENDIF(NOT WIN32)
   ENDIF ( APPLE )
 

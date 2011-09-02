@@ -20,8 +20,16 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   MESSAGE(STATUS "SWIG Ruby: generating Ruby API")
   SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
   INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
-  SWIG_ADD_MODULE(zorba_api ruby zorba_api.i)
-  SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${RUBY_LIBRARY})
+  IF (WIN32)
+    SWIG_ADD_MODULE(zorba_api_ruby ruby zorba_api.i)
+    SWIG_LINK_LIBRARIES(zorba_api_ruby zorba_simplestore ${RUBY_LIBRARY})
+    SET_TARGET_PROPERTIES (zorba_api_ruby PROPERTIES OUTPUT_NAME "zorba_api")
+    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES PROJECT_LABEL "Api_Ruby" )
+  ELSE (WIN32)
+    SWIG_ADD_MODULE(zorba_api ruby zorba_api.i)
+    SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${RUBY_LIBRARY})
+  ENDIF (WIN32)
+
   IF ( APPLE )
     set_target_properties( zorba_api PROPERTIES SUFFIX .bundle )
   ENDIF ( APPLE )
@@ -33,7 +41,7 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   ENDIF ( LINUX OR CYGWIN )
 
   EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
-48    OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
+    OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
   #STRING(REPLACE "/usr/" "" RUBY_SITEARCH_DIR "${RUBY_SITEARCH_DIR}" )
   
   SET (RUBY_SITEARCH_DIR "${CMAKE_INSTALL_PREFIX}/share/ruby")
@@ -42,9 +50,22 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
     INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api.bundle
     DESTINATION ${RUBY_SITEARCH_DIR} )
   ELSE ( APPLE )
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
-    DESTINATION ${RUBY_SITEARCH_DIR}
-    COMPONENT ruby_swig )
+    IF ( LINUX )
+      INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+      DESTINATION ${RUBY_SITEARCH_DIR}
+      COMPONENT ruby_swig )
+    ELSE ( LINUX )
+      IF (MSVC_IDE)
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll
+        DESTINATION share/ruby
+        COMPONENT ruby_swig )
+      ELSE (MSVC_IDE)
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll
+        DESTINATION share/ruby
+        COMPONENT ruby_swig )
+      ENDIF (MSVC_IDE)
+      
+    ENDIF ( LINUX )
   ENDIF ( APPLE )
 ELSE (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   MESSAGE(STATUS "SWIG Ruby: binding not generated because library and include files are not installed.")

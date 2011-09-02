@@ -15,3 +15,11 @@
  */
 %include ../zorba_api.i
 
+%runtime %{
+#ifdef WIN32
+#ifdef shutdown
+  #undef shutdown
+#endif
+#endif
+%}
+
