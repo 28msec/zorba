@@ -60,11 +60,27 @@ declare %private  variable $conf:XQueryX  as xs:string := "XQueryX";
 
 declare %private variable $conf:features := <features/>;
 
+declare %private variable $conf:numbers := <numbers/>;
+
 declare %private %ann:sequential function conf:collect-feature(
-  $name as xs:string, 
-  $supported as xs:string) 
+  $name       as xs:string, 
+  $supported  as xs:string) 
 {
   insert node <feature name ="{$name}" supported="{$supported}" /> as last into $conf:features;
+};
+
+declare %private %ann:sequential function conf:collect-number(
+  $name   as xs:string, 
+  $value  as xs:string) 
+{
+  insert node <number name ="{$name}" value="{$value}" /> as last into $conf:numbers;
+};
+
+declare %private function  conf:value-intersect(
+  $arg1 as xs:anyAtomicType*,
+  $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* 
+{
+  fn:distinct-values($arg1[.=$arg2])
 };
 
 declare function conf:count-available-tests($node, $isDetailed as xs:boolean) as xs:integer?
@@ -156,10 +172,27 @@ declare function conf:create-tr(
     )
 };
 
-declare function conf:create-tr-summary(
+declare %private function conf:round-decimal(
+  $tmp  as xs:decimal) as xs:decimal
+{
+  let $dec := ($tmp - floor($tmp))*100
+  return (floor($tmp)+(round($dec) div 100))
+};
+
+declare %private function conf:is-root-category(
+  $catName as xs:string, 
+  $XQTS_catalog) as xs:boolean
+{
+  let $rootCategories := for $test-group in $XQTS_catalog/xqCat:test-suite/xqCat:test-group
+                         return xs:string($test-group/xqCat:GroupInfo/xqCat:title)
+  return exists(conf:value-intersect($rootCategories, $catName))
+};
+
+declare %ann:sequential function conf:create-tr-summary(
   $nodes, 
   $no_spaces as xs:integer,
-  $StaticTyping as xs:boolean)
+  $StaticTyping as xs:boolean,
+  $XQTS_catalog)
 {
   let $padding := functx:repeat-string(codepoints-to-string(160), $no_spaces)
   return
@@ -177,8 +210,13 @@ declare function conf:create-tr-summary(
                                    ($test//td[@class = "xqx"]/text() = "not applicable"))
                              return $test)
     let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
+    let $percentXQ := conf:round-decimal(($passingXQ div $total)*100)
+    let $percentXQX := conf:round-decimal(($passingXQX div $total)*100)    
     return
-    (
+    (if(conf:is-root-category(data($test-group/xqCat:GroupInfo/xqCat:title), $XQTS_catalog)) then
+      conf:collect-number(data($test-group/xqCat:GroupInfo/xqCat:title), xs:string($percentXQ))
+     else ()      
+     ,
      if(count($test-group//xqCat:test-case) ne xs:integer(0)) then
       <tr bgcolor="lightcyan">
         <td bgcolor="{if(not(exists($total))) then 'paleturquoise' else 'lightcyan'}">
@@ -189,19 +227,20 @@ declare function conf:create-tr-summary(
                       else if(($passingXQ div $total)*100 > 25) then 'palegreen' else 'coral'}">
           {if(exists($total) and ($total ne xs:integer(0))) 
            then concat($passingXQ,"/",$total) else ()}<br />
-           {if(data($test-group/@name) = "Minimal Conformance") then concat(round(($passingXQ div $total)*100),'%') else ()}</td>
+           {if(conf:is-root-category(data($test-group/xqCat:GroupInfo/xqCat:title), $XQTS_catalog)) then concat($percentXQ,'%') else ()}</td>
         <td align="center" bgcolor="{if(not(exists($total))) then 'paleturquoise' 
                       else if($passingXQX = $total) then 'mediumseagreen'
                       else if($isStaticTyping) then 'white'
                       else if(($passingXQX div $total)*100 > 25) then 'palegreen' else 'coral'}">
           {if(exists($total) and ($total ne xs:integer(0))) 
            then concat($passingXQX,"/",$total) else ()}<br />
-           {if(data($test-group/@name) = "Minimal Conformance") then concat(round(($passingXQX div $total)*100),'%') else ()}</td>
+           {if(conf:is-root-category(data($test-group/xqCat:GroupInfo/xqCat:title), $XQTS_catalog)) then concat($percentXQX,'%') else ()}</td>
       </tr> else (),
       if(data($test-group/@name) = "Optional") then
       conf:create-tr-summary($test-group/xqCat:test-group, 
                             ($no_spaces + xs:integer(2)),
-                            $isStaticTyping)
+                            $isStaticTyping,
+                            $XQTS_catalog)
       else()
     )
 };
@@ -314,7 +353,7 @@ declare function conf:generate-detailed-table($XQTS_catalog)
   </table>
 };
 
-declare function conf:generate-summary-table($XQTS_catalog)
+declare %ann:sequential function conf:generate-summary-table($XQTS_catalog)
 {
   <table bgcolor="lightcyan">
     <tr><td>W3C XQuery Update Facility 1.0 features</td><td>XQuery</td><td>XQueryX</td></tr>
@@ -325,7 +364,8 @@ declare function conf:generate-summary-table($XQTS_catalog)
       let $isStaticTyping as xs:boolean := fn:contains(data($test-group/xqCat:GroupInfo/xqCat:title),"Static Typing")
       return conf:create-tr-summary($test-group,
                                     xs:integer(0),
-                                    $isStaticTyping)
+                                    $isStaticTyping,
+                                    $XQTS_catalog)
     }
   </table>
 };
@@ -347,6 +387,16 @@ declare function conf:generate-features-table()
   </table>
 };
 
+declare %private function conf:create-summary-string() as xs:string
+{
+  let $average := avg(for $number in $conf:numbers/number return xs:decimal(data($number/@value)))
+  return
+    concat("Zorba achieves ",
+            conf:round-decimal($average), 
+            "% correctness (",
+            string-join((for $number in $conf:numbers/number return concat(xs:string(data($number/@value)),"% on ",xs:string(data($number/@name)))),", "),
+            ") for the W3C Test Suite for the XQuery Update Facility 1.0.")
+};
 
 declare %ann:sequential function conf:test()
 {  
@@ -354,19 +404,7 @@ declare %ann:sequential function conf:test()
   
   conf:create-collection($conf:XQuery, $XQTS_catalog);
   conf:create-collection($conf:XQueryX, $XQTS_catalog);
-
-  variable $pageNameDetailed := "conformanceXQUTS";
-  variable $pathDetailed := fn:concat($conf:XQUTS_PATH, file:directory-separator(), $pageNameDetailed, ".dox"); 
   
-  file:write(trace($pathDetailed,"output file path"),
-             ("/** \page conformanceXQUTS  Detailed W3C XQuery Update Facility 1.0 conformance
-
-",
-             {conf:generate-detailed-table($XQTS_catalog)}
-,"
-*/"), 
-             $conf:serParamXhtml);
-
   variable $pageNameSummary := "conformanceXQUTSSummary";
   variable $pathSummary := fn:concat($conf:XQUTS_PATH, file:directory-separator(), $pageNameSummary, ".dox"); 
   
@@ -381,4 +419,19 @@ The following table shows the supported features:
 ,"
 */"), 
              $conf:serParamXhtml);
+
+  variable $pageNameDetailed := "conformanceXQUTS";
+  variable $pathDetailed := fn:concat($conf:XQUTS_PATH, file:directory-separator(), $pageNameDetailed, ".dox"); 
+  
+  file:write(trace($pathDetailed,"output file path"),
+             ("/** \page conformanceXQUTS  W3C XQuery Update Facility 1.0 Conformance.
+
+",
+             {conf:create-summary-string()},"
+",
+             {conf:generate-detailed-table($XQTS_catalog)}
+,"
+*/"), 
+             $conf:serParamXhtml);
+
 };
