@@ -112,8 +112,10 @@ int read_state(xs_short *clockseq, xs_unsignedLong *timestamp,
       return 0;
 #endif
 
-    fread(&st, sizeof st, 1, fp);
+    size_t lReadLength = fread(&st, sizeof st, 1, fp);
     fclose(fp);
+    if (lReadLength == 0)
+      return 0;
     inited = 1;
   }
   *clockseq = st.cs;
@@ -222,7 +224,7 @@ uuid_t NameSpace_DNS = { // 6ba7b810-9dad-11d1-80b4-00c04fd430c8
 };
 
 /* uuidToString -- transform a UUID to a string*/
-zstring uuidToString(uuid_t u)
+zstring uuidToString(const uuid_t& u)
 {
   char lBuffer[174];
   sprintf(lBuffer, "%8.8x-%4.4x-%4.4x-%2.2x%2.2x-9300a64ac3cd", u.time_low, u.time_mid,

@@ -34,7 +34,7 @@ typedef struct {
 int uuid_create(uuid_t * uuid);
 
 /* uuidToString -- transform a UUID to a string */
-zstring uuidToString(uuid_t uuid);
+zstring uuidToString(const uuid_t& uuid);
 
 } // namespace zorba
 #endif /* ZORBA_UTIL_UUID_H */

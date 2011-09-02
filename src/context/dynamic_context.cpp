@@ -202,11 +202,11 @@ void dynamic_context::reset_current_date_time()
   set_implicit_timezone(lTimeShift);//in seconds
 
   GENV_ITEMFACTORY->createDateTime(theCurrentDateTime,
-                                   gmtm.tm_year + 1900,
-                                   gmtm.tm_mon + 1,
-                                   gmtm.tm_mday,
-                                   gmtm.tm_hour,
-                                   gmtm.tm_min,
+                                   static_cast<short>(gmtm.tm_year + 1900),
+                                   static_cast<short>(gmtm.tm_mon + 1),
+                                   static_cast<short>(gmtm.tm_mday),
+                                   static_cast<short>(gmtm.tm_hour),
+                                   static_cast<short>(gmtm.tm_min),
                                    gmtm.tm_sec + timebuffer.millitm/1000.0,
                                    static_cast<short>(theTimezone/3600));
 
