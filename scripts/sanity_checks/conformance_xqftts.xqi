@@ -246,7 +246,7 @@ declare %ann:sequential function conf:create-tr-summary(
                       else if(($sumXQX div $total)*100 > 25) then 'palegreen' else 'coral'}">
           {if(exists($total) and ($total ne xs:integer(0))) 
            then concat($sumXQX,"/",$total) else ()}<br />
-           {if(conf:is-root-category(data($test-group/xqCat:GroupInfo/xqCat:title), $XQTS_catalog)) then concat($percentXQ,'%') else ()}</td>
+           {if(conf:is-root-category(data($test-group/xqCat:GroupInfo/xqCat:title), $XQTS_catalog)) then concat($percentXQX,'%') else ()}</td>
       </tr> else (),
       if(data($test-group/xqCat:GroupInfo/xqCat:title) = "Optional") then
         conf:create-tr-summary($test-group/xqCat:test-group, 

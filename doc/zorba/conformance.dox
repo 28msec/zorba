@@ -154,7 +154,7 @@ This is the W3C XQuery 1.0 conformance summary:
     <td align="center" bgcolor="mediumseagreen">21/21<br />100%</td>
   </tr>
   <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">FunctX -- A Collection Of Functions</td>
+    <td bgcolor="lightcyan">FunctX -- A Collection of Functions</td>
     <td align="center" bgcolor="mediumseagreen">1127/1127<br />100%</td>
     <td align="center" bgcolor="mediumseagreen">1127/1127<br />100%</td>
   </tr>
@@ -354,17 +354,17 @@ This is the W3C XQuery and XPath Full Text 1.0 conformance summary:
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Minimal Conformance</td>
     <td align="center" bgcolor="palegreen">384/429<br />89.51%</td>
-    <td align="center" bgcolor="coral">24/429<br />89.51%</td>
+    <td align="center" bgcolor="coral">24/429<br />5.59%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Optional Features</td>
     <td align="center" bgcolor="palegreen">106/125<br />84.8%</td>
-    <td align="center" bgcolor="coral">0/125<br />84.8%</td>
+    <td align="center" bgcolor="coral">0/125<br />0%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Use Cases</td>
     <td align="center" bgcolor="palegreen">121/135<br />89.63%</td>
-    <td align="center" bgcolor="coral">0/135<br />89.63%</td>
+    <td align="center" bgcolor="coral">0/135<br />0%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Consistency in XQFTTS Catalog</td>
