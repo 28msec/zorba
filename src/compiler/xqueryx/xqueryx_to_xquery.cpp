@@ -76,7 +76,7 @@ void XQueryXConvertor::zorba_xslt_error_handler(void *ctx, const char *msg, ...)
   buffer = (char*)malloc( len * sizeof(char) );
 
   vsnprintf( buffer, len, msg, args );
-  *errstr = buffer;
+  *errstr += buffer;
   free(buffer);
 }
 
@@ -89,6 +89,7 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
   //setup libxml
   xmlSubstituteEntitiesDefault(1);
   xmlLoadExtDtdDefaultValue = 1;
+  errstr.clear();
   xmlSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
   xsltSetGenericErrorFunc(&errstr, zorba_xslt_error_handler);
 

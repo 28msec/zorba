@@ -9,6 +9,7 @@ version 2.x
   * documentation improvements
   * installer improvements
   * Fixed bug #3403291 (build for Fedora 15)
+  * Fixed bug #3397293 (Incorrect XQueryX error message)
 
 version 2.0.1
 
