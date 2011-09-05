@@ -63,6 +63,7 @@ private:
 
 class ICU_TokenizerProvider : public TokenizerProvider {
 public:
+  ICU_TokenizerProvider () {}
   // inherited
   Tokenizer::ptr
   getTokenizer( locale::iso639_1::type, Tokenizer::Numbers& ) const;

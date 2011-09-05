@@ -16,6 +16,7 @@
 #ifndef ZORBA_FUNCTION_API_H
 #define ZORBA_FUNCTION_API_H
 
+#include <cstddef>
 #include <vector>
 
 #include <zorba/config.h>

@@ -15,6 +15,7 @@
  */
 #include "stdafx.h"
 
+#include <cstddef>
 #include "api/functionimpl.h"
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"

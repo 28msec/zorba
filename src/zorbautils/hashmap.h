@@ -21,6 +21,7 @@
 #endif
 
 
+#include <cstddef>
 #include <zorba/config.h>
 
 #include "common/common.h"
