@@ -161,6 +161,26 @@ static bool hoist_expressions(
         // TODO: the expr that was just hoisted here, may contain sub-exprs that
         // can be hoisted even earlier. 
       }
+      else if (domainExpr->is_sequential())
+      {
+        struct flwor_holder root;
+        bool hoisted = hoist_expressions(rCtx,
+                                         domainExpr,
+                                         varmap,
+                                         freevarMap,
+                                         &root);
+        if (hoisted)
+        {
+          if (root.flwor != NULL)
+          {
+            root.flwor->set_return_expr(domainExpr);
+            flc->set_expr(root.flwor);
+          }
+
+          status = true;
+          assert(numForLetClauses == flwor->num_forlet_clauses());
+        }
+      }
       else
       {
         bool hoisted = hoist_expressions(rCtx,
@@ -171,7 +191,6 @@ static bool hoist_expressions(
         if (hoisted)
         {
           status = true;
-
           numForLetClauses = flwor->num_forlet_clauses();
         }
       }
@@ -184,6 +203,8 @@ static bool hoist_expressions(
     expr_t we = flwor->get_where();
     if (we != NULL)
     {
+      ZORBA_ASSERT(!we->is_sequential());
+
       expr_t unhoistExpr = try_hoisting(rCtx, we, varmap, freevarMap, &curr_holder);
       if (unhoistExpr != NULL)
       {
@@ -200,16 +221,31 @@ static bool hoist_expressions(
 
     expr_t re = flwor->get_return_expr();
     expr_t unhoistExpr = try_hoisting(rCtx, re, varmap, freevarMap, &curr_holder);
+
     if (unhoistExpr != NULL)
     {
       flwor->set_return_expr(unhoistExpr.getp());
       status = true;
+    }
+    else if (re->is_sequential())
+    {
+      struct flwor_holder root;
+      bool nestedModified = hoist_expressions(rCtx, re, varmap, freevarMap, &root);
+
+      if (nestedModified && root.flwor != NULL)
+      {
+        root.flwor->set_return_expr(re);
+        flwor->set_return_expr(root.flwor);
+      }
+
+      status = nestedModified || status;
     }
     else
     {
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
     }
   }
+
   else if (e->get_expr_kind() == block_expr_kind || e->is_sequential())
   {
     ExprIterator iter(e);
@@ -235,6 +271,7 @@ static bool hoist_expressions(
       iter.next();
     }
   }
+
   else if (e->is_updating() ||
            e->get_expr_kind() == gflwor_expr_kind ||
            e->get_expr_kind() == transform_expr_kind)
