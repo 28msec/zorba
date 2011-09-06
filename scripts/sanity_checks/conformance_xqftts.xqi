@@ -391,10 +391,13 @@ declare %private function conf:create-summary-string() as xs:string
   return
     concat("Zorba achieves ",
             $minConf, 
-            "% on Minimal conformance (", 
-            string-join(( for $number in $conf:numbers/number where xs:string($number/@name) ne "Minimal Conformance" 
+            "% on minimal conformance (", 
+            string-join(( for $number in $conf:numbers/number where xs:string($number/@name) eq "Optional Features" 
                           return concat(xs:string(data($number/@value)),"% on ",xs:string(data($number/@name)))),", "),
-            ") on the W3C Test Suite for the XQuery and XPath Full Text 1.0.")
+            ") for the W3C XPath Full Text 1.0 Test Suite.
+            
+Please see the table below for more details.")
+")
 };
 
 declare %ann:sequential function conf:test()
