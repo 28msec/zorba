@@ -10,6 +10,9 @@ version 2.x
   * installer improvements
   * Fixed bug #3403291 (build for Fedora 15)
   * Fixed bug #3397293 (Incorrect XQueryX error message)
+  * Fixed bug #3398637 (Nested element constructors cause loss of namespace bindings)
+  * Temporary fix for bug #3404450
+  * Fixed bug #3401592 (Undo of Create Collection doesn't work)
   * Fixed bug #3404689 (assignment problem in flwor)
   * Fixed bug #3398637 (Nested element constructors cause loss of namespace
   bindings)

@@ -2031,7 +2031,7 @@ void CollectionPul::applyUpdates()
 
 #ifndef ZORBA_NO_XMLSCHEMA
     // Revalidate the updated docs
-    if (thePul->theValidator != NULL)
+    if (thePul->theValidator != NULL && !theValidationNodes.empty())
     {
       store::PUL_t validationPul =
       GET_STORE().getItemFactory()->createPendingUpdateList();

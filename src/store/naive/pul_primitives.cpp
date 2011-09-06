@@ -793,7 +793,7 @@ void UpdCreateCollection::undo()
 {
   try
   {
-    GET_STORE().deleteCollection(theName);
+    GET_STORE().deleteCollection(theName, theDynamicCollection);
   }
   catch (...)
   {

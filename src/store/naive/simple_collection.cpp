@@ -33,19 +33,18 @@ namespace zorba { namespace simplestore {
 
 ********************************************************************************/
 SimpleCollection::SimpleCollection(
-    store::Item_t& aName,
+    const store::Item_t& aName,
     uint32_t aFlags,
     const store::Item_t& aNodeType,
     bool aDynamicCollection)
   : 
+  theName(aName),
   theIsDynamic(aDynamicCollection),
   theTreeCounter(1),
   theFlags(aFlags),
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
-
-  theName.transfer(aName);
 }
 
 /*******************************************************************************
