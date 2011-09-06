@@ -1320,10 +1320,17 @@ void static_context::compute_base_uri()
 }
 
 
-/***************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  URI Absolutization                                                        //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
-zstring
-static_context::resolve_relative_uri(
+
+/***************************************************************************//**
+
+********************************************************************************/
+zstring static_context::resolve_relative_uri(
     const zstring& aUri,
     bool aValidate) const
 {
@@ -1332,8 +1339,11 @@ static_context::resolve_relative_uri(
   return lResolvedUri.toString();
 }
 
-zstring
-static_context::resolve_relative_uri(
+
+/***************************************************************************//**
+
+********************************************************************************/
+zstring static_context::resolve_relative_uri(
     const zstring& aRelativeUri,
     const zstring& aBaseUri,
     bool aValidate) const
@@ -1350,36 +1360,52 @@ static_context::resolve_relative_uri(
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 void static_context::add_uri_mapper(impl::URIMapper* aMapper)
 {
   theURIMappers.push_back(std::auto_ptr<impl::URIMapper>(aMapper));
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 void static_context::add_url_resolver(impl::URLResolver* aResolver)
 {
   theURLResolvers.push_back(std::auto_ptr<impl::URLResolver>(aResolver));
 }
 
-// Helper class for resolve_uri()
+
+/***************************************************************************//**
+  Helper class for resolve_uri()
+********************************************************************************/
 class SimpleEntityData : public impl::EntityData
 {
 public:
-  SimpleEntityData(impl::EntityData::Kind aKind)
-    : theKind(aKind)
+  SimpleEntityData(impl::EntityData::Kind aKind) : theKind(aKind)
   {
   }
+
   virtual impl::EntityData::Kind getKind() const
   {
     return theKind;
   }
+
 private:
   impl::EntityData::Kind const theKind;
 };
 
-std::auto_ptr<impl::Resource>
-static_context::resolve_uri
-(zstring const& aUri, impl::EntityData::Kind aEntityKind,
- zstring& oErrorMessage) const
+
+/***************************************************************************//**
+
+********************************************************************************/
+std::auto_ptr<impl::Resource> static_context::resolve_uri(
+    zstring const& aUri, 
+    impl::EntityData::Kind aEntityKind,
+    zstring& oErrorMessage) const
 {
   // Create a simple EntityData that just reports the specified Kind
   SimpleEntityData const lData(aEntityKind);
@@ -1393,24 +1419,31 @@ static_context::resolve_uri
   return lRetval;
 }
 
-void
-static_context::get_component_uris
-(zstring const& aUri, impl::EntityData::Kind aEntityKind,
-  std::vector<zstring>& oComponents) const
+
+void static_context::get_component_uris(
+    zstring const& aUri,
+    impl::EntityData::Kind aEntityKind,
+    std::vector<zstring>& oComponents) const
 {
   // Create a simple EntityData that just reports the specified Kind
   SimpleEntityData const lData(aEntityKind);
 
   apply_uri_mappers(aUri, &lData, impl::URIMapper::COMPONENT, oComponents);
-  if (oComponents.size() == 0) {
+  if (oComponents.size() == 0) 
+  {
     oComponents.push_back(aUri);
   }
 }
 
-void
-static_context::apply_uri_mappers
-(zstring const& aUri, impl::EntityData const* aEntityData,
-  impl::URIMapper::Kind aMapperKind, std::vector<zstring>& oUris) const
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::apply_uri_mappers(
+    zstring const& aUri, 
+    impl::EntityData const* aEntityData,
+    impl::URIMapper::Kind aMapperKind, 
+    std::vector<zstring>& oUris) const
 {
   // Initialize list with the one input URI.
   oUris.push_back(aUri);
@@ -1425,7 +1458,8 @@ static_context::apply_uri_mappers
          mapper != sctx->theURIMappers.end(); mapper++)
     {
       // Only call mappers of the appropriate kind
-      if ((*mapper)->mapperKind() != aMapperKind) {
+      if ((*mapper)->mapperKind() != aMapperKind) 
+      {
         continue;
       }
 
@@ -1440,14 +1474,17 @@ static_context::apply_uri_mappers
         size_t const lPreNumResultUris = lResultUris.size();
         (*mapper)->mapURI(*uri, aEntityData, *this, lResultUris);
         size_t const lPostNumResultUris = lResultUris.size();
-        if (lPreNumResultUris == lPostNumResultUris) {
+        if (lPreNumResultUris == lPostNumResultUris) 
+        {
           // Mapper didn't map this URI to anything new, therefore add
           // the original URI to the result list
           lResultUris.push_back(*uri);
         }
-        else {
+        else 
+        {
           // Check the new entries for DENY_ACCESS.
-          for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++) {
+          for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++) 
+          {
             if (lResultUris.at(i) == impl::URIMapper::DENY_ACCESS) {
               throw XQUERY_EXCEPTION(zerr::ZXQP0029_URI_ACCESS_DENIED,
                                      ERROR_PARAMS(aUri));
@@ -1463,17 +1500,22 @@ static_context::apply_uri_mappers
   }
 }
 
-void
-static_context::apply_url_resolvers
-(std::vector<zstring>& aUrls, impl::EntityData const* aEntityData,
-  std::auto_ptr<impl::Resource>& oResource, zstring& oErrorMessage) const
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::apply_url_resolvers(
+    std::vector<zstring>& aUrls,
+    impl::EntityData const* aEntityData,
+    std::auto_ptr<impl::Resource>& oResource, 
+    zstring& oErrorMessage) const
 {
   oErrorMessage = "";
 
   // Iterate through all candidate URLs...
   for (std::vector<zstring>::iterator url = aUrls.begin();
-       url != aUrls.end(); url++) {
-
+       url != aUrls.end(); url++) 
+  {
     // Iterate upwards through the static_context tree...
     for (static_context const* sctx = this;
          sctx != NULL; sctx = sctx->theParent)
@@ -1483,26 +1525,32 @@ static_context::apply_url_resolvers
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
-        try {
+        try 
+        {
           // if the http-client module is not available, we must not search
           // for it by calling the http-client...
-          if (*url != "http://www.zorba-xquery.com/modules/http-client") {
+          if (*url != "http://www.zorba-xquery.com/modules/http-client") 
+          {
             // Take ownership of returned Resource (if any)
             oResource.reset((*resolver)->resolveURL(*url, aEntityData));
-            if (oResource.get() != NULL) {
+            if (oResource.get() != NULL) 
+            {
               // Populate the URL used to load this Resource
               oResource->setUrl(*url);
               return;
             }
           }
         }
-        catch (const std::exception& e) {
-          if (oErrorMessage == "") {
+        catch (const std::exception& e) 
+        {
+          if (oErrorMessage == "") 
+          {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();
           }
         }
-        catch (...) {
+        catch (...) 
+        {
           // Not much we can do here except try the rest of the
           // candidate URIs
         }
@@ -1510,32 +1558,6 @@ static_context::apply_url_resolvers
     }
   }
 }
-
-
-#ifndef ZORBA_NO_FULL_TEXT
-
-internal::Thesaurus::ptr
-static_context::get_thesaurus( zstring const &uri, iso639_1::type lang ) const {
-  FOR_EACH( thesaurus_providers_t, p, theThesaurusProviders ) {
-    internal::Thesaurus::ptr t( (*p)->get_thesaurus( uri, lang ) );
-    if ( t.get() )
-      return std::move( t );
-  }
-  return theParent ?
-    theParent->get_thesaurus( uri, lang ) :
-    internal::ThesaurusProvider::get_default_provider()
-      .get_thesaurus( uri, lang );
-}
-
-void static_context::remove_thesaurus_provider(
-    internal::ThesaurusProvider const *p ) {
-  ztd::erase_1st_if(
-    theThesaurusProviders,
-    std::bind2nd( std::equal_to<internal::ThesaurusProvider const*>(), p )
-  );
-}
-
-#endif /* ZORBA_NO_FULL_TEXT */
 
 
 /*******************************************************************************
@@ -1569,12 +1591,17 @@ void static_context::get_full_module_paths(std::vector<zstring>& paths) const
   get_module_paths(paths);
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Validating Items                                                           //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 bool static_context::validate(
     store::Item* rootElement,
     store::Item_t& validatedResult,
@@ -1585,6 +1612,9 @@ bool static_context::validate(
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 bool static_context::validate(
     store::Item* rootElement,
     store::Item_t& validatedResult,
@@ -1630,6 +1660,10 @@ bool static_context::validate(
   return false;
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 bool static_context::validateSimpleContent(
     zstring& stringValue,
     store::Item* typeQName,
@@ -3972,6 +4006,33 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     }
   }
 }
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+internal::Thesaurus::ptr
+static_context::get_thesaurus( zstring const &uri, iso639_1::type lang ) const {
+  FOR_EACH( thesaurus_providers_t, p, theThesaurusProviders ) {
+    internal::Thesaurus::ptr t( (*p)->get_thesaurus( uri, lang ) );
+    if ( t.get() )
+      return std::move( t );
+  }
+  return theParent ?
+    theParent->get_thesaurus( uri, lang ) :
+    internal::ThesaurusProvider::get_default_provider()
+      .get_thesaurus( uri, lang );
+}
+
+void static_context::remove_thesaurus_provider(
+    internal::ThesaurusProvider const *p ) {
+  ztd::erase_1st_if(
+    theThesaurusProviders,
+    std::bind2nd( std::equal_to<internal::ThesaurusProvider const*>(), p )
+  );
+}
+
+#endif /* ZORBA_NO_FULL_TEXT */
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

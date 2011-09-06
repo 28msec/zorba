@@ -128,15 +128,12 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
 
   if (var == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS(
-        BUILD_STRING(
-          '{', qnameItem->getNamespace(), '}', qnameItem->getLocalName()
-        ),
-        ZED( Variable )
-      )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0008,
+    ERROR_PARAMS(BUILD_STRING('{',
+                              qnameItem->getNamespace(),
+                              '}',
+                              qnameItem->getLocalName()),
+                 ZED(Variable)));
   }
 
   return var;
@@ -148,8 +145,7 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
   and localname), return the var_expr node that represents this variable within
   the expression tree. The var_expr can be found within the static context that
   the variable  belongs to. This method will search through all static contexts,
-  including library modules, for a matching variable
-  declaration.
+  including library modules, for a matching variable declaration.
 ********************************************************************************/
 var_expr* DynamicContextImpl::get_var_expr(
     const zstring& inVarUri,
@@ -179,12 +175,8 @@ var_expr* DynamicContextImpl::get_var_expr(
 
   if (var == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS(
-        BUILD_STRING( '{', inVarUri, '}', inVarLocalName ), ZED( Variable )
-      )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0008,
+    ERROR_PARAMS(BUILD_STRING('{', inVarUri, '}', inVarLocalName ), ZED(Variable)));
   }
 
   return var;
@@ -244,10 +236,10 @@ bool DynamicContextImpl::setVariable(
     checkNoIterators();
 
     if (!inValue.get())
-      throw ZORBA_EXCEPTION(
-        zerr::ZAPI0014_INVALID_ARGUMENT,
-        ERROR_PARAMS( "null", ZED( BadIterator ) )
-      );
+    {
+      throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS("null", ZED(BadIterator)));
+    }
 
     const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
     const zstring& localName = Unmarshaller::getInternalString(inLocalname);
@@ -302,15 +294,18 @@ bool DynamicContextImpl::setVariable(
     // For string items, check that the value is a valid Unicode codepoint sequence
     const char* invalid_char;
     TypeManager* tm = theStaticContext->get_typemanager();
+    RootTypeManager& rtm = GENV_TYPESYSTEM;
+
     xqtref_t itemType = tm->create_value_type(value);
-    if (value->isStreamable() == false
-        &&
-        TypeOps::is_equal(tm, *itemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE, QueryLoc::null)
-        &&
+
+    if (value->isStreamable() == false &&
+        TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
         (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001, ERROR_PARAMS( zstring("#x")
-          + BUILD_STRING(std::uppercase << std::hex << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+      throw XQUERY_EXCEPTION(err::FOCH0001, 
+      ERROR_PARAMS(zstring("#x") + 
+      BUILD_STRING(std::uppercase << std::hex
+                   << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
     }
 
     try
@@ -353,10 +348,10 @@ bool DynamicContextImpl::setVariable(
     checkNoIterators();
 
     if (!inValue.get())
-      throw ZORBA_EXCEPTION(
-        zerr::ZAPI0014_INVALID_ARGUMENT,
-        ERROR_PARAMS( "null", ZED( BadIterator ) )
-      );
+    {
+      throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS("null", ZED( BadIterator)));
+    }
 
     const zstring& varName = Unmarshaller::getInternalString(inVarName);
     store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
@@ -388,6 +383,7 @@ bool DynamicContextImpl::setVariable(
   return false;
 }
 
+
 /****************************************************************************//**
 
 ********************************************************************************/
@@ -396,6 +392,7 @@ bool DynamicContextImpl::setContextItem(const Item& inValue)
   String varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
   return setVariable(varName, inValue);
 }
+
 
 /****************************************************************************//**
 

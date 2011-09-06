@@ -83,26 +83,26 @@ protected:
 public:
   virtual bool
   getVariable(
-    const String& inNamespace,
-    const String& inLocalname,
-    Item& outItem,
-    Iterator_t& outIterator) const;
+      const String& inNamespace,
+      const String& inLocalname,
+      Item& outItem,
+      Iterator_t& outIterator) const;
 
   virtual bool
   setVariable(
-        const String& inVarName,
-        const Item& inValue);
+      const String& inVarName,
+      const Item& inValue);
 
   virtual bool
   setVariable(
-        const String& inVarName,
-        const Iterator_t& inValue);
+      const String& inVarName,
+      const Iterator_t& inValue);
 
   virtual bool
   setVariable(
-    const String& inNamespace,
-    const String& inLocalname,
-    const Iterator_t& inValue);
+      const String& inNamespace,
+      const String& inLocalname,
+      const Iterator_t& inValue);
 
   virtual bool
   setContextItem(const Item& inValue);

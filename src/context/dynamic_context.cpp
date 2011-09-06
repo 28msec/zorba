@@ -49,6 +49,7 @@
 #include "util/string_util.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 
 using namespace std;
 
@@ -266,11 +267,8 @@ void dynamic_context::set_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPDY0002,
-      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPDY0002, loc,
+    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
   }
 
   valueIter->open();
@@ -325,11 +323,8 @@ void dynamic_context::set_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPDY0002,
-      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPDY0002, loc,
+    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
   }
 
   VarValue& var = theVarValues[varid];
