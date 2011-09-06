@@ -1,6 +1,8 @@
 /** \page conformanceXQTS  W3C XQuery 1.0 Conformance.
 
- Zorba achieves 99.95% correctness (99.99% on Minimal Conformance, 99.63% on Optional Features, 100% on Tests for the appendices., 100% on Use Cases, 100% on XMark -- An XML Benchmark, 100% on FunctX -- A Collection Of Functions, 100% on Consistency in XQTS Catalog) for the W3C Test Suite for the XQuery 1.0. 
+Zorba achieves 99.99% on minimal conformance (and 99.63% on Optional Features) for the W3C XML Query Test Suite.
+Please see the table below for more details.
+
 <table bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery 1.0 features</td>

@@ -389,13 +389,14 @@ declare function conf:generate-features-table()
 
 declare %private function conf:create-summary-string() as xs:string
 {
-  let $average := avg(for $number in $conf:numbers/number return xs:decimal(data($number/@value)))
+  let $minConf := for $number in $conf:numbers/number where xs:string($number/@name) eq "Minimal Conformance" return xs:string(data($number/@value))
   return
     concat("Zorba achieves ",
-            conf:round-decimal($average), 
-            "% correctness (",
-            string-join((for $number in $conf:numbers/number return concat(xs:string(data($number/@value)),"% on ",xs:string(data($number/@name)))),", "),
-            ") for the W3C Test Suite for the XQuery Update Facility 1.0.")
+            $minConf, 
+            "% on Minimal conformance (", 
+            string-join(( for $number in $conf:numbers/number where xs:string($number/@name) ne "Minimal Conformance" 
+                          return concat(xs:string(data($number/@value)),"% on ",xs:string(data($number/@name)))),", "),
+            ") on the W3C Test Suite for the XQuery Update Facility 1.0.")
 };
 
 declare %ann:sequential function conf:test()

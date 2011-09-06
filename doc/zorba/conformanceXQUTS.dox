@@ -1,6 +1,8 @@
 /** \page conformanceXQUTS  W3C XQuery Update Facility 1.0 Conformance.
 
- Zorba achieves 92.86% correctness (100% on Minimal Conformance, 78.57% on Optional Features, 100% on Use Cases) for the W3C Test Suite for the XQuery Update Facility 1.0. 
+Zorba achieves 100% on minimal conformance (and 78.57% on Optional Features) for the XQuery Update Facility Test Suite.
+Please see the table below for more details.
+
 <table bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery Update Facility 1.0 features</td>
