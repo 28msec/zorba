@@ -1796,15 +1796,13 @@ XmlNode* ElementNode::copyInternal(
           // has a default ns binding, then undeclare this default binding.
           const zstring& prefix = theName->getPrefix();
           const zstring& nsuri = theName->getNamespace();
-          if (prefix.empty() &&
-              nsuri.empty() &&
-              rootParent->getNodeKind() == store::StoreConsts::elementNode)
+          if (prefix.empty() && nsuri.empty())
           {
             zstring ns;
             if (reinterpret_cast<ElementNode*>(rootParent)->findBinding(prefix, ns))
               copyNode->addLocalBinding(prefix, nsuri);
           }
-
+          
           copyNode->setNsContext(rootNsContext);
         }
       }
@@ -1817,6 +1815,22 @@ XmlNode* ElementNode::copyInternal(
         {
           copyNode->theNsContext = new NsBindingsContext(getLocalBindings());
           copyNode->theFlags |= HaveLocalBindings;
+        }
+
+        if (rootParent &&
+            rootParent->getNodeKind() == store::StoreConsts::elementNode &&
+            copymode.theNsInherit)
+        {
+          // If "this" does not belong to any namespace and the root parent
+          // has a default ns binding, then undeclare this default binding.
+          const zstring& prefix = theName->getPrefix();
+          const zstring& nsuri = theName->getNamespace();
+          if (prefix.empty() && nsuri.empty())
+          {
+            zstring ns;
+            if (reinterpret_cast<ElementNode*>(rootParent)->findBinding(prefix, ns))
+              copyNode->addLocalBinding(prefix, nsuri);
+          }
         }
 
         if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)

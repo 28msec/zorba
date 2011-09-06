@@ -393,14 +393,18 @@ void set_var(
 #endif
 
     zorba::XmlDataManager* lXmlMgr =
-        zorba::Zorba::getInstance(NULL)->getXmlDataManager();
+    zorba::Zorba::getInstance(NULL)->getXmlDataManager();
+
     zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
+
     zorba::Item lDoc;
-    if (lDocMgr->isAvailableDocument(val)) {
-        lDoc = lDocMgr->document(val);
+    if (lDocMgr->isAvailableDocument(val)) 
+    {
+      lDocMgr->remove(val);
     }
-    else {
-      const char *val_fname = val.c_str ();
+
+    {
+      const char* val_fname = val.c_str();
       std::ifstream ifile(val_fname);
       if (! ifile || !ifile.is_open() )
       {
@@ -417,8 +421,8 @@ void set_var(
 #else
       std::string file_scheme = "file:///";
 #endif
-      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(
-          ifile, file_scheme + val, lOptions);
+      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, file_scheme + val, lOptions);
+
       zorba::Iterator_t lIter = lSeq->getIterator();
       lIter->open();
       lIter->next(lDoc);
