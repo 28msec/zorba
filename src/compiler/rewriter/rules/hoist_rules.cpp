@@ -174,7 +174,7 @@ static bool hoist_expressions(
           if (root.flwor != NULL)
           {
             root.flwor->set_return_expr(domainExpr);
-            flc->set_expr(root.flwor);
+            flc->set_expr(root.flwor.getp());
           }
 
           status = true;
