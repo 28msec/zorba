@@ -116,9 +116,9 @@ and other similar procedural extensions to XQuery.
 
 \section overview_conformance Conformance
 
-Please check the summary and the detailed XQuery W3C Test Suite results bellow:
+Please check the summary and the detailed XQuery W3C Test Suite results below:
 <ul>
-    <li> \ref conformance
+    <li> \ref conformance 
     <li> \ref conformanceXQTS
     <li> \ref conformanceXQUTS
     <li> \ref conformanceXQFTTS

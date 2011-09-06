@@ -121,7 +121,7 @@ Data can be loaded in any container -- static or dynamic --  and after that it w
 Please refer to the section below on various Zorba stores.
 
 Also please note that a data container that is available in the store will be available to all XQuery programs that are being executed synchronously.
-Again, please read more about the Zorba Data Stores bellow about data consistency details.
+Again, please read more about the Zorba Data Stores below about data consistency details.
 
 \section dl_examples Examples
 In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers.

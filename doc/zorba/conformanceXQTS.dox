@@ -1,4 +1,4 @@
-/** \page conformanceXQTS  W3C XQuery 1.0 Conformance.
+/** \page conformanceXQTS  W3C XQuery 1.0 Conformance
 
 Zorba achieves 99.99% on minimal conformance (and 99.63% on Optional Features) for the W3C XML Query Test Suite.
 Please see the table below for more details.
