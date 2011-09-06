@@ -6,18 +6,9 @@ The summary of the Zorba conformance results for the
 For more information, please refer to the following pages that contain detailed testing results:
 
 <ul>
-  <li> W3C XQuery 1.0
-  <ul>
-    <li> \ref conformanceXQTS
-  </ul>
-  <li> W3C XQuery Update Facility 1.0
-  <ul>
-    <li> \ref conformanceXQUTS
-  </ul>
-  <li> W3C XQuery and XPath Full Text 1.0
-  <ul>
-    <li> \ref conformanceXQFTTS
-  </ul>
+  <li> \ref conformanceXQTS
+  <li> \ref conformanceXQUTS
+  <li> \ref conformanceXQFTTS
 </ul>
 
 

@@ -14,6 +14,8 @@
 
 # generate host language and manually written documentation using doxygen
 # this adds a custom target called "zorbadocs"
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/indexpage.dox.in ${CMAKE_CURRENT_BINARY_DIR}/indexpage.dox)
+
 ZORBA_DOXYGEN("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "zorbadocs")
 
 IF (DOXYGEN_FOUND)

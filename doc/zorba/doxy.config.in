@@ -451,6 +451,7 @@ WARN_LOGFILE           = Doc/doxy.log
 # with spaces.
 
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@ \
+                         @CMAKE_CURRENT_BINARY_DIR@ \
                          @CMAKE_SOURCE_DIR@/include/zorba \
                          @CMAKE_CURRENT_SOURCE_DIR@/manual
 

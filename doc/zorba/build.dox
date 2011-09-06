@@ -60,10 +60,7 @@ In order to build Zorba, you need the following libraries and development header
 - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
 - ICU4C 3.6 or later (http://www.icu-project.org/)
 - Xerces-C 2.8.0, 3.0.0 or later (http://xerces.apache.org/xerces-c/)
-  - used for schema support
-  - <strong>required only if</strong> the \c ZORBA_NO_XMLSCHEMA build flag
-    is not switched to \c OFF.
-    Default is \c ON.
+  - <strong>only required if</strong> built with schema support (i.e. \c ZORBA_NO_XMLSCHEMA=ON; default: \c OFF)
 
 \subsection optional Optional Packages
 - for REST and HTTP support:
