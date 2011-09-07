@@ -65,7 +65,7 @@ public:
      */
     virtual bool next( String *synonym ) = 0;
   protected:
-    virtual ~iterator();
+    virtual ~iterator() {}
   };
 
   /**

@@ -25,9 +25,9 @@ Thesaurus::~Thesaurus() {
   // out-of-line since it's virtual
 }
 
-Thesaurus::iterator::~iterator() {
-  // out-of-line since it's virtual
-}
+//Thesaurus::iterator::~iterator() {
+//  // out-of-line since it's virtual
+//}
 
 ThesaurusProvider::~ThesaurusProvider() {
   // out-of-line since it's virtual
