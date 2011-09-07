@@ -235,7 +235,7 @@ static bool hoist_expressions(
       if (nestedModified && root.flwor != NULL)
       {
         root.flwor->set_return_expr(re);
-        flwor->set_return_expr(root.flwor);
+        flwor->set_return_expr(root.flwor.getp());
       }
 
       status = nestedModified || status;
