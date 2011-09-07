@@ -266,17 +266,20 @@ MACRO (DECLARE_ZORBA_MODULE)
     )
     TARGET_LINK_LIBRARIES(${module_lib_target}
       zorba_${ZORBA_STORE_NAME} ${MODULE_LINK_LIBRARIES})
-      
+
+    # Install the library, if it's not a TEST_ONLY module
+    IF (NOT MODULE_TEST_ONLY)
       IF(NOT ${PROJECT_NAME} STREQUAL "zorba")
         STRING(REPLACE "-" "_"  component_name ${PROJECT_NAME})
         INSTALL(TARGETS ${module_lib_target}
-        ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path}
-        COMPONENT ${component_name})
-        
+          ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path}
+          COMPONENT ${component_name})
+      
       ELSE(NOT ${PROJECT_NAME} STREQUAL "zorba")
         INSTALL(TARGETS ${module_lib_target}
-        ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path})
+          ${target_type} DESTINATION ${ZORBA_MODULES_INSTALL_DIR}/${module_path})
       ENDIF(NOT ${PROJECT_NAME} STREQUAL "zorba")
+    ENDIF (NOT MODULE_TEST_ONLY)
       
   ENDIF(MODULE_EXTRA_SOURCES OR EXISTS "${SOURCE_FILE}.src/")
 
