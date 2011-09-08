@@ -115,9 +115,9 @@ In the following, please find a list of required libraries.
 - email
   - IMAP CClient (http://www.washington.edu/imap/)
 - geo
-  GEOS version 3.2.2 or later (http://trac.osgeo.org/geos/)
+  - GEOS version 3.2.2 or later (http://trac.osgeo.org/geos/)
 - EXPath http-client
-  CURL 7.12 or later (http://curl.haxx.se/)
+  - CURL 7.12 or later (http://curl.haxx.se/)
 - image
   - ImageMagick (http://www.imagemagick.org)
 - languages (XSLT)
