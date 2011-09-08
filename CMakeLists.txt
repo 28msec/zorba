@@ -67,7 +67,10 @@ ENDIF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 # turn on the folder grouping used by IDEs (VS or XCode)
-SET_PROPERTY (GLOBAL PROPERTY USE_FOLDERS ON)
+SET(ZORBA_USE_TARGET_FOLDERS ON CACHE BOOL "Activate use of target grouping into folders")
+IF(ZORBA_USE_TARGET_FOLDERS)
+  SET_PROPERTY (GLOBAL PROPERTY USE_FOLDERS ON)
+ENDIF(ZORBA_USE_TARGET_FOLDERS)
 
 ###############################################################################
 # Check for system include files, features, etc.
@@ -390,6 +393,11 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
+  
+  # Clear this variable because this is used only for this build.
+  # A cache variable is needed since this must be modified by subdirectories
+  # and be visible at this level when ZORBA_GENERATE_EXE_SCRIPTS_WIN32 is called
+  SET(ZORBA_EXE_SCRIPT_LIST "" CACHE STRING "List of bat scripts" FORCE)
 ENDIF(WIN32)
 
 ################################################################################
