@@ -1,0 +1,32 @@
+<products>
+  <product>
+    <name>broiler</name>
+    <category>kitchen</category>
+    <price>200</price>
+    <cost>70</cost>
+  </product>
+  <product>
+    <name>toaster</name>
+    <category>kitchen</category>
+    <price>60</price>
+    <cost>10</cost>
+  </product>
+  <product>
+    <name>blender</name>
+    <category>kitchen</category>
+    <price>100</price>
+    <cost>25</cost>
+  </product>
+  <product>
+    <name>socks</name>
+    <category>clothes</category>
+    <price>20</price>
+    <cost>2</cost>
+  </product>
+  <product>
+    <name>shirt</name>
+    <category>clothes</category>
+    <price>20</price>
+    <cost>3</cost>
+  </product>
+</products>

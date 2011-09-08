@@ -304,6 +304,11 @@ Analogously, a main memory store does not provide persistence of data across pro
 The Zorba source distribution as well as the packages provided by <a href="http://www.zorba-xquery.com/">http://www.zorba-xquery.com/</a> come with a main memory based store.
 The lifecycle of the data in this store is bounded by the lifetime of the process in which it is running.
 For example, a document added to the store can be accessed by XQuery programs in the same process.
-As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the document is destroyed and changes to the data are not propagated to any persistence storage.
+As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the default in-memory store will destroy the XML data it contains.
+Changes to this data are not propagated automatically to any persistence storage.
 
+However, propagating the data from the in-memory store to a persistent storage can be achieved manually using the <a href="http://www.w3.org/TR/xpath-functions-30/#func-serialize">XML serializer</a> and the <a href="../../zorba/xqdoc/xhtml/expath.org_ns_file.html">file module</a>.
+For example:
+
+\include zorba/file/file_read_serialize.xq
 */
