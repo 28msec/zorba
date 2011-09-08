@@ -7,10 +7,8 @@
       <ul>
         <li> \ref buildsystem
         <li> \ref compilers
-        <li> \ref required
-        <li> \ref optional
+        <li> \ref required_libs
         <li> \ref buildingzorba
-        <li> \ref buildoptions
       </ul>
       <li> \ref buildcclient
       <ul>
@@ -27,11 +25,6 @@
         <li> \ref imagemagickunix
         <li> \ref imagemagickwindows
       </ul>  
-      <li> \ref mac
-      <ul>
-        <li> \ref universal
-        <li> \ref mac_installer
-      </ul>
       <li> \ref windows
       <ul>
         <li> \ref nmake
@@ -54,39 +47,85 @@ Zorba is tested with the following compilers:
 - GNU Compiler: GCC 3.4.x (32-bit & 64-bit) and GCC 4.x.x
 - Microsoft Compiler: MS VC++ 2008, and MS VC++ 2010
 
-\subsection required Required Packages
-In order to build Zorba, you need the following libraries and development headers to be installed:
-- Libxml2 2.2.16 or later (http://xmlsoft.org/)
-- Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
-- ICU4C 3.6 or later (http://www.icu-project.org/)
-- Xerces-C 2.8.0, 3.0.0 or later (http://xerces.apache.org/xerces-c/)
-  - <strong>only required if</strong> built with schema support (i.e. \c ZORBA_NO_XMLSCHEMA=ON; default: \c OFF)
+\subsection required_libs Required Libraries
+In order to build Zorba, you need the following libraries and development headers:
 
-\subsection optional Optional Packages
-- for REST and HTTP support:
-  - CURL 7.12 or later (http://curl.haxx.se/)
-- for HTML tidy support:
+\subsubsection required_core_zorba Required for Core Zorba
+The following packages are mandatory to build the core part of Zorba.
+
+<ul>
+  <li>Libxml2 2.2.16 or later (http://xmlsoft.org/)</li>
+  <li>Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)</li>
+  <li>ICU4C 3.6 or later (http://www.icu-project.org/)</li>
+</ul>
+
+\subsubsection optional_core_zorba Optional for Core Zorba
+The following packages are only required to build Zorba with some features (e.g. XML Schema or HTTP support).
+
+<ul>
+  <li>Xerces-C 2.8.0, 3.0.0 or later (http://xerces.apache.org/xerces-c/). This package is only required if built
+    with XML schema support. This feature is enabled by default. In order to disable XML schema support, you need
+    to provide the CMake configuration variable \c ZORBA_NO_XMLSCHEMA=ON.
+  </li>
+  <li>CURL 7.12 or later (http://curl.haxx.se/). This package is only required if
+    <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_http-client.html">Zorba's HTTP module</a>
+    should be available.
+    Zorba will automatically be built with this module if the curl packages are installed. In order to suppress
+    HTTP support even though curl is installed, please set the CMake configuration variable \c ZORBA_SUPPRESS_CURL=ON.
+    Please note that other modules depend on this module (i.e. import it). Hence, those depending modules
+    will not work if the http module is not available. Please see our
+    <a href="../../zorba/xqdoc/xhtml/images/modules.svg">module dependency graph</a> for the
+    module inter-dependencies.
+  </li>
+  <li>LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/). The LibXslt package is required for XQueryX support
+    (XQuery 1.0, XQuery 3.0, XQuery Update, and XQuery Full Text). This feature is not enabled by default.
+    It can be enabled if Zorba is compiled using the the CMake configuration variable \c ZORBA_XQUERYX=ON.
+  </li>
+  <li>Flex 2.5.33 or later (http://flex.sourceforge.net/) and Bison 2.4 or later (http://www.gnu.org/software/bison/)
+    are required to generate the XQuery scanner and XQuery parser. These packages are optional and only required
+    if you want to make modifications to the scanner or parser, respectively.
+  </li>
+</ul>
+
+\subsubsection required_language_bindings Required for Language Bindings
+In order to build the various language bindings that come with Zorba, you need
+at least Swig 1.3.40 or later (http://www.swig.org/download.html).
+All bindings are generated using Swig.
+
+For a particular language binding, you need the corresponding language tools
+and development headers.
+
+- Java (http://java.sun.com/javase/downloads/index.jsp)
+- Ruby (http://www.ruby-lang.org/en/downloads/)
+- PHP (http://www.php.net/downloads.php)
+- Python (http://www.python.org/download/)
+
+\subsubsection required_non_core_modules Required for Non-Core Modules
+Zorba provides a huge variety of <a href="../../../html/modules.html">XQuery modules</a>.
+For most of the (external) modules, you need additional libraries.
+All such modules are not build if the library (and development headers) they require are not available.
+In the following, please find a list of required libraries.
+
+- data-converters (JSon, CSV, HTML)
   - Tidy (http://tidy.sourceforge.net)
-- for compiling XQueryX code:
-  - LibXslt version 1.1.24 has been tested (http://xmlsoft.org/XSLT/)
-- for email sending functions:
-  - IMAP CClient (http://www.washington.edu/imap/)
-- if the FOP library is needed:
+  - Jansson (http://www.digip.org/jansson/)
+- data-formatting (XSL-FO)
   - Java (http://java.sun.com/javase/downloads/index.jsp)
   - Apache FOP (http://xmlgraphics.apache.org/fop/download.html)
-- for language bindings:
-  - Swig (http://www.swig.org/download.html)
-    (Note: Swig 1.3.36 does not implement \c %begin sections
-    Use version 1.3.40 or later.)
-  - Java (http://java.sun.com/javase/downloads/index.jsp)
-  - Ruby (http://www.ruby-lang.org/en/downloads/)
-  - PHP (http://www.php.net/downloads.php)
-  - Python (http://www.python.org/download/)
-- if you want to build the scanner and parser
-  - Flex 2.5.33 or later (http://flex.sourceforge.net/)
-  - Bison 2.4 or later (http://www.gnu.org/software/bison/)
-- for image manipulation support
+- email
+  - IMAP CClient (http://www.washington.edu/imap/)
+- geo
+  GEOS version 3.2.2 or later (http://trac.osgeo.org/geos/)
+- EXPath http-client
+  CURL 7.12 or later (http://curl.haxx.se/)
+- image
   - ImageMagick (http://www.imagemagick.org)
+- languages (XSLT)
+  - LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/)
+
+Please note that some of these modules depend on other modules.
+For example, the EXPath http-client module depends on Zorba's http-client module and the tidy data-converter.
+Please see our <a href="../../zorba/xqdoc/xhtml/images/modules.svg">module-interdependency graph</a> for details.
   
 \subsection buildingzorba Building Zorba
 -# Install the Zorba source distribution (see \ref installation).
@@ -113,7 +152,7 @@ In order to build Zorba, you need the following libraries and development header
    you're ready to install and run Zorba
    (see \ref installation).
 
-\subsection buildoptions Build Options
+\subsubsection buildoptions Build Options
 
 - CMake is a meta build system,
   meaning that it is able to generate native makefiles
@@ -299,63 +338,6 @@ and point cmake to use the new version:
 sudo port install swig
 cmake -DCMAKE_PREFIX_PATH=/opt/local ..
 \endcode
-
-\subsection universal Building as Universal Binaries
-
-To build zorba as a universal binary,
-one must also build the required external libraries as universal.
-In most cases
-this is as easy as building them non-universal.
-Following are instructions on how to do so.
-
-For Xerces-C, the 
-<a href="http://developer.apple.com/documentation/Porting/Conceptual/PortingUnix/compiling/chapter_4_section_3.html">instructions given by Apple</a>
-almost just work.
-One should change the \c CFLAGS to \c CXXFLAGS
-because Xerces is written in C++.
-Zorba developers prefer a variation on those instructions like this:
-
-\code
-./configure CXXFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.5.sdk" \
--disable-dependency-tracking LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk \
--arch i386 -arch ppc"
-\endcode
-
-Since \c libxml2 is written in C,
-change \c CXXFLAGS to \c CFLAGS in the above.
-As noted by Apple,
-dependency generation by gcc doesn't work when building universal,
-thus it is turned off with the above command.
-
-For ICU,
-one must build the libraries seperately on PowerPC and Intel platforms
-then combine the them into a Universal library.
-The reason for this is that ICU tests for endianess at configure time
-(i.e., before compiling),
-thus the compiled code will only have endianess correct
-for one platform.
-The script \c zorba/scripts/makefat.sh
-shows one how to do the combining.
-
-Once all the external libraries are built and installed Universal,
-one can build zorba Universal setting the CMake variable \c UNIVERSAL
-on like this:
-
-\verbatim
-cmake -D UNIVERSAL=1 ..
-\endverbatim
-
-\subsection mac_installer Building Mac OS X Installer
-
-In order to build an installer package,
-one should run cmake with an extra flag as follows:
-
-\code
-cmake -DCMAKE_SKIP_BUILD_RPATH=1 .. 
-\endcode
-
-This will remove the build path from the installed executables and libraries.
-It will also add some symbolic links to the libraries.
 
 \section windows Notes for Windows Users
 - In order to compile Zorba on Windows,
