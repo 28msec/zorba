@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zorba xmlns="http://www.w3.org/2005/02/query-test-XQTSResult">  
-  <implementation-defined-items>        
-
-    <implementation-defined-item name="expressionUnicode" value=""/>
+  <implementation-defined-items>
+   
+   <implementation-defined-item 
+    name="expressionUnicode" 
+    value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0."/>
 
     <implementation-defined-item 
      name="collations" 
-     value="http://www.w3.org/2005/xpath-functions/collation/codepoint,"/>
+     value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
 
     <implementation-defined-item 
      name="implicitTimezone" 
-     value="The implicit timezone is computed based on the current local time of the computer running Zorba"/>
+     value="The implicit timezone is computed based on the current local time of the computer running Zorba."/>
 
     <implementation-defined-item 
      name="warningsMethod" 
@@ -38,7 +40,7 @@
 
     <implementation-defined-item 
      name="pragmas" 
-     value="no pragmas are recognized"/>
+     value="No pragmas are recognized."/>
 
     <implementation-defined-item 
      name="optionDeclarations" 
@@ -46,7 +48,7 @@
 
     <implementation-defined-item 
      name="externalFunctionProtocols" 
-     value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/external_functions.html"/>
+     value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/external_functions.html."/>
 
     <implementation-defined-item 
      name="moduleLocationHints" 
@@ -54,13 +56,13 @@
 
     <implementation-defined-item 
      name="staticTypingExtensions" 
-     value="Static typing is not supported"/>
+     value="Static typing is not supported."/>
 
     <implementation-defined-item 
      name="serializationInvocation" 
      value="The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1XQuery.html). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1Serializer.html)."/>
 
-    <implementation-defined-item name="serializationDefaults" value=""/>
+   <implementation-defined-item name="serializationDefaults" value="Serialization Feature is supported. Implicit values are: byte-order-mark = no, encoding = UTF-8, media-type = '', normalization-form = '', omix-xml-declaration = no, standalone = omit, version = '1.0', method = xml, doctype-system = '', doctype-public = '', cdata-section-elements = empty list, include-content-type = no, undeclare-prefixes = no, indent = no"/>
 
     <implementation-defined-item 
      name="externalFunctionCall" 
@@ -72,19 +74,19 @@
      name="traceDestination" 
      value="By default, it is std:cerr. Users can modify this via the StaticContext::setTraceStream method."/>
 
-    <implementation-defined-item name="integerOperations" value=""/>
+    <implementation-defined-item name="integerOperations" value="Zorba raises [err:FOAR0002]"/>
 
     <implementation-defined-item name="decimalDigits" value=""/>
 
     <implementation-defined-item name="roundOrTruncate" value=""/>
 
-    <implementation-defined-item name="Unicode" value=""/>
+    <implementation-defined-item name="Unicode" value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0."/>
 
-    <implementation-defined-item name="normalizationForms" value=""/>
+    <implementation-defined-item name="normalizationForms" value="Zorba supports NFC, NFKC, NFD, NFKD normalization forms."/>
 
     <implementation-defined-item name="collationUnits" value=""/>
 
-    <implementation-defined-item name="secondsDigits" value=""/>
+   <implementation-defined-item name="secondsDigits" value="Year values: Zorba supports 9 digits (32bit maxint). Fractional second: Zorba supports 6 digits."/>
 
     <implementation-defined-item name="stringToDecimal" value=""/>
 
@@ -94,72 +96,23 @@
 
     <implementation-defined-item 
      name="additionalTypes" 
-     value="There are no implementation-defined types. User-defined types are created and become “in-scope” when “import schema” statements are processed. User-defined types (including anonymous types) are created within a static context and they are destroyed when their containing static context is destroyed. "/>
+     value="There are no implementation-defined types. User-defined types are created and become “in-scope” when “import schema” statements are processed. User-defined types (including anonymous types) are created within a static context and they are destroyed when their containing static context is destroyed."/>
 
     <implementation-defined-item 
      name="undefinedProperties" 
      value="err:FOTY0012"/>
 
-    <implementation-defined-item name="sequenceNormalization" value=""/>
+    <implementation-defined-item name="sequenceNormalization" value="Zorba performs sequence normalization for the 'binary' serialization method. Zorba's Data Converters module performs sequence normalization for JSON and JSONML (but these are not serialization output methods, i.e. they cannot be invoked with the help of '-z method=JSON')"/>
 
-    <implementation-defined-item name="outputMethods" value=""/>
+    <implementation-defined-item name="outputMethods" value="Zorba's only implementation-defined output method is 'binary' and it is used unqualified (URI is null)."/>
 
-    <implementation-defined-item name="normalizationFormBehavior" value=""/>
+    <implementation-defined-item name="normalizationFormBehavior" value="Zorba has no implementation-defined values for the normalization-form parameter."/>
 
-    <implementation-defined-item name="additionalParams" value=""/>
+    <implementation-defined-item name="additionalParams" value="Zorba has no implementation-defined serialization parameters."/>
 
-    <implementation-defined-item name="encodingPhase" value=""/>
+    <implementation-defined-item name="encodingPhase" value="Zorba has no such option."/>
 
-    <implementation-defined-item name="CDATASerialization" value=""/>
-
-    <implementation-defined-item name="Tokenization" value=""/>
-
-    <implementation-defined-item name="phrase" value=""/>
-
-    <implementation-defined-item name="sentence" value=""/>
-
-    <implementation-defined-item name="paragraph" value=""/>
-
-    <implementation-defined-item name="Markup Effect Token Boundaries" value=""/>
-
-    <implementation-defined-item name="Scoring Expressions" value=""/>
-
-    <implementation-defined-item name="Matching" value=""/>
-
-    <implementation-defined-item name="Match Option Order" value=""/>
-
-    <implementation-defined-item name="Language Option Tokenization" value=""/>
-
-    <implementation-defined-item name="Language Option Valid ID" value=""/>
-
-    <implementation-defined-item name="Language Option Undefined" value=""/>
-
-    <implementation-defined-item name="Mismatched Languages" value=""/>
-
-    <implementation-defined-item name="Thesaurus Option" value=""/>
-
-    <implementation-defined-item name="Thesaurus Relationships" value=""/>
-
-    <implementation-defined-item name="Thesaurus Levels" value=""/>
-
-    <implementation-defined-item name="Stemming Option" value=""/>
-
-    <implementation-defined-item name="Query Token In Stopword List" value=""/>
-
-    <implementation-defined-item name="StopWord Option Match Number" value=""/>
-
-    <implementation-defined-item name="StopWord Option Default" value=""/>
-
-    <implementation-defined-item name="Extension Option" value=""/>
-
-    <implementation-defined-item name="Extension Selection" value=""/>
-
-    <implementation-defined-item name="Equal Items Different Tokens" value=""/>
-
-    <implementation-defined-item name="FTIgnoreOption" value=""/>
-
-    <implementation-defined-item name="Static Context Items" value=""/>
-
+    <implementation-defined-item name="CDATASerialization" value="Zorba has no such mechanism."/>
   </implementation-defined-items>
   
   <features>
@@ -180,27 +133,27 @@
 
     <context-property 
      name="Default element/type namespace" context-type="static" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="Default function namespace" context-type="static" 
-     value="http://www.w3.org/2005/xpath-functions"/>
+     value="http://www.w3.org/2005/xpath-functions ."/>
 
     <context-property 
      name="In-scope schema types" context-type="static" 
-     value="Built-in types in xs"/>
+     value="Built-in types in xs."/>
 
     <context-property 
      name="In-scope element declarations" context-type="static" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="In-scope attribute declarations" context-type="static" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="In-scope variables" context-type="static" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="Context item static type" context-type="static" 
@@ -208,7 +161,7 @@
 
     <context-property 
      name="Function signatures" context-type="static" 
-     value="functions in fn namespace, and constructors for built-in atomic types"/>
+     value="Functions in fn namespace, and constructors for built-in atomic types."/>
 
     <context-property 
      name="Statically known collations" context-type="static" 
@@ -244,11 +197,11 @@
 
     <context-property 
      name="Statically known documents" context-type="static" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="Statically known collections" context-type="static" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="Statically known default collection type" context-type="static" 
@@ -260,15 +213,15 @@
 
     <context-property 
      name="Context position" context-type="dynamic" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="Context size" context-type="dynamic" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="Variable values" context-type="dynamic" 
-     value="None"/>
+     value="None."/>
 
     <context-property 
      name="Function implementations" context-type="dynamic" 
@@ -276,11 +229,11 @@
 
     <context-property 
      name="Current dateTime" context-type="dynamic" 
-     value="The current local time on the computer running Zorba"/>
+     value="The current local time on the computer running Zorba."/>
 
     <context-property 
      name="Implicit timezone" context-type="dynamic" 
-     value="Computed based on the current local time on the computer running Zorba"/>
+     value="Computed based on the current local time on the computer running Zorba."/>
 
     <context-property 
      name="Available documents" context-type="dynamic" 
