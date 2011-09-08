@@ -19,6 +19,7 @@ version 2.x
   * Fix for bug #3404450 (testdriver_mt problem: caching and validation of
   docs)
   * Fixed installation bug to not install the .so for test modules
+  * Fix for running ctest on Windows
 	
 version 2.0.1
 
