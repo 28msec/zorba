@@ -41,10 +41,7 @@ IF (SWIG_FOUND)
   ENDIF (APPLE)
 
   ADD_SUBDIRECTORY (java)
-  ADD_SUBDIRECTORY (perl)
-  ADD_SUBDIRECTORY (csharp)
-  ADD_SUBDIRECTORY (lua)
-
+  
   IF (APPLE AND UNIVERSAL)
     MESSAGE (STATUS "Ruby module can't be built Universal")
   ELSE(APPLE AND UNIVERSAL)
