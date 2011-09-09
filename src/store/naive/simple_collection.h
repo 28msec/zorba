@@ -31,8 +31,8 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
   theId          : An internally generated unique id.
   theName        : The user provided qname of the collection.
-  theXmlTrees    : The set of xml tress comprising this collection. Implemented
-                   as vector of rchandle to nodes.
+  theXmlTrees    : The set of root nodes comprising this collection. Implemented
+                   as vector of rchandles to nodes.
   theTreeCounter : Incremented every time a new tree is added to the collection.
                    The current value of the counter is then assigned as the id
                    the new tree.

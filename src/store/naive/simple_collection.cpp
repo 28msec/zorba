@@ -205,9 +205,12 @@ ulong SimpleCollection::addNodes(
   theXmlTrees.resize(numNodes + numNewNodes);
 
 #if 1
-  memmove(&theXmlTrees[lTargetPos + numNewNodes], 
-          &theXmlTrees[lTargetPos],
-          (numNodes-lTargetPos) * sizeof(store::Item_t));
+  if (lTargetPos < numNodes)
+  {
+    memmove(&theXmlTrees[lTargetPos + numNewNodes], 
+            &theXmlTrees[lTargetPos],
+            (numNodes-lTargetPos) * sizeof(store::Item_t));
+  }
 
   for (uint64_t i = lTargetPos; i < lTargetPos + numNewNodes; ++i)
     theXmlTrees[i].setNull();
