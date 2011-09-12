@@ -1504,7 +1504,7 @@ zstring DocumentNode::show() const
 
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document";
-  strStream << " baseUri = \"" << getBaseUri();
+  strStream << " baseUri = \"" << getBaseUri() << "\"";
   strStream << " docUri = \"" << getDocUri();
   strStream << "\">" << std::endl;
 
