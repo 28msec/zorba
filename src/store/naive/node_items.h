@@ -638,6 +638,7 @@ public:
 protected:
   std::vector<XmlNode*> theNodes;
   csize                 theNumAttrs;
+  NsBindingsContext_t   theNsContext;
 
   InternalNode() {}
 
@@ -713,6 +714,8 @@ public:
   void replaceChild(UpdReplaceChild& upd);
 
   void restoreChild(UpdReplaceChild& upd);
+
+  NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void finalizeNode();
 
@@ -821,7 +824,6 @@ protected:
 #ifdef EMBEDED_TYPE
   store::Item_t         theTypeName;
 #endif
-  NsBindingsContext_t   theNsContext;
 
 protected:
 
@@ -920,8 +922,6 @@ public:
   {
     return (theFlags & HaveLocalBindings) != 0;
   }
-
-  NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void setNsContext(NsBindingsContext* ctx);
 

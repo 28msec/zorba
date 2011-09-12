@@ -18,6 +18,7 @@ version 2.x
   * Fix for running ctest on Windows
   * Fixed bug #3390410 (Adding a node to a collection causes out of bound in vector)
   * Fixed bug #3406200 (node types were not being moved to new tree during node detach)
+  * Fixed bug #3406191
 	
 version 2.0.1
 

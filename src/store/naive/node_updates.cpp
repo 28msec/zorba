@@ -401,9 +401,14 @@ void XmlNode::detach()
         rootNode->addBaseUriProperty(baseUri, dummyUri);
       }
 
+      // For each node in the nodes stack, we must save the nsCtx of its
+      // parent node in the parentNsCtxs stack, because the nsCtx of the
+      // parent may change during the while loop below.
       std::stack<XmlNode*> nodes;
+      std::stack<NsBindingsContext*> parentNsCtxs;
 
       nodes.push(this);
+      parentNsCtxs.push(rootNode->theParent->getNsContext());
 
       while (!nodes.empty())
       {
@@ -433,13 +438,8 @@ void XmlNode::detach()
 #endif
           // Preserve the namespace bindings of the current node
           NsBindingsContext* nsContext = elemNode->getNsContext();
-          NsBindingsContext* parentNsContext = NULL;
-
-          if (elemNode->theParent->getNodeKind() == store::StoreConsts::elementNode)
-          {
-            parentNsContext = reinterpret_cast<ElementNode*>(elemNode->theParent)->
-                              getNsContext();
-          }
+          NsBindingsContext* parentNsContext = parentNsCtxs.top();
+          parentNsCtxs.pop();
 
           // If the current node is N, or a node in NT that does not inherit ns
           // bindings directly from its parent (but may inherit from some other
@@ -453,7 +453,7 @@ void XmlNode::detach()
             if (nsContext != NULL)
             {
               std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
-              getNamespaceBindings(ctx->getBindings());
+              elemNode->getNamespaceBindings(ctx->getBindings());
             
               if (!ctx->empty())
               {
@@ -467,13 +467,7 @@ void XmlNode::detach()
           // from its parent.
           else
           {
-            if (elemNode->haveLocalBindings())
-            {
-              elemNode->theNsContext =
-                new NsBindingsContext(elemNode->getLocalBindings());
-            }
-
-            elemNode->setNsContext(parentNsContext);
+            elemNode->setNsContext(elemNode->theParent->getNsContext());
           }
 
           // Detach the attributes of the current node
@@ -482,9 +476,25 @@ void XmlNode::detach()
           
           for (; ite != end; ++ite)
           {
-            XmlNode* attr = (*ite);
-            refcount += attr->theRefCount;
-            attr->setTree(newTree);
+            AttributeNode* attrNode = static_cast<AttributeNode*>(*ite);
+            refcount += attrNode->theRefCount;
+#ifndef EMBEDDED_TYPE
+            store::Item_t type;
+
+            if (attrNode->haveType())
+            {
+              type = attrNode->getType();
+              oldTree->removeType(attrNode);
+              attrNode->setTree(newTree);
+              attrNode->setType(type);
+            }
+            else
+            {
+              attrNode->setTree(newTree);
+            }
+#else
+            attrNode->setTree(newTree);
+#endif
           }
 
           // Detach the children of the current node
@@ -495,7 +505,11 @@ void XmlNode::detach()
           {
             XmlNode* child = (*ite);
             refcount += child->theRefCount;
+
             nodes.push(child);
+
+            if (child->getNodeKind() == store::StoreConsts::elementNode)
+              parentNsCtxs.push(nsContext);
           }
         }
         else
