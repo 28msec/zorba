@@ -279,7 +279,7 @@ bool fileEquals(
     bom[2] != static_cast<char>(0xBF))
   {
     // Wasn't a BOM; 'unread' it
-    //refStream.seekg(-3, std::ios_base::cur);
+    refStream.clear();
     refStream.seekg(0, std::ios_base::beg);
   }
 
