@@ -357,14 +357,13 @@ void XmlNode::detach()
     SYNC_CODE(oldTree->getRCLock()->acquire());
     SYNC_CODE(newTree->getRCLock()->acquire());
 
-    setTree(newTree);
-
     refcount += theRefCount;
 
     switch (nodeKind)
     {
     case store::StoreConsts::attributeNode:
     {
+      setTree(newTree);
       theParent->removeAttr(this);
       theParent = NULL;
       break;
@@ -372,12 +371,15 @@ void XmlNode::detach()
     case store::StoreConsts::piNode:
     case store::StoreConsts::commentNode:
     {
+      setTree(newTree);
       theParent->removeChild(this);
       theParent = NULL;
       break;
     }
     case store::StoreConsts::textNode:
     {
+      setTree(newTree);
+
       reinterpret_cast<TextNode*>(this)->revertToTextContent();
 
       theParent->removeChild(this);
@@ -412,6 +414,23 @@ void XmlNode::detach()
         {
           ElementNode* elemNode = reinterpret_cast<ElementNode*>(node);
 
+#ifndef EMBEDDED_TYPE
+          store::Item_t type;
+
+          if (elemNode->haveType())
+          {
+            type = elemNode->getType();
+            oldTree->removeType(elemNode);
+            node->setTree(newTree);
+            elemNode->setType(type);
+          }
+          else
+          {
+            node->setTree(newTree);
+          }
+#else
+          node->setTree(newTree);
+#endif
           // Preserve the namespace bindings of the current node
           NsBindingsContext* nsContext = elemNode->getNsContext();
           NsBindingsContext* parentNsContext = NULL;
@@ -476,10 +495,12 @@ void XmlNode::detach()
           {
             XmlNode* child = (*ite);
             refcount += child->theRefCount;
-            child->setTree(newTree);
-            
             nodes.push(child);
           }
+        }
+        else
+        {
+          node->setTree(newTree);
         }
       } // done traversing tree
 

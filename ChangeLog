@@ -17,6 +17,7 @@ version 2.x
   * Fixed installation bug to not install the .so for test modules
   * Fix for running ctest on Windows
   * Fixed bug #3390410 (Adding a node to a collection causes out of bound in vector)
+  * Fixed bug #3406200 (node types were not being moved to new tree during node detach)
 	
 version 2.0.1
 

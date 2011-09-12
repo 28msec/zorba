@@ -514,7 +514,7 @@ iterator get(const T& item)
   HASHENTRY<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
-    return iterator(&theHashTab, hval);
+    return end();
 
   while (entry != NULL)
   {
