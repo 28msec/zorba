@@ -914,7 +914,11 @@ bool begin_visit(flwor_expr& v)
         case flwor_clause::window_clause:
         {
           if (k == flwor_clause::for_clause || k == flwor_clause::window_clause)
-            ++numForClauses;
+          {
+            xqtref_t domainType = c->get_expr()->get_return_type();
+            if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
+              ++numForClauses;
+          }
 
           if (c->get_expr()->is_sequential())
           {
