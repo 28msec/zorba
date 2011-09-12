@@ -1329,10 +1329,11 @@ StaticContextImpl::getStaticCollectionManager() const
   Zorba* lZorba = Zorba::getInstance(0);
   ItemFactory* lFactory = lZorba->getItemFactory();
 
-  StaticContext_t lSctx = new StaticContextImpl(*this);
-  theCollectionMgr = new StaticCollectionManagerImpl(
-      lSctx, lFactory);
-  theCollectionMgr->registerDiagnosticHandler(theDiagnosticHandler);
+  if (!theCollectionMgr)
+  {
+    theCollectionMgr = new StaticCollectionManagerImpl(this, lFactory);
+    theCollectionMgr->registerDiagnosticHandler(theDiagnosticHandler);
+  }
   return theCollectionMgr;
 }
 

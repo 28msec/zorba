@@ -90,6 +90,9 @@ typedef rchandle<IC> IC_t;
 
 class ICChecker;
 
+struct Annotation;
+typedef rchandle<Annotation> Annotation_t;
+
 
 } // namespace store
 } // namespace zorba

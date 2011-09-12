@@ -21,6 +21,7 @@
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_index.h"
 #include "store/api/ic.h"
+#include "store/api/annotation.h"
 #include "store/naive/loader.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
@@ -34,14 +35,14 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 SimpleCollection::SimpleCollection(
     const store::Item_t& aName,
-    uint32_t aFlags,
+    const std::vector<store::Annotation_t>& aAnnotations,
     const store::Item_t& aNodeType,
     bool aDynamicCollection)
   : 
   theName(aName),
   theIsDynamic(aDynamicCollection),
   theTreeCounter(1),
-  theFlags(aFlags),
+  theAnnotations(aAnnotations),
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
@@ -54,10 +55,6 @@ SimpleCollection::SimpleCollection()
   : 
   theIsDynamic(false),
   theTreeCounter(1),
-  theFlags(
-      Collection::coll_mutable |
-      Collection::coll_ordered |
-      Collection::node_mutable),
   theNodeType(NULL)
 {
 }
@@ -396,6 +393,14 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
   return false;
 }
 
+/*******************************************************************************
+********************************************************************************/
+void SimpleCollection::getAnnotations(
+    std::vector<store::Annotation_t>& annotations
+) const
+{
+  annotations = theAnnotations;
+}
 
 /*******************************************************************************
   For each tree in the collection, set its current position within the collection.

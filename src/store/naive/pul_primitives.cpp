@@ -782,7 +782,7 @@ void UpdCreateCollection::apply()
   // Error is raised if collection exists already.
   GET_STORE().createCollection(
       theName,
-      theFlags,
+      theAnnotations,
       theNodeType,
       theDynamicCollection);
   theIsApplied = true;

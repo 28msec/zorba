@@ -122,9 +122,10 @@ datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
  * Example to show the usage of the collection manager to
  * (1) create a collection
  * (2) insert a node at the end of the collection,
- * (3) iterate over the contents of the collection,
- * (3) delete the node, and
- * (4) make sure the node was deleted.
+ * (3) retrieve the annotations of a collection
+ * (4) iterate over the contents of the collection,
+ * (5) delete the node, and
+ * (6) make sure the node was deleted.
  */
 bool
 datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
@@ -155,10 +156,28 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
       return false;
     }
 
-    // (2) insert a node at the end of the collection
+    // (2) get the annotations of a collections
+    std::vector<Annotation_t> lAnnotations;
+    lColl->getAnnotations(lAnnotations);
+    size_t num_annotations = 0;
+    for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
+         lIter != lAnnotations.end(); ++lIter)
+    {
+      std::cout << "Annotation QName "
+        << (*lIter)->getQName().getStringValue() << std::endl;
+      ++num_annotations;
+    }
+
+    if (num_annotations != 3)
+    {
+      return false;
+    }
+
+
+    // (3) insert a node at the end of the collection
     lColl->insertNodesLast(new SingletonItemSequence(lDoc));
 
-    // (3) iterate over the contents of the collection 
+    // (4) iterate over the contents of the collection 
     ItemSequence_t lContents = lColl->contents();
     Iterator_t lIter = lContents->getIterator();
 
@@ -169,10 +188,10 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
         << lColl->indexOf(lDoc) << std::endl;
     }
 
-    // (4) delete the node
+    // (5) delete the node
     lColl->deleteNodeLast();
 
-    // (5) make sure the node was deleted
+    // (6) make sure the node was deleted
     lIter->close();
     lIter->open();
     while (lIter->next(lDoc)) {

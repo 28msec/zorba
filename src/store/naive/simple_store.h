@@ -187,7 +187,7 @@ public:
 
   store::Collection_t createCollection(
       const store::Item_t& aName,
-      uint32_t aFlags,
+      const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
       bool aDynamicCollection = false);
 

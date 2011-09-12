@@ -239,11 +239,13 @@ CollectionManagerImpl::isAvailableCollection(const Item& aName) const
   return false;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
 void
-CollectionManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
+CollectionManagerImpl::registerDiagnosticHandler(
+    DiagnosticHandler* aDiagnosticHandler)
 {
   theDiagnosticHandler = aDiagnosticHandler;
 }

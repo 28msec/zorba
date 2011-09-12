@@ -86,6 +86,10 @@ class parsenode;
 class exprnode;
 typedef rchandle<parsenode> parsenode_t;
 
+// Annotations
+class AnnotationList;
+typedef rchandle<AnnotationList> AnnotationList_t;
+
 // Expression nodes
 class expr; 
 class fo_expr;

@@ -19,6 +19,7 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item.h>
+#include <vector>
 
 namespace zorba {
 
@@ -180,6 +181,55 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    * \brief Destructor.
    */
   virtual ~Collection() {}
+
+  /**
+   * Retrieves all annotations for the given collection.
+   * If the collection is a statically declared collection, the annotations
+   * are the ones that haven been given in the declaration of the collection
+   * (or the defaults). If the collection is a dynamic collection, the
+   * annotations are the default ones for dynamic collections.
+   *
+   * @return a list of all annotations for the given collection (if found)
+   */
+  virtual void
+  getAnnotations(std::vector<Annotation_t>& aAnnotations) const = 0;
+
+  /**
+   * The function checks if this collection has been statically declared.
+   *
+   * @return true if the collection is a static collection, false otherwise.
+   */
+  virtual bool
+  isStatic() const = 0;
+
+  /**
+   * Retrieves the sequence type for this (static declared) collection.
+   *
+   * @return the sequence type for the said collection, or 0
+   *  if this collection is not statically declared.
+   *
+   * @see isStatic()
+   */
+  virtual TypeIdentifier_t
+  getType() const = 0;
+
+  /** \brief Register a DiagnosticHandler to which errors
+   * occuring during the management or manipulation of this collection
+   * are reported.
+   *
+   * If no DiagnosticHandler has been set using
+   * (1) this function,
+   * (2) the corresponding function of the XmlDataManager, or
+   * (3) the corresponding function of the CollectionManager 
+   * then subclasses of the ZorbaException class are thrown to report
+   * errors.
+   *
+   * @param aDiagnosticHandler DiagnosticHandler to which errors
+   *        are reported. The caller retains ownership over the
+   *        DiagnosticHandler passed as parameter.
+   */
+  virtual void
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler) = 0;
 
 };
   

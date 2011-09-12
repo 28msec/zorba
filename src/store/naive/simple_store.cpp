@@ -918,7 +918,7 @@ store::Iterator_t SimpleStore::listMapNames()
 ********************************************************************************/
 store::Collection_t SimpleStore::createCollection(
     const store::Item_t& aName,
-    uint32_t aFlags,
+    const std::vector<store::Annotation_t>& annotations,
     const store::Item_t& aNodeType,
     bool aDynamicCollection)
 {
@@ -928,7 +928,7 @@ store::Collection_t SimpleStore::createCollection(
   store::Collection_t collection(
       new SimpleCollection(
         aName,
-        aFlags,
+        annotations,
         aNodeType,
         aDynamicCollection));
 

@@ -152,7 +152,7 @@ public:
   virtual void addCreateCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
-        uint32_t flags, // see Collection::Properties enum
+        const std::vector<Annotation_t>& annotations,
         const Item_t& nodeType, // can be null if not a schema type
         bool dyn_collection = false) = 0;
 

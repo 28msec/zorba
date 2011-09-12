@@ -22,15 +22,37 @@
 
 namespace zorba {
 
-  /** \brief 
+  /** \brief Using the StaticCollectionManager one can retrieve information
+   *   about statically declared collections as well as manage them.
+   *
+   * The StaticCollectionManager can be retrieved from (1) a compiled XQuery
+   * or (2) a StaticContext object. In both cases, this class provides access
+   * to information for the collections that are declared in (1) all the
+   * modules (transitively) imported by the main query or (2) the module
+   * that resulted in the compilation of the StaticContext, respectively.
+   * Moreover, this class allows to create or delete such collections.
    *
    */
   class ZORBA_DLL_PUBLIC StaticCollectionManager : public CollectionManager
   {
   public:
+    /**
+     * List all the collections that are declared in the XQuery or the
+     * StaticContext that was used to retrieve this StaticCollectionManager.
+     *
+     * @return a sequence of QNames of all said collections
+     */
     virtual ItemSequence_t
     declaredCollections() const = 0;
 
+    /**
+     * Checks if a collection with a given QName is declared in the XQuery
+     * or the StaticContext that was used to retrieve this
+     * StaticCollectionManager.
+     *
+     * @return true if a collection with the given name is declared,
+     *   false otherwise.
+     */
     virtual bool
     isDeclaredCollection(const Item& aQName) const = 0;
 

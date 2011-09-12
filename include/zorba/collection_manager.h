@@ -77,7 +77,8 @@ namespace zorba {
     getCollection(const Item& aName) const = 0;
 
     /**
-     * This function returns a sequence of names of the collections that are available.
+     * This function returns a sequence of names of the collections
+     * that are available.
      *
      * @return The list of names of the available collections.
      *
@@ -95,6 +96,21 @@ namespace zorba {
      */
     virtual bool
     isAvailableCollection(const Item& aName) const = 0;
+
+    /** \brief Register a DiagnosticHandler to which errors
+     * occuring during the management of collections are reported.
+     *
+     * If no DiagnosticHandler has been set using this function or
+     * the corresponding function of the XmlDataManager then
+     * subclasses of the ZorbaException class are thrown to report
+     * errors.
+     *
+     * @param aDiagnosticHandler DiagnosticHandler to which errors
+     *        are reported. The caller retains ownership over the
+     *        DiagnosticHandler passed as parameter.
+     */
+    virtual void
+    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler) = 0;
 
     /** \brief Destructor
      *

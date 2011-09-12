@@ -59,6 +59,9 @@ namespace zorba {
 
     virtual ~CollectionManagerImpl();
 
+    virtual void
+    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+
   protected:
     friend class XmlDataManagerImpl;
     friend class StaticCollectionManagerImpl;
@@ -71,8 +74,6 @@ namespace zorba {
     void
     initStaticContext(StaticContext_t& aSctx);
 
-    void
-    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
   }; /* class CollectionManagerImpl */
 

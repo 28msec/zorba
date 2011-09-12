@@ -41,6 +41,8 @@
 #include "store/api/iterator.h"
 #include "store/api/ic.h"
 #include "store/api/index.h"
+#include "store/api/annotation.h"
+#include "store/api/shared_types.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
 
@@ -391,36 +393,56 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   if (theDynamicCollection)
   {
+    std::vector<store::Annotation_t> lAnnotations;
+    store::Annotation_t lAnn = 0;
+
+    // dynamic collections have some default properties
+    lAnn = new store::Annotation();
+    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_mutable);
+    lAnnotations.push_back(lAnn);
+
+    lAnn = new store::Annotation();
+    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_ordered);
+    lAnnotations.push_back(lAnn);
+
+    lAnn = new store::Annotation();
+    lAnn->theName = theSctx->lookup_ann(StaticContextConsts::zann_mutable_nodes);
+    lAnnotations.push_back(lAnn);
+
     pul->addCreateCollection(
         &loc,
         collectionName,
-        ( store::Collection::coll_mutable | // dynamic collection have
-          store::Collection::coll_ordered | // some default properties
-          store::Collection::node_mutable ),
+        lAnnotations,
         NULL,
-        theDynamicCollection);
+        true);
   }
   else
   {
-    uint32_t lFlags;
-    lFlags =
-        (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_const)
-      | (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_append_only)
-      | (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_queue)
-      | (collectionDecl->getUpdateProperty() == StaticContextConsts::decl_mutable)
-      | (collectionDecl->getOrderProperty() == StaticContextConsts::decl_ordered)
-      | (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
-      | (collectionDecl->getNodeModifier() == StaticContextConsts::read_only)
-      | (collectionDecl->getNodeModifier() == StaticContextConsts::mutable_node);
+    std::vector<store::Annotation_t> lAnnotations;
+    AnnotationList* lDeclaredAnnotations = collectionDecl->getAnnotations();
 
+    for (size_t i = 0; i < lDeclaredAnnotations->size(); ++i)
+    {
+      store::Annotation_t lAnn = new store::Annotation();
+      AnnotationInternal* lTmp = lDeclaredAnnotations->getAnnotation(i);
+
+      lAnn->theName = lTmp->getQName();
+
+      for (size_t j = 0; j < lTmp->getNumLiterals(); ++j)
+      {
+        lAnn->theLiterals.push_back(lTmp->getLiteral(j)->getLiteralItem());
+      }
+      lAnnotations.push_back(lAnn);
+    }
 
     lNodeType = collectionDecl->getNodeType()->get_qname();
 
     pul->addCreateCollection(
         &loc,
         collectionName,
-        lFlags, lNodeType,
-        theDynamicCollection);
+        lAnnotations,
+        lNodeType,
+        false);
   }
 
   // also add some optional nodes to the collection

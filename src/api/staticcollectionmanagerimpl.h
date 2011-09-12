@@ -1,6 +1,6 @@
 /*
  * Copyright 2006-2011 The FLWOR Foundation.
- Impl*
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,7 @@ namespace zorba {
   class CollectionManagerImpl;
   class StaticCollectionManagerImpl;
   class DiagnosticHandler;
+  class StaticContextImpl;
 
   /** \brief 
    *
@@ -66,7 +67,7 @@ namespace zorba {
     friend class StaticCollectionManagerSetImpl;
     friend class XQueryImpl;
     StaticCollectionManagerImpl(
-      const StaticContext_t& aModuleSctxSet,
+      const StaticContextImpl* aModuleSctxSet,
       ItemFactory* aFactory);
 
     void

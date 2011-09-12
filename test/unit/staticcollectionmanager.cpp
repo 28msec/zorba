@@ -69,6 +69,19 @@ staticcollectionamanger1(zorba::Zorba* z)
     return false;
   }
 
+  ItemSequence_t lAvailableColls = lColMgr->availableCollections();
+  lIter = lAvailableColls->getIterator();
+  lIter->open();
+  num_colls = 0;
+  while (lIter->next(lTmp)) {
+    std::cout << "name " << lTmp.getStringValue() << std::endl;
+    ++num_colls;
+  }
+  
+  if (num_colls != 2) {
+    return false;
+  }
+
   lColMgr->deleteCollection(lCollName2);
   lColMgr->deleteCollection(lCollName3);
 
@@ -98,6 +111,26 @@ staticcollectionamanger2(zorba::Zorba* z)
 
   Collection_t lCollection = lColMgr->getCollection(lCollName2);
 
+  std::vector<Annotation_t> lAnnotations;
+  lCollection->getAnnotations(lAnnotations);
+  size_t num_annotations = 0;
+  for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
+       lIter != lAnnotations.end(); ++lIter)
+  {
+    std::cout << "Annotation QName " << (*lIter)->getQName().getStringValue() << std::endl;
+    ++num_annotations;
+  }
+
+  if (num_annotations != 3)
+  {
+    return false;
+  }
+
+  if (lCollection->getType()->getKind() != IdentTypes::ANY_NODE_TYPE)
+  {
+    return false;
+  }
+
   std::stringstream lInStream;
   lInStream
     << "<books>" << std::endl
@@ -120,15 +153,55 @@ staticcollectionamanger2(zorba::Zorba* z)
   while (lIter->next(lDoc)) {
     ++num_nodes;
   }
+  lIter->close();
 
   if (num_nodes != 8) {
+    return false;
+  }
+
+  lDoc = NULL;
+  lColMgr->deleteCollection(lCollName2);
+
+  return true;
+}
+
+bool
+staticcollectionamanger3(zorba::Zorba* z)
+{
+  std::ifstream lIn("module1.xq");
+
+  zorba::XQuery_t lQuery = z->createQuery();
+  Zorba_CompilerHints lHints;
+  lQuery->compile(lIn, lHints);
+
+  const StaticContext* lSctx = lQuery->getStaticContext();
+
+  StaticCollectionManager* lColMgr = lSctx->getStaticCollectionManager();
+
+  ItemFactory* lFac = z->getItemFactory();
+  Item lCollName2 = lFac->createQName("http://www.mod2.com/", "coll");
+  
+  lColMgr->createCollection(lCollName2);
+  Collection_t lColl = lColMgr->getCollection(lCollName2);
+
+  std::vector<Annotation_t> lAnnotations;
+  lColl->getAnnotations(lAnnotations);
+  size_t num_annotations = 0;
+  for (std::vector<Annotation_t>::const_iterator lIter = lAnnotations.begin();
+       lIter != lAnnotations.end(); ++lIter)
+  {
+    std::cout << "Annotation QName " << (*lIter)->getQName().getStringValue() << std::endl;
+    ++num_annotations;
+  }
+
+  if (num_annotations != 3)
+  {
     return false;
   }
 
 
   return true;
 }
-
 
 int
 staticcollectionmanager(int argc, char* argv[])
@@ -144,6 +217,11 @@ staticcollectionmanager(int argc, char* argv[])
   std::cout << "executing example 2" << std::endl;
   if (!staticcollectionamanger2(z))
     return 2;
+  std::cout << std::endl;
+
+  std::cout << "executing example 3" << std::endl;
+  if (!staticcollectionamanger3(z))
+    return 3;
   std::cout << std::endl;
 
   return 0;

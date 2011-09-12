@@ -253,7 +253,7 @@ PULPrimitiveFactory::createUpdPut(
           CollectionPul* pul,
           const QueryLoc* aLoc,
           store::Item_t& name,
-          uint32_t flags,
+          const std::vector<store::Annotation_t>& annotations,
           const store::Item_t& nodeType,
           bool dyn_collection)
     {
@@ -261,7 +261,7 @@ PULPrimitiveFactory::createUpdPut(
           pul,
           aLoc,
           name,
-          flags,
+          annotations,
           nodeType,
           dyn_collection);
     }

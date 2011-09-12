@@ -25,11 +25,24 @@
 #include <zorba/static_context.h>
 #include <zorba/iterator.h>
 #include <zorba/singleton_item_sequence.h>
+#include <zorba/typeident.h>
 
 #include "api/zorbaimpl.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/zorba_exception.h"
 #include "api/unmarshaller.h"
+
+// needed for getAnnotations and getType
+// might later be done using invoke 
+#include "system/globalenv.h"
+#include "store/api/store.h"
+#include "store/api/collection.h"
+#include "store/api/annotation.h"
+#include "annotations/annotations.h"
+#include "api/annotationimpl.h"
+#include "context/static_context.h"
+#include "types/typeops.h"
+#include "compiler/xqddf/collection_decl.h"
 
 namespace zorba {
 
@@ -50,6 +63,9 @@ namespace zorba {
     ZorbaImpl::notifyError(theDiagnosticHandler);              \
   }
 
+  
+  class StaticallyKnownCollection;
+  
 
 /*******************************************************************************
 
@@ -336,6 +352,111 @@ CollectionImpl::getName() const
   return theQName;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+TypeIdentifier_t
+CollectionImpl::getType() const
+{
+  ZORBA_DM_TRY
+  {
+    store::Item* lQName = Unmarshaller::getInternalItem(theQName);
+
+    static_context* lCtx = Unmarshaller::getInternalStaticContext(theContext);
+
+    const StaticallyKnownCollection* lColl = lCtx->lookup_collection(lQName);
+    if (!lColl)
+    {
+      return 0;
+    }
+
+    const XQType* lType = lColl->getCollectionType();
+
+    return TypeOps::get_type_identifier(lCtx->get_typemanager(), *lType);
+
+  }
+  ZORBA_DM_CATCH
+  return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+CollectionImpl::isStatic() const
+{
+  ZORBA_DM_TRY
+  {
+    store::Item* lQName = Unmarshaller::getInternalItem(theQName);
+
+    static_context* lCtx = Unmarshaller::getInternalStaticContext(theContext);
+
+    const StaticallyKnownCollection* lColl = lCtx->lookup_collection(lQName);
+    return lColl;
+  }
+  ZORBA_DM_CATCH
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::getAnnotations(std::vector<Annotation_t>& aAnnotations) const
+{
+  ZORBA_DM_TRY
+  {
+    store::Item* lQName = Unmarshaller::getInternalItem(theQName);
+
+    store::Store* lStore = & GENV_STORE;
+
+    store::Collection_t lColl = lStore->getCollection(lQName);
+
+    if (!lColl)
+    {
+      lColl = lStore->getCollection(lQName, true);
+    }
+    // must exist because otherwise we wouldn't have an instance of this class
+    ZORBA_ASSERT(lColl);
+
+    std::vector<store::Annotation_t> lAnns;
+    std::vector<store::Annotation_t>::const_iterator lIter;
+    lColl->getAnnotations(lAnns);
+
+    for (lIter = lAnns.begin(); lIter != lAnns.end(); ++lIter)
+    {
+      store::Annotation_t lSAnn = *lIter;
+
+      std::vector<AnnotationLiteral_t> lILiterals;
+      for (std::vector<store::Item_t>::const_iterator lLiteral = lSAnn->theLiterals.begin();
+           lLiteral != lSAnn->theLiterals.end(); ++lLiteral)
+      {
+        lILiterals.push_back(new AnnotationLiteral(*lLiteral));
+      }
+
+      aAnnotations.push_back(
+          new AnnotationImpl(
+            new AnnotationInternal(lSAnn->theName, lILiterals)
+          )
+      );
+    }
+  }
+  ZORBA_DM_CATCH
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionImpl::registerDiagnosticHandler(
+    DiagnosticHandler* aDiagnosticHandler)
+{
+  theDiagnosticHandler = aDiagnosticHandler;
+}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

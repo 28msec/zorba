@@ -42,7 +42,7 @@ class CollectionImpl : public Collection
       const char* aLocalName,
       const std::vector<ItemSequence_t>& aArgs) const;
 
- public:
+  friend class CollectionManagerImpl;
   CollectionImpl(
       const StaticContext_t& aSctx,
       ItemFactory* aFactory,
@@ -50,6 +50,7 @@ class CollectionImpl : public Collection
       DiagnosticHandler* aDiagnosticHandler,
       const std::string& aDMLNamespace);
 
+ public:
   virtual ~CollectionImpl();
 
   virtual void
@@ -91,6 +92,18 @@ class CollectionImpl : public Collection
 
   virtual const Item
   getName() const;
+
+  virtual void
+  getAnnotations(std::vector<Annotation_t>& aAnnotations) const;
+
+  virtual bool
+  isStatic() const;
+
+  virtual TypeIdentifier_t
+  getType() const;
+
+  virtual void
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
   
 }; /* class CollectionImpl */
 

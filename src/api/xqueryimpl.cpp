@@ -706,10 +706,12 @@ XQueryImpl::getStaticCollectionManager() const
 
     for (CompilerCB::SctxMap::iterator lIter = theCompilerCB->theSctxMap.begin();
         lIter != theCompilerCB->theSctxMap.end(); ++lIter) {
-      lMgrs.push_back(
-          new StaticCollectionManagerImpl(
-            new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler),
-            lFactory));
+      // this object is only need to construct the StaticCollectionManagerImpl
+      // but it's not used after the construction anymore
+      std::auto_ptr<StaticContextImpl> lCtx(
+          new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler)
+        );
+      lMgrs.push_back(new StaticCollectionManagerImpl(lCtx.get(), lFactory));
     }
     // transfer ownership over all managers to the set
     theCollMgr = new StaticCollectionManagerSetImpl(lMgrs);

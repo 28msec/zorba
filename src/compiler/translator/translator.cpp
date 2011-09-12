@@ -3653,6 +3653,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     if (v.is_global())
     {
       if (theAnnotations->contains(
+
             theSctx->lookup_ann(StaticContextConsts::fn_private)))
         ve->set_private(true);
     }
@@ -3932,14 +3933,8 @@ void end_visit(const OptionDecl& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  [*] CollectionDecl ::= "declare" CollProperties "collection" QName
+  [*] CollectionDecl ::= "declare" Annotation* "collection" QName
                          ("as" CollectionTypeDecl)?
-                         ("with" NodeModifier "nodes")?
-
-  [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
-                          "ordered" | "unordered")*
-
-  [*] NodeModifier ::= ("read-only" | "mutable")
 
   [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
@@ -3998,59 +3993,98 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     quant = lCollectionType->get_quantifier();
   }
 
-  StaticContextConsts::declaration_property_t lUpdateMode =
-    StaticContextConsts::decl_mutable;
-
-  StaticContextConsts::declaration_property_t lOrderMode =
-    StaticContextConsts::decl_unordered;
-
-  StaticContextConsts::node_modifier_t lNodeModifier =
-    StaticContextConsts::mutable_node;
-
   AnnotationListParsenode* lAnns = v.get_annotations();
   if (lAnns)
   {
     lAnns->accept(*this);
   }
 
-  if ( theAnnotations )
+  if ( !theAnnotations )
   {
-    if ( ZANN_CONTAINS (zann_queue) )
-    {
-      lUpdateMode = StaticContextConsts::decl_queue;
-    }
-    if ( ZANN_CONTAINS ( zann_append_only) )
-    {
-      lUpdateMode = StaticContextConsts::decl_append_only;
-    }
-    if ( ZANN_CONTAINS ( zann_const ) )
-    {
-      lUpdateMode = StaticContextConsts::decl_const;
-    }
-    if ( ZANN_CONTAINS ( zann_ordered) )
-    {
-      lOrderMode = StaticContextConsts::decl_ordered;
-    }
-    if ( ZANN_CONTAINS ( zann_unordered) )
-    {
-      lOrderMode = StaticContextConsts::decl_unordered;
-    }
-    if ( ZANN_CONTAINS ( zann_read_only_nodes) )
-    {
-      lNodeModifier = StaticContextConsts::read_only;
-    }
+    theAnnotations = new AnnotationList();
   }
 
-  theAnnotations = NULL; // important to reset
+  // compute (redundant) enum values and assign
+  // default annotations if no annotation for a group
+  // of annotations exists:
+  // update mode: mutable
+  // order mode: unordered
+  // node modifier: mutable nodes
+  StaticContextConsts::declaration_property_t lUpdateMode;
+  StaticContextConsts::declaration_property_t lOrderMode;
+  StaticContextConsts::node_modifier_t lNodeModifier;
+
+  std::vector<rchandle<const_expr> > lLiterals;
+  if ( ZANN_CONTAINS (zann_queue) )
+  {
+    lUpdateMode = StaticContextConsts::decl_queue;
+  }
+  else if ( ZANN_CONTAINS ( zann_append_only) )
+  {
+    lUpdateMode = StaticContextConsts::decl_append_only;
+  }
+  else if ( ZANN_CONTAINS ( zann_const ) )
+  {
+    lUpdateMode = StaticContextConsts::decl_const;
+  }
+  else if ( ZANN_CONTAINS ( zann_mutable ) )
+  {
+    lUpdateMode = StaticContextConsts::decl_mutable;
+  }
+  else
+  {
+    theAnnotations->push_back(
+        theSctx->lookup_ann( StaticContextConsts::zann_mutable ),
+        lLiterals
+    );
+    lUpdateMode = StaticContextConsts::decl_mutable;
+  }
+
+  if ( ZANN_CONTAINS ( zann_ordered) )
+  {
+    lOrderMode = StaticContextConsts::decl_ordered;
+  }
+  else if ( ZANN_CONTAINS ( zann_unordered ) )
+  {
+    lOrderMode = StaticContextConsts::decl_unordered;
+  }
+  else
+  {
+    theAnnotations->push_back(
+        theSctx->lookup_ann( StaticContextConsts::zann_unordered ),
+        lLiterals
+    );
+    lOrderMode = StaticContextConsts::decl_unordered;
+  }
+
+  if ( ZANN_CONTAINS ( zann_read_only_nodes) )
+  {
+    lNodeModifier = StaticContextConsts::read_only;
+  }
+  else if ( ZANN_CONTAINS ( zann_mutable_nodes ) )
+  {
+    lNodeModifier = StaticContextConsts::mutable_node;
+  }
+  else
+  {
+    theAnnotations->push_back(
+        theSctx->lookup_ann( StaticContextConsts::zann_mutable_nodes ),
+        lLiterals
+    );
+    lNodeModifier = StaticContextConsts::mutable_node;
+  }
 
   // Create the collection object and register it in the static context
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
                                             lExpandedQName,
+                                            theAnnotations,
+                                            lNodeType,
+                                            lCollectionType,
                                             lUpdateMode,
                                             lOrderMode,
-                                            lNodeModifier,
-                                            lNodeType,
-                                            lCollectionType);
+                                            lNodeModifier);
+
+  theAnnotations = NULL; // important to reset
 
   theSctx->bind_collection(lColl, loc);
 
@@ -4067,12 +4101,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
 
 /***************************************************************************//**
-  IndexDecl ::= "declare" IndexPropertyList "index" QName
+  IndexDecl ::= "declare" Annotation* "index" QName
                 "on" "nodes" IndexDomainExpr "by" IndexKeyList
-
-  IndexPropertyList := ("unique" | "non" "unique" |
-                        "value" "range" | "value" "equality" |
-                        "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
 

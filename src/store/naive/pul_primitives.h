@@ -23,6 +23,7 @@
 #include "store/api/update_consts.h"
 #include "store/api/collection.h"
 #include "store/api/iterator.h"
+#include "store/api/annotation.h"
 
 #include "store/api/index.h" // for index spec obj
 #include "store/api/ic.h" // for index spec obj
@@ -882,7 +883,7 @@ class UpdCreateCollection : public UpdCollection
   friend class PULPrimitiveFactory;
 
 protected:
-  uint32_t theFlags; // see Collection::Properties
+  const std::vector<store::Annotation_t> theAnnotations;
   store::Item_t theNodeType;
 
 protected:
@@ -890,12 +891,12 @@ protected:
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,
-        uint32_t flags,
+        const std::vector<store::Annotation_t>& annotations,
         const store::Item_t& nodeType,
         bool dyn_collection)
     :
     UpdCollection(pul, aLoc, name, dyn_collection),
-    theFlags(flags),
+    theAnnotations(annotations),
     theNodeType(nodeType)
   {
   }

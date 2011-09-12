@@ -62,15 +62,15 @@ public:
 
 
 protected:
-  ulong                         theId;
-  store::Item_t                 theName;
-  checked_vector<store::Item_t> theXmlTrees;
-  bool                          theIsDynamic;
+  ulong                           theId;
+  store::Item_t                   theName;
+  checked_vector<store::Item_t>   theXmlTrees;
+  bool                            theIsDynamic;
 
-  ulong                         theTreeCounter;
+  ulong                           theTreeCounter;
 
-  uint32_t                      theFlags;
-  store::Item_t                 theNodeType;
+  const std::vector<store::Annotation_t> theAnnotations;
+  store::Item_t                   theNodeType;
 
   SYNC_CODE(Latch               theLatch;)
 
@@ -81,7 +81,7 @@ protected:
 public:
   SimpleCollection(
       const store::Item_t& aName,
-      uint32_t aFlags,
+      const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
       bool aDynamicCollection = false);
 
@@ -96,41 +96,9 @@ public:
 
   bool isDynamic() const { return theIsDynamic; }
 
-  bool
-  isConst() const
-  {
-    return (theFlags & Collection::coll_const) != 0;
-  }
-
-  bool
-  isAppendOnly() const
-  {
-    return (theFlags & Collection::coll_append_only) != 0;
-  }
-
-  bool
-  isQueue() const
-  {
-    return (theFlags & Collection::coll_queue) != 0;
-  }
-
-  bool
-  isMutable() const
-  {
-    return (theFlags & Collection::coll_mutable) != 0;
-  }
-
-  bool
-  isOrdered() const
-  {
-    return (theFlags & Collection::coll_ordered) != 0;
-  }
-
-  bool
-  areNodesReadOnly() const
-  {
-    return (theFlags & Collection::node_read_only) != 0;
-  }
+  void getAnnotations(
+      std::vector<store::Annotation_t>& annotations
+  ) const;
 
   // virtual to allow extension by subclasses
   virtual ulong createTreeId() { return theTreeCounter++; }
