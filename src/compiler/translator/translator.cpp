@@ -3949,11 +3949,8 @@ void* begin_visit(const CollectionDecl& v)
 
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "data-definition (ddl)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, loc,
+    ERROR_PARAMS("data-definition (ddl)"));
   }
 
   return no_state;
@@ -3965,16 +3962,14 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   TypeManager* tm = CTX_TM;
 
+  const QName* lName = v.getName();
+
   // a collection declaration must allways be in a library module
   if (!inLibraryModule())
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0003_COLLECTION_DECL_IN_MAIN_MODULE,
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0003_COLLECTION_DECL_IN_MAIN_MODULE, loc,
+    ERROR_PARAMS(lName->get_qname()));
   }
-
-  const QName* lName = v.getName();
 
   // Expand the collection qname (error is raised if qname resolution fails).
   store::Item_t lExpandedQName;
@@ -3982,11 +3977,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   if (lExpandedQName->getNamespace() != theModuleNamespace)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE,
-      ERROR_PARAMS( lName->get_qname() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, loc,
+    ERROR_PARAMS(lName->get_qname()));
   }
 
   // Get the static type of the root nodes
