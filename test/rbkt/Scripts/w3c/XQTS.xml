@@ -80,13 +80,19 @@
 
     <implementation-defined-item name="roundOrTruncate" value=""/>
 
-    <implementation-defined-item name="Unicode" value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0."/>
+    <implementation-defined-item 
+     name="Unicode" 
+     value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0."/>
 
-    <implementation-defined-item name="normalizationForms" value="Zorba supports NFC, NFKC, NFD, NFKD normalization forms."/>
+    <implementation-defined-item 
+     name="normalizationForms" 
+     value="Zorba supports NFC, NFKC, NFD, NFKD normalization forms."/>
 
     <implementation-defined-item name="collationUnits" value=""/>
 
-   <implementation-defined-item name="secondsDigits" value="Year values: Zorba supports 9 digits (32bit maxint). Fractional second: Zorba supports 6 digits."/>
+   <implementation-defined-item 
+    name="secondsDigits" 
+    value="Year values: Zorba supports 9 digits (32bit maxint). Fractional second: Zorba supports 6 digits."/>
 
     <implementation-defined-item name="stringToDecimal" value=""/>
 
@@ -102,17 +108,30 @@
      name="undefinedProperties" 
      value="err:FOTY0012"/>
 
-    <implementation-defined-item name="sequenceNormalization" value="Zorba performs sequence normalization for the 'binary' serialization method. Zorba's Data Converters module performs sequence normalization for JSON and JSONML (but these are not serialization output methods, i.e. they cannot be invoked with the help of '-z method=JSON')"/>
+    <implementation-defined-item 
+     name="sequenceNormalization" 
+     value="Zorba performs sequence normalization for the 'binary' serialization method. Zorba's Data Converters module performs sequence normalization for JSON and JSONML (but these are not serialization output methods, i.e. they cannot be invoked with the help of '-z method=JSON')"/>
 
-    <implementation-defined-item name="outputMethods" value="Zorba's only implementation-defined output method is 'binary' and it is used unqualified (URI is null)."/>
+    <implementation-defined-item 
+     name="outputMethods" 
+     value="Zorba's only implementation-defined output method is 'binary' and it is used unqualified (URI is null)."/>
 
-    <implementation-defined-item name="normalizationFormBehavior" value="Zorba has no implementation-defined values for the normalization-form parameter."/>
+    <implementation-defined-item 
+     name="normalizationFormBehavior" 
+     value="Zorba has no implementation-defined values for the normalization-form parameter."/>
 
-    <implementation-defined-item name="additionalParams" value="Zorba has no implementation-defined serialization parameters."/>
+    <implementation-defined-item 
+     name="additionalParams" 
+     value="Zorba has no implementation-defined serialization parameters."/>
 
-    <implementation-defined-item name="encodingPhase" value="Zorba has no such option."/>
+    <implementation-defined-item 
+     name="encodingPhase" 
+     value="Zorba has no such option."/>
 
-    <implementation-defined-item name="CDATASerialization" value="Zorba has no such mechanism."/>
+    <implementation-defined-item 
+     name="CDATASerialization" 
+     value="Zorba has no such mechanism."/>
+
   </implementation-defined-items>
   
   <features>
@@ -165,7 +184,7 @@
 
     <context-property 
      name="Statically known collations" context-type="static" 
-     value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
+     value="http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API."/>
 
     <context-property 
      name="Default collation" context-type="static" 

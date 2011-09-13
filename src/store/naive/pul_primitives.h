@@ -162,9 +162,6 @@ protected:
   InternalNode   * theParent;
 
   csize            thePos;
-  XmlNode_t        theRsib;
-  XmlNode_t        theLsib;
-  XmlNode_t        theNewTextNode;
 
 protected:
   UpdDelete(CollectionPul* pul, const QueryLoc* loc, store::Item_t& target);
@@ -226,7 +223,6 @@ protected:
   store::Item_t                    theSibling;
 
   long                             theNumApplied;
-  store::Item_t                    theMergedNode;
 
   UpdInsertChildren(
         CollectionPul* pul,
@@ -339,9 +335,6 @@ protected:
   ulong                       theNumApplied;
 
   csize                       thePos;
-  XmlNode_t                   theRsib;
-  XmlNode_t                   theLsib;
-  XmlNode_t                   theNewTextNode;
 
   UpdReplaceChild(
         CollectionPul* pul,
@@ -884,7 +877,7 @@ class UpdCreateCollection : public UpdCollection
 
 protected:
   const std::vector<store::Annotation_t> theAnnotations;
-  store::Item_t theNodeType;
+  store::Item_t                          theNodeType;
 
 protected:
   UpdCreateCollection(

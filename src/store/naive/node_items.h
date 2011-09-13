@@ -623,6 +623,7 @@ class InternalNode : public OrdPathNode
   friend class PiNode;
   friend class CommentNode;
   friend class UpdPut;
+  friend class CollectionPul;
 
 public:
   typedef std::vector<XmlNode*> NodeVector;
@@ -1145,6 +1146,7 @@ class TextNode : public XmlNode
   friend class UpdInsertChildren;
   friend class UpdSetElementType;
   friend class NodeFactory;
+  friend class CollectionPul;
 
 protected:
   TextNodeContent theContent;

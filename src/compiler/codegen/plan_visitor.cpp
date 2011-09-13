@@ -843,7 +843,7 @@ bool begin_visit(flwor_expr& v)
     {
       if (v.has_sequential_clauses())
       {
-        bool numForClauses = 0;
+        ulong numForClauses = 0;
 
         for (ulong i = 0; i < numClauses; ++i)
         {
@@ -898,7 +898,7 @@ bool begin_visit(flwor_expr& v)
       std::vector<OrderModifier> modifiers;
       std::vector<expr_t> orderingExprs;
 
-      bool numForClauses = 0;
+      ulong numForClauses = 0;
       ulong i = 0;
 
       while (i < numClauses)

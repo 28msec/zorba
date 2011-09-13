@@ -44,6 +44,8 @@ class IndexKey;
 class PULImpl;
 class QNameItem;
 class SimpleCollection;
+class InternalNode;
+class TextNode;
 
 
 typedef std::vector<UpdatePrimitive*> NodeUpdates;
@@ -115,8 +117,18 @@ public:
   Class storing all update primitives involving a single collection, or no
   collection at all.
 
-  theDoFirstList : insertInto, insertAttributes, replaceValue, rename
-  theInsertList  : insertBefore, insertAfter, insertIntoFirst, insertIntoLast 
+  theDoFirstList: 
+  ---------------
+  insertInto, insertAttributes, replaceValue, rename
+
+  theInsertList:
+  --------------
+  insertBefore, insertAfter, insertIntoFirst, insertIntoLast
+
+  theMergeToCheckSet:
+  -------------------
+  Nodes whose children might need to be merged 
+
 ********************************************************************************/
 class CollectionPul
 {
@@ -125,11 +137,28 @@ class CollectionPul
   friend class ElementNode;
   friend class AttributeNode;
 
+  struct TextNodeMerge
+  {
+    InternalNode         * theParent;
+    ulong                  thePos;
+    std::vector<XmlNode_t> theMergedNodes;
+
+    TextNodeMerge(InternalNode* aParent, ulong aPos)
+      :
+      theParent(aParent),
+      thePos(aPos)
+    {
+    }
+  };
+
 protected:
   // Bookeeping
   SimpleCollection                 * theCollection;
 
   PULImpl                          * thePul;
+
+  std::set<InternalNode*>            theMergeToCheckSet;
+  std::vector<TextNodeMerge>         theMergeList;
 
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
@@ -188,6 +217,8 @@ public:
   void refreshIndices();
 
   void setAdjustTreePositions() { theAdjustTreePositions = true; }
+
+  void addToCheckForMerge(InternalNode* parent) { theMergeToCheckSet.insert(parent); }
 
 protected:
   void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);

@@ -162,10 +162,6 @@ void UpdDelete::undo()
   {
     theParent->restoreChild(*this);
   }
-
-  theRsib = NULL;
-  theLsib = NULL;
-  theNewTextNode = NULL;
 }
 
 
@@ -423,10 +419,6 @@ void UpdReplaceChild::apply()
 void UpdReplaceChild::undo()
 {
   INTERNAL_NODE(theTarget)->restoreChild(*this);
-
-  theRsib = NULL;
-  theLsib = NULL;
-  theNewTextNode = NULL;
 }
 
 

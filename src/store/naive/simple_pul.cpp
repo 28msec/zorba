@@ -28,6 +28,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/pul_primitive_factory.h"
+#include "store/naive/node_factory.h"
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
@@ -2025,9 +2026,50 @@ void CollectionPul::applyUpdates()
     // of XQUF primitives were only temporary and have been resolved by now.
     // If not, an exception will be raised, and the updates will be undone
     // in the "catch" clause below.
-    ulong numToRecheck = (ulong)thePrimitivesToRecheck.size();
-    for (ulong i = 0; i < numToRecheck; ++i)
+    csize numToRecheck = thePrimitivesToRecheck.size();
+    for (csize i = 0; i < numToRecheck; ++i)
       thePrimitivesToRecheck[i]->check();
+
+    // Check if any text node merging has to be performed
+    std::set<InternalNode*>::iterator it = theMergeToCheckSet.begin();
+    std::set<InternalNode*>::iterator end = theMergeToCheckSet.end();
+    for (; it != end; ++it)
+    {
+      InternalNode* node = (*it);
+
+    	for (csize i = 0; i < node->numChildren()-1; ++i)
+    	{
+    		if (node->getChild(i)->getNodeKind() == store::StoreConsts::textNode &&
+            node->getChild(i+1)->getNodeKind() == store::StoreConsts::textNode)
+    		{
+          TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(i));
+
+    			TextNodeMerge mergeInfo(node, i);
+          mergeInfo.theMergedNodes.push_back(mergedNode);
+          node->removeChild(i);
+
+    			zstring newContent = mergedNode->getText();
+          csize j = i;
+
+    			while (j < node->numChildren() &&
+                 node->getChild(j)->getNodeKind() == store::StoreConsts::textNode)
+    			{
+    			  TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(j));
+    				newContent += mergedNode->getText();
+    				node->removeChild(j);
+    				mergeInfo.theMergedNodes.push_back(mergedNode);
+    			}
+
+    			theMergeList.push_back(mergeInfo);
+
+          (void)GET_NODE_FACTORY().createTextNode(node->getTree(),
+                                                  node,
+                                                  false,
+                                                  i,
+                                                  newContent);
+    		}
+    	}
+    }
 
 #ifndef ZORBA_NO_XMLSCHEMA
     // Revalidate the updated docs
@@ -2099,8 +2141,8 @@ void CollectionPul::finalizeUpdates()
     // Detach nodes that were deleted from their trees due to replace-node,
     // replace-content, or delete-node XQUF primitives.
 
-    ulong numUpdates = (ulong)theReplaceNodeList.size();
-    for (ulong i = 0; i < numUpdates; ++i)
+    csize numUpdates = theReplaceNodeList.size();
+    for (csize i = 0; i < numUpdates; ++i)
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
 
@@ -2117,18 +2159,6 @@ void CollectionPul::finalizeUpdates()
         // parent back to what it used to be.
         node->theParent = INTERNAL_NODE(upd->theTarget);
         node->detach();
-
-        if (upd2->theRsib != NULL)
-        {
-          upd2->theRsib->theParent = INTERNAL_NODE(upd2->theTarget);
-          upd2->theRsib->detach();
-        }
-
-        if (upd2->theLsib != NULL)
-        {
-          upd2->theLsib->theParent = INTERNAL_NODE(upd2->theTarget);
-          upd2->theLsib->detach();
-        }
       }
       else
       {
@@ -2141,14 +2171,14 @@ void CollectionPul::finalizeUpdates()
       }
     }
 
-    numUpdates = (ulong)theReplaceContentList.size();
-    for (ulong i = 0; i < numUpdates; ++i)
+    numUpdates = theReplaceContentList.size();
+    for (csize i = 0; i < numUpdates; ++i)
     {
       UpdReplaceElemContent* upd;
       upd = static_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
 
-      ulong numChildren = (ulong)upd->theOldChildren.size();
-      for (ulong j = 0; j < numChildren; ++j)
+      csize numChildren = upd->theOldChildren.size();
+      for (csize j = 0; j < numChildren; ++j)
       {
         XmlNode* node = upd->theOldChildren[j];
         node->theParent = INTERNAL_NODE(upd->theTarget);
@@ -2156,8 +2186,8 @@ void CollectionPul::finalizeUpdates()
       }
     }
 
-    numUpdates = (ulong)theDeleteList.size();
-    for (ulong i = 0; i < numUpdates; ++i)
+    numUpdates = theDeleteList.size();
+    for (csize i = 0; i < numUpdates; ++i)
     {
       UpdDelete* upd = static_cast<UpdDelete*>(theDeleteList[i]);
 
@@ -2167,42 +2197,15 @@ void CollectionPul::finalizeUpdates()
         target->theParent = upd->theParent;
         target->detach();
       }
-
-      if (upd->theNewTextNode != NULL)
-      {
-        upd->theRsib->theParent = upd->theParent;
-        upd->theRsib->detach();
-        upd->theLsib->theParent = upd->theParent;
-        upd->theLsib->detach();
-      }
     }
 
-    numUpdates = (ulong)theInsertList.size();
-    for (ulong i = 0; i < numUpdates; ++i)
+    numUpdates = theMergeList.size();
+    for (csize i = 0; i < numUpdates; ++i)
     {
-      UpdInsertChildren* upd = static_cast<UpdInsertChildren*>(theInsertList[i]);
-
-      if (upd->theMergedNode != NULL)
+      for (csize j = 0; j < theMergeList[i].theMergedNodes.size(); ++j)
       {
-        XmlNode* node = BASE_NODE(upd->theMergedNode);
-        node->theParent = INTERNAL_NODE(upd->theTarget);
-        node->detach();
-      }
-    }
-
-    numUpdates = (ulong)theDoFirstList.size();
-    for (ulong i = 0; i < numUpdates; ++i)
-    {
-      if (theDoFirstList[i]->getKind() != store::UpdateConsts::UP_INSERT_INTO)
-        continue;
-
-      UpdInsertChildren* upd = static_cast<UpdInsertChildren*>(theDoFirstList[i]);
-
-      if (upd->theMergedNode != NULL)
-      {
-        XmlNode* node = BASE_NODE(upd->theMergedNode);
-        node->theParent = INTERNAL_NODE(upd->theTarget);
-        node->detach();
+        theMergeList[i].theMergedNodes[j]->theParent= theMergeList[i].theParent;
+        theMergeList[i].theMergedNodes[j]->detach();
       }
     }
   }
@@ -2223,11 +2226,25 @@ void CollectionPul::undoUpdates()
 
   try
   {
-    // TODO: implement undo for incrementally maintained indexes.
-
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
+
+    // Undo text node merging
+    std::vector<TextNodeMerge>::reverse_iterator rit = theMergeList.rbegin();
+    std::vector<TextNodeMerge>::reverse_iterator rend = theMergeList.rend();
+    for (; rit != rend; ++rit)
+    {
+      TextNodeMerge merge = (*rit);
+      XmlNode* newTextNode = merge.theParent->getChild(merge.thePos);
+      ZORBA_ASSERT(newTextNode->getNodeKind()== store::StoreConsts::textNode);
+
+      newTextNode->detach();
+
+      for (csize j = 0; j < merge.theMergedNodes.size(); ++j)
+        merge.theMergedNodes[j]->connect(merge.theParent, merge.thePos + j);
+    }
+    theMergeList.clear();
 
     undoList(theDeleteList);
     undoList(theReplaceContentList);
