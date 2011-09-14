@@ -333,7 +333,8 @@ void XQueryImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler
     theDiagnosticHandler = aDiagnosticHandler;
     theUserDiagnosticHandler = true;
 
-    if (theCollMgr) {
+    if (theCollMgr) 
+    {
       theCollMgr->registerDiagnosticHandler(theDiagnosticHandler);
     }
   }
@@ -690,7 +691,9 @@ XQuery_t XQueryImpl::clone() const
   return XQuery_t();
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 StaticCollectionManager*
 XQueryImpl::getStaticCollectionManager() const
@@ -698,24 +701,28 @@ XQueryImpl::getStaticCollectionManager() const
   checkNotClosed();
   checkCompiled();
 
-  if (!theCollMgr) {
+  if (!theCollMgr) 
+  {
     std::vector<StaticCollectionManagerImpl*> lMgrs;
 
     Zorba* lZorba = Zorba::getInstance(0);
     ItemFactory* lFactory = lZorba->getItemFactory();
 
     for (CompilerCB::SctxMap::iterator lIter = theCompilerCB->theSctxMap.begin();
-        lIter != theCompilerCB->theSctxMap.end(); ++lIter) {
+        lIter != theCompilerCB->theSctxMap.end();
+         ++lIter) 
+    {
       // this object is only need to construct the StaticCollectionManagerImpl
       // but it's not used after the construction anymore
       std::auto_ptr<StaticContextImpl> lCtx(
-          new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler)
-        );
-      lMgrs.push_back(new StaticCollectionManagerImpl(lCtx.get(), lFactory));
+      new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler));
+
+      lMgrs.push_back(new StaticCollectionManagerImpl(lCtx.get(),
+                                                      lFactory,
+                                                      theDiagnosticHandler));
     }
     // transfer ownership over all managers to the set
     theCollMgr = new StaticCollectionManagerSetImpl(lMgrs);
-    theCollMgr->registerDiagnosticHandler(theDiagnosticHandler);
   }
   return theCollMgr;
 }
@@ -1288,19 +1295,23 @@ void XQueryImpl::close()
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
-  try {
-    if (theIsClosed) {
+  try 
+  {
+    if (theIsClosed) 
+    {
       return;
     }
 
-    if (theResultIterator != NULL) {
+    if (theResultIterator != NULL) 
+    {
       theResultIterator->closeInternal();
       theResultIterator = NULL;
     }
 
     theExecuting = false;
 
-    if (thePlanProxy) {
+    if (thePlanProxy) 
+    {
       thePlanProxy = NULL;
     }
 
@@ -1308,7 +1319,8 @@ void XQueryImpl::close()
     theXQueryDiagnostics = NULL;
 
     // see registerDiagnosticHandler
-    if (!theUserDiagnosticHandler) {
+    if (!theUserDiagnosticHandler) 
+    {
       delete theDiagnosticHandler;
       theDiagnosticHandler = NULL;
     }
@@ -1322,7 +1334,8 @@ void XQueryImpl::close()
     theStaticContext = NULL;
 
     // theCompilerCB may be NULL if an error occured while serializing "this" in.
-    if (theCompilerCB) {
+    if (theCompilerCB) 
+    {
 #ifdef ZORBA_WITH_DEBUGGER
       delete theCompilerCB->theDebuggerCommons;
 #endif
@@ -1343,7 +1356,8 @@ void XQueryImpl::close()
 ********************************************************************************/
 void XQueryImpl::checkIsDebugMode() const
 {
-  if (!theIsDebugMode) {
+  if (!theIsDebugMode) 
+  {
     throw ZORBA_EXCEPTION( zerr::ZAPI0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE );
   }
 }

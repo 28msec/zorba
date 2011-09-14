@@ -117,6 +117,7 @@ XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
   theContext->loadProlog(lProlog.str(), lHints);
 }
 
+
 XmlDataManagerImpl::~XmlDataManagerImpl()
 {
   if (!theUserDiagnosticHandler)
@@ -127,45 +128,54 @@ XmlDataManagerImpl::~XmlDataManagerImpl()
   delete theW3CColManager;
 }
 
+
 DocumentManager*
 XmlDataManagerImpl::getDocumentManager() const
 {
-  if (!theDocManager) {
+  if (!theDocManager) 
+  {
     theDocManager = new DocumentManagerImpl(theContext, theFactory);
     theDocManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
   return theDocManager;
 }
 
+
 CollectionManager*
 XmlDataManagerImpl::getCollectionManager() const
 {
-  if (!theColManager) {
-    theColManager = new CollectionManagerImpl(theContext, theFactory);
-    theColManager->registerDiagnosticHandler(theDiagnosticHandler);
+  if (!theColManager) 
+  {
+    theColManager = new CollectionManagerImpl(theContext,
+                                              theFactory,
+                                              theDiagnosticHandler);
   }
   return theColManager;
 }
 
+
 CollectionManager*
 XmlDataManagerImpl::getW3CCollectionManager() const
 {
-  if (!theW3CColManager) {
+  if (!theW3CColManager) 
+  {
     theW3CColManager = new CollectionManagerImpl(
         theContext,
         theFactory,
+        theDiagnosticHandler,
         "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl",
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml"
-    );
+        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml");
   }
   return theW3CColManager;
 }
+
 
 static void
 streamReleaser(std::istream* stream)
 {
   // it's the user's responsibility to manage the lifetime
 }
+
 
 Item
 XmlDataManagerImpl::parseXML(std::istream& aStream) const

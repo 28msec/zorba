@@ -54,19 +54,21 @@ namespace zorba {
 
 ********************************************************************************/
 CollectionManagerImpl::CollectionManagerImpl(
-  const StaticContext_t& aSctx,
-  ItemFactory* aFactory,
-  const std::string& aDDLNamespace,
-  const std::string& aDMLNamespace
-  )
-  : theContext(aSctx->createChildContext()),
-    theFactory(aFactory),
-    theColDDLNamespace(aDDLNamespace),
-    theColDMLNamespace(aDMLNamespace),
-    theDiagnosticHandler(0)
+    const StaticContext_t& aSctx,
+    ItemFactory* aFactory,
+    DiagnosticHandler* aDiagnosticHandler,
+    const std::string& aDDLNamespace,
+    const std::string& aDMLNamespace)
+  :
+  theContext(aSctx->createChildContext()),
+  theFactory(aFactory),
+  theColDDLNamespace(aDDLNamespace),
+  theColDMLNamespace(aDMLNamespace),
+  theDiagnosticHandler(aDiagnosticHandler)
 {
   initStaticContext(theContext);
 }
+
 
 /*******************************************************************************
 

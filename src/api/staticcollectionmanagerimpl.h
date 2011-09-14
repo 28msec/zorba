@@ -28,114 +28,167 @@ namespace zorba {
   class DiagnosticHandler;
   class StaticContextImpl;
 
-  /** \brief 
-   *
-   */
-  class StaticCollectionManagerImpl : public StaticCollectionManager
-  {
-  public:
-    virtual ~StaticCollectionManagerImpl();
+/*******************************************************************************
 
-    virtual void
-    createCollection(const Item& aQName);
+  A StaticCollectionManager is used to manage the static collections whose
+  declaration is reachable from a particular static_context obj S. 
 
-    virtual void
-    createCollection(
-        const Item& aQName,
-        const ItemSequence_t& aContents);
+  Instances of StaticCollectionManager are obtained via :
 
-    virtual void
-    deleteCollection(const Item& aQName);
+  (a) the StaticContext::getStaticCollectionManager() method. In this case,
+  "this" is owned by the StaticContext obj SW on which getStaticCollectionManager
+  was invoked, and it manages the static collections of the static_context 
+  obj S that is wrapped by SW.
 
-    virtual Collection_t
-    getCollection(const Item& aQName) const;
+  (b) the XqueryImpl::getStaticCollectionManager() method. This method creates 
+  one StaticCollectionManagerImpl for each static_context obj S found in 
+  theSctMap of the Xquery obj. Each of these StaticCollectionManagerImpl objs
+  is owned by the StaticCollectionManagerSetImpl that is also created by the
+  same method and it manages the static collections of the associated S obj.
 
-    virtual ItemSequence_t
-    availableCollections() const;
+  theFactory:
+  -----------
+  The singleton ItemFactory obj.
 
-    virtual bool
-    isAvailableCollection(const Item& aQName) const;
+  theContext:
+  -----------
+  A StaticContext obj that wraps a child of the static_context obj S whose 
+  static collections are managed by "this". A child of S is created because
+  a loadProlog is performed on the child to import theColDMLNamespace module.
 
-    virtual ItemSequence_t
-    declaredCollections() const;
+  theCollMgr:
+  -----------
+  A CollectionManager obj that is owned by "this" and to which many of the 
+  methods of "this" are propagated to. The CollectionManager obj is created 
+  during the construction of "this".
 
-    virtual bool
-    isDeclaredCollection(const Item& aQName) const;
+  theDiagnosticHandler:
+  ---------------------
+  The DiagnosticHandler to use for handling errors raised during the execution
+  of the methods of this StaticCollectionManager. It is the same as the one used
+  by the owner of "this", i.e. the StaticContext obj SW in case (a) above, or
+  the XQuery obj in case (b).
+********************************************************************************/
+class StaticCollectionManagerImpl : public StaticCollectionManager
+{
+protected:
+  friend class StaticContextImpl;
+  friend class StaticCollectionManagerSetImpl;
+  friend class XQueryImpl;
 
-  protected:
-    friend class StaticContextImpl;
-    friend class StaticCollectionManagerSetImpl;
-    friend class XQueryImpl;
-    StaticCollectionManagerImpl(
+protected:
+  ItemFactory            * theFactory;
+  std::string              theColDDLNamespace;
+  std::string              theColDMLNamespace;
+  
+  StaticContext_t          theContext;
+  CollectionManagerImpl*   theCollMgr;
+  
+  DiagnosticHandler      * theDiagnosticHandler;
+
+protected:
+  StaticCollectionManagerImpl(
       const StaticContextImpl* aModuleSctxSet,
-      ItemFactory* aFactory);
+      ItemFactory* aFactory,
+      DiagnosticHandler* aDiagnosticHandler);
 
-    void
-    initStaticContext(StaticContext_t& aCtx);
+  void
+  initStaticContext(StaticContext_t& aCtx);
+  
+  void
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
-  protected:
+public:
+  virtual ~StaticCollectionManagerImpl();
 
-    ItemFactory*             theFactory;
-    std::string              theColDDLNamespace;
-    std::string              theColDMLNamespace;
+  virtual void
+  createCollection(const Item& aQName);
 
-    StaticContext_t          theContext;
-    CollectionManagerImpl*   theCollMgr;
+  virtual void
+  createCollection(const Item& aQName, const ItemSequence_t& aContents);
 
-    DiagnosticHandler      * theDiagnosticHandler;
+  virtual void
+  deleteCollection(const Item& aQName);
 
-    void
-    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+  virtual Collection_t
+  getCollection(const Item& aQName) const;
 
-  }; /* class StaticCollectionManagerImpl */
+  virtual ItemSequence_t
+  availableCollections() const;
 
-  /** \brief 
-   *
-   */
-  class StaticCollectionManagerSetImpl : public StaticCollectionManager
-  {
-  protected:
-    typedef std::vector<StaticCollectionManagerImpl*>  MgrSet;
+  virtual bool
+  isAvailableCollection(const Item& aQName) const;
 
-  public:
-    virtual ~StaticCollectionManagerSetImpl();
+  virtual ItemSequence_t
+  declaredCollections() const;
 
-    virtual void
-    createCollection(const Item& aQName);
+  virtual bool
+  isDeclaredCollection(const Item& aQName) const;
 
-    virtual void
-    createCollection(
-        const Item& aQName,
-        const ItemSequence_t& aContents);
+}; /* class StaticCollectionManagerImpl */
 
-    virtual void
-    deleteCollection(const Item& aQName);
 
-    virtual Collection_t
-    getCollection(const Item& aQName) const;
+/*******************************************************************************
+  A StaticCollectionManagerSet is used to manage the static collections whose
+  declaration is reachable by the static_context objs associated with the any
+  of the modules that participate in a query. Let SS be the set of these
+  static_context objs.
 
-    virtual ItemSequence_t
-    availableCollections() const;
+  Instances of StaticCollectionManager are obtained via the 
+  XqueryImpl::getStaticCollectionManager() method.
 
-    virtual bool
-    isAvailableCollection(const Item& aQName) const;
+  theMgrs:
+  --------
+  For each static_context obj S in SS, a StaticCollectionManager obj is created
+  to manage the static collections of S. theMgrs is a vector the stores all these 
+  StaticCollectionManager objs.
 
-    virtual ItemSequence_t
-    declaredCollections() const;
+********************************************************************************/
+class StaticCollectionManagerSetImpl : public StaticCollectionManager
+{
+protected:
+  friend class XQueryImpl;
 
-    virtual bool
-    isDeclaredCollection(const Item& aQName) const;
+  typedef std::vector<StaticCollectionManagerImpl*>  MgrSet;
 
-  protected:
-    friend class XQueryImpl;
-    StaticCollectionManagerSetImpl(MgrSet&);
+protected:
+  MgrSet  theMgrs;
 
-    MgrSet  theMgrs;
+protected:
+  StaticCollectionManagerSetImpl(MgrSet&);
 
-    void
-    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+  void
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
-  }; /* class StaticCollectionManagerSetImpl */
+public:
+  virtual ~StaticCollectionManagerSetImpl();
+
+  virtual void
+  createCollection(const Item& aQName);
+
+  virtual void
+  createCollection(const Item& aQName, const ItemSequence_t& aContents);
+
+  virtual void
+  deleteCollection(const Item& aQName);
+
+  virtual Collection_t
+  getCollection(const Item& aQName) const;
+
+  virtual ItemSequence_t
+  availableCollections() const;
+
+  virtual bool
+  isAvailableCollection(const Item& aQName) const;
+
+  virtual ItemSequence_t
+  declaredCollections() const;
+
+  virtual bool
+  isDeclaredCollection(const Item& aQName) const;
+
+}; /* class StaticCollectionManagerSetImpl */
+
 
 } /* namespace zorba */
 #endif

@@ -62,10 +62,13 @@ namespace zorba {
 ********************************************************************************/
 StaticCollectionManagerImpl::StaticCollectionManagerImpl(
   const StaticContextImpl* aCtx,
-  ItemFactory* aFactory)
-  : theFactory(aFactory),
-    theColDDLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/ddl"),
-    theColDMLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/dml")
+  ItemFactory* aFactory,
+  DiagnosticHandler* aDiagnosticHandler)
+  : 
+  theFactory(aFactory),
+  theColDDLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/ddl"),
+  theColDMLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/dml"),
+  theDiagnosticHandler(aDiagnosticHandler)
 {
   // the context passed as parameter is not used anywhere in here.
   // it's just used to create a child of the passed context
@@ -73,10 +76,15 @@ StaticCollectionManagerImpl::StaticCollectionManagerImpl(
   // can destroy the object because only internal static contexts
   // are needed.
   theContext = aCtx->createChildContext();
-  theCollMgr = new CollectionManagerImpl(
-      theContext, theFactory, theColDDLNamespace, theColDMLNamespace);
+
+  theCollMgr = new CollectionManagerImpl(theContext, 
+                                         theFactory,
+                                         theDiagnosticHandler, 
+                                         theColDDLNamespace, 
+                                         theColDMLNamespace);
   initStaticContext(theContext);
 }
+
 
 /*******************************************************************************
 
@@ -85,6 +93,32 @@ StaticCollectionManagerImpl::~StaticCollectionManagerImpl()
 {
   delete theCollMgr;
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticCollectionManagerImpl::initStaticContext(StaticContext_t& aCtx)
+{
+  Zorba_CompilerHints_t lHints;
+  std::ostringstream lProlog;
+  lProlog << "import module namespace d = '" << theColDDLNamespace << "';";
+  aCtx->loadProlog(lProlog.str(), lHints);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticCollectionManagerImpl::registerDiagnosticHandler(
+    DiagnosticHandler* aDiagnosticHandler)
+{
+  theDiagnosticHandler = aDiagnosticHandler;
+  theCollMgr->registerDiagnosticHandler(aDiagnosticHandler);
+}
+
 
 /*******************************************************************************
 
@@ -95,6 +129,7 @@ StaticCollectionManagerImpl::createCollection(const Item& aQName)
   theCollMgr->createCollection(aQName);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -104,13 +139,14 @@ StaticCollectionManagerImpl::createCollection(
     const ItemSequence_t& aContents)
 {
   // do a check here in order to get better (non-confusing) error messages
-  if (!isDeclaredCollection(aQName)) {
-    throw ZORBA_EXCEPTION( zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aQName.getStringValue() )
-    );
+  if (!isDeclaredCollection(aQName)) 
+  {
+    throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+    ERROR_PARAMS(aQName.getStringValue()));
   }
   theCollMgr->createCollection(aQName, aContents);
 }
+
 
 /*******************************************************************************
 
@@ -119,13 +155,14 @@ void
 StaticCollectionManagerImpl::deleteCollection(const Item& aQName)
 {
   // do a check here in order to get better (non-confusing) error messages
-  if (!isDeclaredCollection(aQName)) {
-    throw ZORBA_EXCEPTION( zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aQName.getStringValue() )
-    );
+  if (!isDeclaredCollection(aQName)) 
+  {
+    throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+    ERROR_PARAMS(aQName.getStringValue()));
   }
   theCollMgr->deleteCollection(aQName);
 }
+
 
 /*******************************************************************************
 
@@ -136,6 +173,7 @@ StaticCollectionManagerImpl::getCollection(const Item& aQName) const
   return theCollMgr->getCollection(aQName);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -145,6 +183,7 @@ StaticCollectionManagerImpl::availableCollections() const
   return theCollMgr->availableCollections();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -152,10 +191,10 @@ bool
 StaticCollectionManagerImpl::isAvailableCollection(const Item& aQName) const
 {
   // do a check here in order to get better (non-confusing) error messages
-  if (!isDeclaredCollection(aQName)) {
-    throw ZORBA_EXCEPTION( zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-      ERROR_PARAMS( aQName.getStringValue() )
-    );
+  if (!isDeclaredCollection(aQName)) 
+  {
+    throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+    ERROR_PARAMS(aQName.getStringValue()));
   }
   return theCollMgr->isAvailableCollection(aQName);
 }
@@ -169,9 +208,8 @@ StaticCollectionManagerImpl::declaredCollections() const
 {
   ZORBA_DM_TRY
   {
-    Item lFunc = theFactory->createQName(
-        theColDDLNamespace,
-        "declared-collections");
+    Item lFunc = theFactory->createQName(theColDDLNamespace,
+                                         "declared-collections");
 
     std::vector<ItemSequence_t> lArgs;
     return theContext->invoke(lFunc, lArgs);
@@ -189,9 +227,8 @@ StaticCollectionManagerImpl::isDeclaredCollection(const Item& aQName) const
 {
   ZORBA_DM_TRY
   {
-    Item lFunc = theFactory->createQName(
-        theColDDLNamespace,
-        "is-declared-collection");
+    Item lFunc = theFactory->createQName(theColDDLNamespace,
+                                         "is-declared-collection");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aQName));
@@ -207,37 +244,23 @@ StaticCollectionManagerImpl::isDeclaredCollection(const Item& aQName) const
   return false;
 }
 
-/*******************************************************************************
 
-********************************************************************************/
-void
-StaticCollectionManagerImpl::initStaticContext(StaticContext_t& aCtx)
-{
-  Zorba_CompilerHints_t lHints;
-  std::ostringstream lProlog;
-  lProlog
-    << "import module namespace d = '" << theColDDLNamespace << "';";
-  aCtx->loadProlog(lProlog.str(), lHints);
-}
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  StaticCollectionManagerSetImpl                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-/*******************************************************************************
-
-********************************************************************************/
-void
-StaticCollectionManagerImpl::registerDiagnosticHandler(
-    DiagnosticHandler* aDiagnosticHandler)
-{
-  theDiagnosticHandler = aDiagnosticHandler;
-  theCollMgr->registerDiagnosticHandler(aDiagnosticHandler);
-}
 
 /*******************************************************************************
 
 ********************************************************************************/
 StaticCollectionManagerSetImpl::StaticCollectionManagerSetImpl(MgrSet& aSet)
-  : theMgrs(aSet)
+  : 
+  theMgrs(aSet)
 {
 }
+
 
 /*******************************************************************************
 
@@ -246,10 +269,12 @@ StaticCollectionManagerSetImpl::~StaticCollectionManagerSetImpl()
 {
   for (MgrSet::iterator lIter = theMgrs.begin();
        lIter != theMgrs.end();
-       ++lIter) {
+       ++lIter) 
+  {
     delete (*lIter);
   }
 }
+
 
 /*******************************************************************************
 
@@ -259,17 +284,19 @@ StaticCollectionManagerSetImpl::createCollection(const Item& aQName)
 {
   for (MgrSet::iterator lIter = theMgrs.begin();
        lIter != theMgrs.end();
-       ++lIter) {
-    // do a check here in order to get better (non-confusing) error messages
-    if ((*lIter)->isDeclaredCollection(aQName)) {
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredCollection(aQName)) 
+    {
         (*lIter)->createCollection(aQName);
         return;
     }
   }
-  throw ZORBA_EXCEPTION( zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-    ERROR_PARAMS( aQName.getStringValue() )
-  );
+
+  throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+  ERROR_PARAMS(aQName.getStringValue()));
 }
+
 
 /*******************************************************************************
 
@@ -281,17 +308,19 @@ StaticCollectionManagerSetImpl::createCollection(
 {
   for (MgrSet::iterator lIter = theMgrs.begin();
        lIter != theMgrs.end();
-       ++lIter) {
-    // do a check here in order to get better (non-confusing) error messages
-    if ((*lIter)->isDeclaredCollection(aQName)) {
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredCollection(aQName)) 
+    {
         (*lIter)->createCollection(aQName, aContents);
         return;
     }
   }
-  throw ZORBA_EXCEPTION( zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-    ERROR_PARAMS( aQName.getStringValue() )
-  );
+
+  throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+  ERROR_PARAMS(aQName.getStringValue()));
 }
+
 
 /*******************************************************************************
 
@@ -301,17 +330,19 @@ StaticCollectionManagerSetImpl::deleteCollection(const Item& aQName)
 {
   for (MgrSet::iterator lIter = theMgrs.begin();
        lIter != theMgrs.end();
-       ++lIter) {
-    // do a check here in order to get better (non-confusing) error messages
-    if ((*lIter)->isDeclaredCollection(aQName)) {
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredCollection(aQName)) 
+    {
         (*lIter)->deleteCollection(aQName);
         return;
     }
   }
-  throw ZORBA_EXCEPTION( zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-    ERROR_PARAMS( aQName.getStringValue() )
-  );
+
+  throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+  ERROR_PARAMS(aQName.getStringValue()));
 }
+
 
 /*******************************************************************************
 
@@ -321,16 +352,18 @@ StaticCollectionManagerSetImpl::getCollection(const Item& aQName) const
 {
   for (MgrSet::const_iterator lIter = theMgrs.begin();
        lIter != theMgrs.end();
-       ++lIter) {
-    // do a check here in order to get better (non-confusing) error messages
-    if ((*lIter)->isDeclaredCollection(aQName)) {
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredCollection(aQName)) 
+    {
       return (*lIter)->getCollection(aQName);
     }
   }
-  throw ZORBA_EXCEPTION( zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-    ERROR_PARAMS( aQName.getStringValue() )
-  );
+
+  throw ZORBA_EXCEPTION(zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+  ERROR_PARAMS(aQName.getStringValue()));
 }
+
 
 /*******************************************************************************
 
@@ -346,6 +379,7 @@ StaticCollectionManagerSetImpl::availableCollections() const
   return new ItemSequenceChainer(lSequences);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -353,10 +387,12 @@ bool
 StaticCollectionManagerSetImpl::isAvailableCollection(const Item& aQName) const
 {
   for (MgrSet::const_iterator lIter = theMgrs.begin();
-       lIter != theMgrs.end(); ++lIter) {
-    // do a check here in order to get better (non-confusing) error messages
+       lIter != theMgrs.end(); 
+       ++lIter) 
+  {
     if ((*lIter)->isDeclaredCollection(aQName) &&
-        (*lIter)->isAvailableCollection(aQName)) {
+        (*lIter)->isAvailableCollection(aQName)) 
+    {
       return true;
     }
   }
@@ -372,7 +408,9 @@ StaticCollectionManagerSetImpl::declaredCollections() const
 {
   std::vector<ItemSequence_t> lSequences;
   for (MgrSet::const_iterator lIter = theMgrs.begin();
-       lIter != theMgrs.end(); ++lIter) {
+       lIter != theMgrs.end(); 
+       ++lIter) 
+  {
     lSequences.push_back((*lIter)->declaredCollections());
   }
   // we need to do duplicate elimination of the sequence because
@@ -384,6 +422,7 @@ StaticCollectionManagerSetImpl::declaredCollections() const
   return new ItemSequenceChainer(lSequences, true);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -391,8 +430,11 @@ bool
 StaticCollectionManagerSetImpl::isDeclaredCollection(const Item& aQName) const
 {
   for (MgrSet::const_iterator lIter = theMgrs.begin();
-       lIter != theMgrs.end(); ++lIter) {
-    if ((*lIter)->isDeclaredCollection(aQName)) {
+       lIter != theMgrs.end(); 
+       ++lIter) 
+  {
+    if ((*lIter)->isDeclaredCollection(aQName)) 
+    {
       return true;
     }
   }
@@ -408,7 +450,9 @@ StaticCollectionManagerSetImpl::registerDiagnosticHandler(
     DiagnosticHandler* aDiagnosticHandler)
 {
   for (MgrSet::const_iterator lIter = theMgrs.begin();
-       lIter != theMgrs.end(); ++lIter) {
+       lIter != theMgrs.end(); 
+       ++lIter) 
+  {
     (*lIter)->registerDiagnosticHandler(aDiagnosticHandler);
   }
 }

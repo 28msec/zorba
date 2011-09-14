@@ -68,6 +68,7 @@ namespace zorba {
     CollectionManagerImpl(
       const StaticContext_t& aSctx,
       ItemFactory* aFactory,
+      DiagnosticHandler* aDiagnosticHandler,
       const std::string& aDDLNS = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl",
       const std::string& aDMLNS = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml");
 

@@ -132,10 +132,10 @@ class StaticCollectionManagerSetImpl;
 
   - theProfileName :
 
-  - theStaticCollectionMgr : StaticCollectionManager object for all
-      statically declared collections in this query or any transitively
-      imported module. It's created lazily upon request and destroyed
-      when this XQueryImpl object is destroyed.
+  - theStaticCollectionMgr : 
+  StaticCollectionManager object for all statically declared collections in this 
+  query or any transitively imported module. It's created lazily upon request 
+  and destroyed when this XQueryImpl object is destroyed.
 
 ********************************************************************************/
 class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseClass
@@ -219,7 +219,7 @@ private:
 
 public:
   SERIALIZABLE_CLASS(XQueryImpl)
-  XQueryImpl(::zorba::serialization::Archiver &ar);
+  XQueryImpl(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

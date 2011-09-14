@@ -89,7 +89,9 @@ StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   This constructor is used when the static context of a query is returned to
   the application (see XQueryImpl::getStaticContext()).
 ********************************************************************************/
-StaticContextImpl::StaticContextImpl(static_context* aCtx, DiagnosticHandler* aDiagnosticHandler)
+StaticContextImpl::StaticContextImpl(
+    static_context* aCtx,
+    DiagnosticHandler* aDiagnosticHandler)
   :
   theCtx(aCtx),
   theDiagnosticHandler(aDiagnosticHandler),
@@ -1314,12 +1316,14 @@ StaticContextImpl::invoke(
     // contains a reference to the query in order to do cleanup work
     Iterator_t lIter = impl->iterator();
     return new InvokeItemSequence(impl.release(), lIter);
-  } catch (ZorbaException const& e)
+  } 
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
     return 0;
   }
 }
+
 
 StaticCollectionManager*
 StaticContextImpl::getStaticCollectionManager() const
@@ -1331,17 +1335,20 @@ StaticContextImpl::getStaticCollectionManager() const
 
   if (!theCollectionMgr)
   {
-    theCollectionMgr = new StaticCollectionManagerImpl(this, lFactory);
-    theCollectionMgr->registerDiagnosticHandler(theDiagnosticHandler);
+    theCollectionMgr = new StaticCollectionManagerImpl(this,
+                                                       lFactory,
+                                                       theDiagnosticHandler);
   }
   return theCollectionMgr;
 }
+
 
 void
 StaticContextImpl::setAuditEvent(audit::Event* anEvent)
 {
   theCtx->set_audit_event(anEvent);
 }
+
 
 audit::Event*
 StaticContextImpl::getAuditEvent()
