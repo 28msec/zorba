@@ -384,7 +384,7 @@ Zorba defines three categories of collection annotations:
 <strong>document update mode</strong> (with possible values '%ann:read-only-nodes' and '%ann:mutable-nodes').
 
 If not specified, the default values for update and ordering mode are '%ann:mutable' and '%ann:unordered', respectively.
-The default value for the document update mode is '%ann:mutable-node'.
+The default value for the document update mode is '%ann:mutable-nodes'.
 
 It is a static error [err::XQST0106] if a collection declaration contains more than one value for the same property.
 An <strong>ordered collection</strong> is a collection into which the ordering of documents is assumed to be meaningful for the application, and as a result, programmers can explicitly control the placement of documents via appropriate updating functions.
@@ -1410,7 +1410,7 @@ or in another imported module (even if the declarations are consistent).
 
 Zorba defines three index properties which are syntactically expressed as annotations:
 <strong>uniqueness</strong> (with possible values '%ann:unique' or '%ann:nonunique'),
-<strong>usage</strong> (with possible values '%ann:value range', '%ann:value-equality', '%ann:general-range', or '%ann:general-equality'), and 
+<strong>usage</strong> (with possible values '%ann:value-range', '%ann:value-equality', '%ann:general-range', or '%ann:general-equality'), and 
 <strong>maintenance mode</strong> (with possible values '%ann:manual' or '%ann:automatic').
 The syntax allows the values for these properties to be listed in any order or not be specified at all.
 If not specified, the default values for uniqueness, usage, and maintenance mode are '%ann:nonunique', 
@@ -2048,6 +2048,27 @@ function populates an empty index container).</li>
 
 
 \section integrity_constraints Integrity Constraints in Zorba 
+
+\code
+  ICDecl                ::=  'declare' 'integrity' 'constraint' QName (ICCollection | ICForeignKey)
+
+  ICCollection          ::=  'on' 'collection' QName
+       ( ICCollSequence | ICCollSequenceUnique | ICCollNode )
+
+  ICCollSequence        ::=  '\$' QName 'check' ExprSingle
+
+  ICCollSequenceUnique  ::=  'node' '\$' QName 'check' 'unique' 'key' PathExpr
+
+  ICCollNode            ::=  'foreach' 'node' '\$' QName 'check' ExprSingle
+
+  ICForeignKey          ::=  'foreign' 'key' ICForeignKeySource ICForeignKeyTarget
+
+  ICForeignKeySource    ::=  'from' ICForeignKeyValues
+
+  ICForeignKeyTarget    ::=  'to' ICForeignKeyValues
+
+  ICForeignKeyValues    ::=  'collection' QName 'node' '\$' QName 'key' PathExpr
+\endcode
 
 
 Analogously to collections and indexes, XQDDF defines an additional extension to

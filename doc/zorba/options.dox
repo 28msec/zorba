@@ -237,7 +237,7 @@ declare %ann:nonassignable variable $var := 3;
 If a value is assigned to a nonassignable variable, the error <tt>XSST0007</tt> in the Zorba error namespace is raised.
 
 \paragraph variadic_annotation Variadic Functions
-A function annotated with the <tt>ann:variadic</tt> annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments.  
+A function annotated with the <tt>%ann:variadic</tt> annotation is a function of indefinite arity, i.e. one that accepts a variable number of arguments.  
 
 For example, the function to create an unordered map with an arbitrary number of key types (see module http://www.zorba-xquery.com/modules/store/data-structures/unordered-map) is declared as follow:
 
@@ -287,17 +287,17 @@ The semantics of each of the annotations is given in the documentation about the
 However, for completeness, we also list all of the annotations here.
 
 <ul>
-  <li><b>mutable, queue, append-only, const</b> Determines whether a collection is mutable, queue (FIFO), append-only, or const (not mutable). The default annotation is mutable. </li>
+  <li><b>%ann:mutable, %ann:queue, %ann:append-only, %ann:const</b> Determines whether a collection is mutable, queue (FIFO), append-only, or const (not mutable). The default annotation is mutable. </li>
 
-  <li><b>ordered, unordered</b>  Annotations to specify whether the order of nodes in a collection must be preserved. The default is ordered.</li>
+  <li><b>%ann:ordered, %ann:unordered</b>  Annotations to specify whether the order of nodes in a collection must be preserved. The default is ordered.</li>
 
-  <li><b>read-only-nodes, mutable-nodes</b> If a collection is annotated with read-only-nodes, the nodes in the collection can not be modified using the XQuery Update Facility. The default is mutable-nodes.</li>
+  <li><b>%ann:read-only-nodes, %ann:mutable-nodes</b> If a collection is annotated with read-only-nodes, the nodes in the collection can not be modified using the XQuery Update Facility. The default is %ann:mutable-nodes.</li>
 
-  <li><b>unique, nonunique</b> Unique indexes make sure that the relationship between index keys and values is one-to-one. The default is nonunique.</li>
+  <li><b>%ann:unique, %ann:nonunique</b> Unique indexes make sure that the relationship between index keys and values is one-to-one. The default is %ann:nonunique.</li>
 
-  <li><b>value-equality, value-range</b> Determine whether the index is a value equality or value range index. The default is value-equality.</li>
+  <li><b>%ann:value-equality, %ann:value-range, %ann:general-range, %ann:general-equality</b> Determine whether the index is a value or general equality or value range index, respectively. The default is %ann:value-equality.</li>
 
-  <li><b>automatic, manual</b> If an index is declared as automatic, Zorba guarantees that the index is maintained automatically. The default is manual.</li>
+  <li><b>%ann:automatic, %ann:manual</b> If an index is declared as automatic, Zorba guarantees that the index is maintained automatically. The default is %ann:manual.</li>
 
 </ul>
 
