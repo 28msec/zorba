@@ -70,7 +70,7 @@ SeededRandomIterator::nextImpl(
     {
       int_seed = static_cast<unsigned int>(
           to_xs_int( seed->getIntegerValue() ) );
-    } catch (std::range_error& e)
+    } catch (std::range_error& /*e*/)
     {
       throw XQUERY_EXCEPTION(
           zerr::ZXQD0004_INVALID_PARAMETER,
