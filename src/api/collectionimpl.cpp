@@ -408,7 +408,7 @@ CollectionImpl::isStatic() const
     static_context* lCtx = Unmarshaller::getInternalStaticContext(theContext);
 
     const StaticallyKnownCollection* lColl = lCtx->lookup_collection(lQName);
-    return (lColl != nullptr);
+    return (lColl != NULL);
   }
   ZORBA_DM_CATCH
   return false;

@@ -159,9 +159,8 @@ class UpdDelete : public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  InternalNode   * theParent;
-
-  csize            thePos;
+  store::ItemHandle<InternalNode> theParent;
+  csize                           thePos;
 
 protected:
   UpdDelete(CollectionPul* pul, const QueryLoc* loc, store::Item_t& target);

@@ -27,6 +27,8 @@ version 2.x
   * Fixed bug #3409344 (during detach, if the node being detached is the root of
     its tree, it should be detached from the tree as well; otherwise memory
     corruption will occur)
+  * Fixed bug # (Should not destroy the parent of a node that is being detached 
+    before the detach is done). 
 	
 version 2.0.1
 

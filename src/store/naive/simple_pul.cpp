@@ -2144,8 +2144,9 @@ void CollectionPul::finalizeUpdates()
 
     // Detach nodes that were deleted from their trees due to replace-node,
     // replace-content, or delete-node XQUF primitives.
+    csize numUpdates;
 
-    csize numUpdates = theReplaceNodeList.size();
+    numUpdates = theReplaceNodeList.size();
     for (csize i = 0; i < numUpdates; ++i)
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
