@@ -28,20 +28,25 @@
 #include <zorba/typeident.h>
 
 #include "api/zorbaimpl.h"
-#include "diagnostics/xquery_diagnostics.h"
-#include "diagnostics/zorba_exception.h"
 #include "api/unmarshaller.h"
 
-// needed for getAnnotations and getType
+#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/zorba_exception.h"
+
+// The following includes are needed for getAnnotations and getType
 // might later be done using invoke 
 #include "system/globalenv.h"
+
 #include "store/api/store.h"
 #include "store/api/collection.h"
 #include "store/api/annotation.h"
 #include "annotations/annotations.h"
 #include "api/annotationimpl.h"
+
 #include "context/static_context.h"
+
 #include "types/typeops.h"
+
 #include "compiler/xqddf/collection_decl.h"
 
 namespace zorba {
@@ -63,24 +68,22 @@ namespace zorba {
     ZorbaImpl::notifyError(theDiagnosticHandler);              \
   }
 
-  
-  class StaticallyKnownCollection;
-  
 
 /*******************************************************************************
 
 ********************************************************************************/
 CollectionImpl::CollectionImpl(
-      const StaticContext_t& aSctx,
-      ItemFactory* aFactory,
-      const Item& aQName,
-      DiagnosticHandler* aDiagnosticHandler,
-      const std::string& aDMLNS)
-  : theContext(aSctx->createChildContext()),
-    theFactory(aFactory),
-    theQName(aQName),
-    theDiagnosticHandler(aDiagnosticHandler),
-    theNS(aDMLNS)
+    const StaticContext_t& aSctx,
+    ItemFactory* aFactory,
+    const Item& aQName,
+    DiagnosticHandler* aDiagnosticHandler,
+    const std::string& aDMLNS)
+  :
+  theContext(aSctx->createChildContext()),
+  theFactory(aFactory),
+  theQName(aQName),
+  theDiagnosticHandler(aDiagnosticHandler),
+  theNS(aDMLNS)
 {
   initStaticContext();
 }
@@ -93,6 +96,7 @@ CollectionImpl::~CollectionImpl()
 {
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -101,10 +105,10 @@ CollectionImpl::initStaticContext()
 {
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
-  lProlog
-    << "import module namespace d = '" << theNS << "';";
+  lProlog << "import module namespace d = '" << theNS << "';";
   theContext->loadProlog(lProlog.str(), lHints);
 }
+
 
 /*******************************************************************************
 
@@ -123,6 +127,7 @@ CollectionImpl::invoke(
   lIter->next(lRes);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -140,6 +145,7 @@ CollectionImpl::insertNodesFirst(const ItemSequence_t& aNodes)
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -156,6 +162,7 @@ CollectionImpl::insertNodesLast(const ItemSequence_t& aNodes)
   }
   ZORBA_DM_CATCH
 }
+
 
 /*******************************************************************************
 
@@ -177,6 +184,7 @@ CollectionImpl::insertNodesBefore(
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -197,6 +205,7 @@ CollectionImpl::insertNodesAfter(
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -214,6 +223,7 @@ CollectionImpl::deleteNodes(const ItemSequence_t& aNodes)
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -229,6 +239,7 @@ CollectionImpl::deleteNodeFirst()
   }
   ZORBA_DM_CATCH
 }
+
 
 /*******************************************************************************
 
@@ -247,6 +258,7 @@ CollectionImpl::deleteNodesFirst(unsigned long aNumNodes)
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -262,6 +274,7 @@ CollectionImpl::deleteNodeLast()
   }
   ZORBA_DM_CATCH
 }
+
 
 /*******************************************************************************
 
@@ -280,6 +293,7 @@ CollectionImpl::deleteNodesLast(unsigned long aNumNodes)
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -293,18 +307,16 @@ CollectionImpl::indexOf(const Item& aNode)
     // (2) the collection needs to be the same as the given collection
     store::Item_t lNode = Unmarshaller::getInternalItem(aNode);
     const store::Collection* aColl = lNode->getCollection();
-    if (!aColl) {
-      throw ZORBA_EXCEPTION(
-        zerr::ZSTR0009_COLLECTION_NOT_FOUND
-      );
+    if (!aColl) 
+    {
+      throw ZORBA_EXCEPTION(zerr::ZSTR0009_COLLECTION_NOT_FOUND);
     }
     store::Item_t lName1 = Unmarshaller::getInternalItem(aNode.getCollectionName());
     store::Item_t lName2 = Unmarshaller::getInternalItem(theQName);
-    if (lName1 != lName2) {
-      throw ZORBA_EXCEPTION(
-        zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
-        ERROR_PARAMS( lName1->getStringValue() )
-      );
+    if (lName1 != lName2) 
+    {
+      throw ZORBA_EXCEPTION(zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND,
+      ERROR_PARAMS(lName1->getStringValue()));
     }
 
     Item lFunc = theFactory->createQName(theNS, "index-of");
@@ -324,6 +336,7 @@ CollectionImpl::indexOf(const Item& aNode)
   return -1;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -342,6 +355,7 @@ CollectionImpl::contents()
   ZORBA_DM_CATCH
   return 0;
 }
+
 
 /*******************************************************************************
 
@@ -394,7 +408,7 @@ CollectionImpl::isStatic() const
     static_context* lCtx = Unmarshaller::getInternalStaticContext(theContext);
 
     const StaticallyKnownCollection* lColl = lCtx->lookup_collection(lQName);
-    return lColl;
+    return (lColl != nullptr);
   }
   ZORBA_DM_CATCH
   return false;
@@ -431,17 +445,16 @@ CollectionImpl::getAnnotations(std::vector<Annotation_t>& aAnnotations) const
       store::Annotation_t lSAnn = *lIter;
 
       std::vector<AnnotationLiteral_t> lILiterals;
-      for (std::vector<store::Item_t>::const_iterator lLiteral = lSAnn->theLiterals.begin();
-           lLiteral != lSAnn->theLiterals.end(); ++lLiteral)
+      std::vector<store::Item_t>::const_iterator lLiteral;
+      for (lLiteral = lSAnn->theLiterals.begin();
+           lLiteral != lSAnn->theLiterals.end();
+           ++lLiteral)
       {
         lILiterals.push_back(new AnnotationLiteral(*lLiteral));
       }
 
       aAnnotations.push_back(
-          new AnnotationImpl(
-            new AnnotationInternal(lSAnn->theName, lILiterals)
-          )
-      );
+      new AnnotationImpl(new AnnotationInternal(lSAnn->theName, lILiterals)));
     }
   }
   ZORBA_DM_CATCH
@@ -457,6 +470,7 @@ CollectionImpl::registerDiagnosticHandler(
 {
   theDiagnosticHandler = aDiagnosticHandler;
 }
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -157,48 +157,53 @@ TypeIdentifier_t TypeIdentifier::createPIType(IdentTypes::quantifier_t quantifie
     return ti;
 }
 
+
 TypeIdentifier_t TypeIdentifier::createTextType(IdentTypes::quantifier_t quantifier)
 {
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::TEXT_TYPE;
-    ti->m_quantifier = quantifier;
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::TEXT_TYPE;
+  ti->m_quantifier = quantifier;
 
-    return ti;
+  return ti;
 }
+
 
 TypeIdentifier_t TypeIdentifier::createCommentType(IdentTypes::quantifier_t quantifier)
 {
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::COMMENT_TYPE;
-    ti->m_quantifier = quantifier;
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::COMMENT_TYPE;
+  ti->m_quantifier = quantifier;
 
-    return ti;
+  return ti;
 }
+
 
 TypeIdentifier_t TypeIdentifier::createAnyNodeType(IdentTypes::quantifier_t quantifier)
 {
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::ANY_NODE_TYPE;
-    ti->m_quantifier = quantifier;
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::ANY_NODE_TYPE;
+  ti->m_quantifier = quantifier;
 
-    return ti;
+  return ti;
 }
+
 
 TypeIdentifier_t TypeIdentifier::createItemType(IdentTypes::quantifier_t quantifier)
 {
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::ITEM_TYPE;
-    ti->m_quantifier = quantifier;
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::ITEM_TYPE;
+  ti->m_quantifier = quantifier;
 
-    return ti;
+  return ti;
 }
+
 
 TypeIdentifier_t TypeIdentifier::createEmptyType()
 {
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::EMPTY_TYPE;
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::EMPTY_TYPE;
 
-    return ti;
+  return ti;
 }
 
 }

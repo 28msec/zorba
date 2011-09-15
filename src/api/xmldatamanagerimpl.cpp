@@ -70,10 +70,15 @@ namespace zorba {
     ZorbaImpl::notifyError(theDiagnosticHandler);              \
   }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 XmlDataManagerImpl::XmlDataManagerImpl()
-  : theDocManager(0),
-    theColManager(0),
-    theW3CColManager(0)
+  : 
+  theDocManager(0),
+  theColManager(0),
+  theW3CColManager(0)
 #ifndef ZORBA_NO_FULL_TEXT
   , theStemmerProviderWrapper(0)
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -91,6 +96,10 @@ XmlDataManagerImpl::XmlDataManagerImpl()
   ZORBA_CATCH
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 XmlDataManagerImpl::initializeItemFactory()
 {
@@ -100,6 +109,10 @@ XmlDataManagerImpl::initializeItemFactory()
   theFactory = lZorba->getItemFactory();
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
 {
@@ -118,6 +131,9 @@ XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 XmlDataManagerImpl::~XmlDataManagerImpl()
 {
   if (!theUserDiagnosticHandler)
@@ -129,6 +145,9 @@ XmlDataManagerImpl::~XmlDataManagerImpl()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 DocumentManager*
 XmlDataManagerImpl::getDocumentManager() const
 {
@@ -141,19 +160,28 @@ XmlDataManagerImpl::getDocumentManager() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CollectionManager*
 XmlDataManagerImpl::getCollectionManager() const
 {
   if (!theColManager) 
   {
-    theColManager = new CollectionManagerImpl(theContext,
-                                              theFactory,
-                                              theDiagnosticHandler);
+    theColManager = new CollectionManagerImpl(
+        theContext,
+        theFactory,
+        theDiagnosticHandler,
+        "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl",
+        "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml");
   }
   return theColManager;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CollectionManager*
 XmlDataManagerImpl::getW3CCollectionManager() const
 {
@@ -170,6 +198,9 @@ XmlDataManagerImpl::getW3CCollectionManager() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 static void
 streamReleaser(std::istream* stream)
 {
@@ -177,18 +208,22 @@ streamReleaser(std::istream* stream)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 Item
 XmlDataManagerImpl::parseXML(std::istream& aStream) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(), "parse-xml");
+    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(),
+                                          "parse-xml");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createStreamableString(
-            aStream, &streamReleaser)));
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createStreamableString(aStream,
+                                                                 &streamReleaser)));
 
     ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
     Iterator_t lIter = lSeq->getIterator();
@@ -201,6 +236,10 @@ XmlDataManagerImpl::parseXML(std::istream& aStream) const
   return 0;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 Item
 XmlDataManagerImpl::parseXML(
     std::istream& aStream,
@@ -208,14 +247,16 @@ XmlDataManagerImpl::parseXML(
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(), "parse-xml");
+    Item lQName = theFactory->createQName(static_context::W3C_FN_NS.c_str(),
+                                          "parse-xml");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createStreamableString(aStream, &streamReleaser)));
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createString(aBaseURI)));
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createStreamableString(aStream,
+                                                                 &streamReleaser)));
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createString(aBaseURI)));
 
     ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
     Iterator_t lIter = lSeq->getIterator();
@@ -228,28 +269,33 @@ XmlDataManagerImpl::parseXML(
   return 0;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 ItemSequence_t
-XmlDataManagerImpl::parseXML(std::istream& aStream, XmlDataManager::ParseOptions& aOptions) const
+XmlDataManagerImpl::parseXML(
+    std::istream& aStream,
+    XmlDataManager::ParseOptions& aOptions) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(), "parse-xml-fragment");
+    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(),
+                                          "parse-xml-fragment");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createStreamableString(aStream, &streamReleaser)));
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createStreamableString(aStream,
+                                                                 &streamReleaser)));
 
     std::ostringstream lOptions;
-    lOptions
-      << (aOptions.isDtdValidationEnabled()?"d":"D");
+    lOptions << (aOptions.isDtdValidationEnabled()?"d":"D");
 
-    lOptions
-      << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
+    lOptions << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
 
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createString(lOptions.str()))
-        );
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createString(lOptions.str())));
 
     return theContext->invoke(lQName, lArgs);
   }
@@ -257,6 +303,10 @@ XmlDataManagerImpl::parseXML(std::istream& aStream, XmlDataManager::ParseOptions
   return 0;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 ItemSequence_t
 XmlDataManagerImpl::parseXML(
     std::istream& aStream,
@@ -265,26 +315,24 @@ XmlDataManagerImpl::parseXML(
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(
-        static_context::ZORBA_XML_FN_NS.c_str(), "parse-xml-fragment");
+    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS.c_str(),
+                                          "parse-xml-fragment");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createStreamableString(aStream, &streamReleaser)));
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createString(aBaseURI)));
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createStreamableString(aStream,
+                                                                 &streamReleaser)));
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createString(aBaseURI)));
 
     std::ostringstream lOptions;
-    lOptions
-      << (aOptions.isDtdValidationEnabled()?"d":"D");
+    lOptions << (aOptions.isDtdValidationEnabled()?"d":"D");
 
-    lOptions
-      << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
+    lOptions << (aOptions.isExternalEntityProcessingEnabled()?"e":"E");
 
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createString(lOptions.str()))
-        );
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createString(lOptions.str())));
 
     return theContext->invoke(lQName, lArgs);
   }
@@ -292,17 +340,22 @@ XmlDataManagerImpl::parseXML(
   return 0;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 Item
 XmlDataManagerImpl::fetch(const String& aURI) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_FETCH_FN_NS.c_str(), "content");
+    Item lQName = theFactory->createQName(static_context::ZORBA_FETCH_FN_NS.c_str(),
+                                          "content");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(new SingletonItemSequence(
-          theFactory->createString(aURI)));
+    lArgs.push_back(
+    new SingletonItemSequence(theFactory->createString(aURI)));
 
     ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
     Iterator_t lIter = lSeq->getIterator();
@@ -315,6 +368,10 @@ XmlDataManagerImpl::fetch(const String& aURI) const
   return 0;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
@@ -326,35 +383,47 @@ void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosti
   theDiagnosticHandler = aDiagnosticHandler;
   theUserDiagnosticHandler = true;
 
-  if (theColManager) {
+  if (theColManager) 
+  {
     theColManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
-  if (theDocManager) {
+  if (theDocManager) 
+  {
     theDocManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
-  if (theW3CColManager) {
+  if (theW3CColManager) 
+  {
     theW3CColManager->registerDiagnosticHandler(theDiagnosticHandler);
   }
 }
 
 #ifndef ZORBA_NO_FULL_TEXT
-void XmlDataManagerImpl::
-registerStemmerProvider(StemmerProvider const *p) {
+/*******************************************************************************
+
+********************************************************************************/
+void XmlDataManagerImpl::registerStemmerProvider(StemmerProvider const *p) 
+{
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
-  if ( theStemmerProviderWrapper ) {
+  if ( theStemmerProviderWrapper ) 
+  {
     if ( theStemmerProviderWrapper->get_provider() == p )
       return;
     delete theStemmerProviderWrapper;
     theStemmerProviderWrapper = nullptr;
   }
-  if ( p ) {
+  if ( p ) 
+  {
     theStemmerProviderWrapper = new internal::StemmerProviderWrapper( p );
     theStore->setStemmerProvider( theStemmerProviderWrapper );
   }
 }
 
-void XmlDataManagerImpl::
-registerTokenizerProvider(TokenizerProvider const *p) {
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlDataManagerImpl::registerTokenizerProvider(TokenizerProvider const *p) 
+{
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
   theStore->setTokenizerProvider( p );
 }

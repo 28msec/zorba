@@ -50,6 +50,7 @@ namespace zorba {
     ZorbaImpl::notifyError(theDiagnosticHandler);              \
   }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -77,6 +78,7 @@ CollectionManagerImpl::~CollectionManagerImpl()
 {
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -85,10 +87,21 @@ CollectionManagerImpl::initStaticContext(StaticContext_t& aCtx)
 {
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
-  lProlog
-    << "import module namespace d = '" << theColDDLNamespace << "';";
+  lProlog << "import module namespace d = '" << theColDDLNamespace << "';";
   aCtx->loadProlog(lProlog.str(), lHints);
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+CollectionManagerImpl::registerDiagnosticHandler(
+    DiagnosticHandler* aDiagnosticHandler)
+{
+  theDiagnosticHandler = aDiagnosticHandler;
+}
+
 
 /*******************************************************************************
 
@@ -98,9 +111,7 @@ CollectionManagerImpl::createCollection(const Item& aName)
 {
   ZORBA_DM_TRY
   {
-    Item lFunc = theFactory->createQName(
-        theColDDLNamespace,
-        "create");
+    Item lFunc = theFactory->createQName(theColDDLNamespace, "create");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aName));
@@ -114,6 +125,7 @@ CollectionManagerImpl::createCollection(const Item& aName)
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -124,9 +136,7 @@ CollectionManagerImpl::createCollection(
 {
   ZORBA_DM_TRY
   {
-    Item lFunc = theFactory->createQName(
-        theColDDLNamespace,
-        "create");
+    Item lFunc = theFactory->createQName(theColDDLNamespace, "create");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aName));
@@ -141,6 +151,7 @@ CollectionManagerImpl::createCollection(
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -149,14 +160,13 @@ CollectionManagerImpl::deleteCollection(const Item& aName)
 {
   ZORBA_DM_TRY
   {
-    if (!isAvailableCollection(aName)) {
-      throw ZORBA_EXCEPTION( zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-        ERROR_PARAMS( aName.getStringValue() )
-      );
+    if (!isAvailableCollection(aName)) 
+    {
+      throw ZORBA_EXCEPTION(zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+      ERROR_PARAMS(aName.getStringValue()));
     }
 
-    Item lFunc = theFactory->createQName(
-        theColDDLNamespace, "delete");
+    Item lFunc = theFactory->createQName(theColDDLNamespace, "delete");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aName));
@@ -170,6 +180,7 @@ CollectionManagerImpl::deleteCollection(const Item& aName)
   ZORBA_DM_CATCH
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -178,11 +189,12 @@ CollectionManagerImpl::getCollection(const Item& aName) const
 {
   ZORBA_DM_TRY
   {
-    if (!isAvailableCollection(aName)) {
-      throw ZORBA_EXCEPTION( zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
-        ERROR_PARAMS( aName.getStringValue() )
-      );
+    if (!isAvailableCollection(aName)) 
+    {
+      throw ZORBA_EXCEPTION(zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+      ERROR_PARAMS(aName.getStringValue()));
     }
+
     return new CollectionImpl(
         theContext,
         theFactory,
@@ -194,6 +206,7 @@ CollectionManagerImpl::getCollection(const Item& aName) const
   return 0;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -202,9 +215,8 @@ CollectionManagerImpl::availableCollections() const
 {
   ZORBA_DM_TRY
   {
-    Item lFunc = theFactory->createQName(
-        theColDDLNamespace,
-        "available-collections");
+    Item lFunc = theFactory->createQName(theColDDLNamespace,
+                                         "available-collections");
 
     std::vector<ItemSequence_t> lArgs;
 
@@ -214,6 +226,7 @@ CollectionManagerImpl::availableCollections() const
   return 0;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -222,9 +235,8 @@ CollectionManagerImpl::isAvailableCollection(const Item& aName) const
 {
   ZORBA_DM_TRY
   {
-    Item lFunc = theFactory->createQName(
-        theColDDLNamespace,
-        "is-available-collection");
+    Item lFunc = theFactory->createQName(theColDDLNamespace,
+                                         "is-available-collection");
 
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(aName));
@@ -235,22 +247,13 @@ CollectionManagerImpl::isAvailableCollection(const Item& aName) const
     Item lRes;
     if (!lIter->next(lRes))
       return false;
+
     return lRes.getBooleanValue();
   }
   ZORBA_DM_CATCH
   return false;
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void
-CollectionManagerImpl::registerDiagnosticHandler(
-    DiagnosticHandler* aDiagnosticHandler)
-{
-  theDiagnosticHandler = aDiagnosticHandler;
-}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

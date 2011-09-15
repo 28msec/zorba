@@ -22,18 +22,63 @@
 
 namespace zorba {
 
+
+/*******************************************************************************
+
+  A CollectionImpl obj can be used to do dml kind of operations on an underlying
+  store collection, which may be a zorba static collection, a zorba dynamic 
+  collection, or a w3c collection. Instances of CollectionImpl are obtained via
+  the CollectionManagerImpl::getCollection method. However, the instances are
+  NOT owned by the CollectionManager who created them.
+
+  theContext:
+  -----------
+  A StaticContext obj that is created as a child of the StaticContext obj owned
+  by the CollectionManagerImpl that created "this". A child context is required
+  because the CollectionImpl constructor will do a loadProlog on this child in
+  order to import the module identified by theNS.
+
+  theFactory:
+  -----------
+  The singleton ItemFactory obj.
+
+  theQName:
+  ---------
+  The QName of the collection.
+
+  theNS:
+  ------
+  One of the following:
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/dml, or
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, or
+  http://www.zorba-xquery.com/modules/store/static/collections/dml
+
+  theDiagnosticHandler:
+  ---------------------
+  Initialized (during construction) to the same as theDiagnosticHandler of 
+  the CollectionManagerImpl obj from which "this" is being created.
+********************************************************************************/
 class CollectionImpl : public Collection
 {
  protected:
   friend class Unmarshaller;
+  friend class CollectionManagerImpl;
 
-  StaticContext_t theContext;
-  ItemFactory*    theFactory;
-  Item            theQName;
-  DiagnosticHandler   * theDiagnosticHandler;
-  std::string     theNS;
+protected:
+  StaticContext_t      theContext;
+  ItemFactory        * theFactory;
+  Item                 theQName;
+  DiagnosticHandler  * theDiagnosticHandler;
+  std::string          theNS;
 
- protected:
+protected:
+  CollectionImpl(
+      const StaticContext_t& aSctx,
+      ItemFactory* aFactory,
+      const Item& aQName,
+      DiagnosticHandler* aDiagnosticHandler,
+      const std::string& aDMLNamespace);
+
   void
   initStaticContext();
 
@@ -42,16 +87,11 @@ class CollectionImpl : public Collection
       const char* aLocalName,
       const std::vector<ItemSequence_t>& aArgs) const;
 
-  friend class CollectionManagerImpl;
-  CollectionImpl(
-      const StaticContext_t& aSctx,
-      ItemFactory* aFactory,
-      const Item& aQName,
-      DiagnosticHandler* aDiagnosticHandler,
-      const std::string& aDMLNamespace);
-
  public:
   virtual ~CollectionImpl();
+
+  virtual void
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
   virtual void
   insertNodesFirst(const ItemSequence_t& aNodes);
@@ -60,14 +100,10 @@ class CollectionImpl : public Collection
   insertNodesLast(const ItemSequence_t& aNodes);
   
   virtual void
-  insertNodesBefore(
-      const Item& aTarget,
-      const ItemSequence_t& aNodes);
+  insertNodesBefore(const Item& aTarget, const ItemSequence_t& aNodes);
   
   virtual void
-  insertNodesAfter(
-      const Item& aTarget,
-      const ItemSequence_t& aNodes);
+  insertNodesAfter(const Item& aTarget, const ItemSequence_t& aNodes);
   
   virtual void
   deleteNodes(const ItemSequence_t& aNodes);
@@ -101,9 +137,6 @@ class CollectionImpl : public Collection
 
   virtual TypeIdentifier_t
   getType() const;
-
-  virtual void
-  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
   
 }; /* class CollectionImpl */
 

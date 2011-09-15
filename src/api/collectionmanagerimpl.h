@@ -21,62 +21,109 @@
 
 namespace zorba {
 
-  class DiagnosticHandler;
+class DiagnosticHandler;
 
-  /** \brief 
-   *
-   */
-  class CollectionManagerImpl : public virtual CollectionManager
-  {
-  protected:
-    StaticContext_t          theContext;
-    ItemFactory*             theFactory;
-    std::string              theColDDLNamespace;
-    std::string              theColDMLNamespace;
 
-    DiagnosticHandler      * theDiagnosticHandler;
+/*******************************************************************************
+  There are 3 kinds of CollectionManager instsances, depending on the kind of
+  collections they are created to manage: static, dynamic, or w3c collections.
 
-  public:
-    virtual void
-    createCollection(const Item& aName);
+  There is only one instance of a dynamic CollectionManager, and only one
+  instance of a w3c CollectionManager. These are obtainable via the 
+  XmlDataManager::getCollectionManagerand and XmlDataManager::getW3CCollectionManager
+  methods respectively, and are owned by the (singleton) XmlDataManager obj. 
 
-    virtual void
-    createCollection(
-        const Item& aName,
-        const ItemSequence_t& aContents);
+  There is one instance of a static CollectionManager per instance of
+  StaticCollectionManager. Such a CollectionManager obj is created internally
+  when the associated StaticCollectionManager obj is created, and it is owned
+  by the associated StaticCollectionManager obj.
 
-    virtual void
-    deleteCollection(const Item& aName);
+  theContext:
+  -----------
+  A StaticContext obj that is created during construction of this CollectionManager
+  and is owned by it. The obj is created as the child of the StaticContext obj
+  owned by the associated XmlDataManager or StaticCollectionManager.  A child 
+  context is required because the CollectionManagerImpl constructor will do a 
+  loadProlog on this child in order to import either one of the following 3 
+  modules, depending on whether "this" is supposed to manage dynamic collections,
+  or w3c collections, or static collections respectively:
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl, or
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl, or
+  http://www.zorba-xquery.com/modules/store/static/collections/ddl
 
-    virtual Collection_t
-    getCollection(const Item& aName) const;
+  theFactory:
+  -----------
+  The singleton ItemFactory obj.
 
-    virtual ItemSequence_t
-    availableCollections() const;
+  theDiagnosticHandler:
+  ---------------------
+  The DiagnosticHandler to use for handling errors raised during the execution of
+  the methods of this CollectionManager. It is the same as the DiagnosticHandler 
+  used by the associated XmlDataManager or StaticCollectionManager.
 
-    virtual bool
-    isAvailableCollection(const Item& aName) const;
+  theColDDLNamespace:
+  -------------------
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl, or
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl, or
+  http://www.zorba-xquery.com/modules/store/static/collections/ddl
 
-    virtual ~CollectionManagerImpl();
+  theColDMLNamespace:
+  -------------------
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/dml, or
+  http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, or
+  http://www.zorba-xquery.com/modules/store/static/collections/dml
 
-    virtual void
-    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+********************************************************************************/
+class CollectionManagerImpl : public virtual CollectionManager
+{
+protected:
+  friend class XmlDataManagerImpl;
+  friend class StaticCollectionManagerImpl;
 
-  protected:
-    friend class XmlDataManagerImpl;
-    friend class StaticCollectionManagerImpl;
-    CollectionManagerImpl(
+protected:
+  StaticContext_t          theContext;
+  ItemFactory*             theFactory;
+  std::string              theColDDLNamespace;
+  std::string              theColDMLNamespace;
+
+  DiagnosticHandler      * theDiagnosticHandler;
+
+protected:
+  CollectionManagerImpl(
       const StaticContext_t& aSctx,
       ItemFactory* aFactory,
       DiagnosticHandler* aDiagnosticHandler,
-      const std::string& aDDLNS = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl",
-      const std::string& aDMLNS = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml");
+      const std::string& aDDLNS,
+      const std::string& aDMLNS);
 
-    void
-    initStaticContext(StaticContext_t& aSctx);
+  void
+  initStaticContext(StaticContext_t& aSctx);
 
+  virtual void
+  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
-  }; /* class CollectionManagerImpl */
+public:
+  virtual void
+  createCollection(const Item& aName);
+
+  virtual void
+  createCollection(const Item& aName, const ItemSequence_t& aContents);
+
+  virtual void
+  deleteCollection(const Item& aName);
+
+  virtual Collection_t
+  getCollection(const Item& aName) const;
+
+  virtual ItemSequence_t
+  availableCollections() const;
+
+  virtual bool
+  isAvailableCollection(const Item& aName) const;
+
+  virtual ~CollectionManagerImpl();
+
+}; /* class CollectionManagerImpl */
 
 } /* namespace zorba */
 #endif
