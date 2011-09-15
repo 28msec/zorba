@@ -613,15 +613,15 @@ bool XmlNode::disconnect(csize& pos)
       csize numAttrs = theParent->numAttrs();
       pos = theParent->removeAttr(this);
       ZORBA_FATAL(pos <= numAttrs, "");
+      return (pos < numAttrs);
     }
     else
     {
       csize numChildren = theParent->numChildren();
       pos = theParent->removeChild(this);
       ZORBA_FATAL(pos <= numChildren, "");
+      return (pos < numChildren);
     }
-
-    return true;
   }
   catch(...)
   {

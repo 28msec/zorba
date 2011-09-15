@@ -342,6 +342,9 @@ void XmlNode::detach()
     XmlTree* newTree = GET_STORE().getNodeFactory().createXmlTree();
     newTree->setRoot(this);
 
+    if (oldTree->getRoot() == this)
+      oldTree->setRoot(NULL);
+
     store::StoreConsts::NodeKind nodeKind = getNodeKind();
 
     // ???? What we do here is not really thread-safe. For example, consider the

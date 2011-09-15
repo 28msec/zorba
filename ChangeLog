@@ -24,6 +24,9 @@ version 2.x
   and the annotations of a static collection.
   * Fixed bug #3406272 (merging of adjacent text nodes must be done after all
     updates have been applied).
+  * Fixed bug #3409344 (during detach, if the node being detached is the root of
+    its tree, it should be detached from the tree as well; otherwise memory
+    corruption will occur)
 	
 version 2.0.1
 

@@ -428,7 +428,7 @@ void PULImpl::addInsertAttributes(
 ********************************************************************************/
 void PULImpl::addReplaceNode(
     const QueryLoc* aQueryLoc,
-    store::Item_t&              target,
+    store::Item_t& target,
     std::vector<store::Item_t>& newNodes)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
@@ -456,27 +456,29 @@ void PULImpl::addReplaceNode(
       }
     }
 
-    upd = GET_STORE().getPULFactory().createUpdReplaceAttribute(pul, aQueryLoc, parent, target, newNodes);
+    upd = GET_PUL_FACTORY().
+          createUpdReplaceAttribute(pul, aQueryLoc, parent, target, newNodes);
+
     kind = store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
   else
   {
-    upd = GET_STORE().getPULFactory().createUpdReplaceChild(pul, aQueryLoc, parent, target, newNodes);
+    upd = GET_PUL_FACTORY().
+          createUpdReplaceChild(pul, aQueryLoc, parent, target, newNodes);
+
     kind = store::UpdateConsts::UP_REPLACE_CHILD;
   }
 
   if (!found)
   {
-    pul->theReplaceNodeList.push_back(upd);
-
-    updates = new NodeUpdates(1);
+     updates = new NodeUpdates(1);
     (*updates)[0] = upd;
     pul->theNodeToUpdatesMap.insert(n, updates);
   }
   else
   {
-    ulong numUpdates = (ulong)updates->size();
-    for (ulong i = 0; i < numUpdates; i++)
+    csize numUpdates = updates->size();
+    for (csize i = 0; i < numUpdates; ++i)
     {
       if ((*updates)[i]->getKind() == kind)
       {
@@ -488,6 +490,8 @@ void PULImpl::addReplaceNode(
 
     updates->push_back(upd);
   }
+
+   pul->theReplaceNodeList.push_back(upd);
 }
 
 
@@ -2191,7 +2195,7 @@ void CollectionPul::finalizeUpdates()
     {
       UpdDelete* upd = static_cast<UpdDelete*>(theDeleteList[i]);
 
-      if (upd->theParent != NULL)
+      if (upd->theIsApplied)
       {
         XmlNode* target = BASE_NODE(upd->theTarget);
         target->theParent = upd->theParent;

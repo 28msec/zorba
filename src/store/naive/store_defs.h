@@ -36,6 +36,9 @@ namespace simplestore {
 #define GET_NODE_FACTORY() \
   (GET_STORE().getNodeFactory())
 
+#define GET_PUL_FACTORY() \
+  (GET_STORE().getPULFactory())
+
 
 #define BASE_NODE(item) (reinterpret_cast<XmlNode*>((item).getp()))
 

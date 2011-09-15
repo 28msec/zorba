@@ -157,10 +157,10 @@ protected:
 
   PULImpl                          * thePul;
 
+  NodeToUpdatesMap                   theNodeToUpdatesMap;
+
   std::set<InternalNode*>            theMergeToCheckSet;
   std::vector<TextNodeMerge>         theMergeList;
-
-  NodeToUpdatesMap                   theNodeToUpdatesMap;
 
   std::vector<UpdatePrimitive*>      thePrimitivesToRecheck;
 
