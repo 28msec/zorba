@@ -133,7 +133,7 @@ public:
     const QueryLoc& aLoc,
     PlanIter_t target,
     PlanIter_t source,
-    const NamespaceContext_t& nsctx);
+    const namespace_context* nsctx);
 
   ~RenameIterator() {}
 

@@ -1667,6 +1667,7 @@ void wrap_in_debugger_expr(
                                                          aLoc,
                                                          aExpr,
                                                          thePrologVars,
+                                                         theNSCtx,
                                                          aIsVarDeclaration));
 
     // add the breakable expression in the debugger commons as a possible

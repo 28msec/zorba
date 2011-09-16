@@ -176,6 +176,35 @@ public:
 
 
 /***************************************************************************//**
+  Base for expression classes that require a namespace context
+********************************************************************************/
+class namespace_context_base_expr : public expr
+{
+  friend class expr;
+
+protected:
+  NamespaceContext_t theNSCtx;
+
+protected:
+  namespace_context_base_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      expr_kind_t kind,
+      const namespace_context* aNSCtx);
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(namespace_context_base_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(namespace_context_base_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  const namespace_context* getNSCtx() const;
+
+  void compute_scripting_kind() = 0;
+};
+
+
+/***************************************************************************//**
   Base for cast, treat, promote, castable, instanceof
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr 
@@ -214,7 +243,7 @@ public:
 /***************************************************************************//**
   Base for cast, treat, promote
 ********************************************************************************/
-class cast_base_expr : public cast_or_castable_base_expr 
+class cast_base_expr : public cast_or_castable_base_expr
 {
   friend class ExprIterator;
 
@@ -238,7 +267,7 @@ public:
 
   SingleType ::= AtomicType "?"?
 ********************************************************************************/
-class cast_expr : public cast_base_expr 
+class cast_expr : public cast_base_expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -484,19 +513,18 @@ public:
   attribute constructors when the name of the element/attribute is not a const
   expr.
 ********************************************************************************/
-class name_cast_expr : public expr 
+class name_cast_expr : public namespace_context_base_expr
 {
   friend class ExprIterator;
   friend class expr;
 
 private:
   expr_t             theInputExpr;
-  NamespaceContext_t theNCtx;
   bool               theIsAttrName;
 
 public:
   SERIALIZABLE_CLASS(name_cast_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(name_cast_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(name_cast_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -508,8 +536,6 @@ public:
         bool isAttr);
 
   expr* get_input() const { return theInputExpr.getp(); }
-
-  namespace_context* get_namespace_context() const;
 
   bool is_attr_name() const { return theIsAttrName; }
 
@@ -580,7 +606,7 @@ public:
   CommonContent ::= PredefinedEntityRef | CharRef | "{{" | "}}" | EnclosedExpr
 
 ********************************************************************************/
-class elem_expr : public expr 
+class elem_expr : public namespace_context_base_expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -589,11 +615,10 @@ protected:
   expr_t theQNameExpr;
   expr_t theAttrs;
   expr_t theContent;
-  rchandle<namespace_context> theNSCtx;
   
 public:
   SERIALIZABLE_CLASS(elem_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(elem_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(elem_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -617,8 +642,6 @@ public:
   const expr* getContent() const { return theContent.getp(); }
 
   const expr* getAttrs() const { return theAttrs; }
-
-  const namespace_context* getNSCtx() const;
 
   void compute_scripting_kind();
   
@@ -1118,9 +1141,8 @@ public:
   theVars  : There is one eval var for each non-global var that is in scope
              where the call to the eval function appears at.
   theArgs  : The domain expr of each eval var.
-  theNSCtx : Expression-level namespace bindings.
 ********************************************************************************/
-class eval_expr : public expr 
+class eval_expr : public namespace_context_base_expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -1129,12 +1151,11 @@ protected:
   expr_t                      theExpr;
   checked_vector<var_expr_t>  theVars;
   std::vector<expr_t>         theArgs;
-  rchandle<namespace_context> theNSCtx;
   expr_script_kind_t          theInnerScriptingKind;
 
 public:
   SERIALIZABLE_CLASS(eval_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(eval_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(eval_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -1159,8 +1180,6 @@ public:
     theArgs.push_back(arg);
   }
 
-  const namespace_context* getNSCtx() const;
-
   expr_script_kind_t get_inner_scripting_kind() const;
 
   void compute_scripting_kind();
@@ -1177,18 +1196,21 @@ public:
 /***************************************************************************//**
   debugger expression
 ********************************************************************************/
-class debugger_expr: public eval_expr
+class debugger_expr : public namespace_context_base_expr
 {
   friend class ExprIterator;
   friend class expr;
 
 private:
-  std::list<GlobalBinding> theGlobals;
-  bool theIsVarDeclaration;
+  expr_t                      theExpr;
+  checked_vector<var_expr_t>  theVars;
+  std::vector<expr_t>         theArgs;
+  std::list<GlobalBinding>    theGlobals;
+  bool                        theIsVarDeclaration;
 
 public:
   SERIALIZABLE_CLASS(debugger_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, eval_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, namespace_context_base_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -1197,26 +1219,10 @@ public:
     const QueryLoc& loc,
     expr_t aChild,
     std::list<GlobalBinding> aGlobals,
-    bool aIsVarDeclaration)
-    : eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
-      theGlobals(aGlobals),
-      theIsVarDeclaration(aIsVarDeclaration)
-  {
-  }
+    namespace_context* nsCtx,
+    bool aIsVarDeclaration);
 
-  debugger_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    expr_t aChild,
-    checked_vector<var_expr_t> aScopedVariables,
-    std::list<GlobalBinding> aGlobals,
-    bool aIsVarDeclaration)
-    : eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
-      theGlobals(aGlobals),
-      theIsVarDeclaration(aIsVarDeclaration)
-  {
-    store_local_variables(aScopedVariables);
-  }
+  expr* get_expr() const { return theExpr.getp(); }
 
   std::list<GlobalBinding> getGlobals() const { return theGlobals; }
 
@@ -1226,11 +1232,22 @@ public:
 
   std::ostream& put(std::ostream&) const;
 
+  ulong var_count() const { return (ulong)theVars.size(); }
+
+  const var_expr* get_var(ulong i) const { return theVars[i]; }
+
+  void add_var(const var_expr_t& var, const expr_t& arg) 
+  {
+    theVars.push_back(var);
+    theArgs.push_back(arg);
+  }
+
+  void compute_scripting_kind();
+
 private:
   void store_local_variables(checked_vector<var_expr_t>& aScopedVariables);
 };
 #endif
-
 
 
 }

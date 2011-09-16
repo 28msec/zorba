@@ -2066,47 +2066,53 @@ void end_visit(debugger_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  ulong numVars = v.var_count();
+  // generate an eval iterator and populate it with the in-scope variables
 
+  std::vector<PlanIter_t> argvEvalIter;
+
+  ulong numVars = v.var_count();
   std::vector<store::Item_t> varnames(numVars);
   std::vector<xqtref_t> vartypes(numVars);
-  std::vector<PlanIter_t> argvEvalIter;
-  std::vector<PlanIter_t> argv;
 
-  for (ulong i = 0; i < numVars; i++)
-  {
+  //create the eval iterator children
+  for (ulong i = 0; i < numVars; i++) {
     varnames[i] = v.get_var(i)->get_name();
     vartypes[i] = v.get_var(i)->get_type();
     argvEvalIter.push_back(pop_itstack());
   }
+  argvEvalIter.push_back(
+    new DebuggerSingletonIterator(sctx, qloc, theCCB->theDebuggerCommons));
 
-  //create the eval iterator children
-  argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
-                                                       qloc,
-                                                       theCCB->theDebuggerCommons));
+  // now reverse them (first the expression, then the variables)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
+
 
   // get the debugger iterator from the debugger stack
   std::auto_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
   theDebuggerStack.pop();
 
-  // set the child of the debugger iterator
+  // set the children of the debugger iterator
+  // child 0: the iterator of the wrapped expression
+  // child 1: the eval iterator
+
+  // child 0
+  std::vector<PlanIter_t> argv;
   argv.push_back(pop_itstack());
 
+  // child 1
   store::NsBindings localBindings;
-  if (v.getNSCtx())
+  if (v.getNSCtx()) {
     v.getNSCtx()->getAllBindings(localBindings);
-
-  argv.push_back(new EvalIterator(sctx, 
-                                  qloc, 
-                                  argvEvalIter, 
-                                  varnames, 
+  }
+  argv.push_back(new EvalIterator(sctx,
+                                  qloc,
+                                  argvEvalIter,
+                                  varnames,
                                   vartypes,
-                                  v.get_inner_scripting_kind(),
+                                  SIMPLE_EXPR,
                                   localBindings));
 
   lDebugIterator->setChildren(&argv);
-
   lDebugIterator->setVariables(varnames, vartypes);
 
   // link all debugger iterators in the tree
@@ -2411,7 +2417,7 @@ void end_visit(name_cast_expr& v)
   push_itstack(new NameCastIterator(sctx,
                                     qloc,
                                     child,
-                                    v.get_namespace_context(),
+                                    v.getNSCtx(),
                                     v.is_attr_name()));
 }
 
@@ -3194,7 +3200,7 @@ void end_visit(rename_expr& v)
                                  qloc,
                                  lTarget,
                                  lName,
-                                 nameCastExpr->get_namespace_context());
+                                 nameCastExpr->getNSCtx());
   }
   else
   {

@@ -659,7 +659,6 @@ void ExprIterator::next()
 #endif /* ZORBA_NO_FULL_TEXT */
 
   case eval_expr_kind:
-  case debugger_expr_kind:
   {
     eval_expr* evalExpr = static_cast<eval_expr*>(theExpr);
 
@@ -669,6 +668,25 @@ void ExprIterator::next()
 
     theArgsIter = evalExpr->theArgs.begin();
     theArgsEnd = evalExpr->theArgs.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case debugger_expr_kind:
+  {
+    debugger_expr* debuggerExpr = static_cast<debugger_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(debuggerExpr->theExpr);
+
+    theArgsIter = debuggerExpr->theArgs.begin();
+    theArgsEnd = debuggerExpr->theArgs.end();
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
       EXPR_ITER_NEXT(*theArgsIter);

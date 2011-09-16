@@ -636,10 +636,10 @@ RenameIterator::RenameIterator (
     const QueryLoc& aLoc,
     PlanIter_t target,
     PlanIter_t source,
-    const NamespaceContext_t& nsctx)
+    const namespace_context* nsctx)
   :
   BinaryBaseIterator<RenameIterator, PlanIteratorState>(sctx, aLoc, target, source),
-  theNsCtx(nsctx)
+  theNsCtx(const_cast<namespace_context*>(nsctx))
 { 
 }
 
@@ -648,8 +648,6 @@ void RenameIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (BinaryBaseIterator<RenameIterator, PlanIteratorState>*)this);
-
-  ar & theNsCtx;
 }
 
 

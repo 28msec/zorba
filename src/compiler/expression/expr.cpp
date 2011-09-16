@@ -76,6 +76,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
 SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(namespace_context_base_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(namespace_context_base_expr)
+
 SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
 
@@ -366,6 +369,33 @@ expr_t validate_expr::clone(substitution_t& subst) const
 }
 
 
+/***************************************************************************//**
+  Base for expression classes that require a namespace context
+********************************************************************************/
+namespace_context_base_expr::namespace_context_base_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_kind_t kind,
+    const namespace_context* aNSCtx)
+  :
+  expr(sctx, loc, kind),
+  theNSCtx(const_cast<namespace_context*>(aNSCtx))
+{
+}
+
+
+const namespace_context* namespace_context_base_expr::getNSCtx() const
+{
+  return theNSCtx.getp(); 
+}
+
+
+void namespace_context_base_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theNSCtx;
+}
+
 
 /*******************************************************************************
   Base for cast, treat, promote, castable, instanceof
@@ -400,6 +430,7 @@ xqtref_t cast_or_castable_base_expr::get_target_type() const
 {
   return theTargetType;
 }
+
 
 void cast_or_castable_base_expr::set_target_type(xqtref_t target) 
 {
@@ -643,12 +674,11 @@ name_cast_expr::name_cast_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
-    const namespace_context* aNCtx,
+    const namespace_context* aNSCtx,
     bool isAttrName)
   :
-  expr(sctx, loc, name_cast_expr_kind),
+  namespace_context_base_expr(sctx, loc, name_cast_expr_kind, aNSCtx),
   theInputExpr(inputExpr),
-  theNCtx(const_cast<namespace_context*>(aNCtx)),
   theIsAttrName(isAttrName)
 {
   compute_scripting_kind();
@@ -659,7 +689,6 @@ void name_cast_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theInputExpr;
-  ar & theNCtx;
   ar & theIsAttrName;
 }
 
@@ -675,18 +704,12 @@ void name_cast_expr::compute_scripting_kind()
 }
 
 
-namespace_context* name_cast_expr::get_namespace_context() const
-{
-  return theNCtx.getp();
-}
-
-
 expr_t name_cast_expr::clone(substitution_t& subst) const
 {
   return new name_cast_expr(theSctx,
                             get_loc(),
                             get_input()->clone(subst),
-                            get_namespace_context(),
+                            getNSCtx(),
                             theIsAttrName);
 }
 
@@ -741,11 +764,10 @@ elem_expr::elem_expr(
     expr_t aContent,
     const namespace_context* aNSCtx)
   :
-  expr(sctx, aLoc, elem_expr_kind),
+  namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
   theAttrs(aAttrs),
-  theContent(aContent),
-  theNSCtx(const_cast<namespace_context*>(aNSCtx))
+  theContent(aContent)
 {
   compute_scripting_kind();
 
@@ -760,11 +782,10 @@ elem_expr::elem_expr(
     expr_t aContent,
     const namespace_context* aNSCtx)
   :
-  expr(sctx, aLoc, elem_expr_kind),
+  namespace_context_base_expr(sctx, aLoc, elem_expr_kind, aNSCtx),
   theQNameExpr(aQNameExpr),
   theAttrs(0),
-  theContent(aContent),
-  theNSCtx(const_cast<namespace_context*>(aNSCtx))
+  theContent(aContent)
 {
   compute_scripting_kind();
 
@@ -779,12 +800,6 @@ void elem_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theAttrs;
   ar & theContent;
   ar & theNSCtx;
-}
-
-
-const namespace_context* elem_expr::getNSCtx() const
-{
-  return theNSCtx.getp(); 
 }
 
 
@@ -1377,9 +1392,8 @@ eval_expr::eval_expr(
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
   :
-  expr(sctx, loc, eval_expr_kind),
+  namespace_context_base_expr(sctx, loc, eval_expr_kind, nsCtx),
   theExpr(e),
-  theNSCtx(nsCtx),
   theInnerScriptingKind(scriptingKind)
 {
   compute_scripting_kind();
@@ -1392,14 +1406,7 @@ void eval_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theExpr;
   ar & theVars;
   ar & theArgs;
-  ar & theNSCtx;
   SERIALIZE_ENUM(expr_script_kind_t, theInnerScriptingKind);
-}
-
-
-const namespace_context* eval_expr::getNSCtx() const
-{
-  return theNSCtx.getp(); 
 }
 
 
@@ -1448,6 +1455,22 @@ expr_t eval_expr::clone(substitution_t& s) const
 /*******************************************************************************
 
 ********************************************************************************/
+debugger_expr::debugger_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t aChild,
+    std::list<GlobalBinding> aGlobals,
+    namespace_context* nsCtx,
+    bool aIsVarDeclaration)
+  :
+  namespace_context_base_expr(sctx, loc, debugger_expr_kind, nsCtx),
+  theExpr(aChild),
+  theGlobals(aGlobals),
+  theIsVarDeclaration(aIsVarDeclaration)
+{
+  theScriptingKind = aChild->get_scripting_detail();
+}
+
 void debugger_expr::store_local_variables(checked_vector<var_expr_t>& aScopedVariables)
 {
   std::set<const store::Item*> lQNames;
@@ -1468,11 +1491,18 @@ void debugger_expr::store_local_variables(checked_vector<var_expr_t>& aScopedVar
   }
 }
 
+void debugger_expr::compute_scripting_kind()
+{
+}
 
 void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (eval_expr*)this);
+  serialize_baseclass(ar, (expr*)this);
+  ar & theExpr;
+  ar & theVars;
+  ar & theArgs;
   ar & theGlobals;
+  ar & theIsVarDeclaration;
 }
 #endif
 
