@@ -697,7 +697,7 @@ extern entry const dict_en[] = {
   { "~scripting static error", "scripting static error" },
   { "~scripting static warning", "scripting static warning" },
   { "~serialization error", "serialization error" },
-  { "~serialization warning", "serialization error" },
+  { "~serialization warning", "serialization warning" },
   { "~static error", "static error" },
   { "~static warning", "static warning" },
   { "~type error", "type error" },
