@@ -78,7 +78,10 @@ namespace zorba {
 
     /**
      * This function returns a sequence of names of the collections
-     * that are available.
+     * that are available. If this is an instance of the StaticCollectionManager
+     * class (i.e. returned by any of the getStaticCollectionManager methods),
+     * the collections returned by this function are also
+     * statically declared.
      *
      * @return The list of names of the available collections.
      *
@@ -88,6 +91,9 @@ namespace zorba {
 
     /**
      * This function returns true if a collection with the given name is available.
+     * If this is an instance of the StaticCollectionManager class (i.e.
+     * returned by any of the getStaticCollectionManager() methods),
+     * the collection also needs to be statically declared.
      *
      * @param aName The name of the collection that is being checked.
      *

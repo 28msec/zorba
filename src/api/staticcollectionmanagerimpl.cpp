@@ -372,11 +372,16 @@ ItemSequence_t
 StaticCollectionManagerSetImpl::availableCollections() const
 {
   std::vector<ItemSequence_t> lSequences;
-  if (theMgrs.begin() != theMgrs.end())
+  for (MgrSet::const_iterator lIter = theMgrs.begin();
+       lIter != theMgrs.end();
+       ++lIter)
   {
-    lSequences.push_back((*theMgrs.begin())->availableCollections());
+    lSequences.push_back((*lIter)->availableCollections());
   }
-  return new ItemSequenceChainer(lSequences);
+  // need to do duplicate elimination because
+  // collections are coming from static contexts
+  // which might be imported multiple times
+  return new ItemSequenceChainer(lSequences, true);
 }
 
 

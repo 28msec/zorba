@@ -1831,11 +1831,31 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   DEFAULT_STACK_INIT(AvailableCollectionsIteratorState, state, planState);
 
-  for ((state->nameItState = GENV_STORE.listCollectionNames(theDynamicCollection))->open ();
-       state->nameItState->next(nameItem); ) 
+  if (theDynamicCollection)
   {
-    result = nameItem;
-    STACK_PUSH( true, state);
+    for ((state->nameItState = GENV_STORE.listCollectionNames(theDynamicCollection))->open ();
+         state->nameItState->next(nameItem);) 
+    {
+      result = nameItem;
+      STACK_PUSH( true, state);
+    }
+  }
+  else
+  {
+    // static collections have to exist and need to be declared
+    for ((state->nameItState = theSctx->collection_names())->open ();
+         state->nameItState->next(nameItem);) 
+    {
+      if (!GENV_STORE.getCollection(nameItem.getp()))
+      {
+        continue;
+      }
+      else
+      {
+        result = nameItem;
+        STACK_PUSH( true, state);
+      }
+    }
   }
 
   state->nameItState->close();

@@ -48,21 +48,24 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : The function returns true if a collection with the given QName is available
- : (i.e. has been created).
+ : The function returns true if a collection with the given QName is
+ : statically declared and available (i.e. has been created).
  :
  : @param $name The QName of the collection that is being checked.
  :
- : @return true if the collection is available and false otherwise.
+ : @return true if the collection is statically declared and available,
+ :   false otherwise.
  :
  :)
 declare function cddl:is-available-collection($name as xs:QName) as xs:boolean external;
 
 (:~
  : The function returns a sequence of QNames of the collections that are
- : available. The sequence will be empty if there are no collections.
+ : statically declared and available. The sequence will be empty if there
+ : are no such collections.
  :
- : @return A sequence of QNames, one for each available collection, or an emtpy sequence.
+ : @return A sequence of QNames, one for each statically declared and available
+ :  collection, or an emtpy sequence.
  :
  :)
 declare function cddl:available-collections() as xs:QName*  external;

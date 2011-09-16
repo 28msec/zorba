@@ -29,6 +29,7 @@ version 2.x
     corruption will occur)
   * Fixed bug # (Should not destroy the parent of a node that is being detached 
     before the detach is done). 
+  * Fixed bug #3408181 (available-collection() returns undeclared collections)
 	
 version 2.0.1
 
