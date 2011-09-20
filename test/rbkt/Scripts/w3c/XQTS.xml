@@ -62,7 +62,9 @@
      name="serializationInvocation" 
      value="The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1XQuery.html). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1Serializer.html)."/>
 
-   <implementation-defined-item name="serializationDefaults" value="Serialization Feature is supported. Implicit values are: byte-order-mark = no, encoding = UTF-8, media-type = '', normalization-form = '', omix-xml-declaration = no, standalone = omit, version = '1.0', method = xml, doctype-system = '', doctype-public = '', cdata-section-elements = empty list, include-content-type = no, undeclare-prefixes = no, indent = no"/>
+   <implementation-defined-item 
+    name="serializationDefaults" 
+    value="Serialization Feature is supported. Implicit values are: byte-order-mark = no, encoding = UTF-8, media-type = '', normalization-form = '', omix-xml-declaration = no, standalone = omit, version = '1.0', method = xml, doctype-system = '', doctype-public = '', cdata-section-elements = empty list, include-content-type = no, undeclare-prefixes = no, indent = no"/>
 
     <implementation-defined-item 
      name="externalFunctionCall" 
@@ -74,7 +76,9 @@
      name="traceDestination" 
      value="By default, it is std:cerr. Users can modify this via the StaticContext::setTraceStream method."/>
 
-    <implementation-defined-item name="integerOperations" value="Zorba raises [err:FOAR0002]"/>
+    <implementation-defined-item 
+     name="integerOperations" 
+     value="Zorba raises [err:FOAR0002]"/>
 
     <implementation-defined-item name="decimalDigits" value=""/>
 
