@@ -568,6 +568,7 @@ static void test_to_string_from_utf8() {
   ASSERT_TRUE( t == s );
 }
 
+#ifndef ZORBA_NO_UNICODE
 template<class StringType>
 static void test_to_string_from_wchar_t() {
   wchar_t const w[] = L"hello";
@@ -577,6 +578,7 @@ static void test_to_string_from_wchar_t() {
   for ( string::size_type i = 0; i < s.length(); ++i )
     ASSERT_TRUE( s[i] == w[i] );
 }
+#endif /* ZORBA_NO_UNICODE */
 
 template<class StringType>
 static void test_to_upper() {
@@ -604,6 +606,7 @@ static void test_to_upper() {
   }
 }
 
+#ifndef ZORBA_NO_UNICODE
 static void test_to_wchar_t() {
   string const s = "hello";
   wchar_t *w;
@@ -615,6 +618,7 @@ static void test_to_wchar_t() {
     ASSERT_TRUE( w[i] == s[i] );
   delete[] w;
 }
+#endif /* ZORBA_NO_UNICODE */
 
 static void test_trim_start() {
   char const *s;
@@ -867,16 +871,20 @@ int string_test( int, char*[] ) {
   test_to_string_from_utf8<zstring>();
   test_to_string_from_utf8<zstring_p>();
 
+#ifndef ZORBA_NO_UNICODE
   test_to_string_from_wchar_t<string>();
   test_to_string_from_wchar_t<zstring>();
   test_to_string_from_wchar_t<zstring_p>();
+#endif /* ZORBA_NO_UNICODE */
 
   test_to_upper<string>();
   test_to_upper<zstring>();
   test_to_upper<zstring_p>();
   test_to_upper<String>();
 
+#ifndef ZORBA_NO_UNICODE
   test_to_wchar_t();
+#endif /* ZORBA_NO_UNICODE */
 
   test_trim_start();
   test_trim_end();

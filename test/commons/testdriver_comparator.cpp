@@ -280,6 +280,7 @@ bool fileEquals(
   {
     // Wasn't a BOM; 'unread' it
     refStream.clear();
+    refStream.clear();
     refStream.seekg(0, std::ios_base::beg);
   }
 

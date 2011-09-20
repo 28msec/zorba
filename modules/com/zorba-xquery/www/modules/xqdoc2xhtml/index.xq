@@ -1364,7 +1364,7 @@ declare %private function xqdoc2html:module-function-summary($functions)
                                fn:concat(fn:substring-before($description,"."),".") else ""
       order by $name, $param-number 
       return
-        let $type := replace(normalize-space(substring-after(substring-before($signature, "function"), "declare")),"\%",""),
+        let $type := replace(normalize-space(substring-after(substring-before($signature, "function"), "declare")),"%",""),
             $isExternal := ends-with($signature, "external"),    
             $paramsAndReturn := substring-after($signature,concat(':',$name)),
             $external := if(ends-with($signature,"external")) then "external" else ""

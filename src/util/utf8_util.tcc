@@ -123,7 +123,11 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
 template<class InputStringType,class OutputStringType>
 void strip_diacritics( InputStringType const &in, OutputStringType *out ) {
   InputStringType in_normalized;
+#ifndef ZORBA_NO_UNICODE
   normalize( in, unicode::normalization::NFKD, &in_normalized );
+#else
+  in_normalized = in.c_str();
+#endif /* ZORBA_NO_UNICODE */
   out->clear();
   out->reserve( in_normalized.size() );
   std::copy(

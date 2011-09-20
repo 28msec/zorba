@@ -19,12 +19,16 @@
 
 #include <zorba/config.h>
 
-#ifndef ZORBA_NO_UNICODE
-
 #include <cctype>
 #include <cstring>
 #include <cwchar>
-#include <unicode/unistr.h>
+
+#ifdef ZORBA_NO_UNICODE
+# include "zorbamisc/config/stdint.h"
+# include "zorbatypes/zstring.h"
+#else
+# include <unicode/unistr.h>
+#endif /* ZORBA_NO_UNICODE */
 
 #include "stl_util.h"
 
@@ -37,13 +41,21 @@ namespace unicode {
  * The character type that can hold a Unicode character encoded in UTF-16.  Do
  * not assume that this is an unsigned type.
  */
-typedef UChar char_type;
+#ifdef ZORBA_NO_UNICODE
+  typedef char char_type;
+#else
+  typedef /* ICU's */ UChar char_type;
+#endif /* ZORBA_NO_UNICODE */
 
 /**
  * The type type that can hold a Unicode code-point.  Do not assume that this
  * is an unsigned type.
  */
-typedef UChar32 code_point;
+#ifdef ZORBA_NO_UNICODE
+typedef uint32_t code_point;
+#else
+typedef /* ICU's */ UChar32 code_point;
+#endif /* ZORBA_NO_UNICODE */
 
 typedef int32_t size_type;
 
@@ -60,10 +72,17 @@ namespace normalization {
   };
 }
 
+#ifndef ZORBA_NO_UNICODE
 /**
  * A Unicode string.
  */
 typedef U_NAMESPACE_QUALIFIER UnicodeString string;
+#else
+/**
+ * Since there is no ICU, just use a zstring as a "Unicode" string.
+ */
+typedef zstring string;
+#endif /* ZORBA_NO_UNICODE */
 
 ////////// code-point checking ////////////////////////////////////////////////
 
@@ -168,6 +187,7 @@ code_point to_upper( code_point c );
 
 ////////// normalization //////////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_UNICODE
 /**
  * Normalizes the given string.
  *
@@ -177,9 +197,11 @@ code_point to_upper( code_point c );
  */
 ZORBA_DLL_PUBLIC
 bool normalize( string const &in, normalization::type n, string *out );
+#endif /* ZORBA_NO_UNICODE */
 
 ////////// string conversion //////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_UNICODE
 /**
  * Converts a single UTF-8 encoded character into a single Unicode character.
  *
@@ -188,6 +210,7 @@ bool normalize( string const &in, normalization::type n, string *out );
  * @return Returns \c true only if the conversion succeeded.
  */
 bool to_char( char const *in, char_type *out );
+#endif /* ZORBA_NO_UNICODE */
 
 /**
  * Converts a UTF-8 encoded string into a sequence of Unicode characters.
@@ -210,8 +233,15 @@ bool to_string( char const *in, size_type in_len, char_type **out,
  * @param out The Unicode string result.
  * @return Returns \c true only if the conversion succeeded.
  */
+#ifndef ZORBA_NO_UNICODE
 ZORBA_DLL_PUBLIC
 bool to_string( char const *in, size_type in_len, string *out );
+#else
+inline bool to_string( char const *in, size_type in_len, string *out ) {
+  out->assign( in, in_len );
+  return true;
+}
+#endif /* ZORBA_NO_UNICODE */
 
 /**
  * Converts a C string to a Unicode string.
@@ -223,6 +253,8 @@ bool to_string( char const *in, size_type in_len, string *out );
 inline bool to_string( char const *in, string *out ) {
   return to_string( in, (size_type)std::strlen( in ), out );
 }
+
+#ifndef ZORBA_NO_UNICODE
 
 /**
  * Converts a wide-character string to a Unicode string.
@@ -245,6 +277,8 @@ inline bool to_string( wchar_t const *in, string *out ) {
   return to_string( in, static_cast<size_type>( std::wcslen( in ) ), out );
 }
 
+#endif /* ZORBA_NO_UNICODE */
+
 /**
  * Converts a string to a Unicode string.
  *
@@ -263,13 +297,6 @@ inline bool to_string( StringType const &in, string *out ) {
 } // namespace unicode
 } // namespace zorba
 
-#else
-#endif /* ZORBA_NO_UNICODE */
-namespace zorba{
-namespace unicode{
-typedef int32_t size_type;
-} // namespace unicode
-} // namespace zorba
 #endif /* ZORBA_UNICODE_UTIL_H */
 /*
  * Local variables:

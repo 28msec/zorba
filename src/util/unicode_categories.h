@@ -25,6 +25,7 @@ namespace unicode {
 //Unicode codepoint categories, as from http://www.fileformat.info/info/unicode/category/index.htm
 
 enum UnicodeCategoriesEnum {
+UNICODE_Cn = 0, //Not Assigned
 UNICODE_Cc, //Other, Control
 UNICODE_Cf, //Other, Format
 UNICODE_Co, //Other, Private Use

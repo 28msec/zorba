@@ -90,7 +90,7 @@ typedef rchandle<IC> IC_t;
 
 class ICChecker;
 
-struct Annotation;
+class Annotation;
 typedef rchandle<Annotation> Annotation_t;
 
 

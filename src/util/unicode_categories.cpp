@@ -65824,10 +65824,10 @@ bool check_codepoint_category(code_point cp, UnicodeCategoriesEnum categ)
       if(cp >= codepoints_categories2[i].cp1)
         return codepoints_categories2[i].category == categ;
       else
-        return false;
+        return categ ? false : true;
     }
   }
-  return false;
+  return categ ? false : true;
 }
 
 /*

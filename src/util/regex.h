@@ -17,15 +17,13 @@
 #ifndef ZORBA_REGEX_H
 #define ZORBA_REGEX_H
 
-#ifndef ZORBA_NO_UNICODE
-#include <unicode/regex.h>
-#endif
-
 #include "cxx_util.h"
 #include "unicode_util.h"
 #include "zorbatypes/zstring.h"
 
 #ifndef ZORBA_NO_UNICODE
+
+#include <unicode/regex.h>
 
 namespace zorba {
 
@@ -42,8 +40,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
 
 ////////// classes ////////////////////////////////////////////////////////////
 
-namespace unicode {
 
+namespace unicode {
 
 /**
  * The %regex class wraps the underlying Unicode regular expression library.
@@ -423,14 +421,13 @@ public:
     return replace_all( in.c_str(), replacement.c_str(), out );
   }
 
-
   /**
    * Set the string to work on, without doing matching yet.
    *
    * @param in The UTF-8 input string.
    * @param len the size in bytes.
    */
-  void set_string( const char* in, size_type len );
+  void set_string( char const *in, size_type len );
 
   /**
    * Find the next match in string set by set_string().
@@ -501,7 +498,8 @@ private:
 #include "util/regex_ascii.h"
 #include <string>
 
-namespace zorba{
+namespace zorba {
+
 /**
  * Converts an XQuery regular expression to the form used by the regular
  * expression library Zorba is using (here regex_ascii).
@@ -513,9 +511,9 @@ namespace zorba{
 void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
                         char const *flags = "" );
 
-namespace unicode{
-////////// classes ////////////////////////////////////////////////////////////
+namespace unicode {
 
+////////// classes ////////////////////////////////////////////////////////////
 
 /**
  * The %regex class wraps the underlying Unicode regular expression library.
@@ -525,7 +523,7 @@ public:
   /**
    * Constructs a %regex.
    */
-  regex() : regex_matcher( NULL ) { }
+  regex() : regex_matcher( nullptr ) { }
 
   /**
    * Destroys a %regex.
@@ -873,15 +871,13 @@ private:
   regex( regex const& );
   regex& operator=( regex const& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace unicode
 } // namespace zorba
 
 #endif /* ZORBA_NO_UNICODE */
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-
 #endif /* ZORBA_REGEX_H */
 /*
  * Local variables:

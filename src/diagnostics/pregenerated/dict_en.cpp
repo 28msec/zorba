@@ -557,6 +557,83 @@ extern entry const dict_en[] = {
   { "~ParserNoCreateTree", "XML tree creation failed" },
   { "~PromotionImpossible", "promotion not possible" },
   { "~QuotedColon_23", "\"$2\": $3" },
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\p{Is} construct. Valid characters are [a-zA-Z0-9-]" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\p construct" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_INVALID_ATOM_CHAR", "$3 - invalid character for at atom. Forbidden characters are: [{}?*+|^]" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_INVALID_BACK_REF", "\\$3 backreference to a non-existent capture group ($4 groups so far)" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_INVALID_SUBCLASS", "malformed class subtraction" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction. The class subtraction must be the last construct in a class group [xxx-[yyy]]" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_MISSING_CLOSE_BRACKET", "missing close bracket in char group" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_MULTICHAR_IN_CHAR_RANGE", "multichars or char categories cannot be part of a char range" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char. Supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes,\
+      \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups." },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category. Supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "\
+        unknown \\p{Is} category block. Supported categories are:\
+        BasicLatin, Latin-1Supplement, LatinExtended-A, LatinExtended-B, IPAExtensions, SpacingModifierLetters,\
+        CombiningDiacriticalMarks, Greek, Cyrillic, Armenian,  Hebrew, Arabic,  Syriac,  Thaana,  Devanagari,\
+        Bengali,  Gurmukhi,  Gujarati, Oriya,  Tamil, Telugu, Kannada,   Malayalam, Sinhala,  Thai,  Lao,\
+        Tibetan, Myanmar,  Georgian, HangulJamo, Ethiopic,  Cherokee,  UnifiedCanadianAboriginalSyllabics,\
+        Ogham,  Runic,  Khmer,  Mongolian, LatinExtendedAdditional,  GreekExtended, GeneralPunctuation,\
+        SuperscriptsandSubscripts,  CurrencySymbols,  CombiningMarksforSymbols,  LetterlikeSymbols,\
+        NumberForms,  Arrows,  MathematicalOperators, MiscellaneousTechnical,  ControlPictures,\
+        OpticalCharacterRecognition, EnclosedAlphanumerics,  BoxDrawing, BlockElements, GeometricShapes,\
+        MiscellaneousSymbols,  Dingbats, BraillePatterns, CJKRadicalsSupplement, KangxiRadicals,  IdeographicDescriptionCharacters,\
+        CJKSymbolsandPunctuation, Hiragana,  Katakana,  Bopomofo, HangulCompatibilityJamo,   Kanbun,\
+        BopomofoExtended,  EnclosedCJKLettersandMonths, CJKCompatibility,  CJKUnifiedIdeographsExtensionA,\
+        CJKUnifiedIdeographs, YiSyllables, YiRadicals,  HangulSyllables,  PrivateUse,   CJKCompatibilityIdeographs,\
+        AlphabeticPresentationForms, ArabicPresentationForms-A,  CombiningHalfMarks,  CJKCompatibilityForms,\
+        SmallFormVariants,   ArabicPresentationForms-B, Specials,  HalfwidthandFullwidthForms\
+      " },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\p{L?} category. Supported categories: L, Lu, Ll, Lt, Lm, Lo" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\p{M?} category. Supported categories: M, Mn, Mc, Me" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\p{N?} category. Supported categories: N, Nd, Nl, No" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\p{P?} category. Supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\p{S?} category. Supported categories: S, Sm, Sc, Sk, So" },
+#endif
+#if defined(ZORBA_NO_UNICODE)
+  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\p{Z?} category. Supported categories: Z, Zs, Zl, Zp" },
+#endif
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SchemaAttributeName", "schema-attribute name" },

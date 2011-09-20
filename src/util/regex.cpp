@@ -21,10 +21,10 @@
 #include <vector>
 
 #include <zorba/diagnostic_list.h>
-#include "diagnostics/xquery_exception.h"
 
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/xquery_exception.h"
 
 #include "ascii_util.h"
 #include "cxx_util.h"
@@ -434,7 +434,7 @@ uint32_t regex::parse_regex_flags(const char* flag_cstr)
     case 'i': flags |= REGEX_ASCII_CASE_INSENSITIVE; break;
     case 's': flags |= REGEX_ASCII_DOTALL; break;
     case 'm': flags |= REGEX_ASCII_MULTILINE; break;
-    case 'x': flags |= REGEX_ASCII_COMMENTS; break;
+    case 'x': flags |= REGEX_ASCII_NO_WHITESPACE; break;
     case 'q': flags |= REGEX_ASCII_LITERAL; break;
     default:
       throw XQUERY_EXCEPTION( err::FORX0001, ERROR_PARAMS( *p ) );
@@ -481,6 +481,8 @@ bool regex::next_match( char const *s, size_type *pos, zstring *match )
 bool regex::next_token( char const *s, size_type *pos, zstring *token,
                   bool *matched)
 {
+  if(!s[*pos])
+    return false;
   bool  retval;
   int   match_pos;
   int   matched_len;
@@ -492,14 +494,8 @@ bool regex::next_token( char const *s, size_type *pos, zstring *token,
       token->assign(s+*pos, match_pos);
     *pos += match_pos + matched_len;
     if(matched)
-      if(match_pos)
-        *matched = true;
-      else
-        *matched = false;
-    if(match_pos)
-      return true;
-    else
-      return false;
+      *matched = true;
+    return true;
   }
   else
   {
@@ -508,7 +504,7 @@ bool regex::next_token( char const *s, size_type *pos, zstring *token,
     *pos += strlen(s+*pos);
     if(matched)
       *matched = false;
-    return s[*pos] != 0;
+    return true;
   }
 }
 
@@ -518,12 +514,8 @@ bool regex::match_whole( char const *s )
   int   matched_pos;
   int   matched_len;
 
-  bool prev_align = regex_matcher->set_align_begin(true);
-  retval = regex_matcher->match_from(s, parsed_flags, &matched_pos, &matched_len);
-  regex_matcher->set_align_begin(prev_align);
+  retval = regex_matcher->match_anywhere(s, parsed_flags|REGEX_ASCII_WHOLE_MATCH, &matched_pos, &matched_len);
   if(!retval)
-    return false;
-  if(matched_len != strlen(s))
     return false;
   return true;
 }
@@ -551,14 +543,19 @@ bool regex::replace_all( char const *in, char const *replacement, zstring *resul
       //look for dollars
       if(*temprepl == '\\')
       {
-        temprepl++;
-        if(!*temprepl || (*temprepl != '\\') || (*temprepl != '$'))//Invalid replacement string.
-          throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
+        if(!(parsed_flags & REGEX_ASCII_LITERAL))
+        {
+          temprepl++;
+          if(!*temprepl) 
+            temprepl--;
+          else if((*temprepl != '\\') && (*temprepl != '$'))//Invalid replacement string.
+            throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
+        }
         result->append(1, *temprepl);
         temprepl++;
         continue;
       }
-      if(*temprepl == '$')
+      if((*temprepl == '$') && !(parsed_flags & REGEX_ASCII_LITERAL))
       {
         temprepl++;
         index = 0;
@@ -612,7 +609,7 @@ bool regex::find_next_match( bool *reachedEnd )
   if(retval)
   {
     m_match_pos += m_pos;
-    m_pos = m_match_pos = m_matched_len;
+    m_pos = m_match_pos + m_matched_len;
   }
   else
   {

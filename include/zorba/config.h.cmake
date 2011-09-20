@@ -93,6 +93,8 @@
 typedef __int64 int64_t;
 #endif /* ZORBA_HAVE_INT64_T */
 
+#cmakedefine ZORBA_SIZEOF_WCHAR_T @ZORBA_SIZEOF_WCHAR_T@
+
 // Compiler
 #cmakedefine CLANG
 #cmakedefine MSVC
