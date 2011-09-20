@@ -148,7 +148,6 @@ void encode( unicode::code_point c, StringType *out ) {
  * @return Returns the Unicode code-point of the next character.
  */
 template<class OctetIterator>
-ZORBA_DLL_PUBLIC
 unicode::code_point next_char( OctetIterator &i );
 
 /**

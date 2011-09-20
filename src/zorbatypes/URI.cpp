@@ -1191,7 +1191,16 @@ bool URI::is_absolute() const
   return is_set(Scheme) && !theScheme.empty();
 }
 
-
+bool URI::is_absolute_path(zstring &thePath)
+{
+#ifndef WIN32
+  return thePath[0] == '/';
+#else
+  return (thePath.length() > 2) && 
+          ((thePath[1] == ':') || 
+           ((thePath[1] == '%') && (thePath[2] == '3') && (thePath[3] == 'A')));
+#endif
+}
 
 /*******************************************************************************
 
@@ -1331,7 +1340,7 @@ void URI::resolve(const URI* base_uri)
 
   // If the path component begins with a slash character ("/"), then
   // the reference is an absolute-path and we skip to step 7.
-  if ( (is_set(Path)) && (thePath[0] =='/') ) 
+  if ( is_set(Path) && is_absolute_path(thePath) ) 
   {
      invalidate_text();
      return;
@@ -1342,12 +1351,14 @@ void URI::resolve(const URI* base_uri)
 
   if ( base_uri->is_set(Path) ) 
   {
-    zstring::size_type last_slash = base_path.rfind("/");
-    if ( last_slash != zstring::npos )
-      path = base_path.substr(0, last_slash+1);
-//  else
-//    path = "/";
-
+    if(!is_absolute_path(thePath))
+    {
+      zstring::size_type last_slash = base_path.rfind("/");
+      if ( last_slash != zstring::npos )
+        path = base_path.substr(0, last_slash+1);
+  //  else
+  //    path = "/";
+    }
   }
 
   // 6b - append the relative URI path
