@@ -199,8 +199,6 @@ public:
 
 public:
   const namespace_context* getNSCtx() const;
-
-  void compute_scripting_kind() = 0;
 };
 
 

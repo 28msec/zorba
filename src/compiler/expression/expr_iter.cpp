@@ -677,6 +677,7 @@ void ExprIterator::next()
     break;
   }
 
+#ifdef ZORBA_WITH_DEBUGGER
   case debugger_expr_kind:
   {
     debugger_expr* debuggerExpr = static_cast<debugger_expr*>(theExpr);
@@ -695,6 +696,7 @@ void ExprIterator::next()
     EXPR_ITER_END();
     break;
   }
+#endif
 
   case function_trace_expr_kind:
   {
