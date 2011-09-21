@@ -1,0 +1,1 @@
+fn:matches("a", "\P{L ")
