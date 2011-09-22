@@ -2081,8 +2081,37 @@ bool ElementNode::haveTypedTypedValue() const
   if (numChildren() == 1 &&
       getChild(0)->getNodeKind() == store::StoreConsts::textNode)
   {
-    if (reinterpret_cast<TextNode*>(getChild(0))->isTyped())
+    if (static_cast<TextNode*>(getChild(0))->isTyped())
       return true;
+  }
+  else
+  {
+    XmlNode* textChild = NULL;
+
+    InternalNode::const_iterator ite = p->childrenBegin();
+    InternalNode::const_iterator end = p->childrenEnd();
+
+    for (; ite != end; ++ite)
+    {
+      store::StoreConts::NodeKind kind = (*ite)->getNodeKind();
+
+      if (kind == store::StoreConsts::elementNode)
+        return false;
+
+      if (kind == store::StoreConsts::commentNode ||
+          kind == store::StoreConsts::piNode)
+        continue;
+
+      assert(kind == store::StoreConsts::textNode);
+
+      if (textChild != NULL)
+        return false;
+
+      textChild = (*ite);
+    }
+
+    if (textChild != NULL)
+      return static_cast<TextNode*>(textChild)->isTyped();
   }
 
   return false;
@@ -2814,7 +2843,7 @@ zstring ElementNode::show() const
   store::NsBindings nsBindings;
   getNamespaceBindings(nsBindings);
 
-  for (ulong i = 0; i < nsBindings.size(); i++)
+  for (csize i = 0; i < nsBindings.size(); i++)
   {
     str << " xmlns:" <<  nsBindings[i].first << "=\""
         << nsBindings[i].second << "\"";
@@ -3379,12 +3408,12 @@ TextNode::TextNode(
 
 ********************************************************************************/
 TextNode::TextNode(
-    InternalNode*  parent,
+    InternalNode* parent,
     store::Item_t& content,
-    bool           isListValue)
+    bool isListValue)
   :
 #ifdef TEXT_ORDPATH
-  OrdPathNode(NULL, parent, true, 0, store::StoreConsts::textNode)
+  OrdPathNode(NULL, parent, append, pos, store::StoreConsts::textNode)
 #else
   XmlNode(NULL, parent, store::StoreConsts::textNode)
 #endif
@@ -3395,14 +3424,30 @@ TextNode::TextNode(
 
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
 
-  ZORBA_ASSERT(p->numChildren() == 0);
+  if (p->numChildren() > 0)
+  {
+    InternalNode::const_iterator ite = p->childrenBegin();
+    InternalNode::const_iterator end = p->childrenEnd();
+
+    for (; ite != end; ++ite)
+    {
+      XmlNode* child = (*ite);
+
+      if (child->getNodeKind() != store::StoreConsts::commentNode &&
+          child->getNodeKind() != store::StoreConsts::piNode)
+      {
+        ZORBA_ASSERT(false);
+      }
+    }    
+  }
+
   ZORBA_ASSERT(p->haveValue() && !p->haveEmptyValue());
 
   setTypedValue(content);
   if (isListValue)
     setHaveListValue();
 
-  p->insertChild(this, 0);
+  p->insertChild(this, p->numChildren());
 
 #ifdef TEXT_ORDPATH
   NODE_TRACE1("Constructed text node " << this << " parent = "
@@ -3453,7 +3498,7 @@ XmlNode* TextNode::copyInternal(
         // always be untyped.
 
         // Merge adjacent text nodes.
-        ulong numChildren = parent->numChildren();
+        csize numChildren = parent->numChildren();
 
         XmlNode* lsib = (pos > 0 ? parent->getChild(pos-1) : NULL);
         XmlNode* rsib = (pos < numChildren ? parent->getChild(pos) : NULL);
@@ -3635,9 +3680,9 @@ bool TextNode::isIdRefsInternal() const
     if (haveListValue())
     {
       const ItemVector& values = *reinterpret_cast<ItemVector*>(value);
-      ulong numValues = values.size();
+      csize numValues = values.size();
 
-      for (ulong i = 0; i < numValues; ++i)
+      for (csize i = 0; i < numValues; ++i)
       {
         if (dynamic_cast<IDREFItem*>(values.getItem(i)) != NULL)
         {
@@ -4285,7 +4330,7 @@ AttributeNode::getTokens( TokenizerProvider const &provider,
 void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
 {
   XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
-  for ( ulong i = 0; i < numChildren(); ++i )
+  for ( csize i = 0; i < numChildren(); ++i )
     getChild( i )->tokenize( cb );
   cb.endTokenization( this, begin );
 }

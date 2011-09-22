@@ -525,8 +525,8 @@ void Validator::processChildren(
                << "\n"; cout.flush();
 #endif
 
-        if ( xqType!=NULL &&
-             xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
+        if ( xqType != NULL &&
+             xqType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
         {
           store::NsBindings nsBindings;
           parent->getNamespaceBindings(nsBindings);
@@ -540,7 +540,7 @@ void Validator::processChildren(
                            typedValues,
                            loc);
 
-          if ( typedValues.size()==1 ) // hack around serialization bug
+          if ( typedValues.size() == 1 ) // hack around serialization bug
             GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent,
                                              typedValues[0]);
           else

@@ -29,6 +29,9 @@
 namespace zorba 
 { 
 
+typedef std::vector<char>::size_type csize;
+
+
 namespace store 
 {
 
