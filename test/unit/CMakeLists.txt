@@ -108,6 +108,11 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
+IF(ZORBA_NO_UNICODE)
+  SET_TESTS_PROPERTIES(test/unit/string_test
+                       PROPERTIES WILL_FAIL TRUE)
+ENDIF(ZORBA_NO_UNICODE)
+
 # Add lib-internal unit tests
 ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")
 

@@ -447,6 +447,7 @@ uint32_t regex::parse_regex_flags(const char* flag_cstr)
 void regex::compile( char const *pattern, char const *flags)
 {
   parsed_flags = parse_regex_flags(flags);
+  regex_ascii::CRegexAscii_parser regex_parser;
   regex_matcher = regex_parser.parse(pattern, parsed_flags);
   if(!regex_matcher)
     throw INVALID_RE_EXCEPTION(pattern);

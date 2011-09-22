@@ -45,6 +45,7 @@
 
 #include "context/static_context.h"
 
+#include "types/typeimpl.h"
 #include "types/typeops.h"
 
 #include "compiler/xqddf/collection_decl.h"
