@@ -182,11 +182,11 @@ UpdInsertChildren::UpdInsertChildren(
 {
   theSibling.transfer(sibling);
 
-  size_t numNewChildren = 0;
-  size_t numChildren = children.size();
+  std::size_t numNewChildren = 0;
+  std::size_t numChildren = children.size();
   theNewChildren.resize(numChildren);
 
-  for (size_t i = 0; i < numChildren; i++)
+  for (std::size_t i = 0; i < numChildren; i++)
   {
     if (i > 0 &&
         children[i]->getNodeKind() == store::StoreConsts::textNode &&
@@ -286,9 +286,10 @@ UpdInsertAttributes::UpdInsertAttributes(
   UpdatePrimitive(pul, aLoc, target),
   theNumApplied(0)
 {
-  size_t numAttrs = attrs.size();
+  std::size_t numAttrs = attrs.size();
   theNewAttrs.resize(numAttrs);
-  for (size_t i = 0; i < numAttrs; i++) {
+  for (std::size_t i = 0; i < numAttrs; i++)
+  {
     theNewAttrs[i].transfer(attrs[i]);
   }
 }
@@ -336,9 +337,10 @@ UpdReplaceAttribute::UpdReplaceAttribute(
 {
   theAttr.transfer(attr);
 
-  size_t numAttrs = (uint64_t)newAttrs.size();
+  std::size_t numAttrs = newAttrs.size();
   theNewAttrs.resize(numAttrs);
-  for (size_t i = 0; i < numAttrs; i++) {
+  for (std::size_t i = 0; i < numAttrs; i++)
+  {
     theNewAttrs[i].transfer(newAttrs[i]);
   }
 }
@@ -736,10 +738,11 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  size_t numNodes = (uint64_t)nodes.size();
+  std::size_t numNodes = nodes.size();
   theNodes.resize(numNodes);
 
-  for (size_t i = 0; i < numNodes; ++i) {
+  for (std::size_t i = 0; i < numNodes; ++i)
+  {
     theNodes[i].transfer(nodes[i]);
   }
 }
@@ -758,10 +761,11 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  size_t numNodes = (uint64_t)nodes.size();
+  std::size_t numNodes = nodes.size();
   theNodes.resize(numNodes);
 
-  for (size_t i = 0; i < numNodes; ++i) {
+  for (std::size_t i = 0; i < numNodes; ++i)
+  {
     theNodes[i].transfer(nodes[i]);
   }
 }
@@ -874,8 +878,9 @@ void UpdInsertIntoCollection::apply()
 
   theIsApplied = true;
 
-  size_t numNodes = (uint64_t)theNodes.size();
-  for (size_t i = 0; i < numNodes; ++i) {
+  std::size_t numNodes = theNodes.size();
+  for (std::size_t i = 0; i < numNodes; ++i)
+  {
     lColl->addNode(theNodes[i], -1);
     ++theNumApplied;
   }
@@ -924,8 +929,9 @@ void UpdInsertFirstIntoCollection::apply()
 
   theCollectionPul->setAdjustTreePositions();
 
-  size_t numNodes = (uint64_t)theNodes.size();
-  for (size_t i = 0; i < numNodes; ++i) {
+  std::size_t numNodes = theNodes.size();
+  for (std::size_t i = 0; i < numNodes; ++i)
+  {
     lColl->addNode(theNodes[i], i);
     ++theNumApplied;
   }
@@ -938,7 +944,8 @@ void UpdInsertFirstIntoCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  for (size_t i = 0; i < theNumApplied; ++i) {
+  for (std::size_t i = 0; i < theNumApplied; ++i)
+  {
     ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(0));
 
     lColl->removeNode((uint64_t)0);
@@ -957,8 +964,9 @@ void UpdInsertLastIntoCollection::apply()
 
   theIsApplied = true;
 
-  size_t numNodes = (uint64_t)theNodes.size();
-  for (size_t i = 0; i < numNodes; ++i) {
+  std::size_t numNodes = theNodes.size();
+  for (std::size_t i = 0; i < numNodes; ++i)
+  {
     lColl->addNode(theNodes[i], -1);
   }
 }
@@ -1066,9 +1074,12 @@ void UpdDeleteNodesFromCollection::apply()
   theIsApplied = true;
 
   uint64_t size;
-  try {
+  try
+  {
     size = to_xs_unsignedLong(lColl->size());
-  } catch (std::range_error& e) {
+  }
+  catch (std::range_error& e)
+  {
     throw ZORBA_EXCEPTION(
         zerr::ZSTR0060_RANGE_EXCEPTION,
         ERROR_PARAMS(
@@ -1078,27 +1089,32 @@ void UpdDeleteNodesFromCollection::apply()
       );
   }
 
-  size_t numNodes = theNodes.size();
+  std::size_t numNodes = theNodes.size();
 
   bool isLast = theIsLast;
 
-  if (theIsLast) {
-    for (size_t i = numNodes; i > 0; --i) {
-      if (theNodes[i-1] != lColl->nodeAt(size - i)) {
+  if (theIsLast)
+  {
+    for (std::size_t i = numNodes; i > 0; --i)
+    {
+      if (theNodes[i-1] != lColl->nodeAt(size - i))
+      {
         isLast = false;
         break;
       }
     }
   }
 
-  if (!isLast) {
+  if (!isLast)
+  {
     theCollectionPul->setAdjustTreePositions();
   }
 
   theFound.resize(numNodes);
   thePositions.resize(numNodes);
 
-  for (size_t i = 0; i < numNodes; ++i) {
+  for (std::size_t i = 0; i < numNodes; ++i)
+  {
     theFound[i] = lColl->removeNode(theNodes[i], thePositions[i]);
     ++theNumApplied;
   }
@@ -1110,8 +1126,10 @@ void UpdDeleteNodesFromCollection::undo()
                             (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
-  for (size_t i = 0; i < theNumApplied; ++i) {
-    if (theFound[i]) {
+  for (std::size_t i = 0; i < theNumApplied; ++i)
+  {
+    if (theFound[i])
+    {
       lColl->addNode(theNodes[i], thePositions[i]);
     }
   }

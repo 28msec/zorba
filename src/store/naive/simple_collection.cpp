@@ -128,8 +128,9 @@ void SimpleCollection::addNode(
   }
   else
   {
-    theXmlTrees.insert(theXmlTrees.begin() + lPosition, nodeItem);
-    node->setCollection(this, lPosition);
+
+    theXmlTrees.insert(theXmlTrees.begin() + (std::size_t)lPosition, nodeItem);
+    node->setCollection(this, to_xs_unsignedInt(lPosition));
   }
 }
 
@@ -149,7 +150,6 @@ ulong SimpleCollection::addNodes(
 
   xs_integer targetPos;
   bool found = findNode(targetNode, targetPos);
-  uint64_t lTargetPos = to_xs_long(targetPos);
 
   if (!found)
   {
@@ -159,13 +159,17 @@ ulong SimpleCollection::addNodes(
     );
   }
 
-  if (!before)
-    ++lTargetPos;
+  std::size_t lTargetPos = to_xs_unsignedInt(targetPos);
 
-  uint64_t numNodes = (uint64_t)theXmlTrees.size();
-  uint64_t numNewNodes = (uint64_t)nodes.size();
+  if (!before)
+  {
+    ++lTargetPos;
+  }
+
+  std::size_t numNodes = theXmlTrees.size();
+  std::size_t numNewNodes = nodes.size();
   
-  for (uint64_t i = 0; i < numNewNodes; ++i)
+  for (std::size_t i = 0; i < numNewNodes; ++i)
   {
     if (!nodes[i]->isNode())
     {
@@ -209,8 +213,10 @@ ulong SimpleCollection::addNodes(
             (numNodes-lTargetPos) * sizeof(store::Item_t));
   }
 
-  for (uint64_t i = lTargetPos; i < lTargetPos + numNewNodes; ++i)
+  for (std::size_t i = lTargetPos; i < lTargetPos + numNewNodes; ++i)
+  {
     theXmlTrees[i].setNull();
+  }
 #else
   for (long j = numNodes-1, i = theXmlTrees.size()-1; j >= lTargetPos; --j, --i)
   {
@@ -218,7 +224,7 @@ ulong SimpleCollection::addNodes(
   }
 #endif
 
-  for (uint64_t i = 0; i < numNewNodes; ++i)
+  for (std::size_t i = 0; i < numNewNodes; ++i)
   {
     theXmlTrees[lTargetPos + i].transfer(nodes[i]);
   }
@@ -247,13 +253,13 @@ bool SimpleCollection::removeNode(store::Item* nodeItem, xs_integer& position)
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   bool found = findNode(nodeItem, position);
-  uint64_t lPosition = to_xs_long(position);
 
   if (found)
   {
     ZORBA_ASSERT(node->getCollection() == this);
 
     node->setCollection(NULL, 0);
+    std::size_t lPosition = to_xs_unsignedInt(position);
     theXmlTrees.erase(theXmlTrees.begin() + lPosition);
     return true;
   }
@@ -273,13 +279,12 @@ bool SimpleCollection::removeNode(xs_integer position)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  uint64_t lPosition = to_xs_long(position);
+  std::size_t lPosition = to_xs_unsignedInt(position);
 
-  if (lPosition >= theXmlTrees.size())
-  {
+  if (lPosition >= theXmlTrees.size()) {
     return false;
   }
-  else 
+  else
   {
     XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
     ZORBA_ASSERT(node->getCollection() == this);
@@ -301,20 +306,22 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  uint64_t lPosition = to_xs_long(position);
-  uint64_t lNum = to_xs_long(num);
+  std::size_t lPosition = to_xs_unsignedInt(position);
+  std::size_t lNum = to_xs_unsignedInt(num);
 
   if (lNum == 0 || lPosition >= theXmlTrees.size())
   {
     return 0;
   }
-  else 
+  else
   {
     uint64_t last = lPosition + lNum;
     if (last > theXmlTrees.size())
+    {
       last = theXmlTrees.size();
+    }
 
-    for (uint64_t i = lPosition; i < last; ++i)
+    for (std::size_t i = lPosition; i < last; ++i)
     { 
       XmlNode* node = static_cast<XmlNode*>(theXmlTrees[lPosition].getp());
       ZORBA_ASSERT(node->getCollection() == this);
@@ -334,7 +341,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer num)
 ********************************************************************************/
 store::Item_t SimpleCollection::nodeAt(xs_integer position)
 {
-  uint64_t lPosition = to_xs_long(position);
+  std::size_t lPosition = to_xs_unsignedInt(position);
   if (lPosition >= theXmlTrees.size())
   {
     return NULL;
@@ -369,7 +376,7 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
 
   position = n->getTree()->getPosition();
 
-  uint64_t lPosition = to_xs_long(position);
+  std::size_t lPosition = to_xs_unsignedInt(position);
 
   if (lPosition < theXmlTrees.size() &&
       BASE_NODE(theXmlTrees[lPosition])->getTreeId() == n->getTreeId())
@@ -377,9 +384,9 @@ bool SimpleCollection::findNode(const store::Item* node, xs_integer& position) c
     return true;
   }
 
-  uint64_t numTrees = (uint64_t)theXmlTrees.size();
+  std::size_t numTrees = theXmlTrees.size();
 
-  for (uint64_t i = 0; i < numTrees; ++i)
+  for (std::size_t i = 0; i < numTrees; ++i)
   {
     // check if the nodes are the same
     if (node->equals(theXmlTrees[i]))
@@ -407,9 +414,9 @@ void SimpleCollection::getAnnotations(
 ********************************************************************************/
 void SimpleCollection::adjustTreePositions()
 {
-  uint64_t numTrees = (uint64_t)theXmlTrees.size();
+  std::size_t numTrees = (uint64_t)theXmlTrees.size();
 
-  for (uint64_t i = 0; i < numTrees; ++i)
+  for (std::size_t i = 0; i < numTrees; ++i)
   {
     BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
   }
@@ -435,7 +442,7 @@ void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
     const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
     uint64_t numIndexSources = (uint64_t)indexSources.size();
 
-    for (uint64_t i = 0; i < numIndexSources; ++i)
+    for (std::size_t i = 0; i < numIndexSources; ++i)
     {
       if (indexSources[i]->equals(getName()))
       {
