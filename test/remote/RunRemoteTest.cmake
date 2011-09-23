@@ -60,14 +60,12 @@ execute_process (COMMAND "${ZORBA_EXE}" --omit-xml-declaration
   OUTPUT_VARIABLE datetime)
 string (REPLACE ":" "-" datetime "${datetime}")
 
-# Package up local changes for Zorba
+# Configure working directory for building submission
 set (workdir "${CMAKE_ZORBA_BUILD_DIR}/remotequeue/changes-${datetime}")
-svn_package ("${srcdir}" "${workdir}" "${changelist}" "${workdir}/zorba.tgz")
 
-# Save the local "svn info" so the remote queue easily knows what branch
-# we're working in
-execute_process (COMMAND "${svn}" info --xml
-  WORKING_DIRECTORY "${srcdir}" OUTPUT_FILE "${workdir}/zorba-info.xml")
+# Create a fake zorba-info.xml that points to the old SF zorba trunk
+file (WRITE "${workdir}/zorba-info.xml"
+  "<info><entry><url>http://zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba</url></entry></info>")
 
 # Extract ZORBA_MODULE_DIR. This seems like a kludgy approach, but
 # unfortunately load_cache() can't be called in CMake scripts.
