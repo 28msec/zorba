@@ -30,9 +30,6 @@ namespace store
 namespace simplestore 
 {
 
-typedef std::vector<char>::size_type csize;
-
-
 class CollectionSet;
 class CollectionIterator;
 typedef rchandle<CollectionIterator> CollectionIterator_t;
