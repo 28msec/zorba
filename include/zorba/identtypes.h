@@ -22,16 +22,16 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC IdentTypes {
 public:
   typedef enum {
-    NAMED_TYPE,
+    NAMED_TYPE,     // builtin atomic type
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
     DOCUMENT_TYPE,
     PI_TYPE,
     TEXT_TYPE,
     COMMENT_TYPE,
-    ANY_NODE_TYPE,
-    ITEM_TYPE,
-    EMPTY_TYPE,
+    ANY_NODE_TYPE, // node()
+    ITEM_TYPE,     // item()
+    EMPTY_TYPE,    // empty-sequence()
     INVALID_TYPE,
   } kind_t;
 
