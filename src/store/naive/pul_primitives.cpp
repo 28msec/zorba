@@ -465,10 +465,10 @@ void UpdSetElementType::apply()
 
   target->setType(theTypeName);
 
-  if (target->haveTypedTypedValue())
-  {
-    TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
+  TextNode* textChild;
 
+  if (target->haveTypedTypedValue(textChild))
+  {
     zstring textValue;
     textChild->getStringValue2(textValue);
 
@@ -487,10 +487,7 @@ void UpdSetElementType::apply()
 
     if (theHaveTypedValue)
     {
-      ZORBA_FATAL(target->numChildren() == 1, "");
-      ZORBA_FATAL(target->getChild(0)->getNodeKind() == store::StoreConsts::textNode, "");
-
-      TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
+      TextNode* textChild = target->getUniqueTextChild();
 
       textChild->setTypedValue(theTypedValue);
       if (theHaveListValue)
