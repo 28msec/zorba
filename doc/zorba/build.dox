@@ -1,38 +1,4 @@
-/** \page build Build Instructions
-
-  <ul>
-    <li> Table of Contents
-    <ul>
-      <li> \ref requirements
-      <ul>
-        <li> \ref buildsystem
-        <li> \ref compilers
-        <li> \ref required_libs
-        <li> \ref buildingzorba
-      </ul>
-      <li> \ref buildcclient
-      <ul>
-        <li> \ref cclientunix
-        <li> \ref cclientwindows
-      </ul>
-      <li> \ref buildjansson
-      <ul>
-        <li> \ref janssonunix
-        <li> \ref janssonwindows
-      </ul> 
-      <li> \ref buildimagemagick
-      <ul>
-        <li> \ref imagemagickunix
-        <li> \ref imagemagickwindows
-      </ul>  
-      <li> \ref windows
-      <ul>
-        <li> \ref nmake
-        <li> \ref visualstudio
-        <li> \ref https_support
-      </ul>
-    </ul>
- </ul>
+/** \page build Zorba Build Instructions
 
 \section requirements Requirements
 
@@ -45,7 +11,7 @@ You can download CMake from http://www.cmake.org/.
 \subsection compilers Compilers
 Zorba is tested with the following compilers:
 - GNU Compiler: GCC 3.4.x (32-bit & 64-bit) and GCC 4.x.x
-- Microsoft Compiler: MS VC++ 2008, and MS VC++ 2010
+- Microsoft Compiler: MS VC++ 2008, and MS VC++ 2010 (including Express)
 
 \subsection required_libs Required Libraries
 In order to build Zorba, you need the following libraries and development headers:
@@ -100,39 +66,16 @@ and development headers.
 - PHP (http://www.php.net/downloads.php)
 - Python (http://www.python.org/download/)
 
-\subsubsection required_non_core_modules Required for Non-Core Modules
-Zorba provides a huge variety of <a href="../../../html/modules.html">XQuery modules</a>.
-For most of the (external) modules, you need additional libraries.
-All such modules are not build if the library (and development headers) they require are not available.
-In the following, please find a list of required libraries.
-
-- data-converters (JSon, CSV, HTML)
-  - Tidy (http://tidy.sourceforge.net)
-  - Jansson (http://www.digip.org/jansson/)
-- data-formatting (XSL-FO)
-  - Java (http://java.sun.com/javase/downloads/index.jsp)
-  - Apache FOP (http://xmlgraphics.apache.org/fop/download.html)
-- email
-  - IMAP CClient (http://www.washington.edu/imap/)
-- geo
-  - GEOS version 3.2.2 or later (http://trac.osgeo.org/geos/)
-- EXPath http-client
-  - CURL 7.12 or later (http://curl.haxx.se/)
-- image
-  - ImageMagick (http://www.imagemagick.org)
-- languages (XSLT)
-  - LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/)
-
-Please note that some of these modules depend on other modules.
-For example, the EXPath http-client module depends on Zorba's http-client module and the tidy data-converter.
-Please see our <a href="../../zorba/xqdoc/xhtml/images/modules.svg">module-interdependency graph</a> for details.
   
-\subsection buildingzorba Building Zorba
+\section buildingzorba Building Zorba
 -# Install the Zorba source distribution (see \ref installation).
   The directory in which the Zorba sources are installed
   is referred to as \c [ZORBA] in the following.
--# Change the working directory into \c [ZORBA].
--# The recommended way to build Zorba is by creating an
+-# If desired, also install or download the source for any non-core modules
+  that you would like to build along with Zorba, and ensure that you have
+  any libraries required by those modules available. See \ref build_noncore
+  for more details.
+-# Zorba requires an
    <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">out-of-source build</a>.
    We suggest to create the directory \c [ZORBA]/build
    and refer to this directory as \c [ZORBABUILD] in the following.
@@ -141,18 +84,21 @@ Please see our <a href="../../zorba/xqdoc/xhtml/images/modules.svg">module-inter
    <tt>cmake [ZORBA]</tt>.
    In case the \c [ZORBABUILD]
    is located directly within the \c [ZORBA] directory,
-   just type <tt>cmake ..</tt> .
+   you can just type <tt>cmake ..</tt> .
    This command should configure Zorba and prepare for the build.
    CMake will tell you if your installation is missing
    some of the required libraries or development headers.
 -# If CMake executed successfully,
-   you should be able to run \c make.
-   Running make will take some time.
-   If \c make finishes successfully,
+   you should be able to build the project. For Makefile-based builds,
+   just type \c make (or \c make -j2 to do a parallel build on a multi-core
+   machine). For IDE-based builds, open the project created in the previous
+   step and build the \c ALL target.
+   The build will take some time.
+   If it finishes successfully,
    you're ready to install and run Zorba
    (see \ref installation).
 
-\subsubsection buildoptions Build Options
+\subsection buildoptions Build Options
 
 - CMake is a meta build system,
   meaning that it is able to generate native makefiles
@@ -173,147 +119,8 @@ Please see our <a href="../../zorba/xqdoc/xhtml/images/modules.svg">module-inter
 - Zorba has other options as well.
   You can tweak the performance and library footprint
   by enabling or disabling various features from Zorba.
-  Details here \ref options_and_annotations .
 
-\section buildcclient Building IMAP CClient
-
-Zorba provides email support using the CClient library part of the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.
-
-\subsection cclientunix Unix/Linux/Mac OS X
-Notes:
-- There are some known issues with the CClient packages
-  that come with diffrent Linux distributions.
-- On x32 bit OpenSuse and also on x64 bit Ubuntu,
-  we noticed that the CClient shared library is broken
-  (undefined symbol: mm_dlog).
-- Due to that fact that Mark Crispin
-  (the creator of CClient library)
-  does not support CClient as a shared library but only as a static library
-  (see <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html#6.3" target="_blank">FAQs shared library</a>),
-  we strongly suggest you want to get the
-  <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>
-  and compile it yourself.
-- On Linux 64-bit,
-  you might discover a problem with the optional package cclient.
-  E.g. on Ubuntu 64-bit, you might discover the following:
-  \code
-Linking CXX shared library libsmtp.so
-/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a(osdep.o): relocation R_X86_64_32 against
-  `server_input_wait' can not be used when making a shared object; recompile with -fPIC
-/usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a: could not read symbols: Bad value
-  \endcode
-  To fix this,
-  you need to compile CClient yourself.
-  The commands to compile CClient correctly are:
-  \code
-cd <some_directory>
-wget ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
-tar -xf imap-2007e.tar.gz
-cd imap-2007e
-make slx EXTRACFLAGS="-I/usr/include/openssl -fPIC"
-  \endcode
-
-- Also please keep in mind that if SSL/TLS authentication is required
-  by the SMTP server,
-  then you first need to install
-  <a href="http://www.openssl.org/" target="_blank">OpenSSL</a>
-  and configure CClient to use it.
-- Make sure the name of the library is prefixed by \c lib
-  and suffixed with \c .a
-  (for example \c libc-client.a on Linux/Unix
-  or \c libc-client4.a on Mac OS X).
-
-Use the following extra CMake arguments when building Zorba:
-\verbatim
--D "CCLIENT_INCLUDE=path_to_imap-2007e\c-client"
--D CCLIENT_LIBRARY=path_to_imap-2007e\c-client\libc-client.a"
-\endverbatim
-
-Here are some quick suggestions to build CClient on Linux:
-- x32-bit Linux: <tt>make lnp</tt>
-- x64-bit Linux: <tt>make lnp  EXTRACFLAGS="-I/usr/include/openssl -fPIC" EXTRAAUTHENTICATORS=gss</tt> in order to build with SSL and Kerberos support.<br /></ul>
-
-For more detailed build instructions,
-please see the
-<a href="http://www.washington.edu/imap/documentation" target="_blank">UW IMAP toolkit "Server Documentation"</a>
-and the <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html" target="_blank">UW IMAP FAQs</a>.
-
-\subsection cclientwindows Windows
-
-You must build the
-<a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.
-
-Use the following extra CMake arguments when building Zorba:
-\code
--D "CCLIENT_INCLUDE=path_to_imap-2007e\c-client"
--D "CCLIENT_LIBRARY=path_to_imap-2007e\c-client\release\cclient.lib"
-\endcode
-
-\section buildjansson Building Jansson
-
-Zorba provides Json manipulation support
-using the Jansson Library (http://www.digip.org/jansson/).
-
-\subsection janssonunix Unix/Linux/Mac OS X
-
-For Linux/Unix systems,
-download the Jansson library from http://www.digip.org/jansson/releases/.
-Then follow the instructions from
-http://www.digip.org/jansson/doc/2.0/gettingstarted.html#compiling-and-installing-jansson.
-
-The source use GNU Autotools
-(autoconf, automake, libtool),
-so compiling and installing is extremely simple:
-\code
-./configure
-make
-make check
-make install
-\endcode
-
-On Fedora starting with version 12, Jansson is also available as a package,
-so (as root) you can simply run: 
-\code
-yum install -y jansson-devel
-\endcode
-
-Ubuntu packages are available from PPA of
-https://launchpad.net/~petri/+archive/ppa
-
-\subsection janssonwindows Windows
-
-For Windows please follow these steps:
-- download Jansson from https://github.com/akheron/jansson/zipball/master
-- rename src/jansson_config.h.win32 to src/jansson_config.h
-- replace \c snprintf with \c _snprintf in \c src/dump.c lines 188 and 202
-  and \c load.c lines 96 and 108
-- replace \c json_strtoint with \c strtol in \c load.c line 481
-- add all headers and source files in src folder and create a static library
-
-There will be a new Jansson 2.0.1 release
-that will include the fixed described above.
-
-\section buildimagemagick Building ImageMagick
-
-Zorba provides image manipulation support
-using the ImageMagick Library (http://www.imagemagick.org).
-
-\subsection imagemagickunix Unix/Linux/Mac OS X
-
-For Linux/Unix systems,
-just use the package manager to install the
-magick++, magickwand, magickcore packages
-including the developer versions of these packages
-(that inlcude the header files).
-
-On OSX, use macports to install imagemagick.
-
-\subsection imagemagickwindows Windows
-
-For Windows,
-just download the ImageMagick windows binary (Q8-windows-dll) and install it.
-
-\section mac Note for Mac OS X Users 
+\section mac Notes for Mac OS X Users 
 
 The easiest way to install the required packages (like CMake or Xerces-C) is
 to use Macports (http://macports.org/).
@@ -353,9 +160,8 @@ cmake -DCMAKE_PREFIX_PATH=/opt/local ..
   indicated in the \ref required section):
   - Libxml2 and Iconv: http://www.zlatkovic.com/libxml.en.html
   - CURL: http://curl.haxx.se/download.html
-  - Tidy: http://dev.int64.org/tidy.html
   - Libxslt: http://www.zlatkovic.com/pub/libxml/
-  - IMAP CClient: http://www.washington.edu/imap/
+
 - Zorba has in place an automatic DLL detection mechanism.
   This will try to automatically gather all the DLLs
   from the third party librbaries
