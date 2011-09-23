@@ -899,18 +899,24 @@ public:
   void resetHaveEmptyValue()    { theFlags &= ~HaveEmptyValue; }
   bool haveEmptyValue() const   { return (theFlags & HaveEmptyValue) != 0; }
 
-  bool haveTypedTypedValue() const;
+  bool haveTypedTypedValue(TextNode*&) const;
+
+  TextNode* getUniqueTextChild() const;
 
   void setInSubstGroup()        { theFlags |= IsInSubstGroup; }
+
   void resetInSubstGroup()      { theFlags &= ~IsInSubstGroup; }
 
 #ifndef EMBEDED_TYPE
   bool haveType() const         { return (theFlags & HaveType) != 0; }
+
   void setHaveType()            { theFlags |= HaveType; }
+
   void resetHaveType()          { theFlags &= ~HaveType; }
 #endif
 
   bool isRecursive() const      { return (theFlags & IsRecursive) != 0; }
+
   void resetRecursive()         { theFlags &= ~IsRecursive; }
 
   void setRecursive()

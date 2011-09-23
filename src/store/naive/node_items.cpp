@@ -2076,24 +2076,25 @@ void ElementNode::setType(store::Item_t& type)
 /*******************************************************************************
 
 ********************************************************************************/
-bool ElementNode::haveTypedTypedValue() const
+bool ElementNode::haveTypedTypedValue(TextNode*& textChild) const
 {
+  textChild = NULL;
+
   if (numChildren() == 1 &&
       getChild(0)->getNodeKind() == store::StoreConsts::textNode)
   {
-    if (static_cast<TextNode*>(getChild(0))->isTyped())
-      return true;
+    textChild = static_cast<TextNode*>(getChild(0));
+
+    return textChild->isTyped();
   }
   else
   {
-    XmlNode* textChild = NULL;
-
-    InternalNode::const_iterator ite = p->childrenBegin();
-    InternalNode::const_iterator end = p->childrenEnd();
+    InternalNode::const_iterator ite = childrenBegin();
+    InternalNode::const_iterator end = childrenEnd();
 
     for (; ite != end; ++ite)
     {
-      store::StoreConts::NodeKind kind = (*ite)->getNodeKind();
+      store::StoreConsts::NodeKind kind = (*ite)->getNodeKind();
 
       if (kind == store::StoreConsts::elementNode)
         return false;
@@ -2107,14 +2108,42 @@ bool ElementNode::haveTypedTypedValue() const
       if (textChild != NULL)
         return false;
 
-      textChild = (*ite);
+      textChild = static_cast<TextNode*>(*ite);
     }
 
-    if (textChild != NULL)
-      return static_cast<TextNode*>(textChild)->isTyped();
+    return (textChild && textChild->isTyped());
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+TextNode* ElementNode::getUniqueTextChild() const
+{
+  TextNode* textChild = NULL;
+
+  InternalNode::const_iterator ite = childrenBegin();
+  InternalNode::const_iterator end = childrenEnd();
+
+  for (; ite != end; ++ite)
+  {
+    store::StoreConsts::NodeKind kind = (*ite)->getNodeKind();
+    
+    ZORBA_ASSERT(kind != store::StoreConsts::elementNode);
+
+    if (kind == store::StoreConsts::textNode)
+    {
+      if (textChild != NULL)
+        ZORBA_ASSERT(false);
+
+      textChild = static_cast<TextNode*>(*ite);
+    }
   }
 
-  return false;
+  ZORBA_ASSERT(textChild);
+
+  return textChild;
 }
 
 
@@ -2123,10 +2152,10 @@ bool ElementNode::haveTypedTypedValue() const
 ********************************************************************************/
 bool ElementNode::isId() const
 {
-  if (numChildren() == 1 &&
-      getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+  TextNode* textChild;
+  if (haveTypedTypedValue(textChild))
   {
-		if (reinterpret_cast<TextNode*>(getChild(0))->isIdInternal())
+		if (textChild->isIdInternal())
       return true;
 	}
 
@@ -2139,10 +2168,10 @@ bool ElementNode::isId() const
 ********************************************************************************/
 bool ElementNode::isIdRefs() const
 {
-  if (numChildren() == 1 &&
-      getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+  TextNode* textChild;
+  if (haveTypedTypedValue(textChild))
   {
-    if (reinterpret_cast<TextNode*>(getChild(0))->isIdRefsInternal())
+    if (textChild->isIdRefsInternal())
       return true;
   }
 
@@ -2157,24 +2186,24 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 {
   if (haveValue())
   {
+    TextNode* textChild;
+
     if (haveEmptyValue())
     {
       val = NULL;
       iter = NULL;
     }
-    else if (haveTypedTypedValue())
+    else if (haveTypedTypedValue(textChild))
     {
-      const TextNode* child = reinterpret_cast<const TextNode*>(getChild(0));
-
-      if (child->haveListValue())
+      if (textChild->haveListValue())
       {
-        ItemVector* vec = reinterpret_cast<ItemVector*>(child->getValue());
+        ItemVector* vec = reinterpret_cast<ItemVector*>(textChild->getValue());
         iter = new ItemIterator(vec->getItems(), true);
         val = NULL;
       }
       else
       {
-        val = child->getValue();
+        val = textChild->getValue();
         iter = NULL;
       }
     }
@@ -2187,10 +2216,8 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FOTY0012,
-      ERROR_PARAMS( theName->getStringValue(), getType()->getStringValue() )
-    );
+    throw XQUERY_EXCEPTION(err::FOTY0012,
+    ERROR_PARAMS(theName->getStringValue(), getType()->getStringValue()));
   }
 }
 
@@ -3374,12 +3401,10 @@ TextNode::TextNode(
   if (parent)
   {
 #ifndef NDEBUG
-    if (parent->getNodeKind() == store::StoreConsts::elementNode &&
-        parent->numChildren() == 1 &&
-        parent->getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+    if (parent->getNodeKind() == store::StoreConsts::elementNode)
     {
-      TextNode* textChild = reinterpret_cast<TextNode*>(parent->getChild(0));
-      ZORBA_ASSERT(!textChild->isTyped());
+      TextNode* textChild;
+      ZORBA_ASSERT(!static_cast<ElementNode*>(parent)->haveTypedTypedValue(textChild));
     }
 #endif
 
@@ -3424,6 +3449,7 @@ TextNode::TextNode(
 
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
 
+  // Make sure that the parent node has only comment and pi nodes as children.
   if (p->numChildren() > 0)
   {
     InternalNode::const_iterator ite = p->childrenBegin();
@@ -3660,8 +3686,8 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 bool TextNode::isIdInternal() const
 {
   if (isTyped() &&
-    (static_cast<AtomicItem*>(getValue()))->isAtomic() &&
-    (static_cast<AtomicItem*>(getValue()))->getTypeCode() == XS_ID)
+      getValue()->isAtomic() &&
+      static_cast<AtomicItem*>(getValue())->getTypeCode() == XS_ID)
     return true;
 
   return false;

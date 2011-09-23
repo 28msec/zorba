@@ -605,12 +605,12 @@ void ElementNode::removeAttributes(csize pos, csize numAttrs)
 void XmlNode::removeType(UpdatePrimitive& upd)
 {
   TypeUndoList& undoList = upd.theTypeUndoList;
-  ulong undoSize = (ulong)undoList.size();
+  csize undoSize = undoList.size();
 
   zorba::store::Item* revalidationNode = NULL;
   XmlNode* currNode = this;
 
-  while(currNode != NULL)
+  while (currNode != NULL)
   {
     NodeTypeInfo tinfo;
     tinfo.theNode = currNode;
@@ -643,10 +643,10 @@ void XmlNode::removeType(UpdatePrimitive& upd)
 #endif
       tinfo.theFlags = n->theFlags;
 
-      if (n->haveTypedTypedValue())
-      {
-        TextNode* textChild = reinterpret_cast<TextNode*>(n->getChild(0));
+      TextNode* textChild;
 
+      if (n->haveTypedTypedValue(textChild))
+      {
         zstring textValue;
         textChild->getStringValue2(textValue);
 
@@ -744,12 +744,9 @@ void XmlNode::restoreType(TypeUndoList& undoList)
       n->setType(tinfo.theTypeName);
       n->theFlags = tinfo.theFlags;
 
-      if (tinfo.theChildFlags & IsTyped)
+      if (tinfo.theChildFlags & XmlNode::IsTyped)
       {
-        ZORBA_ASSERT(n->numChildren() == 1 &&
-                     n->getChild(0)->getNodeKind() == store::StoreConsts::textNode);
-
-        TextNode* textChild = reinterpret_cast<TextNode*>(n->getChild(0));
+        TextNode* textChild = n->getUniqueTextChild();
 
         if (!textChild->isTyped())
         {
