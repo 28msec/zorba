@@ -421,6 +421,7 @@ extern entry const dict_en[] = {
   { "~BadIterator", "invalid iterator" },
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
+  { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },
