@@ -211,7 +211,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
 
   /** \brief Add a name-value pair the this context.
    *         The value can be accessed in the evaluate method
-   *         of external functions (see NonePureStatelessExternalFunction).
+   *         of external functions (see ContextualExternalFunction).
    *
    * @param aName the name of the parameter to add
    * @param aValue the value that can be accessed in the evaluate method.
@@ -224,7 +224,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
   /** \brief Get the value of a pair that was registered using
    *         the addExternalFunctionParam method. This can
    *         be used in the evaluate method
-   *         of external functions (see NonePureStatelessExternalFunction).
+   *         of external functions (see ContextualExternalFunction).
    *
    * @param aName the name of the parameter to retrieve
    * @param aValue the value matching the given name if true is returned.

@@ -8,7 +8,7 @@
 
     <implementation-defined-item 
      name="collations" 
-     value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
+     value="Initially, the only available collation is the codepoint collection: http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API."/>
 
     <implementation-defined-item 
      name="implicitTimezone" 
@@ -16,7 +16,7 @@
 
     <implementation-defined-item 
      name="warningsMethod" 
-     value="Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html. Currently, there are only 2 warnings: 1. ZWST0002: generated when an unknown annotation is encountered in an XQuery program. 2. ZWST0003: generated when a non-external user-defined function is declared as sequential, but its implementation is not really sequential."/>
+     value="Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html. For the list of all warnings, see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_warnings.html"/>
 
     <implementation-defined-item 
      name="errorsMethod" 
@@ -28,7 +28,7 @@
 
     <implementation-defined-item
      name="overwrittenContextComponents" 
-     value="The following static context components are overwrtten/augmented: 1. Statically known namespaces: Augmented with zerr –> http://www.zorba-xquery.com/ 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*"/>
+     value="The following static context components are overwrtten/augmented: 1. Statically known namespaces: Augmented with zerr –> http://www.zorba-xquery.com/errors 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*"/>
 
     <implementation-defined-item 
      name="axes" 
@@ -188,7 +188,7 @@
 
     <context-property 
      name="Statically known collations" context-type="static" 
-     value="http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API."/>
+     value="Initially, the only available collation is the codepoint collection: http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API."/>
 
     <context-property 
      name="Default collation" context-type="static" 
