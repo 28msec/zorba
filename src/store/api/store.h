@@ -288,7 +288,8 @@ public:
    * collectionQName.
    */
   virtual IC_t activateIC(const Item_t& icQName, 
-                          const Item_t& collectionQName)  = 0;
+                          const Item_t& collectionQName,
+                          bool& isApplied)  = 0;
 
   /**
    * Activates the icQName foreigh key integrity constraint using
@@ -296,7 +297,8 @@ public:
    */
   virtual IC_t activateForeignKeyIC(const Item_t& icQName, 
                                     const Item_t& fromCollectionQName,
-                                    const Item_t& toCollectionQName)  = 0;
+                                    const Item_t& toCollectionQName,
+                                    bool& isApplied)  = 0;
 
   /**
    * Deactivates icQName integrity constraint.

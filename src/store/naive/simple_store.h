@@ -229,12 +229,14 @@ public:
 
   store::IC_t activateIC(
         const store::Item_t& icQName,
-        const store::Item_t& collectionQName);
+        const store::Item_t& collectionQName,
+        bool& isApplied);
 
   store::IC_t activateForeignKeyIC(
         const store::Item_t& icQName,
         const store::Item_t& fromCollectionQName,
-        const store::Item_t& toCollectionQName);
+        const store::Item_t& toCollectionQName,
+        bool& isApplied);
 
   store::IC_t deactivateIC(const store::Item_t& icQName);
 

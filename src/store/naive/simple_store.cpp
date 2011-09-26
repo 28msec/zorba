@@ -800,7 +800,8 @@ store::Iterator_t SimpleStore::listIndexNames()
 ********************************************************************************/
 store::IC_t SimpleStore::activateIC(
     const store::Item_t& icQName,
-    const store::Item_t& collectionQName)
+    const store::Item_t& collectionQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -817,6 +818,7 @@ store::IC_t SimpleStore::activateIC(
 
   theICs.insert(qname, ic);
 
+  isApplied=true;
   return ic;
 }
 
@@ -827,7 +829,8 @@ store::IC_t SimpleStore::activateIC(
 store::IC_t SimpleStore::activateForeignKeyIC(
     const store::Item_t& icQName,
     const store::Item_t& fromCollectionQName,
-    const store::Item_t& toCollectionQName)
+    const store::Item_t& toCollectionQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -844,6 +847,7 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 
   theICs.insert(qname, ic);
 
+  isApplied=true;
   return ic;
 }
 
