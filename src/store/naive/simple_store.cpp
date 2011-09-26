@@ -810,10 +810,7 @@ store::IC_t SimpleStore::activateIC(
 
   if (theICs.get(qname, ic))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0015_IC_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    return ic; // already activated => noop
   }
 
   ic = new ICCollectionImpl(icQName, collectionQName);
@@ -840,10 +837,7 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 
   if (theICs.get(qname, ic))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0015_IC_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    return ic; // already activated => noop
   }
 
   ic = new ICForeignKeyImpl(qname, fromCollectionQName, toCollectionQName);
