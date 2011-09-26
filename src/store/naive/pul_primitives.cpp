@@ -1320,8 +1320,8 @@ void UpdActivateIC::undo()
   if (theIsApplied)
   {
     SimpleStore* store = &GET_STORE();
-    store->deactivateIC(theQName);
-    theIsApplied = false;
+    bool isApplied;
+    store->deactivateIC(theQName,isApplied);
   }
 }
 
@@ -1361,8 +1361,8 @@ void UpdActivateForeignKeyIC::undo()
   if (theIsApplied)
   {
     SimpleStore* store = &GET_STORE();
-    store->deactivateIC(theQName);
-    theIsApplied = false;
+    bool isApplied;
+    store->deactivateIC(theQName,isApplied);
   }
 }
 
@@ -1389,20 +1389,22 @@ UpdDeActivateIC::~UpdDeActivateIC()
 void UpdDeActivateIC::apply()
 {
   SimpleStore* store = &GET_STORE();
-  store::IC_t ic = store->deactivateIC(theQName);
-  theICKind = ic->getICKind();
-  switch (theICKind) {
-    case store::IC::ic_collection:
-      theFromCollectionName = ic->getCollectionName();
-      break;
-    case store::IC::ic_foreignkey:
-      theFromCollectionName = ic->getFromCollectionName();
-      theToCollectionName = ic->getToCollectionName();
-      break;
-    default:
-      ZORBA_ASSERT(false);
+  store::IC_t ic = store->deactivateIC(theQName,theIsApplied);
+  if (theIsApplied)
+  {
+    theICKind = ic->getICKind();
+    switch (theICKind) {
+      case store::IC::ic_collection:
+        theFromCollectionName = ic->getCollectionName();
+        break;
+      case store::IC::ic_foreignkey:
+        theFromCollectionName = ic->getFromCollectionName();
+        theToCollectionName = ic->getToCollectionName();
+        break;
+      default:
+        ZORBA_ASSERT(false);
+    }
   }
-  theIsApplied = true;
 }
 
 
