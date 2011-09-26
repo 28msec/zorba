@@ -1490,11 +1490,11 @@ void UpdDeleteDocument::apply()
 
   theDoc = store->getDocument(lUri); // remember for undo
 
-  ZORBA_ASSERT(theDoc != NULL); // checked in the iterator
-
-  store->deleteDocument(lUri);
-
-  theIsApplied = true;
+  if(theDoc != NULL) //is not checked in the iterator if two
+  {                  //deleteDocument are present for the same uri
+    store->deleteDocument(lUri);
+    theIsApplied = true;
+  }
 }
 
 
