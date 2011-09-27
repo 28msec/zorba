@@ -341,17 +341,22 @@ public:
 
   /* ------------------------ Node Identifiers Management ---------------------------*/
 
-  bool getIdentifier(store::Item_t& result, store::Item* node) {return getIdentifier(result,node,true);}
+  bool getIdentifier(store::Item_t& result, store::Item* node);
 
-  bool getIdentifier(store::Item_t& result, store::Item* node, bool generate);
+  bool getCurrentIdentifier(store::Item_t& result, const store::Item* node);
 
   bool hasIdentifier(const store::Item* node);
 
   bool getNodeByIdentifier(store::Item_t& result, const zstring& identifier);
 
-  bool setIdentifier(XmlNode* node, const zstring& identifier);
+  bool unregisterNode(XmlNode* node);
 
-  bool unregisterNode(XmlNode* node, bool haveFrozenIdentifier);
+  bool copyIdentifier(const XmlNode* source, XmlNode* target);
+
+  bool restoreIdentifier(XmlNode* node, const zstring& identifier);
+
+  bool unfreezeIdentifier(XmlNode* node);
+
 
   /* ------------------------ Node Identifiers Management ---------------------------*/
 

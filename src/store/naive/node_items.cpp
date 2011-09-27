@@ -695,7 +695,7 @@ void XmlNode::destroyInternal(bool removeType)
 
   if (haveIdentifier())
   {
-    GET_STORE().unregisterNode(this,haveFrozenIdentifier());
+    GET_STORE().unregisterNode(this);
   }
   delete this;
 }
@@ -1391,6 +1391,10 @@ XmlNode* DocumentNode::copyInternal(
     throw;
   }
 
+  if (haveFrozenIdentifier() || copymode.theFreezeIdentifier)
+    GET_STORE().copyIdentifier(this,copyNode);
+
+
   NODE_TRACE1("}");
   NODE_TRACE1("Copied doc node " << this << " to node " << copyNode);
 
@@ -2014,6 +2018,9 @@ XmlNode* ElementNode::copyInternal(
 
     throw;
   }
+
+  if (haveFrozenIdentifier() || copymode.theFreezeIdentifier)
+    GET_STORE().copyIdentifier(this,copyNode);
 
   NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
               << " name = " << theName->getStringValue() << " parent = "
@@ -3129,6 +3136,9 @@ XmlNode* AttributeNode::copyInternal(
     throw;
   }
 
+  if (haveFrozenIdentifier() || copymode.theFreezeIdentifier)
+    GET_STORE().copyIdentifier(this,copyNode);
+
   NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
@@ -3596,6 +3606,9 @@ XmlNode* TextNode::copyInternal(
     delete tree;
     throw;
   }
+
+  if (haveFrozenIdentifier() || copymode.theFreezeIdentifier)
+    GET_STORE().copyIdentifier(this,copyNode);
 
   NODE_TRACE1("Copied text node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
@@ -4083,6 +4096,9 @@ XmlNode* PiNode::copyInternal(
     throw;
   }
 
+  if (haveFrozenIdentifier() || copymode.theFreezeIdentifier)
+    GET_STORE().copyIdentifier(this,copyNode);
+
   NODE_TRACE1("Copied pi node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
@@ -4205,6 +4221,9 @@ XmlNode* CommentNode::copyInternal(
     delete tree;
     throw;
   }
+
+  if (haveFrozenIdentifier() || copymode.theFreezeIdentifier)
+    GET_STORE().copyIdentifier(this,copyNode);
 
   NODE_TRACE1("Copied coment node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)

@@ -1684,7 +1684,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
 /* ------------------------ Node Identifiers Management ---------------------------*/
 
-bool SimpleStore::getIdentifier(store::Item_t& result, store::Item* node, bool generate)
+bool SimpleStore::getIdentifier(store::Item_t& result, store::Item* node)
 {
   std::map<const store::Item *,zstring>::iterator resIt;
   if ((resIt=theNodeToIdentifiersMap.find(node))!=theNodeToIdentifiersMap.end())
@@ -1692,11 +1692,6 @@ bool SimpleStore::getIdentifier(store::Item_t& result, store::Item* node, bool g
     //The node has already an associated identifier
     zstring id=resIt->second;
     return theItemFactory->createString(result, id);
-  }
-  //The node has no identifier
-  if (!generate)
-  {
-    throw ZORBA_EXCEPTION(zerr::ZAPI0090_NO_CURRENT_IDENTIFIER);
   }
 
   uuid_t uuid;
@@ -1708,6 +1703,19 @@ bool SimpleStore::getIdentifier(store::Item_t& result, store::Item* node, bool g
   theNodeToIdentifiersMap[node]=uuidStr;
   theIdentifiersToNodeMap[uuidStr2]=node;
   return theItemFactory->createString(result, uuidStr3);
+}
+
+bool SimpleStore::getCurrentIdentifier(store::Item_t& result, const store::Item* node)
+{
+  std::map<const store::Item *,zstring>::iterator resIt;
+  if ((resIt=theNodeToIdentifiersMap.find(node))!=theNodeToIdentifiersMap.end())
+  {
+    //The node has already an associated identifier
+    zstring id=resIt->second;
+    return theItemFactory->createString(result, id);
+  }
+  //The node has no identifier
+  throw ZORBA_EXCEPTION(zerr::ZAPI0090_NO_CURRENT_IDENTIFIER);
 }
 
 bool SimpleStore::getNodeByIdentifier(store::Item_t& result, const zstring& identifier)
@@ -1727,22 +1735,41 @@ bool SimpleStore::hasIdentifier(const store::Item* node)
   return theNodeToIdentifiersMap.find(node)!=theNodeToIdentifiersMap.end();
 }
 
-bool SimpleStore::setIdentifier(XmlNode* node, const zstring& identifier)
+bool SimpleStore::copyIdentifier(const XmlNode* source, XmlNode* target)
 {
-  node->setHaveIdentifier();
-  theNodeToIdentifiersMap[node]=identifier;
-  theIdentifiersToNodeMap[identifier]=node;
+  store::Item_t identifier;
+  getCurrentIdentifier(identifier,source);
+  target->setHaveIdentifier();
+  target->setHaveFrozenIdentifier();
+  theNodeToIdentifiersMap[target]=identifier->getStringValue();
   return true;
 }
 
-bool SimpleStore::unregisterNode(XmlNode* node, bool haveFrozenIdentifier)
+bool SimpleStore::restoreIdentifier(XmlNode* node, const zstring& identifier)
+{
+  unregisterNode(node);
+  theNodeToIdentifiersMap[node]=identifier;
+  node->setHaveIdentifier();
+  return true;
+}
+
+bool SimpleStore::unfreezeIdentifier(XmlNode* node)
+{
+  store::Item_t identifier;
+  getCurrentIdentifier(identifier,node);
+  theIdentifiersToNodeMap[identifier->getStringValue()]=node;
+  node->resetHaveFrozenIdentifier();
+  return true;
+}
+
+bool SimpleStore::unregisterNode(XmlNode* node)
 {
   std::map<const store::Item *,zstring>::iterator resIt;
   if ((resIt=theNodeToIdentifiersMap.find(node))!=theNodeToIdentifiersMap.end())
   {
     zstring value=resIt->second;
     theNodeToIdentifiersMap.erase(resIt);
-    if (!haveFrozenIdentifier)
+    if (node->haveFrozenIdentifier())
     {
       theIdentifiersToNodeMap.erase(value);
       node->resetHaveFrozenIdentifier();
