@@ -103,6 +103,14 @@ static expr_t execute (
       {
         break;
       }
+
+      if (item->isError())
+      {
+        node->setUnfoldable(ANNOTATION_TRUE_FIXED);
+        node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+        return node;
+      }
+
       result.push_back(item);
     }
 
