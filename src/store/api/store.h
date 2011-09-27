@@ -243,11 +243,11 @@ public:
   /* ------------------------ Index Management ---------------------------*/
 
   /**
-   * Creates a new index.
+   * Creates a new index. Used for temp indexes only (non-temp indexes are
+   * created via PUL primitives).
    *
-   * @param qname The qname identifying the index. For non-temporary indices,
-   *        the store maintains the map between qnames and indices and makes
-   *        sure that there are no two indices with the same qname.
+   * @param qname The qname identifying the index. Node: The map between 
+   *        qnames and temp indices is stored in the dynamic context.
    * @param spec The index specification. It specifies the index properties
    *        (@see index.h)
    * @param sourceIter It produces the entries to be inserted in the index.
@@ -269,11 +269,6 @@ public:
    *        sure that there are no two indices with the same qname.
    */
   virtual Index* getIndex(const Item* qname) = 0;
-
-  /**
-   *  Destroy the index with the given qname. The index must not be a temporary one.
-   */
-  virtual void deleteIndex(const Item* qname) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available indexes.
