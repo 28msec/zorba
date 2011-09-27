@@ -238,7 +238,8 @@ public:
         const store::Item_t& toCollectionQName,
         bool& isApplied);
 
-  store::IC_t deactivateIC(const store::Item_t& icQName);
+  store::IC_t deactivateIC(const store::Item_t& icQName,
+        bool& isApplied);
 
   store::Iterator_t listActiveICNames();
 
