@@ -105,6 +105,18 @@ public:
    * @returns referenced item if it exists, otherwise NULL
    */
   virtual bool getNodeByReference(Item_t& result, const Item* uri) = 0;
+
+  /*************************UUID********************************************/
+
+  virtual bool getNodeByUUID(store::Item_t& result, const zstring& uuid) = 0;
+
+  virtual bool registerNodeUUID(const zstring& uuid, const store::Item_t& node) = 0;
+
+  virtual bool unRegisterNodeUUID(const zstring& uuid) = 0;
+
+  /*************************UUID********************************************/
+
+
 		
 		
   /* --------------------------- Node Id Management ---------------------------*/

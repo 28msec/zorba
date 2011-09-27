@@ -1172,6 +1172,87 @@ std::istream& Item::getStream()
   );
 }
 
+/************************UUID***********************/
+
+bool Item::hasUUID()
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0040_TYPE_ERROR,
+    ERROR_PARAMS(
+      ZED( OperationNotDef_23 ), "Item::hasUUID()",
+      getType()->getStringValue()
+    )
+  );
+}
+
+zstring Item::getUUID(bool generateUUID, bool registerNode)
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0040_TYPE_ERROR,
+    ERROR_PARAMS(
+      ZED( OperationNotDef_23 ), "Item::getUUID()",
+      getType()->getStringValue()
+    )
+  );
+}
+
+void Item::setUUID(zstring & uuid, bool registerNode)
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0040_TYPE_ERROR,
+    ERROR_PARAMS(
+      ZED( OperationNotDef_23 ), "Item::setUUID()",
+      getType()->getStringValue()
+    )
+  );
+}
+
+void Item::setIsInPUL(bool isInPUL)
+{
+	throw ZORBA_EXCEPTION(
+	    zerr::ZSTR0040_TYPE_ERROR,
+	    ERROR_PARAMS(
+	      ZED( OperationNotDef_23 ), "Item::setIsInPUL()",
+	      getType()->getStringValue()
+	    )
+	  );
+}
+
+bool Item::isInPUL()
+{
+	throw ZORBA_EXCEPTION(
+	    zerr::ZSTR0040_TYPE_ERROR,
+	    ERROR_PARAMS(
+	      ZED( OperationNotDef_23 ), "Item::isInPUL()",
+	      getType()->getStringValue()
+	    )
+	  );
+}
+
+void Item::registerNode(bool update)
+{
+	throw ZORBA_EXCEPTION(
+	    zerr::ZSTR0040_TYPE_ERROR,
+	    ERROR_PARAMS(
+	      ZED( OperationNotDef_23 ), "Item::registerNode()",
+	      getType()->getStringValue()
+	    )
+	  );
+}
+
+void Item::unregisterNode()
+{
+	throw ZORBA_EXCEPTION(
+	    zerr::ZSTR0040_TYPE_ERROR,
+	    ERROR_PARAMS(
+	      ZED( OperationNotDef_23 ), "Item::unregisterNode()",
+	      getType()->getStringValue()
+	    )
+	  );
+}
+
+/************************UUID***********************/
+
 StreamReleaser Item::getStreamReleaser()
 {
   throw ZORBA_EXCEPTION(

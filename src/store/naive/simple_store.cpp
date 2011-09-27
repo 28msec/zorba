@@ -334,6 +334,18 @@ void SimpleStore::shutdown(bool soft)
       theNodeFactory = NULL;
     }
 
+    if(theNodeIdentifiersMap.size()>0)
+    {
+        std::map<zstring,store::Item *>::iterator iter= theNodeIdentifiersMap.begin();
+        std::map<zstring,store::Item *>::iterator end= theNodeIdentifiersMap.end();
+        for (; iter != end; ++iter)
+        {
+                std::cerr << "Identifier: " << iter->first;
+        }
+      ZORBA_FATAL(0, theNodeIdentifiersMap.size()+"Node identifiers still in the identifier map");
+    }
+    theNodeIdentifiersMap.clear();
+
     // do cleanup of the libxml2 library
     // however, after that, a user will have to call
     // LIBXML_TEST_VERSION if he wants to use libxml2
@@ -1660,6 +1672,37 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+
+bool SimpleStore::getNodeByUUID(store::Item_t& result, const zstring& uuid)
+{
+	std::map<zstring,store::Item *>::iterator resIt;
+	if ((resIt=theNodeIdentifiersMap.find(uuid))!=theNodeIdentifiersMap.end())
+	{
+		result=resIt->second;
+		return true;
+	}
+	return false;
+}
+
+bool SimpleStore::registerNodeUUID(const zstring& uuid, const store::Item_t& node)
+{
+	std::map<zstring,store::Item *>::iterator resIt;
+	if ((resIt=theNodeIdentifiersMap.find(uuid))!=theNodeIdentifiersMap.end())
+	{
+		resIt->second=node.getp();
+		return true;
+	}
+	theNodeIdentifiersMap[uuid]=node.getp();
+	return false;
+}
+
+bool SimpleStore::unRegisterNodeUUID(const zstring& uuid)
+{
+	return theNodeIdentifiersMap.erase(uuid)>0;
+}
 
 /*******************************************************************************
 

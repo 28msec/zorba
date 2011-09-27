@@ -60,6 +60,7 @@
 #include "runtime/schema/schema.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
+#include "runtime/store/identifiers.h"
 #include "runtime/store/maps.h"
 #include "runtime/strings/strings.h"
 #include "runtime/xqdoc/xqdoc.h"
@@ -3118,6 +3119,48 @@ void PrinterVisitor::endVisit ( const IsAvailableDocumentIterator& ) {
   thePrinter.endEndVisit();
 }
 // </IsAvailableDocumentIterator>
+
+
+// <NodeIdentifierIterator>
+void PrinterVisitor::beginVisit ( const NodeIdentifierIterator& a) {
+  thePrinter.startBeginVisit("NodeIdentifierIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeIdentifierIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeIdentifierIterator>
+
+
+// <HasIdentifierIterator>
+void PrinterVisitor::beginVisit ( const HasIdentifierIterator& a) {
+  thePrinter.startBeginVisit("HasIdentifierIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HasIdentifierIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HasIdentifierIterator>
+
+
+// <NodeByIdentifierIterator>
+void PrinterVisitor::beginVisit ( const NodeByIdentifierIterator& a) {
+  thePrinter.startBeginVisit("NodeByIdentifierIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeByIdentifierIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeByIdentifierIterator>
 
 
 // <MapCreateIterator>

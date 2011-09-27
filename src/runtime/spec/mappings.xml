@@ -29,6 +29,11 @@
                      prefix="fn-zorba-schema"/>
 
     <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/node-identifiers"
+      define="ZORBA_STORE_NODE_IDENTIFIERS_FN_NS"
+      prefix="zorba-store-node-identifiers"/>
+
+    <zorba:namespace
       uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl"
       define="ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS"
       prefix="zorba-store-collections-static-ddl"/>

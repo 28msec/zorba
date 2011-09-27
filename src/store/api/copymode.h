@@ -34,13 +34,15 @@ public:
   bool  theTypePreserve;
   bool  theNsPreserve;
   bool  theNsInherit;
+  bool	theCopyToPul;
 
   CopyMode()
     :
     theDoCopy(true),
     theTypePreserve(true),
     theNsPreserve(true),
-    theNsInherit(true)
+    theNsInherit(true),
+    theCopyToPul(false)
   {
   }
 
@@ -49,7 +51,8 @@ public:
     theDoCopy(aCopyMode.theDoCopy),
     theTypePreserve(aCopyMode.theTypePreserve),
     theNsPreserve(aCopyMode.theNsPreserve),
-    theNsInherit(aCopyMode.theNsInherit)
+    theNsInherit(aCopyMode.theNsInherit),
+    theCopyToPul(aCopyMode.theCopyToPul)
   {
   }
 
@@ -57,12 +60,14 @@ public:
         bool copy,
         bool typePreserve,
         bool nsPreserve,
-        bool nsInherit)
+        bool nsInherit,
+        bool copyToPul=false)
   {
     theDoCopy = copy;
     theTypePreserve = typePreserve;
     theNsPreserve = nsPreserve;
     theNsInherit = nsInherit;
+    theCopyToPul=copyToPul;
   }
 
   std::string toString() const
@@ -76,6 +81,8 @@ public:
     s += (theNsPreserve ? "T" : "F");
     s += " ";
     s += (theNsInherit ? "T" : "F");
+    s += " ";
+    s += (theCopyToPul ? "T" : "F");
     s += "]";
     return s;
   }

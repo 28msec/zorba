@@ -142,6 +142,10 @@ protected:
 
   long                          theTraceLevel;
 
+  /**********UUID***********/
+  std::map<zstring,store::Item *> theNodeIdentifiersMap;
+  /**********UUID***********/
+
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const * theStemmerProvider;
   TokenizerProvider const     * theTokenizerProvider;
@@ -328,6 +332,17 @@ public:
   bool getReference(store::Item_t& result, const store::Item* node);
 
   bool getNodeByReference(store::Item_t& result, const store::Item* uri);
+
+  /*************************UUID********************************************/
+
+  bool getNodeByUUID(store::Item_t& result, const zstring& uuid);
+
+  bool registerNodeUUID(const zstring& uuid, const store::Item_t& node);
+
+  bool unRegisterNodeUUID(const zstring& uuid);
+
+  /*************************UUID********************************************/
+
 
   store::TempSeq_t createTempSeq(bool lazy);
 

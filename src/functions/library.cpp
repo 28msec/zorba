@@ -59,6 +59,7 @@
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
 #include "functions/func_documents.h"
+#include "functions/func_identifiers.h"
 #include "functions/func_maps.h"
 #include "functions/func_eval.h"
 #include "functions/func_reflection.h"
