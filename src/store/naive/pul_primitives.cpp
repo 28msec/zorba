@@ -1322,6 +1322,7 @@ void UpdActivateIC::undo()
     SimpleStore* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
+    theIsApplied=false;
   }
 }
 
@@ -1363,6 +1364,7 @@ void UpdActivateForeignKeyIC::undo()
     SimpleStore* store = &GET_STORE();
     bool isApplied;
     store->deactivateIC(theQName,isApplied);
+    theIsApplied=false;
   }
 }
 
