@@ -46,6 +46,8 @@ DECLARE_ZORBA_MODULE(FILE math.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/math")
 DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-reference")
+DECLARE_ZORBA_MODULE(FILE node-identifier.xq VERSION 2.0
+  URI "http://www.zorba-xquery.com/modules/node-identifier")
 DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
 DECLARE_ZORBA_MODULE(FILE project_xqdoc.xq VERSION 2.0
@@ -73,8 +75,6 @@ DECLARE_ZORBA_MODULE(FILE xqdoc2xhtml/error.xq VERSION 2.0
 DECLARE_ZORBA_MODULE(FILE xqdoc2xhtml/index.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc2xhtml/")
 
-DECLARE_ZORBA_MODULE(FILE store/node-identifiers.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/node-identifiers")
 DECLARE_ZORBA_MODULE(FILE store/data-structures/unordered-map.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map")
 DECLARE_ZORBA_MODULE(FILE store/documents/dynamic.xq VERSION 2.0

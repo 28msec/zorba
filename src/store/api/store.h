@@ -106,7 +106,8 @@ public:
    */
   virtual bool getNodeByReference(Item_t& result, const Item* uri) = 0;
 
-  /*************************UUID********************************************/
+
+  /* ------------------------ Node Identifiers Management ---------------------------*/
 
   virtual bool getNodeByUUID(store::Item_t& result, const zstring& uuid) = 0;
 
@@ -114,12 +115,8 @@ public:
 
   virtual bool unRegisterNodeUUID(const zstring& uuid) = 0;
 
-  /*************************UUID********************************************/
 
-
-		
-		
-  /* --------------------------- Node Id Management ---------------------------*/
+  /* ------------------------ Node Identity Management ---------------------------*/
 
   /**
    * Compares two nodes, based on their node id.

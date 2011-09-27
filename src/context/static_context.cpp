@@ -280,8 +280,7 @@ const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
 const zstring
-static_context::ZORBA_STORE_NODE_IDENTIFIERS_FN_NS
-  = NS_PRE + "modules/store/node-identifiers";
+static_context::ZORBA_NODEID_FN_NS= NS_PRE + "modules/node-identifier";
 
 const zstring
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS
@@ -377,7 +376,7 @@ bool static_context::is_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
-            ns == ZORBA_STORE_NODE_IDENTIFIERS_FN_NS ||
+            ns == ZORBA_NODEID_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
@@ -395,7 +394,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
-            ns == ZORBA_FETCH_FN_NS ||            
+            ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_XML_FN_NS);
   } 

@@ -303,6 +303,12 @@ namespace zorba{
 
     class FrexpIterator;
 
+    class NodeIdentifierIterator;
+
+    class HasIdentifierIterator;
+
+    class NodeByIdentifierIterator;
+
     class NodeReferenceIterator;
 
     class NodeByReferenceIterator;
@@ -461,12 +467,6 @@ namespace zorba{
     class AvailableDocumentsIterator;
 
     class IsAvailableDocumentIterator;
-
-    class NodeIdentifierIterator;
-
-    class HasIdentifierIterator;
-
-    class NodeByIdentifierIterator;
 
     class MapCreateIterator;
 
@@ -961,6 +961,15 @@ public:
     virtual void beginVisit ( const FrexpIterator& ) = 0;
     virtual void endVisit   ( const FrexpIterator& ) = 0;
 
+    virtual void beginVisit ( const NodeIdentifierIterator& ) = 0;
+    virtual void endVisit   ( const NodeIdentifierIterator& ) = 0;
+
+    virtual void beginVisit ( const HasIdentifierIterator& ) = 0;
+    virtual void endVisit   ( const HasIdentifierIterator& ) = 0;
+
+    virtual void beginVisit ( const NodeByIdentifierIterator& ) = 0;
+    virtual void endVisit   ( const NodeByIdentifierIterator& ) = 0;
+
     virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeReferenceIterator& ) = 0;
 
@@ -1198,15 +1207,6 @@ public:
 
     virtual void beginVisit ( const IsAvailableDocumentIterator& ) = 0;
     virtual void endVisit   ( const IsAvailableDocumentIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeIdentifierIterator& ) = 0;
-    virtual void endVisit   ( const NodeIdentifierIterator& ) = 0;
-
-    virtual void beginVisit ( const HasIdentifierIterator& ) = 0;
-    virtual void endVisit   ( const HasIdentifierIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeByIdentifierIterator& ) = 0;
-    virtual void endVisit   ( const NodeByIdentifierIterator& ) = 0;
 
     virtual void beginVisit ( const MapCreateIterator& ) = 0;
     virtual void endVisit   ( const MapCreateIterator& ) = 0;

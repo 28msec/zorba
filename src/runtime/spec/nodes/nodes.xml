@@ -11,6 +11,66 @@
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="NodeIdentifierIterator">
+
+    <zorba:description author="Federico Cavalieri">       
+      declare function ref:node-identifier-impl($node as node, $generate-identifier as xs:boolean) as xs:string
+    </zorba:description>
+    
+    <zorba:function>
+    
+      <zorba:signature localname="node-identifier" prefix="zorba-node-identifier">
+        <zorba:param>node()</zorba:param>   
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+  
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="HasIdentifierIterator">
+
+    <zorba:description author="Federico Cavalieri">
+      declare function ref:has-identifier($node as node) as xs:boolean
+    </zorba:description>
+    
+    <zorba:function>
+    
+      <zorba:signature localname="has-identifier" prefix="zorba-node-identifier">
+        <zorba:param>node()</zorba:param>                
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="NodeByIdentifierIterator">
+
+    <zorba:description author="Federico Cavalieri">
+      declare function ref:node-by-identifier-impl($identifier as xs:string, $mandatory as xs:boolean) as node()?
+    </zorba:description>
+
+    <zorba:function>
+    
+      <zorba:signature localname="node-by-identifier" prefix="zorba-node-identifier">        
+        <zorba:param>xs:string</zorba:param>        
+        <zorba:output>node()?</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
     
 <!--
 /*******************************************************************************

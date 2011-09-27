@@ -457,6 +457,15 @@ namespace zorba {
     void beginVisit( const FrexpIterator& );
     void endVisit  ( const FrexpIterator& );
 
+    void beginVisit( const NodeIdentifierIterator& );
+    void endVisit  ( const NodeIdentifierIterator& );
+
+    void beginVisit( const HasIdentifierIterator& );
+    void endVisit  ( const HasIdentifierIterator& );
+
+    void beginVisit( const NodeByIdentifierIterator& );
+    void endVisit  ( const NodeByIdentifierIterator& );
+
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );
 
@@ -695,15 +704,6 @@ namespace zorba {
 
     void beginVisit( const IsAvailableDocumentIterator& );
     void endVisit  ( const IsAvailableDocumentIterator& );
-
-    void beginVisit( const NodeIdentifierIterator& );
-    void endVisit  ( const NodeIdentifierIterator& );
-
-    void beginVisit( const HasIdentifierIterator& );
-    void endVisit  ( const HasIdentifierIterator& );
-
-    void beginVisit( const NodeByIdentifierIterator& );
-    void endVisit  ( const NodeByIdentifierIterator& );
 
     void beginVisit( const MapCreateIterator& );
     void endVisit  ( const MapCreateIterator& );

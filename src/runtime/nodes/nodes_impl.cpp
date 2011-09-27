@@ -33,6 +33,63 @@ using namespace std;
 
 namespace zorba {
 
+/*******************************************************************************
+********************************************************************************/
+bool
+NodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  store::Item_t lGenerateIdentifier;
+  zstring lNodeId;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+
+  lNodeId=lNode->getUUID(true,true);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult,lNodeId), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+HasIdentifierIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lNode;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lNode, theChildren[0].getp(), planState);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lNode->hasUUID()), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+NodeByIdentifierIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+    store::Item_t lUUID;
+
+    PlanIteratorState *state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+    consumeNext(lUUID, theChildren[0].getp(), planState);
+
+    STACK_PUSH(GENV_STORE.getNodeByUUID(result, lUUID->getStringValue()), state);
+
+    STACK_END (state);
+}
+
+
+
 bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState *state;

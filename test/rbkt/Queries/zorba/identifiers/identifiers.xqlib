@@ -1,0 +1,3 @@
+module namespace idd= "http://www.zorba-xquery.com/identifiers";
+
+declare variable $idd:node:=<root><child>text</child></root>;

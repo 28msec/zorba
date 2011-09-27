@@ -31,6 +31,36 @@ namespace zorba{
 
 
 
+PlanIter_t zorba_node_identifier_node_identifier::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new NodeIdentifierIterator(sctx, loc, argv);
+}
+
+PlanIter_t zorba_node_identifier_has_identifier::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new HasIdentifierIterator(sctx, loc, argv);
+}
+
+PlanIter_t zorba_node_identifier_node_by_identifier::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new NodeByIdentifierIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_ref_node_reference::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -233,6 +263,42 @@ PlanIter_t fn_zorba_node_least_common_ancestor::codegen(
 
 void populate_context_nodes(static_context* sctx)
 {
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_node_identifier_node_identifier,
+        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","node-identifier"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::ZORBA_NODE_IDENTIFIER_NODE_IDENTIFIER_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_node_identifier_has_identifier,
+        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","has-identifier"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_NODE_IDENTIFIER_HAS_IDENTIFIER_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_node_identifier_node_by_identifier,
+        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","node-by-identifier"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
+        FunctionConsts::ZORBA_NODE_IDENTIFIER_NODE_BY_IDENTIFIER_1);
+
+  }
+
+
   {
     
 

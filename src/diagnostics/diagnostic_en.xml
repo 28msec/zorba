@@ -1792,6 +1792,14 @@
       <value>can not retrieve node-reference for a node that is not in a collection.</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0090" name="NO_CURRENT_IDENTIFIER">
+      <value>the node has no current identifier.</value>
+    </diagnostic>
+    
+    <diagnostic code="ZAPI0091" name="INVALID_NODE_IDENTIFIER">
+      <value>"$1": invalid node URI.</value>
+    </diagnostic>
+    
     <!--////////// Zorba Class Serialization Errors ////////////////////////-->
 
     <diagnostic code="ZCSE0001" name="NONEXISTENT_INPUT_FIELD">
