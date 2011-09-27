@@ -1311,8 +1311,7 @@ UpdActivateIC::~UpdActivateIC()
 void UpdActivateIC::apply()
 {
   SimpleStore* store = &GET_STORE();
-  store->activateIC(theQName, theCollectionName);
-  theIsApplied = true;
+  store->activateIC(theQName, theCollectionName,theIsApplied);
 }
 
 
@@ -1353,8 +1352,7 @@ UpdActivateForeignKeyIC::~UpdActivateForeignKeyIC()
 void UpdActivateForeignKeyIC::apply()
 {
   SimpleStore* store = &GET_STORE();
-  store->activateForeignKeyIC(theQName, theFromCollectionName, theToCollectionName);
-  theIsApplied = true;
+  store->activateForeignKeyIC(theQName, theFromCollectionName, theToCollectionName,theIsApplied);
 }
 
 
@@ -1413,15 +1411,16 @@ void UpdDeActivateIC::undo()
   if (theIsApplied)
   {
     SimpleStore* store = &GET_STORE();
+    bool isApplied;
     switch (theICKind) {
       case store::IC::ic_collection:
-        store->activateIC(theQName, theFromCollectionName);
+        store->activateIC(theQName, theFromCollectionName,isApplied);
         break;
       case store::IC::ic_foreignkey:
         store->activateForeignKeyIC(
             theQName,
             theFromCollectionName,
-            theToCollectionName);
+            theToCollectionName,isApplied);
         break;
       default:
         ZORBA_ASSERT(false);
@@ -1491,11 +1490,11 @@ void UpdDeleteDocument::apply()
 
   theDoc = store->getDocument(lUri); // remember for undo
 
-  ZORBA_ASSERT(theDoc != NULL); // checked in the iterator
-
-  store->deleteDocument(lUri);
-
-  theIsApplied = true;
+  if(theDoc != NULL) //is not checked in the iterator if two
+  {                  //deleteDocument are present for the same uri
+    store->deleteDocument(lUri);
+    theIsApplied = true;
+  }
 }
 
 
