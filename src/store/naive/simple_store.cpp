@@ -819,7 +819,8 @@ store::Iterator_t SimpleStore::listIndexNames()
 ********************************************************************************/
 store::IC_t SimpleStore::activateIC(
     const store::Item_t& icQName,
-    const store::Item_t& collectionQName)
+    const store::Item_t& collectionQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -836,6 +837,7 @@ store::IC_t SimpleStore::activateIC(
 
   theICs.insert(qname, ic);
 
+  isApplied=true;
   return ic;
 }
 
@@ -846,7 +848,8 @@ store::IC_t SimpleStore::activateIC(
 store::IC_t SimpleStore::activateForeignKeyIC(
     const store::Item_t& icQName,
     const store::Item_t& fromCollectionQName,
-    const store::Item_t& toCollectionQName)
+    const store::Item_t& toCollectionQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -863,12 +866,14 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 
   theICs.insert(qname, ic);
 
+  isApplied=true;
   return ic;
 }
 
 
 store::IC_t
-SimpleStore::deactivateIC(const store::Item_t& icQName)
+SimpleStore::deactivateIC(const store::Item_t& icQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -876,13 +881,11 @@ SimpleStore::deactivateIC(const store::Item_t& icQName)
 
   if (!theICs.get(icQName.getp(), ic))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0016_IC_DOES_NOT_EXIST,
-      ERROR_PARAMS( icQName->getStringValue() )
-    );
+    return ic; // already deactivated in the same PUL => noop
   }
 
   theICs.remove(icQName.getp());
+  isApplied=true;
   return ic;
 }
 

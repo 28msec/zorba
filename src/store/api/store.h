@@ -270,11 +270,11 @@ public:
   /* ------------------------ Index Management ---------------------------*/
 
   /**
-   * Creates a new index.
+   * Creates a new index. Used for temp indexes only (non-temp indexes are
+   * created via PUL primitives).
    *
-   * @param qname The qname identifying the index. For non-temporary indices,
-   *        the store maintains the map between qnames and indices and makes
-   *        sure that there are no two indices with the same qname.
+   * @param qname The qname identifying the index. Node: The map between 
+   *        qnames and temp indices is stored in the dynamic context.
    * @param spec The index specification. It specifies the index properties
    *        (@see index.h)
    * @param sourceIter It produces the entries to be inserted in the index.
@@ -297,11 +297,6 @@ public:
    */
   virtual Index* getIndex(const Item* qname) = 0;
 
-  /**
-   *  Destroy the index with the given qname. The index must not be a temporary one.
-   */
-  virtual void deleteIndex(const Item* qname) = 0;
-
   /** 
    * Returns an iterator that lists the names of all the available indexes.
    */
@@ -309,26 +304,6 @@ public:
 
 
   /* ------------------ Integrity Constraints Management ------------------- */
-
-  /**
-   * Activates the icQname integrity constraint pointing to collection 
-   * collectionQName.
-   */
-  virtual IC_t activateIC(const Item_t& icQName, 
-                          const Item_t& collectionQName)  = 0;
-
-  /**
-   * Activates the icQName foreigh key integrity constraint using
-   * from and to collections.
-   */
-  virtual IC_t activateForeignKeyIC(const Item_t& icQName, 
-                                    const Item_t& fromCollectionQName,
-                                    const Item_t& toCollectionQName)  = 0;
-
-  /**
-   * Deactivates icQName integrity constraint.
-   */
-  virtual IC_t deactivateIC(const Item_t& icQName) = 0;
 
   /**
    * Lists all active integrity constraints.
