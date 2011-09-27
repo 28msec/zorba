@@ -325,38 +325,30 @@ public:
 
     // For element nodes only. The flag is set for a node N if there is another
     // node M in its subtree such that N and M have the same name.
-    IsRecursive       =   0x4000
+    IsRecursive       =   0x4000,
 
 #ifndef EMBEDED_TYPE
-    ,
     // For element and attribute nodes only. The flag is set if the node has
     // a type other than untyped (for elements) or untypedAtomic (for attributes)
-    HaveType  =   0x8000
+    HaveType  =   0x8000,
 #endif
+
+    HaveIdentifier    = 0x10000,
+    HaveFrozenIdentifier = 0x20000
   };
 
 protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
 
-  zstring			theUUID;
-  bool				theIsInPUL;
-  bool				theIsRegistered;
-
 protected:
   XmlNode() : theParent(NULL)
   {
-	  theUUID="";
-	  theIsInPUL=false;
-	  theIsRegistered=false;
   }
 
   XmlNode(store::StoreConsts::NodeKind k) : Item(), theParent(NULL)
   {
     theFlags = (uint32_t)k;
-	  theUUID="";
-	  theIsInPUL=false;
-	  theIsRegistered=false;
   }
 
 
@@ -505,22 +497,19 @@ public:
 
   void setFlags(uint32_t flags) { theFlags = flags; }
 
+  bool haveIdentifier() const         { return (theFlags & HaveIdentifier) != 0; }
+  void setHaveIdentifier()            { theFlags |= HaveIdentifier; }
+  void resetHaveIdentifier()          { theFlags &= ~HaveIdentifier; }
+
+  bool haveFrozenIdentifier() const   { return (theFlags & HaveFrozenIdentifier) != 0; }
+  void setHaveFrozenIdentifier()      { theFlags |= HaveFrozenIdentifier; }
+  void resetHaveFrozenIdentifier()    { theFlags &= ~HaveFrozenIdentifier; }
+
+
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
                                locale::iso639_1::type, bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
-
-  /********************UUID***************/
-
-  zstring getUUID(bool generateUUID,bool registerNode);
-  void setUUID(zstring & uuid, bool registerNode);
-  bool hasUUID() {return !theUUID.empty();}
-  void setIsInPUL(bool isInPUL) {theIsInPUL=isInPUL;}
-  bool isInPUL(){return theIsInPUL;}
-  void unregisterNode();
-  void registerNode(bool update=false);
-
-  /********************UUID***************/
 
 protected:
   virtual void getBaseURIInternal(zstring& uri, bool& local) const;

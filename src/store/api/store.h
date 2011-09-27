@@ -109,11 +109,29 @@ public:
 
   /* ------------------------ Node Identifiers Management ---------------------------*/
 
-  virtual bool getNodeByUUID(store::Item_t& result, const zstring& uuid) = 0;
+  /**
+   * Returns the identifier of the given node.
+   *
+   * @param item XDM node
+   * @return an item of type xs:uri
+   */
+  virtual bool getIdentifier(Item_t& result, Item* node) = 0;
 
-  virtual bool registerNodeUUID(const zstring& uuid, const store::Item_t& node) = 0;
+  /**
+   * Returns whether an identifier has been generated for the given node.
+   *
+   * @param item XDM node
+   * @return whether an identifier has been generated for the given node.
+   */
+  virtual bool hasIdentifier(const Item* node) = 0;
 
-  virtual bool unRegisterNodeUUID(const zstring& uuid) = 0;
+  /**
+   * Returns the node which is associated to the given identifier
+   *
+   * @param identifier the identifier to dereference
+   * @returns referenced item if it exists, otherwise NULL
+   */
+  virtual bool getNodeByIdentifier(store::Item_t& result, const zstring& identifier) = 0;
 
 
   /* ------------------------ Node Identity Management ---------------------------*/

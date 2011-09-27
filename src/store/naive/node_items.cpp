@@ -44,7 +44,6 @@
 #include "store/naive/node_factory.h"
 
 #include "util/string_util.h"
-#include "util/uuid/uuid.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 using namespace zorba::locale;
@@ -288,11 +287,6 @@ XmlNode::XmlNode(
   {
     setTree(parent->getTree());
   }
-
-  theUUID="";
-  theIsInPUL=false;
-  theIsRegistered=false;
-
 }
 
 
@@ -699,92 +693,12 @@ void XmlNode::destroyInternal(bool removeType)
   }
 #endif
 
-  if (!theIsInPUL && theIsRegistered)
+  if (haveIdentifier())
   {
-    GET_STORE().unRegisterNodeUUID(theUUID);
+    GET_STORE().unregisterNode(this,haveFrozenIdentifier());
   }
   delete this;
 }
-
-/********************UUID***************/
-
-/*
- * Each node MAY have an associated UUID.
- * Nodes with an associated UUID MAY be registered in the store.
- * A node which is registered in the store can be retrieved using its identifier.
- *
- * A node UUID changes whenever the identity of the node changes if the node is not in a PUL XDM representation.
- * A node UUID is preserved on copy when it belongs to a PUL XDM representation.
- */
-
-
-/*
- * Returns the UUID of the node.
- * If generateUUID is true and the node has not a UUID a new one is generated.
- * Then If registerNode is true and the node UUID is not registered in the store the node is registered.
- *
- * It is an error to:
- * - try to generate a UUID for a node in a PUL
- * - try to register a node which is in a PUL
- */
-  zstring XmlNode::getUUID(bool aGenerateUUID, bool aRegisterNode)
-  {
-	  ZORBA_FATAL( !(/*theUUID.empty() &&*/ aGenerateUUID && theIsInPUL), "Trying to generate a UUID for an in-pul node " + show());
-	  ZORBA_FATAL( !(/*!theIsRegistered && */ aRegisterNode && theIsInPUL), "Trying to register a UUID for an in-pul node " + show());
-	  ZORBA_FATAL( !(/*!theIsRegistered && */ theUUID.empty() && !aGenerateUUID), "Trying to retrieve an UUID of a node without UUID " + show());
-	  if (theUUID.empty() && aGenerateUUID)
-	  {
-	    uuid_t uuid;
-	    uuid_create(&uuid);
-	    theUUID=uuidToString(uuid);
-	  }
-
-	  if (aRegisterNode && !theIsRegistered)
-	  	  registerNode();
-
-	  return theUUID;
-  }
-
-  /*
-   * Sets the UUID of the node.
-   * If registerNode is true and the node is (re-)registered in the store.   *
-   */
-  void XmlNode::setUUID(zstring & aUUID, bool aRegisterNode)
-  {
-      unregisterNode();
-   	  theUUID=aUUID;
-   	  if (aRegisterNode)
-   	  	registerNode();
-  }
-
-  /*
-  * Unregister a node, if registered.
-  */
-void XmlNode::unregisterNode()
-{
-	if (theIsRegistered)
-	{
-      	GET_STORE().unRegisterNodeUUID(theUUID);
-      	theIsRegistered=false;
-    }
-}
-
-/*
- * Register a node in the store.
- * If update is false and the node is already registered, the operation is a noop.
- * If update is true and the node is already registered, the registration is updated.
- */
-void XmlNode::registerNode(bool update)
-{
-	if ((!theIsRegistered && !update) || (theIsRegistered && update))
-	{
-		ZORBA_FATAL(!theUUID.empty(), "Trying to register a node without a UUID");
-		GET_STORE().registerNodeUUID(theUUID,this);
-		theIsRegistered=true;
-    }
-}
-
-  /********************UUID***************/
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1477,14 +1391,6 @@ XmlNode* DocumentNode::copyInternal(
     throw;
   }
 
-    if (theIsInPUL || copymode.theCopyToPul)
-    {
-  	  copyNode->theUUID=theUUID;
-  	  copyNode->theIsInPUL=theIsInPUL || copymode.theCopyToPul;
-  	  copyNode->theIsRegistered=theIsRegistered;
-    }
-
-
   NODE_TRACE1("}");
   NODE_TRACE1("Copied doc node " << this << " to node " << copyNode);
 
@@ -2108,13 +2014,6 @@ XmlNode* ElementNode::copyInternal(
 
     throw;
   }
-
-  if (theIsInPUL || copymode.theCopyToPul)
-    {
-  	  copyNode->theUUID=theUUID;
-  	  copyNode->theIsInPUL=theIsInPUL || copymode.theCopyToPul;
-  	  copyNode->theIsRegistered=theIsRegistered;
-    }
 
   NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
               << " name = " << theName->getStringValue() << " parent = "
@@ -3230,13 +3129,6 @@ XmlNode* AttributeNode::copyInternal(
     throw;
   }
 
-if (theIsInPUL || copymode.theCopyToPul)
-    {
-  	  copyNode->theUUID=theUUID;
-  	  copyNode->theIsInPUL=theIsInPUL || copymode.theCopyToPul;
-  	  copyNode->theIsRegistered=theIsRegistered;
-    }
-
   NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
@@ -3704,13 +3596,6 @@ XmlNode* TextNode::copyInternal(
     delete tree;
     throw;
   }
-
-  if (theIsInPUL || copymode.theCopyToPul)
-    {
-  	  copyNode->theUUID=theUUID;
-  	  copyNode->theIsInPUL=theIsInPUL || copymode.theCopyToPul;
-  	  copyNode->theIsRegistered=theIsRegistered;
-    }
 
   NODE_TRACE1("Copied text node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
@@ -4198,13 +4083,6 @@ XmlNode* PiNode::copyInternal(
     throw;
   }
 
-  if (theIsInPUL || copymode.theCopyToPul)
-    {
-  	  copyNode->theUUID=theUUID;
-  	  copyNode->theIsInPUL=theIsInPUL || copymode.theCopyToPul;
-  	  copyNode->theIsRegistered=theIsRegistered;
-    }
-
   NODE_TRACE1("Copied pi node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
@@ -4326,13 +4204,6 @@ XmlNode* CommentNode::copyInternal(
   {
     delete tree;
     throw;
-  }
-
-  if (theIsInPUL || copymode.theCopyToPul)
-  {
-    copyNode->theUUID=theUUID;
-    copyNode->theIsInPUL=theIsInPUL || copymode.theCopyToPul;
-    copyNode->theIsRegistered=theIsRegistered;
   }
 
   NODE_TRACE1("Copied coment node " << this << " to node " << copyNode

@@ -41,6 +41,16 @@ PlanIter_t zorba_node_identifier_node_identifier::codegen(
   return new NodeIdentifierIterator(sctx, loc, argv);
 }
 
+PlanIter_t zorba_node_identifier_current_node_identifier::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new CurrentNodeIdentifierIterator(sctx, loc, argv);
+}
+
 PlanIter_t zorba_node_identifier_has_identifier::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -271,6 +281,18 @@ void populate_context_nodes(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::ZORBA_NODE_IDENTIFIER_NODE_IDENTIFIER_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_node_identifier_current_node_identifier,
+        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","current-node-identifier"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::ZORBA_NODE_IDENTIFIER_CURRENT_NODE_IDENTIFIER_1);
 
   }
 

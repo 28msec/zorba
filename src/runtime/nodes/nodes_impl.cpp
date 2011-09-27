@@ -47,9 +47,7 @@ NodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) 
 
   consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
-  lNodeId=lNode->getUUID(true,true);
-
-  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult,lNodeId), state);
+  STACK_PUSH(GENV_STORE.getIdentifier(aResult, lNode), state);
 
   STACK_END (state);
 }
@@ -57,16 +55,42 @@ NodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) 
 /*******************************************************************************
 ********************************************************************************/
 bool
-HasIdentifierIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+CurrentNodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  store::Item_t lNode;
+  store::Item_t lGenerateIdentifier;
+  zstring lNodeId;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
+
+  if (!GENV_STORE.hasIdentifier(lNode))
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZAPI0090_NO_CURRENT_IDENTIFIER,
+      ERROR_LOC( loc )
+    );
+  }
+  STACK_PUSH(GENV_STORE.getIdentifier(aResult, lNode), state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+HasIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lNode;
 
   PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  consumeNext(lNode, theChildren[0].getp(), planState);
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lNode->hasUUID()), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, GENV_STORE.hasIdentifier(lNode)), state);
 
   STACK_END (state);
 }
@@ -83,7 +107,7 @@ NodeByIdentifierIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
     consumeNext(lUUID, theChildren[0].getp(), planState);
 
-    STACK_PUSH(GENV_STORE.getNodeByUUID(result, lUUID->getStringValue()), state);
+    STACK_PUSH(GENV_STORE.getNodeByIdentifier(result, lUUID->getStringValue()), state);
 
     STACK_END (state);
 }

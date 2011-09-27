@@ -19,7 +19,7 @@
   <zorba:iterator name="NodeIdentifierIterator">
 
     <zorba:description author="Federico Cavalieri">       
-      declare function ref:node-identifier-impl($node as node, $generate-identifier as xs:boolean) as xs:string
+      declare function id:node-identifier($node as node) as xs:string
     </zorba:description>
     
     <zorba:function>
@@ -32,6 +32,26 @@
 
   </zorba:iterator>
   
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="CurrentNodeIdentifierIterator">
+
+    <zorba:description author="Federico Cavalieri">       
+      declare function id:current-node-identifier($node as node) as xs:string
+    </zorba:description>
+    
+    <zorba:function>
+    
+      <zorba:signature localname="current-node-identifier" prefix="zorba-node-identifier">
+        <zorba:param>node()</zorba:param>   
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
 <!--
 /*******************************************************************************
 ********************************************************************************/
@@ -59,7 +79,7 @@
   <zorba:iterator name="NodeByIdentifierIterator">
 
     <zorba:description author="Federico Cavalieri">
-      declare function ref:node-by-identifier-impl($identifier as xs:string, $mandatory as xs:boolean) as node()?
+      declare function ref:node-by-identifier($identifier as xs:string) as node()?
     </zorba:description>
 
     <zorba:function>

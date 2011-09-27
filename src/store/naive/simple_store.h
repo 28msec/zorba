@@ -142,9 +142,12 @@ protected:
 
   long                          theTraceLevel;
 
-  /**********UUID***********/
-  std::map<zstring,store::Item *> theNodeIdentifiersMap;
-  /**********UUID***********/
+  /* ------------------------ Node Identifiers Management ---------------------------*/
+
+  std::map<const zstring, const store::Item *> theIdentifiersToNodeMap;
+  std::map<const store::Item *, zstring> theNodeToIdentifiersMap;
+
+  /* ------------------------ Node Identifiers Management ---------------------------*/
 
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const * theStemmerProvider;
@@ -333,16 +336,21 @@ public:
 
   bool getNodeByReference(store::Item_t& result, const store::Item* uri);
 
-  /*************************UUID********************************************/
+  /* ------------------------ Node Identifiers Management ---------------------------*/
 
-  bool getNodeByUUID(store::Item_t& result, const zstring& uuid);
+  bool getIdentifier(store::Item_t& result, store::Item* node) {return getIdentifier(result,node,true);}
 
-  bool registerNodeUUID(const zstring& uuid, const store::Item_t& node);
+  bool getIdentifier(store::Item_t& result, store::Item* node, bool generate);
 
-  bool unRegisterNodeUUID(const zstring& uuid);
+  bool hasIdentifier(const store::Item* node);
 
-  /*************************UUID********************************************/
+  bool getNodeByIdentifier(store::Item_t& result, const zstring& identifier);
 
+  bool setIdentifier(XmlNode* node, const zstring& identifier);
+
+  bool unregisterNode(XmlNode* node, bool haveFrozenIdentifier);
+
+  /* ------------------------ Node Identifiers Management ---------------------------*/
 
   store::TempSeq_t createTempSeq(bool lazy);
 

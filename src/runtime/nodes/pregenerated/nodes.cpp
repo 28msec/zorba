@@ -60,6 +60,34 @@ NodeIdentifierIterator::~NodeIdentifierIterator() {}
 // </NodeIdentifierIterator>
 
 
+// <CurrentNodeIdentifierIterator>
+const char* CurrentNodeIdentifierIterator::class_name_str = "CurrentNodeIdentifierIterator";
+CurrentNodeIdentifierIterator::class_factory<CurrentNodeIdentifierIterator>
+CurrentNodeIdentifierIterator::g_class_factory;
+
+const serialization::ClassVersion 
+CurrentNodeIdentifierIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int CurrentNodeIdentifierIterator::class_versions_count =
+sizeof(CurrentNodeIdentifierIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void CurrentNodeIdentifierIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+CurrentNodeIdentifierIterator::~CurrentNodeIdentifierIterator() {}
+
+// </CurrentNodeIdentifierIterator>
+
+
 // <HasIdentifierIterator>
 const char* HasIdentifierIterator::class_name_str = "HasIdentifierIterator";
 HasIdentifierIterator::class_factory<HasIdentifierIterator>

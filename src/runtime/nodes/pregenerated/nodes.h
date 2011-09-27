@@ -35,7 +35,7 @@ namespace zorba {
 
 /**
  *        
- *      declare function ref:node-identifier-impl($node as node, $generate-identifier as xs:boolean) as xs:string
+ *      declare function id:node-identifier($node as node) as xs:string
  *    
  * Author: Federico Cavalieri
  */
@@ -62,6 +62,42 @@ public:
   {}
 
   virtual ~NodeIdentifierIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ *        
+ *      declare function id:current-node-identifier($node as node) as xs:string
+ *    
+ * Author: Federico Cavalieri
+ */
+class CurrentNodeIdentifierIterator : public NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(CurrentNodeIdentifierIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentNodeIdentifierIterator,
+    NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>*)this);
+  }
+
+  CurrentNodeIdentifierIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~CurrentNodeIdentifierIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -107,7 +143,7 @@ public:
 
 /**
  * 
- *      declare function ref:node-by-identifier-impl($identifier as xs:string, $mandatory as xs:boolean) as node()?
+ *      declare function ref:node-by-identifier($identifier as xs:string) as node()?
  *    
  * Author: Federico Cavalieri
  */

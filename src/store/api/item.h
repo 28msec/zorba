@@ -762,24 +762,6 @@ public:
             locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  /*****************************UUID************************/
-
-  virtual bool hasUUID();
-
-  virtual zstring getUUID(bool generateUUID,bool registerNode);
-
-  virtual void setUUID(zstring & uuid, bool registerNode);
-
-  virtual void setIsInPUL(bool isInPUL);
-
-  virtual bool isInPUL();
-
-  virtual void registerNode(bool update=false);
-
-  virtual void unregisterNode();
-
-  /*****************************UUID************************/
-
 private:
   Item(const Item& other);
   Item& operator=(const Item&);

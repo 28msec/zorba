@@ -2027,6 +2027,20 @@ void PrinterVisitor::endVisit ( const NodeIdentifierIterator& ) {
 // </NodeIdentifierIterator>
 
 
+// <CurrentNodeIdentifierIterator>
+void PrinterVisitor::beginVisit ( const CurrentNodeIdentifierIterator& a) {
+  thePrinter.startBeginVisit("CurrentNodeIdentifierIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentNodeIdentifierIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentNodeIdentifierIterator>
+
+
 // <HasIdentifierIterator>
 void PrinterVisitor::beginVisit ( const HasIdentifierIterator& a) {
   thePrinter.startBeginVisit("HasIdentifierIterator", ++theId);

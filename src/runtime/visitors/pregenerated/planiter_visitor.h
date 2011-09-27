@@ -305,6 +305,8 @@ namespace zorba{
 
     class NodeIdentifierIterator;
 
+    class CurrentNodeIdentifierIterator;
+
     class HasIdentifierIterator;
 
     class NodeByIdentifierIterator;
@@ -963,6 +965,9 @@ public:
 
     virtual void beginVisit ( const NodeIdentifierIterator& ) = 0;
     virtual void endVisit   ( const NodeIdentifierIterator& ) = 0;
+
+    virtual void beginVisit ( const CurrentNodeIdentifierIterator& ) = 0;
+    virtual void endVisit   ( const CurrentNodeIdentifierIterator& ) = 0;
 
     virtual void beginVisit ( const HasIdentifierIterator& ) = 0;
     virtual void endVisit   ( const HasIdentifierIterator& ) = 0;

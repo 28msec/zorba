@@ -51,6 +51,19 @@ public:
 };
 
 
+//zorba-node-identifier:current-node-identifier
+class zorba_node_identifier_current_node_identifier : public function
+{
+public:
+  zorba_node_identifier_current_node_identifier(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
 //zorba-node-identifier:has-identifier
 class zorba_node_identifier_has_identifier : public function
 {
