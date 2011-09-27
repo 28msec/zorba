@@ -352,6 +352,11 @@ static_context::ZORBA_NODE_FN_NS = NS_PRE + "modules/node";
 const zstring
 static_context::ZORBA_XML_FN_NS = NS_PRE + "modules/xml";
 
+#ifndef ZORBA_NO_FULL_TEXT
+const zstring
+static_context::ZORBA_FULL_TEXT_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/full_text";
+#endif /* ZORBA_NO_FULL_TEXT */
+
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
 ********************************************************************************/

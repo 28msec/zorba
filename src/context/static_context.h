@@ -478,6 +478,9 @@ public:
   static const zstring ZORBA_FETCH_FN_NS;
   static const zstring ZORBA_NODE_FN_NS;
   static const zstring ZORBA_XML_FN_NS;
+#ifndef ZORBA_NO_FULL_TEXT
+  static const zstring ZORBA_FULL_TEXT_FN_NS;
+#endif /* ZORBA_NO_FULL_TEXT */
 
   //
   // Namespaces of virtual modules declaring zorba builtin functions

@@ -63,6 +63,11 @@ DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
 DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc")
 
+IF(NOT ZORBA_NO_FULL_TEXT)
+  DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0
+    URI "http://www.zorba-xquery.com/modules/full-text")
+ENDIF(NOT ZORBA_NO_FULL_TEXT)
+
 # Subdirectories
 DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/converters/base64")

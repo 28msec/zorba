@@ -72,7 +72,7 @@ static bool is_word_char( char c ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void ft_stop_words_set::apply_word( zstring const &word, set_t &word_set,
+void ft_stop_words_set::apply_word( zstring const &word, word_set_t &word_set,
                                     ft_stop_words_unex::type mode ) {
   // TODO: should "word" be converted to lower-case?
   std::cout << "applying word " << word << std::endl;
@@ -87,33 +87,33 @@ void ft_stop_words_set::apply_word( zstring const &word, set_t &word_set,
 }
 
 void ft_stop_words_set::apply_word( char const *begin, char const *end,
-                                    set_t &word_set,
+                                    word_set_t &word_set,
                                     ft_stop_words_unex::type mode ) {
-  set_t::value_type const word( begin, end - begin );
+  word_set_t::value_type const word( begin, end - begin );
   apply_word( word, word_set, mode );
 }
 
-ft_stop_words_set const*
+ft_stop_words_set::ptr
 ft_stop_words_set::construct( ftstop_word_option const &option,
                               iso639_1::type lang,
                               static_context const& sctx ) {
   bool must_delete = false;
-  set_t *word_set = nullptr;            // pointless init. to stifle warning
+  word_set_t *word_set = nullptr;       // pointless init. to stifle warning
 
   switch ( option.get_mode() ) {
     case ft_stop_words_mode::with:
-      word_set = new set_t;
+      word_set = new word_set_t;
       must_delete = true;
       break;
     case ft_stop_words_mode::with_default:
       word_set = get_default_word_set_for( lang );
       if ( !word_set ) {
         // TODO: throw exception?
-        return 0;
+        return ptr();
       }
       break;
     case ft_stop_words_mode::without:
-      return 0;
+      return ptr();
   }
 
   FOR_EACH( ftstop_word_option::list_t, ftsw, option.get_stop_words() ) {
@@ -122,7 +122,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
 
     if ( !uri.empty() ) {
       if ( !must_delete ) {
-        word_set = new set_t( *word_set );
+        word_set = new word_set_t( *word_set );
         must_delete = true;
       }
 
@@ -167,25 +167,30 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
     ftstop_words::list_t const &word_list = (*ftsw)->get_list();
     if ( !word_list.empty() ) {
       if ( !must_delete ) {
-        word_set = new set_t( *word_set );
+        word_set = new word_set_t( *word_set );
         must_delete = true;
       }
       FOR_EACH( ftstop_words::list_t, word, word_list )
         apply_word( *word, *word_set, mode );
     }
   }
-  return new ft_stop_words_set( word_set, must_delete );
+  return ptr( new ft_stop_words_set( word_set, must_delete ) );
 }
 
-ft_stop_words_set::set_t*
+ft_stop_words_set const*
+ft_stop_words_set::get_default( iso639_1::type lang ) {
+  return new ft_stop_words_set( get_default_word_set_for( lang ), false );
+}
+
+ft_stop_words_set::word_set_t*
 ft_stop_words_set::get_default_word_set_for( iso639_1::type lang ) {
-  static set_t* cached_word_sets[ iso639_1::NUM_ENTRIES ];
+  static word_set_t *cached_word_sets[ iso639_1::NUM_ENTRIES ];
   if ( !lang )
     lang = get_host_lang();
-  set_t *&word_set = cached_word_sets[ lang ];
+  word_set_t *&word_set = cached_word_sets[ lang ];
   if ( !word_set ) {
     if ( ft_stop_table const table = get_table_for( lang ) ) {
-      word_set = new set_t;
+      word_set = new word_set_t;
       for ( ft_stop_table word = table; *word; ++word )
         word_set->insert( *word );
     }
