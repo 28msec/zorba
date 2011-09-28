@@ -246,6 +246,7 @@ extern entry const dict_en[] = {
   { "ZAPI0080", "can not retrieve node-reference for a node that is not in a collection." },
   { "ZAPI0090", "node has no current identifier." },
   { "ZAPI0091", "\"$1\": invalid node identifier." },
+  { "ZAPI0092", "\"$1\": identifier already present in the store." },
   { "ZCSE0001", "\"$1\": nonexistent input field" },
   { "ZCSE0002", "\"$1\": incompatible input field${: type=2}${, class=3}" },
   { "ZCSE0003", "\"$1\": unrecognized class field" },

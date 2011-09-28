@@ -107,6 +107,16 @@ NodeByIdentifierIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
     consumeNext(lUUID, theChildren[0].getp(), planState);
 
+    if (!utf8::match_whole(lUUID->getStringValue(), "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZAPI0091_INVALID_NODE_IDENTIFIER,
+        ERROR_PARAMS(lUUID->getStringValue()),
+        ERROR_LOC( loc )
+      );
+    }
+
+
     STACK_PUSH(GENV_STORE.getNodeByIdentifier(result, lUUID->getStringValue()), state);
 
     STACK_END (state);

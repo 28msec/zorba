@@ -28,6 +28,7 @@
         <zorba:param>node()</zorba:param>   
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
+      
     </zorba:function>
 
   </zorba:iterator>
@@ -48,6 +49,7 @@
         <zorba:param>node()</zorba:param>   
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
+      
     </zorba:function>
 
   </zorba:iterator>
@@ -68,6 +70,7 @@
         <zorba:param>node()</zorba:param>                
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
+      
     </zorba:function>
 
   </zorba:iterator>
@@ -88,8 +91,9 @@
         <zorba:param>xs:string</zorba:param>        
         <zorba:output>node()?</zorba:output>
       </zorba:signature>
+      
     </zorba:function>
-
+        
   </zorba:iterator>
     
 <!--

@@ -693,10 +693,7 @@ void XmlNode::destroyInternal(bool removeType)
   }
 #endif
 
-  if (haveIdentifier())
-  {
-    GET_STORE().unregisterNode(this);
-  }
+  GET_STORE().unregisterNode(this);
   delete this;
 }
 

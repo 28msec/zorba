@@ -1800,6 +1800,10 @@
       <value>"$1": invalid node identifier.</value>
     </diagnostic>
     
+    <diagnostic code="ZAPI0092" name="IDENTIFIER_ALREADY_PRESENT">
+      <value>"$1": identifier already present in the store.</value>
+    </diagnostic>
+    
     <!--////////// Zorba Class Serialization Errors ////////////////////////-->
 
     <diagnostic code="ZCSE0001" name="NONEXISTENT_INPUT_FIELD">

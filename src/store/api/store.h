@@ -110,10 +110,11 @@ public:
   /* ------------------------ Node Identifiers Management ---------------------------*/
 
   /**
-   * Returns the identifier of the given node.
+   * Computes the identifier of the given node.
    *
-   * @param item XDM node
-   * @return an item of type xs:uri
+   * @param result the identifier as an item of type xs:string
+   * @param node XDM node
+   * @return whether the identifier has been created successfully
    */
   virtual bool getIdentifier(Item_t& result, Item* node) = 0;
 
@@ -126,10 +127,11 @@ public:
   virtual bool hasIdentifier(const Item* node) = 0;
 
   /**
-   * Returns the node which is associated to the given identifier
+   * Returns the node which is associated to the given identifier.
    *
+   * @param result the node or NULL if not found
    * @param identifier the identifier to dereference
-   * @returns referenced item if it exists, otherwise NULL
+   * @returns whether the referenced item exists, NULL otherwise
    */
   virtual bool getNodeByIdentifier(store::Item_t& result, const zstring& identifier) = 0;
 

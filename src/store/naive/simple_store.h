@@ -351,11 +351,11 @@ public:
 
   bool unregisterNode(XmlNode* node);
 
-  bool copyIdentifier(const XmlNode* source, XmlNode* target);
+  void copyIdentifier(const XmlNode* source, XmlNode* target);
 
-  bool restoreIdentifier(XmlNode* node, const zstring& identifier);
+  void restoreIdentifier(XmlNode* node, const zstring& identifier);
 
-  bool unfreezeIdentifier(XmlNode* node);
+  void unfreezeIdentifier(XmlNode* node);
 
 
   /* ------------------------ Node Identifiers Management ---------------------------*/

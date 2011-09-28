@@ -1684,6 +1684,13 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
 /* ------------------------ Node Identifiers Management ---------------------------*/
 
+/**
+ * Computes the identifier of the given node.
+ *
+ * @param result identifier as an item of type xs:string
+ * @param node XDM node
+ * @return whether the identifier has been created successfully
+ */
 bool SimpleStore::getIdentifier(store::Item_t& result, store::Item* node)
 {
   std::map<const store::Item *,zstring>::iterator resIt;
@@ -1705,6 +1712,15 @@ bool SimpleStore::getIdentifier(store::Item_t& result, store::Item* node)
   return theItemFactory->createString(result, uuidStr3);
 }
 
+/**
+ * Returns the already computed identifier of the given node.
+ * If no identifier has already been computed for the given node
+ * error ZAPI0090 is raised.
+ *
+ * @param result identifier as an item of type xs:string
+ * @param node XDM node
+ * @return whether the identifier has been created successfully
+ */
 bool SimpleStore::getCurrentIdentifier(store::Item_t& result, const store::Item* node)
 {
   std::map<const store::Item *,zstring>::iterator resIt;
@@ -1718,6 +1734,13 @@ bool SimpleStore::getCurrentIdentifier(store::Item_t& result, const store::Item*
   throw ZORBA_EXCEPTION(zerr::ZAPI0090_NO_CURRENT_IDENTIFIER);
 }
 
+/**
+ * Returns the node which is associated to the given identifier.
+ *
+ * @param result the node or NULL if not found
+ * @param identifier the identifier to dereference
+ * @returns whether the referenced item exists, NULL otherwise
+ */
 bool SimpleStore::getNodeByIdentifier(store::Item_t& result, const zstring& identifier)
 {
   std::map<const zstring, const store::Item *>::iterator resIt;
@@ -1730,51 +1753,103 @@ bool SimpleStore::getNodeByIdentifier(store::Item_t& result, const zstring& iden
   return false;
 }
 
+/**
+ * Returns whether an identifier has been generated for the given node.
+ *
+ * @param item XDM node
+ * @return whether an identifier has been generated for the given node.
+ */
 bool SimpleStore::hasIdentifier(const store::Item* node)
 {
   return theNodeToIdentifiersMap.find(node)!=theNodeToIdentifiersMap.end();
 }
 
-bool SimpleStore::copyIdentifier(const XmlNode* source, XmlNode* target)
+/**
+ * Copies the identifier of a source node to a target node. The source
+ * node must already have an identifier. The target nodes acquires the
+ * source identifier but it is not registered in the identifier-to-node
+ * map. The target node also get its "haveFrozenIdentifier" flag set.
+ * Used in PUL manipulation.
+ *
+ * @param source source XDM node
+ * @param target target XDM node
+ */
+void SimpleStore::copyIdentifier(const XmlNode* source, XmlNode* target)
 {
   store::Item_t identifier;
   getCurrentIdentifier(identifier,source);
+  unregisterNode(target);
   target->setHaveIdentifier();
   target->setHaveFrozenIdentifier();
   theNodeToIdentifiersMap[target]=identifier->getStringValue();
-  return true;
 }
 
-bool SimpleStore::restoreIdentifier(XmlNode* node, const zstring& identifier)
+/**
+ * Sets the identifier of a node to a given value. The "haveFrozenIdentifer"
+ * flag is also set.
+ * Used in PUL manipulation.
+ *
+ * @param node  XDM node
+ * @param identifier the identifier to set
+ */
+void SimpleStore::restoreIdentifier(XmlNode* node, const zstring& identifier)
 {
   unregisterNode(node);
   theNodeToIdentifiersMap[node]=identifier;
   node->setHaveIdentifier();
-  return true;
+  node->setHaveFrozenIdentifier();
 }
 
-bool SimpleStore::unfreezeIdentifier(XmlNode* node)
+/**
+ * Unfreezes the identifier of a given node:
+ * - Registers the node in the identifiers to node map
+ * - Resets the node "haveFrozenIdentifier" flag
+ * The node must already have an identifier, otherwise
+ * error ZAPI0090 is raised.
+ * The node identifier must not be used for any other
+ * node in the identifier-to-node map, otherwise
+ * error ZAPI0092 is raised.
+ * Used in PUL manipulation.
+ *
+ * @param node XDM node
+ */
+void SimpleStore::unfreezeIdentifier(XmlNode* node)
 {
   store::Item_t identifier;
   getCurrentIdentifier(identifier,node);
+  store::Item_t result;
+  if (getNodeByIdentifier(result, identifier->getStringValue()))
+  {
+    throw XQUERY_EXCEPTION(
+            zerr::ZAPI0092_IDENTIFIER_ALREADY_PRESENT,
+            ERROR_PARAMS(identifier->getStringValue())
+          );
+  }
   theIdentifiersToNodeMap[identifier->getStringValue()]=node;
   node->resetHaveFrozenIdentifier();
-  return true;
 }
 
+/**
+ * Removes a node from the identifier-to-nodes and nodes-to-identifiers maps.
+ *
+ * @param node XDM node
+ * @return whether the node was registered or not.
+ */
 bool SimpleStore::unregisterNode(XmlNode* node)
 {
+  if (!node->haveIdentifier())
+    return false;
   std::map<const store::Item *,zstring>::iterator resIt;
   if ((resIt=theNodeToIdentifiersMap.find(node))!=theNodeToIdentifiersMap.end())
   {
     zstring value=resIt->second;
     theNodeToIdentifiersMap.erase(resIt);
-    if (node->haveFrozenIdentifier())
-    {
-      theIdentifiersToNodeMap.erase(value);
-      node->resetHaveFrozenIdentifier();
-    }
     node->resetHaveIdentifier();
+    if (!node->haveFrozenIdentifier())
+      theIdentifiersToNodeMap.erase(value);
+    else
+      node->resetHaveFrozenIdentifier();
+    //if a node has a frozen identifier it is not registered in the identifiers to node map
     return true;
   }
   else
