@@ -202,15 +202,30 @@ external_function_test_2(Zorba* aZorba)
       zorba::DynamicContext* lDynContext = lQuery->getDynamicContext();
 
       // must be released in MyExternalFunctionParameter::destroy
-      MyExternalFunctionParameter* lParam = new MyExternalFunctionParameter();
+      MyExternalFunctionParameter* lParam1 = new MyExternalFunctionParameter();
+      MyExternalFunctionParameter* lParam2 = new MyExternalFunctionParameter();
 
-      lDynContext->addExternalFunctionParameter("myparam", lParam);
+      lDynContext->addExternalFunctionParameter("myparam", lParam1);
+      lDynContext->addExternalFunctionParameter("myparam", lParam2);
+
+      // make sure that destroy is invoked if the first parameter is overwritten
+      if (!lDestroyedParam)
+      {
+        return false;
+      }
+      else
+      {
+        lDestroyedParam = false;
+      }
+
+
       lDynContext->setVariable("local:foo",
                                aZorba->getItemFactory()->createString("foo")); 
 
       std::cout << lQuery << std::endl;
     }
 
+    // destroy is called if the XQuery object is destroyed
     return lGotParam && lDestroyedParam;
 
   } catch (XQueryException& qe) {

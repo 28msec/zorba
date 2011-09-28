@@ -618,6 +618,12 @@ bool dynamic_context::addExternalFunctionParameter(
   val.type = dynamic_context::dctx_value_t::ext_func_param_typed;
   val.func_param = aValue;
 
+  ExternalFunctionParameter* lValue = getExternalFunctionParameter(aName);
+  if (lValue)
+  {
+    // destroy the object if it's already contained in the map
+    lValue->destroy();
+  }
   return keymap.put ( aName, val);
 }
 
