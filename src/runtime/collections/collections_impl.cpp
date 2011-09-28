@@ -61,6 +61,63 @@ void checkNodeType(
     const QueryLoc& aLoc,
     bool  dyn_coll);
 
+/*******************************************************************************
+  Shared functions for loading a Collection given a string or item
+********************************************************************************/
+store::Collection_t findCollection(static_context *sctx, const QueryLoc &loc,
+                                   zstring &resolvedURIString)
+{
+  store::Collection_t coll;
+  std::auto_ptr<impl::Resource> lResource;
+  impl::CollectionResource* lCollResource;
+  zstring lErrorMessage;
+
+  lResource = sctx->resolve_uri( resolvedURIString, impl::EntityData::COLLECTION, lErrorMessage );
+  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+  if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FODC0004,
+      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
+      ERROR_LOC( loc )
+    );
+  }
+  return coll;
+}
+
+store::Collection_t findCollection(static_context *sctx, const QueryLoc &loc,
+	store::Item_t &lURI)
+{
+  zstring resolvedURIString;
+  try
+  {
+    resolvedURIString = sctx->resolve_relative_uri(lURI->getStringValue());
+  }
+  catch (ZorbaException const&)
+  {
+    throw XQUERY_EXCEPTION(
+      err::FODC0004,
+      ERROR_PARAMS( lURI->getStringValue(), ZED( BadAnyURI ) ),
+      ERROR_LOC( loc )
+    );
+  }
+  return findCollection(sctx, loc, resolvedURIString);
+}
+
+store::Collection_t findCollection(static_context* sctx, const QueryLoc &loc, PlanState& planState)
+{
+  store::Item_t resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
+  zstring resolvedURIString = sctx->resolve_relative_uri(resolvedURIItem->getStringValue());
+
+  if( NULL == resolvedURIItem)
+    throw XQUERY_EXCEPTION(
+      err::FODC0002,
+      ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
+      ERROR_LOC( loc )
+    );
+
+  return findCollection(sctx, loc, resolvedURIString);
+}
 
 /*******************************************************************************
   fn:collection() as node()*
@@ -106,62 +163,10 @@ void FnCollectionIteratorState::reset(PlanState& planState)
   }
 }
 
-store::Collection_t findCollection()
-{
-  store::Item_t resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
-  zstring resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
-
-  if( NULL == resolvedURIItem)
-    throw XQUERY_EXCEPTION(
-      err::FODC0002,
-      ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
-      ERROR_LOC( loc )
-    );
-
-  return findCollection(resolvedURIString);
-}
-
-store::Collection_t findCollection(store::Item_t &lURI)
-{
-  zstring resolvedURIString;
-  try
-  {
-    resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
-  }
-  catch (ZorbaException const&)
-  {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( lURI->getStringValue(), ZED( BadAnyURI ) ),
-      ERROR_LOC( loc )
-    );
-  }
-  return findCollection(resolvedURIString);
-}
-
-store::Collection_t findCollection(zstring &resolvedURIString)
-{
-  store::Collection_t coll;
-  std::auto_ptr<impl::Resource> lResource;
-  impl::CollectionResource* lCollResource;
-  zstring lErrorMessage;
-
-  lResource = theSctx->resolve_uri( resolvedURIString, impl::EntityData::COLLECTION, lErrorMessage );
-  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
-  if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
-  {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
-      ERROR_LOC( loc )
-    );
-  }
-  return coll;
-}
-
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t coll;
+  store::Item_t lURI;
 
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
@@ -169,11 +174,11 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (theChildren.size() == 1 &&
       consumeNext(lURI, theChildren[0].getp(), planState))
   {
-    coll = getCollection(lURI);
+    coll = findCollection(theSctx, loc, lURI);
   }
   else
   {
-    coll = getCollection();
+    coll = findCollection(theSctx, loc, planState);
   }
 
   /** return the nodes of the collection */
@@ -192,6 +197,36 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+/*******************************************************************************
+Iterator for optimizing fn:count when applied to collections
+********************************************************************************/
+bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lSequenceItem;
+  ulong lCount = 0;
+  store::Collection_t coll;
+  store::Item_t lURI;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  //This optimization converts the fn:count and fn:collection into a single node
+  //So we get the collection from the child like fn:collection
+  //But return it's size instead
+  if (theChildren.size() == 1 &&
+      consumeNext(lURI, theChildren[0].getp(), planState))
+  {
+    coll = findCollection(theSctx, loc, lURI);
+  }
+  else
+  {
+    coll = findCollection(theSctx, loc, planState);
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, coll->size()), state);
+
+  STACK_END(state);
+}
 
 /*******************************************************************************
 ********************************************************************************/
