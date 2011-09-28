@@ -465,9 +465,26 @@ void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
+
+  theOldTypeName=target->getType();
+  theOldHaveValue=target->haveValue();
+  theOldHaveEmptyValue=target->haveEmptyValue();
+  TextNode* textChild;
+  theOldHaveTypedValue=target->haveTypedTypedValue(textChild);
+  if (theOldHaveTypedValue)
+  {
+    store::Iterator_t temp;
+    textChild->getTypedValue(theOldTypedValue,temp);
+    theOldHaveListValue= textChild->haveListValue();
+  }
+  else
+    theOldHaveListValue= false;
+  theOldIsInSubstitutionGroup=target->isInSubstitutionGroup();
+
+
   target->setType(theTypeName);
 
-  TextNode* textChild;
+  //TextNode* textChild;
 
   if (target->haveTypedTypedValue(textChild))
   {
@@ -505,6 +522,11 @@ void UpdSetElementType::apply()
     target->setInSubstGroup();
 }
 
+
+void UpdSetElementType::undo()
+{
+
+}
 
 /*******************************************************************************
 
@@ -563,6 +585,11 @@ void UpdSetAttributeType::apply()
 {
   AttributeNode* target = ATTR_NODE(theTarget);
 
+  theOldTypeName=target->getType();
+  theOldTypedValue=target->theTypedValue;
+  theOldHaveListValue=target->haveListValue();
+
+
   target->setType(theTypeName);
   target->theTypedValue.transfer(theTypedValue);
 
@@ -570,6 +597,10 @@ void UpdSetAttributeType::apply()
     target->setHaveListValue();
 }
 
+void UpdSetAttributeType::undo()
+{
+
+}
 
 /*******************************************************************************
 

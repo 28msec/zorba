@@ -699,6 +699,15 @@ protected:
   bool                     theHaveListValue;
   bool                     theIsInSubstitutionGroup;
 
+  store::Item_t            theOldTypeName;
+  store::Item_t            theOldTypedValue;
+  bool                     theOldHaveValue;
+  bool                     theOldHaveEmptyValue;
+  bool                     theOldHaveTypedValue;
+  bool                     theOldHaveListValue;
+  bool                     theOldIsInSubstitutionGroup;
+
+
   UpdSetElementType(
         PULImpl*        pul,
         const QueryLoc* aLoc,
@@ -729,7 +738,7 @@ public:
   }
 
   void apply();
-  void undo() {}
+  void undo();
 };
 
 
@@ -745,6 +754,10 @@ protected:
   store::Item_t            theTypeName;
   store::Item_t            theTypedValue;
   bool                     theHaveListValue;
+
+  store::Item_t            theOldTypeName;
+  store::Item_t            theOldTypedValue;
+  bool                     theOldHaveListValue;
 
   UpdSetAttributeType(
         PULImpl*        pul,
@@ -768,7 +781,7 @@ public:
   }
 
   void apply();
-  void undo() {}
+  void undo();
 };
 
 
