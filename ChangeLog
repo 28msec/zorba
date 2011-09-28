@@ -31,6 +31,7 @@ version 2.x
     before the detach is done). 
   * Fixed bug #3408181 (available-collection() returns undeclared collections)
   * Added ExternalFunctionParameter class to be registered in the DynamicContext
+  * Fixed bug #855314 (should not fold a constant expr that returns an error item)
 	
 version 2.0.1
 
