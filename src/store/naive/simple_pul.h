@@ -166,6 +166,8 @@ protected:
 
   std::set<store::Item*>             theValidationNodes;
 
+  store::PUL_t                       theValidationPul;
+
   bool                               theAdjustTreePositions;
 
   bool                               theIsApplied;

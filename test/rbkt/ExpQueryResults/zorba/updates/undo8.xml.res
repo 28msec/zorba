@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root><child><childchild/></child></root>
+<ELEM-shiporders type="xs:anyType"><ELEM-shiporder type="xs:anyType"><ATTR-orderid type="orderidtype"/><ELEM-orderperson type="xs:anyType"/><ELEM-shipto type="xs:anyType"><ELEM-name type="xs:anyType"/><ELEM-address type="xs:anyType"/><ELEM-city type="xs:anyType"/><ELEM-country type="xs:anyType"/></ELEM-shipto><ELEM-item type="xs:anyType"><ELEM-title type="xs:anyType"/><ELEM-note type="xs:anyType"/><ELEM-quantity type="xs:anyType"/><ELEM-price type="xs:anyType"/></ELEM-item><ELEM-item type="xs:anyType"><ELEM-title type="xs:anyType"/><ELEM-quantity type="xs:anyType"/><ELEM-price type="xs:anyType"/></ELEM-item></ELEM-shiporder></ELEM-shiporders>
