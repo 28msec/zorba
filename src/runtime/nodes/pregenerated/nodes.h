@@ -107,7 +107,7 @@ public:
 
 /**
  * 
- *      declare function ref:has-identifier($node as node) as xs:boolean
+ *      declare function id:has-identifier($node as node) as xs:boolean
  *    
  * Author: Federico Cavalieri
  */
@@ -143,7 +143,7 @@ public:
 
 /**
  * 
- *      declare function ref:node-by-identifier($identifier as xs:string) as node()?
+ *      declare function id:node-by-identifier($identifier as xs:string) as node()?
  *    
  * Author: Federico Cavalieri
  */

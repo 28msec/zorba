@@ -340,7 +340,7 @@ void SimpleStore::shutdown(bool soft)
       std::map<const store::Item *,zstring>::iterator iter= theNodeToIdentifiersMap.begin();
       std::map<const store::Item *,zstring>::iterator end= theNodeToIdentifiersMap.end();
       for (; iter != end; ++iter)
-        std::cerr << "Identifier: " << iter->first << "is still in the nodes to identifiers map" << std::endl;
+        std::cerr << "Identifier: " << iter->second << "is still in the nodes to identifiers map" << std::endl;
       ZORBA_FATAL(0, theNodeToIdentifiersMap.size()+" node identifiers still in the nodes to identifiers map");
     }
 

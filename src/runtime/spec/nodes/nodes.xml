@@ -61,7 +61,7 @@
   <zorba:iterator name="HasIdentifierIterator">
 
     <zorba:description author="Federico Cavalieri">
-      declare function ref:has-identifier($node as node) as xs:boolean
+      declare function id:has-identifier($node as node) as xs:boolean
     </zorba:description>
     
     <zorba:function>
@@ -82,7 +82,7 @@
   <zorba:iterator name="NodeByIdentifierIterator">
 
     <zorba:description author="Federico Cavalieri">
-      declare function ref:node-by-identifier($identifier as xs:string) as node()?
+      declare function id:node-by-identifier($identifier as xs:string) as node()?
     </zorba:description>
 
     <zorba:function>
