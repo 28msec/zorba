@@ -147,7 +147,7 @@ dynamic_context::~dynamic_context()
   for (uint32_t i = 0; i < keymap.size(); ++i)
   {
     dctx_value_t lValue = keymap.getentryVal(i);
-    if (lValue.type == dctx_value_t::ext_func_param_typed)
+    if (lValue.type == dctx_value_t::ext_func_param_typed && lValue.func_param)
     {
       static_cast<ExternalFunctionParameter*>(lValue.func_param)->destroy();
     }
