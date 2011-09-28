@@ -154,8 +154,8 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : assumed to be in the host machine's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
-declare function ft:tokenize( $doc as node )
-  as element(token)* external;
+declare function ft:tokenize( $doc as node() )
+  as node()* external;
 
 (:~
  : Tokenizes the given document.
@@ -164,8 +164,8 @@ declare function ft:tokenize( $doc as node )
  : @param lang The default language of \a doc.
  : @return a (possibly empty) sequence of tokens.
  :)
-declare function ft:tokenize( $doc as node, $lang as xs:language )
-  as element(token)* external;
+declare function ft:tokenize( $doc as node(), $lang as xs:language )
+  as node()* external;
 
 (:~
  : Tokenizes the given string.
@@ -178,7 +178,7 @@ declare function ft:tokenize( $string as xs:string )
   as xs:string*
 {
   () (: TODO :)
-}
+};
 
 (:~
  : Tokenizes the given string.
@@ -191,6 +191,6 @@ declare function ft:tokenize( $string as xs:string, $lang as xs:language )
   as xs:string*
 {
   () (: TODO :)
-}
+};
 
 (: vim:set et sw=2 ts=2: :)

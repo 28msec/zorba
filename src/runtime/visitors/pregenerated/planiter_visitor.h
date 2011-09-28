@@ -189,6 +189,18 @@ namespace zorba{
 
     class FnPutIterator;
 
+    class HostLangWordIterator;
+
+    class IsStopWordIterator;
+
+    class StemIterator;
+
+    class StripDiacriticsIterator;
+
+    class ThesaurusLookupIterator;
+
+    class TokenizeIterator;
+
     class FunctionNameIterator;
 
     class FunctionArityIterator;
@@ -783,6 +795,24 @@ public:
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
+
+    virtual void beginVisit ( const HostLangWordIterator& ) = 0;
+    virtual void endVisit   ( const HostLangWordIterator& ) = 0;
+
+    virtual void beginVisit ( const IsStopWordIterator& ) = 0;
+    virtual void endVisit   ( const IsStopWordIterator& ) = 0;
+
+    virtual void beginVisit ( const StemIterator& ) = 0;
+    virtual void endVisit   ( const StemIterator& ) = 0;
+
+    virtual void beginVisit ( const StripDiacriticsIterator& ) = 0;
+    virtual void endVisit   ( const StripDiacriticsIterator& ) = 0;
+
+    virtual void beginVisit ( const ThesaurusLookupIterator& ) = 0;
+    virtual void endVisit   ( const ThesaurusLookupIterator& ) = 0;
+
+    virtual void beginVisit ( const TokenizeIterator& ) = 0;
+    virtual void endVisit   ( const TokenizeIterator& ) = 0;
 
     virtual void beginVisit ( const FunctionNameIterator& ) = 0;
     virtual void endVisit   ( const FunctionNameIterator& ) = 0;

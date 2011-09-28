@@ -1,0 +1,246 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+// ******************************************
+// *                                        *
+// * THIS IS A GENERATED FILE. DO NOT EDIT! *
+// * SEE .xml FILE WITH SAME NAME           *
+// *                                        *
+// ******************************************
+#ifndef ZORBA_RUNTIME_FULL_TEXT_FT_MODULE_H
+#define ZORBA_RUNTIME_FULL_TEXT_FT_MODULE_H
+
+
+#include "common/shared_types.h"
+
+
+
+#include "runtime/base/narybase.h"
+
+
+namespace zorba {
+
+/**
+ * 
+ * Author: 
+ */
+class HostLangWordIterator : public NaryBaseIterator<HostLangWordIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(HostLangWordIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HostLangWordIterator,
+    NaryBaseIterator<HostLangWordIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<HostLangWordIterator, PlanIteratorState>*)this);
+  }
+
+  HostLangWordIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<HostLangWordIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~HostLangWordIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class IsStopWordIterator : public NaryBaseIterator<IsStopWordIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsStopWordIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsStopWordIterator,
+    NaryBaseIterator<IsStopWordIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsStopWordIterator, PlanIteratorState>*)this);
+  }
+
+  IsStopWordIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsStopWordIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsStopWordIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class StemIterator : public NaryBaseIterator<StemIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StemIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StemIterator,
+    NaryBaseIterator<StemIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StemIterator, PlanIteratorState>*)this);
+  }
+
+  StemIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StemIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StemIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class StripDiacriticsIterator : public NaryBaseIterator<StripDiacriticsIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StripDiacriticsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StripDiacriticsIterator,
+    NaryBaseIterator<StripDiacriticsIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StripDiacriticsIterator, PlanIteratorState>*)this);
+  }
+
+  StripDiacriticsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StripDiacriticsIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StripDiacriticsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class ThesaurusLookupIterator : public NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ThesaurusLookupIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ThesaurusLookupIterator,
+    NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>*)this);
+  }
+
+  ThesaurusLookupIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~ThesaurusLookupIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class TokenizeIterator : public NaryBaseIterator<TokenizeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(TokenizeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeIterator,
+    NaryBaseIterator<TokenizeIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TokenizeIterator, PlanIteratorState>*)this);
+  }
+
+  TokenizeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TokenizeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~TokenizeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+}
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

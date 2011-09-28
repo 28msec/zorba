@@ -79,7 +79,7 @@
       prefix="zorba-store-data-structure-unordered-map"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/full_text"
+      uri="http://www.zorba-xquery.com/modules/full-text"
       define="ZORBA_FULL_TEXT_FN_NS"
       prefix="zorba-full-text"/>
 
