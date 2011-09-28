@@ -30,6 +30,7 @@ version 2.x
   * Fixed bug # (Should not destroy the parent of a node that is being detached 
     before the detach is done). 
   * Fixed bug #3408181 (available-collection() returns undeclared collections)
+  * Added ExternalFunctionParameter class to be registered in the DynamicContext
 	
 version 2.0.1
 
