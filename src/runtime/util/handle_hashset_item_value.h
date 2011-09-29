@@ -66,7 +66,7 @@ public:
   public:
     CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) {}
 
-    bool equal(const store::Item_t& item1, const store::Item_t& item2)
+    bool equal(const store::Item_t& item1, const store::Item_t& item2) const
     {
       assert (item1 != NULL);
       assert (item2 != NULL);
@@ -80,7 +80,7 @@ public:
                                          theCompareParam->theCollator);
     }
 
-    uint32_t hash(const store::Item_t& t)
+    uint32_t hash(const store::Item_t& t) const
     {
       assert (t != NULL);
       return t->hash(theCompareParam->theTimezone,  theCompareParam->theCollator);
