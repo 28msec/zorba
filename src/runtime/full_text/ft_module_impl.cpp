@@ -255,7 +255,9 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       lang = get_lang_from( item );
     }
 
+    tokenizer_provider = GENV_STORE.getTokenizerProvider();
     doc_tokens = doc_item->getTokens( *tokenizer_provider, no, lang );
+
     while ( doc_tokens->hasNext() ) {
       FTToken const *token;
       token = doc_tokens->next();

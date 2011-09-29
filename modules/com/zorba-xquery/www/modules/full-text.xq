@@ -174,7 +174,7 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
  : assumed to be in the host machine's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
-declare function ft:tokenize( $string as xs:string )
+declare function ft:tokenize-string( $string as xs:string )
   as xs:string*
 {
   () (: TODO :)
@@ -187,7 +187,8 @@ declare function ft:tokenize( $string as xs:string )
  : @param lang The default language of \a string.
  : @return a (possibly empty) sequence of tokens.
  :)
-declare function ft:tokenize( $string as xs:string, $lang as xs:language )
+declare function ft:tokenize-string( $string as xs:string,
+                                     $lang as xs:language )
   as xs:string*
 {
   () (: TODO :)
