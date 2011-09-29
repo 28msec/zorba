@@ -33,12 +33,12 @@ public:
   class CompareFunction
   {
   public:
-    bool equal(const Item_t& t1, const Item_t& t2)
+    bool equal(const Item_t& t1, const Item_t& t2) const
     {
       return t1->equals(t2, 0);
     }
 
-    uint32_t hash(const Item_t& t)
+    uint32_t hash(const Item_t& t) const
     {
       return t->hash(0);
     }

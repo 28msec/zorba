@@ -330,15 +330,13 @@ FloatImpl<FloatType>::FloatImpl( char const *s ) {
 template<typename FloatType>
 template<typename FloatType2>
 inline FloatImpl<FloatType>::FloatImpl( FloatImpl<FloatType2> const &f ) :
-  value_( f.value_ ),
-  precision_( max_precision() )
+  value_( static_cast<value_type>( f.value_ ) ), precision_( max_precision() )
 {
 }
 
 template<typename FloatType>
 inline FloatImpl<FloatType>::FloatImpl( value_type v, precision_type p ) :
-  value_( v ),
-  precision_( p )
+  value_( v ), precision_( p )
 {
 }
 
