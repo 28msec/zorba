@@ -50,6 +50,14 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   consumeNext(node, theChildren[0].getp(), planState);
 
+  if (node->getNodeKind()==store::StoreConsts::attributeNode)
+  {
+    throw XQUERY_EXCEPTION(
+          err::FOUP0001,
+          ERROR_LOC( loc )
+        );
+  }
+
   consumeNext(uriItem, theChildren[1].getp(), planState);
 
   uriString = uriItem->getStringValue();
