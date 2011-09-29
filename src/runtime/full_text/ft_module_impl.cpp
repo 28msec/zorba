@@ -221,6 +221,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
 bool TokenizeIterator::nextImpl( store::Item_t &result,
                                  PlanState& plan_state ) const {
   store::Item_t attr_name, attr_node;
+  zstring base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
   store::Item_t doc_item, item;
   iso639_1::type lang;
   Tokenizer::Numbers no;
@@ -228,15 +229,12 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   ftmatch_options const *options;
   static_context const *static_ctx;
   TokenizerProvider const *tokenizer_provider;
-  zstring base_uri;
-  zstring value_string;
-
   store::Item_t type_name;
+  zstring value_string;
 
   TokenizeIteratorState *state;
   DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
 
-  base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
