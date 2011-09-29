@@ -105,6 +105,7 @@
   </zorba:function>
   <zorba:state generateInit="use-default">
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_" brief=""/>
+    <zorba:member type="store::Item_t" name="token_qname_" brief=""/>
   </zorba:state>
 </zorba:iterator>
 

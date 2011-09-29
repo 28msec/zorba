@@ -231,7 +231,6 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   zstring base_uri;
   zstring value_string;
 
-  store::Item_t token_qname;
   store::Item_t type_name;
 
   TokenizeIteratorState *state;
@@ -241,10 +240,6 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
-
-  GENV_ITEMFACTORY->createQName(
-    token_qname, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token"
-  );
 
   if ( consumeNext( doc_item, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
@@ -258,20 +253,29 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
     while ( state->doc_tokens_->hasNext() ) {
       FTToken const *token;
       token = state->doc_tokens_->next();
+      ZORBA_ASSERT( token );
+
+      if ( state->token_qname_.isNull() )
+        GENV_ITEMFACTORY->createQName(
+          state->token_qname_, static_context::ZORBA_FULL_TEXT_FN_NS, "",
+          "token"
+        );
 
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(
-        result, nullptr, token_qname, type_name, true, false, ns_bindings,
-        base_uri
+        result, nullptr, state->token_qname_, type_name, true, false,
+        ns_bindings, base_uri
       );
 
-      value_string = iso639_1::string_of[ token->lang() ];
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      GENV_ITEMFACTORY->createQName( attr_name, "", "", "lang" );
-      GENV_ITEMFACTORY->createString( item, value_string );
-      GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, attr_name, type_name, item
-      );
+      if ( token->lang() ) {
+        value_string = iso639_1::string_of[ token->lang() ];
+        type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+        GENV_ITEMFACTORY->createQName( attr_name, "", "", "lang" );
+        GENV_ITEMFACTORY->createString( item, value_string );
+        GENV_ITEMFACTORY->createAttributeNode(
+          attr_node, result, attr_name, type_name, item
+        );
+      }
 
       ztd::to_string( token->para(), &value_string );
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
