@@ -9,7 +9,7 @@
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
-<zorba:iterator name="HostLangWordIterator">
+<zorba:iterator name="HostLangIterator">
   <zorba:function>
     <zorba:signature localname="host-lang" prefix="zorba-full-text">
       <zorba:output>xs:language</zorba:output>
@@ -94,12 +94,12 @@
   <zorba:function>
     <zorba:signature localname="tokenize" prefix="zorba-full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
-      <zorba:output>element(token)*</zorba:output>
+      <zorba:output>node()*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="tokenize" prefix="zorba-full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
       <zorba:param>xs:language</zorba:param>  <!-- lang -->
-      <zorba:output>element(token)*</zorba:output>
+      <zorba:output>node()*</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>

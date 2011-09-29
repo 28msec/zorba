@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
+#include <limits>
+
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "zorbatypes/URI.h"
 
 #include "system/globalenv.h"
-
-#include "runtime/store/maps.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -41,444 +41,263 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
+#include "zorbautils/locale.h"
+
+#include "runtime/full_text/ft_module.h"
+#include "ft_stop_words_set.h"
+#include "ft_util.h"
+
+using namespace std;
+using namespace zorba::locale;
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool
-IsStopWordIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t              lQName;
-  std::vector<store::Item_t> lTypes;
-  std::vector<zstring>       lCollations;
-  std::auto_ptr<store::PUL>  lPul;
-  long                       lTimezone = 0;
-  xqtref_t                   lAnyAtomicType, lIndexKeyType;
-  size_t                     i;
+static iso639_1::type get_lang_from( store::Item_t lang_item ) {
+  zstring lang_string;
+  lang_item->getStringValue2( lang_string );
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
-
-  lTypes.resize(theChildren.size() - 1);
-  lCollations.resize(theChildren.size() - 1);
-  for (i = 1; i < theChildren.size(); ++i)
-  {
-    consumeNext(lTypes[i-1], theChildren[i].getp(), aPlanState);
-
-    lAnyAtomicType = GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
-    lIndexKeyType  = GENV_TYPESYSTEM.create_named_type(
-        lTypes[i-1].getp(), TypeConstants::QUANT_ONE, loc);
-
-    if (lIndexKeyType != NULL &&
-        !TypeOps::is_subtype(&GENV_TYPESYSTEM,
-          *lIndexKeyType, *lAnyAtomicType))
-    {
-      RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
-                     *lAnyAtomicType,
-                     lQName->getStringValue(),
-                     *lIndexKeyType)
-      );
-    }
-  }
-
-  lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addCreateHashMap(&loc, lQName, lTypes, lCollations, lTimezone);
-
-  apply_updates(
-      aPlanState.theCompilerCB,
-      aPlanState.theGlobalDynCtx,
-      theSctx,
-      lPul.get(),
-      loc);
-
-  result = NULL;
-
-  STACK_END(state);
+  if ( !GenericCast::instance()->castableToLanguage( lang_string ) )
+    throw XQUERY_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS(
+        ZED( BadType_23o ), lang_string, ZED( NoCastTo_45o ), "xs:language"
+      )
+    );
+  if ( iso639_1::type lang = find_lang( lang_string.c_str() ) )
+    return lang;
+  throw XQUERY_EXCEPTION( err::FTST0009, ERROR_PARAMS( lang_string ) );
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-/*******************************************************************************
-********************************************************************************/
-bool
-MapGetIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t              lQName;
-  std::vector<store::Item_t> lKey;
-  store::Index*              lIndex;
-  ulong i;
-  store::Item_t              lKeyItem;
-  store::IndexSpecification  lSpec;
+bool HostLangIterator::nextImpl( store::Item_t &result,
+                                 PlanState &p_state ) const {
+  iso639_1::type const lang = get_host_lang();
+  zstring lang_string = iso639_1::string_of[ lang ];
 
-  MapGetIteratorState* state;
-  DEFAULT_STACK_INIT(MapGetIteratorState, state, aPlanState);
+  PlanIteratorState *pi_state;
+  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  GENV_ITEMFACTORY->createLanguage( result, lang_string );
+  STACK_PUSH( true, pi_state );
 
-  lIndex = GENV_STORE.getMap(lQName);
-
-  if (!lIndex)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
-  }
-
-  lSpec = lIndex->getSpecification();
-
-  if (lSpec.getNumColumns() != theChildren.size() - 1)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
-  }
-
-  state->theCond = lIndex->createCondition(store::IndexCondition::POINT_VALUE);
-
-  for (i = 1; i < theChildren.size(); ++i)
-  {
-    if (!consumeNext(lKeyItem, theChildren[i], aPlanState)) 
-    {
-      // Return the empty seq if any of the search key items is the empty seq.
-      break;
-    }
-
-    namespace_context tmp_ctx(theSctx);
-    castOrCheckIndexType(lKeyItem, lSpec.theKeyTypes[i-1], lQName, &tmp_ctx, loc);
-
-    state->theCond->pushItem(lKeyItem);
-  }
-
-  if (i == theChildren.size())
-  {
-    state->theIter = GENV_STORE.getIteratorFactory()->
-      createIndexProbeIterator(lIndex);
-
-    state->theIter->init(state->theCond);
-    state->theIter->open();
-    
-    while (state->theIter->next(result))
-    {
-      STACK_PUSH(true, state);
-    }
-  }
-
-  STACK_END(state);
+  STACK_END( pi_state );
 }
 
+bool IsStopWordIterator::nextImpl( store::Item_t &result,
+                                   PlanState &p_state ) const {
+  store::Item_t item;
+  iso639_1::type lang;
+  ftmatch_options const *options;
+  static_context const *static_ctx;
+  ft_stop_words_set::ptr stop_words;
+  zstring word;
 
-/*******************************************************************************
-********************************************************************************/
-bool
-MapInsertIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t              lQName;
-  std::vector<store::Item_t> lKey;
-  store::Iterator_t          lValue;
-  std::auto_ptr<store::PUL>  lPul;
-  store::IndexSpecification  lSpec;
-  store::Index_t             lIndex;
+  PlanIteratorState *pi_state;
+  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  static_ctx = getStaticContext();
+  options = static_ctx->get_match_options();
+  lang = get_lang_from( options );
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
-
-  lIndex = GENV_STORE.getMap(lQName);
-
-  if (!lIndex)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+  if ( consumeNext( item, theChildren[0], p_state ) ) {
+    item->getStringValue2( word );
+    if ( theChildren.size() > 1 ) {
+      ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+      lang = get_lang_from( item );
+    }
+    stop_words.reset( ft_stop_words_set::get_default( lang ) );
+    GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
+    STACK_PUSH( true, pi_state );
   }
 
-  lSpec = lIndex->getSpecification();
+  STACK_END( pi_state );
+}
 
-  if (lSpec.getNumColumns() != theChildren.size() - 2)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
-  }
+bool StemIterator::nextImpl( store::Item_t &result,
+                             PlanState &p_state ) const {
+  store::Item_t item;
+  iso639_1::type lang;
+  ftmatch_options const *options;
+  internal::StemmerProvider const *provider;
+  static_context const *static_ctx;
+  internal::Stemmer::ptr stemmer;
+  zstring word, stem;
 
-  lValue = new PlanIteratorWrapper(theChildren[1], aPlanState);
+  PlanIteratorState *pi_state;
+  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
 
-  lKey.resize(theChildren.size() - 2);
-  for (size_t i = 2; i < theChildren.size(); ++i)
-  {
-    if (consumeNext(lKey[i-2], theChildren[i].getp(), aPlanState))
-    {
-      namespace_context tmp_ctx(theSctx);
-      castOrCheckIndexType(lKey[i-2], lSpec.theKeyTypes[i-2], lQName, &tmp_ctx, loc);
+  static_ctx = getStaticContext();
+  options = static_ctx->get_match_options();
+  lang = get_lang_from( options );
+
+  if ( consumeNext( item, theChildren[0], p_state ) ) {
+    item->getStringValue2( word );
+    if ( theChildren.size() > 1 ) {
+      ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+      lang = get_lang_from( item );
+    }
+    provider = &internal::StemmerProvider::get_default();
+    stemmer = provider->get_stemmer( lang );
+    if ( stemmer ) {
+      stemmer->stem( word, lang, &stem );
+      GENV_ITEMFACTORY->createString( result, stem );
+      STACK_PUSH( true, pi_state );
     }
   }
 
-  lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addInsertIntoHashMap(&loc, lQName, lKey, lValue);
-
-  apply_updates(
-      aPlanState.theCompilerCB,
-      aPlanState.theGlobalDynCtx,
-      theSctx,
-      lPul.get(),
-      loc);
-
-  result = NULL;
-
-  STACK_END(state);
+  STACK_END( pi_state );
 }
 
+bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
+                                        PlanState &p_state ) const {
+  store::Item_t item;
+  zstring phrase, stripped_phrase;
 
-/*******************************************************************************
-********************************************************************************/
-bool
-MapRemoveIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t              lQName;
-  std::vector<store::Item_t> lKey;
-  store::Index*              lIndex;
-  ulong i;
-  store::Item_t              lKeyItem;
-  std::auto_ptr<store::PUL>  lPul;
-  store::IndexSpecification  lSpec;
+  PlanIteratorState *pi_state;
+  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
-
-  lIndex = GENV_STORE.getMap(lQName);
-
-  if (!lIndex)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+  if ( consumeNext( item, theChildren[0], p_state ) ) {
+    item->getStringValue2( phrase );
+    utf8::strip_diacritics( phrase, &stripped_phrase );
+    GENV_ITEMFACTORY->createString( result, stripped_phrase );
+    STACK_PUSH( true, pi_state );
   }
 
-  lSpec = lIndex->getSpecification();
+  STACK_END( pi_state );
+}
 
-  if (lSpec.getNumColumns() != theChildren.size() - 1)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
-  }
+bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
+                                        PlanState &p_state ) const {
+  internal::Thesaurus::level_type at_least;
+  internal::Thesaurus::level_type at_most;
+  store::Item_t item;
+  iso639_1::type lang;
+  ftmatch_options const *options;
+  zstring phrase, relationship, uri;
+  static_context const *static_ctx;
 
-  lKey.resize(theChildren.size()-1);
-  for (i = 1; i < theChildren.size(); ++i)
-  {
-    if (consumeNext(lKey[i-1], theChildren[i], aPlanState)) 
-    {
-      namespace_context tmp_ctx(theSctx);
-      castOrCheckIndexType(lKey[i-1], lSpec.theKeyTypes[i-1], lQName, &tmp_ctx, loc);
+  PlanIteratorState *pi_state;
+  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
+
+  static_ctx = getStaticContext();
+  options = static_ctx->get_match_options();
+  lang = get_lang_from( options );
+  at_least = 0;
+  at_most = numeric_limits<internal::Thesaurus::level_type>::max();
+
+  if ( theChildren.size() == 1 ) {
+    ZORBA_ASSERT( consumeNext( item, theChildren[0], p_state ) );
+    item->getStringValue2( phrase );
+  } else if ( theChildren.size() > 1 ) {
+    ZORBA_ASSERT( consumeNext( item, theChildren[0], p_state ) );
+    item->getStringValue2( uri );
+    ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+    item->getStringValue2( phrase );
+    if ( theChildren.size() > 2 ) {
+      ZORBA_ASSERT( consumeNext( item, theChildren[2], p_state ) );
+      lang = get_lang_from( item );
+      if ( theChildren.size() > 3 ) {
+        ZORBA_ASSERT( consumeNext( item, theChildren[3], p_state ) );
+        item->getStringValue2( relationship );
+        if ( theChildren.size() > 4 ) {
+          ZORBA_ASSERT( theChildren.size() == 6 );
+          ZORBA_ASSERT( consumeNext( item, theChildren[4], p_state ) );
+          at_least = item->getUnsignedIntValue();
+          ZORBA_ASSERT( consumeNext( item, theChildren[5], p_state ) );
+          at_most = item->getUnsignedIntValue();
+        }
+      }
     }
   }
 
-  lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addRemoveFromHashMap(&loc, lQName, lKey);
+  // TODO
 
-  apply_updates(
-      aPlanState.theCompilerCB,
-      aPlanState.theGlobalDynCtx,
-      theSctx,
-      lPul.get(),
-      loc);
-
-  result = NULL;
-
-  STACK_END(state);
+  STACK_END( pi_state );
 }
 
+bool TokenizeIterator::nextImpl( store::Item_t &result,
+                                 PlanState& p_state ) const {
+  store::Item_t attr_name, attr_node;
+  store::Item_t doc_item, item;
+  FTTokenIterator_t doc_tokens;
+  iso639_1::type lang;
+  Tokenizer::Numbers no;
+  store::NsBindings const ns_bindings;
+  ftmatch_options const *options;
+  static_context const *static_ctx;
+  TokenizerProvider const *tokenizer_provider;
+  zstring base_uri;
+  zstring value_string;
 
-/*******************************************************************************
-********************************************************************************/
-bool
-MapKeysIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t    lQName;
-  store::Index*    lIndex;
-  store::IndexKey  lKey;
-  store::Item_t    lTypeName;
-  zstring          lBaseURI =
-    static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+  store::Item_t token_qname;
+  store::Item_t type_name;
 
-  store::Item_t lKeyNodeName;
-  GENV_ITEMFACTORY->createQName(lKeyNodeName,
-      static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
-      "", "key");
+  PlanIteratorState *pi_state;
+  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
 
-  MapKeysIteratorState* state;
-  DEFAULT_STACK_INIT(MapKeysIteratorState, state, aPlanState);
+  base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
+  static_ctx = getStaticContext();
+  options = static_ctx->get_match_options();
+  lang = get_lang_from( options );
 
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
+  GENV_ITEMFACTORY->createQName(
+    token_qname, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token"
+  );
 
-  lIndex = GENV_STORE.getMap(lQName);
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
 
-  if (!lIndex)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
-  }
+  if ( consumeNext( doc_item, theChildren[0], p_state ) ) {
+    if ( theChildren.size() > 1 ) {
+      ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+      lang = get_lang_from( item );
+    }
 
-  state->theIter = lIndex->keys();
-
-  state->theIter->open();
-
-  // generate result elements of the form
-  // <key>
-  //   <attribute value="key1_value"/>
-  //   <attribute value="key2_value"/>
-  //   <attribute value="key3_value"/>
-  // </key>
-  while (state->theIter->next(lKey))
-  {
-    lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-
-    GENV_ITEMFACTORY->createElementNode(
-        result, NULL, lKeyNodeName, lTypeName,
-        true, false, theNSBindings, lBaseURI);
-
-    for (store::ItemVector::iterator lIter = lKey.begin();
-         lIter != lKey.end();
-         ++lIter)
-    {
-      store::Item_t lAttrElem, lAttrNodeName;
-      store::Item_t lNameAttr, lValueAttr, lValueAttrName;
-
-      GENV_ITEMFACTORY->createQName(lAttrNodeName,
-          static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
-          "", "attribute");
-
-      GENV_ITEMFACTORY->createQName(lValueAttrName,
-           "", "", "value");
-
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    doc_tokens = doc_item->getTokens( *tokenizer_provider, no, lang );
+    while ( doc_tokens->hasNext() ) {
+      FTToken const *token;
+      token = doc_tokens->next();
 
       GENV_ITEMFACTORY->createElementNode(
-          lAttrElem, result, lAttrNodeName, lTypeName,
-          true, false, theNSBindings, lBaseURI);
+        result, nullptr, token_qname, type_name, true, false, ns_bindings,
+        base_uri
+      );
 
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+      value_string = iso639_1::string_of[ token->lang() ];
+      GENV_ITEMFACTORY->createQName( attr_name, "", "", "lang" );
+      GENV_ITEMFACTORY->createString( item, value_string );
       GENV_ITEMFACTORY->createAttributeNode(
-          lValueAttr, lAttrElem.getp(), lValueAttrName, lTypeName, (*lIter));
+        attr_node, result, attr_name, type_name, item
+      );
+
+      ztd::to_string( token->para(), &value_string );
+      GENV_ITEMFACTORY->createQName( attr_name, "", "", "paragraph" );
+      GENV_ITEMFACTORY->createString( item, value_string );
+      GENV_ITEMFACTORY->createAttributeNode(
+        attr_node, result, attr_name, type_name, item
+      );
+
+      ztd::to_string( token->sent(), &value_string );
+      GENV_ITEMFACTORY->createQName( attr_name, "", "", "sentence" );
+      GENV_ITEMFACTORY->createString( item, value_string );
+      GENV_ITEMFACTORY->createAttributeNode(
+        attr_node, result, attr_name, type_name, item
+      );
+
+      value_string = token->value();
+      GENV_ITEMFACTORY->createQName( attr_name, "", "", "value" );
+      GENV_ITEMFACTORY->createString( item, value_string );
+      GENV_ITEMFACTORY->createAttributeNode(
+        attr_node, result, attr_name, type_name, item
+      );
+
+      STACK_PUSH( true, pi_state );
     }
-    STACK_PUSH(true, state);
   }
 
-  STACK_END(state);
-}
-
-
-/*******************************************************************************
-********************************************************************************/
-bool
-MapSizeIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  store::Item_t              lQName;
-  store::Index*              lIndex;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lQName, theChildren[0].getp(), aPlanState);
-
-  lIndex = GENV_STORE.getMap(lQName);
-
-  if (!lIndex)
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( lQName->getStringValue() ),
-      ERROR_LOC( loc )
-    );
-  }
-
-  GENV_ITEMFACTORY->createInteger(result, lIndex->size());
-
-  STACK_PUSH(true, state);
-
-  STACK_END(state);
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-AvailableMapsIteratorState::~AvailableMapsIteratorState()
-{
-  if ( nameItState != NULL ) 
-  {
-    nameItState->close();
-    nameItState = NULL;
-  }
-}
-
-
-void AvailableMapsIteratorState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  nameItState = NULL;
-}
-
-
-void AvailableMapsIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  if ( nameItState != NULL ) {
-    nameItState->close();
-    nameItState = NULL;
-  }
-}
-
-
-bool
-AvailableMapsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  AvailableMapsIteratorState * state;
-  store::Item_t              nameItem;
-
-  DEFAULT_STACK_INIT(AvailableMapsIteratorState, state, planState);
-
-  for ((state->nameItState = GENV_STORE.listMapNames())->open ();
-       state->nameItState->next(nameItem); ) 
-  {
-    result = nameItem;
-    STACK_PUSH( true, state);
-  }
-
-  state->nameItState->close();
-
-  STACK_END (state);
+  STACK_END( pi_state );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

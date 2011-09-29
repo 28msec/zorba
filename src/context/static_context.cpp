@@ -354,7 +354,7 @@ static_context::ZORBA_XML_FN_NS = NS_PRE + "modules/xml";
 
 #ifndef ZORBA_NO_FULL_TEXT
 const zstring
-static_context::ZORBA_FULL_TEXT_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/full_text";
+static_context::ZORBA_FULL_TEXT_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/full-text";
 #endif /* ZORBA_NO_FULL_TEXT */
 
 /***************************************************************************//**
@@ -397,7 +397,8 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
-            ns == ZORBA_XML_FN_NS);
+            ns == ZORBA_XML_FN_NS ||
+            ns == ZORBA_FULL_TEXT_FN_NS);
   } 
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {

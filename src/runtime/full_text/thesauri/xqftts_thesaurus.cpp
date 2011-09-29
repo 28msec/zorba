@@ -60,8 +60,8 @@ thesaurus::iterator::candidate_queue_t::value_type const
     make_pair( static_cast<synonym*>(0), iso2788::neutral );
 
 thesaurus::iterator::iterator( thesaurus_t const &t, zstring const &phrase,
-                               zstring const &rel_string, ft_int at_least,
-                               ft_int at_most ) :
+                               zstring const &rel_string, level_type at_least,
+                               level_type at_most ) :
   thesaurus_( t ), at_least_( at_least ), at_most_( at_most ), level_( 1 )
 {
   using namespace iso2788;
@@ -217,7 +217,7 @@ void thesaurus::destroy() const {
 
 thesaurus::iterator::ptr
 thesaurus::lookup( zstring const &phrase, zstring const &relationship,
-                   ft_int at_least, ft_int at_most ) const {
+                   level_type at_least, level_type at_most ) const {
 # if DEBUG_THESAURUS
   cout << "==================================================" << endl;
   cout << "query phrase: " << phrase << endl;

@@ -286,6 +286,24 @@ namespace zorba {
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
 
+    void beginVisit( const HostLangIterator& );
+    void endVisit  ( const HostLangIterator& );
+
+    void beginVisit( const IsStopWordIterator& );
+    void endVisit  ( const IsStopWordIterator& );
+
+    void beginVisit( const StemIterator& );
+    void endVisit  ( const StemIterator& );
+
+    void beginVisit( const StripDiacriticsIterator& );
+    void endVisit  ( const StripDiacriticsIterator& );
+
+    void beginVisit( const ThesaurusLookupIterator& );
+    void endVisit  ( const ThesaurusLookupIterator& );
+
+    void beginVisit( const TokenizeIterator& );
+    void endVisit  ( const TokenizeIterator& );
+
     void beginVisit( const FunctionNameIterator& );
     void endVisit  ( const FunctionNameIterator& );
 

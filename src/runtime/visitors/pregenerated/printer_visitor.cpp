@@ -47,6 +47,7 @@
 #include "runtime/errors_and_diagnostics/other_diagnostics.h"
 #include "runtime/fetch/fetch.h"
 #include "runtime/fnput/fnput.h"
+#include "runtime/full_text/ft_module.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/introspection/sctx.h"
@@ -1213,6 +1214,90 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPutIterator>
+
+
+// <HostLangIterator>
+void PrinterVisitor::beginVisit ( const HostLangIterator& a) {
+  thePrinter.startBeginVisit("HostLangIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HostLangIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HostLangIterator>
+
+
+// <IsStopWordIterator>
+void PrinterVisitor::beginVisit ( const IsStopWordIterator& a) {
+  thePrinter.startBeginVisit("IsStopWordIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsStopWordIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsStopWordIterator>
+
+
+// <StemIterator>
+void PrinterVisitor::beginVisit ( const StemIterator& a) {
+  thePrinter.startBeginVisit("StemIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StemIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StemIterator>
+
+
+// <StripDiacriticsIterator>
+void PrinterVisitor::beginVisit ( const StripDiacriticsIterator& a) {
+  thePrinter.startBeginVisit("StripDiacriticsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StripDiacriticsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StripDiacriticsIterator>
+
+
+// <ThesaurusLookupIterator>
+void PrinterVisitor::beginVisit ( const ThesaurusLookupIterator& a) {
+  thePrinter.startBeginVisit("ThesaurusLookupIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ThesaurusLookupIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ThesaurusLookupIterator>
+
+
+// <TokenizeIterator>
+void PrinterVisitor::beginVisit ( const TokenizeIterator& a) {
+  thePrinter.startBeginVisit("TokenizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TokenizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TokenizeIterator>
 
 
 // <FunctionNameIterator>

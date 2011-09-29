@@ -70,8 +70,10 @@ uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
  * broad, hence if at_most specifies "all levels" (max int), clamp it at 2
  * (which seems to work well in practice).
  */
-inline ft_int fix_at_most( ft_int at_most ) {
-  return at_most == numeric_limits<ft_int>::max() ? 2 : at_most;
+inline internal::Thesaurus::level_type
+fix_at_most( internal::Thesaurus::level_type at_most ) {
+  return at_most == numeric_limits<internal::Thesaurus::level_type>::max() ?
+    2 : at_most;
 }
 
 /**
@@ -233,8 +235,8 @@ thesaurus::iterator::candidate_queue_t::value_type const
   thesaurus::iterator::LevelMarker = make_pair( ~0u, iso2788::neutral );
 
 thesaurus::iterator::iterator( thesaurus const &t, char const *p,
-                               pointer::type ptr_type, ft_int at_least,
-                               ft_int at_most ) :
+                               pointer::type ptr_type, level_type at_least,
+                               level_type at_most ) :
   thesaurus_( t ), query_ptr_type_( ptr_type ),
   at_least_( at_least ), at_most_( fix_at_most( at_most ) ), level_( 0 )
 {
@@ -506,7 +508,7 @@ char const* thesaurus::find_lemma( zstring const &phrase ) const {
 
 thesaurus::iterator::ptr
 thesaurus::lookup( zstring const &phrase, zstring const &relationship,
-                   ft_int at_least, ft_int at_most ) const {
+                   level_type at_least, level_type at_most ) const {
   iterator::ptr result;
 # if DEBUG_FT_THESAURUS
   cout << "==================================================" << endl;

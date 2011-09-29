@@ -35,6 +35,7 @@ namespace internal {
  */
 class Thesaurus {
 public:
+  typedef ft_int level_type;
   typedef std::unique_ptr<Thesaurus,ztd::destroy_delete<Thesaurus> > ptr;
 
   /**
@@ -81,8 +82,9 @@ public:
    * the phrase was not found.
    */
   virtual iterator::ptr lookup( zstring const &phrase,
-                                zstring const &relationship, ft_int at_least,
-                                ft_int at_most ) const = 0;
+                                zstring const &relationship,
+                                level_type at_least,
+                                level_type at_most ) const = 0;
 
 protected:
   Thesaurus() { }

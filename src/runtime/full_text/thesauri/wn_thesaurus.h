@@ -44,7 +44,8 @@ public:
 
   // inherited
   void destroy() const;
-  iterator::ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
+  iterator::ptr lookup( zstring const&, zstring const&, level_type,
+                        level_type ) const;
 
 private:
   /**
@@ -86,7 +87,7 @@ private:
 
   private:
     iterator( thesaurus const&, char const *lemma, pointer::type,
-              ft_int at_least, ft_int at_most );
+              level_type at_least, level_type at_most );
     ~iterator();
 
     thesaurus const &thesaurus_;
@@ -97,8 +98,8 @@ private:
      */
     pointer::type query_ptr_type_;
   
-    ft_int const at_least_, at_most_;
-    ft_int level_;
+    level_type const at_least_, at_most_;
+    level_type level_;
   
     typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
     typedef std::deque<candidate_t> candidate_queue_t;
