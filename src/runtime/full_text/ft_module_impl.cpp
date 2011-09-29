@@ -235,6 +235,8 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   store::Item_t token_qname;
   store::Item_t type_name;
 
+  bool b;
+
   PlanIteratorState *pi_state;
   DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
 
@@ -247,8 +249,6 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
     token_qname, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token"
   );
 
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-
   if ( consumeNext( doc_item, theChildren[0], p_state ) ) {
     if ( theChildren.size() > 1 ) {
       ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
@@ -258,16 +258,20 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
     doc_tokens = doc_item->getTokens( *tokenizer_provider, no, lang );
 
-    while ( doc_tokens->hasNext() ) {
+    b = doc_tokens->hasNext();          // This is OK.
+
+    while ( doc_tokens->hasNext() ) {   // This crashes.
       FTToken const *token;
       token = doc_tokens->next();
 
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(
         result, nullptr, token_qname, type_name, true, false, ns_bindings,
         base_uri
       );
 
       value_string = iso639_1::string_of[ token->lang() ];
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createQName( attr_name, "", "", "lang" );
       GENV_ITEMFACTORY->createString( item, value_string );
       GENV_ITEMFACTORY->createAttributeNode(
@@ -275,6 +279,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       );
 
       ztd::to_string( token->para(), &value_string );
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createQName( attr_name, "", "", "paragraph" );
       GENV_ITEMFACTORY->createString( item, value_string );
       GENV_ITEMFACTORY->createAttributeNode(
@@ -282,6 +287,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       );
 
       ztd::to_string( token->sent(), &value_string );
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createQName( attr_name, "", "", "sentence" );
       GENV_ITEMFACTORY->createString( item, value_string );
       GENV_ITEMFACTORY->createAttributeNode(
@@ -289,6 +295,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
       );
 
       value_string = token->value();
+      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createQName( attr_name, "", "", "value" );
       GENV_ITEMFACTORY->createString( item, value_string );
       GENV_ITEMFACTORY->createAttributeNode(
