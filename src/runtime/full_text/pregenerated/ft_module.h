@@ -207,18 +207,30 @@ public:
  * 
  * Author: 
  */
-class TokenizeIterator : public NaryBaseIterator<TokenizeIterator, PlanIteratorState>
+class TokenizeIteratorState : public PlanIteratorState
+{
+public:
+  FTTokenIterator_t doc_tokens_; //
+
+  TokenizeIteratorState();
+
+  ~TokenizeIteratorState();
+
+  void reset(PlanState&);
+};
+
+class TokenizeIterator : public NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(TokenizeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizeIterator,
-    NaryBaseIterator<TokenizeIterator, PlanIteratorState>);
+    NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<TokenizeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>*)this);
   }
 
   TokenizeIterator(
@@ -226,7 +238,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<TokenizeIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<TokenizeIterator, TokenizeIteratorState>(sctx, loc, children)
   {}
 
   virtual ~TokenizeIterator();
@@ -234,6 +246,8 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
 };
 
 

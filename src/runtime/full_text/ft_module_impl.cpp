@@ -73,21 +73,21 @@ static iso639_1::type get_lang_from( store::Item_t lang_item ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool HostLangIterator::nextImpl( store::Item_t &result,
-                                 PlanState &p_state ) const {
+                                 PlanState &plan_state ) const {
   iso639_1::type const lang = get_host_lang();
   zstring lang_string = iso639_1::string_of[ lang ];
 
-  PlanIteratorState *pi_state;
-  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   GENV_ITEMFACTORY->createLanguage( result, lang_string );
-  STACK_PUSH( true, pi_state );
+  STACK_PUSH( true, state );
 
-  STACK_END( pi_state );
+  STACK_END( state );
 }
 
 bool IsStopWordIterator::nextImpl( store::Item_t &result,
-                                   PlanState &p_state ) const {
+                                   PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
   ftmatch_options const *options;
@@ -95,29 +95,29 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   ft_stop_words_set::ptr stop_words;
   zstring word;
 
-  PlanIteratorState *pi_state;
-  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
 
-  if ( consumeNext( item, theChildren[0], p_state ) ) {
+  if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( word );
     if ( theChildren.size() > 1 ) {
-      ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+      ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
       lang = get_lang_from( item );
     }
     stop_words.reset( ft_stop_words_set::get_default( lang ) );
     GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
-    STACK_PUSH( true, pi_state );
+    STACK_PUSH( true, state );
   }
 
-  STACK_END( pi_state );
+  STACK_END( state );
 }
 
 bool StemIterator::nextImpl( store::Item_t &result,
-                             PlanState &p_state ) const {
+                             PlanState &plan_state ) const {
   store::Item_t item;
   iso639_1::type lang;
   ftmatch_options const *options;
@@ -126,17 +126,17 @@ bool StemIterator::nextImpl( store::Item_t &result,
   internal::Stemmer::ptr stemmer;
   zstring word, stem;
 
-  PlanIteratorState *pi_state;
-  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
 
-  if ( consumeNext( item, theChildren[0], p_state ) ) {
+  if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( word );
     if ( theChildren.size() > 1 ) {
-      ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+      ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
       lang = get_lang_from( item );
     }
     provider = &internal::StemmerProvider::get_default();
@@ -144,33 +144,33 @@ bool StemIterator::nextImpl( store::Item_t &result,
     if ( stemmer ) {
       stemmer->stem( word, lang, &stem );
       GENV_ITEMFACTORY->createString( result, stem );
-      STACK_PUSH( true, pi_state );
+      STACK_PUSH( true, state );
     }
   }
 
-  STACK_END( pi_state );
+  STACK_END( state );
 }
 
 bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
-                                        PlanState &p_state ) const {
+                                        PlanState &plan_state ) const {
   store::Item_t item;
   zstring phrase, stripped_phrase;
 
-  PlanIteratorState *pi_state;
-  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  if ( consumeNext( item, theChildren[0], p_state ) ) {
+  if ( consumeNext( item, theChildren[0], plan_state ) ) {
     item->getStringValue2( phrase );
     utf8::strip_diacritics( phrase, &stripped_phrase );
     GENV_ITEMFACTORY->createString( result, stripped_phrase );
-    STACK_PUSH( true, pi_state );
+    STACK_PUSH( true, state );
   }
 
-  STACK_END( pi_state );
+  STACK_END( state );
 }
 
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
-                                        PlanState &p_state ) const {
+                                        PlanState &plan_state ) const {
   internal::Thesaurus::level_type at_least;
   internal::Thesaurus::level_type at_most;
   store::Item_t item;
@@ -179,8 +179,8 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   zstring phrase, relationship, uri;
   static_context const *static_ctx;
 
-  PlanIteratorState *pi_state;
-  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
@@ -189,24 +189,24 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   at_most = numeric_limits<internal::Thesaurus::level_type>::max();
 
   if ( theChildren.size() == 1 ) {
-    ZORBA_ASSERT( consumeNext( item, theChildren[0], p_state ) );
+    ZORBA_ASSERT( consumeNext( item, theChildren[0], plan_state ) );
     item->getStringValue2( phrase );
   } else if ( theChildren.size() > 1 ) {
-    ZORBA_ASSERT( consumeNext( item, theChildren[0], p_state ) );
+    ZORBA_ASSERT( consumeNext( item, theChildren[0], plan_state ) );
     item->getStringValue2( uri );
-    ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+    ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
     item->getStringValue2( phrase );
     if ( theChildren.size() > 2 ) {
-      ZORBA_ASSERT( consumeNext( item, theChildren[2], p_state ) );
+      ZORBA_ASSERT( consumeNext( item, theChildren[2], plan_state ) );
       lang = get_lang_from( item );
       if ( theChildren.size() > 3 ) {
-        ZORBA_ASSERT( consumeNext( item, theChildren[3], p_state ) );
+        ZORBA_ASSERT( consumeNext( item, theChildren[3], plan_state ) );
         item->getStringValue2( relationship );
         if ( theChildren.size() > 4 ) {
           ZORBA_ASSERT( theChildren.size() == 6 );
-          ZORBA_ASSERT( consumeNext( item, theChildren[4], p_state ) );
+          ZORBA_ASSERT( consumeNext( item, theChildren[4], plan_state ) );
           at_least = item->getUnsignedIntValue();
-          ZORBA_ASSERT( consumeNext( item, theChildren[5], p_state ) );
+          ZORBA_ASSERT( consumeNext( item, theChildren[5], plan_state ) );
           at_most = item->getUnsignedIntValue();
         }
       }
@@ -215,14 +215,13 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
 
   // TODO
 
-  STACK_END( pi_state );
+  STACK_END( state );
 }
 
 bool TokenizeIterator::nextImpl( store::Item_t &result,
-                                 PlanState& p_state ) const {
+                                 PlanState& plan_state ) const {
   store::Item_t attr_name, attr_node;
   store::Item_t doc_item, item;
-  FTTokenIterator_t doc_tokens;
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
@@ -235,10 +234,8 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   store::Item_t token_qname;
   store::Item_t type_name;
 
-  bool b;
-
-  PlanIteratorState *pi_state;
-  DEFAULT_STACK_INIT( PlanIteratorState, pi_state, p_state );
+  TokenizeIteratorState *state;
+  DEFAULT_STACK_INIT( TokenizeIteratorState, state, plan_state );
 
   base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
   static_ctx = getStaticContext();
@@ -249,20 +246,18 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
     token_qname, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token"
   );
 
-  if ( consumeNext( doc_item, theChildren[0], p_state ) ) {
+  if ( consumeNext( doc_item, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
-      ZORBA_ASSERT( consumeNext( item, theChildren[1], p_state ) );
+      ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
       lang = get_lang_from( item );
     }
 
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
-    doc_tokens = doc_item->getTokens( *tokenizer_provider, no, lang );
+    state->doc_tokens_ = doc_item->getTokens( *tokenizer_provider, no, lang );
 
-    b = doc_tokens->hasNext();          // This is OK.
-
-    while ( doc_tokens->hasNext() ) {   // This crashes.
+    while ( state->doc_tokens_->hasNext() ) {
       FTToken const *token;
-      token = doc_tokens->next();
+      token = state->doc_tokens_->next();
 
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(
@@ -302,11 +297,20 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
         attr_node, result, attr_name, type_name, item
       );
 
-      STACK_PUSH( true, pi_state );
+      STACK_PUSH( true, state );
     }
   }
 
-  STACK_END( pi_state );
+  STACK_END( state );
+}
+
+void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>::resetImpl( plan_state );
+  TokenizeIteratorState *const state =
+    StateTraitsImpl<TokenizeIteratorState>::getState(
+      plan_state, this->theStateOffset
+    );
+  state->doc_tokens_->reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

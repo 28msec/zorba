@@ -198,6 +198,14 @@ void TokenizeIterator::accept(PlanIterVisitor& v) const {
 
 TokenizeIterator::~TokenizeIterator() {}
 
+TokenizeIteratorState::TokenizeIteratorState() {}
+
+TokenizeIteratorState::~TokenizeIteratorState() {}
+
+
+void TokenizeIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </TokenizeIterator>
 
 

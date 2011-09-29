@@ -90,7 +90,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="TokenizeIterator">
+<zorba:iterator name="TokenizeIterator"
+                generateResetImpl="true">
   <zorba:function>
     <zorba:signature localname="tokenize" prefix="zorba-full-text">
       <zorba:param>node()</zorba:param>       <!-- doc -->
@@ -102,6 +103,9 @@
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
   </zorba:function>
+  <zorba:state generateInit="use-default">
+    <zorba:member type="FTTokenIterator_t" name="doc_tokens_" brief=""/>
+  </zorba:state>
 </zorba:iterator>
 
 </zorba:iterators>
