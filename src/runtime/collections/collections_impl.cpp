@@ -33,6 +33,7 @@
 #include "compiler/xqddf/value_ic.h"
 
 #include "runtime/collections/collections.h"
+#include "runtime/collections/collections_impl.h"
 #include "runtime/core/apply_updates.h"
 
 #include "store/api/pul.h"

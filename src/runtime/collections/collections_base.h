@@ -174,42 +174,6 @@ public:
   }
 };
 
-/**
- *
- *      fn:count(collection)
- *
- * Author: Zorba Team
- */
-class CountCollectionIterator: public NaryBaseIterator<CountCollectionIterator, PlanIteratorState>
-{
-  public:
-
-  SERIALIZABLE_CLASS(CountCollectionIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CountCollectionIterator,
-          NaryBaseIterator<CountCollectionIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-      serialize_baseclass(ar,
-              (NaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
-    }
-
-  CountCollectionIterator(
-          static_context* sctx,
-              const QueryLoc& loc,
-                  std::vector<PlanIter_t>& children)
-    :
-    NaryBaseIterator<CountCollectionIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~CountCollectionIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
 } // namespace zorba
 #endif /* ZORBA_RUNTIME_COLLECTIONS_COLLECTIONS_BASE_H */
 /* vim:set et sw=2 ts=2: */
