@@ -99,6 +99,9 @@ class SimpleStore : public store::Store
 {
   friend class zorba::StoreManager;
 
+  typedef std::map<const zstring, const store::Item *> RefNodeMap;
+  typedef std::map<const store::Item *, zstring> NodeRefMap;
+
 public:
   static const char* XS_URI;
   static const char* XML_URI;
@@ -148,8 +151,8 @@ protected:
 
   /* ------------------------ Node Reference Management ---------------------------*/
 
-  std::map<const zstring, const store::Item *> theReferencesToNodeMap;
-  std::map<const store::Item *, zstring> theNodeToReferencesMap;
+  RefNodeMap                    theReferencesToNodeMap;
+  NodeRefMap                    theNodeToReferencesMap;
 
   /* ------------------------ Node Reference Management ---------------------------*/
 

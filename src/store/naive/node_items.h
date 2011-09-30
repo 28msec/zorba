@@ -309,31 +309,31 @@ class XmlNode : public store::Item
 public:
   enum NodeFlags
   {
-    NodeKindMask      =   0x7,
-    IsId              =   0x8,
-    IsIdRefs          =   0x10,
-    HaveTypedValue    =   0x20,    // for element nodes only
-    HaveEmptyValue    =   0x40,    // for element nodes only
-    IsTyped           =   0x80,    // for text nodes only
-    HaveListValue     =   0x100,   // for text and attribute nodes only
+    NodeKindMask        =   0x7,
+    IsId                =   0x8,
+    IsIdRefs            =   0x10,
+    HaveTypedValue      =   0x20,    // for element nodes only
+    HaveEmptyValue      =   0x40,    // for element nodes only
+    IsTyped             =   0x80,    // for text nodes only
+    HaveListValue       =   0x100,   // for text and attribute nodes only
 
-    HaveLocalBindings =   0x200,   // for element nodes only
-    HaveBaseUri       =   0x400,   // for element nodes only
-    IsBaseUri         =   0x800,   // for attribute nodes only
-    IsHidden          =   0x1000,  // for attribute nodes only
-    IsInSubstGroup    =   0x2000,  // for element nodes only
+    HaveLocalBindings   =   0x200,   // for element nodes only
+    HaveBaseUri         =   0x400,   // for element nodes only
+    IsBaseUri           =   0x800,   // for attribute nodes only
+    IsHidden            =   0x1000,  // for attribute nodes only
+    IsInSubstGroup      =   0x2000,  // for element nodes only
 
     // For element nodes only. The flag is set for a node N if there is another
     // node M in its subtree such that N and M have the same name.
-    IsRecursive       =   0x4000,
+    IsRecursive         =   0x4000,
 
 #ifndef EMBEDED_TYPE
     // For element and attribute nodes only. The flag is set if the node has
     // a type other than untyped (for elements) or untypedAtomic (for attributes)
-    HaveType  =   0x8000,
+    HaveType            =   0x8000,
 #endif
 
-    HaveReference    = 0x10000,
+    HaveReference       = 0x10000,
     HaveFrozenReference = 0x20000
   };
 

@@ -1329,143 +1329,160 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 
 /* ------------------------ Node References Management ---------------------------*/
 
-/**
- * Computes the reference of the given node.
- *
- * @param node XDM node
- * @return the identifier as an item of type xs:anyURI
- */
+
+/*******************************************************************************
+ Computes the reference of the given node.
+ 
+ @param node XDM node
+ @return the identifier as an item of type xs:anyURI
+********************************************************************************/
 bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
 {
-  XmlNode* xmlNode=static_cast<XmlNode*>(node);
+  XmlNode* xmlNode = static_cast<XmlNode*>(node);
+
   if (xmlNode->haveReference())
   {
-    std::map<const store::Item *,zstring>::iterator resIt=theNodeToReferencesMap.find(node);
-    ZORBA_FATAL(resIt!=theNodeToReferencesMap.end(),"Node reference cannot be found");
-    zstring id=resIt->second;
+    std::map<const store::Item *, zstring>::iterator resIt =
+    theNodeToReferencesMap.find(node);
+
+    ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
+
+    zstring id = resIt->second;
     return theItemFactory->createString(result, id);
   }
 
   uuid_t uuid;
   uuid_create(&uuid);
-  zstring uuidStr=uuidToURI(uuid);
+  zstring uuidStr = uuidToURI(uuid);
+
   xmlNode->setHaveReference();
-  theNodeToReferencesMap[node]=uuidStr;
-  theReferencesToNodeMap[uuidStr]=node;
+
+  theNodeToReferencesMap[node] = uuidStr;
+  theReferencesToNodeMap[uuidStr] = node;
+
   return theItemFactory->createAnyURI(result, uuidStr);
 }
 
-/**
- * Returns the already computed reference of the given node.
- * If no reference has already been computed for the given node
- * error ZAPI0030 is raised.
- *
- * @param result reference as an item of type xs:string
- * @param node XDM node
- * @return whether the reference has been created successfully
- */
+
+/*******************************************************************************
+  Returns the already computed reference of the given node. If no reference has
+  already been computed for the given node error ZAPI0030 is raised.
+ 
+  @param result reference as an item of type xs:string
+  @param node XDM node
+  @return whether the reference has been created successfully
+********************************************************************************/
 bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* node)
 {
-  const XmlNode* xmlNode=static_cast<const XmlNode*>(node);
+  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
   if (!xmlNode->haveReference())
     throw ZORBA_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
 
-  std::map<const store::Item *,zstring>::iterator resIt=theNodeToReferencesMap.find(node);
-  ZORBA_FATAL(resIt!=theNodeToReferencesMap.end(),"Node reference cannot be found");
-  zstring id=resIt->second;
+  std::map<const store::Item *,zstring>::iterator resIt =
+  theNodeToReferencesMap.find(node);
+
+  ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
+
+  zstring id = resIt->second;
   return theItemFactory->createString(result, id);
 }
 
-/**
- * Returns the node which is identified by the given reference.
- *
- * @param reference an xs:anyURI item
- * @returns the node identified by the reference, NULL otherwise
- */
+
+/*******************************************************************************
+  Returns the node which is identified by the given reference.
+ 
+  @param reference an xs:anyURI item
+  @result the node identified by the reference, or NULL if no node with the given
+          reference exists
+  @return false if no node with the given reference exists; true otherwise.
+********************************************************************************/
 bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& reference)
 {
-  if (
-          reference.length()!=41
-          ||
-          !utf8::match_whole(reference, "uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}")
-         )
-      {
-        throw ZORBA_EXCEPTION(
-          zerr::ZAPI0028_INVALID_NODE_URI,
-          ERROR_PARAMS(reference)
-        );
-      }
-
-  std::map<const zstring, const store::Item *>::iterator resIt;
-  if ((resIt=theReferencesToNodeMap.find(reference))!=theReferencesToNodeMap.end())
+  if (reference.length() != 41 ||
+      !utf8::match_whole(reference, "uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
   {
-    result=resIt->second;
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(reference));
+  }
+
+  RefNodeMap::iterator resIt;
+
+  if ((resIt = theReferencesToNodeMap.find(reference)) != theReferencesToNodeMap.end())
+  {
+    result = resIt->second;
     return true;
   }
-  result=NULL;
+
+  result = NULL;
   return false;
 }
 
-/**
- * Returns whether a reference has already been generated for the given node.
- *
- * @param item XDM node
- * @return whether a reference has already been generated for the given node.
- */
+
+/*******************************************************************************
+  Returns whether a reference has already been generated for the given node.
+ 
+  @param item XDM node
+  @return whether a reference has already been generated for the given node.
+********************************************************************************/
 bool SimpleStore::hasReference(const store::Item* node)
 {
   return static_cast<const XmlNode*>(node)->haveReference();
 }
 
-/**
- * Copies the reference of a source node to a target node. The source
- * node must already have a reference. The target nodes acquires the
- * source reference but it is not registered in the reference-to-node
- * map. The target node also get its "haveFrozenReference" flag set.
- * Used in PUL manipulation.
- *
- * @param source source XDM node
- * @param target target XDM node
- */
+
+/*******************************************************************************
+  Copies the reference of a source node to a target node. The source
+  node must already have a reference. The target nodes acquires the
+  source reference but it is not registered in the reference-to-node
+  map. The target node also get its "haveFrozenReference" flag set.
+  Used in PUL manipulation.
+ 
+  @param source source XDM node
+  @param target target XDM node
+********************************************************************************/
 void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
 {
   store::Item_t reference;
-  getCurrentReference(reference,source);
+  getCurrentReference(reference, source);
+
   unregisterNode(target);
+
   target->setHaveReference();
   target->setHaveFrozenReference();
-  theNodeToReferencesMap[target]=reference->getStringValue();
+
+  theNodeToReferencesMap[target] = reference->getStringValue();
 }
 
-/**
- * Sets the reference of a node to a given value. The "haveFrozenIdentifer"
- * flag is also set.
- * Used in PUL manipulation.
- *
- * @param node  XDM node
- * @param reference the reference to set
- */
+
+/*******************************************************************************
+  Sets the reference of a node to a given value. The "haveFrozenIdentifer"
+  flag is also set.
+  Used in PUL manipulation.
+ 
+  @param node  XDM node
+  @param reference the reference to set
+********************************************************************************/
 void SimpleStore::restoreReference(XmlNode* node, const zstring& reference)
 {
   unregisterNode(node);
-  theNodeToReferencesMap[node]=reference;
+  theNodeToReferencesMap[node] = reference;
   node->setHaveReference();
   node->setHaveFrozenReference();
 }
 
-/**
- * Unfreezes the reference of a given node:
- * - Registers the node in the references to node map
- * - Resets the node "haveFrozenReference" flag
- * The node must already have an reference, otherwise
- * error ZAPI0030 is raised.
- * The node reference must not be used for any other
- * node in the reference-to-node map, otherwise
- * error ZAPI0029 is raised.
- * Used in PUL manipulation.
- *
- * @param node XDM node
- */
+
+/*******************************************************************************
+  Unfreezes the reference of a given node:
+  - Registers the node in the references to node map
+  - Resets the node "haveFrozenReference" flag
+  The node must already have an reference, otherwise
+  error ZAPI0030 is raised.
+  The node reference must not be used for any other
+  node in the reference-to-node map, otherwise
+  error ZAPI0029 is raised.
+  Used in PUL manipulation.
+ 
+  @param node XDM node
+********************************************************************************/
 void SimpleStore::unfreezeReference(XmlNode* node)
 {
   store::Item_t reference;
@@ -1482,32 +1499,38 @@ void SimpleStore::unfreezeReference(XmlNode* node)
   node->resetHaveFrozenReference();
 }
 
-/**
- * Removes a node from the reference-to-nodes and nodes-to-references maps.
- *
- * @param node XDM node
- * @return whether the node was registered or not.
- */
+
+/*******************************************************************************
+  Removes a node from the reference-to-nodes and nodes-to-references maps.
+ 
+  @param node XDM node
+  @return whether the node was registered or not.
+********************************************************************************/
 bool SimpleStore::unregisterNode(XmlNode* node)
 {
   if (!node->haveReference())
     return false;
-  std::map<const store::Item *,zstring>::iterator resIt;
-  if ((resIt=theNodeToReferencesMap.find(node))!=theNodeToReferencesMap.end())
+
+  NodeRefMap::iterator resIt;
+
+  if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
   {
-    zstring value=resIt->second;
+    zstring value = resIt->second;
     theNodeToReferencesMap.erase(resIt);
     node->resetHaveReference();
+
     if (!node->haveFrozenReference())
       theReferencesToNodeMap.erase(value);
     else
       node->resetHaveFrozenReference();
+
     //if a node has a frozen reference it is not registered in the references to node map
     return true;
   }
   else
     return false;
 }
+
 
 /*******************************************************************************
 

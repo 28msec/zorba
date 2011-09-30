@@ -1349,10 +1349,10 @@ DocumentNode::DocumentNode(
 
 ********************************************************************************/
 XmlNode* DocumentNode::copyInternal(
-    InternalNode*          rootParent,
-    InternalNode*          parent,
-    csize                pos,
-    const XmlNode*         rootCopy,
+    InternalNode* rootParent,
+    InternalNode* parent,
+    csize pos,
+    const XmlNode* rootCopy,
     const store::CopyMode& copymode) const
 {
   ZORBA_ASSERT(rootParent == NULL && parent == NULL);
@@ -1389,7 +1389,7 @@ XmlNode* DocumentNode::copyInternal(
   }
 
   if (haveFrozenReference() || copymode.theFreezeReference)
-    GET_STORE().copyReference(this,copyNode);
+    GET_STORE().copyReference(this, copyNode);
 
 
   NODE_TRACE1("}");
