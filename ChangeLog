@@ -37,7 +37,8 @@ version 2.x
   * Fixed bug #859968 (Using put on an attribute produces an invalid XDM instance and may cause segmentation faults)
   * Fixed bug #855314 (should not fold a constant expr that returns an error item)
   * Added ExternalFunctionParameter class to be registered in the DynamicContext
-	
+  * Fixed bug #863320 (Sentence is incorrectly incremented when token characters end without sentence terminator)
+
 version 2.0.1
 
   * Custom Full-text stemming.
