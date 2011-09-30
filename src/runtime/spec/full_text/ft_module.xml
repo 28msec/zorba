@@ -112,8 +112,9 @@
     </zorba:signature>
   </zorba:function>
   <zorba:state generateInit="use-default">
-    <zorba:member type="FTTokenIterator_t" name="doc_tokens_" brief=""/>
-    <zorba:member type="store::Item_t" name="token_qname_" brief=""/>
+    <zorba:member type="store::Item_t" name="doc_item_"/>
+    <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
+    <zorba:member type="store::Item_t" name="token_qname_"/>
   </zorba:state>
 </zorba:iterator>
 

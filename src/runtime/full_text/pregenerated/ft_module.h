@@ -224,6 +224,7 @@ public:
 class TokenizeIteratorState : public PlanIteratorState
 {
 public:
+  store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
   store::Item_t token_qname_; //
 

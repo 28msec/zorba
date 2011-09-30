@@ -243,7 +243,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
   store::Item_t attr_name, attr_node;
   zstring base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
-  store::Item_t doc_item, item;
+  store::Item_t item;
   iso639_1::type lang;
   Tokenizer::Numbers no;
   store::NsBindings const ns_bindings;
@@ -260,14 +260,15 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
 
-  if ( consumeNext( doc_item, theChildren[0], plan_state ) ) {
+  if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
       ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
       lang = get_lang_from( item );
     }
 
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
-    state->doc_tokens_ = doc_item->getTokens( *tokenizer_provider, no, lang );
+    state->doc_tokens_ =
+      state->doc_item_->getTokens( *tokenizer_provider, no, lang );
 
     while ( state->doc_tokens_->hasNext() ) {
       FTToken const *token;
