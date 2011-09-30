@@ -30,6 +30,13 @@ version 2.x
   * Fixed bug # (Should not destroy the parent of a node that is being detached 
     before the detach is done). 
   * Fixed bug #3408181 (available-collection() returns undeclared collections)
+  * Fixed bug #859465 (Fatal error if a PUL contains two deactivate IC primitives)
+  * Fixed bug #859467 (Fatal error if a PUL contains two activate Foreign Key primitives)
+  * Fixed bug #859468 (Fatal error if a PUL contains two activate Simple IC primitives)
+  * Fixed bug #859522 (Fatal error if a PUL contains two delete document primitives)
+  * Fixed bug #859968 (Using put on an attribute produces an invalid XDM instance and may cause segmentation faults)
+  * Fixed bug #855314 (should not fold a constant expr that returns an error item)
+  * Added ExternalFunctionParameter class to be registered in the DynamicContext
 	
 version 2.0.1
 

@@ -800,7 +800,8 @@ store::Iterator_t SimpleStore::listIndexNames()
 ********************************************************************************/
 store::IC_t SimpleStore::activateIC(
     const store::Item_t& icQName,
-    const store::Item_t& collectionQName)
+    const store::Item_t& collectionQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -810,16 +811,14 @@ store::IC_t SimpleStore::activateIC(
 
   if (theICs.get(qname, ic))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0015_IC_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    return ic; // already activated => noop
   }
 
   ic = new ICCollectionImpl(icQName, collectionQName);
 
   theICs.insert(qname, ic);
 
+  isApplied=true;
   return ic;
 }
 
@@ -830,7 +829,8 @@ store::IC_t SimpleStore::activateIC(
 store::IC_t SimpleStore::activateForeignKeyIC(
     const store::Item_t& icQName,
     const store::Item_t& fromCollectionQName,
-    const store::Item_t& toCollectionQName)
+    const store::Item_t& toCollectionQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -840,22 +840,21 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 
   if (theICs.get(qname, ic))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0015_IC_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() )
-    );
+    return ic; // already activated => noop
   }
 
   ic = new ICForeignKeyImpl(qname, fromCollectionQName, toCollectionQName);
 
   theICs.insert(qname, ic);
 
+  isApplied=true;
   return ic;
 }
 
 
 store::IC_t
-SimpleStore::deactivateIC(const store::Item_t& icQName)
+SimpleStore::deactivateIC(const store::Item_t& icQName,
+    bool& isApplied)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -863,13 +862,11 @@ SimpleStore::deactivateIC(const store::Item_t& icQName)
 
   if (!theICs.get(icQName.getp(), ic))
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0016_IC_DOES_NOT_EXIST,
-      ERROR_PARAMS( icQName->getStringValue() )
-    );
+    return ic; // already deactivated in the same PUL => noop
   }
 
   theICs.remove(icQName.getp());
+  isApplied=true;
   return ic;
 }
 

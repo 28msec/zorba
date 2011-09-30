@@ -108,6 +108,11 @@ public:
   {
     return (theNext == 0 ? NULL : this + theNext);
   }
+
+  const HASHENTRY* getNext() const
+  {
+    return (theNext == 0 ? NULL : this + theNext);
+  }
 };
 
 
@@ -256,7 +261,7 @@ protected:
 
   bool                              theUseTransfer;
 
-  SYNC_CODE(Mutex                   theMutex;)
+  SYNC_CODE(mutable Mutex           theMutex;)
   SYNC_CODE(Mutex                 * theMutexp;)
 
   int                               numCollisions;
@@ -511,7 +516,7 @@ iterator get(const T& item)
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HASHENTRY<T, V>* entry = bucket(hval);
+  const HASHENTRY<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return end();
@@ -532,13 +537,13 @@ iterator get(const T& item)
   If the given item is already in the set, return true and a copy of the value
   associated with the item; otherwise return false.
 ********************************************************************************/
-bool get(const T& item, V& value)
+bool get(const T& item, V& value) const
 {
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HASHENTRY<T, V>* entry = bucket(hval);
+  const HASHENTRY<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -721,7 +726,7 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-size_t computeTabSize(size_t size)
+size_t computeTabSize(size_t size) const
 {
   return size + 32 + size/5;
 }
@@ -730,13 +735,13 @@ size_t computeTabSize(size_t size)
 /*******************************************************************************
 
 ********************************************************************************/
-ulong hash(const T& item)
+ulong hash(const T& item) const
 {
   return theCompareFunction.hash(item);
 }
 
 
-bool equal(const T& item1, const T& item2)
+bool equal(const T& item1, const T& item2) const
 {
   return theCompareFunction.equal(item1, item2);
 }
@@ -746,6 +751,15 @@ bool equal(const T& item1, const T& item2)
 
 ********************************************************************************/
 HASHENTRY<T, V>* bucket(ulong hvalue)
+{
+  return &theHashTab[hvalue % theHashTabSize];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const HASHENTRY<T, V>* bucket(ulong hvalue) const
 {
   return &theHashTab[hvalue % theHashTabSize];
 }
