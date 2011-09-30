@@ -16,38 +16,17 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="NodeIdentifierIterator">
+  <zorba:iterator name="NodeReferenceIterator">
 
     <zorba:description author="Federico Cavalieri">       
-      declare function id:node-identifier($node as node) as xs:string
+      declare function ref:node-reference($node as node) as xs:anyURI
     </zorba:description>
     
     <zorba:function>
     
-      <zorba:signature localname="node-identifier" prefix="zorba-node-identifier">
+      <zorba:signature localname="node-reference" prefix="fn-zorba-ref">
         <zorba:param>node()</zorba:param>   
-        <zorba:output>xs:string</zorba:output>
-      </zorba:signature>
-      
-    </zorba:function>
-
-  </zorba:iterator>
-  
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-  <zorba:iterator name="CurrentNodeIdentifierIterator">
-
-    <zorba:description author="Federico Cavalieri">       
-      declare function id:current-node-identifier($node as node) as xs:string
-    </zorba:description>
-    
-    <zorba:function>
-    
-      <zorba:signature localname="current-node-identifier" prefix="zorba-node-identifier">
-        <zorba:param>node()</zorba:param>   
-        <zorba:output>xs:string</zorba:output>
+        <zorba:output>xs:anyURI</zorba:output>
       </zorba:signature>
       
     </zorba:function>
@@ -58,15 +37,15 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="HasIdentifierIterator">
+  <zorba:iterator name="HasReferenceIterator">
 
     <zorba:description author="Federico Cavalieri">
-      declare function id:has-identifier($node as node) as xs:boolean
+      declare function id:has-reference($node as node) as xs:boolean
     </zorba:description>
     
     <zorba:function>
     
-      <zorba:signature localname="has-identifier" prefix="zorba-node-identifier">
+      <zorba:signature localname="has-reference" prefix="fn-zorba-ref">
         <zorba:param>node()</zorba:param>                
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
@@ -79,7 +58,7 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="NodeByIdentifierIterator">
+  <zorba:iterator name="NodeByReferenceIterator">
 
     <zorba:description author="Federico Cavalieri">
       declare function id:node-by-identifier($identifier as xs:string) as node()?
@@ -87,8 +66,8 @@
 
     <zorba:function>
     
-      <zorba:signature localname="node-by-identifier" prefix="zorba-node-identifier">        
-        <zorba:param>xs:string</zorba:param>        
+      <zorba:signature localname="node-by-reference" prefix="fn-zorba-ref">        
+        <zorba:param>xs:anyURI</zorba:param>        
         <zorba:output>node()?</zorba:output>
       </zorba:signature>
       
@@ -96,44 +75,6 @@
         
   </zorba:iterator>
     
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="NodeReferenceIterator">
-
-  <zorba:description author="Zorba Team">
-  Iterator to implement the zorba:node-reference function.
-  </zorba:description>
-
-  <zorba:function>
-    <zorba:signature localname="node-reference" prefix="fn-zorba-ref">
-      <zorba:param>node()</zorba:param>
-      <zorba:output>xs:anyURI</zorba:output>
-    </zorba:signature>
-  </zorba:function>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="NodeByReferenceIterator">
-
-    <zorba:description author="Zorba Team">
-      Iterator to implement the zorba:node-by-reference function.
-    </zorba:description>
-
-    <zorba:function>
-      <zorba:signature localname="node-by-reference" prefix="fn-zorba-ref">
-        <zorba:param>xs:anyURI</zorba:param>
-        <zorba:output>node()?</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-</zorba:iterator>
-
 <!--
 /*******************************************************************************
 ********************************************************************************/

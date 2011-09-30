@@ -36,7 +36,7 @@ namespace zorba {
 /*******************************************************************************
 ********************************************************************************/
 bool
-NodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lNode;
   store::Item_t lGenerateIdentifier;
@@ -47,7 +47,7 @@ NodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) 
 
   consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
-  STACK_PUSH(GENV_STORE.getIdentifier(aResult, lNode), state);
+  STACK_PUSH(GENV_STORE.getReference(aResult, lNode), state);
 
   STACK_END (state);
 }
@@ -55,33 +55,7 @@ NodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) 
 /*******************************************************************************
 ********************************************************************************/
 bool
-CurrentNodeIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-  store::Item_t lGenerateIdentifier;
-  zstring lNodeId;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-
-  if (!GENV_STORE.hasIdentifier(lNode))
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZAPI0090_NO_CURRENT_IDENTIFIER,
-      ERROR_LOC( loc )
-    );
-  }
-  STACK_PUSH(GENV_STORE.getIdentifier(aResult, lNode), state);
-
-  STACK_END (state);
-}
-
-/*******************************************************************************
-********************************************************************************/
-bool
-HasIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+HasReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lNode;
 
@@ -90,7 +64,7 @@ HasIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
 
   consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, GENV_STORE.hasIdentifier(lNode)), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, GENV_STORE.hasReference(lNode)), state);
 
   STACK_END (state);
 }
@@ -98,7 +72,7 @@ HasIdentifierIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
 /*******************************************************************************
 ********************************************************************************/
 bool
-NodeByIdentifierIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
     store::Item_t lUUID;
 
@@ -107,60 +81,24 @@ NodeByIdentifierIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
     consumeNext(lUUID, theChildren[0].getp(), planState);
 
-    if (!utf8::match_whole(lUUID->getStringValue(), "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
+    if (
+        lUUID->getStringValue().length()!=41
+        ||
+        !utf8::match_whole(lUUID->getStringValue(), "uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}")
+       )
     {
       throw XQUERY_EXCEPTION(
-        zerr::ZAPI0091_INVALID_NODE_IDENTIFIER,
+        zerr::ZAPI0028_INVALID_NODE_URI,
         ERROR_PARAMS(lUUID->getStringValue()),
         ERROR_LOC( loc )
       );
     }
 
 
-    STACK_PUSH(GENV_STORE.getNodeByIdentifier(result, lUUID->getStringValue()), state);
+    STACK_PUSH(GENV_STORE.getNodeByReference(result, lUUID->getStringValue()), state);
 
     STACK_END (state);
 }
-
-
-
-bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  PlanIteratorState *state;
-  bool valid;
-  store::Item_t inNode;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  valid = consumeNext(inNode, theChildren[0], planState);
-  assert(valid);
-
-  if (! inNode->getCollection() )
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZAPI0080_CANNOT_RETRIEVE_NODE_REFERENCE,
-      ERROR_LOC( loc )
-    );
-  }
-
-  STACK_PUSH(GENV_STORE.getReference(result, inNode), state);
-  STACK_END(state);
-}
-
-bool NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t inUri;
-  bool valid;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  valid = consumeNext(inUri, theChildren[0], planState);
-  assert(valid);
-
-  STACK_PUSH(GENV_STORE.getNodeByReference(result, inUri), state);
-  STACK_END (state);
-}
-
 
 // 14.2 fn:local-name
 //---------------------

@@ -32,118 +32,6 @@
 
 namespace zorba {
 
-// <NodeIdentifierIterator>
-const char* NodeIdentifierIterator::class_name_str = "NodeIdentifierIterator";
-NodeIdentifierIterator::class_factory<NodeIdentifierIterator>
-NodeIdentifierIterator::g_class_factory;
-
-const serialization::ClassVersion 
-NodeIdentifierIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int NodeIdentifierIterator::class_versions_count =
-sizeof(NodeIdentifierIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void NodeIdentifierIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-NodeIdentifierIterator::~NodeIdentifierIterator() {}
-
-// </NodeIdentifierIterator>
-
-
-// <CurrentNodeIdentifierIterator>
-const char* CurrentNodeIdentifierIterator::class_name_str = "CurrentNodeIdentifierIterator";
-CurrentNodeIdentifierIterator::class_factory<CurrentNodeIdentifierIterator>
-CurrentNodeIdentifierIterator::g_class_factory;
-
-const serialization::ClassVersion 
-CurrentNodeIdentifierIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int CurrentNodeIdentifierIterator::class_versions_count =
-sizeof(CurrentNodeIdentifierIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void CurrentNodeIdentifierIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-CurrentNodeIdentifierIterator::~CurrentNodeIdentifierIterator() {}
-
-// </CurrentNodeIdentifierIterator>
-
-
-// <HasIdentifierIterator>
-const char* HasIdentifierIterator::class_name_str = "HasIdentifierIterator";
-HasIdentifierIterator::class_factory<HasIdentifierIterator>
-HasIdentifierIterator::g_class_factory;
-
-const serialization::ClassVersion 
-HasIdentifierIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int HasIdentifierIterator::class_versions_count =
-sizeof(HasIdentifierIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void HasIdentifierIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-HasIdentifierIterator::~HasIdentifierIterator() {}
-
-// </HasIdentifierIterator>
-
-
-// <NodeByIdentifierIterator>
-const char* NodeByIdentifierIterator::class_name_str = "NodeByIdentifierIterator";
-NodeByIdentifierIterator::class_factory<NodeByIdentifierIterator>
-NodeByIdentifierIterator::g_class_factory;
-
-const serialization::ClassVersion 
-NodeByIdentifierIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int NodeByIdentifierIterator::class_versions_count =
-sizeof(NodeByIdentifierIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void NodeByIdentifierIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-NodeByIdentifierIterator::~NodeByIdentifierIterator() {}
-
-// </NodeByIdentifierIterator>
-
-
 // <NodeReferenceIterator>
 const char* NodeReferenceIterator::class_name_str = "NodeReferenceIterator";
 NodeReferenceIterator::class_factory<NodeReferenceIterator>
@@ -170,6 +58,34 @@ void NodeReferenceIterator::accept(PlanIterVisitor& v) const {
 NodeReferenceIterator::~NodeReferenceIterator() {}
 
 // </NodeReferenceIterator>
+
+
+// <HasReferenceIterator>
+const char* HasReferenceIterator::class_name_str = "HasReferenceIterator";
+HasReferenceIterator::class_factory<HasReferenceIterator>
+HasReferenceIterator::g_class_factory;
+
+const serialization::ClassVersion 
+HasReferenceIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int HasReferenceIterator::class_versions_count =
+sizeof(HasReferenceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void HasReferenceIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+HasReferenceIterator::~HasReferenceIterator() {}
+
+// </HasReferenceIterator>
 
 
 // <NodeByReferenceIterator>

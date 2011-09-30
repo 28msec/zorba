@@ -35,153 +35,9 @@ namespace zorba {
 
 /**
  *        
- *      declare function id:node-identifier($node as node) as xs:string
+ *      declare function ref:node-reference($node as node) as xs:anyURI
  *    
  * Author: Federico Cavalieri
- */
-class NodeIdentifierIterator : public NaryBaseIterator<NodeIdentifierIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(NodeIdentifierIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeIdentifierIterator,
-    NaryBaseIterator<NodeIdentifierIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<NodeIdentifierIterator, PlanIteratorState>*)this);
-  }
-
-  NodeIdentifierIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<NodeIdentifierIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~NodeIdentifierIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- *        
- *      declare function id:current-node-identifier($node as node) as xs:string
- *    
- * Author: Federico Cavalieri
- */
-class CurrentNodeIdentifierIterator : public NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(CurrentNodeIdentifierIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentNodeIdentifierIterator,
-    NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>*)this);
-  }
-
-  CurrentNodeIdentifierIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<CurrentNodeIdentifierIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~CurrentNodeIdentifierIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      declare function id:has-identifier($node as node) as xs:boolean
- *    
- * Author: Federico Cavalieri
- */
-class HasIdentifierIterator : public NaryBaseIterator<HasIdentifierIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(HasIdentifierIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HasIdentifierIterator,
-    NaryBaseIterator<HasIdentifierIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<HasIdentifierIterator, PlanIteratorState>*)this);
-  }
-
-  HasIdentifierIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<HasIdentifierIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~HasIdentifierIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      declare function id:node-by-identifier($identifier as xs:string) as node()?
- *    
- * Author: Federico Cavalieri
- */
-class NodeByIdentifierIterator : public NaryBaseIterator<NodeByIdentifierIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(NodeByIdentifierIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeByIdentifierIterator,
-    NaryBaseIterator<NodeByIdentifierIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<NodeByIdentifierIterator, PlanIteratorState>*)this);
-  }
-
-  NodeByIdentifierIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<NodeByIdentifierIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~NodeByIdentifierIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *  Iterator to implement the zorba:node-reference function.
- *  
- * Author: Zorba Team
  */
 class NodeReferenceIterator : public NaryBaseIterator<NodeReferenceIterator, PlanIteratorState>
 { 
@@ -215,9 +71,45 @@ public:
 
 /**
  * 
- *      Iterator to implement the zorba:node-by-reference function.
+ *      declare function id:has-reference($node as node) as xs:boolean
  *    
- * Author: Zorba Team
+ * Author: Federico Cavalieri
+ */
+class HasReferenceIterator : public NaryBaseIterator<HasReferenceIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(HasReferenceIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HasReferenceIterator,
+    NaryBaseIterator<HasReferenceIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<HasReferenceIterator, PlanIteratorState>*)this);
+  }
+
+  HasReferenceIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<HasReferenceIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~HasReferenceIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      declare function id:node-by-identifier($identifier as xs:string) as node()?
+ *    
+ * Author: Federico Cavalieri
  */
 class NodeByReferenceIterator : public NaryBaseIterator<NodeByReferenceIterator, PlanIteratorState>
 { 

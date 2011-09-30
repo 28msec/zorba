@@ -38,63 +38,24 @@ void populate_context_nodes(static_context* sctx);
 
 
 
-//zorba-node-identifier:node-identifier
-class zorba_node_identifier_node_identifier : public function
-{
-public:
-  zorba_node_identifier_node_identifier(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-
-}
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-node-identifier:current-node-identifier
-class zorba_node_identifier_current_node_identifier : public function
-{
-public:
-  zorba_node_identifier_current_node_identifier(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-
-}
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-node-identifier:has-identifier
-class zorba_node_identifier_has_identifier : public function
-{
-public:
-  zorba_node_identifier_has_identifier(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-
-}
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-node-identifier:node-by-identifier
-class zorba_node_identifier_node_by_identifier : public function
-{
-public:
-  zorba_node_identifier_node_by_identifier(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-
-}
-
-  CODEGEN_DECL();
-};
-
-
 //fn-zorba-ref:node-reference
 class fn_zorba_ref_node_reference : public function
 {
 public:
   fn_zorba_ref_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ref:has-reference
+class fn_zorba_ref_has_reference : public function
+{
+public:
+  fn_zorba_ref_has_reference(const signature& sig, FunctionConsts::FunctionKind kind)
     : function(sig, kind) {
 
 }

@@ -66,30 +66,34 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 
 
 /*******************************************************************************
-  theSchemaTypeNames   : Maps each enum value from SchemaTypeNames (see
-                         store_defs.h) to its associated QName item.
+  theSchemaTypeNames     : Maps each enum value from SchemaTypeNames (see
+                           store_defs.h) to its associated QName item.
 
-  theCollectionCounter : Incremented every time a new collection is created. The
-                         current value of the counter is then assigned as the
-                         id of the new collection.
+  theCollectionCounter   : Incremented every time a new collection is created. The
+                           current value of the counter is then assigned as the
+                           id of the new collection.
 
-  theNamespacePool     :
-  theQNamePool         :
+  theNamespacePool       :
+  theQNamePool           :
 
-  theItemFactory       : Factory to create items.
-  theIteratorFactory   : Factory to create iterators.
-  theNodeFactory       : Factory to create node items.
+  theItemFactory         : Factory to create items.
+  theIteratorFactory     : Factory to create iterators.
+  theNodeFactory         : Factory to create node items.
 
-  theDocuments         : A hashmap that for each xml tree that does not belong
-                         to any collection, maps the URI of the tree to the root
-                         node of the tree.
-  theCollections       : Container which contains the collections of the store.
-                         It includes a map that maps the qname of each collection
-                         to the collection's container object.
-  theIndices           : A hashmap that for each index, maps the qname of the
-                         index to the index container object.
-  theICs               : A hashmap the for each integrity constraint, maps the
-                         qname of the ic to the ic's container object.
+  theDocuments           : A hashmap that for each xml tree that does not belong
+                           to any collection, maps the URI of the tree to the root
+                           node of the tree.
+  theCollections         : Container which contains the collections of the store.
+                           It includes a map that maps the qname of each collection
+                           to the collection's container object.
+  theIndices             : A hashmap that for each index, maps the qname of the
+                           index to the index container object.
+  theICs                 : A hashmap the for each integrity constraint, maps the
+                           qname of the ic to the ic's container object.
+  theReferencesToNodeMap : A hashmap that maps node references to the referenced
+                           nodes
+  theNodeToReferencesMap : A hashmap that maps nodes into their references
+
 ********************************************************************************/
 class SimpleStore : public store::Store
 {
@@ -144,8 +148,8 @@ protected:
 
   /* ------------------------ Node Identifiers Management ---------------------------*/
 
-  std::map<const zstring, const store::Item *> theIdentifiersToNodeMap;
-  std::map<const store::Item *, zstring> theNodeToIdentifiersMap;
+  std::map<const zstring, const store::Item *> theReferencesToNodeMap;
+  std::map<const store::Item *, zstring> theNodeToReferencesMap;
 
   /* ------------------------ Node Identifiers Management ---------------------------*/
 
@@ -335,28 +339,23 @@ public:
         bool& found,
         bool& unique);
 
-  bool getReference(store::Item_t& result, const store::Item* node);
-
-  bool getNodeByReference(store::Item_t& result, const store::Item* uri);
-
   /* ------------------------ Node Identifiers Management ---------------------------*/
 
-  bool getIdentifier(store::Item_t& result, store::Item* node);
+  bool getReference(store::Item_t& result, store::Item* node);
 
-  bool getCurrentIdentifier(store::Item_t& result, const store::Item* node);
+  bool getCurrentReference(store::Item_t& result, const store::Item* node);
 
-  bool hasIdentifier(const store::Item* node);
+  bool hasReference(const store::Item* node);
 
-  bool getNodeByIdentifier(store::Item_t& result, const zstring& identifier);
+  bool getNodeByReference(store::Item_t& result, const zstring& reference);
 
   bool unregisterNode(XmlNode* node);
 
-  void copyIdentifier(const XmlNode* source, XmlNode* target);
+  void copyReference(const XmlNode* source, XmlNode* target);
 
-  void restoreIdentifier(XmlNode* node, const zstring& identifier);
+  void restoreReference(XmlNode* node, const zstring& reference);
 
-  void unfreezeIdentifier(XmlNode* node);
-
+  void unfreezeReference(XmlNode* node);
 
   /* ------------------------ Node Identifiers Management ---------------------------*/
 

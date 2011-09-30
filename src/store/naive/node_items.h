@@ -333,8 +333,8 @@ public:
     HaveType  =   0x8000,
 #endif
 
-    HaveIdentifier    = 0x10000,
-    HaveFrozenIdentifier = 0x20000
+    HaveReference    = 0x10000,
+    HaveFrozenReference = 0x20000
   };
 
 protected:
@@ -497,13 +497,13 @@ public:
 
   void setFlags(uint32_t flags) { theFlags = flags; }
 
-  bool haveIdentifier() const         { return (theFlags & HaveIdentifier) != 0; }
-  void setHaveIdentifier()            { theFlags |= HaveIdentifier; }
-  void resetHaveIdentifier()          { theFlags &= ~HaveIdentifier; }
+  bool haveReference() const         { return (theFlags & HaveReference) != 0; }
+  void setHaveReference()            { theFlags |= HaveReference; }
+  void resetHaveReference()          { theFlags &= ~HaveReference; }
 
-  bool haveFrozenIdentifier() const   { return (theFlags & HaveFrozenIdentifier) != 0; }
-  void setHaveFrozenIdentifier()      { theFlags |= HaveFrozenIdentifier; }
-  void resetHaveFrozenIdentifier()    { theFlags &= ~HaveFrozenIdentifier; }
+  bool haveFrozenReference() const   { return (theFlags & HaveFrozenReference) != 0; }
+  void setHaveFrozenReference()      { theFlags |= HaveFrozenReference; }
+  void resetHaveFrozenReference()    { theFlags &= ~HaveFrozenReference; }
 
 
 #ifndef ZORBA_NO_FULL_TEXT

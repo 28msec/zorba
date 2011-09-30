@@ -2013,62 +2013,6 @@ void PrinterVisitor::endVisit ( const FrexpIterator& ) {
 // </FrexpIterator>
 
 
-// <NodeIdentifierIterator>
-void PrinterVisitor::beginVisit ( const NodeIdentifierIterator& a) {
-  thePrinter.startBeginVisit("NodeIdentifierIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeIdentifierIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeIdentifierIterator>
-
-
-// <CurrentNodeIdentifierIterator>
-void PrinterVisitor::beginVisit ( const CurrentNodeIdentifierIterator& a) {
-  thePrinter.startBeginVisit("CurrentNodeIdentifierIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const CurrentNodeIdentifierIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </CurrentNodeIdentifierIterator>
-
-
-// <HasIdentifierIterator>
-void PrinterVisitor::beginVisit ( const HasIdentifierIterator& a) {
-  thePrinter.startBeginVisit("HasIdentifierIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const HasIdentifierIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </HasIdentifierIterator>
-
-
-// <NodeByIdentifierIterator>
-void PrinterVisitor::beginVisit ( const NodeByIdentifierIterator& a) {
-  thePrinter.startBeginVisit("NodeByIdentifierIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeByIdentifierIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeByIdentifierIterator>
-
-
 // <NodeReferenceIterator>
 void PrinterVisitor::beginVisit ( const NodeReferenceIterator& a) {
   thePrinter.startBeginVisit("NodeReferenceIterator", ++theId);
@@ -2081,6 +2025,20 @@ void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
   thePrinter.endEndVisit();
 }
 // </NodeReferenceIterator>
+
+
+// <HasReferenceIterator>
+void PrinterVisitor::beginVisit ( const HasReferenceIterator& a) {
+  thePrinter.startBeginVisit("HasReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HasReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HasReferenceIterator>
 
 
 // <NodeByReferenceIterator>

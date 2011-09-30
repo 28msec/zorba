@@ -87,53 +87,33 @@ public:
    */
   virtual TempSeq_t createTempSeq(bool lazy) = 0;
 
-
-  /* -------------------------- Reference Management --------------------------*/
-		
-  /** 
-   * Computes the URI of the passed item.
-   *
-   * @param item XDM item
-   * @return Returns an item of type xs:uri 
-   */
-  virtual bool getReference(Item_t& result, const Item* node) = 0;
-		
-  /**
-   * Returns Item which is identified by a reference
-   *
-   * @param uri Has to be an xs:URI item
-   * @returns referenced item if it exists, otherwise NULL
-   */
-  virtual bool getNodeByReference(Item_t& result, const Item* uri) = 0;
-
-
-  /* ------------------------ Node Identifiers Management ---------------------------*/
+  /* ----------------------- Node Reference Management -------------------------*/
 
   /**
-   * Computes the identifier of the given node.
+   * Computes the reference of the given node.
    *
-   * @param result the identifier as an item of type xs:string
+   * @param result the identifier as an item of type xs:anyURI
    * @param node XDM node
    * @return whether the identifier has been created successfully
    */
-  virtual bool getIdentifier(Item_t& result, Item* node) = 0;
+  virtual bool getReference(Item_t& result, Item* node) = 0;
 
   /**
-   * Returns whether an identifier has been generated for the given node.
+   * Returns whether a reference has already been generated for the given node.
    *
    * @param item XDM node
-   * @return whether an identifier has been generated for the given node.
+   * @return whether an reference has been generated for the given node.
    */
-  virtual bool hasIdentifier(const Item* node) = 0;
+  virtual bool hasReference(const Item* node) = 0;
 
   /**
-   * Returns the node which is associated to the given identifier.
+   * Returns the node which is associated to the given reference.
    *
    * @param result the node or NULL if not found
-   * @param identifier the identifier to dereference
-   * @returns whether the referenced item exists, NULL otherwise
+   * @param reference an xs:anyURI reference
+   * @returns whether the referenced item exists
    */
-  virtual bool getNodeByIdentifier(store::Item_t& result, const zstring& identifier) = 0;
+  virtual bool getNodeByReference(store::Item_t& result, const zstring& reference) = 0;
 
 
   /* ------------------------ Node Identity Management ---------------------------*/

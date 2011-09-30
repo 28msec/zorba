@@ -31,46 +31,6 @@ namespace zorba{
 
 
 
-PlanIter_t zorba_node_identifier_node_identifier::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new NodeIdentifierIterator(sctx, loc, argv);
-}
-
-PlanIter_t zorba_node_identifier_current_node_identifier::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new CurrentNodeIdentifierIterator(sctx, loc, argv);
-}
-
-PlanIter_t zorba_node_identifier_has_identifier::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new HasIdentifierIterator(sctx, loc, argv);
-}
-
-PlanIter_t zorba_node_identifier_node_by_identifier::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new NodeByIdentifierIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_zorba_ref_node_reference::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -79,6 +39,16 @@ PlanIter_t fn_zorba_ref_node_reference::codegen(
   AnnotationHolder& ann) const
 {
   return new NodeReferenceIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_ref_has_reference::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new HasReferenceIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ref_node_by_reference::codegen(
@@ -276,59 +246,23 @@ void populate_context_nodes(static_context* sctx)
   {
     
 
-    DECL_WITH_KIND(sctx, zorba_node_identifier_node_identifier,
-        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","node-identifier"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::ZORBA_NODE_IDENTIFIER_NODE_IDENTIFIER_1);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, zorba_node_identifier_current_node_identifier,
-        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","current-node-identifier"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::ZORBA_NODE_IDENTIFIER_CURRENT_NODE_IDENTIFIER_1);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, zorba_node_identifier_has_identifier,
-        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","has-identifier"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_NODE_IDENTIFIER_HAS_IDENTIFIER_1);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, zorba_node_identifier_node_by_identifier,
-        (createQName("http://www.zorba-xquery.com/modules/node-identifier","","node-by-identifier"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
-        FunctionConsts::ZORBA_NODE_IDENTIFIER_NODE_BY_IDENTIFIER_1);
-
-  }
-
-
-  {
-    
-
     DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
         (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-reference"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_URI_TYPE_ONE),
         FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_ref_has_reference,
+        (createQName("http://www.zorba-xquery.com/modules/node-reference","","has-reference"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_REF_HAS_REFERENCE_1);
 
   }
 

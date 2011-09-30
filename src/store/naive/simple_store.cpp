@@ -335,22 +335,22 @@ void SimpleStore::shutdown(bool soft)
       theNodeFactory = NULL;
     }
 
-    if(theNodeToIdentifiersMap.size()>0)
+    if(theNodeToReferencesMap.size()>0)
     {
-      std::map<const store::Item *,zstring>::iterator iter= theNodeToIdentifiersMap.begin();
-      std::map<const store::Item *,zstring>::iterator end= theNodeToIdentifiersMap.end();
+      std::map<const store::Item *,zstring>::iterator iter= theNodeToReferencesMap.begin();
+      std::map<const store::Item *,zstring>::iterator end= theNodeToReferencesMap.end();
       for (; iter != end; ++iter)
-        std::cerr << "Identifier: " << iter->second << "is still in the nodes to identifiers map" << std::endl;
-      ZORBA_FATAL(0, theNodeToIdentifiersMap.size()+" node identifiers still in the nodes to identifiers map");
+        std::cerr << "Reference: " << iter->second << "is still in the nodes to references map" << std::endl;
+      ZORBA_FATAL(0, theNodeToReferencesMap.size()+" node references still in the nodes to references map");
     }
 
-    if(theIdentifiersToNodeMap.size()>0)
+    if(theReferencesToNodeMap.size()>0)
     {
-      std::map<const zstring,const store::Item *>::iterator iter= theIdentifiersToNodeMap.begin();
-      std::map<const zstring,const store::Item *>::iterator end= theIdentifiersToNodeMap.end();
+      std::map<const zstring,const store::Item *>::iterator iter= theReferencesToNodeMap.begin();
+      std::map<const zstring,const store::Item *>::iterator end= theReferencesToNodeMap.end();
       for (; iter != end; ++iter)
-        std::cerr << "Identifier: " << iter->first << "is still in the identifiers to nodes map" << std::endl;
-      ZORBA_FATAL(0, theIdentifiersToNodeMap.size()+" node identifiers still in the identifiers to nodes map");
+        std::cerr << "Reference: " << iter->first << "is still in the references to nodes map" << std::endl;
+      ZORBA_FATAL(0, theReferencesToNodeMap.size()+" node references still in the references to nodes map");
     }
 
     // do cleanup of the libxml2 library
@@ -1326,425 +1326,69 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 }
 
 
-/*******************************************************************************
-  Computes the URI for the given node.
-********************************************************************************/
-bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
-{
-  std::ostringstream stream;
-
-  const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
-  stream << "zorba:"
-         << n->getCollectionId() << "."
-         << n->getTreeId() << "."
-         << n->getTree()->getPosition() + 1;
-
-#ifdef TEXT_ORDPATH
-
-  if (n->getNodeKind() == store::StoreConsts::attributeNode)
-  {
-    stream <<  ".a."
-  }
-  else
-  {
-    stream <<  ".c."
-  }
-  stream << n->getOrdPath().serialize();
-
-#else
-
-  if (n->getNodeKind() == store::StoreConsts::attributeNode)
-  {
-    stream << ".a."
-           << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
-  }
-  else if (n->getNodeKind() == store::StoreConsts::textNode)
-  {
-    stream << ".a."
-           << static_cast<const OrdPathNode*>(n->getParent())->getOrdPath().serialize();
-  }
-  else
-  {
-    stream << ".c."
-           << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
-  }
-#endif
-
-  zstring str(stream.str());
-
-  return theItemFactory->createAnyURI(result, str);
-}
-
-
-/*******************************************************************************
-  Returns Item which is identified by a reference
-
-  @param uri Has to be an xs:URI item
-  @returns referenced item if it exists, otherwise NULL
-********************************************************************************/
-bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* uri)
-{
-  const zstring& str = uri->getString();
-
-  ulong prefixlen = (ulong)strlen("zorba:");
-
-  if (strncmp(str.c_str(), "zorba:", prefixlen))
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  const char* start;
-  long tmp = 0;
-
-  //
-  // Decode collection id
-  //
-  start = str.c_str() + prefixlen;
-  char* next = const_cast<char*>(start);
-
-  tmp = strtol(start, &next, 10);
-
-  if (tmp < 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  start = next;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  ulong collectionId = (ulong)tmp;
-
-  //
-  // Decode tree id
-  //
-  tmp = strtol(start, &next, 10);
-
-  if (tmp <= 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  start = next;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  ulong treeId = (ulong)tmp;
-
-  //
-  // Decode tree position within collection
-  //
-  tmp = strtol(start, &next, 10);
-
-  if (tmp <= 0 || tmp == LONG_MAX)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  start = next;
-
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  ulong treePos = (ulong)tmp;
-
-  //
-  // Check if the uri specifies attribute node or not
-  //
-  bool attributeNode;
-
-  if (*start == 'a')
-    attributeNode = true;
-  else if (*start == 'c')
-    attributeNode = false;
-  else
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-  if (*start != '.')
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS( str )
-    );
-
-  ++start;
-
-  //
-  // Search for the tree
-  //
-  XmlNode* rootNode = NULL;
-
-  if (collectionId == 0)
-  {
-    DocumentSet::iterator it = theDocuments.begin();
-    DocumentSet::iterator end = theDocuments.end();
-
-    for (; it != end; ++it)
-    {
-      rootNode = (*it).second.getp();
-
-      if (rootNode->getTreeId() == treeId)
-        break;
-    }
-
-    if (it == end)
-      rootNode = NULL;
-  }
-  else
-  {
-    // Look for the collection
-    SimpleCollection* collection;
-
-    CollectionIterator_t lIter = theCollections->collections();
-    lIter->open();
-
-    store::Collection_t lCollection;
-    bool lFound = false;
-
-    // search the collection
-    while (lIter->next(lCollection))
-    {
-      collection = static_cast<SimpleCollection*>(lCollection.getp());
-
-      if (collection->getId() == collectionId) {
-        lFound = true;
-        break;
-      }
-    }
-
-    if (!lFound)
-    {
-      lIter = theCollections->collections(true);
-      lIter->open();
-
-      // search the collection
-      while (lIter->next(lCollection))
-      {
-        collection = static_cast<SimpleCollection*>(lCollection.getp());
-
-        if (collection->getId() == collectionId) {
-          lFound = true;
-          break;
-        }
-      }
-    }
-
-    // If collection found, look for the tree
-    if (lFound)
-    {
-      store::Item_t rootItem = collection->nodeAt(treePos);
-
-      rootNode = BASE_NODE(rootItem);
-
-      if (rootNode == NULL || rootNode->getTreeId() != treeId)
-      {
-        store::Iterator_t treeIter = collection->getIterator();
-
-        treeIter->open();
-
-        while (treeIter->next(rootItem))
-        {
-          rootNode = BASE_NODE(rootItem);
-          if (rootNode->getTreeId() == treeId)
-            break;
-        }
-
-        treeIter->close();
-
-        rootNode = BASE_NODE(rootItem);
-      }
-    }
-  }
-
-  if (rootNode == NULL)
-  {
-    result = NULL;
-    return false;
-  }
-
-  //
-  // Search for node in the tree
-  //
-
-  OrdPath op((unsigned char*)start, (ulong)strlen(start));
-
-#ifdef TEXT_ORDPATH
-  if (static_cast<OrdPathNode*>(rootNode)->getOrdPath() == op)
-  {
-    result = rootNode;
-    return true;
-  }
-#else
-  if (rootNode->getNodeKind() == store::StoreConsts::textNode)
-  {
-    result = NULL;
-    return false;
-  }
-  else if (static_cast<OrdPathNode*>(rootNode)->getOrdPath() == op)
-  {
-    result = rootNode;
-    return true;
-  }
-#endif
-
-  XmlNode* parent = rootNode;
-
-  while (1)
-  {
-    ulong i;
-
-    if (parent->getNodeKind() != store::StoreConsts::documentNode &&
-        parent->getNodeKind() != store::StoreConsts::elementNode)
-    {
-      result = NULL;
-      return false;
-    }
-
-    if (attributeNode && parent->getNodeKind() == store::StoreConsts::elementNode)
-    {
-      ElementNode* elemParent = reinterpret_cast<ElementNode*>(parent);
-
-      ulong numAttrs = elemParent->numAttrs();
-      for (i = 0; i < numAttrs; i++)
-      {
-        AttributeNode* child = elemParent->getAttr(i);
-
-        OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
-
-        if (pos == OrdPath::SELF)
-        {
-          result = child;
-          return true;
-        }
-        else if (pos != OrdPath::FOLLOWING)
-        {
-          result = NULL;
-          return false;
-        }
-      }
-    }
-
-    InternalNode* parent2 = reinterpret_cast<InternalNode*>(parent);
-
-    ulong numChildren = parent2->numChildren();
-    for (i = 0; i < numChildren; i++)
-    {
-#ifdef TEXT_ORDPATH
-      OrdPathNode* child = static_cast<OrdPathNode*>(parent2->getChild(i));
-#else
-      XmlNode* c = parent2->getChild(i);
-
-      if (c->getNodeKind() == store::StoreConsts::textNode)
-        continue;
-
-      OrdPathNode* child = static_cast<OrdPathNode*>(c);
-#endif
-
-      OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
-
-      if (pos == OrdPath::SELF)
-      {
-        result = child;
-        return true;
-      }
-      else if (pos == OrdPath::DESCENDANT)
-      {
-        parent = child;
-        break;
-      }
-      else if (pos != OrdPath::FOLLOWING)
-      {
-        result = NULL;
-        return false;
-      }
-    }
-
-    if (i == numChildren)
-    {
-      result = NULL;
-      return false;
-    }
-  }
-}
-
-/* ------------------------ Node Identifiers Management ---------------------------*/
+/* ------------------------ Node References Management ---------------------------*/
 
 /**
- * Computes the identifier of the given node.
+ * Computes the reference of the given node.
  *
- * @param result identifier as an item of type xs:string
+ * @param result reference as an item of type xs:string
  * @param node XDM node
- * @return whether the identifier has been created successfully
+ * @return whether the reference has been created successfully
  */
-bool SimpleStore::getIdentifier(store::Item_t& result, store::Item* node)
+bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
 {
   std::map<const store::Item *,zstring>::iterator resIt;
-  if ((resIt=theNodeToIdentifiersMap.find(node))!=theNodeToIdentifiersMap.end())
+  if ((resIt=theNodeToReferencesMap.find(node))!=theNodeToReferencesMap.end())
   {
-    //The node has already an associated identifier
+    //The node has already an associated reference
     zstring id=resIt->second;
     return theItemFactory->createString(result, id);
   }
 
   uuid_t uuid;
   uuid_create(&uuid);
-  zstring uuidStr=uuidToString(uuid);
+  zstring uuidStr=uuidToURI(uuid);
   zstring uuidStr2=uuidStr;
   zstring uuidStr3=uuidStr;
-  static_cast<const XmlNode*>(node)->setHaveIdentifier();
-  theNodeToIdentifiersMap[node]=uuidStr;
-  theIdentifiersToNodeMap[uuidStr2]=node;
-  return theItemFactory->createString(result, uuidStr3);
+  static_cast<const XmlNode*>(node)->setHaveReference();
+  theNodeToReferencesMap[node]=uuidStr;
+  theReferencesToNodeMap[uuidStr2]=node;
+  return theItemFactory->createAnyURI(result, uuidStr3);
 }
 
 /**
- * Returns the already computed identifier of the given node.
- * If no identifier has already been computed for the given node
+ * Returns the already computed reference of the given node.
+ * If no reference has already been computed for the given node
  * error ZAPI0090 is raised.
  *
- * @param result identifier as an item of type xs:string
+ * @param result reference as an item of type xs:string
  * @param node XDM node
- * @return whether the identifier has been created successfully
+ * @return whether the reference has been created successfully
  */
-bool SimpleStore::getCurrentIdentifier(store::Item_t& result, const store::Item* node)
+bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* node)
 {
   std::map<const store::Item *,zstring>::iterator resIt;
-  if ((resIt=theNodeToIdentifiersMap.find(node))!=theNodeToIdentifiersMap.end())
+  if ((resIt=theNodeToReferencesMap.find(node))!=theNodeToReferencesMap.end())
   {
-    //The node has already an associated identifier
+    //The node has already an associated reference
     zstring id=resIt->second;
     return theItemFactory->createString(result, id);
   }
-  //The node has no identifier
-  throw ZORBA_EXCEPTION(zerr::ZAPI0090_NO_CURRENT_IDENTIFIER);
+  //The node has no reference
+  throw ZORBA_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
 }
 
 /**
- * Returns the node which is associated to the given identifier.
+ * Returns the node which is associated to the given reference.
  *
  * @param result the node or NULL if not found
- * @param identifier the identifier to dereference
+ * @param reference the reference to dereference
  * @returns whether the referenced item exists, NULL otherwise
  */
-bool SimpleStore::getNodeByIdentifier(store::Item_t& result, const zstring& identifier)
+bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& reference)
 {
   std::map<const zstring, const store::Item *>::iterator resIt;
-  if ((resIt=theIdentifiersToNodeMap.find(identifier))!=theIdentifiersToNodeMap.end())
+  if ((resIt=theReferencesToNodeMap.find(reference))!=theReferencesToNodeMap.end())
   {
     result=resIt->second;
     return true;
@@ -1754,102 +1398,102 @@ bool SimpleStore::getNodeByIdentifier(store::Item_t& result, const zstring& iden
 }
 
 /**
- * Returns whether an identifier has been generated for the given node.
+ * Returns whether an reference has been generated for the given node.
  *
  * @param item XDM node
- * @return whether an identifier has been generated for the given node.
+ * @return whether an reference has been generated for the given node.
  */
-bool SimpleStore::hasIdentifier(const store::Item* node)
+bool SimpleStore::hasReference(const store::Item* node)
 {
-  return theNodeToIdentifiersMap.find(node)!=theNodeToIdentifiersMap.end();
+  return theNodeToReferencesMap.find(node)!=theNodeToReferencesMap.end();
 }
 
 /**
- * Copies the identifier of a source node to a target node. The source
- * node must already have an identifier. The target nodes acquires the
- * source identifier but it is not registered in the identifier-to-node
- * map. The target node also get its "haveFrozenIdentifier" flag set.
+ * Copies the reference of a source node to a target node. The source
+ * node must already have an reference. The target nodes acquires the
+ * source reference but it is not registered in the reference-to-node
+ * map. The target node also get its "haveFrozenReference" flag set.
  * Used in PUL manipulation.
  *
  * @param source source XDM node
  * @param target target XDM node
  */
-void SimpleStore::copyIdentifier(const XmlNode* source, XmlNode* target)
+void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
 {
-  store::Item_t identifier;
-  getCurrentIdentifier(identifier,source);
+  store::Item_t reference;
+  getCurrentReference(reference,source);
   unregisterNode(target);
-  target->setHaveIdentifier();
-  target->setHaveFrozenIdentifier();
-  theNodeToIdentifiersMap[target]=identifier->getStringValue();
+  target->setHaveReference();
+  target->setHaveFrozenReference();
+  theNodeToReferencesMap[target]=reference->getStringValue();
 }
 
 /**
- * Sets the identifier of a node to a given value. The "haveFrozenIdentifer"
+ * Sets the reference of a node to a given value. The "haveFrozenIdentifer"
  * flag is also set.
  * Used in PUL manipulation.
  *
  * @param node  XDM node
- * @param identifier the identifier to set
+ * @param reference the reference to set
  */
-void SimpleStore::restoreIdentifier(XmlNode* node, const zstring& identifier)
+void SimpleStore::restoreReference(XmlNode* node, const zstring& reference)
 {
   unregisterNode(node);
-  theNodeToIdentifiersMap[node]=identifier;
-  node->setHaveIdentifier();
-  node->setHaveFrozenIdentifier();
+  theNodeToReferencesMap[node]=reference;
+  node->setHaveReference();
+  node->setHaveFrozenReference();
 }
 
 /**
- * Unfreezes the identifier of a given node:
- * - Registers the node in the identifiers to node map
- * - Resets the node "haveFrozenIdentifier" flag
- * The node must already have an identifier, otherwise
- * error ZAPI0090 is raised.
- * The node identifier must not be used for any other
- * node in the identifier-to-node map, otherwise
- * error ZAPI0092 is raised.
+ * Unfreezes the reference of a given node:
+ * - Registers the node in the references to node map
+ * - Resets the node "haveFrozenReference" flag
+ * The node must already have an reference, otherwise
+ * error ZAPI0030 is raised.
+ * The node reference must not be used for any other
+ * node in the reference-to-node map, otherwise
+ * error ZAPI0029 is raised.
  * Used in PUL manipulation.
  *
  * @param node XDM node
  */
-void SimpleStore::unfreezeIdentifier(XmlNode* node)
+void SimpleStore::unfreezeReference(XmlNode* node)
 {
-  store::Item_t identifier;
-  getCurrentIdentifier(identifier,node);
+  store::Item_t reference;
+  getCurrentReference(reference,node);
   store::Item_t result;
-  if (getNodeByIdentifier(result, identifier->getStringValue()))
+  if (getNodeByReference(result, reference->getStringValue()))
   {
     throw XQUERY_EXCEPTION(
-            zerr::ZAPI0092_IDENTIFIER_ALREADY_PRESENT,
-            ERROR_PARAMS(identifier->getStringValue())
+            zerr::ZAPI0029_REFERENCE_ALREADY_PRESENT,
+            ERROR_PARAMS(reference->getStringValue())
           );
   }
-  theIdentifiersToNodeMap[identifier->getStringValue()]=node;
-  node->resetHaveFrozenIdentifier();
+  theReferencesToNodeMap[reference->getStringValue()]=node;
+  node->resetHaveFrozenReference();
 }
 
 /**
- * Removes a node from the identifier-to-nodes and nodes-to-identifiers maps.
+ * Removes a node from the reference-to-nodes and nodes-to-references maps.
  *
  * @param node XDM node
  * @return whether the node was registered or not.
  */
 bool SimpleStore::unregisterNode(XmlNode* node)
 {
-  if (!node->haveIdentifier())
+  if (!node->haveReference())
     return false;
   std::map<const store::Item *,zstring>::iterator resIt;
-  if ((resIt=theNodeToIdentifiersMap.find(node))!=theNodeToIdentifiersMap.end())
+  if ((resIt=theNodeToReferencesMap.find(node))!=theNodeToReferencesMap.end())
   {
     zstring value=resIt->second;
-    theNodeToIdentifiersMap.erase(resIt);
-    node->resetHaveIdentifier();
-    if (!node->haveFrozenIdentifier())
-      theIdentifiersToNodeMap.erase(value);
+    theNodeToReferencesMap.erase(resIt);
+    node->resetHaveReference();
+    if (!node->haveFrozenReference())
+      theReferencesToNodeMap.erase(value);
     else
-      node->resetHaveFrozenIdentifier();
-    //if a node has a frozen identifier it is not registered in the identifiers to node map
+      node->resetHaveFrozenReference();
+    //if a node has a frozen reference it is not registered in the references to node map
     return true;
   }
   else
