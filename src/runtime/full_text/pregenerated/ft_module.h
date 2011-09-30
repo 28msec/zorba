@@ -177,6 +177,10 @@ public:
 class ThesaurusLookupIteratorState : public PlanIteratorState
 {
 public:
+  zstring phrase_; //
+  zstring relationship_; //
+  internal::Thesaurus::level_type at_least_; //
+  internal::Thesaurus::level_type at_most_; //
   internal::Thesaurus::ptr thesaurus_; //
   internal::Thesaurus::iterator::ptr tresult_; //
 
@@ -214,6 +218,8 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
 };
 
 

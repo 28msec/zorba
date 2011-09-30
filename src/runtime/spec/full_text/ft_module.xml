@@ -58,7 +58,8 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="ThesaurusLookupIterator">
+<zorba:iterator name="ThesaurusLookupIterator"
+                generateResetImpl="true">
   <zorba:function>
     <zorba:signature localname="thesaurus-lookup" prefix="zorba-full-text">
       <zorba:param>xs:string</zorba:param>    <!-- phrase -->
@@ -93,6 +94,10 @@
     </zorba:signature>
   </zorba:function>
   <zorba:state generateInit="use-default">
+    <zorba:member type="zstring" name="phrase_"/>
+    <zorba:member type="zstring" name="relationship_"/>
+    <zorba:member type="internal::Thesaurus::level_type" name="at_least_"/>
+    <zorba:member type="internal::Thesaurus::level_type" name="at_most_"/>
     <zorba:member type="internal::Thesaurus::ptr" name="thesaurus_"/>
     <zorba:member type="internal::Thesaurus::iterator::ptr" name="tresult_"/>
   </zorba:state>

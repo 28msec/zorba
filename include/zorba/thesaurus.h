@@ -64,6 +64,7 @@ public:
      * @return Returns \c true only if there is a next synonym.
      */
     virtual bool next( String *synonym ) = 0;
+
   protected:
     virtual ~iterator() {}
   };

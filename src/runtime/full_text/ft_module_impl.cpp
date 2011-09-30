@@ -55,7 +55,8 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static iso639_1::type get_lang_from( store::Item_t lang_item ) {
+static iso639_1::type get_lang_from( store::Item_t lang_item,
+                                     QueryLoc const &loc ) {
   zstring lang_string;
   lang_item->getStringValue2( lang_string );
 
@@ -64,11 +65,14 @@ static iso639_1::type get_lang_from( store::Item_t lang_item ) {
       err::XPTY0004,
       ERROR_PARAMS(
         ZED( BadType_23o ), lang_string, ZED( NoCastTo_45o ), "xs:language"
-      )
+      ),
+      ERROR_LOC( loc )
     );
   if ( iso639_1::type lang = find_lang( lang_string.c_str() ) )
     return lang;
-  throw XQUERY_EXCEPTION( err::FTST0009, ERROR_PARAMS( lang_string ) );
+  throw XQUERY_EXCEPTION(
+    err::FTST0009, ERROR_PARAMS( lang_string ), ERROR_LOC( loc )
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -107,7 +111,7 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
     item->getStringValue2( word );
     if ( theChildren.size() > 1 ) {
       ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
-      lang = get_lang_from( item );
+      lang = get_lang_from( item, loc );
     }
     stop_words.reset( ft_stop_words_set::get_default( lang ) );
     GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
@@ -138,7 +142,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
     item->getStringValue2( word );
     if ( theChildren.size() > 1 ) {
       ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
-      lang = get_lang_from( item );
+      lang = get_lang_from( item, loc );
     }
     provider = &internal::StemmerProvider::get_default();
     stemmer = provider->get_stemmer( lang );
@@ -172,13 +176,11 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
-  internal::Thesaurus::level_type at_least;
-  internal::Thesaurus::level_type at_most;
   vector<zstring> comp_uris;
   store::Item_t item;
   iso639_1::type lang;
   ftmatch_options const *options;
-  zstring phrase, relationship, uri = "##default";
+  zstring uri = "##default";
   static_context const *static_ctx;
   zstring synonym;
 
@@ -188,29 +190,29 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
-  at_least = 0;
-  at_most = numeric_limits<internal::Thesaurus::level_type>::max();
+  state->at_least_ = 0;
+  state->at_most_ = numeric_limits<internal::Thesaurus::level_type>::max();
 
   if ( theChildren.size() == 1 ) {
     ZORBA_ASSERT( consumeNext( item, theChildren[0], plan_state ) );
-    item->getStringValue2( phrase );
+    item->getStringValue2( state->phrase_ );
   } else if ( theChildren.size() > 1 ) {
     ZORBA_ASSERT( consumeNext( item, theChildren[0], plan_state ) );
     item->getStringValue2( uri );
     ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
-    item->getStringValue2( phrase );
+    item->getStringValue2( state->phrase_ );
     if ( theChildren.size() > 2 ) {
       ZORBA_ASSERT( consumeNext( item, theChildren[2], plan_state ) );
-      lang = get_lang_from( item );
+      lang = get_lang_from( item, loc );
       if ( theChildren.size() > 3 ) {
         ZORBA_ASSERT( consumeNext( item, theChildren[3], plan_state ) );
-        item->getStringValue2( relationship );
+        item->getStringValue2( state->relationship_ );
         if ( theChildren.size() > 4 ) {
           ZORBA_ASSERT( theChildren.size() == 6 );
           ZORBA_ASSERT( consumeNext( item, theChildren[4], plan_state ) );
-          at_least = item->getUnsignedIntValue();
+          state->at_least_ = item->getUnsignedIntValue();
           ZORBA_ASSERT( consumeNext( item, theChildren[5], plan_state ) );
-          at_most = item->getUnsignedIntValue();
+          state->at_most_ = item->getUnsignedIntValue();
         }
       }
     }
@@ -227,7 +229,9 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   );
   ZORBA_ASSERT( state->thesaurus_.get() );
   state->tresult_ = std::move(
-    state->thesaurus_->lookup( phrase, relationship, at_least, at_most )
+    state->thesaurus_->lookup(
+      state->phrase_, state->relationship_, state->at_least_, state->at_most_
+    )
   );
   ZORBA_ASSERT( state->tresult_.get() );
 
@@ -237,6 +241,21 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   }
 
   STACK_END( state );
+}
+
+void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
+  NaryBaseIterator<ThesaurusLookupIterator,ThesaurusLookupIteratorState>::
+    resetImpl( plan_state );
+  ThesaurusLookupIteratorState *const state =
+    StateTraitsImpl<ThesaurusLookupIteratorState>::getState(
+      plan_state, this->theStateOffset
+    );
+  state->tresult_ = std::move(
+    state->thesaurus_->lookup(
+      state->phrase_, state->relationship_, state->at_least_, state->at_most_
+    )
+  );
+  ZORBA_ASSERT( state->tresult_.get() );
 }
 
 bool TokenizeIterator::nextImpl( store::Item_t &result,
@@ -263,7 +282,7 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
   if ( consumeNext( state->doc_item_, theChildren[0], plan_state ) ) {
     if ( theChildren.size() > 1 ) {
       ZORBA_ASSERT( consumeNext( item, theChildren[1], plan_state ) );
-      lang = get_lang_from( item );
+      lang = get_lang_from( item, loc );
     }
 
     tokenizer_provider = GENV_STORE.getTokenizerProvider();
@@ -329,7 +348,8 @@ bool TokenizeIterator::nextImpl( store::Item_t &result,
 }
 
 void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
-  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>::resetImpl( plan_state );
+  NaryBaseIterator<TokenizeIterator,TokenizeIteratorState>::
+    resetImpl( plan_state );
   TokenizeIteratorState *const state =
     StateTraitsImpl<TokenizeIteratorState>::getState(
       plan_state, this->theStateOffset
