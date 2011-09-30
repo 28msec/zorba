@@ -1336,10 +1336,11 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
  */
 bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
 {
-  std::map<const store::Item *,zstring>::iterator resIt;
-  if ((resIt=theNodeToReferencesMap.find(node))!=theNodeToReferencesMap.end())
+  XmlNode* xmlNode=static_cast<XmlNode*>(node);
+  if (xmlNode->haveReference())
   {
-    //The node has already an associated reference
+    std::map<const store::Item *,zstring>::iterator resIt=theNodeToReferencesMap.find(node);
+    ZORBA_FATAL(resIt!=theNodeToReferencesMap.end(),"Node reference cannot be found");
     zstring id=resIt->second;
     return theItemFactory->createString(result, id);
   }
@@ -1347,7 +1348,7 @@ bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
   uuid_t uuid;
   uuid_create(&uuid);
   zstring uuidStr=uuidToURI(uuid);
-  static_cast<XmlNode*>(node)->setHaveReference();
+  xmlNode->setHaveReference();
   theNodeToReferencesMap[node]=uuidStr;
   theReferencesToNodeMap[uuidStr]=node;
   return theItemFactory->createAnyURI(result, uuidStr);
@@ -1364,15 +1365,14 @@ bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
  */
 bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* node)
 {
-  std::map<const store::Item *,zstring>::iterator resIt;
-  if ((resIt=theNodeToReferencesMap.find(node))!=theNodeToReferencesMap.end())
-  {
-    //The node has already an associated reference
-    zstring id=resIt->second;
-    return theItemFactory->createString(result, id);
-  }
-  //The node has no reference
-  throw ZORBA_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
+  const XmlNode* xmlNode=static_cast<const XmlNode*>(node);
+  if (!xmlNode->haveReference())
+    throw XQUERY_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
+
+  std::map<const store::Item *,zstring>::iterator resIt=theNodeToReferencesMap.find(node);
+  ZORBA_FATAL(resIt!=theNodeToReferencesMap.end(),"Node reference cannot be found");
+  zstring id=resIt->second;
+  return theItemFactory->createString(result, id);
 }
 
 /**
@@ -1401,12 +1401,12 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
  */
 bool SimpleStore::hasReference(const store::Item* node)
 {
-  return theNodeToReferencesMap.find(node)!=theNodeToReferencesMap.end();
+  return static_cast<const XmlNode*>(node)->haveReference();
 }
 
 /**
  * Copies the reference of a source node to a target node. The source
- * node must already have an reference. The target nodes acquires the
+ * node must already have a reference. The target nodes acquires the
  * source reference but it is not registered in the reference-to-node
  * map. The target node also get its "haveFrozenReference" flag set.
  * Used in PUL manipulation.
