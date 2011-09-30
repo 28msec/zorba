@@ -32,6 +32,20 @@
 using namespace zorba;
 
 bool lCalled = false;
+bool lGotParam = false;
+bool lDestroyedParam = false;
+
+class MyExternalFunctionParameter : public ExternalFunctionParameter
+{
+  public:
+    virtual void
+    destroy() throw()
+    {
+      lDestroyedParam = true;
+      delete this;
+    }
+};
+
 
 class MySimpleExternalFunction : public ContextualExternalFunction
 {
@@ -46,6 +60,14 @@ public:
         const DynamicContext* dctx) const 
   {
     lCalled = true; // must not be reached because query is only compiled and not executed
+    ExternalFunctionParameter* lParam = 0;
+    if ( (lParam = dctx->getExternalFunctionParameter("myparam")) )
+    {
+      if (dynamic_cast<MyExternalFunctionParameter*>(lParam))
+      {
+        lGotParam = true;
+      }
+    }
     return ItemSequence_t(new EmptySequence());
   }
 };
@@ -97,12 +119,9 @@ class MySerializationCallback : public SerializationCallback
     }
 };
 
-int
-external_function(int argc, char* argv[]) 
+bool
+external_function_test_1(Zorba* aZorba)
 {
-  void* lStore = zorba::StoreManager::getStore();
-  Zorba* lZorba = Zorba::getInstance(lStore);
-
   try {
     // test the sausalito use case
     // serialize a query and afterwards execute it
@@ -114,15 +133,15 @@ external_function(int argc, char* argv[])
       MyExternalModule lMod;
 
       {
-        StaticContext_t lSctx = lZorba->createStaticContext();
+        StaticContext_t lSctx = aZorba->createStaticContext();
         lSctx->registerModule(&lMod);
 
-        XQuery_t lQuery = lZorba->compileQuery(lIn, lSctx);
+        XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx);
         lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
 
         zorba::DynamicContext* lDynContext = lQuery->getDynamicContext();
         lDynContext->setVariable("local:foo",
-                                 lZorba->getItemFactory()->createString("foo")); 
+                                 aZorba->getItemFactory()->createString("foo")); 
         // make sure constant folding doesn't happen, i.e. the function is not evaluated
         if (lCalled) {
           return 1;
@@ -143,14 +162,14 @@ external_function(int argc, char* argv[])
         // this tests if, when loaded, the functions of the static context
         // that have not yet been compiled, can be compiled properly
         std::istringstream lIn(lOut.str());
-        XQuery_t lQuery = lZorba->createQuery();
+        XQuery_t lQuery = aZorba->createQuery();
         lQuery->loadExecutionPlan(lIn, &lCallback);
 
         // set the parameter for evaluating a different dynamic function then
         // in the test above
         zorba::DynamicContext* lDynContext = lQuery->getDynamicContext();
         lDynContext->setVariable("local:foo",
-                                 lZorba->getItemFactory()->createString("foo2")); 
+                                 aZorba->getItemFactory()->createString("foo2")); 
 
         // evaluate the query
         std::cout << lQuery << std::endl;
@@ -158,9 +177,82 @@ external_function(int argc, char* argv[])
     }
   } catch (XQueryException& qe) {
     std::cerr << qe << std::endl;
-    return 1;
+    return false;
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
+    return false;
+  }
+  return true;
+}
+
+bool
+external_function_test_2(Zorba* aZorba)
+{
+  try {
+    std::ifstream lIn("ext_main.xq");
+    assert(lIn.good());
+    std::ostringstream lOut;
+    MyExternalModule lMod;
+
+    StaticContext_t lSctx = aZorba->createStaticContext();
+    lSctx->registerModule(&lMod);
+    {
+      XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx);
+
+      zorba::DynamicContext* lDynContext = lQuery->getDynamicContext();
+
+      // must be released in MyExternalFunctionParameter::destroy
+      MyExternalFunctionParameter* lParam1 = new MyExternalFunctionParameter();
+      MyExternalFunctionParameter* lParam2 = new MyExternalFunctionParameter();
+
+      lDynContext->addExternalFunctionParameter("myparam", lParam1);
+      lDynContext->addExternalFunctionParameter("myparam", lParam2);
+
+      // make sure that destroy is invoked if the first parameter is overwritten
+      if (!lDestroyedParam)
+      {
+        return false;
+      }
+      else
+      {
+        lDestroyedParam = false;
+      }
+
+
+      lDynContext->setVariable("local:foo",
+                               aZorba->getItemFactory()->createString("foo")); 
+
+      std::cout << lQuery << std::endl;
+    }
+
+    // destroy is called if the XQuery object is destroyed
+    return lGotParam && lDestroyedParam;
+
+  } catch (XQueryException& qe) {
+    std::cerr << qe << std::endl;
+    return false;
+  } catch (ZorbaException& e) {
+    std::cerr << e << std::endl;
+    return false;
+  }
+  return true;
+}
+
+int
+external_function(int argc, char* argv[]) 
+{
+  void* lStore = zorba::StoreManager::getStore();
+  Zorba* lZorba = Zorba::getInstance(lStore);
+
+  std::cout << "executing external_function_test_1" << std::endl;
+  if (!external_function_test_1(lZorba))
+  {
+    return 1;
+  }
+
+  std::cout << "executing external_function_test_2" << std::endl;
+  if (!external_function_test_2(lZorba))
+  {
     return 2;
   }
 
