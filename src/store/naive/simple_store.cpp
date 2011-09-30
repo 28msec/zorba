@@ -58,6 +58,7 @@
 
 #include "util/cxx_util.h"
 #include "util/uuid/uuid.h"
+#include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "runtime/full_text/default_tokenizer.h"
@@ -1367,7 +1368,7 @@ bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* 
 {
   const XmlNode* xmlNode=static_cast<const XmlNode*>(node);
   if (!xmlNode->haveReference())
-    throw XQUERY_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
+    throw ZORBA_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
 
   std::map<const store::Item *,zstring>::iterator resIt=theNodeToReferencesMap.find(node);
   ZORBA_FATAL(resIt!=theNodeToReferencesMap.end(),"Node reference cannot be found");
@@ -1383,6 +1384,18 @@ bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* 
  */
 bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& reference)
 {
+  if (
+          reference.length()!=41
+          ||
+          !utf8::match_whole(reference, "uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}")
+         )
+      {
+        throw ZORBA_EXCEPTION(
+          zerr::ZAPI0028_INVALID_NODE_URI,
+          ERROR_PARAMS(reference)
+        );
+      }
+
   std::map<const zstring, const store::Item *>::iterator resIt;
   if ((resIt=theReferencesToNodeMap.find(reference))!=theReferencesToNodeMap.end())
   {
@@ -1460,7 +1473,7 @@ void SimpleStore::unfreezeReference(XmlNode* node)
   store::Item_t result;
   if (getNodeByReference(result, reference->getStringValue()))
   {
-    throw XQUERY_EXCEPTION(
+    throw ZORBA_EXCEPTION(
             zerr::ZAPI0029_REFERENCE_ALREADY_PRESENT,
             ERROR_PARAMS(reference->getStringValue())
           );

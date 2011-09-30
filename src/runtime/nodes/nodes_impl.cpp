@@ -75,27 +75,22 @@ bool
 NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
     store::Item_t lUUID;
+    bool haveResult;
 
     PlanIteratorState *state;
     DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
     consumeNext(lUUID, theChildren[0].getp(), planState);
-
-    if (
-        lUUID->getStringValue().length()!=41
-        ||
-        !utf8::match_whole(lUUID->getStringValue(), "uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}")
-       )
+    try
     {
-      throw XQUERY_EXCEPTION(
-        zerr::ZAPI0028_INVALID_NODE_URI,
-        ERROR_PARAMS(lUUID->getStringValue()),
-        ERROR_LOC( loc )
-      );
+      haveResult=GENV_STORE.getNodeByReference(result, lUUID->getStringValue());
     }
-
-
-    STACK_PUSH(GENV_STORE.getNodeByReference(result, lUUID->getStringValue()), state);
+    catch (ZorbaException& e)
+    {
+      set_source( e, loc );
+      throw;
+    }
+    STACK_PUSH(haveResult, state);
 
     STACK_END (state);
 }
