@@ -5,6 +5,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
+<zorba:header>
+  <zorba:include form="Quoted">runtime/full_text/thesaurus.h</zorba:include>
+</zorba:header>
+
 <zorba:source>
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
@@ -88,6 +92,10 @@
       <zorba:output>xs:string+</zorba:output>
     </zorba:signature>
   </zorba:function>
+  <zorba:state generateInit="use-default">
+    <zorba:member type="internal::Thesaurus::ptr" name="thesaurus_"/>
+    <zorba:member type="internal::Thesaurus::iterator::ptr" name="tresult_"/>
+  </zorba:state>
 </zorba:iterator>
 
 <zorba:iterator name="TokenizeIterator"

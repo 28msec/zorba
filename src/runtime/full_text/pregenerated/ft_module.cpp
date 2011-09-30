@@ -170,6 +170,14 @@ void ThesaurusLookupIterator::accept(PlanIterVisitor& v) const {
 
 ThesaurusLookupIterator::~ThesaurusLookupIterator() {}
 
+ThesaurusLookupIteratorState::ThesaurusLookupIteratorState() {}
+
+ThesaurusLookupIteratorState::~ThesaurusLookupIteratorState() {}
+
+
+void ThesaurusLookupIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </ThesaurusLookupIterator>
 
 

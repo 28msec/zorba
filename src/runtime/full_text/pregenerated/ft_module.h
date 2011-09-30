@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include "runtime/full_text/thesaurus.h"
 
 
 namespace zorba {
@@ -173,18 +174,31 @@ public:
  * 
  * Author: 
  */
-class ThesaurusLookupIterator : public NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>
+class ThesaurusLookupIteratorState : public PlanIteratorState
+{
+public:
+  internal::Thesaurus::ptr thesaurus_; //
+  internal::Thesaurus::iterator::ptr tresult_; //
+
+  ThesaurusLookupIteratorState();
+
+  ~ThesaurusLookupIteratorState();
+
+  void reset(PlanState&);
+};
+
+class ThesaurusLookupIterator : public NaryBaseIterator<ThesaurusLookupIterator, ThesaurusLookupIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ThesaurusLookupIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ThesaurusLookupIterator,
-    NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>);
+    NaryBaseIterator<ThesaurusLookupIterator, ThesaurusLookupIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ThesaurusLookupIterator, ThesaurusLookupIteratorState>*)this);
   }
 
   ThesaurusLookupIterator(
@@ -192,7 +206,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<ThesaurusLookupIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ThesaurusLookupIterator, ThesaurusLookupIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ThesaurusLookupIterator();

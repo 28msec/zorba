@@ -45,6 +45,7 @@
 
 #include "runtime/full_text/ft_module.h"
 #include "ft_stop_words_set.h"
+#include "thesaurus.h"
 #include "ft_util.h"
 
 using namespace std;
@@ -173,14 +174,16 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
   internal::Thesaurus::level_type at_least;
   internal::Thesaurus::level_type at_most;
+  vector<zstring> comp_uris;
   store::Item_t item;
   iso639_1::type lang;
   ftmatch_options const *options;
-  zstring phrase, relationship, uri;
+  zstring phrase, relationship, uri = "##default";
   static_context const *static_ctx;
+  zstring synonym;
 
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+  ThesaurusLookupIteratorState *state;
+  DEFAULT_STACK_INIT( ThesaurusLookupIteratorState, state, plan_state );
 
   static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
@@ -213,13 +216,31 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
     }
   }
 
-  // TODO
+  static_ctx->get_component_uris( uri, impl::EntityData::THESAURUS, comp_uris );
+  if ( comp_uris.size() != 1 )
+    throw XQUERY_EXCEPTION(
+      err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
+    );
+
+  state->thesaurus_ = std::move(
+    static_ctx->get_thesaurus( comp_uris.front(), lang )
+  );
+  ZORBA_ASSERT( state->thesaurus_.get() );
+  state->tresult_ = std::move(
+    state->thesaurus_->lookup( phrase, relationship, at_least, at_most )
+  );
+  ZORBA_ASSERT( state->tresult_.get() );
+
+  while ( state->tresult_->next( &synonym ) ) {
+    GENV_ITEMFACTORY->createString( result, synonym );
+    STACK_PUSH( true, state );
+  }
 
   STACK_END( state );
 }
 
 bool TokenizeIterator::nextImpl( store::Item_t &result,
-                                 PlanState& plan_state ) const {
+                                 PlanState &plan_state ) const {
   store::Item_t attr_name, attr_node;
   zstring base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
   store::Item_t doc_item, item;
