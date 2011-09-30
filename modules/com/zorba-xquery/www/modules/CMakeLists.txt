@@ -46,8 +46,6 @@ DECLARE_ZORBA_MODULE(FILE math.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/math")
 DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-reference")
-DECLARE_ZORBA_MODULE(FILE node-identifier.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/node-identifier")
 DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
 DECLARE_ZORBA_MODULE(FILE project_xqdoc.xq VERSION 2.0

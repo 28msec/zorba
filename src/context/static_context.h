@@ -459,7 +459,6 @@ public:
   static const zstring ZORBA_MATH_FN_NS;
   static const zstring ZORBA_BASE64_FN_NS;
   static const zstring ZORBA_NODEREF_FN_NS;
-  static const zstring ZORBA_NODEID_FN_NS;
   static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
   static const zstring ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
   static const zstring ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS;

@@ -92,9 +92,8 @@ public:
   /**
    * Computes the reference of the given node.
    *
-   * @param result the identifier as an item of type xs:anyURI
    * @param node XDM node
-   * @return whether the identifier has been created successfully
+   * @return the identifier as an item of type xs:anyURI
    */
   virtual bool getReference(Item_t& result, Item* node) = 0;
 
@@ -102,21 +101,20 @@ public:
    * Returns whether a reference has already been generated for the given node.
    *
    * @param item XDM node
-   * @return whether an reference has been generated for the given node.
+   * @return whether a reference has already been generated for the given node.
    */
   virtual bool hasReference(const Item* node) = 0;
 
   /**
-   * Returns the node which is associated to the given reference.
+   * Returns the node which is identified by the given reference.
    *
-   * @param result the node or NULL if not found
-   * @param reference an xs:anyURI reference
-   * @returns whether the referenced item exists
+   * @param reference an xs:anyURI item
+   * @returns the node identified by the reference, NULL otherwise
    */
   virtual bool getNodeByReference(store::Item_t& result, const zstring& reference) = 0;
 
 
-  /* ------------------------ Node Identity Management ---------------------------*/
+  /* --------------------------- Node Id Management ---------------------------*/
 
   /**
    * Compares two nodes, based on their node id.

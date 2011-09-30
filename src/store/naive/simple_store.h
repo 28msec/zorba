@@ -146,12 +146,12 @@ protected:
 
   long                          theTraceLevel;
 
-  /* ------------------------ Node Identifiers Management ---------------------------*/
+  /* ------------------------ Node Reference Management ---------------------------*/
 
   std::map<const zstring, const store::Item *> theReferencesToNodeMap;
   std::map<const store::Item *, zstring> theNodeToReferencesMap;
 
-  /* ------------------------ Node Identifiers Management ---------------------------*/
+  /* ------------------------ Node Reference Management ---------------------------*/
 
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const * theStemmerProvider;
@@ -339,7 +339,7 @@ public:
         bool& found,
         bool& unique);
 
-  /* ------------------------ Node Identifiers Management ---------------------------*/
+  /* ------------------------ Node Reference Management ---------------------------*/
 
   bool getReference(store::Item_t& result, store::Item* node);
 
@@ -357,7 +357,7 @@ public:
 
   void unfreezeReference(XmlNode* node);
 
-  /* ------------------------ Node Identifiers Management ---------------------------*/
+  /* ------------------------ Node Reference Management ---------------------------*/
 
   store::TempSeq_t createTempSeq(bool lazy);
 

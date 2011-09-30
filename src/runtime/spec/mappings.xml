@@ -24,10 +24,6 @@
                      define="ZORBA_NODEREF_FN_NS"
                      prefix="fn-zorba-ref"/> 
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-identifier"
-      define="ZORBA_NODEID_FN_NS"
-      prefix="zorba-node-identifier"/>
-
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema"
                      define="ZORBA_SCHEMA_FN_NS"
                      prefix="fn-zorba-schema"/>

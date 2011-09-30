@@ -1331,9 +1331,8 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 /**
  * Computes the reference of the given node.
  *
- * @param result reference as an item of type xs:string
  * @param node XDM node
- * @return whether the reference has been created successfully
+ * @return the identifier as an item of type xs:anyURI
  */
 bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
 {
@@ -1348,18 +1347,16 @@ bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
   uuid_t uuid;
   uuid_create(&uuid);
   zstring uuidStr=uuidToURI(uuid);
-  zstring uuidStr2=uuidStr;
-  zstring uuidStr3=uuidStr;
-  static_cast<const XmlNode*>(node)->setHaveReference();
+  static_cast<XmlNode*>(node)->setHaveReference();
   theNodeToReferencesMap[node]=uuidStr;
-  theReferencesToNodeMap[uuidStr2]=node;
-  return theItemFactory->createAnyURI(result, uuidStr3);
+  theReferencesToNodeMap[uuidStr]=node;
+  return theItemFactory->createAnyURI(result, uuidStr);
 }
 
 /**
  * Returns the already computed reference of the given node.
  * If no reference has already been computed for the given node
- * error ZAPI0090 is raised.
+ * error ZAPI0030 is raised.
  *
  * @param result reference as an item of type xs:string
  * @param node XDM node
@@ -1379,11 +1376,10 @@ bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* 
 }
 
 /**
- * Returns the node which is associated to the given reference.
+ * Returns the node which is identified by the given reference.
  *
- * @param result the node or NULL if not found
- * @param reference the reference to dereference
- * @returns whether the referenced item exists, NULL otherwise
+ * @param reference an xs:anyURI item
+ * @returns the node identified by the reference, NULL otherwise
  */
 bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& reference)
 {
@@ -1398,10 +1394,10 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
 }
 
 /**
- * Returns whether an reference has been generated for the given node.
+ * Returns whether a reference has already been generated for the given node.
  *
  * @param item XDM node
- * @return whether an reference has been generated for the given node.
+ * @return whether a reference has already been generated for the given node.
  */
 bool SimpleStore::hasReference(const store::Item* node)
 {

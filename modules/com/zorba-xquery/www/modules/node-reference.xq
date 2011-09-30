@@ -18,14 +18,19 @@ xquery version "1.0";
 
 (:~
  : The module provides functions to compute a stable reference (URI) for
- : a node that is stored in a collection and vice versa.
+ : any node, either temporary or stored in a collection and for retrieving
+ : nodes given their identifier. The identifiers are immutable, i.e. a node 
+ : identifier do not change during the node lifetime. Identifiers are also 
+ : unique in that an already generated identifier cannot be generated again.
+ : Morever a node, at any time during its lifetime, can be retrieved by its 
+ : identifier.
  :
  : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
  : documentation</a> about details on management and manipulation of collections.</p>
  : 
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  :
- : @author Matthias Brantner
+ : @author Federico Cavalieri
  :
  : @project XDM/node
  :
@@ -41,9 +46,6 @@ declare option ver:module-version "2.0";
  : Compute a stable and opaque node reference (with type xs:anyURI) for
  : a given node.
  :
- : <p>The function can only compute reference for nodes that a stored
- : in a collection [zerr:ZAPI0080].</p>
- :
  : <p>The returned URI is stable, i.e. it still can be dereferenced if
  : the node or the containing collection is modified.</p>
  :
@@ -58,7 +60,7 @@ declare function ref:node-reference(
 (:~
  : Returns the node identified by the given node reference.
  :
- : <p>The function may return the empty sequence if the node
+ : <p>The function returns the empty sequence if the node
  : that is referenced was deleted.</p>
  :
  : @param $arg the URI of the node to retrieve.
@@ -72,3 +74,15 @@ declare function ref:node-reference(
 declare function ref:node-by-reference(
   $arg as xs:anyURI
 ) as node()? external;
+
+
+(:~
+ : Returns whether a reference has already been generated for the given node. 
+ :  
+ : @param $node a node 
+ :
+ : @return whether an reference has already been generated the given node.
+ :)
+declare function ref:has-reference(
+  $node as node()  
+) as xs:boolean external;

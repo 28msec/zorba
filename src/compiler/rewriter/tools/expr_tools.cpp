@@ -62,9 +62,9 @@ bool count_variable_uses_rec(
    * as argument in a node:reference() function. This avoids that an expression
    * like let $x:=<x/> return ref:node-by-reference(ref:node-reference($x)) get
    * rewritten into ref:node-by-reference(ref:node-reference(</x>)). In the
-   * latter case </x> is out of scope of node-by-reference and cannot be
-   * retrieved. The variable used inside the node-reference function are counted
-   * twice, thus EliminateUnusedLetVars do not substitute them.
+   * latter case </x> is  cannot be retrieved. The variable used inside the 
+   * node-reference function are counted twice, thus EliminateUnusedLetVars 
+   * do not substitute them.
    */
   if (e->get_expr_kind() == fo_expr_kind)
   {
