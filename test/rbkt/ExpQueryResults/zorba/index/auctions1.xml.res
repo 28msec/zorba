@@ -110,20 +110,31 @@
 Probing the typed AuctionDates sorted general index
 ---------------------------------------------------
 
+probe 1:
 <exception>err:XPTY0004 : node with more than one key value found during probe on index "auctions:AuctionDates"</exception>
 
+probe 2:
 <exception>err:XPTY0004 : "xs:integer": search key type for index "auctions:AuctionDates" does not match expected type "xs:date"</exception>
 
+probe 3:
 <open_auction id="open_auction2"/><open_auction id="open_auction3"/>
 
+probe 4:
 <exception>err:XPTY0004 : "xs:string": search key type for index "auctions:AuctionDates" does not match expected type "xs:date"</exception>
 
+probe 5:
+<exception>err:XPTY0004 : node with more than one key value found during probe on index "auctions:AuctionDates"</exception>
+
+probe 6:
 <open_auction id="open_auction0"/><open_auction id="open_auction1"/><open_auction id="open_auction3"/><open_auction id="open_auction4"/><open_auction id="open_auction9"/><open_auction id="open_auction10"/><open_auction id="open_auction11"/>
 
+probe 7:
 <open_auction id="open_auction1"/><open_auction id="open_auction4"/><open_auction id="open_auction9"/>
 
+probe 8:
 <open_auction id="open_auction1"/><open_auction id="open_auction9"/>
 
+probe 9:
 <open_auction id="open_auction9"/>
 
 Empty Probe

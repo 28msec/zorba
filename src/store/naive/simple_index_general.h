@@ -285,6 +285,7 @@ protected:
 
   store::IndexCondition::Kind                 theProbeKind;
   rchandle<IndexPointCondition>               thePointCondition;
+  rchandle<IndexBoxValueCondition>            theBoxValueCondition;
   rchandle<IndexBoxGeneralCondition>          theBoxGeneralCondition;
   bool                                        theIsUntypedProbe;
 
@@ -321,11 +322,16 @@ protected:
 
   void initGeneralBox(const store::IndexCondition_t& cond);
 
-  void probeMap(GeneralTreeIndex::IndexMap* map, const store::IndexKey* key);
+  void probeMap(
+      GeneralTreeIndex::IndexMap* map,
+      const store::IndexKey* lowerKey,
+      const store::IndexKey* upperKey);
 
   void doubleToLongProbe(
       const AtomicItem* doubleItem,
       store::Item_t& result) const;
+
+  void checkStringKeyType(AtomicItem* keyItem) const;
 };
 
 
