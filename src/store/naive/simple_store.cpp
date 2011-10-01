@@ -1348,7 +1348,7 @@ bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
     ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
 
     zstring id = resIt->second;
-    return theItemFactory->createString(result, id);
+    return theItemFactory->createAnyURI(result, id);
   }
 
   uuid_t uuid;
@@ -1384,7 +1384,7 @@ bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* 
   ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
 
   zstring id = resIt->second;
-  return theItemFactory->createString(result, id);
+  return theItemFactory->createAnyURI(result, id);
 }
 
 
