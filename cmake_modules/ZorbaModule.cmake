@@ -544,13 +544,7 @@ MACRO(expected_failure testname bugid)
     set (willfail 1)
   endif (willfail)
 
-  # simplestore executable doesn't need an extension
-  SET(SUFFIX)
-  IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-    SET(SUFFIX "_${ZORBA_STORE_NAME}")
-  ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-
-  set_tests_properties ("${testname}${SUFFIX}"
+  set_tests_properties ("${testname}"
     PROPERTIES WILL_FAIL ${willfail})
 
   # Also store the name and bug ID of this test in our output file
