@@ -106,7 +106,8 @@ SimpleStore::SimpleStore()
   theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theHashMaps(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theTraceLevel(0)
+  theTraceLevel(0),
+  theNodeToReferencesMap(128, true)
 #ifndef ZORBA_NO_FULL_TEXT
   , theStemmerProvider( nullptr )
   , theTokenizerProvider( nullptr )
@@ -336,22 +337,30 @@ void SimpleStore::shutdown(bool soft)
       theNodeFactory = NULL;
     }
 
-    if(theNodeToReferencesMap.size()>0)
+    if (theNodeToReferencesMap.size() > 0)
     {
-      std::map<const store::Item *,zstring>::iterator iter= theNodeToReferencesMap.begin();
-      std::map<const store::Item *,zstring>::iterator end= theNodeToReferencesMap.end();
+      NodeRefMap::iterator iter = theNodeToReferencesMap.begin();
+      NodeRefMap::iterator end = theNodeToReferencesMap.end();
       for (; iter != end; ++iter)
-        std::cerr << "Reference: " << iter->second << "is still in the nodes to references map" << std::endl;
-      ZORBA_FATAL(0, theNodeToReferencesMap.size()+" node references still in the nodes to references map");
+      {
+        std::cerr << "Reference: " << (*iter).second
+                  << "is still in the nodes to references map" << std::endl;
+      }
+      ZORBA_FATAL(0, theNodeToReferencesMap.size() + 
+                     " node references still in the nodes to references map");
     }
 
-    if(theReferencesToNodeMap.size()>0)
+    if (theReferencesToNodeMap.size() > 0)
     {
-      std::map<const zstring,const store::Item *>::iterator iter= theReferencesToNodeMap.begin();
-      std::map<const zstring,const store::Item *>::iterator end= theReferencesToNodeMap.end();
+      RefNodeMap::iterator iter = theReferencesToNodeMap.begin();
+      RefNodeMap::iterator end = theReferencesToNodeMap.end();
       for (; iter != end; ++iter)
-        std::cerr << "Reference: " << iter->first << "is still in the references to nodes map" << std::endl;
-      ZORBA_FATAL(0, theReferencesToNodeMap.size()+" node references still in the references to nodes map");
+      {
+        std::cerr << "Reference: " << (*iter).first 
+                  << "is still in the references to nodes map" << std::endl;
+      }
+      ZORBA_FATAL(0, theReferencesToNodeMap.size() +
+                     " node references still in the references to nodes map");
     }
 
     // do cleanup of the libxml2 library
@@ -1348,12 +1357,11 @@ bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
 
   if (xmlNode->haveReference())
   {
-    std::map<const store::Item *, zstring>::iterator resIt =
-    theNodeToReferencesMap.find(node);
+    NodeRefMap::iterator resIt = theNodeToReferencesMap.find(xmlNode);
 
     ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
 
-    zstring id = resIt->second;
+    zstring id = (*resIt).second;
     return theItemFactory->createAnyURI(result, id);
   }
 
@@ -1363,7 +1371,7 @@ bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
 
   xmlNode->setHaveReference();
 
-  theNodeToReferencesMap[node] = uuidStr;
+  theNodeToReferencesMap.insert(xmlNode, uuidStr);
   theReferencesToNodeMap[uuidStr] = node;
 
   return theItemFactory->createAnyURI(result, uuidStr);
@@ -1384,12 +1392,11 @@ bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* 
   if (!xmlNode->haveReference())
     throw ZORBA_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
 
-  std::map<const store::Item *,zstring>::iterator resIt =
-  theNodeToReferencesMap.find(node);
+  NodeRefMap::iterator resIt = theNodeToReferencesMap.find(xmlNode);
 
   ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
 
-  zstring id = resIt->second;
+  zstring id = (*resIt).second;
   return theItemFactory->createAnyURI(result, id);
 }
 
@@ -1455,7 +1462,10 @@ void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
   target->setHaveReference();
   target->setHaveFrozenReference();
 
-  theNodeToReferencesMap[target] = reference->getStringValue();
+  zstring refStr;
+  reference->getStringValue2(refStr);
+
+  theNodeToReferencesMap.insert(target,  refStr);
 }
 
 
@@ -1470,7 +1480,8 @@ void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
 void SimpleStore::restoreReference(XmlNode* node, const zstring& reference)
 {
   unregisterNode(node);
-  theNodeToReferencesMap[node] = reference;
+  theNodeToReferencesMap.insert(std::pair<const XmlNode*, zstring>(node, reference));
+
   node->setHaveReference();
   node->setHaveFrozenReference();
 }
@@ -1492,16 +1503,16 @@ void SimpleStore::restoreReference(XmlNode* node, const zstring& reference)
 void SimpleStore::unfreezeReference(XmlNode* node)
 {
   store::Item_t reference;
-  getCurrentReference(reference,node);
+  getCurrentReference(reference, node);
+
   store::Item_t result;
   if (getNodeByReference(result, reference->getStringValue()))
   {
-    throw ZORBA_EXCEPTION(
-            zerr::ZAPI0029_REFERENCE_ALREADY_PRESENT,
-            ERROR_PARAMS(reference->getStringValue())
-          );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0029_REFERENCE_ALREADY_PRESENT,
+    ERROR_PARAMS(reference->getStringValue()));
   }
-  theReferencesToNodeMap[reference->getStringValue()]=node;
+
+  theReferencesToNodeMap[reference->getStringValue()] = node;
   node->resetHaveFrozenReference();
 }
 
@@ -1521,7 +1532,7 @@ bool SimpleStore::unregisterNode(XmlNode* node)
 
   if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
   {
-    zstring value = resIt->second;
+    zstring value = (*resIt).second;
     theNodeToReferencesMap.erase(resIt);
     node->resetHaveReference();
 

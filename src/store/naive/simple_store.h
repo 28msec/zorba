@@ -18,6 +18,7 @@
 
 #include "store/naive/shared_types.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/hashmap_nodep.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "store/naive/node_items.h"
@@ -99,8 +100,8 @@ class SimpleStore : public store::Store
 {
   friend class zorba::StoreManager;
 
-  typedef std::map<const zstring, const store::Item *> RefNodeMap;
-  typedef std::map<const store::Item *, zstring> NodeRefMap;
+  typedef std::map<const zstring, const store::Item*> RefNodeMap;
+  typedef NodePointerHashMap<zstring> NodeRefMap;
 
 public:
   static const char* XS_URI;
@@ -149,30 +150,13 @@ protected:
 
   long                          theTraceLevel;
 
-  /* ------------------------ Node Reference Management ---------------------------*/
-
   RefNodeMap                    theReferencesToNodeMap;
   NodeRefMap                    theNodeToReferencesMap;
-
-  /* ------------------------ Node Reference Management ---------------------------*/
 
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const * theStemmerProvider;
   TokenizerProvider const     * theTokenizerProvider;
 #endif /* ZORBA_NO_FULL_TEXT */
-
-public:
-  // needs to be virtual to allow implementation of additional stores
-  virtual void populateValueIndex(
-      const store::Index_t& index,
-      store::Iterator* sourceIter,
-      ulong numColumns);
-
-  // needs to be virtual to allow implementation of additional stores
-  virtual void populateGeneralIndex(
-      const store::Index_t& index,
-      store::Iterator* sourceIter,
-      ulong numColumns);
 
 public:
   void shutdown(bool soft = true);
@@ -193,7 +177,9 @@ public:
 
   long getTraceLevel() const { return theTraceLevel; }
 
-  XmlLoader* getXmlLoader(XQueryDiagnostics*, const store::LoadProperties& loadProperties);
+  XmlLoader* getXmlLoader(
+      XQueryDiagnostics*,
+      const store::LoadProperties& loadProperties);
 
   ulong createCollectionId();
 
@@ -218,16 +204,30 @@ public:
   store::Iterator_t listCollectionNames(bool aDynamicCollections = false);
 
   store::Index_t createIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec,
-        store::Iterator* sourceIter);
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec,
+      store::Iterator* sourceIter);
+  
+  // needs to be virtual to allow implementation of additional stores
+  virtual void populateValueIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
 
   // needs to be virtual to allow implementation of additional stores
-  virtual
-  store::Index_t refreshIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec,
-        store::Iterator* sourceIter);
+  virtual void populateGeneralIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
+
+  // needs to be virtual to allow implementation of additional stores
+  virtual store::Index_t refreshIndex(
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec,
+      store::Iterator* sourceIter);
+
+  // needs to be virtual to allow implementation of additional stores
+  virtual const IndexSet& getIndices() const { return theIndices; }
 
   void addIndex(store::Index_t& index);
 
@@ -237,23 +237,20 @@ public:
 
   store::Iterator_t listIndexNames();
 
-  // needs to be virtual to allow implementation of additional stores
-  virtual
-  const IndexSet& getIndices() const { return theIndices; }
-
   store::IC_t activateIC(
-        const store::Item_t& icQName,
-        const store::Item_t& collectionQName,
-        bool& isApplied);
-
+      const store::Item_t& icQName,
+      const store::Item_t& collectionQName,
+      bool& isApplied);
+  
   store::IC_t activateForeignKeyIC(
-        const store::Item_t& icQName,
-        const store::Item_t& fromCollectionQName,
-        const store::Item_t& toCollectionQName,
-        bool& isApplied);
+      const store::Item_t& icQName,
+      const store::Item_t& fromCollectionQName,
+      const store::Item_t& toCollectionQName,
+      bool& isApplied);
 
-  store::IC_t deactivateIC(const store::Item_t& icQName,
-        bool& isApplied);
+  store::IC_t deactivateIC(
+      const store::Item_t& icQName,
+      bool& isApplied);
 
   store::Iterator_t listActiveICNames();
 

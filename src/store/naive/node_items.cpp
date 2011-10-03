@@ -234,7 +234,7 @@ void XmlTree::copyTypesMap(const XmlTree* source)
 
   if (theTypesMap == NULL)
   {
-    theTypesMap = new NodeTypeMap(source->theTypesMap->object_count(), false);
+    theTypesMap = new NodeTypeMap(source->theTypesMap->size(), false);
   }
 
   NodeTypeMap::iterator ite = source->theTypesMap->begin();
