@@ -1556,6 +1556,17 @@ void ProbeGeneralTreeIndexIterator::init(const store::IndexCondition_t& cond)
   theProbeKind = cond->getKind();
 
   if (cond->getKind() == store::IndexCondition::POINT_VALUE ||
+      cond->getKind() == store::IndexCondition::BOX_VALUE)
+  {
+    if (theIndex->theMultiKeyFlag)
+    {
+      RAISE_ERROR_NO_LOC(err::XPTY0004,
+      ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2),
+                   theIndex->getName()->getStringValue()));
+    }
+  }
+
+  if (cond->getKind() == store::IndexCondition::POINT_VALUE ||
       cond->getKind() == store::IndexCondition::POINT_GENERAL)
   {
     initPoint(cond);
@@ -1591,20 +1602,11 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     ZORBA_ASSERT(false);
   }
 
-  if (theProbeKind == store::IndexCondition::POINT_VALUE)
+  if (theProbeKind == store::IndexCondition::POINT_VALUE &&
+      theIndex->theUntypedFlag)
   {
-    if (theIndex->theMultiKeyFlag)
-    {
-      RAISE_ERROR_NO_LOC(err::XPTY0004,
-      ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2),
-                   theIndex->getName()->getStringValue()));
-    }
-
-    if (theIndex->theUntypedFlag)
-    {
-      AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
-      checkStringKeyType(keyItem);
-    }
+    AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+    checkStringKeyType(keyItem);
   }
 
   theResultSets.resize(1);
@@ -1891,13 +1893,6 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     ZORBA_ASSERT(false);
   }
 
-  if (theIndex->theMultiKeyFlag)
-  {
-    RAISE_ERROR_NO_LOC(err::XPTY0004,
-    ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2),
-                 theIndex->getName()->getStringValue()));
-  }
-
   store::IndexKey* lowerKey = &theBoxValueCondition->theLowerBounds;
   store::IndexKey* upperKey = &theBoxValueCondition->theUpperBounds;
 
@@ -1976,7 +1971,7 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
           upperAltKey[0].transfer(castItem);
         }
         
-        probeMap(theIndex->theMaps[XS_STRING], &lowerAltKey, &aupperAltKey);
+        probeMap(theIndex->theMaps[XS_STRING], &lowerAltKey, &upperAltKey);
       }
 
       break;
@@ -2026,7 +2021,128 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     {
       probeMap(theIndex->theMaps[XS_DOUBLE], lowerKey, upperKey);
 
-      
+      if (theIndex->theMaps[XS_LONG])
+      {
+        store::IndexKey lowerAltKey(1);
+        store::IndexKey upperAltKey(1);
+
+        if (haveUpper)
+        {
+          doubleToLongProbe(castItem, upperKeyItem, false, haveUpper);
+          if (castItem)
+            upperAltKey[0].transfer(castItem);
+        }
+
+        probeMap(theIndex->theMaps[XS_ANY_URI], &lowerAltKey, &upperAltKey);
+      }
+
+      break;
+    }
+
+    case XS_DECIMAL:
+    case XS_INTEGER:
+    case XS_NON_POSITIVE_INTEGER:
+    case XS_NEGATIVE_INTEGER:
+    case XS_NON_NEGATIVE_INTEGER:
+    case XS_POSITIVE_INTEGER:
+    case XS_UNSIGNED_LONG:
+    {
+      probeMap(theIndex->theMaps[XS_DECIMAL], lowerKey, upperKey);
+
+      if (theIndex->theMaps[XS_LONG])
+      {
+        store::IndexKey lowerAltKey(1);
+        store::IndexKey upperAltKey(1);
+
+        if (haveLower)
+          lowerAltKey[0] = lowerKeyItem;
+
+        if (haveUpper)
+          upperAltKey[0] = upperKeyItem;
+
+        probeMap(theIndex->theMaps[XS_LONG], &lowerAltKey, &upperAltKey);
+      }
+
+      if (theIndex->theMaps[XS_DOUBLE])
+      {
+        store::IndexKey lowerAltKey(1);
+        store::IndexKey upperAltKey(1);
+
+        if (haveLower)
+        {
+          xs_double doubleValue = lowerKeyItem->getDecimalValue();
+          GET_FACTORY().createDouble(castItem, doubleValue);
+          lowerAltKey[0].transfer(castItem);
+        }
+
+        if (haveUpper)
+        {
+          xs_double doubleValue = upperKeyItem->getDecimalValue();
+          GET_FACTORY().createDouble(castItem, doubleValue);
+          upperAltKey[0].transfer(castItem);
+        }
+
+        probeMap(theIndex->theMaps[XS_DOUBLE], &lowerAltKey, &upperAltKey);
+      }
+
+      break;
+    }
+
+    case XS_LONG:
+    case XS_INT:
+    case XS_SHORT:
+    case XS_BYTE:
+    case XS_UNSIGNED_INT:
+    case XS_UNSIGNED_SHORT:
+    case XS_UNSIGNED_BYTE:
+    {
+      probeMap(theIndex->theMaps[XS_LONG], lowerKey, upperKey);
+
+      if (theIndex->theMaps[XS_DECIMAL])
+      {
+        store::IndexKey lowerAltKey(1);
+        store::IndexKey upperAltKey(1);
+
+        if (haveLower)
+        {
+          xs_decimal decimalValue = lowerKeyItem->getLongValue();
+          GET_FACTORY().createDecimal(castItem, decimalValue);
+          lowerAltKey[0].transfer(castItem);
+        }
+
+        if (haveUpper)
+        {
+          xs_decimal decimalValue = upperKeyItem->getLongValue();
+          GET_FACTORY().createDecimal(castItem, decimalValue);
+          upperAltKey[0].transfer(castItem);
+        }
+
+        probeMap(theIndex->theMaps[XS_DECIMAL], &lowerAltKey, &upperAltKey);
+      }
+
+      if (theIndex->theMaps[XS_DOUBLE])
+      {
+        store::IndexKey lowerAltKey(1);
+        store::IndexKey upperAltKey(1);
+
+        if (haveLower)
+        {
+          xs_double doubleValue = lowerKeyItem->getLongValue();
+          GET_FACTORY().createDouble(castItem, doubleValue);
+          lowerAltKey[0].transfer(castItem);
+        }
+
+        if (haveUpper)
+        {
+          xs_double doubleValue = upperKeyItem->getLongValue();
+          GET_FACTORY().createDouble(castItem, doubleValue);
+          upperAltKey[0].transfer(castItem);
+        }
+
+        probeMap(theIndex->theMaps[XS_DOUBLE], &upperAltKey, &lowerAltKey);
+      }
+
+      break;
     }
 
     default:
@@ -2042,125 +2158,8 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
 
       theMapBegins.push_back(theIndex->theMaps[i]->begin());
       theMapEnds.push_back(theIndex->theMaps[i]->end());
-  }
-}
-
-
-/******************************************************************************
-  
-********************************************************************************/
-void ProbeGeneralTreeIndexIterator::probeMap(
-    GeneralTreeIndex::IndexMap* map,
-    const store::IndexKey* lowerKey,
-    const store::IndexKey* upperKey)
-{
-  if (map == NULL)
-    return;
-
-  IndexBoxCondition::RangeFlags& flags = 
-  (theProbeKind == store::IndexCondition::BOX_VALUE ?
-   theBoxValueCondition->theRangeFlags[0] :
-   theBoxGeneralCondition->theRangeFlags);
-
-  bool haveLower = flags.theHaveLowerBound;
-  bool haveUpper = flags.theHaveUpperBound;
-  bool lowerIncl = flags.theLowerBoundIncl;
-  bool upperIncl = flags.theUpperBoundIncl;
-
-  assert(theProbeKind != store::IndexCondition::BOX_GENERAL ||
-         !(haveLower && haveUpper));
-
-  if (haveLower)
-  {
-    if (lowerIncl)
-      theMapBegins.push_back(map->lower_bound(lowerKey));
-    else
-      theMapBegins.push_back(map->upper_bound(lowerKey));    
-  }
-  else
-  {
-    theMapBegins.push_back(map->begin());
-  }
- 
-  if (haveUpper)
-  {
-    if (upperIncl)
-      theMapEnds.push_back(map->upper_bound(upperKey));
-    else
-      theMapEnds.push_back(map->lower_bound(upperKey));
-  }
-  else
-  {
-    theMapEnds.push_back(map->end());
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void ProbeGeneralTreeIndexIterator::doubleToLongProbe(
-    const AtomicItem* doubleItem,
-    store::Item_t& result) const
-{
-  xs_double doubleObj = doubleItem->getDoubleValue();
-
-  if (doubleObj.isNaN())
-    throw ZORBA_EXCEPTION(zerr::ZSTR0041_NAN_COMPARISON);
-
-  double doubleValue = doubleObj.getNumber();
-
-  bool haveLower = theBoxGeneralCondition->theRangeFlags.theHaveLowerBound;
-  bool haveUpper = theBoxGeneralCondition->theRangeFlags.theHaveUpperBound;
-
-  int64_t longValue;
-
-  result = NULL;
-
-  if (doubleObj.isPosInf() || doubleValue > GeneralTreeIndex::theDoubleMaxLong)
-  {
-    if (haveLower)
-    {
-      return;
-    }
-    else
-    {
-      longValue = GeneralTreeIndex::theMaxLong;
-      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
     }
   }
-  else if (doubleObj.isNegInf() || doubleValue < GeneralTreeIndex::theDoubleMinLong)
-  {
-    if (haveLower)
-    {
-      longValue = GeneralTreeIndex::theMinLong;
-      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = true;
-    }
-    else
-    {
-      return;
-    }
-  }
-  else
-  {
-    double doubleFloor = ::floor(doubleValue);
-    longValue = static_cast<uint64_t>(doubleFloor);
-    
-    bool lossy = (doubleFloor != doubleValue);
-
-    assert(doubleFloor + 1.0 > doubleValue);
-
-    if (haveLower && lossy)
-    {
-      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = false;
-    }
-    else if (haveUpper && lossy)
-    {
-      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
-    }
-  }
-
-  GET_FACTORY().createLong(result, longValue);
 }
 
 
@@ -2274,7 +2273,7 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 
       if (theIndex->theMaps[XS_LONG])
       {
-        doubleToLongProbe(keyItem, castItem);
+        doubleToLongProbe(castItem, keyItem, haveLower, haveUpper);
 
         if (castItem)
         {
@@ -2442,7 +2441,7 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 
         if (theIndex->theMaps[XS_LONG])
         {
-          doubleToLongProbe(doubleItem.getp(), castItem);
+          doubleToLongProbe(castItem, doubleItem.getp(), haveLower, haveUpper);
 
           if (castItem)
           {
@@ -2500,6 +2499,125 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
       theMapEnds.push_back(theIndex->theMaps[i]->end());
     }
   }
+}
+
+
+/******************************************************************************
+  
+********************************************************************************/
+void ProbeGeneralTreeIndexIterator::probeMap(
+    GeneralTreeIndex::IndexMap* map,
+    const store::IndexKey* lowerKey,
+    const store::IndexKey* upperKey)
+{
+  if (map == NULL)
+    return;
+
+  IndexBoxCondition::RangeFlags& flags = 
+  (theProbeKind == store::IndexCondition::BOX_VALUE ?
+   theBoxValueCondition->theRangeFlags[0] :
+   theBoxGeneralCondition->theRangeFlags);
+
+  bool haveLower = flags.theHaveLowerBound;
+  bool haveUpper = flags.theHaveUpperBound;
+  bool lowerIncl = flags.theLowerBoundIncl;
+  bool upperIncl = flags.theUpperBoundIncl;
+
+  assert(theProbeKind != store::IndexCondition::BOX_GENERAL ||
+         !(haveLower && haveUpper));
+
+  if (haveLower)
+  {
+    if (lowerIncl)
+      theMapBegins.push_back(map->lower_bound(lowerKey));
+    else
+      theMapBegins.push_back(map->upper_bound(lowerKey));    
+  }
+  else
+  {
+    theMapBegins.push_back(map->begin());
+  }
+ 
+  if (haveUpper)
+  {
+    if (upperIncl)
+      theMapEnds.push_back(map->upper_bound(upperKey));
+    else
+      theMapEnds.push_back(map->lower_bound(upperKey));
+  }
+  else
+  {
+    theMapEnds.push_back(map->end());
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ProbeGeneralTreeIndexIterator::doubleToLongProbe(
+    store::Item_t& result,
+    const AtomicItem* doubleItem,
+    bool haveLower,
+    bool haveUpper) const
+{
+  assert(!(haveLower && haveUpper));
+
+  xs_double doubleObj = doubleItem->getDoubleValue();
+
+  if (doubleObj.isNaN())
+    throw ZORBA_EXCEPTION(zerr::ZSTR0041_NAN_COMPARISON);
+
+  double doubleValue = doubleObj.getNumber();
+
+  int64_t longValue;
+
+  result = NULL;
+
+  if (doubleObj.isPosInf() || doubleValue > GeneralTreeIndex::theDoubleMaxLong)
+  {
+    if (haveLower)
+    {
+      return;
+    }
+    else
+    {
+      longValue = GeneralTreeIndex::theMaxLong;
+      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
+    }
+  }
+  else if (doubleObj.isNegInf() || doubleValue < GeneralTreeIndex::theDoubleMinLong)
+  {
+    if (haveLower)
+    {
+      longValue = GeneralTreeIndex::theMinLong;
+      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = true;
+    }
+    else
+    {
+      return;
+    }
+  }
+  else
+  {
+    double doubleFloor = ::floor(doubleValue);
+    longValue = static_cast<uint64_t>(doubleFloor);
+    
+    bool lossy = (doubleFloor != doubleValue);
+
+    assert(doubleFloor + 1.0 > doubleValue);
+
+    if (haveLower && lossy)
+    {
+      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = false;
+    }
+    else if (haveUpper && lossy)
+    {
+      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
+    }
+  }
+
+  GET_FACTORY().createLong(result, longValue);
 }
 
 
