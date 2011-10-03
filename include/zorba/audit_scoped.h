@@ -28,8 +28,10 @@ namespace audit {
 
   class ZORBA_DLL_PUBLIC ScopedRecord {
   public:
-    ScopedRecord(Event* event) : theEvent(event), theRecord(0) {
-      assert(event);
+    ScopedRecord(Event* event)
+      : theEvent(event ? event : Event::get()),
+        theRecord(0) {
+      assert(theEvent);
     }
 
     ~ScopedRecord() {
@@ -104,6 +106,7 @@ namespace audit {
   typedef ScopedAuditor<const int>               IntAuditor;
   typedef ScopedAuditor<zorba::time::Timer>      DurationAuditor;
   typedef ScopedAuditor<zorba::time::Timer, 0x1> TimestampAuditor;
+  typedef ScopedAuditor<zorba::time::Timer, 0x2> MicroDurationAuditor;
 
   template<> struct AuditorTraits<const std::string> {
     typedef const std::string value_type;
@@ -141,7 +144,7 @@ namespace audit {
     static inline void start(value_type& value) {
     }
     static inline audit_type end(value_type& value) {
-      return value;
+      return static_cast<audit_type>(value);
     }
   };
 
@@ -189,6 +192,19 @@ namespace audit {
       return static_cast<audit_type>(value.getStart());
     }
   };
+
+  template<> struct AuditorTraits<zorba::time::Timer, 0x2> {
+    typedef zorba::time::Timer value_type;
+    typedef long long          audit_type;
+    static inline void start(value_type& value) {
+      value.start();
+    }
+    static inline audit_type end(value_type& value) {
+      return static_cast<audit_type>(value.elapsed() * 1000);
+    }
+
+  };
+
 }
 }
 #endif
