@@ -147,14 +147,14 @@ class Archiver
   class SimpleHashoutFieldCompare
   {
   public: 
-    uint32_t hash(const SIMPLE_HASHOUT_FIELD& f)
+    uint32_t hash(const SIMPLE_HASHOUT_FIELD& f) const
     {
       uint32_t  h = 0;
       h = hashfun::h32(f.type);
       h = hashfun::h32((void*)&f.ptr, sizeof(void*), h);
       return h;
     }
-    bool equal(const SIMPLE_HASHOUT_FIELD& f1, const SIMPLE_HASHOUT_FIELD& f2)
+    bool equal(const SIMPLE_HASHOUT_FIELD& f1, const SIMPLE_HASHOUT_FIELD& f2) const
     {
       if((f1.ptr == f2.ptr) && (f1.type == f2.type))
         return true;

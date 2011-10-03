@@ -161,7 +161,7 @@ store::Item* XmlTree::getType(const XmlNode* n) const
 {
   assert(theTypesMap != NULL);
 
-  NodeTypeMap::iterator ite = theTypesMap->get(n);
+  NodeTypeMap::iterator ite = theTypesMap->find(n);
 
   assert(ite != theTypesMap->end());
 
@@ -196,7 +196,7 @@ void XmlTree::setType(const XmlNode* n, store::Item_t& type)
     theTypesMap = new NodeTypeMap(32, false);
   }
 
-  NodeTypeMap::iterator ite = theTypesMap->get(n);
+  NodeTypeMap::iterator ite = theTypesMap->find(n);
 
   if (ite == theTypesMap->end())
   {
@@ -216,7 +216,7 @@ void XmlTree::removeType(const XmlNode* n)
 {
   assert(theTypesMap != NULL);
 
-  if (! theTypesMap->remove(n))
+  if (! theTypesMap->erase(n))
   {
     assert(false);
   }
