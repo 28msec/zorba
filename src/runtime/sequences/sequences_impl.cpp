@@ -293,7 +293,7 @@ bool FnDistinctValuesIterator::nextImpl(
         STACK_PUSH(true, state);
       }
     }
-    else if ( ! state->theAlreadySeenMap->find(result) )
+    else if ( ! state->theAlreadySeenMap->exists(result) )
     {
       // check if the item is already in the map
       state->theAlreadySeenMap->insert(result);
@@ -1123,7 +1123,7 @@ bool HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   while (consumeNext(result, theChildren[0].getp(), planState))
   {
-    not_found = ! state->theRightInput->find(result);
+    not_found = ! state->theRightInput->exists(result);
     if (not_found == theAntijoin)
       STACK_PUSH(true, state);
   }

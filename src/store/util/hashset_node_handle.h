@@ -56,11 +56,11 @@ public:
 
   bool empty() const { return theSet.empty(); }
 
-  bool find(const Item_t& key) { return theSet.find(key); }
+  bool exists(const Item_t& key) { return theSet.exists(key); }
 
   bool insert(Item_t& key) { return theSet.insert(key); }
 
-  bool remove(const Item_t& key) { return theSet.remove(key); }
+  bool erase(const Item_t& key) { return theSet.erase(key); }
 };
 
 } // namespace store
