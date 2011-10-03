@@ -75,11 +75,11 @@ public:
 
   bool get(const zstring_b& key, V& value) { return theMap.get(key, value); }
 
-  bool find(const zstring_b& key) { return theMap.find(key); } 
+  bool find(const zstring_b& key) { return theMap.exists(key); } 
 
   bool insert(zstring_b& key, V& value) { return theMap.insert(key, value); }
 
-  bool remove(const zstring_b& key) { return theMap.remove(key); }
+  bool remove(const zstring_b& key) { return theMap.erase(key); }
 };
 
 

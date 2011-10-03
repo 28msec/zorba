@@ -116,7 +116,7 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
     {
       if (std::find(callChain.begin(), callChain.end(), udf) == callChain.end())
       {
-        bool found = theNodes.find(udf);
+        bool found = theNodes.exists(udf);
 
         addEdge(callChain.back(), udf);
 

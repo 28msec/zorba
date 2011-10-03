@@ -21,14 +21,12 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/audit.h>
+#include <zorba/audit_scoped.h>
 
-int
-test_audit(int argc, char* argv[])
+bool
+test_audit_1(zorba::Zorba* aZorba)
 {
-  void* store = zorba::StoreManager::getStore();
-  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
-
-  zorba::audit::Provider* lAuditProvider = lZorbaInstance->getAuditProvider();
+  zorba::audit::Provider* lAuditProvider = aZorba->getAuditProvider();
   zorba::audit::Configuration* config = lAuditProvider->createConfiguration();
   std::vector<zorba::String> property_names;
   zorba::audit::Configuration::getPropertyNames(property_names);
@@ -52,8 +50,8 @@ test_audit(int argc, char* argv[])
 
   zorba::audit::Event* event = lAuditProvider->createEvent(config);
 
-  zorba::XQuery_t query = lZorbaInstance->createQuery();
-  zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
+  zorba::XQuery_t query = aZorba->createQuery();
+  zorba::StaticContext_t lStaticContext = aZorba->createStaticContext();
 
   lStaticContext->setAuditEvent(event);
 
@@ -64,7 +62,7 @@ test_audit(int argc, char* argv[])
   query->execute(std::cout, &lSerOptions);
 
   if (event->size() != 2) {
-    return 1;
+    return false;
   } else {
     // one record for the eval query and one for the main query
     const zorba::audit::Record* lRecord = event->at(0);
@@ -74,9 +72,47 @@ test_audit(int argc, char* argv[])
     std::cerr << *event << std::endl;
   }
 
+  aZorba->getAuditProvider()->submitEvent(event);
+  aZorba->getAuditProvider()->destroyConfiguration(config);
 
-  lZorbaInstance->getAuditProvider()->submitEvent(event);
-  lZorbaInstance->getAuditProvider()->destroyConfiguration(config);
+  return true;
+}
+
+bool
+test_audit_2(zorba::Zorba* aZorba)
+{
+  zorba::audit::Provider* lAuditProvider = aZorba->getAuditProvider();
+  zorba::audit::Configuration* config = lAuditProvider->createConfiguration();
+
+  {
+    // test to make sure that auditing doesn't crash if the record is initialized
+    // with a 0 event pointer
+    zorba::audit::ScopedRecord sar(0);
+    zorba::time::Timer lTimer;
+    zorba::audit::MicroDurationAuditor auditor(sar, "blub", lTimer);
+  }
+
+
+  aZorba->getAuditProvider()->destroyConfiguration(config);
+
+  return true;
+}
+
+int
+test_audit(int argc, char* argv[])
+{
+  void* store = zorba::StoreManager::getStore();
+  zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
+
+  if (!test_audit_1(lZorbaInstance))
+  {
+    return 1;
+  }
+
+  if (!test_audit_2(lZorbaInstance))
+  {
+    return 2;
+  }
 
   return 0;
 }

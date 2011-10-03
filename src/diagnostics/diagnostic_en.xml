@@ -1909,8 +1909,8 @@
       <value>"$1": collection does not contain node</value>
     </diagnostic>
 
-    <diagnostic code="ZDDY0012" name="COLLECTION_UNORDERED_BAD_INSERT">
-      <value>"$1": illegal insert into unordered collection</value>
+    <diagnostic code="ZDDY0012" name="COLLECTION_UNORDERED_BAD_OPERATION">
+      <value>"$1": illegal $2 into unordered collection</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0013" name="COLLECTION_BAD_DESTROY_INDEXES">
