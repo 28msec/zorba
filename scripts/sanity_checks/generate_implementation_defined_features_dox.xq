@@ -20,7 +20,7 @@ let $XQFTTSZorba := fn:doc("../../test/rbkt/Scripts/w3c/XQFTTS.xml")
 
 return 
 ("",
-"/** \page impl_dep_features  Information about Implementation Dependent Features and Properties
+"/** \page impl_dep_features  Implementation Dependent Features and Properties
 
 ",
 <ul>
@@ -31,15 +31,15 @@ return
 "
 \section IDI Implementation Defined Items",
   <table bgcolor="lightcyan">
-    <tr><td>Feature</td><td>Name</td><td>Value/Description</td></tr>
+    <tr><td>Feature</td><td>Description</td><td>Value</td></tr>
     {
       for $idi in $XQTSZorba//*:implementation-defined-item
       where not(data($idi/@value) = "")
       return
       <tr>
         <td>W3C XQuery 1.0</td>
-        <td>{data($idi/@name)}</td>
-        <td>{data($idi/@value)}</td>
+        <td>{normalize-space($idi/*:description/text())}</td>
+        <td>{data($idi/@value)}</td>        
       </tr>
     }
     {
@@ -48,17 +48,17 @@ return
       return
       <tr>
         <td>W3C XQuery Update Facility 1.0</td>
-        <td>{data($idi/@name)}</td>
+        <td>{normalize-space($idi/*:description/text())}</td>
         <td>{data($idi/@value)}</td>
       </tr>
     }
     {
       for $idi in $XQFTTSZorba//*:implementation-defined-item
-      where not(data($idi/@value) = "")
+      where not(data($idi/@value) = "") and data($idi/@spec) = "XQueryFullText"
       return
       <tr>
         <td>W3C XQuery and XPath Full Text 1.0</td>
-        <td>{data($idi/@name)}</td>
+        <td>{normalize-space($idi/*:description/text())}</td>
         <td>{data($idi/@value)}</td>
       </tr>
     }
@@ -100,17 +100,6 @@ return
 \section Context_properties Context Properties",
     <table bgcolor="lightcyan">
     <tr><td>Feature</td><td>Name</td><td>Context Type</td><td>Value</td></tr>
-    {
-      for $property in $XQTSZorba//*:context-property
-      where not(data($property/@value) = "")
-      return
-      <tr>
-        <td>W3C XQuery 1.0</td>
-        <td>{data($property/@name)}</td>
-        <td>{data($property/@context-type)}</td>
-        <td>{data($property/@value)}</td>
-      </tr>
-    }
     {
       for $property in $XQUTSZorba//*:context-property
       where not(data($property/@value) = "")

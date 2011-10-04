@@ -2,128 +2,704 @@
 <zorba xmlns="http://www.w3.org/2005/02/query-test-XQTSResult">
   
   <implementation-defined-items>
-    <implementation-defined-item name="expressionUnicode" value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0."/>
-    <implementation-defined-item name="collations" value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
-    <implementation-defined-item name="implicitTimezone" value="The implicit timezone is computed based on the current local time of the computer running Zorba."/>
-    <implementation-defined-item name="warningsMethod" value="Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html. Currently, there are only 2 warnings: 1. ZWST0002: generated when an unknown annotation is encountered in an XQuery program. 2. ZWST0003: generated when a non-external user-defined function is declared as sequential, but its implementation is not really sequential."/>
-    <implementation-defined-item name="errorsMethod" value="Errors are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html."/>
-    <implementation-defined-item name="XMLVersion" value="XML 1.0"/>
-    <implementation-defined-item name="overwrittenContextComponents" value="The following static context components are overwrtten/augmented: 1. Statically known namespaces: Augmented with zerr –> http://www.zorba-xquery.com/ 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*"/>
-    <implementation-defined-item name="axes" value="All axes are supported."/>
-    <implementation-defined-item name="defaultOrderEmpty" value="empty_greatest"/>
-    <implementation-defined-item name="pragmas" value="No pragmas are recognized."/>
-    <implementation-defined-item name="optionDeclarations" value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/options_and_annotations.html."/>
-    <implementation-defined-item name="externalFunctionProtocols" value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/external_functions.html"/>
-    <implementation-defined-item name="moduleLocationHints" value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/modules_top.html."/>
-    <implementation-defined-item name="staticTypingExtensions" value="Static typing is not supported."/>
-    <implementation-defined-item name="serializationInvocation" value="The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1XQuery.html). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1Serializer.html)."/>
-    <implementation-defined-item name="serializationDefaults" value="Serialization Feature is supported. Implicit values are: byte-order-mark = no, encoding = UTF-8, media-type = '', normalization-form = '', omix-xml-declaration = no, standalone = omit, version = '1.0', method = xml, doctype-system = '', doctype-public = '', cdata-section-elements = empty list, include-content-type = no, undeclare-prefixes = no, indent = no"/>
-    <implementation-defined-item name="externalFunctionCall" value="An error is raised using the regular error handling mechanism of zorba. The kind of error depends on the kind of failure. For example, zerr:ZXQP0008  if the function implementation is not found, or err:XPTY0004 if the result of the function does not match the declared returned type."/>
-    <implementation-defined-item name="limits" value=""/>
-    <implementation-defined-item name="traceDestination" value="By default, it is std:cerr. Users can modify this via the StaticContext::setTraceStream method."/>
-    <implementation-defined-item name="integerOperations" value="Zorba raises [err:FOAR0002]"/>
-    <implementation-defined-item name="decimalDigits" value=""/>
-    <implementation-defined-item name="roundOrTruncate" value=""/>
-    <implementation-defined-item name="Unicode" value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0."/>
-    <implementation-defined-item name="normalizationForms" value="Zorba supports NFC, NFKC, NFD, NFKD normalization forms."/>
-    <implementation-defined-item name="collationUnits" value=""/>
-    <implementation-defined-item name="secondsDigits" value="Year values: Zorba supports 9 digits (32bit maxint). Fractional second: Zorba supports 6 digits."/>
-    <implementation-defined-item name="stringToDecimal" value=""/>
-    <implementation-defined-item name="docProcessing" value=""/>
-    <implementation-defined-item name="weakenStable" value=""/>
-    <implementation-defined-item name="additionalTypes" value="There are no implementation-defined types. User-defined types are created and become “in-scope” when “import schema” statements are processed. User-defined types (including anonymous types) are created within a static context and they are destroyed when their containing static context is destroyed."/>
-    <implementation-defined-item name="undefinedProperties" value="err:FOTY0012"/>
-    <implementation-defined-item name="sequenceNormalization" value="Zorba performs sequence normalization for the 'binary' serialization method. Zorba's Data Converters module performs sequence normalization for JSON and JSONML (but these are not serialization output methods, i.e. they cannot be invoked with the help of '-z method=JSON')"/>
-    <implementation-defined-item name="outputMethods" value="Zorba's only implementation-defined output method is 'binary' and it is used unqualified (URI is null)."/>
-    <implementation-defined-item name="normalizationFormBehavior" value="Zorba has no implementation-defined values for the normalization-form parameter."/>
-    <implementation-defined-item name="additionalParams" value="Zorba has no implementation-defined serialization parameters."/>
-    <implementation-defined-item name="encodingPhase" value="Zorba has no such option."/>
-    <implementation-defined-item name="CDATASerialization" value="Zorba has no such mechanism."/>
-    <implementation-defined-item name="Tokenization" value="Zorba uses ICU for word tokenization, so what ever ICU's rules are are Zorba's rules. ICU uses the 'Unicode Standard Annex #29: Unicode Text Segmentation' rules found here http://www.unicode.org/reports/tr29 ."/>
-    <implementation-defined-item name="phrase" value="A phrase in nothing more that 1+ tokens separated by text boundaries as defined by http://www.unicode.org/reports/tr29 ."/>
-    <implementation-defined-item name="sentence" value="Zorba uses ICU for sentence tokenization, so what ever ICU's rules are are Zorba's rules. ICU uses the 'Unicode Standard Annex #29: Unicode Text Segmentation' rules found here http://www.unicode.org/reports/tr29 ."/>
-    <implementation-defined-item name="paragraph" value="Zorba considers XML elements to be paragraph delimiters.  For example: &lt;p&gt;It was the best of times. It wat the worse of times.&lt;/p&gt; is 1 paragraph; however: &lt;p&gt;That was a &lt;b&gt;bold&lt;/b&gt; is 3 paragraphs since Zorba attaches no semantic meaning to any particular XML elements."/>
-    <implementation-defined-item name="Markup Effect Token Boundaries" value="Markup delimits paragraphs and, by implication, sentences and tokens."/>
-    <implementation-defined-item name="Scoring Expressions" value="Score variables are not currently supported."/>
-    <implementation-defined-item name="Matching" value="Given the tokens: A B C they have to match: A B C exactly; no more, no less."/>
-    <implementation-defined-item name="Match Option Order" value="Match options are applied in the following order: Stop Word Option, Stemming Option, Case Option, Diacritics Option, Wildcard Option, Language Option."/>
-    <implementation-defined-item name="Language Option Tokenization" value="The Language Option: * Affects tokenization as performed by ICU. * Selects the stemming algorithm to be used.* Selects the default set of stop-words to be used. The Language Option does not affect any other Match Option."/>
-    <implementation-defined-item name="Language Option Valid ID" value="Zorba recognizes the ISO 639-1 and 639-2 language identifiers for the following languages: Danish, Dutch, English, Finnish, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish."/>
-    <implementation-defined-item name="Language Option Undefined" value="Zorba raises err::XPTY0004 for a string that can not be cast to xs:language and err::FTST0009 for an unsupported language."/>
-    <implementation-defined-item name="Mismatched Languages" value="xml:lang always wins."/>
-    <implementation-defined-item name="Thesaurus Option" value="This is covered in the Zorba Full Text Thesaurus documentation, http://www.zorba-xquery.com/site2/doc/latest/zorba/html/ft_thesaurus.html"/>
-    <implementation-defined-item name="Thesaurus Relationships" value="Unsupported thesaurus relationships are treated as no relationship.  All levels are supported.  When no relationship is specified, all related words are returned."/>
-    <implementation-defined-item name="Thesaurus Levels" value="Zorba uses 2 levels by default."/>
-    <implementation-defined-item name="Stemming Option" value="Zorba uses the publicly available Snowball stemmers found here http://snowball.tartarus.org."/>
-    <implementation-defined-item name="Query Token In Stopword List" value="The query token is compared (case insensitively) against the list of stop words for an exact match."/>
-    <implementation-defined-item name="StopWord Option Match Number" value="Zorba has no such conditions."/>
-    <implementation-defined-item name="StopWord Option Default" value="For each of the supported languages, Zorba defines a set of default stop-words (too big to be listed here)."/>
-    <implementation-defined-item name="Extension Option" value="Zorba implements no extension options."/>
-    <implementation-defined-item name="Extension Selection" value="Zorba implements no extension pragmas."/>
-    <implementation-defined-item name="Equal Items Different Tokens" value=""/>
-    <implementation-defined-item name="FTIgnoreOption" value="Zorba imposes no restriction; however, the FTIgnoreOption implementation is incomplete."/>
-    <implementation-defined-item name="Static Context Items" value=""/>
+    <implementation-defined-item 
+      name="expressionUnicode" 
+      spec="XQuery"
+      value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0.">
+      <description last-mod="2005-04-04">The version of Unicode that is used to construct expressions.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="collations" 
+      spec="XQuery"
+      value="http://www.w3.org/2005/xpath-functions/collation/codepoint">
+      <description last-mod="2005-04-04">The statically-known collations.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="implicitTimezone"
+      spec="XQuery"
+      value="The implicit timezone is computed based on the current local time of the computer running Zorba.">
+      <description last-mod="2005-04-04">The implicit timezone.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="warningsMethod"
+      spec="XQuery"
+      value="Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_warnings.html.">
+      <description last-mod="2005-04-04">The circumstances in which warnings are raised, and the ways in which warnings are handled.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="errorsMethod"
+      spec="XQuery"
+      value="Errors are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html.">
+      <description last-mod="2005-04-04">The method by which errors are reported to the external processing environment.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="XMLVersion"
+      spec="XQuery"
+      value="XML 1.0">
+      <description last-mod="2005-10-10">Whether the implementation is based on the rules of [XML 1.0] and [XML Names] or the rules of [XML 1.1] and [XML Names 1.1]. One of these sets of rules must be applied consistently by all aspects of the implementation.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="overwrittenContextComponents"
+      spec="XQuery"
+      value="The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –> http://www.zorba-xquery.com/ 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*">
+      <description last-mod="2005-04-04">Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="axes"
+      spec="XQuery"
+      value="All axes are supported.">
+      <description last-mod="2005-04-04">Which of the optional axes are supported by the implementation, if the Full-Axis Feature is not supported.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="defaultOrderEmpty"
+      spec="XQuery"
+      value="empty_greatest">
+      <description last-mod="2005-04-04">The default handling of empty sequences returned by an ordering key (sortspec) in an order by clause (empty least or empty greatest).</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="pragmas"
+      spec="XQuery"
+      value="No pragmas are recognized.">
+      <description last-mod="2005-04-04">The names and semantics of any extension expressions (pragmas) recognized by the implementation.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="optionDeclarations"
+      spec="XQuery"
+      value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/options_and_annotations.html.">
+      <description last-mod="2005-04-04">The names and semantics of any option declarations recognized by the implementation.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="externalFunctionProtocols"
+      spec="XQuery"
+      value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/external_functions.html">
+      <description last-mod="2005-04-04">Protocols (if any) by which parameters can be passed to an external function, and the result of the function can returned to the invoking query.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="moduleLocationHints"
+      spec="XQuery"
+      value="See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/modules_top.html.">
+      <description last-mod="2005-11-01">The process by which the specific modules to be imported by a module import are identified, if the Module Feature is supported (includes processing of location hints, if any.)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="staticTypingExtensions"
+      spec="XQuery"
+      value="Static typing is not supported.">
+      <description last-mod="2005-04-04">Any static typing extensions supported by the implementation, if the Static Typing Feature is supported.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="serializationInvocation"
+      spec="XQuery"
+      value="The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1XQuery.html). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1Serializer.html).">
+      <description last-mod="2005-04-04">The means by which serialization is invoked, if the Serialization Feature is supported.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="serializationDefaults"
+      spec="XQuery"
+      value="Serialization Feature is supported. Implicit values are: byte-order-mark = no, encoding = UTF-8, media-type = '', normalization-form = '', omix-xml-declaration = no, standalone = omit, version = '1.0', method = xml, doctype-system = '', doctype-public = '', cdata-section-elements = empty list, include-content-type = no, undeclare-prefixes = no, indent = no">
+      <description last-mod="2005-10-10">The default values for the byte-order-mark, encoding, media-type, normalization-form, omit-xml-declaration, standalone, and version parameters, if the Serialization Feature is supported.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="externalFunctionCall"
+      spec="XQuery"
+      value="An error is raised using the regular error handling mechanism of zorba. The kind of error depends on the kind of failure. For example, zerr:ZXQP0008  if the function implementation is not found, or err:XPTY0004 if the result of the function does not match the declared returned type.">
+      <description last-mod="2006-08-09">The result of an unsuccessful call to an external function (for example, if the function implementation cannot be found or does not return a value of the declared type).</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="limits"
+      spec="XQuery"
+      value="totalDigits = 2^63, xs:string length = available memory.">
+      <description last-mod="2005-11-01">Limits on ranges of values for various data types, as enumerated in 5.3 Data Model Conformance.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="traceDestination"
+      spec="FuncOps"
+      value="By default, it is std:cerr. Users can modify this via the StaticContext::setTraceStream method.">
+      <description last-mod="2005-10-10">The destination of the trace output is implementation-defined. See 4 The Trace Function.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="integerOperations"
+      spec="FuncOps"
+      value="Zorba raises [err:FOAR0002]">
+      <description last-mod="2005-10-10">For xs:integer operations, implementations that support limited-precision integer operations must either raise an error [err:FOAR0002] or provide an implementation-defined mechanism that allows users to choose between raising an error and returning a result that is modulo the largest representable integer value. See 6.2 Operators on Numeric Values.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="decimalDigits"
+      spec="FuncOps"
+      value="On a 32-bit system, the number of digits of precision is 2^31; on a 64-bit system, the number of digits of precision is 2^63.">
+      <description last-mod="2005-11-01">For xs:decimal values the number of digits of precision returned by the numeric operators is implementation-defined. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="roundOrTruncate"
+      spec="FuncOps"
+      value="It does whatever the underlying C++ implementation does.">
+      <description last-mod="2005-10-10">If the number of digits in the result exceeds the number of digits that the implementation supports, the result is truncated or rounded in an implementation-defined manner. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Unicode"
+      spec="FuncOps"
+      value="Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0.">
+      <description last-mod="2005-11-01">It is implementation-defined which version of Unicode is supported by the features defined in this specification, but it is recommended that the most recent version of Unicode be used. See 7.1 String Types.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="normalizationForms"
+      spec="FuncOps"
+      value="Zorba supports NFC, NFKC, NFD, NFKD normalization forms.">
+      <description last-mod="2005-10-10">For 7.4.6 fn:normalize-unicode, conforming implementations must support normalization form "NFC" and may support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED". They may also support other normalization forms with implementation-defined semantics.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="collationUnits"
+      spec="FuncOps"
+      value="Zorba does not support this.">
+      <description last-mod="2005-10-10">The ability to decompose strings into collation units suitable for substring matching is an implementation-defined property of a collation. See 7.5 Functions Based on Substring Matching.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="secondsDigits"
+      spec="FuncOps"
+      value="Year values: Zorba supports 9 digits (32bit maxint). Fractional second: Zorba supports 6 digits.">
+      <description last-mod="2005-10-10">All minimally conforming processors must support year values with a minimum of 4 digits (i.e., YYYY) and a minimum fractional second precision of 1 millisecond or three digits (i.e., s.sss). However, conforming processors may set larger implementation-defined limits on the maximum number of digits they support in these two situations. See 10.1.1 Limits and Precision.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="stringToDecimal"
+      spec="FuncOps"
+      value="On a 32-bit system, the number of digits of precision is 2^31; on a 64-bit system, the number of digits of precision is 2^63.">
+      <description last-mod="2006-08-09">The result of casting a string to xs:decimal, when the resulting value is not too large or too small but nevertheless has too many decimal digits to be accurately represented, is implementation-defined. See 17.1.1 Casting from xs:string and xs:untypedAtomic.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="docProcessing"
+      spec="FuncOps"
+      value="Zorba provides no configuration options for 15.5.4 fn:doc.">
+      <description last-mod="2005-10-10">Various aspects of the processing provided by 15.5.4 fn:doc are implementation-defined. Implementations may provide external configuration options that allow any aspect of the processing to be controlled by the user.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="weakenStable"
+      spec="FuncOps"
+      value="Zorba provides no options to weaken the stable characteristics of 15.5.6 fn:collection or 15.5.4 fn:doc.">
+      <description last-mod="2006-08-09">The manner in which implementations provide options to weaken the stable characteristic of 15.5.6 fn:collection and 15.5.4 fn:doc are implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="additionalTypes"
+      spec="DataModel"
+      value="There are no implementation-defined types. User-defined types are created and become “in-scope” when “import schema” statements are processed. User-defined types (including anonymous types) are created within a static context and they are destroyed when their containing static context is destroyed.">
+      <description last-mod="2005-04-04">Support for additional user-defined or implementation-defined types is implementation-defined. (See 2.6.1 Representation of Types)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="undefinedProperties"
+      spec="DataModel"
+      value="err:FOTY0012">
+      <description last-mod="2005-04-04">Some typed values in the data model are undefined. Attempting to access an undefined property is always an error. Behavior in these cases is implementation-defined and the host language is responsible for determining the result. (See 5 Accessors)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="sequenceNormalization"
+      spec="Serialization"
+      value="Zorba performs sequence normalization for the 'binary' serialization method. Zorba's Data Converters module performs sequence normalization for JSON and JSONML (but these are not serialization output methods, i.e. they cannot be invoked with the help of '-z method=JSON')">
+      <description last-mod="2005-04-04">For any implementation-defined output method, it is implementation-defined whether sequence normalization process takes place. (See 2 Sequence Normalization)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="outputMethods"
+      spec="Serialization"
+      value="Zorba's only implementation-defined output method is 'binary' and it is used unqualified (URI is null).">
+      <description last-mod="2005-04-04">If the namespace URI is non-null for the method serialization parameter, then the parameter specifies an implementation-defined output method. (See 3 Serialization Parameters)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="normalizationFormBehavior"
+      spec="Serialization"
+      value="Zorba has no implementation-defined values for the normalization-form parameter.">
+      <description last-mod="2005-04-04">If the value of the normalization-form form parameter is not NFC, NFD, NFKC, NFKD, fully-normalized, or none then the meaning of the value and it's effect is implementation-defined. (See 4 Phases of Serialization)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="additionalParams"
+      spec="Serialization"
+      value="Zorba has no implementation-defined serialization parameters.">
+      <description last-mod="2005-11-01">The effect of additional serialization parameters on the output of the serializer, where the name of such a parameter must be namespace-qualified, is implementation-defined or implementation-dependent. The extent of this effect on the output must not override the provisions of this specification. (See 3 Serialization Parameters)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="encodingPhase"
+      spec="Serialization"
+      value="Zorba has no such option.">
+      <description last-mod="2005-04-04">The effect of providing an option that allows the encoding phase to be skipped, so that the result of serialization is a stream of Unicode characters, is implementation-defined. The serializer is not required to support such an option. (See 4 Phases of Serialization)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="CDATASerialization"
+      spec="Serialization"
+      value="Input CDATA sections are treated and serialized as text. Text nodes can be serialized as cdata sections if explicitly requested through the cdata-section-elements parameter.">
+      <description last-mod="2005-04-04">An serializer may provide an implementation-defined mechanism to place CDATA sections in the result tree. (See 5.1.4 XML Output Method: the cdata-section-elements Parameter)</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Tokenization"
+      spec="XQueryFullText"
+      value="Zorba uses ICU for word tokenization, so what ever ICU's rules are are Zorba's rules. ICU uses the 'Unicode Standard Annex #29: Unicode Text Segmentation' rules found here http://www.unicode.org/reports/tr29 .">
+      <description last-mod="2010-09-17">Tokenization, including the definition of the term "tokens", SHOULD be implementation-defined. Implementations SHOULD expose the rules and sample results of tokenization as much as possible to enable users to predict and interpret the results of tokenization.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="phrase"
+      spec="XQueryFullText"
+      value="A phrase in nothing more that 1+ tokens separated by text boundaries as defined by http://www.unicode.org/reports/tr29 .">
+      <description last-mod="2008-02-18">A phrase is an ordered sequence of any number of tokens. Beyond that, phrases are implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="sentence"
+      spec="XQueryFullText"
+      value="Zorba uses ICU for sentence tokenization, so what ever ICU's rules are are Zorba's rules. ICU uses the 'Unicode Standard Annex #29: Unicode Text Segmentation' rules found here http://www.unicode.org/reports/tr29 .">
+      <description last-mod="2010-09-16">A sentence is an ordered sequence of any number of tokens. Beyond that, sentences are implementation-defined. An implementation is not required to support sentences.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="paragraph"
+      spec="XQueryFullText"
+      value="Zorba considers XML elements to be paragraph delimiters.  For example: &lt;p&gt;It was the best of times. It wat the worse of times.&lt;/p&gt; is 1 paragraph; however: &lt;p&gt;That was a &lt;b&gt;bold&lt;/b&gt; is 3 paragraphs since Zorba attaches no semantic meaning to any particular XML elements.">
+      <description last-mod="2010-09-16">A paragraph is an ordered sequence of any number of tokens. Beyond that, paragraphs are implementation-defined. An implementation is not required to support paragraphs.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Markup Effect Token Boundaries"
+      spec="XQueryFullText"
+      value="Markup delimits paragraphs and, by implication, sentences and tokens.">
+      <description last-mod="2010-09-16">Implementations are free to provide implementation-defined ways to differentiate between markup's effect on token boundaries during tokenization.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Scoring Expressions"
+      spec="XQueryFullText"
+      value="Score variables are not currently supported.">
+      <description last-mod="2010-09-16">The set of expressions (of form ExprSingle) that can be assigned to a score variable in a let-clause is implementation-defined. The result of passing an expression to the scoring algorithm that it does not support is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Matching"
+      spec="XQueryFullText"
+      value="Given the tokens: A B C they have to match: A B C exactly; no more, no less.">
+      <description last-mod="2010-09-17">When a sequence of query tokens is considered as a phrase, it matches a sequence of tokens in the tokenized form of the text being searched only if the two sequences correspond in an implementation-defined way.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Match Option Order"
+      spec="XQueryFullText"
+      value="Match options are applied in the following order: Stop Word Option, Stemming Option, Case Option, Diacritics Option, Wildcard Option, Language Option.">
+      <description last-mod="2010-09-16">The match option application order, subject to the stated constraints, is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Language Option Tokenization"
+      spec="XQueryFullText"
+      value="The Language Option: * Affects tokenization as performed by ICU. * Selects the stemming algorithm to be used.* Selects the default set of stop-words to be used. The Language Option does not affect any other Match Option.">
+      <description last-mod="2010-09-16">The "language" option influences tokenization, stemming, and stop words in an implementation-defined way. It MAY influence the behavior of other match options in an implementation-defined way.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Language Option Valid ID"
+      spec="XQueryFullText"
+      value="Zorba recognizes the ISO 639-1 and 639-2 language identifiers for the following languages: Danish, Dutch, English, Finnish, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish.">
+      <description last-mod="2010-09-16">The set of valid language identifiers is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Language Option Undefined"
+      spec="XQueryFullText"
+      value="Zorba raises err::XPTY0004 for a string that can not be cast to xs:language and err::FTST0009 for an unsupported language.">
+      <description last-mod="2010-09-17">If an invalid language identifier is specified, then the behavior is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Mismatched Languages"
+      spec="XQueryFullText"
+      value="xml:lang always wins.">
+      <description last-mod="2010-09-17">When a processor evaluates text in a document that is governed by an xml:lang attribute and the portion of the full-text query doing that evaluation contains an FTLanguageOption that specifies a different language from the language specified by the governing xml:lang attribute, the language-related behavior of that full-text query is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Thesaurus Option"
+      spec="XQueryFullText"
+      value="This is covered in the Zorba Full Text Thesaurus documentation, http://www.zorba-xquery.com/site2/doc/latest/zorba/html/ft_thesaurus.html">
+      <description last-mod="2010-09-16">It is implementation-defined which thesaurus relationships an implementation supports.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Thesaurus Relationships"
+      spec="XQueryFullText"
+      value="Unsupported thesaurus relationships are treated as no relationship.  All levels are supported.  When no relationship is specified, all related words are returned.">
+      <description last-mod="2010-09-17">If a query specifies thesaurus relationships or levels not supported by the thesaurus, or does not specify a relationship, the behavior is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Thesaurus Levels"
+      spec="XQueryFullText"
+      value="Zorba uses 2 levels by default.">
+      <description last-mod="2011-01-04">If a query does not specify the number of levels, and the implementation does not follow the default of querying all levels of hierarchical relationships, then the number of levels of hierarchical relationships queries is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Stemming Option"
+      spec="XQueryFullText"
+      value="Zorba uses the publicly available Snowball stemmers found here http://snowball.tartarus.org.">
+      <description last-mod="2010-09-16">It is implementation-defined what a stem of a token is and whether stemming will based on an algorithm, dictionary, or mixed approach.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Query Token In Stopword List"
+      spec="XQueryFullText"
+      value="The query token is compared (case insensitively) against the list of stop words for an exact match.">
+      <description last-mod="2010-09-16">An implementation-defined comparison is used to determine whether a query token appears in the collection of stop words defined by the applicable stop word option.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="StopWord Option Match Number"
+      spec="XQueryFullText"
+      value="Zorba has no such conditions.">
+      <description last-mod="2010-09-17">Normally a stop word matches exactly one token, but there may be implementation-defined  conditions, under which a stop word may match a different number of tokens.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="StopWord Option Default"
+      spec="XQueryFullText"
+      value="For each of the supported languages, Zorba defines a set of default stop-words (too big to be listed here).">
+      <description last-mod="2010-09-17">The "stop words default" option specifies that an implementation-defined  collection of stop words is used.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Extension Option"
+      spec="XQueryFullText"
+      value="Zorba implements no extension options.">
+      <description last-mod="2010-09-17">An implementation recognizes an implementation-defined  set of namespace URIs used to denote extension options. The effect of each, including its error behavior, is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Extension Selection"
+      spec="XQueryFullText"
+      value="Zorba implements no extension pragmas.">
+      <description last-mod="2010-09-17">An implementation recognizes an implementation-defined  set of namespace URIs used to denote extension selection pragmas. The effect of each, including its error behavior, is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Equal Items Different Tokens"
+      spec="XQueryFullText"
+      value="If items are equal, the tokens will also be equal.">
+      <description last-mod="2010-09-16">The conditions under which tokenization of two equal items produces different tokens is implementation-defined.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="FTIgnoreOption"
+      spec="XQueryFullText"
+      value="Zorba imposes no restriction; however, the FTIgnoreOption implementation is incomplete.">
+      <description last-mod="2010-09-17">An implementation may impose an implementation-defined  restriction on the operand of FTIgnoreOption.</description>
+    </implementation-defined-item>
+    
+    <implementation-defined-item 
+      name="Static Context Items"
+      spec="XQueryFullText"
+      value="FTThesaurusOption has no default value. FTLanguageOption is set to whatever the host's language is. Statically known languages: The ISO 639-1 codes are: da, de, en, es, fi, hu, it, nl, no, pt, sv, ru.">
+      <description last-mod="2010-09-17">For certain full-text components of the static context (see C Static Context Components), the default initial value of the component can be overwritten or augmented with an implementation-defined value or values.</description>
+    </implementation-defined-item>
+    
   </implementation-defined-items>
   
+  
   <features>
-    <feature name="Minimal Conformance" supported='true' />
-    <feature name="FTMildNot Operator" supported='true' />
-    <feature name="FTUnaryNot Operator" supported='true' />
-    <feature name="FTUnit and FTBigUnit" supported='true' />
-    <feature name="FTOrder Operator" supported='true' />
-    <feature name="FTScope Operator" supported='true' />
-    <feature name="FTWindow Operator" supported='true' />
-    <feature name="FTDistance Operator" supported='true' />
-    <feature name="FTTimes Operator" supported='true' />
-    <feature name="FTContent Operator" supported='true' />
-    <feature name="FTCaseOption" supported='true' />
-    <feature name="FTStopwordOption" supported='true' />
-    <feature name="FTLanguageOption" supported='true' />
-    <feature name="FTIgnoreOption" supported='false' />
-    <feature name="Scoring" supported='false' />
-    <feature name="Weights" supported='false' />
+    <feature 
+      name="Minimal Conformance" 
+      supported='true' />
+    
+    <feature 
+      name="FTMildNot Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTUnaryNot Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTUnit and FTBigUnit" 
+      supported='true' />
+    
+    <feature 
+      name="FTOrder Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTScope Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTWindow Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTDistance Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTTimes Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTContent Operator" 
+      supported='true' />
+    
+    <feature 
+      name="FTCaseOption" 
+      supported='true' />
+    
+    <feature 
+      name="FTStopwordOption" 
+      supported='true' />
+    
+    <feature 
+      name="FTLanguageOption" 
+      supported='true' />
+    
+    <feature 
+      name="FTIgnoreOption" 
+      supported='false' />
+    
+    <feature 
+      name="Scoring" 
+      supported='false' />
+    
+    <feature 
+      name="Weights" 
+      supported='false' />
+    
   </features>
   
   <context-properties>        
-    <context-property name="Statically known namespaces" context-type="static" value="fn –> http://www.w3.org/2005/xpath-functions, xml –> http://www.w3.org/XML/1998/namespace, xs –> http://www.w3.org/2001/XMLSchema, xsi –> http://www.w3.org/2001/XMLSchema-instance, local –> http://www.w3.org/2005/xquery-local-functions, zerr –> http://www.zorba-xquery.com/"/>
-    <context-property name="Default element/type namespace" context-type="static" value="None."/>
-    <context-property name="Default function namespace" context-type="static" value="http://www.w3.org/2005/xpath-functions ."/>
-    <context-property name="In-scope schema types" context-type="static" value="Built-in types in xs."/>
-    <context-property name="In-scope element declarations" context-type="static" value="None."/>
-    <context-property name="In-scope attribute declarations" context-type="static" value="None."/>
-    <context-property name="In-scope variables" context-type="static" value="None."/>
-    <context-property name="Context item static type" context-type="static" value="item()"/>
-    <context-property name="Function signatures" context-type="static" value="Functions in fn namespace, and constructors for built-in atomic types."/>
-    <context-property name="Statically known collations" context-type="static" value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
-    <context-property name="Default collation" context-type="static" value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
-    <context-property name="Construction mode" context-type="static" value="preserve"/>
-    <context-property name="Ordering mode" context-type="static" value="ordered"/>
-    <context-property name="Default order for empty sequences" context-type="static" value="empty greatest"/>
-    <context-property name="Boundary-space policy" context-type="static" value="strip"/>
-    <context-property name="Copy-namespaces mode" context-type="static" value="inherit preserve"/>
-    <context-property name="Base URI" context-type="static" value="Uses the rules in http://www.w3.org/TR/xquery-30/#id-base-uri-decl, where the implementation-defined default mentioned there is http://www.zorba-xquery.com"/>
-    <context-property name="Statically known documents" context-type="static" value="None."/>
-    <context-property name="Statically known collections" context-type="static" value="None."/>
-    <context-property name="Statically known default collection type" context-type="static" value="item()*"/>
-    <context-property name="Context item" context-type="dynamic" value="None. Before execution of a query, a value can be assigned to the context itemvia the DynamicContext::setContextItem method."/>
-    <context-property name="Context position" context-type="dynamic" value="None."/>
-    <context-property name="Context size" context-type="dynamic" value="None."/>
-    <context-property name="Variable values" context-type="dynamic" value="None."/>
-    <context-property name="Function implementations" context-type="dynamic" value="Functions in fn namespace, and constructors for built-in atomic types."/>
-    <context-property name="Current dateTime" context-type="dynamic" value="The current local time on the computer running Zorba."/>
-    <context-property name="Implicit timezone" context-type="dynamic" value="Computed based on the current local time on the computer running Zorba."/>
-    <context-property name="Available documents" context-type="dynamic" value="The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)"/>
-    <context-property name="Available collections" context-type="dynamic" value="The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)"/>
-    <context-property name="Default collection" context-type="dynamic" value="None."/>
-    <context-property name="FTCaseOption" context-type="static" value=""/>
-    <context-property name="FTDiacriticsOption" context-type="static" value=""/>
-    <context-property name="FTStemOption" context-type="static" value=""/>
-    <context-property name="FTThesaurusOption" context-type="static" value=""/>
-    <context-property name="Statically known thesauri" context-type="static" value="http://wordnet.princeton.edu/"/>
-    <context-property name="FTStopWordOption" context-type="static" value=""/>
-    <context-property name="Statically known stop word lists" context-type="static" value="Zorba uses the publicly available lists found here http://snowball.tartarus.org."/>
-    <context-property name="FTLanguageOption" context-type="static" value=""/>
-    <context-property name="Statically known languages" context-type="static" value=""/>
-    <context-property name="FTWildcardOption" context-type="static" value=""/>
+    <context-property 
+      name="Statically known namespaces" 
+      context-type="static" 
+      value="fn –> http://www.w3.org/2005/xpath-functions, xml –> http://www.w3.org/XML/1998/namespace, xs –> http://www.w3.org/2001/XMLSchema, xsi –> http://www.w3.org/2001/XMLSchema-instance, local –> http://www.w3.org/2005/xquery-local-functions, zerr –> http://www.zorba-xquery.com/"/>
+    
+    <context-property 
+      name="Default element/type namespace" 
+      context-type="static" 
+      value="None."/>
+    
+    <context-property 
+      name="Default function namespace" 
+      context-type="static" 
+      value="http://www.w3.org/2005/xpath-functions ."/>
+    
+    <context-property 
+      name="In-scope schema types" 
+      context-type="static" 
+      value="Built-in types in xs."/>
+    
+    <context-property 
+      name="In-scope element declarations" 
+      context-type="static" 
+      value="None."/>
+    
+    <context-property 
+      name="In-scope attribute declarations" 
+      context-type="static" 
+      value="None."/>
+    
+    <context-property 
+      name="In-scope variables" 
+      context-type="static" 
+      value="None."/>
+    
+    <context-property 
+      name="Context item static type" 
+      context-type="static" 
+      value="item()"/>
+    
+    <context-property 
+      name="Function signatures" 
+      context-type="static" 
+      value="Functions in fn namespace, and constructors for built-in atomic types."/>
+    
+    <context-property 
+      name="Statically known collations" 
+      context-type="static" 
+      value="Initially, the only available collation is the codepoint collection: http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API."/>
+    
+    <context-property 
+      name="Default collation" 
+      context-type="static" 
+      value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
+    
+    <context-property 
+      name="Construction mode" 
+      context-type="static" 
+      value="preserve"/>
+    
+    <context-property 
+      name="Ordering mode" 
+      context-type="static" 
+      value="ordered"/>
+    
+    <context-property 
+      name="Default order for empty sequences" 
+      context-type="static" 
+      value="empty greatest"/>
+    
+    <context-property 
+      name="Boundary-space policy" 
+      context-type="static" 
+      value="strip"/>
+    
+    <context-property 
+      name="Copy-namespaces mode" 
+      context-type="static" 
+      value="inherit preserve"/>
+    
+    <context-property 
+      name="Base URI" 
+      context-type="static" 
+      value="Uses the rules in http://www.w3.org/TR/xquery-30/#id-base-uri-decl, where the implementation-defined default mentioned there is http://www.zorba-xquery.com"/>
+    
+    <context-property 
+      name="Statically known documents" 
+      context-type="static" 
+      value="None."/>
+    
+    <context-property 
+      name="Statically known collections" 
+      context-type="static" 
+      value="None."/>
+    
+    <context-property 
+      name="Statically known default collection type" 
+      context-type="static" 
+      value="item()*"/>
+    
+    <context-property 
+      name="Context item" 
+      context-type="dynamic" 
+      value="None. Before execution of a query, a value can be assigned to the context item via the DynamicContext::setContextItem method."/>
+    
+    <context-property 
+      name="Context position" 
+      context-type="dynamic" 
+      value="None."/>
+    
+    <context-property 
+      name="Context size" 
+      context-type="dynamic" 
+      value="None."/>
+    
+    <context-property 
+      name="Variable values" 
+      context-type="dynamic" 
+      value="None."/>
+    
+    <context-property 
+      name="Function implementations" 
+      context-type="dynamic" 
+      value="Functions in fn namespace, and constructors for built-in atomic types."/>
+    
+    <context-property 
+      name="Current dateTime" 
+      context-type="dynamic" 
+      value="The current local time on the computer running Zorba."/>
+    
+    <context-property 
+      name="Implicit timezone" 
+      context-type="dynamic" 
+      value="Computed based on the current local time on the computer running Zorba."/>
+    
+    <context-property 
+      name="Available documents" 
+      context-type="dynamic" 
+      value="The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)"/>
+    
+    <context-property 
+      name="Available collections" 
+      context-type="dynamic" 
+      value="The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)"/>
+    
+    <context-property 
+      name="Default collection" 
+      context-type="dynamic" 
+      value="None."/>
+    
+    <context-property 
+      name="FTCaseOption" 
+      context-type="static" 
+      value="case insensitive"/>
+    
+    <context-property 
+      name="FTDiacriticsOption" 
+      context-type="static" 
+      value="diacritics insensitive"/>
+    
+    <context-property 
+      name="FTStemOption" 
+      context-type="static" 
+      value="no stemming"/>
+    
+    <context-property 
+      name="FTThesaurusOption" 
+      context-type="static" 
+      value=""/>
+    
+    <context-property 
+      name="Statically known thesauri" 
+      context-type="static" 
+      value="http://wordnet.princeton.edu/"/>
+    
+    <context-property 
+      name="FTStopWordOption" 
+      context-type="static" 
+      value="no stop words"/>
+    
+    <context-property 
+      name="Statically known stop word lists" 
+      context-type="static" 
+      value="Zorba uses the publicly available lists found here http://snowball.tartarus.org."/>
+    
+    <context-property 
+      name="FTLanguageOption" 
+      context-type="static" 
+      value="Whatever the host's language is."/>
+    
+    <context-property 
+      name="Statically known languages" 
+      context-type="static" 
+      value="The ISO 639-1 codes are: da, de, en, es, fi, hu, it, nl, no, pt, sv, ru."/>
+    
+    <context-property 
+      name="FTWildcardOption" 
+      context-type="static" 
+      value="no wildcards "/>
+    
   </context-properties>
+  
 </zorba>
