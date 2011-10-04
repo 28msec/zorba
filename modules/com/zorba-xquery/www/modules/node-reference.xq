@@ -17,12 +17,13 @@ xquery version "1.0";
 :)
 
 (:~
- : The module provides functions to compute a stable reference (URI) for
- : any node, either temporary or stored in a collection and for retrieving
+ : The module provides functions to compute an immutable and opaque reference 
+ : for any node, either temporary or stored in a collection and for retrieving
  : nodes given their identifier. The identifiers are immutable, i.e. a node 
- : identifier do not change during the node lifetime. Identifiers are also 
- : unique in that an already generated identifier cannot be generated again.
- : Morever a node, at any time during its lifetime, can be retrieved by its 
+ : identifier do not change during the node lifetime. Identifiers should also 
+ : be considered unique, in that, a generated identifier has an extremely 
+ : high probability to never have been generated before.
+ : A node, at any time during its lifetime, can be retrieved by its 
  : identifier.
  :
  : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
@@ -43,11 +44,18 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Compute a stable and opaque node reference (with type xs:anyURI) for
- : a given node.
+ : Compute an immutable and opaque node reference (with type xs:anyURI) for
+ : a given node, either temporary or stored in a collection.
+ : 
+ : <p>The generated identifier is immutable, i.e. a node 
+ : identifier do not change during the node lifetime.</p>
  :
- : <p>The returned URI is stable, i.e. it still can be dereferenced if
- : the node or the containing collection is modified.</p>
+ : <p>Identifiers should also be considered unique, in that, a generated 
+ : identifier has an extremely high probability to never have been generated
+ : before.</p>
+ :
+ : A node, at any time during its lifetime, can be retrieved by its 
+ : identifier. 
  :
  : @param $arg the node for which the URI should be computed
  :
