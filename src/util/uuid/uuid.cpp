@@ -239,7 +239,7 @@ zstring uuidToString(const uuid_t& u)
 zstring uuidToURI(const uuid_t& u)
 {
   char lBuffer[200];
-  sprintf(lBuffer, "uuid:%8.8x-%4.4x-%4.4x-%2.2x%2.2x-9300a64ac3cd", u.time_low, u.time_mid,
+  sprintf(lBuffer, "urn:uuid:%8.8x-%4.4x-%4.4x-%2.2x%2.2x-9300a64ac3cd", u.time_low, u.time_mid,
           u.time_hi_and_version, u.clock_seq_hi_and_reserved,
           u.clock_seq_low);
 

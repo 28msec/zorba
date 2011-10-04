@@ -378,9 +378,9 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
           // need to convert the opaque uri into a valid ncname
           // e.g. z0.1.1.c.50
 #ifndef NDEBUG
-          ZORBA_ASSERT( uri_string.find_first_of("uuid:") == 0 );
+          ZORBA_ASSERT( uri_string.find_first_of("urn:uuid:") == 0 );
 #endif
-          lRes = "u" + uri_string.substr(uri_string.find_first_of(":") + 1);
+          lRes = "u" + uri_string.substr(9);
         }
       }
       retval = GENV_ITEMFACTORY->createString(result, lRes);
