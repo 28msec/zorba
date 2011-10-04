@@ -95,6 +95,8 @@ namespace audit {
 
   class ZORBA_DLL_PUBLIC Event {
   public:
+    static Event* get();
+
     virtual bool audit(const Property&) const = 0;
     virtual bool audit(const String&) const = 0;
 

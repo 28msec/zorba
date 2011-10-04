@@ -288,6 +288,7 @@ protected:
   rchandle<IndexBoxValueCondition>            theBoxValueCondition;
   rchandle<IndexBoxGeneralCondition>          theBoxGeneralCondition;
   bool                                        theIsUntypedProbe;
+  bool                                        theIsFullProbe;
 
   ResultSets                                  theResultSets;
   ResultSets::const_iterator                  theResultSetsIte;
@@ -328,8 +329,10 @@ protected:
       const store::IndexKey* upperKey);
 
   void doubleToLongProbe(
+      store::Item_t& result,
       const AtomicItem* doubleItem,
-      store::Item_t& result) const;
+      bool haveLower,
+      bool haveUpper) const;
 
   void checkStringKeyType(AtomicItem* keyItem) const;
 };

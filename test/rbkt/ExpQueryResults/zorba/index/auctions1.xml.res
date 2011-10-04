@@ -177,3 +177,31 @@ probe 7:
 
 Full Probe:
 <open_auction id="open_auction0"/><open_auction id="open_auction1"/><open_auction id="open_auction2"/><open_auction id="open_auction3"/><open_auction id="open_auction4"/><open_auction id="open_auction5"/><open_auction id="open_auction6"/><open_auction id="open_auction7"/><open_auction id="open_auction8"/><open_auction id="open_auction9"/><open_auction id="open_auction10"/><open_auction id="open_auction11"/>
+
+-----------------------------------------------------------
+Probing the untyped PersonIncome2 sorted general 1-1 index
+-----------------------------------------------------------
+
+probe 1:
+
+<exception>err:XPTY0004 : node with untyped key value found during probe on index "auctions:PersonIncome2"</exception>
+
+probe 2:
+
+<person id="person3" income="41889.41"/><person id="person10" income="44300.88"/><person id="person11" income="33731.14"/><person id="person12" income="43552.04"/><person id="person13" income="41407.27"/><person id="person16" income="26302.86"/><person id="person18" income="32624.17"/>
+
+probe 3:
+
+<person id="person0" income="55386.86"/><person id="person4" income="9876.00"/><person id="person9" income="57878.50"/><person id="person14" income="53231.89"/>
+
+probe 4:
+
+ 
+
+probe 5:
+
+ 
+
+probe 6 (full probe):
+
+<person id="person0" income="55386.86"/><person id="person3" income="41889.41"/><person id="person4" income="9876.00"/><person id="person9" income="57878.50"/><person id="person10" income="44300.88"/><person id="person11" income="33731.14"/><person id="person12" income="43552.04"/><person id="person13" income="41407.27"/><person id="person14" income="53231.89"/><person id="person16" income="26302.86"/><person id="person18" income="32624.17"/>

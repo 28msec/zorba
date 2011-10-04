@@ -1266,6 +1266,7 @@ counterparts.
                      where $art/empid eq $emp/id
                      return $art)
   return $emp
+\endcode
 
 <a name="query_no_probe_3" id="query_no_probe_3"></a>
 \code
