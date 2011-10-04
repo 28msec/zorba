@@ -82,15 +82,3 @@ declare function ref:node-reference(
 declare function ref:node-by-reference(
   $arg as xs:anyURI
 ) as node()? external;
-
-
-(:~
- : Returns whether a reference has already been generated for the given node. 
- :  
- : @param $node a node 
- :
- : @return whether an reference has already been generated the given node.
- :)
-declare function ref:has-reference(
-  $node as node()  
-) as xs:boolean external;

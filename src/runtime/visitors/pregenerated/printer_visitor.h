@@ -460,9 +460,6 @@ namespace zorba {
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );
 
-    void beginVisit( const HasReferenceIterator& );
-    void endVisit  ( const HasReferenceIterator& );
-
     void beginVisit( const NodeByReferenceIterator& );
     void endVisit  ( const NodeByReferenceIterator& );
 

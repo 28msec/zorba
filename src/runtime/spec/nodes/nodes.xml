@@ -37,27 +37,6 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="HasReferenceIterator">
-
-    <zorba:description author="Federico Cavalieri">
-      declare function id:has-reference($node as node) as xs:boolean
-    </zorba:description>
-    
-    <zorba:function>
-    
-      <zorba:signature localname="has-reference" prefix="fn-zorba-ref">
-        <zorba:param>node()</zorba:param>                
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-      
-    </zorba:function>
-
-  </zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
   <zorba:iterator name="NodeByReferenceIterator">
 
     <zorba:description author="Federico Cavalieri">

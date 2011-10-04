@@ -55,23 +55,6 @@ NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
 /*******************************************************************************
 ********************************************************************************/
 bool
-HasReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, GENV_STORE.hasReference(lNode)), state);
-
-  STACK_END (state);
-}
-
-/*******************************************************************************
-********************************************************************************/
-bool
 NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
     store::Item_t lUUID;

@@ -41,16 +41,6 @@ PlanIter_t fn_zorba_ref_node_reference::codegen(
   return new NodeReferenceIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_ref_has_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new HasReferenceIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_zorba_ref_node_by_reference::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -251,18 +241,6 @@ void populate_context_nodes(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_URI_TYPE_ONE),
         FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1);
-
-  }
-
-
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_ref_has_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","has-reference"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_REF_HAS_REFERENCE_1);
 
   }
 

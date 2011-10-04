@@ -60,34 +60,6 @@ NodeReferenceIterator::~NodeReferenceIterator() {}
 // </NodeReferenceIterator>
 
 
-// <HasReferenceIterator>
-const char* HasReferenceIterator::class_name_str = "HasReferenceIterator";
-HasReferenceIterator::class_factory<HasReferenceIterator>
-HasReferenceIterator::g_class_factory;
-
-const serialization::ClassVersion 
-HasReferenceIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int HasReferenceIterator::class_versions_count =
-sizeof(HasReferenceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void HasReferenceIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-HasReferenceIterator::~HasReferenceIterator() {}
-
-// </HasReferenceIterator>
-
-
 // <NodeByReferenceIterator>
 const char* NodeByReferenceIterator::class_name_str = "NodeByReferenceIterator";
 NodeByReferenceIterator::class_factory<NodeByReferenceIterator>

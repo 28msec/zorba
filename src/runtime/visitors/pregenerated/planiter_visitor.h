@@ -305,8 +305,6 @@ namespace zorba{
 
     class NodeReferenceIterator;
 
-    class HasReferenceIterator;
-
     class NodeByReferenceIterator;
 
     class FnLocalNameIterator;
@@ -959,9 +957,6 @@ public:
 
     virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeReferenceIterator& ) = 0;
-
-    virtual void beginVisit ( const HasReferenceIterator& ) = 0;
-    virtual void endVisit   ( const HasReferenceIterator& ) = 0;
 
     virtual void beginVisit ( const NodeByReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeByReferenceIterator& ) = 0;

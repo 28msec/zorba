@@ -2027,20 +2027,6 @@ void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
 // </NodeReferenceIterator>
 
 
-// <HasReferenceIterator>
-void PrinterVisitor::beginVisit ( const HasReferenceIterator& a) {
-  thePrinter.startBeginVisit("HasReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const HasReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </HasReferenceIterator>
-
-
 // <NodeByReferenceIterator>
 void PrinterVisitor::beginVisit ( const NodeByReferenceIterator& a) {
   thePrinter.startBeginVisit("NodeByReferenceIterator", ++theId);

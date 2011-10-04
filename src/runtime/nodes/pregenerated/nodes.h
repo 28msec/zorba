@@ -71,42 +71,6 @@ public:
 
 /**
  * 
- *      declare function id:has-reference($node as node) as xs:boolean
- *    
- * Author: Federico Cavalieri
- */
-class HasReferenceIterator : public NaryBaseIterator<HasReferenceIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(HasReferenceIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HasReferenceIterator,
-    NaryBaseIterator<HasReferenceIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<HasReferenceIterator, PlanIteratorState>*)this);
-  }
-
-  HasReferenceIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<HasReferenceIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~HasReferenceIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
  *      declare function id:node-by-identifier($identifier as xs:string) as node()?
  *    
  * Author: Federico Cavalieri

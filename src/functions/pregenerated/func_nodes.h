@@ -51,19 +51,6 @@ public:
 };
 
 
-//fn-zorba-ref:has-reference
-class fn_zorba_ref_has_reference : public function
-{
-public:
-  fn_zorba_ref_has_reference(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-
-}
-
-  CODEGEN_DECL();
-};
-
-
 //fn-zorba-ref:node-by-reference
 class fn_zorba_ref_node_by_reference : public function
 {
