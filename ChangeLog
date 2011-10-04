@@ -40,7 +40,8 @@ version 2.x
   * Fixed bug #863320 (Sentence is incorrectly incremented when token characters end without sentence terminator)
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
   * Implemented the probe-index-range-value for general indexes
-	
+  * Fixed bug #867662 ("nullptr" warning)
+
 version 2.0.1
 
   * Custom Full-text stemming.
