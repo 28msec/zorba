@@ -110,7 +110,7 @@ protected:
   UserTypedAtomicItem() {}
 
 public:
-  store::Item* getBaseItem() const { return theBaseItem.getp(); }
+  store::Item* getBaseItem() const;
 
   SchemaTypeCode getTypeCode() const { return theBaseItem->getTypeCode(); }
 
