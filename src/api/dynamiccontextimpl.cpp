@@ -575,5 +575,38 @@ bool DynamicContextImpl::getExternalFunctionParam(
   return false;
 }
 
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool
+DynamicContextImpl::addExternalFunctionParameter (
+    const String& aName,
+    ExternalFunctionParameter* aValue )
+{
+  ZORBA_DCTX_TRY
+  {
+    std::string lName = aName.c_str();
+    return theCtx->addExternalFunctionParameter(lName, aValue);
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+ExternalFunctionParameter*
+DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
+{
+  ZORBA_DCTX_TRY
+  {
+    std::string lName = aName.c_str();
+    return theCtx->getExternalFunctionParameter(lName);
+  }
+  ZORBA_DCTX_CATCH
+  return 0;
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

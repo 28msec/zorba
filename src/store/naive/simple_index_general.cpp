@@ -1510,6 +1510,7 @@ ProbeGeneralTreeIndexIterator::ProbeGeneralTreeIndexIterator(
     const store::Index_t& index) 
   :
   theIsUntypedProbe(false),
+  theIsFullProbe(false),
   theResultSets(1)
 {
   theIndex = static_cast<GeneralTreeIndex*>(index.getp());
@@ -2026,6 +2027,13 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
         store::IndexKey lowerAltKey(1);
         store::IndexKey upperAltKey(1);
 
+        if (haveLower)
+        {
+          doubleToLongProbe(castItem, lowerKeyItem, false, haveUpper);
+          if (castItem)
+            lowerAltKey[0].transfer(castItem);
+        }
+
         if (haveUpper)
         {
           doubleToLongProbe(castItem, upperKeyItem, false, haveUpper);
@@ -2151,6 +2159,8 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
   }
   else
   {
+    theIsFullProbe = true;
+
     for (ulong i = 0; i < XS_LAST; ++i)
     {
       if (theIndex->theMaps[i] == NULL)
@@ -2526,6 +2536,17 @@ void ProbeGeneralTreeIndexIterator::probeMap(
   assert(theProbeKind != store::IndexCondition::BOX_GENERAL ||
          !(haveLower && haveUpper));
 
+  if (haveLower && haveUpper)
+  {
+    long cmp = (*lowerKey)[0]->compare((*upperKey)[0]);
+
+    if (cmp > 0)
+      return;
+
+    if (cmp == 0 && (!lowerIncl || !upperIncl))
+      return;
+  }
+
   if (haveLower)
   {
     if (lowerIncl)
@@ -2728,7 +2749,7 @@ bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
       {
         while (theIte != theEnd)
         {
-          if (theIsUntypedProbe && (*theIte).theUntyped)
+          if ((theIsFullProbe || theIsUntypedProbe) && (*theIte).theUntyped)
           {
             ++theIte;
             continue;

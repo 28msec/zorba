@@ -447,6 +447,36 @@ for $person in index_dml:probe-index-range-value($auctions:PersonIncome2,
                                                  fn:true())
 return <person>{$person/@id, $person//@income}</person>,
 
+"
+
+probe 5:
+
+",
+
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 "50000",
+                                                 "50000",
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:true(),
+                                                 fn:false())
+return <person>{$person/@id, $person//@income}</person>,
+
+"
+
+probe 6 (full probe):
+
+",
+
+for $person in index_dml:probe-index-range-value($auctions:PersonIncome2, 
+                                                 "50000",
+                                                 "50000",
+                                                 fn:false(),
+                                                 fn:false(),
+                                                 fn:true(),
+                                                 fn:false())
+return <person>{$person/@id, $person//@income}</person>,
+
 
 "
 "

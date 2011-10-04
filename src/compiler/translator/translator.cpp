@@ -1294,7 +1294,7 @@ void normalize_fo(fo_expr* foExpr)
   const function* func = foExpr->get_func();
 
   if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N &&
-      (n == 0 || (n - 1) % 6 != 0))
+      (n < 7 || (n - 1) % 6 != 0))
   {
     const store::Item* qname = NULL;
 

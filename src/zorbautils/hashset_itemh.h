@@ -65,9 +65,9 @@ public:
 
   void clear();
 
-  bool find(store::Item* const key) 
+  bool exists(store::Item* const key) 
   {
-    return theSet.find(key); 
+    return theSet.exists(key); 
   }
 
   bool insert(store::Item* key) 

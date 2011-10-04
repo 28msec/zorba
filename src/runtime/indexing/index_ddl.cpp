@@ -1351,7 +1351,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
 
       while(state->theIterator->next(result)) 
       {
-        if (state->theNodeHashSet->find(result))
+        if (state->theNodeHashSet->exists(result))
           STACK_PUSH(true, state);
       }
       

@@ -71,19 +71,19 @@ public:
   {
   }
 
-  bool equal(const store::Item* t1, const store::Item* t2)
+  bool equal(const store::Item* t1, const store::Item* t2) const
   {
     return t1->equals(t2, theTimeZone, theCollator);
   }
 
-  uint32_t hash(const store::Item* t)
+  uint32_t hash(const store::Item* t) const
   {
     return t->hash(theTimeZone, theCollator);
   }
 
-  long get_timezone() { return theTimeZone; }
+  long get_timezone() const { return theTimeZone; }
   
-  const XQPCollator* get_collator() { return theCollator; }
+  const XQPCollator* get_collator() const { return theCollator; }
 };
 
 
@@ -148,19 +148,19 @@ public:
   {
   }
 
-  bool equal(const store::Item* t1, const store::Item* t2)
+  bool equal(const store::Item* t1, const store::Item* t2) const
   {
     return t1->equals(t2, theTimeZone, theCollator);
   }
 
-  uint32_t hash(const store::Item* t)
+  uint32_t hash(const store::Item* t) const
   {
     return t->hash(theTimeZone, theCollator);
   }
 
-  long get_timezone() { return theTimeZone; }
+  long get_timezone() const { return theTimeZone; }
   
-  const XQPCollator* get_collator() { return theCollator; }
+  const XQPCollator* get_collator() const { return theCollator; }
 };
 
 

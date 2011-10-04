@@ -288,6 +288,7 @@ protected:
   rchandle<IndexBoxValueCondition>            theBoxValueCondition;
   rchandle<IndexBoxGeneralCondition>          theBoxGeneralCondition;
   bool                                        theIsUntypedProbe;
+  bool                                        theIsFullProbe;
 
   ResultSets                                  theResultSets;
   ResultSets::const_iterator                  theResultSetsIte;
