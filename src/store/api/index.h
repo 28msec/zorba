@@ -177,8 +177,9 @@ typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
 
   bound op? K, where 
 
-  (a) op? is one of <, <=, >, or >=, (b) K is a key value, and (c) bound is either
-  an atomic item or -INFINITY or +INFINITY.
+  (a) op? is one of <, <=, >, or >=, 
+  (b) K is a key value, and 
+  (c) bound is either an atomic item or -INFINITY or +INFINITY.
 
 ********************************************************************************/
 class IndexCondition : public SimpleRCObject

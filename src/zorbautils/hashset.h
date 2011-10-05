@@ -77,9 +77,9 @@ void clear()
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool find(const T& item)
+bool exists(const T& item)
 {
-  return HashMap<T, DummyHashValue, C>::find(item);
+  return HashMap<T, DummyHashValue, C>::exists(item);
 }
 
 
@@ -180,9 +180,9 @@ bool insert(const T& item, T& outItem)
   If the set contains an item that is "equal" to the given item, remove that
   item from the set and return true. Otherwise, return false.
 ********************************************************************************/
-bool remove(const T& item)
+bool erase(const T& item)
 {
-  return HashMap<T, DummyHashValue, C>::remove(item);
+  return HashMap<T, DummyHashValue, C>::erase(item);
 }
 
 };

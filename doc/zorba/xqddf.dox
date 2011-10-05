@@ -1266,6 +1266,7 @@ counterparts.
                      where $art/empid eq $emp/id
                      return $art)
   return $emp
+\endcode
 
 <a name="query_no_probe_3" id="query_no_probe_3"></a>
 \code
@@ -1791,8 +1792,7 @@ from the indexes table.</li>
 
 
 Probing an index means retrieving the domain nodes associated with a particular
-search condition, which is either a single key item/tuple, or a "range" of key
-items/tuples. Probing can be done via the xqddf functions 
+search condition Probing can be done via the xqddf functions 
 idml:probe-index-point-value, idml:probe-index-point-general, 
 idml:probe-index-range-value, or idml:probe-index-range-general.
 For each of these functions, the first argument is a QName identifying an index.
@@ -1801,9 +1801,9 @@ index must exist in both the statically known indexes and the available indexes
 of the invoking module; otherwise error <a href="#ERRZDDY0021">zerr:ZDDY0021</a>
 or <a href="#ERRZDDY0023">zerr:ZDDY0023</a> is raised, 
 respectively. All of the functions return their result sorted in document order 
-and without duplicate nodes. (For general probes, duplicate node elimination 
-is performed as part of the function implementation; for value probes, duplicate
-nodes cannot appear in the result, so no duplicate elimination is needed.)
+and without duplicate nodes.
+
+<strong>idml:probe-index-point-value</strong>
 
 <a name="probe_index_point_value" id="probe_index_point_value"></a>
 \code
@@ -1814,32 +1814,35 @@ nodes cannot appear in the result, so no duplicate elimination is needed.)
 \endcode
 
 For the probe-index-point-value function, the search condition is specified as a
-number of <strong>search key items</strong> comprising a <strong>search key 
-tuple</strong>. A search key item is either an atomic item or the empty sequence.
-The number of search key items must be equal to the number of IndexKeySpecs found 
+number of <strong>search keys</strong> comprising a <strong>search 
+tuple</strong>. A search key is either an atomic item or the empty sequence.
+The number of search keys must be equal to the number of IndexKeySpecs found 
 in the index declaration [<a href="#ERRZDDY0025"> zerr:ZDDY0025</a>]. (Remember 
 that for general indexes, there can be only one IndexKeySpec, and as a result, 
 for general indexes, the probe-index-point-value function takes only one search 
-key item as input). Furthermore, the type of each search key item must match 
-the sequence type specified in the corresponding IndexKeyTypeDecl; otherwise, 
-a type error is raised [err:XPTY0004].
+value as input). Furthermore, for each search key that is not the empty sequence, 
+its type must match the sequence type specified in the corresponding IndexKeyTypeDecl;
+otherwise, a type error is raised [err:XPTY0004].
 
-The result of this function is either an error or the set of domain nodes that 
-satisfy the following xquery condition:
+The result of this function is either an error or the set of domain nodes for which 
+the following xquery condition returns true:
 
 \code
 $key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
 \endcode
 
 where keyExpr<sub>i</sub> is the expression specified in the i-th keyspec 
-of the index.
+of the index. Notice that this definition implies that if any of search keys
+is the empty sequence, the result of the probe is also the empty sequence.
 
-In addition to the error conditions described already, the function may raise
+In addition to the error conditions described already, the function raises
 a type error [err:XPTY0004] if the index is general and (a) the multi-key flag
 of the index is true, or (b) the untyped flag of the index is true and the type of
-the search key item is something other than xs:untypedAtomic, xs:string, or 
+any non-empty search key is something other than xs:untypedAtomic, xs:string, or 
 xs:anyURI (or subtype of these).
 
+
+<strong>idml:probe-index-point-general</strong>
 
 <a name="probe_index_point_general" id="probe_index_point_general"></a>
 \code
@@ -1848,13 +1851,14 @@ xs:anyURI (or subtype of these).
 \endcode
 
 This method is supported by general indexes only [<a href="#ERRZDDY0029">
-zerr:ZDDY0029</a>]. The search condition is specified as a sequence of
-atomic search key items. If the search sequence is non-empty, the type of each 
-atomic item in it must match the atomic type specified by the IndexKeyTypeDecl
-of the index; otherwise, a type error is raised [err:XPTY0004]. 
+zerr:ZDDY0029</a>]. The search condition is specified as a <strong>search 
+sequence</strong> consisting of an arbitrary number of <strong>search keys
+</strong>, where each search key is an atomic item. If the search sequence 
+is non-empty, the type of each search key must match the atomic type specified 
+by the IndexKeyTypeDecl of the index; otherwise, a type error is raised [err:XPTY0004]. 
 
-The result of this function is either an error or the set of domain nodes that 
-satisfy the following xquery condition:
+The result of this function is either an error or the set of domain nodes for which 
+the following xquery condition returns true:
 
 \code
 $keys = $node/keyExpr
@@ -1863,79 +1867,78 @@ $keys = $node/keyExpr
 where keyExpr is the expression specified in the keyspec of the index.
 
 
+<strong>idml:probe-index-range-value</strong>
+
 <a name="probe_index_range_value" id="probe_index_range_value"></a>
 \code
-  probe-index-range-value($indexUri                 as xs:QName,
-                          $rangeLowerBound1         as xs:anyAtomicType?,
-                          $rangeUpperBound1         as xs:anyAtomicType?,
-                          $rangeHaveLowerBound1     as xs:boolean,
-                          $rangeHaveupperBound1     as xs:boolean,
-                          $rangeLowerBoundIncluded1 as xs:boolean,
-                          $rangeupperBoundIncluded1 as xs:boolean,
+  probe-index-range-value($indexUri            as xs:QName,
+                          $lowerBound1         as xs:anyAtomicType?,
+                          $upperBound1         as xs:anyAtomicType?,
+                          $haveLowerBound1     as xs:boolean,
+                          $haveUpperBound1     as xs:boolean,
+                          $lowerBoundIncluded1 as xs:boolean,
+                          $upperBoundIncluded1 as xs:boolean,
                           ....,
-                          $rangeLowerBoundM         as xs:anyAtomicType?,
-                          $rangeUpperBoundM         as xs:anyAtomicType?,
-                          $rangeHaveLowerBoundM     as xs:boolean,
-                          $rangeHaveupperBoundM     as xs:boolean,
-                          $rangeLowerBoundIncludedM as xs:boolean,
-                          $rangeupperBoundIncludedM as xs:boolean) as node()*
+                          $lowerBoundM         as xs:anyAtomicType?,
+                          $upperBoundM         as xs:anyAtomicType?,
+                          $haveLowerBoundM     as xs:boolean,
+                          $haveUpperBoundM     as xs:boolean,
+                          $lowerBoundIncludedM as xs:boolean,
+                          $upperBoundIncludedM as xs:boolean) as node()*
 \endcode
 
 The probe-index-range-value function can be invoked on range indices only 
-(value or general) [<a href="#ERRZDDY0026">zerr:ZDDY0026</a>]. To describe the
-semantics of this function, we start by defining the i<sup>th</sup> <strong>key
-column</strong> of an index as the set of key items produced by evaluating the
-i<sup>th</sup> keyspec of the index for every domain node. Then, the search
-condition of a range probe can be defined as a number of
-<strong>rangespecs</strong>, where a rangespec describes a constraint on the
-values of a key column. The first rangespec applies to the first key column, the
-second rangespec to the second key column, etc. The number of rangespecs must be
-less or equal to the number of keyspecs found in the declaration of the given
-index [<a href="#ERRZDDY0025" title="zerr:ZDDY0025">zerr:ZDDY0025</a>]. Each
-rangespec consists of 6 values:
-  <ul>
-  <li>rangeLowerBound : The lower bound in a range of key values.</li>
-  <li>rangeUpperBound : The upper bound in a range of key values.</li>
-  <li>rangeHaveLowerBound : If false, then there is no lower bound, or
-equivalently, the lower bound is -INFINITY (the actual rangeLowerBound value is
-ignored). Otherwise, the lower bound is the one given by the rangeLowerBound
-value. The <strong>effective lower bound</strong> of the range is either the
-rangeLowerBound if rangeHaveLowerBound is true, or -INFINITY if
-rangeHaveLowerBound is false.</li>
-  <li>rangeHaveUpperBound : If false, then there is no upper bound, or
-equivalently, the upper bound is +INFINITY (the actual rangeUpperBound value is
-ignored). Otherwise, the upper bound is the one given by the rangeUpperBound
-value. The <strong>effective upper bound</strong> of the range is either the
-rangeUpperBound if rangeHaveUpperBound is true, or +INFINITY if
-rangeHaveUpperBound is false.</li>
-  <li>rangeLowerBoundIncluded : If false, then the range is open from below,
-i.e., the rangeLowerBound value is not considered part of the range. Otherwise,
-the range is closed from below, i.e., the rangeLowerBound value is part of the
-range.</li>
-  <li>rangeUpperBoundIncluded : If false, then the range is open from above,
-i.e., the rangeUpperBound value is not considered part of the range. Otherwise,
-the range is closed from above, i.e., the rangeUpperBound value is part of the
-range.</li>
-  </ul>
+(value or general) [<a href="#ERRZDDY0026">zerr:ZDDY0026</a>]. The search 
+condition is specified as a number M of <strong>rangespecs</strong>, where
+each rangespec consists of six values. The number M must be greater than 
+0 and less than or equal to the number N of keyspecs found in the declaration 
+of the given index [<a href="#ERRZDDY0025">zerr:ZDDY0025</a>]. If M is less 
+than N, then the "missing" rangespecs are assumed to have the following 
+value: [(), (), false, false, false, false]. As a result, from now on, we
+can assume that M is equal to N (Remember that for general indexes, there 
+can be only one IndexKeySpec, and as a result, for general indexes, M = N = 1).
 
-If the number of rangespecs is less than the number of key columns, then the
-missing rangespecs are assumed to have the following value: [(), (), false,
-false, false, false].
+The i<sup>th</sup> rangespec corresponds to the i<sup>th</sup> keyspec, and 
+specifies a condition on the key values that are produced by evaluating that
+keyspec for every domain node. Specifically, we define the i<sup>th</sup>
+<strong>rangespec result</strong> as the set of domain nodes for which the 
+following xquery condition returns true:
 
-A key tuple K = [k<sub>1</sub>, ..., k<sub>M</sub>] satisfies a range search
-condition if for each i = 1, 2, ..., M the following is true:
+\code
+if ($haveLowerBound-i and $haveUpperBound-i) then
+  $lowerBound-i lop $node/keyExpr-i and $node/keyExpr-i uop $upperBound-i
+else if ($haveLowerBound-i) then
+  $lowerBound-i lop $node/keyExpr-i
+else if ($haveUpperBound-i) then
+  $node/keyExpr-i uop $upperBound-i
+else
+  fn:true()
+\endcode
 
-effectiveLowerBound<sub>i</sub>  lOp  k<sub>i</sub>  uOp 
-effectiveUpperBound<sub>i</sub>
+where keyExpr-i is the expression specified by the i<sup>th</sup> keyspec 
+of the index, lop is either the le or the lt operator depending on whether 
+$lowerBoundsIncluded-i is true or false, and uop is either the le or the 
+lt operator depending on whether $upperBoundsIncluded-i is true or false.
 
-where lOp (uOp) is either the le operator if rangeLowerBoundIncluded<sub>i</sub>
-(rangeUpperBoundIncluded<sub>i</sub>) is true, or the lt operator if
-rangeLowerBoundIncluded<sub>i</sub> (rangeUpperBoundIncluded<sub>i</sub>) is
-false. The index-probe-range function finds all key tuples in the index that
-satisfy the given search condition, creates the union of the domain nodes
-associated with each such key tuple, puts the resulting sequence of nodes in
-document order, and finally returns this sequence to its caller.
+In computing the i<sup>th</sup> rangespec result, a type error [err:XPTY0004]
+is raised in the following cases: (a) $haveLowerBound-i is true and
+$lowerBound-i is an atomic item whose type does not match the atomic
+type specified by i<sup>th</sup> keyspec, or (b) $haveUpperBound-i is 
+true and $upperBound-i is an atomic item whose type does not match 
+the atomic type specified by i<sup>th</sup> keyspec, or (c) the index is general
+and its multi-key flag is true, or (d) the index is general, its untyped flag
+is true, $haveLowerBound-i is true, and $lowerBound-i is
+an atomic item whose type is something other than xs:untypedAtomic, xs:string, 
+or xs:anyURI (or subtype of these), or (e) the index is general, its untyped flag
+is true, $haveUpperBound-i is true, and $upperBound-i is
+an atomic item whose type is something other than xs:untypedAtomic, xs:string, 
+or xs:anyURI (or subtype of these).
 
+The result of the probe-index-range-value is either one of the errors described
+above, or the intersection of all the rangespec results.
+
+
+<strong>idml:probe-index-range-general</strong>
 
 <a name="probe_index_range_general" id="probe_index_range_general"></a>
 \code
