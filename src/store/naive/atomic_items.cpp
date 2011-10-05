@@ -88,17 +88,21 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   result = NULL;
 
-  switch (getTypeCode())
+  const AtomicItem* item1 = static_cast<AtomicItem*>(getBaseItem());
+  if (item1 == NULL)
+    item1 = this;
+
+  switch (item1->getTypeCode())
   {
   case XS_UNTYPED_ATOMIC:
   {
-    const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(this);
+    const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(item1);
     try
     {
       longValue = ztd::aton<xs_long>(item->theValue.c_str());
       GET_FACTORY().createLong(result, longValue);
     }
-    catch ( std::exception const& )
+    catch (std::exception const&)
     {
       // ignore
     }
@@ -108,7 +112,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case XS_DOUBLE:
   case XS_FLOAT:
   {
-    double doubleValue = getDoubleValue().getNumber();
+    double doubleValue = item1->getDoubleValue().getNumber();
     longValue = static_cast<xs_long>(doubleValue);
 
     if (doubleValue == static_cast<double>(longValue))
@@ -119,13 +123,13 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   case XS_DECIMAL:
   {
-    const DecimalItem* item = static_cast<const DecimalItem*>(this);
+    const DecimalItem* item = static_cast<const DecimalItem*>(item1);
     try
     {
       longValue = to_xs_long(item->theValue);
       GET_FACTORY().createLong(result, longValue);
     }
-    catch ( std::range_error const& )
+    catch (std::range_error const&)
     {
       // ignore
     }
@@ -138,13 +142,13 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case XS_NON_NEGATIVE_INTEGER:
   case XS_POSITIVE_INTEGER:
   {
-    const IntegerItem* item = static_cast<const IntegerItem*>(this);
+    const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
     {
-      longValue = to_xs_long( item->theValue );
+      longValue = to_xs_long(item->theValue);
       GET_FACTORY().createLong(result, longValue);
     }
-    catch ( std::range_error const& )
+    catch (std::range_error const&)
     {
       // ignore
     }
@@ -153,7 +157,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   case XS_UNSIGNED_LONG:
   {
-    const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(this);
+    const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(item1);
     if ((item->theValue >> 63) == 0)
     {
       longValue = static_cast<xs_long>(item->theValue);
@@ -185,11 +189,15 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
   result = NULL;
 
-  switch (getTypeCode())
+  const AtomicItem* item1 = static_cast<AtomicItem*>(getBaseItem());
+  if (item1 == NULL)
+    item1 = this;
+
+  switch (item1->getTypeCode())
   {
   case XS_DECIMAL:
   {
-    const DecimalItem* item = static_cast<const DecimalItem*>(this);
+    const DecimalItem* item = static_cast<const DecimalItem*>(item1);
 
     doubleValue = item->theValue;
 
@@ -205,7 +213,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   case XS_NON_NEGATIVE_INTEGER:
   case XS_POSITIVE_INTEGER:
   {
-    const IntegerItem* item = static_cast<const IntegerItem*>(this);
+    const IntegerItem* item = static_cast<const IntegerItem*>(item1);
 
     doubleValue = item->theValue;
 
@@ -217,7 +225,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
   case XS_UNSIGNED_LONG:
   {
-    const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(this);
+    const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(item1);
 
     doubleValue = item->theValue;
 
@@ -238,7 +246,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
   case XS_LONG:
   {
-    const LongItem* item = static_cast<const LongItem*>(this);
+    const LongItem* item = static_cast<const LongItem*>(item1);
 
     doubleValue = item->theValue;
 
@@ -252,7 +260,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   case XS_SHORT:
   case XS_BYTE:
   {
-    doubleValue = getIntValue();
+    doubleValue = item1->getIntValue();
     lossy = false;
     break;
   }
@@ -348,6 +356,22 @@ void AtomicItem::coerceToLong(
   GET_FACTORY().createLong(result, longValue);
 }
 #endif
+
+
+/*******************************************************************************
+  class UserTypedAtomicItem
+********************************************************************************/
+store::Item* UserTypedAtomicItem::getBaseItem() const 
+{
+  store::Item* baseItem = theBaseItem.getp();
+
+  while (baseItem->getBaseItem() != NULL)
+  {
+    baseItem = baseItem->getBaseItem();
+  }
+
+  return baseItem;
+}
 
 
 /*******************************************************************************

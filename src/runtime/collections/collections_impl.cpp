@@ -769,8 +769,8 @@ ZorbaInsertNodesFirstIterator::getCollection(
     if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
     {
       throw XQUERY_EXCEPTION(
-        zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_INSERT,
-        ERROR_PARAMS( aName->getStringValue() ),
+        zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION,
+        ERROR_PARAMS( aName->getStringValue(), "insert" ),
         ERROR_LOC( loc )
       );
     }
@@ -856,8 +856,8 @@ ZorbaInsertNodesLastIterator::getCollection(
     if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
     {
       throw XQUERY_EXCEPTION(
-        zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_INSERT,
-        ERROR_PARAMS( aName->getStringValue() ),
+        zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION,
+        ERROR_PARAMS( aName->getStringValue(), "insert" ),
         ERROR_LOC( loc )
       );
     }
@@ -953,8 +953,8 @@ ZorbaInsertNodesBeforeIterator::getCollection(
     if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
     {
       throw XQUERY_EXCEPTION(
-        zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_INSERT,
-        ERROR_PARAMS( aName->getStringValue() ),
+        zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION,
+        ERROR_PARAMS( aName->getStringValue(), "insert" ),
         ERROR_LOC( loc )
       );
     }
@@ -1627,6 +1627,15 @@ ZorbaDeleteNodesFirstIterator::getCollection(
       ERROR_LOC( aLoc )
     );
   }
+  if (collectionDecl && 
+      collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION,
+      ERROR_PARAMS( aName->getStringValue(), "delete" ),
+      ERROR_LOC(loc)
+    );
+  }
 
   return collectionDecl;
 }
@@ -1773,6 +1782,15 @@ ZorbaDeleteNodesLastIterator::getCollection(
       zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
       ERROR_PARAMS( aName->getStringValue() ),
       ERROR_LOC( aLoc )
+    );
+  }
+  if (collectionDecl &&
+      collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION,
+      ERROR_PARAMS( aName->getStringValue(), "delete" ),
+      ERROR_LOC(loc)
     );
   }
   return collectionDecl;
