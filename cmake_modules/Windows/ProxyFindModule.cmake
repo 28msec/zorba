@@ -318,10 +318,14 @@ MACRO (FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
       LIST (APPEND paths "${NATIVE_PATH}")
       MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS cache variable: ${TMP_DLL_VAR}")
 
-      IF (NOT ${PROJECT_NAME} STREQUAL "zorba")
+      IF (${PROJECT_NAME} STREQUAL "zorba")
+        # for zorba core requirements, install this DLL
+        INSTALL (PROGRAMS ${TMP_DLL_VAR} DESTINATION bin)
+      ELSE (${PROJECT_NAME} STREQUAL "zorba")
+        # for zorba non-core requirements, install this DLL only if the component is spcified
         STRING (REPLACE "-" "_"  component_name ${PROJECT_NAME})
         INSTALL (PROGRAMS ${TMP_DLL_VAR} DESTINATION bin COMPONENT ${component_name})
-      ENDIF (NOT ${PROJECT_NAME} STREQUAL "zorba")
+      ENDIF (${PROJECT_NAME} STREQUAL "zorba")
 
     ELSE (TMP_DLL_VAR)
       MESSAGE (WARNING "${NAME} was not found in: ${LIBRARY_LOCATION}. Zorba will not run properly unless you have it in the path.")
@@ -386,6 +390,7 @@ MACRO (FIND_DLL_WIN32 DLL_NAME)
     FILE(TO_NATIVE_PATH ${PATH} NATIVE_PATH)
     LIST (APPEND paths "${NATIVE_PATH}")
     MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS cache variable: ${TMP_DLL_VAR}")
+    INSTALL (PROGRAMS "${TMP_DLL_VAR}" DESTINATION bin)
   ELSE (TMP_DLL_VAR)
     MESSAGE (STATUS "Did not find ${DLL_NAME}")
     MESSAGE (WARNING "You will not be able to run zorba unless you have ${DLL_NAME} in your path.")
@@ -425,6 +430,7 @@ MACRO (ADD_DLL_WIN32 DLL_PATH DLL_NAME)
   FILE(TO_NATIVE_PATH ${DLL_PATH} NATIVE_PATH)
   LIST (APPEND paths "${NATIVE_PATH}")
   MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS cache variable: ${DLL_PATH}/${DLL_NAME}")
+  INSTALL (PROGRAMS "${DLL_PATH}/${DLL_NAME}" DESTINATION bin)
 
   # set the current DLLs and their paths in a variable
   SET (ZORBA_REQUIRED_DLLS "${dlls}"
