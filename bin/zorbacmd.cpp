@@ -70,7 +70,7 @@ const char *copyright_str =
 
 #ifndef ZORBA_NO_FULL_TEXT
 OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
-OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS, URIMapper::COMPONENT);
+OneToOneURIMapper theThesaurusMapper(EntityData::THESAURUS);
 #endif
 
 bool

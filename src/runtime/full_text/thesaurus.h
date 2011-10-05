@@ -30,6 +30,8 @@ namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// CEEJ as with public API, rename this class ThesaurusResource and make a
+// subclass of impl::Resource.
 /**
  * A %Thesaurus is the abstract base class for thesaurus implementations.
  */

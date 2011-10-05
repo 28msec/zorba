@@ -1207,14 +1207,14 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
     at_least = 0, at_most = numeric_limits<ft_int>::max();
 
   zstring const &uri = tid.get_uri();
-  vector<zstring> comp_uris;
-  static_ctx_.get_component_uris( uri, impl::EntityData::THESAURUS, comp_uris );
-  if ( comp_uris.size() != 1 )
-    throw XQUERY_EXCEPTION( err::FTST0018, ERROR_PARAMS( uri ) );
 
-  internal::Thesaurus::ptr thesaurus(
-    static_ctx_.get_thesaurus( comp_uris.front(), qt0.lang() )
-  );
+  internal::Thesaurus::ptr thesaurus;
+  // CEEJ call something like:
+  //      static_ctx_.resolve_uri(uri, ThesaurusEntityData(qt0.lang))
+  // to get back an auto_ptr<Resource> that you can downcast to ThesaurusResource
+//  (
+//    static_ctx_.get_thesaurus( uri, qt0.lang() )
+//  );
 
   internal::Thesaurus::iterator::ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )

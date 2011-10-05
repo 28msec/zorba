@@ -30,6 +30,7 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// CEEJ rename this class to ThesaurusResource, make it subclass Resource
 /**
  * A %Thesaurus is an abstract base class for thesaurus implementations.
  */
@@ -100,25 +101,6 @@ public:
 
 protected:
   virtual ~Thesaurus();
-};
-
-/**
- * A %ThesaurusProvider, given an language, provies a thesaurus for it.
- */
-class ZORBA_DLL_PUBLIC ThesaurusProvider {
-public:
-  virtual ~ThesaurusProvider();
-
-  /**
-   * Gets a Thesaurus for the given language.
-   *
-   * @param uri The URI provided in the query for the thesaurus.
-   * @param lang The language to get a Thesaurus for.
-   * @return The relevant Thesaurus or \c NULL if no thesaurus for the given
-   * language is available.
-   */
-  virtual Thesaurus::ptr
-  getThesaurus( String const &uri, locale::iso639_1::type lang ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

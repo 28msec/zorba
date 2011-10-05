@@ -21,20 +21,28 @@
 
 namespace zorba
 {
-
-  class EntityDataWrapper : public EntityData
+  // "Convenience" class for passing an internal EntityData object to
+  // external mappers/resolvers. This can serve as a plain EntityData or
+  // a ThesaurusEntityData. However, when there's another EntityData subclass
+  // in future, this won't work as EntityData becomes an ambiguous base class...
+  class EntityDataWrapper : public ThesaurusEntityData
   {
   public:
-    static EntityDataWrapper const* create(impl::EntityData::Kind aKind) {
+    static EntityDataWrapper const* create(impl::EntityData const* aData) {
       // More ugly: Create a public-API EntityData with the same Entity Kind,
       // but only if it's one of the publicly-supported kinds
-      switch (aKind) {
+      switch (aData->getKind()) {
       case impl::EntityData::MODULE:
         return new EntityDataWrapper(EntityData::MODULE);
       case impl::EntityData::SCHEMA:
         return new EntityDataWrapper(EntityData::SCHEMA);
       case impl::EntityData::THESAURUS:
-        return new EntityDataWrapper(EntityData::THESAURUS);
+      {
+        EntityDataWrapper* retval = new EntityDataWrapper(EntityData::THESAURUS);
+        retval->theThesaurusLang =
+            dynamic_cast<const impl::ThesaurusEntityData*>(aData)->getLanguage();
+        return retval;
+      }
       case impl::EntityData::STOP_WORDS:
         return new EntityDataWrapper(EntityData::STOP_WORDS);
       case impl::EntityData::COLLECTION:
@@ -50,12 +58,17 @@ namespace zorba
       return theKind;
     }
 
+    virtual zorba::locale::iso639_1::type getLanguage() const {
+      return theThesaurusLang;
+    }
+
   private:
     EntityDataWrapper(EntityData::Kind aKind)
       : theKind(aKind)
     {}
 
     EntityData::Kind const theKind;
+    zorba::locale::iso639_1::type theThesaurusLang;
   };
 
   URIMapperWrapper::URIMapperWrapper(zorba::URIMapper& aUserMapper)
@@ -73,15 +86,15 @@ namespace zorba
     std::vector<zstring>& oUris)
   {
     std::auto_ptr<const EntityDataWrapper> lDataWrap
-        (EntityDataWrapper::create(aEntityData->getKind()));
+        (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return;
     }
 
     std::vector<zorba::String> lUserUris;
     // QQQ should public API have a StaticContext on it?
-    theUserMapper.mapURI(zorba::String(aUri.c_str()),
-      lDataWrap.get(), lUserUris);
+    theUserMapper.mapURI(zorba::String(aUri.c_str()), lDataWrap.get(),
+                         lUserUris);
     std::vector<zorba::String>::iterator iter;
     for (iter = lUserUris.begin(); iter != lUserUris.end(); iter++) {
       oUris.push_back(Unmarshaller::getInternalString(*iter));
@@ -118,7 +131,7 @@ namespace zorba
     impl::EntityData const* aEntityData)
   {
     std::auto_ptr<const EntityDataWrapper> lDataWrap
-        (EntityDataWrapper::create(aEntityData->getKind()));
+        (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return NULL;
     }

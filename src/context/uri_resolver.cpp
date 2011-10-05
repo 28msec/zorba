@@ -100,6 +100,33 @@ namespace impl {
     return theCollection;
   }
 
+/*************
+ * Implementation of EntityData hierarchy.
+ *************/
+  EntityData::EntityData(EntityData::Kind aKind)
+    : theKind(aKind)
+  {
+  }
+
+  EntityData::Kind EntityData::getKind() const
+  {
+    return theKind;
+  }
+
+  EntityData::~EntityData()
+  {
+  }
+
+  ThesaurusEntityData::ThesaurusEntityData(lang_t aLang)
+    : EntityData(EntityData::THESAURUS),
+      theLang(aLang)
+  {
+  }
+
+  ThesaurusEntityData::lang_t ThesaurusEntityData::getLanguage() const
+  {
+    return theLang;
+  }
 
 /*************
  * URIMapper is an abstract class, but we have to define its vtbl and
@@ -116,15 +143,6 @@ namespace impl {
 
   URLResolver::~URLResolver()
   {}
-
-  /*************
-   * EntityData is an abstract class, but we have to define its vtbl
-   * and base destructor somewhere.
-   *************/
-
-  EntityData::~EntityData()
-  {}
-
 
 } /* namespace zorba::impl */
 

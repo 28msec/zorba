@@ -25,6 +25,7 @@
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
 #include <zorba/streams.h>
+#include <zorba/locale.h>
 
 /**
  * @file uri_resolvers.h
@@ -90,9 +91,8 @@ public:
  * and URLResolvers when mapping/resolving a URI.
  *
  * This base class specifies the kind of entity for which this URI is being
- * resolved - for instance, a schema URI or a module URI. In the future,
- * there may be kind-specific subclasses containing additional information;
- * as yet however there are none.
+ * resolved - for instance, a schema URI or a module URI. Subclasses of
+ * this class will provide additional data for specific kinds of entities.
  */
 class ZORBA_DLL_PUBLIC EntityData
 {
@@ -117,6 +117,19 @@ public:
   virtual Kind getKind() const = 0;
 
   virtual ~EntityData() = 0;
+};
+
+/**
+ * @brief The class containing additional data for URIMappers and URLResolvers
+ * when mapping/resolving a Thesaurus URI.
+ */
+class ZORBA_DLL_PUBLIC ThesaurusEntityData : public EntityData
+{
+public:
+  /**
+   * @brief Return the language for which a thesaurus is being requested.
+   */
+  virtual zorba::locale::iso639_1::type getLanguage() const = 0;
 };
 
 /**
@@ -254,6 +267,7 @@ public:
    * Constructor. Specify the Entity Kind you wish to map. Optionally,
    * specify whether this should be a CANDIDATE or COMPONENT mapper;
    * default is CANDIDATE.
+   * QQQ COMPONENT is no longer used; delete?
    */
   OneToOneURIMapper(EntityData::Kind aEntityKind,
                     URIMapper::Kind aMapperKind = URIMapper::CANDIDATE);

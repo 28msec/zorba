@@ -40,6 +40,8 @@
 
 #include "zorbautils/hashmap_zstring.h"
 
+// CEEJ this #include can be deleted, but doing so causes several unrelated
+// build failures - need to fix
 #ifndef ZORBA_NO_FULL_TEXT
 #include "runtime/full_text/thesaurus.h"
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -510,11 +512,6 @@ protected:
 
   ztd::auto_vector<impl::URLResolver>     theURLResolvers;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  typedef std::deque<internal::ThesaurusProvider const*> thesaurus_providers_t;
-  thesaurus_providers_t                   theThesaurusProviders;
-#endif /* ZORBA_NO_FULL_TEXT */
-
   checked_vector<zstring>                 theModulePaths;
 
   ExternalModuleMap                     * theExternalModulesMap;
@@ -691,6 +688,13 @@ public:
   (zstring const& aUri, impl::EntityData::Kind aEntityKind, zstring& oErrorMessage) const;
 
   /**
+   * Given a URI, return a Resource for that URI.
+   * @param aEntityData an EntityData object to pass to the mappers/resolvers.
+   */
+  std::auto_ptr<impl::Resource> resolve_uri
+  (zstring const& aUri, impl::EntityData const& aEntityData, zstring& oErrorMessage) const;
+
+  /**
    * Given a URI, populate a vector with a list of component URIs.  If
    * no component URIs are available, the vector will be populated
    * with (only) the input URI.
@@ -698,17 +702,6 @@ public:
   void get_component_uris
   (zstring const& aUri, impl::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
-
-#ifndef ZORBA_NO_FULL_TEXT
-  void add_thesaurus_provider( internal::ThesaurusProvider const *p ) {
-    theThesaurusProviders.push_front( p );
-  }
-
-  internal::Thesaurus::ptr get_thesaurus( zstring const &uri,
-                                          locale::iso639_1::type lang ) const;
-
-  void remove_thesaurus_provider( internal::ThesaurusProvider const *p );
-#endif /* ZORBA_NO_FULL_TEXT */
 
   void set_module_paths(const std::vector<zstring>& aModulePaths);
 
