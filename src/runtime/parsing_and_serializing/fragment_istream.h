@@ -18,12 +18,13 @@
 #define ZORBA_RUNTIME_PARSING_AND_SERIALIZING_FRAGMENT_ISTREAM_H
 
 #include <iostream>
+#include <libxml/parser.h>
 
 namespace zorba {
 
 /**
  * A class to hold an input stream for the parse-xml-fragment function
- * Author: Zorba Team
+ * Author: Nicolae Brinza
  */
 class FragmentIStream : public std::istream
 {
@@ -35,30 +36,48 @@ public:
     theStream(NULL),
     theBuffer(NULL),
     buffer_size(0),
-    current_offset(0)
+    current_offset(0),
+    current_element_depth(0),
+    root_elements_to_skip(0),
+    ctxt(NULL),
+    saved_instate(XML_PARSER_START),
+    first_start_doc(true)
   {
   };
 
   void reset()
   {
     if (theBuffer)
+    {
       delete[] theBuffer;
+    }
+
     if (theIss)
+    {
       delete theIss;
+    }
+
+    if (ctxt)
+    {
+      xmlCtxtReset(ctxt);
+      xmlFreeParserCtxt(ctxt);
+    }
 
     theIss = NULL;
     theStream = NULL;
     theBuffer = NULL;
     buffer_size = 0;
     current_offset = 0;
+    current_element_depth = 0;
+    root_elements_to_skip = 0;
+    ctxt = NULL;
+    saved_instate = XML_PARSER_START;
+    first_start_doc = true;
   }
 
   virtual ~FragmentIStream()
   {
-    if (theBuffer)
-      delete[] theBuffer;
-    if (theIss)
-      delete theIss;
+    reset();
   }
 
 public:
@@ -67,6 +86,11 @@ public:
   char* theBuffer;
   unsigned long buffer_size;
   unsigned long current_offset;
+  int current_element_depth;
+  int root_elements_to_skip;
+  xmlParserCtxtPtr ctxt;
+  xmlParserInputState saved_instate;
+  bool first_start_doc;
 };
 
 }

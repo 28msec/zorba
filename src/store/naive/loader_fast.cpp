@@ -193,7 +193,7 @@ void FastXmlLoader::reset()
   theOrdPath.init();
   theRootNode = NULL;
 
-  theNodeStack.pop();
+  theNodeStack.clear();
 
   ZORBA_ASSERT(theNodeStack.empty());
 #ifdef DATAGUIDE
@@ -512,6 +512,55 @@ void FastXmlLoader::endDocument(void * ctx)
   }
 }
 
+void FastXmlLoader::processNamespaces(
+        void * ctx,
+        ElementNode* elemNode,
+        int numNamespaces,
+        const xmlChar ** namespaces,
+        bool pushBindings)
+{
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
+  zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
+  csize numBindings = static_cast<csize>(numNamespaces);
+
+  if (numBindings > 0)
+  {
+    SimpleStore& store = GET_STORE();
+    if (elemNode->getNsContext() == NULL)
+      elemNode->theNsContext = new NsBindingsContext(numBindings);
+    store::NsBindings& bindings = elemNode->getNsContext()->getBindings();
+    if (bindings.size() < numBindings)
+      bindings.resize(numBindings);
+
+    for (csize i = 0; i < numBindings; ++i)
+    {
+      const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
+      const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
+
+      if (prefix == NULL)
+        prefix = "";
+
+      zstring pooledNs;
+      store.getNamespacePool().insertc(nsuri, pooledNs);
+
+      bindings[i].first = prefix;
+      bindings[i].second = pooledNs;
+
+      LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
+    }
+
+    if (pushBindings)
+      loader.theBindingsStack.push(elemNode->getNsContext());
+  }
+  else if (pathStack.size() == 1)
+  {
+    elemNode->theNsContext = new NsBindingsContext;
+    elemNode->theFlags |= XmlNode::HaveLocalBindings;
+
+    if (pushBindings)
+      loader.theBindingsStack.push(elemNode->theNsContext);
+  }
+}
 
 /*******************************************************************************
   SAX2 callback when an element start has been detected by the parser. It
@@ -638,36 +687,7 @@ void FastXmlLoader::startElement(
                   << std::endl);
 
     // Process namespace bindings
-    if (numBindings > 0)
-    {
-      store::NsBindings& bindings = elemNode->getNsContext()->getBindings();
-
-      for (csize i = 0; i < numBindings; ++i)
-      {
-        const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
-        const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
-
-        if (prefix == NULL)
-          prefix = "";
-
-        zstring pooledNs;
-        store.getNamespacePool().insertc(nsuri, pooledNs);
-
-        bindings[i].first = prefix;
-        bindings[i].second = pooledNs;
-
-        LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
-      }
-
-      loader.theBindingsStack.push(elemNode->getNsContext());
-    }
-    else if (pathStack.size() == 1)
-    {
-      elemNode->theNsContext = new NsBindingsContext;
-      elemNode->theFlags |= XmlNode::HaveLocalBindings;
-
-      loader.theBindingsStack.push(elemNode->theNsContext);
-    }
+    FastXmlLoader::processNamespaces(ctx, elemNode, numNamespaces, namespaces);
 
     // Process attributes
     if (numAttributes > 0)

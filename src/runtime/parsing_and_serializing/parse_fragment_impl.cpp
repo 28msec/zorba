@@ -43,6 +43,8 @@ class ParseXmlFragmentOptions
 public:
   // all options are false by default, except for enableFatelErrorProcessing which is true
   bool enableExternalEntitiesProcessing;
+  bool enableRootNodesSkipping;
+  unsigned int rootNodesToSkip;
   bool enableDTDValidation;
   bool enableStrictSchemaValidation;
   bool enableLaxSchemaValidation;
@@ -52,6 +54,8 @@ public:
 public:
   ParseXmlFragmentOptions() :
     enableExternalEntitiesProcessing(false),
+    enableRootNodesSkipping(false),
+    rootNodesToSkip(0),
     enableDTDValidation(false),
     enableStrictSchemaValidation(false),
     enableLaxSchemaValidation(false),
@@ -63,6 +67,8 @@ public:
   void reset()
   {
     enableExternalEntitiesProcessing = false;
+    enableRootNodesSkipping = false;
+    rootNodesToSkip = 0;
     enableDTDValidation = false;
     enableStrictSchemaValidation = false;
     enableLaxSchemaValidation = false;
@@ -123,6 +129,17 @@ public:
       opt.enableWhitespaceStripping = false;
     if (options.find("F") != zstring::npos)
       opt.enableFatelErrorProcessing = false;
+
+    if (options.find("r") != zstring::npos)
+    {
+      opt.enableRootNodesSkipping = true;
+      int pos = options.find("r") + 1;
+
+      // TODO: catch range exception and add test for it
+      opt.rootNodesToSkip = ztd::aton<unsigned int>(options.c_str() + pos);
+    }
+
+    // TODO: check that "r" option is enabled only if "e" is enabled
 
     if (opt.enableExternalEntitiesProcessing
         &&
@@ -232,9 +249,12 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
       state->theProperties.setEnableExtParsedEntity(true);
     state->theProperties.setStoreDocument(false);
 
+    ////////////////////////////////////////////////////////////////////////
+    // External parsed entity processing
+    ////////////////////////////////////////////////////////////////////////
     if (state->theProperties.getEnableExtParsedEntity())
     {
-      // state->theFragmentStream.root_elements_to_skip = 0;
+      state->theFragmentStream.root_elements_to_skip = parseOptions.rootNodesToSkip;
 
       while (state->theFragmentStream.theBuffer == NULL
              ||
@@ -249,13 +269,17 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
             result = NULL;
         }
 
+        // Skip document node if present
         if (result != NULL)
-        {
           result->getChildren()->next(result);
+
+        if (result != NULL)
           STACK_PUSH(true, state);
-        }
       }
     }
+    ////////////////////////////////////////////////////////////////////////
+    // XML document processing
+    ////////////////////////////////////////////////////////////////////////
     else  // if (!state->theProperties.getEnableExtParsedEntity())
     {
       try {

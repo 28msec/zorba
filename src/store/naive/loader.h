@@ -179,6 +179,13 @@ public:
 
   static void endDocument(void * ctx);
 
+  static void processNamespaces(
+        void * ctx,
+        ElementNode* elemNode,
+        int numNamespaces,
+        const xmlChar ** namespaces,
+        bool pushBindings = true);
+
   static void startElement(
         void * ctx,
         const xmlChar * localname,
@@ -255,7 +262,13 @@ public:
         std::istream& xmlStream);
 
 protected:
-  static void checkStopParsing(void* ctx);
+  unsigned long getCurrentInputOffset();
+
+  static void checkStopParsing(void* ctx, bool force = false);
+
+  static void startDocument(void * ctx);
+
+  static void endDocument(void * ctx);
 
   static void startElement(
         void * ctx,
@@ -295,7 +308,6 @@ protected:
 
 protected:
   FragmentIStream* theFragmentStream;
-  int element_depth;
 };
 
 /*******************************************************************************
