@@ -78,6 +78,7 @@ NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     STACK_END (state);
 }
 
+
 // 14.2 fn:local-name
 //---------------------
 bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const

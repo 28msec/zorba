@@ -34,7 +34,7 @@ public:
   bool  theTypePreserve;
   bool  theNsPreserve;
   bool  theNsInherit;
-  bool	theFreezeReference;
+  bool  theCopyReference;
 
   CopyMode()
     :
@@ -42,7 +42,7 @@ public:
     theTypePreserve(true),
     theNsPreserve(true),
     theNsInherit(true),
-    theFreezeReference(false)
+    theCopyReference(false)
   {
   }
 
@@ -52,7 +52,7 @@ public:
     theTypePreserve(aCopyMode.theTypePreserve),
     theNsPreserve(aCopyMode.theNsPreserve),
     theNsInherit(aCopyMode.theNsInherit),
-    theFreezeReference(aCopyMode.theFreezeReference)
+    theCopyReference(aCopyMode.theCopyReference)
   {
   }
 
@@ -61,13 +61,13 @@ public:
         bool typePreserve,
         bool nsPreserve,
         bool nsInherit,
-        bool freezeReference=false)
+        bool copyReference=false)
   {
     theDoCopy = copy;
     theTypePreserve = typePreserve;
     theNsPreserve = nsPreserve;
     theNsInherit = nsInherit;
-    theFreezeReference=freezeReference;
+    theCopyReference= copyReference;
   }
 
   std::string toString() const
@@ -82,7 +82,7 @@ public:
     s += " ";
     s += (theNsInherit ? "T" : "F");
     s += " ";
-    s += (theFreezeReference ? "T" : "F");
+    s += (theCopyReference ? "T" : "F");
     s += "]";
     return s;
   }

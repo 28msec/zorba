@@ -333,8 +333,7 @@ public:
     HaveType            =   0x8000,
 #endif
 
-    HaveReference       = 0x10000,
-    HaveFrozenReference = 0x20000
+    HaveReference       = 0x10000
   };
 
 protected:
@@ -500,11 +499,6 @@ public:
   bool haveReference() const         { return (theFlags & HaveReference) != 0; }
   void setHaveReference()            { theFlags |= HaveReference; }
   void resetHaveReference()          { theFlags &= ~HaveReference; }
-
-  bool haveFrozenReference() const   { return (theFlags & HaveFrozenReference) != 0; }
-  void setHaveFrozenReference()      { theFlags |= HaveFrozenReference; }
-  void resetHaveFrozenReference()    { theFlags &= ~HaveFrozenReference; }
-
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,

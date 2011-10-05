@@ -1446,7 +1446,7 @@ bool SimpleStore::hasReference(const store::Item* node)
   Copies the reference of a source node to a target node. The source
   node must already have a reference. The target nodes acquires the
   source reference but it is not registered in the reference-to-node
-  map. The target node also get its "haveFrozenReference" flag set.
+  map.
   Used in PUL manipulation.
  
   @param source source XDM node
@@ -1460,7 +1460,6 @@ void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
   unregisterNode(target);
 
   target->setHaveReference();
-  target->setHaveFrozenReference();
 
   zstring refStr;
   reference->getStringValue2(refStr);
@@ -1470,8 +1469,7 @@ void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
 
 
 /*******************************************************************************
-  Sets the reference of a node to a given value. The "haveFrozenIdentifer"
-  flag is also set.
+  Sets the reference of a node to a given value.
   Used in PUL manipulation.
  
   @param node  XDM node
@@ -1483,19 +1481,14 @@ void SimpleStore::restoreReference(XmlNode* node, const zstring& reference)
   theNodeToReferencesMap.insert(std::pair<const XmlNode*, zstring>(node, reference));
 
   node->setHaveReference();
-  node->setHaveFrozenReference();
 }
 
 
 /*******************************************************************************
-  Unfreezes the reference of a given node:
-  - Registers the node in the references to node map
-  - Resets the node "haveFrozenReference" flag
-  The node must already have an reference, otherwise
-  error ZAPI0030 is raised.
+  Register the reference of a given node in the references to node map
+  The node must already have an reference, otherwise error ZAPI0030 is raised.
   The node reference must not be used for any other
-  node in the reference-to-node map, otherwise
-  error ZAPI0029 is raised.
+  node in the reference-to-node map, otherwise error ZAPI0029 is raised.
   Used in PUL manipulation.
  
   @param node XDM node
@@ -1513,7 +1506,6 @@ void SimpleStore::unfreezeReference(XmlNode* node)
   }
 
   theReferencesToNodeMap[reference->getStringValue()] = node;
-  node->resetHaveFrozenReference();
 }
 
 
@@ -1536,12 +1528,8 @@ bool SimpleStore::unregisterNode(XmlNode* node)
     theNodeToReferencesMap.erase(resIt);
     node->resetHaveReference();
 
-    if (!node->haveFrozenReference())
-      theReferencesToNodeMap.erase(value);
-    else
-      node->resetHaveFrozenReference();
+    theReferencesToNodeMap.erase(value);
 
-    //if a node has a frozen reference it is not registered in the references to node map
     return true;
   }
   else

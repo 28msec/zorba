@@ -71,7 +71,7 @@ public:
 
 /**
  * 
- *      declare function id:node-by-identifier($identifier as xs:string) as node()?
+ *      declare function id:node-by-identifier($identifier as xs:anyURI) as node()?
  *    
  * Author: Federico Cavalieri
  */

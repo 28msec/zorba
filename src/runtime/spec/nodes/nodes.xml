@@ -40,13 +40,13 @@
   <zorba:iterator name="NodeByReferenceIterator">
 
     <zorba:description author="Federico Cavalieri">
-      declare function id:node-by-identifier($identifier as xs:string) as node()?
+      declare function id:node-by-identifier($identifier as xs:anyURI) as node()?
     </zorba:description>
 
     <zorba:function>
     
-      <zorba:signature localname="node-by-reference" prefix="fn-zorba-ref">        
-        <zorba:param>xs:anyURI</zorba:param>        
+      <zorba:signature localname="node-by-reference" prefix="fn-zorba-ref">
+        <zorba:param>xs:anyURI</zorba:param>
         <zorba:output>node()?</zorba:output>
       </zorba:signature>
       

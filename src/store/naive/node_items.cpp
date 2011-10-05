@@ -1349,10 +1349,10 @@ DocumentNode::DocumentNode(
 
 ********************************************************************************/
 XmlNode* DocumentNode::copyInternal(
-    InternalNode* rootParent,
-    InternalNode* parent,
-    csize pos,
-    const XmlNode* rootCopy,
+    InternalNode*          rootParent,
+    InternalNode*          parent,
+    csize                  pos,
+    const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
   ZORBA_ASSERT(rootParent == NULL && parent == NULL);
@@ -1388,7 +1388,7 @@ XmlNode* DocumentNode::copyInternal(
     throw;
   }
 
-  if (haveFrozenReference() || copymode.theFreezeReference)
+  if (copymode.theCopyReference)
     GET_STORE().copyReference(this, copyNode);
 
 
@@ -2016,7 +2016,7 @@ XmlNode* ElementNode::copyInternal(
     throw;
   }
 
-  if (haveFrozenReference() || copymode.theFreezeReference)
+  if (copymode.theCopyReference)
     GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
@@ -3133,7 +3133,7 @@ XmlNode* AttributeNode::copyInternal(
     throw;
   }
 
-  if (haveFrozenReference() || copymode.theFreezeReference)
+  if (copymode.theCopyReference)
     GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
@@ -3604,7 +3604,7 @@ XmlNode* TextNode::copyInternal(
     throw;
   }
 
-  if (haveFrozenReference() || copymode.theFreezeReference)
+  if (copymode.theCopyReference)
     GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied text node " << this << " to node " << copyNode
@@ -4093,7 +4093,7 @@ XmlNode* PiNode::copyInternal(
     throw;
   }
 
-  if (haveFrozenReference() || copymode.theFreezeReference)
+  if (copymode.theCopyReference)
     GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied pi node " << this << " to node " << copyNode
@@ -4219,7 +4219,7 @@ XmlNode* CommentNode::copyInternal(
     throw;
   }
 
-  if (haveFrozenReference() || copymode.theFreezeReference)
+  if (copymode.theCopyReference)
     GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied coment node " << this << " to node " << copyNode
