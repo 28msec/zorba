@@ -272,15 +272,13 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
   # make sure we don't leave garbage in the cache and don't influence other logic with this
   SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
 
-  IF (${PROJECT_NAME} STREQUAL  "zorba")
-    # set the current DLLs and their paths in a variable
-    SET (ZORBA_REQUIRED_DLLS "${dlls}"
-      CACHE STRING "List of DLLs that must be installed" FORCE
-    )
-    SET (ZORBA_REQUIRED_DLL_PATHS "${paths}"
-      CACHE STRING "List of paths executable require in order to find the required DLLs" FORCE
-    )
-  ENDIF (${PROJECT_NAME} STREQUAL  "zorba")
+  # set the current DLLs and their paths in a variable
+  SET (ZORBA_REQUIRED_DLLS "${dlls}"
+    CACHE STRING "List of DLLs that must be installed" FORCE
+  )
+  SET (ZORBA_REQUIRED_DLL_PATHS "${paths}"
+    CACHE STRING "List of paths executable require in order to find the required DLLs" FORCE
+  )
 
 ENDMACRO (FIND_PACKAGE_DLL_WIN32)
 
@@ -339,15 +337,13 @@ MACRO (FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
   # make sure we don't leave garbage in the cache and don't influence other logic with this
   SET (TMP_DLL_VAR TMP_DLL_VAR-NOTFOUND CACHE FILEPATH "Path to a file." FORCE)
 
-  IF (${PROJECT_NAME} STREQUAL  "zorba")
-    # set the current DLLs and their paths in a variable
-    SET (ZORBA_REQUIRED_DLLS "${dlls}"
-      CACHE STRING "List of DLLs that must be installed" FORCE
-    )
-    SET (ZORBA_REQUIRED_DLL_PATHS "${paths}"
-      CACHE STRING "List of paths executable require in order to find the required DLLs" FORCE
-    )
-  ENDIF (${PROJECT_NAME} STREQUAL  "zorba")
+  # set the current DLLs and their paths in a variable
+  SET (ZORBA_REQUIRED_DLLS "${dlls}"
+    CACHE STRING "List of DLLs that must be installed" FORCE
+  )
+  SET (ZORBA_REQUIRED_DLL_PATHS "${paths}"
+    CACHE STRING "List of paths executable require in order to find the required DLLs" FORCE
+  )
 
 ENDMACRO (FIND_PACKAGE_DLLS_WIN32)
 
