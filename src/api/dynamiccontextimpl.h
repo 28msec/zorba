@@ -136,6 +136,12 @@ public:
   virtual bool
   getExternalFunctionParam(const String& aName, void*&) const;
 
+  virtual bool
+  addExternalFunctionParameter ( const String& aName, ExternalFunctionParameter* aParam );
+
+  virtual ExternalFunctionParameter*
+  getExternalFunctionParameter ( const String& aName ) const;
+
 protected:
   void checkNoIterators() const;
 

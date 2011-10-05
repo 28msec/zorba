@@ -782,7 +782,7 @@ void SimpleStore::deleteIndex(const store::Item* qname)
 
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  theIndices.remove(qname2);
+  theIndices.erase(qname2);
 }
 
 
@@ -865,7 +865,7 @@ SimpleStore::deactivateIC(const store::Item_t& icQName,
     return ic; // already deactivated in the same PUL => noop
   }
 
-  theICs.remove(icQName.getp());
+  theICs.erase(icQName.getp());
   isApplied=true;
   return ic;
 }
@@ -1197,7 +1197,9 @@ SimpleStore::createHashMap(
   return lIndex;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 store::Index_t
 SimpleStore::destroyHashMap(const store::Item_t& aQName)
@@ -1210,11 +1212,13 @@ SimpleStore::destroyHashMap(const store::Item_t& aQName)
       ERROR_PARAMS( aQName->getStringValue() )
     );
   }
-  theHashMaps.remove(aQName.getp());
+  theHashMaps.erase(aQName.getp());
   return lIndex;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 store::Index_t
 SimpleStore::getHashMap(const store::Item_t& aQName) const
@@ -1230,7 +1234,9 @@ SimpleStore::getHashMap(const store::Item_t& aQName) const
   }
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 void
 SimpleStore::addHashMap(const store::Index_t& aIndex)

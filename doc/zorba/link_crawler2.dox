@@ -1,48 +1,44 @@
 /**
-\page web_crawler_tutorial  Web Crawler example in XQuery
-
-Description of a web crawler example in XQuery.<br/>
-Entire script can be seen here: 
-\link link_crawler2
-web crawler script
-\endlink
-
-<br/>
-The idea is to crawl through the pages of a website and store a list with external pages and internal pages and check if they work or not.
-This example uses Zorba's http module for accessing the webpages, and the html module for converting the html to xml.
-The complete code can be found in the test directory of the html convertor module.
-
+\page link_crawler2  Web Crawler example in XQuery
 \code
+(:
+ : Copyright 2006-2011 The FLWOR Foundation.
+ :
+ : Licensed under the Apache License, Version 2.0 (the "License");
+ : you may not use this file except in compliance with the License.
+ : You may obtain a copy of the License at
+ :
+ : http://www.apache.org/licenses/LICENSE-2.0
+ :
+ : Unless required by applicable law or agreed to in writing, software
+ : distributed under the License is distributed on an "AS IS" BASIS,
+ : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ : See the License for the specific language governing permissions and
+ : limitations under the License.
+:)
+
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
 import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
-\endcode
 
-The internal pages are checked recursively, while the external ones are only checked for existence.
-The distinction between internal and external links is made by comparing the URI with a global string variable $uri-host.
-Change this variable to point to your website, or a subdirectory on your website.
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace xhtml="http://www.w3.org/1999/xhtml";
+declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
+declare namespace err="http://www.w3.org/2005/xqt-errors";
+declare namespace httpsch = "http://expath.org/ns/http-client";
 
-\code
 declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/site2/html/index.html";
 declare variable $uri-host as xs:string := "http://www.zorba-xquery.com/site2/";
 
-declare function local:is-internal($x as xs:string) as xs:boolean
-{
- starts-with($x, $uri-host)
-};
 
-\endcode
+declare variable $supported-media-types as xs:string+ := ("text/xml", "application/xml", "text/xml-external-parsed-entity", "application/xml-external-parsed-entity",
+                         "application/atom+xml", "text/html");
 
-The crawling starts from the URI pointed by $top-uri.
 
-Visited links are stored as nodes in two maps, one for internal pages and one for external pages.
-The keys are the URIs, and the values are the strings "broken" or "clean".
-The maps are used to avoid parsing the same page twice.
+declare variable $local:processed-internal-links:=xs:QName("processed-internal-links");
+declare variable $local:processed-external-links  :=xs:QName("processed-external-links");
 
-\code
-declare variable $local:processed-internal-links := xs:QName("processed-internal-links");
-declare variable $local:processed-external-links := xs:QName("processed-external-links");
 
 declare %ann:sequential function local:create-containers()
 {
@@ -55,14 +51,34 @@ declare %ann:sequential function local:delete-containers(){
   return map:delete($x);
 };
 
-\endcode
+declare function local:is-internal($x as xs:string) as xs:boolean
+{
+ starts-with($x, $uri-host)
+};
 
-After parsing an internal page with html module, all the links are extracted and parsed recursively, if they haven't been parsed.
-The html module uses tidy library, so we use tidy options to setup for converting from html to xml. 
-Some html tags are marked to be ignored in new-inline-tags param, this being a particular case of this website. 
-You can add or remove tags to suit your website needs.
+declare function local:my-substring-before($s1 as xs:string, $s2 as xs:string) as xs:string
+{
+let $sb := fn:substring-before($s1, $s2)
+return  if($sb = "") then  $s1 else $sb
+};
 
-\code
+declare function local:get-real-link($href as xs:string, $start-uri as xs:string) as xs:string
+{
+   local:my-substring-before(resolve-uri($href, $start-uri), "#")
+};
+
+
+declare  function local:get-media-type ($http-call as node()) as xs:string
+{
+   local:my-substring-before($http-call/httpsch:header[@name = 'Content-Type'][1]/string(@value), ";")
+};
+
+declare function local:alive($http-call as node()*) as xs:boolean
+{
+ if(($http-call[1]/@status eq 200)) then true() else false()
+};
+
+
 declare function local:get-out-links-parsed($content as node()*, $uri as xs:string) as xs:string*
 {  distinct-values( for $y in  ($content//*:a/string(@href),
                               $content//*:link/string(@href),
@@ -71,6 +87,33 @@ declare function local:get-out-links-parsed($content as node()*, $uri as xs:stri
                               $content//*:area/string(@href)
                               )
 return  local:get-real-link($y, $uri))
+};
+
+
+declare function local:get-out-links-unparsed($content as xs:string, $uri as xs:string) as xs:string*{
+
+      distinct-values( 
+         let $search := fn:analyze-string($content, "(&lt;|&amp;lt;|<)(((a|link|area).+?href)|((script|img).+?src))=([""'])(.*?)\7")
+         for $other-uri2 in  $search//group[@nr=8]/string()
+         let $y:= fn:normalize-space($other-uri2)
+         return local:get-real-link($y, $uri)
+     )
+};
+
+
+
+declare  %ann:sequential function local:process-external-link($x as xs:string){
+  if(not(empty(map:get($local:processed-external-links, $x))))
+         then   exit returning false();
+         else {}
+ variable $http-call:=();
+  try{
+        $http-call:=http:send-request(<httpsch:request method="HEAD" href="{$x}"/>, (), ());
+  }
+  catch * {}
+  if( local:alive($http-call))
+          then map:insert($local:processed-external-links, "clean", $x);
+          else map:insert($local:processed-external-links, "broken", $x);
 };
 
 declare function local:tidy-options()
@@ -84,6 +127,7 @@ declare function local:tidy-options()
                                          <tidyParam name="new-inline-tags" value="nav header section article footer xqdoc:custom d c options json-param" />
                                        </options>
 };
+
 
 declare  %ann:sequential function local:process-internal-link($x as xs:string, $n as xs:integer){
       if($n=3) then exit returning (); else {}
@@ -124,55 +168,41 @@ declare  %ann:sequential function local:process-internal-link($x as xs:string, $
        return  local:process-link($l, $n+1);
 };
 
-\endcode
 
-Some html pages have errors, and tidy library is very strict with checking errors. 
-When the parsing fails, we fallback to using regex for extracting the links.
 
-\code
-declare function local:get-out-links-unparsed($content as xs:string, $uri as xs:string) as xs:string*{
+declare %ann:sequential function local:process-link($x as xs:string, $n as xs:integer) as item()*{
+ if(local:is-internal($x))
+       then local:process-internal-link($x, $n);
+       else local:process-external-link($x);
 
-      distinct-values( 
-         let $search := fn:analyze-string($content, "(&lt;|&amp;lt;|<)(((a|link|area).+?href)|((script|img).+?src))=([""'])(.*?)\7")
-         for $other-uri2 in  $search//group[@nr=8]/string()
-         let $y:= fn:normalize-space($other-uri2)
-         return local:get-real-link($y, $uri)
-     )
 };
 
-\endcode
 
-For external links, we just check if they exist, so the http command requests only for HEAD.
-
-\code
-declare  %ann:sequential function local:process-external-link($x as xs:string){
-  if(not(empty(map:get($local:processed-external-links, $x))))
-         then   exit returning false();
-         else {}
- variable $http-call:=();
-  try{
-        $http-call:=http:send-request(<httpsch:request method="HEAD" href="{$x}"/>, (), ());
-  }
-  catch * {}
-  if( local:alive($http-call))
-          then map:insert($local:processed-external-links, "clean", $x);
-          else map:insert($local:processed-external-links, "broken", $x);
-};
-
-\endcode
-
-After parsing, the results are returned in xml format.
-
-\code
 declare function local:print-results() as element()*
 {
     for $x in map:keys($local:processed-internal-links)/map:attribute/@value/string()
     return <INTERNAL><LINK>{$x}</LINK><RESULT>{map:get($local:processed-internal-links,$x)}</RESULT></INTERNAL>, 
-    
-    for $x in map:keys($local:processed-external-links)/map:attribute/@value/string()
-    return <EXTERNAL><LINK>{$x}</LINK><RESULT>{map:get($local:processed-external-links,$x)}</RESULT></EXTERNAL>
+     for $x in map:keys($local:processed-external-links)/map:attribute/@value/string()
+     return <EXTERNAL><LINK>{$x}</LINK><RESULT>{map:get($local:processed-external-links,$x)}</RESULT></EXTERNAL>
 };
 
-\endcode
+(:==========================================
+===========================================:)
 
+variable $uri:= $top-uri;
+
+variable $result;
+
+try {
+  local:create-containers();
+  local:process-link($uri, 1);
+  $result:=local:print-results() ;
+}
+catch * { $result:=concat("an error occurred", $err:description);}
+
+
+local:delete-containers();
+$result
+
+\endcode
 */
