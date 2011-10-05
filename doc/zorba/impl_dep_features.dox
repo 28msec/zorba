@@ -6,8 +6,8 @@
   <li> \ref Context_properties </li>
 </ul>
 \section IDI Implementation Defined Items
-<table bgcolor="lightcyan" cellpadding="1">
-  <tr>
+<table bgcolor="white" cellpadding="2">
+  <tr bgcolor="lightcyan">
     <td>
       <strong>W3C Specification</strong>
     </td>
@@ -18,335 +18,335 @@
       <strong>Description of the Implementation in Zorba</strong>
     </td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The version of Unicode that is used to construct expressions.</td>
     <td>Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The statically-known collations.</td>
     <td>http://www.w3.org/2005/xpath-functions/collation/codepoint</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The implicit timezone.</td>
     <td>The implicit timezone is computed based on the current local time of the computer running Zorba.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The circumstances in which warnings are raised, and the ways in which warnings are handled.</td>
     <td>Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_warnings.html.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The method by which errors are reported to the external processing environment.</td>
     <td>Errors are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Whether the implementation is based on the rules of [XML 1.0] and [XML Names] or the rules of [XML 1.1] and [XML Names 1.1]. One of these sets of rules must be applied consistently by all aspects of the implementation.</td>
     <td>XML 1.0</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</td>
     <td>The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –&gt; http://www.zorba-xquery.com/errors 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Which of the optional axes are supported by the implementation, if the Full-Axis Feature is not supported.</td>
     <td>All axes are supported</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The default handling of empty sequences returned by an ordering key (sortspec) in an order by clause (empty least or empty greatest).</td>
     <td>empty_greatest</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The names and semantics of any extension expressions (pragmas) recognized by the implementation.</td>
     <td>No pragmas are recognized.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The names and semantics of any option declarations recognized by the implementation.</td>
     <td>See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/options_and_annotations.html.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Protocols (if any) by which parameters can be passed to an external function, and the result of the function can returned to the invoking query.</td>
     <td>See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/external_functions.html.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The process by which the specific modules to be imported by a module import are identified, if the Module Feature is supported (includes processing of location hints, if any.)</td>
     <td>See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/modules_top.html.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Any static typing extensions supported by the implementation, if the Static Typing Feature is supported.</td>
     <td>Static typing is not supported.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The means by which serialization is invoked, if the Serialization Feature is supported.</td>
     <td>The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1XQuery.html). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1Serializer.html).</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The default values for the byte-order-mark, encoding, media-type, normalization-form, omit-xml-declaration, standalone, and version parameters, if the Serialization Feature is supported.</td>
     <td>Serialization Feature is supported. Implicit values are: byte-order-mark = no, encoding = UTF-8, media-type = '', normalization-form = '', omix-xml-declaration = no, standalone = omit, version = '1.0', method = xml, doctype-system = '', doctype-public = '', cdata-section-elements = empty list, include-content-type = no, undeclare-prefixes = no, indent = no</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The result of an unsuccessful call to an external function (for example, if the function implementation cannot be found or does not return a value of the declared type).</td>
     <td>An error is raised using the regular error handling mechanism of zorba. The kind of error depends on the kind of failure. For example, zerr:ZXQP0008  if the function implementation is not found, or err:XPTY0004 if the result of the function does not match the declared returned type.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Limits on ranges of values for various data types, as enumerated in 5.3 Data Model Conformance.</td>
     <td>totalDigits = 2^63, xs:string length = available memory.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The destination of the trace output is implementation-defined. See 4 The Trace Function.</td>
     <td>By default, it is std:cerr. Users can modify this via the StaticContext::setTraceStream method.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>For xs:integer operations, implementations that support limited-precision integer operations must either raise an error [err:FOAR0002] or provide an implementation-defined mechanism that allows users to choose between raising an error and returning a result that is modulo the largest representable integer value. See 6.2 Operators on Numeric Values.</td>
     <td>Zorba raises [err:FOAR0002]</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>For xs:decimal values the number of digits of precision returned by the numeric operators is implementation-defined. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</td>
     <td>On a 32-bit system, the number of digits of precision is 2^31; on a 64-bit system, the number of digits of precision is 2^63.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>If the number of digits in the result exceeds the number of digits that the implementation supports, the result is truncated or rounded in an implementation-defined manner. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</td>
     <td>It does whatever the underlying C++ implementation does.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>It is implementation-defined which version of Unicode is supported by the features defined in this specification, but it is recommended that the most recent version of Unicode be used. See 7.1 String Types.</td>
     <td>Zorba's Unicode version is whatever ICU's Unicode is. Latest ICU supports Unicode 6.0.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>For 7.4.6 fn:normalize-unicode, conforming implementations must support normalization form "NFC" and may support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED". They may also support other normalization forms with implementation-defined semantics.</td>
     <td>Zorba supports NFC, NFKC, NFD, NFKD normalization forms.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The ability to decompose strings into collation units suitable for substring matching is an implementation-defined property of a collation. See 7.5 Functions Based on Substring Matching.</td>
     <td>Zorba does not support this.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>All minimally conforming processors must support year values with a minimum of 4 digits (i.e., YYYY) and a minimum fractional second precision of 1 millisecond or three digits (i.e., s.sss). However, conforming processors may set larger implementation-defined limits on the maximum number of digits they support in these two situations. See 10.1.1 Limits and Precision.</td>
     <td>Year values: Zorba supports 9 digits (32bit maxint). Fractional second: Zorba supports 6 digits.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The result of casting a string to xs:decimal, when the resulting value is not too large or too small but nevertheless has too many decimal digits to be accurately represented, is implementation-defined. See 17.1.1 Casting from xs:string and xs:untypedAtomic.</td>
     <td>On a 32-bit system, the number of digits of precision is 2^31; on a 64-bit system, the number of digits of precision is 2^63.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Various aspects of the processing provided by 15.5.4 fn:doc are implementation-defined. Implementations may provide external configuration options that allow any aspect of the processing to be controlled by the user.</td>
     <td>Zorba provides no configuration options for 15.5.4 fn:doc.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The manner in which implementations provide options to weaken the stable characteristic of 15.5.6 fn:collection and 15.5.4 fn:doc are implementation-defined.</td>
     <td>Zorba provides no options to weaken the stable characteristics of 15.5.6 fn:collection or 15.5.4 fn:doc.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Support for additional user-defined or implementation-defined types is implementation-defined. (See 2.6.1 Representation of Types)</td>
     <td>There are no implementation-defined types. User-defined types are created and become “in-scope” when “import schema” statements are processed. User-defined types (including anonymous types) are created within a static context and they are destroyed when their containing static context is destroyed.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Some typed values in the data model are undefined. Attempting to access an undefined property is always an error. Behavior in these cases is implementation-defined and the host language is responsible for determining the result. (See 5 Accessors)</td>
     <td>err:FOTY0012</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>For any implementation-defined output method, it is implementation-defined whether sequence normalization process takes place. (See 2 Sequence Normalization)</td>
     <td>Zorba performs sequence normalization for the 'binary' serialization method. Zorba's Data Converters module performs sequence normalization for JSON and JSONML (but these are not serialization output methods, i.e. they cannot be invoked with the help of '-z method=JSON')</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>If the namespace URI is non-null for the method serialization parameter, then the parameter specifies an implementation-defined output method. (See 3 Serialization Parameters)</td>
     <td>Zorba's only implementation-defined output method is 'binary' and it is used unqualified (URI is null).</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>If the value of the normalization-form form parameter is not NFC, NFD, NFKC, NFKD, fully-normalized, or none then the meaning of the value and it's effect is implementation-defined. (See 4 Phases of Serialization)</td>
     <td>Zorba has no implementation-defined values for the normalization-form parameter.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The effect of additional serialization parameters on the output of the serializer, where the name of such a parameter must be namespace-qualified, is implementation-defined or implementation-dependent. The extent of this effect on the output must not override the provisions of this specification. (See 3 Serialization Parameters)</td>
     <td>Zorba has no implementation-defined serialization parameters.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The effect of providing an option that allows the encoding phase to be skipped, so that the result of serialization is a stream of Unicode characters, is implementation-defined. The serializer is not required to support such an option. (See 4 Phases of Serialization)</td>
     <td>Zorba has no such option.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>An serializer may provide an implementation-defined mechanism to place CDATA sections in the result tree. (See 5.1.4 XML Output Method: the cdata-section-elements Parameter)</td>
     <td>Input CDATA sections are treated and serialized as text. Text nodes can be serialized as cdata sections if explicitly requested through the cdata-section-elements parameter.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery Update Facility 1.0</td>
     <td>The revalidation modes that are supported by this implementation.</td>
     <td>lax, skip, strict</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery Update Facility 1.0</td>
     <td>The default revalidation mode for this implementation.</td>
     <td>lax</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery Update Facility 1.0</td>
     <td>The mechanism (if any) by which an external function can return an XDM instance and/or a pending update list to the invoking query.</td>
     <td>Zorba allows external functions to be implemented in C++. Such functions may return XDM instances. However, it is not possible to implement an updating external function.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery Update Facility 1.0</td>
     <td>The semantics of fn:put(), including the kinds of nodes accepted as operands by this function.</td>
     <td>fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Tokenization, including the definition of the term "tokens", SHOULD be implementation-defined. Implementations SHOULD expose the rules and sample results of tokenization as much as possible to enable users to predict and interpret the results of tokenization.</td>
     <td>Zorba uses ICU for word tokenization, so what ever ICU's rules are are Zorba's rules. ICU uses the 'Unicode Standard Annex #29: Unicode Text Segmentation' rules found here http://www.unicode.org/reports/tr29 .</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>A phrase is an ordered sequence of any number of tokens. Beyond that, phrases are implementation-defined.</td>
     <td>A phrase in nothing more that 1+ tokens separated by text boundaries as defined by http://www.unicode.org/reports/tr29 .</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>A sentence is an ordered sequence of any number of tokens. Beyond that, sentences are implementation-defined. An implementation is not required to support sentences.</td>
     <td>Zorba uses ICU for sentence tokenization, so what ever ICU's rules are are Zorba's rules. ICU uses the 'Unicode Standard Annex #29: Unicode Text Segmentation' rules found here http://www.unicode.org/reports/tr29 .</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>A paragraph is an ordered sequence of any number of tokens. Beyond that, paragraphs are implementation-defined. An implementation is not required to support paragraphs.</td>
     <td>Zorba considers XML elements to be paragraph delimiters.  For example: &lt;p&gt;It was the best of times. It wat the worse of times.&lt;/p&gt; is 1 paragraph; however: &lt;p&gt;That was a &lt;b&gt;bold&lt;/b&gt; is 3 paragraphs since Zorba attaches no semantic meaning to any particular XML elements.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Implementations are free to provide implementation-defined ways to differentiate between markup's effect on token boundaries during tokenization.</td>
     <td>Markup delimits paragraphs and, by implication, sentences and tokens.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>The set of expressions (of form ExprSingle) that can be assigned to a score variable in a let-clause is implementation-defined. The result of passing an expression to the scoring algorithm that it does not support is implementation-defined.</td>
     <td>Score variables are not currently supported.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>When a sequence of query tokens is considered as a phrase, it matches a sequence of tokens in the tokenized form of the text being searched only if the two sequences correspond in an implementation-defined way.</td>
     <td>Given the tokens: A B C they have to match: A B C exactly; no more, no less.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>The match option application order, subject to the stated constraints, is implementation-defined.</td>
     <td>Match options are applied in the following order: Stop Word Option, Stemming Option, Case Option, Diacritics Option, Wildcard Option, Language Option.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>The "language" option influences tokenization, stemming, and stop words in an implementation-defined way. It MAY influence the behavior of other match options in an implementation-defined way.</td>
     <td>The Language Option: * Affects tokenization as performed by ICU. * Selects the stemming algorithm to be used.* Selects the default set of stop-words to be used. The Language Option does not affect any other Match Option.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>The set of valid language identifiers is implementation-defined.</td>
     <td>Zorba recognizes the ISO 639-1 and 639-2 language identifiers for the following languages: Danish, Dutch, English, Finnish, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>If an invalid language identifier is specified, then the behavior is implementation-defined.</td>
     <td>Zorba raises err::XPTY0004 for a string that can not be cast to xs:language and err::FTST0009 for an unsupported language.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>When a processor evaluates text in a document that is governed by an xml:lang attribute and the portion of the full-text query doing that evaluation contains an FTLanguageOption that specifies a different language from the language specified by the governing xml:lang attribute, the language-related behavior of that full-text query is implementation-defined.</td>
     <td>xml:lang always wins.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>It is implementation-defined which thesaurus relationships an implementation supports.</td>
     <td>This is covered in the Zorba Full Text Thesaurus documentation, http://www.zorba-xquery.com/site2/doc/latest/zorba/html/ft_thesaurus.html</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>If a query specifies thesaurus relationships or levels not supported by the thesaurus, or does not specify a relationship, the behavior is implementation-defined.</td>
     <td>Unsupported thesaurus relationships are treated as no relationship.  All levels are supported.  When no relationship is specified, all related words are returned.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>If a query does not specify the number of levels, and the implementation does not follow the default of querying all levels of hierarchical relationships, then the number of levels of hierarchical relationships queries is implementation-defined.</td>
     <td>Zorba uses 2 levels by default.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>It is implementation-defined what a stem of a token is and whether stemming will based on an algorithm, dictionary, or mixed approach.</td>
     <td>Zorba uses the publicly available Snowball stemmers found here http://snowball.tartarus.org.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>An implementation-defined comparison is used to determine whether a query token appears in the collection of stop words defined by the applicable stop word option.</td>
     <td>The query token is compared (case insensitively) against the list of stop words for an exact match.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Normally a stop word matches exactly one token, but there may be implementation-defined conditions, under which a stop word may match a different number of tokens.</td>
     <td>Zorba has no such conditions.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>The "stop words default" option specifies that an implementation-defined collection of stop words is used.</td>
     <td>For each of the supported languages, Zorba defines a set of default stop-words (too big to be listed here).</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>An implementation recognizes an implementation-defined set of namespace URIs used to denote extension options. The effect of each, including its error behavior, is implementation-defined.</td>
     <td>Zorba implements no extension options.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>An implementation recognizes an implementation-defined set of namespace URIs used to denote extension selection pragmas. The effect of each, including its error behavior, is implementation-defined.</td>
     <td>Zorba implements no extension pragmas.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>The conditions under which tokenization of two equal items produces different tokens is implementation-defined.</td>
     <td>If items are equal, the tokens will also be equal.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>An implementation may impose an implementation-defined restriction on the operand of FTIgnoreOption.</td>
     <td>Zorba imposes no restriction; however, the FTIgnoreOption implementation is incomplete.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>For certain full-text components of the static context (see C Static Context Components), the default initial value of the component can be overwritten or augmented with an implementation-defined value or values.</td>
     <td>FTThesaurusOption has no default value. FTLanguageOption is set to whatever the host's language is. Statically known languages: The ISO 639-1 codes are: da, de, en, es, fi, hu, it, nl, no, pt, sv, ru.</td>
   </tr>
 </table>
 \section Features Supported Features
-<table bgcolor="lightcyan" cellpadding="1">
-  <tr>
+<table bgcolor="white" cellpadding="2">
+  <tr bgcolor="lightcyan">
     <td>
       <strong>W3C Specification</strong>
     </td>
@@ -357,140 +357,140 @@
       <strong>Value</strong>
     </td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Minimal Conformance</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Schema Import</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Schema Validation</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Static Typing</td>
     <td bgcolor="white">false</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Static Typing Extensions</td>
     <td bgcolor="white">false</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Full Axis</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Module</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Serialization</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery Update Facility 1.0</td>
     <td>Minimal Conformance</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery Update Facility 1.0</td>
     <td>Update Facility Static Typing Feature</td>
     <td bgcolor="white">false</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Minimal Conformance</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTMildNot Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTUnaryNot Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTUnit and FTBigUnit</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTOrder Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTScope Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTWindow Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTDistance Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTTimes Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTContent Operator</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTCaseOption</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTStopwordOption</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTLanguageOption</td>
     <td bgcolor="mediumseagreen">true</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTIgnoreOption</td>
     <td bgcolor="white">false</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Scoring</td>
     <td bgcolor="white">false</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Weights</td>
     <td bgcolor="white">false</td>
   </tr>
 </table>
 \section Context_properties Context Properties
-<table bgcolor="lightcyan" cellpadding="1">
-  <tr>
+<table bgcolor="white" cellpadding="2">
+  <tr bgcolor="lightcyan">
     <td>
       <strong>W3C Specification</strong>
     </td>
@@ -504,241 +504,241 @@
       <strong>Value</strong>
     </td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Statically known namespaces</td>
     <td>static</td>
     <td>fn –&gt; http://www.w3.org/2005/xpath-functions, xml –&gt; http://www.w3.org/XML/1998/namespace, xs –&gt; http://www.w3.org/2001/XMLSchema, xsi –&gt; http://www.w3.org/2001/XMLSchema-instance, local –&gt; http://www.w3.org/2005/xquery-local-functions, zerr –&gt; http://www.zorba-xquery.com/errors</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Default element/type namespace</td>
     <td>static</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Default function namespace</td>
     <td>static</td>
     <td>http://www.w3.org/2005/xpath-functions .</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>In-scope schema types</td>
     <td>static</td>
     <td>Built-in types in xs.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>In-scope element declarations</td>
     <td>static</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>In-scope attribute declarations</td>
     <td>static</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>In-scope variables</td>
     <td>static</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Context item static type</td>
     <td>static</td>
     <td>item()</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Function signatures</td>
     <td>static</td>
     <td>Functions in fn namespace, and constructors for built-in atomic types.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Statically known collations</td>
     <td>static</td>
     <td>Initially, the only available collation is the codepoint collection: http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Default collation</td>
     <td>static</td>
     <td>http://www.w3.org/2005/xpath-functions/collation/codepoint</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Construction mode</td>
     <td>static</td>
     <td>preserve</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Ordering mode</td>
     <td>static</td>
     <td>ordered</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Default order for empty sequences</td>
     <td>static</td>
     <td>empty greatest</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Boundary-space policy</td>
     <td>static</td>
     <td>strip</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Copy-namespaces mode</td>
     <td>static</td>
     <td>inherit preserve</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Base URI</td>
     <td>static</td>
     <td>Uses the rules in http://www.w3.org/TR/xquery-30/#id-base-uri-decl, where the implementation-defined default mentioned there is http://www.zorba-xquery.com</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Statically known documents</td>
     <td>static</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Statically known collections</td>
     <td>static</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Statically known default collection type</td>
     <td>static</td>
     <td>item()*</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Context item</td>
     <td>dynamic</td>
     <td>None. Before execution of a query, a value can be assigned to the context item via the DynamicContext::setContextItem method.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Context position</td>
     <td>dynamic</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Context size</td>
     <td>dynamic</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Variable values</td>
     <td>dynamic</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Function implementations</td>
     <td>dynamic</td>
     <td>Functions in fn namespace, and constructors for built-in atomic types.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Current dateTime</td>
     <td>dynamic</td>
     <td>The current local time (when the XQuery execution is actually started) on the computer running Zorba.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Implicit timezone</td>
     <td>dynamic</td>
     <td>Computed based on the current local time on the computer running Zorba.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Available documents</td>
     <td>dynamic</td>
     <td>The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Available collections</td>
     <td>dynamic</td>
     <td>The URIs returned by the available-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Default collection</td>
     <td>dynamic</td>
     <td>None.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery Update Facility 1.0</td>
     <td>Revalidation mode</td>
     <td>static</td>
     <td>lax</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTCaseOption</td>
     <td>static</td>
     <td>case insensitive</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTDiacriticsOption</td>
     <td>static</td>
     <td>diacritics insensitive</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTStemOption</td>
     <td>static</td>
     <td>no stemming</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Statically known thesauri</td>
     <td>static</td>
     <td>http://wordnet.princeton.edu/</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTStopWordOption</td>
     <td>static</td>
     <td>no stop words</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Statically known stop word lists</td>
     <td>static</td>
     <td>Zorba uses the publicly available lists found here http://snowball.tartarus.org.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTLanguageOption</td>
     <td>static</td>
     <td>Whatever the host's language is.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>Statically known languages</td>
     <td>static</td>
     <td>The ISO 639-1 codes are: da, de, en, es, fi, hu, it, nl, no, pt, sv, ru.</td>
   </tr>
-  <tr>
+  <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>FTWildcardOption</td>
     <td>static</td>

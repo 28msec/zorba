@@ -30,13 +30,13 @@ return
 </ul>,
 "
 \section IDI Implementation Defined Items",
-  <table bgcolor="lightcyan" cellpadding="1">
-    <tr><td><strong>W3C Specification</strong></td><td><strong>Description</strong></td><td><strong>Description of the Implementation in Zorba</strong></td></tr>
+  <table bgcolor="white" cellpadding="2">
+    <tr bgcolor="lightcyan"><td><strong>W3C Specification</strong></td><td><strong>Description</strong></td><td><strong>Description of the Implementation in Zorba</strong></td></tr>
     {
       for $idi in $XQTSZorba//*:implementation-defined-item
       where not(data($idi/@value) = "")
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery 1.0</td>
         <td>{normalize-space($idi/*:description/text())}</td>
         <td>{data($idi/@value)}</td>        
@@ -46,7 +46,7 @@ return
       for $idi in $XQUTSZorba//*:implementation-defined-item
       where not(data($idi/@value) = "")
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery Update Facility 1.0</td>
         <td>{normalize-space($idi/*:description/text())}</td>
         <td>{data($idi/@value)}</td>
@@ -56,7 +56,7 @@ return
       for $idi in $XQFTTSZorba//*:implementation-defined-item
       where not(data($idi/@value) = "") and data($idi/@spec) = "XQueryFullText"
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery and XPath Full Text 1.0</td>
         <td>{normalize-space($idi/*:description/text())}</td>
         <td>{data($idi/@value)}</td>
@@ -66,12 +66,12 @@ return
   ,
 "
 \section Features Supported Features",
-  <table bgcolor="lightcyan" cellpadding="1">
-    <tr><td><strong>W3C Specification</strong></td><td><strong>Name</strong></td><td><strong>Value</strong></td></tr>
+  <table bgcolor="white" cellpadding="2">
+    <tr bgcolor="lightcyan"><td><strong>W3C Specification</strong></td><td><strong>Name</strong></td><td><strong>Value</strong></td></tr>
     {
       for $feature in $XQTSZorba//*:feature
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery 1.0</td>
         <td>{data($feature/@name)}</td>
         <td bgcolor="{if(xs:boolean(data($feature/@supported))) then 'mediumseagreen' else 'white'}">{data($feature/@supported)}</td>
@@ -80,7 +80,7 @@ return
     {
       for $feature in $XQUTSZorba//*:feature
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery Update Facility 1.0</td>
         <td>{data($feature/@name)}</td>
         <td bgcolor="{if(xs:boolean(data($feature/@supported))) then 'mediumseagreen' else 'white'}">{data($feature/@supported)}</td>
@@ -89,7 +89,7 @@ return
     {
       for $feature in $XQFTTSZorba//*:feature
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery and XPath Full Text 1.0</td>
         <td>{data($feature/@name)}</td>
         <td bgcolor="{if(xs:boolean(data($feature/@supported))) then 'mediumseagreen' else 'white'}">{data($feature/@supported)}</td>
@@ -98,13 +98,13 @@ return
   </table>,
   "
 \section Context_properties Context Properties",
-    <table bgcolor="lightcyan" cellpadding="1">
-    <tr><td><strong>W3C Specification</strong></td><td><strong>Name</strong></td><td><strong>Context Type</strong></td><td><strong>Value</strong></td></tr>
+    <table bgcolor="white" cellpadding="2">
+    <tr bgcolor="lightcyan"><td><strong>W3C Specification</strong></td><td><strong>Name</strong></td><td><strong>Context Type</strong></td><td><strong>Value</strong></td></tr>
    {
       for $property in $XQTSZorba//*:context-property
       where not(data($property/@value) = "")
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery 1.0</td>
         <td>{data($property/@name)}</td>
         <td>{data($property/@context-type)}</td>
@@ -115,7 +115,7 @@ return
       for $property in $XQUTSZorba//*:context-property
       where not(data($property/@value) = "")
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery Update Facility 1.0</td>
         <td>{data($property/@name)}</td>
         <td>{data($property/@context-type)}</td>
@@ -126,7 +126,7 @@ return
       for $property in $XQFTTSZorba//*:context-property
       where not(data($property/@value) = "") and data($property/@spec) = "XQueryFullText"
       return
-      <tr>
+      <tr bgcolor="lightcyan">
         <td>W3C XQuery and XPath Full Text 1.0</td>
         <td>{data($property/@name)}</td>
         <td>{data($property/@context-type)}</td>
