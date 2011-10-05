@@ -57,31 +57,6 @@ bool count_variable_uses_rec(
     return false;
   }
 
-  /*
-   * This is an hack for avoiding variable substitution when a variable is used
-   * as argument in a node:reference() function. This avoids that an expression
-   * like let $x:=<x/> return ref:node-by-reference(ref:node-reference($x)) get
-   * rewritten into ref:node-by-reference(ref:node-reference(</x>)). In the
-   * latter case </x> is  cannot be retrieved. The variable used inside the 
-   * node-reference function are counted twice, thus EliminateUnusedLetVars 
-   * do not substitute them.
-   */
-  if (e->get_expr_kind() == fo_expr_kind)
-  {
-    const fo_expr* fo = static_cast<const fo_expr *>(&*e);
-    const function* fn = fo->get_func();
-    if (fn->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1)
-    {
-      ExprConstIterator iter(e);
-      while (!iter.done())
-      {
-        if (!count_variable_uses_rec(iter.get_expr(), var, rCtx, limit, count))
-          break;
-        iter.next();
-      }
-    }
-  }
-
   if (e == var)
   {
     ++count;

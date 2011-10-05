@@ -13,22 +13,6 @@ fn:put(<root>doc</root>,"doc");
 <in-scope>{id:node-by-reference(id:node-reference($node))}</in-scope>
 
 <temporary-variable-out-of-scope>{id:node-by-reference(id:node-reference(<root>temp</root>))}</temporary-variable-out-of-scope>
-<temporary-variable-in-scope>{let $temp:=<root>temp</root> return id:node-by-reference(id:node-reference($temp))}</temporary-variable-in-scope>
-<temporary-variable-in-scope>{
-let $temp:=<root>temp</root> 
-return
-let $ref:=id:node-reference($temp)
-return
-id:node-by-reference($ref)
-}</temporary-variable-in-scope>
-<temporary-variable-in-scope>{
-for $i in (1 to 3)
-let $temp:=<root>temp</root> 
-let $ref:=id:node-reference($temp)
-return
-id:node-by-reference($ref)
-}</temporary-variable-in-scope>
-
 <temporary-variable-in-scope>{
 for $i in (1 to 3)
 let $temp:=<root>{$i}</root>
@@ -37,9 +21,6 @@ let $ref:=id:node-reference($temp)
 return
 id:node-by-reference($ref)
 }</temporary-variable-in-scope>
-
-<temporary-variable-in-scope>{let $temp:=<root>temp</root> return id:node-by-reference(id:node-reference($temp))}</temporary-variable-in-scope>
-
 <temporary-variable-in-scope>{variable $temp:=<root>temp</root>; id:node-by-reference(id:node-reference($temp))}</temporary-variable-in-scope>
 
 </result>
