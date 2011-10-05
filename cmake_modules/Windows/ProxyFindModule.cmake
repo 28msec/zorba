@@ -243,10 +243,14 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
       LIST (APPEND paths "${NATIVE_PATH}")
       MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS cache variable: ${TMP_DLL_VAR}")
 
-      IF (NOT ${PROJECT_NAME} STREQUAL "zorba")
+      IF (${PROJECT_NAME} STREQUAL "zorba")
+        # for zorba core requirements, install this DLL
+        INSTALL (PROGRAMS ${TMP_DLL_VAR} DESTINATION bin)
+      ELSE (${PROJECT_NAME} STREQUAL "zorba")
+        # for zorba non-core requirements, install this DLL only if the component is spcified
         STRING (REPLACE "-" "_"  component_name ${PROJECT_NAME})
         INSTALL (PROGRAMS ${TMP_DLL_VAR} DESTINATION bin COMPONENT ${component_name})
-      ENDIF (NOT ${PROJECT_NAME} STREQUAL "zorba")
+      ENDIF (${PROJECT_NAME} STREQUAL "zorba")
 
       # we break the loop if we found one DLL
       BREAK ()
