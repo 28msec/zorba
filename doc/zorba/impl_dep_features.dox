@@ -6,11 +6,17 @@
   <li> \ref Context_properties </li>
 </ul>
 \section IDI Implementation Defined Items
-<table bgcolor="lightcyan">
+<table bgcolor="lightcyan" cellpadding="1">
   <tr>
-    <td>W3C Specification</td>
-    <td>Description</td>
-    <td>Value</td>
+    <td>
+      <strong>W3C Specification</strong>
+    </td>
+    <td>
+      <strong>Description</strong>
+    </td>
+    <td>
+      <strong>Description of the Implementation in Zorba</strong>
+    </td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>
@@ -45,7 +51,7 @@
   <tr>
     <td>W3C XQuery 1.0</td>
     <td>Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</td>
-    <td>The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –&gt; http://www.zorba-xquery.com/ 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*</td>
+    <td>The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –&gt; http://www.zorba-xquery.com/errors 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*</td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>
@@ -339,11 +345,17 @@
   </tr>
 </table>
 \section Features Supported Features
-<table bgcolor="lightcyan">
+<table bgcolor="lightcyan" cellpadding="1">
   <tr>
-    <td>W3C Specification</td>
-    <td>Name</td>
-    <td>Value</td>
+    <td>
+      <strong>W3C Specification</strong>
+    </td>
+    <td>
+      <strong>Name</strong>
+    </td>
+    <td>
+      <strong>Value</strong>
+    </td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>
@@ -477,18 +489,26 @@
   </tr>
 </table>
 \section Context_properties Context Properties
-<table bgcolor="lightcyan">
+<table bgcolor="lightcyan" cellpadding="1">
   <tr>
-    <td>W3C Specification</td>
-    <td>Name</td>
-    <td>Context Type</td>
-    <td>Value</td>
+    <td>
+      <strong>W3C Specification</strong>
+    </td>
+    <td>
+      <strong>Name</strong>
+    </td>
+    <td>
+      <strong>Context Type</strong>
+    </td>
+    <td>
+      <strong>Value</strong>
+    </td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>
     <td>Statically known namespaces</td>
     <td>static</td>
-    <td>fn –&gt; http://www.w3.org/2005/xpath-functions, xml –&gt; http://www.w3.org/XML/1998/namespace, xs –&gt; http://www.w3.org/2001/XMLSchema, xsi –&gt; http://www.w3.org/2001/XMLSchema-instance, local –&gt; http://www.w3.org/2005/xquery-local-functions, zerr –&gt; http://www.zorba-xquery.com/</td>
+    <td>fn –&gt; http://www.w3.org/2005/xpath-functions, xml –&gt; http://www.w3.org/XML/1998/namespace, xs –&gt; http://www.w3.org/2001/XMLSchema, xsi –&gt; http://www.w3.org/2001/XMLSchema-instance, local –&gt; http://www.w3.org/2005/xquery-local-functions, zerr –&gt; http://www.zorba-xquery.com/errors</td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>
@@ -608,7 +628,7 @@
     <td>W3C XQuery 1.0</td>
     <td>Context item</td>
     <td>dynamic</td>
-    <td>None. Before execution of a query, a value can be assigned to the context itemvia the DynamicContext::setContextItem method.</td>
+    <td>None. Before execution of a query, a value can be assigned to the context item via the DynamicContext::setContextItem method.</td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>
@@ -638,7 +658,7 @@
     <td>W3C XQuery 1.0</td>
     <td>Current dateTime</td>
     <td>dynamic</td>
-    <td>The current local time on the computer running Zorba.</td>
+    <td>The current local time (when the XQuery execution is actually started) on the computer running Zorba.</td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>
@@ -656,7 +676,7 @@
     <td>W3C XQuery 1.0</td>
     <td>Available collections</td>
     <td>dynamic</td>
-    <td>The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)</td>
+    <td>The URIs returned by the available-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)</td>
   </tr>
   <tr>
     <td>W3C XQuery 1.0</td>

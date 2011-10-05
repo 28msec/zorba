@@ -47,7 +47,7 @@
     <implementation-defined-item 
       name="overwrittenContextComponents"
       spec="XQuery"
-      value="The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –> http://www.zorba-xquery.com/ 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*">
+      value="The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –> http://www.zorba-xquery.com/errors 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*">
       <description last-mod="2005-04-04">Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</description>
     </implementation-defined-item>
     
@@ -504,7 +504,7 @@
       spec="XQuery"
       name="Statically known namespaces" 
       context-type="static" 
-      value="fn –> http://www.w3.org/2005/xpath-functions, xml –> http://www.w3.org/XML/1998/namespace, xs –> http://www.w3.org/2001/XMLSchema, xsi –> http://www.w3.org/2001/XMLSchema-instance, local –> http://www.w3.org/2005/xquery-local-functions, zerr –> http://www.zorba-xquery.com/"/>
+      value="fn –> http://www.w3.org/2005/xpath-functions, xml –> http://www.w3.org/XML/1998/namespace, xs –> http://www.w3.org/2001/XMLSchema, xsi –> http://www.w3.org/2001/XMLSchema-instance, local –> http://www.w3.org/2005/xquery-local-functions, zerr –> http://www.zorba-xquery.com/errors"/>
     
     <context-property
       spec="XQuery"    
@@ -654,7 +654,7 @@
       spec="XQuery"
       name="Current dateTime" 
       context-type="dynamic" 
-      value="The current local time on the computer running Zorba."/>
+      value="The current local time (when the XQuery execution is actually started) on the computer running Zorba."/>
     
     <context-property
       spec="XQuery"
@@ -672,7 +672,7 @@
       spec="XQuery"    
       name="Available collections" 
       context-type="dynamic" 
-      value="The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)"/>
+      value="The URIs returned by the available-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)"/>
     
     <context-property
       spec="XQuery"

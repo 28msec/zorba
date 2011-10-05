@@ -30,8 +30,8 @@ return
 </ul>,
 "
 \section IDI Implementation Defined Items",
-  <table bgcolor="lightcyan">
-    <tr><td>W3C Specification</td><td>Description</td><td>Value</td></tr>
+  <table bgcolor="lightcyan" cellpadding="1">
+    <tr><td><strong>W3C Specification</strong></td><td><strong>Description</strong></td><td><strong>Description of the Implementation in Zorba</strong></td></tr>
     {
       for $idi in $XQTSZorba//*:implementation-defined-item
       where not(data($idi/@value) = "")
@@ -66,8 +66,8 @@ return
   ,
 "
 \section Features Supported Features",
-  <table bgcolor="lightcyan">
-    <tr><td>W3C Specification</td><td>Name</td><td>Value</td></tr>
+  <table bgcolor="lightcyan" cellpadding="1">
+    <tr><td><strong>W3C Specification</strong></td><td><strong>Name</strong></td><td><strong>Value</strong></td></tr>
     {
       for $feature in $XQTSZorba//*:feature
       return
@@ -98,8 +98,8 @@ return
   </table>,
   "
 \section Context_properties Context Properties",
-    <table bgcolor="lightcyan">
-    <tr><td>W3C Specification</td><td>Name</td><td>Context Type</td><td>Value</td></tr>
+    <table bgcolor="lightcyan" cellpadding="1">
+    <tr><td><strong>W3C Specification</strong></td><td><strong>Name</strong></td><td><strong>Context Type</strong></td><td><strong>Value</strong></td></tr>
    {
       for $property in $XQTSZorba//*:context-property
       where not(data($property/@value) = "")
