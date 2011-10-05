@@ -355,7 +355,7 @@ public:
 
   void restoreReference(XmlNode* node, const zstring& reference);
 
-  void unfreezeReference(XmlNode* node);
+  void registerReference(XmlNode* node);
 
   /* ------------------------ Node Reference Management ---------------------------*/
 

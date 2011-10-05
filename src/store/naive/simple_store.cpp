@@ -1446,7 +1446,9 @@ bool SimpleStore::hasReference(const store::Item* node)
   Copies the reference of a source node to a target node. The source
   node must already have a reference. The target nodes acquires the
   source reference but it is not registered in the reference-to-node
-  map.
+  map.If no reference has already been computed for the given node
+  error ZAPI0030 is raised.
+
   Used in PUL manipulation.
  
   @param source source XDM node
@@ -1464,7 +1466,7 @@ void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
   zstring refStr;
   reference->getStringValue2(refStr);
 
-  theNodeToReferencesMap.insert(target,  refStr);
+  theNodeToReferencesMap.insert(target, refStr);
 }
 
 
@@ -1493,7 +1495,7 @@ void SimpleStore::restoreReference(XmlNode* node, const zstring& reference)
  
   @param node XDM node
 ********************************************************************************/
-void SimpleStore::unfreezeReference(XmlNode* node)
+void SimpleStore::registerReference(XmlNode* node)
 {
   store::Item_t reference;
   getCurrentReference(reference, node);
