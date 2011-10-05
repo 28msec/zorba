@@ -8,7 +8,7 @@
 \section IDI Implementation Defined Items
 <table bgcolor="lightcyan">
   <tr>
-    <td>Feature</td>
+    <td>W3C Specification</td>
     <td>Description</td>
     <td>Value</td>
   </tr>
@@ -341,7 +341,7 @@
 \section Features Supported Features
 <table bgcolor="lightcyan">
   <tr>
-    <td>Feature</td>
+    <td>W3C Specification</td>
     <td>Name</td>
     <td>Value</td>
   </tr>
@@ -479,196 +479,196 @@
 \section Context_properties Context Properties
 <table bgcolor="lightcyan">
   <tr>
-    <td>Feature</td>
+    <td>W3C Specification</td>
     <td>Name</td>
     <td>Context Type</td>
     <td>Value</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Statically known namespaces</td>
+    <td>static</td>
+    <td>fn –&gt; http://www.w3.org/2005/xpath-functions, xml –&gt; http://www.w3.org/XML/1998/namespace, xs –&gt; http://www.w3.org/2001/XMLSchema, xsi –&gt; http://www.w3.org/2001/XMLSchema-instance, local –&gt; http://www.w3.org/2005/xquery-local-functions, zerr –&gt; http://www.zorba-xquery.com/</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default element/type namespace</td>
+    <td>static</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default function namespace</td>
+    <td>static</td>
+    <td>http://www.w3.org/2005/xpath-functions .</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>In-scope schema types</td>
+    <td>static</td>
+    <td>Built-in types in xs.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>In-scope element declarations</td>
+    <td>static</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>In-scope attribute declarations</td>
+    <td>static</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>In-scope variables</td>
+    <td>static</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Context item static type</td>
+    <td>static</td>
+    <td>item()</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Function signatures</td>
+    <td>static</td>
+    <td>Functions in fn namespace, and constructors for built-in atomic types.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Statically known collations</td>
+    <td>static</td>
+    <td>Initially, the only available collation is the codepoint collection: http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default collation</td>
+    <td>static</td>
+    <td>http://www.w3.org/2005/xpath-functions/collation/codepoint</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Construction mode</td>
+    <td>static</td>
+    <td>preserve</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Ordering mode</td>
+    <td>static</td>
+    <td>ordered</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default order for empty sequences</td>
+    <td>static</td>
+    <td>empty greatest</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Boundary-space policy</td>
+    <td>static</td>
+    <td>strip</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Copy-namespaces mode</td>
+    <td>static</td>
+    <td>inherit preserve</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Base URI</td>
+    <td>static</td>
+    <td>Uses the rules in http://www.w3.org/TR/xquery-30/#id-base-uri-decl, where the implementation-defined default mentioned there is http://www.zorba-xquery.com</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Statically known documents</td>
+    <td>static</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Statically known collections</td>
+    <td>static</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Statically known default collection type</td>
+    <td>static</td>
+    <td>item()*</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Context item</td>
+    <td>dynamic</td>
+    <td>None. Before execution of a query, a value can be assigned to the context itemvia the DynamicContext::setContextItem method.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Context position</td>
+    <td>dynamic</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Context size</td>
+    <td>dynamic</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Variable values</td>
+    <td>dynamic</td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Function implementations</td>
+    <td>dynamic</td>
+    <td>Functions in fn namespace, and constructors for built-in atomic types.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Current dateTime</td>
+    <td>dynamic</td>
+    <td>The current local time on the computer running Zorba.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Implicit timezone</td>
+    <td>dynamic</td>
+    <td>Computed based on the current local time on the computer running Zorba.</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Available documents</td>
+    <td>dynamic</td>
+    <td>The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Available collections</td>
+    <td>dynamic</td>
+    <td>The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)</td>
+  </tr>
+  <tr>
+    <td>W3C XQuery 1.0</td>
+    <td>Default collection</td>
+    <td>dynamic</td>
+    <td>None.</td>
   </tr>
   <tr>
     <td>W3C XQuery Update Facility 1.0</td>
     <td>Revalidation mode</td>
     <td>static</td>
     <td>lax</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Statically known namespaces</td>
-    <td>static</td>
-    <td>fn –&gt; http://www.w3.org/2005/xpath-functions, xml –&gt; http://www.w3.org/XML/1998/namespace, xs –&gt; http://www.w3.org/2001/XMLSchema, xsi –&gt; http://www.w3.org/2001/XMLSchema-instance, local –&gt; http://www.w3.org/2005/xquery-local-functions, zerr –&gt; http://www.zorba-xquery.com/</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Default element/type namespace</td>
-    <td>static</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Default function namespace</td>
-    <td>static</td>
-    <td>http://www.w3.org/2005/xpath-functions .</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>In-scope schema types</td>
-    <td>static</td>
-    <td>Built-in types in xs.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>In-scope element declarations</td>
-    <td>static</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>In-scope attribute declarations</td>
-    <td>static</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>In-scope variables</td>
-    <td>static</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Context item static type</td>
-    <td>static</td>
-    <td>item()</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Function signatures</td>
-    <td>static</td>
-    <td>Functions in fn namespace, and constructors for built-in atomic types.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Statically known collations</td>
-    <td>static</td>
-    <td>Initially, the only available collation is the codepoint collection: http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Default collation</td>
-    <td>static</td>
-    <td>http://www.w3.org/2005/xpath-functions/collation/codepoint</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Construction mode</td>
-    <td>static</td>
-    <td>preserve</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Ordering mode</td>
-    <td>static</td>
-    <td>ordered</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Default order for empty sequences</td>
-    <td>static</td>
-    <td>empty greatest</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Boundary-space policy</td>
-    <td>static</td>
-    <td>strip</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Copy-namespaces mode</td>
-    <td>static</td>
-    <td>inherit preserve</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Base URI</td>
-    <td>static</td>
-    <td>Uses the rules in http://www.w3.org/TR/xquery-30/#id-base-uri-decl, where the implementation-defined default mentioned there is http://www.zorba-xquery.com</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Statically known documents</td>
-    <td>static</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Statically known collections</td>
-    <td>static</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Statically known default collection type</td>
-    <td>static</td>
-    <td>item()*</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Context item</td>
-    <td>dynamic</td>
-    <td>None. Before execution of a query, a value can be assigned to the context item via the DynamicContext::setContextItem method.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Context position</td>
-    <td>dynamic</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Context size</td>
-    <td>dynamic</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Variable values</td>
-    <td>dynamic</td>
-    <td>None.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Function implementations</td>
-    <td>dynamic</td>
-    <td>Functions in fn namespace, and constructors for built-in atomic types.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Current dateTime</td>
-    <td>dynamic</td>
-    <td>The current local time on the computer running Zorba.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Implicit timezone</td>
-    <td>dynamic</td>
-    <td>Computed based on the current local time on the computer running Zorba.</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Available documents</td>
-    <td>dynamic</td>
-    <td>The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Available collections</td>
-    <td>dynamic</td>
-    <td>The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)</td>
-  </tr>
-  <tr>
-    <td>W3C XQuery and XPath Full Text 1.0</td>
-    <td>Default collection</td>
-    <td>dynamic</td>
-    <td>None.</td>
   </tr>
   <tr>
     <td>W3C XQuery and XPath Full Text 1.0</td>

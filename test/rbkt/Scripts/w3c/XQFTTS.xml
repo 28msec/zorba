@@ -500,202 +500,242 @@
   </features>
   
   <context-properties>        
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Statically known namespaces" 
       context-type="static" 
       value="fn –> http://www.w3.org/2005/xpath-functions, xml –> http://www.w3.org/XML/1998/namespace, xs –> http://www.w3.org/2001/XMLSchema, xsi –> http://www.w3.org/2001/XMLSchema-instance, local –> http://www.w3.org/2005/xquery-local-functions, zerr –> http://www.zorba-xquery.com/"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"    
       name="Default element/type namespace" 
       context-type="static" 
       value="None."/>
     
     <context-property 
+      spec="XQuery"
       name="Default function namespace" 
       context-type="static" 
       value="http://www.w3.org/2005/xpath-functions ."/>
     
     <context-property 
+      spec="XQuery"
       name="In-scope schema types" 
       context-type="static" 
       value="Built-in types in xs."/>
     
     <context-property 
+      spec="XQuery"
       name="In-scope element declarations" 
       context-type="static" 
       value="None."/>
     
     <context-property 
+      spec="XQuery"
       name="In-scope attribute declarations" 
       context-type="static" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="In-scope variables" 
       context-type="static" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Context item static type" 
       context-type="static" 
       value="item()"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Function signatures" 
       context-type="static" 
       value="Functions in fn namespace, and constructors for built-in atomic types."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Statically known collations" 
       context-type="static" 
       value="Initially, the only available collation is the codepoint collection: http://www.w3.org/2005/xpath-functions/collation/codepoint. More collations can be added to a static context via the StaticContext::addCollation() method of the C++ API."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Default collation" 
       context-type="static" 
       value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Construction mode" 
       context-type="static" 
       value="preserve"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Ordering mode" 
       context-type="static" 
       value="ordered"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Default order for empty sequences" 
       context-type="static" 
       value="empty greatest"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Boundary-space policy" 
       context-type="static" 
       value="strip"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Copy-namespaces mode" 
       context-type="static" 
       value="inherit preserve"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Base URI" 
       context-type="static" 
       value="Uses the rules in http://www.w3.org/TR/xquery-30/#id-base-uri-decl, where the implementation-defined default mentioned there is http://www.zorba-xquery.com"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Statically known documents" 
       context-type="static" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Statically known collections" 
       context-type="static" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Statically known default collection type" 
       context-type="static" 
       value="item()*"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Context item" 
       context-type="dynamic" 
       value="None. Before execution of a query, a value can be assigned to the context item via the DynamicContext::setContextItem method."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Context position" 
       context-type="dynamic" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Context size" 
       context-type="dynamic" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Variable values" 
       context-type="dynamic" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Function implementations" 
       context-type="dynamic" 
       value="Functions in fn namespace, and constructors for built-in atomic types."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Current dateTime" 
       context-type="dynamic" 
       value="The current local time on the computer running Zorba."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Implicit timezone" 
       context-type="dynamic" 
       value="Computed based on the current local time on the computer running Zorba."/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Available documents" 
       context-type="dynamic" 
       value="The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"    
       name="Available collections" 
       context-type="dynamic" 
       value="The URIs returned by the availale-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)"/>
     
-    <context-property 
+    <context-property
+      spec="XQuery"
       name="Default collection" 
       context-type="dynamic" 
       value="None."/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="FTCaseOption" 
       context-type="static" 
       value="case insensitive"/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="FTDiacriticsOption" 
       context-type="static" 
       value="diacritics insensitive"/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="FTStemOption" 
       context-type="static" 
       value="no stemming"/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="FTThesaurusOption" 
       context-type="static" 
       value=""/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="Statically known thesauri" 
       context-type="static" 
       value="http://wordnet.princeton.edu/"/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="FTStopWordOption" 
       context-type="static" 
       value="no stop words"/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="Statically known stop word lists" 
       context-type="static" 
       value="Zorba uses the publicly available lists found here http://snowball.tartarus.org."/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="FTLanguageOption" 
       context-type="static" 
       value="Whatever the host's language is."/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="Statically known languages" 
       context-type="static" 
       value="The ISO 639-1 codes are: da, de, en, es, fi, hu, it, nl, no, pt, sv, ru."/>
     
-    <context-property 
+    <context-property
+      spec="XQueryFullText"
       name="FTWildcardOption" 
       context-type="static" 
       value="no wildcards "/>

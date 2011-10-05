@@ -31,7 +31,7 @@ return
 "
 \section IDI Implementation Defined Items",
   <table bgcolor="lightcyan">
-    <tr><td>Feature</td><td>Description</td><td>Value</td></tr>
+    <tr><td>W3C Specification</td><td>Description</td><td>Value</td></tr>
     {
       for $idi in $XQTSZorba//*:implementation-defined-item
       where not(data($idi/@value) = "")
@@ -67,7 +67,7 @@ return
 "
 \section Features Supported Features",
   <table bgcolor="lightcyan">
-    <tr><td>Feature</td><td>Name</td><td>Value</td></tr>
+    <tr><td>W3C Specification</td><td>Name</td><td>Value</td></tr>
     {
       for $feature in $XQTSZorba//*:feature
       return
@@ -99,7 +99,18 @@ return
   "
 \section Context_properties Context Properties",
     <table bgcolor="lightcyan">
-    <tr><td>Feature</td><td>Name</td><td>Context Type</td><td>Value</td></tr>
+    <tr><td>W3C Specification</td><td>Name</td><td>Context Type</td><td>Value</td></tr>
+   {
+      for $property in $XQTSZorba//*:context-property
+      where not(data($property/@value) = "")
+      return
+      <tr>
+        <td>W3C XQuery 1.0</td>
+        <td>{data($property/@name)}</td>
+        <td>{data($property/@context-type)}</td>
+        <td>{data($property/@value)}</td>
+      </tr>
+    }
     {
       for $property in $XQUTSZorba//*:context-property
       where not(data($property/@value) = "")
@@ -113,7 +124,7 @@ return
     }
     {
       for $property in $XQFTTSZorba//*:context-property
-      where not(data($property/@value) = "")
+      where not(data($property/@value) = "") and data($property/@spec) = "XQueryFullText"
       return
       <tr>
         <td>W3C XQuery and XPath Full Text 1.0</td>

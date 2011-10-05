@@ -47,6 +47,13 @@ else
         }
         </implementation-defined-items>,
         <features>{$XQFTTSZorba//*:feature}</features>,
+        <context-properties>
+        {
+          for $cp in $XQFTTSZorba//*:context-property
+          return
+             <context-property name="{data($cp/@name)}" context-type="{data($cp/@context-type)}" value="{data($cp/@value)}" />
+        }
+        </context-properties>
         <context-properties>{$XQFTTSZorba//*:context-property}</context-properties>
       )
     }
