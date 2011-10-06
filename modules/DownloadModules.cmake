@@ -71,6 +71,10 @@ foreach (modline ${modlines})
     if (_getmod)
       message ("Downloading module '${_modname}'...")
       if (${_modvc} STREQUAL "svn")
+        if (NOT svn)
+          message (FATAL_ERROR
+            "Subversion client not found - required for ${_modname} module!")
+        endif (NOT svn)
         # QQQ Ridiculous and slow hack, but Sourceforge has been
         # incredibly unreliable lately so this is the best choice I've
         # got to make the remote queue semi-stable
@@ -80,6 +84,10 @@ foreach (modline ${modlines})
         endforeach (s 1 2)
 
       elseif (${_modvc} STREQUAL "bzr")
+        if (NOT bzr)
+          message (FATAL_ERROR
+            "Bazaar client not found - required for ${_modname} module!")
+        endif (NOT bzr)
         execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
           WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
 
