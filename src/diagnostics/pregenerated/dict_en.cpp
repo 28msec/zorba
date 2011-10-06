@@ -335,8 +335,6 @@ extern entry const dict_en[] = {
   { "ZSTR0002", "\"$1\": index does not exist" },
   { "ZSTR0003", "\"$1\": partial key insertion into index \"$2\"" },
   { "ZSTR0004", "\"$1\": partial key deletion from index \"$2\"" },
-  { "ZSTR0005", "\"$1\": partial key probe into index \"$2\"" },
-  { "ZSTR0006", "for index \"$1\": $2" },
   { "ZSTR0007", "\"$1\": unsupported probe condition for index \"$2\"" },
   { "ZSTR0008", "\"$1\": collection already exists" },
   { "ZSTR0009", "\"$1\": collection not found" },

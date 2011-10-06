@@ -1629,14 +1629,11 @@ void UpdInsertIntoHashMap::apply()
 
   if (!lMap)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( theQName->getStringValue() )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+    ERROR_PARAMS(theQName->getStringValue()));
   }
 
-  simplestore::IndexImpl* lImpl =
-    static_cast<simplestore::IndexImpl*>(lMap.getp());
+  ValueIndex* lImpl = static_cast<ValueIndex*>(lMap.getp());
 
   theValue->open();
   store::Item_t lValue;
@@ -1653,7 +1650,7 @@ void UpdInsertIntoHashMap::apply()
     }
 
     store::IndexKey* lKeyPtr = lKey.get();
-    if (!lImpl->insert(lKeyPtr, lValue, lKey->size() > 1))
+    if (!lImpl->insert(lKeyPtr, lValue))
     {
       // the index took the ownership over the key if the index
       // did _not_ already contain an entry with the same key

@@ -31,22 +31,145 @@ namespace zorba
 namespace simplestore 
 {
 
-const int64_t  GeneralTreeIndex::theMaxLong       =  99999999999LL;
-const int64_t  GeneralTreeIndex::theMinLong       = -99999999999LL;
-const double   GeneralTreeIndex::theDoubleMaxLong =  99999999999.0;
-const double   GeneralTreeIndex::theDoubleMinLong = -99999999999.0;
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  GeneralIndexCompareFunction                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/******************************************************************************
+
+********************************************************************************/
+GeneralIndexCompareFunction::GeneralIndexCompareFunction(
+    long timezone,
+    const std::string& collation)
+  :
+  theTimezone(timezone)
+{
+  if (!collation.empty())
+  {
+    theCollator = CollationFactory::createCollator(collation);
+  }
+  else
+  {
+    theCollator = NULL;
+  } 
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+GeneralIndexCompareFunction::~GeneralIndexCompareFunction()
+{
+  if (theCollator)
+    delete theCollator; 
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+uint32_t GeneralIndexCompareFunction::hash(const store::Item_t& key) const
+{
+  uint32_t hval = FNV_32_INIT;
+
+  if (key == NULL)
+    return hval;
+
+  return hashfun::h32<uint32_t>(key->hash(theTimezone, theCollator), hval);
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+bool GeneralIndexCompareFunction::equal(
+    const store::Item_t& key1,
+    const store::Item_t& key2) const
+{
+  if (key1 == NULL && key2 == NULL)
+    return true;
+
+  if (key1 == NULL || key2 == NULL)
+    return false;
+
+  if (! key1->equals(key2.getp(), theTimezone, theCollator))
+    return false;
+  
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+long GeneralIndexCompareFunction::compare(
+    const store::Item_t& key1,
+    const store::Item_t& key2) const
+{
+  long result;
+
+  if (key1 == NULL)
+  {
+    if (key2 != NULL)
+      return -1;
+  }
+  else if (key2 == NULL)
+  {
+    if (key1 != NULL)
+      return +1;
+  }
+  else if (key1 == IndexConditionImpl::theNegInf)
+  {
+    return -1;
+  }
+  else if (key1 == IndexConditionImpl::thePosInf)
+  {
+    return +1;
+  }
+  else if (key2 == IndexConditionImpl::theNegInf)
+  {
+    return +1;
+  }
+  else if (key2 == IndexConditionImpl::thePosInf)
+  {
+    return -1;
+  }
+  else if ((result = key1->compare(key2, theTimezone, theCollator)))
+  {
+    return result;
+  }
+
+  return 0;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  GeneralIndexValue                                                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 
 /******************************************************************************
 
 *******************************************************************************/
-void GeneralIndexValue::addNode(store::Item_t& node, bool multikey, bool untyped)
+void GeneralIndexValue::addNode(store::Item_t& node, bool untyped)
 {
-  size_t numNodes = theNodes.size();
+  csize numNodes = theNodes.size();
   theNodes.resize(numNodes + 1);
   theNodes[numNodes].theNode.transfer(node);
-  //theNodes[numNodes].theMultiKey = multikey;
   theNodes[numNodes].theUntyped = untyped;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  GeneralIndex                                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /******************************************************************************
@@ -57,7 +180,7 @@ GeneralIndex::GeneralIndex(
     const store::IndexSpecification& spec)
   :
   IndexImpl(qname, spec),
-  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
+  theCompFunction(spec.theTimezone, spec.theCollations[0]),
   theUntypedFlag(false),
   theMultiKeyFlag(false)
 {
@@ -65,15 +188,31 @@ GeneralIndex::GeneralIndex(
 
 
 /******************************************************************************
+
+*******************************************************************************/
+GeneralIndex::~GeneralIndex()
+{
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+const XQPCollator* GeneralIndex::getCollator(ulong i) const
+{
+  ZORBA_ASSERT(i == 0);
+  return theCompFunction.getCollator();
+}
+
+
+/******************************************************************************
   Macro used during the population of both hash and tree general indexes.
 *******************************************************************************/
-#define ADD_IN_MAP(MAP_ID, untyped)                                            \
-if (castItem !=  NULL)                                                         \
-{                                                                              \
-  if (key == NULL) key = new store::IndexKey(1);                               \
-  (*key)[0].transfer(castItem);                                                \
-  found = found || insertInMap(key, node, theMaps[MAP_ID], multikey, untyped); \
-  node = node2;                                                                \
+#define ADD_IN_MAP(MAP_ID, untyped)                                       \
+if (castItem !=  NULL)                                                    \
+{                                                                         \
+  found = found || insertInMap(castItem, node, theMaps[MAP_ID], untyped); \
+  node = node2;                                                           \
 }
 
 
@@ -82,33 +221,6 @@ if (castItem !=  NULL)                                                         \
 //  Hash Map General Index                                                     //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
-
-
-/******************************************************************************
-
-*******************************************************************************/
-GeneralHashIndex::KeyIterator::~KeyIterator()
-{
-}
-
-
-void GeneralHashIndex::KeyIterator::open()
-{
-  assert(false);
-}
-
-
-bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
-{
-  assert(false);
-  return false;
-}
-
-
-void GeneralHashIndex::KeyIterator::close()
-{
-  assert(false);
-}
 
 
 /******************************************************************************
@@ -156,7 +268,7 @@ GeneralHashIndex::~GeneralHashIndex()
       //std::cout << "Index Entry Delete [" << (*ite).first << "," 
       //          << (*ite).second << "]" << std::endl;
       
-      delete (*ite).first;
+      //delete (*ite).first;
       delete (*ite).second;
     }
 
@@ -188,16 +300,13 @@ store::Index::KeyIterator_t GeneralHashIndex::keys() const
 /******************************************************************************
 
 *******************************************************************************/
-bool GeneralHashIndex::insert(
-    store::IndexKey*& key,
-    store::Item_t& node,
-    bool multikey)
+bool GeneralHashIndex::insert(store::Item_t& key, store::Item_t& node)
 {
   bool found = false;
   store::Item_t castItem;
   store::Item_t node2;
 
-  AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+  AtomicItem* keyItem = static_cast<AtomicItem*>(key.getp());
 
   if (keyItem == NULL)
   {
@@ -210,21 +319,28 @@ bool GeneralHashIndex::insert(
   if (keyItem->getBaseItem() != NULL)
   {
     keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
-    (*key)[0] = keyItem;
+    key = keyItem;
   }
 
   SchemaTypeCode keyType = keyItem->getTypeCode();
 
   if (isTyped())
   {
-    return insertInMap(key, node, theSingleMap, multikey, false);
+    return insertInMap(key, node, theSingleMap, false);
   }
 
   switch (keyType)
   {
-  case XS_ANY_URI:
   case XS_QNAME:
   case XS_NOTATION:
+
+  case XS_ANY_URI:
+
+  case XS_BOOLEAN:
+
+  case XS_BASE64BINARY:
+  case XS_HEXBINARY:
+
   case XS_DATETIME:
   case XS_DATE:
   case XS_TIME:
@@ -233,18 +349,15 @@ bool GeneralHashIndex::insert(
   case XS_GMONTH_DAY:
   case XS_GDAY:
   case XS_GMONTH:
-  case XS_BASE64BINARY:
-  case XS_HEXBINARY:
-  case XS_BOOLEAN:
   {
-    return insertInMap(key, node, theMaps[keyType], multikey, false);
+    return insertInMap(key, node, theMaps[keyType], false);
   }
 
   case XS_DURATION:
   case XS_YM_DURATION:
   case XS_DT_DURATION:
   {
-    return insertInMap(key, node, theMaps[XS_DURATION], multikey, false);
+    return insertInMap(key, node, theMaps[XS_DURATION], false);
   }
 
   case XS_STRING:
@@ -258,13 +371,13 @@ bool GeneralHashIndex::insert(
   case XS_IDREF:
   case XS_ENTITY:
   {
-    return insertInMap(key, node, theMaps[XS_STRING], multikey, false);
+    return insertInMap(key, node, theMaps[XS_STRING], false);
   }
 
   case XS_DOUBLE:
   case XS_FLOAT:
   {
-    return insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
+    return insertInMap(key, node, theMaps[XS_DOUBLE], false);
   }
 
   case XS_DECIMAL:
@@ -275,27 +388,28 @@ bool GeneralHashIndex::insert(
   case XS_POSITIVE_INTEGER:
   case XS_UNSIGNED_LONG:
   {
+    // try lossless cast to xs:long
     keyItem->castToLong(castItem);
     if (castItem != NULL)
     {
       keyItem = static_cast<AtomicItem*>(castItem.getp());
-      (*key)[0].transfer(castItem);
+      key.transfer(castItem);
       goto longmap;
     }
 
+    // Coerce to xs:double 
     bool lossy;
     keyItem->coerceToDouble(castItem, true, lossy);
 
     if (lossy)
     {
       node2 = node;
-      found = insertInMap(key, node2, theMaps[XS_DECIMAL], multikey, false);
+      found = insertInMap(key, node2, theMaps[XS_DECIMAL], false);
     }
 
-    if (key == NULL) key = new store::IndexKey(1);
-    (*key)[0].transfer(castItem);
+    key.transfer(castItem);
 
-    found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
+    found = found || insertInMap(key, node, theMaps[XS_DOUBLE], false);
 
     return found;
   }
@@ -315,16 +429,15 @@ longmap:
     if (lossy)
     {
       node2 = node;
-      found = insertInMap(key, node2, theMaps[XS_LONG], multikey, false);
+      found = insertInMap(key, node2, theMaps[XS_LONG], false);
 
-      if (key == NULL) key = new store::IndexKey(1);
-      (*key)[0].transfer(castItem);
+      key.transfer(castItem);
 
-      found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
+      found = found || insertInMap(key, node, theMaps[XS_DOUBLE], false);
     }
     else
     {
-      found = insertInMap(key, node, theMaps[XS_LONG], multikey, false);
+      found = insertInMap(key, node, theMaps[XS_LONG], false);
     }
 
     return found;
@@ -335,7 +448,7 @@ longmap:
     bool found = false;
 
     store::ItemHandle<UntypedAtomicItem> untypedItem = 
-    static_cast<UntypedAtomicItem*>((*key)[0].getp());
+    static_cast<UntypedAtomicItem*>(key.getp());
 
     node2 = node;
 
@@ -378,12 +491,14 @@ longmap:
       store::ItemHandle<DecimalItem> decimalItem = 
       static_cast<DecimalItem*>(castItem.getp());
 
-      ADD_IN_MAP(XS_DOUBLE, true);
-
       bool lossy;
       decimalItem->coerceToDouble(castItem, true, lossy);
+
+      ADD_IN_MAP(XS_DOUBLE, true);
+
       if (lossy)
       {
+        castItem.transfer(decimalItem);
         ADD_IN_MAP(XS_DECIMAL, true);
       }
 
@@ -477,10 +592,9 @@ longmap:
 
 *******************************************************************************/
 bool GeneralHashIndex::insertInMap(
-    store::IndexKey*& key,
+    store::Item_t& key,
     store::Item_t& node,
     IndexMap*& targetMap,
-    bool multikey,
     bool untyped)
 {
   GeneralIndexValue* valueSet = NULL;
@@ -491,33 +605,27 @@ bool GeneralHashIndex::insertInMap(
   if (untyped)
     theUntypedFlag = true;
 
-  if (multikey)
-    theMultiKeyFlag = true;
-
   if (targetMap->get(key, valueSet))
   {
     if (isUnique())
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
-        ERROR_PARAMS( theQname->getStringValue() )
-      );
+      throw ZORBA_EXCEPTION(zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      ERROR_PARAMS(theQname->getStringValue()));
     }
     
-    valueSet->addNode(node, multikey, untyped);
+    valueSet->addNode(node, untyped);
 
     return true;
   }
 
   valueSet = new GeneralIndexValue();
-  valueSet->addNode(node, multikey, untyped);
+  valueSet->addNode(node, untyped);
   
   //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;
   
-  const store::IndexKey* key2 = key;
-  targetMap->insert(key2, valueSet);
-  key = NULL; // ownership of the key obj passes to the index.
+  targetMap->insert(key, valueSet);
+  key = NULL; // ownership of the key passes to the index.
 
   return false;
 }
@@ -527,7 +635,7 @@ bool GeneralHashIndex::insertInMap(
 
 *******************************************************************************/
 bool GeneralHashIndex::remove(
-    const store::IndexKey* key,
+    const store::Item_t& key,
     store::Item_t& item,
     bool all)
 {
@@ -538,62 +646,483 @@ bool GeneralHashIndex::remove(
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  ProbeHashGeneralIndexIterator                                              //
-//                                                                             //
-//  Iterator to probe a general, hash-based index. The probe itself may be a   //
-//  value probe or a general probe.                                            //
+//  GeneralHashIndex::KeyIterator                                              //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
 /******************************************************************************
-  Create an 
-********************************************************************************/
-ProbeGeneralHashIndexIterator::ProbeGeneralHashIndexIterator(
-    const store::Index_t& index) 
-  :
-  theIsUntypedProbe(false),
-  theResultSets(1)
+
+*******************************************************************************/
+GeneralHashIndex::KeyIterator::~KeyIterator()
 {
-  theIndex = static_cast<GeneralHashIndex*>(index.getp());
-    
-  theResultSets[0] = NULL;
 }
 
 
-#define PROBE_MAP(MAP_ID)                                                           \
-{                                                                                   \
-  altKey[0].transfer(castItem);                                                     \
-  theResultSets.push_back(NULL);                                                    \
-  theIndex->theMaps[MAP_ID]->get(&altKey, theResultSets[theResultSets.size() - 1]); \
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralHashIndex::KeyIterator::open()
+{
+  assert(false);
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralHashIndex::KeyIterator::next(store::IndexKey&)
+{
+  assert(false);
+  return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralHashIndex::KeyIterator::close()
+{
+  assert(false);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Tree General Index                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/******************************************************************************
+
+*******************************************************************************/
+const int64_t  GeneralTreeIndex::theMaxLong       =  99999999999LL;
+const int64_t  GeneralTreeIndex::theMinLong       = -99999999999LL;
+const double   GeneralTreeIndex::theDoubleMaxLong =  99999999999.0;
+const double   GeneralTreeIndex::theDoubleMinLong = -99999999999.0;
+
+
+/******************************************************************************
+
+*******************************************************************************/
+GeneralTreeIndex::GeneralTreeIndex(
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec)
+  :
+  GeneralIndex(qname, spec),
+  theSingleMap(NULL)
+{
+  assert(getNumColumns() == 1);
+
+  memset(reinterpret_cast<void*>(theMaps), 0, XS_LAST * sizeof(IndexMap*));
+
+  store::Item* typeName = spec.theKeyTypes[0].getp();
+
+  if (typeName != NULL &&
+      typeName != GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC] &&
+      typeName != GET_STORE().theSchemaTypeNames[XS_ANY_ATOMIC])
+  {
+    theSingleMap = new IndexMap(theCompFunction);
+
+    theMaps[GET_STORE().theSchemaTypeCodes[spec.theKeyTypes[0].getp()]] = theSingleMap;
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+GeneralTreeIndex::~GeneralTreeIndex()
+{
+  for (ulong i = 0; i < XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    IndexMap::iterator ite = theMaps[i]->begin();
+    IndexMap::iterator end = theMaps[i]->end();
+ 
+    for (; ite != end; ++ite)
+    {
+      //std::cout << "Index Entry Delete [" << (*ite).first << "," 
+      //          << (*ite).second << "]" << std::endl;
+      
+      //delete (*ite).first;
+      delete (*ite).second;
+    }
+
+    delete theMaps[i];
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralTreeIndex::insert(store::Item_t& key, store::Item_t& node)
+{
+  store::Item_t castItem;
+  store::Item_t node2;
+  bool lossy;
+  bool found = false;
+
+  AtomicItem* keyItem = static_cast<AtomicItem*>(key.getp());
+
+  if (keyItem == NULL)
+  {
+    csize numNodes = theEmptyKeyNodes.size();
+    theEmptyKeyNodes.resize(numNodes + 1);
+    theEmptyKeyNodes[numNodes].transfer(node);
+    return true;
+  }
+
+  if (keyItem->getBaseItem() != NULL)
+  {
+    keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+    key = keyItem;
+  }
+
+  SchemaTypeCode keyType = keyItem->getTypeCode();
+
+  if (isTyped())
+  {
+    return insertInMap(key, node, theSingleMap, false);
+  }
+
+  switch (keyType)
+  {
+  case XS_ANY_URI:
+  case XS_DATETIME:
+  case XS_DATE:
+  case XS_TIME:
+  case XS_BOOLEAN:
+  {
+    return insertInMap(key, node, theMaps[keyType], false);
+  }
+
+  case XS_DURATION:
+  case XS_YM_DURATION:
+  case XS_DT_DURATION:
+  {
+    return insertInMap(key, node, theMaps[XS_DURATION], false);
+  }
+
+  case XS_STRING:
+  case XS_NORMALIZED_STRING:
+  case XS_TOKEN:
+  case XS_NMTOKEN:
+  case XS_LANGUAGE:
+  case XS_NAME:
+  case XS_NCNAME:
+  case XS_ID:
+  case XS_IDREF:
+  case XS_ENTITY:
+  {
+    return insertInMap(key, node, theMaps[XS_STRING], false);
+  }
+
+  case XS_DOUBLE:
+  case XS_FLOAT:
+  {
+    return insertInMap(key, node, theMaps[XS_DOUBLE], false);
+  }
+
+  case XS_DECIMAL:
+  case XS_INTEGER:
+  case XS_NON_POSITIVE_INTEGER:
+  case XS_NEGATIVE_INTEGER:
+  case XS_NON_NEGATIVE_INTEGER:
+  case XS_POSITIVE_INTEGER:
+  case XS_UNSIGNED_LONG:
+  {
+    // try lossless cast to xs:long
+    keyItem->castToLong(castItem);
+    if (castItem != NULL)
+    {
+      keyItem = static_cast<AtomicItem*>(castItem.getp());
+      key.transfer(castItem);
+      goto longmap;
+    }
+
+    // Do a forced coersion to xs:double 
+    keyItem->coerceToDouble(castItem, true, lossy);
+
+    found = insertInMap(key, node, theMaps[XS_DOUBLE], false);
+
+    if (lossy)
+    {
+      node2 = node;
+      found = found || insertInMap(castItem, node2, theMaps[XS_DECIMAL], false);
+    }
+
+    return found;
+  }
+
+  case XS_LONG:
+  {
+longmap:
+    xs_long longValue = static_cast<LongItem*>(keyItem)->getLongValue();
+
+    if (longValue > theMaxLong || longValue < theMinLong)
+    {
+      node2 = node;
+      found = insertInMap(key, node2, theMaps[XS_LONG], false);
+
+      xs_double doubleValue(longValue);
+      GET_FACTORY().createDouble(castItem, doubleValue);
+
+      found = found || insertInMap(castItem, node, theMaps[XS_DOUBLE], false);
+    }
+    else
+    {
+      found = insertInMap(key, node, theMaps[XS_LONG], false);
+    }
+
+    return found;
+  }
+
+  case XS_INT:
+  case XS_SHORT:
+  case XS_BYTE:
+  case XS_UNSIGNED_INT:
+  case XS_UNSIGNED_SHORT:
+  case XS_UNSIGNED_BYTE:
+  {
+    return insertInMap(key, node, theMaps[XS_LONG], false);
+  }
+
+  case XS_UNTYPED_ATOMIC:
+  {
+    bool found = false;
+
+    store::ItemHandle<UntypedAtomicItem> untypedItem = 
+    static_cast<UntypedAtomicItem*>(key.getp());
+
+    node2 = node;
+
+    // cast to xs:string
+    untypedItem->castToString(castItem);
+    ADD_IN_MAP(XS_STRING, false);
+
+    // try casting to xs:long
+    if (untypedItem->castToLong(castItem))
+    {
+      store::ItemHandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+      xs_long longValue = longItem->getLongValue();
+
+      ADD_IN_MAP(XS_LONG, true);
+
+      if (longValue > theMaxLong || longValue < theMinLong)
+      {
+        xs_double doubleValue(longValue);
+        GET_FACTORY().createDouble(castItem, doubleValue);
+
+        ADD_IN_MAP(XS_DOUBLE, true);
+      }
+    }
+
+    // try casting to xs:decimal
+    else if (untypedItem->castToDecimal(castItem))
+    {
+      store::ItemHandle<DecimalItem> decimalItem = 
+      static_cast<DecimalItem*>(castItem.getp());
+
+      decimalItem->coerceToDouble(castItem, true, lossy);
+
+      ADD_IN_MAP(XS_DOUBLE, true);
+
+      if (lossy)
+      {
+        castItem.transfer(decimalItem);
+        ADD_IN_MAP(XS_DECIMAL, true);
+      }
+    }
+
+    // try casting to xs:double
+    else if (untypedItem->castToDouble(castItem))
+    {
+      ADD_IN_MAP(XS_DOUBLE, true);
+    }
+
+    // try casting to xs:datetime
+    else if (untypedItem->castToDateTime(castItem))
+    {
+      ADD_IN_MAP(XS_DATETIME, true);
+    }
+
+    // try casting to xs:date
+    else if (untypedItem->castToDate(castItem))
+    {
+      ADD_IN_MAP(XS_DATE, true);
+    }
+
+    // try casting to xs:time
+    else if (untypedItem->castToTime(castItem))
+    {
+      ADD_IN_MAP(XS_TIME, true);
+    }
+
+    // try casting to xs:duration
+    else if (untypedItem->castToDuration(castItem))
+    {
+      ADD_IN_MAP(XS_DURATION, true);
+    }
+
+    return found;
+  }
+
+  default:
+  {
+    RAISE_ERROR_NO_LOC(zerr::ZDTY0012_INDEX_KEY_TYPE_ERROR, 
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralTreeIndex::insertInMap(
+    store::Item_t& key,
+    store::Item_t& node,
+    IndexMap*& targetMap,
+    bool untyped)
+{
+  GeneralIndexValue* valueSet = NULL;
+
+  if (targetMap == NULL)
+    targetMap = new IndexMap(theCompFunction);
+
+  if (untyped)
+    theUntypedFlag = true;
+
+  IndexMap::iterator pos = targetMap->find(key);
+
+  if (pos != targetMap->end())
+  {
+    if (isUnique())
+    {
+      RAISE_ERROR_NO_LOC(zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
+      ERROR_PARAMS(theQname->getStringValue()));
+    }
+    
+    pos->second->addNode(node, untyped);
+
+    return true;
+  }
+
+  valueSet = new GeneralIndexValue();
+  valueSet->addNode(node, untyped);
+  
+  //std::cout << "Index Entry Insert [" << key << "," 
+  //          << valueSet << "]" << std::endl;
+  
+  targetMap->insert(IndexMapPair(key, valueSet));
+  key = NULL; // ownership of the key obj passes to the index.
+
+  return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralTreeIndex::remove(
+    const store::Item_t& key,
+    store::Item_t& item,
+    bool all)
+{
+  return true;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+ulong GeneralTreeIndex::size() const
+{
+  return 0;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+store::Index::KeyIterator_t GeneralTreeIndex::keys() const
+{
+  return 0;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  GeneralTreeIndex::KeyIterator                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/******************************************************************************
+
+*******************************************************************************/
+GeneralTreeIndex::KeyIterator::~KeyIterator()
+{
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralTreeIndex::KeyIterator::open()
+{
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralTreeIndex::KeyIterator::next(store::IndexKey&)
+{
+  return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void GeneralTreeIndex::KeyIterator::close()
+{
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  ProbeGeneralIndexIterator                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+ProbeGeneralIndexIterator::ProbeGeneralIndexIterator(const store::Index_t& idx)
+  :
+  theIndex(static_cast<GeneralIndex*>(idx.getp())),
+  theIsUntypedProbe(false)
+{
 }
 
 
 /******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond)
 {
   theProbeKind = cond->getKind();
+  theCondition = static_cast<GeneralIndexCondition*>(cond.getp());
 
-  if (theProbeKind != store::IndexCondition::POINT_VALUE &&
-      theProbeKind != store::IndexCondition::POINT_GENERAL)
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-    ERROR_PARAMS(cond->getKindString(), theIndex->getName()->getStringValue()));
-  }
+  //assert(theCondition->theIsSet);
 
-  theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
-
-  store::IndexKey* key = &(theCondition->theKey);
-
-  if (key->size() != theIndex->getNumColumns())
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
-    ERROR_PARAMS(key->toString(), theIndex->getName()->getStringValue()));
-  }
-
-  if (theProbeKind == store::IndexCondition::POINT_VALUE)
+  if (theProbeKind == store::IndexCondition::POINT_VALUE ||
+      theProbeKind == store::IndexCondition::BOX_VALUE)
   {
     if (theIndex->theMultiKeyFlag)
     {
@@ -603,85 +1132,107 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
 
     if (theIndex->theUntypedFlag)
     {
-      AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
-
-      if (keyItem->getBaseItem() != NULL)
-        keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
-      
-      SchemaTypeCode keyType = keyItem->getTypeCode();
-
-      if (keyType != XS_UNTYPED_ATOMIC &&
-          keyType != XS_ANY_URI &&
-          keyType != XS_STRING &&
-          keyType != XS_NORMALIZED_STRING &&
-          keyType != XS_TOKEN &&
-          keyType != XS_NMTOKEN &&
-          keyType != XS_LANGUAGE &&
-          keyType != XS_NAME &&
-          keyType != XS_NCNAME &&
-          keyType != XS_ID &&
-          keyType != XS_IDREF &&
-          keyType != XS_ENTITY)
-      {
-        RAISE_ERROR_NO_LOC(err::XPTY0004,
-        ERROR_PARAMS(ZED(NoUntypedKeyNodeValue_2),
-                     theIndex->getName()->getStringValue()));
-      }
+      checkStringKeyType(theCondition->theKey.getp());
+      checkStringKeyType(theCondition->theLowerBound.getp());
+      checkStringKeyType(theCondition->theUpperBound.getp());
     }
   }
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void ProbeGeneralIndexIterator::checkStringKeyType(const AtomicItem* key) const
+{
+  if (key == NULL)
+    return;
+
+  SchemaTypeCode keyType = key->getTypeCode();
+
+  if (keyType != XS_UNTYPED_ATOMIC &&
+      keyType != XS_ANY_URI &&
+      keyType != XS_STRING &&
+      keyType != XS_NORMALIZED_STRING &&
+      keyType != XS_TOKEN &&
+      keyType != XS_NMTOKEN &&
+      keyType != XS_LANGUAGE &&
+      keyType != XS_NAME &&
+      keyType != XS_NCNAME &&
+      keyType != XS_ID &&
+      keyType != XS_IDREF &&
+      keyType != XS_ENTITY)
+  {
+    RAISE_ERROR_NO_LOC(err::XPTY0004,
+    ERROR_PARAMS(ZED(NoUntypedKeyNodeValue_2), theIndex->getName()->getStringValue()));
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  ProbeHashGeneralIndexIterator                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/******************************************************************************
+
+********************************************************************************/
+ProbeGeneralHashIndexIterator::ProbeGeneralHashIndexIterator(
+    const store::Index_t& index) 
+  :
+  ProbeGeneralIndexIterator(index),
+  theResultSets(1)
+{
+  theResultSets[0] = NULL;
+}
+
+
+#define PROBE_MAP(MAP_ID)                                               \
+  {                                                                     \
+  theResultSets.push_back(NULL);                                        \
+  idx->theMaps[MAP_ID]->get(castItem, theResultSets[theResultSets.size() - 1]); \
+}
+
+
+/******************************************************************************
   
+********************************************************************************/
+void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
+{
+  ProbeGeneralIndexIterator::init(cond);
+
+  // Note: the runtime (or compiler) makes sure that the search key is a
+  // subtype of the index key type.
+  AtomicItem_t& key = theCondition->theKey;
+
   theResultSets.resize(1);
   theResultSets[0] = NULL;
 
-  if (theIndex->isTyped())
-  {
-    // Note: the runtime (or compiler) makes sure that the search key is a
-    // subtype of the index key type.
+  GeneralHashIndex* idx = static_cast<GeneralHashIndex*>(theIndex.getp());
 
-    theIndex->theSingleMap->get(key, theResultSets[0]);
+  if (idx->isTyped())
+  {
+    idx->theSingleMap->get(key, theResultSets[0]);
   }
   else
   {
     bool lossy;
     store::Item_t castItem;
-    store::IndexKey altKey(1);
-    AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
 
-    if (keyItem->getBaseItem() != NULL)
-    {
-      keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
-      (*key)[0] = keyItem;
-    }
-
-    SchemaTypeCode keyType = keyItem->getTypeCode();
+    SchemaTypeCode keyType = key->getTypeCode();
 
     switch (keyType)
     {
-    case XS_ANY_URI:
-    {
-      if (theIndex->theMaps[XS_ANY_URI])
-      {
-        theIndex->theMaps[XS_ANY_URI]->get(key, theResultSets[0]);
-      }
-
-      if (theIndex->theMaps[XS_STRING] != NULL)
-      {
-        store::Item_t castItem;
-        zstring tmp;
-        keyItem->getStringValue2(tmp);
-        GET_FACTORY().createString(castItem, tmp);
-
-        PROBE_MAP(XS_STRING);
-      }
-
-      break;
-    }
-
     case XS_QNAME:
     case XS_NOTATION:
+
     case XS_BASE64BINARY:
     case XS_HEXBINARY:
+
     case XS_BOOLEAN:
+
     case XS_DATETIME:
     case XS_DATE:
     case XS_TIME:
@@ -691,9 +1242,9 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     case XS_GDAY:
     case XS_GMONTH:
     {
-      if (theIndex->theMaps[keyType] != NULL)
+      if (idx->theMaps[keyType] != NULL)
       {
-        theIndex->theMaps[keyType]->get(key, theResultSets[0]);
+        idx->theMaps[keyType]->get(key, theResultSets[0]);
       }
 
       break;
@@ -703,9 +1254,28 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     case XS_YM_DURATION:
     case XS_DT_DURATION:
     {
-      if (theIndex->theMaps[XS_DURATION])
+      if (idx->theMaps[XS_DURATION])
       {
-        theIndex->theMaps[XS_DURATION]->get(key, theResultSets[0]);
+        idx->theMaps[XS_DURATION]->get(key, theResultSets[0]);
+      }
+
+      break;
+    }
+
+    case XS_ANY_URI:
+    {
+      if (idx->theMaps[XS_ANY_URI])
+      {
+        idx->theMaps[XS_ANY_URI]->get(key, theResultSets[0]);
+      }
+
+      if (idx->theMaps[XS_STRING] != NULL)
+      {
+        zstring tmp;
+        key->getStringValue2(tmp);
+        GET_FACTORY().createString(castItem, tmp);
+
+        PROBE_MAP(XS_STRING);
       }
 
       break;
@@ -722,16 +1292,15 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     case XS_IDREF:
     case XS_ENTITY:
     {
-      if (theIndex->theMaps[XS_STRING])
+      if (idx->theMaps[XS_STRING])
       {
-        theIndex->theMaps[XS_STRING]->get(key, theResultSets[0]);
+        idx->theMaps[XS_STRING]->get(key, theResultSets[0]);
       }
 
-      if (theIndex->theMaps[XS_ANY_URI])
+      if (idx->theMaps[XS_ANY_URI])
       {
-        store::Item_t castItem;
         zstring tmp;
-        keyItem->getStringValue2(tmp);
+        key->getStringValue2(tmp);
         GET_FACTORY().createAnyURI(castItem, tmp);
 
         PROBE_MAP(XS_ANY_URI);
@@ -743,12 +1312,12 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     case XS_DOUBLE:
     case XS_FLOAT:
     {
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
-        theIndex->theMaps[XS_DOUBLE]->get(key, theResultSets[0]);
+        idx->theMaps[XS_DOUBLE]->get(key, theResultSets[0]);
       }
 
-      if (theIndex->theMaps[XS_LONG] && keyItem->castToLong(castItem))
+      if (idx->theMaps[XS_LONG] && key->castToLong(castItem))
       {
         PROBE_MAP(XS_LONG);
       }
@@ -764,19 +1333,19 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     case XS_POSITIVE_INTEGER:
     case XS_UNSIGNED_LONG:
     {
-      keyItem->coerceToDouble(castItem, true, lossy);
+      key->coerceToDouble(castItem, true, lossy);
 
-      if (lossy && theIndex->theMaps[XS_DECIMAL])
+      if (lossy && idx->theMaps[XS_DECIMAL])
       {
-        theIndex->theMaps[XS_DECIMAL]->get(key, theResultSets[0]);
+        idx->theMaps[XS_DECIMAL]->get(key, theResultSets[0]);
       }
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
         PROBE_MAP(XS_DOUBLE);
       }
 
-      if (theIndex->theMaps[XS_LONG] && keyItem->castToLong(castItem))
+      if (idx->theMaps[XS_LONG] && key->castToLong(castItem))
       {
         PROBE_MAP(XS_LONG);
       }
@@ -792,14 +1361,14 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
     case XS_UNSIGNED_SHORT:
     case XS_UNSIGNED_BYTE:
     {
-      if (theIndex->theMaps[XS_LONG])
+      if (idx->theMaps[XS_LONG])
       {
-        theIndex->theMaps[XS_LONG]->get(key, theResultSets[0]);
+        idx->theMaps[XS_LONG]->get(key, theResultSets[0]);
       }
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
-        keyItem->coerceToDouble(castItem, true, lossy);
+        key->coerceToDouble(castItem, true, lossy);
         PROBE_MAP(XS_DOUBLE);
       }
 
@@ -811,18 +1380,17 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
       theIsUntypedProbe = true;
 
       store::ItemHandle<UntypedAtomicItem> untypedItem = 
-      static_cast<UntypedAtomicItem*>(keyItem);
+      static_cast<UntypedAtomicItem*>(key.getp());
 
       // cast to xs:string
-      if (theIndex->theMaps[XS_STRING])
+      if (idx->theMaps[XS_STRING])
       {
         untypedItem->castToString(castItem); 
         PROBE_MAP(XS_STRING);
       }
 
       // cast to xs:anyURI
-      if (theIndex->theMaps[XS_ANY_URI] &&
-          untypedItem->castToUri(castItem))
+      if (idx->theMaps[XS_ANY_URI] && untypedItem->castToUri(castItem))
       {
         PROBE_MAP(XS_ANY_URI);
       }
@@ -831,30 +1399,29 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
         return;
 
       // try casting to xs:long
-      if ((theIndex->theMaps[XS_LONG] ||
-           theIndex->theMaps[XS_DOUBLE]) &&
+      if ((idx->theMaps[XS_LONG] || idx->theMaps[XS_DOUBLE]) &&
           (untypedItem->castToLong(castItem), castItem != NULL))
       {
         store::ItemHandle<LongItem> longItem = 
         static_cast<LongItem*>(castItem.getp());
 
-        if (theIndex->theMaps[XS_LONG])
+        if (idx->theMaps[XS_LONG])
           PROBE_MAP(XS_LONG);
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
         {
           longItem->coerceToDouble(castItem, true, lossy);
           PROBE_MAP(XS_DOUBLE);
         }
 
         // may also be gYear, hexBinary, or boolean
-        if (theIndex->theMaps[XS_GYEAR])
+        if (idx->theMaps[XS_GYEAR])
         {
           untypedItem->castToGYear(castItem);
           PROBE_MAP(XS_GYEAR);
         }
 
-        if (theIndex->theMaps[XS_HEXBINARY])
+        if (idx->theMaps[XS_HEXBINARY])
         {
           untypedItem->castToHexBinary(castItem); 
           PROBE_MAP(XS_HEXBINARY);
@@ -862,9 +1429,9 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
       }
 
       // try casting to xs:decimal
-      else if ((theIndex->theMaps[XS_DECIMAL] ||
-                theIndex->theMaps[XS_LONG] ||
-                theIndex->theMaps[XS_DOUBLE]) &&
+      else if ((idx->theMaps[XS_DECIMAL] ||
+                idx->theMaps[XS_LONG] ||
+                idx->theMaps[XS_DOUBLE]) &&
                untypedItem->castToDecimal(castItem))
       {
         store::ItemHandle<DecimalItem> decimalItem = 
@@ -872,24 +1439,24 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
 
         decimalItem->coerceToDouble(castItem, true, lossy);
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
         {
           PROBE_MAP(XS_DOUBLE);
         }
 
-        if (theIndex->theMaps[XS_LONG] && decimalItem->castToLong(castItem))
+        if (idx->theMaps[XS_LONG] && decimalItem->castToLong(castItem))
         {
           PROBE_MAP(XS_LONG);
         }
 
-        if (lossy && theIndex->theMaps[XS_DECIMAL])
+        if (lossy && idx->theMaps[XS_DECIMAL])
         {
           castItem.transfer(decimalItem);
           PROBE_MAP(XS_DOUBLE);
         }
 
         // may also be hexBinary
-        if (theIndex->theMaps[XS_HEXBINARY])
+        if (idx->theMaps[XS_HEXBINARY])
         {
           untypedItem->castToHexBinary(castItem); 
           PROBE_MAP(XS_HEXBINARY);
@@ -897,86 +1464,86 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
       }
 
       // try casting to xs:double
-      else if ((theIndex->theMaps[XS_LONG] || theIndex->theMaps[XS_DOUBLE]) &&
+      else if ((idx->theMaps[XS_LONG] || idx->theMaps[XS_DOUBLE]) &&
                untypedItem->castToDouble(castItem))
       {
         store::ItemHandle<DoubleItem> doubleItem = 
         static_cast<DoubleItem*>(castItem.getp());
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
           PROBE_MAP(XS_DOUBLE);
 
-        if (theIndex->theMaps[XS_LONG] && doubleItem->castToLong(castItem))
+        if (idx->theMaps[XS_LONG] && doubleItem->castToLong(castItem))
         {
           PROBE_MAP(XS_LONG);
         }
       }
 
       // try casting to xs:datetime
-      else if (theIndex->theMaps[XS_DATETIME] &&
+      else if (idx->theMaps[XS_DATETIME] &&
                untypedItem->castToDateTime(castItem))
       {
         PROBE_MAP(XS_DATETIME);
       }
 
       // try casting to xs:date
-      else if (theIndex->theMaps[XS_DATE] &&
+      else if (idx->theMaps[XS_DATE] &&
                untypedItem->castToDate(castItem))
       {
         PROBE_MAP(XS_DATE);
       }
 
       // try casting to xs:time
-      else if (theIndex->theMaps[XS_TIME] &&
+      else if (idx->theMaps[XS_TIME] &&
                untypedItem->castToTime(castItem))
       {
         PROBE_MAP(XS_TIME);
       }
 
       // try casting to xs:gYearMonth
-      else if (theIndex->theMaps[XS_GYEAR_MONTH] &&
+      else if (idx->theMaps[XS_GYEAR_MONTH] &&
                untypedItem->castToGYearMonth(castItem))
       {
         PROBE_MAP(XS_GYEAR_MONTH);
       }
 
       // try casting to xs:gMonthDay
-      else if (theIndex->theMaps[XS_GMONTH_DAY] &&
+      else if (idx->theMaps[XS_GMONTH_DAY] &&
                untypedItem->castToGMonthDay(castItem))
       {
         PROBE_MAP(XS_GMONTH_DAY);
       }
 
       // try casting to xs:gDay
-      else if (theIndex->theMaps[XS_GDAY] &&
+      else if (idx->theMaps[XS_GDAY] &&
                untypedItem->castToGDay(castItem))
       {
         PROBE_MAP(XS_GDAY);
       }
 
       // try casting to xs:gMonth
-      else if (theIndex->theMaps[XS_GMONTH] &&
+      else if (idx->theMaps[XS_GMONTH] &&
                untypedItem->castToGMonth(castItem))
       {
         PROBE_MAP(XS_GMONTH);
       }
       
       // try casting to xs:duration
-      else if (theIndex->theMaps[XS_DURATION] &&
+      else if (idx->theMaps[XS_DURATION] &&
                untypedItem->castToDuration(castItem))
       {
         PROBE_MAP(XS_DURATION);
       }
       
       // try casting to xs:hexBinary
-      else if (theIndex->theMaps[XS_HEXBINARY] &&
+      else if (idx->theMaps[XS_HEXBINARY] &&
                untypedItem->castToHexBinary(castItem))
       {
         PROBE_MAP(XS_HEXBINARY);
       }
       
       // try casting to xs:base64Binary
-      else if (theIndex->theMaps[XS_BASE64BINARY] &&
+      else if (idx->theMaps[XS_BASE64BINARY] &&
                untypedItem->castToBase64Binary(castItem))
       {
         PROBE_MAP(XS_BASE64BINARY);
@@ -1067,439 +1634,25 @@ bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  Tree General Index                                                         //
+//  ProbeGeneralTreeIndexIterator                                              //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
-/******************************************************************************
-
-*******************************************************************************/
-GeneralTreeIndex::GeneralTreeIndex(
-    const store::Item_t& qname,
-    const store::IndexSpecification& spec)
-  :
-  GeneralIndex(qname, spec),
-  theSingleMap(NULL)
-{
-  assert(getNumColumns() == 1);
-
-  memset(reinterpret_cast<void*>(theMaps), 0, XS_LAST * sizeof(IndexMap*));
-
-  store::Item* typeName = spec.theKeyTypes[0].getp();
-
-  if (typeName != NULL &&
-      typeName != GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC] &&
-      typeName != GET_STORE().theSchemaTypeNames[XS_ANY_ATOMIC])
-  {
-    theSingleMap = new IndexMap(theCompFunction);
-
-    theMaps[GET_STORE().theSchemaTypeCodes[spec.theKeyTypes[0].getp()]] = theSingleMap;
-  }
+#define PROBE_TREE_MAP(MAP_ID)                                     \
+{                                                                  \
+  ite = idx->theMaps[MAP_ID]->find(key);                           \
+  if (ite != idx->theMaps[MAP_ID]->end())                          \
+    theResultSets[0] = ite->second;                                \
 }
 
 
-/******************************************************************************
-
-*******************************************************************************/
-GeneralTreeIndex::~GeneralTreeIndex()
-{
-  for (ulong i = 0; i < XS_LAST; ++i)
-  {
-    if (theMaps[i] == NULL)
-      continue;
-
-    IndexMap::iterator ite = theMaps[i]->begin();
-    IndexMap::iterator end = theMaps[i]->end();
- 
-    for (; ite != end; ++ite)
-    {
-      //std::cout << "Index Entry Delete [" << (*ite).first << "," 
-      //          << (*ite).second << "]" << std::endl;
-      
-      delete (*ite).first;
-      delete (*ite).second;
-    }
-
-    delete theMaps[i];
-  }
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-bool GeneralTreeIndex::insert(
-    store::IndexKey*& key,
-    store::Item_t& node,
-    bool multikey)
-{
-  bool found = false;
-  store::Item_t castItem;
-  store::Item_t node2;
-  bool lossy;
-
-  AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
-
-  if (keyItem == NULL)
-  {
-    csize numNodes = theEmptyKeyNodes.size();
-    theEmptyKeyNodes.resize(numNodes + 1);
-    theEmptyKeyNodes[numNodes].transfer(node);
-    return true;
-  }
-
-  if (keyItem->getBaseItem() != NULL)
-  {
-    keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
-    (*key)[0] = keyItem;
-  }
-
-  SchemaTypeCode keyType = keyItem->getTypeCode();
-
-  if (isTyped())
-  {
-    return insertInMap(key, node, theSingleMap, multikey, false);
-  }
-
-  switch (keyType)
-  {
-  case XS_ANY_URI:
-  case XS_DATETIME:
-  case XS_DATE:
-  case XS_TIME:
-  case XS_BOOLEAN:
-  {
-    return insertInMap(key, node, theMaps[keyType], multikey, false);
-  }
-
-  case XS_DURATION:
-  case XS_YM_DURATION:
-  case XS_DT_DURATION:
-  {
-    return insertInMap(key, node, theMaps[XS_DURATION], multikey, false);
-  }
-
-  case XS_STRING:
-  case XS_NORMALIZED_STRING:
-  case XS_TOKEN:
-  case XS_NMTOKEN:
-  case XS_LANGUAGE:
-  case XS_NAME:
-  case XS_NCNAME:
-  case XS_ID:
-  case XS_IDREF:
-  case XS_ENTITY:
-  {
-    return insertInMap(key, node, theMaps[XS_STRING], multikey, false);
-  }
-
-  case XS_DOUBLE:
-  case XS_FLOAT:
-  {
-    return insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
-  }
-
-  case XS_DECIMAL:
-  case XS_INTEGER:
-  case XS_NON_POSITIVE_INTEGER:
-  case XS_NEGATIVE_INTEGER:
-  case XS_NON_NEGATIVE_INTEGER:
-  case XS_POSITIVE_INTEGER:
-  case XS_UNSIGNED_LONG:
-  {
-    keyItem->castToLong(castItem);
-    if (castItem != NULL)
-    {
-      keyItem = static_cast<AtomicItem*>(castItem.getp());
-      (*key)[0].transfer(castItem);
-      goto longmap;
-    }
-
-    keyItem->coerceToDouble(castItem, true, lossy);
-
-    if (lossy)
-    {
-      node2 = node;
-      found = insertInMap(key, node2, theMaps[XS_DECIMAL], multikey, false);
-    }
-
-    if (key == NULL) key = new store::IndexKey(1);
-    (*key)[0].transfer(castItem);
-
-    found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
-
-    return found;
-  }
-
-  case XS_LONG:
-  {
-longmap:
-    xs_long longValue = static_cast<LongItem*>(keyItem)->getLongValue();
-
-    if (longValue > theMaxLong || longValue < theMinLong)
-    {
-      node2 = node;
-      found = insertInMap(key, node2, theMaps[XS_LONG], multikey, false);
-
-      xs_double doubleValue(longValue);
-      GET_FACTORY().createDouble(castItem, doubleValue);
-
-      if (key == NULL) key = new store::IndexKey(1);
-      (*key)[0].transfer(castItem);
-
-      found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
-    }
-    else
-    {
-      found = insertInMap(key, node, theMaps[XS_LONG], multikey, false);
-    }
-
-    return found;
-  }
-
-  case XS_INT:
-  case XS_SHORT:
-  case XS_BYTE:
-  case XS_UNSIGNED_INT:
-  case XS_UNSIGNED_SHORT:
-  case XS_UNSIGNED_BYTE:
-  {
-    return insertInMap(key, node, theMaps[XS_LONG], multikey, false);
-  }
-
-  case XS_UNTYPED_ATOMIC:
-  {
-    bool found = false;
-
-    store::ItemHandle<UntypedAtomicItem> untypedItem = 
-    static_cast<UntypedAtomicItem*>((*key)[0].getp());
-
-    node2 = node;
-
-    // cast to xs:string
-    untypedItem->castToString(castItem);
-    ADD_IN_MAP(XS_STRING, false);
-
-    // try casting to xs:long
-    if (untypedItem->castToLong(castItem))
-    {
-      ADD_IN_MAP(XS_LONG, true);
-
-      store::ItemHandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
-      xs_long longValue = longItem->getLongValue();
-
-      if (longValue > theMaxLong || longValue < theMinLong)
-      {
-        xs_double doubleValue(longValue);
-        GET_FACTORY().createDouble(castItem, doubleValue);
-
-        ADD_IN_MAP(XS_DOUBLE, true);
-      }
-    }
-
-    // try casting to xs:decimal
-    else if (untypedItem->castToDecimal(castItem))
-    {
-      store::ItemHandle<DecimalItem> decimalItem = 
-      static_cast<DecimalItem*>(castItem.getp());
-
-      ADD_IN_MAP(XS_DOUBLE, true);
-
-      decimalItem->coerceToDouble(castItem, true, lossy);
-      if (lossy)
-      {
-        ADD_IN_MAP(XS_DECIMAL, true);
-      }
-    }
-
-    // try casting to xs:double
-    else if (untypedItem->castToDouble(castItem))
-    {
-      ADD_IN_MAP(XS_DOUBLE, true);
-    }
-
-    // try casting to xs:datetime
-    else if (untypedItem->castToDateTime(castItem))
-    {
-      ADD_IN_MAP(XS_DATETIME, true);
-    }
-
-    // try casting to xs:date
-    else if (untypedItem->castToDate(castItem))
-    {
-      ADD_IN_MAP(XS_DATE, true);
-    }
-
-    // try casting to xs:time
-    else if (untypedItem->castToTime(castItem))
-    {
-      ADD_IN_MAP(XS_TIME, true);
-    }
-
-    // try casting to xs:duration
-    else if (untypedItem->castToDuration(castItem))
-    {
-      ADD_IN_MAP(XS_DURATION, true);
-    }
-
-    return found;
-  }
-
-  default:
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZDTY0012_INDEX_KEY_TYPE_ERROR, 
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-  }
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-bool GeneralTreeIndex::insertInMap(
-    store::IndexKey*& key,
-    store::Item_t& node,
-    IndexMap*& targetMap,
-    bool multikey,
-    bool untyped)
-{
-  GeneralIndexValue* valueSet = NULL;
-
-  if (targetMap == NULL)
-    targetMap = new IndexMap(theCompFunction);
-
-  if (untyped)
-    theUntypedFlag = true;
-
-  if (multikey)
-    theMultiKeyFlag = true;
-
-  IndexMap::iterator pos = targetMap->find(key);
-
-  if (pos != targetMap->end())
-  {
-    if (isUnique())
-    {
-      RAISE_ERROR_NO_LOC(zerr::ZDDY0024_INDEX_UNIQUE_VIOLATION,
-      ERROR_PARAMS(theQname->getStringValue()));
-    }
-    
-    pos->second->addNode(node, multikey, untyped);
-
-    return true;
-  }
-
-  valueSet = new GeneralIndexValue();
-  valueSet->addNode(node, multikey, untyped);
-  
-  //std::cout << "Index Entry Insert [" << key << "," 
-  //          << valueSet << "]" << std::endl;
-  
-  targetMap->insert(IndexMapPair(key, valueSet));
-  key = NULL; // ownership of the key obj passes to the index.
-
-  return false;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-bool GeneralTreeIndex::remove(
-    const store::IndexKey* key,
-    store::Item_t& item,
-    bool all)
-{
-  return true;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-ulong GeneralTreeIndex::size() const
-{
-  return 0;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-store::Index::KeyIterator_t GeneralTreeIndex::keys() const
-{
-  return 0;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  GeneralTreeIndex::KeyIterator                                              //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/******************************************************************************
-
-*******************************************************************************/
-GeneralTreeIndex::KeyIterator::~KeyIterator()
-{
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void GeneralTreeIndex::KeyIterator::open()
-{
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-bool GeneralTreeIndex::KeyIterator::next(store::IndexKey&)
-{
-  return false;
-}
-
-
-/******************************************************************************
-
-*******************************************************************************/
-void GeneralTreeIndex::KeyIterator::close()
-{
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  ProbeHashGeneralIndexIterator                                              //
-//                                                                             //
-//  Iterator to probe a general, hash-based index. The probe itself may be a   //
-//  value probe or a general probe.                                            //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-#define PROBE_TREE_MAP(MAP_ID)                                          \
-{                                                                       \
-  ite = theIndex->theMaps[MAP_ID]->find(key);                           \
-  if (ite != theIndex->theMaps[MAP_ID]->end())                          \
-    theResultSets[0] = ite->second;                                     \
-}
-
-
-#define PROBE_ALT_TREE_MAP(MAP_ID)                                      \
-{                                                                       \
-  altKey[0].transfer(castItem);                                         \
-  theResultSets.push_back(NULL);                                        \
-  ite = theIndex->theMaps[MAP_ID]->find(&altKey);                       \
-  if (ite != theIndex->theMaps[MAP_ID]->end())                          \
-    theResultSets[theResultSets.size() - 1] = ite->second;              \
+#define PROBE_ALT_TREE_MAP(MAP_ID)                                 \
+{                                                                  \
+  theResultSets.push_back(NULL);                                   \
+  ite = idx->theMaps[MAP_ID]->find(castItem);                      \
+  if (ite != idx->theMaps[MAP_ID]->end())                          \
+    theResultSets[theResultSets.size() - 1] = ite->second;         \
 }
 
 
@@ -1509,43 +1662,11 @@ void GeneralTreeIndex::KeyIterator::close()
 ProbeGeneralTreeIndexIterator::ProbeGeneralTreeIndexIterator(
     const store::Index_t& index) 
   :
-  theIsUntypedProbe(false),
+  ProbeGeneralIndexIterator(index),
   theIsFullProbe(false),
   theResultSets(1)
 {
-  theIndex = static_cast<GeneralTreeIndex*>(index.getp());
-    
   theResultSets[0] = NULL;
-}
-
-
-/******************************************************************************
-  
-********************************************************************************/
-void ProbeGeneralTreeIndexIterator::checkStringKeyType(AtomicItem* keyItem) const
-{
-  if (keyItem == NULL)
-    return;
-
-  SchemaTypeCode keyType = keyItem->getTypeCode();
-
-  if (keyType != XS_UNTYPED_ATOMIC &&
-      keyType != XS_ANY_URI &&
-      keyType != XS_STRING &&
-      keyType != XS_NORMALIZED_STRING &&
-      keyType != XS_TOKEN &&
-      keyType != XS_NMTOKEN &&
-      keyType != XS_LANGUAGE &&
-      keyType != XS_NAME &&
-      keyType != XS_NCNAME &&
-      keyType != XS_ID &&
-      keyType != XS_IDREF &&
-      keyType != XS_ENTITY)
-  {
-    RAISE_ERROR_NO_LOC(err::XPTY0004,
-    ERROR_PARAMS(ZED(NoUntypedKeyNodeValue_2),
-                 theIndex->getName()->getStringValue()));
-  }
 }
 
 
@@ -1554,31 +1675,20 @@ void ProbeGeneralTreeIndexIterator::checkStringKeyType(AtomicItem* keyItem) cons
 ********************************************************************************/
 void ProbeGeneralTreeIndexIterator::init(const store::IndexCondition_t& cond)
 {
-  theProbeKind = cond->getKind();
+  ProbeGeneralIndexIterator::init(cond);
 
-  if (cond->getKind() == store::IndexCondition::POINT_VALUE ||
-      cond->getKind() == store::IndexCondition::BOX_VALUE)
+  if (theProbeKind == store::IndexCondition::POINT_VALUE ||
+      theProbeKind == store::IndexCondition::POINT_GENERAL)
   {
-    if (theIndex->theMultiKeyFlag)
-    {
-      RAISE_ERROR_NO_LOC(err::XPTY0004,
-      ERROR_PARAMS(ZED(NoMultiKeyNodeValues_2),
-                   theIndex->getName()->getStringValue()));
-    }
+    initPoint();
   }
-
-  if (cond->getKind() == store::IndexCondition::POINT_VALUE ||
-      cond->getKind() == store::IndexCondition::POINT_GENERAL)
+  else if (theProbeKind == store::IndexCondition::BOX_VALUE)
   {
-    initPoint(cond);
-  }
-  else if (cond->getKind() == store::IndexCondition::BOX_VALUE)
-  {
-    initValueBox(cond);
+    initValueBox();
   }
   else
   {
-    initGeneralBox(cond);
+    initGeneralBox();
   }
 }
 
@@ -1586,40 +1696,28 @@ void ProbeGeneralTreeIndexIterator::init(const store::IndexCondition_t& cond)
 /******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& cond)
+void ProbeGeneralTreeIndexIterator::initPoint()
 {
-  thePointCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
-
   // Note: the runtime (or compiler) makes sure that the search tuple consists
   // of exactly one search item, which is not NULL and whose type is a subtype
   // of the index key type. Furthermore, in the case of a point-value probe,
   // the type of the search item cannot be untyped, because untyped search keys
   // either don't match the index key type, or are cast to xs:string. 
 
-  store::IndexKey* key = &(thePointCondition->theKey);
+  GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(theIndex.getp());
 
-  if (key->size() != theIndex->getNumColumns())
-  {
-    ZORBA_ASSERT(false);
-  }
-
-  if (theProbeKind == store::IndexCondition::POINT_VALUE &&
-      theIndex->theUntypedFlag)
-  {
-    AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
-    checkStringKeyType(keyItem);
-  }
+  AtomicItem_t& key = theCondition->theKey;
 
   theResultSets.resize(1);
   theResultSets[0] = NULL;
 
   EntryIterator ite;
 
-  if (theIndex->isTyped())
+  if (idx->isTyped())
   {
-    ite = theIndex->theSingleMap->find(key);
+    ite = idx->theSingleMap->find(key);
 
-    if (ite != theIndex->theSingleMap->end())
+    if (ite != idx->theSingleMap->end())
       theResultSets[0] = ite->second;
   }
   else
@@ -1628,24 +1726,17 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     store::Item_t castItem;
     store::IndexKey altKey(1);
 
-    AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
-
-    if (keyItem->getBaseItem() != NULL)
-    {
-      keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
-      (*key)[0] = keyItem;
-    }
-
-    SchemaTypeCode keyType = keyItem->getTypeCode();
+    SchemaTypeCode keyType = key->getTypeCode();
 
     switch (keyType)
     {
     case XS_BOOLEAN:
+
     case XS_DATETIME:
     case XS_DATE:
     case XS_TIME:
     {
-      if (theIndex->theMaps[keyType] != NULL)
+      if (idx->theMaps[keyType] != NULL)
         PROBE_TREE_MAP(keyType);
 
       break;
@@ -1655,7 +1746,7 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     case XS_YM_DURATION:
     case XS_DT_DURATION:
     {
-      if (theIndex->theMaps[XS_DURATION])
+      if (idx->theMaps[XS_DURATION])
         PROBE_TREE_MAP(XS_DURATION);
 
       break;
@@ -1663,13 +1754,13 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
     case XS_ANY_URI:
     {
-      if (theIndex->theMaps[XS_ANY_URI])
+      if (idx->theMaps[XS_ANY_URI])
         PROBE_TREE_MAP(XS_ANY_URI);
 
-      if (theIndex->theMaps[XS_STRING] != NULL)
+      if (idx->theMaps[XS_STRING] != NULL)
       {
         zstring tmp;
-        keyItem->getStringValue2(tmp);
+        key->getStringValue2(tmp);
         GET_FACTORY().createString(castItem, tmp);
 
         PROBE_ALT_TREE_MAP(XS_STRING);
@@ -1689,13 +1780,13 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     case XS_IDREF:
     case XS_ENTITY:
     {
-      if (theIndex->theMaps[XS_STRING])
+      if (idx->theMaps[XS_STRING])
         PROBE_TREE_MAP(XS_STRING);
 
-      if (theIndex->theMaps[XS_ANY_URI])
+      if (idx->theMaps[XS_ANY_URI])
       {
         zstring tmp;
-        keyItem->getStringValue2(tmp);
+        key->getStringValue2(tmp);
         GET_FACTORY().createAnyURI(castItem, tmp);
 
         PROBE_ALT_TREE_MAP(XS_ANY_URI);
@@ -1707,10 +1798,10 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     case XS_DOUBLE:
     case XS_FLOAT:
     {
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
         PROBE_TREE_MAP(XS_DOUBLE);
 
-      if (theIndex->theMaps[XS_LONG] && keyItem->castToLong(castItem))
+      if (idx->theMaps[XS_LONG] && key->castToLong(castItem))
         PROBE_ALT_TREE_MAP(XS_LONG);
 
       break;
@@ -1724,15 +1815,15 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     case XS_POSITIVE_INTEGER:
     case XS_UNSIGNED_LONG:
     {
-      keyItem->coerceToDouble(castItem, true, lossy);
+      key->coerceToDouble(castItem, true, lossy);
 
-      if (lossy && theIndex->theMaps[XS_DECIMAL])
+      if (lossy && idx->theMaps[XS_DECIMAL])
         PROBE_TREE_MAP(XS_DECIMAL);
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
         PROBE_ALT_TREE_MAP(XS_DOUBLE);
 
-      if (theIndex->theMaps[XS_LONG] && keyItem->castToLong(castItem))
+      if (idx->theMaps[XS_LONG] && key->castToLong(castItem))
         PROBE_ALT_TREE_MAP(XS_LONG);
 
       break;
@@ -1746,12 +1837,12 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     case XS_UNSIGNED_SHORT:
     case XS_UNSIGNED_BYTE:
     {
-      if (theIndex->theMaps[XS_LONG])
+      if (idx->theMaps[XS_LONG])
         PROBE_TREE_MAP(XS_LONG);
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
-        keyItem->coerceToDouble(castItem, true, lossy);
+        key->coerceToDouble(castItem, true, lossy);
         PROBE_ALT_TREE_MAP(XS_DOUBLE);
       }
 
@@ -1765,34 +1856,34 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
       theIsUntypedProbe = true;
 
       store::ItemHandle<UntypedAtomicItem> untypedItem = 
-      static_cast<UntypedAtomicItem*>(keyItem);
+      static_cast<UntypedAtomicItem*>(key.getp());
 
       // cast to xs:string
-      if (theIndex->theMaps[XS_STRING])
+      if (idx->theMaps[XS_STRING])
       {
         untypedItem->castToString(castItem); 
         PROBE_ALT_TREE_MAP(XS_STRING);
       }
 
       // cast to xs:anyURI
-      if (theIndex->theMaps[XS_ANY_URI] && untypedItem->castToUri(castItem))
+      if (idx->theMaps[XS_ANY_URI] && untypedItem->castToUri(castItem))
         PROBE_ALT_TREE_MAP(XS_ANY_URI);
 
       if (theProbeKind == store::IndexCondition::POINT_VALUE)
         return;
 
       // try casting to xs:long
-      if ((theIndex->theMaps[XS_LONG] ||
-           theIndex->theMaps[XS_DOUBLE]) &&
+      if ((idx->theMaps[XS_LONG] ||
+           idx->theMaps[XS_DOUBLE]) &&
           (untypedItem->castToLong(castItem), castItem != NULL))
       {
         store::ItemHandle<LongItem> longItem = 
         static_cast<LongItem*>(castItem.getp());
 
-        if (theIndex->theMaps[XS_LONG])
+        if (idx->theMaps[XS_LONG])
           PROBE_ALT_TREE_MAP(XS_LONG);
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
         {
           longItem->coerceToDouble(castItem, true, lossy);
           PROBE_ALT_TREE_MAP(XS_DOUBLE);
@@ -1800,9 +1891,9 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
       }
 
       // try casting to xs:decimal
-      else if ((theIndex->theMaps[XS_DECIMAL] ||
-                theIndex->theMaps[XS_LONG] ||
-                theIndex->theMaps[XS_DOUBLE]) &&
+      else if ((idx->theMaps[XS_DECIMAL] ||
+                idx->theMaps[XS_LONG] ||
+                idx->theMaps[XS_DOUBLE]) &&
                untypedItem->castToDecimal(castItem))
       {
         store::ItemHandle<DecimalItem> decimalItem = 
@@ -1810,13 +1901,13 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
         decimalItem->coerceToDouble(castItem, true, lossy);
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
           PROBE_ALT_TREE_MAP(XS_DOUBLE);
 
-        if (theIndex->theMaps[XS_LONG] && decimalItem->castToLong(castItem))
+        if (idx->theMaps[XS_LONG] && decimalItem->castToLong(castItem))
           PROBE_ALT_TREE_MAP(XS_LONG);
 
-        if (lossy && theIndex->theMaps[XS_DECIMAL])
+        if (lossy && idx->theMaps[XS_DECIMAL])
         {
           castItem.transfer(decimalItem);
           PROBE_ALT_TREE_MAP(XS_DOUBLE);
@@ -1824,39 +1915,39 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
       }
 
       // try casting to xs:double
-      else if ((theIndex->theMaps[XS_LONG] || theIndex->theMaps[XS_DOUBLE]) &&
+      else if ((idx->theMaps[XS_LONG] || idx->theMaps[XS_DOUBLE]) &&
                untypedItem->castToDouble(castItem))
       {
         store::ItemHandle<DoubleItem> doubleItem = 
         static_cast<DoubleItem*>(castItem.getp());
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
           PROBE_ALT_TREE_MAP(XS_DOUBLE);
 
-        if (theIndex->theMaps[XS_LONG] && doubleItem->castToLong(castItem))
+        if (idx->theMaps[XS_LONG] && doubleItem->castToLong(castItem))
           PROBE_ALT_TREE_MAP(XS_LONG);
       }
 
       // try casting to xs:datetime
-      else if (theIndex->theMaps[XS_DATETIME] && untypedItem->castToDateTime(castItem))
+      else if (idx->theMaps[XS_DATETIME] && untypedItem->castToDateTime(castItem))
       {
         PROBE_ALT_TREE_MAP(XS_DATETIME);
       }
 
       // try casting to xs:date
-      else if (theIndex->theMaps[XS_DATE] && untypedItem->castToDate(castItem))
+      else if (idx->theMaps[XS_DATE] && untypedItem->castToDate(castItem))
       {
         PROBE_ALT_TREE_MAP(XS_DATE);
       }
 
       // try casting to xs:time
-      else if (theIndex->theMaps[XS_TIME] && untypedItem->castToTime(castItem))
+      else if (idx->theMaps[XS_TIME] && untypedItem->castToTime(castItem))
       {
         PROBE_ALT_TREE_MAP(XS_TIME);
       }
 
       // try casting to xs:duration
-      else if (theIndex->theMaps[XS_DURATION] && untypedItem->castToDuration(castItem))
+      else if (idx->theMaps[XS_DURATION] && untypedItem->castToDuration(castItem))
       {
         PROBE_ALT_TREE_MAP(XS_DURATION);
       }
@@ -1876,54 +1967,35 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 /******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralTreeIndexIterator::initValueBox(
-    const store::IndexCondition_t& cond)
+void ProbeGeneralTreeIndexIterator::initValueBox()
 {
-  theBoxValueCondition = static_cast<IndexBoxValueCondition*>(cond.getp());
+  GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(theIndex.getp());
 
-  ulong numRanges = theBoxValueCondition->numRanges();
+  bool haveLower = theCondition->theRangeFlags.theHaveLowerBound;
+  bool haveUpper = theCondition->theRangeFlags.theHaveUpperBound;
 
-  if (numRanges > theIndex->getNumColumns())
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0006_INDEX_INVALID_BOX_PROBE,
-    ERROR_PARAMS(theIndex->getName()->getStringValue(), ZED(BoxCondTooManyColumns)));
-  }
+  AtomicItem_t& lowerKey = theCondition->theLowerBound;
+  AtomicItem_t& upperKey = theCondition->theUpperBound;
+  store::Item_t lowerAltKey;
+  store::Item_t upperAltKey;
 
-  if (numRanges == 0)
-  {
-    ZORBA_ASSERT(false);
-  }
-
-  store::IndexKey* lowerKey = &theBoxValueCondition->theLowerBounds;
-  store::IndexKey* upperKey = &theBoxValueCondition->theUpperBounds;
-
-  AtomicItem* lowerKeyItem = static_cast<AtomicItem*>((*lowerKey)[0].getp());
-  AtomicItem* upperKeyItem = static_cast<AtomicItem*>((*upperKey)[0].getp());
-
-  bool haveLower = theBoxValueCondition->theRangeFlags[0].theHaveLowerBound;
-  bool haveUpper = theBoxValueCondition->theRangeFlags[0].theHaveUpperBound;
-
-  if (theIndex->theUntypedFlag)
-  {
-    checkStringKeyType(lowerKeyItem);
-    checkStringKeyType(upperKeyItem);
-  }
+  zstring tmp;
 
   theMapBegins.clear();
   theMapEnds.clear();
 
-  if (theIndex->isTyped())
+  if (idx->isTyped())
   {
     // Note: the runtime (or compiler) makes sure that each search key is a
     // subtype of the index key type.
-    probeMap(theIndex->theSingleMap, lowerKey, upperKey);
+    probeMap(idx->theSingleMap, lowerKey, upperKey);
   }
   else if (haveLower || haveUpper)
   {
     store::Item_t castItem;
 
-    SchemaTypeCode lowerKeyType = (haveLower ? lowerKeyItem->getTypeCode() : XS_LAST);
-    SchemaTypeCode upperKeyType = (haveUpper ? upperKeyItem->getTypeCode() : XS_LAST);
+    SchemaTypeCode lowerKeyType = (haveLower ? lowerKey->getTypeCode() : XS_LAST);
+    SchemaTypeCode upperKeyType = (haveUpper ? upperKey->getTypeCode() : XS_LAST);
 
     SchemaTypeCode keyType = (lowerKeyType < upperKeyType ?
                               lowerKeyType :
@@ -1936,7 +2008,7 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     case XS_DATE:
     case XS_TIME:
     {
-      probeMap(theIndex->theMaps[keyType], lowerKey, upperKey);
+      probeMap(idx->theMaps[keyType], lowerKey, upperKey);
       break;
     }
 
@@ -1944,35 +2016,29 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     case XS_YM_DURATION:
     case XS_DT_DURATION:
     {
-      probeMap(theIndex->theMaps[XS_DURATION], lowerKey, upperKey);
+      probeMap(idx->theMaps[XS_DURATION], lowerKey, upperKey);
       break;
     }
 
     case XS_ANY_URI:
     {
-      probeMap(theIndex->theMaps[XS_ANY_URI], lowerKey, upperKey);
+      probeMap(idx->theMaps[XS_ANY_URI], lowerKey, upperKey);
 
-      if (theIndex->theMaps[XS_STRING])
+      if (idx->theMaps[XS_STRING])
       {
-        zstring tmp;
-        store::IndexKey lowerAltKey(1);
-        store::IndexKey upperAltKey(1);
-
         if (haveLower)
         {
-          lowerKeyItem->getStringValue2(tmp);
-          GET_FACTORY().createString(castItem, tmp);
-          lowerAltKey[0].transfer(castItem);
+          lowerKey->getStringValue2(tmp);
+          GET_FACTORY().createString(lowerAltKey, tmp);
         }
 
         if (haveUpper)
         {
-          upperKeyItem->getStringValue2(tmp);
-          GET_FACTORY().createString(castItem, tmp);
-          upperAltKey[0].transfer(castItem);
+          upperKey->getStringValue2(tmp);
+          GET_FACTORY().createString(upperAltKey, tmp);
         }
         
-        probeMap(theIndex->theMaps[XS_STRING], &lowerAltKey, &upperAltKey);
+        probeMap(idx->theMaps[XS_STRING], lowerAltKey, upperAltKey);
       }
 
       break;
@@ -1989,29 +2055,23 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     case XS_IDREF:
     case XS_ENTITY:
     {
-      probeMap(theIndex->theMaps[XS_STRING], lowerKey, upperKey);
+      probeMap(idx->theMaps[XS_STRING], lowerKey, upperKey);
 
-      if (theIndex->theMaps[XS_ANY_URI])
+      if (idx->theMaps[XS_ANY_URI])
       {
-        zstring tmp;
-        store::IndexKey lowerAltKey(1);
-        store::IndexKey upperAltKey(1);
-
         if (haveLower)
         {
-          lowerKeyItem->getStringValue2(tmp);
-          GET_FACTORY().createAnyURI(castItem, tmp);
-          lowerAltKey[0].transfer(castItem);
+          lowerKey->getStringValue2(tmp);
+          GET_FACTORY().createAnyURI(lowerAltKey, tmp);
         }
 
         if (haveUpper)
         {
-          upperKeyItem->getStringValue2(tmp);
-          GET_FACTORY().createAnyURI(castItem, tmp);
-          upperAltKey[0].transfer(castItem);
+          upperKey->getStringValue2(tmp);
+          GET_FACTORY().createAnyURI(upperAltKey, tmp);
         }
 
-        probeMap(theIndex->theMaps[XS_ANY_URI], &lowerAltKey, &upperAltKey);
+        probeMap(idx->theMaps[XS_ANY_URI], lowerAltKey, upperAltKey);
       }
 
       break;
@@ -2020,28 +2080,25 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     case XS_DOUBLE:
     case XS_FLOAT:
     {
-      probeMap(theIndex->theMaps[XS_DOUBLE], lowerKey, upperKey);
+      probeMap(idx->theMaps[XS_DOUBLE], lowerKey, upperKey);
 
-      if (theIndex->theMaps[XS_LONG])
+      if (idx->theMaps[XS_LONG])
       {
-        store::IndexKey lowerAltKey(1);
-        store::IndexKey upperAltKey(1);
-
         if (haveLower)
-        {
-          doubleToLongProbe(castItem, lowerKeyItem, false, haveUpper);
-          if (castItem)
-            lowerAltKey[0].transfer(castItem);
-        }
+          doubleToLongProbe(lowerAltKey, lowerKey, true, false);
 
         if (haveUpper)
-        {
-          doubleToLongProbe(castItem, upperKeyItem, false, haveUpper);
-          if (castItem)
-            upperAltKey[0].transfer(castItem);
-        }
+          doubleToLongProbe(upperAltKey, upperKey, false, true);
 
-        probeMap(theIndex->theMaps[XS_ANY_URI], &lowerAltKey, &upperAltKey);
+        if (haveLower && haveUpper)
+        {
+          if (lowerAltKey && upperAltKey)
+            probeMap(idx->theMaps[XS_ANY_URI], lowerAltKey, upperAltKey);    
+        }
+        else if ((haveLower && lowerAltKey) || (haveUpper && upperAltKey))
+        {
+          probeMap(idx->theMaps[XS_ANY_URI], lowerAltKey, upperAltKey);
+        }
       }
 
       break;
@@ -2055,42 +2112,28 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     case XS_POSITIVE_INTEGER:
     case XS_UNSIGNED_LONG:
     {
-      probeMap(theIndex->theMaps[XS_DECIMAL], lowerKey, upperKey);
+      probeMap(idx->theMaps[XS_DECIMAL], lowerKey, upperKey);
 
-      if (theIndex->theMaps[XS_LONG])
+      if (idx->theMaps[XS_LONG])
       {
-        store::IndexKey lowerAltKey(1);
-        store::IndexKey upperAltKey(1);
-
-        if (haveLower)
-          lowerAltKey[0] = lowerKeyItem;
-
-        if (haveUpper)
-          upperAltKey[0] = upperKeyItem;
-
-        probeMap(theIndex->theMaps[XS_LONG], &lowerAltKey, &upperAltKey);
+        probeMap(idx->theMaps[XS_LONG], lowerKey, upperKey);
       }
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
-        store::IndexKey lowerAltKey(1);
-        store::IndexKey upperAltKey(1);
-
         if (haveLower)
         {
-          xs_double doubleValue = lowerKeyItem->getDecimalValue();
-          GET_FACTORY().createDouble(castItem, doubleValue);
-          lowerAltKey[0].transfer(castItem);
+          xs_double doubleValue = lowerKey->getDecimalValue();
+          GET_FACTORY().createDouble(lowerAltKey, doubleValue);
         }
 
         if (haveUpper)
         {
-          xs_double doubleValue = upperKeyItem->getDecimalValue();
-          GET_FACTORY().createDouble(castItem, doubleValue);
-          upperAltKey[0].transfer(castItem);
+          xs_double doubleValue = upperKey->getDecimalValue();
+          GET_FACTORY().createDouble(upperAltKey, doubleValue);
         }
 
-        probeMap(theIndex->theMaps[XS_DOUBLE], &lowerAltKey, &upperAltKey);
+        probeMap(idx->theMaps[XS_DOUBLE], lowerAltKey, upperAltKey);
       }
 
       break;
@@ -2104,50 +2147,40 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
     case XS_UNSIGNED_SHORT:
     case XS_UNSIGNED_BYTE:
     {
-      probeMap(theIndex->theMaps[XS_LONG], lowerKey, upperKey);
+      probeMap(idx->theMaps[XS_LONG], lowerKey, upperKey);
 
-      if (theIndex->theMaps[XS_DECIMAL])
+      if (idx->theMaps[XS_DECIMAL])
       {
-        store::IndexKey lowerAltKey(1);
-        store::IndexKey upperAltKey(1);
-
         if (haveLower)
         {
-          xs_decimal decimalValue = lowerKeyItem->getLongValue();
-          GET_FACTORY().createDecimal(castItem, decimalValue);
-          lowerAltKey[0].transfer(castItem);
+          xs_decimal decimalValue = lowerKey->getLongValue();
+          GET_FACTORY().createDecimal(lowerAltKey, decimalValue);
         }
 
         if (haveUpper)
         {
-          xs_decimal decimalValue = upperKeyItem->getLongValue();
-          GET_FACTORY().createDecimal(castItem, decimalValue);
-          upperAltKey[0].transfer(castItem);
+          xs_decimal decimalValue = upperKey->getLongValue();
+          GET_FACTORY().createDecimal(upperAltKey, decimalValue);
         }
 
-        probeMap(theIndex->theMaps[XS_DECIMAL], &lowerAltKey, &upperAltKey);
+        probeMap(idx->theMaps[XS_DECIMAL], lowerAltKey, upperAltKey);
       }
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
-        store::IndexKey lowerAltKey(1);
-        store::IndexKey upperAltKey(1);
-
         if (haveLower)
         {
-          xs_double doubleValue = lowerKeyItem->getLongValue();
-          GET_FACTORY().createDouble(castItem, doubleValue);
-          lowerAltKey[0].transfer(castItem);
+          xs_double doubleValue = lowerKey->getLongValue();
+          GET_FACTORY().createDouble(lowerAltKey, doubleValue);
         }
 
         if (haveUpper)
         {
-          xs_double doubleValue = upperKeyItem->getLongValue();
-          GET_FACTORY().createDouble(castItem, doubleValue);
-          upperAltKey[0].transfer(castItem);
+          xs_double doubleValue = upperKey->getLongValue();
+          GET_FACTORY().createDouble(upperAltKey, doubleValue);
         }
 
-        probeMap(theIndex->theMaps[XS_DOUBLE], &upperAltKey, &lowerAltKey);
+        probeMap(idx->theMaps[XS_DOUBLE], lowerAltKey, upperAltKey);
       }
 
       break;
@@ -2163,11 +2196,11 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
 
     for (ulong i = 0; i < XS_LAST; ++i)
     {
-      if (theIndex->theMaps[i] == NULL)
+      if (idx->theMaps[i] == NULL)
         continue;
 
-      theMapBegins.push_back(theIndex->theMaps[i]->begin());
-      theMapEnds.push_back(theIndex->theMaps[i]->end());
+      theMapBegins.push_back(idx->theMaps[i]->begin());
+      theMapEnds.push_back(idx->theMaps[i]->end());
     }
   }
 }
@@ -2176,41 +2209,34 @@ void ProbeGeneralTreeIndexIterator::initValueBox(
 /******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralTreeIndexIterator::initGeneralBox(
-    const store::IndexCondition_t& cond)
+void ProbeGeneralTreeIndexIterator::initGeneralBox()
 {
-  theBoxGeneralCondition = reinterpret_cast<IndexBoxGeneralCondition*>(cond.getp());
+  GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(theIndex.getp());
 
-  store::IndexKey* key = &theBoxGeneralCondition->theBound;
+  bool haveLower = theCondition->theRangeFlags.theHaveLowerBound;
+  bool haveUpper = theCondition->theRangeFlags.theHaveUpperBound;
 
-  bool haveLower = theBoxGeneralCondition->theRangeFlags.theHaveLowerBound;
-  bool haveUpper = theBoxGeneralCondition->theRangeFlags.theHaveUpperBound;
+  assert(!(haveLower && haveUpper));
+
+  AtomicItem_t& key = (haveLower ?
+                       theCondition->theLowerBound :
+                       theCondition->theUpperBound);
+  store::Item_t altKey;
+
+  zstring tmp;
 
   theMapBegins.clear();
   theMapEnds.clear();
-  
-  assert(!(haveLower && haveUpper));
 
-  if (theIndex->isTyped())
+  if (idx->isTyped())
   {
     // Note: the runtime (or compiler) makes sure that the search key is a
     // subtype of the index key type.
-    probeMap(theIndex->theSingleMap, key, key);
+    probeMap(idx->theSingleMap, key, key);
   }
   else if (haveLower || haveUpper)
   {
-    store::Item_t castItem;
-    store::IndexKey altKey(1);
-
-    AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
-
-    if (keyItem->getBaseItem() != NULL)
-    {
-      keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
-      (*key)[0] = keyItem;
-    }
-
-    SchemaTypeCode keyType = keyItem->getTypeCode();
+    SchemaTypeCode keyType = key->getTypeCode();
 
     switch (keyType)
     {
@@ -2219,7 +2245,7 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
     case XS_DATE:
     case XS_TIME:
     {
-      probeMap(theIndex->theMaps[keyType], key, key);
+      probeMap(idx->theMaps[keyType], key, key);
       break;
     }
 
@@ -2227,23 +2253,20 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
     case XS_YM_DURATION:
     case XS_DT_DURATION:
     {
-      probeMap(theIndex->theMaps[XS_DURATION], key, key);
+      probeMap(idx->theMaps[XS_DURATION], key, key);
       break;
     }
 
     case XS_ANY_URI:
     {
-      probeMap(theIndex->theMaps[XS_ANY_URI], key, key);
+      probeMap(idx->theMaps[XS_ANY_URI], key, key);
 
-      if (theIndex->theMaps[XS_STRING])
+      if (idx->theMaps[XS_STRING])
       {
-        zstring tmp;
-        keyItem->getStringValue2(tmp);
-        GET_FACTORY().createString(castItem, tmp);
+        key->getStringValue2(tmp);
+        GET_FACTORY().createString(altKey, tmp);
 
-        altKey[0].transfer(castItem);
-        
-        probeMap(theIndex->theMaps[XS_STRING], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_STRING], altKey, altKey);
       }
 
       break;
@@ -2260,17 +2283,14 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
     case XS_IDREF:
     case XS_ENTITY:
     {
-      probeMap(theIndex->theMaps[XS_STRING], key, key);
+      probeMap(idx->theMaps[XS_STRING], key, key);
 
-      if (theIndex->theMaps[XS_ANY_URI])
+      if (idx->theMaps[XS_ANY_URI])
       {
-        zstring tmp;
-        keyItem->getStringValue2(tmp);
-        GET_FACTORY().createAnyURI(castItem, tmp);
+        key->getStringValue2(tmp);
+        GET_FACTORY().createAnyURI(altKey, tmp);
 
-        altKey[0].transfer(castItem);
-        
-        probeMap(theIndex->theMaps[XS_ANY_URI], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_ANY_URI], altKey, altKey);
       }
 
       break;
@@ -2279,17 +2299,14 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
     case XS_DOUBLE:
     case XS_FLOAT:
     {
-      probeMap(theIndex->theMaps[XS_DOUBLE], key, key);
+      probeMap(idx->theMaps[XS_DOUBLE], key, key);
 
-      if (theIndex->theMaps[XS_LONG])
+      if (idx->theMaps[XS_LONG])
       {
-        doubleToLongProbe(castItem, keyItem, haveLower, haveUpper);
+        doubleToLongProbe(altKey, key, haveLower, haveUpper);
 
-        if (castItem)
-        {
-          altKey[0].transfer(castItem);
-          probeMap(theIndex->theMaps[XS_LONG], &altKey, &altKey);
-        }
+        if (altKey)
+          probeMap(idx->theMaps[XS_LONG], altKey, altKey);
       }
 
       break;
@@ -2303,20 +2320,19 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
     case XS_POSITIVE_INTEGER:
     case XS_UNSIGNED_LONG:
     {
-      probeMap(theIndex->theMaps[XS_DECIMAL], key, key);
+      probeMap(idx->theMaps[XS_DECIMAL], key, key);
 
-      if (theIndex->theMaps[XS_LONG])
+      if (idx->theMaps[XS_LONG])
       {
-        altKey[0] = keyItem;
-        probeMap(theIndex->theMaps[XS_LONG], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_LONG], key, key);
       }
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
-        xs_double doubleValue = keyItem->getDecimalValue();
-        GET_FACTORY().createDouble(castItem, doubleValue);
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_DOUBLE], &altKey, &altKey);
+        xs_double doubleValue = key->getDecimalValue();
+        GET_FACTORY().createDouble(altKey, doubleValue);
+
+        probeMap(idx->theMaps[XS_DOUBLE], altKey, altKey);
       }
 
       break;
@@ -2330,22 +2346,22 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
     case XS_UNSIGNED_SHORT:
     case XS_UNSIGNED_BYTE:
     {
-      probeMap(theIndex->theMaps[XS_LONG], key, key);
+      probeMap(idx->theMaps[XS_LONG], key, key);
 
-      if (theIndex->theMaps[XS_DECIMAL])
+      if (idx->theMaps[XS_DECIMAL])
       {
-        xs_decimal decimalValue = keyItem->getLongValue();
-        GET_FACTORY().createDecimal(castItem, decimalValue);
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_DECIMAL], &altKey, &altKey);
+        xs_decimal decimalValue = key->getLongValue();
+        GET_FACTORY().createDecimal(altKey, decimalValue);
+
+        probeMap(idx->theMaps[XS_DECIMAL], altKey, altKey);
       }
 
-      if (theIndex->theMaps[XS_DOUBLE])
+      if (idx->theMaps[XS_DOUBLE])
       {
-        xs_double doubleValue = keyItem->getLongValue();
-        GET_FACTORY().createDouble(castItem, doubleValue);
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_DOUBLE], &altKey, &altKey);
+        xs_double doubleValue = key->getLongValue();
+        GET_FACTORY().createDouble(altKey, doubleValue);
+
+        probeMap(idx->theMaps[XS_DOUBLE], altKey, altKey);
       }
 
       break;
@@ -2356,137 +2372,123 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
       theIsUntypedProbe = true;
 
       store::ItemHandle<UntypedAtomicItem> untypedItem = 
-      static_cast<UntypedAtomicItem*>(keyItem);
+      static_cast<UntypedAtomicItem*>(key.getp());
 
       // cast to xs:string
-      if (theIndex->theMaps[XS_STRING])
+      if (idx->theMaps[XS_STRING])
       {
-        untypedItem->castToString(castItem);
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_STRING], &altKey, &altKey);
+        untypedItem->castToString(altKey);
+        probeMap(idx->theMaps[XS_STRING], altKey, altKey);
       }
 
       // cast to xs:anyURI
-      if (theIndex->theMaps[XS_ANY_URI] && untypedItem->castToUri(castItem))
+      if (idx->theMaps[XS_ANY_URI] && untypedItem->castToUri(altKey))
       {
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_ANY_URI], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_ANY_URI], altKey, altKey);
       }
 
       // try casting to xs:long
-      if ((theIndex->theMaps[XS_LONG] ||
-           theIndex->theMaps[XS_DOUBLE] ||
-           theIndex->theMaps[XS_DECIMAL]) &&
-          untypedItem->castToLong(castItem), castItem != NULL)
+      if ((idx->theMaps[XS_LONG] ||
+           idx->theMaps[XS_DOUBLE] ||
+           idx->theMaps[XS_DECIMAL]) &&
+          untypedItem->castToLong(altKey), altKey != NULL)
       {
         store::ItemHandle<LongItem> longItem = 
-        static_cast<LongItem*>(castItem.getp());
+        static_cast<LongItem*>(altKey.getp());
 
-        if (theIndex->theMaps[XS_LONG])
+        if (idx->theMaps[XS_LONG])
         {
-          altKey[0].transfer(castItem);
-          probeMap(theIndex->theMaps[XS_LONG], &altKey, &altKey);
+          probeMap(idx->theMaps[XS_LONG], altKey, altKey);
         }
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
         {
           xs_double doubleValue = longItem->getLongValue();
-          GET_FACTORY().createDouble(castItem, doubleValue);
-          altKey[0].transfer(castItem);
-          probeMap(theIndex->theMaps[XS_DOUBLE], &altKey, &altKey);
+          GET_FACTORY().createDouble(altKey, doubleValue);
+          probeMap(idx->theMaps[XS_DOUBLE], altKey, altKey);
         }
 
-        if (theIndex->theMaps[XS_DECIMAL])
+        if (idx->theMaps[XS_DECIMAL])
         {
           xs_decimal decimalValue = longItem->getLongValue();
-          GET_FACTORY().createDecimal(castItem, decimalValue);
-          altKey[0].transfer(castItem);
-          probeMap(theIndex->theMaps[XS_DECIMAL], &altKey, &altKey);
+          GET_FACTORY().createDecimal(altKey, decimalValue);
+          probeMap(idx->theMaps[XS_DECIMAL], altKey, altKey);
         }
       }
 
       // try casting to xs:decimal
-      else if ((theIndex->theMaps[XS_LONG] ||
-                theIndex->theMaps[XS_DOUBLE] ||
-                theIndex->theMaps[XS_DECIMAL]) &&
-               untypedItem->castToDecimal(castItem), castItem != NULL)
+      else if ((idx->theMaps[XS_LONG] ||
+                idx->theMaps[XS_DOUBLE] ||
+                idx->theMaps[XS_DECIMAL]) &&
+               untypedItem->castToDecimal(altKey), altKey != NULL)
       {
         store::ItemHandle<DecimalItem> decimalItem = 
-        static_cast<DecimalItem*>(castItem.getp());
+        static_cast<DecimalItem*>(altKey.getp());
 
-        if (theIndex->theMaps[XS_DECIMAL])
+        if (idx->theMaps[XS_DECIMAL])
         {
-          altKey[0].transfer(castItem);
-          probeMap(theIndex->theMaps[XS_DECIMAL], &altKey, &altKey);
+          probeMap(idx->theMaps[XS_DECIMAL], altKey, altKey);
+        }
 
-          if (theIndex->theMaps[XS_LONG])
-          {
-            altKey[0] = decimalItem;
-            probeMap(theIndex->theMaps[XS_LONG], &altKey, &altKey);
-          }
+        if (idx->theMaps[XS_LONG])
+        {
+          probeMap(idx->theMaps[XS_LONG], altKey, altKey);
+        }
 
-          if (theIndex->theMaps[XS_DOUBLE])
-          {
-            xs_double doubleValue = decimalItem->getDecimalValue();
-            GET_FACTORY().createDouble(castItem, doubleValue);
-            altKey[0].transfer(castItem);
-            probeMap(theIndex->theMaps[XS_DOUBLE], &altKey, &altKey);
-          }
+        if (idx->theMaps[XS_DOUBLE])
+        {
+          xs_double doubleValue = decimalItem->getDecimalValue();
+          GET_FACTORY().createDouble(altKey, doubleValue);
+          probeMap(idx->theMaps[XS_DOUBLE], altKey, altKey);
         }
       }
 
       // try casting to xs:double
-      else if ((theIndex->theMaps[XS_LONG] ||
-               theIndex->theMaps[XS_DOUBLE]) &&
-               untypedItem->castToDouble(castItem), castItem != NULL)
+      else if ((idx->theMaps[XS_LONG] ||
+               idx->theMaps[XS_DOUBLE]) &&
+               untypedItem->castToDouble(altKey), altKey != NULL)
       {
         store::ItemHandle<DoubleItem> doubleItem = 
-        static_cast<DoubleItem*>(castItem.getp());
+        static_cast<DoubleItem*>(altKey.getp());
 
-        if (theIndex->theMaps[XS_DOUBLE])
+        if (idx->theMaps[XS_DOUBLE])
         {
-          altKey[0].transfer(castItem);
-          probeMap(theIndex->theMaps[XS_DOUBLE], &altKey, &altKey);
+          probeMap(idx->theMaps[XS_DOUBLE], altKey, altKey);
         }
 
-        if (theIndex->theMaps[XS_LONG])
+        if (idx->theMaps[XS_LONG])
         {
-          doubleToLongProbe(castItem, doubleItem.getp(), haveLower, haveUpper);
+          doubleToLongProbe(altKey, doubleItem.getp(), haveLower, haveUpper);
 
-          if (castItem)
+          if (altKey)
           {
-            altKey[0].transfer(castItem);
-            probeMap(theIndex->theMaps[XS_LONG], &altKey, &altKey);
+            probeMap(idx->theMaps[XS_LONG], altKey, altKey);
           }
         }
       }
 
       // try casting to xs:datetime
-      else if (theIndex->theMaps[XS_DATETIME] && untypedItem->castToDateTime(castItem))
+      else if (idx->theMaps[XS_DATETIME] && untypedItem->castToDateTime(altKey))
       {
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_DATETIME], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_DATETIME], altKey, altKey);
       }
 
       // try casting to xs:date
-      else if (theIndex->theMaps[XS_DATE] && untypedItem->castToDate(castItem))
+      else if (idx->theMaps[XS_DATE] && untypedItem->castToDate(altKey))
       {
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_DATE], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_DATE], altKey, altKey);
       }
 
       // try casting to xs:time
-      else if (theIndex->theMaps[XS_TIME] && untypedItem->castToTime(castItem))
+      else if (idx->theMaps[XS_TIME] && untypedItem->castToTime(altKey))
       {
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_TIME], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_TIME], altKey, altKey);
       }
 
       // try casting to xs:duration
-      else if (theIndex->theMaps[XS_DURATION] && untypedItem->castToDuration(castItem))
+      else if (idx->theMaps[XS_DURATION] && untypedItem->castToDuration(altKey))
       {
-        altKey[0].transfer(castItem);
-        probeMap(theIndex->theMaps[XS_DURATION], &altKey, &altKey);
+        probeMap(idx->theMaps[XS_DURATION], altKey, altKey);
       }
 
       break;
@@ -2500,13 +2502,13 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
   }
   else
   {
-    for (ulong i = 0; i < XS_LAST; ++i)
+    for (csize i = 0; i < XS_LAST; ++i)
     {
-      if (theIndex->theMaps[i] == NULL)
+      if (idx->theMaps[i] == NULL)
         continue;
 
-      theMapBegins.push_back(theIndex->theMaps[i]->begin());
-      theMapEnds.push_back(theIndex->theMaps[i]->end());
+      theMapBegins.push_back(idx->theMaps[i]->begin());
+      theMapEnds.push_back(idx->theMaps[i]->end());
     }
   }
 }
@@ -2517,16 +2519,13 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox(
 ********************************************************************************/
 void ProbeGeneralTreeIndexIterator::probeMap(
     GeneralTreeIndex::IndexMap* map,
-    const store::IndexKey* lowerKey,
-    const store::IndexKey* upperKey)
+    const AtomicItem_t& lowerKey,
+    const AtomicItem_t& upperKey)
 {
   if (map == NULL)
     return;
 
-  IndexBoxCondition::RangeFlags& flags = 
-  (theProbeKind == store::IndexCondition::BOX_VALUE ?
-   theBoxValueCondition->theRangeFlags[0] :
-   theBoxGeneralCondition->theRangeFlags);
+  GeneralIndexCondition::RangeFlags& flags = theCondition->theRangeFlags;
 
   bool haveLower = flags.theHaveLowerBound;
   bool haveUpper = flags.theHaveUpperBound;
@@ -2538,7 +2537,7 @@ void ProbeGeneralTreeIndexIterator::probeMap(
 
   if (haveLower && haveUpper)
   {
-    long cmp = (*lowerKey)[0]->compare((*upperKey)[0]);
+    long cmp = lowerKey->compare(upperKey);
 
     if (cmp > 0)
       return;
@@ -2604,7 +2603,7 @@ void ProbeGeneralTreeIndexIterator::doubleToLongProbe(
     else
     {
       longValue = GeneralTreeIndex::theMaxLong;
-      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
+      theCondition->theRangeFlags.theUpperBoundIncl = true;
     }
   }
   else if (doubleObj.isNegInf() || doubleValue < GeneralTreeIndex::theDoubleMinLong)
@@ -2612,7 +2611,7 @@ void ProbeGeneralTreeIndexIterator::doubleToLongProbe(
     if (haveLower)
     {
       longValue = GeneralTreeIndex::theMinLong;
-      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = true;
+      theCondition->theRangeFlags.theLowerBoundIncl = true;
     }
     else
     {
@@ -2630,11 +2629,11 @@ void ProbeGeneralTreeIndexIterator::doubleToLongProbe(
 
     if (haveLower && lossy)
     {
-      theBoxGeneralCondition->theRangeFlags.theLowerBoundIncl = false;
+      theCondition->theRangeFlags.theLowerBoundIncl = false;
     }
     else if (haveUpper && lossy)
     {
-      theBoxGeneralCondition->theRangeFlags.theUpperBoundIncl = true;
+      theCondition->theRangeFlags.theUpperBoundIncl = true;
     }
   }
 

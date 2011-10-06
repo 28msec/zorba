@@ -29,8 +29,6 @@ namespace store
 {
 
 class IndexSpecification;
-class IndexKeyCompareFunction;
-class IndexColumnRange;
 class IndexEntryCreator;
 class Iterator;
 

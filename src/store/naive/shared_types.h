@@ -30,6 +30,9 @@ namespace store
 namespace simplestore 
 {
 
+class AtomicItem;
+typedef store::ItemHandle<AtomicItem> AtomicItem_t;
+
 class CollectionSet;
 class CollectionIterator;
 typedef rchandle<CollectionIterator> CollectionIterator_t;

@@ -22,7 +22,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_collection.h"
-#include "store/naive/simple_index.h"
+#include "store/naive/simple_index_value.h"
 #include "store/naive/simple_pul.h"
 #include "store/naive/pul_primitives.h"
 #include "store/naive/node_items.h"
@@ -1915,18 +1915,18 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 ********************************************************************************/
 void CollectionPul::refreshIndices()
 {
-  ulong numIncrementalIndices = (ulong)theIncrementalIndices.size();
+  csize numIncrementalIndices = theIncrementalIndices.size();
 
-  for (ulong idx = 0; idx < numIncrementalIndices; ++idx)
+  for (csize idx = 0; idx < numIncrementalIndices; ++idx)
   {
-    IndexImpl* index = theIncrementalIndices[idx];
+    ValueIndex* index = static_cast<ValueIndex*>(theIncrementalIndices[idx]);
 
     //
     // Referesh the index w.r.t. modified docs.
     //
-    IndexCompareFunction keyCmp(index->getNumColumns(),
-                                index->getTimezone(),
-                                index->getCollators());
+    ValueIndexCompareFunction keyCmp(index->getNumColumns(),
+                                     index->getTimezone(),
+                                     index->getCollations());
     
     store::IndexDelta& beforeDelta = theBeforeIndexDeltas[idx];
     store::IndexDelta& afterDelta = theAfterIndexDeltas[idx];

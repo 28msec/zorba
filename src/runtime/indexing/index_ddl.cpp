@@ -545,7 +545,10 @@ void GeneralIndexEntryBuilderIterator::accept(PlanIterVisitor& v) const
 
 
 /*******************************************************************************
-  ProbeIndexPointValueIterator
+  probe-index-point-value($indexName as xs:QName,
+                          $key1      as anyAtomic?,
+                          ...,
+                          $keyN      as anyAtomic?) as node()*
 ********************************************************************************/
 
 ProbeIndexPointValueIteratorState::ProbeIndexPointValueIteratorState() 
@@ -720,7 +723,7 @@ void ProbeIndexPointValueIterator::accept(PlanIterVisitor& v) const
 /*******************************************************************************
   ProbeIndexPointGeneralIterator
 
-  fn-zorba-ddl:probe-index-point-general(
+  probe-index-point-general(
       $indexName as xs:QName,
       $keys      as xs:anyAtomicItem*) as node()*
 
@@ -874,7 +877,24 @@ void ProbeIndexPointGeneralIterator::accept(PlanIterVisitor& v) const
 
 
 /*******************************************************************************
-  ProbeIndexRangeValueIterator
+
+  probe-index-range-value($indexName               as xs:QName,
+                          $range1LowerBound         as anyAtomic?,
+                          $range1UpperBound         as anyAtomic?,
+                          $range1HaveLowerBound     as boolean?,
+                          $range1HaveupperBound     as boolean?,
+                          $range1LowerBoundIncluded as boolean?,
+                          $range1upperBoundIncluded as boolean?,
+                          ....,
+                          $rangeNLowerBound         as anyAtomic?,
+                          $rangeNUpperBound         as anyAtomic?,
+                          $rangeNHaveLowerBound     as boolean?,
+                          $rangeNHaveupperBound     as boolean?,
+                          $rangeNLowerBoundIncluded as boolean?,
+                          $rangeNupperBoundIncluded as boolean?) as node()*
+
+  Note: the translator makes sure that there is at least one range, and each
+        range consits of exactly 6 values.
 ********************************************************************************/
 
 ProbeIndexRangeValueIteratorState::ProbeIndexRangeValueIteratorState() 
@@ -930,7 +950,8 @@ ProbeIndexRangeValueIterator::~ProbeIndexRangeValueIterator()
 void ProbeIndexRangeValueIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<ProbeIndexRangeValueIterator, ProbeIndexRangeValueIteratorState>*)this);
+  (NaryBaseIterator<ProbeIndexRangeValueIterator,
+                    ProbeIndexRangeValueIteratorState>*)this);
 
   ar & theCheckKeyType;
 }
@@ -970,13 +991,9 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       ERROR_PARAMS(qname->getStringValue()));
     }
 
-    if ((numChildren-1) % 6 != 0)
-    {
-      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-      ERROR_PARAMS(qname->getStringValue()));
-    }
+    assert(numChildren >= 7 && (numChildren-1) % 6 == 0);
 
-    if (indexDecl->getKeyExpressions().size() * 6 > numChildren-1)
+    if (indexDecl->getKeyExpressions().size() * 6 < numChildren-1)
     {
       RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
       ERROR_PARAMS(qname->getStringValue()));
@@ -1114,7 +1131,7 @@ void ProbeIndexRangeValueIterator::accept(PlanIterVisitor& v) const
 
 
 /*******************************************************************************
-  ProbeIndexRangeGeneralIterator
+  probe-index-range-general
 ********************************************************************************/
 ProbeIndexRangeGeneralIteratorState::ProbeIndexRangeGeneralIteratorState()
   :

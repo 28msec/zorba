@@ -29,6 +29,7 @@
 #include "store/api/item.h"
 #include "store/api/item_handle.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "store/naive/naive_ft_token_iterator.h"
@@ -81,9 +82,6 @@ public:
       bool force,
       bool& lossy) const;
 };
-
-
-typedef store::ItemHandle<AtomicItem> AtomicItem_t;
 
 
 /*******************************************************************************
@@ -1095,7 +1093,7 @@ public:
 class DecimalItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class IndexBoxCondition;
+  friend class IndexConditionImpl;
   friend class AtomicItem;
 
 protected:

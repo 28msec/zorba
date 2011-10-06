@@ -191,17 +191,14 @@ public:
 };
 
 
-/**
- * 
- *  refresh-index($indexName as xs:QName) as pul()
- *
- *  This is an updating function. During normal runtime (see RefreshIndexIterator),
- *  it checks that index exists (in the dynamic context) and generates an update
- *  primitive. During applyUpdates(), it clears the index of its contents and then
- *  rebuilds the index the same way as the create() function.
- *    
- * Author: Zorba Team
- */
+/******************************************************************************
+   refresh-index($indexName as xs:QName) as pul()
+ 
+   This is an updating function. During normal runtime (see RefreshIndexIterator),
+   it checks that index exists (in the dynamic context) and generates an update
+   primitive. During applyUpdates(), it clears the index of its contents and then
+   rebuilds the index the same way as the create() function.
+*******************************************************************************/
 class RefreshIndexIterator : public UnaryBaseIterator<RefreshIndexIterator, 
                                                       PlanIteratorState>
 { 
