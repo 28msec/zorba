@@ -476,15 +476,9 @@ void UpdSetElementType::apply()
   theOldHaveTypedValue=target->haveTypedTypedValue(textChild);
   if (theOldHaveTypedValue)
   {
-    theOldHaveListValue= textChild->haveListValue();
-    zstring textValue;
-    textChild->getStringValue2(textValue);
-
+    theOldHaveListValue= textChild->haveListValue();    
     theOldTypedValue=textChild->getValue();
-    textChild->setValue(NULL);
-
-    textChild->theFlags &= ~XmlNode::IsTyped;
-    textChild->setText(textValue);
+    textChild->revertToTextContent();
   }
 
 
@@ -510,11 +504,6 @@ void UpdSetElementType::apply()
         textChild->setHaveListValue();
       else
         textChild->resetHaveListValue();
-    }
-    else
-    {
-      if(theOldHaveTypedValue)
-        textChild->revertToTextContent();
     }
   }
   else
@@ -550,6 +539,7 @@ void UpdSetElementType::undo()
       if (theOldHaveTypedValue)
       {
         TextNode* textChild = target->getUniqueTextChild();
+        textChild->revertToTextContent();
 
         textChild->setTypedValue(theOldTypedValue);
         if (theOldHaveListValue)
