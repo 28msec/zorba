@@ -52,6 +52,7 @@
 #include "runtime/introspection/sctx.h"
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/nodes.h"
+#include "runtime/nodes/structural.h"
 #include "runtime/numerics/numerics.h"
 #include "runtime/parsing_and_serializing/parse_fragment.h"
 #include "runtime/parsing_and_serializing/parsing_and_serializing.h"
@@ -2277,6 +2278,328 @@ void PrinterVisitor::endVisit ( const LeastCommonAncestor& ) {
   thePrinter.endEndVisit();
 }
 // </LeastCommonAncestor>
+
+
+// <NodeStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const NodeStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("NodeStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeStructuralInformationIterator>
+
+
+// <IsAncestorStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsAncestorStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsAncestorStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAncestorStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAncestorStructuralInformationIterator>
+
+
+// <IsFollowingSiblingStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingSiblingStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingSiblingStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsFollowingSiblingStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsFollowingSiblingStructuralInformationIterator>
+
+
+// <IsFollowingStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsFollowingStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsFollowingStructuralInformationIterator>
+
+
+// <IsDescendantStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsDescendantStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsDescendantStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsDescendantStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsDescendantStructuralInformationIterator>
+
+
+// <IsPrecedingSiblingStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingSiblingStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingSiblingStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsPrecedingSiblingStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsPrecedingSiblingStructuralInformationIterator>
+
+
+// <IsPrecedingStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsPrecedingStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsPrecedingStructuralInformationIterator>
+
+
+// <IsChildStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsChildStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsChildStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsChildStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsChildStructuralInformationIterator>
+
+
+// <IsAttributeOfStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsAttributeOfStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsAttributeOfStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAttributeOfStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAttributeOfStructuralInformationIterator>
+
+
+// <IsParentStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsParentStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsParentStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsParentStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsParentStructuralInformationIterator>
+
+
+// <IsPrecedingInDocumentOrderStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingInDocumentOrderStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingInDocumentOrderStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsPrecedingInDocumentOrderStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsPrecedingInDocumentOrderStructuralInformationIterator>
+
+
+// <IsFollowingInDocumentOrderStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingInDocumentOrderStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingInDocumentOrderStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsFollowingInDocumentOrderStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsFollowingInDocumentOrderStructuralInformationIterator>
+
+
+// <LevelStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const LevelStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("LevelStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const LevelStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </LevelStructuralInformationIterator>
+
+
+// <IsAttributeStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsAttributeStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsAttributeStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAttributeStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAttributeStructuralInformationIterator>
+
+
+// <IsCommentStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsCommentStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsCommentStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsCommentStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsCommentStructuralInformationIterator>
+
+
+// <IsDocumentStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsDocumentStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsDocumentStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsDocumentStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsDocumentStructuralInformationIterator>
+
+
+// <IsElementStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsElementStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsElementStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsElementStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsElementStructuralInformationIterator>
+
+
+// <IsProcessingInstructionStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsProcessingInstructionStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsProcessingInstructionStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsProcessingInstructionStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsProcessingInstructionStructuralInformationIterator>
+
+
+// <IsTextStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsTextStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsTextStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsTextStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsTextStructuralInformationIterator>
+
+
+// <IsSiblingStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const IsSiblingStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("IsSiblingStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsSiblingStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsSiblingStructuralInformationIterator>
+
+
+// <InSameTreeStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const InSameTreeStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("InSameTreeStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const InSameTreeStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </InSameTreeStructuralInformationIterator>
+
+
+// <InCollectionStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const InCollectionStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("InCollectionStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const InCollectionStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </InCollectionStructuralInformationIterator>
+
+
+// <InSameCollectionStructuralInformationIterator>
+void PrinterVisitor::beginVisit ( const InSameCollectionStructuralInformationIterator& a) {
+  thePrinter.startBeginVisit("InSameCollectionStructuralInformationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const InSameCollectionStructuralInformationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </InSameCollectionStructuralInformationIterator>
 
 
 // <AbsIterator>

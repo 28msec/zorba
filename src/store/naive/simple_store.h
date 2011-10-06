@@ -332,6 +332,8 @@ public:
 
   bool getNodeByReference(store::Item_t& result, const store::Item* uri);
 
+  bool getStructuralInformation(store::Item_t& result, const store::Item* node);
+
   store::TempSeq_t createTempSeq(bool lazy);
 
   store::TempSeq_t createTempSeq(

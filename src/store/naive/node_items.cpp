@@ -1138,7 +1138,7 @@ const OrdPath* InternalNode::getFirstChildOrdPathBefore(csize pos) const
   Return the position of the given node among the children of "this". If the
   given node is not a child of "this", return the number of children of "this".
 ********************************************************************************/
-csize InternalNode::findChild(XmlNode* child) const
+csize InternalNode::findChild(const XmlNode* child) const
 {
   const_iterator begin = childrenBegin();
   const_iterator end = childrenEnd();

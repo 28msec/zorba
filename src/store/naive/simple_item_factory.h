@@ -41,6 +41,7 @@ namespace simplestore
 class StringPool;
 typedef StringPool UriPool;
 class QNamePool;
+class OrdPath;
 
 
 class BasicItemFactory : public store::ItemFactory
@@ -77,6 +78,12 @@ public:
   bool createAnyURI(store::Item_t& result, zstring& value);
 
   bool createAnyURI(store::Item_t& result, const char* value);
+
+  bool createStructuralAnyURI(store::Item_t& result, zstring& value);
+
+  bool createStructuralAnyURI(store::Item_t& result, const char* value);
+
+  bool createStructuralAnyURI(store::Item_t& result, ulong collectionId, ulong treeId, store::StoreConsts::NodeKind nodeKind, const OrdPath& ordPath);
 
   bool createUntypedAtomic(store::Item_t& result, zstring& value);
 

@@ -22,7 +22,11 @@
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-reference"
                      define="ZORBA_NODEREF_FN_NS"
-                     prefix="fn-zorba-ref"/> 
+                     prefix="fn-zorba-ref"/>
+    
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-structural-information"
+                     define="ZORBA_NODESTRUCT_FN_NS"
+                     prefix="fn-zorba-struct"/> 
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema"
                      define="ZORBA_SCHEMA_FN_NS"

@@ -31,6 +31,7 @@
 namespace zorba { namespace simplestore {
 
 class OrdPathStack;
+class Reference;
 
 
 /*******************************************************************************
@@ -51,6 +52,16 @@ public:
     FOLLOWING
   }
   RelativePosition;
+
+  typedef enum
+  {
+      PRECEDING_SIBLING,
+      FOLLOWING_SIBLING,
+      PARENT,
+      CHILD,
+      OTHER
+  }
+  RelativePosition2;
 
 
   typedef std::vector<int32_t> DeweyID;
@@ -181,6 +192,10 @@ public:
   int operator>(const OrdPath& other) const;
 
   RelativePosition getRelativePosition(const OrdPath& other) const;
+
+  RelativePosition2 getRelativePosition2(const OrdPath& other) const;
+
+  ulong getLevel() const;
 
   void compress(const DeweyID& dewey);
 
