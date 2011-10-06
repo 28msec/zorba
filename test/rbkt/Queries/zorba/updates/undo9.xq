@@ -7,7 +7,7 @@ import module namespace u = "http://www.zorba-xquery.com/test/undo/utils" at "ut
 import schema namespace s="http://www.zorba-xquery.org/schema" at "shiporder.xsd";
 
 declare revalidation lax;
-declare construction preserve;
+declare construction strip;
 
 variable $x:=
 <shiporders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

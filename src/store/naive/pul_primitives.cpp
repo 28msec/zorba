@@ -465,12 +465,13 @@ void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
+  //
+  // Save undo data
+  //
   theOldTypeName=target->getType();
   theOldHaveValue=target->haveValue();
   theOldHaveEmptyValue=target->haveEmptyValue();
   theOldIsInSubstitutionGroup=target->isInSubstitutionGroup();
-  target->setType(theTypeName);
-
   TextNode* textChild;
   theOldHaveTypedValue=target->haveTypedTypedValue(textChild);
   if (theOldHaveTypedValue)
@@ -486,20 +487,34 @@ void UpdSetElementType::apply()
     textChild->setText(textValue);
   }
 
+
+  //
+  // Apply operation
+  //
+  target->setType(theTypeName);
+
   if (theHaveValue)
   {
     target->setHaveValue();
 
     if (theHaveEmptyValue)
       target->setHaveEmptyValue();
+    else
+      target->resetHaveEmptyValue();
 
     if (theHaveTypedValue)
     {
-      TextNode* textChild = target->getUniqueTextChild();
-
+      ZORBA_ASSERT(textChild);
       textChild->setTypedValue(theTypedValue);
       if (theHaveListValue)
         textChild->setHaveListValue();
+      else
+        textChild->resetHaveListValue();
+    }
+    else
+    {
+      if(theOldHaveTypedValue)
+        textChild->revertToTextContent();
     }
   }
   else
@@ -509,6 +524,8 @@ void UpdSetElementType::apply()
 
   if (theIsInSubstitutionGroup)
     target->setInSubstGroup();
+  else
+    target->resetInSubstGroup();
 
   theIsApplied=true;
 }
@@ -520,16 +537,6 @@ void UpdSetElementType::undo()
     ElementNode* target = ELEM_NODE(theTarget);
 
     target->setType(theOldTypeName);
-
-    TextNode* textChild;
-    if (target->haveTypedTypedValue(textChild))
-    {
-      zstring textValue;
-      textChild->getStringValue2(textValue);
-      textChild->setValue(NULL);
-      textChild->theFlags &= ~XmlNode::IsTyped;
-      textChild->setText(textValue);
-    }
 
     if (theOldHaveValue)
     {
@@ -550,6 +557,14 @@ void UpdSetElementType::undo()
         else
           textChild->resetHaveListValue();
       }
+      else
+      {
+        if (theHaveTypedValue)
+        {
+          TextNode* textChild = target->getUniqueTextChild();
+          textChild->revertToTextContent();
+        }
+      }
     }
     else
     {
@@ -560,6 +575,8 @@ void UpdSetElementType::undo()
       target->setInSubstGroup();
     else
       target->resetInSubstGroup();
+
+    theIsApplied=false;
   }
 }
 
@@ -629,18 +646,26 @@ void UpdSetAttributeType::apply()
 
   if (theHaveListValue)
     target->setHaveListValue();
+  else
+    target->resetHaveListValue();
+
+  theIsApplied=true;
 }
 
 void UpdSetAttributeType::undo()
 {
-  AttributeNode* target = ATTR_NODE(theTarget);
-  target->setType(theOldTypeName);
-  target->theTypedValue.transfer(theOldTypedValue);
+  if (theIsApplied)
+  {
+    AttributeNode* target = ATTR_NODE(theTarget);
+    target->setType(theOldTypeName);
+    target->theTypedValue.transfer(theOldTypedValue);
 
-  if (theOldHaveListValue)
-    target->setHaveListValue();
-  else
-    target->resetHaveListValue();
+    if (theOldHaveListValue)
+      target->setHaveListValue();
+    else
+      target->resetHaveListValue();
+    theIsApplied=false;
+  }
 }
 
 /*******************************************************************************
