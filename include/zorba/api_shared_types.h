@@ -34,6 +34,7 @@ namespace zorba {
   class ItemFactory;
   class Iterator;
   class StatelessExternalFunction;
+  class ExternalFunctionParameter;
   class ExternalModule;
   class TypeIdentifier;
   class ItemSequence;

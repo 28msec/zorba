@@ -331,6 +331,30 @@ void IndexBoxCondition::pushItem(store::Item_t& item)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void IndexBoxCondition::pushRange(
+    store::Item_t& lower,
+    store::Item_t& upper,
+    bool haveLower,
+    bool haveUpper,
+    bool lowerIncl,
+    bool upperIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+void IndexBoxCondition::pushBound(
+    store::Item_t& bound, 
+    bool isLower,
+    bool boundIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  IndexBoxValueCondition                                                     //
@@ -371,15 +395,6 @@ void IndexBoxValueCondition::pushRange(
   theRangeFlags[size].theHaveUpperBound = haveUpper;
   theRangeFlags[size].theLowerBoundIncl = lowerIncl;
   theRangeFlags[size].theUpperBoundIncl = upperIncl;
-}
-
-
-void IndexBoxValueCondition::pushBound(
-    store::Item_t& bound, 
-    bool isLower,
-    bool boundIncl)
-{
-  ZORBA_ASSERT(false);
 }
 
 
@@ -509,21 +524,6 @@ void IndexBoxGeneralCondition::clear()
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexBoxGeneralCondition::pushRange(
-    store::Item_t& lower,
-    store::Item_t& upper,
-    bool haveLower,
-    bool haveUpper,
-    bool lowerIncl,
-    bool upperIncl)
-{
-  ZORBA_ASSERT(false);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void IndexBoxGeneralCondition::pushBound(
     store::Item_t& bound,
     bool isLower, 
@@ -545,6 +545,7 @@ void IndexBoxGeneralCondition::pushBound(
 ********************************************************************************/
 bool IndexBoxGeneralCondition::test(const store::IndexKey& key) const
 {
+  ZORBA_ASSERT(false);
   return true;
 }
 
