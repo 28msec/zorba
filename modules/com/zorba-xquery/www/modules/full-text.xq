@@ -34,7 +34,7 @@ declare function ft:host-lang()
 (:~
  : Checks whether the given word is a stop-word.
  :
- : @param word The word to check.  The word's language is assumed to be in the
+ : @param word The word to check.  The word's language is assumed to be the
  : host machine's current language.
  : @return \c true only if the \a word is a stop-word.
  :)
@@ -54,7 +54,7 @@ declare function ft:is-stop-word( $word as xs:string, $lang as xs:language )
 (:~
  : Stems the given word.
  :
- : @param word The word to stem.  The word's language is assumed to be in the
+ : @param word The word to stem.  The word's language is assumed to be the
  : host machine's current language.
  : @return the stem of \a word.
  :)
@@ -151,7 +151,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : Tokenizes the given document.
  :
  : @param doc The XML document to tokenize.  The document's default language is
- : assumed to be in the host machine's current language.
+ : assumed to be the host machine's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize( $doc as node() )
@@ -171,7 +171,7 @@ declare function ft:tokenize( $doc as node(), $lang as xs:language )
  : Tokenizes the given string.
  :
  : @param string The string to tokenize.  The string's default language is
- : assumed to be in the host machine's current language.
+ : assumed to be the host machine's current language.
  : @return a (possibly empty) sequence of tokens.
  :)
 declare function ft:tokenize-string( $string as xs:string )
@@ -193,5 +193,13 @@ declare function ft:tokenize-string( $string as xs:string,
 {
   () (: TODO :)
 };
+
+(:~
+ : Gets properties of the tokenizer.
+ :
+ : @return said properties.
+ :)
+declare function ft:tokenizer-properties()
+  as element(ft:tokenizer-properties) external;
 
 (: vim:set et sw=2 ts=2: :)

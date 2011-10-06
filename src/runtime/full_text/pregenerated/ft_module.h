@@ -273,6 +273,42 @@ public:
 };
 
 
+/**
+ * 
+ * Author: 
+ */
+class TokenizerPropertiesIterator : public NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(TokenizerPropertiesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TokenizerPropertiesIterator,
+    NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>*)this);
+  }
+
+  TokenizerPropertiesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TokenizerPropertiesIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~TokenizerPropertiesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
+};
+
+
 }
 #endif
 /*

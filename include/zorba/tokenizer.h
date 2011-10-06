@@ -94,6 +94,25 @@ public:
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Various properties of this %Tokenizer.
+   */
+  struct Properties {
+    /**
+     * If \c true, XML elements separate tokens.
+     */
+    bool elements_separate_tokens;
+  };
+
+  /**
+   * Gets the Properties of this %Tokenizer.
+   *
+   * @param result The Properties to populate.
+   */
+  virtual void properties( Properties *result ) const = 0;
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
    * Destroys this %Tokenizer.
    * This function is called by Zorba when the %Tokenizer is no longer needed.
    *

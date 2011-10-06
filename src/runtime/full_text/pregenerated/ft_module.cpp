@@ -217,6 +217,34 @@ void TokenizeIteratorState::reset(PlanState& planState) {
 // </TokenizeIterator>
 
 
+// <TokenizerPropertiesIterator>
+const char* TokenizerPropertiesIterator::class_name_str = "TokenizerPropertiesIterator";
+TokenizerPropertiesIterator::class_factory<TokenizerPropertiesIterator>
+TokenizerPropertiesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+TokenizerPropertiesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int TokenizerPropertiesIterator::class_versions_count =
+sizeof(TokenizerPropertiesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void TokenizerPropertiesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+TokenizerPropertiesIterator::~TokenizerPropertiesIterator() {}
+
+// </TokenizerPropertiesIterator>
+
+
 
 }
 

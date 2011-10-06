@@ -123,5 +123,20 @@
   </zorba:state>
 </zorba:iterator>
 
+<zorba:iterator name="TokenizerPropertiesIterator"
+                generateResetImpl="true">
+  <zorba:function>
+    <zorba:signature localname="tokenizer-properties" prefix="zorba-full-text">
+      <zorba:output>node()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="tokenizer-properties" prefix="zorba-full-text">
+      <zorba:param>xs:language</zorba:param>  <!-- lang -->
+      <zorba:output>node()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 </zorba:iterators>
 <!-- vim:set et sw=2 ts=2: -->

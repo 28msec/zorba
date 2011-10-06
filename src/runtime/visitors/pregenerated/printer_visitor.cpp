@@ -1300,6 +1300,20 @@ void PrinterVisitor::endVisit ( const TokenizeIterator& ) {
 // </TokenizeIterator>
 
 
+// <TokenizerPropertiesIterator>
+void PrinterVisitor::beginVisit ( const TokenizerPropertiesIterator& a) {
+  thePrinter.startBeginVisit("TokenizerPropertiesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TokenizerPropertiesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TokenizerPropertiesIterator>
+
+
 // <FunctionNameIterator>
 void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {
   thePrinter.startBeginVisit("FunctionNameIterator", ++theId);

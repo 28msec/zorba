@@ -116,6 +116,32 @@ public:
 };
 
 
+//zorba-full-text:tokenizer-properties
+class zorba_full_text_tokenizer_properties : public function
+{
+public:
+  zorba_full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-full-text:tokenizer-properties
+class zorba_full_text_tokenizer_properties : public function
+{
+public:
+  zorba_full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

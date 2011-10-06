@@ -201,6 +201,8 @@ namespace zorba{
 
     class TokenizeIterator;
 
+    class TokenizerPropertiesIterator;
+
     class FunctionNameIterator;
 
     class FunctionArityIterator;
@@ -813,6 +815,9 @@ public:
 
     virtual void beginVisit ( const TokenizeIterator& ) = 0;
     virtual void endVisit   ( const TokenizeIterator& ) = 0;
+
+    virtual void beginVisit ( const TokenizerPropertiesIterator& ) = 0;
+    virtual void endVisit   ( const TokenizerPropertiesIterator& ) = 0;
 
     virtual void beginVisit ( const FunctionNameIterator& ) = 0;
     virtual void endVisit   ( const FunctionNameIterator& ) = 0;

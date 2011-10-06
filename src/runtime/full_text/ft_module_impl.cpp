@@ -357,6 +357,54 @@ void TokenizeIterator::resetImpl( PlanState &plan_state ) const {
   state->doc_tokens_->reset();
 }
 
+bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
+                                            PlanState &plan_state ) const {
+  store::Item_t attr_name, attr_node, item;
+  zstring base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
+  iso639_1::type lang;
+  Tokenizer::Numbers no;
+  store::NsBindings const ns_bindings;
+  ftmatch_options const *options;
+  static_context const *static_ctx;
+  Tokenizer const *tokenizer;
+  store::Item_t type_name;
+  Tokenizer::Properties props;
+  TokenizerProvider const *tokenizer_provider;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  static_ctx = getStaticContext();
+  options = static_ctx->get_match_options();
+  lang = get_lang_from( options );
+
+  if ( !theChildren.empty() ) {
+    ZORBA_ASSERT( consumeNext( item, theChildren[0], plan_state ) );
+    lang = get_lang_from( item, loc );
+  }
+
+  tokenizer_provider = GENV_STORE.getTokenizerProvider();
+  tokenizer = tokenizer_provider->getTokenizer( lang, no );
+  tokenizer->properties( &props );
+
+  GENV_ITEMFACTORY->createQName(
+    item, static_context::ZORBA_FULL_TEXT_FN_NS, "", "tokenizer-properties"
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    result, nullptr, item, type_name, true, false, ns_bindings, base_uri
+  );
+
+  GENV_ITEMFACTORY->createQName( attr_name, "", "", "elements-separate-tokens" );
+  GENV_ITEMFACTORY->createBoolean( item, props.elements_separate_tokens );
+  GENV_ITEMFACTORY->createAttributeNode(
+    attr_node, result, attr_name, type_name, item
+  );
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

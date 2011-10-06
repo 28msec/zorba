@@ -91,6 +91,26 @@ PlanIter_t zorba_full_text_tokenize::codegen(
   return new TokenizeIterator(sctx, loc, argv);
 }
 
+PlanIter_t zorba_full_text_tokenizer_properties::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new TokenizerPropertiesIterator(sctx, loc, argv);
+}
+
+PlanIter_t zorba_full_text_tokenizer_properties::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new TokenizerPropertiesIterator(sctx, loc, argv);
+}
+
 void populate_context_ft_module(static_context* sctx)
 {
   {
@@ -258,6 +278,29 @@ void populate_context_ft_module(static_context* sctx)
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
         FunctionConsts::ZORBA_FULL_TEXT_TOKENIZE_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_full_text_tokenizer_properties,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenizer-properties"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE),
+        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_0);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, zorba_full_text_tokenizer_properties,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","tokenizer-properties"), 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE),
+        FunctionConsts::ZORBA_FULL_TEXT_TOKENIZER_PROPERTIES_1);
 
   }
 
