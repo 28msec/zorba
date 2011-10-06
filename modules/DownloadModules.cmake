@@ -27,11 +27,10 @@
 get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
 
 # Find SVN
-FIND_PROGRAM(SVN_EXECUTABLE svn DOC "subversion command line client")
-IF(NOT SVN_EXECUTABLE)
-  message (FATAL_ERROR "Subversion is required; not found")
-ENDIF(NOT SVN_EXECUTABLE)
-set (svn "${SVN_EXECUTABLE}")
+FIND_PROGRAM(svn svn DOC "subversion command line client")
+
+# Find BZR
+FIND_PROGRAM(bzr bzr DOC "bazaar command line client")
 
 # Check parameters
 if (NOT outdir)
@@ -68,22 +67,27 @@ foreach (modline ${modlines})
       endif (NOT ${_modfound} EQUAL -1)
     endif (allmodules)
 
-    # Ensure we recognize vc-type
-    if (NOT ${_modvc} STREQUAL "svn")
-      message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
-        "'${_modname}' in modules/ExternalModules.conf!")
-    endif (NOT ${_modvc} STREQUAL "svn")
-
     # Download
     if (_getmod)
       message ("Downloading module '${_modname}'...")
-      # QQQ Ridiculous and slow hack, but Sourceforge has been incredibly
-      # unreliable lately so this is the best choice I've got to make
-      # the remote queue semi-stable
-      foreach (s 1 2)
-        execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
+      if (${_modvc} STREQUAL "svn")
+        # QQQ Ridiculous and slow hack, but Sourceforge has been
+        # incredibly unreliable lately so this is the best choice I've
+        # got to make the remote queue semi-stable
+        foreach (s 1 2)
+          execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
+            WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
+        endforeach (s 1 2)
+
+      elseif (${_modvc} STREQUAL "bzr")
+        execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
           WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
-      endforeach (s 1 2)
+
+      else (${_modvc} STREQUAL "svn")
+        message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
+          "'${_modname}' in modules/ExternalModules.conf!")
+
+      endif (${_modvc} STREQUAL "svn")
     endif (_getmod)
   endif (modline)
 endforeach (modline)
