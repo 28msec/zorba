@@ -20,8 +20,8 @@ xquery version "1.0";
  : The module provides functions to compute an immutable and opaque reference 
  : for any node, either temporary or stored in a collection and for retrieving
  : nodes given their identifier. The identifiers are immutable, i.e. a node 
- : identifier do not change during the node lifetime. Identifiers are also 
- : unique, in that, a generated identifier has never been generated before.
+ : identifier does not change during the node lifetime. Identifiers are also 
+ : unique, in that, two different nodes will never have identical identifiers.
  : A node, at any time during its lifetime, can be retrieved by its identifier.
  :
  : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
@@ -46,10 +46,10 @@ declare option ver:module-version "2.0";
  : a given node, either temporary or stored in a collection.
  : 
  : <p>The generated identifier is immutable, i.e. a node 
- : identifier do not change during the node lifetime.</p>
+ : identifier does not change during the node lifetime.</p>
  :
- : <p>Identifiers are also unique, in that, a generated identifier has never
- : been generated before.</p>
+ : <p>Identifiers are also unique, in that, two different nodes 
+ : will never have identical identifiers.</p>
  :
  : A node, at any time during its lifetime, can be retrieved by its 
  : identifier. 
@@ -74,7 +74,7 @@ declare function ref:node-reference(
  :         or the empty-sequence if no node with that URI is found.
  :
  : @error zerr::ZAPI0028 if the given URI is not a valid node reference
- :  computed by the <tt>ref:node-reference</tt> function.
+ :        computed by the <tt>ref:node-reference</tt> function.
  :)
 declare function ref:node-by-reference(
   $arg as xs:anyURI
