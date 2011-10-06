@@ -35,7 +35,7 @@ namespace zorba {
 
 /**
  *        
- *      declare function ref:node-reference($node as node) as xs:anyURI
+ *      declare function ref:node-reference($node as node()) as xs:anyURI
  *    
  * Author: Federico Cavalieri
  */
@@ -71,7 +71,7 @@ public:
 
 /**
  * 
- *      declare function id:node-by-reference($identifier as xs:anyURI) as node()?
+ *      declare function ref:node-by-reference($reference as xs:anyURI) as node()?
  *    
  * Author: Federico Cavalieri
  */
