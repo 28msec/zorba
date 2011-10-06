@@ -213,7 +213,7 @@ MACRO (DECLARE_ZORBA_MODULE)
         SET (_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/${_src_dir}")
       ENDIF (NOT IS_ABSOLUTE "${_src_dir}")
       FILE(GLOB_RECURSE _srcs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
-        "${_src_dir}/*.cpp")
+        "${_src_dir}/*.cpp" "${_src_dir}/*.c")
       LIST (APPEND SRC_FILES ${_srcs})
     ENDFOREACH (_src_dir)
 
