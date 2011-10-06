@@ -1981,6 +1981,10 @@
       <value>"$1": index range-general probe not allowed</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0034" name="INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES">
+      <value>"$1": index range-value probe has search keys with incompatible types</value>
+    </diagnostic>
+
     <diagnostic code="ZDDY0031" name="IC_NOT_DECLARED">
       <value>"$1": integrity constraint is not declared</value>
     </diagnostic>
