@@ -21,7 +21,8 @@ xquery version "1.0";
  : for any node, either temporary or stored in a collection and for retrieving
  : nodes given their identifier. The identifiers are immutable, i.e. a node 
  : identifier does not change during the node lifetime. Identifiers are also 
- : unique, in that, two different nodes will never have identical identifiers.
+ : unique, in that, two nodes with different identities will never have identical
+ : identifiers.
  : A node, at any time during its lifetime, can be retrieved by its identifier.
  :
  : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
@@ -48,7 +49,7 @@ declare option ver:module-version "2.0";
  : <p>The generated identifier is immutable, i.e. a node 
  : identifier does not change during the node lifetime.</p>
  :
- : <p>Identifiers are also unique, in that, two different nodes 
+ : <p>Identifiers are also unique, in that, two nodes with different identities 
  : will never have identical identifiers.</p>
  :
  : A node, at any time during its lifetime, can be retrieved by its 
