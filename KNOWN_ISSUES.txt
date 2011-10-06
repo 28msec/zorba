@@ -1,11 +1,6 @@
-  ------------------------
-  FLWOR Foundation - Zorba
-  ------------------------
-
 This is a list of issues that we are aware of but are not imlemeneted or fixed:
 
 Zorba Version 2.0
------------------
 
 * Floating-point precision problems.
   For details, see the following bugs:
