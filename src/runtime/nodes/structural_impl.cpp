@@ -65,11 +65,17 @@ IsAncestorStructuralInformationIterator::nextImpl(store::Item_t& result, PlanSta
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isAncestor(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isAncestor(lUriB)
-      ), state);
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -88,11 +94,17 @@ IsFollowingSiblingStructuralInformationIterator::nextImpl(store::Item_t& result,
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isFollowingSibling(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isFollowingSibling(lUriB)
-      ), state);
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -111,10 +123,17 @@ IsFollowingStructuralInformationIterator::nextImpl(store::Item_t& result, PlanSt
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isFollowing(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isFollowing(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -133,10 +152,17 @@ IsDescendantStructuralInformationIterator::nextImpl(store::Item_t& result, PlanS
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isDescendant(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isDescendant(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -155,10 +181,18 @@ IsPrecedingSiblingStructuralInformationIterator::nextImpl(store::Item_t& result,
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isPrecedingSibling(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isPrecedingSibling(lUriB));
+
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -177,10 +211,17 @@ IsPrecedingStructuralInformationIterator::nextImpl(store::Item_t& result, PlanSt
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isPreceding(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isPreceding(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -199,10 +240,17 @@ IsChildStructuralInformationIterator::nextImpl(store::Item_t& result, PlanState&
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isChild(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isChild(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -221,10 +269,17 @@ IsAttributeOfStructuralInformationIterator::nextImpl(store::Item_t& result, Plan
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isAttribute(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isAttribute(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -244,10 +299,17 @@ IsParentStructuralInformationIterator::nextImpl(store::Item_t& result, PlanState
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isParent(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isParent(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -266,10 +328,17 @@ IsPrecedingInDocumentOrderStructuralInformationIterator::nextImpl(store::Item_t&
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isPrecedingInDocumentOrder(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isPrecedingInDocumentOrder(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -288,10 +357,17 @@ IsFollowingInDocumentOrderStructuralInformationIterator::nextImpl(store::Item_t&
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isFollowingInDocumentOrder(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isFollowingInDocumentOrder(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -308,7 +384,16 @@ LevelStructuralInformationIterator::nextImpl(store::Item_t& result, PlanState& p
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  result=lUri->getLevel();
+  try
+  {
+    result=lUri->getLevel();
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
   STACK_PUSH(true, state);
 
   STACK_END (state);
@@ -327,10 +412,17 @@ IsAttributeStructuralInformationIterator::nextImpl(store::Item_t& result, PlanSt
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUri->isAttribute()
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isAttribute());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -347,10 +439,17 @@ IsCommentStructuralInformationIterator::nextImpl(store::Item_t& result, PlanStat
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUri->isComment()
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isComment());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -367,10 +466,17 @@ IsDocumentStructuralInformationIterator::nextImpl(store::Item_t& result, PlanSta
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUri->isDocument()
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isDocument());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -387,10 +493,17 @@ IsElementStructuralInformationIterator::nextImpl(store::Item_t& result, PlanStat
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUri->isElement()
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isElement());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -407,10 +520,17 @@ IsProcessingInstructionStructuralInformationIterator::nextImpl(store::Item_t& re
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUri->isProcessingInstruction()
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isProcessingInstruction());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -427,10 +547,17 @@ IsTextStructuralInformationIterator::nextImpl(store::Item_t& result, PlanState& 
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUri->isText()
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isText());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -448,10 +575,17 @@ IsSiblingStructuralInformationIterator::nextImpl(store::Item_t& result, PlanStat
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->isSibling(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isSibling(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -471,10 +605,17 @@ InSameTreeStructuralInformationIterator::nextImpl(store::Item_t& result, PlanSta
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->inSameTree(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->inSameTree(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -491,10 +632,17 @@ InCollectionStructuralInformationIterator::nextImpl(store::Item_t& result, PlanS
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUri->inCollection()
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUri->inCollection());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }
@@ -513,10 +661,17 @@ InSameCollectionStructuralInformationIterator::nextImpl(store::Item_t& result, P
   consumeNext(lUriA, theChildren[0].getp(), planState);
   consumeNext(lUriB, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-          lUriA->inSameCollection(lUriB)
-      ), state);
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->inSameCollection(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
 
   STACK_END (state);
 }

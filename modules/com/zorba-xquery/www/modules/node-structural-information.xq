@@ -59,7 +59,7 @@ declare function si:node-structural-information(
  : is an ancestor of the node whose structural information is $s-info1;
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function. 
  :)
 declare function si:ancestor-of(
@@ -78,7 +78,7 @@ declare function si:ancestor-of(
  : is a descendant of the node whose structural information is $s-info1; 
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:descendant-of(
@@ -97,7 +97,7 @@ declare function si:descendant-of(
  : is the parent of the node whose structural information is $s-info1; 
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:parent-of(
@@ -116,7 +116,7 @@ declare function si:parent-of(
  : is a child of the node whose structural information is $s-info1; 
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:child-of(
@@ -135,7 +135,7 @@ declare function si:child-of(
  : is an attribute of the node whose structural information is $s-info1; 
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:attribute-of(
@@ -154,7 +154,7 @@ declare function si:attribute-of(
  : is a following-sibling of the node whose structural information is $s-info1; 
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:following-sibling-of(
@@ -173,7 +173,7 @@ declare function si:following-sibling-of(
  : is a preceding-sibling of the node whose structural information is $s-info1; 
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:preceding-sibling-of(
@@ -192,7 +192,7 @@ declare function si:preceding-sibling-of(
  : is following the node whose structural information is $s-info1;
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:following-of(
@@ -212,7 +212,7 @@ declare function si:following-of(
  : is following in document order the node whose structural information
  : is $s-info1; false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:following-in-document-order-of(
@@ -232,7 +232,7 @@ declare function si:following-in-document-order-of(
  : is preceding the node whose structural information is $s-info1; 
  : false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:preceding-of(
@@ -251,7 +251,7 @@ declare function si:preceding-of(
  : is preceding in document order the node whose structural information 
  : is $s-info1; false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:preceding-in-document-order-of(
@@ -271,7 +271,7 @@ declare function si:preceding-in-document-order-of(
  : @return The level in the tree as xs:integer of the node whose 
  : structural information is $s-info.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:level(
@@ -286,7 +286,7 @@ declare function si:level(
  : @return true if the two nodes whose structural information are $s-info1
  : and $s-info2 are siblings; false otherwise.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)  
 declare function si:sibling-of(
@@ -301,7 +301,7 @@ declare function si:sibling-of(
  : @return true if the node whose structural information is $s-info
  : is an attribute; false otherwise.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:is-attribute(
@@ -315,7 +315,7 @@ declare function si:is-attribute(
  : @return true if the node whose structural information is $s-info
  : is a comment; false otherwise.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:is-comment(
@@ -329,7 +329,7 @@ declare function si:is-comment(
  : @return true if the node whose structural information is $s-info
  : is a document; false otherwise.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:is-document(
@@ -343,7 +343,7 @@ declare function si:is-document(
  : @return true if the node whose structural information is $s-info
  : is an element; false otherwise.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:is-element(
@@ -357,7 +357,7 @@ declare function si:is-element(
  : @return true if the node whose structural information is $s-info
  : is a processing-instruction; false otherwise.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:is-processing-instruction(
@@ -371,7 +371,7 @@ declare function si:is-processing-instruction(
  : @return true if the node whose structural information is $s-info
  : is a text node; false otherwise.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:is-text(
@@ -387,7 +387,7 @@ declare function si:is-text(
  : @return true if the two node whose structural information are $s-info1
  : and $s-info2 belong to the same tree.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)  
 declare function si:in-same-tree-of(
@@ -403,7 +403,7 @@ declare function si:in-same-tree-of(
  : @return true if the node whose structural information is $s-info 
  : is in a collection; false otherwise.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)
 declare function si:in-collection(
@@ -419,7 +419,7 @@ declare function si:in-collection(
  : @return true if the two node whose structural information are $s-info1
  : and $s-info2 belong to the same collection.
  :
- : @error zerr::ZAPI0028 if one of the given URI is not a valid node structural
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
  : information computed by the <tt>si:node-structural-information</tt> function.
  :)  
 declare function si:in-same-collection-of(
