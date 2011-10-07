@@ -31,7 +31,6 @@
 namespace zorba { namespace simplestore {
 
 class OrdPathStack;
-class Reference;
 
 
 /*******************************************************************************
