@@ -1,4 +1,4 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-structural-information";
+import module namespace ref = "http://www.zorba-xquery.com/modules/node-information";
 
 declare function local:test-types($s-info)
 {
@@ -25,10 +25,10 @@ document
 
 
 <result>
-  <attr>{local:test-types(ref:node-structural-information($doc//attribute()))}</attr>
-  <comm>{local:test-types(ref:node-structural-information($doc/comment()))}</comm>
-  <docu>{local:test-types(ref:node-structural-information($doc))}</docu>
-  <elem>{local:test-types(ref:node-structural-information($doc/element()))}</elem>
-  <proc>{local:test-types(ref:node-structural-information($doc/processing-instruction()))}</proc>
-  <text>{local:test-types(ref:node-structural-information($doc/text()))}</text>
+  <attr>{local:test-types(ref:node-information($doc//attribute()))}</attr>
+  <comm>{local:test-types(ref:node-information($doc/comment()))}</comm>
+  <docu>{local:test-types(ref:node-information($doc))}</docu>
+  <elem>{local:test-types(ref:node-information($doc/element()))}</elem>
+  <proc>{local:test-types(ref:node-information($doc/processing-instruction()))}</proc>
+  <text>{local:test-types(ref:node-information($doc/text()))}</text>
 </result>   

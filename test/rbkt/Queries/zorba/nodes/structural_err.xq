@@ -1,4 +1,4 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-structural-information";
+import module namespace ref = "http://www.zorba-xquery.com/modules/node-information";
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 try
@@ -11,7 +11,6 @@ catch *
 <err-code>{$err:code}</err-code>
 <err-description>{$err:description}</err-description>
 <err-value>{$err:value}</err-value>
-<err-module>{$err:module}</err-module>
 <err-line>{$err:line-number}</err-line>
 </err>
 }

@@ -1,4 +1,4 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-structural-information";
+import module namespace ref = "http://www.zorba-xquery.com/modules/node-information";
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
@@ -26,116 +26,116 @@ variable $y :=  element {"x"}{$x}/*;
 <result>
   <child-of>
   {
-    ref:child-of(ref:node-structural-information($x), ref:node-structural-information($x/b[1])),
-    ref:child-of(ref:node-structural-information($x), ref:node-structural-information($x/newb[1])),
-    ref:child-of(ref:node-structural-information($x), ref:node-structural-information($x/b[4]/c[1])),
-    ref:child-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x)),
-    ref:child-of(ref:node-structural-information($x/b[4]/c[1]), ref:node-structural-information($x)),    
-    ref:child-of(ref:node-structural-information($x), ref:node-structural-information($x)),
-    ref:child-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($y))
+    ref:child-of(ref:node-information($x), ref:node-information($x/b[1])),
+    ref:child-of(ref:node-information($x), ref:node-information($x/newb[1])),
+    ref:child-of(ref:node-information($x), ref:node-information($x/b[4]/c[1])),
+    ref:child-of(ref:node-information($x/b[1]), ref:node-information($x)),
+    ref:child-of(ref:node-information($x/b[4]/c[1]), ref:node-information($x)),    
+    ref:child-of(ref:node-information($x), ref:node-information($x)),
+    ref:child-of(ref:node-information($x/b[1]), ref:node-information($y))
   }
   </child-of>
   <attribute-of>
   {
-    ref:attribute-of(ref:node-structural-information($x/b[4]), ref:node-structural-information($x/b[4]/@attr)),
-    ref:attribute-of(ref:node-structural-information($x/b[4]), ref:node-structural-information($x/b[4]/c/@attr)),
-    ref:attribute-of(ref:node-structural-information($x/b[4]/@attr), ref:node-structural-information($x/b[4])),
-    ref:attribute-of(ref:node-structural-information($x/b[4]/c/@attr), ref:node-structural-information($x/b[4])),    
-    ref:attribute-of(ref:node-structural-information($x), ref:node-structural-information($x/b[1])),
-    ref:attribute-of(ref:node-structural-information($x), ref:node-structural-information($x/newb[1])),    
-    ref:attribute-of(ref:node-structural-information($x/b[4]/@attr), ref:node-structural-information($x/b[4]/@attr)),
-    ref:attribute-of(ref:node-structural-information($x/b[4]), ref:node-structural-information($y/b[4]/@attr))
+    ref:attribute-of(ref:node-information($x/b[4]), ref:node-information($x/b[4]/@attr)),
+    ref:attribute-of(ref:node-information($x/b[4]), ref:node-information($x/b[4]/c/@attr)),
+    ref:attribute-of(ref:node-information($x/b[4]/@attr), ref:node-information($x/b[4])),
+    ref:attribute-of(ref:node-information($x/b[4]/c/@attr), ref:node-information($x/b[4])),    
+    ref:attribute-of(ref:node-information($x), ref:node-information($x/b[1])),
+    ref:attribute-of(ref:node-information($x), ref:node-information($x/newb[1])),    
+    ref:attribute-of(ref:node-information($x/b[4]/@attr), ref:node-information($x/b[4]/@attr)),
+    ref:attribute-of(ref:node-information($x/b[4]), ref:node-information($y/b[4]/@attr))
   }
   </attribute-of>
   <parent-of>
   { 
-    ref:parent-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x)),
-    ref:parent-of(ref:node-structural-information($x/newb[1]), ref:node-structural-information($x)),
-    ref:parent-of(ref:node-structural-information($x/b[4]/c[1]), ref:node-structural-information($x)),
-    ref:parent-of(ref:node-structural-information($x), ref:node-structural-information($x/b[1])),
-    ref:parent-of(ref:node-structural-information($x), ref:node-structural-information($x/b[4]/c[1])),        
-    ref:parent-of(ref:node-structural-information($x), ref:node-structural-information($x)),
-    ref:parent-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($y))
+    ref:parent-of(ref:node-information($x/b[1]), ref:node-information($x)),
+    ref:parent-of(ref:node-information($x/newb[1]), ref:node-information($x)),
+    ref:parent-of(ref:node-information($x/b[4]/c[1]), ref:node-information($x)),
+    ref:parent-of(ref:node-information($x), ref:node-information($x/b[1])),
+    ref:parent-of(ref:node-information($x), ref:node-information($x/b[4]/c[1])),        
+    ref:parent-of(ref:node-information($x), ref:node-information($x)),
+    ref:parent-of(ref:node-information($x/b[1]), ref:node-information($y))
   }
   </parent-of>
   <preceding-in-document-order-of>
   {
-    ref:preceding-in-document-order-of(ref:node-structural-information($x/b[4]/@attr), ref:node-structural-information($x/b[1])),
-    ref:preceding-in-document-order-of(ref:node-structural-information($x/b[4]/c[1]), ref:node-structural-information($x/b[1])),
-    ref:preceding-in-document-order-of(ref:node-structural-information($x/b[4]/c[1]), ref:node-structural-information($x/b[4])),
-    ref:preceding-in-document-order-of(ref:node-structural-information($y), ref:node-structural-information($x)),
-    ref:preceding-in-document-order-of(ref:node-structural-information($x), ref:node-structural-information($y)),
-    ref:preceding-in-document-order-of(ref:node-structural-information($x), ref:node-structural-information($x)),
-    ref:preceding-in-document-order-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x/b[4]/@attr)),
-    ref:preceding-in-document-order-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x/b[4]/c[1])),
-    ref:preceding-in-document-order-of(ref:node-structural-information($x/b[4]), ref:node-structural-information($x/b[4]/c[1]))
+    ref:preceding-in-document-order-of(ref:node-information($x/b[4]/@attr), ref:node-information($x/b[1])),
+    ref:preceding-in-document-order-of(ref:node-information($x/b[4]/c[1]), ref:node-information($x/b[1])),
+    ref:preceding-in-document-order-of(ref:node-information($x/b[4]/c[1]), ref:node-information($x/b[4])),
+    ref:preceding-in-document-order-of(ref:node-information($y), ref:node-information($x)),
+    ref:preceding-in-document-order-of(ref:node-information($x), ref:node-information($y)),
+    ref:preceding-in-document-order-of(ref:node-information($x), ref:node-information($x)),
+    ref:preceding-in-document-order-of(ref:node-information($x/b[1]), ref:node-information($x/b[4]/@attr)),
+    ref:preceding-in-document-order-of(ref:node-information($x/b[1]), ref:node-information($x/b[4]/c[1])),
+    ref:preceding-in-document-order-of(ref:node-information($x/b[4]), ref:node-information($x/b[4]/c[1]))
   }
   </preceding-in-document-order-of>
   <following-in-document-order-of>
   { 
-    ref:following-in-document-order-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x/b[4]/@attr)),   
-    ref:following-in-document-order-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x/b[4]/c[1])),
-    ref:following-in-document-order-of(ref:node-structural-information($x/b[4]), ref:node-structural-information($x/b[4]/c[1])),
-    ref:following-in-document-order-of(ref:node-structural-information($x), ref:node-structural-information($y)),
-    ref:following-in-document-order-of(ref:node-structural-information($y), ref:node-structural-information($x)),
-    ref:following-in-document-order-of(ref:node-structural-information($x), ref:node-structural-information($x)),
-    ref:following-in-document-order-of(ref:node-structural-information($x/b[4]/@attr), ref:node-structural-information($x/b[1])),
-    ref:following-in-document-order-of(ref:node-structural-information($x/b[4]/c[1]), ref:node-structural-information($x/b[1])),
-    ref:following-in-document-order-of(ref:node-structural-information($x/b[4]/c[1]), ref:node-structural-information($x/b[4]))
+    ref:following-in-document-order-of(ref:node-information($x/b[1]), ref:node-information($x/b[4]/@attr)),   
+    ref:following-in-document-order-of(ref:node-information($x/b[1]), ref:node-information($x/b[4]/c[1])),
+    ref:following-in-document-order-of(ref:node-information($x/b[4]), ref:node-information($x/b[4]/c[1])),
+    ref:following-in-document-order-of(ref:node-information($x), ref:node-information($y)),
+    ref:following-in-document-order-of(ref:node-information($y), ref:node-information($x)),
+    ref:following-in-document-order-of(ref:node-information($x), ref:node-information($x)),
+    ref:following-in-document-order-of(ref:node-information($x/b[4]/@attr), ref:node-information($x/b[1])),
+    ref:following-in-document-order-of(ref:node-information($x/b[4]/c[1]), ref:node-information($x/b[1])),
+    ref:following-in-document-order-of(ref:node-information($x/b[4]/c[1]), ref:node-information($x/b[4]))
   }
   </following-in-document-order-of>
   <level>
   {
-    ref:level(ref:node-structural-information($x)),
-    ref:level(ref:node-structural-information($x/b[1])),
-    ref:level(ref:node-structural-information($x/newb[1])),
-    ref:level(ref:node-structural-information($x/newb[2])),
-    ref:level(ref:node-structural-information($x/b/@attr)),
-    ref:level(ref:node-structural-information($x/b/c[1]))
+    ref:level(ref:node-information($x)),
+    ref:level(ref:node-information($x/b[1])),
+    ref:level(ref:node-information($x/newb[1])),
+    ref:level(ref:node-information($x/newb[2])),
+    ref:level(ref:node-information($x/b/@attr)),
+    ref:level(ref:node-information($x/b/c[1]))
   }
   </level>
   <sibling-of>
   {
-    ref:sibling-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x/b[2])),
-    ref:sibling-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x/newb[1])),
-    ref:sibling-of(ref:node-structural-information($x/b[2]), ref:node-structural-information($x/b[1])),
-    ref:sibling-of(ref:node-structural-information($x), ref:node-structural-information($x)),
-    ref:sibling-of(ref:node-structural-information($x/b/@attr), ref:node-structural-information($x/b/@attr2)),
-    ref:sibling-of(ref:node-structural-information($x/b/@attr2), ref:node-structural-information($x/b/@attr)),
-    ref:sibling-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($y/b[2]))
+    ref:sibling-of(ref:node-information($x/b[1]), ref:node-information($x/b[2])),
+    ref:sibling-of(ref:node-information($x/b[1]), ref:node-information($x/newb[1])),
+    ref:sibling-of(ref:node-information($x/b[2]), ref:node-information($x/b[1])),
+    ref:sibling-of(ref:node-information($x), ref:node-information($x)),
+    ref:sibling-of(ref:node-information($x/b/@attr), ref:node-information($x/b/@attr2)),
+    ref:sibling-of(ref:node-information($x/b/@attr2), ref:node-information($x/b/@attr)),
+    ref:sibling-of(ref:node-information($x/b[1]), ref:node-information($y/b[2]))
   }  
   </sibling-of>
   <in-same-tree-of>
   {
-    ref:in-same-tree-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($x/b[2])),
-    ref:in-same-tree-of(ref:node-structural-information($y/b[1]), ref:node-structural-information($y/b[2])),
-    ref:in-same-tree-of(ref:node-structural-information($x/b[1]), ref:node-structural-information($y/b[2])),
-    ref:in-same-tree-of(ref:node-structural-information($y/b[2]), ref:node-structural-information($x/b[1]))    
+    ref:in-same-tree-of(ref:node-information($x/b[1]), ref:node-information($x/b[2])),
+    ref:in-same-tree-of(ref:node-information($y/b[1]), ref:node-information($y/b[2])),
+    ref:in-same-tree-of(ref:node-information($x/b[1]), ref:node-information($y/b[2])),
+    ref:in-same-tree-of(ref:node-information($y/b[2]), ref:node-information($x/b[1]))    
   }
   </in-same-tree-of>
   <in-collection>
   {
-    ref:in-collection(ref:node-structural-information($xx/b)),
-    ref:in-collection(ref:node-structural-information($xx/b2)),
-    ref:in-collection(ref:node-structural-information($xx/b/bb)),
-    ref:in-collection(ref:node-structural-information($xx/b2/bb2)),
-    ref:in-collection(ref:node-structural-information($x)),
-    ref:in-collection(ref:node-structural-information($x/b[1])),
-    ref:in-collection(ref:node-structural-information($x/b/@attr)),
-    ref:in-collection(ref:node-structural-information($x/b/c[1]))
+    ref:in-collection(ref:node-information($xx/b)),
+    ref:in-collection(ref:node-information($xx/b2)),
+    ref:in-collection(ref:node-information($xx/b/bb)),
+    ref:in-collection(ref:node-information($xx/b2/bb2)),
+    ref:in-collection(ref:node-information($x)),
+    ref:in-collection(ref:node-information($x/b[1])),
+    ref:in-collection(ref:node-information($x/b/@attr)),
+    ref:in-collection(ref:node-information($x/b/c[1]))
   }
   </in-collection>
   <in-same-collection>
   {
-    ref:in-same-collection-of(ref:node-structural-information($xx/b),ref:node-structural-information($xx/b)),
-    ref:in-same-collection-of(ref:node-structural-information($xx/b2),ref:node-structural-information($xx/b2)),
-    ref:in-same-collection-of(ref:node-structural-information($xx/b/bb),ref:node-structural-information($xx/b/bb)),
-    ref:in-same-collection-of(ref:node-structural-information($xx/b2/bb2),ref:node-structural-information($xx/b2/bb2)),
-    ref:in-same-collection-of(ref:node-structural-information($xx/b),ref:node-structural-information($yy/b)),
-    ref:in-same-collection-of(ref:node-structural-information($xx/b2),ref:node-structural-information($yy/b2)),
-    ref:in-same-collection-of(ref:node-structural-information($xx/b/bb),ref:node-structural-information($yy/b/bb)),
-    ref:in-same-collection-of(ref:node-structural-information($xx/b2/bb2),ref:node-structural-information($yy/b2/bb2)),    
-    ref:in-same-collection-of(ref:node-structural-information($x),ref:node-structural-information($x))    
+    ref:in-same-collection-of(ref:node-information($xx/b),ref:node-information($xx/b)),
+    ref:in-same-collection-of(ref:node-information($xx/b2),ref:node-information($xx/b2)),
+    ref:in-same-collection-of(ref:node-information($xx/b/bb),ref:node-information($xx/b/bb)),
+    ref:in-same-collection-of(ref:node-information($xx/b2/bb2),ref:node-information($xx/b2/bb2)),
+    ref:in-same-collection-of(ref:node-information($xx/b),ref:node-information($yy/b)),
+    ref:in-same-collection-of(ref:node-information($xx/b2),ref:node-information($yy/b2)),
+    ref:in-same-collection-of(ref:node-information($xx/b/bb),ref:node-information($yy/b/bb)),
+    ref:in-same-collection-of(ref:node-information($xx/b2/bb2),ref:node-information($yy/b2/bb2)),    
+    ref:in-same-collection-of(ref:node-information($x),ref:node-information($x))    
   }
   </in-same-collection>
 </result>    

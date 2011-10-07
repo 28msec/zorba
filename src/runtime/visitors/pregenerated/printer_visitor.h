@@ -457,6 +457,75 @@ namespace zorba {
     void beginVisit( const FrexpIterator& );
     void endVisit  ( const FrexpIterator& );
 
+    void beginVisit( const NodeInformationIterator& );
+    void endVisit  ( const NodeInformationIterator& );
+
+    void beginVisit( const IsAncestorInformationIterator& );
+    void endVisit  ( const IsAncestorInformationIterator& );
+
+    void beginVisit( const IsFollowingSiblingInformationIterator& );
+    void endVisit  ( const IsFollowingSiblingInformationIterator& );
+
+    void beginVisit( const IsFollowingInformationIterator& );
+    void endVisit  ( const IsFollowingInformationIterator& );
+
+    void beginVisit( const IsDescendantInformationIterator& );
+    void endVisit  ( const IsDescendantInformationIterator& );
+
+    void beginVisit( const IsPrecedingSiblingInformationIterator& );
+    void endVisit  ( const IsPrecedingSiblingInformationIterator& );
+
+    void beginVisit( const IsPrecedingInformationIterator& );
+    void endVisit  ( const IsPrecedingInformationIterator& );
+
+    void beginVisit( const IsChildInformationIterator& );
+    void endVisit  ( const IsChildInformationIterator& );
+
+    void beginVisit( const IsAttributeOfInformationIterator& );
+    void endVisit  ( const IsAttributeOfInformationIterator& );
+
+    void beginVisit( const IsParentInformationIterator& );
+    void endVisit  ( const IsParentInformationIterator& );
+
+    void beginVisit( const IsPrecedingInDocumentOrderInformationIterator& );
+    void endVisit  ( const IsPrecedingInDocumentOrderInformationIterator& );
+
+    void beginVisit( const IsFollowingInDocumentOrderInformationIterator& );
+    void endVisit  ( const IsFollowingInDocumentOrderInformationIterator& );
+
+    void beginVisit( const LevelInformationIterator& );
+    void endVisit  ( const LevelInformationIterator& );
+
+    void beginVisit( const IsAttributeInformationIterator& );
+    void endVisit  ( const IsAttributeInformationIterator& );
+
+    void beginVisit( const IsCommentInformationIterator& );
+    void endVisit  ( const IsCommentInformationIterator& );
+
+    void beginVisit( const IsDocumentInformationIterator& );
+    void endVisit  ( const IsDocumentInformationIterator& );
+
+    void beginVisit( const IsElementInformationIterator& );
+    void endVisit  ( const IsElementInformationIterator& );
+
+    void beginVisit( const IsProcessingInstructionInformationIterator& );
+    void endVisit  ( const IsProcessingInstructionInformationIterator& );
+
+    void beginVisit( const IsTextInformationIterator& );
+    void endVisit  ( const IsTextInformationIterator& );
+
+    void beginVisit( const IsSiblingInformationIterator& );
+    void endVisit  ( const IsSiblingInformationIterator& );
+
+    void beginVisit( const InSameTreeInformationIterator& );
+    void endVisit  ( const InSameTreeInformationIterator& );
+
+    void beginVisit( const InCollectionInformationIterator& );
+    void endVisit  ( const InCollectionInformationIterator& );
+
+    void beginVisit( const InSameCollectionInformationIterator& );
+    void endVisit  ( const InSameCollectionInformationIterator& );
+
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );
 
@@ -513,75 +582,6 @@ namespace zorba {
 
     void beginVisit( const LeastCommonAncestor& );
     void endVisit  ( const LeastCommonAncestor& );
-
-    void beginVisit( const NodeStructuralInformationIterator& );
-    void endVisit  ( const NodeStructuralInformationIterator& );
-
-    void beginVisit( const IsAncestorStructuralInformationIterator& );
-    void endVisit  ( const IsAncestorStructuralInformationIterator& );
-
-    void beginVisit( const IsFollowingSiblingStructuralInformationIterator& );
-    void endVisit  ( const IsFollowingSiblingStructuralInformationIterator& );
-
-    void beginVisit( const IsFollowingStructuralInformationIterator& );
-    void endVisit  ( const IsFollowingStructuralInformationIterator& );
-
-    void beginVisit( const IsDescendantStructuralInformationIterator& );
-    void endVisit  ( const IsDescendantStructuralInformationIterator& );
-
-    void beginVisit( const IsPrecedingSiblingStructuralInformationIterator& );
-    void endVisit  ( const IsPrecedingSiblingStructuralInformationIterator& );
-
-    void beginVisit( const IsPrecedingStructuralInformationIterator& );
-    void endVisit  ( const IsPrecedingStructuralInformationIterator& );
-
-    void beginVisit( const IsChildStructuralInformationIterator& );
-    void endVisit  ( const IsChildStructuralInformationIterator& );
-
-    void beginVisit( const IsAttributeOfStructuralInformationIterator& );
-    void endVisit  ( const IsAttributeOfStructuralInformationIterator& );
-
-    void beginVisit( const IsParentStructuralInformationIterator& );
-    void endVisit  ( const IsParentStructuralInformationIterator& );
-
-    void beginVisit( const IsPrecedingInDocumentOrderStructuralInformationIterator& );
-    void endVisit  ( const IsPrecedingInDocumentOrderStructuralInformationIterator& );
-
-    void beginVisit( const IsFollowingInDocumentOrderStructuralInformationIterator& );
-    void endVisit  ( const IsFollowingInDocumentOrderStructuralInformationIterator& );
-
-    void beginVisit( const LevelStructuralInformationIterator& );
-    void endVisit  ( const LevelStructuralInformationIterator& );
-
-    void beginVisit( const IsAttributeStructuralInformationIterator& );
-    void endVisit  ( const IsAttributeStructuralInformationIterator& );
-
-    void beginVisit( const IsCommentStructuralInformationIterator& );
-    void endVisit  ( const IsCommentStructuralInformationIterator& );
-
-    void beginVisit( const IsDocumentStructuralInformationIterator& );
-    void endVisit  ( const IsDocumentStructuralInformationIterator& );
-
-    void beginVisit( const IsElementStructuralInformationIterator& );
-    void endVisit  ( const IsElementStructuralInformationIterator& );
-
-    void beginVisit( const IsProcessingInstructionStructuralInformationIterator& );
-    void endVisit  ( const IsProcessingInstructionStructuralInformationIterator& );
-
-    void beginVisit( const IsTextStructuralInformationIterator& );
-    void endVisit  ( const IsTextStructuralInformationIterator& );
-
-    void beginVisit( const IsSiblingStructuralInformationIterator& );
-    void endVisit  ( const IsSiblingStructuralInformationIterator& );
-
-    void beginVisit( const InSameTreeStructuralInformationIterator& );
-    void endVisit  ( const InSameTreeStructuralInformationIterator& );
-
-    void beginVisit( const InCollectionStructuralInformationIterator& );
-    void endVisit  ( const InCollectionStructuralInformationIterator& );
-
-    void beginVisit( const InSameCollectionStructuralInformationIterator& );
-    void endVisit  ( const InSameCollectionStructuralInformationIterator& );
 
     void beginVisit( const AbsIterator& );
     void endVisit  ( const AbsIterator& );

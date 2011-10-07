@@ -41,7 +41,7 @@ version 2.x
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
   * Implemented the probe-index-range-value for general indexes
   * Fixed bug #867662 ("nullptr" warning)
-  * New node-structural-information module. This module allows to obtain a representation of a node position, which
+  * New node-information module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.   
 
 version 2.0.1

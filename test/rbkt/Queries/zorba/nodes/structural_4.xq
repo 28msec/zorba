@@ -1,4 +1,4 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-structural-information";
+import module namespace ref = "http://www.zorba-xquery.com/modules/node-information";
 
 declare function local:get-ordpath($struct)
 {
@@ -7,8 +7,8 @@ replace($struct,'^zorba:\d*\.\d*\.\d*\.','ref:')
 
 declare function local:test-generated-ordpath($testa,$testb)
 {
-  let $orda:=local:get-ordpath(ref:node-structural-information($testa))
-  let $ordb:=local:get-ordpath(ref:node-structural-information($testb))
+  let $orda:=local:get-ordpath(ref:node-information($testa))
+  let $ordb:=local:get-ordpath(ref:node-information($testb))
   return
     if ($orda eq $ordb)
     then concat("OK: ",$orda)    
