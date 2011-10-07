@@ -60,21 +60,6 @@ typedef enum { xquery_version_1_0 = 100, xquery_version_3_0 = 300 } xquery_versi
  */
 typedef enum { validate_skip, validate_lax, validate_strict } validation_mode_t;
 
-/** \brief Update property of a collection as defined
- *         in the XQuery Data Definition Facility
- */
-typedef enum { coll_const, coll_append_only, coll_queue, coll_mutable } collection_update_property_t;
-
-/** \brief Order property of a collection as defined
- *         in the XQuery Data Definition Facility
- */
-typedef enum { coll_ordered, coll_unordered } collection_order_property_t;
-
-/** \brief Node modifier of a collection as defined
- *         in the XQuery Data Definition Facility
- */
-typedef enum { coll_node_const, coll_node_mutable } collection_node_modifier_t;
-
 /** \brief Maintenance mode of an index as defined
  *         in the XQuery Data Definition Facility
  */
