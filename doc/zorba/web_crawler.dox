@@ -17,6 +17,7 @@ import module namespace http = "http://www.zorba-xquery.com/modules/http-client"
 import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
 import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+import module namespace file = "http://expath.org/ns/file";
 \endcode
 
 The internal pages are checked recursively, while the external ones are only checked for existence.
@@ -60,10 +61,24 @@ declare %ann:sequential function local:delete-containers(){
 After parsing an internal page with html module, all the links are extracted and parsed recursively, if they haven't been parsed.
 The html module uses tidy library, so we use tidy options to setup for converting from html to xml. 
 Some html tags are marked to be ignored in new-inline-tags param, this being a particular case of this website. 
-You can add or remove tags to suit your website needs.
+You can add or remove tags to suit your website needs.<br/>
+The spaces in the links are trimmed and normalized, and the fragment part is ignored.
 
 \code
-declare function local:get-out-links-parsed($content as node()*, $uri as xs:string) as xs:string*
+declare %ann:sequential function local:get-real-link($href as xs:string, $start-uri as xs:string) as xs:string?
+{
+   variable $absuri;
+   try{
+    $absuri := local:my-substring-before(resolve-uri(fn:normalize-space($href), $start-uri), "#");
+   }
+   catch *
+   { 
+     map:insert($local:processed-external-links, fn:concat("malformed, referenced in page ", $start-uri), $href);
+   }
+   $absuri
+};
+
+declare %ann:sequential function local:get-out-links-parsed($content as node()*, $uri as xs:string) as xs:string*
 {  distinct-values( for $y in  ($content//*:a/string(@href),
                               $content//*:link/string(@href),
                               $content//*:script/string(@src),
@@ -86,39 +101,42 @@ declare function local:tidy-options()
 };
 
 declare  %ann:sequential function local:process-internal-link($x as xs:string, $n as xs:integer){
-      if($n=3) then exit returning (); else {}
+      (: if($n=3) then exit returning (); else {} :)
       if(not(empty(map:get($local:processed-internal-links, $x))))
             then exit returning false();
               else {}
+      fn:trace($x, "GET internal link");
        variable $http-call:=();
        try{
              $http-call:=http:send-request(<httpsch:request method="GET" href="{$x}"/>, (), ());
        }
-       catch * {}
-      if( not(local:alive($http-call)))
+       catch * { }
+       if( not(local:alive($http-call)))
                 then { map:insert($local:processed-internal-links, "broken", $x); exit returning ();}
                else {}
-       if(not (local:get-media-type($http-call[1]) = $supported-media-types))
-                then {map:insert($local:processed-internal-links, "clean", $x);  exit returning ();}
+       
+       if(not (local:get-media-type($http-call[1]) = "text/html"))
+                then { map:insert($local:processed-internal-links, "clean", $x); exit returning ();}
                 else {}
-       variable $string-content := xs:string($http-call[2]);
+       variable $string-content := string($http-call[2]);
        variable $content:=();
 
        try{
              $content:=html:parse($string-content,local:tidy-options() );
+             map:insert($local:processed-internal-links, "clean", $x);
         }
         catch *
-             { 
-                 map:insert($local:processed-internal-links, concat("cannot tidy", $err:description), $x); 
+             {   
+                 map:insert($local:processed-internal-links, concat("cannot tidy ", $err:description), $x); 
                  try{
                        $content:=parse-xml:parse-xml-fragment ($string-content, "");
                  }
                  catch *
-                     { map:insert($local:processed-internal-links, concat("cannot parse", $err:description), $x);}
+                     { map:insert($local:processed-internal-links, concat("cannot parse ", $err:description), $x);}
             }
        variable $links :=();
        if(empty($content))
-            then $links:=local:get-out-links-unparsed($string-content, $x);
+           then $links:=local:get-out-links-unparsed($string-content, fn:trace($x, "parse with regex, because tidy failed"));
            else $links:=local:get-out-links-parsed($content, $x);
        for $l in $links
        return  local:process-link($l, $n+1);
@@ -130,13 +148,12 @@ Some html pages have errors, and tidy library is very strict with checking error
 When the parsing fails, we fallback to using regex for extracting the links.
 
 \code
-declare function local:get-out-links-unparsed($content as xs:string, $uri as xs:string) as xs:string*{
+declare %ann:sequential function local:get-out-links-unparsed($content as xs:string, $uri as xs:string) as xs:string*{
 
       distinct-values( 
          let $search := fn:analyze-string($content, "(&lt;|&amp;lt;|<)(((a|link|area).+?href)|((script|img).+?src))=([""'])(.*?)\7")
          for $other-uri2 in  $search//group[@nr=8]/string()
-         let $y:= fn:normalize-space($other-uri2)
-         return local:get-real-link($y, $uri)
+         return local:get-real-link($other-uri2, $uri)
      )
 };
 
@@ -149,6 +166,7 @@ declare  %ann:sequential function local:process-external-link($x as xs:string){
   if(not(empty(map:get($local:processed-external-links, $x))))
          then   exit returning false();
          else {}
+ fn:trace($x, "HEAD external link");
  variable $http-call:=();
   try{
         $http-call:=http:send-request(<httpsch:request method="HEAD" href="{$x}"/>, (), ());
