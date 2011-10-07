@@ -15,6 +15,7 @@ declare variable $auctions:PersonWatches := xs:QName("auctions:PersonWatches");
 declare variable $auctions:PersonWatches2 := xs:QName("auctions:PersonWatches2");
 declare variable $auctions:AuctionDates := xs:QName("auctions:AuctionDates");
 declare variable $auctions:AuctionDates2 := xs:QName("auctions:AuctionDates2");
+declare variable $auctions:PersonIncome2 := xs:QName("auctions:PersonIncome2");
 
 declare collection auctions:auctions as node()*;
 
@@ -39,7 +40,8 @@ by xs:string(.//city) as xs:string;
 
 
 (:
-  The PersonWatches index maps each open auction to the persons who watch that auction.
+  The PersonWatches index maps each open auction to the persons who watch that 
+  auction. A person may watch multiple open auctions.
 :)
 
 declare %ann:general-equality %ann:manual index auctions:PersonWatches
@@ -58,7 +60,7 @@ by (for $x in ./watches/watch/@open_auction return $x);
 
 (:
   The AuctionDates index maps dates to the open auctions that had a biding on the
-  associated date.
+  associated date. An open auction may have biddings on it on multiple dates.
 :)
 
 declare %ann:general-range %ann:manual index auctions:AuctionDates
@@ -74,6 +76,16 @@ by (for $x in ./bidder/date return xs:date($x)) as xs:date*;
 declare %ann:general-range %ann:manual index auctions:AuctionDates2
 on nodes dml:collection(xs:QName("auctions:auctions"))//open_auction
 by (for $x in ./bidder/date return $x);
+
+
+(:
+  The PersonIncome2 maps each income to the persons who have that income.
+  Each person has at most one income.
+:)
+
+declare %ann:general-range %ann:manual index auctions:PersonIncome2
+on nodes dml:collection(xs:QName("auctions:auctions"))//person
+by .//@income;
 
 
 (:
@@ -97,6 +109,8 @@ declare %ann:sequential function auctions:create-db()
   index_ddl:create($auctions:AuctionDates);
 
   index_ddl:create($auctions:AuctionDates2);
+
+  index_ddl:create($auctions:PersonIncome2);
 };
 
 

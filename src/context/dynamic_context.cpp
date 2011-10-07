@@ -539,7 +539,7 @@ void dynamic_context::bindIndex(
 void dynamic_context::unbindIndex(store::Item* qname)
 {
   if (theAvailableIndices != NULL)
-    theAvailableIndices->remove(qname);
+    theAvailableIndices->erase(qname);
 }
 
 
@@ -564,9 +564,9 @@ store::IC* dynamic_context::getIC(const store::Item* qname)
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::addExternalFunctionParam (
+bool dynamic_context::addExternalFunctionParam(
     const std::string& aName,
-    void* aValue )
+    void* aValue)
 {
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::ext_func_param;
@@ -579,7 +579,7 @@ bool dynamic_context::addExternalFunctionParam (
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::getExternalFunctionParam (
+bool dynamic_context::getExternalFunctionParam(
   const std::string& aName,
   void*& aValue) const
 {
@@ -587,7 +587,8 @@ bool dynamic_context::getExternalFunctionParam (
   val.type = dynamic_context::dctx_value_t::no_val;
   val.func_param = 0;
 
-  if ( !keymap.get(aName, val) ) {
+  if ( !keymap.get(aName, val) ) 
+  {
     if (theParent)
       return theParent->getExternalFunctionParam(aName, aValue);
     else
@@ -638,15 +639,17 @@ dynamic_context::getExternalFunctionParameter(const std::string& aName) const
   val.type = dynamic_context::dctx_value_t::no_val;
   val.func_param = 0;
 
-  if ( !keymap.get(aName, val) ) {
+  if ( !keymap.get(aName, val) ) 
+  {
     if (theParent)
       return theParent->getExternalFunctionParameter(aName);
     else
       return 0;
   }
 
-  ExternalFunctionParameter* lRes
-    = static_cast<ExternalFunctionParameter*>(val.func_param);
+  ExternalFunctionParameter* lRes = 
+  static_cast<ExternalFunctionParameter*>(val.func_param);
+
   return lRes;
 }
 

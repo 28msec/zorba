@@ -482,7 +482,7 @@ iterator end() const
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool find(const T& item)
+bool exists(const T& item)
 {
   ulong hval = hash(item);
 
@@ -510,7 +510,7 @@ bool find(const T& item)
   If the given item is already in the set, return an iterator positioned at the
   associated hash entry; otherwise return the end iterator.
 ********************************************************************************/
-iterator get(const T& item)
+iterator find(const T& item)
 {
   ulong hval = hash(item);
 
@@ -640,13 +640,13 @@ bool update(const T& item, const V& value)
   Remove the item that is pointed to by the given iterator and move the iterator
   to the next item.
 ********************************************************************************/
-void remove(iterator& ite)
+void erase(iterator& ite)
 {
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
   if (ite.thePos < theHashTabSize)
   {
-    removeEntry(&theHashTab[ite.thePos], NULL);
+    eraseEntry(&theHashTab[ite.thePos], NULL);
   }
   else
   {
@@ -654,7 +654,7 @@ void remove(iterator& ite)
 
     ulong hval = hash(item);
 
-    removeNoSync(item, hval);
+    eraseNoSync(item, hval);
   }
 
   ++ite;
@@ -665,25 +665,25 @@ void remove(iterator& ite)
   If the set contains an item that is "equal" to the given item, remove that
   item from the set and return true. Otherwise, return false.
 ********************************************************************************/
-bool remove(const T& item)
+bool erase(const T& item)
 {
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  return removeNoSync(item, hval);
+  return eraseNoSync(item, hval);
 }
 
 
-bool removeNoSync(const T& item)
+bool eraseNoSync(const T& item)
 {
   ulong hval = hash(item);
 
-  return removeNoSync(item, hval);
+  return eraseNoSync(item, hval);
 }
 
 
-bool removeNoSync(const T& item, ulong hval)
+bool eraseNoSync(const T& item, ulong hval)
 {
   HASHENTRY<T, V>* entry = bucket(hval);
 
@@ -695,7 +695,7 @@ bool removeNoSync(const T& item, ulong hval)
   // else copy the 2nd entry to the 1st entry and freeup the 2nd entry.
   if (equal(entry->theItem, item))
   {
-    removeEntry(entry, NULL);
+    eraseEntry(entry, NULL);
     return true;
   }
 
@@ -708,7 +708,7 @@ bool removeNoSync(const T& item, ulong hval)
   {
     if (equal(entry->theItem, item))
     {
-      removeEntry(entry, preventry);
+      eraseEntry(entry, preventry);
       return true;
     }
 
@@ -777,7 +777,7 @@ HASHENTRY<T, V>* freelist()
 /*******************************************************************************
 
 ********************************************************************************/
-void removeEntry(HASHENTRY<T, V>* entry, HASHENTRY<T, V>* preventry)
+void eraseEntry(HASHENTRY<T, V>* entry, HASHENTRY<T, V>* preventry)
 {
   if (preventry == NULL)
   {

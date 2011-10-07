@@ -25,6 +25,9 @@
 
 /**
  * See: http://www2.research.att.com/~bs/C++0xFAQ.html#nullptr
+ *
+ * We use "zorba_nullptr" in combination with a macro to elimimate a
+ * "identifier 'nullptr' will become a keyword in C++0x" warning.
  */
 class nullptr_t {
 public:
@@ -38,7 +41,9 @@ public:
   }
 private:
   void operator&() const;               // whose address can't be taken
-} const nullptr = {};                   // and whose name is nullptr
+} const zorba_nullptr = {};             // and whose name is nullptr
+
+#define nullptr ::zorba_nullptr
 
 #endif /* ZORBA_CXX_NULLPTR */
 

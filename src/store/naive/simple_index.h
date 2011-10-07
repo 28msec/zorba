@@ -240,16 +240,37 @@ public:
   IndexBoxCondition(IndexImpl* idx) : theIndex(idx) { }
 
   void pushItem(store::Item_t& item);
+
+  virtual void pushRange(
+        store::Item_t& lower,
+        store::Item_t& upper,
+        bool haveLower,
+        bool haveUpper,
+        bool lowerIncl,
+        bool upperIncl);
+
+  virtual void pushBound(store::Item_t& bound, bool isLower, bool boundIncl);
 };
 
 
 /*******************************************************************************
+  It represents a condition that is satisfied by the index keys inside a
+  user-specified "box".
 
+  Let M be the number of key columns. Then, an M-dimensional box is defined as
+  a conjuction of M range conditions on columns 0 to M-1. Each range condition
+  specifies a range of acceptable values for some key column. Specifically, a
+  range is defined as the set of all key values K such that
+
+  lower_bound <? K <? upper_bound, where <? is either the lt or the le operator.
+
+  The lower bound may be -INFINITY and the upper bound may be +INFINTY.
 ********************************************************************************/
 class IndexBoxValueCondition : public IndexBoxCondition
 {
   friend class ValueTreeIndex;
   friend class ProbeValueTreeIndexIterator;
+  friend class ProbeGeneralTreeIndexIterator;
 
   friend std::ostream& operator<<(std::ostream& os, const IndexBoxValueCondition& c);
 
@@ -277,8 +298,6 @@ public:
       bool lowerIncl,
       bool upperIncl);
 
-  void pushBound(store::Item_t& bound, bool isLower, bool boundIncl);
-
   bool test(const store::IndexKey& key) const;
 
   std::string toString() const;
@@ -289,7 +308,23 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxValueCondition& cond);
 
 
 /*******************************************************************************
+  It represents the following condition:
 
+  bound op? K, where 
+
+  (a) op? is one of <, <=, >, or >=, 
+  (b) K is a key value, and 
+  (c) bound is either an atomic item or -INFINITY or +INFINITY.
+
+  theRangeFlags:
+  --------------
+  Specify the kind of operator and whether the bound is INFINITY or not
+
+  theBound:
+  ---------
+  The search key that serves as either a lower bound or an upper bound. If,
+  according to theRangeFlags, the bound is not INFINITY, theBound contains 
+  exactly one non-NULL atomic item; otherwise, it is empty.
 ********************************************************************************/
 class IndexBoxGeneralCondition : public IndexBoxCondition
 {
@@ -310,14 +345,6 @@ public:
   std::string getKindString() const { return "BOX_GENERAL"; }
 
   void clear();
-
-  void pushRange(
-      store::Item_t& lower,
-      store::Item_t& upper,
-      bool haveLower,
-      bool haveUpper,
-      bool lowerIncl,
-      bool upperIncl);
 
   void pushBound(store::Item_t& bound, bool isLower, bool boundIncl);
 

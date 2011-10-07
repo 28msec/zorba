@@ -107,7 +107,7 @@ public:
 
   bool insert(XmlNode* key, NodeUpdates* value) { return theMap.insert(key, value); }
 
-  bool remove(XmlNode* key) { return theMap.remove(key); }
+  bool remove(XmlNode* key) { return theMap.erase(key); }
 
   void clear() { theMap.clear(); }
 };

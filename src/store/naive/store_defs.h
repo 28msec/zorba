@@ -106,6 +106,7 @@ enum SchemaTypeCode
 
   XS_FLOAT,
   XS_DOUBLE,
+
   XS_DECIMAL,
   XS_INTEGER,
   XS_NON_POSITIVE_INTEGER,
@@ -130,34 +131,6 @@ enum SchemaTypeCode
   ZXSE_TUPLE,
 
   XS_LAST
-};
-
-
-enum IndexKeyTypeCode
-{
-  IDX_XS_STRING,
-
-  IDX_XS_DOUBLE,
-
-  IDX_XS_DECIMAL,
-
-  IDX_XS_INTEGER,
-
-  IDX_XS_LONG,
-
-  IDX_XS_BASE64BINARY,
-
-  IDX_XS_HEXBINARY,
-
-  IDX_XS_BOOLEAN,
-
-  IDX_XS_DATETIME,
-
-  IDX_XS_DURATION,
-
-  IDX_XS_QNAME,
-
-  IDX_XS_LAST
 };
 
 
