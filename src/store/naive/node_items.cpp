@@ -1388,10 +1388,6 @@ XmlNode* DocumentNode::copyInternal(
     throw;
   }
 
-  if (copymode.theCopyReference)
-    GET_STORE().copyReference(this, copyNode);
-
-
   NODE_TRACE1("}");
   NODE_TRACE1("Copied doc node " << this << " to node " << copyNode);
 
@@ -2015,9 +2011,6 @@ XmlNode* ElementNode::copyInternal(
 
     throw;
   }
-
-  if (copymode.theCopyReference)
-    GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied elem node " << this << " to node " << copyNode
               << " name = " << theName->getStringValue() << " parent = "
@@ -3133,9 +3126,6 @@ XmlNode* AttributeNode::copyInternal(
     throw;
   }
 
-  if (copymode.theCopyReference)
-    GET_STORE().copyReference(this,copyNode);
-
   NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
@@ -3603,9 +3593,6 @@ XmlNode* TextNode::copyInternal(
     delete tree;
     throw;
   }
-
-  if (copymode.theCopyReference)
-    GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied text node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
@@ -4093,9 +4080,6 @@ XmlNode* PiNode::copyInternal(
     throw;
   }
 
-  if (copymode.theCopyReference)
-    GET_STORE().copyReference(this,copyNode);
-
   NODE_TRACE1("Copied pi node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
               << " pos = " << pos);
@@ -4218,9 +4202,6 @@ XmlNode* CommentNode::copyInternal(
     delete tree;
     throw;
   }
-
-  if (copymode.theCopyReference)
-    GET_STORE().copyReference(this,copyNode);
 
   NODE_TRACE1("Copied coment node " << this << " to node " << copyNode
               << " parent = " << std::hex << (parent ? (ulong)parent : 0)
