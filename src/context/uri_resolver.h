@@ -198,15 +198,14 @@ private:
 class ThesaurusEntityData : public EntityData
 {
 public:
-  typedef zorba::locale::iso639_1::type lang_t;
-  ThesaurusEntityData(lang_t aLang);
+  ThesaurusEntityData(locale::iso639_1::type aLang);
   /**
    * @brief Return the language for which a thesaurus is being requested.
    */
-  virtual lang_t getLanguage() const;
+  virtual locale::iso639_1::type getLanguage() const;
 
 private:
-  lang_t const theLang;
+  locale::iso639_1::type const theLang;
 };
 
 /**

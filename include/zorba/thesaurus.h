@@ -24,19 +24,20 @@
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
 #include <zorba/locale.h>
+#include <zorba/uri_resolvers.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// CEEJ rename this class to ThesaurusResource, make it subclass Resource
 /**
- * A %Thesaurus is an abstract base class for thesaurus implementations.
+ * A %ThesaurusResource is-a Resource for thesaurus implementations.
  */
-class ZORBA_DLL_PUBLIC Thesaurus {
+class ZORBA_DLL_PUBLIC ThesaurusResource : public Resource {
 public:
-  typedef std::unique_ptr<Thesaurus,internal::ztd::destroy_delete<Thesaurus> >
+  typedef std::unique_ptr<ThesaurusResource,
+                          internal::ztd::destroy_delete<ThesaurusResource> >
           ptr;
 
   /**
@@ -66,19 +67,20 @@ public:
      */
     virtual bool next( String *synonym ) = 0;
   protected:
-    virtual ~iterator() {}
+    virtual ~iterator() { }
   };
 
   /**
-   * Destroys this %Thesaurus.
-   * This function is called by Zorba when the %Thesaurus is no longer needed.
+   * Destroys this %ThesaurusResource.
+   * This function is called by Zorba when the %ThesaurusResource is no longer
+   * needed.
    *
-   * If your ThesaurusProvider dynamically allocates %Thesaurus objects, then
-   * the implementation can simply be (and usually is) <code>delete
-   * this</code>.
+   * If your ThesaurusProvider dynamically allocates %ThesaurusResource
+   * objects, then the implementation can simply be (and usually is)
+   * <code>delete this</code>.
    *
-   * If your ThesaurusProvider returns a pointer to a static %Thesaurus object,
-   * then the implementation should do nothing.
+   * If your ThesaurusProvider returns a pointer to a static %ThesaurusResource
+   * object, then the implementation should do nothing.
    */
   virtual void destroy() const = 0;
 
@@ -100,7 +102,7 @@ public:
           range_type at_least, range_type at_most ) const = 0;
 
 protected:
-  virtual ~Thesaurus();
+  virtual ~ThesaurusResource();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

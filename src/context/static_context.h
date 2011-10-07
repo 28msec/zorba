@@ -40,12 +40,6 @@
 
 #include "zorbautils/hashmap_zstring.h"
 
-// CEEJ this #include can be deleted, but doing so causes several unrelated
-// build failures - need to fix
-#ifndef ZORBA_NO_FULL_TEXT
-#include "runtime/full_text/thesaurus.h"
-#endif /* ZORBA_NO_FULL_TEXT */
-
 #include "common/shared_types.h"
 #include "util/stl_util.h"
 #include "util/auto_vector.h"

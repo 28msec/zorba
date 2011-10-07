@@ -34,7 +34,7 @@ static bool destroy_called;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class TestThesaurus : public Thesaurus {
+class TestThesaurus : public ThesaurusResource {
 public:
   // inherited
   void destroy() const;
@@ -46,7 +46,7 @@ private:
 
   static thesaurus_t const& get_thesaurus();
 
-  class iterator : public Thesaurus::iterator {
+  class iterator : public ThesaurusResource::iterator {
   public:
     iterator( synonyms_t const &s ) : synonyms_( s ), i_( s.begin() ) { }
     void destroy() const;
@@ -74,12 +74,12 @@ void TestThesaurus::destroy() const {
   destroy_called = true;
 }
 
-Thesaurus::iterator::ptr
+ThesaurusResource::iterator::ptr
 TestThesaurus::lookup( String const &phrase, String const &relationship,
                        range_type at_least, range_type at_most ) const {
   static thesaurus_t const &thesaurus = get_thesaurus();
   thesaurus_t::const_iterator const i = thesaurus.find( phrase );
-  Thesaurus::iterator::ptr result;
+  ThesaurusResource::iterator::ptr result;
   if ( i != thesaurus.end() )
     result.reset( new iterator( *i->second ) );
   return std::move( result );
@@ -100,24 +100,22 @@ bool TestThesaurus::iterator::next( String *synonym ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class TestThesaurusProvider : public ThesaurusProvider {
+class TestThesaurusResolver : public URLResolver {
 public:
-  TestThesaurusProvider( String const &uri ) : uri_( uri ) { }
+  TestThesaurusResolver( String const &uri ) : uri_( uri ) { }
 
   // inherited
-  Thesaurus::ptr getThesaurus( String const &uri, iso639_1::type lang ) const;
+  Resource* resolveURL( String const &uri, EntityData const* );
 private:
   String const uri_;
 };
 
-Thesaurus::ptr
-TestThesaurusProvider::getThesaurus( String const &uri,
-                                     iso639_1::type lang ) const {
+Resource*
+TestThesaurusResolver::resolveURL( String const &uri, EntityData const *ed ) {
   static TestThesaurus thesaurus;
-  Thesaurus::ptr result;
   if ( uri == uri_ )
-    result.reset( &thesaurus );
-  return std::move( result );
+    return &thesaurus;
+  return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -137,8 +135,8 @@ int thesaurus( int argc, char *argv[] ) {
       "  using thesaurus at \"http://test\" \n";
 
     StaticContext_t sctx = zorba->createStaticContext();
-    TestThesaurusProvider provider( "http://test" );
-    sctx->addThesaurusProvider( &provider );
+    TestThesaurusResolver resolver( "http://test" );
+    sctx->registerURLResolver( &resolver );
     XQuery_t xquery = zorba->compileQuery( query_src, sctx );
 
     Zorba_SerializerOptions ser_options;

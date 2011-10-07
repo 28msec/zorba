@@ -31,7 +31,7 @@ namespace internal {
 
 class ThesaurusWrapper : public Thesaurus {
 public:
-  ThesaurusWrapper( zorba::Thesaurus::ptr );
+  ThesaurusWrapper( zorba::ThesaurusResource::ptr );
   ~ThesaurusWrapper();
 
   // inherited
@@ -39,7 +39,7 @@ public:
   iterator::ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
 
 private:
-  typedef zorba::Thesaurus::iterator::ptr api_iterator_ptr;
+  typedef zorba::ThesaurusResource::iterator::ptr api_iterator_ptr;
 
   struct iterator_wrapper : Thesaurus::iterator {
     void destroy() const;
@@ -51,7 +51,7 @@ private:
     api_iterator_ptr api_ptr_;
   };
 
-  zorba::Thesaurus::ptr api_thesaurus_;
+  zorba::ThesaurusResource::ptr api_thesaurus_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

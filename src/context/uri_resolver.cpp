@@ -117,13 +117,13 @@ namespace impl {
   {
   }
 
-  ThesaurusEntityData::ThesaurusEntityData(lang_t aLang)
+  ThesaurusEntityData::ThesaurusEntityData(locale::iso639_1::type aLang)
     : EntityData(EntityData::THESAURUS),
       theLang(aLang)
   {
   }
 
-  ThesaurusEntityData::lang_t ThesaurusEntityData::getLanguage() const
+  locale::iso639_1::type ThesaurusEntityData::getLanguage() const
   {
     return theLang;
   }

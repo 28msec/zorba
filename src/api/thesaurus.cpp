@@ -21,11 +21,11 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Thesaurus::~Thesaurus() {
+ThesaurusResource::~ThesaurusResource() {
   // out-of-line since it's virtual
 }
 
-//Thesaurus::iterator::~iterator() {
+//ThesaurusResource::iterator::~iterator() {
 //  // out-of-line since it's virtual
 //}
 

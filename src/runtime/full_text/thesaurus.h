@@ -20,6 +20,7 @@
 #include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
 
+#include "context/uri_resolver.h"
 #include "util/stl_util.h"
 #include "zorbatypes/zstring.h"
 
@@ -30,12 +31,10 @@ namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// CEEJ as with public API, rename this class ThesaurusResource and make a
-// subclass of impl::Resource.
 /**
  * A %Thesaurus is the abstract base class for thesaurus implementations.
  */
-class Thesaurus {
+class Thesaurus : public impl::Resource {
 public:
   typedef std::unique_ptr<Thesaurus,ztd::destroy_delete<Thesaurus> > ptr;
 
