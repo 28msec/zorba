@@ -366,7 +366,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   store::NsBindings const ns_bindings;
   ftmatch_options const *options;
   static_context const *static_ctx;
-  Tokenizer const *tokenizer;
+  Tokenizer::ptr tokenizer;
   store::Item_t type_name;
   Tokenizer::Properties props;
   TokenizerProvider const *tokenizer_provider;

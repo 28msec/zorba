@@ -101,16 +101,6 @@ PlanIter_t zorba_full_text_tokenizer_properties::codegen(
   return new TokenizerPropertiesIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_full_text_tokenizer_properties::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new TokenizerPropertiesIterator(sctx, loc, argv);
-}
-
 void populate_context_ft_module(static_context* sctx)
 {
   {

@@ -64,6 +64,7 @@ public:
   // inherited
   void destroy() const;
   void element( Item const&, int );
+  void properties( Properties* ) const;
   void tokenize( char const*, size_type, iso639_1::type, bool, Callback&,
                  void* );
 
@@ -167,6 +168,11 @@ bool TestTokenizer::is_word_char( char c ) {
 
 inline char TestTokenizer::peek( char const *s, char const *end ) {
   return ++s < end ? *s : '\0';
+}
+
+void TestTokenizer::properties( Properties *p ) const {
+  ::memset( p, 0, sizeof( Properties ) );
+  p->elements_separate_tokens = true;
 }
 
 #define HANDLE_BACKSLASH()            \

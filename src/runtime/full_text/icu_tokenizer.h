@@ -48,6 +48,7 @@ public:
 
   // inherited
   void destroy() const;
+  void properties( Properties* ) const;
   void tokenize( char const*, size_type, locale::iso639_1::type, bool,
                  Callback&, void* );
 

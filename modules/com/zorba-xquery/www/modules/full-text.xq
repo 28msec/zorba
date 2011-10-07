@@ -200,6 +200,6 @@ declare function ft:tokenize-string( $string as xs:string,
  : @return said properties.
  :)
 declare function ft:tokenizer-properties()
-  as element(ft:tokenizer-properties) external;
+  as node() external;
 
 (: vim:set et sw=2 ts=2: :)

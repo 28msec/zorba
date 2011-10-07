@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <cctype>
+#include <cstring>
 #include <unicode/unistr.h>
 
 #define DEBUG_TOKENIZER 0
@@ -156,6 +157,11 @@ ICU_Tokenizer::~ICU_Tokenizer() {
 
 void ICU_Tokenizer::destroy() const {
   delete this;
+}
+
+void ICU_Tokenizer::properties( Properties *p ) const {
+  ::memset( p, 0, sizeof( Properties ) );
+  p->elements_separate_tokens = true;
 }
 
 #define HANDLE_BACKSLASH()            \
