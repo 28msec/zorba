@@ -386,7 +386,7 @@ LevelStructuralInformationIterator::nextImpl(store::Item_t& result, PlanState& p
 
   try
   {
-    result=lUri->getLevel();
+    result = lUri->getLevel();
   }
   catch (ZorbaException& e)
   {
