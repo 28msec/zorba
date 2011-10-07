@@ -18,12 +18,12 @@ xquery version "1.0";
 
 (:~
  : The module provides functions to compute an immutable and opaque reference 
- : for any node, either temporary or stored in a collection and for retrieving
- : nodes given their identifier. The identifiers are immutable, i.e. a node 
- : identifier does not change during the node lifetime. Identifiers are also 
- : unique, in that, two nodes with different identities will never have identical
- : identifiers.
- : A node, at any time during its lifetime, can be retrieved by its identifier.
+ : for any node and for retrieving nodes given their identifier. The identifiers 
+ : are immutable, i.e. a node identifier does not change during the node lifetime,
+ : and cannot be reused for another node after the original node gets deleted.
+ : Identifiers are unique, in that, two different nodes will never have the same 
+ : identifier.  A node, at any time during its lifetime, can be retrieved by its 
+ : identifier.
  :
  : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle                          
  : documentation</a> about details on storing nodes in collections or as documents.</p>
@@ -67,8 +67,7 @@ declare function ref:node-reference(
  : Returns the node identified by the given node reference.
  :
  : <p>The function returns the empty sequence if the node
- : that is referenced does not exist (e.g. because it was 
- : deleted or the temporary node is not available anymore).</p>
+ : that is referenced does not exist.</p>
  :
  : @param $arg the URI of the node to retrieve.
  :
