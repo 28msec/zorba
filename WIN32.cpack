@@ -14,5 +14,3 @@
 #
 
 INCLUDE(InstallRequiredSystemLibraries)
-
-INSTALL(PROGRAMS ${ZORBA_REQUIRED_DLLS} DESTINATION bin)

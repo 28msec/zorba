@@ -23,7 +23,7 @@
   ---------------
 
   Bug or error reports should be sent to
-  https://sourceforge.net/tracker/?group_id=226244&atid=1067586
+  https://bugs.launchpad.net/zorba.
 
 
   Licensing
@@ -42,7 +42,7 @@
 
   o If you have a concrete bug report for Zorba please go to the
   Zorba's Bug Database and submit your report:
-  https://sourceforge.net/tracker/?group_id=226244&atid=1067586
+  https://bugs.launchpad.net/zorba.
 
   o If you want to participate in actively developing Zorba or
   support Zorba, please write a mail to: zorba-coders@lists.inf.ethz.ch.
