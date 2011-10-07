@@ -57,25 +57,25 @@ NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
 bool
 NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-    store::Item_t lUUID;
-    bool haveResult;
+  store::Item_t lUUID;
+  bool haveResult;
 
-    PlanIteratorState *state;
-    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-    consumeNext(lUUID, theChildren[0].getp(), planState);
-    try
-    {
-      haveResult=GENV_STORE.getNodeByReference(result, lUUID->getStringValue());
-    }
-    catch (ZorbaException& e)
-    {
-      set_source( e, loc );
-      throw;
-    }
-    STACK_PUSH(haveResult, state);
+  consumeNext(lUUID, theChildren[0].getp(), planState);
+  try
+  {
+    haveResult = GENV_STORE.getNodeByReference(result, lUUID->getStringValue());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH(haveResult, state);
 
-    STACK_END (state);
+  STACK_END (state);
 }
 
 
@@ -360,7 +360,6 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
         {
           uri_string = item_uri->getStringValue();
           // need to convert the opaque uri into a valid ncname
-          // e.g. z0.1.1.c.50
 #ifndef NDEBUG
           ZORBA_ASSERT( uri_string.find_first_of("urn:uuid:") == 0 );
 #endif

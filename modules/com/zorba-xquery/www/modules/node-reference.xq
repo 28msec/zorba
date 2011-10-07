@@ -25,8 +25,8 @@ xquery version "1.0";
  : identifiers.
  : A node, at any time during its lifetime, can be retrieved by its identifier.
  :
- : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
- : documentation</a> about details on management and manipulation of collections.</p>
+ : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle                          
+ : documentation</a> about details on storing nodes in collections or as documents.</p>
  : 
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  :
@@ -43,7 +43,7 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Computes an immutable and opaque node reference (with type xs:anyURI) for
+ : Returns an immutable and opaque node reference (with type xs:anyURI) for
  : a given node, either temporary or stored in a collection.
  : 
  : <p>The generated identifier is immutable, i.e. a node 
@@ -67,14 +67,15 @@ declare function ref:node-reference(
  : Returns the node identified by the given node reference.
  :
  : <p>The function returns the empty sequence if the node
- : that is referenced was deleted.</p>
+ : that is referenced does not exist (e.g. because it was 
+ : deleted or the temporary node is not available anymore).</p>
  :
  : @param $arg the URI of the node to retrieve.
  :
  : @return the node identified by the URI passed as parameter
  :         or the empty-sequence if no node with that URI is found.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node reference
+ : @error zerr:ZAPI0028 if the given URI is not a valid node reference
  :        computed by the <tt>ref:node-reference</tt> function.
  :)
 declare function ref:node-by-reference(
