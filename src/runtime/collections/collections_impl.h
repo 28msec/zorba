@@ -19,7 +19,7 @@
 
 #include "common/shared_types.h"
 
-#include "runtime/base/narybase.h"
+#include "runtime/base/unarybase.h"
 #include "runtime/collections/collections_base.h"
 
 namespace zorba{
@@ -30,27 +30,33 @@ namespace zorba{
  *
  * Author: Zorba Team
  */
-class CountCollectionIterator: public NaryBaseIterator<CountCollectionIterator, PlanIteratorState>
+class CountCollectionIterator: public UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>
 {
+  protected:
+    //Whether the Collection is of the dynamic or static collection module
+    bool theDynamicCollection;
+
   public:
 
   SERIALIZABLE_CLASS(CountCollectionIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CountCollectionIterator,
-      NaryBaseIterator<CountCollectionIterator, PlanIteratorState>);
+      UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-        (NaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
+        (UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
   }
   CountCollectionIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    PlanIter_t& child,
+    bool aDynamicCollection)
     :
-    NaryBaseIterator<CountCollectionIterator, PlanIteratorState>(
-        sctx, loc, children)
+    UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>(
+        sctx, loc, child),
+    theDynamicCollection(aDynamicCollection)
   {}
 
   virtual ~CountCollectionIterator();

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ extern const int g_NaryBaseIterator_class_versions_count;
 
 /*******************************************************************************
   Superclass for all iterators which have N child iterators and no additional
-  data members. 
+  data members.
 ********************************************************************************/
 template <class IterType, class StateType>
 class NaryBaseIterator : public Batcher<IterType>
@@ -59,11 +59,16 @@ public:
 
   virtual ~NaryBaseIterator(){}
 
+  std::vector<PlanIter_t>& getChildren()
+  {
+    return theChildren;
+  }
+
   virtual uint32_t getStateSize() const
   {
     return StateTraitsImpl<StateType>::getStateSize();
   }
- 
+
   virtual uint32_t getStateSizeOfSubtree() const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
@@ -101,7 +106,7 @@ NaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
 
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
   for (; lIter != lEnd; ++lIter )
   {
@@ -116,12 +121,12 @@ template <class IterType, class StateType>
 void
 NaryBaseIterator<IterType, StateType>::openImpl(
     PlanState& planState,
-    uint32_t& offset) 
+    uint32_t& offset)
 {
   StateTraitsImpl<StateType>::createState(planState, this->theStateOffset, offset);
   StateTraitsImpl<StateType>::initState(planState, this->theStateOffset);
 
-  std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+  std::vector<PlanIter_t>::iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
   for ( ; lIter != lEnd; ++lIter )
 	{
@@ -136,7 +141,7 @@ NaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<StateType>::reset(planState, this->theStateOffset);
 
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
   for ( ; lIter != lEnd; ++lIter )
 	{
@@ -149,7 +154,7 @@ template <class IterType, class StateType>
 void
 NaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 {
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
   for ( ; lIter != lEnd; ++lIter )
   {
@@ -214,7 +219,7 @@ public:                                                                 \
 ********************************************************************************/
 
 #define NARY_ITER(name) \
-NARY_ITER_STATE(name, PlanIteratorState) 
+NARY_ITER_STATE(name, PlanIteratorState)
 
 
 } /* namespace zorba */

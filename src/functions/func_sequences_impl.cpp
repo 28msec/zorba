@@ -22,6 +22,9 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/var_iterators.h"
 
+#include "runtime/collections/collections_impl.h"
+#include "runtime/collections/collections.h"
+
 #include "system/globalenv.h"
 
 #include "compiler/expression/expr.h"
@@ -30,7 +33,7 @@
 
 #include "types/typeops.h"
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -39,7 +42,7 @@ namespace zorba
 ********************************************************************************/
 xqtref_t op_concatenate::getReturnType(
     const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const 
+    const std::vector<xqtref_t>& arg_types) const
 {
   ulong sz = (ulong)arg_types.size();
 
@@ -47,11 +50,11 @@ xqtref_t op_concatenate::getReturnType(
   {
     return GENV_TYPESYSTEM.EMPTY_TYPE;
   }
-  else 
+  else
   {
     xqtref_t t = arg_types[0];
     TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
-    for (ulong i = 1; i < sz; i++) 
+    for (ulong i = 1; i < sz; i++)
     {
       t = TypeOps::union_type(*t, *arg_types[i], tm);
       TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
@@ -65,14 +68,14 @@ xqtref_t op_concatenate::getReturnType(
   }
 }
 
-  
-BoolAnnotationValue op_concatenate::ignoresSortedNodes(expr* fo, ulong input) const 
+
+BoolAnnotationValue op_concatenate::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue op_concatenate::ignoresDuplicateNodes(expr* fo, ulong input) const 
+BoolAnnotationValue op_concatenate::ignoresDuplicateNodes(expr* fo, ulong input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -81,13 +84,13 @@ BoolAnnotationValue op_concatenate::ignoresDuplicateNodes(expr* fo, ulong input)
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_empty::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_empty::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_empty::ignoresDuplicateNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_empty::ignoresDuplicateNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -96,13 +99,13 @@ BoolAnnotationValue fn_empty::ignoresDuplicateNodes(expr* fo, ulong input) const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_exists::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_exists::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_exists::ignoresDuplicateNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_exists::ignoresDuplicateNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -120,8 +123,8 @@ xqtref_t fn_distinct_values::getReturnType(
 
 
 BoolAnnotationValue fn_distinct_values::ignoresSortedNodes(
-    expr* fo, 
-    ulong input) const 
+    expr* fo,
+    ulong input) const
 {
   if (input == 0)
     return fo->getIgnoresSortedNodes();
@@ -132,7 +135,7 @@ BoolAnnotationValue fn_distinct_values::ignoresSortedNodes(
 
 BoolAnnotationValue fn_distinct_values::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;
@@ -146,7 +149,7 @@ BoolAnnotationValue fn_distinct_values::ignoresDuplicateNodes(
 ********************************************************************************/
 BoolAnnotationValue fn_insert_before::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   if (input == 0 || input == 2)
     return fo->getIgnoresSortedNodes();
@@ -157,7 +160,7 @@ BoolAnnotationValue fn_insert_before::ignoresSortedNodes(
 
 BoolAnnotationValue fn_insert_before::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   if (input == 0 || input == 2)
     return fo->getIgnoresSortedNodes();
@@ -179,7 +182,7 @@ xqtref_t fn_remove::getReturnType(
 
 BoolAnnotationValue fn_remove::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   if (input == 0)
     return ANNOTATION_FALSE;
@@ -190,7 +193,7 @@ BoolAnnotationValue fn_remove::ignoresSortedNodes(
 
 BoolAnnotationValue fn_remove::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   return ANNOTATION_FALSE;
 }
@@ -209,7 +212,7 @@ xqtref_t fn_reverse::getReturnType(
 
 BoolAnnotationValue fn_reverse::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   return fo->getIgnoresSortedNodes();
 }
@@ -217,7 +220,7 @@ BoolAnnotationValue fn_reverse::ignoresSortedNodes(
 
 BoolAnnotationValue fn_reverse::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   return fo->getIgnoresSortedNodes();
 }
@@ -250,7 +253,7 @@ PlanIter_t fn_subsequence::codegen(
   const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
-      posExpr->get_expr_kind() == const_expr_kind && 
+      posExpr->get_expr_kind() == const_expr_kind &&
       lenExpr != NULL &&
       lenExpr->get_expr_kind() == const_expr_kind)
   {
@@ -277,6 +280,30 @@ PlanIter_t fn_subsequence::codegen(
   }
 
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
+}
+
+
+/******************************************************************************
+fn:count
+*******************************************************************************/
+PlanIter_t fn_count::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  if(typeid(*argv[0]) == typeid(ZorbaCollectionIterator))
+  {
+    ZorbaCollectionIterator& collection =
+      static_cast<ZorbaCollectionIterator&>(*argv[0]);
+    return new CountCollectionIterator(sctx, loc,
+      collection.getChildren()[0], collection.isDynamic());
+  }
+  else
+  {
+    return new FnCountIterator(sctx, loc, argv);
+  }
 }
 
 
@@ -310,7 +337,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
   CtxVarIterator* ctxVarIter;
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
-      posExpr->get_expr_kind() == const_expr_kind && 
+      posExpr->get_expr_kind() == const_expr_kind &&
       lenExpr != NULL &&
       lenExpr->get_expr_kind() == const_expr_kind)
   {
@@ -402,14 +429,14 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
     if (inputExpr->get_expr_kind() == relpath_expr_kind)
     {
       const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
-      
+
       ulong numSteps = pathExpr->numSteps();
 
       if (pos > 0 && numSteps == 2)
       {
         AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
         assert(input != NULL);
-        
+
         if (input->setTargetPos(pos-1))
           return aArgs[0];
       }
@@ -436,7 +463,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
   {
     const var_expr* inputVar = inputExpr->get_var();
-      
+
     if (inputVar != NULL &&
         (inputVar->get_kind() == var_expr::let_var ||
          inputVar->get_kind() == var_expr::win_var ||
@@ -496,7 +523,7 @@ xqtref_t fn_zero_or_one::getReturnType(
 }
 
 
-BoolAnnotationValue fn_zero_or_one::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_zero_or_one::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -528,13 +555,13 @@ xqtref_t fn_one_or_more::getReturnType(
 }
 
 
-BoolAnnotationValue fn_one_or_more::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_one_or_more::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return fo->getIgnoresSortedNodes();
 }
 
 
-BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, ulong input) const
 {
   return fo->getIgnoresDuplicateNodes();
 }
@@ -589,7 +616,7 @@ PlanIter_t fn_union::codegen(
 PlanIter_t fn_intersect::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,
-    const QueryLoc& loc, 
+    const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
@@ -626,7 +653,7 @@ PlanIter_t fn_except::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_count::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_count::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -635,7 +662,7 @@ BoolAnnotationValue fn_count::ignoresSortedNodes(expr* fo, ulong input) const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_avg::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_avg::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -672,7 +699,7 @@ PlanIter_t fn_min::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_sum::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_sum::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -766,13 +793,13 @@ BoolAnnotationValue op_sum_integer::ignoresSortedNodes(expr* fo, ulong input) co
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_id::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_id::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_id::ignoresDuplicateNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_id::ignoresDuplicateNodes(expr* fo, ulong input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;
@@ -786,7 +813,7 @@ BoolAnnotationValue fn_id::ignoresDuplicateNodes(expr* fo, ulong input) const
 ********************************************************************************/
 BoolAnnotationValue fn_element_with_id::ignoresSortedNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -794,7 +821,7 @@ BoolAnnotationValue fn_element_with_id::ignoresSortedNodes(
 
 BoolAnnotationValue fn_element_with_id::ignoresDuplicateNodes(
     expr* fo,
-    ulong input) const 
+    ulong input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;
@@ -806,13 +833,13 @@ BoolAnnotationValue fn_element_with_id::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_idref::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_idref::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
 
 
-BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, ulong input) const 
+BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, ulong input) const
 {
   if (input == 0)
     return ANNOTATION_TRUE;
@@ -867,7 +894,7 @@ void populate_context_sequences_impl(static_context* sctx)
 
   DECL(sctx, fn_exactly_one,
        (createQName(fn_ns, "", "exactly-one"),
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, fn_exactly_one_noraise,
@@ -895,9 +922,9 @@ void populate_context_sequences_impl(static_context* sctx)
 
   DECL(sctx, fn_max,
        (createQName(fn_ns,"","max"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-  
+
   DECL(sctx, fn_max,
        (createQName(fn_ns,"","max"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
@@ -906,23 +933,23 @@ void populate_context_sequences_impl(static_context* sctx)
 
   DECL(sctx, fn_min,
        (createQName(fn_ns,"","min"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, fn_min,
        (createQName(fn_ns,"","min"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, fn_head,
        (createQName(fn_ns,"","head"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, fn_tail,
        (createQName(fn_ns,"","tail"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 }

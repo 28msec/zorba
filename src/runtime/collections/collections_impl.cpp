@@ -62,63 +62,6 @@ void checkNodeType(
     const QueryLoc& aLoc,
     bool  dyn_coll);
 
-/*******************************************************************************
-  Shared functions for loading a Collection given a string or item
-********************************************************************************/
-store::Collection_t findCollection(static_context *sctx, const QueryLoc &loc,
-                                   zstring &resolvedURIString)
-{
-  store::Collection_t coll;
-  std::auto_ptr<impl::Resource> lResource;
-  impl::CollectionResource* lCollResource;
-  zstring lErrorMessage;
-
-  lResource = sctx->resolve_uri( resolvedURIString, impl::EntityData::COLLECTION, lErrorMessage );
-  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
-  if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
-  {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
-      ERROR_LOC( loc )
-    );
-  }
-  return coll;
-}
-
-store::Collection_t findCollection(static_context *sctx, const QueryLoc &loc,
-	store::Item_t &lURI)
-{
-  zstring resolvedURIString;
-  try
-  {
-    resolvedURIString = sctx->resolve_relative_uri(lURI->getStringValue());
-  }
-  catch (ZorbaException const&)
-  {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( lURI->getStringValue(), ZED( BadAnyURI ) ),
-      ERROR_LOC( loc )
-    );
-  }
-  return findCollection(sctx, loc, resolvedURIString);
-}
-
-store::Collection_t findCollection(static_context* sctx, const QueryLoc &loc, PlanState& planState)
-{
-  store::Item_t resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
-  zstring resolvedURIString = sctx->resolve_relative_uri(resolvedURIItem->getStringValue());
-
-  if( NULL == resolvedURIItem)
-    throw XQUERY_EXCEPTION(
-      err::FODC0002,
-      ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
-      ERROR_LOC( loc )
-    );
-
-  return findCollection(sctx, loc, resolvedURIString);
-}
 
 /*******************************************************************************
   fn:collection() as node()*
@@ -164,10 +107,15 @@ void FnCollectionIteratorState::reset(PlanState& planState)
   }
 }
 
+
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  store::Item_t lURI, resolvedURIItem;
   store::Collection_t coll;
-  store::Item_t lURI;
+  std::auto_ptr<impl::Resource> lResource;
+  impl::CollectionResource* lCollResource;
+  zstring resolvedURIString;
+  zstring lErrorMessage;
 
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
@@ -175,11 +123,42 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (theChildren.size() == 1 &&
       consumeNext(lURI, theChildren[0].getp(), planState))
   {
-    coll = findCollection(theSctx, loc, lURI);
+    try
+    {
+      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
+    }
+    catch (ZorbaException const&)
+    {
+      throw XQUERY_EXCEPTION(
+        err::FODC0004,
+        ERROR_PARAMS( lURI->getStringValue(), ZED( BadAnyURI ) ),
+        ERROR_LOC( loc )
+      );
+    }
   }
   else
   {
-    coll = findCollection(theSctx, loc, planState);
+    resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
+    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
+
+    if( NULL == resolvedURIItem)
+      throw XQUERY_EXCEPTION(
+        err::FODC0002,
+        ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInDynamicCtx ) ),
+        ERROR_LOC( loc )
+      );
+  }
+
+
+  lResource = theSctx->resolve_uri( resolvedURIString, impl::EntityData::COLLECTION, lErrorMessage );
+  lCollResource = dynamic_cast<impl::CollectionResource*>(lResource.get());
+  if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FODC0004,
+      ERROR_PARAMS( resolvedURIString, lErrorMessage ),
+      ERROR_LOC( loc )
+    );
   }
 
   /** return the nodes of the collection */
@@ -198,6 +177,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
 /*******************************************************************************
 Iterator for optimizing fn:count when applied to collections
 ********************************************************************************/
@@ -206,28 +186,38 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   store::Item_t lSequenceItem;
   ulong lCount = 0;
   store::Collection_t coll;
-  store::Item_t lURI;
+  store::Item_t qName;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  //This optimization converts the fn:count and fn:collection into a single node
-  //So we get the collection from the child like fn:collection
-  //But return it's size instead
-  if (theChildren.size() == 1 &&
-      consumeNext(lURI, theChildren[0].getp(), planState))
+  ZORBA_ASSERT(consumeNext(qName, theChild.getp(), planState));
+
+   if(theSctx->lookup_collection(qName) == 0  && ! theDynamicCollection)
   {
-    coll = findCollection(theSctx, loc, lURI);
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
+      ERROR_PARAMS( qName->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
-  else
+
+  coll = GENV_STORE.getCollection(qName, theDynamicCollection);
+
+  if (coll == NULL)
   {
-    coll = findCollection(theSctx, loc, planState);
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0003_COLLECTION_DOES_NOT_EXIST,
+      ERROR_PARAMS( qName->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, coll->size()), state);
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
 ********************************************************************************/
@@ -1627,7 +1617,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
       ERROR_LOC( aLoc )
     );
   }
-  if (collectionDecl && 
+  if (collectionDecl &&
       collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
   {
     throw XQUERY_EXCEPTION(
