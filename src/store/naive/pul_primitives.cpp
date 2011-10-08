@@ -480,7 +480,8 @@ void UpdSetElementType::apply()
     theOldTypedValue=textChild->getValue();
     textChild->revertToTextContent();
   }
-
+  else
+    theOldHaveListValue= false;
 
   //
   // Apply operation
