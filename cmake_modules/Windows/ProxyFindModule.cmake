@@ -32,6 +32,15 @@ MACRO (PRINT_FIND_END_TITLE MODULE_NAME LOCATION_VAR)
 ENDMACRO (PRINT_FIND_END_TITLE)
 
 
+MACRO (PRINT_FIND_END_TITLE_SYSTEM MODULE_NAME FOUND)
+  IF (${FOUND})
+    MESSAGE (STATUS "************* DONE (found) *************")
+  ELSE (${FOUND})
+    MESSAGE (STATUS "*********** DONE (not found) ***********")
+  ENDIF (${FOUND})
+ENDMACRO (PRINT_FIND_END_TITLE_SYSTEM)
+
+
 MACRO (INSTALL_DLL DLL_PATH)
   IF (${PROJECT_NAME} STREQUAL "zorba")
     # for zorba core requirements, install this DLL
@@ -211,6 +220,34 @@ MACRO (FIND_PACKAGE_WIN32)
   SET(MODULE_COMPONENT)
 
 ENDMACRO (FIND_PACKAGE_WIN32)
+
+
+# This macro will just perform a normal library search without trying to guess
+# locations. This should be used for searching libraries that can be found on
+# Windows using other means like registry entries (ImageMagick) or special
+# environment variables (Java or JNI)
+MACRO (FIND_PACKAGE_WIN32_NO_PROXY MODULE_NAME FOUND_VAR)
+
+  PRINT_FIND_TITLE (${MODULE_NAME})
+
+  # remove the Windows module path (both from Zorba or the external modules)
+  # to avoid an infinite recursion
+  FOREACH (PATH ${CMAKE_MODULE_PATH})
+    IF ("${PATH}" MATCHES ".*/cmake_modules/Windows")
+      LIST (REMOVE_ITEM CMAKE_MODULE_PATH "${PATH}")
+    ENDIF ("${PATH}" MATCHES ".*/cmake_modules/Windows")
+  ENDFOREACH (PATH)
+
+  FIND_PACKAGE (${MODULE_NAME})
+
+  # restore the module path
+  SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows ${CMAKE_MODULE_PATH})
+  # restore the prefix path
+  SET (CMAKE_PREFIX_PATH ${OLD_CMAKE_PREFIX_PATH})
+
+  PRINT_FIND_END_TITLE_SYSTEM (${MODULE_NAME} ${FOUND_VAR})
+
+ENDMACRO (FIND_PACKAGE_WIN32_NO_PROXY)
 
 
 # This macro will search for a DLL in the given library location using extra
