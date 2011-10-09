@@ -253,7 +253,10 @@ IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
   
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
+ELSE (WIN32)
+  EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871335)
 ENDIF(WIN32)
+
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
