@@ -738,3 +738,26 @@ MACRO (ADD_XQDOC_TARGETS)
   MESSAGE(STATUS "  added test test/xqdoc/make_xqdoc")
   MESSAGE(STATUS "ADD_XQDOC_TARGETS END")
 ENDMACRO(ADD_XQDOC_TARGETS)
+
+
+# Macro that takes care of the CMake module path in a project. This will prepend
+# "cmake_modules" and "cmake_modules/Windows" to the existing CMAKE_MODULE_PATH
+MACRO (SET_CMAKE_MODULE_PATH)
+
+  # first we prepend the "cmake_modules" directory in the project root
+  SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules ${CMAKE_MODULE_PATH})
+
+  # now we prepend the "cmake_modules/Windows" directory in the project root
+  # this takes care about the finding and installing DLL for these libraries
+  IF (WIN32)
+    # Since the user can install libraries on Windows at any location we use
+    # proxy modules that try to guess first the location of the required third
+    # party libraries. This will search in order in:
+    # 1. the path pointed by ZORBA_THIRD_PARTY_REQUIREMENTS
+    # 2. the Program Files directory available on the users computer
+    # 3. the PATH environment variable
+    # The logic is implemented by the macros in the ProxyFindModule.cmake module.
+    SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows ${CMAKE_MODULE_PATH})
+  ENDIF (WIN32)
+  
+ENDMACRO (SET_CMAKE_MODULE_PATH)
