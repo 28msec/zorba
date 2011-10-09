@@ -259,11 +259,12 @@ IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/versioning/external2 870991)
 
   EXPECTED_FAILURE(test/rbkt/zorba/versioning/link1 871061)
-  EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
 
   # this is still an expected failure but has been commented out since the
   # test is now completely disabled because of bug 871335
-  #EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
+  #EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
+
+  EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
 ENDIF(WIN32)
 
 
