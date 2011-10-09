@@ -243,7 +243,7 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
       TMP_DLL_VAR
       "${NAME}.dll"
       PATHS "${LIBRARY_LOCATION}"
-      PATH_SUFFIXES "bin" "bin/Release" 
+      PATH_SUFFIXES "bin" "bin/Release" "lib"
       NO_DEFAULT_PATH
     )
 
@@ -308,7 +308,7 @@ MACRO (FIND_PACKAGE_DLLS_WIN32 LIBRARY_LOCATION DLL_NAMES)
       TMP_DLL_VAR
       "${NAME}"
       PATHS "${LIBRARY_LOCATION}"
-      PATH_SUFFIXES "bin" "bin/Release" 
+      PATH_SUFFIXES "bin" "bin/Release" "lib"
       NO_DEFAULT_PATH
     )
 
