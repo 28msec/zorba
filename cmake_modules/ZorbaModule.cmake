@@ -553,11 +553,21 @@ MACRO(expected_failure testname bugid)
 
 ENDMACRO(expected_failure)
 
-# Convenience macro for adding tests in a standard format. QQQ doc!
-MACRO(ADD_TEST_DIRECTORY TEST_DIR)
+# Convenience macro for adding tests in a standard format.
+# Parameters:
+#   TEST_DIR - all the .xq files in this directory will be added as tests
+#   ARGV1    - if this is present, it will be interpreted as a list of
+#              exceptions. The list items will be removed from the list of
+#              files found in TEST_DIR.
+MACRO (ADD_TEST_DIRECTORY TEST_DIR)
   # QQQ error-check: Queries directory exists, some tests found...
   FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
     RELATIVE "${TEST_DIR}/Queries" "${TEST_DIR}/Queries/*.xq")
+
+  FOREACH (EXCEPTION ${ARGV1})
+    LIST (REMOVE_ITEM TESTFILES ${EXCEPTION})
+  ENDFOREACH (EXCEPTION)
+
   SET(TESTCOUNTER 0)
   FOREACH(TESTFILE ${TESTFILES})
     SET(TESTNAME "${PROJECT_NAME}/${TESTFILE}")
@@ -579,7 +589,7 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
     ENDIF (${TESTMOD} EQUAL 0)
   ENDFOREACH(TESTFILE)
   MESSAGE(STATUS "Added ${TESTCOUNTER} tests in ${TEST_DIR}")
-ENDMACRO(ADD_TEST_DIRECTORY)
+ENDMACRO (ADD_TEST_DIRECTORY)
 
 # Macro to install a basic CMake config file for a module. Provide a
 # source and binary directory. Result will be installed in binary
