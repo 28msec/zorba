@@ -246,7 +246,12 @@ IF(XVERMAJ EQUAL 2)
 ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
-  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external1 870991)
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external2 870991)
+
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/link1 871061)
+  EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
+  
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
 ENDIF(WIN32)
 
@@ -268,5 +273,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
-
-# vim:set et sw=2 ts=2:
