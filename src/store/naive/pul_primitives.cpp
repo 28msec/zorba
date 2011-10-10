@@ -480,29 +480,33 @@ void UpdSetElementType::apply()
     textChild->setText(textValue);
   }
 
-  if (theHaveValue)
+  if (theHaveTypedValue)
   {
-    target->setHaveValue();
+    target->setHaveTypedValue();
 
-    if (theHaveEmptyValue)
-      target->setHaveEmptyValue();
+    if (theHaveEmptyTypedValue)
+      target->setHaveEmptyTypedValue();
+    else
+      target->resetHaveEmptyTypedValue();
 
-    if (theHaveTypedValue)
+    if (theHaveTypedTypedValue)
     {
       TextNode* textChild = target->getUniqueTextChild();
 
       textChild->setTypedValue(theTypedValue);
-      if (theHaveListValue)
+      if (theHaveListTypedValue)
         textChild->setHaveListValue();
     }
   }
   else
   {
-    target->resetHaveValue();
+    target->resetHaveTypedValue();
   }
 
   if (theIsInSubstitutionGroup)
     target->setInSubstGroup();
+  else
+    target->resetInSubstGroup();
 }
 
 

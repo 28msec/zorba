@@ -1592,10 +1592,10 @@ ElementNode::ElementNode(
 
     if (haveTypedValue)
     {
-      setHaveValue();
+      setHaveTypedValue();
 
       if (haveEmptyValue)
-        setHaveEmptyValue();
+        setHaveEmptyTypedValue();
     }
 
     if (isInSubstGroup)
@@ -1741,9 +1741,9 @@ XmlNode* ElementNode::copyInternal(
   if (copymode.theTypePreserve)
   {
     typeName = getType();
-    haveValue = this->haveValue();
-    haveEmptyValue = this->haveEmptyValue();
-    inSubstGroup = this->isInSubstitutionGroup();
+    haveValue = haveTypedValue();
+    haveEmptyValue = haveEmptyTypedValue();
+    inSubstGroup = isInSubstitutionGroup();
   }
   else
   {
@@ -2191,7 +2191,7 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
   {
     TextNode* textChild;
 
-    if (haveEmptyValue())
+    if (haveEmptyTypedValue())
     {
       val = NULL;
       iter = NULL;
@@ -3470,7 +3470,7 @@ TextNode::TextNode(
     }    
   }
 
-  ZORBA_ASSERT(p->haveValue() && !p->haveEmptyValue());
+  ZORBA_ASSERT(p->haveValue() && !p->haveEmptyTypedValue());
 
   setTypedValue(content);
   if (isListValue)
