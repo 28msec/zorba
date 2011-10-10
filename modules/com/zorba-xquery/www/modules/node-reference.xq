@@ -18,14 +18,14 @@ xquery version "1.0";
 
 (:~
  : The module provides functions to compute an immutable and opaque reference 
- : for any node and for retrieving nodes given their identifier. The identifiers 
- : are immutable, i.e. a node identifier does not change during the node lifetime,
+ : for any node and to retrieve nodes given their identifier. The identifiers 
+ : are immutable, i.e. a node identifier does not change during the node lifetime
  : and cannot be reused for another node after the original node gets deleted.
  : Identifiers are unique, in that, two different nodes will never have the same 
- : identifier.  A node, at any time during its lifetime, can be retrieved by its 
+ : identifier. A node, at any time during its lifetime, can be retrieved by its 
  : identifier.
  :
- : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle                          
+ : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
  : documentation</a> about details on storing nodes in collections or as documents.</p>
  : 
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
@@ -40,20 +40,22 @@ module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+
 declare option ver:module-version "2.0";
 
 (:~
  : Returns an immutable and opaque node reference (with type xs:anyURI) for
- : a given node, either temporary or stored in a collection.
+ : a given node.
  : 
- : <p>The generated identifier is immutable, i.e. a node 
- : identifier does not change during the node lifetime.</p>
+ : <p>The generated identifier is immutable, i.e. a node identifier does not
+ : change during the node lifetime and cannot be reused for another node after
+ : the original node gets deleted.</p>
  :
- : <p>Identifiers are also unique, in that, two nodes with different identities 
- : will never have identical identifiers.</p>
+ : <p>Identifiers are also unique, in that, two different nodes will never 
+ : have the same identifier.</p>
  :
  : A node, at any time during its lifetime, can be retrieved by its 
- : identifier. 
+ : identifier, using the <tt>ref:node-by-reference</tt> function.
  :
  : @param $arg the node for which the URI should be computed
  :

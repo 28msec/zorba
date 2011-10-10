@@ -343,21 +343,13 @@ public:
 
   bool getReference(store::Item_t& result, store::Item* node);
 
-  bool getCurrentReference(store::Item_t& result, const store::Item* node);
-
   bool hasReference(const store::Item* node);
 
   bool getNodeByReference(store::Item_t& result, const zstring& reference);
 
   bool unregisterNode(XmlNode* node);
 
-  void copyReference(const XmlNode* source, XmlNode* target);
-
-  void restoreReference(XmlNode* node, const zstring& reference);
-
-  void registerReference(XmlNode* node);
-
-  /* ------------------------ Node Reference Management ---------------------------*/
+  /* ------------------------ Temp Sequence Management ---------------------------*/
 
   store::TempSeq_t createTempSeq(bool lazy);
 

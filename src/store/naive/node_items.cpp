@@ -693,7 +693,9 @@ void XmlNode::destroyInternal(bool removeType)
   }
 #endif
 
-  GET_STORE().unregisterNode(this);
+  if (haveReference())
+    GET_STORE().unregisterNode(this);
+
   delete this;
 }
 

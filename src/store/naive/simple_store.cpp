@@ -1342,9 +1342,6 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
 }
 
 
-/* ------------------------ Node References Management ---------------------------*/
-
-
 /*******************************************************************************
  Computes the reference of the given node.
  
@@ -1375,29 +1372,6 @@ bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
   theReferencesToNodeMap[uuidStr] = node;
 
   return theItemFactory->createAnyURI(result, uuidStr);
-}
-
-
-/*******************************************************************************
-  Returns the already computed reference of the given node. If no reference has
-  already been computed for the given node error ZAPI0030 is raised.
- 
-  @param result reference as an item of type xs:string
-  @param node XDM node
-  @return whether the reference has been created successfully
-********************************************************************************/
-bool SimpleStore::getCurrentReference(store::Item_t& result, const store::Item* node)
-{
-  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
-  if (!xmlNode->haveReference())
-    throw ZORBA_EXCEPTION(zerr::ZAPI0030_NO_CURRENT_REFERENCE);
-
-  NodeRefMap::iterator resIt = theNodeToReferencesMap.find(xmlNode);
-
-  ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
-
-  zstring id = (*resIt).second;
-  return theItemFactory->createAnyURI(result, id);
 }
 
 
@@ -1439,75 +1413,6 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
 bool SimpleStore::hasReference(const store::Item* node)
 {
   return static_cast<const XmlNode*>(node)->haveReference();
-}
-
-
-/*******************************************************************************
-  Copies the reference of a source node to a target node. The source
-  node must already have a reference. The target nodes acquires the
-  source reference but it is not registered in the reference-to-node
-  map.If no reference has already been computed for the given node
-  error ZAPI0030 is raised.
-
-  Used in PUL manipulation.
- 
-  @param source source XDM node
-  @param target target XDM node
-********************************************************************************/
-void SimpleStore::copyReference(const XmlNode* source, XmlNode* target)
-{
-  store::Item_t reference;
-  getCurrentReference(reference, source);
-
-  unregisterNode(target);
-
-  target->setHaveReference();
-
-  zstring refStr;
-  reference->getStringValue2(refStr);
-
-  theNodeToReferencesMap.insert(target, refStr);
-}
-
-
-/*******************************************************************************
-  Sets the reference of a node to a given value.
-  Used in PUL manipulation.
- 
-  @param node  XDM node
-  @param reference the reference to set
-********************************************************************************/
-void SimpleStore::restoreReference(XmlNode* node, const zstring& reference)
-{
-  unregisterNode(node);
-  theNodeToReferencesMap.insert(std::pair<const XmlNode*, zstring>(node, reference));
-
-  node->setHaveReference();
-}
-
-
-/*******************************************************************************
-  Register the reference of a given node in the references to node map
-  The node must already have an reference, otherwise error ZAPI0030 is raised.
-  The node reference must not be used for any other
-  node in the reference-to-node map, otherwise error ZAPI0029 is raised.
-  Used in PUL manipulation.
- 
-  @param node XDM node
-********************************************************************************/
-void SimpleStore::registerReference(XmlNode* node)
-{
-  store::Item_t reference;
-  getCurrentReference(reference, node);
-
-  store::Item_t result;
-  if (getNodeByReference(result, reference->getStringValue()))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZAPI0029_REFERENCE_ALREADY_PRESENT,
-    ERROR_PARAMS(reference->getStringValue()));
-  }
-
-  theReferencesToNodeMap[reference->getStringValue()] = node;
 }
 
 
