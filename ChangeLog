@@ -41,6 +41,10 @@ version 2.x
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
   * Implemented the probe-index-range-value for general indexes
   * Fixed bug #867662 ("nullptr" warning)
+  * Fixed bug #869024 (segmentation fault with node-reference)
+  * Fixed bug #869025 (segmentation fault with node-reference)
+  * New node-reference module. References can be obtained for any node, and different nodes cannot 
+    have the same identifier.
 
 version 2.0.1
 
