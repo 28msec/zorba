@@ -553,11 +553,21 @@ MACRO(expected_failure testname bugid)
 
 ENDMACRO(expected_failure)
 
-# Convenience macro for adding tests in a standard format. QQQ doc!
-MACRO(ADD_TEST_DIRECTORY TEST_DIR)
+# Convenience macro for adding tests in a standard format.
+# Parameters:
+#   TEST_DIR - all the .xq files in this directory will be added as tests
+#   ARGV1    - if this is present, it will be interpreted as a list of
+#              exceptions. The list items will be removed from the list of
+#              files found in TEST_DIR.
+MACRO (ADD_TEST_DIRECTORY TEST_DIR)
   # QQQ error-check: Queries directory exists, some tests found...
   FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
     RELATIVE "${TEST_DIR}/Queries" "${TEST_DIR}/Queries/*.xq")
+
+  FOREACH (EXCEPTION ${ARGV1})
+    LIST (REMOVE_ITEM TESTFILES ${EXCEPTION})
+  ENDFOREACH (EXCEPTION)
+
   SET(TESTCOUNTER 0)
   FOREACH(TESTFILE ${TESTFILES})
     SET(TESTNAME "${PROJECT_NAME}/${TESTFILE}")
@@ -579,7 +589,7 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
     ENDIF (${TESTMOD} EQUAL 0)
   ENDFOREACH(TESTFILE)
   MESSAGE(STATUS "Added ${TESTCOUNTER} tests in ${TEST_DIR}")
-ENDMACRO(ADD_TEST_DIRECTORY)
+ENDMACRO (ADD_TEST_DIRECTORY)
 
 # Macro to install a basic CMake config file for a module. Provide a
 # source and binary directory. Result will be installed in binary
@@ -728,3 +738,26 @@ MACRO (ADD_XQDOC_TARGETS)
   MESSAGE(STATUS "  added test test/xqdoc/make_xqdoc")
   MESSAGE(STATUS "ADD_XQDOC_TARGETS END")
 ENDMACRO(ADD_XQDOC_TARGETS)
+
+
+# Macro that takes care of the CMake module path in a project. This will prepend
+# "cmake_modules" and "cmake_modules/Windows" to the existing CMAKE_MODULE_PATH
+MACRO (SET_CMAKE_MODULE_PATH)
+
+  # first we prepend the "cmake_modules" directory in the project root
+  SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules ${CMAKE_MODULE_PATH})
+
+  # now we prepend the "cmake_modules/Windows" directory in the project root
+  # this takes care about the finding and installing DLL for these libraries
+  IF (WIN32)
+    # Since the user can install libraries on Windows at any location we use
+    # proxy modules that try to guess first the location of the required third
+    # party libraries. This will search in order in:
+    # 1. the path pointed by ZORBA_THIRD_PARTY_REQUIREMENTS
+    # 2. the Program Files directory available on the users computer
+    # 3. the PATH environment variable
+    # The logic is implemented by the macros in the ProxyFindModule.cmake module.
+    SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows ${CMAKE_MODULE_PATH})
+  ENDIF (WIN32)
+  
+ENDMACRO (SET_CMAKE_MODULE_PATH)
