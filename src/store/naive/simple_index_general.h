@@ -95,6 +95,9 @@ public:
 
 /******************************************************************************
 
+  theKeyTypeCode:
+  ---------------
+
   theCompFunction:
   ----------------
   An instance of GeneralIndexCompareFunction that acts as a comparison function
@@ -107,6 +110,8 @@ public:
 
   theUntypedFlag:
   ---------------
+  Set to true if there is at least one domain node for which the key expression
+  returns an item with type xs:untypedAtomic.
 
   theMultiKeyFlag:
   ----------------
@@ -116,9 +121,22 @@ public:
 class GeneralIndex : public IndexImpl
 {
   friend class IndexImpl;
+  friend class GeneralHashIndex;
+  friend class GeneralTreeIndex;
   friend class ProbeGeneralIndexIterator;
+  friend class ProbeGeneralTreeIndexIterator;
+
+  typedef std::pair<store::Item_t, GeneralIndexValue*> IndexMapPair;
+
+private:
+  static const int64_t        theMaxLong;
+  static const int64_t        theMinLong;
+  static const double         theDoubleMaxLong;
+  static const double         theDoubleMinLong;
 
 protected:
+  SchemaTypeCode              theKeyTypeCode;
+
   GeneralIndexCompareFunction theCompFunction;
 
   std::vector<store::Item_t>  theEmptyKeyNodes;
@@ -127,16 +145,27 @@ protected:
 
   bool                        theMultiKeyFlag;
 
-public:
+protected:
   GeneralIndex(const store::Item_t& name, const store::IndexSpecification& spec);
 
   virtual ~GeneralIndex();
 
+  bool isTyped() const { return (theKeyTypeCode != XS_LAST); }
+
+  bool insertInMap(
+      store::Item_t& key,
+      store::Item_t& node,
+      SchemaTypeCode targetMap,
+      bool untyped);
+
+public:
   const XQPCollator* getCollator(ulong i) const;
 
   void setMultiKey() { theMultiKeyFlag = true; }
 
-  virtual bool insert(store::Item_t& key, store::Item_t& node) = 0;
+  ulong size() const;
+
+  bool insert(store::Item_t& key, store::Item_t& node);
 
   virtual bool remove(const store::Item_t& key, store::Item_t& item, bool all) = 0;
 };
@@ -157,7 +186,7 @@ public:
 *******************************************************************************/
 class GeneralHashIndex : public GeneralIndex
 {
-  friend class SimpleStore;
+  friend class GeneralIndex;
   friend class ProbeGeneralHashIndexIterator;
 
   typedef HashMap<store::Item_t,
@@ -181,14 +210,6 @@ private:
   IndexMap  * theSingleMap;
 
 protected:
-  GeneralHashIndex(
-      const store::Item_t& name,
-      const store::IndexSpecification& spec);
-
-  ~GeneralHashIndex();
-
-  bool isTyped() const { return (theSingleMap != NULL); }
-
   bool insertInMap(
       store::Item_t& key,
       store::Item_t& node,
@@ -196,11 +217,13 @@ protected:
       bool untyped);
 
 public:
-  ulong size() const;
+  GeneralHashIndex(
+      const store::Item_t& name,
+      const store::IndexSpecification& spec);
+
+  ~GeneralHashIndex();
 
   Index::KeyIterator_t keys() const;
-
-  bool insert(store::Item_t& key, store::Item_t& node);
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool);
 };
@@ -211,10 +234,8 @@ public:
 *******************************************************************************/
 class GeneralTreeIndex : public GeneralIndex
 {
-  friend class SimpleStore;
+  friend class GeneralIndex;
   friend class ProbeGeneralTreeIndexIterator;
-
-  typedef std::pair<store::Item_t, GeneralIndexValue*> IndexMapPair;
 
   typedef std::map<store::Item_t,
                    GeneralIndexValue*,
@@ -233,25 +254,11 @@ class GeneralTreeIndex : public GeneralIndex
   typedef rchandle<KeyIterator> KeyIterator_t;
 
 private:
-  static const int64_t  theMaxLong;
-  static const int64_t  theMinLong;
-  static const double   theDoubleMaxLong;
-  static const double   theDoubleMinLong;
-
-private:
   IndexMap       * theMaps[XS_LAST];
   IndexMap       * theSingleMap;
   SYNC_CODE(Mutex  theMapMutex;)
 
 protected:
-  GeneralTreeIndex(
-      const store::Item_t& qname,
-      const store::IndexSpecification& spec);
-
-  ~GeneralTreeIndex();
-
-  bool isTyped() const { return (theSingleMap != NULL); }
-
   bool insertInMap(
       store::Item_t& key,
       store::Item_t& node,
@@ -259,11 +266,13 @@ protected:
       bool untyped);
 
 public:
-  ulong size() const;
+  GeneralTreeIndex(
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec);
+
+  ~GeneralTreeIndex();
 
   Index::KeyIterator_t keys() const;
-
-  bool insert(store::Item_t& key, store::Item_t& node);
 
   bool remove(const store::Item_t& key, store::Item_t& item, bool all);
 };
