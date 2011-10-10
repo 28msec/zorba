@@ -235,6 +235,18 @@ zstring uuidToString(const uuid_t& u)
   return lResult;
 }
 
+/* uuidToString -- transform a UUID to a uri*/
+zstring uuidToURI(const uuid_t& u)
+{
+  char lBuffer[200];
+  sprintf(lBuffer, "urn:uuid:%8.8x-%4.4x-%4.4x-%2.2x%2.2x-9300a64ac3cd", u.time_low, u.time_mid,
+          u.time_hi_and_version, u.clock_seq_hi_and_reserved,
+          u.clock_seq_low);
+
+  zstring lResult = lBuffer;
+  return lResult;
+}
+
 /*
 //This appendix lists the name space IDs for some potentially
 //interesting namespaces, as initialized C structures and in the
