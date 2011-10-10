@@ -126,90 +126,88 @@ static std::string toString(UpdPrimKind k)
 {
   switch(k) 
   {
-  case UP_DELETE:
-    return "delete";
-  case UP_INSERT_INTO:
-    return "insert_into";
-  case UP_INSERT_INTO_FIRST:
-    return "insert_into_first";
-  case UP_INSERT_INTO_LAST:
-    return "insert_into_last";
-  case UP_INSERT_BEFORE:
-    return "insert_before";
-  case UP_INSERT_AFTER:
-    return "insert_after";
-  case UP_INSERT_ATTRIBUTES:
-    return "insert_attributes";
-  case UP_REPLACE_CHILD:
-    return "replace_child";
-  case UP_REPLACE_ATTRIBUTE:
-    return "replace_attribute";
-  case UP_REPLACE_CONTENT:
-    return "replace_content";
-  case UP_REPLACE_ATTR_VALUE:
-    return "replace_attr_value";
-  case UP_REPLACE_TEXT_VALUE:
-    return "replace_text_value";
-  case UP_REPLACE_PI_VALUE:
-    return "replace_pi_value";
-  case UP_REPLACE_COMMENT_VALUE:
-    return "replace_comment_value";
-  case UP_RENAME_ELEM:
-    return "rename_elem";
-  case UP_RENAME_ATTR:
-    return "rename_attr";
-  case UP_RENAME_PI:
-    return "rename_pi";
-  case UP_PUT:
-    return "put";
-  case UP_CREATE_COLLECTION:
-    return "create_collection";
-  case UP_COLLECTION:
-    return "update_collection";
-  case UP_DELETE_COLLECTION:
-    return "delete_collection";
-  case UP_INSERT_INTO_COLLECTION:
-    return "insert_into_coll";
-  case UP_INSERT_FIRST_INTO_COLLECTION:
-    return "insert_first_into_collection";
-  case UP_INSERT_LAST_INTO_COLLECTION:
-    return "insert_last_into_collection";
-  case UP_INSERT_BEFORE_INTO_COLLECTION:
-    return "insert_before_into_collection";
-  case UP_INSERT_AFTER_INTO_COLLECTION:
-    return "insert_after_into_collection";
-  case UP_INSERT_AT_INTO_COLLECTION:
-    return "insert_at_into_collection";
-  case UP_REMOVE_FROM_COLLECTION:
-    return "remove_from_collection";
-  case UP_REMOVE_AT_FROM_COLLECTION:
-    return "remove_at_from_collection";
-  case UP_CREATE_INDEX:
-    return "create index";
-  case UP_DROP_INDEX:
-    return "drop index";
-  case UP_REBUILD_INDEX:
-    return "refresh index";
-  case UP_ACTIVATE_IC:
-    return "activate integrity constraint";
-  case UP_ACTIVATE_FOREIGN_KEY_IC:
-    return "activate foreign key integrity constraint";
-  case UP_DEACTIVATE_IC:
-    return "deactivate integrity constraint";
-  case UP_CREATE_DOCUMENT:
-    return "create document";
-  case UP_DELETE_DOCUMENT:
-    return "delete document";
-  case UP_CREATE_HASHMAP:
-    return "create hashmap";
-  case UP_DESTROY_HASHMAP:
-    return "destroy hashmap";
-  case UP_INSERT_INTO_HASHMAP:
-    return "inserto_into_hashmap";
-  case UP_REMOVE_FROM_HASHMAP:
-    return "remove_from_hashmap";
-  default:
-    return "<unknown UpdPrimKind>";
+    case UP_DELETE:
+      return "delete";
+    case UP_INSERT_INTO:
+      return "insertInto";
+    case UP_INSERT_INTO_FIRST:
+      return "insertIntoAsFirst";
+    case UP_INSERT_INTO_LAST:
+      return "insertIntoAsLast";
+    case UP_INSERT_BEFORE:
+      return "insertBefore";
+    case UP_INSERT_AFTER:
+      return "insertAfter";
+    case UP_INSERT_ATTRIBUTES:
+      return "insertAttributes";
+    case UP_REPLACE_CHILD:
+    case UP_REPLACE_ATTRIBUTE:
+      return "replaceNode";
+    case UP_REPLACE_CONTENT:
+      return "replaceElementContent";
+    case UP_REPLACE_ATTR_VALUE:
+    case UP_REPLACE_TEXT_VALUE:
+    case UP_REPLACE_PI_VALUE:
+    case UP_REPLACE_COMMENT_VALUE:
+      return "replaceValue";
+    case UP_RENAME_ELEM:
+    case UP_RENAME_ATTR:
+    case UP_RENAME_PI:
+      return "rename";
+    case UP_PUT:
+      return "put";
+    case UP_CREATE_COLLECTION:
+      return "createCollection";
+    case UP_COLLECTION:
+      return "updateCollection";
+    case UP_DELETE_COLLECTION:
+      return "deleteCollection";
+    case UP_INSERT_INTO_COLLECTION:
+      return "insertIntoCollection";
+    case UP_INSERT_FIRST_INTO_COLLECTION:
+      return "insertFirstIntoCollection";
+    case UP_INSERT_LAST_INTO_COLLECTION:
+      return "insertLastIntoCollection";
+    case UP_INSERT_BEFORE_INTO_COLLECTION:
+      return "insertBeforeIntoCollection";
+    case UP_INSERT_AFTER_INTO_COLLECTION:
+      return "insertAfterIntoCollection";
+    case UP_INSERT_AT_INTO_COLLECTION:
+      return "insertAtIntoCollection";
+    case UP_REMOVE_FROM_COLLECTION:
+      return "removeFromCollection";
+    case UP_REMOVE_AT_FROM_COLLECTION:
+      return "removeAtFromCollection";
+    case UP_CREATE_INDEX:
+      return "createIndex";
+    case UP_DROP_INDEX:
+      return "dropIndex";
+    case UP_REBUILD_INDEX:
+      return "rebuildIndex";
+    case UP_ACTIVATE_IC:
+      return "activateIC";
+    case UP_ACTIVATE_FOREIGN_KEY_IC:
+      return "activateForeignKeyIC";
+    case UP_DEACTIVATE_IC:
+      return "deactivateIC";
+    case UP_CREATE_DOCUMENT:
+      return "createDocument";
+    case UP_DELETE_DOCUMENT:
+      return "deleteDocument";
+    case UP_CREATE_HASHMAP:
+      return "createHashmap";
+    case UP_DESTROY_HASHMAP:
+      return "destroyHashmap";
+    case UP_INSERT_INTO_HASHMAP:
+      return "insertIntoHashmap";
+    case UP_REMOVE_FROM_HASHMAP:
+      return "removeFromHashmap";
+    case UP_SET_ATTRIBUTE_TYPE:
+      return "setAttributeType";
+    case UP_SET_ELEMENT_TYPE:
+      return "setElementType";
+    default:
+      return "unknownUpdatePrimitive";
   }
 }
 };

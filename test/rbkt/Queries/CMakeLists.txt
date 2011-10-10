@@ -32,12 +32,21 @@ ENDIF(ZORBA_TEST_XQUERYX)
 # appropriate. IF YOU THINK YOU WANT TO DO THIS, YOU ARE PROBABLY
 # WRONG OR THERE IS A SERIOUS PROBLEM WITH THE BUILD SYSTEM.
 # PLEASE DO NOT USE THIS MECHANISM IF AT ALL POSSIBLE.
-# IF STILL NEEDED, GIVE THE CORRESPONDING BUG PRIORITY 9 BECAUSE
-# THIS HAS TO BE ADDRESSED ASAP.
+# IF STILL NEEDED, GIVE THE CORRESPONDING BUG IMPORTANCE "CRITICAL"
+# BECAUSE THIS HAS TO BE ADDRESSED ASAP.
 LIST(REMOVE_ITEM TESTFILES
 
-# Crashes on Windows: 3284881, 3071699 (fix 3284881 before 3071699)
+  # crashes on Windows: 866978, 866742 (fix 866978 before 866742)
   zorba/HigherOrder/hof-101.xq
+
+  # fails because of the image external module's broken documentation
+  # If you try to submit something else to the external module, it will
+  # fail because of this test.
+  # If you try and mark it as expected failure here, the "expected failure"
+  # will fail because the image module will not be tested and therefore the
+  # module documentation test will succeed.
+  # Created bug 871335 for this.
+  zorba/xqdoc/moduleDocumentation.xq
 )
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
@@ -246,9 +255,18 @@ IF(XVERMAJ EQUAL 2)
 ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
-  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
-  EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external1 870991)
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/external2 870991)
+
+  EXPECTED_FAILURE(test/rbkt/zorba/versioning/link1 871061)
+
+  # this is still an expected failure but has been commented out since the
+  # test is now completely disabled because of bug 871335
+  #EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 871062)
+
+  EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
 ENDIF(WIN32)
+
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
@@ -271,4 +289,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 
 EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
-# vim:set et sw=2 ts=2:
