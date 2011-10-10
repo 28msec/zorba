@@ -234,7 +234,7 @@ void XmlTree::copyTypesMap(const XmlTree* source)
 
   if (theTypesMap == NULL)
   {
-    theTypesMap = new NodeTypeMap(source->theTypesMap->object_count(), false);
+    theTypesMap = new NodeTypeMap(source->theTypesMap->size(), false);
   }
 
   NodeTypeMap::iterator ite = source->theTypesMap->begin();
@@ -692,6 +692,9 @@ void XmlNode::destroyInternal(bool removeType)
     }
   }
 #endif
+
+  if (haveReference())
+    GET_STORE().unregisterNode(this);
 
   delete this;
 }
@@ -1350,7 +1353,7 @@ DocumentNode::DocumentNode(
 XmlNode* DocumentNode::copyInternal(
     InternalNode*          rootParent,
     InternalNode*          parent,
-    csize                pos,
+    csize                  pos,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {

@@ -43,6 +43,10 @@ version 2.x
   * Fixed bug #867662 ("nullptr" warning)
   * New node-information module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.   
+  * Fixed bug #869024 (segmentation fault with node-reference)
+  * Fixed bug #869025 (segmentation fault with node-reference)
+  * New node-reference module. References can be obtained for any node, and different nodes cannot 
+    have the same identifier.
 
 version 2.0.1
 

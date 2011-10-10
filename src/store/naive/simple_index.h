@@ -38,7 +38,6 @@ class IndexBoxConditionImpl;
 class IndexCompareFunction
 {
   friend class HashIndex;
-  friend class STLMapIndex;
 
 private:
   ulong                              theNumColumns;
