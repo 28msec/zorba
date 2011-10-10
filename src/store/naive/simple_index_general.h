@@ -126,7 +126,7 @@ class GeneralIndex : public IndexImpl
   friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralTreeIndexIterator;
 
-  typedef std::pair<store::Item_t, GeneralIndexValue*> IndexMapPair;
+  typedef std::pair<store::Item*, GeneralIndexValue*> IndexMapPair;
 
 private:
   static const int64_t        theMaxLong;
@@ -189,7 +189,7 @@ class GeneralHashIndex : public GeneralIndex
   friend class GeneralIndex;
   friend class ProbeGeneralHashIndexIterator;
 
-  typedef HashMap<store::Item_t,
+  typedef HashMap<store::Item*,
                   GeneralIndexValue*,
                   GeneralIndexCompareFunction> IndexMap;
 
@@ -237,7 +237,7 @@ class GeneralTreeIndex : public GeneralIndex
   friend class GeneralIndex;
   friend class ProbeGeneralTreeIndexIterator;
 
-  typedef std::map<store::Item_t,
+  typedef std::map<store::Item*,
                    GeneralIndexValue*,
                    GeneralIndexCompareFunction> IndexMap;
 

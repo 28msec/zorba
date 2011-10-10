@@ -670,7 +670,7 @@ GeneralHashIndex::~GeneralHashIndex()
       //std::cout << "Index Entry Delete [" << (*ite).first << "," 
       //          << (*ite).second << "]" << std::endl;
       
-      //delete (*ite).first;
+      (*ite).first->removeReference();
       delete (*ite).second;
     }
 
@@ -722,8 +722,8 @@ bool GeneralHashIndex::insertInMap(
   //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;
   
-  targetMap->insert(key, valueSet);
-  key = NULL; // ownership of the key passes to the index.
+  targetMap->insert(key.getp(), valueSet);
+  key.release(); // ownership of the key passes to the index.
 
   return false;
 }
@@ -833,7 +833,7 @@ GeneralTreeIndex::~GeneralTreeIndex()
       //std::cout << "Index Entry Delete [" << (*ite).first << "," 
       //          << (*ite).second << "]" << std::endl;
       
-      //delete (*ite).first;
+      (*ite).first->removeReference();
       delete (*ite).second;
     }
 
@@ -877,8 +877,8 @@ bool GeneralTreeIndex::insertInMap(
   //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;
   
-  targetMap->insert(IndexMapPair(key, valueSet));
-  key = NULL; // ownership of the key obj passes to the index.
+  targetMap->insert(IndexMapPair(key.getp(), valueSet));
+  key.release(); // ownership of the key obj passes to the index.
 
   return false;
 }
@@ -1039,9 +1039,9 @@ ProbeGeneralHashIndexIterator::ProbeGeneralHashIndexIterator(
 
 
 #define PROBE_MAP(MAP_ID)                                               \
-  {                                                                     \
+{                                                                       \
   theResultSets.push_back(NULL);                                        \
-  idx->theMaps[MAP_ID]->get(castItem, theResultSets[theResultSets.size() - 1]); \
+  idx->theMaps[MAP_ID]->get(castItem.getp(), theResultSets[theResultSets.size() - 1]); \
 }
 
 
@@ -1490,7 +1490,7 @@ bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
 
 #define PROBE_TREE_MAP(MAP_ID)                                     \
 {                                                                  \
-  ite = idx->theMaps[MAP_ID]->find(key);                           \
+  ite = idx->theMaps[MAP_ID]->find(key.getp());                    \
   if (ite != idx->theMaps[MAP_ID]->end())                          \
     theResultSets[0] = ite->second;                                \
 }
@@ -1499,7 +1499,7 @@ bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
 #define PROBE_ALT_TREE_MAP(MAP_ID)                                 \
 {                                                                  \
   theResultSets.push_back(NULL);                                   \
-  ite = idx->theMaps[MAP_ID]->find(castItem);                      \
+  ite = idx->theMaps[MAP_ID]->find(castItem.getp());               \
   if (ite != idx->theMaps[MAP_ID]->end())                          \
     theResultSets[theResultSets.size() - 1] = ite->second;         \
 }
@@ -2398,9 +2398,9 @@ void ProbeGeneralTreeIndexIterator::probeMap(
   if (haveLower)
   {
     if (lowerIncl)
-      theMapBegins.push_back(map->lower_bound(lowerKey));
+      theMapBegins.push_back(map->lower_bound(lowerKey.getp()));
     else
-      theMapBegins.push_back(map->upper_bound(lowerKey));    
+      theMapBegins.push_back(map->upper_bound(lowerKey.getp()));
   }
   else
   {
@@ -2410,9 +2410,9 @@ void ProbeGeneralTreeIndexIterator::probeMap(
   if (haveUpper)
   {
     if (upperIncl)
-      theMapEnds.push_back(map->upper_bound(upperKey));
+      theMapEnds.push_back(map->upper_bound(upperKey.getp()));
     else
-      theMapEnds.push_back(map->lower_bound(upperKey));
+      theMapEnds.push_back(map->lower_bound(upperKey.getp()));
   }
   else
   {
