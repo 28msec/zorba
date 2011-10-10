@@ -20,5 +20,4 @@ has to be included in the Zorab documentation *only* the tests that have a statu
 
 generate_implementation_defined_features_dox.xq
 Run it in order to generate the docygen page:
-./zorba --indent -z method=xml --omit-xml-declaration
--f -q ../../scripts/sanity_checks/generate_implementation_defined_features_dox.xq > /home/spungi/work/zorba2/doc/zorba/impl_dep_features.dox
+./zorba --indent -z method=xml --omit-xml-declaration -f -q ../../scripts/sanity_checks/generate_implementation_defined_features_dox.xq > ../../doc/zorba/impl_dep_features.dox

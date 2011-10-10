@@ -124,4 +124,6 @@ Please check the summary and the detailed XQuery W3C Test Suite results below:
     <li> \ref conformanceXQFTTS
 </ul>
 
+Please also see our page about \ref known_issues.
+
 */
