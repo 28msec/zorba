@@ -1543,7 +1543,7 @@ ElementNode::ElementNode(
   InternalNode(store::StoreConsts::elementNode)
 {
   theName.transfer(nodeName);
-  setHaveValue();
+  setHaveTypedValue();
   resetRecursive();
 
   if (numBindings > 0)
@@ -2187,7 +2187,7 @@ bool ElementNode::isIdRefs() const
 ********************************************************************************/
 void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  if (haveValue())
+  if (haveTypedValue())
   {
     TextNode* textChild;
 
@@ -3470,7 +3470,7 @@ TextNode::TextNode(
     }    
   }
 
-  ZORBA_ASSERT(p->haveValue() && !p->haveEmptyTypedValue());
+  ZORBA_ASSERT(p->haveTypedValue() && !p->haveEmptyTypedValue());
 
   setTypedValue(content);
   if (isListValue)

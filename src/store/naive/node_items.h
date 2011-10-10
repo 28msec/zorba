@@ -310,44 +310,56 @@ public:
   enum NodeFlags
   {
     // Encodes the kind of the node (document, element, attribute, etc.)
-    NodeKindMask          =   0x7,
+    NodeKindMask          = 0x7,
 
-    IsId                  =   0x8,
+    // For element nodes only.
+    HaveLocalBindings     = 0x80,
 
-    IsIdRefs              =   0x10,
+    // For element nodes only.
+    HaveBaseUri           = 0x10,
 
     // For element nodes only. Set if the target element node has a typed value.
     // The only case when an element node does not have a typed value is when 
     // the type of the node is complex with complex content, but with no mixed 
     //content allowed.
-    HaveTypedValue        =   0x20,
+    HaveTypedValue        = 0x20,
 
     // For element nodes only. Set if the target element node has a complex 
     // type with empty content. In this case, the typed value of the node is
     // the empty sequence.
-    HaveEmptyTypedValue   =   0x40,
+    HaveEmptyTypedValue   = 0x40,
 
-    IsTyped               =   0x80,    // for text nodes only
-    HaveListValue         =   0x100,   // for text and attribute nodes only
+    // For text nodes only. Set if the text node is actually used to store the
+    // typed value of its parent element node. In such a case, the remaining
+    // children (if any) of the parent node can be comment and/or pi nodes only.
+    IsTyped               = 0x80,
 
-    HaveLocalBindings     =   0x200,   // for element nodes only
-    HaveBaseUri           =   0x400,   // for element nodes only
+    // For text and attribute nodes only. Set if the typed value stored in the
+    // node is actually a sequence of atomic items.
+    HaveListValue         = 0x100,
 
-    IsBaseUri             =   0x800,   // for attribute nodes only
-    IsHidden              =   0x1000,  // for attribute nodes only
+    // For attribute nodes only.
+    IsBaseUri             = 0x800,
 
-    IsInSubstGroup        =   0x2000,  // for element nodes only
+    // For attribute nodes only.
+    IsHidden              = 0x1000,
+
+    // For element nodes only.
+    IsInSubstGroup        = 0x2000,
 
     // For element nodes only. The flag is set for a node N if there is another
     // node M in its subtree such that N and M have the same name.
-    IsRecursive           =   0x4000
+    IsRecursive           = 0x4000,
 
 #ifndef EMBEDED_TYPE
-    ,
     // For element and attribute nodes only. The flag is set if the node has
     // a type other than untyped (for elements) or untypedAtomic (for attributes)
-    HaveType              =   0x8000
+    HaveType              = 0x8000,
 #endif
+
+    // For any kind of node. Set if an identifier has been generated for the node
+    // (see SimpleStore::getNodeReference() method).
+    HaveReference         = 0x10000
   };
 
 protected:
@@ -510,9 +522,18 @@ public:
 
   void setFlags(uint32_t flags) { theFlags = flags; }
 
+  bool haveReference() const { return (theFlags & HaveReference) != 0; }
+
+  void setHaveReference() { theFlags |= HaveReference; }
+
+  void resetHaveReference() { theFlags &= ~HaveReference; }
+
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( TokenizerProvider const&, Tokenizer::Numbers&,
-                               locale::iso639_1::type, bool = false ) const;
+  FTTokenIterator_t getTokens( 
+      TokenizerProvider const&,
+      Tokenizer::Numbers&,
+      locale::iso639_1::type,
+      bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
