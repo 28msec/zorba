@@ -11,7 +11,7 @@ else
     <test-suite-result>
       <implementation
         name="Zorba" 
-        version='2.0 (svn rev. 11228)'
+        version='2.0.3'
         anonymous-result-column="false">
       
      <organization         
@@ -32,21 +32,28 @@ else
         database servers, XML message dispatchers, or smartphones.
         Its architecture employes a modular design, which allows customizing
         the Zorba query processor to the environment’s needs.
-        In particular the architecture of the query processor allows a
-        pluggable XML store (e.g. main memory, DOM stores, persistent
-        disk-based large stores, S3 stores). Zorba runs on most platforms
-        and is available under the Apache license v2. Currently, Zorba
-        implements the following W3C specifications: XQuery 1.0, XQuery Update
-        Facility 1.0, XQuery Scripting Extension 1.0, and XSLT 2.0 and XQuery 1.0
-        Serialization.</p>
+        For more details please check out http://www.zorba-xquery.com.</p>
       </description>
 
     {
       let $XQFTTSZorba := fn:doc("XQFTTS.xml")
       return
       (
-        <implementation-defined-items>{$XQFTTSZorba//*:implementation-defined-item}</implementation-defined-items>,
+        <implementation-defined-items>
+        {
+          for $idi in $XQFTTSZorba//*:implementation-defined-item
+          return
+             <implementation-defined-item name="{data($idi/@name)}" value="{data($idi/@value)}" />
+        }
+        </implementation-defined-items>,
         <features>{$XQFTTSZorba//*:feature}</features>,
+        <context-properties>
+        {
+          for $cp in $XQFTTSZorba//*:context-property
+          return
+             <context-property name="{data($cp/@name)}" context-type="{data($cp/@context-type)}" value="{data($cp/@value)}" />
+        }
+        </context-properties>
         <context-properties>{$XQFTTSZorba//*:context-property}</context-properties>
       )
     }
@@ -55,11 +62,11 @@ else
 
     <syntax>XQuery</syntax>
 
-    <test-run dateRun="2011-07-13">
+    <test-run dateRun="2011-09-23">
       <test-suite version="current"/>
       <transformation><p>Standard</p></transformation>
       <comparison><p>Standard</p></comparison>
-      <otherComments><p>XQFTTS taken from W3C CVS as of 2011-07-13.</p></otherComments>
+      <otherComments><p>XQFTTS taken from W3C CVS as of 2011-09-21.</p></otherComments>
     </test-run>
 
     {
