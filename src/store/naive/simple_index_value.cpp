@@ -319,7 +319,7 @@ void ValueHashIndex::clear()
 ********************************************************************************/
 ulong ValueHashIndex::size() const
 {
-  return theMap.object_count();
+  return theMap.size();
 }
 
 

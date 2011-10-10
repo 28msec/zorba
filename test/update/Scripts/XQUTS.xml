@@ -2,19 +2,41 @@
 <zorba xmlns="http://www.w3.org/2005/02/query-test-XQTSResult">
   
   <implementation-defined-items>
-    <implementation-defined-item  name="supportedRevalidationModes" 
-                                  value="lax, skip, strict"/>
-    <implementation-defined-item  name="defaultRevalidationMode" 
-                                  value="lax"/>
-    <implementation-defined-item  name="externalFunctionXDMPUL" 
-                                  value="Zorba allows external functions to be implemented in C++. Such functions may return XDM instances. However, it is not possible to implement an updating external function."/>
-    <implementation-defined-item  name="fnPutSemantics" 
-                                  value="fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent."/>
+    <implementation-defined-item  
+      name="supportedRevalidationModes" 
+      value="lax, skip, strict">
+      <description last-mod="2008-11-05">The revalidation modes that are supported by this
+        implementation.</description>
+    </implementation-defined-item>
+    <implementation-defined-item  
+      name="defaultRevalidationMode" 
+      value="lax">
+      <description last-mod="2008-11-05">The default revalidation mode for this
+        implementation.</description>
+    </implementation-defined-item>
+    <implementation-defined-item  
+      name="externalFunctionXDMPUL" 
+      value="Zorba allows external functions to be implemented in C++. Such functions may return XDM instances. However, it is not possible to implement an updating external function.">
+      <description last-mod="2008-11-05">The mechanism (if any) by which an external function can
+        return an XDM instance and/or a pending update list to the invoking query.</description>
+    </implementation-defined-item>
+    <implementation-defined-item  
+      name="fnPutSemantics" 
+      value="fn:put stores a copy (preserving type, preserving namespaces, and inheriting namespace) of the given document or element in Zorba's store. That is it binds the node to the URI passed as first argument. If the URI is relative it's resolved against the base uri. The result of fn:put become effective at the end of the XQuery program or if they are applied using Zorba's made persistent.">
+      <description last-mod="2008-11-05">The semantics of fn:put(), including the kinds of nodes
+        accepted as operands by this function.</description>
+    </implementation-defined-item>
   </implementation-defined-items>
   
   <features>
-    <feature name='Minimal Conformance' supported='true' />
-    <feature name='Update Facility Static Typing Feature' supported='false' />
+    <feature 
+      name='Minimal Conformance' 
+      supported='true' />
+    
+    <feature 
+      name='Update Facility Static Typing Feature' 
+      supported='false' />
+    
   </features>
   
   <context-properties>
