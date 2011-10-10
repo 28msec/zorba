@@ -33,9 +33,10 @@ namespace zorba {
 
 template<typename FloatType>
 class FloatImpl;
+
 namespace serialization{
   template<typename FloatType>
-  void operator&(Archiver &ar, FloatImpl<FloatType> &obj);
+  void operator&(Archiver&, FloatImpl<FloatType>&);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
