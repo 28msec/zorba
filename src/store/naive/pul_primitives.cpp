@@ -572,6 +572,8 @@ void UpdSetAttributeType::apply()
 
   if (theHaveListValue)
     target->setHaveListValue();
+  else
+    target->resetHaveListValue();
 }
 
 
