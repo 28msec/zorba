@@ -97,6 +97,8 @@ public:
 
   theKeyTypeCode:
   ---------------
+  The type code for the builtin atomic key type (set to XS_LAST if the index
+  is not typed).
 
   theCompFunction:
   ----------------
@@ -111,7 +113,8 @@ public:
   theUntypedFlag:
   ---------------
   Set to true if there is at least one domain node for which the key expression
-  returns an item with type xs:untypedAtomic.
+  returns an item with type xs:untypedAtomic and that item is sucessfully cast
+  to an item with a type other than xs:string.
 
   theMultiKeyFlag:
   ----------------
@@ -158,6 +161,10 @@ protected:
       SchemaTypeCode targetMap,
       bool untyped);
 
+  bool probeMap(
+      const store::Item* key,
+      SchemaTypeCode targetMap);
+
 public:
   const XQPCollator* getCollator(ulong i) const;
 
@@ -187,11 +194,14 @@ public:
 class GeneralHashIndex : public GeneralIndex
 {
   friend class GeneralIndex;
+  friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralHashIndexIterator;
 
   typedef HashMap<store::Item*,
                   GeneralIndexValue*,
                   GeneralIndexCompareFunction> IndexMap;
+
+  typedef IndexMap::iterator EntryIterator;
 
   class KeyIterator : public Index::KeyIterator
   {
@@ -235,11 +245,15 @@ public:
 class GeneralTreeIndex : public GeneralIndex
 {
   friend class GeneralIndex;
+  friend class ProbeGeneralIndexIterator;
   friend class ProbeGeneralTreeIndexIterator;
 
   typedef std::map<store::Item*,
                    GeneralIndexValue*,
                    GeneralIndexCompareFunction> IndexMap;
+
+  typedef IndexMap::const_iterator EntryIterator;
+
 
   class KeyIterator : public Index::KeyIterator
   {
@@ -297,6 +311,20 @@ public:
   theIsUntypedProbe:
   ------------------
 
+  theResultSets:
+  --------------
+  The node sets associated with the keys that match the condition. This is used
+  for point probes only.
+
+  theResultSetsIte:
+  -----------------
+  Iterator over theResultSets; points to the "current" result set. This is used
+  for point probes only.
+
+  theResultSetsEnd:
+  -----------------
+  The "end" iterator of theResultSets. This is used for point probes only. 
+
   theIte:
   -------
   For iterating over the domain nodes associated with an index key that satisfies
@@ -310,52 +338,40 @@ public:
 ********************************************************************************/
 class ProbeGeneralIndexIterator : public store::IndexProbeIterator
 {
+  friend class ProbeGeneralHashIndexIterator;
+  friend class ProbeGeneralTreeIndexIterator;
+
+  typedef std::vector<GeneralIndexValue*> ResultSets;
+
 protected:
-  rchandle<GeneralIndex>                     theIndex;
+  rchandle<GeneralIndex>                theIndex;
 
-  store::IndexCondition::Kind                theProbeKind;
-  rchandle<GeneralIndexCondition>            theCondition;
+  store::IndexCondition::Kind           theProbeKind;
+  rchandle<GeneralIndexCondition>       theCondition;
 
-  bool                                       theIsUntypedProbe;
+  bool                                  theIsUntypedProbe;
 
-  GeneralIndexValue::const_iterator          theIte;
-  GeneralIndexValue::const_iterator          theEnd;
+  ResultSets                            theResultSets;
+  ResultSets::const_iterator            theResultSetsIte;
+  ResultSets::const_iterator            theResultSetsEnd;
+
+  GeneralIndexValue::const_iterator     theIte;
+  GeneralIndexValue::const_iterator     theEnd;
 
 protected:
   ProbeGeneralIndexIterator(const store::Index_t& index);
 
-  void init(const store::IndexCondition_t& cond);
-
   void checkStringKeyType(const AtomicItem* keyItem) const;
-};
 
+  void initPoint();
 
-/******************************************************************************
-  Iterator to probe a hash-based, general index. The probe itself may be a
-  value probe or a general probe.
+  bool haveMap(SchemaTypeCode targetMap) const;
 
-  theResultSets    : The node sets associated with the keys that match the 
-                     condition
-  theResultSetsIte :
-  theResultSetsEnd :
-********************************************************************************/
-class ProbeGeneralHashIndexIterator : public ProbeGeneralIndexIterator
-{
-protected:
-  std::vector<GeneralIndexValue*>            theResultSets;
-  std::vector<GeneralIndexValue*>::iterator  theResultSetsIte;
-  std::vector<GeneralIndexValue*>::iterator  theResultSetsEnd;
-
+  void probeMap(const store::Item* key, SchemaTypeCode targetMap);
 
 public:
-  ProbeGeneralHashIndexIterator(const store::Index_t& index);
-
   void init(const store::IndexCondition_t& cond);
 
-  void open();
-
-  bool next(store::Item_t& result);
-  
   void reset();
 
   void close();
@@ -363,15 +379,32 @@ public:
 
 
 /******************************************************************************
-  Iterator to probe a tree-based, general index. The probe itself may be a
+  Iterator to probe a hash-based, general index. The probe itself may be a
   value probe or a general probe.
 
-  theResultSets    : The node sets associated with the keys that match the 
-                     condition. This is used for point probes only.
-  theResultSetsIte : Iterator over theResultSets; points to the "current" result
-                     set. This is used for point probes only.
-  theResultSetsEnd : The "end" iterator of theResultSets. This is used for 
-                     point probes only. 
+
+********************************************************************************/
+class ProbeGeneralHashIndexIterator : public ProbeGeneralIndexIterator
+{
+  friend class ProbeGeneralIndexIterator;
+
+protected:
+  void probeMap(
+    const store::Item* key,
+    const GeneralHashIndex::IndexMap* targetMap);
+
+public:
+  ProbeGeneralHashIndexIterator(const store::Index_t& index);
+
+  void open();
+
+  bool next(store::Item_t& result);
+};
+
+
+/******************************************************************************
+  Iterator to probe a tree-based, general index. The probe itself may be a
+  value probe or a general probe.
 
   theMapBegins     :  A vector that stores an iterator pointing to the 1st 
                       qualifying entry in each tree that has at least one
@@ -381,37 +414,32 @@ public:
                       qualifying entry. This is used for range probes only.
   theMapIte        :
 
-  theIte           : Iterator over the "current" result set. 
-  theEnd           : The "end" iterator of the "current" result set. 
-
 ********************************************************************************/
 class ProbeGeneralTreeIndexIterator : public ProbeGeneralIndexIterator
 {
-  typedef std::vector<GeneralIndexValue*> ResultSets;
+  friend class ProbeGeneralIndexIterator;
 
-  typedef GeneralTreeIndex::IndexMap::const_iterator EntryIterator;
+  typedef GeneralTreeIndex::EntryIterator EntryIterator;
 
   typedef std::vector<EntryIterator> EntryIterators;
 
 protected:
-  bool                                        theIsFullProbe;
+  bool                   theIsFullProbe;
 
-  ResultSets                                  theResultSets;
-  ResultSets::const_iterator                  theResultSetsIte;
-  ResultSets::const_iterator                  theResultSetsEnd;
+  EntryIterators         theMapBegins;
+  EntryIterators         theMapEnds;
 
-  EntryIterators                              theMapBegins;
-  EntryIterators                              theMapEnds;
-
-  ulong                                       theCurrentMap;
-  EntryIterator                               theMapIte;
+  csize                  theCurrentMap;
+  EntryIterator          theMapIte;
 
 protected:
-  void initPoint();
-
   void initValueBox();
 
   void initGeneralBox();
+
+  void probeMap(
+    const store::Item* key,
+    const GeneralTreeIndex::IndexMap* targetMap);
 
   void probeMap(
       GeneralTreeIndex::IndexMap* map,
@@ -424,21 +452,12 @@ protected:
       bool haveLower,
       bool haveUpper) const;
 
-  void checkStringKeyType(AtomicItem* keyItem) const;
-
 public:
   ProbeGeneralTreeIndexIterator(const store::Index_t& index);
-
-  void init(const store::IndexCondition_t& cond);
 
   void open();
 
   bool next(store::Item_t& result);
-  
-  void reset();
-
-  void close();
-
 };
 
 

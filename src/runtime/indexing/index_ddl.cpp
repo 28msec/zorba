@@ -135,11 +135,11 @@ static void createIndexSpec(
 {
   const std::vector<xqtref_t>& keyTypes(indexDecl->getKeyTypes());
   const std::vector<OrderModifier>& keyModifiers(indexDecl->getOrderModifiers());
-  ulong numColumns = (ulong)keyTypes.size();
+  csize numColumns = keyTypes.size();
 
   spec.resize(numColumns);
 
-  for (ulong i = 0; i < numColumns; ++i) 
+  for (csize i = 0; i < numColumns; ++i) 
   {
     if (keyTypes[i] != NULL)
     {
@@ -156,11 +156,11 @@ static void createIndexSpec(
   spec.theIsThreadSafe = true;
   spec.theIsAutomatic = indexDecl->getMaintenanceMode() != IndexDecl::MANUAL;
 
-  ulong numSources = (ulong)indexDecl->numSources();
+  csize numSources = indexDecl->numSources();
 
   spec.theSources.resize(numSources);
 
-  for (ulong i = 0; i < numSources; ++i)
+  for (csize i = 0; i < numSources; ++i)
   {
     spec.theSources[i] = const_cast<store::Item*>(indexDecl->getSourceName(i));
   }

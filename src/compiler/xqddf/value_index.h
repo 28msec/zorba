@@ -92,32 +92,40 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   Data members:
   -------------
 
-  - theSctx :
+  theSctx:
+  --------
   The root static context of the data module containing the index declaration.
 
-  - theName :
+  theName:
+  --------
   The qname that identifies the index.
 
-  - theIsGeneral :
+  theIsGeneral:
+  -------------
 
-  - theIsUnique :
+  theIsUnique:
+  ------------
   Whether it is a unique index or not. 
 
-  - theIsTemp :
+  theIsTemp:
+  ----------
   Whether it is a temp index or not. A temp index is an index that is created
   on-the-fly to optimize a query by converting a nested-lopp join to a hashjoin
   (see index_join_rule.cpp). Such an index is destroyed at the end of the query
   that created it.
 
-  - theMaintenanceMode: 
+  theMaintenanceMode:
+  ------------------- 
   If and how to maintain the index during/after each apply-updates or not.
 
-  - theContainerKind : 
+  theContainerKind:
+  ----------------- 
   The kind if container used to implement the index. Currently, there are 2 
   kinds: a tree-based container (std::map) for ordered indexes, or hash-based
   container for unordered indexes.
 
-  - theDomainClause : 
+  theDomainClause:
+  ---------------- 
   A FOR-clause that associates the domain expr with a FOR var that is referenced
   by the key exprs and acts as the domain node for those exprs. If dexpr is the
   domain expr specified in the index declaration, the actual domain expr is:
@@ -125,25 +133,31 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   for value indexes   : domainExpr := dexpr treat as node()*
   for general indexes : domainExpr := check-distinct-nodes(dexpr treat as node()*)
 
-  - theKeyExprs :
+  theKeyExprs:
+  ------------
   The key expressions of the index. If kexpr is a key expr specified in the 
   index declaration, the actual domain expr is:
 
   for value indexes   : keyExpr := fn:data(kexpr) treat as typeDecl
   for general indexes : distinct-values(fn:data(kexpr) treat as typeDecl)
 
-  - theKeyTypes :
-  The atomic item type that each key value must match with according to the 
-  rules of sequence type matching. For value indexes, their index declaration
-  must always specify a type T, and the item type of T may not be xs:anyAtomicType
-  or xs:untypedAtomic. For general indexes, the key type declaration may be 
-  absent, or its item type may be xs:anyAtomicType or xs:untypedAtomic. If
-  absent, the associated entry in theKeyTypes will be NULL, but this is treated
-  the same as xs:anyAtomicType.
+  theKeyTypes:
+  ------------
+  For each key expr, this vector contains the builtin atomic item that is the
+  base of the atomic type type T specified for that key expr. For value indexes,
+  their index declaration must always specify a type T, and the item type of T 
+  may not be xs:anyAtomicType or xs:untypedAtomic. For general indexes, the key 
+  type declaration may be absent, or its item type may be xs:anyAtomicType or 
+  xs:untypedAtomic. If absent, the associated entry in theKeyTypes will be NULL, 
+  but this is treated the same as xs:anyAtomicType. The translator makes sure
+  that each key value inserted into the index matches with T according to the 
+  rules of sequence type matching. 
 
-  - theOrderModifiers :
+  theOrderModifiers:
+  ------------------
 
-  - theSourceNames :
+  theSourceNames:
+  -----------------
   The qnames of the collections referenced in the domain and key expressions.
   Currently, it is required that the arg given to every xqddf:collection()
   invocation within the domain expr or any of the key exprs is a constant expr.
@@ -166,11 +180,13 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   determine the collection set of an index as the index is being created, and
   then give this info to the store.
                    
-  - theDomainSourceExprs :
+  theDomainSourceExprs:
+  ---------------------
   A vector containing pointers to the xqddf:collection() exprs within the
   domain expr.    
 
-  -theBuildExpr :
+  theBuildExpr:
+  -------------
   The expr that computes the index entries. It is used to create or rebuild
   the full index from scratch. The expr is a flwor expr of the following form,
   for value and general indexes, respectively:
@@ -181,23 +197,27 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   for $$dot at $$pos in domainExpr
   return general-index-entry-builder($$dot, fieldExpr);
 
-  - theBuildPlan :
+  theBuildPlan:
+  -------------
   The runtime plan corresponding to theBuildExpr. During runtime (see
   CreateIndexIterator and RebuildIndexIterator), this plan is wrapper into a 
   PlanWrapper and then passed to the store, which uses it to create or 
   re-build the full index.
 
-  - theDocIndexerExpr : 
+  theDocIndexerExpr:
+  ------------------ 
   This is an expr that builds the index over a single xml tree, which is
   provided as an external var to this expr. It is basically the same as
   theBuildExpr except that a reference to a collection inside the domainExpr
   is replaced with a reference to an external var that can be bound dynamically
   to some xml tree.
                                             
-  - theDocIndexerVar :
+  theDocIndexerVar:
+  -----------------
   The external var appearing in theDocIndexerExpr.
 
-  - theDocIndexer : 
+  theDocIndexer:
+  -------------- 
   If the index domain expr is a map over a collection C, then theDocIndexer obj
   is not NULL and it provides a method that takes as input a document D in C 
   and produces all the index entries for D. theDocIndexer obj is passed to the
