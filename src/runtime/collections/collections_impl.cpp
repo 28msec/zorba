@@ -35,6 +35,8 @@
 #include "runtime/collections/collections.h"
 #include "runtime/collections/collections_impl.h"
 #include "runtime/core/apply_updates.h"
+#include "runtime/base/plan_iterator.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/pul.h"
 #include "store/api/item.h"
@@ -217,6 +219,23 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   STACK_END(state);
 }
+
+//Serialization data for CountCollectionIterator
+const char* CountCollectionIterator::class_name_str = "CountCollectionIterator";
+CountCollectionIterator::class_factory<CountCollectionIterator>
+CountCollectionIterator::g_class_factory;
+
+const serialization::ClassVersion 
+CountCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int CountCollectionIterator::class_versions_count =
+sizeof(CountCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+//Visitor functions for CountCollectionIterator
+UNARY_ACCEPT(CountCollectionIterator);
+
+//Desctructor
+CountCollectionIterator::~CountCollectionIterator() {}
 
 
 /*******************************************************************************
