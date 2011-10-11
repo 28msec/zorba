@@ -36,6 +36,9 @@ int uuid_create(uuid_t * uuid);
 /* uuidToString -- transform a UUID to a string */
 zstring uuidToString(const uuid_t& uuid);
 
+/* uuidToURI -- transform a UUID to a URI-formatted string */
+zstring uuidToURI(const uuid_t& uuid);
+
 } // namespace zorba
 #endif /* ZORBA_UTIL_UUID_H */
 /* vim:set et sw=2 ts=2: */

@@ -11,45 +11,49 @@
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="NodeReferenceIterator">
+
+    <zorba:description author="Federico Cavalieri">       
+      declare function ref:node-reference($node as node()) as xs:anyURI
+    </zorba:description>
     
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="NodeReferenceIterator">
+    <zorba:function>
+    
+      <zorba:signature localname="node-reference" prefix="fn-zorba-ref">
+        <zorba:param>node()</zorba:param>   
+        <zorba:output>xs:anyURI</zorba:output>
+      </zorba:signature>
+      
+    </zorba:function>
 
-  <zorba:description author="Zorba Team">
-  Iterator to implement the zorba:node-reference function.
-  </zorba:description>
-
-  <zorba:function>
-    <zorba:signature localname="node-reference" prefix="fn-zorba-ref">
-      <zorba:param>node()</zorba:param>
-      <zorba:output>xs:anyURI</zorba:output>
-    </zorba:signature>
-  </zorba:function>
-
-</zorba:iterator>
+  </zorba:iterator>
 
 <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="NodeByReferenceIterator">
+  <zorba:iterator name="NodeByReferenceIterator">
 
-    <zorba:description author="Zorba Team">
-      Iterator to implement the zorba:node-by-reference function.
+    <zorba:description author="Federico Cavalieri">
+      declare function ref:node-by-reference($reference as xs:anyURI) as node()?
     </zorba:description>
 
     <zorba:function>
+    
       <zorba:signature localname="node-by-reference" prefix="fn-zorba-ref">
         <zorba:param>xs:anyURI</zorba:param>
         <zorba:output>node()?</zorba:output>
       </zorba:signature>
+      
     </zorba:function>
-
-</zorba:iterator>
-
+        
+  </zorba:iterator>
+    
 <!--
 /*******************************************************************************
 ********************************************************************************/
