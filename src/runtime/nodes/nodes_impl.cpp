@@ -34,6 +34,7 @@ using namespace std;
 namespace zorba {
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
@@ -42,17 +43,19 @@ NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
   store::Item_t lGenerateIdentifier;
   zstring lNodeId;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
-  STACK_PUSH(GENV_STORE.getReference(aResult, lNode), state);
+  STACK_PUSH(GENV_STORE.getNodeReference(aResult, lNode), state);
 
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -60,7 +63,7 @@ NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t lUUID;
   bool haveResult;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUUID, theChildren[0].getp(), planState);
@@ -378,8 +381,8 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
       zstring uri_string, lRes;
       if(consumeNext(item, theChildren[0].getp(), planState))
       {
-        store::Item_t   item_uri;
-        if (GENV_STORE.getReference(item_uri, item.getp()))
+        store::Item_t item_uri;
+        if (GENV_STORE.getNodeReference(item_uri, item.getp()))
         {
           uri_string = item_uri->getStringValue();
           // need to convert the opaque uri into a valid ncname
