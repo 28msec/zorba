@@ -496,6 +496,8 @@ void UpdSetElementType::apply()
       textChild->setTypedValue(theTypedValue);
       if (theHaveListTypedValue)
         textChild->setHaveListValue();
+      else
+        textChild->resetHaveListValue();
     }
   }
   else
@@ -552,7 +554,8 @@ void UpdRenameAttr::check()
       ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
       parent->checkUniqueAttrs();
     }
-  } catch (ZorbaException& e)
+  } 
+  catch (ZorbaException& e)
   {
     set_source(e, *theLoc);
     throw;
