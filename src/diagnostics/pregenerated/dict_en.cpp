@@ -239,6 +239,8 @@ extern entry const dict_en[] = {
   { "ZAPI0021", "\"$1\": item to load is not a node" },
   { "ZAPI0027", "cannot update dynamic context with iterators" },
   { "ZAPI0028", "\"$1\": invalid node URI" },
+  { "ZAPI0029", "\"$1\": reference already present in the store" },
+  { "ZAPI0030", "node has no current reference" },
   { "ZAPI0039", "XQuery has iterator already" },
   { "ZAPI0040", "iterator is not open" },
   { "ZAPI0041", "iterator is already open" },
