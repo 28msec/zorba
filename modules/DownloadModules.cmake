@@ -55,6 +55,11 @@ foreach (modline ${modlines})
     list (GET _modargs 0 _modname)
     list (GET _modargs 1 _modvc)
     list (GET _modargs 2 _modurl)
+    set (_modtag)
+    list (LENGTH _modargs _modargslen)
+    if (_modargslen GREATER 3)
+      list (GET _modargs 3 _modtag)
+    endif (_modargslen GREATER 3)
 
     # See if this is a module short-name we care about
     set (_getmod)
@@ -88,8 +93,13 @@ foreach (modline ${modlines})
           message (FATAL_ERROR
             "Bazaar client not found - required for ${_modname} module!")
         endif (NOT bzr)
+
+        set (_modtagargs)
+        if (_modtag)
+          set (_modtagargs "-r" "${_modtag}")
+        endif (_modtag)
         execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
-          WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
+          ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
 
       else (${_modvc} STREQUAL "svn")
         message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
