@@ -19,9 +19,11 @@
 #   Valid options:
 #      modname = short module name (see modules/ExternalModules.conf);
 #                may be a semicolon-separated list
-#      allmodules = if true, download all known modules
+#      allmodules = if true: download all known modules
 #      outdir = full path to Zorba's external modules directory to download
 #               modules into (will be created if necessary)
+#      notags = if true: ignore tags, check out HEAD revision of module(s)
+#               (bzr only - svn uses different URLs for tags)
 
 # Figure out what directory we're running in - ExternalModules.txt is here too
 get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
@@ -95,9 +97,9 @@ foreach (modline ${modlines})
         endif (NOT bzr)
 
         set (_modtagargs)
-        if (_modtag)
+        if (_modtag AND NOT notags)
           set (_modtagargs "-r" "${_modtag}")
-        endif (_modtag)
+        endif (_modtag AND NOT notags)
         execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
           ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
 
