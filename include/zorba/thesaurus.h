@@ -75,11 +75,11 @@ public:
    * This function is called by Zorba when the %ThesaurusResource is no longer
    * needed.
    *
-   * If your ThesaurusProvider dynamically allocates %ThesaurusResource
+   * If your URLResolver dynamically allocates %ThesaurusResource
    * objects, then the implementation can simply be (and usually is)
    * <code>delete this</code>.
    *
-   * If your ThesaurusProvider returns a pointer to a static %ThesaurusResource
+   * If your URLResolver returns a pointer to a static %ThesaurusResource
    * object, then the implementation should do nothing.
    */
   virtual void destroy() const = 0;

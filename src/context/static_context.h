@@ -502,9 +502,9 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  ztd::auto_vector<impl::URIMapper>       theURIMappers;
+  ztd::auto_vector<internal::URIMapper>       theURIMappers;
 
-  ztd::auto_vector<impl::URLResolver>     theURLResolvers;
+  ztd::auto_vector<internal::URLResolver>     theURLResolvers;
 
   checked_vector<zstring>                 theModulePaths;
 
@@ -666,27 +666,27 @@ public:
    * Add a URIMapper to be used by this static context when resolving
    * URIs to resources.
    */
-  void add_uri_mapper(impl::URIMapper* aMapper);
+  void add_uri_mapper(internal::URIMapper* aMapper);
 
   /**
    * Add a URLResolver to be used by this static context when
    * resolving URIs to resources.
    */
-  void add_url_resolver(impl::URLResolver* aResolver);
+  void add_url_resolver(internal::URLResolver* aResolver);
 
   /**
    * Given a URI, return a Resource for that URI.
    * @param aEntityKind the expected kind of entity expected at this aUri
    */
-  std::auto_ptr<impl::Resource> resolve_uri
-  (zstring const& aUri, impl::EntityData::Kind aEntityKind, zstring& oErrorMessage) const;
+  std::auto_ptr<internal::Resource> resolve_uri
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind, zstring& oErrorMessage) const;
 
   /**
    * Given a URI, return a Resource for that URI.
    * @param aEntityData an EntityData object to pass to the mappers/resolvers.
    */
-  std::auto_ptr<impl::Resource> resolve_uri
-  (zstring const& aUri, impl::EntityData const& aEntityData, zstring& oErrorMessage) const;
+  std::auto_ptr<internal::Resource> resolve_uri
+  (zstring const& aUri, internal::EntityData const& aEntityData, zstring& oErrorMessage) const;
 
   /**
    * Given a URI, populate a vector with a list of component URIs.  If
@@ -694,7 +694,7 @@ public:
    * with (only) the input URI.
    */
   void get_component_uris
-  (zstring const& aUri, impl::EntityData::Kind aEntityKind,
+  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const;
 
   void set_module_paths(const std::vector<zstring>& aModulePaths);
@@ -1031,13 +1031,13 @@ protected:
 private:
 
   void apply_uri_mappers(zstring const& aUri,
-    impl::EntityData const* aEntityData,
-    impl::URIMapper::Kind aMapperKind,
+    internal::EntityData const* aEntityData,
+    internal::URIMapper::Kind aMapperKind,
     std::vector<zstring>& oUris) const;
 
   void apply_url_resolvers(std::vector<zstring>& aUrls,
-    impl::EntityData const* aEntityData,
-    std::auto_ptr<impl::Resource>& oResource,
+    internal::EntityData const* aEntityData,
+    std::auto_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const;
 
 public:

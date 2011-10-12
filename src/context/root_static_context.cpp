@@ -95,13 +95,13 @@ void root_static_context::init()
 
 
   // TODO move into globalenv? memory leaks?
-  add_url_resolver(new impl::FileURLResolver());
-  add_url_resolver(new impl::HTTPURLResolver());
-  add_uri_mapper(new impl::FileizeURIMapper());
-  add_uri_mapper(new impl::ModuleVersioningURIMapper());
-  add_uri_mapper(new impl::AutoFSURIMapper());
-  add_url_resolver(new impl::ZorbaCollectionURLResolver());
-  add_uri_mapper(new impl::ZorbaCollectionURIMapper());
+  add_url_resolver(new internal::FileURLResolver());
+  add_url_resolver(new internal::HTTPURLResolver());
+  add_uri_mapper(new internal::FileizeURIMapper());
+  add_uri_mapper(new internal::ModuleVersioningURIMapper());
+  add_uri_mapper(new internal::AutoFSURIMapper());
+  add_url_resolver(new internal::ZorbaCollectionURLResolver());
+  add_uri_mapper(new internal::ZorbaCollectionURIMapper());
 
   set_validation_mode(StaticContextConsts::lax_validation);
 

@@ -328,7 +328,7 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   "stream URL" hack in StreamResource - this is the only place in the code where
   we use the two-arg StreamResource constructor.
 *******************************************************************************/
-class FakeLibraryModuleURLResolver : public impl::URLResolver
+class FakeLibraryModuleURLResolver : public internal::URLResolver
 {
 public:
   FakeLibraryModuleURLResolver
@@ -341,8 +341,8 @@ public:
   virtual ~FakeLibraryModuleURLResolver()
   {}
 
-  virtual impl::Resource* resolveURL
-  (zstring const& aUrl, impl::EntityData const* aEntityData)
+  virtual internal::Resource* resolveURL
+  (zstring const& aUrl, internal::EntityData const* aEntityData)
   {
     if (aUrl != theLibraryModuleNamespace) {
       return NULL;
@@ -351,7 +351,7 @@ public:
     // Pass a nullptr StreamReleaser; memory ownership of the istream remains
     // with the caller of this method.
     // QQQ We can remove this third argument when we can compile modules individually
-    return new impl::StreamResource(&theStream, nullptr,
+    return new internal::StreamResource(&theStream, nullptr,
                                     theLibraryModuleFilename);
   }
 

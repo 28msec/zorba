@@ -26,6 +26,8 @@
 #include <zorba/zorba_string.h>
 #include <zorba/streams.h>
 #include <zorba/locale.h>
+#include <zorba/internal/unique_ptr.h>
+#include <zorba/internal/ztd.h>
 
 /**
  * @file uri_resolvers.h
@@ -48,7 +50,19 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC Resource
 {
 public:
+  typedef std::unique_ptr<Resource,internal::ztd::destroy_delete<Resource> > ptr;
+
   virtual ~Resource() = 0;
+
+  /**
+   * @brief Destroy/clean up this Resource.
+   *
+   * Zorba will call this method when it no longer needs the Resource. It
+   * is the responsibility of subclasses to clean up appropriate when
+   * this method is called, including calling "delete this" if the Resource
+   * was allocated with "new".
+   */
+  virtual void destroy() const = 0;
 };
 
 /**

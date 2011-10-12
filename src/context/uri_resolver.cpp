@@ -26,13 +26,13 @@
 // We avoid the "static initialization order fiasco" by initializing both of
 // these constants here in the same file. This also makes it easy to ensure
 // both strings have the same value.
-const zorba::zstring zorba::impl::URIMapper::DENY_ACCESS("[~~Deny Access~~]");
-const zorba::String zorba::URIMapper::DENY_ACCESS(zorba::impl::URIMapper::DENY_ACCESS.c_str());
+const zorba::zstring zorba::internal::URIMapper::DENY_ACCESS("[~~Deny Access~~]");
+const zorba::String zorba::URIMapper::DENY_ACCESS(zorba::internal::URIMapper::DENY_ACCESS.c_str());
 
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /*************
  * Implementation of the Resource class hierarchy.

@@ -27,7 +27,7 @@
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /******
  * Fileize mapper.

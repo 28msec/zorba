@@ -31,7 +31,7 @@
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /******
  * http: (and https: and ftp:) URL resolver.
@@ -103,7 +103,7 @@ Resource*
 ZorbaCollectionURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
-  if (aEntityData->getKind() != impl::EntityData::COLLECTION)
+  if (aEntityData->getKind() != internal::EntityData::COLLECTION)
     return NULL;
 
   store::Item_t lName;

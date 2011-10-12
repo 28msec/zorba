@@ -1364,43 +1364,43 @@ zstring static_context::resolve_relative_uri(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::add_uri_mapper(impl::URIMapper* aMapper)
+void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 {
-  theURIMappers.push_back(std::auto_ptr<impl::URIMapper>(aMapper));
+  theURIMappers.push_back(std::auto_ptr<internal::URIMapper>(aMapper));
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::add_url_resolver(impl::URLResolver* aResolver)
+void static_context::add_url_resolver(internal::URLResolver* aResolver)
 {
-  theURLResolvers.push_back(std::auto_ptr<impl::URLResolver>(aResolver));
+  theURLResolvers.push_back(std::auto_ptr<internal::URLResolver>(aResolver));
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-std::auto_ptr<impl::Resource> static_context::resolve_uri(
+std::auto_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri, 
-    impl::EntityData::Kind aEntityKind,
+    internal::EntityData::Kind aEntityKind,
     zstring& oErrorMessage) const
 {
   // Create a simple EntityData that just reports the specified Kind
-  impl::EntityData const lData(aEntityKind);
+  internal::EntityData const lData(aEntityKind);
   return this->resolve_uri(aUri, lData, oErrorMessage);
 }
 
-std::auto_ptr<impl::Resource> static_context::resolve_uri(
+std::auto_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri,
-    impl::EntityData const& aEntityData,
+    internal::EntityData const& aEntityData,
     zstring& oErrorMessage) const
 {
   std::vector<zstring> lUris;
-  apply_uri_mappers(aUri, &aEntityData, impl::URIMapper::CANDIDATE, lUris);
+  apply_uri_mappers(aUri, &aEntityData, internal::URIMapper::CANDIDATE, lUris);
 
-  std::auto_ptr<impl::Resource> lRetval;
+  std::auto_ptr<internal::Resource> lRetval;
   apply_url_resolvers(lUris, &aEntityData, lRetval, oErrorMessage);
 
   return lRetval;
@@ -1408,13 +1408,13 @@ std::auto_ptr<impl::Resource> static_context::resolve_uri(
 
 void static_context::get_component_uris(
     zstring const& aUri,
-    impl::EntityData::Kind aEntityKind,
+    internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const
 {
   // Create a simple EntityData that just reports the specified Kind
-  impl::EntityData const lData(aEntityKind);
+  internal::EntityData const lData(aEntityKind);
 
-  apply_uri_mappers(aUri, &lData, impl::URIMapper::COMPONENT, oComponents);
+  apply_uri_mappers(aUri, &lData, internal::URIMapper::COMPONENT, oComponents);
   if (oComponents.size() == 0) 
   {
     oComponents.push_back(aUri);
@@ -1427,8 +1427,8 @@ void static_context::get_component_uris(
 ********************************************************************************/
 void static_context::apply_uri_mappers(
     zstring const& aUri, 
-    impl::EntityData const* aEntityData,
-    impl::URIMapper::Kind aMapperKind, 
+    internal::EntityData const* aEntityData,
+    internal::URIMapper::Kind aMapperKind, 
     std::vector<zstring>& oUris) const
 {
   // Initialize list with the one input URI.
@@ -1439,7 +1439,7 @@ void static_context::apply_uri_mappers(
        sctx != NULL; sctx = sctx->theParent)
   {
     // Iterate through all available mappers on this static_context...
-    for (ztd::auto_vector<impl::URIMapper>::const_iterator mapper =
+    for (ztd::auto_vector<internal::URIMapper>::const_iterator mapper =
            sctx->theURIMappers.begin();
          mapper != sctx->theURIMappers.end(); mapper++)
     {
@@ -1471,7 +1471,7 @@ void static_context::apply_uri_mappers(
           // Check the new entries for DENY_ACCESS.
           for (size_t i = lPreNumResultUris; i < lPostNumResultUris; i++) 
           {
-            if (lResultUris.at(i) == impl::URIMapper::DENY_ACCESS) {
+            if (lResultUris.at(i) == internal::URIMapper::DENY_ACCESS) {
               throw XQUERY_EXCEPTION(zerr::ZXQP0029_URI_ACCESS_DENIED,
                                      ERROR_PARAMS(aUri));
             }
@@ -1492,8 +1492,8 @@ void static_context::apply_uri_mappers(
 ********************************************************************************/
 void static_context::apply_url_resolvers(
     std::vector<zstring>& aUrls,
-    impl::EntityData const* aEntityData,
-    std::auto_ptr<impl::Resource>& oResource, 
+    internal::EntityData const* aEntityData,
+    std::auto_ptr<internal::Resource>& oResource, 
     zstring& oErrorMessage) const
 {
   oErrorMessage = "";
@@ -1507,7 +1507,7 @@ void static_context::apply_url_resolvers(
          sctx != NULL; sctx = sctx->theParent)
     {
       // Iterate through all available resolvers on this static_context...
-      for (ztd::auto_vector<impl::URLResolver>::const_iterator resolver =
+      for (ztd::auto_vector<internal::URLResolver>::const_iterator resolver =
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {

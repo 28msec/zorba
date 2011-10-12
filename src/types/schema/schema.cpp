@@ -205,7 +205,7 @@ public:
         isSystemId = true;
       }
       
-      std::auto_ptr<impl::Resource> lResource;
+      std::auto_ptr<internal::Resource> lResource;
       
       zstring lStrId = StrX(lId).localForm();
       zstring lResolved;
@@ -228,9 +228,9 @@ public:
       {
         TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved);
         zstring lErrorMessage;
-        lResource = theSctx->resolve_uri(lResolved, impl::EntityData::SCHEMA, lErrorMessage);
-        impl::StreamResource* lStream =
-            dynamic_cast<impl::StreamResource*>(lResource.get());
+        lResource = theSctx->resolve_uri(lResolved, internal::EntityData::SCHEMA, lErrorMessage);
+        internal::StreamResource* lStream =
+            dynamic_cast<internal::StreamResource*>(lResource.get());
         if (lStream != NULL)
         {
           // Pass memory ownership of this istream to the new IstreamInputSource
@@ -265,7 +265,7 @@ public:
   StaticContextEntityResolver(
     const XMLCh* const aLogicalURI,
     static_context * aSctx,
-    impl::StreamResource* aStreamResource)
+    internal::StreamResource* aStreamResource)
     : theLogicalURI(aLogicalURI), theSctx(aSctx)
   {
     // Take memory ownership of the istream
@@ -391,7 +391,7 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
 *******************************************************************************/
 void Schema::registerXSD(const char* xsdURL,
   static_context * aSctx,
-  impl::StreamResource* stream,
+  internal::StreamResource* stream,
   const QueryLoc& loc)
 {
   std::auto_ptr<SAX2XMLReader> parser;

@@ -41,7 +41,7 @@ namespace zorba {
 // Forward declaration
 class static_context;
 
-namespace impl {
+namespace internal {
 
 /**
  * @brief The class representing the result of URL resolution.

@@ -28,26 +28,26 @@ namespace zorba
   class EntityDataWrapper : public ThesaurusEntityData
   {
   public:
-    static EntityDataWrapper const* create(impl::EntityData const* aData) {
+    static EntityDataWrapper const* create(internal::EntityData const* aData) {
       // More ugly: Create a public-API EntityData with the same Entity Kind,
       // but only if it's one of the publicly-supported kinds
       switch (aData->getKind()) {
-      case impl::EntityData::MODULE:
+      case internal::EntityData::MODULE:
         return new EntityDataWrapper(EntityData::MODULE);
-      case impl::EntityData::SCHEMA:
+      case internal::EntityData::SCHEMA:
         return new EntityDataWrapper(EntityData::SCHEMA);
-      case impl::EntityData::THESAURUS:
+      case internal::EntityData::THESAURUS:
       {
         EntityDataWrapper* retval = new EntityDataWrapper(EntityData::THESAURUS);
         retval->theThesaurusLang =
-            dynamic_cast<const impl::ThesaurusEntityData*>(aData)->getLanguage();
+            dynamic_cast<const internal::ThesaurusEntityData*>(aData)->getLanguage();
         return retval;
       }
-      case impl::EntityData::STOP_WORDS:
+      case internal::EntityData::STOP_WORDS:
         return new EntityDataWrapper(EntityData::STOP_WORDS);
-      case impl::EntityData::COLLECTION:
+      case internal::EntityData::COLLECTION:
         return new EntityDataWrapper(EntityData::COLLECTION);
-      case impl::EntityData::DOCUMENT:
+      case internal::EntityData::DOCUMENT:
         return new EntityDataWrapper(EntityData::DOCUMENT);
       default:
         return NULL;
@@ -81,7 +81,7 @@ namespace zorba
   void
   URIMapperWrapper::mapURI
   (const zstring& aUri,
-    impl::EntityData const* aEntityData,
+    internal::EntityData const* aEntityData,
     static_context const& aSctx,
     std::vector<zstring>& oUris)
   {
@@ -101,20 +101,20 @@ namespace zorba
     }
   }
 
-  impl::URIMapper::Kind
+  internal::URIMapper::Kind
   URIMapperWrapper::mapperKind()
   {
     // Still so ugly.
     switch (theUserMapper.mapperKind()) {
       case URIMapper::COMPONENT:
-        return impl::URIMapper::COMPONENT;
+        return internal::URIMapper::COMPONENT;
       case URIMapper::CANDIDATE:
-        return impl::URIMapper::CANDIDATE;
+        return internal::URIMapper::CANDIDATE;
     }
 
     assert(false);
     // dummy return
-    return impl::URIMapper::COMPONENT;
+    return internal::URIMapper::COMPONENT;
   }
 
 
@@ -125,10 +125,10 @@ namespace zorba
   URLResolverWrapper::~URLResolverWrapper()
   {}
 
-  impl::Resource*
+  internal::Resource*
   URLResolverWrapper::resolveURL
   (const zstring& aUrl,
-    impl::EntityData const* aEntityData)
+    internal::EntityData const* aEntityData)
   {
     std::auto_ptr<const EntityDataWrapper> lDataWrap
         (EntityDataWrapper::create(aEntityData));
@@ -136,23 +136,19 @@ namespace zorba
       return NULL;
     }
 
-    impl::StreamResource* lRetval = nullptr;
-    // Get the user's Resource. It's OK to use an auto_ptr here for safety,
-    // because the Resource will have been created by a factory method inside
-    // libzorba (no cross-DLL memory allocation issue).
-    std::auto_ptr<Resource> lUserPtr
+    internal::StreamResource* lRetval = nullptr;
+    // Get the user's Resource.
+    Resource::ptr lUserPtr
       (theUserResolver.resolveURL(zorba::String(aUrl.c_str()),
                                   lDataWrap.get()));
     if (lUserPtr.get() != NULL) {
-      // This will get a bit more complicated when we publicly support more than
-      // one kind of Resource subclass.
       StreamResourceImpl* lUserStream =
           dynamic_cast<StreamResourceImpl*>(lUserPtr.get());
       if (lUserStream != NULL) {
         // Here we pass memory ownership of the std::istream to the internal
         // StreamResource, by passing the StreamReleaser to it and setting the
         // user's StreamResource's StreamReleaser to nullptr.
-        lRetval = new impl::StreamResource(lUserStream->getStream(),
+        lRetval = new internal::StreamResource(lUserStream->getStream(),
                                            lUserStream->getStreamReleaser());
         lUserStream->setStreamReleaser(nullptr);
       }

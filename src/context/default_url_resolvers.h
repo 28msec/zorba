@@ -31,12 +31,12 @@
 
 namespace zorba {
 
-namespace impl {
+namespace internal {
 
 /**
  * @brief http: URL Resolver.
  */
-class HTTPURLResolver : public impl::URLResolver
+class HTTPURLResolver : public internal::URLResolver
 {
 public:
 
@@ -47,7 +47,7 @@ public:
 /**
  * @brief file: URL Resolver.
  */
-class FileURLResolver : public impl::URLResolver
+class FileURLResolver : public internal::URLResolver
 {
 public:
 
@@ -57,7 +57,7 @@ public:
 
 /**
  */
-class ZorbaCollectionURLResolver : public impl::URLResolver
+class ZorbaCollectionURLResolver : public internal::URLResolver
 {
 public:
 
