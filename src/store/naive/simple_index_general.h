@@ -402,9 +402,16 @@ protected:
 
   void initPoint();
 
+  void initBox();
+
   bool haveMap(SchemaTypeCode targetMap) const;
 
-  void probeMap(const store::Item* key, SchemaTypeCode targetMap);
+  void probeMap(SchemaTypeCode targetMap, const store::Item* key);
+
+  void probeMap(
+      const SchemaTypeCode targetMap,
+      const AtomicItem_t& lowerKey,
+      const AtomicItem_t& upperKey);
 
   void checkStringKeyType(const AtomicItem* keyItem) const;
 
@@ -437,8 +444,8 @@ class ProbeGeneralHashIndexIterator : public ProbeGeneralIndexIterator
 
 protected:
   void probeMap(
-    const store::Item* key,
-    const GeneralHashIndex::IndexMap* targetMap);
+    const GeneralHashIndex::IndexMap* targetMap,
+    const store::Item* key);
 
 public:
   ProbeGeneralHashIndexIterator(const store::Index_t& index);
@@ -454,14 +461,12 @@ class ProbeGeneralTreeIndexIterator : public ProbeGeneralIndexIterator
   friend class ProbeGeneralIndexIterator;
 
 protected:
-  void initBox();
+  void probeMap(
+      const GeneralTreeIndex::IndexMap* targetMap,
+      const store::Item* key);
 
   void probeMap(
-    const store::Item* key,
-    const GeneralTreeIndex::IndexMap* targetMap);
-
-  void probeMap(
-      const GeneralTreeIndex::IndexMap* map,
+      const GeneralTreeIndex::IndexMap* targetMap,
       const AtomicItem_t& lowerKey,
       const AtomicItem_t& upperKey);
 
