@@ -416,21 +416,15 @@ bool empty() const
   return (theNumEntries == 0);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-ulong object_count() const
+ulong size() const
 {
   return theNumEntries;
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-C get_compare_function()
-{
-  return theCompareFunction;
-}
 
 /*******************************************************************************
 
@@ -438,6 +432,15 @@ C get_compare_function()
 size_t capacity() const
 {
   return theHashTab.size();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+C get_compare_function()
+{
+  return theCompareFunction;
 }
 
 
@@ -560,6 +563,30 @@ bool get(const T& item, V& value) const
   }
 
   return false;
+}
+
+
+/******************************************************************************
+  If the set does not already contain an item I that is "equal" to the given
+  item, make a copy of the given item and its associated value and place the
+  new (item, value) pair in the map; then return true. Otherwise, return false.
+********************************************************************************/
+bool insert(const std::pair<const T, V>& pair)
+{
+  bool found;
+  ulong hval = hash(pair.first);
+
+  SYNC_CODE(AutoMutex lock(theMutexp);)
+
+  HASHENTRY<T, V>* entry = hashInsert(pair.first, hval, found);
+
+  if (!found)
+  {
+    entry->theItem = pair.first;
+    entry->theValue = pair.second;
+  }
+
+  return !found;
 }
 
 

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result><out-of-module-global><root>reference.xqlib</root></out-of-module-global><put-doc><root>doc</root></put-doc><in-scope><root>global</root></in-scope><temporary-variable-out-of-scope/><temporary-variable-in-scope><root>1</root><root>2</root><root>3</root></temporary-variable-in-scope><temporary-variable-in-scope><root>temp</root></temporary-variable-in-scope><in-map><a>1</a></in-map></result>

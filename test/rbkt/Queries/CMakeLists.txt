@@ -286,3 +286,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
+
+EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
+

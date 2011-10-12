@@ -33,40 +33,51 @@ using namespace std;
 
 namespace zorba {
 
-bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+/*******************************************************************************
+
+********************************************************************************/
+bool
+NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
-  PlanIteratorState *state;
-  bool valid;
-  store::Item_t inNode;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  store::Item_t lNode;
+  store::Item_t lGenerateIdentifier;
+  zstring lNodeId;
 
-  valid = consumeNext(inNode, theChildren[0], planState);
-  assert(valid);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  if (! inNode->getCollection() )
-  {
-    throw XQUERY_EXCEPTION(
-      zerr::ZAPI0080_CANNOT_RETRIEVE_NODE_REFERENCE,
-      ERROR_LOC( loc )
-    );
-  }
+  consumeNext(lNode, theChildren[0].getp(), aPlanState);
 
-  STACK_PUSH(GENV_STORE.getReference(result, inNode), state);
-  STACK_END(state);
+  STACK_PUSH(GENV_STORE.getNodeReference(aResult, lNode), state);
+
+  STACK_END (state);
 }
 
-bool NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t inUri;
-  bool valid;
 
-  PlanIteratorState *state;
+/*******************************************************************************
+
+********************************************************************************/
+bool
+NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lUUID;
+  bool haveResult;
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  valid = consumeNext(inUri, theChildren[0], planState);
-  assert(valid);
+  consumeNext(lUUID, theChildren[0].getp(), planState);
+  try
+  {
+    haveResult = GENV_STORE.getNodeByReference(result, lUUID->getStringValue());
+  }
+  catch (ZorbaException& e)
+  {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH(haveResult, state);
 
-  STACK_PUSH(GENV_STORE.getNodeByReference(result, inUri), state);
   STACK_END (state);
 }
 
@@ -138,8 +149,9 @@ bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 
-// 14.5 fn:lang
-//---------------------
+/*******************************************************************************
+  14.5 fn:lang
+********************************************************************************/
 bool
 FnLangIterator::isLangAttr(const store::Item_t& aAttr) const
 {
@@ -149,6 +161,7 @@ FnLangIterator::isLangAttr(const store::Item_t& aAttr) const
           ZSTREQ(lAttrName->getNamespace(), XML_NS));
 }
 
+
 bool
 FnLangIterator::matchesReqLang(
     const store::Item_t& aAttr,
@@ -157,6 +170,7 @@ FnLangIterator::matchesReqLang(
   return utf8::match_whole( 
             aAttr->getStringValue(), aRequestLang.str() + "(?:-.+)?", "i");
 }
+
 
 bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -218,6 +232,10 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool FnHasChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     item, child1;
@@ -244,6 +262,10 @@ bool FnHasChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 static bool is_ancestor_of(store::Item_t parent, store::Item_t child)
 {
   if(parent == NULL)
@@ -257,6 +279,10 @@ static bool is_ancestor_of(store::Item_t parent, store::Item_t child)
   return false;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool FnInnermostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     item;
@@ -295,6 +321,10 @@ bool FnInnermostIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool FnOutermostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     item;
@@ -333,30 +363,33 @@ bool FnOutermostIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     item;
   bool retval;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(theChildren.size())
+  if (theChildren.size())
   {
     {
       zstring uri_string, lRes;
       if(consumeNext(item, theChildren[0].getp(), planState))
       {
-        store::Item_t   item_uri;
-        if(GENV_STORE.getReference(item_uri, item.getp()))
+        store::Item_t item_uri;
+        if (GENV_STORE.getNodeReference(item_uri, item.getp()))
         {
           uri_string = item_uri->getStringValue();
           // need to convert the opaque uri into a valid ncname
-          // e.g. z0.1.1.c.50
 #ifndef NDEBUG
-          ZORBA_ASSERT( uri_string.find_first_of("zorba:") == 0 );
+          ZORBA_ASSERT( uri_string.find_first_of("urn:uuid:") == 0 );
 #endif
-          lRes = "z" + uri_string.substr(uri_string.find_first_of(":") + 1);
+          lRes = "u" + uri_string.substr(9);
         }
       }
       retval = GENV_ITEMFACTORY->createString(result, lRes);
@@ -367,7 +400,9 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 IsFollowingSiblingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -389,7 +424,9 @@ IsFollowingSiblingIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 IsFollowingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -411,7 +448,9 @@ IsFollowingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 IsChildIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -433,6 +472,7 @@ IsChildIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 /*******************************************************************************
 ********************************************************************************/
 bool
@@ -451,6 +491,7 @@ LevelIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
 ********************************************************************************/
@@ -471,6 +512,7 @@ LeastCommonAncestor::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
 ********************************************************************************/
@@ -494,6 +536,7 @@ IsParentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 /*******************************************************************************
 ********************************************************************************/
 bool
@@ -516,6 +559,7 @@ IsDescendantIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   STACK_END (state);
 }
 
+
 /*******************************************************************************
 ********************************************************************************/
 bool
@@ -537,6 +581,7 @@ IsPrecedingSiblingIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
 ********************************************************************************/

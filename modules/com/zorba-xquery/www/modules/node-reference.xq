@@ -17,15 +17,20 @@ xquery version "1.0";
 :)
 
 (:~
- : The module provides functions to compute a stable reference (URI) for
- : a node that is stored in a collection and vice versa.
+ : The module provides functions to compute an immutable and opaque reference 
+ : for any node and to retrieve nodes given their identifier. The identifiers 
+ : are immutable, i.e. a node identifier does not change during the node lifetime
+ : and cannot be reused for another node after the original node gets deleted.
+ : Identifiers are unique, in that, two different nodes will never have the same 
+ : identifier. A node, at any time during its lifetime, can be retrieved by its 
+ : identifier.
  :
  : <p>Please see the <a href="../../html/data_lifecycle.html">data lifecycle
- : documentation</a> about details on management and manipulation of collections.</p>
+ : documentation</a> about details on storing nodes in collections or as documents.</p>
  : 
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  :
- : @author Matthias Brantner
+ : @author Federico Cavalieri
  :
  : @project XDM/node
  :
@@ -35,17 +40,22 @@ module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+
 declare option ver:module-version "2.0";
 
 (:~
- : Compute a stable and opaque node reference (with type xs:anyURI) for
+ : Returns an immutable and opaque node reference (with type xs:anyURI) for
  : a given node.
+ : 
+ : <p>The generated identifier is immutable, i.e. a node identifier does not
+ : change during the node lifetime and cannot be reused for another node after
+ : the original node gets deleted.</p>
  :
- : <p>The function can only compute reference for nodes that a stored
- : in a collection [zerr:ZAPI0080].</p>
+ : <p>Identifiers are also unique, in that, two different nodes will never 
+ : have the same identifier.</p>
  :
- : <p>The returned URI is stable, i.e. it still can be dereferenced if
- : the node or the containing collection is modified.</p>
+ : A node, at any time during its lifetime, can be retrieved by its 
+ : identifier, using the <tt>ref:node-by-reference</tt> function.
  :
  : @param $arg the node for which the URI should be computed
  :
@@ -58,16 +68,16 @@ declare function ref:node-reference(
 (:~
  : Returns the node identified by the given node reference.
  :
- : <p>The function may return the empty sequence if the node
- : that is referenced was deleted.</p>
+ : <p>The function returns the empty sequence if the node
+ : that is referenced does not exist.</p>
  :
  : @param $arg the URI of the node to retrieve.
  :
  : @return the node identified by the URI passed as parameter
  :         or the empty-sequence if no node with that URI is found.
  :
- : @error zerr::ZAPI0028 if the given URI is not a valid node reference
- :  computed by the <tt>ref:node-reference</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node reference
+ :        computed by the <tt>ref:node-reference</tt> function.
  :)
 declare function ref:node-by-reference(
   $arg as xs:anyURI
