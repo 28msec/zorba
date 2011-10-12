@@ -49,6 +49,7 @@ version 2.x
   * New node-reference module. References can be obtained for any node, and
 	different nodes cannot have the same identifier.
   * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
+  * Added undo for node revalidation
   * Fixed bug #872850  (Serialization of Tumbling Window For fails)
 
 version 2.0.1
