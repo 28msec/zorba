@@ -10,9 +10,9 @@ This creates a <tt>zorba-</tt><em>version</em> directory
 in your current working directory.
 
 To build Zorba,
-please follow the build instructions (see \ref build). 
+please follow the build instructions (see \ref buildingzorba). 
 
-\subsection BinaryInstallation Installing the Binary Distribution
+\subsection Installing Installing
 
 Once you have successfully built Zorba using the "Unix Makefile" generator
 (see \ref SourceInstallation),
@@ -27,10 +27,10 @@ you can use the \c CMAKE_INSTALL_PREFIX variable.
 For example,
 in order to install Zorba in <tt>/opt</tt>
 use <tt>cmake -D CMAKE_INSTALL_PREFIX=/opt </tt><em>zorba source directory</em>.
+(Note that while CMake-generated Makefiles support the \c DESTDIR variable,
+this will NOT work with Zorba as certain installation paths are hard-coded
+in the binary files.)
 
-However,
-CMake generated makefiles also support the make \c DESTDIR variable
-(see the <a href="http://www.cmake.org/Wiki/CMake_FAQ#Does_CMake.27s_.22make_install.22_support_DESTDIR.3F" target="_blank">CMAKE FAQ</a>).
 There is also a <tt>make uninstall</tt> command available
 (also to be called from the build directory).
 

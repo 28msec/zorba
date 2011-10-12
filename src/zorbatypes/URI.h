@@ -190,8 +190,6 @@ protected:
   void unset_state(uint32_t s) const { theState &= ~s; }
 
   void invalidate_text() const;
-  
-  bool is_absolute_path(zstring &thePath);
 };
 
 

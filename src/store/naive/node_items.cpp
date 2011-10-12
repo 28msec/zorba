@@ -2076,16 +2076,74 @@ void ElementNode::setType(store::Item_t& type)
 /*******************************************************************************
 
 ********************************************************************************/
-bool ElementNode::haveTypedTypedValue() const
+bool ElementNode::haveTypedTypedValue(TextNode*& textChild) const
 {
+  textChild = NULL;
+
   if (numChildren() == 1 &&
       getChild(0)->getNodeKind() == store::StoreConsts::textNode)
   {
-    if (reinterpret_cast<TextNode*>(getChild(0))->isTyped())
-      return true;
+    textChild = static_cast<TextNode*>(getChild(0));
+
+    return textChild->isTyped();
+  }
+  else
+  {
+    InternalNode::const_iterator ite = childrenBegin();
+    InternalNode::const_iterator end = childrenEnd();
+
+    for (; ite != end; ++ite)
+    {
+      store::StoreConsts::NodeKind kind = (*ite)->getNodeKind();
+
+      if (kind == store::StoreConsts::elementNode)
+        return false;
+
+      if (kind == store::StoreConsts::commentNode ||
+          kind == store::StoreConsts::piNode)
+        continue;
+
+      assert(kind == store::StoreConsts::textNode);
+
+      if (textChild != NULL)
+        return false;
+
+      textChild = static_cast<TextNode*>(*ite);
+    }
+
+    return (textChild && textChild->isTyped());
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+TextNode* ElementNode::getUniqueTextChild() const
+{
+  TextNode* textChild = NULL;
+
+  InternalNode::const_iterator ite = childrenBegin();
+  InternalNode::const_iterator end = childrenEnd();
+
+  for (; ite != end; ++ite)
+  {
+    store::StoreConsts::NodeKind kind = (*ite)->getNodeKind();
+    
+    ZORBA_ASSERT(kind != store::StoreConsts::elementNode);
+
+    if (kind == store::StoreConsts::textNode)
+    {
+      if (textChild != NULL)
+        ZORBA_ASSERT(false);
+
+      textChild = static_cast<TextNode*>(*ite);
+    }
   }
 
-  return false;
+  ZORBA_ASSERT(textChild);
+
+  return textChild;
 }
 
 
@@ -2094,10 +2152,10 @@ bool ElementNode::haveTypedTypedValue() const
 ********************************************************************************/
 bool ElementNode::isId() const
 {
-  if (numChildren() == 1 &&
-      getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+  TextNode* textChild;
+  if (haveTypedTypedValue(textChild))
   {
-		if (reinterpret_cast<TextNode*>(getChild(0))->isIdInternal())
+		if (textChild->isIdInternal())
       return true;
 	}
 
@@ -2110,10 +2168,10 @@ bool ElementNode::isId() const
 ********************************************************************************/
 bool ElementNode::isIdRefs() const
 {
-  if (numChildren() == 1 &&
-      getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+  TextNode* textChild;
+  if (haveTypedTypedValue(textChild))
   {
-    if (reinterpret_cast<TextNode*>(getChild(0))->isIdRefsInternal())
+    if (textChild->isIdRefsInternal())
       return true;
   }
 
@@ -2128,24 +2186,24 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 {
   if (haveValue())
   {
+    TextNode* textChild;
+
     if (haveEmptyValue())
     {
       val = NULL;
       iter = NULL;
     }
-    else if (haveTypedTypedValue())
+    else if (haveTypedTypedValue(textChild))
     {
-      const TextNode* child = reinterpret_cast<const TextNode*>(getChild(0));
-
-      if (child->haveListValue())
+      if (textChild->haveListValue())
       {
-        ItemVector* vec = reinterpret_cast<ItemVector*>(child->getValue());
+        ItemVector* vec = reinterpret_cast<ItemVector*>(textChild->getValue());
         iter = new ItemIterator(vec->getItems(), true);
         val = NULL;
       }
       else
       {
-        val = child->getValue();
+        val = textChild->getValue();
         iter = NULL;
       }
     }
@@ -2158,10 +2216,8 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FOTY0012,
-      ERROR_PARAMS( theName->getStringValue(), getType()->getStringValue() )
-    );
+    throw XQUERY_EXCEPTION(err::FOTY0012,
+    ERROR_PARAMS(theName->getStringValue(), getType()->getStringValue()));
   }
 }
 
@@ -2814,7 +2870,7 @@ zstring ElementNode::show() const
   store::NsBindings nsBindings;
   getNamespaceBindings(nsBindings);
 
-  for (ulong i = 0; i < nsBindings.size(); i++)
+  for (csize i = 0; i < nsBindings.size(); i++)
   {
     str << " xmlns:" <<  nsBindings[i].first << "=\""
         << nsBindings[i].second << "\"";
@@ -3345,12 +3401,10 @@ TextNode::TextNode(
   if (parent)
   {
 #ifndef NDEBUG
-    if (parent->getNodeKind() == store::StoreConsts::elementNode &&
-        parent->numChildren() == 1 &&
-        parent->getChild(0)->getNodeKind() == store::StoreConsts::textNode)
+    if (parent->getNodeKind() == store::StoreConsts::elementNode)
     {
-      TextNode* textChild = reinterpret_cast<TextNode*>(parent->getChild(0));
-      ZORBA_ASSERT(!textChild->isTyped());
+      TextNode* textChild;
+      ZORBA_ASSERT(!static_cast<ElementNode*>(parent)->haveTypedTypedValue(textChild));
     }
 #endif
 
@@ -3379,12 +3433,12 @@ TextNode::TextNode(
 
 ********************************************************************************/
 TextNode::TextNode(
-    InternalNode*  parent,
+    InternalNode* parent,
     store::Item_t& content,
-    bool           isListValue)
+    bool isListValue)
   :
 #ifdef TEXT_ORDPATH
-  OrdPathNode(NULL, parent, true, 0, store::StoreConsts::textNode)
+  OrdPathNode(NULL, parent, append, pos, store::StoreConsts::textNode)
 #else
   XmlNode(NULL, parent, store::StoreConsts::textNode)
 #endif
@@ -3395,14 +3449,31 @@ TextNode::TextNode(
 
   ElementNode* p = reinterpret_cast<ElementNode*>(parent);
 
-  ZORBA_ASSERT(p->numChildren() == 0);
+  // Make sure that the parent node has only comment and pi nodes as children.
+  if (p->numChildren() > 0)
+  {
+    InternalNode::const_iterator ite = p->childrenBegin();
+    InternalNode::const_iterator end = p->childrenEnd();
+
+    for (; ite != end; ++ite)
+    {
+      XmlNode* child = (*ite);
+
+      if (child->getNodeKind() != store::StoreConsts::commentNode &&
+          child->getNodeKind() != store::StoreConsts::piNode)
+      {
+        ZORBA_ASSERT(false);
+      }
+    }    
+  }
+
   ZORBA_ASSERT(p->haveValue() && !p->haveEmptyValue());
 
   setTypedValue(content);
   if (isListValue)
     setHaveListValue();
 
-  p->insertChild(this, 0);
+  p->insertChild(this, p->numChildren());
 
 #ifdef TEXT_ORDPATH
   NODE_TRACE1("Constructed text node " << this << " parent = "
@@ -3453,7 +3524,7 @@ XmlNode* TextNode::copyInternal(
         // always be untyped.
 
         // Merge adjacent text nodes.
-        ulong numChildren = parent->numChildren();
+        csize numChildren = parent->numChildren();
 
         XmlNode* lsib = (pos > 0 ? parent->getChild(pos-1) : NULL);
         XmlNode* rsib = (pos < numChildren ? parent->getChild(pos) : NULL);
@@ -3615,8 +3686,8 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 bool TextNode::isIdInternal() const
 {
   if (isTyped() &&
-    (static_cast<AtomicItem*>(getValue()))->isAtomic() &&
-    (static_cast<AtomicItem*>(getValue()))->getTypeCode() == XS_ID)
+      getValue()->isAtomic() &&
+      static_cast<AtomicItem*>(getValue())->getTypeCode() == XS_ID)
     return true;
 
   return false;
@@ -3635,9 +3706,9 @@ bool TextNode::isIdRefsInternal() const
     if (haveListValue())
     {
       const ItemVector& values = *reinterpret_cast<ItemVector*>(value);
-      ulong numValues = values.size();
+      csize numValues = values.size();
 
-      for (ulong i = 0; i < numValues; ++i)
+      for (csize i = 0; i < numValues; ++i)
       {
         if (dynamic_cast<IDREFItem*>(values.getItem(i)) != NULL)
         {
@@ -4285,7 +4356,7 @@ AttributeNode::getTokens( TokenizerProvider const &provider,
 void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
 {
   XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
-  for ( ulong i = 0; i < numChildren(); ++i )
+  for ( csize i = 0; i < numChildren(); ++i )
     getChild( i )->tokenize( cb );
   cb.endTokenization( this, begin );
 }
