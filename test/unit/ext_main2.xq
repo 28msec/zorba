@@ -14,24 +14,8 @@
  : limitations under the License.
 :)
 
-module namespace ext = "http://www.zorba-xquery.com/m";
 
-declare function ext:bar() as xs:string? external;
-
-declare function ext:foo()
-{
-  let $res := ext:bar()
-  return (1, $res)
-};
-
-declare function ext:foo2()
-{
-  let $res := ext:bar2()
-  return (1, $res)
-};
-
-declare function ext:bar2() as xs:string? external;
+import module namespace ext = "http://www.zorba-xquery.com/m" at "file:///${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq";
 
 
-declare function ext:bar3($seq as xs:integer*) external;
-
+ext:bar3((1,5))

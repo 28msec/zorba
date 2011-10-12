@@ -660,8 +660,8 @@ void XmlNode::removeType(UpdatePrimitive& upd)
       undoList.resize(++undoSize);
       undoList[undoSize - 1].transfer(tinfo);
 
-      n->setHaveValue();
-      n->resetHaveEmptyValue();
+      n->setHaveTypedValue();
+      n->resetHaveEmptyTypedValue();
       n->resetInSubstGroup();
 
       revalidationNode = currNode;

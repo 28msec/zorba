@@ -465,43 +465,44 @@ void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
-  //
-  // Save undo data
-  //
   theOldTypeName=target->getType();
-  theOldHaveValue=target->haveValue();
-  theOldHaveEmptyValue=target->haveEmptyValue();
-  theOldIsInSubstitutionGroup=target->isInSubstitutionGroup();
-  TextNode* textChild;
-  theOldHaveTypedValue=target->haveTypedTypedValue(textChild);
+  theOldHaveTypedValue=target->haveTypedValue();
   if (theOldHaveTypedValue)
-  {
-    theOldHaveListValue= textChild->haveListValue();    
-    theOldTypedValue=textChild->getValue();
-    textChild->revertToTextContent();
-  }
-  else
-    theOldHaveListValue= false;
+    theOldHaveEmptyTypedValue=target->haveEmptyTypedValue();
+  theOldIsInSubstitutionGroup=target->isInSubstitutionGroup();
 
-  //
-  // Apply operation
-  //
   target->setType(theTypeName);
 
-  if (theHaveValue)
+  TextNode* textChild;
+  theOldHaveTypedTypedValue=target->haveTypedTypedValue(textChild);
+  if (theOldHaveTypedTypedValue)
   {
-    target->setHaveValue();
+    theOldHaveListTypedValue= textChild->haveListValue();    
+    theOldTypedValue=textChild->getValue();
+    zstring textValue;
+    textChild->getStringValue2(textValue);
 
-    if (theHaveEmptyValue)
-      target->setHaveEmptyValue();
+    textChild->setValue(NULL);
+
+    textChild->theFlags &= ~XmlNode::IsTyped;
+    textChild->setText(textValue);
+  }
+
+  if (theHaveTypedValue)
+  {
+    target->setHaveTypedValue();
+
+    if (theHaveEmptyTypedValue)
+      target->setHaveEmptyTypedValue();
     else
-      target->resetHaveEmptyValue();
+      target->resetHaveEmptyTypedValue();
 
-    if (theHaveTypedValue)
+    if (theHaveTypedTypedValue)
     {
-      ZORBA_ASSERT(textChild);
+      textChild = target->getUniqueTextChild();
+
       textChild->setTypedValue(theTypedValue);
-      if (theHaveListValue)
+      if (theHaveListTypedValue)
         textChild->setHaveListValue();
       else
         textChild->resetHaveListValue();
@@ -509,7 +510,7 @@ void UpdSetElementType::apply()
   }
   else
   {
-    target->resetHaveValue();
+    target->resetHaveTypedValue();
   }
 
   if (theIsInSubstitutionGroup)
@@ -528,38 +529,35 @@ void UpdSetElementType::undo()
 
     target->setType(theOldTypeName);
 
-    if (theOldHaveValue)
+    if (theHaveTypedTypedValue)
     {
-      target->setHaveValue();
+      TextNode* textChild = target->getUniqueTextChild();
+      textChild->revertToTextContent();
+    }
 
-      if (theOldHaveEmptyValue)
-        target->setHaveEmptyValue();
+    if (theOldHaveTypedValue)
+    {
+      target->setHaveTypedValue();
+
+      if (theOldHaveEmptyTypedValue)
+        target->setHaveEmptyTypedValue();
       else
-        target->resetHaveEmptyValue();
+        target->resetHaveEmptyTypedValue();
 
-      if (theOldHaveTypedValue)
+      if (theOldHaveTypedTypedValue)
       {
         TextNode* textChild = target->getUniqueTextChild();
-        textChild->revertToTextContent();
 
         textChild->setTypedValue(theOldTypedValue);
-        if (theOldHaveListValue)
+        if (theOldHaveListTypedValue)
           textChild->setHaveListValue();
         else
           textChild->resetHaveListValue();
       }
-      else
-      {
-        if (theHaveTypedValue)
-        {
-          TextNode* textChild = target->getUniqueTextChild();
-          textChild->revertToTextContent();
-        }
-      }
     }
     else
     {
-      target->resetHaveValue();
+      target->resetHaveTypedValue();
     }
 
     if (theOldIsInSubstitutionGroup)
@@ -613,7 +611,8 @@ void UpdRenameAttr::check()
       ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
       parent->checkUniqueAttrs();
     }
-  } catch (ZorbaException& e)
+  } 
+  catch (ZorbaException& e)
   {
     set_source(e, *theLoc);
     throw;
@@ -655,6 +654,7 @@ void UpdSetAttributeType::undo()
       target->setHaveListValue();
     else
       target->resetHaveListValue();
+
     theIsApplied=false;
   }
 }

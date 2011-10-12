@@ -18,6 +18,7 @@
 
 #include "store/naive/shared_types.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/hashmap_nodep.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "store/naive/node_items.h"
@@ -66,34 +67,41 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 
 
 /*******************************************************************************
-  theSchemaTypeNames   : Maps each enum value from SchemaTypeNames (see
-                         store_defs.h) to its associated QName item.
+  theSchemaTypeNames     : Maps each enum value from SchemaTypeNames (see
+                           store_defs.h) to its associated QName item.
 
-  theCollectionCounter : Incremented every time a new collection is created. The
-                         current value of the counter is then assigned as the
-                         id of the new collection.
+  theCollectionCounter   : Incremented every time a new collection is created. The
+                           current value of the counter is then assigned as the
+                           id of the new collection.
 
-  theNamespacePool     :
-  theQNamePool         :
+  theNamespacePool       :
+  theQNamePool           :
 
-  theItemFactory       : Factory to create items.
-  theIteratorFactory   : Factory to create iterators.
-  theNodeFactory       : Factory to create node items.
+  theItemFactory         : Factory to create items.
+  theIteratorFactory     : Factory to create iterators.
+  theNodeFactory         : Factory to create node items.
 
-  theDocuments         : A hashmap that for each xml tree that does not belong
-                         to any collection, maps the URI of the tree to the root
-                         node of the tree.
-  theCollections       : Container which contains the collections of the store.
-                         It includes a map that maps the qname of each collection
-                         to the collection's container object.
-  theIndices           : A hashmap that for each index, maps the qname of the
-                         index to the index container object.
-  theICs               : A hashmap the for each integrity constraint, maps the
-                         qname of the ic to the ic's container object.
+  theDocuments           : A hashmap that for each xml tree that does not belong
+                           to any collection, maps the URI of the tree to the root
+                           node of the tree.
+  theCollections         : Container which contains the collections of the store.
+                           It includes a map that maps the qname of each collection
+                           to the collection's container object.
+  theIndices             : A hashmap that for each index, maps the qname of the
+                           index to the index container object.
+  theICs                 : A hashmap the for each integrity constraint, maps the
+                           qname of the ic to the ic's container object.
+  theReferencesToNodeMap : A hashmap that maps node references to the referenced
+                           nodes
+  theNodeToReferencesMap : A hashmap that maps nodes into their references
+
 ********************************************************************************/
 class SimpleStore : public store::Store
 {
   friend class zorba::StoreManager;
+
+  typedef std::map<const zstring, const store::Item*> RefNodeMap;
+  typedef NodePointerHashMap<zstring> NodeRefMap;
 
 public:
   static const char* XS_URI;
@@ -142,23 +150,13 @@ protected:
 
   long                          theTraceLevel;
 
+  RefNodeMap                    theReferencesToNodeMap;
+  NodeRefMap                    theNodeToReferencesMap;
+
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProvider const * theStemmerProvider;
   TokenizerProvider const     * theTokenizerProvider;
 #endif /* ZORBA_NO_FULL_TEXT */
-
-public:
-  // needs to be virtual to allow implementation of additional stores
-  virtual void populateValueIndex(
-      const store::Index_t& index,
-      store::Iterator* sourceIter,
-      ulong numColumns);
-
-  // needs to be virtual to allow implementation of additional stores
-  virtual void populateGeneralIndex(
-      const store::Index_t& index,
-      store::Iterator* sourceIter,
-      ulong numColumns);
 
 public:
   void shutdown(bool soft = true);
@@ -179,7 +177,9 @@ public:
 
   long getTraceLevel() const { return theTraceLevel; }
 
-  XmlLoader* getXmlLoader(XQueryDiagnostics*, const store::LoadProperties& loadProperties);
+  XmlLoader* getXmlLoader(
+      XQueryDiagnostics*,
+      const store::LoadProperties& loadProperties);
 
   ulong createCollectionId();
 
@@ -204,16 +204,30 @@ public:
   store::Iterator_t listCollectionNames(bool aDynamicCollections = false);
 
   store::Index_t createIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec,
-        store::Iterator* sourceIter);
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec,
+      store::Iterator* sourceIter);
+  
+  // needs to be virtual to allow implementation of additional stores
+  virtual void populateValueIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
 
   // needs to be virtual to allow implementation of additional stores
-  virtual
-  store::Index_t refreshIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec,
-        store::Iterator* sourceIter);
+  virtual void populateGeneralIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
+
+  // needs to be virtual to allow implementation of additional stores
+  virtual store::Index_t refreshIndex(
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec,
+      store::Iterator* sourceIter);
+
+  // needs to be virtual to allow implementation of additional stores
+  virtual const IndexSet& getIndices() const { return theIndices; }
 
   void addIndex(store::Index_t& index);
 
@@ -223,23 +237,20 @@ public:
 
   store::Iterator_t listIndexNames();
 
-  // needs to be virtual to allow implementation of additional stores
-  virtual
-  const IndexSet& getIndices() const { return theIndices; }
-
   store::IC_t activateIC(
-        const store::Item_t& icQName,
-        const store::Item_t& collectionQName,
-        bool& isApplied);
-
+      const store::Item_t& icQName,
+      const store::Item_t& collectionQName,
+      bool& isApplied);
+  
   store::IC_t activateForeignKeyIC(
-        const store::Item_t& icQName,
-        const store::Item_t& fromCollectionQName,
-        const store::Item_t& toCollectionQName,
-        bool& isApplied);
+      const store::Item_t& icQName,
+      const store::Item_t& fromCollectionQName,
+      const store::Item_t& toCollectionQName,
+      bool& isApplied);
 
-  store::IC_t deactivateIC(const store::Item_t& icQName,
-        bool& isApplied);
+  store::IC_t deactivateIC(
+      const store::Item_t& icQName,
+      bool& isApplied);
 
   store::Iterator_t listActiveICNames();
 
@@ -328,9 +339,17 @@ public:
         bool& found,
         bool& unique);
 
-  bool getReference(store::Item_t& result, const store::Item* node);
+  /* ------------------------ Node Reference Management ---------------------------*/
 
-  bool getNodeByReference(store::Item_t& result, const store::Item* uri);
+  bool getNodeReference(store::Item_t& result, store::Item* node);
+
+  bool hasReference(const store::Item* node);
+
+  bool getNodeByReference(store::Item_t& result, const zstring& reference);
+
+  bool unregisterNode(XmlNode* node);
+
+  /* ------------------------ Temp Sequence Management ---------------------------*/
 
   store::TempSeq_t createTempSeq(bool lazy);
 
