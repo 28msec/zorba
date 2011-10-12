@@ -41,6 +41,7 @@ version 2.x
   * Fixed bug #863730 (static delete-node* functions don't raise ZDDY0012)
   * Implemented the probe-index-range-value for general indexes
   * Fixed bug #867662 ("nullptr" warning)
+  * Fixed bug #868258 (Assertion failure with two delete collection)
   * Fixed bug #871623 and #871629 (assertion failures with insertions in dynamic collections)
   * Fixed bug #867262 (allow reuse of iterator over ExtFuncArgItemSequence)
   * Fixed bug #869024 (segmentation fault with node-reference)
