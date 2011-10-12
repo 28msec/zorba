@@ -465,12 +465,20 @@ void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
+  theOldTypeName=target->getType();
+  theOldHaveTypedValue=target->haveTypedValue();
+  if (theOldHaveTypedValue)
+    theOldHaveEmptyTypedValue=target->haveEmptyTypedValue();
+  theOldIsInSubstitutionGroup=target->isInSubstitutionGroup();
+
   target->setType(theTypeName);
 
   TextNode* textChild;
-
-  if (target->haveTypedTypedValue(textChild))
+  theOldHaveTypedTypedValue=target->haveTypedTypedValue(textChild);
+  if (theOldHaveTypedTypedValue)
   {
+    theOldHaveListTypedValue= textChild->haveListValue();    
+    theOldTypedValue=textChild->getValue();
     zstring textValue;
     textChild->getStringValue2(textValue);
 
@@ -480,31 +488,86 @@ void UpdSetElementType::apply()
     textChild->setText(textValue);
   }
 
-  if (theHaveValue)
+  if (theHaveTypedValue)
   {
-    target->setHaveValue();
+    target->setHaveTypedValue();
 
-    if (theHaveEmptyValue)
-      target->setHaveEmptyValue();
+    if (theHaveEmptyTypedValue)
+      target->setHaveEmptyTypedValue();
+    else
+      target->resetHaveEmptyTypedValue();
 
-    if (theHaveTypedValue)
+    if (theHaveTypedTypedValue)
     {
-      TextNode* textChild = target->getUniqueTextChild();
+      textChild = target->getUniqueTextChild();
 
       textChild->setTypedValue(theTypedValue);
-      if (theHaveListValue)
+      if (theHaveListTypedValue)
         textChild->setHaveListValue();
+      else
+        textChild->resetHaveListValue();
     }
   }
   else
   {
-    target->resetHaveValue();
+    target->resetHaveTypedValue();
   }
 
   if (theIsInSubstitutionGroup)
     target->setInSubstGroup();
+  else
+    target->resetInSubstGroup();
+
+  theIsApplied=true;
 }
 
+void UpdSetElementType::undo()
+{
+  if (theIsApplied)
+  {
+    ElementNode* target = ELEM_NODE(theTarget);
+
+    target->setType(theOldTypeName);
+
+    if (theHaveTypedTypedValue)
+    {
+      TextNode* textChild = target->getUniqueTextChild();
+      textChild->revertToTextContent();
+    }
+
+    if (theOldHaveTypedValue)
+    {
+      target->setHaveTypedValue();
+
+      if (theOldHaveEmptyTypedValue)
+        target->setHaveEmptyTypedValue();
+      else
+        target->resetHaveEmptyTypedValue();
+
+      if (theOldHaveTypedTypedValue)
+      {
+        TextNode* textChild = target->getUniqueTextChild();
+
+        textChild->setTypedValue(theOldTypedValue);
+        if (theOldHaveListTypedValue)
+          textChild->setHaveListValue();
+        else
+          textChild->resetHaveListValue();
+      }
+    }
+    else
+    {
+      target->resetHaveTypedValue();
+    }
+
+    if (theOldIsInSubstitutionGroup)
+      target->setInSubstGroup();
+    else
+      target->resetInSubstGroup();
+
+    theIsApplied=false;
+  }
+}
 
 /*******************************************************************************
 
@@ -548,7 +611,8 @@ void UpdRenameAttr::check()
       ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
       parent->checkUniqueAttrs();
     }
-  } catch (ZorbaException& e)
+  } 
+  catch (ZorbaException& e)
   {
     set_source(e, *theLoc);
     throw;
@@ -563,13 +627,37 @@ void UpdSetAttributeType::apply()
 {
   AttributeNode* target = ATTR_NODE(theTarget);
 
+  theOldTypeName=target->getType();
+  theOldTypedValue.transfer(target->theTypedValue);
+  theOldHaveListValue=target->haveListValue();
+
   target->setType(theTypeName);
   target->theTypedValue.transfer(theTypedValue);
 
   if (theHaveListValue)
     target->setHaveListValue();
+  else
+    target->resetHaveListValue();
+
+  theIsApplied=true;
 }
 
+void UpdSetAttributeType::undo()
+{
+  if (theIsApplied)
+  {
+    AttributeNode* target = ATTR_NODE(theTarget);
+    target->setType(theOldTypeName);
+    target->theTypedValue.transfer(theOldTypedValue);
+
+    if (theOldHaveListValue)
+      target->setHaveListValue();
+    else
+      target->resetHaveListValue();
+
+    theIsApplied=false;
+  }
+}
 
 /*******************************************************************************
 
@@ -807,7 +895,8 @@ void UpdCreateCollection::undo()
 void UpdDeleteCollection::apply()
 {
   theCollection = GET_STORE().getCollection(theName, theDynamicCollection);
-  assert(theCollection);
+  if (theCollection == NULL)
+    return;//If two delete collection are issued in the same snapshot is a noop
   SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
 
   std::vector<store::Index*> indexes;

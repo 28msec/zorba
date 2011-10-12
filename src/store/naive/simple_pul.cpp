@@ -185,47 +185,46 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
-  if (target->isNode())
+  assert(target->isNode());
+
+  const XmlNode* n = static_cast<const XmlNode*>(target);
+
+  const store::Collection* collection = n->getCollection();
+
+  if (collection != NULL)
   {
-    const XmlNode* n = static_cast<const XmlNode*>(target);
+    collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
 
-    const store::Collection* collection = n->getCollection();
-
-    if (collection != NULL)
-    {
-      collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
-
-      if (collName == theLastCollection)
-        return theLastPul;
-    }
-    else if (theNoCollectionPul != NULL)
-    {
-      return theNoCollectionPul;
-    }
-    else if (theCollectionPuls[NULL] != NULL)
-    {
-      theNoCollectionPul = theCollectionPuls[NULL];
-      return theNoCollectionPul;
-    }
-    else
-    {
-      theNoCollectionPul = new CollectionPul(this, NULL);
-      theCollectionPuls[NULL] = theNoCollectionPul;
-      return theNoCollectionPul;
-    }
+    if (collName == theLastCollection)
+      return theLastPul;
+    return getCollectionPulByName(collName,collection->isDynamic());
+  }
+  else if (theNoCollectionPul != NULL)
+  {
+    return theNoCollectionPul;
+  }
+  else if (theCollectionPuls[NULL] != NULL)
+  {
+    theNoCollectionPul = theCollectionPuls[NULL];
+    return theNoCollectionPul;
   }
   else
   {
-    // "taret" is the name of a collection.
-    if (target == theLastCollection)
-    {
-      return theLastPul;
-    }
-    else
-    {
-      collName = static_cast<const QNameItem*>(target)->getNormalized();
-    }
+    theNoCollectionPul = new CollectionPul(this, NULL);
+    theCollectionPuls[NULL] = theNoCollectionPul;
+    return theNoCollectionPul;
   }
+}
+
+CollectionPul* PULImpl::getCollectionPulByName(const store::Item* name, bool dynamicCollection)
+{
+  const QNameItem* collName = static_cast<const QNameItem*>(name)->getNormalized();
+
+  assert(!name->isNode());
+
+  // "name" is the name of a collection.
+  if (name == theLastCollection)
+    return theLastPul;
 
   CollectionPulMap::iterator ite = theCollectionPuls.find(collName);
 
@@ -238,7 +237,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   else
   {
     SimpleCollection* collection = static_cast<SimpleCollection*>
-                                   (GET_STORE().getCollection(collName).getp());
+    (GET_STORE().getCollection(collName,dynamicCollection).getp());
     theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
   }
@@ -810,7 +809,7 @@ void PULImpl::addCreateCollection(
     const store::Item_t& nodeType,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theCreateCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdCreateCollection(
@@ -828,7 +827,7 @@ void PULImpl::addDeleteCollection(
     store::Item_t& name,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theDeleteCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdDeleteCollection(pul, aQueryLoc, name, dyn_collection));
@@ -841,7 +840,7 @@ void PULImpl::addInsertIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdInsertIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
@@ -854,7 +853,7 @@ void PULImpl::addInsertFirstIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdInsertFirstIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
@@ -867,7 +866,7 @@ void PULImpl::addInsertLastIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdInsertLastIntoCollection(pul, aQueryLoc, name, nodes, dyn_collection));
@@ -881,7 +880,7 @@ void PULImpl::addInsertBeforeIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdInsertBeforeIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
@@ -895,7 +894,7 @@ void PULImpl::addInsertAfterIntoCollection(
     std::vector<store::Item_t>& nodes,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theInsertIntoCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdInsertAfterIntoCollection(pul, aQueryLoc, name, target, nodes, dyn_collection));
@@ -909,7 +908,7 @@ void PULImpl::addDeleteFromCollection(
     bool isLast,
     bool dyn_collection)
 {
-  CollectionPul* pul = getCollectionPul(name.getp());
+  CollectionPul* pul = getCollectionPulByName(name.getp(),dyn_collection);
 
   pul->theDeleteFromCollectionList.push_back(
   GET_STORE().getPULFactory().createUpdDeleteNodesFromCollection(pul, aQueryLoc, name, nodes, isLast, dyn_collection));
@@ -1581,7 +1580,7 @@ void PULImpl::addIndexEntryCreator(
     store::Index* idx,
     store::IndexEntryCreator* creator)
 {
-  CollectionPul* pul = getCollectionPul(collectionName);
+  CollectionPul* pul = getCollectionPulByName(collectionName,false);
 
   pul->theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
   pul->theIndexEntryCreators.push_back(creator);
@@ -2079,14 +2078,13 @@ void CollectionPul::applyUpdates()
     // Revalidate the updated docs
     if (thePul->theValidator != NULL && !theValidationNodes.empty())
     {
-      store::PUL_t validationPul =
-      GET_STORE().getItemFactory()->createPendingUpdateList();
+      theValidationPul = GET_STORE().getItemFactory()->createPendingUpdateList();
       
-      thePul->theValidator->validate(theValidationNodes, *validationPul.getp());
+      thePul->theValidator->validate(theValidationNodes, *theValidationPul.getp());
 
       try
       {
-        validationPul->applyUpdates(false);
+        theValidationPul->applyUpdates(false);
       }
       catch (...)
       {
@@ -2138,8 +2136,8 @@ void CollectionPul::finalizeUpdates()
     // If necessary, adjust the position of trees inside this collection.
     if (theAdjustTreePositions)
     {
-      if (theCollection) // ??? not set if the collection is dynamic
-        theCollection->adjustTreePositions();
+      assert(theCollection);
+      theCollection->adjustTreePositions();
     }
 
     // Detach nodes that were deleted from their trees due to replace-node,
@@ -2234,6 +2232,12 @@ void CollectionPul::undoUpdates()
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
+
+    // Undo validation
+    if (theValidationPul)
+    {
+      undoList(static_cast<PULImpl *>(theValidationPul.getp())->theValidationList);
+    }
 
     // Undo text node merging
     std::vector<TextNodeMerge>::reverse_iterator rit = theMergeList.rbegin();

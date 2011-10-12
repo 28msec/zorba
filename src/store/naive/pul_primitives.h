@@ -673,17 +673,37 @@ public:
 
 
 /*******************************************************************************
-  theHaveValue      : True if the target element node has a typed value. The only
-                      case when an element node does not have a typed value is
-                      when the type of the node is complex with complex content,
-                      but with no mixed content allowed.
-  theHaveEmptyValue : True if the target element node has a complex type with
-                      empty content.
-  theHaveTypedValue : True if the target element node has a typed value whose
-                      type is not untypedAtomic. Note: This can happen only if
-                      the type of the target element node has simple content.
-  theHaveListValue  : True if theHaveTypedValue is true, and the type of the
-                      typed value is a list type. 
+  theTypeName:
+  ------------
+  The qname of this node's data type.
+
+  theTypedValue:
+  --------------
+
+  theHaveTypedValue:
+  ------------------
+  True if the target element node has a typed value. The only case when an 
+  element node does not have a typed value is when the type of the node is 
+  complex with complex content, but with no mixed content allowed.
+
+  theHaveEmptyTypedValue:
+  -----------------------
+  True if the target element node has a complex type with empty content. In
+  this case, the typed value of the node is the empty sequence.
+
+  theHaveTypedTypedValue:
+  ------------------
+  True if the target element node has a typed value whose type is not 
+  untypedAtomic. Note: This can happen only if the type of the target element
+  node has simple content.
+
+  theHaveListTypedValue: 
+  -----------------
+  True if theHaveTypedTypedValue is true, and the type of the typed value is a
+  list type. 
+
+  theIsInSubstitutionGroup:
+  -------------------------
 ********************************************************************************/
 class UpdSetElementType : public UpdatePrimitive
 {
@@ -693,11 +713,22 @@ class UpdSetElementType : public UpdatePrimitive
 protected:
   store::Item_t            theTypeName;
   store::Item_t            theTypedValue;
-  bool                     theHaveValue;
-  bool                     theHaveEmptyValue;
+
   bool                     theHaveTypedValue;
-  bool                     theHaveListValue;
+  bool                     theHaveEmptyTypedValue;
+  bool                     theHaveTypedTypedValue;
+  bool                     theHaveListTypedValue;
   bool                     theIsInSubstitutionGroup;
+
+  store::Item_t            theOldTypeName;
+  store::Item_t            theOldTypedValue;
+
+  bool                     theOldHaveTypedValue;
+  bool                     theOldHaveEmptyTypedValue;
+  bool                     theOldHaveTypedTypedValue;
+  bool                     theOldHaveListTypedValue;
+  bool                     theOldIsInSubstitutionGroup;
+
 
   UpdSetElementType(
         PULImpl*        pul,
@@ -705,17 +736,17 @@ protected:
         store::Item_t&  target,
         store::Item_t&  typeName,
         store::Item_t&  typedValue,
-        bool            haveValue,
-        bool            haveEmptyValue,
         bool            haveTypedValue,
-        bool            haveListValue,
+        bool            haveEmptyTypedValue,
+        bool            haveTypedTypedValue,
+        bool            haveListTypedValue,
         bool            isInSubstitutionGroup)
     :
     UpdatePrimitive(pul, aLoc, target),
-    theHaveValue(haveValue),
-    theHaveEmptyValue(haveEmptyValue),
     theHaveTypedValue(haveTypedValue),
-    theHaveListValue(haveListValue),
+    theHaveEmptyTypedValue(haveEmptyTypedValue),
+    theHaveTypedTypedValue(haveTypedTypedValue),
+    theHaveListTypedValue(haveListTypedValue),
     theIsInSubstitutionGroup(isInSubstitutionGroup)
   {
     theTypeName.transfer(typeName);
@@ -729,7 +760,7 @@ public:
   }
 
   void apply();
-  void undo() {}
+  void undo();
 };
 
 
@@ -745,6 +776,10 @@ protected:
   store::Item_t            theTypeName;
   store::Item_t            theTypedValue;
   bool                     theHaveListValue;
+
+  store::Item_t            theOldTypeName;
+  store::Item_t            theOldTypedValue;
+  bool                     theOldHaveListValue;
 
   UpdSetAttributeType(
         PULImpl*        pul,
@@ -768,7 +803,7 @@ public:
   }
 
   void apply();
-  void undo() {}
+  void undo();
 };
 
 
