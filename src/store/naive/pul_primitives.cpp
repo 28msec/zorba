@@ -25,12 +25,14 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/simple_item_factory.h"
 #include "store/naive/node_factory.h"
 #include "store/naive/simple_index.h"
 #include "store/naive/simple_index_value.h"
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
+#include "store/api/validator.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -658,6 +660,35 @@ void UpdSetAttributeType::undo()
     theIsApplied=false;
   }
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdRevalidate::apply()
+{
+  std::set<store::Item*> nodes;
+
+  theRevalidationPul=GET_STORE().getItemFactory()->createPendingUpdateList();
+  nodes.insert(theTarget.getp());
+  thePul->theValidator->validate(nodes,*theRevalidationPul.getp());
+  try
+  {
+    theRevalidationPul->applyUpdates(false);
+  }
+  catch (...)
+  {
+    ZORBA_FATAL(0, "Error during the in-place validation");
+  }
+
+  theIsApplied = true;
+}
+
+
+void UpdRevalidate::undo()
+{
+  static_cast<PULImpl *>(theRevalidationPul.getp())->undoUpdates();
+}
+
 
 /*******************************************************************************
 

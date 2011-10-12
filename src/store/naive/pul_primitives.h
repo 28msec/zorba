@@ -24,10 +24,10 @@
 #include "store/api/collection.h"
 #include "store/api/iterator.h"
 #include "store/api/annotation.h"
+#include "store/api/pul.h"
 
 #include "store/api/index.h" // for index spec obj
 #include "store/api/ic.h" // for index spec obj
-
 
 namespace zorba { namespace simplestore {
 
@@ -800,6 +800,34 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_SET_ATTRIBUTE_TYPE; 
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdRevalidate : public UpdatePrimitive
+{
+  friend class PULImpl;
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::PUL_t theRevalidationPul;
+
+  UpdRevalidate(PULImpl* pul, const QueryLoc* aLoc, store::Item_t& target)
+    :
+    UpdatePrimitive(pul, aLoc, target){}
+
+
+public:
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_REVALIDATE;
   }
 
   void apply();
