@@ -134,18 +134,17 @@ CHECK_CXX_SOURCE_COMPILES("int main() { static_assert(1,\"\"); }" ZORBA_CXX_STAT
 ################################################################################
 # Various cmake macros
 
-IF(WIN32)
+SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules ${CMAKE_MODULE_PATH})
+IF (WIN32)
   # On Windows we use proxy modules that try to guess first the location
   # of the required third party libraries. This will search in order in:
   # 1. the path pointed by ZORBA_THIRD_PARTY_REQUIREMENTS
   # 2. the Program Files directory available on the users computer
   # 3. the PATH environment variable
   # The logic is implemented by the macros in the ProxyFindModule.cmake module.
-  LIST (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/Windows")
-  INCLUDE(ProxyFindModule)
-ENDIF(WIN32)
-LIST (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules")
-
+  SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows ${CMAKE_MODULE_PATH})
+  INCLUDE (ProxyFindModule)
+ENDIF (WIN32)
 
 ################################################################################
 # This section is used for batch script generation. Each executable

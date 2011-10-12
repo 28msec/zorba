@@ -117,9 +117,12 @@ bool CollectionSet::get(
     store::Collection_t& aCollection,
     bool aDynamicCollection) 
 {
-  if (theCollections.get(const_cast<store::Item*>(aName), aCollection)) {
+  if (theCollections.get(const_cast<store::Item*>(aName), aCollection)) 
+  {
     return aCollection->isDynamic() == aDynamicCollection;
-  } else {
+  }
+  else 
+  {
     return false;
   }
 }
@@ -128,10 +131,13 @@ bool CollectionSet::get(
 bool CollectionSet::remove(const store::Item* aName, bool aDynamicCollection) 
 {
   store::Collection_t lColl;
-  if (!get(aName, lColl, aDynamicCollection)) {
+  if (!get(aName, lColl, aDynamicCollection))
+  {
     return false;
-  } else {
-    return theCollections.remove(const_cast<store::Item*>(aName));
+  }
+  else
+  {
+    return theCollections.erase(const_cast<store::Item*>(aName));
   }
 }
 

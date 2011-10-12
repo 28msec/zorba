@@ -1,1 +1,0 @@
-fn:replace("acabacab", "(a)*(b)*(a)*(c)*", "$3$1$2$5$4")

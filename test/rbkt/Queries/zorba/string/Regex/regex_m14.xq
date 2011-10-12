@@ -1,1 +1,0 @@
-fn:matches("abc", "(a|ab)c")

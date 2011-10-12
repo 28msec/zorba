@@ -147,7 +147,7 @@ void ValueHashIndex::clear()
 ********************************************************************************/
 ulong ValueHashIndex::size() const
 {
-  return theMap.object_count();
+  return theMap.size();
 }
 
 
@@ -226,7 +226,7 @@ bool ValueHashIndex::remove(
     ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
-  IndexMap::iterator pos = theMap.get(key);
+  IndexMap::iterator pos = theMap.find(key);
 
   if (pos != theMap.end())
   {
@@ -239,7 +239,7 @@ bool ValueHashIndex::remove(
 
     if (all)
     {
-      theMap.remove(pos);
+      theMap.erase(pos);
       delete keyp;
       delete valueSet;
 
@@ -252,7 +252,7 @@ bool ValueHashIndex::remove(
         
       if (valueSet->empty())
       {
-        theMap.remove(pos);
+        theMap.erase(pos);
         delete keyp;
         delete valueSet;
       }

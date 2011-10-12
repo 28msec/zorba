@@ -57,7 +57,8 @@ protected:
     typedef enum
     {
       no_val,
-      ext_func_param // params that can be used by ext. functions
+      ext_func_param, // params that can be used by ext. functions
+      ext_func_param_typed 
     } val_type_t;
 
     val_type_t  type;
@@ -193,6 +194,13 @@ public:
   bool addExternalFunctionParam(const std::string& aName, void* aValue);
 
   bool getExternalFunctionParam(const std::string& aName, void*& aValue) const;
+
+  bool addExternalFunctionParameter(
+     const std::string& aName,
+     ExternalFunctionParameter* aValue);
+
+  ExternalFunctionParameter* getExternalFunctionParameter(
+      const std::string& aName) const;
 
   //std::vector<zstring>* get_all_keymap_keys() const;
 

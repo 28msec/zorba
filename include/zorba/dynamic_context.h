@@ -24,6 +24,7 @@
 #include <zorba/api_shared_types.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/xmldatamanager.h>
+#include <zorba/external_function_parameter.h>
 
 
 namespace zorba {
@@ -209,11 +210,12 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual Item
   getDefaultCollection() const = 0;
 
-  /** \brief Add a name-value pair the this context.
+  /** \brief Add a name-value pair to this context.
    *         The value can be accessed in the evaluate method
    *         of external functions (see ContextualExternalFunction).
    *
-   * @param aName the name of the parameter to add
+   * @param aName the name of the parameter to add. If an entry with
+   *   the same name already exists, the existing entry is replaced.
    * @param aValue the value that can be accessed in the evaluate method.
    * @return returns true if an entry with the same name did not already exist,
    *         false otherwise.
@@ -228,11 +230,38 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *
    * @param aName the name of the parameter to retrieve
    * @param aValue the value matching the given name if true is returned.
-   * @return returns true if an entry with the given name was found,
+   * @return true if an entry with the given name was found,
    *         false otherwise.
    */
   virtual bool
   getExternalFunctionParam ( const String& aName, void*& aValue ) const = 0;
+
+  /** \brief Add a name-value pair to this context.
+   *         The value can be accessed in the evaluate method
+   *         of external functions (see ContextualExternalFunction).
+   *
+   * @param aName the name of the parameter to add. If an entry with
+   *   the same name already exists, the existing entry is replaced.
+   * @param aParam the parameter to add
+   * @return true if an entry with the same name did not exist already,
+   *  false otherwise.
+   */
+  virtual bool
+  addExternalFunctionParameter ( const String& aName, ExternalFunctionParameter* aParam ) = 0;
+
+  /** \brief Get the value of a pair that was registered using
+   *         the addExternalFunctionParam method. This can
+   *         be used in the evaluate method
+   *         of external functions (see ContextualExternalFunction).
+   *
+   * @param aName the name of the parameter to retrieve
+   * @return the ExternalFunctionParameter* that was added using
+   *   addExternalFunctionParameter, or 0 if no entry with the given
+   *   name was found.
+   */
+  virtual ExternalFunctionParameter*
+  getExternalFunctionParameter ( const String& aName ) const = 0;
+  
 
 protected:
   /** \brief Destructor

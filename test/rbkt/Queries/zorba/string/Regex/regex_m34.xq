@@ -1,1 +1,0 @@
-fn:matches("ab", "^a$")

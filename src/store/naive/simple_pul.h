@@ -107,7 +107,7 @@ public:
 
   bool insert(XmlNode* key, NodeUpdates* value) { return theMap.insert(key, value); }
 
-  bool remove(XmlNode* key) { return theMap.remove(key); }
+  bool remove(XmlNode* key) { return theMap.erase(key); }
 
   void clear() { theMap.clear(); }
 };
@@ -562,6 +562,10 @@ protected:
         std::vector<store::Item_t>& children);
 
   CollectionPul* getCollectionPul(const store::Item* target);
+
+  CollectionPul* getCollectionPulByName(
+        const store::Item* name,
+        bool dynamicCollection = false);
 
   void undoUpdates();
 };

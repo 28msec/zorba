@@ -404,12 +404,15 @@ void operator&(Archiver &ar, store::Item* &obj)
       {
         ar.dont_allow_delay();
         ar & type;//save qname of type
-        ///check for User Typed Atomic Item
-        store::Item*    baseItem;
-        if(ar.is_serializing_out())         
-          baseItem = (store::Item*)obj->getBaseItem();            
+
         ar.set_is_temp_field(false);
         ar.dont_allow_delay();
+
+        ///check for User Typed Atomic Item
+        store::Item* baseItem;
+        if(ar.is_serializing_out())       
+          baseItem = (store::Item*)obj->getBaseItem();            
+
         ar & baseItem;
         ar.set_is_temp_field(true);
         if(baseItem)

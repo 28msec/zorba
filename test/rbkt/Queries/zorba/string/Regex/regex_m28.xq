@@ -1,1 +1,0 @@
-fn:matches("cat", "c()a\1t")

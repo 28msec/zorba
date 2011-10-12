@@ -1,1 +1,0 @@
-fn:analyze-string("aaa", "((a))+")

@@ -1,1 +1,0 @@
-fn:replace("aba", "a", "")

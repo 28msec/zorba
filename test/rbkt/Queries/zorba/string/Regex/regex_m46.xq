@@ -1,1 +1,0 @@
-fn:matches("cabana", "(cab|caba)na")

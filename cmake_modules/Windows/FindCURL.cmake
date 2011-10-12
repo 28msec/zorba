@@ -27,14 +27,32 @@
 #
 # See the FindCURL.cmake module shipped with CMake for more information.
 
-FIND_PACKAGE_WIN32(NAME CURL FOUND_VAR CURL_FOUND SEARCH_NAMES curl)
+FIND_PACKAGE_WIN32(NAME "CURL" FOUND_VAR "CURL_FOUND" SEARCH_NAMES "curl")
 
 IF (CURL_FOUND)
 
-  # find the needed DLL's
-  FIND_PACKAGE_DLLS_WIN32 (${FOUND_LOCATION} "curllib.dll;libeay32.dll;openldap.dll;ssleay32.dll")
+  IF (EXISTS "${FOUND_LOCATION}/curl.exe")
 
-  # find additional DLL's
-  FIND_DLL_WIN32 (libsasl.dll)
+    MESSAGE (STATUS "Found CURL binary distribution")
+
+    # find the needed DLL's
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "libcurl" "curllib")
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "libeay32")
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "openldap")
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "ssleay32")
+
+  ELSE (EXISTS "${FOUND_LOCATION}/curl.exe")
+
+    MESSAGE (STATUS "Found CURL source build")
+
+    # find the needed DLL's
+    FIND_PACKAGE_DLL_WIN32 (${FOUND_LOCATION} "libcurl" "curllib")
+
+    # find additional DLL's
+    FIND_DLL_WIN32 ("libeay32.dll")
+    FIND_DLL_WIN32 ("ssleay32.dll")
+    #FIND_DLL_WIN32 (libsasl.dll)
+
+  ENDIF (EXISTS "${FOUND_LOCATION}/curl.exe")
 
 ENDIF (CURL_FOUND)

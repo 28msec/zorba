@@ -110,7 +110,7 @@ void QNamePool::remove(QNameItem* qn)
     // qn in the pool, and let the pool garbage-collect it later (if it still
     // unused). If however QNameItems may be referenced by regular pointers as
     // well, then qn must be removed from the pool and really deleted
-    theHashSet.removeNoSync(qn);
+    theHashSet.eraseNoSync(qn);
     delete qn;
   }
 }
@@ -338,7 +338,7 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
       ulong hval = hashfun::h32(qn->getPrefix().c_str(),
                                 hashfun::h32(qn->getLocalName().c_str(),
                                              hashfun::h32(qn->getNamespace().c_str())));
-      theHashSet.removeNoSync(qn, hval);
+      theHashSet.eraseNoSync(qn, hval);
 
       if (!qn->isNormalized())
       {
