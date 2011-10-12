@@ -895,7 +895,8 @@ void UpdCreateCollection::undo()
 void UpdDeleteCollection::apply()
 {
   theCollection = GET_STORE().getCollection(theName, theDynamicCollection);
-  assert(theCollection);
+  if (theCollection == NULL)
+    return;//If two delete collection are issued in the same snapshot is a noop
   SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
 
   std::vector<store::Index*> indexes;
