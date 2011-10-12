@@ -990,13 +990,9 @@ void ProbeGeneralIndexIterator::init(const store::IndexCondition_t& cond)
   {
     initPoint();
   }
-  else if (theProbeKind == store::IndexCondition::BOX_VALUE)
-  {
-    static_cast<ProbeGeneralTreeIndexIterator*>(this)->initValueBox();
-  }
   else
   {
-    static_cast<ProbeGeneralTreeIndexIterator*>(this)->initGeneralBox();
+    static_cast<ProbeGeneralTreeIndexIterator*>(this)->initBox();
   }
 }
 
@@ -1538,6 +1534,88 @@ void ProbeGeneralIndexIterator::close()
 }
 
 
+/******************************************************************************
+  TODO : need sync on result vector
+********************************************************************************/
+bool ProbeGeneralIndexIterator::next(store::Item_t& result)
+{
+  if (theProbeKind == store::IndexCondition::POINT_VALUE ||
+      theProbeKind == store::IndexCondition::POINT_GENERAL)
+  {
+    while (theResultSetsIte != theResultSetsEnd)
+    {
+      while (theIte != theEnd)
+      {
+        if (theIsUntypedProbe && (*theIte).theUntyped)
+        {
+          assert(theProbeKind == store::IndexCondition::POINT_GENERAL);
+
+          ++theIte;
+          continue;
+        }
+
+        result = (*theIte).theNode;
+        
+        ++theIte;
+        return true;
+      }
+
+      ++theResultSetsIte;
+
+      if (theResultSetsIte != theResultSetsEnd)
+      {
+        theIte = (*theResultSetsIte)->begin();
+        theEnd = (*theResultSetsIte)->end();
+      }
+    }
+  }
+  else
+  {
+    while (theCurrentMap < theMapBegins.size())
+    {
+      while (theMapIte != theMapEnds[theCurrentMap])
+      {
+        while (theIte != theEnd)
+        {
+          if ((theIsFullProbe || theIsUntypedProbe) && (*theIte).theUntyped)
+          {
+            ++theIte;
+            continue;
+          }
+
+          result = (*theIte).theNode;
+          
+          ++theIte;
+          return true;
+        }
+
+        ++theMapIte;
+        if (theMapIte == theMapEnds[theCurrentMap])
+          break;
+
+        GeneralIndexValue* resultSet = theMapIte->second;
+        theIte = resultSet->begin();
+        theEnd = resultSet->end();
+      }
+
+      ++theCurrentMap;
+      if (theCurrentMap == theMapBegins.size())
+        break;
+
+      theMapIte = theMapBegins[theCurrentMap];
+
+      if (theMapIte != theMapEnds[theCurrentMap])
+      {
+        GeneralIndexValue* resultSet = theMapIte->second;
+        theIte = resultSet->begin();
+        theEnd = resultSet->end();
+      }
+    }
+  }
+
+  return false;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -1578,39 +1656,6 @@ void ProbeGeneralHashIndexIterator::probeMap(
 }
 
 
-/******************************************************************************
-  TODO : need sync on result vector
-********************************************************************************/
-bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
-{
-  while (theResultSetsIte != theResultSetsEnd)
-  {
-    while (theIte != theEnd)
-    {
-      if (theIsUntypedProbe && (*theIte).theUntyped)
-      {
-        ++theIte;
-        continue;
-      }
-
-      result = (*theIte).theNode;
-      ++theIte;
-      return true;
-    }
-
-    ++theResultSetsIte;
-
-    if (theResultSetsIte != theResultSetsEnd && *theResultSetsIte != NULL)
-    {
-      theIte = (*theResultSetsIte)->begin();
-      theEnd = (*theResultSetsIte)->end();
-    }
-  }
-
-  return false;
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  ProbeGeneralTreeIndexIterator                                              //
@@ -1630,35 +1675,17 @@ ProbeGeneralTreeIndexIterator::ProbeGeneralTreeIndexIterator(
 
 
 /******************************************************************************
-
-********************************************************************************/
-void ProbeGeneralTreeIndexIterator::probeMap(
-    const store::Item* key,
-    const GeneralTreeIndex::IndexMap* targetMap)
-{
-  if (targetMap == NULL)
-    return;
-
-  GeneralTreeIndex::EntryIterator ite = const_cast<GeneralTreeIndex::IndexMap*>
-  (targetMap)->find(const_cast<store::Item*>(key));
-
-  if (ite != targetMap->end())
-  {
-    theResultSets.push_back(NULL);
-    theResultSets[theResultSets.size() - 1] = (*ite).second;
-  }
-}
-
-
-/******************************************************************************
   
 ********************************************************************************/
-void ProbeGeneralTreeIndexIterator::initValueBox()
+void ProbeGeneralTreeIndexIterator::initBox()
 {
   GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(theIndex.getp());
 
   bool haveLower = theCondition->theRangeFlags.theHaveLowerBound;
   bool haveUpper = theCondition->theRangeFlags.theHaveUpperBound;
+
+  assert(theProbeKind == store::IndexCondition::BOX_VALUE ||
+         !(haveLower && haveUpper));
 
   AtomicItem_t& lowerKey = theCondition->theLowerBound;
   AtomicItem_t& upperKey = theCondition->theUpperBound;
@@ -1872,193 +1899,18 @@ void ProbeGeneralTreeIndexIterator::initValueBox()
       break;
     }
 
-    default:
-      ZORBA_ASSERT(false);
-    }
-  }
-  else
-  {
-    theIsFullProbe = true;
-
-    for (ulong i = 0; i < XS_LAST; ++i)
-    {
-      if (idx->theMaps[i] == NULL)
-        continue;
-
-      theMapBegins.push_back(idx->theMaps[i]->begin());
-      theMapEnds.push_back(idx->theMaps[i]->end());
-    }
-  }
-}
-
-
-/******************************************************************************
-  
-********************************************************************************/
-void ProbeGeneralTreeIndexIterator::initGeneralBox()
-{
-  GeneralTreeIndex* idx = static_cast<GeneralTreeIndex*>(theIndex.getp());
-
-  bool haveLower = theCondition->theRangeFlags.theHaveLowerBound;
-  bool haveUpper = theCondition->theRangeFlags.theHaveUpperBound;
-
-  assert(!(haveLower && haveUpper));
-
-  AtomicItem_t& key = (haveLower ?
-                       theCondition->theLowerBound :
-                       theCondition->theUpperBound);
-  store::Item_t altKey;
-
-  zstring tmp;
-
-  theMapBegins.clear();
-  theMapEnds.clear();
-
-  if (idx->isTyped())
-  {
-    // Note: the runtime (or compiler) makes sure that the search key is a
-    // subtype of the index key type.
-    probeMap(idx->theSingleMap, key, key);
-  }
-  else if (haveLower || haveUpper)
-  {
-    SchemaTypeCode keyType = key->getTypeCode();
-
-    switch (keyType)
-    {
-    case XS_BOOLEAN:
-    case XS_DATETIME:
-    case XS_DATE:
-    case XS_TIME:
-    {
-      probeMap(idx->theMaps[keyType], key, key);
-      break;
-    }
-
-    case XS_DURATION:
-    case XS_YM_DURATION:
-    case XS_DT_DURATION:
-    {
-      probeMap(idx->theMaps[XS_DURATION], key, key);
-      break;
-    }
-
-    case XS_ANY_URI:
-    {
-      probeMap(idx->theMaps[XS_ANY_URI], key, key);
-
-      if (idx->theMaps[XS_STRING])
-      {
-        key->getStringValue2(tmp);
-        GET_FACTORY().createString(altKey, tmp);
-
-        probeMap(idx->theMaps[XS_STRING], altKey, altKey);
-      }
-
-      break;
-    }
-
-    case XS_STRING:
-    case XS_NORMALIZED_STRING:
-    case XS_TOKEN:
-    case XS_NMTOKEN:
-    case XS_LANGUAGE:
-    case XS_NAME:
-    case XS_NCNAME:
-    case XS_ID:
-    case XS_IDREF:
-    case XS_ENTITY:
-    {
-      probeMap(idx->theMaps[XS_STRING], key, key);
-
-      if (idx->theMaps[XS_ANY_URI])
-      {
-        key->getStringValue2(tmp);
-        GET_FACTORY().createAnyURI(altKey, tmp);
-
-        probeMap(idx->theMaps[XS_ANY_URI], altKey, altKey);
-      }
-
-      break;
-    }
-
-    case XS_DOUBLE:
-    case XS_FLOAT:
-    {
-      probeMap(idx->theMaps[XS_DOUBLE], key, key);
-
-      if (idx->theMaps[XS_LONG])
-      {
-        doubleToLongProbe(altKey, key, haveLower, haveUpper);
-
-        if (altKey)
-          probeMap(idx->theMaps[XS_LONG], altKey, altKey);
-      }
-
-      break;
-    }
-
-    case XS_DECIMAL:
-    case XS_INTEGER:
-    case XS_NON_POSITIVE_INTEGER:
-    case XS_NEGATIVE_INTEGER:
-    case XS_NON_NEGATIVE_INTEGER:
-    case XS_POSITIVE_INTEGER:
-    case XS_UNSIGNED_LONG:
-    {
-      probeMap(idx->theMaps[XS_DECIMAL], key, key);
-
-      if (idx->theMaps[XS_LONG])
-      {
-        probeMap(idx->theMaps[XS_LONG], key, key);
-      }
-
-      if (idx->theMaps[XS_DOUBLE])
-      {
-        xs_double doubleValue = key->getDecimalValue();
-        GET_FACTORY().createDouble(altKey, doubleValue);
-
-        probeMap(idx->theMaps[XS_DOUBLE], altKey, altKey);
-      }
-
-      break;
-    }
-
-    case XS_LONG:
-    case XS_INT:
-    case XS_SHORT:
-    case XS_BYTE:
-    case XS_UNSIGNED_INT:
-    case XS_UNSIGNED_SHORT:
-    case XS_UNSIGNED_BYTE:
-    {
-      probeMap(idx->theMaps[XS_LONG], key, key);
-
-      if (idx->theMaps[XS_DECIMAL])
-      {
-        xs_decimal decimalValue = key->getLongValue();
-        GET_FACTORY().createDecimal(altKey, decimalValue);
-
-        probeMap(idx->theMaps[XS_DECIMAL], altKey, altKey);
-      }
-
-      if (idx->theMaps[XS_DOUBLE])
-      {
-        xs_double doubleValue = key->getLongValue();
-        GET_FACTORY().createDouble(altKey, doubleValue);
-
-        probeMap(idx->theMaps[XS_DOUBLE], altKey, altKey);
-      }
-
-      break;
-    }
-
     case XS_UNTYPED_ATOMIC:
     {
+      assert(theProbeKind == store::IndexCondition::BOX_GENERAL);
+
       theIsUntypedProbe = true;
 
       store::ItemHandle<UntypedAtomicItem> untypedItem = 
-      static_cast<UntypedAtomicItem*>(key.getp());
+      (haveLower ? 
+       static_cast<UntypedAtomicItem*>(lowerKey.getp()) :
+       static_cast<UntypedAtomicItem*>(upperKey.getp()));
+
+      store::Item_t altKey;
 
       // cast to xs:string
       if (idx->theMaps[XS_STRING])
@@ -2181,14 +2033,14 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox()
     }
 
     default:
-    {
       ZORBA_ASSERT(false);
-    }
     }
   }
   else
   {
-    for (csize i = 0; i < XS_LAST; ++i)
+    theIsFullProbe = true;
+
+    for (ulong i = 0; i < XS_LAST; ++i)
     {
       if (idx->theMaps[i] == NULL)
         continue;
@@ -2201,10 +2053,31 @@ void ProbeGeneralTreeIndexIterator::initGeneralBox()
 
 
 /******************************************************************************
+
+********************************************************************************/
+void ProbeGeneralTreeIndexIterator::probeMap(
+    const store::Item* key,
+    const GeneralTreeIndex::IndexMap* targetMap)
+{
+  if (targetMap == NULL)
+    return;
+
+  GeneralTreeIndex::EntryIterator ite = const_cast<GeneralTreeIndex::IndexMap*>
+  (targetMap)->find(const_cast<store::Item*>(key));
+
+  if (ite != targetMap->end())
+  {
+    theResultSets.push_back(NULL);
+    theResultSets[theResultSets.size() - 1] = (*ite).second;
+  }
+}
+
+
+/******************************************************************************
   
 ********************************************************************************/
 void ProbeGeneralTreeIndexIterator::probeMap(
-    GeneralTreeIndex::IndexMap* map,
+    const GeneralTreeIndex::IndexMap* map,
     const AtomicItem_t& lowerKey,
     const AtomicItem_t& upperKey)
 {
@@ -2257,92 +2130,6 @@ void ProbeGeneralTreeIndexIterator::probeMap(
   }
 }
 
-
-/******************************************************************************
-  TODO : need sync on result vector
-********************************************************************************/
-bool ProbeGeneralTreeIndexIterator::next(store::Item_t& result)
-{
-  if (theProbeKind == store::IndexCondition::POINT_VALUE ||
-      theProbeKind == store::IndexCondition::POINT_GENERAL)
-  {
-    while (theResultSetsIte != theResultSetsEnd)
-    {
-      while (theIte != theEnd)
-      {
-        if (theIsUntypedProbe && (*theIte).theUntyped)
-        {
-          assert(theProbeKind == store::IndexCondition::POINT_GENERAL);
-          // Note: in case of a point value probe, (*theIte).theUntyped implies
-          // that the search key is of type xs:string, or xs:anyURI (otherwise,
-          // an error would have been raised in the initPoint method). As a 
-          // result, we should not skip this node.
-
-          ++theIte;
-          continue;
-        }
-
-        result = (*theIte).theNode;
-        
-        ++theIte;
-        return true;
-      }
-
-      ++theResultSetsIte;
-
-      if (theResultSetsIte != theResultSetsEnd && *theResultSetsIte != NULL)
-      {
-        theIte = (*theResultSetsIte)->begin();
-        theEnd = (*theResultSetsIte)->end();
-      }
-    }
-  }
-  else
-  {
-    while (theCurrentMap < theMapBegins.size())
-    {
-      while (theMapIte != theMapEnds[theCurrentMap])
-      {
-        while (theIte != theEnd)
-        {
-          if ((theIsFullProbe || theIsUntypedProbe) && (*theIte).theUntyped)
-          {
-            ++theIte;
-            continue;
-          }
-
-          result = (*theIte).theNode;
-          
-          ++theIte;
-          return true;
-        }
-
-        ++theMapIte;
-        if (theMapIte == theMapEnds[theCurrentMap])
-          break;
-
-        GeneralIndexValue* resultSet = theMapIte->second;
-        theIte = resultSet->begin();
-        theEnd = resultSet->end();
-      }
-
-      ++theCurrentMap;
-      if (theCurrentMap == theMapBegins.size())
-        break;
-
-      theMapIte = theMapBegins[theCurrentMap];
-
-      if (theMapIte != theMapEnds[theCurrentMap])
-      {
-        GeneralIndexValue* resultSet = theMapIte->second;
-        theIte = resultSet->begin();
-        theEnd = resultSet->end();
-      }
-    }
-  }
-
-  return false;
-}
 
 
 } // namespace simplestore

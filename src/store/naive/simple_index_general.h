@@ -313,7 +313,11 @@ public:
 
   theIsFullProbe:
   ---------------
-
+  Set to true if the condition is a range condition with no bounds. In this case,
+  domain nodes that appear in the index with their associated "untyped" flag set
+  to true must be skipped from the result because they will be just duplicates
+  (they appear for sure in the STRING map). This is used for range probes only.
+ 
   theResultSets:
   --------------
   The node sets associated with the keys that match the condition. This is used
@@ -418,14 +422,14 @@ public:
   void reset();
 
   void close();
+
+  bool next(store::Item_t& result);
 };
 
 
 /******************************************************************************
   Iterator to probe a hash-based, general index. The probe itself may be a
   value probe or a general probe.
-
-
 ********************************************************************************/
 class ProbeGeneralHashIndexIterator : public ProbeGeneralIndexIterator
 {
@@ -438,38 +442,31 @@ protected:
 
 public:
   ProbeGeneralHashIndexIterator(const store::Index_t& index);
-
-  bool next(store::Item_t& result);
 };
 
 
 /******************************************************************************
   Iterator to probe a tree-based, general index. The probe itself may be a
   value probe or a general probe.
-
 ********************************************************************************/
 class ProbeGeneralTreeIndexIterator : public ProbeGeneralIndexIterator
 {
   friend class ProbeGeneralIndexIterator;
 
 protected:
-  void initValueBox();
-
-  void initGeneralBox();
+  void initBox();
 
   void probeMap(
     const store::Item* key,
     const GeneralTreeIndex::IndexMap* targetMap);
 
   void probeMap(
-      GeneralTreeIndex::IndexMap* map,
+      const GeneralTreeIndex::IndexMap* map,
       const AtomicItem_t& lowerKey,
       const AtomicItem_t& upperKey);
 
 public:
   ProbeGeneralTreeIndexIterator(const store::Index_t& index);
-
-  bool next(store::Item_t& result);
 };
 
 
