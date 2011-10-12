@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 // ******************************************
 // *                                        *
 // * THIS IS A GENERATED FILE. DO NOT EDIT! *
@@ -35,9 +35,9 @@
 namespace zorba {
 class StaticallyKnownCollection;
 /**
- *
+ * 
  *      fn:collection
- *
+ *    
  * Author: Zorba Team
  */
 class FnCollectionIteratorState : public PlanIteratorState
@@ -55,7 +55,7 @@ public:
 };
 
 class FnCollectionIterator : public NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(FnCollectionIterator);
 
@@ -72,7 +72,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>(sctx, loc, children)
   {}
 
@@ -85,9 +85,9 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:collection
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaCollectionIteratorState : public PlanIteratorState
@@ -105,7 +105,7 @@ public:
 };
 
 class ZorbaCollectionIterator : public NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -127,7 +127,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -145,13 +145,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:index-of
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaIndexOfIterator : public NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -173,7 +173,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -189,13 +189,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:create
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaCreateCollectionIterator : public NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -217,7 +217,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -233,13 +233,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:delete
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaDeleteCollectionIterator : public NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -261,7 +261,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -277,13 +277,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:insert-nodes
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaInsertNodesIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesIterator);
 
@@ -301,7 +301,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -316,13 +316,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:insert-nodes-first
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaInsertNodesFirstIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesFirstIterator);
 
@@ -340,7 +340,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -355,13 +355,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:insert-nodes-last
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaInsertNodesLastIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesLastIterator);
 
@@ -379,7 +379,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -394,13 +394,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:insert-nodes-before
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaInsertNodesBeforeIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesBeforeIterator);
 
@@ -418,7 +418,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -433,13 +433,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:insert-nodes-after
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaInsertNodesAfterIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -461,7 +461,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>(sctx, loc, children, aDynamicCollection),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -477,9 +477,9 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:apply-insert-nodes
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaApplyInsertNodesIteratorState : public PlanIteratorState
@@ -497,7 +497,7 @@ public:
 };
 
 class ZorbaApplyInsertNodesIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaApplyInsertNodesIterator);
 
@@ -515,7 +515,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -528,9 +528,9 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:apply-insertnodes-first
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaApplyInsertNodesFirstIteratorState : public PlanIteratorState
@@ -548,7 +548,7 @@ public:
 };
 
 class ZorbaApplyInsertNodesFirstIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaApplyInsertNodesFirstIterator);
 
@@ -566,7 +566,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -579,9 +579,9 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:apply-insertnodes-last
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaApplyInsertNodesLastIteratorState : public PlanIteratorState
@@ -599,7 +599,7 @@ public:
 };
 
 class ZorbaApplyInsertNodesLastIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaApplyInsertNodesLastIterator);
 
@@ -617,7 +617,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -630,9 +630,9 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:apply-insert-nodes-before
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaApplyInsertNodesBeforeIteratorState : public PlanIteratorState
@@ -650,7 +650,7 @@ public:
 };
 
 class ZorbaApplyInsertNodesBeforeIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaApplyInsertNodesBeforeIterator);
 
@@ -668,7 +668,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -681,9 +681,9 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:apply-insertnodes-after
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaApplyInsertNodesAfterIteratorState : public PlanIteratorState
@@ -701,7 +701,7 @@ public:
 };
 
 class ZorbaApplyInsertNodesAfterIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaApplyInsertNodesAfterIterator);
 
@@ -719,7 +719,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>(sctx, loc, children, aDynamicCollection)
   {}
 
@@ -732,13 +732,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:delete-nodes
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaDeleteNodesIterator : public NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -760,7 +760,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -776,13 +776,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:delete-node-first
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaDeleteNodesFirstIterator : public NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -804,7 +804,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -820,13 +820,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:delete-node-last
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaDeleteNodesLastIterator : public NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -848,7 +848,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -864,13 +864,13 @@ public:
 
 
 /**
- *
+ * 
  *      zorba:collection-name
- *
+ *    
  * Author: Zorba Team
  */
 class ZorbaCollectionNameIterator : public NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaCollectionNameIterator);
 
@@ -887,7 +887,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
@@ -900,13 +900,13 @@ public:
 
 
 /**
- *
+ * 
  *      dc:is-available-collection
- *
+ *    
  * Author: Zorba Team
  */
 class IsAvailableCollectionIterator : public NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -928,7 +928,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -944,9 +944,9 @@ public:
 
 
 /**
- *
+ * 
  *      dc:available-collections
- *
+ *    
  * Author: Zorba Team
  */
 class AvailableCollectionsIteratorState : public PlanIteratorState
@@ -963,7 +963,7 @@ public:
 };
 
 class AvailableCollectionsIterator : public NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>
-{
+{ 
 protected:
   bool theDynamicCollection; //whether it's the function of the dynamic or the static collection module
 public:
@@ -985,7 +985,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool aDynamicCollection)
-    :
+    : 
     NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>(sctx, loc, children),
     theDynamicCollection(aDynamicCollection)
   {}
@@ -999,13 +999,13 @@ public:
 
 
 /**
- *
+ * 
  *      dc:is-available-index
- *
+ *    
  * Author: Zorba Team
  */
 class IsAvailableIndexIterator : public NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(IsAvailableIndexIterator);
 
@@ -1022,7 +1022,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
@@ -1035,9 +1035,9 @@ public:
 
 
 /**
- *
+ * 
  *      dc:available-indexes
- *
+ *    
  * Author: Zorba Team
  */
 class AvailableIndexesIteratorState : public PlanIteratorState
@@ -1054,7 +1054,7 @@ public:
 };
 
 class AvailableIndexesIterator : public NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(AvailableIndexesIterator);
 
@@ -1071,7 +1071,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>(sctx, loc, children)
   {}
 
@@ -1084,13 +1084,13 @@ public:
 
 
 /**
- *
+ * 
  *      dc:is-activated-integrity-constraint
- *
+ *    
  * Author: Zorba Team
  */
 class IsActivatedICIterator : public NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(IsActivatedICIterator);
 
@@ -1107,7 +1107,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
@@ -1120,9 +1120,9 @@ public:
 
 
 /**
- *
+ * 
  *      dc:activated-integrity-constraints
- *
+ *    
  * Author: Zorba Team
  */
 class ActivatedICsIteratorState : public PlanIteratorState
@@ -1139,7 +1139,7 @@ public:
 };
 
 class ActivatedICsIterator : public NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(ActivatedICsIterator);
 
@@ -1156,7 +1156,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>(sctx, loc, children)
   {}
 
@@ -1169,13 +1169,13 @@ public:
 
 
 /**
- *
+ * 
  *      sc:is-declared-collection
- *
+ *    
  * Author: Zorba Team
  */
 class IsDeclaredCollectionIterator : public NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(IsDeclaredCollectionIterator);
 
@@ -1192,7 +1192,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
@@ -1205,9 +1205,9 @@ public:
 
 
 /**
- *
+ * 
  *      sc:declared-collections
- *
+ *    
  * Author: Zorba Team
  */
 class DeclaredCollectionsIteratorState : public PlanIteratorState
@@ -1224,7 +1224,7 @@ public:
 };
 
 class DeclaredCollectionsIterator : public NaryBaseIterator<DeclaredCollectionsIterator, DeclaredCollectionsIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(DeclaredCollectionsIterator);
 
@@ -1241,7 +1241,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<DeclaredCollectionsIterator, DeclaredCollectionsIteratorState>(sctx, loc, children)
   {}
 
@@ -1254,13 +1254,13 @@ public:
 
 
 /**
- *
+ * 
  *      sc:is-declared-index
- *
+ *    
  * Author: Zorba Team
  */
 class IsDeclaredIndexIterator : public NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(IsDeclaredIndexIterator);
 
@@ -1277,7 +1277,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
@@ -1290,9 +1290,9 @@ public:
 
 
 /**
- *
+ * 
  *      sc:declared-indexes
- *
+ *    
  * Author: Zorba Team
  */
 class DeclaredIndexesIteratorState : public PlanIteratorState
@@ -1309,7 +1309,7 @@ public:
 };
 
 class DeclaredIndexesIterator : public NaryBaseIterator<DeclaredIndexesIterator, DeclaredIndexesIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(DeclaredIndexesIterator);
 
@@ -1326,7 +1326,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<DeclaredIndexesIterator, DeclaredIndexesIteratorState>(sctx, loc, children)
   {}
 
@@ -1339,13 +1339,13 @@ public:
 
 
 /**
- *
+ * 
  *      sc:is-declared-integrity-constraint
- *
+ *    
  * Author: Zorba Team
  */
 class IsDeclaredICIterator : public NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(IsDeclaredICIterator);
 
@@ -1362,7 +1362,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
@@ -1375,9 +1375,9 @@ public:
 
 
 /**
- *
+ * 
  *      sc:declared-integrity-constrints
- *
+ *    
  * Author: Zorba Team
  */
 class DeclaredICsIteratorState : public PlanIteratorState
@@ -1394,7 +1394,7 @@ public:
 };
 
 class DeclaredICsIterator : public NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>
-{
+{ 
 public:
   SERIALIZABLE_CLASS(DeclaredICsIterator);
 
@@ -1411,7 +1411,7 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
-    :
+    : 
     NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>(sctx, loc, children)
   {}
 
@@ -1429,4 +1429,4 @@ public:
  * Local variables:
  * mode: c++
  * End:
- */
+ */ 
