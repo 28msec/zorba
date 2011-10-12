@@ -2275,6 +2275,7 @@ void CollectionPul::undoUpdates()
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
 
+#ifndef ZORBA_NO_XMLSCHEMA
     // Undo validate-in-place validation
     undoList(theRevalidateList);
 
@@ -2283,6 +2284,7 @@ void CollectionPul::undoUpdates()
     {
       undoList(static_cast<PULImpl *>(theValidationPul.getp())->theValidationList);
     }
+#endif
 
     // Undo text node merging
     std::vector<TextNodeMerge>::reverse_iterator rit = theMergeList.rbegin();

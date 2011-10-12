@@ -666,10 +666,13 @@ void UpdSetAttributeType::undo()
 ********************************************************************************/
 void UpdRevalidate::apply()
 {
+#ifndef ZORBA_NO_XMLSCHEMA
   std::set<store::Item*> nodes;
 
   theRevalidationPul=GET_STORE().getItemFactory()->createPendingUpdateList();
   nodes.insert(theTarget.getp());
+  if (!thePul->theValidator)
+    return;
   thePul->theValidator->validate(nodes,*theRevalidationPul.getp());
   try
   {
@@ -681,12 +684,15 @@ void UpdRevalidate::apply()
   }
 
   theIsApplied = true;
+#endif
 }
 
 
 void UpdRevalidate::undo()
 {
+#ifndef ZORBA_NO_XMLSCHEMA
   static_cast<PULImpl *>(theRevalidationPul.getp())->undoUpdates();
+#endif
 }
 
 
