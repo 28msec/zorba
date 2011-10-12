@@ -18,6 +18,9 @@
 #include "uri_resolver_wrappers.h"
 #include "uriresolverimpl.h"
 #include "unmarshaller.h"
+#include <zorba/thesaurus.h>
+#include <runtime/full_text/thesaurus.h>
+#include <context/thesaurus_wrappers.h>
 
 namespace zorba
 {
@@ -136,12 +139,14 @@ namespace zorba
       return NULL;
     }
 
-    internal::StreamResource* lRetval = nullptr;
+    internal::Resource* lRetval = nullptr;
     // Get the user's Resource.
     Resource::ptr lUserPtr
       (theUserResolver.resolveURL(zorba::String(aUrl.c_str()),
                                   lDataWrap.get()));
     if (lUserPtr.get() != NULL) {
+      // Sooo ugly... have to try down-casting to each subclass in turn to
+      // figure out what kind of Resource we've got.
       StreamResourceImpl* lUserStream =
           dynamic_cast<StreamResourceImpl*>(lUserPtr.get());
       if (lUserStream != NULL) {
@@ -153,7 +158,18 @@ namespace zorba
         lUserStream->setStreamReleaser(nullptr);
       }
       else {
-        assert(false);
+        ThesaurusResource* lUserThesaurus =
+            dynamic_cast<ThesaurusResource*>(lUserPtr.get());
+        if (lUserThesaurus != NULL) {
+          // Here we pass memory ownership of the actual ThesaurusResource
+          // to the internal ThesaurusWrapper.
+          lRetval = new internal::ThesaurusWrapper
+              (ThesaurusResource::ptr(lUserThesaurus));
+          lUserPtr.release();
+        }
+        else {
+          assert(false);
+        }
       }
     }
     return lRetval;

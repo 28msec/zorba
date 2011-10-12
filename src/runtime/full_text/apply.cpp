@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <zorba/tokenizer.h>
+#include <context/uri_resolver.h>
 
 #include "compiler/expression/ftnode.h"
 #include "diagnostics/dict.h"
@@ -1208,13 +1209,16 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 
   zstring const &uri = tid.get_uri();
 
-  internal::Thesaurus::ptr thesaurus;
-  // CEEJ call something like:
-  //      static_ctx_.resolve_uri(uri, ThesaurusEntityData(qt0.lang))
-  // to get back an auto_ptr<Resource> that you can downcast to ThesaurusResource
-//  (
-//    static_ctx_.get_thesaurus( uri, qt0.lang() )
-//  );
+  // CEEJ Need to think about error-handling here: message from
+  // resolve_uri() as well as what happens if the dynamic_cast<>
+  // below returns nullptr.
+  zstring errorMsg;
+  auto_ptr<internal::Resource> lResource =
+      static_ctx_.resolve_uri(uri,
+                              internal::ThesaurusEntityData(qt0.lang()),
+                              errorMsg);
+  internal::Thesaurus::ptr thesaurus
+      (dynamic_cast<internal::Thesaurus*>(lResource.release()));
 
   internal::Thesaurus::iterator::ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )
