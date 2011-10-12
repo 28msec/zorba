@@ -510,7 +510,8 @@ aton( char const *s ) {
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
-typename std::enable_if<is_double<NumericType>::value,NumericType>::type
+typename std::enable_if<ZORBA_TR1_NS::is_same<NumericType,double>::value,
+                        NumericType>::type
 aton( char const *s ) {
   return atod( s );
 }
@@ -527,7 +528,8 @@ aton( char const *s ) {
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
-typename std::enable_if<is_float<NumericType>::value,NumericType>::type
+typename std::enable_if<ZORBA_TR1_NS::is_same<NumericType,float>::value,
+                        NumericType>::type
 aton( char const *s ) {
   return atof( s );
 }

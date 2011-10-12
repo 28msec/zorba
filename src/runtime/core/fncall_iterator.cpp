@@ -399,29 +399,35 @@ class ExtFuncArgItemSequence : public ItemSequence
   {
   private:
     ExtFuncArgItemSequence * theItemSequence;
-    bool is_open;
-    int open_count;
+    bool                     theIsOpen;
+    bool                     theFirstOpen;
 
   public:
-    InternalIterator(ExtFuncArgItemSequence* item_sequence) 
+    InternalIterator(ExtFuncArgItemSequence* seq) 
       : 
-      theItemSequence(item_sequence),
-      is_open(false),
-      open_count(0)
+      theItemSequence(seq),
+      theIsOpen(false),
+      theFirstOpen(true)
     {
     }
 
-    virtual void open()
+    void open()
     {
-      is_open = true;
-      //if(open_count)
-      //  theItemSequence->theChild->reset(theItemSequence->thePlanState);
-      open_count++;
+      if (theIsOpen)
+        throw ZORBA_EXCEPTION(zerr::ZAPI0041_ITERATOR_ALREADY_OPEN);
+
+      if (!theFirstOpen)
+        theItemSequence->theChild->reset(theItemSequence->thePlanState);
+
+      theIsOpen = true;
+      theFirstOpen = false;
     }
 
     bool next(Item& item)
     {
-      ZORBA_ASSERT(is_open);
+      if (!theIsOpen)  
+        throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
+
       store::Item_t result;
       bool status = theItemSequence->theChild->
                     consumeNext(result,
@@ -431,28 +437,38 @@ class ExtFuncArgItemSequence : public ItemSequence
       return status;
     }
 
-    virtual void close()
+    void close()
     {
-      is_open = false;
-      // theItemSequence->theChild->close(theItemSequence->thePlanState);
+      if (!theIsOpen)  
+        throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
+
+      theIsOpen = false;
     }
 
-    virtual bool isOpen() const {return is_open;}
+    bool isOpen() const { return theIsOpen; }
   };
 
 private:
   PlanIter_t   theChild;
   PlanState  & thePlanState;
+  bool         theHasIterator;
 
 public:
   ExtFuncArgItemSequence(PlanIter_t& child, PlanState& state)
     :
     theChild(child),
-    thePlanState(state)
+    thePlanState(state),
+    theHasIterator(false)
   {
   }
 
-  virtual Iterator_t getIterator() {return new InternalIterator(this);}
+  virtual Iterator_t getIterator() 
+  {
+    if (theHasIterator)
+      throw ZORBA_EXCEPTION(zerr::ZAPI0039_XQUERY_HAS_ITERATOR_ALREADY);
+
+    return new InternalIterator(this);
+  }
 };
 
 
@@ -468,9 +484,9 @@ ExtFunctionCallIteratorState::~ExtFunctionCallIteratorState()
 {
   theResultIter = NULL;
 
-  ulong n = (ulong)m_extArgs.size();
+  csize n = m_extArgs.size();
 
-  for (ulong i = 0; i < n; ++i)
+  for (csize i = 0; i < n; ++i)
   {
     delete m_extArgs[i];
   }

@@ -95,7 +95,7 @@ public:
    * @param node XDM node
    * @return the identifier as an item of type xs:anyURI
    */
-  virtual bool getReference(Item_t& result, Item* node) = 0;
+  virtual bool getNodeReference(Item_t& result, Item* node) = 0;
 
   /**
    * Returns whether a reference has already been generated for the given node.

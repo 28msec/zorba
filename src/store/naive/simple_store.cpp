@@ -1348,7 +1348,7 @@ store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
  @param node XDM node
  @return the identifier as an item of type xs:anyURI
 ********************************************************************************/
-bool SimpleStore::getReference(store::Item_t& result, store::Item* node)
+bool SimpleStore::getNodeReference(store::Item_t& result, store::Item* node)
 {
   XmlNode* xmlNode = static_cast<XmlNode*>(node);
 

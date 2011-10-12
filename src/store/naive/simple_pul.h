@@ -563,6 +563,10 @@ protected:
 
   CollectionPul* getCollectionPul(const store::Item* target);
 
+  CollectionPul* getCollectionPulByName(
+        const store::Item* name,
+        bool dynamicCollection = false);
+
   void undoUpdates();
 };
 
