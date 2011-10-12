@@ -21,19 +21,26 @@
 
 namespace zorba { 
 
-  /** \brief This interface represents an instance of the XQuery 1.0 and XPath 2.0 Data Model (XDM).
+  /** 
+   * \brief This interface represents an instance of the XQuery 1.0 and XPath 2.0
+   * Data Model (XDM).
    *
    * See http://www.w3.org/TR/xpath-datamodel/.
    */
   class ZORBA_DLL_PUBLIC ItemSequence : virtual public SmartObject
   {
     public:
-      /** \brief Destructor
+      /**
+       * \brief Destructor
        */
       virtual ~ItemSequence() { }
 
-      /** \brief get the Iterator over the items
+      /**
+       * \brief get the Iterator over the items
+       *
        * @return an iterator over the items
+       * @throw Throws zerr::ZAPI0039 if the implementation of the associated
+       *        ItemSequence does not allow more than one iterator to be created. 
       */
       virtual Iterator_t  getIterator() = 0;
 
