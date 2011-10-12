@@ -82,6 +82,15 @@ protected:
 
 public:
   virtual bool
+  getExternalVariables(
+      std::vector<Item>& aVars)const;
+
+  virtual bool
+  isBoundVariable(
+      const String& inNamespace,
+      const String& inLocalname) const;
+
+  virtual bool
   getVariable(
       const String& inNamespace,
       const String& inLocalname,

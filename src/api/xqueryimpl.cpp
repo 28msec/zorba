@@ -771,6 +771,24 @@ bool XQueryImpl::isUpdating() const
 
 
 /*******************************************************************************
+ Return true, if the root expr of the query is a sequential expr.
+********************************************************************************/
+bool XQueryImpl::isSequential() const
+{
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
+  try
+  {
+    checkNotClosed();
+    checkCompiled();
+
+    return theCompilerCB->isSequential();
+  }
+  QUERY_CATCH
+  return false;
+}
+
+/*******************************************************************************
   Serialize the execution plan inot the given output stream.
 ********************************************************************************/
 bool XQueryImpl::saveExecutionPlan(

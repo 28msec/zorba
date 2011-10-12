@@ -163,6 +163,12 @@ public:
       const store::Item_t& varname,
       const QueryLoc& loc);
 
+  bool is_bound_variable(
+        ulong varid,
+        const store::Item_t& varname,
+        const QueryLoc& loc
+        )const;
+
   void get_variable(
         ulong varid,
         const store::Item_t& varname,

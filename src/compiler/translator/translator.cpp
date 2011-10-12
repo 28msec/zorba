@@ -5190,6 +5190,11 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
     theModulesInfo->theCCB->setIsUpdating(true);
   }
 
+  if(program ->is_sequential())
+  {
+    theModulesInfo->theCCB->setIsSequential(true);
+  }
+
   if (program->is_updating() && !theCCB->theIsEval)
   {
     program = new apply_expr(theRootSctx,

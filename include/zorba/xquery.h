@@ -316,6 +316,17 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   virtual bool
   isUpdating() const = 0;
   
+   /** 
+   * \brief Check if this query is a sequential query.
+   *
+   * @return true if the query is a sequential query, false otherwise.
+   * @throw SystemException if the query is not compiled or has been closed.
+   * @see close()
+   * @see compile(...)
+   */
+  virtual bool 
+  isSequential() const = 0;
+
   /** \brief Save the compiled execution plan.
    *
    * After compiling an XQuery program you can save the execution plan in some

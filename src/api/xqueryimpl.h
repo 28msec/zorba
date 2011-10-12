@@ -285,6 +285,8 @@ public:
   const StaticContext* getStaticContext() const;
 
   bool isUpdating() const;
+  
+  bool isSequential() const;
 
   bool saveExecutionPlan(
         std::ostream& os,

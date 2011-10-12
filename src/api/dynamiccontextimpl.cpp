@@ -182,6 +182,66 @@ var_expr* DynamicContextImpl::get_var_expr(
   return var;
 }
 
+/****************************************************************************//**
+
+********************************************************************************/
+
+bool DynamicContextImpl::getExternalVariables(
+  std::vector<Item>& aVars
+  ) const 
+{
+  
+  ZORBA_DCTX_TRY
+  {
+    //get all the local variables to check them later
+    std::vector<var_expr_t> lVars;
+    theStaticContext->getVariables(lVars, true);
+    
+    std::vector<var_expr_t>::iterator lIte = lVars.begin();
+    std::vector<var_expr_t>::iterator lEnd = lVars.end();
+    
+    for (; lIte != lEnd; ++lIte) 
+    { 
+          
+      if(lIte->getp()->is_external())
+        aVars.push_back(lIte->getp()->get_name());
+            
+    }
+    
+    if(!aVars.empty())
+      return true;
+       
+  }
+  ZORBA_DCTX_CATCH
+  
+  return false;
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::isBoundVariable(
+  const String& inNamespace,
+  const String& inLocalname) const
+{
+  ZORBA_DCTX_TRY
+  {
+    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
+    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
+
+    var_expr* var = get_var_expr(nameSpace, localName);
+       
+    ulong varId = var->get_unique_id();
+
+    if(theCtx->is_bound_variable(varId, var->get_name(), QueryLoc::null))
+    {
+      return true;
+    }
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
 
 /****************************************************************************//**
 
