@@ -234,7 +234,7 @@ void XmlTree::copyTypesMap(const XmlTree* source)
 
   if (theTypesMap == NULL)
   {
-    theTypesMap = new NodeTypeMap(source->theTypesMap->object_count(), false);
+    theTypesMap = new NodeTypeMap(source->theTypesMap->size(), false);
   }
 
   NodeTypeMap::iterator ite = source->theTypesMap->begin();
@@ -692,6 +692,9 @@ void XmlNode::destroyInternal(bool removeType)
     }
   }
 #endif
+
+  if (haveReference())
+    GET_STORE().unregisterNode(this);
 
   delete this;
 }
@@ -1350,7 +1353,7 @@ DocumentNode::DocumentNode(
 XmlNode* DocumentNode::copyInternal(
     InternalNode*          rootParent,
     InternalNode*          parent,
-    csize                pos,
+    csize                  pos,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -1540,7 +1543,7 @@ ElementNode::ElementNode(
   InternalNode(store::StoreConsts::elementNode)
 {
   theName.transfer(nodeName);
-  setHaveValue();
+  setHaveTypedValue();
   resetRecursive();
 
   if (numBindings > 0)
@@ -1589,10 +1592,10 @@ ElementNode::ElementNode(
 
     if (haveTypedValue)
     {
-      setHaveValue();
+      setHaveTypedValue();
 
       if (haveEmptyValue)
-        setHaveEmptyValue();
+        setHaveEmptyTypedValue();
     }
 
     if (isInSubstGroup)
@@ -1738,9 +1741,9 @@ XmlNode* ElementNode::copyInternal(
   if (copymode.theTypePreserve)
   {
     typeName = getType();
-    haveValue = this->haveValue();
-    haveEmptyValue = this->haveEmptyValue();
-    inSubstGroup = this->isInSubstitutionGroup();
+    haveValue = haveTypedValue();
+    haveEmptyValue = haveEmptyTypedValue();
+    inSubstGroup = isInSubstitutionGroup();
   }
   else
   {
@@ -2184,11 +2187,11 @@ bool ElementNode::isIdRefs() const
 ********************************************************************************/
 void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  if (haveValue())
+  if (haveTypedValue())
   {
     TextNode* textChild;
 
-    if (haveEmptyValue())
+    if (haveEmptyTypedValue())
     {
       val = NULL;
       iter = NULL;
@@ -3467,7 +3470,7 @@ TextNode::TextNode(
     }    
   }
 
-  ZORBA_ASSERT(p->haveValue() && !p->haveEmptyValue());
+  ZORBA_ASSERT(p->haveTypedValue() && !p->haveEmptyTypedValue());
 
   setTypedValue(content);
   if (isListValue)
