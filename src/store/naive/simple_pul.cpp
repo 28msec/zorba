@@ -798,6 +798,35 @@ void PULImpl::addSetAttributeType(
   theValidationList.push_back(upd);
 }
 
+void PULImpl::addRevalidate(
+    const QueryLoc* aQueryLoc,
+    store::Item_t& target)
+{
+  CollectionPul* pul = getCollectionPul(target.getp());
+
+  XmlNode* n = BASE_NODE(target);
+
+  NodeUpdates* updates = 0;
+  bool found = pul->theNodeToUpdatesMap.get(n, updates);
+
+  UpdRevalidate* upd = GET_STORE().getPULFactory().
+      createUpdRevalidate(this, aQueryLoc, target);
+
+
+  pul->theRevalidateList.push_back(upd);
+
+  if (!found)
+  {
+    updates = new NodeUpdates(1);
+    (*updates)[0] = upd;
+    pul->theNodeToUpdatesMap.insert(n, updates);
+  }
+  else
+  {
+    updates->push_back(upd);
+  }
+}
+
 
 /*******************************************************************************
  Collection primitives
@@ -1104,6 +1133,11 @@ void PULImpl::mergeUpdates(store::Item* other)
                       thisPul->theDeleteList,
                       otherPul->theDeleteList,
                       UP_LIST_DELETE);
+      // Merge revalidation primitives
+      mergeUpdateList(thisPul,
+                      thisPul->theRevalidateList,
+                      otherPul->theRevalidateList,
+                      UP_LIST_NONE);
 
       // Merge collection primitives
       mergeUpdateList(thisPul,
@@ -1709,6 +1743,8 @@ void PULImpl::undoUpdates()
 {
   try
   {
+    undoList(theValidationList);
+
     CollectionPulMap::iterator collIte = theCollectionPuls.begin();
     CollectionPulMap::iterator collEnd = theCollectionPuls.end();
 
@@ -1762,6 +1798,7 @@ CollectionPul::~CollectionPul()
   cleanList(theReplaceNodeList);
   cleanList(theReplaceContentList);
   cleanList(theDeleteList);
+  cleanList(theRevalidateList);
 
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
@@ -1787,6 +1824,8 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theReplaceNodeList);
   switchPulInPrimitivesList(theReplaceContentList);
   switchPulInPrimitivesList(theDeleteList);
+  switchPulInPrimitivesList(theRevalidateList);
+
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
@@ -2040,38 +2079,38 @@ void CollectionPul::applyUpdates()
     {
       InternalNode* node = (*it);
 
-    	for (csize i = 0; i < node->numChildren()-1; ++i)
-    	{
-    		if (node->getChild(i)->getNodeKind() == store::StoreConsts::textNode &&
+      for (csize i = 0; i < node->numChildren()-1; ++i)
+      {
+        if (node->getChild(i)->getNodeKind() == store::StoreConsts::textNode &&
             node->getChild(i+1)->getNodeKind() == store::StoreConsts::textNode)
-    		{
+        {
           TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(i));
 
-    			TextNodeMerge mergeInfo(node, i);
+          TextNodeMerge mergeInfo(node, i);
           mergeInfo.theMergedNodes.push_back(mergedNode);
           node->removeChild(i);
 
-    			zstring newContent = mergedNode->getText();
+          zstring newContent = mergedNode->getText();
           csize j = i;
 
-    			while (j < node->numChildren() &&
-                 node->getChild(j)->getNodeKind() == store::StoreConsts::textNode)
-    			{
-    			  TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(j));
-    				newContent += mergedNode->getText();
-    				node->removeChild(j);
-    				mergeInfo.theMergedNodes.push_back(mergedNode);
-    			}
+          while (j < node->numChildren() &&
+              node->getChild(j)->getNodeKind() == store::StoreConsts::textNode)
+          {
+            TextNode* mergedNode = reinterpret_cast<TextNode*>(node->getChild(j));
+            newContent += mergedNode->getText();
+            node->removeChild(j);
+            mergeInfo.theMergedNodes.push_back(mergedNode);
+          }
 
-    			theMergeList.push_back(mergeInfo);
+          theMergeList.push_back(mergeInfo);
 
           (void)GET_NODE_FACTORY().createTextNode(node->getTree(),
-                                                  node,
-                                                  false,
-                                                  i,
-                                                  newContent);
-    		}
-    	}
+              node,
+              false,
+              i,
+              newContent);
+        }
+      }
     }
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -2090,6 +2129,11 @@ void CollectionPul::applyUpdates()
       {
         ZORBA_FATAL(0, "Error during the application of the validation PUL");
       }
+    }
+
+    if (thePul->theValidator != NULL)
+    {
+      applyList(theRevalidateList);
     }
 #endif
 
@@ -2233,11 +2277,16 @@ void CollectionPul::undoUpdates()
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
 
-    // Undo validation
+#ifndef ZORBA_NO_XMLSCHEMA
+    // Undo validate-in-place validation
+    undoList(theRevalidateList);
+
+    // Undo apply-updates caused validation
     if (theValidationPul)
     {
       undoList(static_cast<PULImpl *>(theValidationPul.getp())->theValidationList);
     }
+#endif
 
     // Undo text node merging
     std::vector<TextNodeMerge>::reverse_iterator rit = theMergeList.rbegin();
