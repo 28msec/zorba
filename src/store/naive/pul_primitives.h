@@ -712,15 +712,23 @@ class UpdSetElementType : public UpdatePrimitive
 
 protected:
   store::Item_t            theTypeName;
-
   store::Item_t            theTypedValue;
 
   bool                     theHaveTypedValue;
   bool                     theHaveEmptyTypedValue;
   bool                     theHaveTypedTypedValue;
   bool                     theHaveListTypedValue;
-
   bool                     theIsInSubstitutionGroup;
+
+  store::Item_t            theOldTypeName;
+  store::Item_t            theOldTypedValue;
+
+  bool                     theOldHaveTypedValue;
+  bool                     theOldHaveEmptyTypedValue;
+  bool                     theOldHaveTypedTypedValue;
+  bool                     theOldHaveListTypedValue;
+  bool                     theOldIsInSubstitutionGroup;
+
 
   UpdSetElementType(
         PULImpl*        pul,
@@ -752,7 +760,7 @@ public:
   }
 
   void apply();
-  void undo() {}
+  void undo();
 };
 
 
@@ -768,6 +776,10 @@ protected:
   store::Item_t            theTypeName;
   store::Item_t            theTypedValue;
   bool                     theHaveListValue;
+
+  store::Item_t            theOldTypeName;
+  store::Item_t            theOldTypedValue;
+  bool                     theOldHaveListValue;
 
   UpdSetAttributeType(
         PULImpl*        pul,
@@ -791,7 +803,7 @@ public:
   }
 
   void apply();
-  void undo() {}
+  void undo();
 };
 
 
