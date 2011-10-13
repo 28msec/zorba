@@ -2078,14 +2078,13 @@ void CollectionPul::applyUpdates()
     // Revalidate the updated docs
     if (thePul->theValidator != NULL && !theValidationNodes.empty())
     {
-      store::PUL_t validationPul =
-      GET_STORE().getItemFactory()->createPendingUpdateList();
+      theValidationPul = GET_STORE().getItemFactory()->createPendingUpdateList();
       
-      thePul->theValidator->validate(theValidationNodes, *validationPul.getp());
+      thePul->theValidator->validate(theValidationNodes, *theValidationPul.getp());
 
       try
       {
-        validationPul->applyUpdates(false);
+        theValidationPul->applyUpdates(false);
       }
       catch (...)
       {
@@ -2233,6 +2232,12 @@ void CollectionPul::undoUpdates()
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
+
+    // Undo validation
+    if (theValidationPul)
+    {
+      undoList(static_cast<PULImpl *>(theValidationPul.getp())->theValidationList);
+    }
 
     // Undo text node merging
     std::vector<TextNodeMerge>::reverse_iterator rit = theMergeList.rbegin();
