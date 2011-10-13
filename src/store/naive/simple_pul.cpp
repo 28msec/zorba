@@ -1743,6 +1743,8 @@ void PULImpl::undoUpdates()
 {
   try
   {
+    undoList(theValidationList);
+
     CollectionPulMap::iterator collIte = theCollectionPuls.begin();
     CollectionPulMap::iterator collEnd = theCollectionPuls.end();
 
