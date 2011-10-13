@@ -31,7 +31,7 @@ class   Collator
 {
 };
 
-#endif
+#endif /* ZORBA_NO_UNICODE */
 
 class XQPCollator
 {

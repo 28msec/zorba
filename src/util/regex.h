@@ -40,7 +40,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
 
 ////////// classes ////////////////////////////////////////////////////////////
 
-
 namespace unicode {
 
 /**
@@ -493,7 +492,9 @@ private:
 } // namespace unicode
 } // namespace zorba
 
-#else ///ZORBA_NO_UNICODE (ascii part:)
+///////////////////////////////////////////////////////////////////////////////
+
+#else /* ZORBA_NO_UNICODE (ascii part:) */
 
 #include "util/regex_ascii.h"
 #include <string>

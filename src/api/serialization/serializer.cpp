@@ -217,7 +217,7 @@ int serializer::emitter::emit_expanded_string(
 
       continue;
     }
-#endif//ZORBA_NO_UNICODE
+#endif /* ZORBA_NO_UNICODE */
 
     // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
     if (ser && ser->method == PARAMETER_VALUE_XML &&
@@ -339,7 +339,7 @@ void serializer::emitter::emit_declaration()
       tr.verbatim((char)0xFF);
       tr.verbatim((char)0xFE);
     }
-#endif
+#endif /* ZORBA_NO_UNICODE */
   }
 }
 
@@ -798,7 +798,7 @@ void serializer::xml_emitter::emit_declaration()
 #ifndef ZORBA_NO_UNICODE
     } else if (ser->encoding == PARAMETER_VALUE_UTF_16) {
       tr << "UTF-16";
-#endif
+#endif /* ZORBA_NO_UNICODE */
     }
     tr << "\"";
 
@@ -1111,7 +1111,7 @@ void serializer::html_emitter::emit_node(
 #ifndef ZORBA_NO_UNICODE
       else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
-#endif
+#endif /* ZORBA_NO_UNICODE */
       tr << "\"";
       // closed_parent_tag = 1;
     }
@@ -1308,7 +1308,7 @@ void serializer::xhtml_emitter::emit_node(
 #ifndef ZORBA_NO_UNICODE
         else if (ser->encoding == PARAMETER_VALUE_UTF_16)
           tr << "UTF-16";
-#endif
+#endif /* ZORBA_NO_UNICODE */
         tr << "\"/";
         //closed_parent_tag = 1;
       }
@@ -2002,7 +2002,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
 #ifndef ZORBA_NO_UNICODE
     else if (!strcmp(aValue, "UTF-16"))
       encoding = PARAMETER_VALUE_UTF_16;
-#endif
+#endif /* ZORBA_NO_UNICODE */
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
@@ -2108,7 +2108,7 @@ bool serializer::setup(std::ostream& os)
   {
     tr = new transcoder(os, true);
   }
-#endif
+#endif /* ZORBA_NO_UNICODE */
   else
   {
     ZORBA_ASSERT(0);

@@ -201,13 +201,13 @@ void GlobalEnvironment::init_icu()
     udata_setCommonData(icu_appdata, &data_err);
     ZORBA_ASSERT(data_err == U_ZERO_ERROR);
   
-      //  u_setDataDirectory(self_path);
+    // u_setDataDirectory(self_path);
   }
 #  endif
   UErrorCode lICUInitStatus = U_ZERO_ERROR;
   u_init(&lICUInitStatus);
   ZORBA_ASSERT(lICUInitStatus == U_ZERO_ERROR);
-#endif//ifndef ZORBA_NO_UNICODE
+#endif /* ZORBA_NO_UNICODE */
 }
 
 
@@ -224,7 +224,7 @@ void GlobalEnvironment::cleanup_icu()
 # if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
   delete[] icu_appdata;
 # endif
-#endif//ifndef ZORBA_NO_UNICODE
+#endif /* ZORBA_NO_UNICODE */
 }
 
 

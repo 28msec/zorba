@@ -73,7 +73,7 @@ public:
     PARAMETER_VALUE_UTF_8
 #ifndef ZORBA_NO_UNICODE
     ,PARAMETER_VALUE_UTF_16
-#endif
+#endif /* ZORBA_NO_UNICODE */
   } PARAMETER_VALUE_TYPE;
 
 protected:

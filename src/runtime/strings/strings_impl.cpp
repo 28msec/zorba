@@ -607,7 +607,6 @@ bool NormalizeUnicodeIterator::nextImpl(
   zstring normForm;
   zstring resStr;
   unicode::normalization::type normType;
-  bool success;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -658,9 +657,8 @@ bool NormalizeUnicodeIterator::nextImpl(
 
     item0->getStringValue2(resStr);
 #ifndef ZORBA_NO_UNICODE
-    success = utf8::normalize(resStr, normType, &resStr);
-    ZORBA_ASSERT(success);
-#endif//#ifndef ZORBA_NO_UNICODE
+    ZORBA_ASSERT( utf8::normalize(resStr, normType, &resStr) );
+#endif /* ZORBA_NO_UNICODE */
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state );
   }
   else
