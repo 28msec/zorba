@@ -466,21 +466,24 @@ void UpdRenameElem::undo()
 void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
+  TextNode* textChild;
 
-  theOldTypeName=target->getType();
-  theOldHaveTypedValue=target->haveTypedValue();
+  theOldTypeName = target->getType();
+  theOldHaveTypedValue = target->haveTypedValue();
+  theOldHaveTypedTypedValue = target->haveTypedTypedValue(textChild);
+
   if (theOldHaveTypedValue)
-    theOldHaveEmptyTypedValue=target->haveEmptyTypedValue();
-  theOldIsInSubstitutionGroup=target->isInSubstitutionGroup();
+    theOldHaveEmptyTypedValue = target->haveEmptyTypedValue();
+
+  theOldIsInSubstitutionGroup = target->isInSubstitutionGroup();
 
   target->setType(theTypeName);
 
-  TextNode* textChild;
-  theOldHaveTypedTypedValue=target->haveTypedTypedValue(textChild);
   if (theOldHaveTypedTypedValue)
   {
-    theOldHaveListTypedValue= textChild->haveListValue();    
-    theOldTypedValue=textChild->getValue();
+    theOldHaveListTypedValue = textChild->haveListValue();    
+    theOldTypedValue = textChild->getValue();
+
     zstring textValue;
     textChild->getStringValue2(textValue);
 
@@ -504,6 +507,7 @@ void UpdSetElementType::apply()
       textChild = target->getUniqueTextChild();
 
       textChild->setTypedValue(theTypedValue);
+
       if (theHaveListTypedValue)
         textChild->setHaveListValue();
       else
@@ -520,8 +524,9 @@ void UpdSetElementType::apply()
   else
     target->resetInSubstGroup();
 
-  theIsApplied=true;
+  theIsApplied = true;
 }
+
 
 void UpdSetElementType::undo()
 {
@@ -551,6 +556,7 @@ void UpdSetElementType::undo()
         TextNode* textChild = target->getUniqueTextChild();
 
         textChild->setTypedValue(theOldTypedValue);
+
         if (theOldHaveListTypedValue)
           textChild->setHaveListValue();
         else
@@ -567,7 +573,7 @@ void UpdSetElementType::undo()
     else
       target->resetInSubstGroup();
 
-    theIsApplied=false;
+    theIsApplied = false;
   }
 }
 
@@ -629,9 +635,9 @@ void UpdSetAttributeType::apply()
 {
   AttributeNode* target = ATTR_NODE(theTarget);
 
-  theOldTypeName=target->getType();
+  theOldTypeName = target->getType();
   theOldTypedValue.transfer(target->theTypedValue);
-  theOldHaveListValue=target->haveListValue();
+  theOldHaveListValue = target->haveListValue();
 
   target->setType(theTypeName);
   target->theTypedValue.transfer(theTypedValue);
@@ -641,8 +647,9 @@ void UpdSetAttributeType::apply()
   else
     target->resetHaveListValue();
 
-  theIsApplied=true;
+  theIsApplied = true;
 }
+
 
 void UpdSetAttributeType::undo()
 {
@@ -657,9 +664,10 @@ void UpdSetAttributeType::undo()
     else
       target->resetHaveListValue();
 
-    theIsApplied=false;
+    theIsApplied = false;
   }
 }
+
 
 /*******************************************************************************
 
@@ -669,11 +677,15 @@ void UpdRevalidate::apply()
 #ifndef ZORBA_NO_XMLSCHEMA
   std::set<store::Item*> nodes;
 
-  theRevalidationPul=GET_STORE().getItemFactory()->createPendingUpdateList();
+  theRevalidationPul = GET_STORE().getItemFactory()->createPendingUpdateList();
+
   nodes.insert(theTarget.getp());
+
   if (!thePul->theValidator)
     return;
-  thePul->theValidator->validate(nodes,*theRevalidationPul.getp());
+
+  thePul->theValidator->validate(nodes, *theRevalidationPul.getp());
+
   try
   {
     theRevalidationPul->applyUpdates(false);
