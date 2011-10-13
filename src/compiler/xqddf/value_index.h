@@ -92,6 +92,10 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   Data members:
   -------------
 
+  theLocation:
+  ------------
+  The query location where the index declaration appears at.
+
   theSctx:
   --------
   The root static context of the data module containing the index declaration.
@@ -243,6 +247,8 @@ public:
 
 
 private:
+  QueryLoc                        theLocation;
+
   static_context                * theSctx;
 
   store::Item_t                   theName;

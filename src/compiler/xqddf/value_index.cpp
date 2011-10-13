@@ -36,6 +36,8 @@
 
 #include "store/api/item_factory.h"
 
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba
 {
@@ -52,6 +54,7 @@ IndexDecl::IndexDecl(
     const QueryLoc& loc,
     const store::Item_t& name)
   :
+  theLocation(loc),
   theSctx(sctx),
   theName(name),
   theIsGeneral(false),
@@ -210,7 +213,28 @@ const std::vector<xqtref_t>& IndexDecl::getKeyTypes() const
 ********************************************************************************/
 void IndexDecl::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 {
+  assert(!keyTypes.empty());
+
   theKeyTypes = keyTypes;
+
+  if (theIsGeneral && theIsUnique)
+  {
+    TypeManager* tm = theSctx->get_typemanager();
+
+    xqtref_t type = theKeyTypes[0];
+    xqtref_t ptype;
+
+    if (type != NULL)
+      ptype = TypeOps::prime_type(tm, *type);
+
+    if (ptype == NULL ||
+        TypeOps::is_equal(tm, *ptype, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
+        TypeOps::is_subtype(tm, *ptype, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    {
+      RAISE_ERROR(zerr::ZDST0025_INDEX_BAD_UNIQUE_PROPERTY, theLocation,
+      ERROR_PARAMS(theName->getStringValue()));
+    }
+  }
 }
 
 
@@ -269,7 +293,7 @@ void IndexDecl::analyze()
 
   std::vector<expr*> keySources;
 
-  ulong numKeys = (ulong)theKeyExprs.size();
+  csize numKeys = theKeyExprs.size();
 
   if (theIsGeneral && numKeys > 1)
   {
@@ -281,7 +305,7 @@ void IndexDecl::analyze()
   }
 
   // Check constraints on the key exprs
-  for (ulong i = 0; i < numKeys; ++i)
+  for (csize i = 0; i < numKeys; ++i)
   {
     analyzeExprInternal(theKeyExprs[i].getp(),
                         theSourceNames,
@@ -307,11 +331,9 @@ void IndexDecl::analyze()
     // theMaintenanceMode is initially set to REBUILD. If theMaintenanceMode
     // is not changed above (to DOC_MAP), then we throw an error because we
     // don't want to automatically rebuild the full index with every update. 
-		throw XQUERY_EXCEPTION(
-			zerr::ZDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
-			ERROR_PARAMS( theName->getStringValue() ),
-			ERROR_LOC( getDomainExpr()->get_loc() )
-		);
+    RAISE_ERROR(zerr::ZDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
+    getDomainExpr()->get_loc(),
+    ERROR_PARAMS(theName->getStringValue()));
   }
 }
 
@@ -342,11 +364,8 @@ void IndexDecl::analyzeExprInternal(
 
     if (!func->isDeterministic())
     {
-			throw XQUERY_EXCEPTION(
-				zerr::ZDST0028_INDEX_NOT_DETERMINISTIC,
-				ERROR_PARAMS( theName->getStringValue() ),
-				ERROR_LOC( e->get_loc() )
-			);
+			RAISE_ERROR(zerr::ZDST0028_INDEX_NOT_DETERMINISTIC, e->get_loc(),
+			ERROR_PARAMS(theName->getStringValue()));
     }
 
     if (func->isSource())
@@ -364,20 +383,14 @@ void IndexDecl::analyzeExprInternal(
         }
         else
         {
-					throw XQUERY_EXCEPTION(
-						zerr::ZDST0030_INDEX_NON_CONST_DATA_SOURCE,
-						ERROR_PARAMS( theName->getStringValue() ),
-						ERROR_LOC( e->get_loc() )
-					);
+					RAISE_ERROR(zerr::ZDST0030_INDEX_NON_CONST_DATA_SOURCE, e->get_loc(),
+          ERROR_PARAMS(theName->getStringValue()));
         }
       }
       else
       {
-				throw XQUERY_EXCEPTION(
-					zerr::ZDST0029_INDEX_INVALID_DATA_SOURCE,
-					ERROR_PARAMS( theName->getStringValue() ),
-					ERROR_LOC( e->get_loc() )
-				);
+        RAISE_ERROR(zerr::ZDST0029_INDEX_INVALID_DATA_SOURCE, e->get_loc(),
+        ERROR_PARAMS(theName->getStringValue()));
       }
     }
   }

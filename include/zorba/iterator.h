@@ -73,6 +73,8 @@ class ZORBA_DLL_PUBLIC Iterator : virtual public SmartObject
    * The purpose of this method is to release resources that were allocated
    * during open. After calling close(), neither close() nor next() may be
    * called again. However, the iterator may be re-opened (by calling open()).
+   *
+   * @throw  ZorbaException if an error occurs, or the Iterator has not been opened.
    */
   virtual void 
   close() = 0;

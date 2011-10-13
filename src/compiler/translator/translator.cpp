@@ -4158,13 +4158,13 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (theAnnotations)
   {
-    if ( ZANN_CONTAINS(zann_general_equality) ||
-         ZANN_CONTAINS(zann_general_range)) 
+    if (ZANN_CONTAINS(zann_general_equality) ||
+        ZANN_CONTAINS(zann_general_range)) 
     {
       index->setGeneral(true);
     }
-    if ( ZANN_CONTAINS(zann_general_range) ||
-         ZANN_CONTAINS(zann_value_range)) 
+    if (ZANN_CONTAINS(zann_general_range) ||
+        ZANN_CONTAINS(zann_value_range)) 
     {
       index->setMethod(IndexDecl::TREE);
     }
@@ -4177,6 +4177,7 @@ void* begin_visit(const AST_IndexDecl& v)
       index->setMaintenanceMode(IndexDecl::REBUILD);
     }
   }
+
   theAnnotations = NULL;
 
   theIndexDecl = index;

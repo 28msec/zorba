@@ -306,6 +306,7 @@ extern entry const dict_en[] = {
   { "ZDST0022", "\"$1\": index already imported into module \"$2\"" },
   { "ZDST0023", "\"$1\": index declaration not allowed in main module" },
   { "ZDST0024", "index multiple property values" },
+  { "ZDST0025", "\"$1\": index cannot be declared as unique" },
   { "ZDST0026", "index invalid property value" },
   { "ZDST0027", "\"$1\": index bad key type" },
   { "ZDST0028", "\"$1\": index not deterministic" },

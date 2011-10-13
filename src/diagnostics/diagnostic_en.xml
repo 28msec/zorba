@@ -2046,6 +2046,10 @@
       <value>index multiple property values</value>
     </diagnostic>
 
+    <diagnostic code="ZDST0025" name="INDEX_BAD_UNIQUE_PROPERTY">
+      <value>"$1": index cannot be declared as unique</value>
+    </diagnostic>
+
     <diagnostic code="ZDST0026" name="INDEX_INVALID_PROPERTY_VALUE">
       <value>index invalid property value</value>
     </diagnostic>

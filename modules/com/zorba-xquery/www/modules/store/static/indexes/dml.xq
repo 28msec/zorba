@@ -22,7 +22,7 @@ xquery version "3.0";
  :
  : <p>This module is part of <a href="../../html/xqddf.html">Zorba's XQuery Data
  : Definition Facility</a>. All the indexes managed by this module
- : have to be pre-declared in the prolog of a module. Please refer to the
+ : have to be pre-declared in the prolog of a library module. Please refer to the
  : <a href="../../html/data_lifecycle.html">general documentation</a>
  : for more information and examples.</p>
  :
@@ -35,7 +35,7 @@ xquery version "3.0";
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
  : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
- : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
+ : @author Zorba Team
  :
  : @project store/indexes/static
  :
@@ -46,33 +46,48 @@ declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+
 declare option ver:module-version "2.0";
 
 (:~
- : The probe function retrieves the domain nodes associated with a particular
- : search condition, which is presented as a single key tuple. This function 
- : is variadic and accepts a variable number of key arguments.
+ : The probe-index-point-value function retrieves the domain nodes associated
+ : by value equality with a particular search tuple. This function is variadic
+ : because the number of search keys comprising the search tuple is not fixed.
  : 
  : The first argument is the QName identifying the index to probe. The remaining 
- : arguments specify the search condition, which is given as a number of 
- : (optional) atomic items comprising a key tuple. The number of key tuples
- : given must be equal to the number of keys declared for the index.
+ : arguments specify the search condition, which is given as a number of search
+ : keys comprising a search tuple. Each search key is either an atomic item
+ : or the empty sequence. The number of search keys given must be equal to the
+ : number of keys declared for the index. 
  :
  : @param $name The QName of the index to probe
- : @param $key_i any number of key used to probe the index (i.e. the search condition).
+ : @param $key_i the search keys used to probe the index with. The i-th search
+ :        key corresponds to the i-th key expression in the index declaration.
  :
- : @return If the index contains an entry with the given key tuple,
- :   the associated domain nodes are
- : returned. Otherwise, the empty sequence is returned.
+ : @return the set of domain nodes for which the following xquery expression 
+ : returns true:
+ :
+ : $key1 eq $node/keyExpr1 and ... and $keyM eq $node/keyExprM
  :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
- : @error zerr:ZDDY0025 if the number of keys passed as arguments
- :    does not match the number of keys declared for the index.
+ : @error zerr:ZDDY0025 if the number of search keys passed as arguments is not
+ :        the same as the number of keys declared for the index.
+ : @error err:XPTY0004 if a search key is given that is not the empty sequence,
+ :        and whose type does not match the sequence type specified in the 
+ :        index declaration for the corresponding key expression.
  :)
 declare %ann:variadic function idml:probe-index-point-value(
   $name as xs:QName, 
   $key_i as xs:anyAtomicType?) as node()*  external; 
+
+
+(:~
+ : @param $name The QName of the index to probe
+ :)
+declare %ann:variadic function idml:probe-index-point-general(
+  $name as xs:QName, 
+  $key  as xs:anyAtomicType*) as node()*  external; 
 
 
 (:~
@@ -118,13 +133,31 @@ declare %ann:variadic function idml:probe-index-point-value(
  : @error zerr:ZDDY0025 if the number of rangespecs passed as arguments
  :    does not match the number of keys declared for the index.
  :)
-declare %ann:variadic function idml:probe-index-range-value($name as xs:QName, 
-  $rangeLowerBound1         as xs:anyAtomicType?,
-  $rangeUpperBound1         as xs:anyAtomicType?,
-  $rangeHaveLowerBound1     as xs:boolean,
-  $rangeHaveupperBound1     as xs:boolean,
-  $rangeLowerBoundIncluded1 as xs:boolean,
-  $rangeupperBoundIncluded1 as xs:boolean) as node()*  external;
+declare %ann:variadic function idml:probe-index-range-value(
+  $name                as xs:QName, 
+  $lowerBound1         as xs:anyAtomicType?,
+  $upperBound1         as xs:anyAtomicType?,
+  $haveLowerBound1     as xs:boolean,
+  $haveupperBound1     as xs:boolean,
+  $lowerBoundIncluded1 as xs:boolean,
+  $upperBoundIncluded1 as xs:boolean) as node()*  external;
+
+
+(:~
+ : @param $name The QName of the index to probe
+ :
+ : @error zerr:ZDDY0021 if the index with name $name is not declared.
+ : @error zerr:ZDDY0023 if the index with name $name does not exist.
+ :)
+declare %ann:variadic function idml:probe-index-range-general(
+  $name               as xs:QName, 
+  $lowerBound         as xs:anyAtomicType*,
+  $upperBound         as xs:anyAtomicType*,
+  $haveLowerBound     as xs:boolean,
+  $haveupperBound     as xs:boolean,
+  $lowerBoundIncluded as xs:boolean,
+  $upperBoundIncluded as xs:boolean) as node()*  external;
+
 
 (:~
  : The refresh-index function is an updating function which updates
@@ -136,6 +169,7 @@ declare %ann:variadic function idml:probe-index-range-value($name as xs:QName,
  : @return The result of the function is an empty XDM instance and a
  :         pending update list which, when applied, refreshes the contents
  :         of the index.that consists of a
+ :
  : @error zerr:ZDDY0021 if the index with name $name is not declared.
  : @error zerr:ZDDY0023 if the index with name $name does not exist.
  :)

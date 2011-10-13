@@ -341,6 +341,9 @@ public:
                            $key1      as anyAtomic?,
                            ...,
                            $keyN      as anyAtomic?) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
+  function.
 ********************************************************************************/
 class ProbeIndexPointValueIteratorState : public PlanIteratorState
 {
@@ -400,6 +403,9 @@ public:
                              $key1      as anyAtomic*,
                               ...,
                              $keyN      as anyAtomic*) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_DISTINCT_ASC
+  function.
 ********************************************************************************/
 class ProbeIndexPointGeneralIteratorState : public ProbeIndexPointValueIteratorState
 {
@@ -428,11 +434,12 @@ public:
 
   void serialize(::zorba::serialization::Archiver& ar);
 
+public:
   ProbeIndexPointGeneralIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& children);
-
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& children);
+  
   ~ProbeIndexPointGeneralIterator();
 
   void accept(PlanIterVisitor& v) const;
@@ -457,6 +464,9 @@ public:
                            $rangeNLowerBoundIncluded as boolean?,
                            $rangeNupperBoundIncluded as boolean?) as node()*
 
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
+  function.
+
   theQname    : the name of the index
   theIndex    : the index to probe
   theIterator : the index probe iterator
@@ -479,10 +489,9 @@ public:
 };
 
 
-class ProbeIndexRangeValueIterator 
-  :
-  public NaryBaseIterator<ProbeIndexRangeValueIterator,
-                          ProbeIndexRangeValueIteratorState>
+class ProbeIndexRangeValueIterator :
+public NaryBaseIterator<ProbeIndexRangeValueIterator,
+                        ProbeIndexRangeValueIteratorState>
 {
 protected:
   bool theCheckKeyType;
@@ -495,10 +504,11 @@ public:
 
   void serialize(::zorba::serialization::Archiver& ar);
 
+public:
   ProbeIndexRangeValueIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& children);
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& children);
 
   ~ProbeIndexRangeValueIterator();
 
@@ -550,10 +560,9 @@ public:
 };
 
 
-class ProbeIndexRangeGeneralIterator 
-  : 
-  public NaryBaseIterator<ProbeIndexRangeGeneralIterator, 
-                          ProbeIndexRangeGeneralIteratorState>
+class ProbeIndexRangeGeneralIterator : 
+public NaryBaseIterator<ProbeIndexRangeGeneralIterator, 
+                        ProbeIndexRangeGeneralIteratorState>
 {
 protected:
   bool theCheckKeyType;
@@ -566,11 +575,12 @@ public:
 
   void serialize(::zorba::serialization::Archiver& ar);
 
+public:
   ProbeIndexRangeGeneralIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& children);
-
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& children);
+  
   ~ProbeIndexRangeGeneralIterator();
 
   void accept(PlanIterVisitor& v) const;
