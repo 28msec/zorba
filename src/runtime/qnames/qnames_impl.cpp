@@ -314,7 +314,6 @@ bool NamespaceUriForPrefixIterator::nextImpl(
           found = true;
           break;
         }
-      }
     }
   }
 
