@@ -1386,7 +1386,7 @@ bool StructuralAnyUriItem::isSibling(const store::Item_t& aOther) const
         other->theNodeKind != store::StoreConsts::attributeNode &&
         theNodeKind != store::StoreConsts::attributeNode)
     {
-      OrdPath::RelativePosition2 pos = 
+      OrdPath::RelativePosition pos = 
       theOrdPath.getRelativePosition2(other->theOrdPath);
 
       return (pos == OrdPath::FOLLOWING_SIBLING ||

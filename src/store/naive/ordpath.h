@@ -34,9 +34,8 @@ class OrdPathStack;
 
 
 /*******************************************************************************
-
+  only exported for unit testing
 ********************************************************************************/
-// only exported for unit testing
 class ZORBA_DLL_PUBLIC OrdPath
 {
   friend class OrdPathStack;
@@ -48,20 +47,14 @@ public:
     ANCESTOR,
     SELF,
     DESCENDANT,
-    FOLLOWING
+    FOLLOWING,
+    PRECEDING_SIBLING,
+    FOLLOWING_SIBLING,
+    PARENT,
+    CHILD,
+    OTHER
   }
   RelativePosition;
-
-  typedef enum
-  {
-      PRECEDING_SIBLING,
-      FOLLOWING_SIBLING,
-      PARENT,
-      CHILD,
-      OTHER
-  }
-  RelativePosition2;
-
 
   typedef std::vector<int32_t> DeweyID;
 
@@ -192,7 +185,7 @@ public:
 
   RelativePosition getRelativePosition(const OrdPath& other) const;
 
-  RelativePosition2 getRelativePosition2(const OrdPath& other) const;
+  RelativePosition getRelativePosition2(const OrdPath& other) const;
 
   ulong getLevel() const;
 

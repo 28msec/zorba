@@ -618,7 +618,7 @@ OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) con
  Determine the position of the "other" ordpath relative to "this" ordpath.
  The result is one of: PRECEDING_SIBLING, FOLLOWING_SIBLING, PARENT, CHILD or OTHER
 ********************************************************************************/
-OrdPath::RelativePosition2 OrdPath::getRelativePosition2(const OrdPath& other) const
+OrdPath::RelativePosition OrdPath::getRelativePosition2(const OrdPath& other) const
 {
   int32_t dewey1[MAX_NUM_COMPS], dewey2[MAX_NUM_COMPS];
   ulong offsets1[MAX_NUM_COMPS], offsets2[MAX_NUM_COMPS];
