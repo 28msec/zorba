@@ -622,48 +622,62 @@ OrdPath::RelativePosition OrdPath::getRelativePosition2(const OrdPath& other) co
 {
   int32_t dewey1[MAX_NUM_COMPS], dewey2[MAX_NUM_COMPS];
   ulong offsets1[MAX_NUM_COMPS], offsets2[MAX_NUM_COMPS];
-  ulong numComps1 = 0,numComps2 = 0;
-  ulong bitLen1 = 0,bitLen2 = 0;
+  ulong numComps1 = 0, numComps2 = 0;
+  ulong bitLen1 = 0, bitLen2 = 0;
   bool thisFirst;
 
-  decompress(0,dewey1,offsets1,numComps1,bitLen1);
-  other.decompress(0,dewey2,offsets2,numComps2,bitLen2);
+  decompress(0, dewey1, offsets1, numComps1, bitLen1);
+  other.decompress(0, dewey2, offsets2, numComps2, bitLen2);
 
-  ulong curr=0; //curr will be the first non-shared component
-  if (numComps1<numComps2)
+  // curr will be the first non-shared component
+  ulong curr = 0;
+
+  if (numComps1 < numComps2)
   {
-    while (curr<numComps1 && dewey1[curr]==dewey2[curr])
+    while (curr < numComps1 && dewey1[curr] == dewey2[curr])
       ++curr;
   }
   else
   {
-    while (curr<numComps2 && dewey1[curr]==dewey2[curr])
+    while (curr < numComps2 && dewey1[curr] == dewey2[curr])
       ++curr;
-    //curr is the first non-shared component
-    if (curr==numComps1 && numComps1==numComps2)
+
+    if (curr == numComps1 && numComps1 == numComps2)
       return OTHER; //The two ordpaths are the same
   }
-  if (curr<numComps1 && curr<numComps2 && dewey1[curr]<dewey2[curr])
-    thisFirst=true;
-  else
-    thisFirst=false;
 
-  ulong extraLevels1=0, extraLevels2=0;
-  for (ulong i=curr;i<numComps1;++i)
+  if (curr < numComps1 && curr < numComps2 && dewey1[curr] < dewey2[curr])
+    thisFirst = true;
+  else
+    thisFirst = false;
+
+  ulong extraLevels1 = 0, extraLevels2 = 0;
+
+  for (ulong i = curr; i < numComps1; ++i)
+  {
     if (dewey1[i] % 2 == 1)
       ++extraLevels1;
+  }
 
-  for (ulong i=curr;i<numComps2;++i)
+  for (ulong i = curr; i < numComps2; ++i)
+  {
     if (dewey2[i] % 2 == 1)
       ++extraLevels2;
+  }
 
-  if (extraLevels1>1 || extraLevels2>1)
+  // extraLevels1/2 == 0 means that we exhausted ordpath1/2, i.e. one ordpath
+  // is a prefix of the other ordpath.
+
+  if (extraLevels1 > 1 || extraLevels2 > 1)
     return OTHER;
-  else if (extraLevels1==1 && extraLevels2==0)
+
+  else if (extraLevels1 == 1 && extraLevels2 == 0)
     return PARENT;
-  else if (extraLevels1==0 && extraLevels2==1)
+
+  else if (extraLevels1 == 0 && extraLevels2 == 1)
     return CHILD;
-  else if (extraLevels1==1 && extraLevels2==1)
+
+  else if (extraLevels1 == 1 && extraLevels2 == 1)
     return thisFirst ? FOLLOWING_SIBLING : PRECEDING_SIBLING;
 
   ZORBA_FATAL(0,"");//The last component of an OrdPath is odd.
@@ -1522,18 +1536,26 @@ zstring OrdPath::show() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 ulong OrdPath::getLevel() const
 {
   int32_t dewey[MAX_NUM_COMPS];
   ulong offsets[MAX_NUM_COMPS];
   ulong numComps = 0;
   ulong bitLen = 0;
-  decompress(0,dewey,offsets,numComps,bitLen);
 
-  ulong level=0;
-  for (ulong i=0;i<numComps;++i)
-    if (dewey[i] % 2==1)
+  decompress(0, dewey, offsets, numComps, bitLen);
+
+  ulong level = 0;
+
+  for (ulong i = 0; i < numComps; ++i)
+  {
+    if (dewey[i] % 2 == 1)
       ++level;
+  }
+
   return level;
 }
 
