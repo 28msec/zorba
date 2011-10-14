@@ -16,15 +16,20 @@ xquery version "1.0";
 :)
 
 (:~
- : This module allows to retrieve an xs:anyURI representation of a
- : node position. This module also defines function that determine: 
- : (1) the relationship between two nodes (e.g. if one is the ancestor
- : of another) and (2) properties of a node (e.g. its level in the tree)
- : given the corresponding nodes positions.
+ : This module provides a function (np:node-position) that given, a node, 
+ : returns positional information about the node in the form of an xs:anyURI
+ : item. The module also defines functions that use such positional information
+ : to determine: (1) structural relationships between two nodes (e.g. if one 
+ : is the ancestor of another) and (2) properties of a node (e.g. its level in 
+ : the tree).
+ :
+ : Within this module, the temp "node position" will be used to refer to an
+ : xs:anyURI item that is returned by the np:node-position function.
  :
  : @author Federico Cavalieri 
  :)
 module namespace np = "http://www.zorba-xquery.com/modules/node-position";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
