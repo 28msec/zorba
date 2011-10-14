@@ -502,7 +502,10 @@ protected:
   AnyUriItem() {}
 
 public:
-  virtual AnyUriTypeCode getAnyUriTypeCode() const {return NON_SPECIALIZED_ANY_URI;}
+  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  {
+    return NON_SPECIALIZED_ANY_URI;
+  }
 
   SchemaTypeCode getTypeCode() const { return XS_ANY_URI; }
 
@@ -605,6 +608,7 @@ public:
   inSameCollection(const store::Item_t&) const;
 };
 
+
 /*******************************************************************************
   class StructuralAnyUriItem
 ********************************************************************************/
@@ -613,17 +617,25 @@ class StructuralAnyUriItem : public AnyUriItem
   friend class BasicItemFactory;
 
 protected:
-  ulong theCollectionId;
-  ulong theTreeId;
+  ulong                        theCollectionId;
+  ulong                        theTreeId;
   store::StoreConsts::NodeKind theNodeKind;
-  OrdPath theOrdPath;
+  OrdPath                      theOrdPath;
 
 protected:
-  virtual AnyUriTypeCode getAnyUriTypeCode() const {return STRUCTURAL_INFORMATION_ANY_URI;}
+  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  {
+    return STRUCTURAL_INFORMATION_ANY_URI;
+  }
 
   StructuralAnyUriItem(zstring& value);
 
-  StructuralAnyUriItem(zstring& value, ulong collectionId, ulong treeId, store::StoreConsts::NodeKind nodeKind, const OrdPath& ordPath);
+  StructuralAnyUriItem(
+      zstring& value,
+      ulong collectionId,
+      ulong treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
 
   StructuralAnyUriItem() {}
 
@@ -694,6 +706,7 @@ public:
   bool
   inSameCollection(const store::Item_t&) const;
 };
+
 
 /*******************************************************************************
   class StringItem
