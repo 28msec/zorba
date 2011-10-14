@@ -137,7 +137,7 @@ INTEGER_IMPL& INTEGER_IMPL::operator=( Float const &f ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#ifndef ZORBA_WITH_BIG_INTEGER
+#ifdef ZORBA_WITH_BIG_INTEGER
 # define ZORBA_INSTANTIATE(OP) /* nothing */
 #else
 # define ZORBA_INSTANTIATE(OP)                                            \
