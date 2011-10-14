@@ -1390,79 +1390,12 @@ bool SimpleStore::getStructuralInformation(
   if (node->getNodeKind() == store::StoreConsts::textNode)
   {
     OrdPath ordPath;
-    InternalNode* parent = static_cast<InternalNode*>(node->getParent());
-    const TextNode* textChild = static_cast<const TextNode *>(node);
-
-    if (parent == NULL)
-    {
-      // The text node is the root
-      ordPath.setAsRoot();
-      ordPath.appendComp(1);
-    }
-    else
-    {
-      ZORBA_FATAL(parent->theOrdPath.isValid(),"Parent ordpath is invalid.");
-      ElementNode* elemParent = NULL;
-      csize pos = parent->findChild(textChild);
-      csize numChildren = parent->numChildren();
-      csize numAttrs = 0;
-
-      if (parent->getNodeKind() == store::StoreConsts::elementNode)
-      {
-        elemParent = reinterpret_cast<ElementNode*>(parent);
-        numAttrs =  elemParent->numAttrs();
-      }
-
-      if (numChildren == 1 && numAttrs == 0)
-      {
-        // Parent has no other children and no attributes
-        ordPath = parent->theOrdPath;
-        ordPath.appendComp(1);
-      }
-      else 
-      {
-        // Parent has either children or attributes
-
-        // The smallest Ordpath at the same level of the textNode which must
-        // be greater than the OrdPath of the textNode
-        const OrdPath* upperOrdPath = NULL;
-
-        // The biggest Ordpath at the same level of the textNode which must 
-        // be smaller than the OrdPath of the textNode
-        const OrdPath* lowerOrdPath = NULL; 
-
-        if (pos < numChildren-1) 
-        {
-          //There could be an upperOrdPath
-          upperOrdPath = parent->getFirstChildOrdPathAfter(pos);
-        }
-
-        if (pos > 0)
-        {
-          //There could be a lowerOrdPath in the children
-          lowerOrdPath = parent->getFirstChildOrdPathBefore(pos-1);
-        }
-
-        if (lowerOrdPath == NULL && numAttrs > 0) 
-        {
-          //There is a lowerOrdPath in the attributes
-          lowerOrdPath = &elemParent->getAttr(numAttrs-1)->theOrdPath;
-        }
-
-        if (upperOrdPath != NULL && lowerOrdPath != NULL)
-          OrdPath::insertInto(parent->theOrdPath, *lowerOrdPath, *upperOrdPath, ordPath);
-        else if (upperOrdPath == NULL && lowerOrdPath != NULL)
-          OrdPath::insertAfter(parent->theOrdPath, *lowerOrdPath, ordPath);
-        else if (upperOrdPath != NULL && lowerOrdPath == NULL)
-          OrdPath::insertBefore(parent->theOrdPath, *upperOrdPath, ordPath);
-        else
-          ZORBA_FATAL(0,"Adjacent text nodes.");
-      }
-    }
+    const TextNode* n = static_cast<const TextNode*>(node);
+    n->getOrdPath(ordPath);
 
     return theItemFactory->createStructuralAnyURI(result,
-                                                  textChild->getCollectionId(),
-                                                  textChild->getTreeId(),
+                                                  n->getCollectionId(),
+                                                  n->getTreeId(),
                                                   store::StoreConsts::textNode,
                                                   ordPath);
   }

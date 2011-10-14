@@ -580,7 +580,6 @@ class OrdPathNode : public XmlNode
   friend class TextNode;
   friend class PiNode;
   friend class CommentNode;
-  friend class SimpleStore;
 
 protected:
   OrdPath           theOrdPath;
@@ -1256,6 +1255,10 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
+
+#ifndef TEXT_ORDPATH
+  void getOrdPath(OrdPath& ordPath) const;
+#endif
 
   bool isTyped() const;
 
