@@ -303,51 +303,51 @@ namespace zorba{
 
     class FrexpIterator;
 
-    class NodeInformationIterator;
+    class NodePositionIterator;
 
-    class IsAncestorInformationIterator;
+    class IsAncestorPositionIterator;
 
-    class IsFollowingSiblingInformationIterator;
+    class IsFollowingSiblingPositionIterator;
 
-    class IsFollowingInformationIterator;
+    class IsFollowingPositionIterator;
 
-    class IsDescendantInformationIterator;
+    class IsDescendantPositionIterator;
 
-    class IsPrecedingSiblingInformationIterator;
+    class IsPrecedingSiblingPositionIterator;
 
-    class IsPrecedingInformationIterator;
+    class IsPrecedingPositionIterator;
 
-    class IsChildInformationIterator;
+    class IsChildPositionIterator;
 
-    class IsAttributeOfInformationIterator;
+    class IsAttributeOfPositionIterator;
 
-    class IsParentInformationIterator;
+    class IsParentPositionIterator;
 
-    class IsPrecedingInDocumentOrderInformationIterator;
+    class IsPrecedingInDocumentOrderPositionIterator;
 
-    class IsFollowingInDocumentOrderInformationIterator;
+    class IsFollowingInDocumentOrderPositionIterator;
 
-    class LevelInformationIterator;
+    class LevelPositionIterator;
 
-    class IsAttributeInformationIterator;
+    class IsAttributePositionIterator;
 
-    class IsCommentInformationIterator;
+    class IsCommentPositionIterator;
 
-    class IsDocumentInformationIterator;
+    class IsDocumentPositionIterator;
 
-    class IsElementInformationIterator;
+    class IsElementPositionIterator;
 
-    class IsProcessingInstructionInformationIterator;
+    class IsProcessingInstructionPositionIterator;
 
-    class IsTextInformationIterator;
+    class IsTextPositionIterator;
 
-    class IsSiblingInformationIterator;
+    class IsSiblingPositionIterator;
 
-    class InSameTreeInformationIterator;
+    class InSameTreePositionIterator;
 
-    class InCollectionInformationIterator;
+    class InCollectionPositionIterator;
 
-    class InSameCollectionInformationIterator;
+    class InSameCollectionPositionIterator;
 
     class NodeReferenceIterator;
 
@@ -1001,74 +1001,74 @@ public:
     virtual void beginVisit ( const FrexpIterator& ) = 0;
     virtual void endVisit   ( const FrexpIterator& ) = 0;
 
-    virtual void beginVisit ( const NodeInformationIterator& ) = 0;
-    virtual void endVisit   ( const NodeInformationIterator& ) = 0;
+    virtual void beginVisit ( const NodePositionIterator& ) = 0;
+    virtual void endVisit   ( const NodePositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsAncestorInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsAncestorInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsAncestorPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsAncestorPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsFollowingSiblingInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsFollowingSiblingInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsFollowingSiblingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingSiblingPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsFollowingInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsFollowingInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsFollowingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsDescendantInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsDescendantInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsDescendantPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsDescendantPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsPrecedingSiblingInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsPrecedingSiblingInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsPrecedingSiblingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingSiblingPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsPrecedingInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsPrecedingInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsPrecedingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsChildInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsChildInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsChildPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsChildPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsAttributeOfInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsAttributeOfInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsAttributeOfPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsAttributeOfPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsParentInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsParentInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsParentPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsParentPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsPrecedingInDocumentOrderInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsPrecedingInDocumentOrderInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsPrecedingInDocumentOrderPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsPrecedingInDocumentOrderPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsFollowingInDocumentOrderInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsFollowingInDocumentOrderInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsFollowingInDocumentOrderPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsFollowingInDocumentOrderPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const LevelInformationIterator& ) = 0;
-    virtual void endVisit   ( const LevelInformationIterator& ) = 0;
+    virtual void beginVisit ( const LevelPositionIterator& ) = 0;
+    virtual void endVisit   ( const LevelPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsAttributeInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsAttributeInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsAttributePositionIterator& ) = 0;
+    virtual void endVisit   ( const IsAttributePositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsCommentInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsCommentInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsCommentPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsCommentPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsDocumentInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsDocumentInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsDocumentPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsDocumentPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsElementInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsElementInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsElementPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsElementPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsProcessingInstructionInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsProcessingInstructionInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsProcessingInstructionPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsProcessingInstructionPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsTextInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsTextInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsTextPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsTextPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const IsSiblingInformationIterator& ) = 0;
-    virtual void endVisit   ( const IsSiblingInformationIterator& ) = 0;
+    virtual void beginVisit ( const IsSiblingPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsSiblingPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const InSameTreeInformationIterator& ) = 0;
-    virtual void endVisit   ( const InSameTreeInformationIterator& ) = 0;
+    virtual void beginVisit ( const InSameTreePositionIterator& ) = 0;
+    virtual void endVisit   ( const InSameTreePositionIterator& ) = 0;
 
-    virtual void beginVisit ( const InCollectionInformationIterator& ) = 0;
-    virtual void endVisit   ( const InCollectionInformationIterator& ) = 0;
+    virtual void beginVisit ( const InCollectionPositionIterator& ) = 0;
+    virtual void endVisit   ( const InCollectionPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const InSameCollectionInformationIterator& ) = 0;
-    virtual void endVisit   ( const InSameCollectionInformationIterator& ) = 0;
+    virtual void beginVisit ( const InSameCollectionPositionIterator& ) = 0;
+    virtual void endVisit   ( const InSameCollectionPositionIterator& ) = 0;
 
     virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeReferenceIterator& ) = 0;

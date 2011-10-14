@@ -24,9 +24,9 @@
                      define="ZORBA_NODEREF_FN_NS"
                      prefix="fn-zorba-ref"/>
     
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-information"
-                     define="ZORBA_NODEINFO_FN_NS"
-                     prefix="fn-zorba-info"/> 
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-position"
+                     define="ZORBA_NODEPOS_FN_NS"
+                     prefix="fn-zorba-pos"/> 
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema"
                      define="ZORBA_SCHEMA_FN_NS"

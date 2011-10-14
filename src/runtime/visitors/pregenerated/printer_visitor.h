@@ -457,74 +457,74 @@ namespace zorba {
     void beginVisit( const FrexpIterator& );
     void endVisit  ( const FrexpIterator& );
 
-    void beginVisit( const NodeInformationIterator& );
-    void endVisit  ( const NodeInformationIterator& );
+    void beginVisit( const NodePositionIterator& );
+    void endVisit  ( const NodePositionIterator& );
 
-    void beginVisit( const IsAncestorInformationIterator& );
-    void endVisit  ( const IsAncestorInformationIterator& );
+    void beginVisit( const IsAncestorPositionIterator& );
+    void endVisit  ( const IsAncestorPositionIterator& );
 
-    void beginVisit( const IsFollowingSiblingInformationIterator& );
-    void endVisit  ( const IsFollowingSiblingInformationIterator& );
+    void beginVisit( const IsFollowingSiblingPositionIterator& );
+    void endVisit  ( const IsFollowingSiblingPositionIterator& );
 
-    void beginVisit( const IsFollowingInformationIterator& );
-    void endVisit  ( const IsFollowingInformationIterator& );
+    void beginVisit( const IsFollowingPositionIterator& );
+    void endVisit  ( const IsFollowingPositionIterator& );
 
-    void beginVisit( const IsDescendantInformationIterator& );
-    void endVisit  ( const IsDescendantInformationIterator& );
+    void beginVisit( const IsDescendantPositionIterator& );
+    void endVisit  ( const IsDescendantPositionIterator& );
 
-    void beginVisit( const IsPrecedingSiblingInformationIterator& );
-    void endVisit  ( const IsPrecedingSiblingInformationIterator& );
+    void beginVisit( const IsPrecedingSiblingPositionIterator& );
+    void endVisit  ( const IsPrecedingSiblingPositionIterator& );
 
-    void beginVisit( const IsPrecedingInformationIterator& );
-    void endVisit  ( const IsPrecedingInformationIterator& );
+    void beginVisit( const IsPrecedingPositionIterator& );
+    void endVisit  ( const IsPrecedingPositionIterator& );
 
-    void beginVisit( const IsChildInformationIterator& );
-    void endVisit  ( const IsChildInformationIterator& );
+    void beginVisit( const IsChildPositionIterator& );
+    void endVisit  ( const IsChildPositionIterator& );
 
-    void beginVisit( const IsAttributeOfInformationIterator& );
-    void endVisit  ( const IsAttributeOfInformationIterator& );
+    void beginVisit( const IsAttributeOfPositionIterator& );
+    void endVisit  ( const IsAttributeOfPositionIterator& );
 
-    void beginVisit( const IsParentInformationIterator& );
-    void endVisit  ( const IsParentInformationIterator& );
+    void beginVisit( const IsParentPositionIterator& );
+    void endVisit  ( const IsParentPositionIterator& );
 
-    void beginVisit( const IsPrecedingInDocumentOrderInformationIterator& );
-    void endVisit  ( const IsPrecedingInDocumentOrderInformationIterator& );
+    void beginVisit( const IsPrecedingInDocumentOrderPositionIterator& );
+    void endVisit  ( const IsPrecedingInDocumentOrderPositionIterator& );
 
-    void beginVisit( const IsFollowingInDocumentOrderInformationIterator& );
-    void endVisit  ( const IsFollowingInDocumentOrderInformationIterator& );
+    void beginVisit( const IsFollowingInDocumentOrderPositionIterator& );
+    void endVisit  ( const IsFollowingInDocumentOrderPositionIterator& );
 
-    void beginVisit( const LevelInformationIterator& );
-    void endVisit  ( const LevelInformationIterator& );
+    void beginVisit( const LevelPositionIterator& );
+    void endVisit  ( const LevelPositionIterator& );
 
-    void beginVisit( const IsAttributeInformationIterator& );
-    void endVisit  ( const IsAttributeInformationIterator& );
+    void beginVisit( const IsAttributePositionIterator& );
+    void endVisit  ( const IsAttributePositionIterator& );
 
-    void beginVisit( const IsCommentInformationIterator& );
-    void endVisit  ( const IsCommentInformationIterator& );
+    void beginVisit( const IsCommentPositionIterator& );
+    void endVisit  ( const IsCommentPositionIterator& );
 
-    void beginVisit( const IsDocumentInformationIterator& );
-    void endVisit  ( const IsDocumentInformationIterator& );
+    void beginVisit( const IsDocumentPositionIterator& );
+    void endVisit  ( const IsDocumentPositionIterator& );
 
-    void beginVisit( const IsElementInformationIterator& );
-    void endVisit  ( const IsElementInformationIterator& );
+    void beginVisit( const IsElementPositionIterator& );
+    void endVisit  ( const IsElementPositionIterator& );
 
-    void beginVisit( const IsProcessingInstructionInformationIterator& );
-    void endVisit  ( const IsProcessingInstructionInformationIterator& );
+    void beginVisit( const IsProcessingInstructionPositionIterator& );
+    void endVisit  ( const IsProcessingInstructionPositionIterator& );
 
-    void beginVisit( const IsTextInformationIterator& );
-    void endVisit  ( const IsTextInformationIterator& );
+    void beginVisit( const IsTextPositionIterator& );
+    void endVisit  ( const IsTextPositionIterator& );
 
-    void beginVisit( const IsSiblingInformationIterator& );
-    void endVisit  ( const IsSiblingInformationIterator& );
+    void beginVisit( const IsSiblingPositionIterator& );
+    void endVisit  ( const IsSiblingPositionIterator& );
 
-    void beginVisit( const InSameTreeInformationIterator& );
-    void endVisit  ( const InSameTreeInformationIterator& );
+    void beginVisit( const InSameTreePositionIterator& );
+    void endVisit  ( const InSameTreePositionIterator& );
 
-    void beginVisit( const InCollectionInformationIterator& );
-    void endVisit  ( const InCollectionInformationIterator& );
+    void beginVisit( const InCollectionPositionIterator& );
+    void endVisit  ( const InCollectionPositionIterator& );
 
-    void beginVisit( const InSameCollectionInformationIterator& );
-    void endVisit  ( const InSameCollectionInformationIterator& );
+    void beginVisit( const InSameCollectionPositionIterator& );
+    void endVisit  ( const InSameCollectionPositionIterator& );
 
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );

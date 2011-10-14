@@ -24,7 +24,7 @@ xquery version "1.0";
  :
  : @author Federico Cavalieri 
  :)
-module namespace ni = "http://www.zorba-xquery.com/modules/node-information";
+module namespace np = "http://www.zorba-xquery.com/modules/node-position";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -43,7 +43,7 @@ declare option ver:module-version "2.0";
  :
  : @return the opaque structural information URI of the node.
  :)
-declare function ni:node-information(
+declare function np:node-position(
   $arg as node()
 ) as xs:anyURI external;
 
@@ -60,9 +60,9 @@ declare function ni:node-information(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function. 
+ : information computed by the <tt>np:node-position</tt> function. 
  :)
-declare function ni:ancestor-of(
+declare function np:ancestor-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -79,9 +79,9 @@ declare function ni:ancestor-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:descendant-of(
+declare function np:descendant-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -98,9 +98,9 @@ declare function ni:descendant-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:parent-of(
+declare function np:parent-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -117,9 +117,9 @@ declare function ni:parent-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:child-of(
+declare function np:child-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -136,9 +136,9 @@ declare function ni:child-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:attribute-of(
+declare function np:attribute-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -155,9 +155,9 @@ declare function ni:attribute-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:following-sibling-of(
+declare function np:following-sibling-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -174,9 +174,9 @@ declare function ni:following-sibling-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:preceding-sibling-of(
+declare function np:preceding-sibling-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -193,9 +193,9 @@ declare function ni:preceding-sibling-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:following-of(
+declare function np:following-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -213,9 +213,9 @@ declare function ni:following-of(
  : is $s-info1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:following-in-document-order-of(
+declare function np:following-in-document-order-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -233,9 +233,9 @@ declare function ni:following-in-document-order-of(
  : false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:preceding-of(
+declare function np:preceding-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -252,9 +252,9 @@ declare function ni:preceding-of(
  : is $s-info1; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:preceding-in-document-order-of(
+declare function np:preceding-in-document-order-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -272,9 +272,9 @@ declare function ni:preceding-in-document-order-of(
  : structural information is $s-info.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:level(
+declare function np:level(
   $s-info as xs:anyURI) as xs:integer external;  
 
 (:~
@@ -287,9 +287,9 @@ declare function ni:level(
  : and $s-info2 are siblings; false otherwise.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)  
-declare function ni:sibling-of(
+declare function np:sibling-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
   
@@ -302,9 +302,9 @@ declare function ni:sibling-of(
  : is an attribute; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:is-attribute(
+declare function np:is-attribute(
   $s-info1 as xs:anyURI) as xs:boolean external;
 
 (:~
@@ -316,9 +316,9 @@ declare function ni:is-attribute(
  : is a comment; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:is-comment(
+declare function np:is-comment(
   $s-info1 as xs:anyURI) as xs:boolean external;
   
   (:~
@@ -330,9 +330,9 @@ declare function ni:is-comment(
  : is a document; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:is-document(
+declare function np:is-document(
   $s-info1 as xs:anyURI) as xs:boolean external;
   
   (:~
@@ -344,9 +344,9 @@ declare function ni:is-document(
  : is an element; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:is-element(
+declare function np:is-element(
   $s-info1 as xs:anyURI) as xs:boolean external;
   
   (:~
@@ -358,9 +358,9 @@ declare function ni:is-element(
  : is a processing-instruction; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:is-processing-instruction(
+declare function np:is-processing-instruction(
   $s-info1 as xs:anyURI) as xs:boolean external;
   
   (:~
@@ -372,9 +372,9 @@ declare function ni:is-processing-instruction(
  : is a text node; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:is-text(
+declare function np:is-text(
   $s-info1 as xs:anyURI) as xs:boolean external;
 
 (:~
@@ -388,9 +388,9 @@ declare function ni:is-text(
  : and $s-info2 belong to the same tree.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)  
-declare function ni:in-same-tree-of(
+declare function np:in-same-tree-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;
 
@@ -404,9 +404,9 @@ declare function ni:in-same-tree-of(
  : is in a collection; false otherwise.
  :
  : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)
-declare function ni:in-collection(
+declare function np:in-collection(
   $s-info as xs:anyURI) as xs:boolean external;
 
 (:~
@@ -420,8 +420,8 @@ declare function ni:in-collection(
  : and $s-info2 belong to the same collection.
  :
  : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>ni:node-information</tt> function.
+ : information computed by the <tt>np:node-position</tt> function.
  :)  
-declare function ni:in-same-collection-of(
+declare function np:in-same-collection-of(
   $s-info1 as xs:anyURI,
   $s-info2 as xs:anyURI) as xs:boolean external;

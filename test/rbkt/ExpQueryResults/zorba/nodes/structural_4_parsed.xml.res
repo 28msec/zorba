@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<result><test1>OK: ref:50</test1><test2>OK: ref:5a</test2><test3>OK: ref:5c80</test3><test4>OK: ref:5c80</test4><test5>OK: ref:5d80</test5><test6>OK: ref:5a</test6><test7>OK: ref:5c80</test7><test8>OK: ref:5c80</test8><test9>OK: ref:5d80</test9><test10>OK: ref:5880</test10><test11>OK: ref:5c20</test11><test12>OK: ref:5c20</test12><test13>OK: ref:5d20</test13></result>

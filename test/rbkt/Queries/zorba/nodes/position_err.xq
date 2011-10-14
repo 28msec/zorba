@@ -1,9 +1,9 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-information";
+import module namespace np = "http://www.zorba-xquery.com/modules/node-position";
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 try
 {
-ref:ancestor-of(xs:anyURI("not a uri"),xs:anyURI("not a uri"))
+np:ancestor-of(xs:anyURI("not a uri"),xs:anyURI("not a uri"))
 }
 catch * 
 {

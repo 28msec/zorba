@@ -51,7 +51,7 @@
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/introspection/sctx.h"
 #include "runtime/maths/maths.h"
-#include "runtime/nodes/node_information.h"
+#include "runtime/nodes/node_position.h"
 #include "runtime/nodes/nodes.h"
 #include "runtime/numerics/numerics.h"
 #include "runtime/parsing_and_serializing/parse_fragment.h"
@@ -2014,326 +2014,326 @@ void PrinterVisitor::endVisit ( const FrexpIterator& ) {
 // </FrexpIterator>
 
 
-// <NodeInformationIterator>
-void PrinterVisitor::beginVisit ( const NodeInformationIterator& a) {
-  thePrinter.startBeginVisit("NodeInformationIterator", ++theId);
+// <NodePositionIterator>
+void PrinterVisitor::beginVisit ( const NodePositionIterator& a) {
+  thePrinter.startBeginVisit("NodePositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const NodeInformationIterator& ) {
+void PrinterVisitor::endVisit ( const NodePositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </NodeInformationIterator>
+// </NodePositionIterator>
 
 
-// <IsAncestorInformationIterator>
-void PrinterVisitor::beginVisit ( const IsAncestorInformationIterator& a) {
-  thePrinter.startBeginVisit("IsAncestorInformationIterator", ++theId);
+// <IsAncestorPositionIterator>
+void PrinterVisitor::beginVisit ( const IsAncestorPositionIterator& a) {
+  thePrinter.startBeginVisit("IsAncestorPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsAncestorInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsAncestorPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsAncestorInformationIterator>
+// </IsAncestorPositionIterator>
 
 
-// <IsFollowingSiblingInformationIterator>
-void PrinterVisitor::beginVisit ( const IsFollowingSiblingInformationIterator& a) {
-  thePrinter.startBeginVisit("IsFollowingSiblingInformationIterator", ++theId);
+// <IsFollowingSiblingPositionIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingSiblingPositionIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingSiblingPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsFollowingSiblingInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsFollowingSiblingPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsFollowingSiblingInformationIterator>
+// </IsFollowingSiblingPositionIterator>
 
 
-// <IsFollowingInformationIterator>
-void PrinterVisitor::beginVisit ( const IsFollowingInformationIterator& a) {
-  thePrinter.startBeginVisit("IsFollowingInformationIterator", ++theId);
+// <IsFollowingPositionIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingPositionIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsFollowingInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsFollowingPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsFollowingInformationIterator>
+// </IsFollowingPositionIterator>
 
 
-// <IsDescendantInformationIterator>
-void PrinterVisitor::beginVisit ( const IsDescendantInformationIterator& a) {
-  thePrinter.startBeginVisit("IsDescendantInformationIterator", ++theId);
+// <IsDescendantPositionIterator>
+void PrinterVisitor::beginVisit ( const IsDescendantPositionIterator& a) {
+  thePrinter.startBeginVisit("IsDescendantPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsDescendantInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsDescendantPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsDescendantInformationIterator>
+// </IsDescendantPositionIterator>
 
 
-// <IsPrecedingSiblingInformationIterator>
-void PrinterVisitor::beginVisit ( const IsPrecedingSiblingInformationIterator& a) {
-  thePrinter.startBeginVisit("IsPrecedingSiblingInformationIterator", ++theId);
+// <IsPrecedingSiblingPositionIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingSiblingPositionIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingSiblingPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsPrecedingSiblingInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsPrecedingSiblingPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsPrecedingSiblingInformationIterator>
+// </IsPrecedingSiblingPositionIterator>
 
 
-// <IsPrecedingInformationIterator>
-void PrinterVisitor::beginVisit ( const IsPrecedingInformationIterator& a) {
-  thePrinter.startBeginVisit("IsPrecedingInformationIterator", ++theId);
+// <IsPrecedingPositionIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingPositionIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsPrecedingInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsPrecedingPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsPrecedingInformationIterator>
+// </IsPrecedingPositionIterator>
 
 
-// <IsChildInformationIterator>
-void PrinterVisitor::beginVisit ( const IsChildInformationIterator& a) {
-  thePrinter.startBeginVisit("IsChildInformationIterator", ++theId);
+// <IsChildPositionIterator>
+void PrinterVisitor::beginVisit ( const IsChildPositionIterator& a) {
+  thePrinter.startBeginVisit("IsChildPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsChildInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsChildPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsChildInformationIterator>
+// </IsChildPositionIterator>
 
 
-// <IsAttributeOfInformationIterator>
-void PrinterVisitor::beginVisit ( const IsAttributeOfInformationIterator& a) {
-  thePrinter.startBeginVisit("IsAttributeOfInformationIterator", ++theId);
+// <IsAttributeOfPositionIterator>
+void PrinterVisitor::beginVisit ( const IsAttributeOfPositionIterator& a) {
+  thePrinter.startBeginVisit("IsAttributeOfPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsAttributeOfInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsAttributeOfPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsAttributeOfInformationIterator>
+// </IsAttributeOfPositionIterator>
 
 
-// <IsParentInformationIterator>
-void PrinterVisitor::beginVisit ( const IsParentInformationIterator& a) {
-  thePrinter.startBeginVisit("IsParentInformationIterator", ++theId);
+// <IsParentPositionIterator>
+void PrinterVisitor::beginVisit ( const IsParentPositionIterator& a) {
+  thePrinter.startBeginVisit("IsParentPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsParentInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsParentPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsParentInformationIterator>
+// </IsParentPositionIterator>
 
 
-// <IsPrecedingInDocumentOrderInformationIterator>
-void PrinterVisitor::beginVisit ( const IsPrecedingInDocumentOrderInformationIterator& a) {
-  thePrinter.startBeginVisit("IsPrecedingInDocumentOrderInformationIterator", ++theId);
+// <IsPrecedingInDocumentOrderPositionIterator>
+void PrinterVisitor::beginVisit ( const IsPrecedingInDocumentOrderPositionIterator& a) {
+  thePrinter.startBeginVisit("IsPrecedingInDocumentOrderPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsPrecedingInDocumentOrderInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsPrecedingInDocumentOrderPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsPrecedingInDocumentOrderInformationIterator>
+// </IsPrecedingInDocumentOrderPositionIterator>
 
 
-// <IsFollowingInDocumentOrderInformationIterator>
-void PrinterVisitor::beginVisit ( const IsFollowingInDocumentOrderInformationIterator& a) {
-  thePrinter.startBeginVisit("IsFollowingInDocumentOrderInformationIterator", ++theId);
+// <IsFollowingInDocumentOrderPositionIterator>
+void PrinterVisitor::beginVisit ( const IsFollowingInDocumentOrderPositionIterator& a) {
+  thePrinter.startBeginVisit("IsFollowingInDocumentOrderPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsFollowingInDocumentOrderInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsFollowingInDocumentOrderPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsFollowingInDocumentOrderInformationIterator>
+// </IsFollowingInDocumentOrderPositionIterator>
 
 
-// <LevelInformationIterator>
-void PrinterVisitor::beginVisit ( const LevelInformationIterator& a) {
-  thePrinter.startBeginVisit("LevelInformationIterator", ++theId);
+// <LevelPositionIterator>
+void PrinterVisitor::beginVisit ( const LevelPositionIterator& a) {
+  thePrinter.startBeginVisit("LevelPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const LevelInformationIterator& ) {
+void PrinterVisitor::endVisit ( const LevelPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </LevelInformationIterator>
+// </LevelPositionIterator>
 
 
-// <IsAttributeInformationIterator>
-void PrinterVisitor::beginVisit ( const IsAttributeInformationIterator& a) {
-  thePrinter.startBeginVisit("IsAttributeInformationIterator", ++theId);
+// <IsAttributePositionIterator>
+void PrinterVisitor::beginVisit ( const IsAttributePositionIterator& a) {
+  thePrinter.startBeginVisit("IsAttributePositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsAttributeInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsAttributePositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsAttributeInformationIterator>
+// </IsAttributePositionIterator>
 
 
-// <IsCommentInformationIterator>
-void PrinterVisitor::beginVisit ( const IsCommentInformationIterator& a) {
-  thePrinter.startBeginVisit("IsCommentInformationIterator", ++theId);
+// <IsCommentPositionIterator>
+void PrinterVisitor::beginVisit ( const IsCommentPositionIterator& a) {
+  thePrinter.startBeginVisit("IsCommentPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsCommentInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsCommentPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsCommentInformationIterator>
+// </IsCommentPositionIterator>
 
 
-// <IsDocumentInformationIterator>
-void PrinterVisitor::beginVisit ( const IsDocumentInformationIterator& a) {
-  thePrinter.startBeginVisit("IsDocumentInformationIterator", ++theId);
+// <IsDocumentPositionIterator>
+void PrinterVisitor::beginVisit ( const IsDocumentPositionIterator& a) {
+  thePrinter.startBeginVisit("IsDocumentPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsDocumentInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsDocumentPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsDocumentInformationIterator>
+// </IsDocumentPositionIterator>
 
 
-// <IsElementInformationIterator>
-void PrinterVisitor::beginVisit ( const IsElementInformationIterator& a) {
-  thePrinter.startBeginVisit("IsElementInformationIterator", ++theId);
+// <IsElementPositionIterator>
+void PrinterVisitor::beginVisit ( const IsElementPositionIterator& a) {
+  thePrinter.startBeginVisit("IsElementPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsElementInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsElementPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsElementInformationIterator>
+// </IsElementPositionIterator>
 
 
-// <IsProcessingInstructionInformationIterator>
-void PrinterVisitor::beginVisit ( const IsProcessingInstructionInformationIterator& a) {
-  thePrinter.startBeginVisit("IsProcessingInstructionInformationIterator", ++theId);
+// <IsProcessingInstructionPositionIterator>
+void PrinterVisitor::beginVisit ( const IsProcessingInstructionPositionIterator& a) {
+  thePrinter.startBeginVisit("IsProcessingInstructionPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsProcessingInstructionInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsProcessingInstructionPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsProcessingInstructionInformationIterator>
+// </IsProcessingInstructionPositionIterator>
 
 
-// <IsTextInformationIterator>
-void PrinterVisitor::beginVisit ( const IsTextInformationIterator& a) {
-  thePrinter.startBeginVisit("IsTextInformationIterator", ++theId);
+// <IsTextPositionIterator>
+void PrinterVisitor::beginVisit ( const IsTextPositionIterator& a) {
+  thePrinter.startBeginVisit("IsTextPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsTextInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsTextPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsTextInformationIterator>
+// </IsTextPositionIterator>
 
 
-// <IsSiblingInformationIterator>
-void PrinterVisitor::beginVisit ( const IsSiblingInformationIterator& a) {
-  thePrinter.startBeginVisit("IsSiblingInformationIterator", ++theId);
+// <IsSiblingPositionIterator>
+void PrinterVisitor::beginVisit ( const IsSiblingPositionIterator& a) {
+  thePrinter.startBeginVisit("IsSiblingPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IsSiblingInformationIterator& ) {
+void PrinterVisitor::endVisit ( const IsSiblingPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IsSiblingInformationIterator>
+// </IsSiblingPositionIterator>
 
 
-// <InSameTreeInformationIterator>
-void PrinterVisitor::beginVisit ( const InSameTreeInformationIterator& a) {
-  thePrinter.startBeginVisit("InSameTreeInformationIterator", ++theId);
+// <InSameTreePositionIterator>
+void PrinterVisitor::beginVisit ( const InSameTreePositionIterator& a) {
+  thePrinter.startBeginVisit("InSameTreePositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const InSameTreeInformationIterator& ) {
+void PrinterVisitor::endVisit ( const InSameTreePositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </InSameTreeInformationIterator>
+// </InSameTreePositionIterator>
 
 
-// <InCollectionInformationIterator>
-void PrinterVisitor::beginVisit ( const InCollectionInformationIterator& a) {
-  thePrinter.startBeginVisit("InCollectionInformationIterator", ++theId);
+// <InCollectionPositionIterator>
+void PrinterVisitor::beginVisit ( const InCollectionPositionIterator& a) {
+  thePrinter.startBeginVisit("InCollectionPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const InCollectionInformationIterator& ) {
+void PrinterVisitor::endVisit ( const InCollectionPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </InCollectionInformationIterator>
+// </InCollectionPositionIterator>
 
 
-// <InSameCollectionInformationIterator>
-void PrinterVisitor::beginVisit ( const InSameCollectionInformationIterator& a) {
-  thePrinter.startBeginVisit("InSameCollectionInformationIterator", ++theId);
+// <InSameCollectionPositionIterator>
+void PrinterVisitor::beginVisit ( const InSameCollectionPositionIterator& a) {
+  thePrinter.startBeginVisit("InSameCollectionPositionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const InSameCollectionInformationIterator& ) {
+void PrinterVisitor::endVisit ( const InSameCollectionPositionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </InSameCollectionInformationIterator>
+// </InSameCollectionPositionIterator>
 
 
 // <NodeReferenceIterator>
