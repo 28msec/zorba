@@ -1,0 +1,3 @@
+module namespace idd= "http://www.zorba-xquery.com/reference";
+
+declare variable $idd:node:=<root>reference.xqlib</root>;

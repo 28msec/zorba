@@ -1,0 +1,23 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.zorba-xquery.org/schema" xmlns="http://www.zorba-xquery.org/schema"
+    elementFormDefault="qualified">
+
+  <xs:element name="items-a" type="ItemsType-A"/>
+  <xs:complexType name="ItemsType-A">
+    <xs:sequence>
+      <xs:element ref="number-a"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="number-a" type="xs:integer"/>
+ 
+  <xs:element name="number" type="xs:positiveInteger" substitutionGroup="number-a"/>
+  
+  <xs:element name="items-b" type="ItemsType-B"/>
+  <xs:complexType name="ItemsType-B">
+    <xs:sequence>
+      <xs:element name="number" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

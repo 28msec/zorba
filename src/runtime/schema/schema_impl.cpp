@@ -84,27 +84,25 @@ ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 ZorbaValidateInPlaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t item;
+  store::Item_t node;
 
   PlanIteratorState *state;
   std::auto_ptr<store::PUL> pul;
-  std::set<store::Item*> nodes;
-  SchemaValidatorImpl validator(loc, theSctx);
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-      
-  if (consumeNext(item, theChild.getp(), planState))
+
+  if (consumeNext(node, theChild.getp(), planState))
   {
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-    nodes.insert(item.getp());
-    
-    validator.validate(nodes, *pul);    
+    pul->addRevalidate(&loc,node);
+
     result = pul.release();
     STACK_PUSH(true, state);
   }
 
   STACK_END (state);
+
 }
 
 

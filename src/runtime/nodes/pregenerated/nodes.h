@@ -34,10 +34,10 @@
 namespace zorba {
 
 /**
- * 
- *  Iterator to implement the zorba:node-reference function.
- *  
- * Author: Zorba Team
+ *        
+ *      declare function ref:node-reference($node as node()) as xs:anyURI
+ *    
+ * Author: Federico Cavalieri
  */
 class NodeReferenceIterator : public NaryBaseIterator<NodeReferenceIterator, PlanIteratorState>
 { 
@@ -71,9 +71,9 @@ public:
 
 /**
  * 
- *      Iterator to implement the zorba:node-by-reference function.
+ *      declare function ref:node-by-reference($reference as xs:anyURI) as node()?
  *    
- * Author: Zorba Team
+ * Author: Federico Cavalieri
  */
 class NodeByReferenceIterator : public NaryBaseIterator<NodeByReferenceIterator, PlanIteratorState>
 { 
