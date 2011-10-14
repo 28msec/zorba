@@ -331,6 +331,8 @@ public:
 
   store::Iterator_t checkDistinctNodes(store::Iterator* input);
 
+  bool getStructuralInformation(store::Item_t& result, const store::Item* node);
+
   bool getPathInfo(
         const store::Item* docUri,
         std::vector<const store::Item*>& contextPath,
@@ -350,8 +352,6 @@ public:
   bool unregisterNode(XmlNode* node);
 
   /* ------------------------ Temp Sequence Management ---------------------------*/
-
-  bool getStructuralInformation(store::Item_t& result, const store::Item* node);
 
   store::TempSeq_t createTempSeq(bool lazy);
 
