@@ -1286,7 +1286,7 @@ void PULImpl::mergeUpdateList(
     if (listKind == UP_LIST_CREATE_COLLECTION) 
     {
       UpdCreateCollection* otherUpd = static_cast<UpdCreateCollection*>(otherList[i]);
-      for (csize j = 0; j < myList.size(); ++j) 
+      for (csize j = 0; j < numUpdates; ++j) 
       {
         if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) 
         {
@@ -1305,7 +1305,7 @@ void PULImpl::mergeUpdateList(
     else if (listKind == UP_LIST_CREATE_INDEX) 
     {
       UpdCreateIndex* otherUpd = static_cast<UpdCreateIndex*>(otherList[i]);
-      for (csize j = 0; j < myList.size(); ++j) 
+      for (csize j = 0; j < numUpdates; ++j) 
       {
         if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_INDEX) 
         {
