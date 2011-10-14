@@ -1109,7 +1109,8 @@ bool StructuralAnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri,lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isFollowingSibling(lOtherUri);
   }
   else
@@ -1134,7 +1135,8 @@ bool StructuralAnyUriItem::isFollowing(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isFollowing(lOtherUri);
   }
   else
@@ -1157,7 +1159,8 @@ bool StructuralAnyUriItem::isDescendant(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isDescendant(lOtherUri);
   }
   else
@@ -1179,7 +1182,8 @@ bool StructuralAnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isPrecedingSibling(lOtherUri);
   }
   else
@@ -1203,7 +1207,8 @@ bool StructuralAnyUriItem::isPreceding(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isPreceding(lOtherUri);
   }
   else
@@ -1225,7 +1230,8 @@ bool StructuralAnyUriItem::isChild(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isChild(lOtherUri);
   }
   else
@@ -1248,7 +1254,8 @@ bool StructuralAnyUriItem::isAttribute(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isAttribute(lOtherUri);
   }
   else
@@ -1271,7 +1278,8 @@ bool StructuralAnyUriItem::isParent(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isParent(lOtherUri);
   }
   else
@@ -1291,7 +1299,8 @@ bool StructuralAnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOthe
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isPrecedingInDocumentOrder(lOtherUri);
   }
   else
@@ -1311,7 +1320,8 @@ bool StructuralAnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOthe
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isFollowingInDocumentOrder(lOtherUri);
   }
   else
@@ -1375,7 +1385,8 @@ bool StructuralAnyUriItem::isSibling(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isSibling(lOtherUri);
   }
   else
@@ -1407,7 +1418,8 @@ bool StructuralAnyUriItem::inSameTree(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return inSameTree(lOtherUri);
   }
   else
@@ -1430,7 +1442,8 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
   if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
   {
     store::Item_t lOtherUri;
-    GET_FACTORY().createStructuralAnyURI(lOtherUri, lOtherUriP->theValue.c_str());
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return inSameCollection(lOtherUri);
   }
   else
