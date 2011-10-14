@@ -23,7 +23,7 @@ xquery version "1.0";
  : is the ancestor of another) and (2) properties of a node (e.g. its level in 
  : the tree).
  :
- : Within this module, the temp "node position" will be used to refer to an
+ : Within this module, the term "node position" will be used to refer to an
  : xs:anyURI item that is returned by the np:node-position function.
  :
  : @author Federico Cavalieri 
