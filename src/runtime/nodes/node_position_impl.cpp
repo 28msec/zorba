@@ -36,12 +36,14 @@ using namespace std;
 namespace zorba {
 
 /*******************************************************************************
- ********************************************************************************/
+
+********************************************************************************/
 bool NodePositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  PlanIteratorState *state;
   bool valid;
   store::Item_t inNode;
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   valid = consumeNext(inNode, theChildren[0], planState);
@@ -51,15 +53,17 @@ bool NodePositionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END(state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+
+********************************************************************************/
 bool
 IsAncestorPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lUriA;
   store::Item_t lUriB;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUriA, theChildren[0].getp(), planState);
@@ -80,15 +84,17 @@ IsAncestorPositionIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+
+********************************************************************************/
 bool
 IsFollowingSiblingPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lUriA;
   store::Item_t lUriB;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUriA, theChildren[0].getp(), planState);
@@ -109,15 +115,17 @@ IsFollowingSiblingPositionIterator::nextImpl(store::Item_t& result, PlanState& p
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+
+********************************************************************************/
 bool
 IsFollowingPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lUriA;
   store::Item_t lUriB;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUriA, theChildren[0].getp(), planState);
@@ -138,8 +146,10 @@ IsFollowingPositionIterator::nextImpl(store::Item_t& result, PlanState& planStat
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsDescendantPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -167,8 +177,10 @@ IsDescendantPositionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsPrecedingSiblingPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -197,8 +209,10 @@ IsPrecedingSiblingPositionIterator::nextImpl(store::Item_t& result, PlanState& p
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsPrecedingPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -226,8 +240,10 @@ IsPrecedingPositionIterator::nextImpl(store::Item_t& result, PlanState& planStat
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsChildPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -255,8 +271,10 @@ IsChildPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsAttributeOfPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -286,7 +304,8 @@ IsAttributeOfPositionIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
 
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsParentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -314,8 +333,10 @@ IsParentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsPrecedingInDocumentOrderPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -343,8 +364,10 @@ IsPrecedingInDocumentOrderPositionIterator::nextImpl(store::Item_t& result, Plan
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsFollowingInDocumentOrderPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -372,8 +395,10 @@ IsFollowingInDocumentOrderPositionIterator::nextImpl(store::Item_t& result, Plan
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 LevelPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -401,7 +426,8 @@ LevelPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
 
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsAttributePositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -427,8 +453,10 @@ IsAttributePositionIterator::nextImpl(store::Item_t& result, PlanState& planStat
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsCommentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -454,8 +482,10 @@ IsCommentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsDocumentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -481,8 +511,10 @@ IsDocumentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsElementPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -508,8 +540,10 @@ IsElementPositionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsProcessingInstructionPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -535,8 +569,10 @@ IsProcessingInstructionPositionIterator::nextImpl(store::Item_t& result, PlanSta
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsTextPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -561,8 +597,11 @@ IsTextPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   STACK_END (state);
 }
+
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 IsSiblingPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -592,7 +631,8 @@ IsSiblingPositionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 InSameTreePositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -620,8 +660,10 @@ InSameTreePositionIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 InCollectionPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -647,8 +689,10 @@ InCollectionPositionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   STACK_END (state);
 }
 
+
 /*******************************************************************************
- ********************************************************************************/
+ 
+********************************************************************************/
 bool
 InSameCollectionPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
