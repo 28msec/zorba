@@ -64,7 +64,6 @@ SET(UNIT_TESTS_SRCS
   test_audit.cpp
   string_instantiate.cpp
   streamable_string.cpp
-  string_test.cpp
   unique_ptr.cpp
   main_sequential.cpp
   datetime.cpp
@@ -73,6 +72,10 @@ SET(UNIT_TESTS_SRCS
   xmldatamanager.cpp
   staticcollectionmanager.cpp
 )
+
+IF(NOT ZORBA_NO_UNICODE)
+  LIST(APPEND UNIT_TESTS_SRCS string_test.cpp)
+ENDIF(NOT ZORBA_NO_UNICODE)
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND UNIT_TESTS_SRCS
@@ -108,11 +111,6 @@ FOREACH (test ${TestsToRun})
   SET (TestName "test/unit/${TName}")
   ZORBA_ADD_TEST(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
-
-IF(ZORBA_NO_UNICODE)
-  SET_TESTS_PROPERTIES(test/unit/string_test
-                       PROPERTIES WILL_FAIL TRUE)
-ENDIF(ZORBA_NO_UNICODE)
 
 # Add lib-internal unit tests
 ZORBA_GENERATE_EXE(LibUnitTest lib_unit_test.cpp "" "" "")

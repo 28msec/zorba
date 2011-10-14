@@ -2625,6 +2625,10 @@
       <value>valid values are: UTF-8, UTF-16</value>
     </entry>
 
+    <entry key="SerializeEncodingNotSupportedForNoUnicode" if="defined(ZORBA_NO_UNICODE)">
+      <value>setting encoding for serialization is not supported in ASCII only mode (Zorba is compiled with ZORBA_NO_UNICODE flag)</value>
+    </entry>
+
     <entry key="GoodValuesAreXMLEtc">
       <value>valid values are: xml, html, xhtml, text, binary</value>
     </entry>

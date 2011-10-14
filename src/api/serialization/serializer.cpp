@@ -30,7 +30,9 @@
 #include "api/unmarshaller.h"
 
 #include "util/ascii_util.h"
+#ifndef ZORBA_NO_UNICODE
 #include "util/utf8_util.h"
+#endif
 #include "util/string_util.h"
 #include "util/xml_util.h"
 
@@ -328,11 +330,11 @@ void serializer::emitter::emit_declaration()
 {
   if (ser->byte_order_mark == PARAMETER_VALUE_YES )
   {
+#ifndef ZORBA_NO_UNICODE
     if (ser->encoding == PARAMETER_VALUE_UTF_8 )
     {
       tr << (char)0xEF << (char)0xBB << (char)0xBF;
     }
-#ifndef ZORBA_NO_UNICODE
     else if (ser->encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
@@ -792,14 +794,15 @@ void serializer::xml_emitter::emit_declaration()
   emitter::emit_declaration();
 
   if (ser->omit_xml_declaration == PARAMETER_VALUE_NO) {
-    tr << "<?xml version=\"" << ser->version << "\" encoding=\"";
+    tr << "<?xml version=\"" << ser->version;
+#ifndef ZORBA_NO_UNICODE
+    tr << "\" encoding=\"";
     if (ser->encoding == PARAMETER_VALUE_UTF_8) {
       tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
     } else if (ser->encoding == PARAMETER_VALUE_UTF_16) {
       tr << "UTF-16";
-#endif /* ZORBA_NO_UNICODE */
     }
+#endif /* ZORBA_NO_UNICODE */
     tr << "\"";
 
     if (ser->standalone != PARAMETER_VALUE_OMIT) {
@@ -1104,11 +1107,11 @@ void serializer::html_emitter::emit_node(
       }
 
       tr << "<meta http-equiv=\"content-type\" content=\""
-         << ser->media_type << "; charset=";
-
+         << ser->media_type;
+#ifndef ZORBA_NO_UNICODE
+      tr << "; charset=";
       if (ser->encoding == PARAMETER_VALUE_UTF_8)
         tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
       else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
 #endif /* ZORBA_NO_UNICODE */
@@ -1301,11 +1304,12 @@ void serializer::xhtml_emitter::emit_node(
         }
 
         tr << "<meta http-equiv=\"content-type\" content=\""
-           << ser->media_type << "; charset=";
+           << ser->media_type;
+#ifndef ZORBA_NO_UNICODE
+        tr << "; charset=";
 
         if (ser->encoding == PARAMETER_VALUE_UTF_8)
           tr << "UTF-8";
-#ifndef ZORBA_NO_UNICODE
         else if (ser->encoding == PARAMETER_VALUE_UTF_16)
           tr << "UTF-16";
 #endif /* ZORBA_NO_UNICODE */
@@ -1881,7 +1885,11 @@ void serializer::reset()
   doctype_system.clear();
   doctype_public.clear();
 
+#ifndef ZORBA_NO_UNICODE
   encoding = PARAMETER_VALUE_UTF_8;
+#else
+  encoding = 0;
+#endif
 
   include_content_type = PARAMETER_VALUE_NO;
 
@@ -1997,16 +2005,20 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else if (!strcmp(aName, "encoding"))
   {
+#ifndef ZORBA_NO_UNICODE
     if (!strcmp(aValue, "UTF-8"))
       encoding = PARAMETER_VALUE_UTF_8;
-#ifndef ZORBA_NO_UNICODE
     else if (!strcmp(aValue, "UTF-16"))
       encoding = PARAMETER_VALUE_UTF_16;
-#endif /* ZORBA_NO_UNICODE */
     else
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
       );
+#else
+    throw XQUERY_EXCEPTION(
+      err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( SerializeEncodingNotSupportedForNoUnicode ) )
+    );
+#endif /* ZORBA_NO_UNICODE */
   }
   else if (!strcmp(aName, "media-type"))
   {
@@ -2099,21 +2111,23 @@ serializer::validate_parameters(void)
 ********************************************************************************/
 bool serializer::setup(std::ostream& os)
 {
+#ifndef ZORBA_NO_UNICODE
   if (encoding == PARAMETER_VALUE_UTF_8)
   {
     tr = new transcoder(os, false);
   }
-#ifndef ZORBA_NO_UNICODE
   else if (encoding == PARAMETER_VALUE_UTF_16)
   {
     tr = new transcoder(os, true);
   }
-#endif /* ZORBA_NO_UNICODE */
   else
   {
     ZORBA_ASSERT(0);
     return false;
   }
+#else
+  tr = new transcoder(os, false);
+#endif /* ZORBA_NO_UNICODE */
 
   if (method == PARAMETER_VALUE_XML)
     e = new xml_emitter(this, *tr);
