@@ -15,6 +15,8 @@
  */
  #include "stdafx.h"
 
+#include <typeinfo>
+
 #include "functions/func_sequences.h"
 #include "functions/func_sequences_impl.h"
 
@@ -293,12 +295,24 @@ PlanIter_t fn_count::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  if(typeid(*argv[0]) == typeid(ZorbaCollectionIterator))
+  const std::type_info& counted_type = typeid(*argv[0]);
+  if(typeid(ZorbaCollectionIterator) == counted_type)
   {
     ZorbaCollectionIterator& collection =
       static_cast<ZorbaCollectionIterator&>(*argv[0]);
     return new CountCollectionIterator(sctx, loc,
       collection.getChildren()[0], collection.isDynamic());
+  }
+  else if(typeid(FnCollectionIterator) == counted_type)
+  {
+    FnCollectionIterator& collection =
+      static_cast<FnCollectionIterator&>(*argv[0]);
+    PlanIter_t child;
+    if(collection.getChildren().empty())
+      child = NULL;
+    else
+      child = collection.getChildren()[0];
+    return new CountCollectionIterator(sctx, loc, child);
   }
   else
   {

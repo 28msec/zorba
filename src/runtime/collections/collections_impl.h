@@ -33,8 +33,10 @@ namespace zorba{
 class CountCollectionIterator: public UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>
 {
   protected:
-    //Whether the Collection is of the dynamic or static collection module
-    bool theDynamicCollection;
+    //Whether the Collection is a W3C or Zorba Collection
+    //and if it's dynamic or static collection module
+    enum CollectionType {W3C, ZORBASTATIC, ZORBADYNAMIC };
+    CollectionType theCollectionType;
 
   public:
 
@@ -55,15 +57,34 @@ class CountCollectionIterator: public UnaryBaseIterator<CountCollectionIterator,
     bool aDynamicCollection)
     :
     UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>(
+        sctx, loc, child)
+  {
+    if(aDynamicCollection) theCollectionType = ZORBADYNAMIC;
+    else theCollectionType = ZORBASTATIC;
+  }
+
+  CountCollectionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    :
+    UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>(
         sctx, loc, child),
-    theDynamicCollection(aDynamicCollection)
+    theCollectionType(W3C)
   {}
+
+  bool isZorbaCollection() const {return W3C != theCollectionType;}
+  bool isDynamicCollection() const {return ZORBADYNAMIC == theCollectionType;}
 
   virtual ~CountCollectionIterator();
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+protected:
+  store::Collection_t getZorbaCollection(PlanState& planState) const;
+  store::Collection_t getW3CCollection(PlanState& planState) const;
 };
 
 } //namespace zorba
