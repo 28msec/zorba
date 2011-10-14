@@ -9659,8 +9659,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(1)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);
@@ -9669,7 +9669,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(new const_expr(theRootSctx, loc, Integer(2)));
+        arguments.push_back(new const_expr(theRootSctx, loc, xs_integer(2)));
         function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
         fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
         normalize_fo(foExpr);

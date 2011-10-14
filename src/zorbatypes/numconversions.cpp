@@ -33,7 +33,7 @@ xs_int to_xs_int( xs_integer const &i ) {
   zstring const temp( i.toString() );
   return ztd::aton<xs_int>( temp.c_str() );
 #else
-  return static_cast<xs_int>(i.value_);
+  return static_cast<xs_int>( i.value_ );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 

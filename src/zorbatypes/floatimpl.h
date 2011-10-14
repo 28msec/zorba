@@ -34,7 +34,7 @@ namespace zorba {
 template<typename FloatType>
 class FloatImpl;
 
-namespace serialization{
+namespace serialization {
   template<typename FloatType>
   void operator&(Archiver&, FloatImpl<FloatType>&);
 }
@@ -221,7 +221,11 @@ private:
   void parse( char const* );
   bool parse_etc( char const* );
 
-  friend class Integer;
+#ifdef ZORBA_WITH_BIG_INTEGER
+  friend class IntegerImpl;
+#else
+  template<typename T> friend class IntegerImpl;
+#endif /* ZORBA_WITH_BIG_INTEGER */
   friend class Decimal;
 
   friend class FloatImpl<float>;

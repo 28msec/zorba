@@ -145,7 +145,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
     {
-      longValue = to_xs_long(item->theValue);
+      longValue = item->getLongValue();
       GET_FACTORY().createLong(result, longValue);
     }
     catch (std::range_error const&)
@@ -215,11 +215,11 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
   {
     const IntegerItem* item = static_cast<const IntegerItem*>(item1);
 
-    doubleValue = item->theValue;
+    doubleValue = item->getIntegerValue();
 
     const xs_integer intValue(doubleValue);
 
-    lossy = (intValue != item->theValue);
+    lossy = (intValue != item->getIntegerValue());
     break;
   }
 
@@ -1654,10 +1654,11 @@ zstring DecimalItem::show() const
 
 
 /*******************************************************************************
-  class IntegerItem
+  class IntegerItemImpl
 ********************************************************************************/
 
-long IntegerItem::compare( Item const *other, long, const XQPCollator* ) const {
+long IntegerItemImpl::compare( Item const *other, long,
+                               const XQPCollator* ) const {
   try
   {
     return theValue.compare( other->getIntegerValue() );
@@ -1668,8 +1669,8 @@ long IntegerItem::compare( Item const *other, long, const XQPCollator* ) const {
   }
 }
 
-bool IntegerItem::equals( const store::Item* other, long,
-                          const XQPCollator*) const
+bool IntegerItemImpl::equals( const store::Item* other, long,
+                              const XQPCollator*) const
 {
   try
   {
@@ -1681,13 +1682,13 @@ bool IntegerItem::equals( const store::Item* other, long,
   }
 }
 
-xs_decimal IntegerItem::getDecimalValue() const
+xs_decimal IntegerItemImpl::getDecimalValue() const
 {
   return xs_decimal(theValue);
 }
 
 
-xs_long IntegerItem::getLongValue() const
+xs_long IntegerItemImpl::getLongValue() const
 {
   try
   {
@@ -1703,44 +1704,45 @@ xs_long IntegerItem::getLongValue() const
 }
 
 
-store::Item* IntegerItem::getType() const
+store::Item* IntegerItemImpl::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_INTEGER];
 }
 
 
-store::Item_t IntegerItem::getEBV() const
+store::Item_t IntegerItemImpl::getEBV() const
 {
-  bool b = ( theValue != xs_integer::zero() );
+  bool b = !!theValue.sign();
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
 
-zstring IntegerItem::getStringValue() const
+zstring IntegerItemImpl::getStringValue() const
 {
   return theValue.toString();
 }
 
 
-void IntegerItem::getStringValue2(zstring& val) const
+void IntegerItemImpl::getStringValue2(zstring& val) const
 {
   val = theValue.toString();
 }
 
-uint32_t IntegerItem::hash(long, const XQPCollator*) const
+uint32_t IntegerItemImpl::hash(long, const XQPCollator*) const
 {
   return theValue.hash();
 }
 
-void IntegerItem::appendStringValue(zstring& buf) const
+
+void IntegerItemImpl::appendStringValue(zstring& buf) const
 {
   buf += theValue.toString();
 }
 
 
-zstring IntegerItem::show() const
+zstring IntegerItemImpl::show() const
 {
   zstring res("xs:integer(");
   appendStringValue(res);
@@ -1755,6 +1757,31 @@ zstring IntegerItem::show() const
 store::Item* NonPositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
+}
+
+xs_decimal NonPositiveIntegerItem::getDecimalValue() const
+{
+  return xs_decimal(theValue);
+}
+
+xs_integer NonPositiveIntegerItem::getIntegerValue() const
+{
+  return xs_integer(theValue);
+}
+
+xs_long NonPositiveIntegerItem::getLongValue() const
+{
+  try
+  {
+    return to_xs_long(theValue);
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FORG0001,
+      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
+    );
+  }
 }
 
 zstring NonPositiveIntegerItem::show() const
@@ -1790,6 +1817,32 @@ zstring NegativeIntegerItem::show() const
 store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
+}
+
+
+xs_decimal NonNegativeIntegerItem::getDecimalValue() const
+{
+  return xs_decimal(theValue);
+}
+
+xs_integer NonNegativeIntegerItem::getIntegerValue() const
+{
+  return xs_integer(theValue);
+}
+
+xs_long NonNegativeIntegerItem::getLongValue() const
+{
+  try
+  {
+    return to_xs_long(theValue);
+  }
+  catch ( std::range_error const& )
+  {
+    throw XQUERY_EXCEPTION(
+      err::FORG0001,
+      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
+    );
+  }
 }
 
 
@@ -2078,9 +2131,9 @@ xs_integer UnsignedLongItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedLongItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedLongItem::getUnsignedIntegerValue() const
 {
-  return xs_uinteger(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2145,9 +2198,9 @@ xs_integer UnsignedIntItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedIntItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedIntItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2212,9 +2265,9 @@ xs_integer UnsignedShortItem::getIntegerValue() const
 }
 
 
-xs_uinteger UnsignedShortItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedShortItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 
@@ -2275,13 +2328,13 @@ xs_decimal UnsignedByteItem::getDecimalValue() const
 
 xs_integer UnsignedByteItem::getIntegerValue() const
 {
-  return Integer((uint32_t)theValue);
+  return xs_integer((uint32_t)theValue);
 }
 
 
-xs_uinteger UnsignedByteItem::getUnsignedIntegerValue() const
+xs_nonNegativeInteger UnsignedByteItem::getUnsignedIntegerValue() const
 {
-  return Integer(theValue);
+  return xs_nonNegativeInteger(theValue);
 }
 
 

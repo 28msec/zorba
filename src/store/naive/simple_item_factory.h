@@ -101,9 +101,9 @@ public:
 
   bool createInteger(store::Item_t& result, const xs_integer& value);
 
-  bool createNonNegativeInteger(store::Item_t& result, const xs_uinteger& value);
+  bool createNonNegativeInteger(store::Item_t& result, const xs_nonNegativeInteger& value);
 
-  bool createPositiveInteger(store::Item_t& result,  const xs_uinteger& value );
+  bool createPositiveInteger(store::Item_t& result,  const xs_positiveInteger& value );
 
   bool createNonPositiveInteger(store::Item_t& result, const xs_integer& value);
 

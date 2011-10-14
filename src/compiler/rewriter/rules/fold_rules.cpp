@@ -755,7 +755,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
       {
         return new const_expr(fo->get_sctx(),
                               fo->get_loc(),
-                              Integer(type_cnt));
+                              xs_integer(type_cnt));
       }
       else if (fkind == FunctionConsts::FN_EMPTY_1)
       {

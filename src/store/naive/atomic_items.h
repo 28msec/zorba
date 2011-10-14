@@ -167,7 +167,7 @@ public:
 
   xs_integer getIntegerValue() const { return theBaseItem->getIntegerValue(); }
 
-  xs_uinteger getUnsignedIntegerValue() const { return theBaseItem->getUnsignedIntegerValue(); }
+  xs_nonNegativeInteger getUnsignedIntegerValue() const { return theBaseItem->getUnsignedIntegerValue(); }
 
   xs_long getLongValue() const { return theBaseItem->getLongValue(); }
 
@@ -1152,6 +1152,24 @@ public:
 ********************************************************************************/
 class IntegerItem : public AtomicItem
 {
+protected:
+  IntegerItem() {}
+
+public:
+  virtual xs_decimal getDecimalValue() const = 0;
+  virtual xs_integer getIntegerValue() const = 0;
+  virtual xs_long getLongValue() const = 0;
+  virtual store::Item* getType() const = 0;
+
+  bool isNaN() const { return false; }
+};
+
+
+/*******************************************************************************
+  class IntegerItemImpl
+********************************************************************************/
+class IntegerItemImpl : public IntegerItem
+{
   friend class BasicItemFactory;
   friend class AtomicItem;
 
@@ -1159,17 +1177,16 @@ protected:
   xs_integer theValue;
 
 protected:
-  IntegerItem(const xs_integer& aValue) : theValue ( aValue ) {}
+  IntegerItemImpl(const xs_integer& aValue) : theValue ( aValue ) {}
 
-  IntegerItem() {}
+  IntegerItemImpl() {}
 
 public:
   xs_decimal getDecimalValue() const;
 
   xs_integer getIntegerValue() const { return theValue; }
 
-  xs_long getLongValue() const;
-
+  xs_long getLongValue() const; 
   virtual SchemaTypeCode getTypeCode() const { return XS_INTEGER; }
 
   virtual store::Item* getType() const;
@@ -1194,8 +1211,6 @@ public:
 
   void appendStringValue(zstring& buf) const;
 
-  bool isNaN() const { return false; }
-
   virtual zstring show() const;
 };
 
@@ -1208,14 +1223,20 @@ class NonPositiveIntegerItem : public IntegerItem
   friend class BasicItemFactory;
 
 protected:
-  NonPositiveIntegerItem(const xs_integer& aValue) : IntegerItem(aValue) {}
+  xs_nonPositiveInteger theValue;
+
+  NonPositiveIntegerItem(const xs_integer& aValue) : theValue(aValue) {}
 
   NonPositiveIntegerItem() {}
 
 public:
-  SchemaTypeCode getTypeCode() const { return XS_NON_POSITIVE_INTEGER; }
+  // inherited
+  xs_decimal getDecimalValue() const;
+  xs_integer getIntegerValue() const;
+  xs_long getLongValue() const;
 
   store::Item* getType() const;
+  SchemaTypeCode getTypeCode() const { return XS_NON_POSITIVE_INTEGER; }
 
   zstring show() const;
 };
@@ -1224,12 +1245,12 @@ public:
 /*******************************************************************************
   class NegativeIntegerItem
 ********************************************************************************/
-class NegativeIntegerItem : public IntegerItem
+class NegativeIntegerItem : public NonPositiveIntegerItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NegativeIntegerItem(const xs_integer& aValue) : IntegerItem(aValue) {}
+  NegativeIntegerItem(const xs_integer& aValue) : NonPositiveIntegerItem(aValue) {}
 
   NegativeIntegerItem() {}
 
@@ -1244,20 +1265,25 @@ public:
 
 /*******************************************************************************
   class NonNegativeIntegerItem
-
-  Note: xs_uinteger is typedef of Integer
 ********************************************************************************/
 class NonNegativeIntegerItem : public IntegerItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NonNegativeIntegerItem(const xs_uinteger& aValue) : IntegerItem(aValue) {}
+  xs_nonNegativeInteger theValue;
+
+  NonNegativeIntegerItem(const xs_nonNegativeInteger& aValue) : theValue(aValue) {}
 
   NonNegativeIntegerItem() {}
 
 public:
-  xs_uinteger getUnsignedIntegerValue() const { return theValue; }
+  // inherited
+  xs_decimal getDecimalValue() const;
+  xs_integer getIntegerValue() const;
+  xs_long getLongValue() const;
+
+  xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_NON_NEGATIVE_INTEGER; }
 
@@ -1270,18 +1296,16 @@ public:
 /*******************************************************************************
   class PositiveIntegerItem
 ********************************************************************************/
-class PositiveIntegerItem : public  IntegerItem
+class PositiveIntegerItem : public  NonNegativeIntegerItem
 {
   friend class BasicItemFactory;
 
 protected:
-  PositiveIntegerItem(const xs_uinteger& aValue) : IntegerItem(aValue) { }
+  PositiveIntegerItem(const xs_positiveInteger& aValue) : NonNegativeIntegerItem(aValue) { }
 
   PositiveIntegerItem() {}
 
 public:
-  xs_uinteger getUnsignedIntegerValue() const { return theValue; }
-
   SchemaTypeCode getTypeCode() const { return XS_POSITIVE_INTEGER; }
 
   store::Item* getType() const;
@@ -1637,7 +1661,7 @@ protected:
 
   xs_integer getIntegerValue() const;
 
-  xs_uinteger getUnsignedIntegerValue() const;
+  xs_nonNegativeInteger getUnsignedIntegerValue() const;
 
   xs_unsignedLong getUnsignedLongValue() const { return theValue; }
 
@@ -1717,7 +1741,7 @@ public:
 
   xs_integer getIntegerValue() const;
 
-  xs_uinteger getUnsignedIntegerValue() const;
+  xs_nonNegativeInteger getUnsignedIntegerValue() const;
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
@@ -1806,7 +1830,7 @@ public:
 
   xs_integer getIntegerValue() const;
 
-  xs_uinteger getUnsignedIntegerValue() const;
+  xs_nonNegativeInteger getUnsignedIntegerValue() const;
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
@@ -1899,7 +1923,7 @@ public:
 
   xs_integer getIntegerValue() const;
 
-  xs_uinteger getUnsignedIntegerValue() const;
+  xs_nonNegativeInteger getUnsignedIntegerValue() const;
 
   xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 

@@ -28,6 +28,18 @@
 #include "integer.h"
 #include "numconversions.h"
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+# define TEMPLATE_DECL    /* nothing */
+# define INTEGER_IMPL     IntegerImpl
+# define INTEGER_IMPL_LL  IntegerImpl
+# define INTEGER_IMPL_ULL IntegerImpl
+#else
+# define TEMPLATE_DECL    template<typename IntType>
+# define INTEGER_IMPL     IntegerImpl<IntType>
+# define INTEGER_IMPL_LL  IntegerImpl<long long>
+# define INTEGER_IMPL_ULL IntegerImpl<unsigned long long>
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(Decimal)
@@ -218,8 +230,13 @@ Decimal::Decimal( Float const &f ) {
   value_ = f.getNumber();
 }
 
-Decimal::Decimal( Integer const &i ) : value_( i.itod() ) {
+TEMPLATE_DECL
+Decimal::Decimal( INTEGER_IMPL const &i ) : value_( i.itod() ) {
 }
+#ifndef ZORBA_WITH_BIG_INTEGER
+template Decimal::Decimal( INTEGER_IMPL_LL const& );
+template Decimal::Decimal( INTEGER_IMPL_ULL const& );
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 ////////// assignment operators ///////////////////////////////////////////////
 
@@ -235,10 +252,15 @@ Decimal& Decimal::operator=( unsigned long long n ) {
   return *this;
 }
 
-Decimal& Decimal::operator=( Integer const &i ) {
+TEMPLATE_DECL
+Decimal& Decimal::operator=( INTEGER_IMPL const &i ) {
   value_ = i.itod();
   return *this;
 }
+#ifndef ZORBA_WITH_BIG_INTEGER
+template Decimal& Decimal::operator=( INTEGER_IMPL_LL const& );
+template Decimal& Decimal::operator=( INTEGER_IMPL_ULL const& );
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
@@ -256,61 +278,69 @@ Decimal& Decimal::operator=( Float const &f ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-Decimal operator+( Decimal const &d, Integer const &i ) {
-  return d.value_ + i.itod();
-}
+#ifdef ZORBA_WITH_BIG_INTEGER
+# define ZORBA_INSTANTIATE(OP) /* nothing */
+#else
+# define ZORBA_INSTANTIATE(OP)                                            \
+  template Decimal operator OP( Decimal const&, INTEGER_IMPL_LL const& ); \
+  template Decimal operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
-Decimal operator-( Decimal const &d, Integer const &i ) {
-  return d.value_ - i.itod();
-}
+#define ZORBA_DECIMAL_OP(OP)                                        \
+  TEMPLATE_DECL                                                     \
+  Decimal operator OP( Decimal const &d, INTEGER_IMPL const &i ) {  \
+    return d.value_ OP i.itod();                                    \
+  }                                                                 \
+  ZORBA_INSTANTIATE(OP)
 
-Decimal operator*( Decimal const &d, Integer const &i ) {
-  return d.value_ * i.itod();
-}
-
-Decimal operator/( Decimal const &d, Integer const &i ) {
-  return d.value_ / i.itod();
-}
-
-Decimal operator%( Decimal const &d, Integer const &i ) {
-  return d.value_ % i.itod();
-}
+ZORBA_DECIMAL_OP(+);
+ZORBA_DECIMAL_OP(-);
+ZORBA_DECIMAL_OP(*);
+ZORBA_DECIMAL_OP(/);
+ZORBA_DECIMAL_OP(%);
+#undef ZORBA_DECIMAL_OP
+#undef ZORBA_INSTANTIATE
 
 ////////// relational operators ///////////////////////////////////////////////
 
-bool operator==( Decimal const &d, Integer const &i ) {
-  return d.value_ == i.itod();
-}
+#ifdef ZORBA_WITH_BIG_INTEGER
+# define ZORBA_INSTANTIATE(OP) /* nothing */
+#else
+# define ZORBA_INSTANTIATE(OP)                                          \
+  template bool operator OP( Decimal const&, INTEGER_IMPL_LL const& );  \
+  template bool operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
-bool operator!=( Decimal const &d, Integer const &i ) {
-  return d.value_ != i.itod();
-}
+#define ZORBA_DECIMAL_OP(OP)                                    \
+  TEMPLATE_DECL                                                 \
+  bool operator OP( Decimal const &d, INTEGER_IMPL const &i ) { \
+    return d.value_ OP i.itod();                                \
+  }                                                             \
+  ZORBA_INSTANTIATE(OP)
 
-bool operator<( Decimal const &d, Integer const &i ) {
-  return d.value_ < i.itod();
-}
-
-bool operator<=( Decimal const &d, Integer const &i ) {
-  return d.value_ <= i.itod();
-}
-
-bool operator>( Decimal const &d, Integer const &i ) {
-  return d.value_ > i.itod();
-}
-
-bool operator>=( Decimal const &d, Integer const &i ) {
-  return d.value_ >= i.itod();
-}
+ZORBA_DECIMAL_OP(==);
+ZORBA_DECIMAL_OP(!=);
+ZORBA_DECIMAL_OP(< );
+ZORBA_DECIMAL_OP(<=);
+ZORBA_DECIMAL_OP(> );
+ZORBA_DECIMAL_OP(>=);
+#undef ZORBA_DECIMAL_OP
+#undef ZORBA_INSTANTIATE
 
 ////////// math functions /////////////////////////////////////////////////////
 
 Decimal Decimal::round() const {
-  return round( Integer::zero() );
+  return round( INTEGER_IMPL_LL::zero() );
 }
 
-Decimal Decimal::round( Integer const &precision ) const {
+TEMPLATE_DECL
+Decimal Decimal::round( INTEGER_IMPL const &precision ) const {
   return round( value_, precision.itod() );
 }
+#ifndef ZORBA_WITH_BIG_INTEGER
+template Decimal Decimal::round( INTEGER_IMPL_LL const& ) const;
+template Decimal Decimal::round( INTEGER_IMPL_ULL const& ) const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 Decimal::value_type Decimal::round( value_type const &v,
                                     value_type const &precision ) {
@@ -322,9 +352,14 @@ Decimal::value_type Decimal::round( value_type const &v,
   return result;
 }
 
-Decimal Decimal::roundHalfToEven( Integer const &precision ) const {
+TEMPLATE_DECL
+Decimal Decimal::roundHalfToEven( INTEGER_IMPL const &precision ) const {
   return roundHalfToEven( value_, precision.itod() );
 }
+#ifndef ZORBA_WITH_BIG_INTEGER
+template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_LL const& ) const;
+template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_ULL const& ) const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 Decimal::value_type Decimal::roundHalfToEven( value_type const &v,
                                               value_type const &precision ) {
