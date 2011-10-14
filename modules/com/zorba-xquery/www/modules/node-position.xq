@@ -16,7 +16,7 @@ xquery version "1.0";
 :)
 
 (:~
- : This module provides a function (np:node-position) that given, a node, 
+ : This module provides a function (np:node-position) that, given a node, 
  : returns positional information about the node in the form of an xs:anyURI
  : item. The module also defines functions that use such positional information
  : to determine: (1) structural relationships between two nodes (e.g. if one 
