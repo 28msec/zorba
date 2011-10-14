@@ -83,7 +83,12 @@ public:
 
   bool createStructuralAnyURI(store::Item_t& result, const char* value);
 
-  bool createStructuralAnyURI(store::Item_t& result, ulong collectionId, ulong treeId, store::StoreConsts::NodeKind nodeKind, const OrdPath& ordPath);
+  bool createStructuralAnyURI(
+      store::Item_t& result,
+      ulong collectionId,
+      ulong treeId,
+      store::StoreConsts::NodeKind nodeKind,
+      const OrdPath& ordPath);
 
   bool createUntypedAtomic(store::Item_t& result, zstring& value);
 
