@@ -71,6 +71,16 @@ PlanIter_t fn_zorba_pos_following_of::codegen(
   return new IsFollowingPositionIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_pos_in_subtree_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsInSubtreeOfPositionIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_pos_descendant_of::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -310,6 +320,19 @@ void populate_context_node_position(static_context* sctx)
         GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_POS_FOLLOWING_OF_2);
+
+  }
+
+
+  {
+    
+
+    DECL_WITH_KIND(sctx, fn_zorba_pos_in_subtree_of,
+        (createQName("http://www.zorba-xquery.com/modules/node-position","","in-subtree-of"), 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_POS_IN_SUBTREE_OF_2);
 
   }
 

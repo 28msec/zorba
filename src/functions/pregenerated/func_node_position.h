@@ -90,6 +90,19 @@ public:
 };
 
 
+//fn-zorba-pos:in-subtree-of
+class fn_zorba_pos_in_subtree_of : public function
+{
+public:
+  fn_zorba_pos_in_subtree_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-pos:descendant-of
 class fn_zorba_pos_descendant_of : public function
 {

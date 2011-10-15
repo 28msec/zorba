@@ -311,6 +311,8 @@ namespace zorba{
 
     class IsFollowingPositionIterator;
 
+    class IsInSubtreeOfPositionIterator;
+
     class IsDescendantPositionIterator;
 
     class IsPrecedingSiblingPositionIterator;
@@ -1012,6 +1014,9 @@ public:
 
     virtual void beginVisit ( const IsFollowingPositionIterator& ) = 0;
     virtual void endVisit   ( const IsFollowingPositionIterator& ) = 0;
+
+    virtual void beginVisit ( const IsInSubtreeOfPositionIterator& ) = 0;
+    virtual void endVisit   ( const IsInSubtreeOfPositionIterator& ) = 0;
 
     virtual void beginVisit ( const IsDescendantPositionIterator& ) = 0;
     virtual void endVisit   ( const IsDescendantPositionIterator& ) = 0;

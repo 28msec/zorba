@@ -151,6 +151,37 @@ IsFollowingPositionIterator::nextImpl(store::Item_t& result, PlanState& planStat
  
 ********************************************************************************/
 bool
+IsInSubtreeOfPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lUriA;
+  store::Item_t lUriB;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lUriA, theChildren[0].getp(), planState);
+  consumeNext(lUriB, theChildren[1].getp(), planState);
+
+  try
+  {
+    GENV_ITEMFACTORY->createBoolean(result, lUriA->isInSubtreeOf(lUriB));
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc);
+    throw;
+  }
+
+  STACK_PUSH(true,state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+ 
+********************************************************************************/
+bool
 IsDescendantPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lUriA;

@@ -81,8 +81,6 @@ public:
 
   bool createStructuralAnyURI(store::Item_t& result, zstring& value);
 
-  bool createStructuralAnyURI(store::Item_t& result, const char* value);
-
   bool createStructuralAnyURI(
       store::Item_t& result,
       ulong collectionId,

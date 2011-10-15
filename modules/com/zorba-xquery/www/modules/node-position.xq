@@ -34,7 +34,7 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Compute a stable and opaque structural information representation 
+ : Compute a stable and opaque positional information representation 
  : (with type xs:anyURI) for a given node.
  :
  : <p>The returned URI is stable, i.e. it does not change when other 
@@ -43,390 +43,409 @@ declare option ver:module-version "2.0";
  : <p>Each node in a snapshot has a different URI. Note however that
  : different nodes in different snapshots might have the same URI.</p>  
  :
- : @param $arg the node for which the structural information URI
+ : @param $arg the node for which the positional information URI
  :  should be computed
  :
- : @return the opaque structural information URI of the node.
+ : @return the opaque positional information URI of the node.
  :)
 declare function np:node-position(
   $arg as node()
 ) as xs:anyURI external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is an ancestor of the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential descendant structural information
- : @param $s-info2 the potential ancestor structural information
+ : @param $n-pos1 the potential descendant node position
+ : @param $n-pos2 the potential ancestor node position
  :
- : @return true if the node whose structural information is $s-info2 
- : is an ancestor of the node whose structural information is $s-info1;
+ : @return true if the node whose node position is $n-pos2 
+ : is an ancestor of the node whose node position is $n-pos1;
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function. 
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function. 
  :)
 declare function np:ancestor-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
+ : given as second argument belongs to the subtree rooted 
+ : at the node whose node position is given as first argument.
+ :
+ : @param $n-pos1 the potential subtree root node position
+ : @param $n-pos2 the potential node in the subtree node position
+ :
+ : @return true if the node whose node position is $n-pos2 
+ : belongs to the subtree rooted at the node whose node position 
+ : is $n-pos1; false otherwise.
+ :
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
+ :)
+declare function np:in-subtree-of(
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
+
+(:~
+ : Determines whether the node whose node position is 
  : given as second argument is a descendant of the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential ancestor structural information
- : @param $s-info2 the potential descendant structural information
+ : @param $n-pos1 the potential ancestor node position
+ : @param $n-pos2 the potential descendant node position
  :
- : @return true if the node whose structural information is $s-info2 
- : is a descendant of the node whose structural information is $s-info1; 
+ : @return true if the node whose node position is $n-pos2 
+ : is a descendant of the node whose node position is $n-pos1; 
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:descendant-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is the parent of the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential child structural information
- : @param $s-info2 the potential parent structural information
+ : @param $n-pos1 the potential child node position
+ : @param $n-pos2 the potential parent node position
  :
- : @return true if the node whose structural information is $s-info2
- : is the parent of the node whose structural information is $s-info1; 
+ : @return true if the node whose node position is $n-pos2
+ : is the parent of the node whose node position is $n-pos1; 
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:parent-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is a child of the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential parent structural information
- : @param $s-info2 the potential child structural information
+ : @param $n-pos1 the potential parent node position
+ : @param $n-pos2 the potential child node position
  :
- : @return true if the node whose structural information is $s-info2
- : is a child of the node whose structural information is $s-info1; 
+ : @return true if the node whose node position is $n-pos2
+ : is a child of the node whose node position is $n-pos1; 
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:child-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is an attribute of the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential parent structural information
- : @param $s-info2 the potential attribute structural information
+ : @param $n-pos1 the potential parent node position
+ : @param $n-pos2 the potential attribute node position
  :
- : @return true if the node whose structural information is $s-info2
- : is an attribute of the node whose structural information is $s-info1; 
+ : @return true if the node whose node position is $n-pos2
+ : is an attribute of the node whose node position is $n-pos1; 
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:attribute-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is a following-sibling of the node 
- : whose structural information is given as first argument.
+ : whose node position is given as first argument.
  :
- : @param $s-info1 the potential preceding-sibling structural information
- : @param $s-info2 the potential following-sibling structural information
+ : @param $n-pos1 the potential preceding-sibling node position
+ : @param $n-pos2 the potential following-sibling node position
  :
- : @return true if the node whose structural information is $s-info2
- : is a following-sibling of the node whose structural information is $s-info1; 
+ : @return true if the node whose node position is $n-pos2
+ : is a following-sibling of the node whose node position is $n-pos1; 
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:following-sibling-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is a preceding-sibling of the node 
- : whose structural information is given as first argument.
+ : whose node position is given as first argument.
  :
- : @param $s-info1 the potential following-sibling structural information
- : @param $s-info2 the potential preceding-sibling structural information
+ : @param $n-pos1 the potential following-sibling node position
+ : @param $n-pos2 the potential preceding-sibling node position
  :
- : @return true if the node whose structural information is $s-info2 
- : is a preceding-sibling of the node whose structural information is $s-info1; 
+ : @return true if the node whose node position is $n-pos2 
+ : is a preceding-sibling of the node whose node position is $n-pos1; 
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:preceding-sibling-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is following the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential preceding node structural information
- : @param $s-info2 the potential following node structural information
+ : @param $n-pos1 the potential preceding node position
+ : @param $n-pos2 the potential following node position
  :
- : @return true if the node whose structural information is $s-info2 
- : is following the node whose structural information is $s-info1;
+ : @return true if the node whose node position is $n-pos2 
+ : is following the node whose node position is $n-pos1;
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:following-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
   
 (:~
- : Determines whether the node whose structural information is 
- : given as second argument is following in document order the node whose 
- : structural information is given as first argument.
+ : Determines whether the node whose node position is given as 
+ : second argument is following in document order the node 
+ : whose node position is given as first argument.
  :
- : @param $s-info1 the potential preceding node structural information
- : @param $s-info2 the potential following node structural information
+ : @param $n-pos1 the potential preceding node position
+ : @param $n-pos2 the potential following node position
  :
- : @return true if the node whose structural information is $s-info2 
- : is following in document order the node whose structural information
- : is $s-info1; false otherwise.
+ : @return true if the node whose node position is $n-pos2 
+ : is following in document order the node whose node position
+ : is $n-pos1; false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:following-in-document-order-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is preceding the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential following node structural information
- : @param $s-info2 the potential preceding node structural information
+ : @param $n-pos1 the potential following node position
+ : @param $n-pos2 the potential preceding node position
  :
- : @return true if the node whose structural information is $s-info2 
- : is preceding the node whose structural information is $s-info1; 
+ : @return true if the node whose node position is $n-pos2 
+ : is preceding the node whose node position is $n-pos1; 
  : false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:preceding-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether the node whose structural information is 
+ : Determines whether the node whose node position is 
  : given as second argument is preceding the node whose 
- : structural information is given as first argument.
+ : node position is given as first argument.
  :
- : @param $s-info1 the potential following node structural information
- : @param $s-info2 the potential preceding node structural information
+ : @param $n-pos1 the potential following node position
+ : @param $n-pos2 the potential preceding node position
  :
- : @return true if the node whose structural information is $s-info2 
- : is preceding in document order the node whose structural information 
- : is $s-info1; false otherwise.
+ : @return true if the node whose node position is $n-pos2 
+ : is preceding in document order the node whose node position 
+ : is $n-pos1; false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:preceding-in-document-order-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 
 (:~
- : Computes the level of a node in the tree given its structural
- : information.
+ : Computes the level of a node in the tree given its node position.
  :
  : Note: The first level has the number one.
  :
- : @param $s-info the structural information of the node which 
- :  level should be computed
+ : @param $n-pos the node position of the node whose level should be 
+ : determined.
  :
- : @return The level in the tree as xs:integer of the node whose 
- : structural information is $s-info.
+ : @return the level in the tree of the node whose node position is 
+ : $n-pos as xs:integer.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:level(
-  $s-info as xs:anyURI) as xs:integer external;  
+  $n-pos as xs:anyURI) as xs:integer external;  
 
 (:~
- : Determines whether two nodes are siblings given their structural information.
+ : Determines whether two nodes are siblings given their node position.
  :
- : @param $s-info1 a node structural information
- : @param $s-info2 a node structural information
+ : @param $n-pos1 a node position
+ : @param $n-pos2 a node position
  :
- : @return true if the two nodes whose structural information are $s-info1
- : and $s-info2 are siblings; false otherwise.
+ : @return true if the two nodes whose node positions are $n-pos1
+ : and $n-pos2 are siblings; false otherwise.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)  
 declare function np:sibling-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
   
 (:~
- : Determines whether a node is an attribute given its structural information.
+ : Determines whether a node is an attribute given its node position.
  :
- : @param $s-info the potential attribute structural information
+ : @param $n-pos the potential attribute node position
  :
- : @return true if the node whose structural information is $s-info
+ : @return true if the node whose node position is $n-pos
  : is an attribute; false otherwise.
  :
- : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:is-attribute(
-  $s-info1 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether a node is a comment given its structural information.
+ : Determines whether a node is a comment given its node position.
  :
- : @param $s-info the potential comment structural information
+ : @param $n-pos the potential comment node position
  :
- : @return true if the node whose structural information is $s-info
+ : @return true if the node whose node position is $n-pos
  : is a comment; false otherwise.
  :
- : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:is-comment(
-  $s-info1 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI) as xs:boolean external;
   
-  (:~
- : Determines whether a node is a document given its structural information.
+ (:~
+ : Determines whether a node is a document given its node position.
  :
- : @param $s-info the potential document structural information
+ : @param $n-pos the potential document node position
  :
- : @return true if the node whose structural information is $s-info
+ : @return true if the node whose node position is $n-pos
  : is a document; false otherwise.
  :
- : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:is-document(
-  $s-info1 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI) as xs:boolean external;
   
-  (:~
- : Determines whether a node is an element given its structural information.
+ (:~
+ : Determines whether a node is an element given its node position.
  :
- : @param $s-info the potential element structural information
+ : @param $n-pos the potential element node position
  :
- : @return true if the node whose structural information is $s-info
+ : @return true if the node whose node position is $n-pos
  : is an element; false otherwise.
  :
- : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:is-element(
-  $s-info1 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI) as xs:boolean external;
   
-  (:~
- : Determines whether a node is a processing-instruction given its structural information.
+ (:~
+ : Determines whether a node is a processing-instruction given its 
+ : node position.
  :
- : @param $s-info the potential processing-instruction structural information
+ : @param $n-pos the potential processing-instruction node position
  :
- : @return true if the node whose structural information is $s-info
+ : @return true if the node whose node position is $n-pos
  : is a processing-instruction; false otherwise.
  :
- : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:is-processing-instruction(
-  $s-info1 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI) as xs:boolean external;
   
-  (:~
- : Determines whether a node is a text given its structural information.
+ (:~
+ : Determines whether a node is a text given its node position.
  :
- : @param $s-info the potential text node structural information
+ : @param $n-pos the potential text node position
  :
- : @return true if the node whose structural information is $s-info
- : is a text node; false otherwise.
+ : @return true if the node whose node position is $n-pos
+ : is a text; false otherwise.
  :
- : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:is-text(
-  $s-info1 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI) as xs:boolean external;
 
 (:~
  : Determines whether two nodes belong to the same tree given their
- : structural information.
+ : node position.
  :
- : @param $s-info1 a node structural information
- : @param $s-info2 a node structural information
+ : @param $n-pos1 a node position
+ : @param $n-pos2 a node position
  :
- : @return true if the two node whose structural information are $s-info1
- : and $s-info2 belong to the same tree.
+ : @return true if the two nodes whose node positions are $n-pos1
+ : and $n-pos2 belong to the same tree.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)  
 declare function np:in-same-tree-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether a node belongs to a collection given its structural
- : information.
+ : Determines whether a node belongs to a collection given its 
+ : node position.
  :
- : @param $s-info the node structural information
+ : @param $n-pos the node position
  :
- : @return true if the node whose structural information is $s-info 
- : is in a collection; false otherwise.
+ : @return true if the node whose node position is $n-pos 
+ : belongs to a collection; false otherwise.
  :
- : @error zerr:ZAPI0028 if the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)
 declare function np:in-collection(
-  $s-info as xs:anyURI) as xs:boolean external;
+  $n-pos as xs:anyURI) as xs:boolean external;
 
 (:~
- : Determines whether two nodes belong to the same collection given their
- : structural information.
+ : Determines whether two nodes belong to the same collection given 
+ : their node position.
  :
- : @param $s-info1 a node structural information
- : @param $s-info2 a node structural information
+ : @param $n-pos1 a node position
+ : @param $n-pos2 a node position
  :
- : @return true if the two node whose structural information are $s-info1
- : and $s-info2 belong to the same collection.
+ : @return true if the two nodes whose node positions are $n-pos1
+ : and $n-pos2 belong to the same collection.
  :
- : @error zerr:ZAPI0028 if one of the given URI is not a valid node structural
- : information computed by the <tt>np:node-position</tt> function.
+ : @error zerr:ZAPI0028 if one of the given URI is not a valid node
+ : position computed by the <tt>np:node-position</tt> function.
  :)  
 declare function np:in-same-collection-of(
-  $s-info1 as xs:anyURI,
-  $s-info2 as xs:anyURI) as xs:boolean external;
+  $n-pos1 as xs:anyURI,
+  $n-pos2 as xs:anyURI) as xs:boolean external;

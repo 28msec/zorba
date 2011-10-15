@@ -1027,6 +1027,15 @@ Item::isFollowing(const store::Item_t&) const
 }
 
 bool
+Item::isInSubtreeOf(const store::Item_t&) const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+bool
 Item::isDescendant(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(

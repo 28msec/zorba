@@ -81,6 +81,26 @@
 
   </zorba:iterator>
 
+
+  <!--
+/*******************************************************************************
+********************************************************************************/
+-->
+  <zorba:iterator name="IsInSubtreeOfPositionIterator">
+
+    <zorba:description author="Federico Cavalieri"></zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="in-subtree-of" prefix="fn-zorba-pos">
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+  </zorba:iterator>
+
+
   <!--
 /*******************************************************************************
 ********************************************************************************/

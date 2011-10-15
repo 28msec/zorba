@@ -2070,6 +2070,20 @@ void PrinterVisitor::endVisit ( const IsFollowingPositionIterator& ) {
 // </IsFollowingPositionIterator>
 
 
+// <IsInSubtreeOfPositionIterator>
+void PrinterVisitor::beginVisit ( const IsInSubtreeOfPositionIterator& a) {
+  thePrinter.startBeginVisit("IsInSubtreeOfPositionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsInSubtreeOfPositionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsInSubtreeOfPositionIterator>
+
+
 // <IsDescendantPositionIterator>
 void PrinterVisitor::beginVisit ( const IsDescendantPositionIterator& a) {
   thePrinter.startBeginVisit("IsDescendantPositionIterator", ++theId);

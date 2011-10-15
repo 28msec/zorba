@@ -41,12 +41,24 @@ variable $y :=  element {"x"}{$x}/*;
   {        
     np:descendant-of(np:node-position($x), np:node-position($x/b[1])),
     np:descendant-of(np:node-position($x), np:node-position($x/b[4]/c[1])),
+    np:descendant-of(np:node-position($x), np:node-position($x/b/@attr)),
     np:descendant-of(np:node-position($x/b[1]), np:node-position($x)),
     np:descendant-of(np:node-position($x/b[4]/c[1]), np:node-position($x)),    
     np:descendant-of(np:node-position($x), np:node-position($x)),
     np:descendant-of(np:node-position($x), np:node-position($y/b[1]))
   }
   </descendant-of>
+  <in-subtree-of>
+  {        
+    np:in-subtree-of(np:node-position($x), np:node-position($x/b[1])),
+    np:in-subtree-of(np:node-position($x), np:node-position($x/b[4]/c[1])),
+    np:in-subtree-of(np:node-position($x), np:node-position($x/b/@attr)),
+    np:in-subtree-of(np:node-position($x/b[1]), np:node-position($x)),
+    np:in-subtree-of(np:node-position($x/b[4]/c[1]), np:node-position($x)),    
+    np:in-subtree-of(np:node-position($x), np:node-position($x)),
+    np:in-subtree-of(np:node-position($x), np:node-position($y/b[1]))
+  }
+  </in-subtree-of>
   <preceding-sibling-of>
   { 
     np:preceding-sibling-of(np:node-position($x/b[2]), np:node-position($x/b[1])),

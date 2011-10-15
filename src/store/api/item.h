@@ -662,6 +662,12 @@ public:
    *
    */
   virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  /**
+   *
+   */
+  virtual bool
   isDescendant(const store::Item_t&) const;
 
   /**

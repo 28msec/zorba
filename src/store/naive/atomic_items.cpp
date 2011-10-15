@@ -822,7 +822,8 @@ zstring AnyUriItem::show() const
 bool AnyUriItem::isAncestor(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isAncestor(aOther);
 }
 
@@ -830,7 +831,8 @@ bool AnyUriItem::isAncestor(const store::Item_t& aOther) const
 bool AnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isFollowingSibling(aOther);
 }
 
@@ -838,7 +840,8 @@ bool AnyUriItem::isFollowingSibling(const store::Item_t& aOther) const
 bool AnyUriItem::isFollowing(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isFollowing(aOther);
 }
 
@@ -846,15 +849,26 @@ bool AnyUriItem::isFollowing(const store::Item_t& aOther) const
 bool AnyUriItem::isDescendant(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isDescendant(aOther);
+}
+
+
+bool AnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
+{
+  store::Item_t lThisUri;
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
+  return lThisUri->isInSubtreeOf(aOther);
 }
 
 
 bool AnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isPrecedingSibling(aOther);
 }
 
@@ -862,7 +876,8 @@ bool AnyUriItem::isPrecedingSibling(const store::Item_t& aOther) const
 bool AnyUriItem::isPreceding(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isPreceding(aOther);
 }
 
@@ -870,7 +885,8 @@ bool AnyUriItem::isPreceding(const store::Item_t& aOther) const
 bool AnyUriItem::isChild(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isChild(aOther);
 }
 
@@ -878,7 +894,8 @@ bool AnyUriItem::isChild(const store::Item_t& aOther) const
 bool AnyUriItem::isAttribute(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isAttribute(aOther);
 }
 
@@ -886,7 +903,8 @@ bool AnyUriItem::isAttribute(const store::Item_t& aOther) const
 bool AnyUriItem::isParent(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isParent(aOther);
 }
 
@@ -894,7 +912,8 @@ bool AnyUriItem::isParent(const store::Item_t& aOther) const
 bool AnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isPrecedingInDocumentOrder(aOther);
 }
 
@@ -902,7 +921,8 @@ bool AnyUriItem::isPrecedingInDocumentOrder(const store::Item_t& aOther) const
 bool AnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isFollowingInDocumentOrder(aOther);
 }
 
@@ -910,7 +930,8 @@ bool AnyUriItem::isFollowingInDocumentOrder(const store::Item_t& aOther) const
 store::Item_t AnyUriItem::getLevel() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->getLevel();
 }
 
@@ -918,7 +939,8 @@ store::Item_t AnyUriItem::getLevel() const
 bool AnyUriItem::isAttribute() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isAttribute();
 }
 
@@ -926,7 +948,8 @@ bool AnyUriItem::isAttribute() const
 bool AnyUriItem::isComment() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isComment();
 }
 
@@ -934,7 +957,8 @@ bool AnyUriItem::isComment() const
 bool AnyUriItem::isDocument() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isDocument();
 }
 
@@ -942,7 +966,8 @@ bool AnyUriItem::isDocument() const
 bool AnyUriItem::isElement() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isElement();
 }
 
@@ -950,7 +975,8 @@ bool AnyUriItem::isElement() const
 bool AnyUriItem::isProcessingInstruction() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isProcessingInstruction();
 }
 
@@ -958,7 +984,8 @@ bool AnyUriItem::isProcessingInstruction() const
 bool AnyUriItem::isText() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isText();
 }
 
@@ -966,7 +993,8 @@ bool AnyUriItem::isText() const
 bool AnyUriItem::isSibling(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->isSibling(aOther);
 }
 
@@ -974,7 +1002,8 @@ bool AnyUriItem::isSibling(const store::Item_t& aOther) const
 bool AnyUriItem::inSameTree(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->inSameTree(aOther);
 }
 
@@ -982,7 +1011,8 @@ bool AnyUriItem::inSameTree(const store::Item_t& aOther) const
 bool AnyUriItem::inCollection() const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return static_cast<StructuralAnyUriItem *>(lThisUri.getp())->inCollection();
 }
 
@@ -990,7 +1020,8 @@ bool AnyUriItem::inCollection() const
 bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 {
   store::Item_t lThisUri;
-  GET_FACTORY().createStructuralAnyURI(lThisUri, theValue.c_str());
+  zstring tempValue=theValue;
+  GET_FACTORY().createStructuralAnyURI(lThisUri, tempValue);
   return lThisUri->inSameCollection(aOther);
 }
 
@@ -1162,6 +1193,30 @@ bool StructuralAnyUriItem::isDescendant(const store::Item_t& aOther) const
     zstring tmp = lOtherUriP->theValue;
     GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
     return isDescendant(lOtherUri);
+  }
+  else
+  {
+    StructuralAnyUriItem* other = static_cast<StructuralAnyUriItem*>(aOther.getp());
+    return 
+    (other->theTreeId == theTreeId &&
+     other->theNodeKind != store::StoreConsts::attributeNode &&
+     theOrdPath.getRelativePosition(other->theOrdPath) == OrdPath::DESCENDANT);
+  }
+}
+
+
+bool StructuralAnyUriItem::isInSubtreeOf(const store::Item_t& aOther) const
+{
+  // Is the "other" in the subtree rooted at "this"?
+
+  AnyUriItem* lOtherUriP = static_cast<AnyUriItem *>(aOther.getp());
+
+  if (lOtherUriP->getAnyUriTypeCode() != STRUCTURAL_INFORMATION_ANY_URI)
+  {
+    store::Item_t lOtherUri;
+    zstring tmp = lOtherUriP->theValue;
+    GET_FACTORY().createStructuralAnyURI(lOtherUri, tmp);
+    return isInSubtreeOf(lOtherUri);
   }
   else
   {

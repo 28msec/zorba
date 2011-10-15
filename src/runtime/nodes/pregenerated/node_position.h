@@ -173,6 +173,40 @@ public:
  * 
  * Author: Federico Cavalieri
  */
+class IsInSubtreeOfPositionIterator : public NaryBaseIterator<IsInSubtreeOfPositionIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsInSubtreeOfPositionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsInSubtreeOfPositionIterator,
+    NaryBaseIterator<IsInSubtreeOfPositionIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsInSubtreeOfPositionIterator, PlanIteratorState>*)this);
+  }
+
+  IsInSubtreeOfPositionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsInSubtreeOfPositionIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsInSubtreeOfPositionIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: Federico Cavalieri
+ */
 class IsDescendantPositionIterator : public NaryBaseIterator<IsDescendantPositionIterator, PlanIteratorState>
 { 
 public:

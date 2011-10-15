@@ -551,6 +551,9 @@ public:
   isFollowing(const store::Item_t&) const;
 
   virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  virtual bool
   isDescendant(const store::Item_t&) const;
 
   virtual bool
@@ -648,6 +651,9 @@ public:
 
   bool
   isFollowing(const store::Item_t&) const;
+
+  bool
+  isInSubtreeOf(const store::Item_t&) const;
 
   bool
   isDescendant(const store::Item_t&) const;

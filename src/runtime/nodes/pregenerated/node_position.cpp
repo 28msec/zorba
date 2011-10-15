@@ -144,6 +144,34 @@ IsFollowingPositionIterator::~IsFollowingPositionIterator() {}
 // </IsFollowingPositionIterator>
 
 
+// <IsInSubtreeOfPositionIterator>
+const char* IsInSubtreeOfPositionIterator::class_name_str = "IsInSubtreeOfPositionIterator";
+IsInSubtreeOfPositionIterator::class_factory<IsInSubtreeOfPositionIterator>
+IsInSubtreeOfPositionIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsInSubtreeOfPositionIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsInSubtreeOfPositionIterator::class_versions_count =
+sizeof(IsInSubtreeOfPositionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsInSubtreeOfPositionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsInSubtreeOfPositionIterator::~IsInSubtreeOfPositionIterator() {}
+
+// </IsInSubtreeOfPositionIterator>
+
+
 // <IsDescendantPositionIterator>
 const char* IsDescendantPositionIterator::class_name_str = "IsDescendantPositionIterator";
 IsDescendantPositionIterator::class_factory<IsDescendantPositionIterator>

@@ -469,6 +469,9 @@ namespace zorba {
     void beginVisit( const IsFollowingPositionIterator& );
     void endVisit  ( const IsFollowingPositionIterator& );
 
+    void beginVisit( const IsInSubtreeOfPositionIterator& );
+    void endVisit  ( const IsInSubtreeOfPositionIterator& );
+
     void beginVisit( const IsDescendantPositionIterator& );
     void endVisit  ( const IsDescendantPositionIterator& );
 

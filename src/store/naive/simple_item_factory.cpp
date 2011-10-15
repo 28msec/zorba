@@ -108,18 +108,7 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 
 bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& value)
 {
-  zstring str = value;
-  theUriPool->insert(str);
-  result =  new StructuralAnyUriItem(str);
-  return true;
-}
-
-
-bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, const char* value)
-{
-  zstring str;
-  theUriPool->insertc(value, str);
-  result = new StructuralAnyUriItem(str);
+  result =  new StructuralAnyUriItem(value);
   return true;
 }
 
