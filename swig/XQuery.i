@@ -209,7 +209,7 @@ public:
     lStream << theQuery;
     return lStream.str();
   }
-  
+
   void compile (const std::string &aQuery)
   {
     theQuery->compile(aQuery);
@@ -220,7 +220,7 @@ public:
     Zorba_CompilerHints_t hints;
     theQuery->compile(aQuery, aStaticContext.theStaticContext, hints);
   }
-  
+
   std::string printPlanAsXML()
   {
     std::ostringstream lStream;

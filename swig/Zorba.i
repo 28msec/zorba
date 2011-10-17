@@ -15,11 +15,12 @@ public:
   {
     return Zorba(zorba::Zorba::getInstance(aStore.getStore()));
   }
+  
   ItemFactory getItemFactory()
   {
     return ItemFactory(theZorba->getItemFactory());
   }
-  
+
   StaticContext createStaticContext()
   {
     return StaticContext(theZorba->createStaticContext());
