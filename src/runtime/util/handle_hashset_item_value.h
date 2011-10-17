@@ -109,7 +109,7 @@ public:
 
   void clear() { theSet.clear(); }
 
-  bool find(const store::Item_t& key) { return theSet.find(key); }
+  bool exists(const store::Item_t& key) { return theSet.exists(key); }
 
   bool insert(store::Item_t& key) { return theSet.insert(key); }
 };

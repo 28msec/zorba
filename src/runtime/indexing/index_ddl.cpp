@@ -46,6 +46,40 @@
 namespace zorba {
 
 
+SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointValueIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointValueIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointGeneralIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointGeneralIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeValueIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeValueIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeGeneralIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeGeneralIterator)
+
+
+/*******************************************************************************
+
+********************************************************************************/
 static void checkKeyType(
     const QueryLoc& loc,
     TypeManager* tm,
@@ -92,41 +126,10 @@ static void checkKeyType(
 }
 
 
-SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointValueIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointValueIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointGeneralIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexPointGeneralIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeValueIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeValueIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeGeneralIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeGeneralIterator)
-
-
 /*******************************************************************************
 
 ********************************************************************************/
-void createIndexSpec(
+static void createIndexSpec(
     IndexDecl* indexDecl,
     store::IndexSpecification& spec)
 {
@@ -624,20 +627,14 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0021_INDEX_NOT_DECLARED,
-          ERROR_PARAMS( qnameItem->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+        ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-          ERROR_PARAMS( qnameItem->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -646,11 +643,8 @@ bool ProbeIndexPointValueIterator::nextImpl(
       
       if (state->theIndex == NULL)
       {
-        throw XQUERY_EXCEPTION(
-          zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-          ERROR_PARAMS( qnameItem->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+        ERROR_PARAMS(qnameItem->getStringValue()));
       }
       
       state->theIterator = GENV_STORE.getIteratorFactory()->
@@ -951,6 +945,8 @@ bool ProbeIndexRangeValueIterator::nextImpl(
   store::IndexCondition_t cond;
   ulong numChildren = (ulong)theChildren.size();
   bool status;
+  TypeManager* tm = theSctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
  
   ProbeIndexRangeValueIteratorState* state;
   DEFAULT_STACK_INIT(ProbeIndexRangeValueIteratorState, state, planState);
@@ -1044,6 +1040,47 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     if (tempRight != NULL && theCheckKeyType)
     {
       checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempRight);
+    }
+
+    if (indexDecl->isGeneral() &&
+        (indexDecl->getKeyTypes())[keyNo] == NULL)
+    {
+      xqtref_t leftType;
+      xqtref_t rightType;
+
+      if (tempLeft != NULL)
+      {
+        leftType = tm->create_value_type(tempLeft);
+        
+        if (TypeOps::is_equal(tm, *leftType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        {
+          zstring str = tempLeft->getStringValue();
+          GENV_ITEMFACTORY->createString(tempLeft, str);
+          leftType = rtm.STRING_TYPE_ONE;
+        }
+      }
+
+      if (tempRight != NULL)
+      {
+        rightType = tm->create_value_type(tempRight);
+        
+        if (TypeOps::is_equal(tm, *rightType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        {
+          zstring str = tempRight->getStringValue();
+          GENV_ITEMFACTORY->createString(tempRight, str);
+          rightType = rtm.STRING_TYPE_ONE;
+        }
+      }
+
+      if (leftType != NULL && rightType != NULL)
+      {
+        if (!TypeOps::is_subtype(tm, *leftType, *rightType) &&
+            !TypeOps::is_subtype(tm, *rightType, *leftType))
+        {
+          RAISE_ERROR(zerr::ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES, loc,
+          ERROR_PARAMS(qname->getStringValue()));
+        }
+      }
     }
 
     cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
@@ -1255,6 +1292,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
     //
     // Build hashmap from the nodes satisfying the lower bound condition
     //
+
     if (!getSearchItems(planState, state, true, false, inclLower, false))
       goto done;
 
@@ -1291,6 +1329,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
     // Compute the nodes satisfying the upper bound condition and probe the
     // node hashmap.
     //
+
     if (!getSearchItems(planState, state, false, true, false, inclUpper))
       goto done;
 
@@ -1312,7 +1351,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
 
       while(state->theIterator->next(result)) 
       {
-        if (state->theNodeHashSet->find(result))
+        if (state->theNodeHashSet->exists(result))
           STACK_PUSH(true, state);
       }
       

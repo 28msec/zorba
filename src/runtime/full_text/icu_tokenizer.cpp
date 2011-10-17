@@ -365,7 +365,8 @@ next:
     word_start = word_end, word_end = word_->next();
     if ( word_end >= sent_end && sent_end != BreakIterator::DONE ) {
       sent_start = sent_end, sent_end = sent_->next();
-      ++numbers().sent;
+      if ( sent_end != BreakIterator::DONE )
+        ++numbers().sent;
     }
   } // while
 

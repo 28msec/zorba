@@ -19,19 +19,20 @@
 #   Valid options:
 #      modname = short module name (see modules/ExternalModules.conf);
 #                may be a semicolon-separated list
-#      allmodules = if true, download all known modules
+#      allmodules = if true: download all known modules
 #      outdir = full path to Zorba's external modules directory to download
 #               modules into (will be created if necessary)
+#      notags = if true: ignore tags, check out HEAD revision of module(s)
+#               (bzr only - svn uses different URLs for tags)
 
 # Figure out what directory we're running in - ExternalModules.txt is here too
 get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
 
 # Find SVN
-FIND_PROGRAM(SVN_EXECUTABLE svn DOC "subversion command line client")
-IF(NOT SVN_EXECUTABLE)
-  message (FATAL_ERROR "Subversion is required; not found")
-ENDIF(NOT SVN_EXECUTABLE)
-set (svn "${SVN_EXECUTABLE}")
+FIND_PROGRAM(svn svn DOC "subversion command line client")
+
+# Find BZR
+FIND_PROGRAM(bzr bzr DOC "bazaar command line client")
 
 # Check parameters
 if (NOT outdir)
@@ -56,6 +57,11 @@ foreach (modline ${modlines})
     list (GET _modargs 0 _modname)
     list (GET _modargs 1 _modvc)
     list (GET _modargs 2 _modurl)
+    set (_modtag)
+    list (LENGTH _modargs _modargslen)
+    if (_modargslen GREATER 3)
+      list (GET _modargs 3 _modtag)
+    endif (_modargslen GREATER 3)
 
     # See if this is a module short-name we care about
     set (_getmod)
@@ -68,22 +74,40 @@ foreach (modline ${modlines})
       endif (NOT ${_modfound} EQUAL -1)
     endif (allmodules)
 
-    # Ensure we recognize vc-type
-    if (NOT ${_modvc} STREQUAL "svn")
-      message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
-        "'${_modname}' in modules/ExternalModules.conf!")
-    endif (NOT ${_modvc} STREQUAL "svn")
-
     # Download
     if (_getmod)
       message ("Downloading module '${_modname}'...")
-      # QQQ Ridiculous and slow hack, but Sourceforge has been incredibly
-      # unreliable lately so this is the best choice I've got to make
-      # the remote queue semi-stable
-      foreach (s 1 2)
-        execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
-          WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
-      endforeach (s 1 2)
+      if (${_modvc} STREQUAL "svn")
+        if (NOT svn)
+          message (FATAL_ERROR
+            "Subversion client not found - required for ${_modname} module!")
+        endif (NOT svn)
+        # QQQ Ridiculous and slow hack, but Sourceforge has been
+        # incredibly unreliable lately so this is the best choice I've
+        # got to make the remote queue semi-stable
+        foreach (s 1 2)
+          execute_process (COMMAND "${svn}" checkout "${_modurl}" "${_modname}"
+            WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
+        endforeach (s 1 2)
+
+      elseif (${_modvc} STREQUAL "bzr")
+        if (NOT bzr)
+          message (FATAL_ERROR
+            "Bazaar client not found - required for ${_modname} module!")
+        endif (NOT bzr)
+
+        set (_modtagargs)
+        if (_modtag AND NOT notags)
+          set (_modtagargs "-r" "${_modtag}")
+        endif (_modtag AND NOT notags)
+        execute_process (COMMAND "${bzr}" branch "${_modurl}" "${_modname}"
+          ${_modtagargs} WORKING_DIRECTORY "${outdir}" TIMEOUT 60)
+
+      else (${_modvc} STREQUAL "svn")
+        message (FATAL_ERROR "Unknown vc-type '${_modvc}' for module "
+          "'${_modname}' in modules/ExternalModules.conf!")
+
+      endif (${_modvc} STREQUAL "svn")
     endif (_getmod)
   endif (modline)
 endforeach (modline)

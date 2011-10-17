@@ -1768,6 +1768,14 @@
       <value>"$1": invalid node URI</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0029" name="REFERENCE_ALREADY_PRESENT">
+      <value>"$1": reference already present in the store</value>
+    </diagnostic>
+   
+    <diagnostic code="ZAPI0030" name="NO_CURRENT_REFERENCE">
+      <value>node has no current reference</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0039" name="XQUERY_HAS_ITERATOR_ALREADY">
       <value>XQuery has iterator already</value>
     </diagnostic>
@@ -1909,8 +1917,8 @@
       <value>"$1": collection does not contain node</value>
     </diagnostic>
 
-    <diagnostic code="ZDDY0012" name="COLLECTION_UNORDERED_BAD_INSERT">
-      <value>"$1": illegal insert into unordered collection</value>
+    <diagnostic code="ZDDY0012" name="COLLECTION_UNORDERED_BAD_OPERATION">
+      <value>"$1": illegal $2 into unordered collection</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0013" name="COLLECTION_BAD_DESTROY_INDEXES">
@@ -1979,6 +1987,10 @@
 
     <diagnostic code="ZDDY0030" name="INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED">
       <value>"$1": index range-general probe not allowed</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0034" name="INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES">
+      <value>"$1": index range-value probe has search keys with incompatible types</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0031" name="IC_NOT_DECLARED">
