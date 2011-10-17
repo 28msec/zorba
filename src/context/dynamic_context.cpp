@@ -408,24 +408,6 @@ void dynamic_context::unset_variable(
   var.theValue.item = NULL;
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-bool dynamic_context::is_bound_variable(
-  ulong varid, 
-  const store::Item_t& varname,
-  const QueryLoc& loc
-  )const
-{
- 
-  if(theVarValues[varid].theState == VarValue::item || theVarValues[varid].theState == VarValue::temp_seq)
-    return true;
-  else
-    return false;
-    
-}
-
-
 
 /*******************************************************************************
 

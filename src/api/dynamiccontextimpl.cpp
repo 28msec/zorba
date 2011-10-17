@@ -217,30 +217,6 @@ bool DynamicContextImpl::getExternalVariables(
   return false;
 }
 
-/****************************************************************************//**
-
-********************************************************************************/
-bool DynamicContextImpl::isBoundVariable(
-  const String& inNamespace,
-  const String& inLocalname) const
-{
-  ZORBA_DCTX_TRY
-  {
-    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
-    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
-
-    var_expr* var = get_var_expr(nameSpace, localName);
-       
-    ulong varId = var->get_unique_id();
-
-    if(theCtx->is_bound_variable(varId, var->get_name(), QueryLoc::null))
-    {
-      return true;
-    }
-  }
-  ZORBA_DCTX_CATCH
-  return false;
-}
 
 
 /****************************************************************************//**

@@ -51,17 +51,6 @@ class ZORBA_DLL_PUBLIC DynamicContext
    */
   virtual bool
   getExternalVariables(std::vector<Item>& aVars) const = 0;
-	
-
-  /** \brief Returns true if a variable is bounded in the 
-   *         dynamic context false if is not.
-   *
-   * @param aNamespace the namespace URI of the variable's expanded QName
-   * @param aLocalname the local name of the variable's expanded QNameuccessfully, false otherwise.
-   * @throw ZorbaException if an error occured.
-   */
-  virtual bool 
-  isBoundVariable(const String& aNamespace, const String& aLocalname) const = 0;
 	 
   /**
    * \brief Defines the external variable identified by aQName and assigns it
