@@ -162,7 +162,7 @@ bool BasicItemFactory::createNMTOKENS(store::Item_t& result, zstring& value )
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
     store::Item_t resultItem;
-    if ( createNMTOKENS(resultItem, atomicTextValues[i]) )
+    if ( createNMTOKEN(resultItem, atomicTextValues[i]) )
     {
       typedValues.push_back(resultItem.getp());
     }
