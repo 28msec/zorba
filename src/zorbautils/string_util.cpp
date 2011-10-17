@@ -31,8 +31,10 @@ U_NAMESPACE_USE
 namespace zorba {
 namespace utf8 {
 
+///////////////////////////////////////////////////////////////////////////////
+
 size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
-            XQPCollator const *collator ) {
+             XQPCollator const *collator ) {
 #ifndef ZORBA_NO_UNICODE
   if ( !collator || collator->doMemCmp()) {
 #endif /* ZORBA_NO_UNICODE */
@@ -112,6 +114,8 @@ bool match_whole( char const *in, char const *pattern, char const *flags ) {
   re.compile( pattern, flags );
   return re.match_whole( in );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace utf8
 } // namespace zorba

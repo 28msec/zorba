@@ -25,6 +25,8 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 transcoder::transcoder( std::ostream& output_stream, bool in_utf16 ) :
   os( output_stream ),
   utf16( in_utf16 )
@@ -77,6 +79,8 @@ void transcoder::write_utf16_char( char ch ) {
 }
 
 #endif /* ZORBA_NO_UNICODE */
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -1967,7 +1967,7 @@ bool CRegexAscii_chargroup::match_internal(const char *source, int *start_from_b
         }
         break;
       default:
-        if(unicode::check_codepoint_category(source[0], (unicode::UnicodeCategoriesEnum)cgt_it->c1))
+        if(unicode::check_codepoint_category(source[0], (unicode::category)cgt_it->c1))
         {
           if(!(cgt_it->flags & 0x80))
             found = true;

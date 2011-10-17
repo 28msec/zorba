@@ -65812,7 +65812,7 @@ static const codepoint_range_category codepoints_categories2[] = {
   { 0x100000, 0x100000, UNICODE_Co},
 };
 
-bool check_codepoint_category(code_point cp, UnicodeCategoriesEnum categ)
+bool check_codepoint_category(code_point cp, category categ)
 {
   if(cp < 0x10000)
     return codepoints_categories[cp] == categ;

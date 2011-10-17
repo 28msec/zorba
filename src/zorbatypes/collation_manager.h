@@ -27,7 +27,7 @@ namespace zorba
 
 #ifdef ZORBA_NO_UNICODE
 
-class   Collator
+class Collator
 {
 };
 

@@ -657,7 +657,7 @@ bool NormalizeUnicodeIterator::nextImpl(
 
     item0->getStringValue2(resStr);
 #ifndef ZORBA_NO_UNICODE
-    ZORBA_ASSERT( utf8::normalize(resStr, normType, &resStr) );
+    ZORBA_ASSERT( utf8::normalize( resStr, normType, &resStr ) );
 #endif /* ZORBA_NO_UNICODE */
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state );
   }

@@ -23,6 +23,8 @@
 #include <cstring>
 #include <cwchar>
 
+#include <zorba/internal/ztd.h>
+
 #ifdef ZORBA_NO_UNICODE
 # include "zorbamisc/config/stdint.h"
 # include "zorbatypes/zstring.h"
@@ -119,7 +121,7 @@ inline bool is_space( code_point c ) {
   return ascii_c == c && isspace( ascii_c );
 #else
   return isspace( c );
-#endif
+#endif /* WIN32 */
 }
 
 /**
@@ -138,8 +140,10 @@ bool is_ucschar( code_point c );
  * @param c The code-point to check.
  * @return Returns \c true only if the code-point is valid.
  */
-template<class CodePointType>
-inline bool is_valid( CodePointType c ) {
+template<typename CodePointType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<CodePointType>::value,
+                        bool>::type
+is_valid( CodePointType c ) {
   return  (ztd::ge0( c ) && c <= 0x00D7FF)
       ||  (c >= 0x00E000 && c <= 0x00FFFD)
       ||  (c >= 0x010000 && c <= 0x10FFFF);

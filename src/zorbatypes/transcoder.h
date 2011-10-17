@@ -69,7 +69,7 @@ public:
 
   transcoder& operator<<( char ch ) {
 #ifndef ZORBA_NO_UNICODE
-    if (utf16)
+    if ( utf16 )
       write_utf16_char(ch);
     else
 #endif /* ZORBA_NO_UNICODE */
