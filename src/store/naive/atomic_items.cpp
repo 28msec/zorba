@@ -1057,6 +1057,8 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
 
   const char* start;
 
+  errno = 0;
+
   //
   // Decode collection id
   //
@@ -1065,6 +1067,9 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   char* next = const_cast<char*>(start);
 
   theCollectionId = strtoul(start, &next, 10);
+
+  if (errno != 0 || start == next)
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
   start = next;
 
@@ -1077,6 +1082,9 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   // Decode tree id
   //
   theTreeId = strtoul(start, &next, 10);
+
+  if (errno != 0 || start == next)
+    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theValue));
 
   start = next;
 
