@@ -22,7 +22,7 @@ namespace zorba { namespace debugclient {
   void CommandLine::execute()
   {
     for (;;) {
-      std::cout << "xqdb>> ";
+      std::cout << "(xqdb) ";
       std::string command;
       std::getline(std::cin, command);
       std::vector<std::string> args;

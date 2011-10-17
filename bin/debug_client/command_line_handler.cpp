@@ -90,12 +90,11 @@ namespace zorba { namespace debugclient {
     bool answered = false;
     while (!answered) {
       std::cout << "Do you really want to stop debugging and exit? (y/n) ";
-      char answer;
-      std::cin >> answer;
-      std::cout << std::endl;
-      if (answer == 'y') {
+      std::string lAnswer;
+      std::getline(cin, lAnswer);
+      if (lAnswer == "y" || lAnswer == "yes") {
         answered = true;
-      } else if (answer == 'n') {
+      } else if (lAnswer == "n" || lAnswer == "no") {
         theContinue = true;
         return;
       }
