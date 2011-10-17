@@ -15,26 +15,20 @@
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
-IF(ZORBA_WITH_DEBUGGER_CLIENT)
-  CONFIGURE_FILE (debug_client/event_handler_init.cpp.in debug_client/event_handler_init.cpp)
-  
-  SET(DEBUG_CLIENT_SRCS
-      debug_client/tuple.h
-      debug_client/main.cpp
-      debug_client/debug_command.h
-      debug_client/debug_command.cpp
-      debug_client/command_line_handler.h
-      debug_client/command_line_handler.cpp
-      debug_client/lock_free_queue.h
-      debug_client/event_handler.h
-      debug_client/event_handler.cpp
-      ${CMAKE_CURRENT_BINARY_DIR}/debug_client/event_handler_init.cpp
+IF (ZORBA_WITH_DEBUGGER)
+  SET (DEBUG_CLIENT_SRCS
+    debug_client/tuple.h
+    debug_client/main.cpp
+    debug_client/debug_command.h
+    debug_client/debug_command.cpp
+    debug_client/command_line_handler.h
+    debug_client/command_line_handler.cpp
+    debug_client/lock_free_queue.h
+    debug_client/event_handler.h
+    debug_client/event_handler.cpp
   )
-  
-  CONFIGURE_FILE (debug_client/message-handler.xq message-handler.xq)
-  
-  ZORBA_GENERATE_EXE("debuggercmd" "${DEBUG_CLIENT_SRCS}" "" "debugger" "bin")
-ENDIF(ZORBA_WITH_DEBUGGER_CLIENT)
+  ZORBA_GENERATE_EXE ("debuggercmd" "${DEBUG_CLIENT_SRCS}" "" "debugger" "bin")
+ENDIF (ZORBA_WITH_DEBUGGER)
 
 SET(SRCS
   zorbacmd.cpp

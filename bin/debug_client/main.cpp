@@ -28,11 +28,11 @@ int
 _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-  int port = 28028;
+  int lPort = 28028;
   if (argv[1]) {
-    std::stringstream stream(argv[1]);
-    stream >> port;
-    if (stream.fail() || argv[2]) {
+    std::stringstream lStream(argv[1]);
+    lStream >> lPort;
+    if (lStream.fail() || argv[2]) {
       std::cerr << "Unknown argument. USAGE: " << argv[0] << " [PORT]" << std::endl;
       return 2;
     }
@@ -40,10 +40,12 @@ _tmain(int argc, _TCHAR* argv[])
   try {
     LockFreeQueue<std::size_t> lQueue;
     LockFreeQueue<bool> lContEvent;
-    EventHandler lHandler(lQueue, lContEvent);
-    CommandLine cli;
-    CommandLineHandler handler(port, lQueue, lContEvent, lHandler, cli);
-    handler.execute();
+    EventHandler lEventHandler(lQueue, lContEvent);
+    lEventHandler.init();
+
+    CommandLine lCommandLine;
+    CommandLineHandler lCommandLineHandler(lPort, lQueue, lContEvent, lEventHandler, lCommandLine);
+    lCommandLineHandler.execute();
   } catch (...) {
     return 4;
   }

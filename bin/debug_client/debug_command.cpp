@@ -22,11 +22,15 @@ namespace zorba { namespace debugclient {
   void CommandLine::execute()
   {
     for (;;) {
-      std::cout << "zdb>> ";
+      std::cout << "xqdb>> ";
       std::string command;
       std::getline(std::cin, command);
       std::vector<std::string> args;
+      // we define the << operator to split the command (see below)
       args << command;
+      if (args.size() == 0) {
+        continue;
+      }
       std::map<std::string, UntypedCommand*>::iterator lIter = theCommands.find(args[0]);
       if (lIter == theCommands.end()) {
         std::cout << args[0] << ": Command not found" << std::endl;
@@ -59,22 +63,33 @@ namespace std {
   vector<string>& operator<< (vector<string>& vec, const string& str)
   {
     string::size_type before = 0;
-    string::size_type pos = str.find(" ", 0);
+    string::size_type pos = str.find_first_of(" \t", 0);
     while (pos != str.npos) {
       std::string lSub = str.substr(before, pos - before);
-      if (lSub[0] == '"') {
-        std::string::size_type lBeforeCopy = before;
-        do {
-          lBeforeCopy = str.find("\"", lBeforeCopy + 1);
-        } while (pos != str.npos && str.size() > pos + 1 && str[pos + 1] == '\\');
-        pos = lBeforeCopy;
-        lSub = str.substr(before + 1, pos - before - 1);
+
+      // if two consecutive spaces, you get an empty string here
+      if (lSub != "") {
+        if (lSub[0] == '"') {
+          std::string::size_type lBeforeCopy = before;
+          do {
+            lBeforeCopy = str.find("\"", lBeforeCopy + 1);
+          } while (pos != str.npos && str.size() > pos + 1 && str[pos + 1] == '\\');
+          pos = lBeforeCopy;
+          lSub = str.substr(before + 1, pos - before - 1);
+        }
+        vec.push_back(lSub);
       }
-      vec.push_back(lSub);
+
       before = pos + 1;
-      pos = str.find(" ", before);
+      pos = str.find_first_of(" \t", before);
     }
     std::string lSub = str.substr(before);
+
+    // catching the case when the command ends with a space
+    if (lSub == "") {
+      return vec;
+    }
+
     if (lSub[0] == '"') {
       pos = str.find("\"", before + 1);
       lSub = str.substr(before + 1, pos - before - 1);

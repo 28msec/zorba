@@ -95,7 +95,7 @@ namespace zorba { namespace debugclient {
       std::cout << std::endl;
       if (answer == 'y') {
         answered = true;
-      } else if (answered == 'n') {
+      } else if (answer == 'n') {
         theContinue = true;
         return;
       }
