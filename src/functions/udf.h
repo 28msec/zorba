@@ -40,29 +40,44 @@ namespace zorba
   i.e., an fo_expr is created that points to the udf obj and also has a vector
   of pointers to the arg exprs appearing in the function call.
 
-  theLoc           : The query location where this udf is declared at.
-  theBodyExpr      : The expr tree representing what this function is doing.
-                     It is the result of translating the udf declaration (so
-                     for a udf with one or more params, it is the flwor expr
-                     described above). Note: translation of udf declarations
-                     includes normalization and optimization of the expr tree.
-  theArgVars       : The internally generated arg vars (the $xi_ vars described
-                     above)
+  theLoc: 
+  -------
+  The query location where this udf is declared at.
+  
+  theBodyExpr:
+  ------------
+  The expr tree representing what this function is doing. It is the result of 
+  translating the udf declaration (so for a udf with one or more params, it is
+  the flwor expr described above). Note: translation of udf declarations
+  includes normalization and optimization of the expr tree.
 
-  theScriptingKind : The declared scripting kind of this udf. Notice that the
-                     getScriptingKind method will return the declared kind if 
-                     the body is NULL, but after the body has been translated,
-                     it will return the kind of the body expr.
+  theArgVars:
+  -----------
+  The internally generated arg vars (the $xi_ vars described above)
 
-  theIsLeaf        : True if this udf does not invoke any other udfs
+  theScriptingKind:
+  -----------------
+  The declared scripting kind of this udf. Notice that the getScriptingKind 
+  method will return the declared kind if the body is NULL, but after the body
+  has been translated, it will return the kind of the body expr.
 
-  thePlan          :
-  theArgVarsRefs   : For each arg var, this vector stores the LetVarIterators 
-                     that represent the references to that var within the udf
-                     body. If there are more than one references of an arg var,
-                     these references are "mutually exclusive", ie, at most one
-                     of the references will actually be reached during each 
-                     particular execution of the body.
+  theIsLeaf:
+  ----------
+  True if this udf does not invoke any other udfs
+
+  thePlan:
+  --------
+
+  thePlanStateSize:
+  -----------------
+
+  theArgVarsRefs:
+  --------------- 
+  For each arg var, this vector stores the LetVarIterators that represent the 
+  references to that var within the udf body. If there are more than one 
+  references of an arg var, these references are "mutually exclusive", ie, 
+  at most one of the references will actually be reached during each particular
+  execution of the body.
 ********************************************************************************/
 class user_function : public function 
 {
@@ -84,6 +99,7 @@ private:
   bool                        theIsOptimized;
 
   PlanIter_t                  thePlan;
+  uint32_t                    thePlanStateSize;
   std::vector<ArgVarRefs>     theArgVarsRefs;
 
 public:
@@ -93,11 +109,10 @@ public:
 
 public:
   user_function(
-        const QueryLoc& loc,
-        const signature& sig,
-        expr_t expr_body,
-        short kind
-    );
+      const QueryLoc& loc,
+      const signature& sig,
+      expr_t expr_body,
+      short kind);
 
   virtual ~user_function();
 
@@ -139,8 +154,10 @@ public:
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
 
-  PlanIter_t getPlan(CompilerCB *);
+  PlanIter_t getPlan(CompilerCB* cb, uint32_t& planStateSize);
   
+  void setPlaneStateSize(uint32_t size) { thePlanStateSize = size; }
+
   const std::vector<ArgVarRefs>& getArgVarsRefs() const;
 
   PlanIter_t codegen(
