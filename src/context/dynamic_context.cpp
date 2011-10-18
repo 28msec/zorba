@@ -666,10 +666,12 @@ bool dynamic_context::addExternalFunctionParameter(
     // destroy the object if it's already contained in the map
     lValue->destroy();
     keymap->erase(aName);
+    keymap->insert(aName, val);
     return false;
   }
   else
   {
+    keymap->insert(aName, val);
     return true;
   }
 }
