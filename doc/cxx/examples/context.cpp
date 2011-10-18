@@ -149,7 +149,11 @@ context_example_4(Zorba* aZorba)
     outStream2 << lQuery << std::endl;
     std::cout << outStream2.str() << std::endl;
 
+#ifndef ZORBA_NO_UNICODE
     if (outStream2.str() != "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\nBook 1.1\n")
+#else
+    if (outStream2.str() != "<?xml version=\"1.0\"?>\nBook 1.1\n")
+#endif
     {
       std::cerr << "Test 4 failed with a wrong result : " << std::endl
                 << outStream2.str() << std::endl;

@@ -2031,9 +2031,12 @@ void serializer::setParameter(const char* aName, const char* aValue)
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
       );
 #else
-    throw XQUERY_EXCEPTION(
-      err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( SerializeEncodingNotSupportedForNoUnicode ) )
-    );
+    if (strcmp(aValue, "UTF-8"))
+    {
+      throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
+      );
+    }
 #endif /* ZORBA_NO_UNICODE */
   }
   else if (!strcmp(aName, "media-type"))

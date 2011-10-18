@@ -306,6 +306,11 @@ IF(ZORBA_NO_UNICODE)
                       test/rbkt/zorba/utf-8/utf8inDataNo
                       test/rbkt/zorba/utf-8/utf8inDataRo
                       test/rbkt/zorba/http-client/send-request/http2-read-svg
+                      test/rbkt/zorba/http-client/post/post2_element
+                      test/rbkt/zorba/http-client/post/post3_xml
+                      test/rbkt/zorba/http-client/put/put2_element
+                      test/rbkt/zorba/http-client/put/put3_xml
+                      test/rbkt/zorba/parsing_and_serializing/fn_serialize_04_xml_decl
                       PROPERTIES WILL_FAIL TRUE)
 ENDIF(ZORBA_NO_UNICODE)
 

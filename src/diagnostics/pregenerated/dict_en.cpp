@@ -595,28 +595,28 @@ extern entry const dict_en[] = {
 #endif
 #if defined(ZORBA_NO_UNICODE)
   { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char. Supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes,\
-      \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups." },
+ \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups." },
 #endif
 #if defined(ZORBA_NO_UNICODE)
   { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category. Supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
 #endif
 #if defined(ZORBA_NO_UNICODE)
   { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "\
-        unknown \\p{Is} category block. Supported categories are:\
-        BasicLatin, Latin-1Supplement, LatinExtended-A, LatinExtended-B, IPAExtensions, SpacingModifierLetters,\
-        CombiningDiacriticalMarks, Greek, Cyrillic, Armenian,  Hebrew, Arabic,  Syriac,  Thaana,  Devanagari,\
-        Bengali,  Gurmukhi,  Gujarati, Oriya,  Tamil, Telugu, Kannada,   Malayalam, Sinhala,  Thai,  Lao,\
-        Tibetan, Myanmar,  Georgian, HangulJamo, Ethiopic,  Cherokee,  UnifiedCanadianAboriginalSyllabics,\
-        Ogham,  Runic,  Khmer,  Mongolian, LatinExtendedAdditional,  GreekExtended, GeneralPunctuation,\
-        SuperscriptsandSubscripts,  CurrencySymbols,  CombiningMarksforSymbols,  LetterlikeSymbols,\
-        NumberForms,  Arrows,  MathematicalOperators, MiscellaneousTechnical,  ControlPictures,\
-        OpticalCharacterRecognition, EnclosedAlphanumerics,  BoxDrawing, BlockElements, GeometricShapes,\
-        MiscellaneousSymbols,  Dingbats, BraillePatterns, CJKRadicalsSupplement, KangxiRadicals,  IdeographicDescriptionCharacters,\
-        CJKSymbolsandPunctuation, Hiragana,  Katakana,  Bopomofo, HangulCompatibilityJamo,   Kanbun,\
-        BopomofoExtended,  EnclosedCJKLettersandMonths, CJKCompatibility,  CJKUnifiedIdeographsExtensionA,\
-        CJKUnifiedIdeographs, YiSyllables, YiRadicals,  HangulSyllables,  PrivateUse,   CJKCompatibilityIdeographs,\
-        AlphabeticPresentationForms, ArabicPresentationForms-A,  CombiningHalfMarks,  CJKCompatibilityForms,\
-        SmallFormVariants,   ArabicPresentationForms-B, Specials,  HalfwidthandFullwidthForms\
+ unknown \\p{Is} category block. Supported categories are:\
+ BasicLatin, Latin-1Supplement, LatinExtended-A, LatinExtended-B, IPAExtensions, SpacingModifierLetters,\
+ CombiningDiacriticalMarks, Greek, Cyrillic, Armenian, Hebrew, Arabic, Syriac, Thaana, Devanagari,\
+ Bengali, Gurmukhi, Gujarati, Oriya, Tamil, Telugu, Kannada, Malayalam, Sinhala, Thai, Lao,\
+ Tibetan, Myanmar, Georgian, HangulJamo, Ethiopic, Cherokee, UnifiedCanadianAboriginalSyllabics,\
+ Ogham, Runic, Khmer, Mongolian, LatinExtendedAdditional, GreekExtended, GeneralPunctuation,\
+ SuperscriptsandSubscripts, CurrencySymbols, CombiningMarksforSymbols, LetterlikeSymbols,\
+ NumberForms, Arrows, MathematicalOperators, MiscellaneousTechnical, ControlPictures,\
+ OpticalCharacterRecognition, EnclosedAlphanumerics, BoxDrawing, BlockElements, GeometricShapes,\
+ MiscellaneousSymbols, Dingbats, BraillePatterns, CJKRadicalsSupplement, KangxiRadicals, IdeographicDescriptionCharacters,\
+ CJKSymbolsandPunctuation, Hiragana, Katakana, Bopomofo, HangulCompatibilityJamo, Kanbun,\
+ BopomofoExtended, EnclosedCJKLettersandMonths, CJKCompatibility, CJKUnifiedIdeographsExtensionA,\
+ CJKUnifiedIdeographs, YiSyllables, YiRadicals, HangulSyllables, PrivateUse, CJKCompatibilityIdeographs,\
+ AlphabeticPresentationForms, ArabicPresentationForms-A, CombiningHalfMarks, CJKCompatibilityForms,\
+ SmallFormVariants, ArabicPresentationForms-B, Specials, HalfwidthandFullwidthForms\
       " },
 #endif
 #if defined(ZORBA_NO_UNICODE)
