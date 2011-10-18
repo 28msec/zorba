@@ -35,7 +35,7 @@ class CountCollectionIterator: public UnaryBaseIterator<CountCollectionIterator,
   protected:
     //Whether the Collection is a W3C or Zorba Collection
     //and if it's dynamic or static collection module
-    enum CollectionType {W3C, ZORBASTATIC, ZORBADYNAMIC };
+    enum CollectionType {W3C = 0, ZORBASTATIC = 1, ZORBADYNAMIC = 2 };
     CollectionType theCollectionType;
 
   public:
@@ -49,7 +49,18 @@ class CountCollectionIterator: public UnaryBaseIterator<CountCollectionIterator,
   {
     serialize_baseclass(ar,
         (UnaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
+
+        /*This ugly casting is necesary, if we used a static_cast directly it
+          would create a new temporary variable with the "casted" value within
+          it. This of course cannot be passed by &, we can pass the value to
+          another variable, then pass the variable and sincronize the values of
+          both again after conversion. I feel this is slightly more efficient
+          and just as unreadable.*/
+        int *intCollectionType = reinterpret_cast<int*>(&theCollectionType);
+
+        ar & *intCollectionType;
   }
+
   CountCollectionIterator(
     static_context* sctx,
     const QueryLoc& loc,
